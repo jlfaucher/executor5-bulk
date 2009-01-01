@@ -60,19 +60,32 @@ useful in programs that work with resource IDs.  The symbolic name is then used
 where ever a numeric resource ID is needed.  Symbolic names are easier to
 remember than numeric IDs and can make the code easier to understand.
 </para>
-<para>The mechanism ooDialog provides for using symbolic IDs is the
-<link linkend="constdir">ConstDir</link> attribute of the dialog classes.  This
-is a directory object where the indexes are symbolic IDs and the item at each
-index is the numerical value of the ID.  The symbolic IDs in the following table
-are pre-defined by ooDialog and placed in the <computeroutput>ConstDir</computeroutput>
-when an instance of a dialog class is created.
+<para>
+  The mechanism ooDialog provides for using symbolic IDs is the <link linkend="constdir">ConstDir</link>
+  attribute of the dialog classes.  This is a directory object where the indexes are symbolic IDs and the
+  item at each index is the numerical value of the ID.
+</para>
+<para>
+  Some generic <link linkend="chapResources">resources</link> are bound to the oodialog.dll.  They can be
+  used in any ooDialog program and are accessed using the <link
+  linkend="clsResourceImage">.ResourceImage</link> class.  Programmers should always use their symbolic
+  ID rather than their numeric ID in case the numeric value changes in future versions.  To allow for
+  future expansion, the ooDialog programmer should consider the resource IDs of 1 through 50 as reserved
+  for ooDialog. Programmers can avoid conflicts by using IDs greater than 50 for resource IDs they assign
+  in their programs.
+</para>
+<para>
+  The symbolic IDs in the following table are pre-defined by ooDialog and placed in the
+  <computeroutput>ConstDir</computeroutput> when an instance of a dialog class is created.  All symbolic
+  names after IDC_STATIC in the table refer to resources bound to oodialog.dll for general use by the
+  ooDialog programmer.
 </para>
 <table id="oodsymbolicids" frame="all">
 <title>Symbolic IDs Used by ooDialog</title>
 <tgroup cols="3">
 <thead>
 <row>
-<entry>Numeric ID</entry>
+<entry>Numeric ID or Symbol</entry>
 <entry>Symbolic ID</entry>
 <entry>ResourceType</entry>
 </row>
@@ -99,22 +112,22 @@ when an instance of a dialog class is created.
 <entry>Static Control</entry>
 </row>
 <row>
-<entry>1</entry>
+<entry>IDI_DLG_OODIALOG</entry>
 <entry>IDI_DLG_OODIALOG</entry>
 <entry>Icon</entry>
 </row>
 <row>
-<entry>2</entry>
+<entry>IDI_DLG_APPICON</entry>
 <entry>IDI_DLG_APPICON</entry>
 <entry>Icon</entry>
 </row>
 <row>
-<entry>3</entry>
+<entry>IDI_DLG_APPICON2</entry>
 <entry>IDI_DLG_APPICON2</entry>
 <entry>Icon</entry>
 </row>
 <row>
-<entry>4</entry>
+<entry>IDI_DLG_OOREXX</entry>
 <entry>IDI_DLG_OOREXX</entry>
 <entry>Icon</entry>
 </row>
@@ -172,45 +185,47 @@ object (pen, brush, font). Handles are required for certain methods; they
 can be retrieved from the system when needed.
 </para></listitem></varlistentry>
 <varlistentry><term id="dialogicon">dialog icon</term>
-<listitem><para>The term <emphasis role="italic">dialog icon</emphasis> is used
-in this documentation to refer to the icon that is displayed in the left hand
-corner of the title bar of a dialog.  In Windows this is often called the
-<emphasis role="italic">application</emphasis> icon.  The dialog icon is also
-used for the Task Bar display and in the AltTab task switcher application.</para>
-<para>The dialog icon for a specific dialog can be set when the dialog is run
-using one of the execute methods.  See the <link linkend="h000048">Execute</link>
-or <link linkend="popup">Popup</link> methods for example.  ooDialog provides four
-pre-defined icons for use in dialogs.  Custom icons can be used by including the
-icon in a binary (compiled) resource, a resource script, or by using the
-<link linkend="addicon">AddIcon</link> method of the UserDialog.  The following
-table shows the symbolic IDs of the pre-defined icons.  Their numeric IDs should
-be considered reserved.  There is a fifth symbolic ID that represents the default
-dialog icon.  This ID can always be used where a dialog icon ID is needed.
+<listitem>
+<para>
+  The term <emphasis role="italic">dialog icon</emphasis> is used in this documentation to refer to the
+  icon that is displayed in the left hand corner of the title bar of a dialog. In Windows this is often
+  called the <emphasis role="italic">application</emphasis> icon.  The dialog icon is also used for the
+  Task Bar display and in the AltTab task switcher application.
+</para>
+<para>
+  The dialog icon for a specific dialog can be set when the dialog is run using one of the execute
+  methods.  See the <link linkend="h000048">Execute</link> or <link linkend="popup">Popup</link> methods
+  for example.  ooDialog provides four pre-defined icons for use in dialogs.  Custom icons can be used by
+  including the icon in a binary (compiled) resource, a resource script, or by using the <link
+  linkend="addicon">AddIcon</link> method of the UserDialog.  The following table shows the symbolic IDs
+  of the pre-defined icons.  The symbolic ID should always be used in case the numeric value is changed
+  in the future.  Their numeric IDs should be considered reserved.  There is a fifth symbolic ID that
+  represents the default dialog icon.  This ID can always be used where a dialog icon ID is needed.
 </para>
 <table frame="all">
 <title>ooDialog Supplied Icons</title>
 <tgroup cols="2">
 <thead>
 <row>
-<entry>Numeric ID</entry>
+<entry>Description</entry>
 <entry>Symbolic ID</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>1</entry>
+<entry>The default, the letters OOD</entry>
 <entry>IDI_DLG_OODIALOG</entry>
 </row>
 <row>
-<entry>2</entry>
+<entry>Dialog box image</entry>
 <entry>IDI_DLG_APPICON</entry>
 </row>
 <row>
-<entry>3</entry>
+<entry>Fancier dialog box image</entry>
 <entry>IDI_DLG_APPICON2</entry>
 </row>
 <row>
-<entry>4</entry>
+<entry>The ooRexx image</entry>
 <entry>IDI_DLG_OOREXX</entry>
 </row>
 <row>

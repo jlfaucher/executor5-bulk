@@ -41,7 +41,7 @@
     #
     #########################################################################
 -->
-<chapter id="resources"><title>Resources</title>
+<chapter id="chapResources"><title>Resources</title>
 <indexterm><primary>Resources</primary></indexterm>
 <para>
   In the Windows OS, a <emphasis role="italic">resource</emphasis>, is binary data used by a
@@ -1228,9 +1228,19 @@
 <para>
   The .ImageList object acts as an interface to the underlying operating system Image List, which
   Microsoft calls a control. Although Microsoft calls the Image List a control and  documents it with the
-  other dialog controls, it is not a control in the same sense as button, edit, or list-view controls.
-  Use the <link linkend="windowsdoc">MSDN library</link> documentation to get more information on exactly
-  how Image Lists work.
+  other dialog controls, it is not a control in the same sense as button, edit, or list-view controls. It
+  is not a window, all dialog controls are windows.  It does not send or recieve window messages. Use the
+  <link linkend="windowsdoc">MSDN library</link> documentation to get more information on exactly how
+  Image Lists work.
+</para>
+<para>
+  When an image list is no longer needed, it can be released.  This frees up the system resources used
+  for the images and the image list.  The programmer releases an image list by using the <link
+  linkend="mthReleaseClsImageList">release()</link> method.  Once an image list is released it can no
+  longer be used.  It is an error to inovke any method on the released object, except for the <link
+  linkend="mthIsNullClsImageList">isNull()</link> method.  The isNull() method can be invoked any time to
+  test if an image list is valid or not. It should go without saying that a programmer should not release
+  an image list that is in use.
 </para>
 <para>
   Future versions of the .ImageList are intended to provide a complete interface to the underlying Image
@@ -1453,7 +1463,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
     <para>
-      Raises syntax errors when incorrect arguments are detected.
+      Raises syntax errors when incorrect arguments are detected or if the image list is null.
     </para>
     <para>
       Provides an interface to the <computeroutput>ImageList_Add()</computeroutput> API. The <link
@@ -1535,7 +1545,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
     <para>
-      Raises syntax errors when incorrect arguments are detected.
+      Raises syntax errors when incorrect arguments are detected or if the image list is null.
     </para>
     <para>
       Provides an interface to the <computeroutput>ImageList_AddMasked()</computeroutput> API. The <link
@@ -1621,7 +1631,7 @@
 </programlisting>
 
 <para>
-  Adds an icon or cursor image to the image list.  If this image list is masked, then both the image and
+  Adds an icon or cursor image to the image list.  If the image list is masked, then both the image and
   mask bitmaps of the icon or cursor are  copied. If it is not masked, then only the image bitmap is
   copied.
 </para>
@@ -1630,13 +1640,16 @@
   be released if it is not needed anymore.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
     <para>
-      Raises syntax errors when incorrect arguments are detected.
+      Raises syntax errors when incorrect arguments are detected or if the image list is null.
     </para>
     <para>
       Provides an interface to the <computeroutput>ImageList_AddIcon()</computeroutput> API. The <link
       linkend="windowsdoc">MSDN library</link> documentation can provide more information on this method.
     </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The only argument is:
@@ -1701,29 +1714,49 @@
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addImages(--x--,--y--)---------------------------------------><
-
+>>--addImages(--images--+---------+--)---------------------------><
+                        +-,-cRef--+
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Adds a number of images to the image list.  The images are supplied in a non-sparse array and must all
+  be of the same type.
+</para>
+<para>
+  The images are added to the image list in the same order as they exist in the array.  If an error
+  occurs in the middle of processing the images, the method returns at that point.  This means that
+  images prior to the error will exist in the image list, but no images in the array after the error will
+  be placed in the image list.  Which images were placed in the image list can be determined by the
+  return value of this method.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected or if the image list is null.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The arguments are:
     <variablelist>
-      <varlistentry><term>x</term>
+      <varlistentry><term>images</term>
       <listitem>
         <para>
-          xx.
+          An array of non-null .Image objects.  The array must not be sparse, that is each index in the
+          array must contain an .Image ojbect.  The images can be bitmaps, icons, or cursors, but each
+          image in the array must be the same type. (Remember that curors are icons, so that the array
+          can contain a mixture of icons and cursors.) Bitmaps can not be mixed with icons or cursors.
         </para>
       </listitem></varlistentry>
-      <varlistentry><term>y</term>
+      <varlistentry><term>cRef</term>
       <listitem>
         <para>
-          yyy,
+          A <link linkend="mthColorRef">COLORREF</link> that is used to generate the mask if the image
+          list is a masked image list.  See the <link
+          linkend="mthAddMaskedClsImageList">addMasked()</link> method for more details on this argument.
+          This argument is ignored if the images are not bitmaps, or if the image list is not masked.
         </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1732,31 +1765,68 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      This method returns the image list index of the last successfully added image, or -1 if no images
+      were added.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
+      This example creates an image list from a number icons and then displays them in a list-view
+      control in a dialog.
       <programlisting>
       <![CDATA[
-      x = y
-      return 0
+      list  = self~getListControl(IDC_LV_IMAGES)
+
+      files1 = .array~new()
+      files1[ 1] = "Bee.ico"
+      files1[ 2] = "Camera.ico"
+      files1[ 3] = "Camera1.ico"
+      files1[ 4] = "Default.ico"
+      files1[ 5] = "Disabled.ico"
+      files1[ 6] = "Hot.ico"
+      files1[ 7] = "Lamp.ico"
+      files1[ 8] = "Mountain.ico"
+      files1[ 9] = "Normal.ico"
+      files1[10] = "Penquin.ico"
+      files1[11] = "Picture.ico"
+      files1[12] = "Pushed.ico"
+      files1[13] = "Question32.ico"
+      files1[14] = "Search32.ico"
+      files1[15] = "Skull.ico"
+      files1[16] = "Stolen.ico"
+      files1[17] = "Window.ico"
+
+      size = .Size~new(32, 32)
+
+      images = .Image~fromFiles(files1, .Image~id(IMAGE_ICON), size)
+      if images~items <> files1~items then do
+        say 'Error loading images.'
+        say '  System error:' .SystemErrorCode
+        say '  Message:     ' SysGetErrorText(.SystemErrorCode)
+        return
+      end
+
+      count = images~items
+      flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+
+      imageList = .ImageList~create(size, flags, 20, 10);
+
+      lastAdded = imageList~addImages(images)
+      if lastAdded <> (count - 1) then do
+        -- Not all images were added.  We just ignore this and display
+        -- in the list-view what was added.
+      end
+
+      -- Set the image list for the list-view's normal icons.
+      list~setImageList(imageList, .Image~id(LVSIL_NORMAL))
+
+      -- Add an item to the list-view for each image.  The
+      -- text for each item will be the icon file name and
+      -- the icon will be the image we loaded.
+      do i = 0 to lastAdded
+        list~add(files1[i + 1], i)
+      end
       ]]>
       </programlisting>
     </para>
@@ -1770,65 +1840,52 @@
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getCount(--x--,--y--)---------------------------------------><
+>>--getCount----------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Determines the number of images in the image list.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_ImageCount()</computeroutput> API. The <link
+      linkend="windowsdoc">MSDN library</link> documentation can provide more information on this method.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+    <para>
+      There are no arguments.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      Returns the number of images currently in the image list.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
-    </para>
+    <programlisting>
+    <![CDATA[
+    ::method displayImageListCount private
+      use strict arg imageList
+      say 'Image list:' imageList~handle 'has' imagelist~getCount 'images.'
+
+      /*
+        Possible output on a Windows 64-bit system:
+
+        Image list: 0x00000000000ED420 has 17 images.
+      */
+    ]]>
+    </programlisting>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ImageList::getCount() -->
@@ -1839,65 +1896,57 @@
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getImageSize(--x--,--y--)---------------------------------------><
+>>--getImageSize----------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Determines the size of the images in the image list.  All images in any single image list have the same
+  size.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_IconSize()</computeroutput> API. The <link
+      linkend="windowsdoc">MSDN library</link> documentation can provide more information on this method.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+    <para>There are no arguments.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      The size of the images in the image list is returned in a <link linkend="clsSize">.Size</link>
+      object.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
-    </para>
+    <programlisting>
+    <![CDATA[
+    ::method displayImageListSize private
+      use strict arg imageList
+      s = imageList~getImageSize
+      h = s~height 'pixels high'
+      w = s~width 'pixels wide'
+      say 'Image list:' imageList~handle 'contains images' h 'by' w
+
+      /*
+        Possible output on a Windows 64-bit system:
+
+        Image list: 0x00000000000DCB20 contains images 32 pixels high by 32 pixels wide
+      */
+
+    ]]>
+    </programlisting>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ImageList::getImageSize() -->
@@ -1908,62 +1957,59 @@
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--duplicate(--x--,--y--)---------------------------------------><
+>>--duplicate----------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Creates a duplicate image list.  All information in the original image list is copied to the new image
+  list.  (Overlay images are not copied, but ooDialog does not have support for image list overlay images
+  at this time.)  The two image lists are independent.  Adding, or removing, images from one image list
+  has no effect on the other.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_Duplcate()</computeroutput> API. The <link
+      linkend="windowsdoc">MSDN library</link> documentation can provide more information on this method.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+    <para>
+      There are no arguments.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      The return is a copy of the image list.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
+      This fictious example is from a point-of-sale application for a restaurant.  The customer is
+      presented with a list-view of menu items, each list-view item has a colorful icon depicting the
+      selection.  The customers place their orders through the application and wait-people then bring
+      them their meal when it is ready.  The dinner menu has all the items that the lunch menu does, plus
+      some more.  The customer can choose whether to order from the lunch menu or the dinner menu, so the
+      lunch menu image list has to remain unchanged.
       <programlisting>
       <![CDATA[
-      x = y
-      return 0
+      ::method getDinnerImageList private
+        use strict arg lunchImageList
+
+        dinnerList = lunchImageList~duplicate
+        fileArray = self~getDinnerImageFiles
+        dinnerList~addImages(fileArray)
+
+      return dinnerList
       ]]>
       </programlisting>
     </para>
@@ -1977,29 +2023,35 @@
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--remove(--x--,--y--)---------------------------------------><
+>>--remove(--index--)-----------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Removes the image at <emphasis role="italic">index</emphasis> from the image list.  When the image is
+  removed, all the indexes in the list are adjusted.  I.e., if the image at index 2 is removed, the image
+  at index 3 becomes index 2, the image at index 4 becomes index 3, etc..
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected or if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_Remove()</computeroutput> API. The <link
+      linkend="windowsdoc">MSDN library</link> documentation can provide more information on this method.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
+    <para>The single argument is:
     <variablelist>
-      <varlistentry><term>x</term>
+      <varlistentry><term>index</term>
       <listitem>
         <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
+          The index of the image to remove.
         </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2008,30 +2060,34 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      This method returns true on success, otherwise false.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
+      This example comes from the fictious point-of-sale application for a restaurant.  Sometimes the
+      chef runs out of a menu item and the item is then removed from the list-view so that the customers
+      can no longer order it.  (Rigorous error checking is not done because the application was written
+      by one of the waiters.)
       <programlisting>
       <![CDATA[
-      x = y
+      ::method removeFromMenu private
+        use strict arg index
+
+        menu = self~getListControl(IDC_LV_MENU)
+
+        bigIcons = menu~getImageList(.Image~id(LVSIL_NORMAL))
+        bigIcons~remove(index)
+
+        smallIcons = menu~getImageList(.Image~id(LVSIL_SMALL))
+        smallIcons~remove(index)
+
+        stateIcons = menu~getImageList(.Image~id(LVSIL_STATE))
+        stateIcons~remove(index)
+
+        menu~delete(index)
+
       return 0
       ]]>
       </programlisting>
@@ -2046,62 +2102,66 @@
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--removeAll(--x--,--y--)---------------------------------------><
+>>--removeAll----------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Removes all images from the image list.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_RemoveAll()</computeroutput> API. The <link
+      linkend="windowsdoc">MSDN library</link> documentation can provide more information on this method.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+    <para>
+      There are no arguments to this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      The method returns true on success, false otherwise.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
+      This example is a continuation of the fictious restaurant point-of-sale application.  The waiter
+      that wrote the application did not like to work past the normal closing time.  The application has
+      a feature that removes all the menu items as it gets near closing time to prevent customers from
+      ordering something they do not have time to finish eating.  (However, the waiter noticed that he
+      often got huge tips from customers that had drinks after their meal.)
       <programlisting>
       <![CDATA[
-      x = y
+      ::method stopOrders private
+
+        menu = self~getListControl(IDC_LV_MENU)
+
+        bigIcons = menu~getImageList(.Image~id(LVSIL_NORMAL))
+        bigIcons~removeAll
+
+        smallIcons = menu~getImageList(.Image~id(LVSIL_SMALL))
+        smallIcons~removeAll
+
+        stateIcons = menu~getImageList(.Image~id(LVSIL_STATE))
+        stateIcons~removeAll
+
+        menu~deleteAll
+
+        self~addAfterDinnerDrinks(menu)
+
       return 0
+
       ]]>
       </programlisting>
     </para>
@@ -2115,62 +2175,52 @@
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--release(--x--,--y--)---------------------------------------><
+>>--release----------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Releases the image list allowing the operating system to reclaim the resources used by the image list.
+  Once the image list has been released, it can no longer be used.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+    <para>
+      There are no arguments to this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      This method always returns 0.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
+      This example comes from a program that runs continuously.  During the life-cycle of the application
+      it displays and then closes a dialog that creates some image lists.  The image lists are always
+      different depending on the state of things.  Each time the dialog closes, it releases the image
+      lists it created to free up the operating system resources.
       <programlisting>
       <![CDATA[
-      x = y
-      return 0
+      ::method ok
+        self~cleanUp
+        return self~ok:super
+
+      ::method cancel
+        self~cleanUp
+        return self~cancel:super
+
+      ::method cleanUp private
+        expose coolTempImages warningImages buidingStatusImages
+
+        if coolTempImages \== .nil then coolTempImages~release
+        if warningImages \== .nil then warningImages~release
+        if buildingStatusImages \== .nil then buildStatusImages~release
+
       ]]>
       </programlisting>
     </para>
@@ -2184,65 +2234,47 @@
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--handle(--x--,--y--)---------------------------------------><
+>>--handle----------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Returns the Windows system handle to the image list this object represents.  It is an error to invoke
+  this method if the image list is null, or after the image has been released.
+</para>
+<para>
+   At this time, the handle is only useful for display.  In the ooDialog framework, methods that use
+   image lists for arguments, use the .ImageList object, not the image list handle.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+    <para>
+      There is no argument to this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      The return is the image list handle.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
-    </para>
+    <programlisting>
+    <![CDATA[
+    ::method displayImageList private
+      use strict arg imageList
+      say 'Currently using this image list:' imageList~handle
+
+      /*
+        Possible output on a Windows 64-bit system:
+
+        Currently using this image list: 0x00000000000DCB20
+      */
+    ]]>
+    </programlisting>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ImageList::handle() -->
@@ -2253,62 +2285,52 @@
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isNull(--x--,--y--)---------------------------------------><
+>>--isNull----------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Used to check if an image list is valid. This method can be invoked on any image list, even after it
+  has been released.  An image list will always be null after it has been released.  It is conceivable
+  that, if an error occurs during an image list creation, the returned image list might be null.
+  However, this is extemely unlikely.  Therefor, for all practical purposes, an image list will only be
+  null after it has been released.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+    <para>
+      There are no arguments to this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      This method returns true if the image list is null, otherwise false.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
+      This example comes from some test code.
       <programlisting>
       <![CDATA[
-      x = y
-      return 0
+      -- See if we can create an image list with no size.
+      imageList = .ImageList~create(.Size~new(0, 0), .Image~id(ILC_COLOR24),  20, 10)
+      if imageList~isNull then do
+        say 'Can not create a 0 x 0 image list.'
+        return .false
+      end
+
+      return .true
+
+      /*
+        Output will be:
+
+        Can not create a 0 x 0 image list.
+
+      */
       ]]>
       </programlisting>
     </para>
@@ -2321,14 +2343,44 @@
 <section id="clsResourceImage"><title>ResourceImage Class</title>
 <indexterm><primary>ResourceImage class</primary></indexterm>
 <para>
-  A ... is ..
+  Resource Images represent modules that contain resources.  These modules are binary executable files,
+  which on Windows are for all practical purposes .exe and .dll files. Before an application can use a
+  resource in a module, the resource must be loaded from the module into memory. Once in memory, the
+  application needs a handle to the specific resource in order to work with it.
 </para>
 <para>
+  The ResourceImage class contains methods and function to assist in the loading of resources into memory
+  and obtaining handles to the desired resources.  ooDialog has always provided, limited, access to
+  resources in modules through the <link linkend="clsResDialog">ResDialog</link> class.  The
+  ResourceImage class expands that access, both improving it and making the access avaiable to any
+  ooDialog program.  The class supports the loading of, and obtaining handles to, resources from any
+  binary executable file.
 </para>
+<para>
+  The class provides the <link linkend="mthReleaseClsResourceImage">release()</link> method to free up
+  system resources if module containing the resources is no longer needed.  The <link
+  linkend="paraClsImageRelease">general remarks</link> concerning freeing the <link
+  linkend="clsImage">.Image</link> class are applicable here.  The release() method will ignore requests
+  to release the module when it is known absoulutely that the module should not be released, such as in
+  the case the module is the <computeroutput>oodialog.dll</computeroutput>. In other cases only the
+  programmer can know if the module should or shouldn't be released.  In those cases, the ResourceImage
+  class will do as requested.  As with the images that the .Image class represents, the system resources
+  used by the module the ResourceImage class represents will be automatically cleaned up when the
+  interpreter process ends.  The <link linkend="paraClsImageRelease">comments</link> about why would a
+  programmer want to release resources in the .Image class remarks are equally apropos here.
+</para>
+<note><title>Note</title>
+<para>
+  The ResourceImage class is new in ooDialog as of ooRexx version 4.0.0.  Its first implementation
+  supports image resources and provides the basic framework upon which to expand in the future.
+</para>
+</note>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para>The ResourceImage class requires the class definition file
-<computeroutput>ooDialog.cls</computeroutput>:
+<listitem>
+<para>
+  The ResourceImage class requires the class definition file
+  <computeroutput>ooDialog.cls</computeroutput>:
 <programlisting>
 <![CDATA[
 ::requires "ooDialog.cls"
@@ -2347,7 +2399,7 @@
 <thead>
 <row>
 <entry>Method...</entry>
-<entry>...on page</entry>
+<entry>...description</entry>
 </row>
 </thead>
 <tbody>
@@ -2390,92 +2442,148 @@
 <secondary>ResouceImage class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(---------------------------------------------------><
-
+>>--new(--fileName--+--------+--)--------------------------><
+                    +-,-dlg--+
 ]]>
 </programlisting>
 
-<para></para>
+<para>
+  Instantiates a new resource image that represents the module specified by <emphasis
+  role="italic">fileName</emphasis>.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
-<programlisting>
-<![CDATA[
-x = y
-return 0
-]]>
-</programlisting>
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>fileName</term>
+      <listitem>
+        <para>
+          Specifies the file name of the module containing resources that the ooDialog program wants to
+          access.  If the module is in the path, (or the current directory,) the file name alone is
+          sufficent. The operating system will search the path for the file as it normally does when a
+          program is executed.  If the module is not in the path then a full, or relative, file name is
+          required.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>dlg</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>The possible return values are:
+    <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+        <para>
+          Some error.
+        </para>
+        </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Resource::new() [class method] -->
 
 <section id="mthGetImageClsResourceImage"><title>getImage</title>
 <indexterm><primary>getImage</primary>
-<secondary>ResouceImage class</secondary></indexterm>
+<secondary>ResourceImage class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~methodName(--x--,--y--)------------------><
+>>--getImage(--x--,--y--)---------------------------------------><
 
 ]]>
 </programlisting>
 
-<para></para>
+<para>
+  Description
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>xx.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>yyy,
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>Some error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
-<programlisting>
-<![CDATA[
-x = y
-return 0
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>  <!-- End ResourceImage::getImage() -->
+</section>  <!-- End ResourceImage::getImage() [class method?] -->
 
 
 <section id="mthGetImagesClsResourceImage"><title>getImages</title>
