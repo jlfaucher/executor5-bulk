@@ -133,7 +133,7 @@
   the dialogs were closed would make a difference in the long run.  The operating system would not clean
   up the resources used by the images until the main Rexx program ended.  If the main program ran for
   days, or maybe was never intended to be shut down, it would make sense to release images that were no
-  longer neede.
+  longer needed.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
@@ -387,12 +387,12 @@
     <varlistentry><term>type</term>
     <listitem>
       <para>
-        Specifies the type of the image: bitmap, icon, cursor, or enhanced metafile. You can use <link
+        Specifies the type of the image: bitmap, icon, or cursor. You can use <link
         linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
         following symbols:
         <simplelist type='horiz' columns='2'>
         <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
-        <member>IMAGE_CURSOR</member> <member>IMAGE_ENHMETAFILE</member>
+        <member>IMAGE_CURSOR</member>
         </simplelist>
       </para>
       <para>
@@ -521,12 +521,12 @@
       <varlistentry><term>type</term>
       <listitem>
         <para>
-          Specifies the type of the image, bitmap, icon, cursor, or enhanced metafile. You can use <link
+          Specifies the type of the image, bitmap, icon, or cursor. You can use <link
           linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
-          <member>IMAGE_CURSOR</member> <member>IMAGE_ENHMETAFILE</member>
+          <member>IMAGE_CURSOR</member>
           </simplelist>
         </para>
         <para>
@@ -634,12 +634,12 @@
       <varlistentry><term>type</term>
       <listitem>
         <para>
-          Specifies the type of the image: bitmap, icon, cursor, or enhanced metafile. You can use <link
+          Specifies the type of the image: bitmap, icon, or cursor. You can use <link
           linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
-          <member>IMAGE_CURSOR</member> <member>IMAGE_ENHMETAFILE</member>
+          <member>IMAGE_CURSOR</member>
           </simplelist>
         </para>
         <para>
@@ -2350,15 +2350,15 @@
 </para>
 <para>
   The ResourceImage class contains methods and function to assist in the loading of resources into memory
-  and obtaining handles to the desired resources.  ooDialog has always provided, limited, access to
-  resources in modules through the <link linkend="clsResDialog">ResDialog</link> class.  The
-  ResourceImage class expands that access, both improving it and making the access avaiable to any
-  ooDialog program.  The class supports the loading of, and obtaining handles to, resources from any
-  binary executable file.
+  and obtaining handles to the desired resources.  ooDialog has always had, limited, access to resources
+  in modules through the <link linkend="clsResDialog">ResDialog</link> class.  The ResourceImage class
+  expands that access, both improving it and making the access avaiable in any ooDialog program, with or
+  without ResDialog objects. The class supports the loading of, and obtaining handles to, resources from
+  any binary executable file.
 </para>
 <para>
   The class provides the <link linkend="mthReleaseClsResourceImage">release()</link> method to free up
-  system resources if module containing the resources is no longer needed.  The <link
+  system resources if a module containing the resources is no longer needed.  The <link
   linkend="paraClsImageRelease">general remarks</link> concerning freeing the <link
   linkend="clsImage">.Image</link> class are applicable here.  The release() method will ignore requests
   to release the module when it is known absoulutely that the module should not be released, such as in
@@ -2478,7 +2478,19 @@
       <varlistentry><term>dlg</term>
       <listitem>
         <para>
-          yyy,
+          The second optional <emphasis role="italic">dlg</emphasis> argument is a dialog object in the
+          current program.  It specifies that the module containing the resources that the ooDialog
+          program wants to acess is one of the modules already avalable to the program.  That is, either
+          the <computeroutput>oodialog.dll</computeroutput> module, or the module used for a <link
+          linkend="mthNewClsResDialog">ResDialog</link>.
+        </para>
+        <para>
+          To specify the <computeroutput>oodialog.dll</computeroutput> module, the file name must be
+          oodialog.dll and the dialog object can be any instantiated dialog in the current program.
+        </para>
+        <para>
+          To specify the module used with a ResDialog, the dialog object must be the instantiated
+          ResDialog dialog object.
         </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2486,30 +2498,56 @@
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>The possible return values are:
-    <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-        <para>
-          Success
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-1</term>
-      <listitem>
-        <para>
-          Some error.
-        </para>
-        </listitem></varlistentry>
-    </variablelist>
+    <para>
+      Returns a new ResourceImage object.  This object may be null if an error occurred.  Use the <link
+      linkend="mthIsNullClsResourceImage">isNull()</link> method to check for this.  Both the <link
+      linkend="dotSystemErrorCode">.SystemErrorCode</link> or the <link
+      linkend="mthSystemErrorCodeClsResourceImage">systemErrorCode()</link> method should contain an
+      error code if the object is null.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>This example ...
+    <para>This example instantiates a resource image using the oodialog.dll module and uses it to load
+      the generally available icon resources from that module.  The icons are then displayed in a
+      list-view control.
       <programlisting>
       <![CDATA[
-      x = y
-      return 0
+      ::method initDialog
+        expose list
+
+        list  = self~getListControl(IDC_LV_IMAGES)
+
+        ids = .array~new()
+        ids[1] = self~constDir[IDI_DLG_OODIALOG]
+        ids[2] = self~constDir[IDI_DLG_APPICON]
+        ids[3] = self~constDir[IDI_DLG_APPICON2]
+        ids[4] = self~constDir[IDI_DLG_OOREXX]
+
+        SM_CXICON = 11
+        SM_CYICON = 12
+
+        size = .Size~new(self~getSystemMetrics(SM_CXICON), self~getSystemMetrics(SM_CYICON))
+
+        oodModule = .ResourceImage~new("oodialog.dll", self)
+        icons = oodModule~getImages(ids, .Image~id(IMAGE_ICON), size)
+
+        flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+        imageList = .ImageList~create(size, flags, 4, 0)
+        imageList~addImages(icons)
+
+        list~setImageList(imageList, .Image~id(LVSIL_NORMAL))
+
+        names = .array~new()
+        names[1] = "IDI_DLG_OODIALOG"
+        names[2] = "IDI_DLG_APPICON"
+        names[3] = "IDI_DLG_APPICON2"
+        names[4] = "IDI_DLG_OOREXX"
+
+        do i = 1 to ids~items
+          list~add(names[i] '('ids[i]')', i - 1)
+        end
+
       ]]>
       </programlisting>
     </para>
@@ -2522,29 +2560,94 @@
 <secondary>ResourceImage class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getImage(--x--,--y--)---------------------------------------><
-
+>>--getImage(--id--+--------+--+--------+--+---------+--)-----><
+                   +-,-type-+  +-,-size-+  +-,-flags-+
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Loads the specified image resource in the module and returns a new <link
+  linkend="clsImage">.Image</link> object.
+  <note><title>Note</title><para>
+    <computeroutput>LoadImage()</computeroutput> is the underlying Windows API used here. This method is
+    very similar to the <link linkend="mthGetImageClsImage">getImage()</link> method of the .Image class.
+    The documentation for that method may provide additional insight.
+  </para></note>
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the resource image is null.
+    </para>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the <link
+      linkend="windowsdoc">MSDN library</link> documentation to get more information on the arguments to
+      this method.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The arguments are:
     <variablelist>
-      <varlistentry><term>x</term>
+      <varlistentry><term>id</term>
       <listitem>
         <para>
-          xx.
+          The resource id of the image in the module.
+          <note><title>Note</title><para>
+            At this time symbolic IDs are not supported for this argument.  That restriction may be
+            lifted in a furture version of ooDialog.
+          </para></note>
         </para>
       </listitem></varlistentry>
-      <varlistentry><term>y</term>
+      <varlistentry><term>type</term>
       <listitem>
         <para>
-          yyy,
+          Specifies the type of the image: bitmap, icon, or cursor. You can use <link
+          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          following symbols:
+          <simplelist type='horiz' columns='2'>
+          <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
+          <member>IMAGE_CURSOR</member>
+          </simplelist>
+        </para>
+        <para>
+          The default is IMAGE_BITMAP
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>size</term>
+      <listitem>
+        <para>
+          A <link linkend="clsSize">.Size</link> object that specifies the size of the image.  The default
+          is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
+          should be used.  However, the <link linkend="windowsdoc">MSDN library</link> documentation for
+          <computeroutput>LoadImage()</computeroutput> should be consulted for other meanings.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>flags</term>
+      <listitem>
+        <para>
+          The load resource flags for the LoadImage() API.  The flags are one or more of the following
+          symbols. You can use <link linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric
+          value for any of the following symbols.  The <link linkend="mthOrClsDlgUtil">or</link> method of
+          the <link linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than one of the
+          symbols if needed.
+          <simplelist type='horiz' columns='2'>
+          <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
+          <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
+          <member>LR_LOADMAP3DCOLORS</member> <member>LR_LOADTRANSPARENT</member>
+          <member>LR_MONOCHROME</member>      <member>LR_SHARED</member>
+          <member>LR_VGACOLOR</member>
+          </simplelist>
+        </para>
+        <para>
+          The default is LR_SHARED.
         </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2553,31 +2656,27 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      This method returns an .Image object that represents the specified image resource in the module.
+      The image may be null if an error occurred, for instance if no image resource was found.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
+      This example uses a ResDialog with a static control that displays a bitmap image.  The image for
+      the static control is obtained from the resource-only DLL used by the ResDialog.
       <programlisting>
       <![CDATA[
-      x = y
-      return 0
+      ::class SimpleDialog subclass ResDialog inherit AdvancedControls MessageExtensions
+      ...
+
+      ::method initDialog
+        ...
+        resources = .ResourceImage~new("simpleImage.dll", self)
+        image = resources~getImage(self~constDir[ID_BMP_IMAGE1])
+        ...
+        picture = self~getStaticControl(IDC_BMP_PICTURE)
+        oldImage = picture~setImage(image)
       ]]>
       </programlisting>
     </para>
@@ -2591,29 +2690,101 @@
 <secondary>ResourceImage class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getImages(--x--,--y--)---------------------------------------><
-
+>>--getImages(--ids,--+--------+--+--------+--+---------+--)-----><
+                      +-,-type-+  +-,-size-+  +-,-flags-+
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Loads a number of image resources from the module. An array of resource IDs is used to specify which
+  image resources.  All the image resources must have the same characteristics.  That is they must all be
+  the same type and use the same flags.  If the type is bitmap, and the flags include LR_DEFAULTSIZE, and
+  the size is 0 x 0, then the size of the image will be the actual resource size.  Otherwise, all the
+  images also need to be the same size.
+  <note><title>Note</title><para>
+    <computeroutput>LoadImage()</computeroutput> is the underlying Windows API used here.  This method is
+    very similar to the <link linkend="mthFromIDsClsImage">fromIDs()</link> method of the .Image class.
+    The documentation for that method can provide additional information.
+  </para></note>
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the resource image is null.
+    </para>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. You can use
+      the <link linkend="windowsdoc">MSDN library</link> documentation to get more information on the
+      interaction between the flags, size, and type arguments.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The arguments are:
     <variablelist>
-      <varlistentry><term>x</term>
+      <varlistentry><term>ids</term>
       <listitem>
         <para>
-          xx.
+          An array of the resource IDs of the image resources in the module.  The array can contain
+          any number of IDs, but it can not be sparse.  That is, each index of the array must contain a
+          number.  If an incorrect item is detected in the array, then a syntax error is raised and no
+          images are returned.
+        </para>
+        <para>
+          If there is an error with an individual image resource, then the index in the array for that
+          image is left empty.  One way to check for this type of error is to compare the number of items
+          in the returned array with the number of items in ID array.
         </para>
       </listitem></varlistentry>
-      <varlistentry><term>y</term>
+      <varlistentry><term>type</term>
       <listitem>
         <para>
-          yyy,
+          Specifies the type of the image: bitmap, icon, or cursor. You can use <link
+          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          following symbols:
+          <simplelist type='horiz' columns='2'>
+          <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
+          <member>IMAGE_CURSOR</member>
+          </simplelist>
+        </para>
+        <para>
+          The default is IMAGE_BITMAP.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>size</term>
+      <listitem>
+        <para>
+          A <link linkend="clsSize">.Size</link> object that specifies the size of the image.  The default
+          is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
+          should be used.  However, the <link linkend="windowsdoc">MSDN library</link> documentation should
+          be consulted for other meanings.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>flags</term>
+      <listitem>
+        <para>
+          The load resource flags for the LoadImage() API.  The flags are one or more of the following
+          symbols. You can use <link linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric
+          value for any of the following symbols.  The <link linkend="mthOrClsDlgUtil">or</link> method of
+          the <link linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than one of the
+          symbols if needed.
+          <simplelist type='horiz' columns='2'>
+          <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
+          <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
+          <member>LR_LOADMAP3DCOLORS</member> <member>LR_LOADTRANSPARENT</member>
+          <member>LR_MONOCHROME</member>      <member>LR_SHARED</member>
+          <member>LR_VGACOLOR</member>
+          </simplelist>
+        </para>
+        <para>
+          The default is LR_SHARED.
         </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2622,31 +2793,87 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      The return will be an array of .Image objects, one for each resource ID specified in the
+      <computeroutput>ids</computeroutput> array, if there is no error.  If there is an error loading the
+      image of any specified ID, the corresponding index in the returned array will be empty.
+    </para>
+    <para>
+      If there is an error, both the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> and the
+      <link linkend="mthSystemErrorCodeClsResourceImage">systemErrorCode</link> attribute of this
+      resource image will be set (to the same code.)  It is conceivable that an error could occur where
+      the system does not set an error code, but unlikely.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
+      The following is a complete working dialog.  Four bitmap images are used.  Each time the user
+      clicks the next button, the next image is displayed.
+    </para>
+    <para>
+      An array is constructed containing the resource IDs of the 4 images.  A new resource image object
+      is instantiated from the <computeroutput>images.dll</computeroutput> module.  The getImages()
+      method is then used to get an array of 4 .Image objects, using the array of resource IDs.
       <programlisting>
       <![CDATA[
-      x = y
+      /* Simple Dialog to display some images */
+
+        dlg = .SimpleDialog~new( , 'simpleImage.h')
+        if dlg~initCode = 0 then do
+          dlg~createCenter(200, 247, "Simple Image Viewer", "", , "MS Shell Dlg 2", 8)
+          dlg~Execute("SHOWTOP", 14)
+        end
+
+        dlg~Deinstall
+
       return 0
+      -- End of entry point.
+
+      ::requires "oodWin32.cls"
+
+      ::class SimpleDialog subclass UserDialog inherit AdvancedControls MessageExtensions
+
+      ::method defineDialog
+
+        self~addStatic(IDC_BMP_PICTURE, 10, 10, 20, 17, "BITMAP REALSIZEIMAGE")
+        self~addStatic(IDC_ST_DESCRIPTION, 14, 190, 176, 20, "TEXT LEFT", "Description")
+        self~addButton(IDC_PB_NEXT, 10, 223, 50, 14, "Next", onNext)
+        self~addButton(IDOK, 140, 223, 50, 14, "Ok", ok, "DEFAULT")
+
+      ::method initDialog
+        expose picture images description descriptions nextImage
+
+        ids = .array~new
+        ids[ 1] = self~constDir[ID_BMP_IMAGE1]
+        ids[ 2] = self~constDir[ID_BMP_IMAGE2]
+        ids[ 3] = self~constDir[ID_BMP_IMAGE3]
+        ids[ 4] = self~constDir[ID_BMP_IMAGE4]
+
+        descriptions = .array~new
+        descriptions[1] = "Conrad, King of the Hill"
+        descriptions[2] = "Berk, Squint Eye"
+        descriptions[3] = "Cienna, Deer in the Headlights"
+        descriptions[4] = "Vail, The Flower Child"
+
+        picture = self~getStaticControl(IDC_BMP_PICTURE)
+        description = self~getStaticControl(IDC_ST_DESCRIPTION)
+        self~connectButton(IDC_PB_NEXT, onNext)
+
+        nextImage = 1
+        module = .ResourceImage~new("images.dll")
+        images = module~getImages(ids)
+
+        self~onNext
+
+      ::method onNext
+        expose picture description images descriptions nextImage
+
+        if nextImage > images~items then nextImage = 1
+
+        picture~setImage(images[nextImage])
+
+        description~setText(descriptions[nextImage])
+        nextImage += 1
       ]]>
       </programlisting>
     </para>
@@ -2660,62 +2887,68 @@
 <secondary>ResourceImage class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--release(--x--,--y--)---------------------------------------><
+>>--release----------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Releases the resource module so that the operating system can reclaim the system resources.  After the
+  resource image has been released it can no longer be used.  The programmer should not release the
+  resource image while resources loaded from the module are still in use.
+</para>
+<para>
+  If the resource image represents the <computeroutput>oodialog.dll</computeroutput> module, or the
+  module used for a ResDialog, then the resource image should never be released.  The
+  <computeroutput>release()</computeroutput> method will ignore release requests in those sitautions.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the resource image is null.
+    </para>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+    <para>There are no arguments.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      This method return the system error code, which will be zero if there is no error, and non-zero if
+      there is an error. The <link linkend="dotSystemErrorCode">.SystemErrorCode</link> is also set to
+      this value.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
+      In this example, the images for an image list are loaded from a resource module.  The resource
+      module is no longer needed after the image list is created. Since an image list makes a copy of the
+      images added to it, once the image list has all the images added to it, the resource image can be
+      released.
       <programlisting>
       <![CDATA[
-      x = y
-      return 0
+      ::method getImages private
+        use strict arg resourceIDs, size, ilFlags
+
+        imageList = .ImageList~create(size, ilFlags, 20, 10);
+
+        module = .ResourceImage~new("zooImages.dll")
+        images = module~getImages(resourceIDs)
+        imageList~addImages(images)
+
+        do i = 1 to images~items
+          images[i]~release
+        end
+        module~release
+
+        return imageList
       ]]>
       </programlisting>
     </para>
@@ -2729,52 +2962,29 @@
 <secondary>ResourceImage class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--handle(--x--,--y--)---------------------------------------><
+>>--handle----------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Returns the Windows system handle for the resource module.  It is an error to invoke this method if the
+  resource image is null, or after the resource image has been released.
+</para>
+<para>
+   At this time, the handle is only useful for display.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+    <para>
+      There are no arguments.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      The return is the handle for the module the resource image represents.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2783,8 +2993,20 @@
       This example ...
       <programlisting>
       <![CDATA[
-      x = y
-      return 0
+      ::method showHandles
+
+        oodMod = .ResourceImage~new("oodialog.dll", self)
+        resMod = .ResourceImage~new("simpleImage.dll", self)
+
+        say 'The oodialog.dll module handle is:        ' oodMod~handle
+        say 'The resource module for this ResDialog is:' resMod~handle
+
+
+      /* The output, for a ResDialog, might be:
+
+         The oodialog.dll module handle is:         0x009E0000
+         The resource module for this ResDialog is: 0x00AF0000
+      */
       ]]>
       </programlisting>
     </para>
@@ -2798,62 +3020,45 @@
 <secondary>ResourceImage class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isNull(--x--,--y--)---------------------------------------><
+>>--isNull----------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Determines if the resource image is valid.  <computeroutput>isNull()</computeroutput> will always
+  return <computeroutput>.true</computeroutput> after the resource image has been released.  It will also
+  return <computeroutput>.true</computeroutput> if there was an error instantiating a new resource image
+  object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+    <para>
+      There are no arguments.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      Returns <computeroutput>.true</computeroutput> if the object is null, otherwise
+      <computeroutput>.false</computeroutput>.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
+      It is a good idea to check that a new resource image object is valid before using it.
       <programlisting>
       <![CDATA[
-      x = y
-      return 0
+      ::method initDialog
+        ...
+        resourceModule = .ResourceImage~new("simpleImage.dll", self)
+        if \ resourceModule~isNull the do
+          image = resources~getImage(self~constDir[ID_BMP_IMAGE1])
+        else do
+          -- Some error handling here.
+        end
       ]]>
       </programlisting>
     </para>
@@ -2867,62 +3072,54 @@
 <secondary>ResourceImage class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--systemErrorCode(--x--,--y--)---------------------------------------><
+>>--systemErrorCode----------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  When a method for a resource image is invoked that sets the <link
+  linkend="dotSystemErrorCode">.SystemErrorCode</link>, the systemErrorCode attribute of the resource
+  image object is also set. This can be useful if the programmer wants to check for an error code at some
+  point when it is possible that .SystemErrorCode has been reset.
+</para>
+<para>
+  This method can always be invoked, even if the resource image is null.  It is very similar to the <link
+  linkend="mthSystemErrorCodeClsImage">systemErrorCode()</link> method of the .Image class and the
+  documentation for that method is generally applicable here.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+    <para>
+      This method does not take any arguments.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      The return is a system error code, which will usually be 0, no error.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
+      This example uses the <computeroutput>systemErrorCode</computeroutput> attribute to get more
+      information on a possbile error, rather than the <computeroutput>.SystemErrorCode</computeroutput>.
       <programlisting>
       <![CDATA[
-      x = y
-      return 0
+      ::method initDialog
+        ...
+        mod = .ResourceImage~new("simpleImage.dll", self)
+        if mod~isNull the do
+          self~writeToLog("Error with resource module simpleImage.dll")
+          self~writeToLog("  RC: " mod~systemErrorCode)
+          self~writeToLog("  msg:" SysGetErrorText(mod~systemErrorCode)
+          return
+        end
+
+        image = resources~getImage(self~constDir[ID_BMP_IMAGE1])
+        ...
       ]]>
       </programlisting>
     </para>
