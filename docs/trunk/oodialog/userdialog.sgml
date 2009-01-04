@@ -59,7 +59,7 @@ The class also inherits the methods of its parent class: the
 <link linkend="clsBaseDialog">BaseDialog class</link>.
 </para></note>
 <para>Subclasses of the UserDialog can inherit the mixin
-<link linkend="advcntlc">AdvancedControls</link> class.  This class provides
+<link linkend="clsAdvancedControls">AdvancedControls</link> class.  This class provides
 methods to dynamically create a dialog with these additional elements:
 </para>
 <itemizedlist>
@@ -172,12 +172,12 @@ the methods listed in the following table.
 <entry><link linkend="mthAddBitmapButton">AddBitmapButton</link></entry>
 </row>
 <row>
-<entry>AddBlackFrame</entry>
-<entry><link linkend="h001774">AddBlackFrame</link></entry>
+<entry>addBlackFrame</entry>
+<entry><link linkend="mthAddBlackFrame">addBlackFrame</link></entry>
 </row>
 <row>
-<entry>AddBlackRect</entry>
-<entry><link linkend="h001735">AddBlackRect</link></entry>
+<entry>addBlackRect</entry>
+<entry><link linkend="mthAddBlackRect">addBlackRect</link></entry>
 </row>
 <row>
 <entry>AddButton</entry>
@@ -212,20 +212,28 @@ the methods listed in the following table.
 <entry><link linkend="mthAddEntryLine">AddEntryLine</link></entry>
 </row>
 <row>
-<entry>AddGrayFrame</entry>
-<entry><link linkend="h001761">AddGreyFrame</link></entry>
+<entry>addEtchedFrame</entry>
+<entry><link linkend="addEtchedFrame">addEtchedFrame</link></entry>
 </row>
 <row>
-<entry>AddGrayRect</entry>
-<entry><link linkend="h001722">AddGrayRect</link></entry>
+<entry>addGrayFrame</entry>
+<entry><link linkend="mthAddGrayFrame">addGreyFrame</link></entry>
+</row>
+<row>
+<entry>addGrayRect</entry>
+<entry><link linkend="mthAddGrayRect">addGrayRect</link></entry>
 </row>
 <row>
 <entry>addGroupBox</entry>
 <entry><link linkend="mthAddGroupBox">addGroupBox</link></entry>
 </row>
 <row>
-<entry>AddIcon</entry>
-<entry><link linkend="addicon">AddIcon</link></entry>
+<entry>addEtchedHorizontal</entry>
+<entry><link linkend="addEtchedHorizontal">addEtchedHorizontal</link></entry>
+</row>
+<row>
+<entry>addIcon</entry>
+<entry><link linkend="mthAddIconClsUserDialog">addIcon</link></entry>
 </row>
 <row>
 <entry>AddInput</entry>
@@ -296,12 +304,16 @@ the methods listed in the following table.
 <entry><link linkend="h001983">AddScrollBar</link></entry>
 </row>
 <row>
-<entry>AddText</entry>
-<entry><link linkend="mthAddText">AddText</link></entry>
+<entry>addText</entry>
+<entry><link linkend="mthAddText">addText</link></entry>
 </row>
 <row>
-<entry>AddWhiteFrame</entry>
-<entry><link linkend="h001748">AddWhiteFrame</link></entry>
+<entry>addEtchedVertical</entry>
+<entry><link linkend="mthAddEtchedVertical">addEtchedVertical</link></entry>
+</row>
+<row>
+<entry>addWhiteFrame</entry>
+<entry><link linkend="mthAddWhiteFrame">addWhiteFrame</link></entry>
 </row>
 <row>
 <entry>addWhiteRect</entry>
@@ -1245,17 +1257,17 @@ bitmap will be used in its place.
 <listitem><para>A bitmap that is displayed if the button is focused. When a
 button is focused it receives the keyboard input and can be clicked by using the
 Enter or Space keys.  Normally the focused button is surrounded by a dashed
-frame.  If this argument is ommitted, the <computeroutput>bmpNormal</computeroutput>
+frame.  If this argument is omitted, the <computeroutput>bmpNormal</computeroutput>
 bitmap is displayed for the focused state.
 </para></listitem></varlistentry>
 <varlistentry><term>bmpSelected</term>
 <listitem><para>A bitmap that is displayed while the button is clicked and held
-down.  If this argument is ommitted, the <computeroutput>bmpNormal</computeroutput>
+down.  If this argument is omitted, the <computeroutput>bmpNormal</computeroutput>
 bitmap is displayed for the selected state.
 </para></listitem></varlistentry>
 <varlistentry><term>bmpDisabled</term>
 <listitem><para>A bitmap that is displayed if the button is disabled.  If this
-argument is ommitted, the <computeroutput>bmpNormal</computeroutput> bitmap is
+argument is omitted, the <computeroutput>bmpNormal</computeroutput> bitmap is
 displayed for the disabled state.
 </para></listitem></varlistentry>
 <varlistentry><term>style</term>
@@ -1306,17 +1318,16 @@ style.
 <varlistentry><term>NOTAB</term>
 <listitem><para>Create the button without the <link
 linkend="wstabstop">tabstop</link> style. By default the button is created
-with the tabstop style except in these conditions: the bmpFocused is ommitted,
-and the bmpSelected is ommitted, and the FRAME style keyword is not used.
+with the tabstop style except in these conditions: the bmpFocused is omitted,
+and the bmpSelected is omitted, and the FRAME style keyword is not used.
 </para></listitem></varlistentry>
 <varlistentry><term>TAB</term>
 <listitem><para>Create the button with the
 <link linkend="wstabstop">tabstop</link> style. The button is normally created
 with the tabstop style and this keyword is not necessary.  However, if the
-bmpFocused argument is ommitted, and the bmpSelected argument is ommitted, and
-the FRAME style keyword is not used, the button is created without the tabstop
-style.  In this case only, it is necessary to use the TAB keyword to change the
-default behavior.
+bmpFocused argument is omitted, and the bmpSelected argument is omitted, and the FRAME style keyword is
+not used, the button is created without the tabstop style.  In this case only, it is necessary to use the
+TAB keyword to change the default behavior.
 </para></listitem></varlistentry>
 <varlistentry><term>BORDER</term>
 <listitem><para>Create the button with the <link
@@ -1345,60 +1356,70 @@ MyDialog~AddBitmapButton(601, 20, 317, 80, 30, , "BmpPushed", ,
 </variablelist>
 </section>
 
-<section id="addicon"><title>AddIcon</title>
-<indexterm><primary>AddIcon</primary></indexterm>
+<section id="mthAddIconClsUserDialog"><title>addIcon</title>
+<indexterm><primary>addIcon</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~AddIcon(--id--,--fileName--)--------------------><
-
-
+>>--addIcon(--id--,--fileName--)-----------------------------------------------><
 ]]>
 </programlisting>
 
-<para>The AddIcon method adds an icon resource to the dialog.  This is
-equivalent to using the <computeroutput>ICON</computeroutput> statement in
-a resource script.</para>
+<para>
+  The addIcon method adds an icon resource to the dialog.  This is equivalent to using the
+  <computeroutput>ICON</computeroutput> statement in a resource script.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The resource ID for the icon.
-</para></listitem></varlistentry>
-<varlistentry><term>fileName</term>
-<listitem><para>The file name of the icon.  If the icon file is not in the
-current directory, then a relative or fully qualified file name should be used.
-</para></listitem></varlistentry>
-</variablelist></para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example creates a very simple dialog that has
-an OK button and a static text box.  The <computeroutput>addIcon</computeroutput>
-method is used to load an icon resource using the ID of 15.  That icon is then
-used in the <computeroutput>execute</computeroutput> method for the dialog icon.
-(The <link linkend="dialogicon">dialog icon</link> is the icon shown in the title
-bar of the dialog.)
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The arguments are:
+      <variablelist>
+        <varlistentry><term>id</term>
+        <listitem>
+          <para>
+            The resource ID for the icon.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>fileName</term>
+        <listitem>
+          <para>
+            The file name of the icon.  If the icon file is not in the current directory, then a relative
+            or fully qualified file name should be used.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example creates a very simple dialog that has an OK button and a static text box.
+      The <computeroutput>addIcon</computeroutput> method is used to load an icon resource using the ID
+      of 15.  That icon is then used in the <computeroutput>execute</computeroutput> method for the
+      dialog icon. (The <link linkend="dialogicon">dialog icon</link> is the icon shown in the title bar
+      of the dialog.)
+    </para>
+    <programlisting>
+    <![CDATA[
+      dlg = .SimpleDialog~new
+      if dlg~initCode = 0 then do
+        dlg~create(30, 30, 150, 100, "The Simple Dialog", "VISIBLE")
+        dlg~execute("SHOWTOP", 15)
+        dlg~deinstall
+      end
 
-<programlisting>
-<![CDATA[
-  dlg = .SimpleDialog~new
-  if dlg~initCode = 0 then do
-    dlg~create(30, 30, 150, 100, "The Simple Dialog", "VISIBLE")
-    dlg~execute("SHOWTOP", 15)
-    dlg~deinstall
-  end
+    ::requires "OODWin32.cls"
 
-::requires "OODWin32.cls"
+    ::class SimpleDialog subclass UserDialog
 
-::class SimpleDialog subclass UserDialog
+    ::method defineDialog
 
-::method defineDialog
-
-  self~addText(10, 20, 130, 30, "Simple message", "CENTER BORDER", 100)
-  self~addButton(IDOK, 105, 70, 35, 15, "OK")
-  self~addIcon(15, "MyAppIcon.ico")
-]]>
-</programlisting>
-</para></listitem></varlistentry>
+      self~addText(10, 20, 130, 30, "Simple message", "CENTER BORDER", 100)
+      self~addButton(IDOK, 105, 70, 35, 15, "OK")
+      self~addIcon(15, "MyAppIcon.ico")
+    ]]>
+    </programlisting>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -1408,7 +1429,6 @@ bar of the dialog.)
 <![CDATA[
 >>-dlg~addGroupBox(--x-,-y-,-cx-,-cy--+---------+-----------+--------+--)-----><
                                       +-,-text--+-,--style--+-,--id--+
-
 ]]>
 </programlisting>
 
@@ -1492,25 +1512,24 @@ bar of the dialog.)
 <section id="sectAddStaticControls"><title>Add Static Controls</title>
 <indexterm><primary>Add staic control methods</primary></indexterm>
 <para>
-  The methods in this section are all used to add a static control to the dialog. However, there is
-  no need to use a number of different methods to add static controls.  The <link
-  linkend="mthAddStatic">addStatic</link> method is all that is needed.  You control the appearance
-  and behavior of the static control in the same way as with other controls, by specifying the
-  appropriate control styles.  Given the proper combination of style keywords, the
+  The methods in this section are all used to add a static control to the dialog. However, there is no
+  need to use a number of different methods to add static controls.  The <link
+  linkend="mthAddStatic">addStatic</link> method is all that is needed.  You control the appearance and
+  behavior of the static control in the same way as with other controls, by specifying the appropriate
+  control styles.  Given the proper combination of style keywords, the
   <computeroutput>addStatic</computeroutput> method can create any static control that the other
   methods in this section create.
 </para>
 <para>
-  However, there are a large number of style keywords for the static control. Many of the keywords
-  have no meaning when used in combination with other keywords.  For instance, the ENDELLIPIS
-  keyword has no meaning if used with the ICON keyword.  The other methods in this section are
-  convenience methods where the number of style keywords are reduced to only those that make sense
-  in combination.
+  However, there are a large number of style keywords for the static control. Many of the keywords have
+  no meaning when used in combination with other keywords.  For instance, the ENDELLIPIS keyword has no
+  meaning if used with the ICON keyword.  The other methods in this section are convenience methods where
+  the number of style keywords are reduced to only those that make sense in combination.
 </para>
 <para>
   A word about frames and rectangles.  In previous versions of the ooDialog reference frames and
-  rectangles were documented as though they were a type of separate controls.  They are not, they
-  are just a static control with a particular style.  The <link linkend="figFramesRects">Frames and
+  rectangles were documented as though they were a type of separate controls.  They are not, they are
+  just a static control with a particular style.  The <link linkend="figFramesRects">Frames and
   Rectangles</link> picture gives some idea of how the different types of static controls can
   appear.
   <figure id="figFramesRects"><title>Frames and Rectangles</title>
@@ -1566,7 +1585,8 @@ bar of the dialog.)
             <varlistentry><term>TEXT</term>
             <listitem>
               <para>
-                A static text control is created, this is the default.
+                A static text control is created, this is the default if no other static type is
+                specified.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>BITMAP</term>
@@ -1584,7 +1604,7 @@ bar of the dialog.)
             <varlistentry><term>ICON</term>
             <listitem>
               <para>
-                A static image control that uses an icon will be created.
+                A static image control that uses an icon will be created. Cursors are also icons.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>WHITERECT</term>
@@ -1680,8 +1700,9 @@ bar of the dialog.)
             <varlistentry><term>SIMPLE</term>
             <listitem>
               <para>
-                A single line of left-aligned text in the rectangle. The text line cannot be shortened
-                or altered in any way. If the control is disabled, the text is not grayed.
+                A single line of left-aligned text is in the rectangle defined by the control
+                coordinates. The text line cannot be shortened or altered in any way. If the control is
+                disabled, the text is not grayed.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>LEFTNOWRAP</term>
@@ -1694,67 +1715,577 @@ bar of the dialog.)
             <varlistentry><term>NOTIFY</term>
             <listitem>
               <para>
-                keyword explanation
+                Causes the static control to send notification messages for the click, double click,
+                disabled, and enabled events.  A static control without this style does not send
+                notification messages.  See the <link
+                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
+                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
             <listitem>
               <para>
-                keyword explanation
+                The control is drawn with a half-sunken border around it.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>EDITCONTROL</term>
             <listitem>
               <para>
-                keyword explanation
+                The static control will act like a multi-line edit control when it displays text.  This
+                consists of calculating the average character width in the same manner as the edit
+                control, and not displaying a partially visible last line.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>ENDELLIPSIS</term>
             <listitem>
               <para>
-                keyword explanation
+                If the end of the text does not fit in the rectangle, it is truncated and ellipses are
+                added. If a word that is not at the end of the text goes beyond the limits of the
+                rectangle, it is truncated without ellipses.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>NOPREFIX</term>
             <listitem>
               <para>
-                keyword explanation
+                Any ampersand (&) characters in the control's text are not interpreted as accelerator
+                prefix characters. The text is displayed with the ampersand removed and the next
+                character in the text underlined.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>PATHELLIPSIS</term>
             <listitem>
               <para>
-                keyword explanation
+                If the text is to0 big for the specified rectangle, characters in the middle of the text
+                are replaced with ellipses so that the result fits in the rectangle. If the text
+                contains backslash (\) characters, this style preserves as much as possible of the text
+                after the last backslash.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>WORDELLIPSIS</term>
             <listitem>
               <para>
-                keyword explanation
+                Any word that does not fit in the rectangle is truncated and ellipses are added.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>CENTERIMAGE</term>
             <listitem>
               <para>
-                keyword explanation
+                Bitmaps are centered in the static control that contains it. The control is not resized,
+                so that a bitmap too large for the control will be clipped. If the static control
+                contains a single line of text, the text is centered vertically in the client area of the
+                control.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>RIGHTJUST</term>
             <listitem>
               <para>
-                keyword explanation
+                The lower right corner of the static control with the BITMAP or ICON style remains fixed
+                when the control is resized. Only the top and left sides are adjusted to accommodate
+                a new bitmap or icon.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SIZECONTROL</term>
             <listitem>
               <para>
-                keyword explanation
+                Adjusts the bitmap to fit the size of the static control. For example, changing the
+                locale can change the system font, and thus controls might be resized. If a static
+                control had a bitmap, the bitmap would no longer fit the control. This style bit dictates
+                automatic redimensioning of bitmaps to fit their controls.
+              </para>
+              <para>
+                If CENTERIMAGE is specified, the bitmap or icon is centered (and clipped if needed). If
+                CENTERIMAGE is not specified, the bitmap or icon is stretched or shrunk.
+              </para>
+              <para>
+                Note that the redimensioning in the two axes are independent, and the result may have a
+                changed aspect ratio.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SIZEIMAGE</term>
             <listitem>
               <para>
-                keyword explanation
+                The actual resource width of the image is used.
+              </para>
+              <para>
+                  SIZEIMAGE is always used in conjunction with ICON. For icon images, the static
+                  control is resized accordingly, but the icon remains aligned to the originally
+                  specified left and top edges of the control.
+              </para>
+              <para>
+                Note that if CENTERIMAGE is also specified, the icon is centered within the control's
+                space rectangle.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HIDDEN</term>
+            <listitem>
+              <para>
+                The <link linkend="wsvisible">not visible</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DISABLED</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">not enabled</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BORDER</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">border</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GROUP</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">group</link> control style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>TAB</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">tabstop</link> control style.
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text</term>
+      <listitem>
+        <para>
+          The text for the static control.  If this argument is omitted then the empty string is used.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method always returns 0.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example adds a static image control and a static text control.
+      <programlisting>
+      <![CDATA[
+      ::method defineDialog
+
+        self~addStatic(IDC_BMP_PICTURE, 10, 10, 20, 17, "BITMAP REALSIZEIMAGE")
+        self~addStatic(IDC_ST_DESCRIPTION, 14, 190, 176, 20, "TEXT LEFT", "Description")
+        self~addButton(IDC_PB_NEXT, 10, 223, 50, 14, "Next", onNext)
+        self~addButton(IDOK, 140, 223, 50, 14, "Ok", ok, "DEFAULT")
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthAddText"><title>addText</title>
+<indexterm><primary>addText</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                                      +-,-"LEFT"-+
+>>-addText(--x--,--y--+------+--+------+--+--------+--+----------+--+-------+--)--><
+                      +-,-cx-+  +-,-cy-+  +-,-text-+  +-,-style--+  +-,--id-+
+]]>
+</programlisting>
+
+<para>
+  The addText method adds a static text control to the dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+        <para>
+          The <link linkend="listCommonArguments">control coordinates</link>.  When cx and cy are
+          omitted, then width and height of the control are calculated automatically based on the width
+          and height of the text string.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text</term>
+      <listitem>
+        <para>
+          The text for the static control.  If this argument is omitted then the empty string is used.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more <link linkend="paraStyleExplanation">style</link> keywords separated by
+          spaces.  If this argument is omitted LEFT is the default.
+          <variablelist>
+            <varlistentry><term>LEFT</term>
+            <listitem>
+              <para>
+                Left aligns the text.  Lines are automatically word wrapped. Words longer than the width
+                of the control are truncated.  This is the default if the style argument is omitted.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>CENTER</term>
+            <listitem>
+              <para>
+                Center aligns the text alignment.  Lines are automatically word wrapped. Words longer
+                than the width of the control are truncated.  If no text alignment style is specified,
+                the text is left aligned.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>RIGHT</term>
+            <listitem>
+              <para>
+                Right aligns the text.  Lines are automatically word wrapped. Words longer than the width
+                of the control are truncated.  If no text alignment style is specified, the text is left
+                aligned.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SIMPLE</term>
+            <listitem>
+              <para>
+                A single line of left-aligned text is used. The text line cannot be shortened or altered
+                in any way. If the control is disabled, the text is not grayed.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>LEFTNOWRAP</term>
+            <listitem>
+              <para>
+                A single line of text, left-aligned is used. Tabs are expanded, but words are not
+                wrapped. Text that extends past the end of a line is clipped.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>NOTIFY</term>
+            <listitem>
+              <para>
+                Causes the static control to send notification messages for the click, double click,
+                disabled, and enabled events.  A static control without this style does not send
+                notification messages.  See the <link
+                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
+                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>CENTERIMAGE</term>
+            <listitem>
+              <para>
+                The text is centered vertically in the client area of the control.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SUNKEN</term>
+            <listitem>
+              <para>
+                The control is drawn with a half-sunken border around it.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>EDITCONTROL</term>
+            <listitem>
+              <para>
+                The static control will act like a multi-line edit control for the text it displays. This
+                consists of calculating the average character width in the same manner as the edit
+                control, and not displaying a partially visible last line.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ENDELLIPSIS</term>
+            <listitem>
+              <para>
+                If the end of the text does not fit in the rectangle, it is truncated and ellipses are
+                added. If a word that is not at the end of the text goes beyond the limits of the
+                rectangle, it is truncated without ellipses.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>NOPREFIX</term>
+            <listitem>
+              <para>
+                Any ampersand (&) characters in the control's text are not interpreted as accelerator
+                prefix characters. The text is displayed with the ampersand removed and the next
+                character in the text underlined.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>PATHELLIPSIS</term>
+            <listitem>
+              <para>
+                If the text is too big for the specified rectangle, characters in the middle of the text
+                are replaced with ellipses so that the result fits in the rectangle. If the text
+                contains backslash (\) characters, this style preserves as much as possible of the text
+                after the last backslash.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>WORDELLIPSIS</term>
+            <listitem>
+              <para>
+                Any word that does not fit in the rectangle is truncated and ellipses are added.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HIDDEN</term>
+            <listitem>
+              <para>
+                The <link linkend="wsvisible">not visible</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DISABLED</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">not enabled</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BORDER</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">border</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GROUP</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">group</link> control style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>TAB</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">tabstop</link> control style.
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the static control.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method always returns 0.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleFramesRects"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example is similar to the one used to produce the <link
+      linkend="figFramesRects">picture</link> of frames and rectangles.  You can copy and paste it into 2
+      files and it should run as is.
+      <programlisting> <![CDATA[
+      /* UserAllStyles.rex  Simple Dialog to display static frames */
+
+        dlg = .SimpleDialog~new( , 'AllStyles.h')
+        if dlg~initCode = 0 then do
+          dlg~createCenter(269, 183, "Frames and Rectangles", "", , "MS Shell Dlg 2", 8)
+          dlg~Execute("SHOWTOP", IDI_DLG_OOREXX)
+        end
+
+        dlg~Deinstall
+
+      return 0
+      -- End of entry point.
+
+      ::class SimpleDialog subclass UserDialog inherit AdvancedControls MessageExtensions
+
+      ::method defineDialog
+
+        self~addText(56, 6, 20, 8, "White")
+        self~addText(100, 6, 19, 8, "Gray")
+        self~addText(143, 6, 19, 8, "Black")
+
+        self~addText(9, 31, 33, 8, "Rectangle")
+        self~addWhiteRect(56, 25, 25, 20, "NOTIFY", IDC_ST_WHITERECT)
+        self~addGrayRect(100, 25, 25, 20, IDC_ST_GRAYRECT)
+        self~addBlackRect(143, 25, 25, 20, IDC_ST_BLACKRECT)
+
+        self~addText(9, 64, 33, 8, "Frame")
+        self~addWhiteFrame(56, 58, 25, 20, "NOTIFY", IDC_ST_WHITEFRAME)
+        self~addGrayFrame(100, 58, 25, 20, , IDC_ST_GRAYFRAME)
+        self~addBlackFrame(143, 58, 25, 20, IDC_ST_BLACKFRAME)
+
+        self~addText(9, 94, 46, 8, "Sunken")
+        self~addWhiteFrame(56, 88, 25, 20, "NOTIFY SUNKEN", IDC_ST_WHITEFRAME_SUNKEN)
+        self~addGrayFrame(100, 88, 25, 20, "SUNKEN", IDC_ST_GRAYFRAME_SUNKEN)
+        self~addBlackFrame(143, 88, 25, 20, "SUNKEN", IDC_ST_BLACKFRAME_SUNKEN)
+
+        self~addText(9, 125, 46, 8, "Border")
+        self~addWhiteFrame(56, 119, 25, 20, "NOTIFY BORDER", IDC_ST_WHITEFRAME_BORDER)
+        self~addGrayFrame(100, 119, 25, 20, "BORDER", IDC_ST_GRAYFRAME_BORDER)
+        self~addBlackFrame(143, 119, 25, 20, "BORDER", IDC_ST_BLACKFRAME_BORDER)
+
+        self~addText(9, 151, 33, 20,"Sunken / Border", "CENTER")
+        self~addWhiteFrame(56, 151, 25, 20, "NOTIFY SUNKEN BORDER", IDC_ST_WHITEFRAME_SUNKEN_BORDER)
+        self~addGrayFrame(100, 151, 25, 20, "SUNKEN BORDER", IDC_ST_GRAYFRAME_SUNKEN_BORDER)
+        self~addBlackFrame(143, 151, 25, 20, "SUNKEN BORDER", IDC_ST_BLACKFRAME_SUNKEN_BORDER)
+
+        self~addText(193, 31, 23, 8, "Etched")
+        self~addText(193, 59, 31, 17, "Etched Horizontal")
+        self~addText(193, 89, 31, 17, "Etched Vertical")
+        self~addEtchedFrame(234, 25, 25, 20, "NOTIFY", IDC_ST_ETCHED)
+        self~addEtchedHorizontal(234, 58, 25, 20, "NOTIFY", IDC_ST_HORZ)
+        self~addEtchedVertical(234, 88, 25, 20, "NOTIFY", IDC_ST_VERT)
+
+        self~addButton(IDOK, 210, 157, 50, 14, "Ok", ok, "DEFAULT")
+
+        self~connectStaticNotify(IDC_ST_WHITERECT, "CLICK", onClick)
+        self~connectStaticNotify(IDC_ST_WHITEFRAME, "CLICK", onClick)
+        self~connectStaticNotify(IDC_ST_WHITEFRAME_SUNKEN, "CLICK", onClick)
+        self~connectStaticNotify(IDC_ST_WHITEFRAME_BORDER, "CLICK", onClick)
+        self~connectStaticNotify(IDC_ST_WHITEFRAME_SUNKEN_BORDER, "CLICK", onClick)
+        self~connectStaticNotify(IDC_ST_ETCHED, "CLICK", onClick)
+        self~connectStaticNotify(IDC_ST_HORZ, "CLICK", onClick)
+        self~connectStaticNotify(IDC_ST_VERT, "CLICK", onClick)
+
+      ::method onClick
+        say 'Got click on static with ID:' .DlgUtil~loWord(arg(1))
+
+
+      /* AllStyles.h */
+
+      #define IDD_DIALOG1                        100
+      #define IDC_ST_WHITERECT                   215
+      #define IDC_ST_GRAYRECT                   1001
+      #define IDC_ST_BLACKRECT                  1002
+      #define IDC_ST_ETCHED                     1003
+      #define IDC_ST_WHITEFRAME                 1004
+      #define IDC_ST_GRAYFRAME                  1005
+      #define IDC_ST_BLACKFRAME                 1006
+      #define IDC_ST_HORZ                       1007
+      #define IDC_ST_WHITEFRAME_SUNKEN          1008
+      #define IDC_ST_GRAYFRAME_SUNKEN           1009
+      #define IDC_ST_BLACKFRAME_SUNKEN          1010
+      #define IDC_ST_VERT                       1011
+      #define IDC_ST_WHITEFRAME_BORDER          1012
+      #define IDC_ST_GRAYFRAME_BORDER           1013
+      #define IDC_ST_BLACKFRAME_BORDER          1014
+      #define IDC_ST_WHITEFRAME_SUNKEN_BORDER   1015
+      #define IDC_ST_GRAYFRAME_SUNKEN_BORDER    1016
+      #define IDC_ST_BLACKFRAME_SUNKEN_BORDER   1017
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section> <!-- End addText() method -->
+
+<section id="mthAddImageClsStaticControl"><title>addImage</title>
+<indexterm><primary>addImage</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                         +-,-"ICON"-+
+>>--addImage(--id--,-x--,-y--,-cx--,-cy--+----------+--)-----------------------><
+                                         +-,-style--+
+
+]]>
+</programlisting>
+<para>
+  The addImage method adds a static control that displays images.
+  <note><title>Note</title><para>
+    After adding the static image control, the programmer will still need to assign an image to the
+    control.  This is done with either the <link linkend="mthSetImageClsStaticControl">setImage()</link>
+    method or the <link linkend="mthSetIconClsStaticControl">setIcon()</link> methods of the static
+    control.  This can only be done once the underlying dialog has been created.  Meaning in <link
+    linkend="mthInitDialog">initDialog()</link> or later.
+  </para></note>
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the static control.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+        <para>
+          The <link linkend="listCommonArguments">control coordinates</link>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more <link linkend="paraStyleExplanation">style</link> keywords separated by
+          spaces. If this argument is omitted, the default is ICON.
+          <variablelist>
+            <varlistentry><term>BITMAP</term>
+            <listitem>
+              <para>
+                A static image control is created that will use a bitmap.  If neither BITMAP nor METAFILE
+                are specified, the control will be an ICON image control.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>METAFILE</term>
+            <listitem>
+              <para>
+                A static image control that uses an enhanced metafile will be created.  If neither BITMAP
+                nor METAFILE are specified, the control will be an ICON image control.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>NOTIFY</term>
+            <listitem>
+              <para>
+                Causes the static control to send notification messages for the click, double click,
+                disabled, and enabled events.  A static control without this style does not send
+                notification messages.  See the <link
+                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
+                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SUNKEN</term>
+            <listitem>
+              <para>
+                The control is drawn with a half-sunken border around it.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>CENTERIMAGE</term>
+            <listitem>
+              <para>
+                Bitmaps are centered in the static control that contains it. The control is not resized,
+                so that a bitmap too large for the control will be clipped.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>RIGHTJUST</term>
+            <listitem>
+              <para>
+                The lower right corner of the static control with the BITMAP or ICON style remains fixed
+                when the control is resized. Only the top and left sides are adjusted to accommodate
+                a new bitmap or icon.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SIZECONTROL</term>
+            <listitem>
+              <para>
+                Adjusts the bitmap to fit the size of the static control. For example, changing the
+                locale can change the system font, and thus controls might be resized. If a static
+                control had a bitmap, the bitmap would no longer fit the control. This style bit dictates
+                automatic redimensioning of bitmaps to fit their controls.
+              </para>
+              <para>
+                If CENTERIMAGE is specified, the bitmap or icon is centered (and clipped if needed). If
+                CENTERIMAGE is not specified, the bitmap or icon is stretched or shrunk.
+              </para>
+              <para>
+                Note that the redimensioning in the two axes are independent, and the result may have a
+                changed aspect ratio.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SIZEIMAGE</term>
+            <listitem>
+              <para>
+                The actual resource width of the image is used.
+              </para>
+              <para>
+                  SIZEIMAGE is always used in conjunction with ICON. For icon images, the static
+                  control is resized accordingly, but the icon remains aligned to the originally
+                  specified left and top edges of the control.
+              </para>
+              <para>
+                Note that if CENTERIMAGE is also specified, the icon is centered within the control's
+                space rectangle.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>HIDDEN</term>
@@ -1792,183 +2323,945 @@ bar of the dialog.)
       </listitem></varlistentry>
     </variablelist>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method always returns 0.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example adds a static image control that uses a bitmap and the control automatically sizes
+      itself to the size of the bitmap.
+      <programlisting>
+      <![CDATA[
+      ::method defineDialog
+
+        self~addImage(IDC_BMP_PICTURE, 10, 10, 20, 17, "BITMAP REALSIZEIMAGE")
+        self~addStatic(IDC_ST_DESCRIPTION, 14, 190, 176, 20, "TEXT LEFT", "Description")
+        self~addButton(IDC_PB_NEXT, 10, 223, 50, 14, "Next", onNext)
+        self~addButton(IDOK, 140, 223, 50, 14, "Ok", ok, "DEFAULT")
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 
 </section>
-
 
 <section id="mthAddWhiteRect"><title>addWhiteRect</title>
 <indexterm><primary>addWhiteRect</primary></indexterm>
 <programlisting>
 <![CDATA[
-
->>-dlg~addWhiteRect(--x-,-y-,-cx-,-cy--,--text--+-----------+--------+--)------><
-                                                +-,--style--+-,--id--+
-
-
+>>--addWhiteRect(--x-,-y-,-cx-,-cy--+-----------+--------+--)------------------><
+                                    +-,--style--+-,--id--+
 ]]>
 </programlisting>
 
-<para>The addWhiteRect method adds a white rectangle
-to the dialog. </para>
+<para>
+  The addWhiteRect() method adds a white <link linkend="figFramesRects">rectangle</link> static control
+  to the dialog. The rectangle is filled with the current window background color, which is white in the
+  default color scheme.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x, y</term>
-<listitem><para>The position of the rectangle's upper-left corner relative to the dialog
-measured in dialog units
-</para></listitem></varlistentry>
-<varlistentry><term>cx, cy</term>
-<listitem><para>The size of the rectangle in dialog units
-</para></listitem></varlistentry>
-<varlistentry><term>options</term>
-<listitem><para>The options can be:
-<variablelist>
-<varlistentry><term>HIDDEN</term>
-<listitem><para>The frame or rectangle is not visible at startup time
-</para></listitem></varlistentry>
-<varlistentry><term>BORDER</term>
-<listitem><para>A border is drawn around the rectangle or frame
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the item, -1 is used by default
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+        <para>
+          The <link linkend="listCommonArguments">control coordinates</link>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+          separated by spaces.
+          <variablelist>
+            <varlistentry><term>NOTIFY</term>
+            <listitem>
+              <para>
+                Causes the static control to send notification messages for the click, double click,
+                disabled, and enabled events.  A static control without this style does not send
+                notification messages.  See the <link
+                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
+                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SUNKEN</term>
+            <listitem>
+              <para>
+                The control is drawn with a half-sunken border around it.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HIDDEN</term>
+            <listitem>
+              <para>
+                The <link linkend="wsvisible">not visible</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DISABLED</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">not enabled</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BORDER</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">border</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GROUP</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">group</link> control style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>TAB</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">tabstop</link> control style.
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the static control.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method always returns 0.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      See the <link linkend="exampleFramesRects">Frames and Rectangles</link> example.
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="h001748"><title>AddWhiteFrame</title>
-<indexterm><primary>AddWhiteFrame</primary></indexterm>
-<para>The AddWhiteFrame method is currently identical
-to the <link linkend="mthAddWhiteRect">addWhiteRect</link> method.</para>
-</section>
-
-<section id="h001722"><title>AddGrayRect</title>
-<indexterm><primary>AddGrayRect</primary></indexterm>
+<section id="mthAddWhiteFrame"><title>addWhiteFrame</title>
+<indexterm><primary>addWhiteFrame</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~AddGrayRect(--x--,--y--,--cx--,--cy-------------->
-
->--+----------------------------------------+--)---------------><
-   +-,--+----------------------+--+-------+-+
-        |    +------------+    |  +-,--id-+
-        |    V            |    |
-        +-"----+-HIDDEN-+-+--"-+
-               +-BORDER-+
-
-
+>>--addWhiteFrame(--x-,-y-,-cx-,-cy--+-----------+--------+--)-----------------><
+                                     +-,--style--+-,--id--+
 ]]>
 </programlisting>
 
-<para>The AddGrayRect method adds a gray rectangle to
-the dialog. </para>
+<para>
+  The addWhiteFrame() method adds a white <link linkend="figFramesRects">frame</link> static control
+  to the dialog.  The frame is drawn with the current window background color, which is white in the
+  default color scheme.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>See <link linkend="mthAddWhiteRect">addWhiteRect</link> for a description of the arguments.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+        <para>
+          The <link linkend="listCommonArguments">control coordinates</link>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+          separated by spaces.
+          <variablelist>
+            <varlistentry><term>NOTIFY</term>
+            <listitem>
+              <para>
+                Causes the static control to send notification messages for the click, double click,
+                disabled, and enabled events.  A static control without this style does not send
+                notification messages.  See the <link
+                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
+                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SUNKEN</term>
+            <listitem>
+              <para>
+                The control is drawn with a half-sunken border around it.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HIDDEN</term>
+            <listitem>
+              <para>
+                The <link linkend="wsvisible">not visible</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DISABLED</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">not enabled</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BORDER</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">border</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GROUP</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">group</link> control style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>TAB</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">tabstop</link> control style.
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the static control.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method always returns 0.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      See the <link linkend="exampleFramesRects">Frames and Rectangles</link> example.
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="h001761"><title>AddGreyFrame</title>
-<indexterm><primary>AddGrayFrame</primary></indexterm>
-<para>The AddGreyFrame method is currently identical
-to the <link linkend="h001722">AddGreyRect</link> method.</para>
-</section>
-
-<section id="h001735"><title>AddBlackRect</title>
-<indexterm><primary>AddBlackRect</primary></indexterm>
+<section id="mthAddGrayRect"><title>addGrayRect</title>
+<indexterm><primary>addGrayRect</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~AddBlackRect(--x--,--y--,--cx--,--cy------------->
-
->--+----------------------------------------+--)---------------><
-   +-,--+----------------------+--+-------+-+
-        |    +------------+    |  +-,--id-+
-        |    V            |    |
-        +-"----+-HIDDEN-+-+--"-+
-               +-BORDER-+
-
-
+>>--addGrayRect(--x-,-y-,-cx-,-cy--+-----------+--------+--)-------------------><
+                                   +-,--style--+-,--id--+
 ]]>
 </programlisting>
 
-<para>The AddBlackRect method adds a black rectangle
-to the dialog. </para>
+<para>
+  The addGrayRect() method adds a gray <link linkend="figFramesRects">rectangle</link> static control to
+  the dialog. The rectangle is filled with the same color as the screen background (desktop), which is
+  gray in the default color scheme.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>See <link linkend="mthAddWhiteRect">addWhiteRect</link> for a description of the arguments.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+        <para>
+          The <link linkend="listCommonArguments">control coordinates</link>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+          separated by spaces.
+          <variablelist>
+            <varlistentry><term>NOTIFY</term>
+            <listitem>
+              <para>
+                Causes the static control to send notification messages for the click, double click,
+                disabled, and enabled events.  A static control without this style does not send
+                notification messages.  See the <link
+                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
+                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SUNKEN</term>
+            <listitem>
+              <para>
+                The control is drawn with a half-sunken border around it.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HIDDEN</term>
+            <listitem>
+              <para>
+                The <link linkend="wsvisible">not visible</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DISABLED</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">not enabled</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BORDER</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">border</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GROUP</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">group</link> control style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>TAB</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">tabstop</link> control style.
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the static control.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method always returns 0.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      See the <link linkend="exampleFramesRects">Frames and Rectangles</link> example.
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="h001774"><title>AddBlackFrame</title>
-<indexterm><primary>AddBlackFrame</primary></indexterm>
-<para>The AddBlackFrame method is currently identical
-to the <link linkend="h001735">AddBlackRect</link> method.</para>
-</section>
-
-<section id="mthAddText"><title>AddText</title>
-<indexterm><primary>AddText</primary></indexterm>
+<section id="mthAddGrayFrame"><title>addGrayFrame</title>
+<indexterm><primary>addGrayFrame</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~AddText(--x--,--y--,--+----+--,--+----+--,--text-->
-                                     +-cx-+     +-cy-+
-
->--+----------------------------------------+--)---------------><
-   +-,--+----------------------+--+-------+-+
-        |    .------------.    |  +-,--id-+
-        |    V            |    |
-        +-"----+-HIDDEN-+-+--"-+
-               +-SIMPLE-+
-               +-RIGHT--+
-               +-CENTER-+
-               +-BORDER-+
-
-
+>>--addGrayFrame(--x-,-y-,-cx-,-cy--+-----------+--------+--)------------------><
+                                    +-,--style--+-,--id--+
 ]]>
 </programlisting>
 
-<para>The AddText method adds a static text element to
-the dialog. </para>
+<para>
+  The addGrayFrame() method adds a gray <link linkend="figFramesRects">frame</link> static control to
+  the dialog. The frame is drawn with the same color as the screen background (desktop), which is
+  gray in the default color scheme.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are the same as for <link linkend="h001647">AddButton</link>,
-with the changes listed below:</para>
-<variablelist>
-<varlistentry><term>text</term>
-<listitem><para>The text string to be displayed
-</para></listitem></varlistentry>
-<varlistentry><term>options</term>
-<listitem><para>This argument can be one or more of:</para>
-<variablelist>
-<varlistentry><term>HIDDEN</term>
-<listitem><para>The text is not visible at startup time
-</para></listitem></varlistentry>
-<varlistentry><term>SIMPLE</term>
-<listitem><para>Simple text field
-</para></listitem></varlistentry>
-<varlistentry><term>RIGHT</term>
-<listitem><para>The text is aligned to the right
-</para></listitem></varlistentry>
-<varlistentry><term>CENTER</term>
-<listitem><para>The text is centered. If neither RIGHT or CENTER is specified, the text
-is aligned to the left.
-</para></listitem></varlistentry>
-<varlistentry><term>BORDER</term>
-<listitem><para>A rectangle is drawn around the text
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+        <para>
+          The <link linkend="listCommonArguments">control coordinates</link>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+          separated by spaces.
+          <variablelist>
+            <varlistentry><term>NOTIFY</term>
+            <listitem>
+              <para>
+                Causes the static control to send notification messages for the click, double click,
+                disabled, and enabled events.  A static control without this style does not send
+                notification messages.  See the <link
+                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
+                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SUNKEN</term>
+            <listitem>
+              <para>
+                The control is drawn with a half-sunken border around it.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HIDDEN</term>
+            <listitem>
+              <para>
+                The <link linkend="wsvisible">not visible</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DISABLED</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">not enabled</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BORDER</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">border</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GROUP</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">group</link> control style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>TAB</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">tabstop</link> control style.
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the static control.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method always returns 0.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      See the <link linkend="exampleFramesRects">Frames and Rectangles</link> example.
+    </para>
+  </listitem></varlistentry>
 </variablelist>
-<para>If not specified RIGHT or CENTER, the text is aligned to the left.</para>
-</listitem></varlistentry>
-<varlistentry><term>id</term>
-<listitem><para>If omitted, ID -1 is used.
-</para></listitem></varlistentry>
+</section>
+
+<section id="mthAddBlackRect"><title>addBlackRect</title>
+<indexterm><primary>addBlackRect</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addBlackRect(--x-,-y-,-cx-,-cy--+-----------+--------+--)------------------><
+                                    +-,--style--+-,--id--+
+]]>
+</programlisting>
+
+<para>
+  The addBlackRect() method adds a black <link linkend="figFramesRects">rectangle</link> static control
+  to the dialog. The rectangle is flled with the current window frame color, which is black in the
+  default color scheme.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+        <para>
+          The <link linkend="listCommonArguments">control coordinates</link>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+          separated by spaces.
+          <variablelist>
+            <varlistentry><term>NOTIFY</term>
+            <listitem>
+              <para>
+                Causes the static control to send notification messages for the click, double click,
+                disabled, and enabled events.  A static control without this style does not send
+                notification messages.  See the <link
+                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
+                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SUNKEN</term>
+            <listitem>
+              <para>
+                The control is drawn with a half-sunken border around it.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HIDDEN</term>
+            <listitem>
+              <para>
+                The <link linkend="wsvisible">not visible</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DISABLED</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">not enabled</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BORDER</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">border</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GROUP</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">group</link> control style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>TAB</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">tabstop</link> control style.
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the static control.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method always returns 0.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      See the <link linkend="exampleFramesRects">Frames and Rectangles</link> example.
+    </para>
+  </listitem></varlistentry>
 </variablelist>
-</listitem></varlistentry>
+</section>
+
+<section id="mthAddBlackFrame"><title>addBlackFrame</title>
+<indexterm><primary>addBlackFrame</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addBlackFrame(--x-,-y-,-cx-,-cy--+-----------+--------+--)-----------------><
+                                     +-,--style--+-,--id--+
+]]>
+</programlisting>
+
+<para>
+  The addBlackFrame() method adds a black <link linkend="figFramesRects">frame</link> static control
+  to the dialog. The rectangle is drawn with the current window frame color, which is black in the
+  default color scheme.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+        <para>
+          The <link linkend="listCommonArguments">control coordinates</link>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+          separated by spaces.
+          <variablelist>
+            <varlistentry><term>NOTIFY</term>
+            <listitem>
+              <para>
+                Causes the static control to send notification messages for the click, double click,
+                disabled, and enabled events.  A static control without this style does not send
+                notification messages.  See the <link
+                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
+                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SUNKEN</term>
+            <listitem>
+              <para>
+                The control is drawn with a half-sunken border around it.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HIDDEN</term>
+            <listitem>
+              <para>
+                The <link linkend="wsvisible">not visible</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DISABLED</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">not enabled</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BORDER</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">border</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GROUP</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">group</link> control style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>TAB</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">tabstop</link> control style.
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the static control.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method always returns 0.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      See the <link linkend="exampleFramesRects">Frames and Rectangles</link> example.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addEtchedFrame"><title>addEtchedFrame</title>
+<indexterm><primary>addEtchedFrame</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addEtchedFramed(--x-,-y-,-cx-,-cy--+-----------+--------+--)---------------><
+                                       +-,--style--+-,--id--+
+]]>
+</programlisting>
+
+<para>
+  The addEtchedFrame() method adds an etched <link linkend="figFramesRects">rectangle</link> static control to
+  the dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+        <para>
+          The <link linkend="listCommonArguments">control coordinates</link>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+          separated by spaces.
+          <variablelist>
+            <varlistentry><term>NOTIFY</term>
+            <listitem>
+              <para>
+                Causes the static control to send notification messages for the click, double click,
+                disabled, and enabled events.  A static control without this style does not send
+                notification messages.  See the <link
+                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
+                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SUNKEN</term>
+            <listitem>
+              <para>
+                The control is drawn with a half-sunken border around it.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HIDDEN</term>
+            <listitem>
+              <para>
+                The <link linkend="wsvisible">not visible</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DISABLED</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">not enabled</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BORDER</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">border</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GROUP</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">group</link> control style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>TAB</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">tabstop</link> control style.
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the static control.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method always returns 0.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      See the <link linkend="exampleFramesRects">Frames and Rectangles</link> example.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addEtchedHorizontal"><title>addEtchedHorizontal</title>
+<indexterm><primary>addEtchedHorizontal</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addEtchedHorizontal(--x-,-y-,-cx-,-cy--+-----------+--------+--)-----------><
+                                           +-,--style--+-,--id--+
+]]>
+</programlisting>
+
+<para>
+  The addEtchedHorizontal() method adds an etched horizontal <link linkend="figFramesRects">line</link> static
+  control to the dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+        <para>
+          The <link linkend="listCommonArguments">control coordinates</link>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+          separated by spaces.
+          <variablelist>
+            <varlistentry><term>NOTIFY</term>
+            <listitem>
+              <para>
+                Causes the static control to send notification messages for the click, double click,
+                disabled, and enabled events.  A static control without this style does not send
+                notification messages.  See the <link
+                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
+                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SUNKEN</term>
+            <listitem>
+              <para>
+                The control is drawn with a half-sunken border around it.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HIDDEN</term>
+            <listitem>
+              <para>
+                The <link linkend="wsvisible">not visible</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DISABLED</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">not enabled</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BORDER</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">border</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GROUP</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">group</link> control style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>TAB</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">tabstop</link> control style.
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the static control.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method always returns 0.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      See the <link linkend="exampleFramesRects">Frames and Rectangles</link> example.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthAddEtchedVertical"><title>addEtchedVertical</title>
+<indexterm><primary>addEtchedVertical</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addEtchedVertical(--x-,-y-,-cx-,-cy--+-----------+--------+--)-------------><
+                                         +-,--style--+-,--id--+
+]]>
+</programlisting>
+
+<para>
+  The addEtchedVertical() method adds an etched vertical <link linkend="figFramesRects">line</link>
+  static control to the dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <variablelist>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+        <para>
+          The <link linkend="listCommonArguments">control coordinates</link>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+          separated by spaces.
+          <variablelist>
+            <varlistentry><term>NOTIFY</term>
+            <listitem>
+              <para>
+                Causes the static control to send notification messages for the click, double click,
+                disabled, and enabled events.  A static control without this style does not send
+                notification messages.  See the <link
+                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
+                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SUNKEN</term>
+            <listitem>
+              <para>
+                The control is drawn with a half-sunken border around it.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HIDDEN</term>
+            <listitem>
+              <para>
+                The <link linkend="wsvisible">not visible</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DISABLED</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">not enabled</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BORDER</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">border</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GROUP</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">group</link> control style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>TAB</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">tabstop</link> control style.
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the static control.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method always returns 0.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      See the <link linkend="exampleFramesRects">Frames and Rectangles</link> example.
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 

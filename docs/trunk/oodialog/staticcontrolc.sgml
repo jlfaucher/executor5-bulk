@@ -41,28 +41,246 @@
     #
     #########################################################################
 -->
-<chapter id="staticcontrolc"><title>StaticControl Class</title>
+<chapter id="clsStaticControl"><title>StaticControl Class</title>
 <indexterm><primary>StaticControl class</primary></indexterm>
 <para>
-  The StaticControl class provides methods to query and modify static controls (static text,
-  rectangles, and frames.) It inherits all methods of the DialogControl class (see  <link
-  linkend="dialogcontrolc">DialogControl Class</link>).  By default, static controls are assigned a
+  The StaticControl class provides methods to query and modify static controls (static text, images,
+  rectangles, and frames.).  By default, static controls are assigned a
   resource ID of -1.  There is no way to query or modify static controls unless the control has a
   positive resource ID.  Which in most circumstances is fine, usually static controls do not need to
   be modified.  Be sure to assign a positive resource ID to statict controls that will be modified
   during the execution of a dialog.
 </para>
 <para>
-  The StaticControl class requires the class definition file
-  <computeroutput>oodWin32.cls</computeroutput>:</para>
+  More text?
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
+  <listitem>
+    <para>
+      The StaticControl class requires the class definition file <computeroutput>oodWin32.cls
+      </computeroutput>:
+      <programlisting>
+      <![CDATA[
+      ::requires "oodWin32.cls"
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
+  <listitem>
+    <para>
+      The static control class is a subclass of the <link linkend="clsDialogControl">DialogControl
+      Class</link> and therefore inherits all methods of that class.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Mixin Class Inherits:</emphasis></term>
+  <listitem>
+    <para>
+      The static control class inherits from the following mixin classes, (indirectly through the
+      DialogControl class.)
+    </para>
+    <para>
+      The <emphasis role="bold">WindowBase</emphasis>
+    </para>
+    <para>
+      The <emphasis role="bold"> WindowExtensions</emphasis>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Instantiating:</emphasis></term>
+  <listitem>
+    <para>
+      Use the <link linkend="getstaticcontrol">getStaticControl()</link>) method to retrieve an object of
+      the static control class. To use this method, the static control must have a positive ID.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamically Defining:</emphasis></term>
+  <listitem>
+    <para>
+      To dynamically define a static control in a <link linkend="clsUserDialog">UserDialog</link> class,
+      use one of the <link linkend="sectAddStaticControls">Add Static Control</link> methods.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Methods:</term>
+  <listitem>
+    <para>
+      Instances of the StaticControl class implement the methods listed in the following table:
+    </para>
+    <table id="tblStaticControlMethods" frame="all">
+    <title>StaticControl Instance Methods</title>
+    <tgroup cols="2">
+    <thead>
+    <row>
+    <entry>Method...</entry>
+    <entry>...on page</entry>
+    </row>
+    </thead>
+    <tbody>
+    <row>
+    <entry>new (Class method)</entry>
+    <entry><link linkend="mthNewClsStaticControl">new</link></entry>
+    </row>
+    <row>
+    <entry>setIcon</entry>
+    <entry><link linkend="mthSetIconClsStaticControl">setIcon</link></entry>
+    </row>
+    <row>
+    <entry>setImage</entry>
+    <entry><link linkend="mthSetImageClsStaticControl">setImage</link></entry>
+    </row>
+    </tbody></tgroup>
+    </table>
+  </listitem></varlistentry>
+</variablelist>
+
+
+<section id="mthNewClsStaticControl"><title>new (Class method)</title>
+<indexterm><primary>new</primary>
+<secondary>StaticControl class</secondary></indexterm>
+<para>
+  The static control class is not intended to be instantiated directly by the programmer using the new()
+  method.  Rather the programmer should obtain a new static control object by using the <link
+  linkend="getstaticcontrol">getStaticControl()</link>) method of the <link
+  linkend="clsAdvancedControls">.AdvancedControls</link> class.
+</para>
+</section>  <!-- End StaticControl::new() [class method] -->
+
+
+<section id="mthSetIconClsStaticControl"><title>setIcon</title>
+<indexterm><primary>setIcon</primary>
+<secondary>StaticControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-::requires "oodWin32.cls"
+>>--setIcon(--x--,--y--)---------------------------------------><
+
 ]]>
 </programlisting>
+
 <para>
-  Use the getStaticControl method (see <link linkend="getstaticcontrol">getStaticControl</link>) to
-  retrieve an object of the StaticControl class. To use this method, the static control must have a
-  positive ID.
+  Description
 </para>
-</chapter>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End StaticControl::setIcon() -->
+
+
+<section id="mthSetImageClsStaticControl"><title>setImage</title>
+<indexterm><primary>setImage</primary>
+<secondary>StaticControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setImage(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End StaticControl::setImage() -->
+
+</chapter>  <!-- End StaticControl class -->
