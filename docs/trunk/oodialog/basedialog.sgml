@@ -691,7 +691,7 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 </row>
 <row>
 <entry>GetPos</entry>
-<entry><link linkend="h001357">GetPos</link></entry>
+<entry><link linkend="mthGetPos">GetPos</link></entry>
 </row>
 <row>
 <entry>GetRadioButton</entry>
@@ -6267,27 +6267,47 @@ one of the check boxes instead.
 </variablelist>
 </section>
 
-<section id="h001357"><title>GetPos</title>
+
+<section id="mthGetPos"><title>getPos</title>
+<indexterm><primary>GetPos</primary>
+<secondary>DialogControl class</secondary></indexterm>
 <indexterm><primary>GetPos</primary>
 <secondary>BaseDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~GetPos-----------------------------------------><
-
+>>--getPos-----------------------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>The GetPos method returns the dialog window's position
-in pixels. The values are returned in a string separated by blanks for parsing. </para>
+<para>
+  The getPos method returns the coordinates of the upper left corner a window, either a dialog or a
+  dialog control, in dialog units.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The horizontal and vertical position, separated by a blank.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example dialog control:</emphasis></term>
+<listitem><para>The following example repositions the tree view control FILES to the
+upper left corner of  the window and displays the new position:
+<programlisting>
+<![CDATA[
+obj = MyDialog~GetTreeControl("FILES")
+if obj = .Nil then return
+obj~Move(1,1)
+parse value obj~getPos with x y
+say "New horizontal position of window is" x "and new vertical position is" y
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example dialog:</emphasis></term>
 <listitem><para>The following example moves the window towards the top left
 of the screen.
 <programlisting>
 <![CDATA[
-parse value self~GetPos with px py
-self~Move( px%self~FactorX - 10, py%self~FactorY - 10)
+parse value self~getPos with px py
+self~Move(px - 10, py - 10)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
