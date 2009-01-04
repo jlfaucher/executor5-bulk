@@ -453,173 +453,34 @@ CHAR      return_buffer[250];          /* returned buffer            */
 ]]>
 </programlisting>
 <para>When RexxStart is executed within an external program (usually
-a C program), it runs synchronously with the main Rexx activity (thread) that
-it started. That is, when the main activity terminates, RexxStart returns,
-and the external program continues running.</para>
-<para>To run RexxStart asynchronously, you can start several concurrent
-activities from the main activity using START or REPLY (see
-<link linkend="concur">Concurrency</link>).
-RexxStart is still synchronous to the main activity, that is, it returns when
-the main activity terminates, but it is asynchronous to the concurrent activities.
-If a concurrent activity runs longer than the main activity, RexxStart returns
-when the main activity ends, but the concurrent activity continues to run.</para>
-<para>If, however, a concurrent activity is still running when the external program
-ends, the activity is terminated. To ensure that all activities finish executing,
-use RexxWaitForTermination or a looped RexxDidRexxTerminate in your external
-program after RexxStart. The use of RexxWaitForTermination is recommended
-also for programs that are not expected to use concurrency.</para>
-<para>The following example demonstrates how to call MyCMD.CMD from a Cobol program
-(Rexx is running in the same process as the Cobol program).</para>
-<programlisting>
-       PROCESS PGMNAME(MIXED)
-      * You need to specify Rexx.LIB when you link this program,
-      * for example on the COB2 command.
-      * Note that the name RexxStart, used later, is case-sensitive,
-      * and requires the PGMNAME(MIXED) compiler option.
-      *************************************************************
-       IDENTIFICATION DIVISION.
-      *************************************************************
-       PROGRAM-ID.    &apos;CALLRexx&apos;
-       AUTHOR.        IBM VISUALAGE FOR COBOL.
-
-      *************************************************************
-      *NAME:     CALLRexx                                       ***
-      *                                                         ***
-      *FUNCTION: CALL A Rexx PROCEDURE NAME XXXXXXXX,           ***
-      *          PASSING ARGUMENT AND GETTING RETURNED DATA.    ***
-      *                                                         ***
-      *EXTERNAL SUBROUTINES: NONE                               ***
-      *COPY MEMBERS: NONE                                       ***
-      *                                                         ***
-      *************************************************************
-
-      *************************************************************
-       ENVIRONMENT DIVISION.
-      *************************************************************
-       CONFIGURATION SECTION.
-
-      *************************************************************
-       DATA DIVISION.
-      *************************************************************
-
-       WORKING-STORAGE SECTION.
-
-
-</programlisting>
-<programlisting>
-      *************************************************************
-      *  INTERNAL VARIABLES                                       *
-      *************************************************************
-
-       01  WS-WORK-FIELDS.
-           05  WS-RESULT-AREA          PIC X(255)     VALUE SPACES.
-           05  WS-ARGUMENT-AREA        PIC X(255)     VALUE SPACES.
-           05  WS-PARM1                PIC X(50)      VALUE &apos;55&apos;.
-           05  WS-PARM2                PIC X(8)       VALUE &apos;66&apos;.
-       01  WS-RexxSTART-PARAMETERS.
-           05  WS-Rexx-ARGUMENT-COUNT  PIC S9(9)      VALUE +1  COMP-5.
-           05  WS-Rexx-ARGUMENT-LIST.
-               10  WS-ARG-LENGTH       PIC  9(9)      COMP-5.
-               10  WS-ARG-POINTER                     POINTER.
-           05  WS-Rexx-PROGRAM-NAME    PIC X(255)     VALUE LOW-VALUES.
-           05  WS-Rexx-ENV-NAME        PIC X(20)      VALUE LOW-VALUES.
-           05  WS-Rexx-RETURN-CODE     PIC S9(9)      VALUE 0   COMP-5.
-           05  WS-Rexx-RESULT.
-               10  WS-RESULT-LENGTH    PIC  9(9)      COMP-5.
-               10  WS-RESULT-POINTER                  POINTER.
-           05  WS-Rexx-INTERPRETER-RC  PIC S9(9)      COMP-5.
-
-       LINKAGE SECTION.
-       PROCEDURE DIVISION.
-            SET WS-ARG-POINTER          TO ADDRESS OF WS-ARGUMENT-AREA.
-            MOVE LENGTH OF WS-ARGUMENT-AREA
-                                        TO WS-ARG-LENGTH.
-            STRING WS-PARM1                  DELIMITED BY SPACE
-                   &apos; &apos;                       DELIMITED BY SIZE
-                   WS-PARM2                  DELIMITED BY SPACE
-                                             INTO WS-ARGUMENT-AREA
-            END-STRING.
-            STRING &apos;MYCMD&apos;                   DELIMITED BY SIZE
-                   X&apos;00&apos;                     DELIMITED BY SIZE
-                                             INTO WS-Rexx-PROGRAM-NAME
-            END-STRING.
-            STRING &apos;CGISRV&apos;                  DELIMITED BY SIZE
-                   X&apos;00&apos;                     DELIMITED BY SIZE
-                                             INTO WS-Rexx-ENV-NAME
-            END-STRING.
-            SET WS-RESULT-POINTER            TO
-                                             ADDRESS OF WS-RESULT-AREA.
-            MOVE LENGTH OF WS-RESULT-AREA    TO WS-RESULT-LENGTH.
-
-
-</programlisting>
-<programlisting>
-      * Note that the name RexxStart is case sensitive
-            CALL &apos;RexxStart&apos;   USING
-                         BY VALUE     WS-Rexx-ARGUMENT-COUNT
-                         BY REFERENCE WS-Rexx-ARGUMENT-LIST
-                         BY REFERENCE WS-Rexx-PROGRAM-NAME
-                         BY VALUE     0
-                         BY REFERENCE WS-Rexx-ENV-NAME
-                         BY VALUE     0
-                         BY VALUE     0
-                         BY REFERENCE WS-Rexx-RETURN-CODE
-                         BY REFERENCE WS-Rexx-RESULT
-                         RETURNING    WS-Rexx-INTERPRETER-RC.
-            DISPLAY WS-Rexx-RETURN-CODE &apos; &apos; WS-Rexx-INTERPRETER-RC.
-            DISPLAY WS-RESULT-LENGTH.
-            DISPLAY WS-RESULT-AREA.
-            GOBACK.
-</programlisting>
+a C program), the main Rexx thread runs on the same thread as the RexxStart
+invocation.  When the main thread terminates, the interpreter will wait until
+all additional threads created from the main thread terminate before returning
+control to the invoking program.</para>
 </section>
 </section>
 
-<section id="rexxwaitfortermfu"><title>The RexxWaitForTermination Function</title>
+<section id="rexxwaitfortermfu"><title>The RexxWaitForTermination Function (Deprecated)</title>
 <indexterm><primary>application programming interfaces</primary>
 <secondary>invoking the Rexx interpreter</secondary>
 <tertiary>RexxWaitForTermination</tertiary></indexterm>
 <indexterm><primary>RexxWaitForTermination</primary></indexterm>
-<para>RexxWaitForTermination waits for the termination of all activities of the
-program that were started by RexxStart. This function puts your program into
-a wait state. It cannot continue until the activities have finished.</para>
-<programlisting>
-RexxWaitForTermination();
-</programlisting>
+<para>RexxWaitForTermination is not supported in 4.0 and will return immediately
+if called.  This is maintained for binary compatibility with previous releases.
+</para>
 </section>
 
-<section id="rexxdidtexxtermfu"><title>The RexxDidRexxTerminate Function</title>
+<section id="rexxdidtexxtermfu"><title>The RexxDidRexxTerminate Function (Deprecated)</title>
 <indexterm><primary>application programming interfaces</primary>
 <secondary>invoking the Rexx interpreter</secondary>
 <tertiary>RexxDidRexxTerminate</tertiary></indexterm>
 <indexterm><primary>RexxDidRexxTerminate</primary></indexterm>
-<para>RexxDidRexxTerminate checks for the termination of all activities of the
-program that were started by RexxStart, and allows your program to continue.</para>
+<para>RexxDidRexxTerminate always returns 1 for 4.0.  This is maintained for
+binary compatibility with early releases.
+</para>
 <programlisting>
 retc = RexxDidRexxTerminate();
 </programlisting>
-
-<section id="rexxdidrexxtermrc"><title>Return Codes</title>
-<para></para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Activities are still running.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>All activities have been terminated.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="rexxdidrexxtermxmp"><title>Example</title>
-<programlisting>
-<![CDATA[
-while (!RexxDidRexxTerminate())
-{
-   /* do your processing */
-}
-]]>
-</programlisting>
-</section>
 </section>
 </section>
 
