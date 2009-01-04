@@ -41,7 +41,164 @@
     #
     #########################################################################
 -->
-<chapter id="termdef"><title>Definition of Terms</title>
+<chapter id="chapOverview"><title>Brief Overview</title>
+<para>
+  This book is a reference to the ooDialog classes and the methods of those classes. There is little
+  documentation for the newcomer on how to get started using ooDialog. Until that type of documentation
+  can be written, the sample ooDialog programs that accompany the ooRexx distribution are probably the
+  best source of help in getting started.  However, there are also numerous snippets of example code in
+  this book.
+</para>
+
+<section id="reference"><title>OODialog Class Reference</title>
+<para>The classes provided by OODialog form a hierarchy as shown in
+<link linkend="fig52">The Hierarchy of OODialog Classes</link>.</para>
+
+<figure id="fig52"><title>The Hierarchy of OODialog Classes</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="rxou0s12.jpg" scale="40">
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="rxou0s24.jpg" scale="40">
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>The classes are: </para>
+<variablelist>
+<varlistentry><term>PlainBaseDialog, BaseDialog</term>
+<listitem><para>Base methods regardless of whether the dialog is implemented as a binary
+resource, a script, or dynamically. PlainBaseDialog provides limited functionality.
+</para></listitem></varlistentry>
+<varlistentry><term>PlainUserDialog</term>
+<listitem><para>Subclass of PlainBaseDialog used to create a dialog with all its control
+elements or to execute a dialog stored in a resource script (.RC). This class
+has limited functionality.
+</para></listitem></varlistentry>
+<varlistentry><term>DynamicDialog, DialogExtensions, WindowBase, WindowExtensions</term>
+<listitem><para>Internal mixin classes used to extend PlainBaseDialog, PlainUserDialog,
+BaseDialog, UserDialog, and DialogControl. The methods provided by these classes
+are not listed separately but are listed in BaseDialog or UserDialog.
+</para></listitem></varlistentry>
+<varlistentry><term>UserDialog</term>
+<listitem><para>Subclass of BaseDialog used to create a dialog with all its control
+elements, such as push buttons, check boxes, radio buttons, entry lines, and
+list boxes.
+</para></listitem></varlistentry>
+<varlistentry><term>ResDialog</term>
+<listitem><para>Subclass of BaseDialog for dialogs within a binary (compiled) resource
+file (.DLL).
+</para></listitem></varlistentry>
+<varlistentry><term>CategoryDialog</term>
+<listitem><para>Subclass of UserDialog used to create a dialog with several pages that
+overlay each other.
+</para></listitem></varlistentry>
+<varlistentry><term>TimedMessage</term>
+<listitem><para>Class to show a message window for a defined duration.
+</para></listitem></varlistentry>
+<varlistentry><term>InputBox</term>
+<listitem><para>Class to dynamically define a dialog with a message, one entry line,
+and two push buttons (OK, Cancel).
+</para></listitem></varlistentry>
+<varlistentry><term>PasswordBox</term>
+<listitem><para>Similar to InputBox, but keystrokes in the entry line are shown as asterisks
+(*).
+</para></listitem></varlistentry>
+<varlistentry><term>IntegerBox</term>
+<listitem><para>Similar to InputBox, but only numeric data can be entered in the entry
+line.
+</para></listitem></varlistentry>
+<varlistentry><term>MultiInputBox</term>
+<listitem><para>Similar to InputBox, but with multiple entry lines.
+</para></listitem></varlistentry>
+<varlistentry><term>ListChoice</term>
+<listitem><para>Class to dynamically define a dialog with a list box, where one line
+can be selected and returned to the caller.
+</para></listitem></varlistentry>
+<varlistentry><term>MultiListChoice</term>
+<listitem><para>Similar to ListChoice, but more than one line can be selected and returned
+to the caller.
+</para></listitem></varlistentry>
+<varlistentry><term>CheckList</term>
+<listitem><para>Class to dynamically define a dialog with a group of check boxes, which
+can be selected and returned to the caller.
+</para></listitem></varlistentry>
+<varlistentry><term>SingleSelection</term>
+<listitem><para>Class to dynamically define a dialog with a group of radio buttons,
+where one can be selected and returned.
+</para></listitem></varlistentry>
+<varlistentry><term>Dialog</term>
+<listitem><para>Subclass of UserDialog for simple dialogs. You can change the default
+dialog style from UserDialog to ResDialog.
+</para></listitem></varlistentry>
+<varlistentry><term>AnimatedButton</term>
+<listitem><para>Class to implement an animated button within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>DialogControl</term>
+<listitem><para>Class to implement methods that are common to all dialogs and dialog
+controls.
+</para></listitem></varlistentry>
+<varlistentry><term>TreeControl</term>
+<listitem><para>Class to implement a tree to display the list of items in a dialog in
+a hierarchy.
+</para></listitem></varlistentry>
+<varlistentry><term>ListControl</term>
+<listitem><para>Class to implement a list view to display the items in a dialog as a
+collection.
+</para></listitem></varlistentry>
+<varlistentry><term>ProgressBar</term>
+<listitem><para>Class to implement a progress indicator within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>SliderControl</term>
+<listitem><para>Class to implement a slider or trackbar within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>TabControl</term>
+<listitem><para>Class to implement tabs, which can be compared to dividers in a notebook
+or labels in a file cabinet.
+</para></listitem></varlistentry>
+<varlistentry><term>StaticControl</term>
+<listitem><para>Class to query and modify static controls, such as static text, group
+boxes, and frames.
+</para></listitem></varlistentry>
+<varlistentry><term>EditControl</term>
+<listitem><para>Class to query and modify edit controls, which are also called entry
+lines.
+</para></listitem></varlistentry>
+<varlistentry><term>ButtonControl</term>
+<listitem><para>Class to implement push buttons within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>RadioButtonControl</term>
+<listitem><para>Class to implement radio buttons within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>CheckBoxControl</term>
+<listitem><para>Class to implement check boxes within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>ListBoxControl</term>
+<listitem><para>Class to implement list boxes within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>ComboBoxControl</term>
+<listitem><para>Class to implement a combo box, which combines a list box with an edit
+control.
+</para></listitem></varlistentry>
+<varlistentry><term>ScrollBarControl</term>
+<listitem><para>Class to implement a scroll bar within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>PropertySheetControl</term>
+<listitem><para>Class to implement a property sheet, which is similar to a category
+dialog that spreads its dialog items over several pages (categories), where
+the individual pages are controlled by a tab control instead of radio buttons
+or combo box lists.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="termdef"><title>Definition of Terms</title>
 <variablelist>
 <varlistentry><term id="resourceid">resource id</term>
 <listitem><para>The identification number of a dialog resource. There are
@@ -375,4 +532,6 @@ programmers that have reached the point where they think a method like
 direction as to how to go about using it.
 </para></listitem></varlistentry>
 </variablelist>
+</section>
+
 </chapter>

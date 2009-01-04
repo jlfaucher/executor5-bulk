@@ -66,7 +66,7 @@ SGML_FILES = advcntlc.sgml \
 	     preface.sgml \
 	     progressbarc.sgml \
 	     propertysheetc.sgml \
-	     reference.sgml \
+	     overview.sgml \
 	     resdialog.sgml \
 	     scrollbarc.sgml \
 	     slidercontrolc.sgml \
@@ -74,7 +74,6 @@ SGML_FILES = advcntlc.sgml \
 	     resources.sgml \
 	     menus.sgml \
 	     tabcontrolc.sgml \
-	     termdef.sgml \
 	     treecontrolc.sgml \
 	     userdialog.sgml \
 	     ../shared/notices.sgml \
