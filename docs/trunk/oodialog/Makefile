@@ -49,10 +49,13 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
 
 SGML_FILES = advcntlc.sgml \
 	     basedialog.sgml \
+	     windowBaseCommon.sgml \
+	     windowExtensionsCommon.sgml \
 	     buttoncontrols.sgml \
 	     categorydialog.sgml \
 	     comboboxc.sgml \
 	     dialogcontrolc.sgml \
+	     dialogcontrolCommon.sgml \
 	     editcontrolc.sgml \
 	     listboxc.sgml \
 	     listcontrolc.sgml \

@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: OODialog Reference SGML file.
     #
-    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -41,36 +41,73 @@
     #
     #########################################################################
 -->
-<chapter id="plainuserdialogc"><title>PlainUserDialog Class and PlainBaseDialog Class</title>
+<chapter id="plainuserdialogc"><title>PlainBaseDialog, PlainUserDialog, Base Mixin Classes</title>
+<indexterm><primary>PlainBaseDialog class</primary></indexterm>
 <indexterm><primary>PlainUserDialog class</primary></indexterm>
-<para>The PlainUserDialog class subclasses from PlainBaseDialog class and provides
-all the methods that normally are required to execute a dialog  that is either
-created dynamically or loaded from a resource script (.RC). In other words
-it is a limited version of  <link linkend="clsUserDialog">UserDialog Class</link>.
-Use <computeroutput>::requires "OODPLAIN.CLS"</computeroutput> in your script
-to get access to the PlainUserDialog class.</para>
-<note><title>Note</title>
-<para>If you use <computeroutput>::requires "OODWIN32.CLS"</computeroutput> you
-do not need to specify the <computeroutput>::requires "OODIALOG.CLS"</computeroutput>
-directive because OODIALOG.CLS is included from OODWIN32.CLS.</para>
-</note>
-<note><title>Note</title>
-<para>If you use <computeroutput>::requires "OODIALOG.CLS"</computeroutput> you
-do not need to specify the <computeroutput>::requires "OODPLAIN.CLS"</computeroutput>
-directive because OODPLAIN.CLS is included from OODIALOG.CLS.</para>
-</note>
-<para>UserDialog includes all the methods PlainUserDialog does plus all the methods
-defined in the DialogExtensions class. These are more specific methods that
- cover asynchronous dialog execution, scroll bar support, resizing and repositioning,
-bitmaps, graphics (device context related methods), scrolling text, and menus
-(action bars).</para>
-<para>The reason for splitting the functionality into two classes is to provide
- a smaller package which requires less system resources for ordinary user
-interfaces like the standard dialogs.</para>
-<para>The following table lists all the methods that are provided by the  PlainUserDialog
-class. The individual methods are documented in
-<link linkend="clsBaseDialog">BaseDialog Class</link> or
-<link linkend="clsUserDialog">UserDialog Class</link>.</para>
+<para>
+  PlainBaseDialog is the base class of all dialog classes in the ooDialog framework.  It implements
+  methods that are common to every dialog.  PlainBaseDialog should be considered an abstract class.
+  Although, a programmer could instantiate a new PlainBaseDialog object, the class does not implement all
+  the methods that are needed to execute a dialog. Therefore, not much can be done with a simple
+  PlainBaseDialog object.  The ooDialog programmer uses subclasses of PlainBaseDialog to actually create
+  and execute a real dialog.
+</para>
+<para>
+  The PlainBaseDialog inherits from the WindowBase mixin class.  The WindowBase mixin class implements
+  methods that are common to all windows.  Since both dialogs and dialog controls are windows, the <link
+  linkend="clsDialogControl">DialogControl</link> class also inherits from WindowBase.
+</para>
+<para>
+  The PlainUserDialog class subclasses from PlainBaseDialog class and provides all the methods that
+  normally are required to execute a dialog that is either created dynamically or loaded from a resource
+  script (.RC).  Its purpose is to provide a simpler class that can be used for ordinary user interfaces,
+  like the <link linkend="sectStandardDialogs">standard dialogs</link>. The ooDialog programmer can
+  subclass from the PlainUserDialog to produce straighforward, uncomplicated user interfaces.
+</para>
+<para>
+  The more advanced dialog classes, <link linkend="clsResDialog">ResDialog</link>, <link
+  linkend="clsRcDialog">RcDialog</link>, <link linkend="clsUserDialog">UserDialog</link>, subclass the
+  <link linkend="clsBaseDialog">BaseDialog</link> class. The BaseDialog class subclasses PlainBaseDialog,
+  and like PlainBaseDialog should be considered an abstract class. BaseDialog inherits from the
+  WindowExtensions and DialogExtensions mixin classes. These classes implement methods that cover
+  asynchronous dialog execution, scroll bar support, resizing and repositioning, bitmaps, graphics
+  (device context related methods), scrolling text, and menus (action bars).  The ResDialog, RcDialog,
+  UserDialog classes, and their subclasses, allow the programmer to produce very sophisticated graphical
+  user interfaces.
+</para>
+<para>
+  Historically, the reason for providing the simpler PlainUserDialog class was to have a smaller package
+  that required less system resources for ordinary user interfaces like the standard dialogs.  That
+  reason is probably not as valid in modern times as it was when ooDialog was being developed to run on
+  Windows 3.1.
+</para>
+
+<section id="clsPlainUserDialog"><title>PlainUserDialog</title>
+<indexterm><primary>PlainUserDialog</primary></indexterm>
+<para>
+  PlainUserDialog is a limited version of the <link linkend="clsUserDialog">UserDialog</link> class. Use
+  <computeroutput>::requires "OODPLAIN.CLS"</computeroutput> in your script to get access to the
+  PlainUserDialog class.
+</para>
+<note><title>Note</title><para>
+  If you use <computeroutput>::requires "OODWIN32.CLS"</computeroutput> you do not need to specify the
+  <computeroutput>::requires "OODIALOG.CLS"</computeroutput> directive because OODIALOG.CLS is included
+  from OODWIN32.CLS.
+</para></note>
+<note><title>Note</title><para>
+  If you use <computeroutput>::requires "OODIALOG.CLS"</computeroutput> you do not need to specify the
+  <computeroutput>::requires "OODPLAIN.CLS"</computeroutput> directive because OODPLAIN.CLS is included
+  from OODIALOG.CLS.
+</para></note>
+
+<section id="methodsPlainUserDialog"><title>Methods</title>
+<indexterm><primary>PlainUserDialog Methods</primary></indexterm>
+<para>
+  The following table lists all the methods that are provided by the PlainUserDialog class with links to
+  the full documentation. The individual methods are documented in <link
+  linkend="clsBaseDialog">BaseDialog Class</link> or <link linkend="clsUserDialog">UserDialog
+  Class</link>.
+</para>
 <variablelist>
 <varlistentry><term>Attributes:</term>
 <listitem><para>Instances of the PlainUserDialog class have
@@ -727,4 +764,33 @@ the methods listed in
 </row>
 </tbody></tgroup>
 </table>
+</section>
+</section>  <!-- End PlainUserDialog class -->
+
+
+<section id="clsWindowBase"><title>WindowBase Class</title>
+<indexterm><primary>WindowBase Class</primary></indexterm>
+<para>
+  WindowBase is a mixin class with methods that are common to all windows.  It is inherited by both
+  dialog and dialog control classes.  The class methods are listed here with links to the full
+  documentation for each method.
+</para>
+
+&windowBaseCommon;
+
+</section>
+
+<section id="clsWindowExtensions"><title>WindowExtensions Class</title>
+<indexterm><primary>WindowExtensions Class</primary></indexterm>
+<para>
+  WindowExtensions is a mixin class with methods that are common to all windows.  As the class name
+  implies, it is an extension of the WindowBase class, providing more sophisticated window methods.
+  It is inherited by both dialog and dialog control classes.  The class methods are listed here with
+  links to the full documentation for each method.
+</para>
+
+&windowExtensionsCommon;
+
+</section>
+
 </chapter>

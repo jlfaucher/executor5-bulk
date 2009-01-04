@@ -45,28 +45,25 @@
 <indexterm><primary>StaticControl class</primary></indexterm>
 <para>
   The StaticControl class provides methods to query and modify static controls (static text, images,
-  rectangles, and frames.).  By default, static controls are assigned a
-  resource ID of -1.  There is no way to query or modify static controls unless the control has a
-  positive resource ID.  Which in most circumstances is fine, usually static controls do not need to
-  be modified.  Be sure to assign a positive resource ID to statict controls that will be modified
-  during the execution of a dialog.
+  rectangles, and frames.).  By default, static controls are assigned a resource ID of -1.  There is no
+  way to query or modify static controls unless the control has a positive resource ID.  Which in most
+  circumstances is fine, usually static controls do not need to be modified.  Be sure to assign a
+  positive resource ID to statict controls that will be modified during the execution of a dialog.
 </para>
 <para>
   More text?
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
-  <listitem>
-    <para>
-      The StaticControl class requires the class definition file <computeroutput>oodWin32.cls
-      </computeroutput>:
-      <programlisting>
-      <![CDATA[
-      ::requires "oodWin32.cls"
-      ]]>
-      </programlisting>
-    </para>
-  </listitem></varlistentry>
+<listitem>
+<para>
+The StaticControl class requires the class definition file <computeroutput>oodWin32.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "oodWin32.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
   <listitem>
     <para>
@@ -132,6 +129,19 @@
     </table>
   </listitem></varlistentry>
 </variablelist>
+
+
+<section><title>Inherited Methods - WindowBase</title>
+&windowBaseCommon;
+</section>
+
+<section><title>Inherited Methods - WindowExtensions</title>
+&windowExtensionsCommon;
+</section>
+
+<section><title>Inherited Methods - DialogControl</title>
+&dialogcontrolCommon;
+</section>
 
 
 <section id="mthNewClsStaticControl"><title>new (Class method)</title>
