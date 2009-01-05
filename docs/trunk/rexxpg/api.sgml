@@ -156,6 +156,105 @@ RexxThreadContext *tc
 </section>
 </section>
 
+<section id="mthCallProgram"><title>CallProgram</title>
+<indexterm><primary>CallProgram</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>CallProgram</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>CallProgram</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>CallProgram</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+CSTRING name;
+RexxObjectPtr ret;
+RexxArrayObject arr;
+
+>>--ret = context->CallProgram(name, arr);----------------------------><
+]]>
+</programlisting>
+<para>Returns the result object of the routine.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">name</emphasis></term>
+    <listitem><para>The ASCIIZ path/name of the Rexx program to call.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">arr</emphasis></term>
+    <listitem><para>The array of Rexx object arguments to the specified program.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to the result Rexx object returned by the program.</para>
+</section>
+</section>
+
+<section id="mthCallRoutine"><title>CallRoutine</title>
+<indexterm><primary>CallRoutine</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>CallRoutine</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>CallRoutine</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>CallRoutine</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj, ret;
+RexxArrayObject arr;
+
+>>--ret = context->CallRoutine(obj, arr);-----------------------------><
+]]>
+</programlisting>
+<para>Returns the result object of the routine.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The Rexx routine object to call.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">arr</emphasis></term>
+    <listitem><para>The array of Rexx object arguments to the specified routine.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to the result Rexx object returned by the routine.</para>
+</section>
+</section>
+
 <section id="mthDetachThread"><title>DetachThread</title>
 <indexterm><primary>DetachThread</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
@@ -406,6 +505,328 @@ RexxDirectoryObject dir;
 </section>
 <section><title>Returns</title>
 <para>A Pointer to a RexxDirectoryObject.</para>
+</section>
+</section>
+
+<section id="mthGetMethodPackage"><title>GetMethodPackage</title>
+<indexterm><primary>GetMethodPackage</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>GetMethodPackage</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>GetMethodPackage</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>GetMethodPackage</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxMethodObject obj;
+RexxPackageObject pkg;
+
+>>--pkg = context->GetMethodPackage(obj);-----------------------------><
+]]>
+</programlisting>
+<para>Returns a pointer to a RexxPackageObject which contains the specified method object.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The Rexx method object to query.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to a RexxPackageObject.</para>
+</section>
+</section>
+
+<section id="mthGetPackageClasses"><title>GetPackageClasses</title>
+<indexterm><primary>GetPackageClasses</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>GetPackageClasses</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>GetPackageClasses</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>GetPackageClasses</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxDirectoryObject dir;
+RexxPackageObject pkg;
+
+>>--dir = context->GetPackageClasses(pkg);----------------------------><
+]]>
+</programlisting>
+<para>Returns a RexxDirectoryObject pointer which contains the public and private classes (name and object) from the specified package object.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The Rexx package object to query.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to a RexxDirectoryObject.</para>
+</section>
+</section>
+
+<section id="mthGetPackageMethods"><title>GetPackageMethods</title>
+<indexterm><primary>GetPackageMethods</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>GetPackageMethods</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>GetPackageMethods</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>GetPackageMethods</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxDirectoryObject dir;
+RexxPackageObject pkg;
+
+>>--dir = context->GetPackageMethods(pkg);----------------------------><
+]]>
+</programlisting>
+<para>Returns a RexxDirectoryObject pointer which contains the public unattached methods (name and object) from the specified package object.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The Rexx package routine object to query.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to a RexxDirectoryObject.</para>
+</section>
+</section>
+
+<section id="mthGetPackagePublicClasses"><title>GetPackagePublicClasses</title>
+<indexterm><primary>GetPackagePublicClasses</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>GetPackagePublicClasses</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>GetPackagePublicClasses</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>GetPackagePublicClasses</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxDirectoryObject dir;
+RexxPackageObject pkg;
+
+>>--dir = context->GetPackagePublicClasses(pkg);----------------------><
+]]>
+</programlisting>
+<para>Returns a RexxDirectoryObject pointer which contains the public classes (name and object) from the specified package object.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The Rexx package object to query.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to a RexxDirectoryObject.</para>
+</section>
+</section>
+
+<section id="mthGetPackagePublicRoutines"><title>GetPackagePublicRoutines</title>
+<indexterm><primary>GetPackagePublicRoutines</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>GetPackagePublicRoutines</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>GetPackagePublicRoutines</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>GetPackagePublicRoutines</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxDirectoryObject dir;
+RexxPackageObject pkg;
+
+>>--dir = context->GetPackagePublicRoutines(pkg);---------------------><
+]]>
+</programlisting>
+<para>Returns a RexxDirectoryObject pointer which contains the public routines (name and object) from the specified package object.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The Rexx package object to query.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to a RexxDirectoryObject.</para>
+</section>
+</section>
+
+<section id="mthGetPackageRoutines"><title>GetPackageRoutines</title>
+<indexterm><primary>GetPackageRoutines</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>GetPackageRoutines</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>GetPackageRoutines</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>GetPackageRoutines</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxDirectoryObject dir;
+RexxPackageObject pkg;
+
+>>--dir = context->GetPackageRoutines(pkg);---------------------------><
+]]>
+</programlisting>
+<para>Returns a RexxDirectoryObject pointer which contains the public and private routines (name and object) from the specified package object.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The Rexx package routine object to query.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to a RexxDirectoryObject.</para>
+</section>
+</section>
+
+<section id="mthGetRoutinePackage"><title>GetRoutinePackage</title>
+<indexterm><primary>GetRoutinePackage</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>GetRoutinePackage</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>GetRoutinePackage</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>GetRoutinePackage</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxRoutineObject obj;
+RexxPackageObject pkg;
+
+>>--pkg = context->GetRoutinePackage(obj);----------------------------><
+]]>
+</programlisting>
+<para>Returns a pointer to a RexxPackageObject which contains the specified routine object.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The Rexx routine object to query.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to a RexxPackageObject.</para>
 </section>
 </section>
 
@@ -667,6 +1088,98 @@ logical_t flag;
 </section>
 </section>
 
+<section id="mthIsMethod"><title>IsMethod</title>
+<indexterm><primary>IsMethod</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>IsMethod</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>IsMethod</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>IsMethod</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+logical_t flag;
+
+>>--flag = context->IsMethod(obj);--------------------------------------><
+]]>
+</programlisting>
+<para>Tests an object to see if is a RexxMethodObject.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>A pointer to the Rexx object to be tested.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>1 = is a method, 0 = not a method.</para>
+</section>
+</section>
+
+<section id="mthIsRoutine"><title>IsRoutine</title>
+<indexterm><primary>IsRoutine</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>IsRoutine</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>IsRoutine</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>IsRoutine</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+logical_t flag;
+
+>>--flag = context->IsRoutine(obj);-------------------------------------><
+]]>
+</programlisting>
+<para>Tests an object to see if is a RexxRoutineObject.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>A pointer to the Rexx object to be tested.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>1 = is a routine, 0 = not a routine.</para>
+</section>
+</section>
+
 <section id="mthLanguageLevel"><title>LanguageLevel</title>
 <indexterm><primary>Language Level</primary></indexterm>
 <indexterm><primary>Rexx instance context methods</primary>
@@ -701,6 +1214,257 @@ size_t langlevel;
 </section>
 <section><title>Returns</title>
 <para>The interpreter language level number.</para>
+</section>
+</section>
+
+<section id="mthLoadPackage"><title>LoadPackage</title>
+<indexterm><primary>LoadPackage</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>LoadPackage</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>LoadPackage</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>LoadPackage</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+CSTRING name;
+RexxPackageObject pkg;
+
+>>--pkg = context->LoadPackage(name);---------------------------------><
+]]>
+</programlisting>
+<para>Returns the loaded package object  from the specified file path/name.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">name</emphasis></term>
+    <listitem><para>The ASCIIZ path/name of the Rexx package to load.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to the loaded package object.</para>
+</section>
+</section>
+
+<section id="mthLoadPackage"><title>LoadPackageFromData</title>
+<indexterm><primary>LoadPackageFromData</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>LoadPackageFromData</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>LoadPackageFromData</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>LoadPackageFromData</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+CSTRING name, data;
+size_t sz;
+RexxPackageObject pkg;
+
+>>--pkg = context->LoadPackageFromData(name, data, sz);---------------><
+]]>
+</programlisting>
+<para>Returns the loaded package object  from the specified file path/name.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">name</emphasis></term>
+    <listitem><para>The ASCIIZ name of the Rexx package to load.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">data</emphasis></term>
+    <listitem><para>String containing the ooRexx code of the package to load.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">sz</emphasis></term>
+    <listitem><para>The size of the <emphasis role="italic">data</emphasis> string.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to the loaded package object.</para>
+</section>
+</section>
+
+<section id="mthNewMethod"><title>NewMethod</title>
+<indexterm><primary>NewMethod</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>NewMethod</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>NewMethod</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>NewMethod</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxMethodObject obj;
+CSTRING name, code;
+size_t sz;
+
+>>--obj = context->NewMethod(name, code, sz);----------------------------><
+]]>
+</programlisting>
+<para>Add a new method to the cuurrent context (method, function or thread).
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">name</emphasis></term>
+    <listitem><para>ASCIIZ name of the Rexx method.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">code</emphasis></term>
+    <listitem><para>String containing the ooRexx code for the new method.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">sz</emphasis></term>
+    <listitem><para>Size of the <emphasis role="italic">code</emphasis> string.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A pointer to the new RexxMethodObject.</para>
+</section>
+</section>
+
+<section id="mthNewRoutine"><title>NewRoutine</title>
+<indexterm><primary>NewRoutine</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>NewRoutine</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>NewRoutine</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>NewRoutine</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxRoutineObject obj;
+CSTRING name, code;
+size_t sz;
+
+>>--obj = context->NewRoutine(name, code, sz);---------------------------><
+]]>
+</programlisting>
+<para>Add a new routine to the cuurrent context (method, function or thread).
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">name</emphasis></term>
+    <listitem><para>ASCIIZ name of the Rexx routine.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">code</emphasis></term>
+    <listitem><para>String containing the ooRexx code for the new routine.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">sz</emphasis></term>
+    <listitem><para>Size of the <emphasis role="italic">code</emphasis> string.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A pointer to the new RexxRoutineObject.</para>
+</section>
+</section>
+
+<section id="mthObjectToCSelf"><title>ObjectToCSelf</title>
+<indexterm><primary>ObjectToCSelf</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ObjectToCSelf</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>ObjectToCSelf</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>ObjectToCSelf</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+POINTER ptr;
+
+>>--ptr = context->ObjectToCSelf(obj);--------------------------------><
+]]>
+</programlisting>
+<para>Returns a pointer to the specified Rexx object that can be saved for later use.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The source Rexx object.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to the Rexx object.</para>
 </section>
 </section>
 
