@@ -88,8 +88,8 @@ them.</para>
 provides.</para>
 </section>
 
-<section id="threadapi"><title>Rexx Thread Instance Interface</title>
-<para>This section describes the Rexx thread instance interface and the methods it
+<section id="threadapi"><title>Rexx Thread Interface</title>
+<para>This section describes the Rexx thread interface and the methods it
 provides.</para>
 </section>
 
@@ -156,6 +156,138 @@ RexxThreadContext *tc
 </section>
 </section>
 
+<section id="mthDetachThread"><title>DetachThread</title>
+<indexterm><primary>DetachThread</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>DetachThread</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>No</entry></row>
+<row><entry>Function</entry><entry>No</entry></row>
+<row><entry>Interpreter</entry><entry>Nos</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+>>--context->DetachThread()-------------;-------------------------------><
+]]>
+</programlisting>
+<para>Detaches the current thread to the Rexx thread instance pointed to by the
+<emphasis role="italic">context</emphasis> pointer.
+</para>
+<section><title>Arguments</title>
+<para>None</para>
+</section>
+<section><title>Returns</title>
+<para>Void.</para>
+</section>
+</section>
+
+<section id="mthFindClass"><title>FindClass</title>
+<indexterm><primary>FindClass</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>FindClass</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>FindClass</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>FindClass</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxClassObject class;
+CSTRING name;
+
+>>--class = context->FindClass(name);---------------------------------><
+]]>
+</programlisting>
+<para>Returns a pointer to the specified class object.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">name</emphasis></term>
+    <listitem><para>An ASCIIZ string containing the name of the class.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to the class object.</para>
+</section>
+</section>
+
+<section id="mthFindPackageClass"><title>FindPackageClass</title>
+<indexterm><primary>FindPackageClass</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>FindPClass</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>FindPackageClass</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>FindPackageClass</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxPackageObject pkg;
+RexxClassObject class;
+CSTRING name;
+
+>>--class = context->FindPackageClass(pkg, name);---------------------><
+]]>
+</programlisting>
+<para>Returns a pointer to the specified class object.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">pkg</emphasis></term>
+    <listitem><para>The package object which contains the class.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">name</emphasis></term>
+    <listitem><para>An ASCIIZ string containing the name of the class.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to the class object.</para>
+</section>
+</section>
+
 <section id="mthGetApplicationData"><title>GetApplicationData</title>
 <indexterm><primary>GetApplicationData</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
@@ -195,6 +327,88 @@ RexxThreadContext *tc
 </section>
 </section>
 
+<section id="mthGetGlobalEnvironment"><title>GetGlobalEnvironment</title>
+<indexterm><primary>GetGlobalEnvironment</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>GetGlobalEnvironment</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>GetGlobalEnvironment</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>GetGlobalEnvironment</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxDirectoryObject dir;
+
+>>--dir = context->GetGlobalEnvironment();----------------------------><
+]]>
+</programlisting>
+<para>Returns a pointer to a RexxDirectoryObject which contains the global environment variables and their values.
+</para>
+<section><title>Arguments</title>
+<para>None.</para>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to a RexxDirectoryObject.</para>
+</section>
+</section>
+
+<section id="mthGetLocalEnvironment"><title>GetLocalEnvironment</title>
+<indexterm><primary>GetLocalEnvironment</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>GetLocalEnvironment</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>GetLocalEnvironment</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>GetLocalEnvironment</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxDirectoryObject dir;
+
+>>--dir = context->GetLocalEnvironment();-----------------------------><
+]]>
+</programlisting>
+<para>Returns a pointer to a RexxDirectoryObject which contains the local environment variables and their values.
+</para>
+<section><title>Arguments</title>
+<para>None.</para>
+</section>
+<section><title>Returns</title>
+<para>A Pointer to a RexxDirectoryObject.</para>
+</section>
+</section>
+
 <section id="mthHalt"><title>Halt</title>
 <indexterm><primary>Halt</primary></indexterm>
 <indexterm><primary>Rexx instance context methods</primary>
@@ -230,6 +444,92 @@ RexxThreadContext *tc
 </section>
 </section>
 
+<section id="mthHaltThread"><title>HaltThread</title>
+<indexterm><primary>HaltThread</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>HaltThread</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>No</entry></row>
+<row><entry>Function</entry><entry>No</entry></row>
+<row><entry>Interpreter</entry><entry>Nos</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+>>--context->HaltThread();----------------------------------------------><
+]]>
+</programlisting>
+<para>Halts the current thread pointed to by the
+<emphasis role="italic">context</emphasis> pointer.
+</para>
+<section><title>Arguments</title>
+<para>None</para>
+</section>
+<section><title>Returns</title>
+<para>Void.</para>
+</section>
+</section>
+
+<section id="mthHasMethod"><title>HasMethod</title>
+<indexterm><primary>HasMethod</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>HasMethod</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>HasMethod</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>HasMethod</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Tes</entry></row>
+<row><entry>Function</entry><entry>Tes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+logical_t flag;
+RexxObjectPtr obj;
+CSTRING name;
+
+>>--flag = context->HasMethod(obj, name);-------------------------------><
+]]>
+</programlisting>
+<para>Returns a boolean indicating if an object has the specified method available.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The Rexx object to query.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">name</emphasis></term>
+    <listitem><para>An ASCIIZ string containing the name of the method.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>1 = has the method available, 0 = does not have the method available.</para>
+</section>
+</section>
+
 <section id="mthInterpreterVersion"><title>InterpreterVersion</title>
 <indexterm><primary>InterpreterVersion</primary></indexterm>
 <indexterm><primary>Rexx instance context methods</primary>
@@ -243,16 +543,16 @@ RexxThreadContext *tc
 <entry><emphasis role="bold">Context</emphasis></entry>
 <entry><emphasis role="bold">Available</emphasis></entry>
 </row>
-<row><entry>Thread</entry><entry>No</entry></row>
-<row><entry>Method</entry><entry>No</entry></row>
-<row><entry>Function</entry><entry>No</entry></row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Tes</entry></row>
+<row><entry>Function</entry><entry>Tes</entry></row>
 <row><entry>Interpreter</entry><entry>Yes</entry></row>
 </tbody>
 </tgroup>
 </informaltable>
 <programlisting>
 <![CDATA[
-suze_t version;
+size_t version;
 
 >>--version = context->InterpreterVersion();----------------------------><
 ]]>
@@ -267,7 +567,107 @@ suze_t version;
 </section>
 </section>
 
-<section id="mthLanguageLevel"><title>Language Level</title>
+<section id="mthIsInstanceOf"><title>IsInstanceOf</title>
+<indexterm><primary>IsInstanceOf</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>IsInstanceOf</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>IsInstanceOf</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>IsInstanceOf</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+RexxClassObj class;
+logical_t flag;
+
+>>--flag = context->IsInstanceOf(obj, class);---------------------------><
+]]>
+</programlisting>
+<para>Tests an object to see if is an instance of or an instance of a subclass of the specified class.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>A pointer to the Rexx object to be tested.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">class</emphasis></term>
+    <listitem><para>A pointer to the Rexx class object to be tested for membership.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>1 = is a member, 0 = not a member.</para>
+</section>
+</section>
+
+<section id="mthIsOfType"><title>IsOfType</title>
+<indexterm><primary>IsOfType</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>IsOfType</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>IsOfType</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>IsOfType</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+CSTRING class;
+logical_t flag;
+
+>>--flag = context->IsOfType(obj, class);-------------------------------><
+]]>
+</programlisting>
+<para>Tests an object to see if is an instance of or an instance of a subclass of the specified class.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>A pointer to the Rexx object to be tested.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">class</emphasis></term>
+    <listitem><para>An ASCIIZ string containing the name of the Rexx class. This string will automatically be converted to upper case.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>1 = is a member, 0 = not a member.</para>
+</section>
+</section>
+
+<section id="mthLanguageLevel"><title>LanguageLevel</title>
 <indexterm><primary>Language Level</primary></indexterm>
 <indexterm><primary>Rexx instance context methods</primary>
 <secondary>LanguageLevel</secondary></indexterm>
@@ -280,16 +680,16 @@ suze_t version;
 <entry><emphasis role="bold">Context</emphasis></entry>
 <entry><emphasis role="bold">Available</emphasis></entry>
 </row>
-<row><entry>Thread</entry><entry>No</entry></row>
-<row><entry>Method</entry><entry>No</entry></row>
-<row><entry>Function</entry><entry>No</entry></row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Tes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
 <row><entry>Interpreter</entry><entry>Yes</entry></row>
 </tbody>
 </tgroup>
 </informaltable>
 <programlisting>
 <![CDATA[
-suze_t langlevel;
+size_t langlevel;
 
 >>--langlevel = context->LanguageLevel();-------------------------------><
 ]]>
@@ -301,6 +701,390 @@ suze_t langlevel;
 </section>
 <section><title>Returns</title>
 <para>The interpreter language level number.</para>
+</section>
+</section>
+
+<section id="mthReleaseGlobalReference"><title>ReleaseGlobalReference</title>
+<indexterm><primary>ReleaseGlobalReference</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ReleaseGlobalReference</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>ReleaseGlobalReference</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>ReleaseGlobalReference</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr ref;
+
+>>--context->RequestGlobalReference(ref);--------------------------------><
+]]>
+</programlisting>
+<para>Release access to a global object reference.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">ref</emphasis></term>
+    <listitem><para>A pointer to the global Rexx object reference.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>Void.</para>
+</section>
+</section>
+
+<section id="mthReleaseLocalReference"><title>ReleaseLocalReference</title>
+<indexterm><primary>ReleaseLocalReference</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ReleaseLocalReference</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>ReleaseLocalReference</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>ReleaseLocalReference</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr ref;
+
+>>--context->RequestLocalReference(ref);---------------------------------><
+]]>
+</programlisting>
+<para>Release access to a local object reference.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">ref</emphasis></term>
+    <listitem><para>A pointer to the local Rexx object reference.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>Void.</para>
+</section>
+</section>
+
+<section id="mthRequestGlobalReference"><title>RequestGlobalReference</title>
+<indexterm><primary>RequestGlobalReference</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>RequestGlobalReference</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>RequestGlobalReference</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>RequestGlobalReference</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr ref, obj;
+
+>>--ref = context->RequestGlobalReference(obj);--------------------------><
+]]>
+</programlisting>
+<para>Request access to a global object reference.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>Rexx object containing the name of the global object.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A pointer to the global Rexx object or NULL if the object was not found.</para>
+</section>
+</section>
+
+<section id="mthSendMessage"><title>SendMessage</title>
+<indexterm><primary>SendMessage</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>SendMessage</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>SendMessage</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>SendMessage</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj, ret;
+RexxArrayObject arr;
+
+>>--ret = context->SendMessage(obj, meg, arr);---------------------------><
+]]>
+</programlisting>
+<para>Send a message to a Rexx object.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The object to receive the message.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">msg</emphasis></term>
+    <listitem><para>An ASCIIZ string containing the message name. This argument will be converted to upper case automatically.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">arr</emphasis></term>
+    <listitem><para>The array of message arguments.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A pointer to the returned Rexx object. If the method does not return an object then NULL is returned.</para>
+</section>
+</section>
+
+<section id="mthSendMessage0"><title>SendMessage0</title>
+<indexterm><primary>SendMessage0</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>SendMessage0</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>SendMessage0</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>SendMessage0</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj, ret;
+
+>>--ret = context->SendMessage0(obj, meg);-------------------------------><
+]]>
+</programlisting>
+<para>Send a message to a Rexx object.
+This is a short cut method when no arguments are needed by the receiving object method.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The object to receive the message.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">msg</emphasis></term>
+    <listitem><para>An ASCIIZ string containing the message name. This argument will be converted to upper case automatically.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A pointer to the returned Rexx object. If the method does not return an object then NULL is returned.</para>
+</section>
+</section>
+
+<section id="mthSendMessage1"><title>SendMessage1</title>
+<indexterm><primary>SendMessage1</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>SendMessage1</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>SendMessage1</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>SendMessage1</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj, ret, arg1;
+
+>>--ret = context->SendMessage2(obj, meg, arg1);-------------------------><
+]]>
+</programlisting>
+<para>Send a message to a Rexx object.
+This is a short cut method when only one argument is needed by the receiving object method.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The object to receive the message.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">msg</emphasis></term>
+    <listitem><para>An ASCIIZ string containing the message name. This argument will be converted to upper case automatically.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">arg1</emphasis></term>
+    <listitem><para>The first argument to the receiving method.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A pointer to the returned Rexx object. If the method does not return an object then NULL is returned.</para>
+</section>
+</section>
+
+<section id="mthSendMessage2"><title>SendMessage2</title>
+<indexterm><primary>SendMessage2</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>SendMessage2</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>SendMessage2</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>SendMessage2</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj, ret, arg1, arg2;
+
+>>--ret = context->SendMessage2(obj, meg, arg1, arg2);-------------------><
+]]>
+</programlisting>
+<para>Send a message to a Rexx object.
+This is a short cut method when only one argument is needed by the receiving object method.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The object to receive the message.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">msg</emphasis></term>
+    <listitem><para>An ASCIIZ string containing the message name. This argument will be converted to upper case automatically.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">arg1</emphasis></term>
+    <listitem><para>The first argument to the receiving method.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">arg2</emphasis></term>
+    <listitem><para>The second argument to the receiving method.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A pointer to the returned Rexx object. If the method does not return an object then NULL is returned.</para>
+</section>
+</section>
+
+<section id="mthSetThreadTrace"><title>SetThreadTrace</title>
+<indexterm><primary>SetThreadTrace</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>SetThreadTrace</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>No</entry></row>
+<row><entry>Function</entry><entry>No</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+logical_t flag;
+
+>>--context->SetThreadTrace(flag);---------------------------------------><
+]]>
+</programlisting>
+<para>Sets the current thread trace flag of the interpreter.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">flag</emphasis></term>
+    <listitem><para>Logical boolean flag.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>Void.</para>
 </section>
 </section>
 
