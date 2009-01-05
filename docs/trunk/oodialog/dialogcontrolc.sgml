@@ -333,8 +333,16 @@ listed in the following DialogControl Instance Methods table.
 <entry><link linkend="hscrollpos">HScrollPos</link></entry>
 </row>
 <row>
-<entry>IsMouseButtonDown</entry>
-<entry><link linkend="ismousebuttondown">IsMouseButtonDown</link></entry>
+<entry>isEnabled</entry>
+<entry><link linkend="mthIsEnabled">isEnabled</link></entry>
+</row>
+<row>
+<entry>isMouseButtonDown</entry>
+<entry><link linkend="ismousebuttondown">isMouseButtonDown</link></entry>
+</row>
+<row>
+<entry>isVisible</entry>
+<entry><link linkend="mthIsVisible">isVisible</link></entry>
 </row>
 <row>
 <entry>LoadBitmap</entry>
@@ -470,7 +478,7 @@ listed in the following DialogControl Instance Methods table.
 </row>
 <row>
 <entry>Title=</entry>
-<entry><link linkend="titlenew">Title=</link></entry>
+<entry><link linkend="mthTitleEquals">Title=</link></entry>
 </row>
 <row>
 <entry>TransparentText</entry>
@@ -701,6 +709,41 @@ the <link linkend="update">Update</link> method to repaint everything at once.
 </variablelist>
 </section>
 
+<section id="mthIsVisible"><title>isVisible</title>
+<indexterm><primary>isVisible</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isVisible--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Tests if the window (dialog or dialog control) is visible.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem>
+<para>
+  There are no arguments.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+<para>
+  Returns .true if the window is visible, otherwise .false
+</para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>
+<programlisting>
+<![CDATA[
+if \ self~isVisible then self~show
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="enable"><title>Enable</title>
 <indexterm><primary>Enable</primary></indexterm>
 <programlisting>
@@ -746,6 +789,46 @@ control.</para>
 <![CDATA[
 MyDialog~GetEditControl("Name")~Disable
 
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthIsEnabled"><title>isEnabled</title>
+<indexterm><primary>isEnabled</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isEnabled--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Tests if the window (dialog or dialog control) is enabled
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem>
+<para>
+  There are no arguments.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+<para>
+  Returns .true if the window is enabled, otherwise .false
+</para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>
+<programlisting>
+<![CDATA[
+::method toggleState private
+listView = self~getListControl(IDC_LV_NAMES)
+if listView~isEnabled then
+   listView~disable
+else
+   listView~enable
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -1554,7 +1637,7 @@ or dialog control.</para>
 </variablelist>
 </section>
 
-<section id="titlenew"><title>Title=</title>
+<section id="mthTitleEquals"><title>Title=</title>
 <indexterm><primary>Title=</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1611,7 +1694,7 @@ MyDialog~Redraw
 </programlisting>
 
 <para>The SetTitle method sets the title of the dialog
-or dialog control. It is equal to <link linkend="titlenew">Title=</link>.</para>
+or dialog control. It is equal to <link linkend="mthTitleEquals">Title=</link>.</para>
 </section>
 </section>
 

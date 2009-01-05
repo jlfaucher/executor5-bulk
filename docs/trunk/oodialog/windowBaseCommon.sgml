@@ -60,15 +60,6 @@
 <para><link linkend="enable">WindowBase::enable</link></para>
 </section>
 
-<section><title>hide</title>
-<programlisting>
-<![CDATA[
->>--hide-------------------------------------------------------><
-]]>
-</programlisting>
-<para><link linkend="hide">WindowBase::hide</link></para>
-</section>
-
 <section><title>getID</title>
 <programlisting>
 <![CDATA[
@@ -96,11 +87,107 @@
 <para><link linkend="getsize">WindowBase::getSize</link></para>
 </section>
 
+<section><title>getTextSize</title>
+<programlisting>
+<![CDATA[
+>>--gGetTextSize(--text--+---------------+---------------+-----------+---------><
+                         +--,--fontname--+--,--fontsize--+--,--hwnd--+
+]]>
+</programlisting>
+<para><link linkend="gettextsize">WindowBase::getTextSize()</link></para>
+</section>
+
+<section><title>hide</title>
+<programlisting>
+<![CDATA[
+>>--hide-------------------------------------------------------><
+]]>
+</programlisting>
+<para><link linkend="hide">WindowBase::hide</link></para>
+</section>
+
+<section><title>isEnabled</title>
+<programlisting>
+<![CDATA[
+>>--isEnabled--------------------------------------------------><
+]]>
+</programlisting>
+<para><link linkend="mthIsEnabled">WindowBase::isEnabled</link></para>
+</section>
+
+<section><title>isVisible</title>
+<programlisting>
+<![CDATA[
+>>--isVisible------------------------------------------------------------------><
+]]>
+</programlisting>
+<para><link linkend="mthIsVisible">WindowBase::isVisible</link></para>
+</section>
+
+<section><title>move</title>
+<programlisting>
+<![CDATA[
+>>---move(--xPos--,--yPos--+----------------------+--)-------------------------><
+                           +-,-"--showOptions--"--+
+]]>
+</programlisting>
+<para><link linkend="move">WindowBase::move()</link></para>
+</section>
+
+<section><title>resize</title>
+<programlisting>
+<![CDATA[
+>>---resize(--width--,--height--+----------------------+--)--------------------><
+                                +-,-"--showOptions--"--+
+]]>
+</programlisting>
+<para><link linkend="resize">WindowBase::resize()</link></para>
+</section>
+
+<section<title>setTitle</title>
+<programlisting>
+<![CDATA[
+>>--setTitle(--new_title--)------------------------------------><
+]]>
+</programlisting>
+<para><link linkend="settitle">WindowBase::setTitle()</link></para>
+</section>
+
 <section><title>show</title>
+<note><title>Note</title><para>
+  The PlainBaseDialog overrides the show() method to take an optional argument.
+</para></note>
 <programlisting>
 <![CDATA[
 >>--show-------------------------------------------------------><
 ]]>
 </programlisting>
-<para><link linkend="showdc">WindowBase::show</link></para>
+<para><link linkend="showdc">DialogControl::show</link></para>
+
+<programlisting>
+<![CDATA[
+>>-show(--"--+--------+--"--)---------------------------------><
+             +--mode--+
+]]>
+</programlisting>
+<para><link linkend="show">PlainBaseDialog::show</link></para>
 </section>
+
+<section><title>title</title>
+<programlisting>
+<![CDATA[
+>>--title------------------------------------------------------><
+]]>
+</programlisting>
+<para><link linkend="title">WindowBase::title</link></para>
+</section>
+
+<section><title>title=</title>
+<programlisting>
+<![CDATA[
+>>--title=--newTitle-------------------------------------------><
+]]>
+</programlisting>
+<para><link linkend="mthTitleEquals">WindowBase::title=</link></para>
+</section>
+
