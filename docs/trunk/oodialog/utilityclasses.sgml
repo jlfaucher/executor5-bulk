@@ -511,9 +511,9 @@ return .true
 <secondary>DlgUtil class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-         +-,-------+
-         V         |
->>--or(----number--+--)-----------------------------------><
+                  +-,-------+
+                  V         |
+>>--.DlgUtil~or(----number--+--)-----------------------------------><
 
 ]]>
 </programlisting>
@@ -560,7 +560,100 @@ return .true
     </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End DlgUtil::or() [class method?] -->
+</section>  <!-- End DlgUtil::or() [class method] -->
+
+<section id="mthGetSystemMetricsClsDlgUtil"><title>getSystemMetrics</title>
+<indexterm><primary>getSystemMetrics</primary>
+<secondary>DlgUtil class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--.DlgUtil~GetSystemMetrics(--index--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Obtains the system metric value for the given index.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The only argument is:
+    <variablelist>
+      <varlistentry><term>index</term>
+      <listitem>
+        <para>
+          The numeric index of the system metric.
+        </para>
+        <para>
+          Good documentation on the system metrics is found in the <link linkend="windowsdoc">MSDN
+          Library</link> under the GetSystemMetrics function.  This documentation contains both the
+          numeric value of the different indexes and information on what is returned for each index. The
+          documentation is easy to found using a Google search of &quot;GetSystemMetrics MSDN
+          library&quot;
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return value is dependent on the index queried.  Consult the MSDN library for information on
+      the returned values.
+      <note><title>Note</title><para>
+        The OS will return 0 if an invalid index is used.  Hoever, the return value for some indexes is
+        also 0.  The programmer will need to determine from the context if 0 is an error return or not.
+      </para></note>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following code snippet is from an application where the user can have 5, 6, or more,
+      independent dialogs open at one time.  One of the menu options is &quot;Tile Dialogs.&quot; When
+      the user selects this option all the open dialogs are &quot;tiled.&quot;
+    </para>
+    <para>
+      All the open dialog objects are stored in a queue.  In the <computeroutput>onTile</computeroutput>
+      method, which is invoked when the user selects the menu item, each dialog is fetched in turn from the
+      queue.  Then the  dialog is repositioned at an offset from the preceding dialog. It is shifted to the
+      right the width of 2 scroll bars and shifted down the the width of the title bar.  (This width is the
+      title bar width plus the thin border around the title bar.)  The height of the thin border, the
+      height of the title bar, and the width of a scroll bar are all determined by querying the system
+      metrics.
+      <programlisting> <![CDATA[
+
+      ::method onTile
+        expose offSetX offSetY dialogQueue
+
+        -- SM_CXVSCROLL = 20
+        -- SM_CYCAPTION = 4
+        -- SM_CYBORDER  = 6
+
+        if \ offSetX~datatype('W') then do
+          scrollBarX = .DlgUtil~getSystemMetrics(20)
+          titleBarY = .DlgUtil~getSystemMetrics(4)
+          windowBorderY = .DlgUtil~getSystemMetrics(6)
+
+          offSetX = 2 * scrollBarX
+          offSetY = (2 * windowBorderY) + titleBarY
+        end
+
+        parse value self~getWindowRect(self~dlgHandle) with x y .
+
+        do dlg over dialogQueue
+          x = x + offSetX
+          y = y + offSetY
+
+          self~setWindowRect(dlg~dlgHandle, x, y, 0, 0, "NOSIZE")
+        end
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgUtil::getSystemMetrics() [class method] -->
 
 </section> <!-- End DlgUtil Class -->
 

@@ -124,10 +124,6 @@ the following table:</para>
 <entry><link linkend="fncGetScreenSize">GetScreenSize function</link></entry>
 </row>
 <row>
-<entry>GetSysMetrics</entry>
-<entry><link linkend="fncGetSysMetrics">GetSysMetrics function</link></entry>
-</row>
-<row>
 <entry>InfoMessage</entry>
 <entry><link linkend="fncInfoMessage">InfoMessage function</link></entry>
 </row>
@@ -227,10 +223,6 @@ the following table:</para>
 <row>
 <entry>SingleSelection</entry>
 <entry><link linkend="rtnSingleSelection">SingleSelection routine</link></entry>
-</row>
-<row>
-<entry>SystemMetrics</entry>
-<entry><link linkend="rtnSystemMetrics">SystemMetrics routine</link></entry>
 </row>
 <row>
 <entry>TimedMessage</entry>
@@ -1175,25 +1167,15 @@ parse var val dunitx dunity pixelx pixely
 </para>
 </section>
 
-<section id="fncGetSysMetrics"><title>GetSysMetrics</title>
-<indexterm><primary>GetSysMetrics</primary></indexterm>
-<indexterm><primary>external functions</primary>
-<secondary>GetSysMetrics</secondary></indexterm>
-<para>Queries a system metric value:
-<programlisting>
-<![CDATA[
-SM_CMONITORS = 80
-metric = GetSysMetrics(SM_CMONITORS)
-say 'There are' metric 'monitors connected to this system.'
-]]>
-</programlisting>
-</para>
-<para>The public routine, <link linkend="rtnSystemMetrics">SystemMetrics</link>,
-provides an easy way to use this external routine without first creating an
-ooDialog dialog or manually loading the C functions.  Check the documentation
-for the public routine for more detailed information on the system metrics in
-Windows.
-</para>
+<section><title>getSysMetrics (deprecated)</title>
+<note><title>Note</title><para>
+  This function is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the .DlgUtil class.  Do not
+  use this function in new code. Try to migrate existing code to to the
+  <computeroutput>.DlgUtil~getSystemMetrics()</computeroutput> method.  This function may not exist in
+  future versions of ooDialog.
+</para></note>
+
 </section>
 
 <section id="fncPlaySoundFile"><title>PlaySoundFile</title>
@@ -1732,79 +1714,14 @@ say 'The monitor is' size[3] 'pixels wide and' size[4] 'pixels high.'
 </variablelist>
 </section>
 
-<section id="rtnSystemMetrics"><title>SystemMetrics Routine</title>
-<indexterm><primary>SystemMetrics</primary></indexterm>
-<indexterm><primary>public routines</primary>
-<secondary>SystemMetrics</secondary></indexterm>
-<para>Queries and returns one of the system metric values The system metric
-values contain information that help the programmer write programs that work
-correctly independent of the current system.  They have information on system
-configuration, such as the number of monitors connected, and metrics such as the
-size in pixels of a dialog border or the width in pixels of a scrollbar.
-</para>
-<para>Good documentation on the system metrics is found in the MSDN Library
-under the GetSystemMetrics function.  This documentation contains both the
-numeric value of the different indexes and information on what is returned for
-each index.  The documentation is easy to found using a Google search of
-&quot;GetSystemMetrics MSDN Library&quot;
- </para>
-<programlisting>
-<![CDATA[
->>-SystemMetrics(--index--)-----------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>index</term>
-<listitem><para>The numeric index of the metric to query.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return value is dependent on the index queried.  Consult the
-MSDN library for information on the returned values.
+<section><title>SystemMetrics Routine (deprecated)</title>
 <note><title>Note</title><para>
-The OS will return 0 if an invalid index is used.  Hoever, the return value for
-some indexes is also 0.  The programmer will need to determine from the context
-if 0 is an error return or not.  In addition, ooDialog will return -1 for some
-invalid argument values.  For instance, if the string &quot;dog&quot; was passed
-in for the <computeroutput>index</computeroutput> argument, -1 would be
-returned.
+  This routine is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the .DlgUtil class.  Do not
+  use this routine in new code. Try to migrate existing code to to the
+  <computeroutput>.DlgUtil~getSystemMetrics()</computeroutput> method.  This routine may not exist in
+  future versions of ooDialog.
 </para></note>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example</emphasis></term>
-<listitem><para>Determine the number of mouse buttons and whether the mouse has
-a scroll wheel.
-<programlisting>
-<![CDATA[
-  /* detectMouse.rex  Simple program to detect the user's mouse. */
-
-  SM_CMOUSEBUTTONS     = 43
-  SM_MOUSEWHEELPRESENT = 19
-
-  countMouseButtons = SystemMetrics(SM_CMOUSEBUTTONS)
-  haveMouseWheel = SystemMetrics(SM_MOUSEWHEELPRESENT)
-
-  if countMouseButtons == 0 then do
-    say 'The system does not have a mouse attached'
-  end
-  else do
-    say 'The mouse has' countMouseButtons 'buttons'
-    if haveMouseWheel == 0 then say 'There is no mouse scroll wheel.'
-    else say 'The mouse has a scroll wheel.'
-  end
-
-  return 0
-  ::requires 'oodPlain.cls'
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
 </section>
 
 <section id="rtnMSSleep"><title>MSSleep Routine</title>

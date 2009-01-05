@@ -2527,7 +2527,7 @@
         SM_CXICON = 11
         SM_CYICON = 12
 
-        size = .Size~new(self~getSystemMetrics(SM_CXICON), self~getSystemMetrics(SM_CYICON))
+        size = .Size~new(.DlgUtil~getSystemMetrics(SM_CXICON), .DlgUtil~getSystemMetrics(SM_CYICON))
 
         oodModule = .ResourceImage~new("oodialog.dll", self)
         icons = oodModule~getImages(ids, .Image~id(IMAGE_ICON), size)
