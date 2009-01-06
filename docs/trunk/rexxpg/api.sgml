@@ -1661,6 +1661,57 @@ POINTER ptr;
 </section>
 </section>
 
+<section id="mthObjectToValue"><title>ObjectToValue</title>
+<indexterm><primary>ObjectToValue</primary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>ObjectToValue</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>ObjectToValue</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>ObjectToValue</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>No</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+ValueDescriptor desc;;
+logical_t flag;
+
+>>--flag = context->ObjectToValue(obj, &desc);---------------------------><
+]]>
+</programlisting>
+<para>Convert a Rexx object to a ValueDescriptor struct. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The Rexx object to be converted.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">desc</emphasis></term>
+    <listitem><para>A C pointer to a ValueDescriptor struct to receive the converted data.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>0 = success, 1 = conversion error.</para>
+</section>
+</section>
+
 <section id="mthReleaseGlobalReference"><title>ReleaseGlobalReference</title>
 <indexterm><primary>ReleaseGlobalReference</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
