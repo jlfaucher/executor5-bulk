@@ -1689,7 +1689,7 @@ POINTER ptr;
 <programlisting>
 <![CDATA[
 RexxObjectPtr obj;
-ValueDescriptor desc;;
+ValueDescriptor desc;
 logical_t flag;
 
 >>--flag = context->ObjectToValue(obj, &desc);---------------------------><
@@ -1704,6 +1704,57 @@ logical_t flag;
     </varlistentry>
     <varlistentry><term><emphasis role="italic">desc</emphasis></term>
     <listitem><para>A C pointer to a ValueDescriptor struct to receive the converted data.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>0 = success, 1 = conversion error.</para>
+</section>
+</section>
+
+<section id="mthObjectToWholeNumber"><title>ObjectToWholeNumber</title>
+<indexterm><primary>ObjectToWholeNumber</primary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>ObjectToWholeNumber</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>ObjectToWholeNumber</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>ObjectToWholeNumber</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+wholenumber_t wn;
+logical_t flag;
+
+>>--flag = context->ObjectToWholeNumber(obj, &wn);-----------------------><
+]]>
+</programlisting>
+<para>Convert a whole number into a Rexx object. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The target Rexx object for the conversion.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">wn</emphasis></term>
+    <listitem><para>A C pointer to a wholenumber_t to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 </section>
@@ -2118,6 +2169,105 @@ logical_t flag;
 </section>
 </section>
 
+<section id="mthStringSize"><title>StringSize</title>
+<indexterm><primary>StringSize</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>StringSize</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>StringSize</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>StringSize</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>StringSize</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+size_t sz;
+
+>>--obj = context->StringSize(sz);---------------------------------------><
+]]>
+</programlisting>
+<para>Convert a C size_t integer to a Rexx object. 
+Alias of the <link linkend="mthStringSizeToObject">StringSizeToObject</link> method.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">n</emphasis></term>
+    <listitem><para>The size_t value to be converted.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A pointer to the Rexx object that represents the C size_t integer.</para>
+</section>
+</section>
+
+<section id="mthStringSizeToObject"><title>StringSizeToObject</title>
+<indexterm><primary>StringSizeToObject</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>StringSizeToObject</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>StringSizeToObject</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>StringSizeToObject</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>StringSizeToObject</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+size_t sz;
+
+>>--obj = context->StringSizeToObject(sz);-------------------------------><
+]]>
+</programlisting>
+<para>Convert a C size_t integer to a Rexx object. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">n</emphasis></term>
+    <listitem><para>The size_t value to be converted.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A pointer to the Rexx object that represents the C size_t integer.</para>
+</section>
+</section>
+
 <section id="mthSetTrace"><title>SetTrace</title>
 <indexterm><primary>SetTrace</primary></indexterm>
 <indexterm><primary>Rexx instance context methods</primary>
@@ -2417,12 +2567,16 @@ ValueDescriptor desc;;
 </tbody>
 </tgroup>
 </informaltable>
+<para>There are two forms of this method.</para>
 <programlisting>
 <![CDATA[
 RexxObjectPtr obj;
 wholenumber_t n;
+logical_t flag;
 
 >>--obj = context->WholeNumber(n);---------------------------------------><
+
+>>--flag = context->WholeNumber(obj, n);---------------------------------><
 ]]>
 </programlisting>
 <para>Convert a C signed integer to a Rexx object. 
@@ -2433,10 +2587,15 @@ Alias of the <link linkend="mthWholeNumberToObject">WholeNumberToObject</link> m
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
     <listitem><para>The C whole number to be converted.</para></listitem>
     </varlistentry>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The target Rexx object of the conversion.</para></listitem>
+    </varlistentry>
 </variablelist>
 </section>
 <section><title>Returns</title>
-<para>A pointer to the Rexx object that represents the C whole number.</para>
+<para>A pointer to the Rexx object that represents the C whole number or
+0 = success, 1 = conversion error.
+</para>
 </section>
 </section>
 
