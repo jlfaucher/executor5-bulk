@@ -484,6 +484,8 @@ and use the same <emphasis role="italic">methodname</emphasis>.
 <indexterm><primary>:: REQUIRES directive</primary></indexterm>
 <indexterm><primary>directives</primary>
 <secondary>::REQUIRES</secondary></indexterm>
+<indexterm><primary>LIBRARY subkeyword</primary>
+<secondary>in a REQUIRES directive</secondary></indexterm>
 
 <para>The ::REQUIRES directive specifies that the program requires access to
 the classes and objects of the Rexx program
@@ -514,13 +516,15 @@ interpreter. This will be executed prior to executing the main Rexx program in
 the file that specifies the ::REQUIRES statement.
 </para>
 <para>If the LIBRARY option is specified, <emphasis role="italic">programname</emphasis>
-is the name of an external native library that is required by this program.  The
-library will be loaded, and any routines defined in the library will be made
-available to all programs running in the process.  If the native library cannot
-be loaded, the program will not be permitted to run.  All LIBRARY ::REQUIRES
-directives will be processed before ::REQUIRES for Rexx programs, which will
-ensure that the native libraries are available to the initialization code of the
-Rexx packages.</para>
+is the name of an external native library that is required by this program. The
+library will be loaded using platform-specific mechanisms, which generally means
+the library name is case sensitive.  Any routines defined in the library will be
+made available to all programs running in the process. If the native library
+cannot be loaded, the program will not be permitted to run.  All LIBRARY
+::REQUIRES directives will be processed before ::REQUIRES for Rexx programs,
+which will ensure that the native libraries are available to the initialization
+code of the Rexx packages.
+</para>
 <para>::REQUIRES directives can be placed anywhere after the main section of
 code in the package.  The order of ::REQUIRES directives determines the search
 order for classes and routines defined in the named programs and also the load
@@ -558,14 +562,22 @@ directive. Only null clauses can appear between them.</para>
 <secondary>in a ROUTINE directive</secondary></indexterm>
 <indexterm><primary>PRIVATE subkeyword</primary>
 <secondary>in a ROUTINE directive</secondary></indexterm>
+<indexterm><primary>EXTERNAL subkeyword</primary>
+<secondary>in a ROUTINE directive</secondary></indexterm>
+<indexterm><primary>EXTERNAL subkeyword</primary>
+<secondary>in a ROUTINE directive</secondary></indexterm>
+<tertiary>LIBRARY routine</tertiary>
+<indexterm><primary>EXTERNAL subkeyword</primary>
+<secondary>in a ROUTINE directive</secondary></indexterm>
+<tertiary>REGISTERED routine</tertiary>
 
 <para>The ::ROUTINE directive creates named routines within a program.</para>
 
 <programlisting>
 <![CDATA[
                            +-PRIVATE-+
->>-::ROUTINE--routinename--+---------+--;-----------------------><
-                           +-PUBLIC--+
+>>-::ROUTINE--routinename--+---------+--+---------------+-------><
+                           +-PUBLIC--+  +-EXTERNAL-spec-+
 ]]>
 </programlisting>
 
@@ -573,8 +585,9 @@ directive. Only null clauses can appear between them.</para>
 is a literal string or a symbol that is taken as a constant.
 Only one ::ROUTINE directive can appear for any
 <emphasis role="italic">routinename</emphasis> in a program.</para>
-<para>A ::ROUTINE directive starts a routine, which is ended by another directive
-or the end of the program.</para>
+<para>If the EXTERNAL option is not specified, the ::ROUTINE directive starts a
+routine, which is ended by another directive or the end of the program.
+</para>
 <para>If you specify the PUBLIC option, the routine is visible beyond its containing
 Rexx program to any other program that references this program with a ::REQUIRES
 directive. If you do not specify the PUBLIC option, the routine is visible
@@ -598,7 +611,49 @@ call r "B"  /* displays "In method B" */
 use arg name
 say "In method" name
 </programlisting>
+<para>If the EXTERNAL option is specified, then <emphasis role="italic">spec</emphasis>
+identifies a function in an external native library that will be defined as the
+named routine for this program.  The <emphasis role="italic">spec</emphasis> is
+a literal string containing a series of whitespace delimited tokens defining the
+external function.  The first token identifies the type of native function to
+locate:</para>
+<variablelist>
+<varlistentry><term>LIBRARY</term>
+<listitem><para>Identifies a routine in an external native library of the type
+supported by the ::REQUIRES directive.  The second token must identify the name
+of the external library.  The external library is located using
+platform-specific mechanisms for loading libraries.  For Unix-based systems,
+the library name is case-sensitive.  The third token is optional and specifies
+the name of the function within the library package.  If not specified, the
+::ROUTINE name is used.  The function name is not case sensitive.
+</para></listitem></varlistentry>
+<varlistentry><term>REGISTERED</term>
+<listitem><para>Identifies a routine in an older-style Rexx function package.
+The second token must identify the name of the external library. The external
+library is located using platform-specific mechanisms for loading libraries.
+For Unix-based systems, the library name is case-sensitive. The third token is
+optional and specifies the name of the function within the library package.  If
+not specified, the ::ROUTINE name is used.  Loading of the function will be
+attempted using the name as given and as all uppercase.  Using REGISTERED is the
+equivalent of loading an external function using the RXFUNCADD() builtin
+function.  See
+<link linkend="bifRxfuncadd">.METHODS</link>  for more details.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>::ROUTINE directive</secondary></indexterm>
+<tertiary>EXTERNAL option</tertiary></indexterm>
+<programlisting>
 
+-- load a function from rxmath library
+::routine RxCalcPi EXTERNAL "LIBRARY rxmath"
+-- same function, but a diffent internal name
+::routine Pi EXTERNAL "LIBRARY rxmath RxCalcPi"
+-- same as call rxfuncadd "SQLLoadFuncs", "rexxsql", "SQLLoadFuncs"
+::routine SQLLoadFuncs "REGISTERED rexxsql SQLLoadFuncs"
+
+</programlisting>
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>It is an error to specify ::ROUTINE with the same routine name more than
