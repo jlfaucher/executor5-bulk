@@ -90,25 +90,26 @@ method properties.</para>
                       +-SET-+
 
     +-PUBLIC--+  +-GUARDED---+  +-UNPROTECTED-+
- >--+---------+--+-----------+--+-------------+--;----------------><
+ >--+---------+--+-----------+--+-------------+------------------->
     +-PRIVATE-+  +-UNGUARDED-+  +-PROTECTED---+
+
+ >--+---------------+---;-----------------------------------------><
+    +-EXTERNAL-spec-+
 ]]>
 </programlisting>
 
-
-<note><title>Note</title>
-<para>You can specify all options in any order.</para></note>
-<para>An ::ATTRIBUTE directive starts an attribute method, which is ended by another directive
-or the end of the program. The ::ATTRIBUTE is not included in the method source.</para>
+<para>The ::ATTRIBUTE directive creates accessor methods for object instance
+variables.  An accessor method allows an object instance variable to be
+retrieved or assigned a value.  ::ATTRIBUTE can create an attribute getter
+method, a setter method, or the getter/setter pair.</para>
 <para>The <emphasis role="italic">name</emphasis> is a literal string or
 a symbol that is taken as a constant.  The <emphasis role="italic">name</emphasis> must also be
 a valid Rexx variable name. The ::ATTRIBUTE directive creates methods
-in the class specified in the most recent ::CLASS directive.</para>
-<para>A ::CLASS directive is not required before an ::ATTRIBUTE directive. If no
-::CLASS directive precedes ::ATTRIBUTE, the attribute methods are not associated with a class
-but are accessible to the main (executable) part of a program through the .METHODS
-built-in object. Only one ::ATTRIBUTE directive can appear for any method name
-not associated with a class. See
+in the class specified in the most recent ::CLASS directive.  If no ::CLASS
+directive precedes an ::ATTRIBUTE directive, the attribute methods are not
+associated with a class but are accessible to the main (executable) part of a
+program through the .METHODS built-in object. Only one ::ATTRIBUTE directive can
+appear for any method name not associated with a class. See
 <link linkend="methe">.METHODS</link>  for more details.</para>
 <para>If you do not specify either SET or GET, ::ATTRIBUTE will create two attribute methods with the
 names <emphasis role="italic">name</emphasis> and <emphasis role="italic">name=</emphasis>.
@@ -124,10 +125,15 @@ equivalent to the following code sequences: </para>
   return name     /* return object&apos;s current value                          */
 </programlisting>
 <para>Both methods will be created with the same method properties (for example, PRIVATE, GUARDED, etc.).
-If GET or SET are not specified, another directive (or the end of the program)
-must follow the ::ATTRIBUTE directive.</para>
-<para>If GET or SET is specified, only the single get or set attribute method is generated.  Specifying separate
-GET or SET ::ATTRIBUTE directives allows the methods to be created with different properties.  For example, the
+If GET or SET are not specified, the pair of methods will be automatically
+generated.  In that case, there is no method code body following the directive,
+so another directive (or the end of the program) must follow the
+::ATTRIBUTE directive.
+</para>
+<para>If GET or SET is specified, only the single get or set attribute method is generated.
+Specifying separate
+GET or SET ::ATTRIBUTE directives allows the methods to be created with different properties.
+For example, the
 sequence:</para>
 <programlisting>
 ::attribute name get
@@ -145,28 +151,75 @@ is frequently used so the SET attribute method can perform new value validation.
     raise syntax 93.906 array ("size", value)
   size=value
 </programlisting>
-<para>If you specify the CLASS option, the create methods are class
+<para>If you specify the CLASS option, the created methods are class
 methods. See <link linkend="provide">Objects and Classes</link>. The attribute methods are
-associated with the class specified on the most recent ::CLASS directive.
-The ::CLASS directive is required in this case.</para>
-<para>If you specify the PRIVATE option, the methods are private methods.
-(Only a message the same object sends can activate the
-methods.) If you omit the PRIVATE option or specify PUBLIC, the methods are public methods
-that any sender can activate.</para>
-<para>If you
+associated with the class specified on the most recent ::CLASS directive. The
+::ATTRIBUTE must be preceded by a ::CLASS directive if CLASS is
+specified.</para>
+<para>If the EXTERNAL option is specified, then <emphasis role="italic">spec</emphasis>
+identifies a method in an external native library that will invoked be as the
+named method.  The
+<emphasis role="italic">spec</emphasis> is a literal string containing a series
+of whitespace delimited tokens defining the external method.  The first token
+must be the word LIBRARY, which indicates the method resides in a native library
+of the type allowed on a ::REQUIRES directive.  The second token must identify
+the name of the external library. The external library is located using
+platform-specific mechanisms for loading libraries. For Unix-based systems, the
+library name is case-sensitive.  The third token is optional and specifies the
+name of the method within the library package.  If not specified, the ::METHOD
+name is used.  The target package method name is case insensitive.</para>
+<para>If the SET or GET option is not specified with the EXTERNAL option, then
+two method objects need to be created.  The target method name is appended to
+the string "GET" to derive the name of the getter attribute method.  To generate
+the setter attribute method, the name is appended to the string "SET".
+If GET or SET is specified and the method name is not specified within
+<emphasis role="italic">spec</emphasis>, then the target library method name
+is generated by concatenating <emphasis role="italic">name</emphasis>
+with "GET" or "SET" as appropriate.  If the method name is specified in
+<emphasis role="italic">spec</emphasis> and GET or SET is specified, the spec
+name will be used unchanged.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>::ATTRIBUTE directive</secondary>
+<tertiary>EXTERNAL option</tertiary></indexterm>
+<programlisting>
+-- maps "NAME" method to "GETNAME and
+-- "NAME=" to "SETNAME"
+::ATTRIBUTE name EXTERNAL "LIBRARY mylib"
+-- maps "ADDRESS" method to "GETADDRESS"
+::ATTRIBUTE address GET EXTERNAL "LIBRARY mylib"
+-- maps "ADDRESS=" method to "setHomeAddress"
+::ATTRIBUTE address SET EXTERNAL "LIBRARY mylib setHomeAddress"
+</programlisting>
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>You can specify all options in any order.
+</para></listitem>
+<listitem><para>If you specify the PRIVATE option, the created methods are
+private methods. (Only a message the same object sends can activate the method.)
+If you omit the PRIVATE option or specify PUBLIC, the method is a public method
+that any sender can activate.
+</para></listitem>
+<listitem><para>If you
 <indexterm><primary>UNGUARDED option of ::ATTRIBUTE</primary></indexterm>
-specify the UNGUARDED option, the methods can be called while other methods
-are active on the same object. If you do not specify UNGUARDED, the method
-requires exclusive use of the object variable pool; they can run only if no
-other method that requires exclusive use of the object variable pool is active
-on the same object.</para>
-<para>If you specify the PROTECTED option, the method is a protected method.
-(See <link linkend="secman">The Security Manager</link> for more information.)
-If you omit the PROTECTED option or specify UNPROTECTED, the method is not protected.</para>
-<note><title>Note</title>
-<para>It is an error to specify ::ATTRIBUTE more than once within the same class
-and to define the <emphasis role="italic">name</emphasis> set or get method.
-</para></note>
+specify the UNGUARDED option, the methods can be called while other methods are
+active on the same object. If you do not specify UNGUARDED, the method requires
+exclusive use of the object variable pool; it can run only if no other method
+that requires exclusive use of the object variable pool is active on the same
+object.</para></listitem>
+<listitem><para>If you specify the PROTECTED option, the method methods are
+protected methods. (See
+<link linkend="secman">The Security Manager</link> for more information.)
+If you omit the PROTECTED option or specify UNPROTECTED, the methods are not
+protected.
+</para></listitem>
+<listitem><para>It is an error to specify ::ATTRIBUTE more than once within the
+same class and use the same
+<emphasis role="italic">name</emphasis>.
+</para></listitem>
+</orderedlist>
+
 </section>
 
 <section id="clasdi"><title>::CLASS</title>
@@ -386,7 +439,7 @@ attributes.</para>
  >--+---------+--+-----------+--+-------------+------------------->
     +-PRIVATE-+  +-UNGUARDED-+  +-PROTECTED---+
 
->>--+---------------+---------------------------------------------><
+ >--+---------------+---;-----------------------------------------><
     +-EXTERNAL-spec-+
 ]]>
 </programlisting>
@@ -463,8 +516,8 @@ ABSTRACT methods define a method that an implementing subclass is expected to pr
 implementation for.  Any attempt to invoke an ABSTRACT method directly will raise a SYNTAX condition.
 </para>
 <para>If the EXTERNAL option is specified, then <emphasis role="italic">spec</emphasis>
-identifies a method in an external native library that will be as the named
-method.  The
+identifies a method in an external native library that will be invoked as the
+named method.  The
 <emphasis role="italic">spec</emphasis> is a literal string containing a series
 of whitespace delimited tokens defining the external method.  The first token
 must be the word LIBRARY, which indicates the method resides in a native library
