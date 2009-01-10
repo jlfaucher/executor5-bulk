@@ -203,8 +203,8 @@ and to define the <emphasis role="italic">name</emphasis> set or get method.
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
-<listitem><para>You can specify the options EXTERNAL, METACLASS, MIXINCLASS, SUBCLASS,
-and PUBLIC in any order.</para></listitem>
+<listitem><para>You can specify the options METACLASS, MIXINCLASS, SUBCLASS, and
+PUBLIC in any order. </para></listitem>
 <listitem><para>If you specify INHERIT, it must be the last option.</para></listitem>
 </orderedlist>
 <para>The ::CLASS directive creates a Rexx class named
@@ -219,10 +219,6 @@ directive is found. Only null clauses (comments or blank lines) can appear
 between a ::CLASS directive and any following directive instruction or the
 end of the program. Only one ::CLASS directive can appear for
 <emphasis role="italic">classname</emphasis> in a program.</para>
-<para>If you specify the EXTERNAL option, the class is created using information
-derived from an external source named
-<emphasis role="italic">extname</emphasis>. The
-<emphasis role="italic">extname</emphasis> is a literal string.</para>
 <para>If you specify the METACLASS option, the instance methods of the
 <emphasis role="italic">metaclass</emphasis> class become class methods of the
 <emphasis role="italic">classname</emphasis> class.
@@ -387,16 +383,17 @@ attributes.</para>
                          +-CLASS-+  +-ATTRIBUTE-+  +-ABSTRACT-+
 
     +-PUBLIC--+  +-GUARDED---+  +-UNPROTECTED-+
- >--+---------+--+-----------+--+-------------+--;----------------><
+ >--+---------+--+-----------+--+-------------+------------------->
     +-PRIVATE-+  +-UNGUARDED-+  +-PROTECTED---+
+
+>>--+---------------+---------------------------------------------><
+    +-EXTERNAL-spec-+
 ]]>
 </programlisting>
-
-
-<note><title>Note</title>
-<para>You can specify all options in any order.</para></note>
-<para>A ::METHOD directive starts a method, which is ended by another directive
-or the end of the program. The ::METHOD is not included in the method source.</para>
+<para>A ::METHOD directive creates method objects that may be associated with a
+class instance.  The created method may be from Rexx code, mapped to method in
+an external native library, or automatically generated.  The type of method is
+determined by the combination of options specified.</para>
 <para>The <emphasis role="italic">methodname</emphasis> is a literal string or
 a symbol that is taken as a constant. The method is defined as
 <emphasis role="italic">methodname</emphasis> in the class specified
@@ -410,24 +407,40 @@ not associated with a class. See
 <link linkend="methe">.METHODS</link>  for more details.</para>
 <para>If you specify the CLASS option, the method is a class
 method. See <link linkend="provide">Objects and Classes</link>. The method is
-associated with the class specified on the most recent ::CLASS directive.
-The ::CLASS directive is required in this case.</para>
-<para>If you specify the PRIVATE option, the method is a private method.
-(Only a message the same object sends can activate the
-method.) If you omit the PRIVATE option or specify PUBLIC, the method is a public method
-that any sender can activate.</para>
-<para>If you
-<indexterm><primary>UNGUARDED option of ::METHOD</primary></indexterm>
-specify the UNGUARDED option, the method can be called while other methods
-are active on the same object. If you do not specify UNGUARDED, the method
-requires exclusive use of the object variable pool; it can run only if no
-other method that requires exclusive use of the object variable pool is active
-on the same object.</para>
-<para>If you specify the ATTRIBUTE option, in addition to having a method
-created as <emphasis role="italic">methodname</emphasis> in the class specified
-in the most recent ::CLASS directive,
-another method is also automatically created in that same class as
-<emphasis role="italic">methodname=</emphasis>.</para>
+associated with the class specified on the most recent ::CLASS directive. The
+::METHOD directive must follow a ::CLASS directive when the CLASS option is
+used.
+</para>
+<para>If ABSTRACT, ATTRIBUTE, or EXTERNAL is not specified, the ::METHOD
+directive starts a section of method code which is ended by another directive or
+the end of the program. The ::METHOD is not included in the source of the
+created METHOD object.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+r = .rectangle~new(20,10)
+say "Area is" r~area       /* Produces "Area is 200" */
+
+::class rectangle
+
+::method area              /* defined for the RECTANGLE class */
+  expose width height
+  return width*height
+
+::method init
+  expose width height
+  use arg width, height
+
+::method perimeter
+  expose width height
+  return (width+height)*2
+</programlisting>
+<para>If you specify the ATTRIBUTE option, method variable accessor methods are
+created.  In addition to generating a method named
+<emphasis role="italic">methodname</emphasis>, another method named
+<emphasis role="italic">methodname=</emphasis> is created.  The first method
+returns the value of object instance variable that matches the method name.
+ The second method assigns a new value to the object instance variable.</para>
 <para>For example, the directive </para>
 <indexterm><primary>examples</primary>
 <secondary>::METHOD directive</secondary></indexterm>
@@ -449,35 +462,74 @@ equivalent to the following code sequences: </para>
 ABSTRACT methods define a method that an implementing subclass is expected to provide a concrete
 implementation for.  Any attempt to invoke an ABSTRACT method directly will raise a SYNTAX condition.
 </para>
-<para>If you specify the PROTECTED option, the method is a protected method.
-(See <link linkend="secman">The Security Manager</link> for more information.)
-If you omit the PROTECTED option or specify UNPROTECTED, the method is not protected.</para>
-<para>If you specify ATTRIBUTE or ABSTRACT, another directive (or the end of the program)
-must follow the ::METHOD directive.</para>
+<para>If the EXTERNAL option is specified, then <emphasis role="italic">spec</emphasis>
+identifies a method in an external native library that will be as the named
+method.  The
+<emphasis role="italic">spec</emphasis> is a literal string containing a series
+of whitespace delimited tokens defining the external method.  The first token
+must be the word LIBRARY, which indicates the method resides in a native library
+of the type allowed on a ::REQUIRES directive.  The second token must identify
+the name of the external library. The external library is located using
+platform-specific mechanisms for loading libraries. For Unix-based systems, the
+library name is case-sensitive.  The third token is optional and specifies the
+name of the method within the library package.  If not specified, the ::METHOD
+name is used.  The target package method name is case insensitive.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>::METHOD directive</secondary>
+<tertiary>EXTERNAL option</tertiary></indexterm>
 <programlisting>
-r = .rectangle~new(20,10)
-say "Area is" r~area       /* Produces "Area is 200" */
 
-::class rectangle
+-- creates method INIT from method RegExp_Init
+-- in library rxregexp
+::METHOD INIT EXTERNAL "LIBRARY rxregexp RegExp_Init"
 
-::method area              /* defined for the RECTANGLE class */
-  expose width height
-  return width*height
-
-::method init
-  expose width height
-  use arg width, height
-
-::method perimeter
-  expose width height
-  return (width+height)*2
+-- creates method INIT from method POS
+-- in library rxregexp
+::METHOD POS EXTERNAL "LIBRARY rxregexp"
 </programlisting>
 
-<note><title>Note</title>
-<para>It is an error to specify ::METHOD more than once within the same class
-and use the same <emphasis role="italic">methodname</emphasis>.
-</para></note>
+<para>If the ATTRIBUTE option is specified with the EXTERNAL option, then two
+method objects need to be created.  The target method name is appended to the
+string "GET" to derive the name of the getter attribute method.  To generate the
+setter attribute method, the name is appended to the string "SET".</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+-- maps "NAME" method to "GETNAME and
+-- "NAME=" to "SETNAME"
+::METHOD name ATTRIBUTE EXTERNAL "LIBRARY mylib"
+
+-- maps "ADDRESS" method to "GETMyAddress and
+-- "ADDRESS=" to "SETMyAddress"
+::METHOD address ATTRIBUTE EXTERNAL "LIBRARY mylib MyAddress"
+</programlisting>
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>You can specify all options in any order.
+</para></listitem>
+<listitem><para>If you specify the PRIVATE option, the method is a private
+method. (Only a message the same object sends can activate the
+method.) If you omit the PRIVATE option or specify PUBLIC, the method is a public method
+that any sender can activate.</para></listitem>
+<listitem><para>If you
+<indexterm><primary>UNGUARDED option of ::METHOD</primary></indexterm> specify
+the UNGUARDED option, the method can be called while other methods are active on
+the same object. If you do not specify UNGUARDED, the method requires exclusive
+use of the object variable pool; it can run only if no other method that
+requires exclusive use of the object variable pool is active on the same
+object.</para></listitem>
+<listitem><para>If you specify the PROTECTED option, the method is a protected
+method. (See <link linkend="secman">The Security Manager</link> for more information.)
+If you omit the PROTECTED option or specify UNPROTECTED, the method is
+not protected.</para></listitem>
+<listitem><para>If you specify ATTRIBUTE, ABSTRACT, or EXTERNAL, another
+directive (or the end of the program) must follow the ::METHOD directive.
+</para></listitem>
+<listitem><para>It is an error to specify ::METHOD more than once within the same
+class and use the same <emphasis role="italic">methodname</emphasis>.
+</para></listitem>
+</orderedlist>
+
 </section>
 
 <section id="requ"><title>::REQUIRES</title>
