@@ -152,7 +152,7 @@ See <link linkend="mthObjectHashCode">hashCode Method</link> for details.
 ]]>
 </programlisting>
 
-<para>Concatenates the receiver object's string representation with
+<para>Returns a new string that is the concatenation the of receiver string with
 <emphasis role="italic">argument</emphasis>. (See
 <link linkend="strgcon">String Concatenation</link>.)
 The <emphasis role="italic">concatenation_operator</emphasis> can be: </para>
@@ -3404,9 +3404,10 @@ DATATYPE built-in function.)</para>
 ]]>
 </programlisting>
 
-<para>Returns the decoded version of the base64 encoded receiving string.
-If the receiving string is not in base64 format then the
-returned result is undefined.</para>
+<para>Returns a new string containing the decoded version of the base64 encoded
+receiving string. If the receiving string is not in base64 format then the
+returned result is undefined.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>decodeBase64 method</secondary></indexterm>
@@ -3415,8 +3416,6 @@ returned result is undefined.</para>
 "YWJjZGVm"~decodeBase64       ->    "abcdef"
 ]]>
 </programlisting>
-<para>Please note that there is no corresponding DECODEBASE64 builtin function
-for this method in ooRexx.</para>
 </section>
 
 <section id="mthStringDelStr"><title>delStr</title>
@@ -3534,7 +3533,8 @@ for information about the DELWORD built-in function.)</para>
 ]]>
 </programlisting>
 
-<para>Returns the base64 encoded version of the receiving string.</para>
+<para>Returns a new string that is the base64 encoded version of the receiving
+string.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>encodeBase64 method</secondary></indexterm>
@@ -3543,8 +3543,6 @@ for information about the DELWORD built-in function.)</para>
 "abcdef"~encodeBase64       ->    "YWJjZGVm"
 ]]>
 </programlisting>
-<para>Please note that there is no corresponding ENCODEBASE64 builtin function
-for this method in ooRexx.</para>
 </section>
 
 <section id="mthStringEquals"><title>equals</title>
