@@ -5646,5 +5646,68 @@ variable names.
 </section>
 </section>
 
+<section id="clsWeakReference"><title>The WeakReference Class</title>
+<indexterm><primary>WeakReference class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>WeakReference class</secondary></indexterm>
+<figure><title>The WeakReference class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxWeakReferenceClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<para>A WeakReference instance maintains a non-pinning reference to another
+object.  A non-pinning reference does not prevent an object from getting garbage
+collected or having its uninit method run when there are no longer normal
+references maintained to the object.  Once the referenced object is eligible for
+garbage collection, the reference inside the WeakReference instance will be
+cleared and the VALUE method will return .nil on all subsequent calls.
+WeakReferences are useful for maintaining caches of objects without preventing
+the objects from being reclaimed by the garbage collector when needed.
+<note><title>Note</title>
+<para>The WeakReference class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
+
+<section id="mthWeakReferenceNew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of WeakReference class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of WeakReference class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-new-(object)  -------+--------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a new WeakReference instance containing a reference to
+<emphasis role="italic">object</emphasis>.<para>
+</section>
+
+<section id="mthWeakReferenceValue"><title>value</title>
+<indexterm><primary>value method</primary>
+<secondary>of WeakReference class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>value method</secondary>
+<tertiary>of WeakReference class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-value------------------------------------------------><
+]]>
+</programlisting>
+<para>This method returns the referenced object.  If the object has been garbage
+collected, then .nil is returned.
+</para>
+</section>
+</section>
+
 </section>
 
