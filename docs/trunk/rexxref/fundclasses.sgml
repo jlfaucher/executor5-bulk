@@ -3916,8 +3916,7 @@ default separator is the newline character.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
 <![CDATA[
-nl = "0d0a"x
-string = "hello"nl"world"nl"this is an array."
+string = "hello".endofline"world".endofline"this is an array."
 array = string~makeArray
 say "the second line is:" array[2]  /*  world  */
 
