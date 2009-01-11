@@ -2594,6 +2594,235 @@ an implementation specific to the comparison being performed.
 </section>
 </section>
 
+<section id="clsOrderable"><title>The Orderable Class</title>
+<indexterm><primary>Orderable class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Orderable class</secondary></indexterm>
+
+<para>The Orderable class can be inherited by classes which wish to provide
+    each of the comparison operator methods without needing to implement each of
+    the individual methods.  The inheriting class need only implement the
+    <link linkend="mthComparableCompareTo">Comparable compareTo method</link>.
+    See This class is defined as a mixin class.
+</para>
+
+<figure><title>The Orderable class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxOrderableClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
+
+<section id="mthOrderableComparisonMethods"><title>Comparison Methods</title>
+<indexterm><primary>method</primary>
+<secondary>comparison methods</secondary>
+<tertiary>of Orderable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-comparison_operator(argument)-------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) or
+<computeroutput>0</computeroutput> (false), the result of performing
+the specified comparison operation. The receiver object and the
+<emphasis role="italic">argument</emphasis> are the terms compared.
+</para>
+
+<para>The comparison operators you can use in a message are: </para>
+<variablelist>
+<varlistentry><term>=
+<indexterm><primary>= method</primary>
+<secondary>of Orderable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>=</secondary>
+<tertiary>of Orderable class</tertiary></indexterm>
+</term>
+<listitem><para>True if the terms are equal
+</para></listitem></varlistentry>
+<varlistentry><term>\=, &gt;&lt;, &lt;&gt;
+<indexterm><primary>>&lt; method</primary>
+<secondary>of Orderable class</secondary></indexterm>
+<indexterm><primary>&gt;&lt; method</primary>
+<secondary>of Orderable class</secondary></indexterm>
+<indexterm><primary>&lt;&gt; method</primary>
+<secondary>of Orderable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\=</secondary>
+<tertiary>of Orderable class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>>&lt;</secondary>
+<tertiary>of Orderable class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;&gt;</secondary>
+<tertiary>of Orderable class</tertiary></indexterm>
+</term>
+<listitem><para>True if the terms are not equal (inverse of =)
+</para></listitem></varlistentry>
+<varlistentry><term>&gt;
+<indexterm><primary>&gt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>></secondary></indexterm>
+</term>
+<listitem><para>Greater than
+</para></listitem></varlistentry>
+<varlistentry><term>&lt;
+<indexterm><primary>&lt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;</secondary></indexterm>
+</term>
+<listitem><para>Less than
+</para></listitem></varlistentry>
+<varlistentry><term>&gt;=
+<indexterm><primary>&gt;= method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&gt;=</secondary></indexterm>
+</term>
+<listitem><para>Greater than or equal to
+</para></listitem></varlistentry>
+<varlistentry><term>\&lt;
+<indexterm><primary>\&lt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\&lt;</secondary></indexterm>
+</term>
+<listitem><para>Not less than
+</para></listitem></varlistentry>
+<varlistentry><term>&lt;=
+<indexterm><primary>&lt;= method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;=</secondary></indexterm>
+</term>
+<listitem><para>Less than or equal to
+</para></listitem></varlistentry>
+<varlistentry><term>\&gt;
+<indexterm><primary>\&gt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\&gt;</secondary></indexterm>
+</term>
+<listitem><para>Not greater than
+</para></listitem></varlistentry>
+</variablelist>
+<para>All strict comparison operations have one of the characters doubled that
+define the operator. The Orderable strict comparison operators produce the same
+results as the non-strict comparisons.
+</para>
+<para>The strict comparison operators you can use in a message are: </para>
+<variablelist>
+<varlistentry><term>==
+<indexterm><primary>== method</primary>
+<secondary>of Orderable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>==</secondary>
+<tertiary>of Orderable class</tertiary></indexterm>
+</term>
+<listitem><para>True if terms are strictly equal
+</para></listitem></varlistentry>
+<varlistentry><term>\==
+<indexterm><primary>\== method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\==</secondary>
+<tertiary>of Orderable class</tertiary></indexterm>
+</term>
+<listitem><para>True if the terms are NOT strictly equal (inverse of ==)
+</para></listitem></varlistentry>
+<varlistentry><term>&gt;&gt;
+<indexterm><primary>&gt;&gt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>>></secondary></indexterm>
+</term>
+<listitem><para>Strictly greater than
+</para></listitem></varlistentry>
+<varlistentry><term>&lt;&lt;
+<indexterm><primary>&lt;&lt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;&lt;</secondary></indexterm>
+</term>
+<listitem><para>Strictly less than
+</para></listitem></varlistentry>
+<varlistentry><term>&gt;&gt;=
+<indexterm><primary>&gt;&gt;= method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&gt;&gt;=</secondary></indexterm>
+</term>
+<listitem><para>Strictly greater than or equal to
+</para></listitem></varlistentry>
+<varlistentry><term>\&lt;&lt;
+<indexterm><primary>\&lt;&lt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\&lt;&lt;</secondary></indexterm>
+</term>
+<listitem><para>Strictly NOT less than
+</para></listitem></varlistentry>
+<varlistentry><term>&lt;&lt;=
+<indexterm><primary>&lt;&lt;= method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;&lt;=</secondary></indexterm>
+</term>
+<listitem><para>Strictly less than or equal to
+</para></listitem></varlistentry>
+<varlistentry><term>\&gt;&gt;
+<indexterm><primary>\&gt;&gt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\&gt;&gt;</secondary></indexterm>
+</term>
+<listitem><para>Strictly NOT greater than
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+
+<section id="clsComparator"><title>The Comparator Class</title>
+<indexterm><primary>Comparator class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Comparator class</secondary></indexterm>
+<figure><title>The Comparator class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxComparatorClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The Comparator class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<para>This class is defined as a mixin class.</para>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
+
+<section id="mthComparatorCompare"><title>compare</title>
+<indexterm><primary>compare method</primary>
+<secondary>of Comparator class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>compare method</secondary>
+<tertiary>of Comparator class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-compare(first,second)--------------------------------><
+]]>
+</programlisting>
+<para>This method returns "-1" if the <emphasis role="italic">second</emphasis> is larger than
+<emphasis role="italic">first</emphasis>
+object, "0" if the two objects are equal, and "1" <emphasis role="italic">second</emphasis> is
+smaller than <emphasis role="italic">first</emphasis> .</para>
+<para>This method is defined as an abstract method.  Inheriting classes are expected to define
+an implementation specific to the comparison being performed.
+</para>
+</section>
+</section>
+
 <section id="clsCaselessColumnComparator"><title>The CaselessColumnComparator Class</title>
 <indexterm><primary>CaselessColumnComparator class</primary></indexterm>
 <indexterm><primary>class</primary>
