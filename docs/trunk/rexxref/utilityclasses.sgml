@@ -2778,51 +2778,6 @@ results as the non-strict comparisons.
 </section>
 </section>
 
-<section id="clsComparator"><title>The Comparator Class</title>
-<indexterm><primary>Comparator class</primary></indexterm>
-<indexterm><primary>class</primary>
-<secondary>Comparator class</secondary></indexterm>
-<figure><title>The Comparator class and methods</title>
-<mediaobject>
-<imageobject>
-<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-<imagedata fileref="ooRexxComparatorClass.png" align="left">
-</imageobject>
-</mediaobject>
-</figure>
-<note><title>Note</title>
-<para>The Comparator class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-
-<para>This class is defined as a mixin class.</para>
-
-<section><title>Inherited Methods</title>
-
-&objclsmthods;
-
-</section>
-
-<section id="mthComparatorCompare"><title>compare</title>
-<indexterm><primary>compare method</primary>
-<secondary>of Comparator class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>compare method</secondary>
-<tertiary>of Comparator class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-compare(first,second)--------------------------------><
-]]>
-</programlisting>
-<para>This method returns "-1" if the <emphasis role="italic">second</emphasis> is larger than
-<emphasis role="italic">first</emphasis>
-object, "0" if the two objects are equal, and "1" <emphasis role="italic">second</emphasis> is
-smaller than <emphasis role="italic">first</emphasis> .</para>
-<para>This method is defined as an abstract method.  Inheriting classes are expected to define
-an implementation specific to the comparison being performed.
-</para>
-</section>
-</section>
-
 <section id="clsCaselessColumnComparator"><title>The CaselessColumnComparator Class</title>
 <indexterm><primary>CaselessColumnComparator class</primary></indexterm>
 <indexterm><primary>class</primary>
