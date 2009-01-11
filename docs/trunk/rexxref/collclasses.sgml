@@ -4659,14 +4659,19 @@ contains any item associated with index
 <tertiary>of Relation class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-hasItem(item,index)-----------------------------------------><
+>>-hasItem(item-+--------+-)-----------------------------------------><
+                +-,index-+
 ]]>
 </programlisting>
 
 <para>Returns <computeroutput>1</computeroutput> (true) if the relation
-contains the member item <emphasis role="italic">item</emphasis>
-(associated with index <emphasis role="italic">index</emphasis>, or
-<computeroutput>0</computeroutput> (false).</para>
+contains the member item <emphasis role="italic">item</emphasis>,
+<computeroutput>0</computeroutput> (false).
+If  is specified, hasIndex
+will only return true if the relation contains the pairing of
+<emphasis role="italic">item</emphasis> associated with index
+<emphasis role="italic">index</emphasis>.
+</para>
 </section>
 
 <section id="mthRelationIndex"><title>index</title>
