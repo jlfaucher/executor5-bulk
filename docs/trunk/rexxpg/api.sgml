@@ -1027,7 +1027,6 @@ CSTRING name;
 </tbody>
 </tgroup>
 </informaltable>
-<para>There a two forms of this method.</para>
 <programlisting>
 <![CDATA[
 RexxObjectPtr obj;
@@ -1135,7 +1134,6 @@ int32_t n;
 </tbody>
 </tgroup>
 </informaltable>
-<para>There a two forms of this method.</para>
 <programlisting>
 <![CDATA[
 RexxObjectPtr obj;
@@ -1292,18 +1290,26 @@ size_t version;
 <programlisting>
 <![CDATA[
 RexxObjectPtr obj;
+logical_t flag;
 intptr_t n;
 
->>--obj = context->Intptr(n);--------------------------------------------><
+>>--obj = context->Intptr(&n);-------------------------------------------><
+
+>>--flag = context->Intptr(obj, &n);-------------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C signed integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object. 
-Alias of the <link linkend="mthIntptrToObject">IntptrToObject</link> method.
+<para>There are two formes of this method.
+The first converts a C signed integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object. 
+The second converts aRexx object to a C signed integer pointed to by <emphasis role="italic">n</emphasis>. 
 </para>
 <section><title>Arguments</title>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the signed interger to be converted.</para></listitem>
+    <listitem><para>The C pointer to the signed interger to be converted in the first form.
+       The target of the conversion in the second form.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The Rexx object to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 </section>
@@ -1344,10 +1350,10 @@ Alias of the <link linkend="mthIntptrToObject">IntptrToObject</link> method.
 RexxObjectPtr obj;
 intptr_t n;
 
->>--obj = context->IntptrToObject(n);------------------------------------><
+>>--obj = context->IntptrToObject(&n);-----------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C signed integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object. 
+<para>Convert a C signed integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object. 
 </para>
 <section><title>Arguments</title>
 <variablelist>
@@ -1879,6 +1885,8 @@ POINTER ptr;
 
 <section id="mthObjectToInt32"><title>ObjectToInt32</title>
 <indexterm><primary>ObjectToInt32</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ObjectToInt32</secondary></indexterm>
 <indexterm><primary>Function context methods</primary>
 <secondary>ObjectToInt32</secondary></indexterm>
 <indexterm><primary>Method context methods</primary>
@@ -1930,6 +1938,8 @@ logical_t flag;
 
 <section id="mthObjectToInt64"><title>ObjectToInt64</title>
 <indexterm><primary>ObjectToInt64</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ObjectToInt64</secondary></indexterm>
 <indexterm><primary>Function context methods</primary>
 <secondary>ObjectToInt64</secondary></indexterm>
 <indexterm><primary>Method context methods</primary>
@@ -1979,8 +1989,63 @@ logical_t flag;
 </section>
 </section>
 
+<section id="mthObjectToIntptr"><title>ObjectToIntptr</title>
+<indexterm><primary>ObjectToIntptr</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ObjectToIntptr</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>ObjectToIntptr</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>ObjectToIntptr</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>ObjectToIntptr</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+intptr_t n;
+logical_t flag;
+
+>>--flag = context->ObjectToIntptr(obj, &n);-----------------------------><
+]]>
+</programlisting>
+<para>Convert an integer into a Rexx object. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The target Rexx object for the conversion.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">n</emphasis></term>
+    <listitem><para>A C pointer to a intptr_t to be converted.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>0 = success, 1 = conversion error.</para>
+</section>
+</section>
+
 <section id="mthObjectToStringSize"><title>ObjectToStringSize</title>
 <indexterm><primary>ObjectToStringSize</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ObjectToStringSize</secondary></indexterm>
 <indexterm><primary>Function context methods</primary>
 <secondary>ObjectToStringSize</secondary></indexterm>
 <indexterm><primary>Method context methods</primary>
@@ -2030,8 +2095,63 @@ logical_t flag;
 </section>
 </section>
 
+<section id="mthObjectToUintptr"><title>ObjectToUintptr</title>
+<indexterm><primary>ObjectToUintptr</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ObjectToUintptr</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>ObjectToUintptr</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>ObjectToUintptr</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>ObjectToUintptr</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+uintptr_t n;
+logical_t flag;
+
+>>--flag = context->ObjectToUintptr(obj, &n);----------------------------><
+]]>
+</programlisting>
+<para>Convert an unsigned integer into a Rexx object. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The target Rexx object for the conversion.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">n</emphasis></term>
+    <listitem><para>A C pointer to a uintptr_t to be converted.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>0 = success, 1 = conversion error.</para>
+</section>
+</section>
+
 <section id="mthObjectToUnsignedInt32"><title>ObjectToUnsignedInt32</title>
 <indexterm><primary>ObjectToUnsignedInt32</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ObjectToUnsignedInt32</secondary></indexterm>
 <indexterm><primary>Function context methods</primary>
 <secondary>ObjectToUnsignedInt32</secondary></indexterm>
 <indexterm><primary>Method context methods</primary>
@@ -2083,6 +2203,8 @@ logical_t flag;
 
 <section id="mthObjectToUnsignedInt64"><title>ObjectToUnsignedInt64</title>
 <indexterm><primary>ObjectToUnsignedInt64</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ObjectToUnsignedInt64</secondary></indexterm>
 <indexterm><primary>Function context methods</primary>
 <secondary>ObjectToUnsignedInt64</secondary></indexterm>
 <indexterm><primary>Method context methods</primary>
@@ -2185,6 +2307,8 @@ logical_t flag;
 
 <section id="mthObjectToWholeNumber"><title>ObjectToWholeNumber</title>
 <indexterm><primary>ObjectToWholeNumber</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ObjectToWholeNumber</secondary></indexterm>
 <indexterm><primary>Function context methods</primary>
 <secondary>ObjectToWholeNumber</secondary></indexterm>
 <indexterm><primary>Method context methods</primary>
@@ -2848,23 +2972,32 @@ all storage associated with that instance.
 <programlisting>
 <![CDATA[
 RexxObjectPtr obj;
+logical_t flag;
 uintptr_t n;
 
->>--obj = context->Uintptr(n);-------------------------------------------><
+>>--obj = context->Uintptr(&n);------------------------------------------><
+
+>>--flag = context->Uintptr(obj, &n);------------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C unsigned integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object. 
-Alias of the <link linkend="mthUintptrToObject">UintptrToObject</link> method.
+<para>There are two forms of this method.
+The first converts a C unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object. 
+The second converts a Rexx object into a C unsigned integer pointed to by <emphasis role="italic">n</emphasis>. 
 </para>
 <section><title>Arguments</title>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned interger to be converted.</para></listitem>
+    <listitem><para>The C pointer to the unsigned interger to be converted in the first form or
+    the target of the conversion in the second form of the method.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The Rexx object to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 </section>
 <section><title>Returns</title>
-<para>A pointer to the Rexx object that represents the C unsigned integer.</para>
+<para>A pointer to the Rexx object that represents the C unsigned integer in the first form
+or 0 = success, 1 = failure in the second form.</para>
 </section>
 </section>
 
@@ -2900,10 +3033,10 @@ Alias of the <link linkend="mthUintptrToObject">UintptrToObject</link> method.
 RexxObjectPtr obj;
 uintptr_t n;
 
->>--obj = context->UintptrToObject(n);-----------------------------------><
+>>--obj = context->UintptrToObject(&n);----------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C unsigned integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object. 
+<para>Convert a C unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object. 
 </para>
 <section><title>Arguments</title>
 <variablelist>
@@ -3254,7 +3387,6 @@ ValueDescriptor desc;;
 </tbody>
 </tgroup>
 </informaltable>
-<para>There are two forms of this method.</para>
 <programlisting>
 <![CDATA[
 RexxObjectPtr obj;
@@ -3263,11 +3395,12 @@ logical_t flag;
 
 >>--obj = context->WholeNumber(n);---------------------------------------><
 
->>--flag = context->WholeNumber(obj, n);---------------------------------><
+>>--flag = context->WholeNumber(obj, &n);--------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C signed integer to a Rexx object. 
-Alias of the <link linkend="mthWholeNumberToObject">WholeNumberToObject</link> method.
+<para>There are two forms of this method.
+The first form converts a C signed integer to a Rexx object. 
+The second form converts a a Rexx object to a C signed integer. 
 </para>
 <section><title>Arguments</title>
 <variablelist>
