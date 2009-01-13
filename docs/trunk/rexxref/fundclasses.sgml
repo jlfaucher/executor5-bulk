@@ -5226,6 +5226,33 @@ string.</para>
 </para>
 </section>
 
+<section id="mthMethodLoadExternalMethod"><title>loadExternalMethod</title>
+<indexterm><primary>loadExternalMethod method</primary>
+<secondary>of Method class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>loadExternalMethod method</secondary>
+<tertiary>of Method class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-loadExternalMethod(name,descriptor)------------------------><
+]]>
+</programlisting>
+<para>Resolves a native method in an external library package and returns a
+Method object instance that can used to call the external method.  The
+<emphasis role="italic">descriptor</emphasis> is a string containing
+blank-delimited tokens that identify the location of the native method.
+function.  The first token identifies the type of native function and must be
+"LIBRARY".   The second token must identify
+the name of the external library.  The external library is located using
+platform-specific mechanisms for loading libraries.  For Unix-based systems, the
+library name is case-sensitive.  The third token is optional and specifies the
+name of the method within the library package.  If not specified,
+<emphasis role="italic">name</emphasis> is used.
+The method name is not case sensitive.
+If the target method cannot be resolved, .nil is returned.
+</para>
+</section>
+
 <section id="mthMethodPackage"><title>package</title>
 <indexterm><primary>package method</primary>
 <secondary>of Method class</secondary></indexterm>
@@ -5470,6 +5497,33 @@ value will be any value returned by the executed routine.</para>
 to its corresponding call argument.  The code in the routine object is called as
 if it was an external routine call. The return value will be any value returned
 by the executed routine.
+</para>
+</section>
+
+<section id="mthRoutineLoadExternalRoutine"><title>loadExternalRoutine</title>
+<indexterm><primary>loadExternalRoutine method</primary>
+<secondary>of Routine class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>loadExternalRoutine method</secondary>
+<tertiary>of Routine class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-loadExternalRoutine(name,descriptor)------------------------><
+]]>
+</programlisting>
+<para>Resolves a native routine in an external library package and returns a
+Routine object instance that can used to call the external routine.  The
+<emphasis role="italic">descriptor</emphasis> is a string containing
+blank-delimited tokens that identify the location of the native routine.
+function.  The first token identifies the type of native routine and must be
+"LIBRARY".   The second token must identify
+the name of the external library.  The external library is located using
+platform-specific mechanisms for loading libraries.  For Unix-based systems, the
+library name is case-sensitive.  The third token is optional and specifies the
+name of the routine within the library package.  If not specified,
+<emphasis role="italic">name</emphasis> is used.
+The routine name is not case sensitive. If the target routine cannot be
+resolved, .nil is returned.
 </para>
 </section>
 
@@ -5782,6 +5836,24 @@ packages.</para>
     packages.</para>
 </section>
 
+<section id="mthPackageLoadLibrary"><title>loadLibrary</title>
+<indexterm><primary>loadLibrary method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>loadLibrary method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-loadLibrary(name)-----------------------------------------><
+]]>
+</programlisting>
+<para>Loads a native library package and adds it to the list of libraries loaded
+by the interpreter. The <emphasis role="italic">name</emphasis> identifies a
+native external library file that will be located and loaded as if it had been
+named on a ::REQUIRES LIBRARY directive.  If the library is successfully loaded,
+loadLibrary will return 1 (true), other wise it returns 0 (false).
+</section>
+
 <section id="mthPackageLoadPackage"><title>loadPackage</title>
 <indexterm><primary>loadPackage method</primary>
 <secondary>of Package class</secondary></indexterm>
@@ -5790,11 +5862,11 @@ packages.</para>
 <tertiary>of Package class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-loadPackage(name-+--------+-)----------------------------><
-                    +-source-+
+>>-loadPackage(name-+---------+-)----------------------------><
+                    +-,source-+
 ]]>
 </programlisting>
-<para>Loads a package and addes it to the list of packages loaded by the package
+<para>Loads a package and adds it to the list of packages loaded by the package
 manager.   If only <emphasis role="italic">name</emphasis> is specified,
 <emphasis role="italic">name</emphasis> identifies a file that will be located
 and loaded as if it had been named on a ::REQUIRES directive.  If
