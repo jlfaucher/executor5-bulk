@@ -262,6 +262,64 @@ RexxArrayObject arr;
 </section>
 </section>
 
+<section id="mthCString"><title>CString</title>
+<indexterm><primary>CString</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>CString</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>CString</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>CString</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>CString</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+RexxStringObject ostr;
+CSTRING str;
+
+>>--str = context->CString(obj);-----------------------------------------><
+
+>>--ostr = context->CString(str);----------------------------------------><
+]]>
+</programlisting>
+<para>There are two forms of this method.
+The first converts a Rexx object into a C ASCIIZ string. 
+The second converts C ASCIIZ string into a Rexx object. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The source Rexx object for the conversion for the first form of the method.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">str</emphasis></term>
+    <listitem><para>The source C ASCII string for the conversion for the second form of the method.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>Returns an C ASCII string for the first form of the method.
+Returns a Rexx object for the second form of the method.</para>
+</section>
+</section>
+
 <section id="mthDetachThread"><title>DetachThread</title>
 <indexterm><primary>DetachThread</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
@@ -296,6 +354,167 @@ RexxArrayObject arr;
 </section>
 <section><title>Returns</title>
 <para>Void.</para>
+</section>
+</section>
+
+<section id="mthDouble"><title>Double</title>
+<indexterm><primary>Double</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>Double</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>Double</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>Double</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>Double</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+double n;
+logical_t flag;
+
+>>--obj = context->Double(n);--------------------------------------------><
+
+>>--flag = context->Double(obj, &n);-------------------------------------><
+]]>
+</programlisting>
+<para>There are two forms of this method.
+The first form converts C double value to a Rexx object. 
+The second form converts a Rexx object to a C double value. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">n</emphasis></term>
+    <listitem><para>The double value to be converted in the first form of the method.
+       The target of the conversion in the second form of the method.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The Rexx object to be converted..</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>Returns a Rexx object with the string value of the double value in the first form of the method.
+0 - success, 1 = failure in the second form of the method.</para>
+</section>
+</section>
+
+<section id="mthDoubleToObject"><title>DoubleToObject</title>
+<indexterm><primary>DoubleToObject</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>DoubleToObject</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>DoubleToObject</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>DoubleToObject</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>DoubleToObject</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+double n;
+
+>>--obj = context->DoubleToObject(n);------------------------------------><
+]]>
+</programlisting>
+<para>Converts C double value to a Rexx object. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">n</emphasis></term>
+    <listitem><para>The double value to be converted.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Rexx object with the string value of the double value.</para>
+</section>
+</section>
+
+<section id="mthDoubleToObjectWithPrecision"><title>DoubleToObjectWithPrecision</title>
+<indexterm><primary>DoubleToObjectWithPrecision</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>DoubleToObjectWithPrecision</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>DoubleToObjectWithPrecision</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>DoubleToObjectWithPrecision</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>DoubleToObjectWithPrecision</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+size_t p;
+double n;
+
+>>--obj = context->DoubleToObject(n, p);---------------------------------><
+]]>
+</programlisting>
+<para>Converts C double value to a Rexx object with a specific precision. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">n</emphasis></term>
+    <listitem><para>The double value to be converted.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">p</emphasis></term>
+    <listitem><para>The precision to be used for the conversion.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Rexx object with the string value of the double value.</para>
 </section>
 </section>
 
@@ -1722,6 +1941,113 @@ RexxPackageObject pkg;
 </section>
 </section>
 
+<section id="mthLogical"><title>Logical</title>
+<indexterm><primary>Logical</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>Logical</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>Logical</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>Logical</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>Logical</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+logical_t flag, n;
+
+>>--flag = context->Logical(obj, &n);------------------------------------><
+
+>>--obj = context->Logical(n);-------------------------------------------><
+]]>
+</programlisting>
+<para>This method has two forms.
+The first form converts a Rexx object to a C logical value (0 or 1). 
+The second form converts C logical value to a Rexx object. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The Rexx object to be converted in the first form of the method.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">n</emphasis></term>
+    <listitem><para>A C pointer to a logical_t to receive the conversion in the first form of the method.
+       A logical_t that is the source of the conversion in the second form of the method.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>0 = success, 1 = conversion error in the first form of the method. In the second form
+a Rexx object is returned.</para>
+</section>
+</section>
+
+<section id="mthLogicalToObject"><title>LogicalToObject</title>
+<indexterm><primary>LogicalToObject</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>LogicalToObject</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>LogicalToObject</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>LogicalToObject</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>LogicalToObject</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+logical_t flag, n;
+
+>>--obj = context->LogicalToObject(n);-----------------------------------><
+]]>
+</programlisting>
+<para>Converts C logical value to a Rexx object. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">n</emphasis></term>
+    <listitem><para>The logical_t value to be converted..</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A Rexx object with the string value of 0 or 1 is returned.</para>
+</section>
+</section>
+
 <section id="mthNewMethod"><title>NewMethod</title>
 <indexterm><primary>NewMethod</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
@@ -1834,6 +2160,61 @@ size_t sz;
 </section>
 </section>
 
+<section id="mthNewString"><title>NewString</title>
+<indexterm><primary>NewString</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>NewString</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>NewString</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>NewString</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>NewString</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxRoutineObject obj;
+CSTRING str;
+size_t len;
+
+>>--obj = context->NewString(str, len);----------------------------------><
+
+>>--obj = context->NewString(str);---------------------------------------><
+]]>
+</programlisting>
+<para>There are two forms of this method. Both create a new Rexx object from a C string.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">str</emphasis></term>
+    <listitem><para>The ASCIIZ string to be converted.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">len</emphasis></term>
+    <listitem><para>Length of the <emphasis role="italic">str</emphasis> string.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A pointer to the new Rexx object.</para>
+</section>
+</section>
+
 <section id="mthObjectToCSelf"><title>ObjectToCSelf</title>
 <indexterm><primary>ObjectToCSelf</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
@@ -1880,6 +2261,59 @@ POINTER ptr;
 </section>
 <section><title>Returns</title>
 <para>A Pointer to the Rexx object.</para>
+</section>
+</section>
+
+<section id="mthObjectToDouble"><title>ObjectToDouble</title>
+<indexterm><primary>ObjectToDouble</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ObjectToDouble</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>ObjectToDouble</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>ObjectToDouble</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>ObjectToDouble</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+double n;
+logical_t flag;
+
+>>--flag = context->ObjectToDouble(obj, &n);-----------------------------><
+]]>
+</programlisting>
+<para>Converts a Rexx object to a C double value.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The source Rexx object for the conversion.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">n</emphasis></term>
+    <listitem><para>A C pointer to the double result.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>0 = success, 1 = conversion error.</para>
 </section>
 </section>
 
@@ -2042,6 +2476,107 @@ logical_t flag;
 </section>
 </section>
 
+<section id="mthObjectToLogical"><title>ObjectToLogical</title>
+<indexterm><primary>ObjectToLogical</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ObjectToLogical</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>ObjectToLogical</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>ObjectToLogical</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>ObjectToLogical</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+logical_t flag, n;
+
+>>--flag = context->ObjectToLogical(obj, &n);----------------------------><
+]]>
+</programlisting>
+<para>Converts a Rexx object to a C logical value (0 or 1). 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The Rexx object to be converted.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">n</emphasis></term>
+    <listitem><para>A C pointer to a logical_t to receive the conversion.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>0 = success, 1 = conversion error.</para>
+</section>
+</section>
+
+<section id="mthObjectToString"><title>ObjectToString</title>
+<indexterm><primary>ObjectToString</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ObjectToString</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>ObjectToString</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>ObjectToString</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>ObjectToString</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+RexxStringObject str;
+
+>>--str = context->ObjectToString(obj);----------------------------------><
+]]>
+</programlisting>
+<para>Convert a Rexx object to a Rexx string object. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The source Rexx object for the conversion.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>The Rexx string object.</para>
+</section>
+</section>
+
 <section id="mthObjectToStringSize"><title>ObjectToStringSize</title>
 <indexterm><primary>ObjectToStringSize</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
@@ -2092,6 +2627,55 @@ logical_t flag;
 </section>
 <section><title>Returns</title>
 <para>0 = success, 1 = conversion error.</para>
+</section>
+</section>
+
+<section id="mthObjectToStringValue"><title>ObjectToStringValue</title>
+<indexterm><primary>ObjectToStringValue</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ObjectToStringValue</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>ObjectToStringValue</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>ObjectToStringValue</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>ObjectToStringValue</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+CSTRING str;
+
+>>--str = context->ObjectToStringValue(obj);-----------------------------><
+]]>
+</programlisting>
+<para>Convert a Rexx object to a C ASCOOZ string. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The source Rexx object for the conversion.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>The C ASCII string.</para>
 </section>
 </section>
 
@@ -2271,7 +2855,7 @@ logical_t flag;
 <entry><emphasis role="bold">Context</emphasis></entry>
 <entry><emphasis role="bold">Available</emphasis></entry>
 </row>
-<row><entry>Thread</entry><entry>No</entry></row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
 <row><entry>Method</entry><entry>Yes</entry></row>
 <row><entry>Function</entry><entry>Yes</entry></row>
 <row><entry>Exit</entry><entry>Yes</entry></row>
@@ -2764,6 +3348,263 @@ logical_t flag;
 </section>
 </section>
 
+<section id="mthSetTrace"><title>SetTrace</title>
+<indexterm><primary>SetTrace</primary></indexterm>
+<indexterm><primary>Rexx instance context methods</primary>
+<secondary>SetTrace</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>No</entry></row>
+<row><entry>Method</entry><entry>No</entry></row>
+<row><entry>Function</entry><entry>No</entry></row>
+<row><entry>Exit</entry><entry>No</entry></row>
+<row><entry>Interpreter</entry><entry>Yes</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+logical_t flag;
+
+>>--context->SetTrace(flag);---------------------------------------------><
+]]>
+</programlisting>
+<para>Sets the trace flag of the interpreter.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">flag</emphasis></term>
+    <listitem><para>Logical boolean flag.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>Void.</para>
+</section>
+</section>
+
+<section id="mthString"><title>String</title>
+<indexterm><primary>String</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>String</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>String</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>String</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>String</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxRoutineObject obj;
+CSTRING str;
+size_t len;
+
+>>--obj = context->String(str, len);-------------------------------------><
+
+>>--obj = context->String(str);------------------------------------------><
+]]>
+</programlisting>
+<para>There are two forms of this method. Both create a new Rexx object from a C string.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">str</emphasis></term>
+    <listitem><para>The ASCIIZ string to be converted.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">len</emphasis></term>
+    <listitem><para>Length of the <emphasis role="italic">str</emphasis> string.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A pointer to the new Rexx object.</para>
+</section>
+</section>
+
+<section id="mthStringData"><title>StringData</title>
+<indexterm><primary>StringData</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>StringData</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>StringData</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>StringData</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>StringData</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+CSTRING str;
+
+>>--str = context->StringData(obj);--------------------------------------><
+]]>
+</programlisting>
+<para>Convert a Rexx object into a C ASCIIZ string. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The source Rexx object for the conversion.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>The C ASCII string.</para>
+</section>
+</section>
+
+<section id="mthStringGet"><title>StringGet</title>
+<indexterm><primary>StringGet</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>StringGet</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>StringGet</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>StringGet</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>StringGet</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+POINTER str;
+size_t c, len1, len2;
+
+>>--c = context->StringGet(obj, len1, str, len2);------------------------><
+]]>
+</programlisting>
+<para>Copies all or part of the Rexx object string value to the C string buffer. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The source Rexx object for the copy.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">len1</emphasis></term>
+    <listitem><para>The source Rexx object starting position for the copy.
+       This argument is 1-based</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">str</emphasis></term>
+    <listitem><para>A pointer to the target buffer for the copy. Note that the buffer is
+       NOT zero-terminated.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">len2</emphasis></term>
+    <listitem><para>The number of characters to copy. This argument should be less than or equal the
+       size of the <emphasis role="italic">str</emphasis> buffer or a buffer overrun will result.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>The number of characters actually copied.</para>
+</section>
+</section>
+
+<section id="mthStringLength"><title>StringLength</title>
+<indexterm><primary>StringLength</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>StringLength</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>StringLength</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>StringLength</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>StringLength</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+size_t sz;
+
+>>--sz = context->StringLength(obj);-------------------------------------><
+]]>
+</programlisting>
+<para>Return the lenght of the string value of a Rexx object. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The source Rexx object.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>The string length of the Rexx object.</para>
+</section>
+</section>
+
 <section id="mthStringSize"><title>StringSize</title>
 <indexterm><primary>StringSize</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
@@ -2811,48 +3652,6 @@ Alias of the <link linkend="mthStringSizeToObject">StringSizeToObject</link> met
 </section>
 <section><title>Returns</title>
 <para>A pointer to the Rexx object that represents the C size_t integer.</para>
-</section>
-</section>
-
-<section id="mthSetTrace"><title>SetTrace</title>
-<indexterm><primary>SetTrace</primary></indexterm>
-<indexterm><primary>Rexx instance context methods</primary>
-<secondary>SetTrace</secondary></indexterm>
-<informaltable frame="all">
-<tgroup cols="2">
-<colspec colnum="1" colwidth="72pc">
-<colspec colnum="2" colwidth="45pc">
-<tbody>
-<row>
-<entry><emphasis role="bold">Context</emphasis></entry>
-<entry><emphasis role="bold">Available</emphasis></entry>
-</row>
-<row><entry>Thread</entry><entry>No</entry></row>
-<row><entry>Method</entry><entry>No</entry></row>
-<row><entry>Function</entry><entry>No</entry></row>
-<row><entry>Exit</entry><entry>No</entry></row>
-<row><entry>Interpreter</entry><entry>Yes</entry></row>
-</tbody>
-</tgroup>
-</informaltable>
-<programlisting>
-<![CDATA[
-logical_t flag;
-
->>--context->SetTrace(flag);---------------------------------------------><
-]]>
-</programlisting>
-<para>Sets the trace flag of the interpreter.
-</para>
-<section><title>Arguments</title>
-<variablelist>
-    <varlistentry><term><emphasis role="italic">flag</emphasis></term>
-    <listitem><para>Logical boolean flag.</para></listitem>
-    </varlistentry>
-</variablelist>
-</section>
-<section><title>Returns</title>
-<para>Void.</para>
 </section>
 </section>
 
@@ -3283,7 +4082,7 @@ uint64_t n;
 <entry><emphasis role="bold">Context</emphasis></entry>
 <entry><emphasis role="bold">Available</emphasis></entry>
 </row>
-<row><entry>Thread</entry><entry>No</entry></row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
 <row><entry>Method</entry><entry>Yes</entry></row>
 <row><entry>Function</entry><entry>Yes</entry></row>
 <row><entry>Exit</entry><entry>Yes</entry></row>
@@ -3330,7 +4129,7 @@ ValueDescriptor desc[3];
 <entry><emphasis role="bold">Context</emphasis></entry>
 <entry><emphasis role="bold">Available</emphasis></entry>
 </row>
-<row><entry>Thread</entry><entry>No</entry></row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
 <row><entry>Method</entry><entry>Yes</entry></row>
 <row><entry>Function</entry><entry>Yes</entry></row>
 <row><entry>Exit</entry><entry>Yes</entry></row>
