@@ -265,6 +265,21 @@ queue lines for the PULL and PARSE PULL instructions.
 </para>
 </section>
 
+<section id="methe"><title>The Rexx Context (.CONTEXT)</title>
+<indexterm><primary>.CONTEXT</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.CONTEXT object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.CONTEXT object</secondary></indexterm>
+<para>The .CONTEXT environment symbol accesses a RexxContext instance for the
+currently active Rexx execution environment.  See
+<link linkend="clsRexxContext">The RexxContext Class</link>) for details on the
+RexxContext object.  The returned context object is only active until the
+current method call, routine call, or program terminates.  Once the context
+object is deactivated, an error will be raised if any of the RexxContext methods
+are called.
+</section>
+
 <section id="linee"><title>The Line Number (.LINE)</title>
 <indexterm><primary>.LINE object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
