@@ -135,8 +135,9 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromNormalDate(-date-+------------+-)-----------------------------><
-                        +-,separator-+
+>>-fromNormalDate(-date-+----------------------------+-)-------------><
+                        +-,-+-----------+--+---------+
+                            +-separator-+  +-,offset-+
 ]]>
 </programlisting>
 
@@ -147,6 +148,12 @@ The time component will be set to the beginning of the input day (00:00:00.00000
 If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the string.  The separator must be a single character
 or the null string ("").  A blank (" ") is the default separator.</para>
+<para>
+If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
+in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
+number value. The default <emphasis role="italic">offset</emphasis> is offset of
+the location from UTC.
+</para>
 </section>
 
 <section id="mthDateTimeFromEuropeanDate"><title>fromEuropeanDate (Class Method)</title>
@@ -157,8 +164,9 @@ or the null string ("").  A blank (" ") is the default separator.</para>
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromEuropeanDate(-date-+------------+-)-----------------------------><
-                          +-,separator-+
+>>-fromEuropeanDate(-date-+----------------------------+--)------------><
+                          +-,-+-----------+--+---------+
+                              +-separator-+  +-,offset-+
 ]]>
 </programlisting>
 
@@ -171,6 +179,12 @@ identifies the field separator character used in the string.  The separator must
 or the null string ("").  A slash ("/") is the default separator.
 The time component will be set to the beginning of the input day (00:00:00.000000).
 </para>
+<para>
+If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
+in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
+number value. The default <emphasis role="italic">offset</emphasis> is offset of
+the location from UTC.
+</para>
 </section>
 
 <section id="mthDateTimeFromOrderedDate"><title>fromOrderedDate (Class Method)</title>
@@ -181,8 +195,9 @@ The time component will be set to the beginning of the input day (00:00:00.00000
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromOrderedDate(-date-+------------+-)-----------------------------><
-                         +-,separator-+
+>>-fromOrderedDate(-date-+----------------------------+--)------------><
+                         +-,-+-----------+--+---------+
+                             +-separator-+  +-,offset-+
 ]]>
 </programlisting>
 
@@ -194,6 +209,12 @@ If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the string.  The separator must be a single character
 or the null string ("").  A slash ("/") is the default separator.
 The time component will be set to the beginning of the input day (00:00:00.000000).</para>
+<para>
+If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
+in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
+number value. The default <emphasis role="italic">offset</emphasis> is offset of
+the location from UTC.
+</para>
 </section>
 
 <section id="mthDateTimeFromStandardDate"><title>fromStandardDate (Class Method)</title>
@@ -204,8 +225,9 @@ The time component will be set to the beginning of the input day (00:00:00.00000
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromStandardDate(-date-+------------+-)-----------------------------><
-                          +-,separator-+
+>>-fromStandardDate(-date-+----------------------------+--)------------><
+                          +-,-+-----------+--+---------+
+                              +-separator-+  +-,offset-+
 ]]>
 </programlisting>
 
@@ -216,6 +238,12 @@ The time component will be set to the beginning of the input day (00:00:00.00000
 If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the string.  The separator must be a single character
 or the null string ("").  A null string ("") is the default separator.</para>
+<para>
+If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
+in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
+number value. The default <emphasis role="italic">offset</emphasis> is offset of
+the location from UTC.
+</para>
 </section>
 
 <section id="mthDateTimeFromUsaDate"><title>fromUsaDate (Class Method)</title>
@@ -226,8 +254,9 @@ or the null string ("").  A null string ("") is the default separator.</para>
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromUsaDate(-date-+------------+-)-----------------------------><
-                     +-,separator-+
+>>-fromUsaDate(-date-+----------------------------+--)------------><
+                     +-,-+-----------+--+---------+
+                         +-separator-+  +-,offset-+
 ]]>
 </programlisting>
 
@@ -238,6 +267,12 @@ The time component will be set to the beginning of the input day (00:00:00.00000
 If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the string.  The separator must be a single character
 or the null string ("").  A slash ("/") is the default separator.</para>
+<para>
+If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
+in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
+number value. The default <emphasis role="italic">offset</emphasis> is offset of
+the location from UTC.
+</para>
 </section>
 
 <section id="mthDateTimeFromNormalTime"><title>fromNormalTime (Class Method)</title>
@@ -248,13 +283,20 @@ or the null string ("").  A slash ("/") is the default separator.</para>
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromNormalTime(time)--------------------------------------><
+>>-fromNormalTime(time--+---------+-)------------------------><
+                        +-,offset-+
 ]]>
 </programlisting>
 
 <para>Creates a DateTime object from a string returned by the Normal option
 of the <link linkend="bifTime">Time()</link> built-in function.
 The date component will be set to 1 January 0001.</para>
+<para>
+If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
+in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
+number value. The default <emphasis role="italic">offset</emphasis> is offset of
+the location from UTC.
+</para>
 </section>
 
 <section id="mthDateTimeFromCivilTime"><title>fromCivilTime (Class Method)</title>
@@ -265,13 +307,20 @@ The date component will be set to 1 January 0001.</para>
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromCivilTime(time)--------------------------------------><
+>>-fromCivilTime(time--+---------+-)------------------------><
+                       +-,offset-+
 ]]>
 </programlisting>
 
 <para>Creates a DateTime object from a string returned by the Civil option
 of the <link linkend="bifTime">Time()</link> built-in function.
 The date component will be set to 1 January 0001.</para>
+<para>
+If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
+in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
+number value. The default <emphasis role="italic">offset</emphasis> is offset of
+the location from UTC.
+</para>
 </section>
 
 <section id="mthDateTimeFromLongTime"><title>fromLongTime (Class Method)</title>
@@ -282,13 +331,20 @@ The date component will be set to 1 January 0001.</para>
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromLongTime(time)--------------------------------------><
+>>-fromLongTime(time--+---------+-)------------------------><
+                      +-,offset-+
 ]]>
 </programlisting>
 
 <para>Creates a DateTime object from a string returned by the Long option
 of the <link linkend="bifTime">Time()</link> built-in function.
 The date component will be set to 1 January 0001.</para>
+<para>
+If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
+in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
+number value. The default <emphasis role="italic">offset</emphasis> is offset of
+the location from UTC.
+</para>
 </section>
 
 <section id="mthDateTimeFromBaseDate"><title>fromBaseDate (Class Method)</title>
@@ -299,13 +355,20 @@ The date component will be set to 1 January 0001.</para>
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromBaseDate(date)---------------------------------------------><
+>>-fromBaseDate(date--+---------+-)-------------------------------><
+                      +-,offset-+
 ]]>
 </programlisting>
 
 <para>Creates a DateTime object from a string returned by the Basedate option
 of the <link linkend="bifDate">Date()</link> built-in function.
 The time component will be set to the beginning of the input day (00:00:00.000000).</para>
+<para>
+If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
+in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
+number value. The default <emphasis role="italic">offset</emphasis> is offset of
+the location from UTC.
+</para>
 </section>
 
 <section id="mthDateTimeFromTicks"><title>fromTicks (Class Method)</title>
@@ -316,13 +379,20 @@ The time component will be set to the beginning of the input day (00:00:00.00000
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromTicks(time)----------------------------------------><
+>>-fromTicks(time--+---------+-)--------------------------><
+                   +-,offset-+
 ]]>
 </programlisting>
 
 <para>Creates a DateTime object from a string returned by the Ticks option
 of the <link linkend="bifDate">Date()</link> or
 <link linkend="bifTime">Time()</link> built-in functions.
+</para>
+<para>
+If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
+in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
+number value. The default <emphasis role="italic">offset</emphasis> is offset of
+the location from UTC.
 </para>
 </section>
 
@@ -334,12 +404,37 @@ of the <link linkend="bifDate">Date()</link> or
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromIsoDate(date)--------------------------------------><
+>>-fromIsoDate(date--+---------+-)------------------------><
+                     +-,offset-+
 ]]>
 </programlisting>
 
 <para>Creates a DateTime object from a string in ISO date format
 (yyyy-mm-ddThh:mm:ss.uuuuuu).  The DateTime string method returns
+the ISO format as the string form of a DateTime object.
+</para>
+<para>
+If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
+in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
+number value. The default <emphasis role="italic">offset</emphasis> is offset of
+the location from UTC.
+</para>
+</section>
+
+<section id="mthDateTimeFromUTCIsoDate"><title>fromUTCIsoDate (Class Method)</title>
+<indexterm><primary>fromUTCIsoDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fromUTCIsoDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fromUTCIsoDate(date)--------------------------------------><
+]]>
+</programlisting>
+
+<para>Creates a DateTime object from a string in ISO timezone qualified date
+format (yyyy-mm-ddThh:mm:ss.uuuuuu+hhmm).  The DateTime string method returns
 the ISO format as the string form of a DateTime object.
 </para>
 </section>
@@ -354,11 +449,15 @@ the ISO format as the string form of a DateTime object.
 <![CDATA[
 >>-init--------------------------------------------------------><
 
->>-init(fullDate)---------------------------------------------><
+>>-init(fullDate--+---------+-)-------------------------------><
+                  +-,offset-+
 
->>-init(year,month,day-+------------------------------------------+----><
-                       +-,hours,minutes,seconds-+---------------+-+
-                                                +-,microseconds-+
+>>-init(year,month,day-+---------+--------------------------------+----><
+                       +-,offset-+
+
+>>-init(year,month,day,hours,minutes,seconds--+--------------------------------+-)-><
+                                              +-,-+--------------+-+---------+-+
+                                                  +-microseconds-+ +-,offset-+
 ]]>
 </programlisting>
 
@@ -367,13 +466,24 @@ the DateTime instance is set to the current date and time.  If the single
 <emphasis role="italic">fullDate</emphasis> argument is used, the DateTime
 argument is initialized to the date and time calculated by adding
 <emphasis role="italic">fullDate</emphasis> microseconds to 0001-01-01T00:00:00.000000.
-Otherwise, the DateTime instance is initialized to the <emphasis role="italic">year</emphasis>,
+If the
+<emphasis role="italic">year</emphasis>,
+<emphasis role="italic">month</emphasis>, <emphasis role="italic">day</emphasis>,
+form is used, the DateTime instance is initialized to 00:00:00.000000 on the
+indicated date. Otherwise, the DateTime instance is initialized to the
+<emphasis role="italic">year</emphasis>,
 <emphasis role="italic">month</emphasis>, <emphasis role="italic">day</emphasis>,
 <emphasis role="italic">hours</emphasis>, <emphasis role="italic">minutes</emphasis>,
 <emphasis role="italic">seconds</emphasis>, and <emphasis role="italic">microseconds</emphasis>
 components.  Each of these components must be a valid whole number within the acceptable range for the given
 component.  For example, <emphasis role="italic">year</emphasis> must be in the range 1-9999, while
 <emphasis role="italic">minutes</emphasis> must be in the range 0-59.
+</para>
+<para>
+If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
+in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
+number value. The default <emphasis role="italic">offset</emphasis> is offset of
+the location from UTC.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <programlisting>
@@ -1019,6 +1129,26 @@ result in microseconds being subtracted from the DateTime value.
 </para>
 </section>
 
+<section id="mthDateTimeUTCIsoDate"><title>utcIsoDate</title>
+<indexterm><primary>utcIsoDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>utcIsoDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-utcIsoDate-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a String formatted into a fully qualified ISO date format.  If the
+timezone offiset is 0, the format is yyyy-dd-mmThh:mm:ss.uuuuuuZ.  If the offset
+is positive, the date is formatted as yyyy-dd-mmThh:mm:ss.uuuuuu+hhmm.  If the
+offset is negative, the result will be in the format
+yyyy-dd-mmThh:mm:ss.uuuuuu-hhmm.
+</para>
+</section>
+
 <section id="mthDateTimeBaseDate"><title>baseDate</title>
 <indexterm><primary>baseDate method</primary>
 <secondary>of DateTime class</secondary></indexterm>
@@ -1329,6 +1459,46 @@ since 00:00:00.000000 on 1 January 0001, in the format:
 </para>
 </section>
 
+<section id="mthDateTimeUtcDate"><title>utcDate</title>
+<indexterm><primary>utcDate method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>utcDate method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-utcDate-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the date converted to UTC time as the number of microseconds
+since 00:00:00.000000 on 1 January 0001, in the format:
+<emphasis role="italic">dddddddddddddddddd</emphasis> (no leading zeros or blanks).
+</para>
+</section>
+
+<section id="mthDateTimeToTimeZone"><title>toTimeZone</title>
+<indexterm><primary>toTimeZone method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>toTimeZone method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-toTimeZone(-+--------+-)------------------------------><
+               +-offset-+
+]]>
+</programlisting>
+
+<para>Returns a new DateTime object representing the time for the timezone
+indicated by <emphasis role="italic">offset</emphasis>.
+If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
+in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
+number value. The default <emphasis role="italic">offset</emphasis> 0, which
+creates a DateTime object for UTC.
+</para>
+</section>
+
 <section id="mthDateTimeTicks"><title>ticks</title>
 <indexterm><primary>ticks method</primary>
 <secondary>of DateTime class</secondary></indexterm>
@@ -1345,6 +1515,24 @@ since 00:00:00.000000 on 1 January 0001, in the format:
 since 00:00:00.000000 on 1 January 1970, in the format:
 <emphasis role="italic">dddddddddddd</emphasis> (no leading zeros or blanks).
 Times prior to 1 January 1970 are returned as a negative value.
+</para>
+</section>
+
+<section id="mthDateTimeOffset"><title>offset</title>
+<indexterm><primary>offset method</primary>
+<secondary>of DateTime class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>offset method</secondary>
+<tertiary>of DateTime class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-offset-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the timezone for the DateTime instance as the offset in minutes
+from UTC.  Timezones east of UTC will return a positive offset.  Timezones west
+of UTC will return a negative offset.
 </para>
 </section>
 
