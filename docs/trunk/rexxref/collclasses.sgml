@@ -4558,9 +4558,15 @@ in an unspecified order (the program should not rely on any order).</para>
 ]]>
 </programlisting>
 
-<para>Returns an array of all indices contained in the Relation. If the Relation
-contains multiple indices of the same value the duplicates will be eliminated
-from the returned array.</para>
+<para>Returns an array of all indexes contained in the Relation. The returned
+array will have one index for every item stored in the relation, including
+duplicates.  Duplicate indexes can be removed easily by converted the array to a
+set.
+</para>
+<programlisting>
+   -- retrieve the unique index items
+   indexes = .set~new~union(relation~allindexes)
+</programlisting>
 </section>
 
 <section id="mthRelationAllItems"><title>allItems</title>
