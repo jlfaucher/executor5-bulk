@@ -801,6 +801,104 @@ RexxThreadContext *tc
 </section>
 </section>
 
+<section id="mthBufferData"><title>BufferData</title>
+<indexterm><primary>BufferData</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>BufferData</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>BufferData</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>BufferData</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>BufferData</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxBufferObject obj;
+POINTER str;
+
+>>--str = context->BufferData(obj);--------------------------------------------><
+]]>
+</programlisting>
+<para>Returns a pointer the Rexx object's data buffer.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The source Rexx object.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>The C pointer to the buffer.</para>
+</section>
+</section>
+
+<section id="mthBufferLength"><title>BufferLength</title>
+<indexterm><primary>BufferLength</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>BufferLength</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>BufferLength</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>BufferLength</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>BufferLength</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxBufferObject obj;
+size_t sz;
+
+>>--sz = context->BufferLength(obj);-------------------------------------><
+]]>
+</programlisting>
+<para>Return the length of the data buffer of a Rexx object. 
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The source Rexx object.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>The string length of the Rexx object.</para>
+</section>
+</section>
+
 <section id="mthBufferStringData"><title>BufferStringData</title>
 <indexterm><primary>BufferStringData</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
@@ -2593,6 +2691,55 @@ logical_t flag;
 </section>
 </section>
 
+<section id="mthIsBuffer"><title>IsBuffer</title>
+<indexterm><primary>IsBuffer</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>IsBuffer</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>IsBuffer</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>IsBuffer</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>IsBuffer</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+logical_t flag;
+
+>>--flag = context->IsBuffer(obj);--------------------------------------><
+]]>
+</programlisting>
+<para>Tests an object to see if it is a RexxBufferObject.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>A pointer to the Rexx object to be tested.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>1 = is a RexxBufferObject, 0 = not a RexxBufferObject.</para>
+</section>
+</section>
+
 <section id="mthIsDirectory"><title>IsDirectory</title>
 <indexterm><primary>IsDirectory</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
@@ -2794,6 +2941,55 @@ logical_t flag;
 </section>
 <section><title>Returns</title>
 <para>1 = is a member, 0 = not a member.</para>
+</section>
+</section>
+
+<section id="mthIsPointer"><title>IsPointer</title>
+<indexterm><primary>IsPointer</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>IsPointer</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>IsPointer</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>IsRPointer</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>IsPointer</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxObjectPtr obj;
+logical_t flag;
+
+>>--flag = context->IsPointer(obj);-------------------------------------><
+]]>
+</programlisting>
+<para>Tests an object to see if is a RexxPointerObject.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>A pointer to the Rexx object to be tested.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>1 = is a RexxPointerObject, 0 = not a RexxPointerObject.</para>
 </section>
 </section>
 
@@ -3202,6 +3398,55 @@ size_t len;
 </section>
 </section>
 
+<section id="mthNewBuffer"><title>NewBuffer</title>
+<indexterm><primary>NewBuffer</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>NewBuffer</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>NewBuffer</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>NewBuffer</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>NewBuffer</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxBufferObject obj;
+size_t len;
+
+>>--obj = context->NewBuffer(len);---------------------------------------><
+]]>
+</programlisting>
+<para>Create a Rexx buffer object with a specific buffer size.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">len</emphasis></term>
+    <listitem><para>The maximum length of the buffer.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A pointer to the new Rexx object.</para>
+</section>
+</section>
+
 <section id="mthNewBufferString"><title>NewBufferString</title>
 <indexterm><primary>NewBufferString</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
@@ -3348,6 +3593,55 @@ size_t sz;
 </section>
 <section><title>Returns</title>
 <para>A pointer to the new RexxMethodObject.</para>
+</section>
+</section>
+
+<section id="mthNewPointer"><title>NewPointer</title>
+<indexterm><primary>NewPointer</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>NewPointer</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>NewPointer</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>NewPointer</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>NewPointer</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxPointerObject obj;
+POINTER p;
+
+>>--obj = context->NewPointer(p);----------------------------------------><
+]]>
+</programlisting>
+<para>Create a new RexxPointerObject from a C pointer.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">p</emphasis></term>
+    <listitem><para>The source C pointer.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A new RexxPointerObject.</para>
 </section>
 </section>
 
@@ -4186,6 +4480,55 @@ logical_t flag;
 </section>
 <section><title>Returns</title>
 <para>0 = success, 1 = conversion error.</para>
+</section>
+</section>
+
+<section id="mthPointerValue"><title>PointerValue</title>
+<indexterm><primary>NPointerValue</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>PointerValue</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>PointerValue</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>PointerValue</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>PointerValue</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+RexxPointerObject obj;
+POINTER p;
+
+>>--p = context->PointerValue(obj);--------------------------------------><
+]]>
+</programlisting>
+<para>Return the C pointer value from a RexxPointerObject.
+</para>
+<section><title>Arguments</title>
+<variablelist>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The source RexxPointerObject.</para></listitem>
+    </varlistentry>
+</variablelist>
+</section>
+<section><title>Returns</title>
+<para>A C pointer value.</para>
 </section>
 </section>
 
