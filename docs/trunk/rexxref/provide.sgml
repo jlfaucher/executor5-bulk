@@ -534,14 +534,59 @@ results.</para>
 <indexterm><primary>public method</primary></indexterm>
 <indexterm><primary>private method</primary></indexterm>
 <para>A method can be public or private.
-Any object can send a message that runs a <emphasis>public</emphasis> method.
-A <emphasis>private</emphasis> method runs only when an object sends a
-message to itself (that is, using the variable SELF as the message receiver).
-Private methods include methods at different scopes within the same object.
-(Superclasses can make private methods available to their subclasses while
-hiding those methods from other objects.) A private method is like an internal
-subroutine. It provides common functions to the object methods but is hidden
-from other programs.</para>
+Any object can send a message that runs a public method.
+A private method can only be invoked from specific calling contexts.  These contexts are:</para>
+<orderedlist>
+<listitem><para>From within a method owned by the same class as the target.  This is frequently
+the same object, accessed via the special variable SELF.  Private methods of an object can also
+be accessed from other instances of the same class (or subclass instances).
+</para></listitem>
+<listitem><para>From within a method defined at the same class scope as the method.  For example:</para>
+<programlisting>
+<![CDATA[
+::class Savings
+::method newCheckingAccount CLASS
+  instance = .self~new
+  instance~makeChecking
+  return instance
+
+::method makeChecking private
+  expose checking
+  checking = .true
+]]>
+</programlisting>
+<para>The newCheckingAccount CLASS method is able to invoke the makeChecking method because
+the scope of the makeChecking method is .Savings.
+</para></listitem>
+<listitem><para>From within an instance (or subclass instance) of a class to a private class
+method of its class.  For example:</para>
+<programlisting>
+<![CDATA[
+::class Savings
+::method init class
+  expose counter
+  counter = 0
+
+::method allocateAccountNumber private class
+  expose counter
+  counter = counter + 1
+  return counter
+
+::method init
+  expose accountNumber
+  accountNumber = self~class~allocateAccountNumber
+]]>
+</programlisting>
+<para>The instance init method of the Savings class is able to invoke the allocateAccountNumber private
+method of the .Savings class object because it is owned by an instance of the .Savings class.</para>
+</listitem>
+</orderedlist>
+<para>Private methods include methods at different scopes within the same object.
+This allows superclasses to make methods available to their subclasses while
+hiding those methods from other objects. A private method is like an internal
+subroutine. It shields the internal information of an object to outsiders, but allowing
+objects to share information with each other and their defining classes.
+</para>
 </section>
 
 <section id="creo"><title>Initialization</title>
