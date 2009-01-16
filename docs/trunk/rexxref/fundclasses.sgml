@@ -306,15 +306,16 @@ characters from '00'x to 'ff'x, inclusive.
 
 <para>Returns <computeroutput>1</computeroutput> (true) if the receiver object
 has a method named <emphasis role="italic">methodname</emphasis>
-(translated to uppercase) or if the target method is a private method.
+(translated to uppercase).
 Otherwise, it returns <computeroutput>0</computeroutput> (false). </para>
 
 <note><title>Note</title>
-<para>If you call the <emphasis role="italic">methodname</emphasis> method
-although it is private, you receive error 97
-<computeroutput>Object method not found</computeroutput> although
-<emphasis role="bold">hasMethod</emphasis>
-returns <computeroutput>1</computeroutput> (true).</para></note>
+<para>The hasMethod object will return true even if the target method is defined
+as private.  A private method has restricted access rules, so its possible to
+receive an unknown method error (error 97) even if hasMethod indicates the method exits.
+See <link linkend="public">Public versus Private Methods</link>
+for private method restrictions.
+</para></note>
 </section>
 
 <section id="mthObjectIdentityHash"><title>identityHash</title>
@@ -600,8 +601,10 @@ method object.</para>
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>The <emphasis role="bold">run</emphasis> method is a
-private method. See the <emphasis role="bold">setPrivate</emphasis> method
-in <link linkend="mthMethodSetPrivate">setPrivate</link>  for details.</para></listitem>
+private method.
+See <link linkend="public">Public versus Private Methods</link>
+for information private method restrictions.
+</para></listitem>
 <listitem><para>The RUN method is a protected method.</para></listitem>
 </orderedlist>
 </section>
@@ -651,8 +654,10 @@ attached to.</para>
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>The <emphasis role="bold">setMethod</emphasis>
-method is a private method. See the <emphasis role="bold">setPrivate</emphasis>
-method in <link linkend="mthMethodSetPrivate">setPrivate</link>  for details.</para>
+method is a private method.
+See the <emphasis role="bold">setPrivate</emphasis> method
+in <link linkend="mthMethodSetPrivate">setPrivate</link> for details.
+</para>
 </listitem>
 <listitem><para>The <emphasis role="bold">setMethod</emphasis>
 method is a protected method.</para></listitem>
@@ -780,8 +785,10 @@ no action is taken. </para>
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>The <emphasis role="bold">unsetMethod</emphasis>
-method is a private method. See the <emphasis role="bold">setPrivate</emphasis>
-method in <link linkend="mthMethodSetPrivate">setPrivate</link>  for details.</para>
+method is a private method.
+See the <emphasis role="bold">setPrivate</emphasis> method
+in <link linkend="mthMethodSetPrivate">setPrivate</link> for details.
+</para>
 </listitem>
 <listitem><para>The <emphasis role="bold">unsetMethod</emphasis>
 method is a protected method.</para></listitem>
@@ -5208,6 +5215,8 @@ string.</para>
 ]]>
 </programlisting>
 <para>Returns true ("1") if the method is a Private method.  Returns false ("0") for Public methods.
+See <link linkend="public">Public versus Private Methods</link>
+for details on private method restrictions.
 </para>
 </section>
 
@@ -5301,13 +5310,11 @@ the default guarded status. If the receiver is already guarded, a
 ]]>
 </programlisting>
 
-<para>Specifies that a method is a private method. Only
-a message that an object sends to itself can run a private method. If a method
-object does not receive a <emphasis role="bold">setPrivate</emphasis>
-message, the method is a public method.
-(Any object can send a message to run a public method. See
-<link linkend="pubpri">Public and Private Methods</link> for
-details.)</para>
+<para>Specifies that a method is a private method.
+By default, method objects are created as public methods.
+See <link linkend="public">Public versus Private Methods</link>
+for details on private method restrictions.
+</para>
 </section>
 
 <section id="mthMethodSetProtected"><title>setProtected</title>
