@@ -194,7 +194,7 @@ the handler can copy the data into the default RXSTRING and set the
 <emphasis role="italic">strlength</emphasis> field to the length returned.</para>
 <para>If the returned data is longer than 256 characters,
 a new RXSTRING can be allocated using
-<computeroutput>GlobalAlloc(size)</computeroutput>. The
+<computeroutput>RexxAllocateMemory(size)</computeroutput>. The
 <emphasis role="italic">strptr</emphasis> field must point to the new storage
 and the <emphasis role="italic">strlength</emphasis> must
 be set to the string length. The Rexx interpreter returns the newly allocated
@@ -1103,10 +1103,10 @@ an external function with a function call,
 within the Rexx expression.</para>
 <para>The Rexx interpreter provides a default 256-byte
 RXSTRING in <emphasis role="italic">Retstr</emphasis>. A longer RXSTRING
-can be allocated with <computeroutput>GlobalAlloc(size)</computeroutput>
+can be allocated with <computeroutput>RexxAllocateMemory(size)</computeroutput>
 if the returned string is longer than 256 bytes.
 The Rexx interpreter releases <emphasis role="italic">Retstr</emphasis> with
-<computeroutput>GlobalFree(ptr)</computeroutput> when
+<computeroutput>RexxFreeMemory(ptr)</computeroutput> when
 the external function completes.</para>
 </listitem></varlistentry>
 <varlistentry><term>Returns
@@ -2270,7 +2270,6 @@ variables.</para></listitem>
 <secondary>exit functions</secondary></indexterm>
 <para>Termination processing.</para>
 <para>The RXTER exit is called as the first step of Rexx program termination.</para>
-<para>The variable pool interface is fully enabled for this exit.</para></note>
 <variablelist>
 <varlistentry><term>RXTEREXT</term>
 <listitem><para>Termination exit.
@@ -2790,7 +2789,7 @@ typedef struct shvnode {
       RXSHV_MEMFL errors are possible for these operations. If an RXSHV_MEMFL
       condition occurs, memory is not allocated for that request block.
       The RexxVariablePool caller must release the storage with
-      <computeroutput>GlobalFree(ptr)</computeroutput>. </para>
+      <computeroutput>RexxFreeMemory(ptr)</computeroutput>. </para>
       <note>
       <para>The RexxVariablePool does not add a terminating null character
       to the variable name.</para></note>
@@ -3566,6 +3565,8 @@ request.</entry>
 </tgroup>
 </informaltable>
 </section>
+</section>
+
 
 <section id="rclearque"><title>RexxClearQueue</title>
 <indexterm><primary>application programming interfaces</primary>
