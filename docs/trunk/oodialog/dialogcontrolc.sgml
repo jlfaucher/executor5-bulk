@@ -309,8 +309,12 @@ listed in the following DialogControl Instance Methods table.
 <entry><link linkend="mthGetStyleRaw">GetStyleRaw</link></entry>
 </row>
 <row>
-<entry>GetTextSize</entry>
-<entry><link linkend="gettextsize">GetTextSize</link></entry>
+<entry>getTextSize <emphasis role="bold">(Deprecated)</emphasis></entry>
+<entry><link linkend="mthGetTextSize">getTextSize</link></entry>
+</row>
+<row>
+<entry>getTextSizeScreen</entry>
+<entry><link linkend="mthGetTextSizeScreen">getTextSizeScrenn</link></entry>
 </row>
 <row>
 <entry>Group</entry>
@@ -3754,58 +3758,123 @@ of the other arguments.</para>
 </variablelist>
 </section>
 
-<section id="gettextsize"><title>GetTextSize</title>
-<indexterm><primary>GetTextSize</primary></indexterm>
+<section id="mthGetTextSizeScreen"><title>getTextSizeScreen</title>
+<indexterm><primary>getTextSizeScreen</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~GetTextSize(--text--+------------------------------------->
-                                      +--,--fontname--+--------------------->
-                                                      +--,--fontsize--+----->
-
->--------------------+--)--------------------------------------------------><
->-----------------+--+
->--+-----------+--+
-   +--,--hwnd--+
-
-
+>>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
+                             +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
 ]]>
 </programlisting>
 
-<para>The GetTextSize method returns the width and height
-that the specified text requires in the font and size given.</para>
+<para>
+  Gets the size, width and height, in pixels, needed to display a string in a specific font. To calculate
+  the size in pixels use the <link linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>()
+  method.
+</para>
+<note><title><emphasis role="bold">Note</emphasis></title><para>
+  This method can only be used after the underlying Windows dialog has been created.  In general this
+  means in the <link linkend="mthInitDialog">initDialog</link>() method or later in the life cycle of the
+  dialog.  If this method is invoked prior to the creation of the underlying dialog, a syntax error is
+  rasised.
+</para></note>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>text</term>
-<listitem><para>The text for which the dimensions are to be returned.
-</para></listitem></varlistentry>
-<varlistentry><term>fontname</term>
-<listitem><para>The name of the font used in the device context (DC).
-</para></listitem></varlistentry>
-<varlistentry><term>fontsize</term>
-<listitem><para>The size of the font used in the device context (DC).
-</para></listitem></varlistentry>
-<varlistentry><term>hwnd</term>
-<listitem><para>The handle to the dialog or dialog control that is the owner of the
-device context (DC).
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>text</term>
+      <listitem>
+        <para>
+          The string whose size is desired.  If none of the optional arguments are specified then the
+          font in use by this object (dialog or dialog control object) is used to calculate the size.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>type</term>
+      <listitem>
+        <para>
+          Optional.  However, if any of the optional arguments are used this argument is required. It
+          signals what fontSrc is.  The allowed types are:
+          <variablelist>
+            <varlistentry><term>Indirect</term>
+            <listitem>
+              <para>
+                fontSrc is a font name and fontSize is the size of the font.  The calculation is done
+                indirectly by temporarily obtaining a logical font using these parameters.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DC</term>
+            <listitem>
+              <para>
+                fontSrc is a handle to a device context.  The correct font for the calculation must
+                already be selected into this device context.  fontSize is ignored.  See the <link
+                linkend="getdc">getDC</link>() and <link linkend="h000948">fontToDC</link>() methods for
+                information on obtaining a device context and selecting a font into it.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>Font</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+          Only the first letter of type is needed and case is not significant.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fontSrc</term>
+      <listitem>
+        <para>
+          Optional. The source of the font to use in calculating the size.  This argument object must
+          match the type specification. It can be either a string, (a font name,) a hand to a device
+          context, or a handle to a font.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fontSize</term>
+      <listitem>
+        <para>
+          Optional. The size of the font. This argument is always ignored unless the type argument is
+          Indirect. If type is Indirect and this argument is omitted then the defualt font size is used.
+          (Currently the default size is 8.)
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The size needed for the string is returned in a <link linkend="clsSize">Size</link> object.  The
+      size is specified in pixels.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example uses 2 static controls to display two strings.  The static controls are positioned so
+      that the second string immediately follows the first string.  The size calculated is based on the
+      font currently in use by the controls.  The calculation is correct no matter what font is in use by
+      the controls, even if the two controls use different fonts.  (This is a contrived example.  Note
+      for instance that there is no space character at the end of the first string or the beginning of
+      the second string.)
+      <programlisting>
+      <![CDATA[
+      stFont1 = self~getStaticControl(IDC_ST_FONT1)
+      stFont2 = self~getStaticControl(IDC_ST_FONT2)
+
+      size = stFont1~getTextSizeScreen("San Diego is great")
+      stFont1~setText("San Diego is great")
+      stFont1~setRect(1, 1, size~width, size~height)
+
+      nextX = 1 + size~width + 1
+      size = stFont2~getTextSizeScreen("and ooRexx is the best")
+      stFont2~setText("and ooRexx is the best")
+      stFont2~setRect(nextX, 1, size~width, size~height)
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The width and height of the text, in dialog units, separated by a blank.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example stores the space required by the specified text
-in the device context of MyButton, in cx and cy:
-<programlisting>
-<![CDATA[
-parse value MyButton~GetTextSize("This is the output!") with cx cy
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End WindowsExtensions::getTextSizeScreen() -->
 
 <section id="setfont"><title>SetFont</title>
 <indexterm><primary>SetFont</primary></indexterm>
