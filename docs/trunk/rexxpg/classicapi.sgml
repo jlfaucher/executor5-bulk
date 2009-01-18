@@ -3233,6 +3233,72 @@ a queue with the same name.</para>
 </section>
 </section>
 
+<section id="ropenque"><title>RexxOpenQueue</title>
+<indexterm><primary>application programming interfaces</primary>
+<secondary>queue interface</secondary>
+<tertiary>RexxOpenQueue</tertiary></indexterm>
+<indexterm><primary>RexxOpenQueue</primary></indexterm>
+<indexterm><primary>queue interface</primary>
+<secondary>RexxOpenQueue</secondary></indexterm>
+<para>RexxOpenQueue creates a new (empty) queue if a queue by the given
+name does not already exist.  In contrast to RexxCreateQueue, RexxOpenQueue will not
+create a differently named queue if the indicated queue name already exists.
+</para>
+<programlisting>
+retc = RexxOpenQueue(RequestedName, CreatedFlag);
+</programlisting>
+
+<section id="openqueueparm"><title>Parameters</title>
+<para></para>
+<variablelist>
+<varlistentry><term>RequestedName  (const char *) - input</term>
+<listitem><para>is the address of an ASCII queue name. If no queue of that name exists,
+a queue is created with the requested name.  and the CreatedFlag will be set to TRUE.
+If the name already exists, this
+will just return a succesful return code.
+The maximum length for a queue name is 1024 characters.</para>
+</listitem></varlistentry>
+<varlistentry><term>CreateFlag  (size_t *) - output</term>
+<listitem><para>indicates whether RexxOpenQueue created the indicated queue.  If zero
+on return, then the named queue already existed.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="openqueuerc"><title>Return Codes</title>
+<informaltable frame="all">
+<tgroup cols="3">
+<colspec colnum="1" colwidth="4*">
+<colspec colnum="2" colwidth="1*">
+<colspec colnum="3" colwidth="5*">
+<tbody>
+<row>
+<entry>RXQUEUE_OK</entry>
+<entry> 0</entry>
+<entry>The system queue function completed successfully.</entry>
+</row>
+<row>
+<entry>RXQUEUE_STORAGE</entry>
+<entry> 1</entry>
+<entry>The name buffer is not large enough for the queue name.</entry>
+</row>
+<row>
+<entry>RXQUEUE_BADQNAME</entry>
+<entry> 5</entry>
+<entry>The queue name is not valid, or you tried to create
+or delete a queue named SESSION.</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+
+<section id="openqueueremark"><title>Remarks</title>
+<para>Queue names must conform to the same syntax rules as Rexx variable names.
+Lowercase characters in queue names are translated to uppercase.</para>
+</section>
+</section>
+
 <section id="rdelque"><title>RexxDeleteQueue</title>
 <indexterm><primary>application programming interfaces</primary>
 <secondary>queue interface</secondary>
@@ -3289,6 +3355,56 @@ or delete a queue named SESSION.</entry>
 
 <section id="delqueueremark"><title>Remarks</title>
 <para>If a queue is busy (for example, wait is active), it is not deleted.</para>
+</section>
+</section>
+
+<section id="rqueexists"><title>RexxQueueExists</title>
+<indexterm><primary>application programming interfaces</primary>
+<secondary>queue interface</secondary>
+<tertiary>RexxQueryExists</tertiary></indexterm>
+<indexterm><primary>RexxQueueExists</primary></indexterm>
+<indexterm><primary>queue interface</primary>
+<secondary>RexxQueueExists</secondary></indexterm>
+<para>RexxQueueExists tests if name queue exists.</para>
+<programlisting>
+retc = RexxQueueExists(QueueName);
+</programlisting>
+
+<section id="queueexistsparm"><title>Parameters</title>
+<para></para>
+<variablelist>
+<varlistentry><term>QueueName (const char *) - input</term>
+<listitem><para>is the address of the ASCII name of the queue to be queried.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="queueexistsrc"><title>Return Codes</title>
+<informaltable frame="all">
+<tgroup cols="3">
+<colspec colnum="1" colwidth="4*">
+<colspec colnum="2" colwidth="1*">
+<colspec colnum="3" colwidth="5*">
+<tbody>
+<row>
+<entry>RXQUEUE_OK</entry>
+<entry> 0</entry>
+<entry>The system queue function completed successfully.</entry>
+</row>
+<row>
+<entry>RXQUEUE_BADQNAME</entry>
+<entry> 5</entry>
+<entry>The queue name is not valid, or you tried to create
+or delete a queue named SESSION.</entry>
+</row>
+<row>
+<entry>RXQUEUE_NOTREG</entry>
+<entry> 9</entry>
+<entry>The queue does not exist.</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 </section>
 
@@ -3418,7 +3534,140 @@ request.</entry>
 </section>
 </section>
 
-<section id="rpulque"><title>RexxPullQueue</title>
+<section id="rpulfque"><title>RexxPullFromQueue</title>
+<indexterm><primary>application programming interfaces</primary>
+<secondary>queue interface</secondary>
+<tertiary>RexxPullFromQueue</tertiary></indexterm>
+<indexterm><primary>RexxPullFromQueue</primary></indexterm>
+<indexterm><primary>queue interface</primary>
+<secondary>RexxPullFromQueue</secondary></indexterm>
+<para>RexxPullFromQueue removes the top entry from the queue and returns it to the
+caller.
+</para>
+<programlisting>
+retc = RexxPullFromQueue(QueueName, DataBuf, DateTime, WaitFlag);
+</programlisting>
+
+<section id="pullfromqueueparm"><title>Parameters</title>
+<para></para>
+<variablelist>
+<varlistentry><term>QueueName (const char *) - input</term>
+<listitem><para>is the address of the ASCII name of the queue from which data is to
+be pulled.
+</para></listitem></varlistentry>
+<varlistentry><term>DataBuf  (PRXSTRING) - output</term>
+<listitem><para>is the address of an RXSTRING for the returned value.
+</para></listitem></varlistentry>
+<varlistentry><term>DateTime  (REXXDATETIME *) - output</term>
+<listitem><para>is the address of the entry's date and time stamp.  If the
+date and time stamp is not needed, DateTime may be NULL.
+</para></listitem></varlistentry>
+<varlistentry><term>WaitFlag  (size_t) - input</term>
+<listitem><para>is the wait flag. When WaitFlag is
+<computeroutput>RXQUEUE_NOWAIT</computeroutput> and the queue is empty,
+RXQUEUE_EMPTY is returned. Otherwise, when WaitFlag is
+<computeroutput>RXQUEUE_WAIT</computeroutput>, Rexx waits until
+a queue entry is available and returns that entry to the caller.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="pullfromqueuerc"><title>Return Codes</title>
+<informaltable frame="all">
+<tgroup cols="3">
+<colspec colnum="1" colwidth="4*">
+<colspec colnum="2" colwidth="1*">
+<colspec colnum="3" colwidth="5*">
+<tbody>
+<row>
+<entry>RXQUEUE_OK</entry>
+<entry> 0</entry>
+<entry>The system queue function completed successfully.</entry>
+</row>
+<row>
+<entry>RXQUEUE_BADQNAME</entry>
+<entry> 5</entry>
+<entry>The queue name is not valid, or you tried to create
+or delete a queue named SESSION.</entry>
+</row>
+<row>
+<entry>RXQUEUE_BADWAITFLAG</entry>
+<entry> 7</entry>
+<entry>The wait flag is not equal to RXQUEUE_WAIT or RXQUEUE_NOWAIT.</entry>
+</row>
+<row>
+<entry>RXQUEUE_EMPTY</entry>
+<entry> 8</entry>
+<entry>Attempted to pull the item off the queue but it was
+empty.</entry>
+</row>
+<row>
+<entry>RXQUEUE_NOTREG</entry>
+<entry> 9</entry>
+<entry>The queue does not exist.</entry>
+</row>
+<row>
+<entry>RXQUEUE_MEMFAIL</entry>
+<entry> 12</entry>
+<entry>There is insufficient memory available to complete the
+request.</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+
+<section id="rclearque"><title>RexxClearQueue</title>
+<indexterm><primary>application programming interfaces</primary>
+<secondary>queue interface</secondary>
+<tertiary>RexxClearQueue</tertiary></indexterm>
+<indexterm><primary>RexxClearQueue</primary></indexterm>
+<indexterm><primary>queue interface</primary>
+<secondary>RexxClearQueue</secondary></indexterm>
+<para>RexxClearQueue clears all entries from a named queue.</para>
+<programlisting>
+retc = RexxClearQueue(QueueName);
+</programlisting>
+
+<section id="clearqueueparm"><title>Parameters</title>
+<para></para>
+<variablelist>
+<varlistentry><term>QueueName (const char *) - input</term>
+<listitem><para>is the address of the ASCII name of the queue to be cleared.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="clearqueuerc"><title>Return Codes</title>
+<informaltable frame="all">
+<tgroup cols="3">
+<colspec colnum="1" colwidth="4*">
+<colspec colnum="2" colwidth="1*">
+<colspec colnum="3" colwidth="5*">
+<tbody>
+<row>
+<entry>RXQUEUE_OK</entry>
+<entry> 0</entry>
+<entry>The system queue function completed successfully.</entry>
+</row>
+<row>
+<entry>RXQUEUE_BADQNAME</entry>
+<entry> 5</entry>
+<entry>The queue name is not valid, or you tried to create
+or delete a queue named SESSION.</entry>
+</row>
+<row>
+<entry>RXQUEUE_NOTREG</entry>
+<entry> 9</entry>
+<entry>The queue does not exist.</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+</section>
+
+<section id="rpulque"><title>RexxPullQueue (Deprecated)</title>
 <indexterm><primary>application programming interfaces</primary>
 <secondary>queue interface</secondary>
 <tertiary>RexxPullQueue</tertiary></indexterm>
@@ -3426,7 +3675,9 @@ request.</entry>
 <indexterm><primary>queue interface</primary>
 <secondary>RexxPullQueue</secondary></indexterm>
 <para>RexxPullQueue removes the top entry from the queue and returns it to the
-caller.</para>
+caller.  RexxPullQueue is deprecated in favor of its more portable
+replacement <link linkend="rpulfque">RexxPullFromQueue</link>.
+</para>
 <programlisting>
 retc = RexxPullQueue(QueueName, DataBuf, DateTime, WaitFlag);
 </programlisting>
