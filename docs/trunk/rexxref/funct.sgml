@@ -226,17 +226,17 @@ the following two calls are not equivalent:</para>
 </programlisting>
 <para>Some steps of the function and subroutine search order are case sensitive, so
 some care may need to be exercised that the correct name form is used:</para>
-<unorderedlist>
+<itemizedlist>
 <listitem>
 <para>Internal routines.  Normally, labels are specified as a symbol followed by a ":".
 These labels have a name value that's all uppercase.  Since unquoted (symbol) names also have
 uppercase values, these will match easily.  It is also possible to use literal strings for
 label names.  If these labels contain lowercase characters, they will not be located using
-normal call mechanisms<para>
+normal call mechanisms</para>
 </listitem>
 <listitem>
 <para>Built-in functions.  The built-in function names are all uppercase, so using a mixed-case
-literal string built-in function name will fail to locate the function.<para>
+literal string built-in function name will fail to locate the function.</para>
 <programlisting>
     x = wordPos(needle, haystack)     -- calls "WORDPOS", which works
     x = "wordPos"(needle, haystack)   -- calls "wordPos", which will fail
@@ -245,9 +245,9 @@ literal string built-in function name will fail to locate the function.<para>
 <listitem>
 <para>External routines.  Some steps of the external function search order may be case sensitive,
 depending on the system.  This may occasionally require a function or subroutine name to be
-specified as a mixed case literal string to be located.</para?
+specified as a mixed case literal string to be located.</para>
 </listitem>
-</unorderedlist>
+</itemizedlist>
 <para>
 If the call or function invocation uses a literal string, then the search for internal
 label is bypassed.
@@ -350,7 +350,7 @@ The Windows file system is case insensitive, so files can be located regardless 
 the call is specified.  Unix-based systems have a case sensitive file system, so files much
 be exact case matches in order to be located.  For these systems, each time a file name
 probe is attempted, the name will be tried in the case specified and also as a lower case
-name.<para>
+name.</para>
 </section>
 <para>The full search pattern for functions and routines is shown in
 <link linkend="os2exf">Function and Routine Resolution and Execution</link>.</para>
