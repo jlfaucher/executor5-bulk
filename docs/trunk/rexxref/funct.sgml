@@ -3564,27 +3564,32 @@ RIGHT("12",5,"0")     ->    "00012"
 ]]>
 </programlisting>
 
-<para>Registers the function <emphasis role="italic">name</emphasis>,
+<para>Registers the function ,
 making it available to
-Rexx procedures. A return value 0 signifies successful registration.
-A return value 1 signifies that the function is already registered.</para>
+Rexx procedures.
+The <emphasis role="italic">module</emphasis> is the name of an
+external library where the native function is located.  In some
+environments, such as Unix-based systems, the library name is
+case sensitive.
+The <emphasis role="italic">procedure</emphasis> is the name of
+the exported prodcure inside of <emphasis role="italic">module</emphasis>.
+If procedure is not specified, it defaults to <emphasis role="italic">name</emphasis>.
+The <emphasis role="italic">procedure</emphasis> is generally case-sensitive.  RxFuncAdd
+will attempt to resolve the procedure address using the name as specified and if that
+attempt fails, will retry using an uppercased name.</para>
+<para>
+A return value 0 signifies successful registration and
+that the registered function has been located in the specified
+<emphasis role="italic">module</emphasis>.
+A return value 1 signifies that the function could not be resolved.</para>
 <indexterm><primary>RXFUNCADD function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>RXFUNCADD function</secondary></indexterm>
 <programlisting>
-rxfuncadd("SysCls","rexxutil", "SysCls") -> 0 /* if not already registered */
-                                         -> 1 /* if already registered */
+rxfuncadd("SysCls","rexxutil", "SysCls") -> 0 /* if SysCls can be located */
+                                         -> 1 /* if SysCls can not be located */
 </programlisting>
-
-<note><title>Note</title>
-<para>A return code of 0 signifies only that the function
-is successfully registered, but not that the function or module is actually
-available.</para></note>
-<note><title>Note</title>
-<para>The <emphasis role="italic">name</emphasis> and
-<emphasis role="italic">module</emphasis> arguments are case-sensitive
-in some environments like Linux</para></note>
 </section>
 
 
