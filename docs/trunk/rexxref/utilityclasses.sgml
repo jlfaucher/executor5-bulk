@@ -3821,6 +3821,33 @@ the length of the buffer or zero, the method does not modify the
 buffer content.</para>
 </section>
 
+<section id="mthMutableBufferDelstr"><title>delstr</title>
+<indexterm><primary>delstr method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>delstr method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-delstr(n---+---------+--)-------------------------------><
+              +-,length-+
+]]>
+</programlisting>
+
+<para>Deletes <emphasis>length</emphasis> characters from the buffer beginning
+at the <emphasis>n</emphasis>'th character. If length is omitted, or if length
+is greater than the number of characters from <emphasis>n</emphasis> to the end
+of the buffer, the method deletes the remaining buffer contents (including
+the <emphasis>n</emphasis>'th character). The length must be a positive integer
+or zero. The <emphasis>n</emphasis> must be a positive integer. If
+<emphasis>n</emphasis> is greater than
+the length of the buffer or zero, the method does not modify the
+buffer content.  The delstr() method is the same as the delete() method.  If
+is provided for polymorphism with the String class.
+</para>
+</section>
+
 
 <section id="mthMutableBufferDelWord"><title>delWord</title>
 <indexterm><primary>delWord method</primary>
@@ -3991,6 +4018,24 @@ is specified, it must be a non-negative whole number.  If <emphasis role="italic
 the default is to convert the remainder of the buffer.</para>
 </section>
 
+<section id="mthMutableBufferMakeArray"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-makeArray(-+-----------+-)----><
+              +-Separator-+
+]]>
+</programlisting>
+
+<para>This method returns an array of strings containing the substrings
+that were separated using the separator character. The
+default separator is the newline character.</para>
+</section>
+
 <section id="mthMutableBufferMatch"><title>match</title>
 <indexterm><primary>match method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
@@ -4149,26 +4194,6 @@ role="italic">n</emphasis> is greater than the length of the receiving string,
 padding is added before the <emphasis role="italic">new</emphasis> string. The
 default
 <emphasis role="italic">pad</emphasis> character is a blank.
-</para>
-</section>
-
-<section id="mthMutableBufferRequest"><title>request</title>
-<indexterm><primary>request method</primary>
-<secondary>of MutableBuffer class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>request method</secondary>
-<tertiary>of MutableBuffer class</tertiary></indexterm>
-
-<programlisting>
-<![CDATA[
->>-request(classid)--------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns an object of the <emphasis role="italic">classid</emphasis>
-class, or the Nil object if the request cannot be satisfied.  The MutableBuffer
-class supports converting to "STRING" and "ARRAY".  The "ARRAY" conversion returns
-the buffer contents as lines split at line end boundaries.
 </para>
 </section>
 
