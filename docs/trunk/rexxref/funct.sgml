@@ -210,13 +210,53 @@ searched in the following sequence:  internal routines, built-in functions,
 external functions.</para>
 <indexterm><primary>functions</primary>
 <secondary>forcing built-in or external reference</secondary></indexterm>
-<para>The name of internal routines must not be specified as a literal string,
-that is, in quotation marks, whereas the name of built-in functions or external
-routines must be specified in quotation marks. Be aware of this when you want
+<para>Function calls or subroutines may use a name that is specified as a symbol or a literal
+string.  For example, these calls are equivalent:</para>
+<programlisting>
+    call MyProcedure
+    call 'MYPROCEDURE'
+</programlisting>
+<para>Note that the name value when specified as a symbol is the symbol name translated
+to upper case.  Both of the calls above will search for a routine named "MYPROCEDURE".  When
+the name is specified as a literal string, then the literal string value is used as-is.  Thus
+the following two calls are not equivalent:</para>
+<programlisting>
+    call MyProcedure    -- calls "MYPROCEDURE"
+    call 'MyProcedure'  -- calls "MyProcedure"
+</programlisting>
+<para>Some steps of the function and subroutine search order are case sensitive, so
+some care may need to be exercised that the correct name form is used:</para>
+<unorderedlist>
+<listitem>
+<para>Internal routines.  Normally, labels are specified as a symbol followed by a ":".
+These labels have a name value that's all uppercase.  Since unquoted (symbol) names also have
+uppercase values, these will match easily.  It is also possible to use literal strings for
+label names.  If these labels contain lowercase characters, they will not be located using
+normal call mechanisms<para>
+</listitem>
+<listitem>
+<para>Built-in functions.  The built-in function names are all uppercase, so using a mixed-case
+literal string built-in function name will fail to locate the function.<para>
+<programlisting>
+    x = wordPos(needle, haystack)     -- calls "WORDPOS", which works
+    x = "wordPos"(needle, haystack)   -- calls "wordPos", which will fail
+</programlisting>
+</listitem>
+<listitem>
+<para>External routines.  Some steps of the external function search order may be case sensitive,
+depending on the system.  This may occasionally require a function or subroutine name to be
+specified as a mixed case literal string to be located.</para?
+</listitem>
+</unorderedlist>
+<para>
+If the call or function invocation uses a literal string, then the search for internal
+label is bypassed.
+This bypass mechanism allows you
 to extend the capabilities of an existing internal function, for example,
 and call it as a built-in function or external routine under the same name
-as the existing internal function. In this case, you must specify the name
-in quotation marks.</para>
+as the existing internal function.  To call the target built-in or external routine
+from inside your internal routine, you must use a literal string for the function name.
+</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
 /* This internal DATE function modifies the          */
@@ -224,13 +264,14 @@ in quotation marks.</para>
 date: procedure
   arg in
   if in="" then in="Standard"
+  -- This calls the DATE built-in function rather than recursively
+  -- calling the DATE: internal routine.  Note that the name needs to
+  -- be all uppercase because built-in functions have uppercase names.
   return "DATE"(in)
-  </programlisting>
-<para>Built-in functions have uppercase names, and so the name in the literal
-string must be in uppercase for the search to succeed. File names can be in
-uppercase, lowercase, or mixed case.  The operating system uses a
-case-insensitive search for files. When calling a Rexx subroutine, the case
-of the name does not matter.</para>
+</programlisting>
+<para>Since built-in functions have uppercase names the literal
+string must also be in uppercase for the search to succeed.
+</para>
 <para>External functions and subroutines have a system-defined search order.</para>
 <para>The search order for external functions is as follows: </para>
 <orderedlist>
@@ -241,34 +282,79 @@ with ::REQUIRES.</para></listitem>
 <listitem><para>Functions that have been loaded into the macrospace for preorder execution.
 (See the <citetitle pubwork="book">Open Object Rexx: Programming Guide</citetitle>
 for details.)</para></listitem>
-<listitem><para>Functions that are part of a function package. (See the
+<listitem><para>Functions that are part of a function package or library package. (See the
 <citetitle pubwork="book">Open Object Rexx: Programming Guide</citetitle>
 for details.)</para></listitem>
-<listitem><para>Rexx functions in the current directory, with the current
-extension.</para></listitem>
-<listitem><para>Rexx functions along environment PATH, with the current
-extension.</para></listitem>
-<listitem><para>Rexx functions in the current directory, with the default
-extension (.REX or .CMD).</para></listitem>
-<listitem><para>Rexx functions along environment PATH, with the default
-extension (.REX or .CMD).</para></listitem>
+<listitem><para>Rexx functions located in an external file.  See below for
+how these external files are located.
+</para></listitem>
 <listitem><para>Functions that have been loaded into the macrospace for
-postorder execution.</para></listitem></orderedlist>
+postorder execution.</para></listitem>
+</orderedlist>
+<section id="filesearch"><title>Locating External Rexx Files</title>
+<para>Rexx uses an extensive search procedure for locating program files.  The first
+element of the search procedure is the locations that will be checked for files.  The
+locations, in order of checking, are:</para>
+<orderedlist>
+<listitem><para>
+The same directory the program invoking the external routine is located.  If this is
+an initial program execution or the calling program was loaded from the macrospace, this
+location is skipped.  Checking in this directory allows related program files to be called
+without requiring the directory be added to the search path.
+</para></listitem>
+<listitem><para>
+The current filesystem directory.
+</para></listitem>
+<listitem><para>
+The current filesystem directory.
+</para></listitem>
+<listitem><para>
+Some applications using Rexx as a scripting language may define an extension
+path used to locate called programs.  If the Rexx program was invoked directly
+from the system command line, the no extension path is defined.
+</para></listitem>
+<listitem><para>
+Any directories specified via the REXX_PATH environment variable.
+</para></listitem>
+<listitem><para>
+Any directories specified via the PATH environment variable.
+</para></listitem>
+</orderedlist>
+<para>The second element of the search process is the file extension.  If the
+routine name contains contains at least one period, then this routine is extension
+qualified.  The search locations above will be checked for the target file unchanged, and
+no additional steps will be taken.  If the routine name is not extension qualified, then
+additional searches will be performed by adding file extensions to the name.  The following
+extensions may be used:<para>
+<orderedlist>
+<listitem><para>
+If the calling program has a file extension, then the interpreter will attempt to locate
+a file using the same extension as the caller.  All directory locations will be checked for
+a given extension before moving to the next potential extension.
+</para></listitem>
+<listitem><para>
+Some applications Rexx as a scripting language may define extensions that should be added to
+the search order.  For example, an editor might define a preferred extension that should be
+used for editor macros.  This extension would be searched next.
+</para></listitem>
+<listitem><para>
+The default system extensions (.REX).
+</para></listitem>
+<listitem><para>
+If the target file has not been located using any of the above extensions, the file name
+is tried without an added extension.
+</para></listitem>
+</orderedlist>
+<para>There are some system file system considerations involved when search for files.
+The Windows file system is case insensitive, so files can be located regardless of how
+the call is specified.  Unix-based systems have a case sensitive file system, so files much
+be exact case matches in order to be located.  For these systems, each time a file name
+probe is attempted, the name will be tried in the case specified and also as a lower case
+name.<para>
+</section>
 <para>The full search pattern for functions and routines is shown in
 <link linkend="os2exf">Function and Routine Resolution and Execution</link>.</para>
 </section>
-
-<section id="errors"><title>Errors during Execution</title>
-<indexterm><primary>error</primary>
-<secondary>during execution of functions</secondary></indexterm>
-<para>If an external or built-in function detects an error, the language processor
-is informed, and a syntax error results.  Execution of the clause that included
-the function call is, therefore, ended. Similarly, if an external function
-fails to return data correctly, the language processor detects this and reports
-it as an error.</para>
-<para>If a syntax error occurs during the execution of an internal function,
-it can be trapped (using SIGNAL ON SYNTAX) and recovery might then be possible.
-If the error is not trapped, the program is ended.</para>
 
 <figure id="os2exf"><title>Function and Routine Resolution and Execution</title>
 <mediaobject>
@@ -278,6 +364,15 @@ If the error is not trapped, the program is ended.</para>
 </imageobject>
 </mediaobject>
 </figure>
+
+<section id="errors"><title>Errors during Execution</title>
+<indexterm><primary>error</primary>
+<secondary>during execution of functions</secondary></indexterm>
+<para>If an external or built-in function detects an error, the language processor
+is informed, and a syntax error results.
+Syntax errors can be trapped in the caller using SIGNAL ON SYNTAX and recovery
+might be possible.  If the error is not trapped, the program is ended.
+</para>
 </section>
 </section>
 
