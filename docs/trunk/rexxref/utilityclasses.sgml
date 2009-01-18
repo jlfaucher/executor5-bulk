@@ -5906,7 +5906,7 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <tertiary>of WeakReference class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-new-(object)  -------+--------------------------------------><
+>>-new-(object)------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -5928,6 +5928,164 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <para>This method returns the referenced object.  If the object has been garbage
 collected, then .nil is returned.
 </para>
+</section>
+</section>
+
+<section id="clsPointer"><title>The Pointer Class</title>
+<indexterm><primary>Pointer class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Pointer class</secondary></indexterm>
+<figure><title>The Pointer class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxPointerClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<para>A Pointer instance is a wrapper around a native pointer value.  This class
+is designed primarily for writing methods and functions in native code and can
+only be created using the native code application programming interfaces.  The Pointer
+class new method will raise an error if invoked.
+<note><title>Note</title>
+<para>The Pointer class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
+
+<section id="mthPointerNew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of Pointer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of Pointer class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-new---------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Creating Pointer object instances directly from Rexx code is not supported.
+The Pointer class new method will raise an error if invoked.
+</section>
+
+<section id="mthPointerOperators"><title>Operator Methods</title>
+<programlisting>
+<![CDATA[
+>>-comparison_operator(argument)-------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) or
+<computeroutput>0</computeroutput> (false), the result of performing
+a specified comparison operation.
+</para>
+<para>For the Pointer class, the argument object must be a pointer object instance and
+the wrappered pointer value must be the same.</para>
+<para>The comparison operators you can use in a message are: </para>
+<variablelist>
+<varlistentry><term>=, ==
+<indexterm><primary>= method</primary>
+<secondary>of Pointer class</secondary></indexterm>
+<indexterm><primary>== method</primary>
+<secondary>of Pointer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>=</secondary>
+<tertiary>of Pointer class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>==</secondary>
+<tertiary>of Pointer class</tertiary></indexterm>
+</term>
+<listitem><para>True if the wrappered pointer values are the same.
+</para></listitem></varlistentry>
+<varlistentry><term>\=, >&lt;, &lt;>, \==
+<indexterm><primary>\= method</primary>
+<secondary>of Pointer class</secondary></indexterm>
+<indexterm><primary>>&lt; method</primary>
+<secondary>of Pointer class</secondary></indexterm>
+<indexterm><primary>&lt;> method</primary>
+<secondary>of Pointer class</secondary></indexterm>
+<indexterm><primary>\== method</primary>
+<secondary>of Pointer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\=</secondary>
+<tertiary>of Pointer class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>>&lt;</secondary>
+<tertiary>of Pointer class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;></secondary>
+<tertiary>of Pointer class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\==</secondary>
+<tertiary>of Pointer class</tertiary></indexterm>
+</term>
+<listitem><para>True if the wrappered pointer values are not the same.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthPointerIsNull"><title>isNull</title>
+<indexterm><primary>isNull method</primary>
+<secondary>of Pointer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isNull method</secondary>
+<tertiary>of Pointer class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isNull-----------------------------------------------><
+]]>
+</programlisting>
+<para>Returns 1 (true) if the wrappered pointer value is a NULL pointer (0) value.
+Returns 0 (false) if the pointer value is non-zero.
+</para>
+</section>
+</section>
+
+<section id="clsBuffer"><title>The Buffer Class</title>
+<indexterm><primary>Buffer class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Buffer class</secondary></indexterm>
+<figure><title>The Buffer class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxBufferClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<para>A Buffer instance is a Rexx interpreter managed block of storage.  This class
+is designed primarily for writing methods and functions in native code and can
+only be created using the native code application programming interfaces.  The Buffer
+class new method will raise an error if invoked.
+<note><title>Note</title>
+<para>The Buffer also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
+
+<section id="mthBufferNew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of Buffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of Buffer class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-new---------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Creating Buffer object instances directly from Rexx code is not supported.
+The Buffer class new method will raise an error if invoked.
 </section>
 </section>
 
