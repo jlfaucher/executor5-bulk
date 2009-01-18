@@ -80,17 +80,18 @@ and execute Rexx routines directly from memory
 <para>The basic requirements for subcommand, function, and system exit handlers
 are: </para>
 <itemizedlist>
-<listitem><para>Rexx handlers must use the APIENTRY (_stdcall) linkage convention.
+<listitem><para>Rexx handlers must use the REXXENTRY linkage convention.
 Handler functions should be declared with the appropriate type definition
-from the Rexx.H include file. Using <computeroutput>C++</computeroutput>,
-the functions must be declared as <computeroutput>extern C</computeroutput>:
+from the rexx.h include file. Using <computeroutput>C++</computeroutput>,
+the functions must be declared as <computeroutput>extern "C"</computeroutput>:
 <itemizedlist>
 <listitem><para>RexxSubcomHandler</para></listitem>
 <listitem><para>RexxFunctionHandler</para></listitem>
 <listitem><para>RexxExitHandler</para></listitem></itemizedlist></para></listitem>
 <listitem><para>A Rexx handler must be packaged as either of the following:
 <itemizedlist>
-<listitem><para>An exported routine within a dynamic-link library (DLL)
+<listitem><para>An exported routine within a loadable library (dynamic-link library (DLL) on Windows,
+or shared library on Unix-based systems.).
 </para></listitem>
 <listitem><para>An entry point within an executable (EXE) module
 </para></listitem>
@@ -128,17 +129,29 @@ an RXSTRING:</para>
 <programlisting>
 <![CDATA[
 typedef struct {
-   ULONG           strlength;     /* length of string             */
-   PCH             strptr;        /* pointer to string            */
+   size_t          strlength;     /* length of string             */
+   char *          strptr;        /* pointer to string            */
 } RXSTRING;
 
 typedef RXSTRING *PRXSTRING;      /* pointer to an RXSTRING       */
 ]]>
 </programlisting>
+<para>Many programming interfaces use RXSTRINGs for input-only operations.
+These APIs use a constant version of the RXSTRING, the CONSTRXSTRING.</para>
+<programlisting>
+<![CDATA[
+typedef struct {
+   size_t          strlength;     /* length of string             */
+   const char *    strptr;        /* pointer to string            */
+} RXSTRING;
+
+typedef CONSTRXSTRING *PCONSTRXSTRING;      /* pointer to a CONSTRXSTRING       */
+]]>
+</programlisting>
 
 <para>Notes:</para>
 <orderedlist>
-<listitem><para>The Rexx.H include file contains a number of convenient macros
+<listitem><para>The rexx.h include file contains a number of convenient macros
 for setting and testing RXSTRING values.</para></listitem>
 <listitem><para>
 An RXSTRING can have a value (including the null string,
@@ -210,7 +223,7 @@ See <link linkend="looks">Running a Rexx Program</link>.</para>
 can call the Rexx interpreter to run a Rexx program. The interpreter is fully
 reentrant and supports Rexx procedures running on several threads within the
 same process.</para>
-<para>A C-language prototype for calling Rexx is in the Rexx.H include file.</para>
+<para>A C-language prototype for calling Rexx is in the rexx.h include file.</para>
 </section>
 
 <section id="rexxstartfu"><title>The RexxStart Function</title>
@@ -227,7 +240,7 @@ retc = RexxStart(ArgCount, ArgList, ProgramName, Instore, EnvName,
 <section id="rexxstartparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>ArgCount (LONG) - input</term>
+<varlistentry><term>ArgCount (size_t) - input</term>
 <listitem><para>is the number of elements in the
 <emphasis role="italic">ArgList</emphasis> array. This is the
 value that the <emphasis role="italic">ARG()</emphasis> built-in function in
@@ -235,18 +248,19 @@ the Rexx program returns. <emphasis role="italic">ArgCount</emphasis>
 includes RXSTRINGs that represent omitted arguments. Omitted
 arguments are empty RXSTRINGs (<emphasis role="italic">strptr</emphasis>
 is null).</para></listitem></varlistentry>
-<varlistentry><term>ArgList (PRXSTRING) - input</term>
-<listitem><para>is an array of RXSTRING structures that are the Rexx program arguments.
+<varlistentry><term>ArgList (PCONSTRXSTRING) - input</term>
+<listitem><para>is an array of CONSTRXSTRING structures that are the Rexx program arguments.
 </para></listitem></varlistentry>
-<varlistentry><term>ProgramName (PSZ) - input</term>
+<varlistentry><term>ProgramName (const char *) - input</term>
 <listitem><para>is the address of the ASCII name of the Rexx procedure. If
 <emphasis role="italic">Instore</emphasis> is null,
 <emphasis role="italic">ProgramName</emphasis> must contain at least the file name of
 the Rexx procedure. You can also provide an extension, drive, and path.
 If you do not specify a file extension, the
-default is .CMD. A Rexx program can use any extension. If you do not
+default is .REX.  A Rexx program can use any extension. If you do not
 provide the path and the drive, the Rexx interpreter uses the usual file search
-(current directory, then environment path).</para>
+order to locate the file.
+</para>
 <para>If <emphasis role="italic">Instore</emphasis> is not null,
 <emphasis role="italic">ProgramName</emphasis> is the name used in the
 PARSE SOURCE instruction. If <emphasis role="italic">Instore</emphasis>
@@ -302,7 +316,7 @@ an output parameter.</para>
 <para>If the procedure is executed from disk, the
 <emphasis role="italic">Instore pointer</emphasis> must be null.
 If the first argument string in <emphasis role="italic">Arglist</emphasis>
-contains the string //T and the <emphasis role="italic">CallType</emphasis>
+is exactly the string "//T" and the <emphasis role="italic">CallType</emphasis>
 is RXCOMMAND, the interpreter performs a syntax check on the procedure source,
 but does not execute it and does not store any images.</para>
 <para>The program calling
@@ -315,7 +329,7 @@ program, nor move a translated image to other systems or save it for later
 use. You can, however, use the translated image several times during a single
 application execution.</para>
 </listitem></varlistentry>
-<varlistentry><term>EnvName (PSZ) - input</term>
+<varlistentry><term>EnvName (const char *) - input</term>
 <listitem><para>is the address of the initial ADDRESS environment name. The ADDRESS
 environment is a subcommand handler registered using RexxRegisterSubcomExe
 or RexxRegisterSubcomDll. <emphasis role="italic">EnvName</emphasis> is used
@@ -324,7 +338,7 @@ as the initial setting for the Rexx ADDRESS instruction. </para>
 extension is used as the initial ADDRESS environment. The environment name
 cannot be longer than 250 characters.</para>
 </listitem></varlistentry>
-<varlistentry><term>CallType (LONG) - input</term>
+<varlistentry><term>CallType (int) - input</term>
 <listitem><para>is the type of the Rexx procedure execution. Allowed execution types
 are:
 <variablelist>
@@ -360,8 +374,8 @@ to be used. The RXSYSEXIT structures have the following form:</para>
 <programlisting>
 <![CDATA[
 typedef struct {
-   PSZ             sysexit_name;  /* name of exit handler        */
-   LONG            sysexit_code;  /* system exit function code   */
+   const char *    sysexit_name;  /* name of exit handler        */
+   int             sysexit_code;  /* system exit function code   */
 } RXSYSEXIT;
 ]]>
 </programlisting>
@@ -373,7 +387,7 @@ is a code identifying the handler exit type. See
 definitions. An RXENDLST entry identifies the system-exit list end.
 <emphasis role="italic">Exits</emphasis> must be null if exits are not used.</para>
 </listitem></varlistentry>
-<varlistentry><term>ReturnCode (PSHORT) - output</term>
+<varlistentry><term>ReturnCode (short *) - output</term>
 <listitem><para>is the integer form of the
 <emphasis role="italic">Result</emphasis> string. If the
 <emphasis role="italic">Result</emphasis> string is a whole number in the range
@@ -385,7 +399,7 @@ definitions. An RXENDLST entry identifies the system-exit list end.
 RETURN or EXIT instruction. A default RXSTRING can be provided for the returned
 result. If a default RXSTRING is not provided or the default is too small
 for the returned result, the Rexx interpreter allocates an RXSTRING using
-<computeroutput>GlobalAlloc(size)</computeroutput>. The caller of RexxStart
+<computeroutput>RexxAllocateMemory(size)</computeroutput>. The caller of RexxStart
 is responsible for releasing the RXSTRING storage with
 <computeroutput>RexxFreeMemory(ptr)</computeroutput>.</para>
 <para>The Rexx interpreter
@@ -407,8 +421,7 @@ does not add a terminating null to <emphasis role="italic">Result</emphasis>.</p
 </para></listitem></varlistentry>
 <varlistentry><term>positive</term>
 <listitem><para>A system return code that indicates problems finding or loading
-the interpreter. See the return codes for the Windows functions
-LoadLibrary and GetProcAddress for details.
+the interpreter.
 </para></listitem></varlistentry>
 </variablelist>
 <para>When a macrospace Rexx procedure (see
@@ -422,11 +435,11 @@ in the macrospace, the return code is -3 (&quot;Program is unreadable&quot;).</p
 <para></para>
 <programlisting>
 <![CDATA[
-LONG      return_code;                 /* interpreter return code    */
-RXSTRING  argv[1];                     /* program argument string    */
+int       return_code;                 /* interpreter return code    */
+CONSTRXSTRING  argv[1];                /* program argument string    */
 RXSTRING  retstr;                      /* program return value       */
-SHORT     rc;                          /* converted return code      */
-CHAR      return_buffer[250];          /* returned buffer            */
+short     rc;                          /* converted return code      */
+char      return_buffer[250];          /* returned buffer            */
 
                                        /* build the argument string  */
    MAKERXSTRING(argv[0], macro_argument,
@@ -446,10 +459,9 @@ CHAR      return_buffer[250];          /* returned buffer            */
 
                                        /* process return value       */
 ...
-   RexxWaitForTermination();
                                        /* need to return storage?    */
    if (RXSTRPTR(retval) != return_buffer)
-     GlobalFree(RXSTRPTR(retval));     /* release the RXSTRING       */
+     RexxFreeMemory(RXSTRPTR(retval)); /* release the RXSTRING       */
 ]]>
 </programlisting>
 <para>When RexxStart is executed within an external program (usually
@@ -523,10 +535,10 @@ command.</para>
 <para>  The following example is a sample subcommand handler definition. </para>
 <programlisting>
 <![CDATA[
-ULONG APIENTRY command_handler(
-  PRXSTRING Command,    /* Command string from Rexx            */
-  PUSHORT   Flags,      /* Returned Error/Failure flags        */
-  PRXSTRING Retstr);    /* Returned RC string                  */
+RexxReturnCode REXXENTRY command_handler(
+  PCONSTRXSTRING Command,     /* Command string from Rexx            */
+  unsigned short *Flags,      /* Returned Error/Failure flags        */
+  PRXSTRING Retstr);          /* Returned RC string                  */
 ]]>
 </programlisting>
 <para>where:</para>
@@ -582,7 +594,7 @@ character string return code that is assigned to the Rexx special variable
 RC when the subcommand handler returns to Rexx. The Rexx interpreter provides
 a default 256-byte RXSTRING in <emphasis role="italic">Retstr</emphasis>.
 A longer RXSTRING can be allocated with
-<computeroutput>GlobalAlloc(size)</computeroutput> if the return string is
+<computeroutput>RexxAllocateMemory(size)</computeroutput> if the return string is
 longer than the default RXSTRING. If the subcommand handler sets
 <emphasis role="italic">Retstr</emphasis> to an empty RXSTRING (a null
 <emphasis role="italic">strptr</emphasis>), Rexx assigns the string 0 to RC.
@@ -594,15 +606,15 @@ longer than the default RXSTRING. If the subcommand handler sets
 <secondary>subcommand handler example</secondary></indexterm>
 <programlisting>
 <![CDATA[
-ULONG APIENTRY Edit_Commands(
-  PRXSTRING Command,    /* Command string passed from the caller    */
-  PUSHORT   Flags,      /* pointer too short for return of flags    */
-  PRXSTRING Retstr)     /* pointer to RXSTRING for RC return        */
+RexxReturnCode REXXENTRY Edit_Commands(
+  PCONSTRXSTRING Command,     /* Command string passed from the caller    */
+  unsigned short *Flags,      /* pointer too short for return of flags    */
+  PRXSTRING Retstr)           /* pointer to RXSTRING for RC return        */
 {
-  LONG      command_id;                /* command to process         */
-  LONG      rc;                        /* return code                */
-  PSZ       scan_pointer;              /* current command scan       */
-  PSZ       target;                    /* general editor target      */
+  int         command_id;                /* command to process         */
+  int         rc;                        /* return code                */
+  const char *scan_pointer;              /* current command scan       */
+  const char *target;                    /* general editor target      */
 
   scan_pointer = Command->strptr;      /* point to the command       */
                                        /* resolve command            */
@@ -661,28 +673,30 @@ retc = RexxRegisterSubcomDll(EnvName, ModuleName, EntryPoint,
 <section id="rexxregistersubcomdllparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>EnvName (PSZ) - input</term>
+<varlistentry><term>EnvName (const char *) - input</term>
 <listitem><para>is the address of an ASCII subcommand handler name.
 </para></listitem></varlistentry>
-<varlistentry><term>ModuleName (PSZ) - input</term>
+<varlistentry><term>ModuleName (const char *) - input</term>
 <listitem><para>is the address of an ASCII dynamic-link library
 name. <emphasis role="italic">ModuleName</emphasis> is the DLL file containing
 the subcommand handler routine.
 </para></listitem></varlistentry>
-<varlistentry><term>EntryPoint (PSZ) - input</term>
+<varlistentry><term>EntryPoint (const char *) - input</term>
 <listitem><para>is the address of an ASCII dynamic-link library
 procedure name. <emphasis role="italic">EntryPoint</emphasis> is the name of
 the exported routine within <emphasis role="italic">ModuleName</emphasis>
 that Rexx calls as a subcommand handler.
 </para></listitem></varlistentry>
-<varlistentry><term>UserArea (PUCHAR) - input</term>
-<listitem><para>is the address of an 8-byte area of user-defined information. The 8
-bytes <emphasis role="italic">UserArea</emphasis> addresses are saved with
+<varlistentry><term>UserArea (const char *) - input</term>
+<listitem><para>is the address of an area of user-defined information.
+The user-defined information is a buffer the size of two pointer values.
+The
+bytes <emphasis role="italic">UserArea</emphasis> buffer is saved with
 the subcommand handler registration. <emphasis role="italic">UserArea</emphasis>
 can be null if there is no user information to be saved. The
 RexxQuerySubcom function can retrieve the saved user information.
 </para></listitem></varlistentry>
-<varlistentry><term>DropAuth (ULONG) - input</term>
+<varlistentry><term>DropAuth (size_t) - input</term>
 <listitem><para>is the drop authority.
 <emphasis role="italic">DropAuth</emphasis> identifies the processes that
 can deregister the subcommand handler. The possible
@@ -726,7 +740,7 @@ address this subcommand, you must specify its library name.)</entry>
 <entry>RXSUBCOM_NOTREG</entry>
 <entry>30</entry>
 <entry>Registration was unsuccessful due to duplicate handler
-and dynalink names (RexxRegisterSubcomExe or RexxRegisterSubcomDll); the subroutine
+and module names (RexxRegisterSubcomExe or RexxRegisterSubcomDll); the subroutine
 environment is not registered (other Rexx subcommand functions).</entry>
 </row>
 <row>
@@ -738,11 +752,6 @@ request.</entry>
 </tbody>
 </tgroup>
 </informaltable>
-</section>
-
-<section id="rxsubcomremark"><title>Remarks</title>
-<para><emphasis role="italic">EntryPoint</emphasis> can only be a 32-bit
-routine.</para>
 </section>
 </section>
 
@@ -762,20 +771,21 @@ retc = RexxRegisterSubcomExe(EnvName, EntryPoint, UserArea);
 <section id="rxregsubcomparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>EnvName (PSZ) - input</term>
+<varlistentry><term>EnvName (const char *) - input</term>
 <listitem><para>is the address of an ASCII subcommand handler name.
 </para></listitem></varlistentry>
-<varlistentry><term>EntryPoint (PFN) - input</term>
+<varlistentry><term>EntryPoint (REXXPFN) - input</term>
 <listitem><para>is the address of the subcommand handler entry point within the
 application executable code.
 </para></listitem></varlistentry>
-<varlistentry><term>UserArea (PUCHAR) - input</term>
-<listitem><para>is the address of an 8-byte area of user-defined information. The 8
-bytes <emphasis role="italic">UserArea</emphasis> addresses are saved with
-the subcommand handler registration.
-<emphasis role="italic">UserArea</emphasis> can be null if there is no user
-information to be saved. The RexxQuerySubcom function can retrieve the user
-information.
+<varlistentry><term>UserArea (const char *) - input</term>
+<listitem><para>is the address of an area of user-defined information.
+The user-defined information is a buffer the size of two pointer values.
+The
+bytes <emphasis role="italic">UserArea</emphasis> buffer is saved with
+the subcommand handler registration. <emphasis role="italic">UserArea</emphasis>
+can be null if there is no user information to be saved. The
+RexxQuerySubcom function can retrieve the saved user information.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -804,7 +814,7 @@ address this subcommand, you must specify its library name.)</entry>
 <entry>RXSUBCOM_NOTREG</entry>
 <entry>30</entry>
 <entry>Registration was unsuccessful due to duplicate handler
-and dynalink names (RexxRegisterSubcomExe or RexxRegisterSubcomDll); the subroutine
+and library names (RexxRegisterSubcomExe or RexxRegisterSubcomDll); the subroutine
 environment is not registered (other Rexx subcommand functions).</entry>
 </row>
 <row>
@@ -872,10 +882,10 @@ retc = RexxDeregisterSubcom(EnvName, ModuleName);
 <section id="rxderegsubcomparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>EnvName (PSZ) - input</term>
+<varlistentry><term>EnvName (const char *) - input</term>
 <listitem><para>is the address of an ASCII subcommand handler name.
 </para></listitem></varlistentry>
-<varlistentry><term>ModuleName (PSZ) - input</term>
+<varlistentry><term>ModuleName (const char *) - input</term>
 <listitem><para>is the address of an ASCII dynamic-link library
 name. <emphasis role="italic">ModuleName</emphasis>
 is the name of the dynamic-link library containing the registered
@@ -939,10 +949,10 @@ retc = RexxQuerySubcom(EnvName, ModuleName, Flag, UserWord);
 <section id="rxquerysubcomparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>EnvName (PSZ) - input</term>
+<varlistentry><term>EnvName (const char *) - input</term>
 <listitem><para>is the address of an ASCII subcommand handler name.
 </para></listitem></varlistentry>
-<varlistentry><term>ModuleName (PSZ) - input</term>
+<varlistentry><term>ModuleName (const char *) - input</term>
 <listitem><para>is the address of an ASCII dynamic-link library
 name. <emphasis role="italic">ModuleName</emphasis> restricts the query to a
 subcommand handler within
@@ -953,7 +963,7 @@ subcommand handler list for a handler within the current process. If RexxQuerySu
 does not find a RexxRegisterSubcomExe handler, it searches the RexxRegisterSubcomDll
 subcommand handler list.
 </para></listitem></varlistentry>
-<varlistentry><term>Flag (PUSHORT) - output</term>
+<varlistentry><term>Flag (unsigned short *) - output</term>
 <listitem><para>is the subcommand handler registration flag.
 <emphasis role="italic">Flag</emphasis> is the
 <emphasis role="italic">EnvName</emphasis> subcommand handler registration
@@ -963,9 +973,10 @@ subcommand handler is currently
 registered. When RexxQuerySubcom returns RXSUBCOM_NOTREG, the
 <emphasis role="italic">EnvName</emphasis> subcommand handler is not registered.
 </para></listitem></varlistentry>
-<varlistentry><term>UserWord (PUCHAR) - output</term>
-<listitem><para>is the address of an 8-byte area that receives the user information
-saved with RexxRegisterSubcomExe or RexxRegisterSubcomDll.
+<varlistentry><term>UserWord (char *) - output</term>
+<listitem><para>is the address of an area that receives the user information
+saved with RexxRegisterSubcomExe or RexxRegisterSubcomDll.  The userarea must
+be large enough to store two pointer values.
 <emphasis role="italic">UserWord</emphasis> can
 be null if the saved user information is not required.
 </para></listitem></varlistentry>
@@ -999,14 +1010,14 @@ environment is not registered (other Rexx subcommand functions).</entry>
 <section id="rxquerysubcomxmp"><title>Example</title>
 <programlisting>
 <![CDATA[
-ULONG APIENTRY Edit_Commands(
-  PRXSTRING Command,    /* Command string passed from the caller    */
-  PUSHORT   Flags,      /* pointer too short for return of flags    */
-  PRXSTRING Retstr)     /* pointer to RXSTRING for RC return        */
+RexxReturnCode REXXENTRY Edit_Commands(
+  PCONSTRXSTRING  Command,    /* Command string passed from the caller    */
+  unsigned short *Flags,      /* pointer too short for return of flags    */
+  PRXSTRING       Retstr)     /* pointer to RXSTRING for RC return        */
 {
   WORKAREARECORD  *user_info[2];       /* saved user information     */
   WORKAREARECORD   global_workarea;    /* application data anchor    */
-  USHORT           query_flag;         /* flag for handler query     */
+  unsigned short   query_flag;         /* flag for handler query     */
 
 
   rc = RexxQuerySubcom("Editor",       /* retrieve application work  */
@@ -1030,7 +1041,7 @@ ULONG APIENTRY Edit_Commands(
 <para>There are two types of Rexx external functions: </para>
 <itemizedlist>
 <listitem><para>Routines written in Rexx</para></listitem>
-<listitem><para>Routines written in other Windows-supported languages
+<listitem><para>Routines written in other platform-supported native code (compiled) languages
 </para></listitem></itemizedlist>
 <para>External functions written in Rexx do not need to be registered. These
 functions are found by a disk search for a Rexx procedure file that matches
@@ -1038,8 +1049,8 @@ the function name.</para>
 
 <section id="xffmt"><title>Registering External Functions</title>
 <para>An external function can reside in the same module (executable
-or DLL)
-as an application, or in a separate dynamic-link library.
+or library)
+as an application, or in a separate lodable library library.
 RexxRegisterFunctionExe registers external functions within an application
 module. External functions registered with RexxRegisterFunctionExe are available
 only to Rexx programs called from the registering application.</para>
@@ -1054,12 +1065,12 @@ directly from a Rexx program using the Rexx RXFUNCADD built-in function.</para>
 <para>The following is a sample external function definition:</para>
 <programlisting>
 <![CDATA[
-ULONG APIENTRY SysLoadFuncs(
-     PSZ       Name,                   /* name of the function       */
-     LONG      Argc,                   /* number of arguments        */
-     RXSTRING  Argv[],                 /* list of argument strings   */
-     PSZ       Queuename,              /* current queue name         */
-     PRXSTRING Retstr)                 /* returned result string     */
+size_t REXXENTRY SysLoadFuncs(
+     const char *Name,                   /* name of the function       */
+     size_t      Argc,                   /* number of arguments        */
+     CONSTRXSTRING  Argv[],              /* list of argument strings   */
+     const char *Queuename,              /* current queue name         */
+     PRXSTRING   Retstr)                 /* returned result string     */
 ]]>
 </programlisting>
 <para>where:</para>
@@ -1075,7 +1086,7 @@ external function.
 <emphasis role="italic">Argc</emphasis> RXSTRINGs.
 </para></listitem></varlistentry>
 <varlistentry><term>Argv</term>
-<listitem><para>is an array of null-terminated RXSTRINGs for the function arguments.
+<listitem><para>is an array of null-terminated CONSTRXSTRINGs for the function arguments.
 </para></listitem></varlistentry>
 <varlistentry><term>Queuename</term>
 <listitem><para>is the name of the currently defined external Rexx data queue.
@@ -1132,12 +1143,12 @@ are available to all processes. The function names cannot be duplicated.</para>
 <secondary>simple function</secondary></indexterm>
 <programlisting>
 <![CDATA[
-ULONG APIENTRY SysMkDir(
-     PSZ       Name,                   /* name of the function       */
-     LONG      Argc,                   /* number of arguments        */
-     RXSTRING  Argv[],                 /* list of argument strings   */
-     PSZ       Queuename,              /* current queue name         */
-     PRXSTRING Retstr)                 /* returned result string     */
+size_t REXXENTRY SysMkDir(
+     const char *Name,                 /* name of the function       */
+     size_t      Argc,                 /* number of arguments        */
+     CONSTRXSTRING  Argv[],            /* list of argument strings   */
+     const char *Queuename,            /* current queue name         */
+     PRXSTRING   Retstr)               /* returned result string     */
 {
   ULONG  rc;                           /* Return code of function    */
 
@@ -1179,16 +1190,16 @@ retc = RexxRegisterFunctionDll(FuncName, ModuleName, EntryPoint);
 <section id="regfudllparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>FuncName (PSZ) - input</term>
+<varlistentry><term>FuncName (const char *) - input</term>
 <listitem><para>is the address of an external function name. The function name
 must not exceed 1024 characters.
 </para></listitem></varlistentry>
-<varlistentry><term>ModuleName (PSZ) - input</term>
-<listitem><para>is the address of an ASCII dynamic-link library
-name. <emphasis role="italic">ModuleName</emphasis> is the DLL file containing
+<varlistentry><term>ModuleName (const char *) - input</term>
+<listitem><para>is the address of an ASCII library
+name. <emphasis role="italic">ModuleName</emphasis> is the library file containing
 the external function routine.
 </para></listitem></varlistentry>
-<varlistentry><term>EntryPoint (PSZ) - input</term>
+<varlistentry><term>EntryPoint (const char *) - input</term>
 <listitem><para>is the address of an ASCII dynamic-link procedure
 name. <emphasis role="italic">EntryPoint</emphasis> is the name of the exported
 external function routine within <emphasis role="italic">ModuleName</emphasis>.
@@ -1224,11 +1235,9 @@ external function routine within <emphasis role="italic">ModuleName</emphasis>.
 </section>
 
 <section id="regfudllremark"><title>Remarks</title>
-<para><emphasis role="italic">EntryPoint</emphasis> can only be a 32-bit routine.</para>
-<para>External functions that reside in a dynamic-link library routine
+<para>On Windows, External functions that reside in a dynamic-link library routine
 must be exported. You can do this by specifying a module-definition
-(.DEF) file that lists the external functions in the EXPORT section. You
-must export these functions with both the mixed-case and the uppercase name.
+(.DEF) file that lists the external functions in the EXPORT section.
 For example:</para>
 <programlisting>
 <![CDATA[
@@ -1247,15 +1256,15 @@ Call SysLoadFuncs              /* call to load other functions    */
 ]]>
 </programlisting>
 <para>RXFUNCADD registers the external function SysLoadFuncs as routine
-SysLoadFuncs in the RexxUTIL dynamic-link library. SysLoadFuncs registers
-additional functions in RexxUTIL.DLL with RexxRegisterFunctionDll. See the
+SysLoadFuncs in the rexxutil library. SysLoadFuncs registers
+additional functions in rexxutil with RexxRegisterFunctionDll. See the
 SysLoadFuncs routine below for a function registration example.</para>
 </section>
 
 <section id="regfudllxmp"><title>Example</title>
 <programlisting>
 <![CDATA[
-static PSZ  RxFncTable[] =             /* function package list      */
+static const char *RxFncTable[] =      /* function package list      */
 {
       "SysCls",
       "SysCurpos",
@@ -1264,12 +1273,12 @@ static PSZ  RxFncTable[] =             /* function package list      */
 }
 
 
-ULONG SysLoadFuncs(
-     PSZ       Name,                   /* name of the function       */
-     LONG      Argc,                   /* number of arguments        */
-     RXSTRING  Argv[],                 /* list of argument strings   */
-     PSZ       Queuename,              /* current queue name         */
-     PRXSTRING Retstr)                 /* returned result string     */
+size_t REXXENTRY SysLoadFuncs(
+     const char *Name,                   /* name of the function       */
+     size_t      Argc,                   /* number of arguments        */
+     CONSTRXSTRING  Argv[],              /* list of argument strings   */
+     const char *Queuename,              /* current queue name         */
+     PRXSTRING   Retstr)                 /* returned result string     */
 {
   INT    entries;                      /* Number of entries          */
   INT    j;                            /* counter                    */
@@ -1280,7 +1289,7 @@ ULONG SysLoadFuncs(
     return 40;                         /* too many, raise an error   */
 
                                        /* get count of arguments     */
-  entries = sizeof(RxFncTable)/sizeof(PSZ);
+  entries = sizeof(RxFncTable)/sizeof(const char *);
                                        /* register each function in  */
   for (j = 0; j < entries; j++) {      /* the table                  */
     RexxRegisterFunctionDll(RxFncTable[j],
@@ -1311,11 +1320,11 @@ retc = RexxRegisterFunctionExe(FuncName, EntryPoint);
 <section id="regfuexeparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>FuncName (PSZ) - input</term>
+<varlistentry><term>FuncName (const char *) - input</term>
 <listitem><para>is the address of an external function name. The function name must
 not exceed 1024 characters.
 </para></listitem></varlistentry>
-<varlistentry><term>EntryPoint (PFN) - input</term>
+<varlistentry><term>EntryPoint (REXXPFN) - input</term>
 <listitem><para>is the address of the external function entry point within the executable
 application file. Functions registered with RexxRegisterFunctionExe are
 local to the current process. Rexx procedures in the same
@@ -1367,7 +1376,7 @@ retc = RexxDeregisterFunction(FuncName);
 <section id="deregfuparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>FuncName (PSZ) - input</term>
+<varlistentry><term>FuncName (const char *) - input</term>
 <listitem><para>is the address of an external function name to be deregistered.
 </para></listitem></varlistentry>
 </variablelist>
@@ -1411,7 +1420,7 @@ retc = RexxQueryFunction(FuncName);
 <section id="queryfuparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>FuncName (PSZ) - input</term>
+<varlistentry><term>FuncName (const char *) - input</term>
 <listitem><para>is the address of an external function name to be queried.
 </para></listitem></varlistentry>
 </variablelist>
@@ -1480,9 +1489,9 @@ within an executable application module.</para>
 definition: </para>
 <programlisting>
 <![CDATA[
-LONG APIENTRY Rexx_IO_exit(
-     LONG  ExitNumber,    /* code defining the exit function    */
-     LONG  Subfunction,   /* code defining the exit subfunction */
+int REXXENTRY Rexx_IO_exit(
+     int   ExitNumber,    /* code defining the exit function    */
+     int   Subfunction,   /* code defining the exit subfunction */
      PEXIT ParmBlock);    /* function-dependent control block   */
 ]]>
 </programlisting>
@@ -1547,7 +1556,7 @@ value can also contain null characters.</para>
 character result in the parameter list. The interpreter provides a default 256-byte
 RXSTRING for the result string. If the result is longer than 256 bytes,
 a new RXSTRING can be allocated using
-<computeroutput>GlobalAlloc(size)</computeroutput>. The Rexx interpreter
+<computeroutput>RexxAllocateMemory(size)</computeroutput>. The Rexx interpreter
 returns the RXSTRING storage for the exit handler.</para>
 </section>
 
@@ -1569,8 +1578,8 @@ exit code marks the exit list end.</para>
 <programlisting>
 <![CDATA[
 typedef struct {
-   PSZ             sysexit_name;       /* name of exit handler        */
-   LONG            sysexit_code;       /* system exit function code   */
+   const char *    sysexit_name;       /* name of exit handler        */
+   int             sysexit_code;       /* system exit function code   */
 } RXSYSEXIT;
 ]]>
 </programlisting>
@@ -1614,14 +1623,14 @@ RXSYSEXIT exit_list[2];                /* system exit list           */
 ...
 }
 
-LONG APIENTRY Init_exit(
-     LONG  ExitNumber,    /* code defining the exit function    */
-     LONG  Subfunction,   /* code defining the exit subfunction */
+int REXXENTRY Init_exit(
+     int   ExitNumber,    /* code defining the exit function    */
+     int   Subfunction,   /* code defining the exit subfunction */
      PEXIT ParmBlock)     /* function dependent control block   */
 {
   WORKAREARECORD  *user_info[2];       /* saved user information     */
   WORKAREARECORD   global_workarea;    /* application data anchor    */
-  USHORT           query_flag;         /* flag for handler query     */
+  unsigned short   query_flag;         /* flag for handler query     */
 
 ]]>
 </programlisting>
@@ -1767,9 +1776,6 @@ error messages.
 not process the subfunction</para></listitem>
 <listitem><para>The exit action</para></listitem>
 <listitem><para>The subfunction parameter list</para></listitem>
-<listitem><para>The state of the variable pool interface during the exit handler call
-(the variable pool interface is fully enabled for the RXCMD, RXFNC, RXINI,
-RXTER, RXHLT, RXCMD, RXFNC, RXSIO, and RXMSQ exit handler calls.</para></listitem>
 </itemizedlist>
 
 <section id="rxfnch"><title>RXFNC</title>
@@ -1782,9 +1788,6 @@ RXTER, RXHLT, RXCMD, RXFNC, RXSIO, and RXMSQ exit handler calls.</para></listite
 <para>  Processes
 calls to external functions. </para>
 
-<note>
-<para>The variable pool interface is
-fully enabled during calls to the RXFNC exit handler.</para></note>
 <para></para>
 <variablelist>
 <varlistentry><term>RXFNCCAL</term>
@@ -1811,12 +1814,12 @@ typedef struct {
                                        /* required for functions.     */
    } rxfnc_flags ;
 
-   PUCHAR            rxfnc_name;       /* Pointer to function name.   */
-   USHORT            rxfnc_namel;      /* Length of function name.    */
-   PUCHAR            rxfnc_que;        /* Current queue name.         */
-   USHORT            rxfnc_quel;       /* Length of queue name.       */
-   USHORT            rxfnc_argc;       /* Number of args in list.     */
-   PRXSTRING         rxfnc_argv;       /* Pointer to argument list.   */
+   const char *      rxfnc_name;       /* Pointer to function name.   */
+   unsigned short    rxfnc_namel;      /* Length of function name.    */
+   const char *      rxfnc_que;        /* Current queue name.         */
+   unsigned short    rxfnc_quel;       /* Length of queue name.       */
+   unsigned short    rxfnc_argc;       /* Number of args in list.     */
+   PCONSTRXSTRING    rxfnc_argv;       /* Pointer to argument list.   */
                                        /* List mimics argv list for   */
                                        /* function calls, an array of */
                                        /* RXSTRINGs.                  */
@@ -1867,10 +1870,6 @@ required.</para></listitem></itemizedlist>
 <indexterm><primary>SYSEXIT interface</primary>
 <secondary>host command exit</secondary></indexterm>
 <para>Processes calls to subcommand handlers. </para>
-<note>
-<para>The variable pool
-interface function is fully enabled during calls to the RXCMD exit handlers.
-</para></note>
 <para></para>
 <variablelist>
 <varlistentry><term>RXCMDHST</term>
@@ -1894,12 +1893,12 @@ typedef struct {
                                        /* Trap with CALL or SIGNAL on */
                                        /* ERROR.                      */
    } rxcmd_flags;
-   PUCHAR            rxcmd_address;    /* Pointer to address name.    */
-   USHORT            rxcmd_addressl;   /* Length of address name.     */
-   PUCHAR            rxcmd_dll;        /* dll name for command.       */
-   USHORT            rxcmd_dll_len;    /* Length of dll name.  0 ==>  */
+   const char *      rxcmd_address;    /* Pointer to address name.    */
+   unsigned short    rxcmd_addressl;   /* Length of address name.     */
+   const char *      rxcmd_dll;        /* dll name for command.       */
+   unsigned short    rxcmd_dll_len;    /* Length of dll name.  0 ==>  */
                                        /* executable file.            */
-   RXSTRING          rxcmd_command;    /* The command string.         */
+   CONSTRXSTRING     rxcmd_command;    /* The command string.         */
    RXSTRING          rxcmd_retc;       /* Pointer to return code      */
                                        /* buffer.  User allocated.    */
 } RXCMDHST_PARM;
@@ -1971,7 +1970,7 @@ typedef struct {
       unsigned rxfmlifo : 1;           /* Stack entry LIFO when TRUE, */
                                        /* FIFO when FALSE.            */
    } rxmsq_flags;
-   RXSTRING          rxmsq_value;      /* The entry to be pushed.     */
+   CONSTRXSTRING     rxmsq_value;      /* The entry to be pushed.     */
 } RXMSQPSH_PARM;
 ]]>
 </programlisting>
@@ -1994,7 +1993,7 @@ the exit handler provided.</para></listitem>
 <programlisting>
 <![CDATA[
 typedef struct {
-   ULONG             rxmsq_size;       /* Number of Lines in Queue    */
+   size_t            rxmsq_size;       /* Number of Lines in Queue    */
 } RXMSQSIZ_PARM;
 ]]>
 </programlisting>
@@ -2016,7 +2015,7 @@ data queue that the exit handler provided.</para></listitem>
 <programlisting>
 <![CDATA[
 typedef struct {
-   RXSTRING          rxmsq_name;       /* RXSTRING containing         */
+   CONSTRXSTRING     rxmsq_name;       /* RXSTRING containing         */
                                        /* queue name.                 */
 } RXMSQNAM_PARM;
 ]]>
@@ -2053,7 +2052,7 @@ the exit handler provided.</para></listitem>
 <programlisting>
 <![CDATA[
 typedef struct {
-   RXSTRING          rxsio_string;     /* String to display.          */
+   CONSTRXSTRING      rxsio_string;     /* String to display.          */
 } RXSIOSAY_PARM;
 ]]>
 </programlisting>
@@ -2077,7 +2076,7 @@ that the exit handler provided.</para></listitem>
 <programlisting>
 <![CDATA[
 typedef struct {
-   RXSTRING           rxsio_string;     /* Trace line to display.      */
+   CONSTRXSTRING       rxsio_string;     /* Trace line to display.      */
 } RXSIOTRC_PARM;
 ]]>
 </programlisting>
@@ -2100,7 +2099,7 @@ stream that the exit handler provided.</para></listitem>
 <programlisting>
 <![CDATA[
 typedef struct {
-   RXSTRING          rxsiotrd_retc;    /* RXSTRING for output.        */
+   RXSTRING          rxsiotrd_retc;    /* RXSTRING for input.         */
 } RXSIOTRD_PARM;
 ]]>
 </programlisting>
@@ -2121,7 +2120,7 @@ stream that the exit handler provided.</para></listitem>
 <programlisting>
 <![CDATA[
 typedef struct {
-   RXSTRING          rxsiodtr_retc;    /* RXSTRING for output.        */
+   RXSTRING          rxsiodtr_retc;    /* RXSTRING for input.         */
 } RXSIODTR_PARM;
 ]]>
 </programlisting>
@@ -2239,9 +2238,6 @@ off the interactive debug mode.</para></listitem></itemizedlist>
 <secondary>initialization exit</secondary></indexterm>
 <para>Initialization processing. This exit is called as the last step of Rexx
 program initialization. </para>
-<note>
-<para>The variable pool interface is fully
-enabled for this exit.</para></note>
 <variablelist>
 <varlistentry><term>RXINIEXT</term>
 <listitem><para>Initialization exit.
@@ -2274,7 +2270,6 @@ variables.</para></listitem>
 <secondary>exit functions</secondary></indexterm>
 <para>Termination processing.</para>
 <para>The RXTER exit is called as the first step of Rexx program termination.</para>
-<note>
 <para>The variable pool interface is fully enabled for this exit.</para></note>
 <variablelist>
 <varlistentry><term>RXTEREXT</term>
@@ -2313,28 +2308,30 @@ retc = RexxRegisterExitDll(ExitName, ModuleName, EntryPoint,
 <section id="regexitdllparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>ExitName (PSZ) - input</term>
+<varlistentry><term>ExitName (const char *) - input</term>
 <listitem><para>is the address of an ASCII exit handler name.
 </para></listitem></varlistentry>
-<varlistentry><term>ModuleName (PSZ) - input</term>
+<varlistentry><term>ModuleName (const char *) - input</term>
 <listitem><para>is the address of an ASCII dynamic-link library
 name. <emphasis role="italic">ModuleName</emphasis>
 is the DLL file containing the exit handler routine.
 </para></listitem></varlistentry>
-<varlistentry><term>EntryPoint (PSZ) - input</term>
+<varlistentry><term>EntryPoint (const char *) - input</term>
 <listitem><para>is the address of an ASCII dynamic-link procedure
 name. <emphasis role="italic">EntryPoint</emphasis> is the routine within
 <emphasis role="italic">ModuleName</emphasis> that Rexx
 calls as an exit handler.
 </para></listitem></varlistentry>
-<varlistentry><term>UserArea (PUCHAR) - input</term>
-<listitem><para>is the address of an 8-byte area of user-defined information. The 8
-bytes <emphasis role="italic">UserArea</emphasis> addresses are saved with the
-exit handler registration. <emphasis role="italic">UserArea</emphasis>
+<varlistentry><term>UserArea (const char *) - input</term>
+<listitem><para>is the address of an area of user-defined information.
+The user-defined information is a buffer the size of two pointer values.
+The
+bytes <emphasis role="italic">UserArea</emphasis> buffer is saved with
+the subcommand handler registration. <emphasis role="italic">UserArea</emphasis>
 can be null if there is no user information to be saved. The
 RexxQueryExit function can retrieve the saved user information.
 </para></listitem></varlistentry>
-<varlistentry><term>DropAuth (ULONG) - input</term>
+<varlistentry><term>DropAuth (size_t) - input</term>
 <listitem><para>is the drop authority.
 <emphasis role="italic">DropAuth</emphasis> identifies the processes that
 can deregister the exit handler. Possible
@@ -2385,11 +2382,6 @@ request.</entry>
 </tgroup>
 </informaltable>
 </section>
-
-<section id="regexitdllremark"><title>Remarks</title>
-<para><emphasis role="italic">EntryPoint</emphasis> can be only a 32-bit
-routine.</para>
-</section>
 </section>
 
 <section id="exreg2"><title>RexxRegisterExitExe</title>
@@ -2408,18 +2400,20 @@ retc = RexxRegisterExitExe(ExitName, EntryPoint, UserArea);
 <section id="regexitexeparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>ExitName (PSZ) - input</term>
+<varlistentry><term>ExitName (const char *) - input</term>
 <listitem><para>is the address of an ASCII exit handler name.
 </para></listitem></varlistentry>
-<varlistentry><term>EntryPoint (PFN) - input</term>
+<varlistentry><term>EntryPoint (REXXPFN) - input</term>
 <listitem><para>is the address of the exit handler entry point within the
 application executable file.
 </para></listitem></varlistentry>
-<varlistentry><term>UserArea (PUCHAR) - input</term>
-<listitem><para>is the address of an 8-byte area of user-defined information. The 8
-bytes <emphasis role="italic">UserArea</emphasis> addresses are saved with the
-exit handler registration. <emphasis role="italic">UserArea</emphasis> can be
-null if there is no user information to be saved. The
+<varlistentry><term>UserArea (const char *) - input</term>
+<listitem><para>is the address of an area of user-defined information.
+The user-defined information is a buffer the size of two pointer values.
+The
+bytes <emphasis role="italic">UserArea</emphasis> buffer is saved with
+the subcommand handler registration. <emphasis role="italic">UserArea</emphasis>
+can be null if there is no user information to be saved. The
 RexxQueryExit function can retrieve the user information.
 </para></listitem></varlistentry>
 </variablelist>
@@ -2505,14 +2499,14 @@ retc = RexxDeregisterExit(ExitName, ModuleName);
 <section id="deregexitparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>ExitName (PSZ) - input</term>
+<varlistentry><term>ExitName (const char *) - input</term>
 <listitem><para>is the address of an ASCII exit handler name.
 </para></listitem></varlistentry>
-<varlistentry><term>ModuleName (PSZ) - input</term>
+<varlistentry><term>ModuleName (const char *) - input</term>
 <listitem><para>is the address of an ASCII dynamic-link library
 name. <emphasis role="italic">ModuleName</emphasis> restricts the query to an
 exit handler within the <emphasis role="italic">ModuleName</emphasis>
-dynamic-link library. When <emphasis role="italic">ModuleName</emphasis>
+library. When <emphasis role="italic">ModuleName</emphasis>
 is null, RexxDeregisterExit searches the RexxRegisterExitExe exit handler
 list for a handler within the current process. If RexxDeregisterExit does
 not find a RexxRegisterExitExe handler, it searches the RexxRegisterExitDll
@@ -2572,10 +2566,10 @@ retc = RexxQueryExit(ExitName, ModuleName, Flag, UserWord);
 <section id="queryexitparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>ExitName (PSZ) - input</term>
+<varlistentry><term>ExitName (const char *) - input</term>
 <listitem><para>is the address of an ASCII exit handler name.
 </para></listitem></varlistentry>
-<varlistentry><term>ModuleName (PSZ) - input</term>
+<varlistentry><term>ModuleName (const char *) - input</term>
 <listitem><para>restricts the query to an exit handler within the
 <emphasis role="italic">ModuleName</emphasis> dynamic-link library. When
 <emphasis role="italic">ModuleName</emphasis> is null, RexxQueryExit
@@ -2583,16 +2577,17 @@ searches the RexxRegisterExitExe exit handler list for a handler within the
 current process. If RexxQueryExit does not find a RexxRegisterExitExe handler,
 it searches the RexxRegisterExitDll exit handler list.
 </para></listitem></varlistentry>
-<varlistentry><term>Flag (PUSHORT) - output</term>
+<varlistentry><term>Flag (unsigned short *) - output</term>
 <listitem><para>is the <emphasis role="italic">ExitName</emphasis> exit handler
 registration status. When RexxQueryExit returns RXEXIT_OK, the
 <emphasis role="italic">ExitName</emphasis> exit handler is currently registered.
 When RexxQueryExit returns RXEXIT_NOTREG, the
 <emphasis role="italic">ExitName</emphasis> exit handler is not registered.
 </para></listitem></varlistentry>
-<varlistentry><term>UserWord (PUCHAR) - output</term>
-<listitem><para>is the address of an 8-byte area to receive the user information saved
-with RexxRegisterExitExe or RexxRegisterExitDll.
+<varlistentry><term>UserWord (char *( - output</term>
+<listitem><para>is the address of an area to receive the user information saved
+with RexxRegisterExitExe or RexxRegisterExitDll.  The referenced area must be
+large enough to store two pointer values.
 <emphasis role="italic">UserWord</emphasis> can be
 null if the saved user information is not required.
 </para></listitem></varlistentry>
@@ -2627,14 +2622,14 @@ and DLL names
 <section id="queryrexitxmp"><title>Example</title>
 <programlisting>
 <![CDATA[
-ULONG APIENTRY Edit_IO_Exit(
-  PRXSTRING Command,    /* Command string passed from the caller    */
-  PUSHORT   Flags,      /* pointer too short for return of flags    */
-  PRXSTRING Retstr)     /* pointer to RXSTRING for RC return        */
+int REXXENTRY Edit_IO_Exit(
+  int       Code,       /* Major exit code                          */
+  int       SubCode     /* Minor exit code                          */
+  PEXIT     Parms)      /* Exit-specific parameters                 */
 {
   WORKAREARECORD  *user_info[2];       /* saved user information     */
   WORKAREARECORD   global_workarea;    /* application data anchor    */
-  USHORT           query_flag;         /* flag for handler query     */
+  unsigned short   query_flag;         /* flag for handler query     */
 
 
   rc = RexxQueryExit("IO_Exit",        /* retrieve application work  */
@@ -2696,15 +2691,11 @@ and RXSHV_DROP use the direct interface.</para>
 <section id="varpoolrestr"><title>RexxVariablePool Restrictions</title>
 <indexterm><primary>variable pool interface</primary>
 <secondary>restrictions</secondary></indexterm>
-<para>Only the main thread of an application
-<indexterm><primary>thread</primary></indexterm>
-can access the Rexx variable pool. Applications can create and use new threads,
-but only the original thread that called RexxStart can use RexxVariablePool.</para>
-<para>Executable Windows modules called from a Rexx procedure
-execute in a new process. Because the modules do not use the same process
-and thread as the Rexx procedure, the modules cannot use RexxVariablePool
-to access Rexx variables. You can use RexxVariablePool from subcommand handlers,
-external functions, and exit handlers.</para>
+<para>The RexxVariablePool interface is only available
+from subcommand handlers,
+external functions, and exit handlers.  The interface will access the
+variable context that initiated the call to the handler code and is only available
+if made from the same thread.</para>
 </section>
 
 <section id="varpooliffu"><title>RexxVariablePool Interface Function</title>
@@ -2746,12 +2737,12 @@ Each block is a separate variable access request.
 <![CDATA[
 typedef struct shvnode {
     struct shvnode    *shvnext;
-    RXSTRING           shvname;
+    CONSTRXSTRING      shvname;
     RXSTRING           shvvalue;
-    ULONG              shvnamelen;
-    ULONG              shvvaluelen;
-    UCHAR              shvcode;
-    UCHAR              shvret;
+    size_t             shvnamelen;
+    size_t             shvvaluelen;
+    unsigned char      shvcode;
+    unsigned char      shvret;
 }   SHVBLOCK;
 ]]>
 </programlisting>
@@ -2804,13 +2795,6 @@ typedef struct shvnode {
       <para>The RexxVariablePool does not add a terminating null character
       to the variable name.</para></note>
       </listitem></varlistentry>
-<!-- removed per Rick. This will not be available in the next version of ooRexx.
-
-      <varlistentry><term>RXSHV_EXIT</term>
-      <listitem><para><emphasis role="italic">shvname</emphasis> is unused
-      for the RXSHV_EXIT function.
-      </para></listitem></varlistentry>
--->
    </variablelist>
    </listitem></varlistentry>
    <varlistentry><term>shvvalue
@@ -2830,15 +2814,6 @@ typedef struct shvnode {
       <emphasis role="italic">shvvaluelen</emphasis> contains the length of the
       variable value.
       </para></listitem></varlistentry>
-<!-- Removed per Rick. This will not be available in the next version of ooRexx.
-
-      <varlistentry><term>RXSHV_EXIT</term>
-      <listitem><para><emphasis role="italic">shvvalue</emphasis> is the value
-      assigned to the exit handler return value.
-      <emphasis role="italic">shvvaluelen</emphasis> contains the length of the
-      variable value.
-      </para></listitem></varlistentry>
--->
       <varlistentry><term>RXSHV_FETCH</term>
       <term>RXSHV_SYFET
       <indexterm><primary>variable pool interface</primary>
@@ -2875,7 +2850,7 @@ typedef struct shvnode {
       cannot occur. However, RXSHV_MEMFL errors are possible for these
       operations. If an RXSHV_MEMFL condition occurs, memory is not allocated
       for that request block. The RexxVariablePool caller must release the
-      storage with <computeroutput>GlobalFree(ptr)</computeroutput>.</para>
+      storage with <computeroutput>RexxFreeMemory(ptr)</computeroutput>.</para>
       <note>
       <para>The RexxVariablePool does not add a terminating null character to
       the variable value.</para></note>
@@ -2912,17 +2887,6 @@ typedef struct shvnode {
       <listitem><para>Fetch the private information of the Rexx procedure. The
       following information items can be retrieved by name: </para>
       <variablelist>
-<!--
-     Eliminated per request from Rick. It will not be available in the next
-     major release of ooRexx.
-
-         <varlistentry><term>EXITNAME</term>
-         <listitem><para>The name of the current system exit
-         <indexterm><primary>thread</primary></indexterm>
-         handler for this thread. If not called from within an exit handler,
-         a null string is returned.
-         </para></listitem></varlistentry>
--->
          <varlistentry><term>PARM</term>
          <listitem><para>The number of arguments supplied to the Rexx procedure.
          The number is formatted as a character string.
@@ -2958,17 +2922,6 @@ typedef struct shvnode {
       to return, RexxVariablePool sets the RXSHV_LVAR bit in
       <emphasis role="italic">shvret</emphasis>.</para>
       </listitem></varlistentry>
-<!--
-     Eliminated per request from Rick. It will not be available in the next
-     major release of ooRexx.
-
-      <varlistentry><term>RXSHV_EXIT</term>
-      <listitem><para>Set a return value for an external function or system
-      exit call. RXSHV_EXIT is valid only from external functions or system
-      exit events that return a string value. An external function or exit
-      handler can use RXSHV_EXIT only once.</para>
-      </listitem></varlistentry>
--->
    </variablelist>
    </listitem></varlistentry>
    <varlistentry><term>shvret
@@ -3052,9 +3005,9 @@ issued.
 /*                                                                   */
 /*********************************************************************/
 
-INT SetRexxVariable(
-  PSZ        name,                     /* Rexx variable to set       */
-  PSZ        value)                    /* value to assign            */
+int SetRexxVariable(
+  const char *name,                    /* Rexx variable to set       */
+  char       *value)                   /* value to assign            */
 {
   SHVBLOCK   block;                    /* variable pool control block*/
 
@@ -3083,7 +3036,7 @@ INT SetRexxVariable(
 dynamically allocate or free memory. Depending on the operating system,
 compiler and REXX interpreter, the method for these allocations and de-
 allocations vary. To write system independent code, Object REXX comes with
-two new API function calls called RexxAllocateMemory() and RexxFreeMemory().
+two API function calls called RexxAllocateMemory() and RexxFreeMemory().
 These functions are wrapper for the corresponding compiler or operating
 system memory functions.</para>
 
@@ -3094,7 +3047,7 @@ system memory functions.</para>
 <indexterm><primary>RexxAllocateMemory</primary></indexterm>
 <programlisting>
 <![CDATA[
-PVOID APIENTRY RexxAllocateMemory( ULONG size );
+void * REXXENTRY RexxAllocateMemory( size_t size );
 ]]>
 </programlisting>
 
@@ -3119,7 +3072,7 @@ memory could be allocated.</para>
 <indexterm><primary>RexxFreeMemory</primary></indexterm>
 <programlisting>
 <![CDATA[
-APIRET APIENTRY RexxFreeMemory( PVOID MemoryBlock );
+RexxReturnCode REXXENTRY RexxFreeMemory( void *MemoryBlock );
 ]]>
 </programlisting>
 
@@ -3172,14 +3125,14 @@ retc = RexxCreateQueue(Buffer, BuffLen, RequestedName, DupFlag);
 <section id="createqueueparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>Buffer (PSZ) - input</term>
+<varlistentry><term>Buffer (char *) - input</term>
 <listitem><para>is the address of the buffer where the ASCII name of the created queue
 is returned.
 </para></listitem></varlistentry>
-<varlistentry><term>BuffLen  (ULONG) - input</term>
+<varlistentry><term>BuffLen  (size_t) - input</term>
 <listitem><para>is the size of the buffer.
 </para></listitem></varlistentry>
-<varlistentry><term>RequestedName  (PSZ) - input</term>
+<varlistentry><term>RequestedName  (const char *) - input</term>
 <listitem><para>is the address of an ASCII queue name. If no queue of that name exists,
 a queue is created with the requested name. If the name already exists, a
 queue is created, but Rexx assigns an arbitrary name to it. In addition, the
@@ -3189,7 +3142,7 @@ provides a name for the created queue.</para>
 <para>In all cases, the actual queue
 name is passed back to the caller.</para>
 </listitem></varlistentry>
-<varlistentry><term>DupFlag  (PULONG) - output</term>
+<varlistentry><term>DupFlag  (size_t *) - output</term>
 <listitem><para>is the duplicate name indicator. This flag is set when the requested
 name already exists.
 </para></listitem></varlistentry>
@@ -3227,9 +3180,6 @@ or delete a queue named SESSION.</entry>
 <section id="createqueueremark"><title>Remarks</title>
 <para>Queue names must conform to the same syntax rules as Rexx variable names.
 Lowercase characters in queue names are translated to uppercase.</para>
-<para>The queue name must be a valid Rexx symbol. However, there is no connection
-between queue names and variable names. A program can have a variable and
-a queue with the same name.</para>
 </section>
 </section>
 
@@ -3314,7 +3264,7 @@ retc = RexxDeleteQueue(QueueName);
 <section id="delqueueparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>QueueName (PSZ) - input</term>
+<varlistentry><term>QueueName (const char *) - input</term>
 <listitem><para>is the address of the ASCII name of the queue to be deleted.
 </para></listitem></varlistentry>
 </variablelist>
@@ -3423,10 +3373,10 @@ retc = RexxQueryQueue(QueueName, Count);
 <section id="queryqueueparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>QueueName (PSZ) - input</term>
+<varlistentry><term>QueueName (const char *) - input</term>
 <listitem><para>is the address of the ASCII name of the queue to be queried.
 </para></listitem></varlistentry>
-<varlistentry><term>Count (PULONG) - output</term>
+<varlistentry><term>Count (size_t *) - output</term>
 <listitem><para>is the number of entries in the queue.
 </para></listitem></varlistentry>
 </variablelist>
@@ -3476,15 +3426,15 @@ retc = RexxAddQueue(QueueName, EntryData, AddFlag);
 <section id="addqueueparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>QueueName (PSZ) - input</term>
+<varlistentry><term>QueueName (const char *) - input</term>
 <listitem><para>is the address of the ASCII name of the queue to which data is
 to be added.
 </para></listitem></varlistentry>
-<varlistentry><term>EntryData  (PRXSTRING) - input</term>
-<listitem><para>is the address of an RXSTRING containing the data to be added
+<varlistentry><term>EntryData  (PCONSTRXSTRING) - input</term>
+<listitem><para>is the address of a CONSTRXSTRING containing the data to be added
 to the queue.
 </para></listitem></varlistentry>
-<varlistentry><term>AddFlag  (ULONG) - input</term>
+<varlistentry><term>AddFlag  (size_t) - input</term>
 <listitem><para>is the LIFO/FIFO flag. When AddFlag is
 <computeroutput>RXQUEUE_LIFO</computeroutput>, data is added LIFO (Last In,
 First Out) to the queue. When AddFlag is
@@ -3685,7 +3635,7 @@ retc = RexxPullQueue(QueueName, DataBuf, DateTime, WaitFlag);
 <section id="pullqueueparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>QueueName (PSZ) - input</term>
+<varlistentry><term>QueueName (const char *) - input</term>
 <listitem><para>is the address of the ASCII name of the queue from which data is to
 be pulled.
 </para></listitem></varlistentry>
@@ -3695,7 +3645,7 @@ be pulled.
 <varlistentry><term>DateTime  (PDATETIME) - output</term>
 <listitem><para>is the address of the entry's date and time stamp.
 </para></listitem></varlistentry>
-<varlistentry><term>WaitFlag  (ULONG) - input</term>
+<varlistentry><term>WaitFlag  (size_t) - input</term>
 <listitem><para>is the wait flag. When WaitFlag is
 <computeroutput>RXQUEUE_NOWAIT</computeroutput> and the queue is empty,
 RXQUEUE_EMPTY is returned. Otherwise, when WaitFlag is
@@ -3789,12 +3739,12 @@ retc = RexxSetHalt(ProcessId, ThreadId);
 <section id="sethaltparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>ProcessId (PID) - input</term>
+<varlistentry><term>ProcessId (process_id_t) - input</term>
 <listitem><para>is the process ID of the target Rexx procedure.
 <emphasis role="italic">ProcessId</emphasis> is
 the application process that called the RexxStart function.
 </para></listitem></varlistentry>
-<varlistentry><term>ThreadId (TID) - input</term>
+<varlistentry><term>ThreadId (thread_id_t) - input</term>
 <listitem><para>is the thread
 <indexterm><primary>thread</primary></indexterm>
 ID of the target Rexx procedure. <emphasis role="italic">ThreadId</emphasis> is
@@ -3853,12 +3803,12 @@ retc = RexxSetTrace(ProcessId, ThreadId);
 <section id="settraceparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>ProcessId (PID) - input</term>
+<varlistentry><term>ProcessId (process_id_t) - input</term>
 <listitem><para>is the process ID of the target Rexx procedure.
 <emphasis role="italic">ProcessId</emphasis> is
 the application process that called the RexxStart function.
 </para></listitem></varlistentry>
-<varlistentry><term>ThreadId (TID) - input</term>
+<varlistentry><term>ThreadId (thread_id_t) - input</term>
 <listitem><para>is the thread
 <indexterm><primary>thread</primary></indexterm>
 ID of the target Rexx procedure.
@@ -3918,12 +3868,12 @@ retc = RexxResetTrace(ProcessId,ThreadId);
 <section id="resettraceparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>ProcessId (PID) - input</term>
+<varlistentry><term>ProcessId (process_id_t) - input</term>
 <listitem><para>is the process ID of the target Rexx procedure.
 <emphasis role="italic">ProcessId</emphasis> is
 the application process that called the RexxStart function.
 </para></listitem></varlistentry>
-<varlistentry><term>ThreadId (TID) - input</term>
+<varlistentry><term>ThreadId (thread_id_t) - input</term>
 <listitem><para>is the thread ID of the target Rexx procedure.
 <emphasis role="italic">ThreadId</emphasis> is
 the application thread that called the RexxStart function. If
@@ -4016,12 +3966,10 @@ RXMACRO_SEARCH_AFTER after any registered functions or external Rexx files.
 </section>
 
 <section id="macrospacelibstor"><title>Storage of Macrospace Libraries</title>
-<para>The Rexx macrospace is placed in shared memory. Only the amount of memory
-and swap space available to the system limits the size of the macrospace.
-However, as the macrospace grows, it limits the memory available to other
-processes in the system. Allowing the macrospace to grow too large can degrade
-overall system performance due to increased system swap file access. Try to
-place only the most frequently-used functions in the macrospace.</para>
+<para>The Rexx macrospace is stored in separate process using a daemon process.
+Macrospace routines are retrieved using interprocess call (IPC) mechanisms.
+A package file that is loaded in the local process might be preferable to
+loading routines in the macrospace.</para>
 </section>
 
 <section id="macrospaceiffu"><title>Macrospace Interface Functions</title>
@@ -4042,16 +3990,16 @@ retc = RexxAddMacro(FuncName, SourceFile, Position);
 <section id="addmacroparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>FuncName (PSZ) - input</term>
+<varlistentry><term>FuncName (const char *) - input</term>
 <listitem><para>is the address of the ASCII function name. Rexx procedures in
 the macrospace are called using the assigned function name.
 </para></listitem></varlistentry>
-<varlistentry><term>SourceFile (PSZ) - input</term>
+<varlistentry><term>SourceFile (const char *) - input</term>
 <listitem><para>is the address of the ASCII file specification for the Rexx procedure
 source file. When a file extension is not supplied, .CMD is used. When the full
 path is not specified, the current directory and path are searched.
 </para></listitem></varlistentry>
-<varlistentry><term>Position (ULONG) - input</term>
+<varlistentry><term>Position (size_t) - input</term>
 <listitem><para>is the position in the Rexx external function search order.
 Possible values are:
 <variablelist>
@@ -4118,7 +4066,7 @@ retc = RexxDropMacro(FuncName);
 <section id="dropmacroparm"><title>Parameter</title>
 <para></para>
 <variablelist>
-<varlistentry><term>FuncName (PSZ) - input</term>
+<varlistentry><term>FuncName (const char *) - input</term>
 <listitem><para>is the address of the ASCII function name.
 </para></listitem></varlistentry>
 </variablelist>
@@ -4204,15 +4152,15 @@ retc = RexxSaveMacroSpace(FuncCount, FuncNames, MacroLibFile);
 <section id="savemacrospaceparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>FuncCount (ULONG) - input</term>
+<varlistentry><term>FuncCount (size_t) - input</term>
 <listitem><para>Number of Rexx procedures to be saved.
 </para></listitem></varlistentry>
-<varlistentry><term>FuncNames (PSZ *) - input</term>
+<varlistentry><term>FuncNames (const char **) - input</term>
 <listitem><para>is the address of a list of ASCII function names.
 <emphasis role="italic">FuncCount</emphasis> gives
 the size of the function list.
 </para></listitem></varlistentry>
-<varlistentry><term>MacroLibFile (PSZ) - input</term>
+<varlistentry><term>MacroLibFile (const char *) - input</term>
 <listitem><para>is the address of the ASCII macrospace file name. If
 <emphasis role="italic">MacroLibFile</emphasis> already exists, it is
 replaced with the new file.
@@ -4280,16 +4228,16 @@ retc = RexxLoadMacroSpace(FuncCount, FuncNames, MacroLibFile);
 <section id="loadmacrospaceparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>FuncCount (ULONG) - input</term>
+<varlistentry><term>FuncCount (size_t) - input</term>
 <listitem><para>is the number of Rexx procedures to load from the saved
 macrospace.
 </para></listitem></varlistentry>
-<varlistentry><term>FuncNames (PSZ *) - input</term>
+<varlistentry><term>FuncNames (const char **) - input</term>
 <listitem><para>is the address of a list of Rexx function names.
 <emphasis role="italic">FuncCount</emphasis> gives
 the size of the function list.
 </para></listitem></varlistentry>
-<varlistentry><term>MacroLibFile (PSZ) - input</term>
+<varlistentry><term>MacroLibFile (const char *) - input</term>
 <listitem><para>is the address of the saved macrospace file name.
 </para></listitem></varlistentry>
 </variablelist>
@@ -4364,10 +4312,10 @@ retc = RexxQueryMacro(FuncName, Position)
 <section id="querymacroparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>FuncName (PSZ) - input</term>
+<varlistentry><term>FuncName (const char *) - input</term>
 <listitem><para>is the address of an ASCII function name.
 </para></listitem></varlistentry>
-<varlistentry><term>Position (PUSHORT) - output</term>
+<varlistentry><term>Position (unsigned short *) - output</term>
 <listitem><para>is the address of an unsigned short integer flag. If the
 function is loaded in the macrospace,
 <emphasis role="italic">Position</emphasis> is set to the search-order position
@@ -4415,7 +4363,7 @@ retc = RexxReorderMacro(FuncName, Position)
 <section id="reordermacroparm"><title>Parameters</title>
 <para></para>
 <variablelist>
-<varlistentry><term>FuncName (PSZ) - input</term>
+<varlistentry><term>FuncName (const char *) - input</term>
 <listitem><para>is the address of an ASCII macrospace function name.
 </para></listitem></varlistentry>
 <varlistentry><term>Position (ULONG) - input</term>
