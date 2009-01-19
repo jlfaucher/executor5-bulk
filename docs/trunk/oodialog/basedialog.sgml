@@ -162,10 +162,10 @@ to Init.
 <varlistentry><term><emphasis role="bold">Routines:</emphasis></term>
 <listitem><para>See <link linkend="sctPublicRoutines">Public Routines</link> for a description of the audio Play routine.
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Cross Referenc:</emphasis></term>
+<varlistentry><term><emphasis role="bold">Cross Reference:</emphasis></term>
 <listitem>
 <para>
-  The following table cross references the descriptions for the BaseDialog class methods, attributes and
+  The following table cross references the descriptions for the BaseDialog class methods, attributes, and
   instance methods:
 <table id="t000013" frame="all">
 <title>BaseDialog Reference</title>
@@ -178,24 +178,24 @@ to Init.
 </thead>
 <tbody>
 <row>
-<entry><emphasis role="bold">Class Method</emphasis></entry>
-<entry><emphasis role="bold">Link</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Method</emphasis></entry>
+<entry align="center"><emphasis role="bold">Link</emphasis></entry>
 </row>
 <row>
-<entry>getFontName</entry>
+<entry>getFontName (Class method)</entry>
 <entry><link linkend="mthClsGetFontName">getFontName</link></entry>
 </row>
 <row>
-<entry>getFontSize</entry>
+<entry>getFontSize (Class method)</entry>
 <entry><link linkend="mthClsGetFontSize">getFontSize</link></entry>
 </row>
 <row>
-<entry>setDefaultFont</entry>
+<entry>setDefaultFont (Class method)</entry>
 <entry><link linkend="mthClsSetDefaultFont">setDefaultFont</link></entry>
 </row>
 <row>
-<entry><emphasis role="bold">Attributes</emphasis></entry>
-<entry><emphasis role="bold">Link</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold">Link</emphasis></entry>
 </row>
 <row>
 <entry>fontName (Attribute)</entry>
@@ -206,8 +206,8 @@ to Init.
 <entry><link linkend="atrFontSize">fontSize</link></entry>
 </row>
 <row>
-<entry><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry><emphasis role="bold">Link</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Link</emphasis></entry>
 </row>
 <row>
 <entry>AbsRect2LogRect</entry>
@@ -1256,7 +1256,7 @@ to Init.
 <secondary>BaseDialog class</secondary></indexterm>
 <para>
   The class methods listed here are class methods of the <link
-  linkend="clsPlainBaseDialog">PlainBaseDialog</link> class.
+  linkend="paraPlainBaseDialog">PlainBaseDialog</link> class.
 </para>
 
 <section id="mthClsSetDefaultFont"><title>setDefaultFont (Class method)</title>
@@ -1361,7 +1361,7 @@ to Init.
 ]]>
 </programlisting>
 <para>
-  Determines the current default dialog font name. The default dialog font is used whenever a dialog
+  Returns the current default dialog font name. The default dialog font is used whenever a dialog
   template, used in a dynamically defined dialog, does not specify a font.
 </para>
 <variablelist>
@@ -1380,9 +1380,11 @@ to Init.
   <varlistentry id="exampleGetFontNameCls"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      The following example temporarily changes the default font to run the accounting program.  All
-      dialogs created while the accounting program is executing will be created using 10 pt Tahoma.  When
-      the accounting program is done, the old default is restored.
+      The following example temporarily changes the default font to run the accounting program. The
+      accounting program uses a large number of dynamically defined dialogs. It does not specify the
+      dialog font for any of the dialogs. Before starting the program, the default font is changed to 10
+      pt Tahoma. Then, all the dialogs created while the accounting program is executing will be created
+      using 10 pt Tahoma.  When the accounting program is done, the old default is restored.
       <programlisting>
       <![CDATA[
       oldName = .PlainBaseDialog~getFontName
@@ -1409,7 +1411,7 @@ to Init.
 ]]>
 </programlisting>
 <para>
-  Determines the current default dialog font size. The default dialog font is used whenever a dialog
+  Returns the current default dialog font size. The default dialog font is used whenever a dialog
   template, used in a dynamically defined dialog, does not specify a font.
 </para>
 <variablelist>
@@ -1425,7 +1427,7 @@ to Init.
       This method returns the current default font size. For instance, 8.
     </para>
   </listitem></varlistentry>
-  <varlistentry id="exampleGetFontNameCls"><term><emphasis role="bold">Example:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
       See the previous <link linkend="exampleGetFontNameCls">getFontName</link>() example.
@@ -1439,10 +1441,10 @@ to Init.
 <section id="attributesBaseDialog"><title>Attributes</title>
 <indexterm><primary>BaseDialog attributes</primary></indexterm>
 <para>
-  This section describes the important attributes of instance of the BaseDialog. (This section of
+  This section describes the important attributes of instances of the BaseDialog. (This section of
   the documentation is a work in progress.  Please see the <link
   linkend="tmpAttributesBaseDialog">attrbutes</link> list at the beginning of this chapeter for
-  attributes not listed here.
+  attributes not listed here.)
 </para>
 
 
@@ -1462,8 +1464,8 @@ to Init.
   Prior to the creation of the underlying Windows dialog, the font name attribute specifies the name of
   the font that will be used to create the dialog. This font is only used when the font is not specified
   in the <link linkend="mthCreate">create</link>() or the <link
-  linkend="mthCreateCenter">createCenter</link>(). After the creation of the dialog, the attribute
-  reflects the font name that was actually used to create the dialog.
+  linkend="mthCreateCenter">createCenter</link>() methods. After the creation of the dialog, the
+  attribute reflects the font name that was actually used to create the dialog.
 </para>
 <para>
   This applies to all dialogs, with this cavaet.  With a binary compiled dialog resource (<link
@@ -1519,9 +1521,12 @@ to Init.
       This example is a portion of the code used to to create a message box dialog using a variable font.
       The calcSizes() method is not shown, but in that method the size and position of the controls, and
       the overall size of the dialog, are calculated in relation to the size needed for the message.
-      <programlisting> <![CDATA[
-        fontName = "Tahoma" fontSize = 20
-        message = "Drive z: is a network drive and is not accesible." title = "Disk Drive Error"
+      <programlisting>
+      <![CDATA[
+        fontName = "Tahoma"
+        fontSize = 20
+        message = "Drive z: is a network drive and is not accesible."
+        title = "Disk Drive Error"
 
         dlg = .MessageBox~new( , , message, title, fontName, fontSize)
         if dlg~initCode = 0 then do
@@ -1584,8 +1589,8 @@ to Init.
   Prior to the creation of the underlying Windows dialog, the font size attribute specifies the size of
   the font that will be used to create the dialog. This font is only used when the font is not specified
   in the <link linkend="mthCreate">create</link>() or the <link
-  linkend="mthCreateCenter">createCenter</link>(). After the creation of the dialog, the attribute
-  reflects the font size that was actually used to create the dialog.
+  linkend="mthCreateCenter">createCenter</link>() methods. After the creation of the dialog, the
+  attribute reflects the font size that was actually used to create the dialog.
 </para>
 <para>
   This applies to all dialogs, with this cavaet.  With a binary compiled dialog resource (<link
