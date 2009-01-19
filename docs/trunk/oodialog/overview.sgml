@@ -438,19 +438,39 @@ by 480 pixels, SVGA screens support higher resolutions, such as 800 by 600,
 1024 by 768, 1280 by 1024, and 1600 by 1200. Pixel values in a dialog start
 at the top left corner and include the window title and border.
 </para></listitem></varlistentry>
-<varlistentry><term>dialog unit</term>
-<listitem><para>Used within dialog box templates to define the size and position of
-the dialog box and its controls. There is a horizontal and a vertical dialog
-base unit to convert width and height of dialog boxes and controls from dialog
-units to pixels and vice versa. The value of these base units depend on the
-screen resolution and the active system font; they are stored in attributes
-of the UserDialog class.
-<programlisting>
-<![CDATA[
-xPixels = xDialogUnits * self~FactorX
-]]>
-</programlisting>
-</para></listitem></varlistentry>
+<varlistentry id="defDialogUnit"><term>dialog unit</term>
+<listitem>
+  <para>
+    Dialog box templates contain measurements that define the size and position of the dialog box and its
+    controls. These measurements are device independent. This allows a single template to be used to
+    create the same dialog box for all types of display devices. Then the dialog box will have the same
+    proportions and appearance on all screens despite differing resolutions and aspect ratios between
+    screens.
+  </para>
+  <para>
+    These measurements are called dialog template units, often shortened to just dialog units in this
+    documentation.
+  </para>
+  <para>
+    The following paragraph, which has been the sole documentation of dialog units in the ooDialog
+    documentation prior to version 4.0.0, is unfortunately incorrect.  The value of a dialog unit is
+    dependent on the font actually used in the dialog, not on the system font. The statements below were
+    probably true in very early versions of Windows when every dialog used system 8 pt font. Today it is
+    highly unusual for a dialog to use system 8 pt font. The factorX and factorY values are calculated
+    incorrectly. These values are only correct if the dialog is using system 8 pt font and are incorrect
+    for a dialog using any other font.
+  </para>
+  <para>
+    There is a horizontal and a vertical dialog base unit to convert width and height of dialog boxes and
+    controls from dialog units to pixels and vice versa. The value of these base units depend on the
+    screen resolution and the active system font; they are stored in attributes of the UserDialog class.
+  <programlisting>
+  <![CDATA[
+  xPixels = xDialogUnits * self~FactorX
+  ]]>
+  </programlisting>
+  </para>
+</listitem></varlistentry>
 <varlistentry><term>color</term>
 <listitem><para>Each color supported by the Windows operating system is assigned a
 number. Sample color indexes are 0 (black), 1 (dark red), 2 (dark green),

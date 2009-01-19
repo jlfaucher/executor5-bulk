@@ -63,7 +63,7 @@ but have to use one of its subclasses.</para>
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Attributes:</emphasis></term>
+<varlistentry id="tmpAttributesBaseDialog"><term><emphasis role="bold">Attributes:</emphasis></term>
 <listitem><para>Instances of the BaseDialog class have the following attributes:
 <variablelist>
 <varlistentry><term><emphasis role="bold">AutoDetect</emphasis></term>
@@ -137,15 +137,18 @@ the attributes of the dialog instance.
 <listitem><para>When this is set to 1, Ok or Cancel will terminate the dialog on exit.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">InitCode</emphasis></term>
-<listitem><para>After the Init method has executed the InitCode attribute will
-be 0 if the object initialization detected no errors.  The attribute will be
-non-zero if initialization failed or an error was detected.  The programmer
-should always check the InitCode attribute after instantiating a dialog object.
-If the attribute is not zero, then the object was not initialized correctly and
-its behavior is undefined.</para>
-<para>After the dialog is finished, the attribute will be 1 if terminated with
-Ok, 2 if terminated with Cancel.
-</para></listitem></varlistentry>
+<listitem>
+  <para>
+    After the Init method has executed the InitCode attribute will be 0 if the object initialization
+    detected no errors.  The attribute will be non-zero if initialization failed or an error was detected.
+    The programmer should always check the InitCode attribute after instantiating a dialog object. If the
+    attribute is not zero, then the object was not initialized correctly and its behavior is undefined.
+  </para>
+  <para>
+    After the dialog is finished, the attribute will be 1 if terminated with Ok, 2 if terminated with
+    Cancel.
+  </para>
+</listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">IsExtended</emphasis></term>
 <listitem><para>A protected attribute that is true (=1) if the graphics extension is
 installed.
@@ -159,20 +162,53 @@ to Init.
 <varlistentry><term><emphasis role="bold">Routines:</emphasis></term>
 <listitem><para>See <link linkend="sctPublicRoutines">Public Routines</link> for a description of the audio Play routine.
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Methods:</emphasis></term>
-<listitem><para>Instances of the BaseDialog class implement
-the methods listed in <link linkend="t000013">Table 2</link>.
-
+<varlistentry><term><emphasis role="bold">Cross Referenc:</emphasis></term>
+<listitem>
+<para>
+  The following table cross references the descriptions for the BaseDialog class methods, attributes and
+  instance methods:
 <table id="t000013" frame="all">
-<title>BaseDialog Instance Methods</title>
+<title>BaseDialog Reference</title>
 <tgroup cols="2">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...on page</entry>
+<entry>Item...</entry>
+<entry>...description</entry>
 </row>
 </thead>
 <tbody>
+<row>
+<entry><emphasis role="bold">Class Method</emphasis></entry>
+<entry><emphasis role="bold">Link</emphasis></entry>
+</row>
+<row>
+<entry>getFontName</entry>
+<entry><link linkend="mthClsGetFontName">getFontName</link></entry>
+</row>
+<row>
+<entry>getFontSize</entry>
+<entry><link linkend="mthClsGetFontSize">getFontSize</link></entry>
+</row>
+<row>
+<entry>setDefaultFont</entry>
+<entry><link linkend="mthClsSetDefaultFont">setDefaultFont</link></entry>
+</row>
+<row>
+<entry><emphasis role="bold">Attributes</emphasis></entry>
+<entry><emphasis role="bold">Link</emphasis></entry>
+</row>
+<row>
+<entry>fontName (Attribute)</entry>
+<entry><link linkend="atrFontName">fontName</link></entry>
+</row>
+<row>
+<entry>fontSize (Attribute)</entry>
+<entry><link linkend="atrFontSize">fontSize</link></entry>
+</row>
+<row>
+<entry><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry><emphasis role="bold">Link</emphasis></entry>
+</row>
 <row>
 <entry>AbsRect2LogRect</entry>
 <entry><link linkend="absrect2logrect">AbsRect2LogRect</link></entry>
@@ -719,7 +755,7 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 </row>
 <row>
 <entry>getTextSize <emphasis role="bold">(Deprecated)</emphasis></entry>
-<entry><link linkend="mthGetTextSize">getTextSize</link></entry>
+<entry><link linkend="mthGetTextSize">getTextSize</link> <emphasis role="bold">(Deprecated)</emphasis></entry>
 </row>
 <row>
 <entry>getTextSizeDlg</entry>
@@ -727,7 +763,7 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 </row>
 <row>
 <entry>getTextSizeScreen</entry>
-<entry><link linkend="mthGetTextSizeScreen">getTextSizeScrenn</link></entry>
+<entry><link linkend="mthGetTextSizeScreen">getTextSizeScreen</link></entry>
 </row>
 <row>
 <entry>GetValue</entry>
@@ -1213,6 +1249,403 @@ the methods listed in <link linkend="t000013">Table 2</link>.
 </table>
 </para></listitem></varlistentry>
 </variablelist>
+
+
+<section id="clsMthsBaseDialog"><title>Class Methods</title>
+<indexterm><primary>class methods</primary>
+<secondary>BaseDialog class</secondary></indexterm>
+<para>
+  The class methods listed here are class methods of the <link
+  linkend="clsPlainBaseDialog">PlainBaseDialog</link> class.
+</para>
+
+<section id="mthClsSetDefaultFont"><title>setDefaultFont (Class method)</title>
+<indexterm><primary>setDefaultFont</primary>
+<secondary>PlainBaseDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setDefaultFont(--fontName--,--fontSize--)----------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  This method changes the default dialog font used for all dialogs. The default dialog font is used
+  whenever a dialog template, used in a dynamically defined dialog, does not specify a font.  Since it is
+  very unusual for a resource script to not specify a font, this mostly effects the <link
+  linkend="clsPlainUserDialog">PlainUserDialog</link> and <link linkend="clsUserDialog">UserDialog</link>
+  classes. Binary compiled dialog templates (<link linkend="clsResDialog">ResDialog</link>) can not be
+  changed, so the default dialog font has no meaning for a ResDialog.
+</para>
+<para>
+  Currently the default font is <computeroutput>MS Shell Dlg</computeroutput> with a size of
+  <computeroutput>8</computeroutput>.  MS Shell Dlg is not a true font name, but rather a pseudo name
+  that signals the operating system to use a standard font for the specific version of Windows.  In other
+  words, on Windows 2000, MS Shell Dlg will cause the operating system to use the standard font for
+  dialogs on Windows 2000.  On XP, the operating system will use the standard XP dialog font.  (The two
+  fonts are different.)  By using this font for the default, ooDialog produces dialogs that match what is
+  most common on the current operating system.
+</para>
+<para>
+  Of course, when the ooDialog programmer specifies a font in either the <link
+  linkend="mthCreate">create</link>() or the <link linkend="mthCreateCenter">createCenter</link>()
+  methods then the defualt font is ignored. Once the default font is changed in a process then all
+  dynamic dialogs, that don't specify a font, that are created afterwards will use the new default font.
+</para>
+<para>
+  The actual font used by a dialog directly effects the value of a <link linkend="defDialogUnit">dialog
+  unit</link>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>fontName</term>
+      <listitem>
+        <para>
+          The family name to use for the default font, for example
+          <computeroutput>Tahoma</computeroutput>.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fontSize</term>
+      <listitem>
+        <para>
+          The size of the font, for example, <computeroutput>10</computeroutput>.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method does not return a value.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example shows a change to the oostddlg.rex sample program.  The default font is changed to
+      Tahoma pt 10.  This causes all the <link linkend="sectStandardDialogs">Standard Dialogs</link> to
+      be created using this font.
+      <programlisting>
+      <![CDATA[
+
+      /*--------------------------------------------------------------------------*/
+      /*                                                                          */
+      /* OODialog\Samples\oostddlg.rex   Standard Dialog demonstration            */
+      /*                                                                          */
+      /*--------------------------------------------------------------------------*/
+
+      .PlainBaseDialog~setDefaultFont("Tahoma", 10)
+      say
+      say 'Starting standard dialog demonstration...'
+
+      ...
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PlainBaseDialog::setDefaultFont() [class method?] -->
+
+
+<section id="mthClsGetFontName"><title>getFontName (Class method)</title>
+<indexterm><primary>getFontName</primary>
+<secondary>PlainBaseDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getFontName----------------------------------------------------><
+
+]]>
+</programlisting>
+<para>
+  Determines the current default dialog font name. The default dialog font is used whenever a dialog
+  template, used in a dynamically defined dialog, does not specify a font.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns the current default font family name. For instance, MS Shell Dlg.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleGetFontNameCls"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example temporarily changes the default font to run the accounting program.  All
+      dialogs created while the accounting program is executing will be created using 10 pt Tahoma.  When
+      the accounting program is done, the old default is restored.
+      <programlisting>
+      <![CDATA[
+      oldName = .PlainBaseDialog~getFontName
+      oldSize = .PlainBaseDialog~getFontSize
+      .PlainBaseDialog~setDefaultFont("Tahoma", 10)
+
+      ret = excuteAccounting("Daily")
+
+      .PlainBaseDialog~setDefaultFont(oldName, oldSize)
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PlainBaseDialog::getFontName() [class method] -->
+
+<section id="mthClsGetFontSize"><title>getFontSize (Class method)</title>
+<indexterm><primary>getFontSize</primary>
+<secondary>PlainBaseDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getFontSize----------------------------------------------------><
+
+]]>
+</programlisting>
+<para>
+  Determines the current default dialog font size. The default dialog font is used whenever a dialog
+  template, used in a dynamically defined dialog, does not specify a font.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns the current default font size. For instance, 8.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleGetFontNameCls"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      See the previous <link linkend="exampleGetFontNameCls">getFontName</link>() example.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PlainBaseDialog::getFontName() [class method] -->
+
+</section>
+
+<section id="attributesBaseDialog"><title>Attributes</title>
+<indexterm><primary>BaseDialog attributes</primary></indexterm>
+<para>
+  This section describes the important attributes of instance of the BaseDialog. (This section of
+  the documentation is a work in progress.  Please see the <link
+  linkend="tmpAttributesBaseDialog">attrbutes</link> list at the beginning of this chapeter for
+  attributes not listed here.
+</para>
+
+
+<section id="atrFontName"><title>fontName (Attribute)</title>
+<indexterm><primary>fontName</primary>
+<secondary>PlainBaseDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--fontName----------------------------------------------------><
+
+>>--fontName=---------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Prior to the creation of the underlying Windows dialog, the font name attribute specifies the name of
+  the font that will be used to create the dialog. This font is only used when the font is not specified
+  in the <link linkend="mthCreate">create</link>() or the <link
+  linkend="mthCreateCenter">createCenter</link>(). After the creation of the dialog, the attribute
+  reflects the font name that was actually used to create the dialog.
+</para>
+<para>
+  This applies to all dialogs, with this cavaet.  With a binary compiled dialog resource (<link
+  linkend="clsResDialog">ResDialog</link>) the font has always been specified when the dialog template
+  was compiled. Therefore the font name attribute has no effect on a ResDialog prior to the execution of
+  the dialog.  However, when the ResDialog object is executed, the font name attribute is updated to
+  reflect the font used by the dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Getting the value of the font name attribute is public:
+      <programlisting>
+      <![CDATA[
+      name = dlgObj~fontName
+      ]]>
+      </programlisting>
+    </para>
+    <para>
+      Setting the value of the font name attribute is private:
+      <programlisting>
+      <![CDATA[
+      dlgObj~fontName = "MS Sans Serif"
+      ]]>
+      </programlisting>
+      will result in an error.
+    </para>
+    <para>
+      Set the value of the font name within a method context of the dialog object:
+      <programlisting>
+      <![CDATA[
+      ::class 'MessageBox' subclass UserDialog
+
+      ::method init
+
+        forward class (super) continue
+        if self~initCode <> 0 then return
+
+        self~fontName = "MS Sans Serif"
+      ]]>
+      </programlisting>
+    </para>
+    <note><title>Note</title><para>
+      The font name and font size attributes are set in the super class init() method to the value of the
+      <link linkend="mthClsSetDefaultFont">default</link> dialog font.  Therefore, to have any effect,
+      setting the font name attribute has to be done after the super class init() is finished.
+    </para></note>
+  </listitem></varlistentry>
+  <varlistentry id="exampleFontName"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example is a portion of the code used to to create a message box dialog using a variable font.
+      The calcSizes() method is not shown, but in that method the size and position of the controls, and
+      the overall size of the dialog, are calculated in relation to the size needed for the message.
+      <programlisting> <![CDATA[
+        fontName = "Tahoma" fontSize = 20
+        message = "Drive z: is a network drive and is not accesible." title = "Disk Drive Error"
+
+        dlg = .MessageBox~new( , , message, title, fontName, fontSize)
+        if dlg~initCode = 0 then do
+          dlg~Execute("SHOWTOP", 14)
+        end
+
+        dlg~Deinstall
+
+      return 0
+      -- End of entry point.
+
+      ::requires "oodWin32.cls"
+
+      ::class 'MessageBox' subclass UserDialog inherit AdvancedControls MessageExtensions
+
+      ::method init
+        expose cx cy message title fontName fontSize
+
+        a = .array~new(2)
+        if arg(1, 'E') then a[1] = arg(1)
+        if arg(2, 'E') then a[2] = arg(2)
+
+        message = arg(3)
+        title = arg(4)
+        if arg(5, 'E') then do
+          fontName = arg(5)
+          fontSize = arg(6)
+        end
+
+        forward class (super) arguments (a) continue
+        if self~initCode <> 0 then return
+
+        if arg(5, 'E') then do
+          self~fontName = fontName
+          self~fontSize = fontSize
+        end
+
+        self~calcSizes()
+        self~createCenter(cx, cy, title)
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PlainBaseDialog::fontName [attribute] -->
+
+<section id="atrFontSize"><title>fontSize (Attribute)</title>
+<indexterm><primary>fontSize</primary>
+<secondary>PlainBaseDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--fontSize----------------------------------------------------><
+
+>>--fontSize=---------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Prior to the creation of the underlying Windows dialog, the font size attribute specifies the size of
+  the font that will be used to create the dialog. This font is only used when the font is not specified
+  in the <link linkend="mthCreate">create</link>() or the <link
+  linkend="mthCreateCenter">createCenter</link>(). After the creation of the dialog, the attribute
+  reflects the font size that was actually used to create the dialog.
+</para>
+<para>
+  This applies to all dialogs, with this cavaet.  With a binary compiled dialog resource (<link
+  linkend="clsResDialog">ResDialog</link>) the font has always been specified when the dialog template
+  was compiled. Therefore the font size attribute has no effect on a ResDialog prior to the execution of
+  the dialog.  However, when the ResDialog object is executed, the font size attribute is updated to
+  reflect the font used by the dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Getting the value of the font size attribute is public:
+      <programlisting>
+      <![CDATA[
+      size = dlgObj~fontSize
+      ]]>
+      </programlisting>
+    </para>
+    <para>
+      Setting the value of the font size attribute is private:
+      <programlisting>
+      <![CDATA[
+      dlgObj~fontSize = 8
+      ]]>
+      </programlisting>
+      will result in an error.
+    </para>
+    <para>
+      Set the value of the font name within a method context of the dialog object:
+      <programlisting>
+      <![CDATA[
+      ::class 'MessageBox' subclass UserDialog
+
+      ::method init
+
+        forward class (super) continue
+        if self~initCode <> 0 then return
+
+        self~fontSize = 8
+      ]]>
+      </programlisting>
+    </para>
+    <note><title>Note</title><para>
+      The font name and font size attributes are set in the super class init() method to the value of the
+      <link linkend="mthClsSetDefaultFont">default</link> dialog font.  Therefore, to have any effect,
+      setting the font size attribute has to be done after the super class init() is finished.
+    </para></note>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      See the <link linkend="exampleFontName">fontName</link>() example, which also uses the fontSize
+      attribute.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PlainBaseDialog::fontSize [attribute] -->
+
+</section>
 
 <section id="prepdialog"><title>Preparing and Running the Dialog</title>
 <indexterm><primary>preparing and running dialogs</primary></indexterm>
@@ -6429,9 +6862,9 @@ used.
 </para>
 <para>
   In general, dialog units are only of value in laying out the dialog controls before the underlying
-  dialog is created.  Once the underlying dialog is created, it makes the most sense to work with pixels.
+  dialog is created.  Once the underlying dialog is created, it makes more sense to work with pixels.
   Historically, the ooDialog documentation did not make that distinction clear.  In addition, dialog
-  units are tied directly to the font in use by a dialog.  Therefore, it does not make much sense for
+  units are tied directly to the font used by a dialog.  Therefore, it does not make much sense for
   this method to be an instance method of a dialog control.
 </para>
 <para>
@@ -6488,9 +6921,9 @@ used.
       <varlistentry><term>fontName</term>
       <listitem>
         <para>
-          Optional. The name of the font to use to calculate the size needed for the string.  This
-          argument used when the string will be displayed in a font <emphasis
-          role="bold">different</emphasis> than the dialog font.
+          Optional. The name of the font to use to calculate the size needed for the string.  Use This
+          argument when the string will be displayed in a font <emphasis role="bold">different</emphasis>
+          than the dialog font.
         </para>
       </listitem></varlistentry>
       <varlistentry><term>fontSize</term>
@@ -6521,9 +6954,9 @@ used.
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example calculates the size needed to display a message.  It then uses that size for the
-      co-ordinates to place the text in a dialog at the top left corner with a margin of 10 dialog units
-      from the left and the top.
+      This example calculates the size needed to display a message.  It then uses that size to create an
+      object that holds the co-ordinates needed to place the text in a dialog.  This is used in
+      defineDialog() to add the message text to the dialog.
       <programlisting>
       <![CDATA[
       size = self~getTextSizeDlg(message)
@@ -6532,6 +6965,14 @@ used.
       messageRect~y = 10
       messageRect~cx = size~width
       messageRect~cy = size~height
+      ...
+
+    ::method defineDialog
+      expose message messageRect okRect
+
+      r = messageRect
+      self~addText(r~x, r~y, r~cx, r~cy, message)
+
       ]]>
       </programlisting>
     </para>
@@ -8924,11 +9365,11 @@ do this is the <link linkend="leavi">Leaving</link> method.</para>
 <para></para>
 </section>
 
-<section id="mthGetTextSize"><title>GetTextSize<emphasis role="bold">Deprecated</emphasis></title>
+<section id="mthGetTextSize"><title>GetTextSize (deprecated)</title>
 <note><title>Note</title>
 <para>
   This method is deprecated.  It is maintained for compatibility to versions of ooDialog previous to
-  4.0.0. It's functionality is replaced by <link
+  4.0.0. It's functionality is replaced by the <link
   linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>() method. Do <emphasis
   role="bold">not</emphasis> use this method in new code. Try to migrate existing code to use the
   <computeroutput>getTextSizeDlg()</computeroutput> method. This method may not exist in future versions

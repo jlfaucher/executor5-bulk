@@ -310,7 +310,7 @@ listed in the following DialogControl Instance Methods table.
 </row>
 <row>
 <entry>getTextSize <emphasis role="bold">(Deprecated)</emphasis></entry>
-<entry><link linkend="mthGetTextSize">getTextSize</link></entry>
+<entry><link linkend="mthGetTextSize">getTextSize</link> <emphasis role="bold">(Deprecated)</emphasis></entry>
 </row>
 <row>
 <entry>getTextSizeScreen</entry>
@@ -3769,8 +3769,8 @@ of the other arguments.</para>
 
 <para>
   Gets the size, width and height, in pixels, needed to display a string in a specific font. To calculate
-  the size in pixels use the <link linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>()
-  method.
+  the size in dialog units use the <link
+  linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>() method.
 </para>
 <note><title><emphasis role="bold">Note</emphasis></title><para>
   This method can only be used after the underlying Windows dialog has been created.  In general this
@@ -3815,6 +3815,7 @@ of the other arguments.</para>
             <varlistentry><term>Font</term>
             <listitem>
               <para>
+                fontSrc is a handle to a font. fontSize is ignored.
               </para>
             </listitem></varlistentry>
           </variablelist>
@@ -3853,9 +3854,9 @@ of the other arguments.</para>
       This example uses 2 static controls to display two strings.  The static controls are positioned so
       that the second string immediately follows the first string.  The size calculated is based on the
       font currently in use by the controls.  The calculation is correct no matter what font is in use by
-      the controls, even if the two controls use different fonts.  (This is a contrived example.  Note
-      for instance that there is no space character at the end of the first string or the beginning of
-      the second string.)
+      the controls, even if the two controls use different fonts.  (This is a contrived example, it was
+      used for testing. Instead of having a space character in between the 2 strings, the ending "t" and
+      the beginning "a" are positioned with no space between them.)
       <programlisting>
       <![CDATA[
       stFont1 = self~getStaticControl(IDC_ST_FONT1)
