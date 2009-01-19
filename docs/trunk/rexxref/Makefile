@@ -154,12 +154,13 @@ IMAGE_FILES = ooRexxObjectClass.png \
 	      rxo90018.jpg \
 	      rxo90019.jpg \
 	      rxo90020.jpg \
-	      rxor0f01.jpg \
 	      rxor0f02.jpg \
 	      rxor0f08.jpg \
 	      rxor0f09.jpg \
 	      rxor0f10.jpg \
 	      rxor0f11.jpg \
+              externalFunction.png \
+              externalFileSearch.png \
  	      oorexx.jpg \
  	      docbook-1.png \
 	      new_rexxla.jpg
