@@ -66,28 +66,28 @@
   much, if any, support for owner-drawn static controls.
 </para>
 <para>
-  The StaticControl class provides methods to query and modify static controls (static text, images,
-  rectangles, and frames.).  By default, static controls are assigned a resource ID of -1.  There is no
-  way to query or modify static controls unless the control has a positive resource ID.  Which in most
-  circumstances is fine, usually static controls do not need to be modified.  Be sure to assign a
-  positive resource ID to statict controls that will be modified during the execution of a dialog.
+  The StaticControl class provides methods to query and modify static controls. By default, static
+  controls are assigned a resource ID of -1.  There is no way to query or modify static controls unless
+  the control has a positive resource ID.  Which in most circumstances is fine, usually static controls
+  do not need to be modified.  Be sure to assign a positive resource ID to static controls that will be
+  modified during the execution of a dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
   <listitem>
   <para>
   The StaticControl class requires the class definition file <computeroutput>oodWin32.cls</computeroutput>:
-  <programlisting>
-  <![CDATA[
-  ::requires "oodWin32.cls"
-  ]]>
-  </programlisting>
+<programlisting>
+<![CDATA[
+::requires "oodWin32.cls"
+]]>
+</programlisting>
   </para></listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
   <listitem>
     <para>
-      The static control class is a subclass of the <link linkend="clsDialogControl">DialogControl
-      Class</link> and therefore inherits all methods of that class.
+      The static control class is a subclass of the <link linkend="clsDialogControl">DialogControl</link>
+      Class and therefore inherits all methods of that class.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Mixin Class Inherits:</emphasis></term>
@@ -103,18 +103,25 @@
       The <link linkend="clsWindowExtensions">WindowExtensions</link>
     </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Instantiating:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
     <para>
       Use the <link linkend="getstaticcontrol">getStaticControl()</link>) method to retrieve an object of
       the static control class. To use this method, the static control must have a positive ID.
     </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Dynamically Defining:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
     <para>
       To dynamically define a static control in a <link linkend="clsUserDialog">UserDialog</link> class,
       use one of the <link linkend="sectAddStaticControls">Add Static Control</link> methods.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+    <para>
+      To recieve notification of static control events use the <link
+      linkend="mthConnectStaticNotify">connectStaticNotify</link>)() method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Methods:</emphasis></term>
@@ -172,7 +179,7 @@
 <para>
   The static control class is not intended to be instantiated directly by the programmer using the new()
   method.  Rather the programmer should obtain a new static control object by using the <link
-  linkend="getstaticcontrol">getStaticControl()</link>) method of the <link
+  linkend="getstaticcontrol">getStaticControl</link>() method of the <link
   linkend="clsAdvancedControls">.AdvancedControls</link> class.
 </para>
 </section>  <!-- End StaticControl::new() [class method] -->
@@ -189,7 +196,8 @@
 </programlisting>
 
 <para>
-  Sets the text of the static control. This only effects text static controls.
+  Sets the text of the static control. This only effects text static controls. For instance, text can not
+  be set for frames or rectangles.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -230,12 +238,12 @@
   <listitem>
     <para>
       This method is straight forward to use.
-      <programlisting>
-      <![CDATA[
-      static = self~getStaticControl(IDC_ST_FULLNAME)
-      static~setText("James Madison")
-      ]]>
-      </programlisting>
+<programlisting>
+<![CDATA[
+static = self~getStaticControl(IDC_ST_FULLNAME)
+static~setText("James Madison")
+]]>
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -253,7 +261,8 @@
 </programlisting>
 
 <para>
-  Returns the current text of the control. This method only applies to the text type of static control.
+  Returns the current text of the control. This method has no effect on any type of static control other
+  than the text static control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -272,18 +281,19 @@
   <listitem>
     <para>
       Returns the text of the static control. If an error is detected, this method will set the <link
-      linkend="dotSystemErrorCode">.SystemErrorCode</link> variable and the empty string is returned.
+      linkend="dotSystemErrorCode">.SystemErrorCode</link> variable and the empty string is returned. (It
+      would be highly unusual for an error to occur.)
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      <programlisting>
-      <![CDATA[
-      static = self~getStaticControl(IDC_ST_DESCRIPTION)
-      text = static~getText
-      ]]>
-      </programlisting>
+<programlisting>
+<![CDATA[
+static = self~getStaticControl(IDC_ST_DESCRIPTION)
+text = static~getText
+]]>
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -301,8 +311,8 @@
 </programlisting>
 
 <para>
-  Sets or removes the icon image for this static control. This method only applies to the image type
-  static control.
+  Sets or removes the icon image for this static control. This method only effects the image type static
+  control. For instance an icon can not be set for a frame or rectangle.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -312,8 +322,8 @@
     </para>
     <para>
       The programmer should manage the image objects as he thinks best.  See the <link
-      linkend="clsImage">documentation</link> for a discussion of this.  The static control does not make
-      a copy of the icon, nor does it release an icon image.
+      linkend="clsImage">.Image</link> documentation for a discussion of this.  The static control does
+      not make a copy of the icon, nor does it release an icon image.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -339,19 +349,19 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      <programlisting>
-      <![CDATA[
-      icon = .Image~getImage(.Image~id(IDI_QUESTION), .Image~id(IMAGE_ICON))
-      if \ icon~isNull then do
-        oldIcon = iconControl~setIcon(icon)
-        ...
-      end
-      else do
-        -- handle error
-        ...
-      end
-      ]]>
-      </programlisting>
+<programlisting>
+<![CDATA[
+icon = .Image~getImage(.Image~id(IDI_QUESTION), .Image~id(IMAGE_ICON))
+if \ icon~isNull then do
+  oldIcon = iconControl~setIcon(icon)
+  ...
+end
+else do
+  -- handle error
+  ...
+end
+]]>
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -369,10 +379,18 @@
 </programlisting>
 
 <para>
-  Gets the static control's icon image, if there is one. This method only applies to the image type
-  static control.
+  Gets the static control's icon image, if there is one. Only the image type of static control can have
+  an icon.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Programmers should manage the image objects as they think best.  See the <link
+      linkend="clsImage">.Image</link> documentation for a discussion of this.  The static control does
+      not make a copy of the icon, nor does it release an icon.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>
@@ -382,20 +400,20 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The current .Image object for the control, if there is one.  If the control does not have an icon
-      set, then .nil is returned.
+      The current icon <link linkend="clsImage">.Image</link> object for the control, if there is one.
+      If the control does not have an icon set, then .nil is returned.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
       This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
+<programlisting>
+<![CDATA[
+staticControl = self~getStaticControl(IDC_ST_ICON)
+icon = staticControl~getIcon
+]]>
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -413,7 +431,7 @@
 </programlisting>
 
 <para>
-  Sets or removes the image for the static control. This method only applies to the image type static
+  Sets or removes the image for the static control. An image can only be set with the image type static
   control.
 </para>
 <variablelist>
@@ -424,8 +442,8 @@
     </para>
     <para>
       Programmers should manage the image objects as they think best.  See the <link
-      linkend="clsImage">documentation</link> for a discussion of this.  The static control does not make
-      a copy of the image, nor does it release an image.
+      linkend="clsImage">.Image</link> documentation for a discussion of this.  The static control does
+      not make a copy of the image, nor does it release an image.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -452,20 +470,20 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      <programlisting>
-      <![CDATA[
-      image = .Image~getImage("Camera.bmp", .Image~id(IMAGE_BITMAP))
-      if \ image~isNull then do
-        oldImage = staticControl~setImage(image)
-        if oldImage \== .nil then oldImage~release
-        ...
-      end
-      else do
-        -- handle error
-        ...
-      end
-      ]]>
-      </programlisting>
+<programlisting>
+<![CDATA[
+image = .Image~getImage("Camera.bmp", .Image~id(IMAGE_BITMAP))
+if \ image~isNull then do
+  oldImage = staticControl~setImage(image)
+  if oldImage \== .nil then oldImage~release
+  ...
+end
+else do
+  -- handle error
+  ...
+end
+]]>
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -483,10 +501,21 @@
 </programlisting>
 
 <para>
-  Returns the static control's image, if there is one. This method only applies to the image type static
-  control.
+  Returns the static control's image, if there is one. Only the image type static control will have an
+  image.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Programmers should manage the image objects as they think best.  See the <link
+      linkend="clsImage">.Image</link> documentation for a discussion of this.  The static control does
+      not make a copy of the image, nor does it release an image.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The only optional argument is:
@@ -494,13 +523,22 @@
       <varlistentry><term>type</term>
       <listitem>
         <para>
-          xx.
+          Specifies the type of the image: bitmap, icon, cursor, or enhanced metafile. You can use <link
+          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          following symbols:
+          <simplelist type='horiz' columns='2'>
+          <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
+          <member>IMAGE_CURSOR</member> <member>IMAGE_ENHMETAFILE</member>
+          </simplelist>
         </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
         <para>
-          yyy,
+          The default is IMAGE_BITMAP.
+        </para>
+        <para>
+          The programmer does not have to use .Image~id() to get the numeric value for type. The correct
+          number itself can be used. In general, symbolic IDs are used to make code more readable and
+          less prone to error. However, since the value of IMAGE_CURSOR is 2, for example, the programmer
+          could use 2 directly for the type argument.
         </para>
       </listitem></varlistentry>
     </variablelist>
@@ -509,33 +547,23 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      This method returns the <link linkend="clsImage">.Image</link> object for the control, if there is
+      one.  If no image has been set, then .nil is returned.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
       This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
+<programlisting>
+<![CDATA[
+::method onExit
+  expose staticPicture
+
+  image = staticPicture~getImage(.Image~id(IMAGE_CURSOR))
+  if \ image~isNull then image~release
+]]>
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>

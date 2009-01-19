@@ -450,7 +450,7 @@ You can cancel the drag operation by clicking the other mouse button while
 holding the button that started the drag operation.</para>
 <para>The DefTreeDragHandler is implemented as follows:</para>
 <programlisting>
- <![CDATA[
+<![CDATA[
 ::method DefTreeDragHandler
    use arg id, item, pt
    tc = self~GetTreeControl(id)
@@ -1264,7 +1264,7 @@ before init:super has been called.</para></listitem>
       <para>
         A keyword specifying the event to be connected with a method:
         <variablelist>
-          <varlistentry><term>CLICKED</term>
+          <varlistentry><term>CLICK</term>
           <listitem>
             <para>
               The static control has been clicked with the mouse.
@@ -1291,13 +1291,13 @@ before init:super has been called.</para></listitem>
         </variablelist>
       </para>
     </listitem></varlistentry>
-    <varlistentry><term>methodNamd</term>
+    <varlistentry><term>methodName</term>
     <listitem>
       <para>
         The method that is to be invoked whenever the specified notification is received from the static
         control. The programmer defines this method. If this argument is omitted, a method name is
         automatically generated that consists of the event keyword preceded by
-        <computeroutput>on</computeroutput>.
+        <computeroutput>on</computeroutput>. For instance, <computeroutput>onClick</computeroutput>.
       </para>
     </listitem></varlistentry>
     </variablelist>
@@ -1329,6 +1329,30 @@ before init:super has been called.</para></listitem>
       </variablelist>
     </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Additional Notes:</emphasis></term>
+  <listitem>
+    <orderedlist>
+    <listitem>
+      <para>
+        The invocation of connectStaticNotify() can be placed in the <link linkend="h000025">init</link>
+        or <link linkend="mthInitDialog">initDialog</link> method.  (Indeed the invocation can be done
+        anywhere. But, it makes most sense to have the connection made before the dialog starts
+        executing.) If the connection is made in the init() method, be sure that the super class init()
+        is invoked first.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        The defined event-handling methods will receive two arguments. The first arg contains information
+        about the specific control and its event. The second arg is the window handle of the static
+        control.
+      </para>
+      <para>
+        The low word of the first arg is the control ID and the high word is the event ID.
+      </para>
+    </listitem>
+    </orderedlist>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
@@ -1336,57 +1360,40 @@ before init:super has been called.</para></listitem>
       on the employee number field advances the display to the next employee.  A double click on either
       the employee name or employee job duties alllows those fields to be edited.
     </para>
-    <programlisting>
-    <![CDATA[
-    ::method initDialog
+<programlisting>
+<![CDATA[
+::method initDialog
 
-      self~connectStaticNotify(IDC_ST_EMPNO, "CLICK", empLookup)
+  self~connectStaticNotify(IDC_ST_EMPNO, "CLICK", empLookup)
 
-      self~connectStaticNotify(IDC_ST_EMPJOB, "DBLCLK", editStats)
-      self~connectStaticNotify(IDC_ST_EMPNAME, "DBLCLK", editStats)
+  self~connectStaticNotify(IDC_ST_EMPJOB, "DBLCLK", editStats)
+  self~connectStaticNotify(IDC_ST_EMPNAME, "DBLCLK", editStats)
 
-      first = self~initDatabase
-      self~setStats(first)
-    ]]>
-    </programlisting>
+  first = self~initDatabase
+  self~setStats(first)
+]]>
+</programlisting>
+      <para>
+        In this example, (a continuation of the above example,) the control ID determines if the user has
+        double clicked on the employee job duties field, or the employee name field.  The event ID is not
+        used, or needed. Its purpose in the code snippet is simply an example. The same thing applies to
+        the window handle.
+      </para>
+<programlisting>
+<![CDATA[
+::method editStats
+  use arg ctrlInfo, ctrlHwnd
+
+  ctrlID = .DlgUtil~loWord(ctrlInfo)
+  eventID = .DlgUtil~hiWord(ctrlInfo)
+
+  rec = self~getCurrentRecord
+
+  if self~userUpdate(ctrlID, rec) then self~setStats(rec)
+]]>
+</programlisting>
   </listitem></varlistentry>
 </variablelist>
-
-<note><title>Notes</title>
-<orderedlist>
-<listitem>
-  <para>
-    The invocation of connectStaticNotify() can be placed in the <link linkend="h000025">init</link> or
-    <link linkend="mthInitDialog">initDialog</link> method.  (Indeed the invocation can be done anywhere.
-    But, it makes most sense to have the connection made before the dialog starts executing.) If the
-    connection is made in the init() method, be sure that init:super() is invoked first.
-  </para>
-</listitem>
-<listitem>
-  <para>
-    The defined event-handling methods will receive two arguments: 1.) information about the specific
-    control and its event, 2.) the window handle of the static control.  The low word of the first arg is
-    the control ID.  The high word of the first arg is the event ID. In this example, (a continuation of
-    the above example,) the control ID determines if the user has double clicked on the employee job
-    duties field, or the employee name field.  The event ID is not used, or needed.  The same with the
-    window handle.
-    <programlisting>
-    <![CDATA[
-    ::method editStats
-      use arg ctrlInfo, ctrlHwnd
-
-      ctrlID = .DlgUtil~loWord(ctrlInfo)
-      eventID = .DlgUtil~hiWord(ctrlInfo)
-
-      rec = self~getCurrentRecord
-
-      if self~userUpdate(ctrlID, rec) then self~setStats(rec)
-    ]]>
-    </programlisting>
-  </para>
-</listitem>
-</orderedlist>
-</note>
 </section>
 
 <section id="connecteditnotify"><title>ConnectEditNotify</title>
