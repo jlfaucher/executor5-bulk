@@ -105,31 +105,71 @@
 <section id="buttoncontrolc"><title>ButtonControl Class</title>
 <indexterm><primary>ButtonControl class</primary></indexterm>
 <para>
-  The ButtonControl class provides methods to query and modify push button
-  controls. It inherits all methods of the <link
-  linkend="clsDialogControl">DialogControl Class</link>.  In addition, the class
-  has methods that allow the ooRexx programmer to partially implement owner
-  drawn buttons using bitmaps.
-</para>
-<para>
-  Use the <link linkend="getbuttoncontrol">GetButtonControl</link> method to
-  retrieve an object of the ButtonControl class.
+  The ButtonControl class provides methods to query and modify push button controls. In addition, the
+  class has methods that allow the ooRexx programmer to partially implement owner drawn buttons using
+  bitmaps.
 </para>
 <variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para>The ButtonControl class requires the class definition
-file <computeroutput>oodwin32.cls</computeroutput>:
+  <varlistentry><term>Requires:</term>
+  <listitem>
+    <para>
+      The ButtonControl class requires the class definition file
+      <computeroutput>oodwin32.cls</computeroutput>:
 <programlisting>
 <![CDATA[
 ::requires "oodwin32.cls"
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
+  <listitem>
+    <para>
+      The button control class is a subclass of the <link linkend="clsDialogControl">DialogControl</link>
+      class and therefore inherits all methods of that class.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Mixin Class Inherits:</emphasis></term>
+  <listitem>
+    <para>
+      The button control class inherits from the following mixin classes, (indirectly through the
+      DialogControl class.)
+    </para>
+    <para>
+      The <link linkend="clsWindowBase">WindowBase</link>
+    </para>
+    <para>
+      The <link linkend="clsWindowExtensions">WindowExtensions</link>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+    <para>
+      Use the <link linkend="getbuttoncontrol">getButtonControl()</link>) method to retrieve an object of
+      the button control class.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+    <para>
+      To dynamically define a button control in a <link linkend="clsUserDialog">UserDialog</link> class,
+      use one of the add button methods described in the <link linkend="sectAddButtonControls">Add Button
+      Control</link> section. That section also describes methods for adding radio buttons, check boxes,
+      etc.. A ButtonControl is not a RadioButton or CheckBox. Only the addButton... methods are used to
+      add a ButtonControl object.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+    <para>
+      To recieve notification of button control events use the <link
+      linkend="mthConnectStaticNotify">connectStaticNotify</link>)() method.
+    </para>
+  </listitem></varlistentry>
 <varlistentry><term>Methods:</term>
 <listitem>
 <para>
-  Instances of the ButtonControl class implement the methods listed in the
-  following table.
+  The ButtonControl class implements the class and instance methods listed in the following table.
 </para>
 <table id="t000023" frame="all">
 <title>ButtonControl Instance Methods</title>
@@ -141,14 +181,6 @@ file <computeroutput>oodwin32.cls</computeroutput>:
 </row>
 </thead>
 <tbody>
-<row>
-<entry>releaseImageList (Class method)</entry>
-<entry><link linkend="mthReleaseImageListClsButtonControl">releaseImageList</link></entry>
-</row>
-<row>
-<entry>changeBitmap</entry>
-<entry><link linkend="changebitmap">changeBitmap</link></entry>
-</row>
 <row>
 <entry>changeBitmap</entry>
 <entry><link linkend="changebitmap">changeBitmap</link></entry>
@@ -180,6 +212,10 @@ file <computeroutput>oodwin32.cls</computeroutput>:
 <row>
 <entry>getBmpDisplacement</entry>
 <entry><link linkend="getbmpdisplacement">getBmpDisplacement</link></entry>
+</row>
+<row>
+<entry>getIdealSize</entry>
+<entry><link linkend="mthGetIdealSize">getIdealSize</link></entry>
 </row>
 <row>
 <entry>getImage</entry>
@@ -238,45 +274,6 @@ file <computeroutput>oodwin32.cls</computeroutput>:
 </listitem></varlistentry>
 </variablelist>
 
-
-<section id="mthReleaseImageListClsButtonControl"><title>releaseImageList</title>
-<indexterm><primary>releaseImageList</primary>
-<secondary>ButtonControl class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-.ButtonControl~releaseImageList(--handle--)-------------><
-
-]]>
-</programlisting>
-
-<para>
-  Use this method to release the operating system resources assigned to an image
-  list created by the <link linkend="mthSetImageList">setImageList</link>()
-  method.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>handle</term>
-<listitem><para>The handle to the image list.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The method does not return any value.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example ...
-<programlisting>
-<![CDATA[
-x = y
-return 0
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 
 <section id="mthPush"><title>push</title>
 <indexterm><primary>push</primary>
@@ -679,7 +676,7 @@ except that the operating system maintains the check state for the programmer.
 </para></listitem></varlistentry>
 <varlistentry><term>NOTIFY</term>
 <listitem><para>Enables a button to send the kill focus and set focus messages.
-  See the <link linkend="connectbuttonnotify">ConnectButtonNotify</link> method
+  See the <link linkend="mthConnectButtonNotify">ConnectButtonNotify</link> method
   of the <link linkend="clsMessageExtensions">MessageExtensions Class</link>.  If the button
   does not have this style, kill and set focus events will not be received, if
   the programmer does <computeroutput>connectButtonNotify()</computeroutput> to
@@ -1032,7 +1029,6 @@ self~getButtonControl(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 <para>
   In addition to the setImageList() method, this example uses a number of other methods
   related to using image lists with buttons. Such as, <link
-  linkend="mthReleaseImageListClsButtonControl">releaseImageList</link>, <link
   linkend="mthGetImageList">getImageList</link>, <link
   linkend="mthGetIdealSize">getIdealSize</link>, and <link
   linkend="mthComCtl32Version">comCtl32Version</link>.
@@ -1633,7 +1629,7 @@ the methods listed in the
 </listitem></varlistentry>
 </variablelist>
 <para>Events for instances of the RadioButton class may be captured using the
-<link linkend="connectbuttonnotify">ConnectButtonNotify</link> method of the
+<link linkend="mthConnectButtonNotify">ConnectButtonNotify</link> method of the
 <link linkend="clsMessageExtensions">MessageExtensions Class</link>.</para>
 
 <section id="ischecked"><title>IsChecked</title>
@@ -1738,7 +1734,7 @@ file <computeroutput>oodwin32.cls</computeroutput>:</para>
 <link linkend="getcheckcontrol">GetCheckControl</link>)
 to retrieve an object of the CheckBox class.</para>
 <para>Events for instances of the CheckBox class may be captured using the
-<link linkend="connectbuttonnotify">ConnectButtonNotify</link> method of the
+<link linkend="mthConnectButtonNotify">ConnectButtonNotify</link> method of the
 <link linkend="clsMessageExtensions">MessageExtensions Class</link>.</para>
 </section>
 

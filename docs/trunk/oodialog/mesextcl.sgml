@@ -77,7 +77,7 @@ the methods listed in
 <tbody>
 <row>
 <entry>ConnectButtonNotify</entry>
-<entry><link linkend="connectbuttonnotify">ConnectButtonNotify</link></entry>
+<entry><link linkend="mthConnectButtonNotify">ConnectButtonNotify</link></entry>
 </row>
 <row>
 <entry>ConnectComboBoxNotify</entry>
@@ -1098,7 +1098,7 @@ entry is removed from the mail merge.
 </variablelist>
 </section>
 
-<section id="connectbuttonnotify"><title>ConnectButtonNotify</title>
+<section id="mthConnectButtonNotify"><title>ConnectButtonNotify</title>
 <indexterm><primary>ConnectButtonNotify</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1162,6 +1162,13 @@ to a method.
 <varlistentry><term>UNHILITE</term>
 <listitem><para>The highlighting is to be removed (lost selection).
 </para></listitem></varlistentry>
+<varlistentry><term>HOTITEM</term>
+<listitem>
+  <para>
+    Notifies the dialog that the mouse has moved over the button, or that the mouse is leaving the area
+    over the button.
+  </para>
+</listitem></varlistentry>
 <varlistentry><term>PAINT</term>
 <listitem><para>The button is to be repainted. This notification is only sent for owner-drawn
 buttons.
@@ -1190,6 +1197,62 @@ incorrect.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Additional Notes:</emphasis></term>
+  <listitem>
+    <orderedlist>
+    <listitem>
+      <para>
+        The invocation of connectButtonNotify() can be placed in the <link linkend="h000025">init</link>
+        or <link linkend="mthInitDialog">initDialog</link> method.  (Indeed the invocation can be done
+        anywhere. But, it makes most sense to have the connection made before the dialog starts
+        executing.) If the connection is made in the init() method, be sure that the super class init()
+        is invoked first.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        For all events other than the HOTITEM event, the event-handling methods will receive two
+        arguments. The first arg contains information about the specific control and its event. The
+        second arg is the window handle of the button control.
+      </para>
+      <para>
+        The low word of the first arg is the control ID and the high word is the event ID. Example:
+<programlisting>
+<![CDATA[
+::method handler
+  use arg info, handle
+  id = .DlgUtil~loWord(info)
+  ...
+]]>
+</programlisting>
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        The method for the HOTITEM event also receives two arguments. The first arg is the control id.
+        The second arg is .true or .false. True if the mouse moved over the button, false if it left the
+        area over the button. Example:
+<programlisting>
+<![CDATA[
+::method onHover
+  use arg id, entering
+  say 'onHover id:' id 'entering:' entering
+  ...
+
+/* Output might be:
+
+  onHover id: 1044 entering: 1
+  onHover id: 1044 entering: 0
+  onHover id: 1001 entering: 1
+  onHover id: 1001 entering: 0
+
+*/
+]]>
+</programlisting>
+      </para>
+    </listitem>
+    </orderedlist>
+  </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example displays a message whenever the OK button is selected:</para>
 <programlisting>
@@ -1207,22 +1270,6 @@ incorrect.
 </listitem></varlistentry>
 </variablelist>
 
-<note><title>Notes</title>
-<orderedlist>
-<listitem><para>Connections are usually placed in the <link linkend="h000025">Init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
-before init:super has been called.</para></listitem>
-<listitem><para>The event-handling methods receive two arguments: the ID of the button
-(extract the low-order word) and the handle to the button. Example:
-<programlisting>
-<![CDATA[
-::method Handler
-  use arg ev_id, handle
-  id = .DlgUtil~loWord(ev_id)
-  ...
-]]>
-</programlisting></para></listitem>
-</orderedlist>
-</note>
 </section>
 
 <section id="mthConnectStaticNotify"><title>connectStaticNotify</title>
