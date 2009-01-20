@@ -1039,7 +1039,7 @@ associated Object Rexx attribute. Add... methods cannot be used after
 <para>
   The methods in this section are all used to add button controls. Button controls include push buttons,
   radio buttons, check boxes, group boxes, and owner-drawn buttons.  See the chapter on <link
-  linkend="buttoncontrolc">button controls</link> for more information.
+  linkend="chapButtonControls">button controls</link> for more information.
 </para>
 
 <section id="mthAddGroupBox"><title>addGroupBox</title>
@@ -1132,8 +1132,8 @@ associated Object Rexx attribute. Add... methods cannot be used after
 <indexterm><primary>addButton</primary></indexterm>
 <programlisting>
 <![CDATA[
-                                                           +-,-""---+
->>-aUserDialog~addButton(--id--,--x--,--y--,--cx--,--cy--,-+--------+---->
+
+>>-aUserDialog~addButton(--id--,--x--,--y--,--cx--,--cy--,-+--------+------>
                                                            +-,-text-+
 
 >--+-----------------------------------------------+--)--------><
@@ -1159,96 +1159,116 @@ associated Object Rexx attribute. Add... methods cannot be used after
 ]]>
 </programlisting>
 
-<para>The addButton method adds a push button to the dialog and connects it with
-a method that is invoked whenever the button is clicked.
+<para>
+  The addButton method adds a push button to the dialog and optionally connects it with a method that is
+  invoked whenever the button is clicked.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
-<varlistentry><term>id</term>
-<listitem>
-  <para>
-    The resource <link linkend="idArgument">ID</link> for the button.
-  </para>
-</listitem></varlistentry>
-<varlistentry><term>x, y, cx, cy</term>
-<listitem><para>The <link linkend="listCommonArguments">control coordinates</link>
-</para></listitem></varlistentry>
-<varlistentry><term>text</term>
-<listitem><para>The text for the label of the button.
-</para></listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The name of a method of the dialog class that is to be invoked
-each time the button is clicked
-</para></listitem></varlistentry>
-<varlistentry><term>style</term>
+  <varlistentry><term>id</term>
   <listitem>
     <para>
-      A list of 0 or more <link linkend="paraStyleExplanation">style</link> keywords separated by
-      spaces:
-      <variablelist>
-      <varlistentry><term>DEFAULT</term>
-      <listitem><para>The button becomes the default button in the dialog.
-      </para></listitem></varlistentry>
-      <varlistentry><term>OWNER</term>
-      <listitem><para>The programmer is completely responsible for drawing the button
-      when the dialog receives the WM_DRAWITEM message.  Currently this would be
-      difficult (but not impossible) to implement in ooDialog.  A simpler approach for
-      an owner drawn button is to use a bitmap button.  See the <link
-      linkend="mthAddBitmapButton">addBitmapButton</link> method.
-      </para></listitem></varlistentry>
-      <varlistentry><term>LEFT</term>
-      <listitem><para>Left justifies the text in the button rectangle.  If neither
-      LEFT nor RIGHT are specified the text is centered in the button rectangle.
-      </para></listitem></varlistentry>
-      <varlistentry><term>RIGHT</term>
-      <listitem><para>Right justifies the text in the button rectangle.  If neither
-      LEFT nor RIGHT are specified the text is centered in the button rectangle.
-      </para></listitem></varlistentry>
-      <varlistentry><term>TOP</term>
-      <listitem><para>The text is aligned at the top of the button rectangle.  If
-      neither TOP nor BOTTOM are specified the text is vertically centered in the
-      button rectangle.
-      </para></listitem></varlistentry>
-      <varlistentry><term>BOTTOM</term>
-      <listitem><para>The text is aligned at the bottom of the button rectangle.  If
-      neither TOP nor BOTTOM are specified the text is vertically centered in the
-      button rectangle.
-      </para></listitem></varlistentry>
-      <varlistentry><term>MULTILINE</term>
-      <listitem><para>If the text for the label of the button is longer than the width
-      of the button rectangle, the operating system will word wrap the text producing
-      more than one line.  The height of the button rectangle has to be sufficient to
-      display the extra line(s) or the text is clipped.
-      </para></listitem></varlistentry>
-      <varlistentry><term>NOTIFY</term>
-      <listitem><para>Enables the button to send notifications for the gained focus,
-      lost focus, and double click events.  This is only necessary when the <link
-      linkend="mthConnectButtonNotify">ConnectButtonNotify</link> method is used, and
-      only for the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method.
-      </para></listitem></varlistentry>
-      <varlistentry><term>FLAT</term>
-      <listitem><para>The button is drawn with a flat appearance, i.e., it is drawn as
-      a flat rectangle the label text inside the rectangle.
-      </para></listitem></varlistentry>
-      <varlistentry><term>HIDDEN</term>
-      <listitem><para>The <link linkend="wsvisible">not visible</link> window style.
-      </para></listitem></varlistentry>
-      <varlistentry><term>DISABLED</term>
-      <listitem><para>The <link linkend="wsborder">not enabled</link> window style.
-      </para></listitem></varlistentry>
-      <varlistentry><term>BORDER</term>
-      <listitem><para>The <link linkend="wsborder">border</link> window style.
-      </para></listitem></varlistentry>
-      <varlistentry><term>GROUP</term>
-      <listitem><para>The <link linkend="wsborder">group</link> control style.
-      </para></listitem></varlistentry>
-      <varlistentry><term>NOTAB</term>
-      <listitem><para>The no <link linkend="wsborder">tabstop</link> control style.
-      </para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+      The resource <link linkend="idArgument">ID</link> for the button.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>x, y, cx, cy</term>
+  <listitem>
+    <para>
+      The <link linkend="listCommonArguments">control coordinates</link>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>text</term>
+  <listitem>
+    <para>
+      The text for the label of the button.  This can be the empty string.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>msgToRaise</term>
+  <listitem>
+    <para>
+      Optional. The name of a method of the dialog class that is to be invoked each time the button is
+      clicked
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>style</term>
+    <listitem>
+      <para>
+        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+        separated by spaces:
+        <variablelist>
+          <varlistentry><term>DEFAULT</term>
+          <listitem>
+            <para>
+              The button becomes the default button in the dialog.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>OWNER</term>
+          <listitem>
+            <para>
+              The programmer is completely responsible for drawing the button when the dialog receives
+              the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
+              implement in ooDialog.  A simpler approach for an owner drawn button is to use a bitmap
+              button.  See the <link linkend="mthAddBitmapButton">addBitmapButton</link> method.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LEFT</term>
+          <listitem>
+            <para>
+              Left justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
+              the text is centered in the button rectangle.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RIGHT</term>
+          <listitem><para>Right justifies the text in the button rectangle.  If neither
+          LEFT nor RIGHT are specified the text is centered in the button rectangle.
+          </para></listitem></varlistentry>
+          <varlistentry><term>TOP</term>
+          <listitem><para>The text is aligned at the top of the button rectangle.  If
+          neither TOP nor BOTTOM are specified the text is vertically centered in the
+          button rectangle.
+          </para></listitem></varlistentry>
+          <varlistentry><term>BOTTOM</term>
+          <listitem><para>The text is aligned at the bottom of the button rectangle.  If
+          neither TOP nor BOTTOM are specified the text is vertically centered in the
+          button rectangle.
+          </para></listitem></varlistentry>
+          <varlistentry><term>MULTILINE</term>
+          <listitem><para>If the text for the label of the button is longer than the width
+          of the button rectangle, the operating system will word wrap the text producing
+          more than one line.  The height of the button rectangle has to be sufficient to
+          display the extra line(s) or the text is clipped.
+          </para></listitem></varlistentry>
+          <varlistentry><term>NOTIFY</term>
+          <listitem><para>Enables the button to send notifications for the gained focus,
+          lost focus, and double click events.  This is only necessary when the <link
+          linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and
+          only for the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method.
+          </para></listitem></varlistentry>
+          <varlistentry><term>FLAT</term>
+          <listitem><para>The button is drawn with a flat appearance, i.e., it is drawn as
+          a flat rectangle the label text inside the rectangle.
+          </para></listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem><para>The <link linkend="wsvisible">not visible</link> window style.
+          </para></listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem><para>The <link linkend="wsborder">not enabled</link> window style.
+          </para></listitem></varlistentry>
+          <varlistentry><term>BORDER</term>
+          <listitem><para>The <link linkend="wsborder">border</link> window style.
+          </para></listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem><para>The <link linkend="wsborder">group</link> control style.
+          </para></listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem><para>The no <link linkend="wsborder">tabstop</link> control style.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1393,7 +1413,7 @@ extent of the button.</para>
 <varlistentry><term>NOTIFY</term>
 <listitem><para>Enables the button to send notifications for the gained focus
 and lost focus events.  This is only necessary when the <link
-linkend="mthConnectButtonNotify">ConnectButtonNotify</link> method is used, and
+linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and
 only for the GOTFOCUS and LOSTFOCUS keywords of that method.  Note that this
 style is not needed for bitmap buttons to receive the double click (DBLCLK)
 event as it is for other buttons.

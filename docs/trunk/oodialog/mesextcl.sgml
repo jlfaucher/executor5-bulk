@@ -76,8 +76,8 @@ the methods listed in
 </thead>
 <tbody>
 <row>
-<entry>ConnectButtonNotify</entry>
-<entry><link linkend="mthConnectButtonNotify">ConnectButtonNotify</link></entry>
+<entry>connectButtonNotify</entry>
+<entry><link linkend="mthConnectButtonNotify">connectButtonNotify</link></entry>
 </row>
 <row>
 <entry>ConnectComboBoxNotify</entry>
@@ -1098,37 +1098,27 @@ entry is removed from the mail merge.
 </variablelist>
 </section>
 
-<section id="mthConnectButtonNotify"><title>ConnectButtonNotify</title>
-<indexterm><primary>ConnectButtonNotify</primary></indexterm>
+<section id="mthConnectButtonNotify"><title>connectButtonNotify</title>
+<indexterm><primary>connectButtonNotify</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectButtonNotify(--id--,--"--+-CLICKED---+--"-->
-                                                      +-DBLCLK----+
-                                                      +-DISABLE---+
-                                                      +-GOTFOCUS--+
-                                                      +-LOSTFOCUS-+
-                                                      +-HILITE----+
-                                                      +-UNHILITE--+
-                                                      +-PAINT-----+
-
->--+---------------+--)----------------------------------------><
-   +-,--msgToRaise-+
-
+>>--connectButtonNotify(--id--,--"--event---"--+---------------+--)---------><
+                                               +-,--msgToRaise-+
 
 ]]>
 </programlisting>
 
-<para>The ConnectButtonNotify method connects a particular
-WM_NOTIFY message for a button control (push button, radio button, or check
-box) with a method. The WM_NOTIFY message informs the dialog that an event
-has occurred with regard to the button.</para>
+<para>
+  The connectButtonNotify method connects a particular WM_NOTIFY message for a button control (push
+  button, radio button, or check box) with a method. The WM_NOTIFY message informs the dialog that an
+  event has occurred with regard to the button.
+</para>
 <note><title>Note</title><para>
-In order to recieve the GOTFOCUS, LOSTFOCUS, and DBLCLK events, the button
-control has to have the NOTIFY (BS_NOTIFY) style.  For user defined dialogs use
-the NOTIFY style keyword in the <link linkend="addmeth">Add...</link> method
-when the button is defined.  For dialogs created from a compiled resource or a
-resource script file use the BS_NOTIFY style for the button resource.  The other
-events are always sent and it is not necessary to add the NOTIFY style.
+  In order to recieve the GOTFOCUS, LOSTFOCUS, and DBLCLK events, the button control has to have the
+  NOTIFY (BS_NOTIFY) style.  For user defined dialogs use the NOTIFY style keyword in the <link
+  linkend="addmeth">Add...</link> method when the button is defined.  For dialogs created from a compiled
+  resource or a resource script file use the BS_NOTIFY style for the button resource.  The other events
+  are always sent and it is not necessary to add the NOTIFY style.
 </para></note>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1139,7 +1129,9 @@ events are always sent and it is not necessary to add the NOTIFY style.
 to a method.
 </para></listitem></varlistentry>
 <varlistentry><term>event</term>
-<listitem><para>The event to be connected with a method:
+<listitem>
+<para>
+  A keyword specifying the event to be connected with a method. This can be exactly one of the follwoing:
 <variablelist>
 <varlistentry><term>CLICKED</term>
 <listitem><para>The button has been clicked.
@@ -1176,9 +1168,12 @@ buttons.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent whenever the specified notification is
-received from the button control. Provide a method with a matching name. If
-you omit this argument, the event is preceded by <computeroutput>On</computeroutput>.
+<listitem>
+<para>
+  The message that is to be sent whenever the specified notification is received from the button control.
+  Provide a method with a matching name. If you omit this argument, a message name is generated
+  automatically. The name consists of the event keyword preceded by <computeroutput>On</computeroutput>.
+  For instance: <computeroutput>onGotFocus</computeroutput>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1261,7 +1256,7 @@ incorrect.
 
 ::method Init
   self~init:super(...)
-  self~ConnectButtonNotify("OK", "HILITE")
+  self~connectButtonNotify("OK", "HILITE")
 
 ::method OnHilite
   say "The OK button has been selected"

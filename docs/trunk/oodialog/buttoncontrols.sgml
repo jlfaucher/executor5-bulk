@@ -41,7 +41,7 @@
     #
     #########################################################################
 -->
-<chapter id="buttoncontrols"><title>Button Controls</title>
+<chapter id="chapButtonControls"><title>Button Controls</title>
 <indexterm><primary>Button Controls</primary></indexterm>
 <para>
   In Windows the Button control has a number of different types or kinds.  Most
@@ -145,7 +145,7 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
     <para>
-      Use the <link linkend="getbuttoncontrol">getButtonControl()</link>) method to retrieve an object of
+      Use the <link linkend="getbuttoncontrol">getButtonControl</link>() method to retrieve an object of
       the button control class.
     </para>
   </listitem></varlistentry>
@@ -155,8 +155,7 @@
       To dynamically define a button control in a <link linkend="clsUserDialog">UserDialog</link> class,
       use one of the add button methods described in the <link linkend="sectAddButtonControls">Add Button
       Control</link> section. That section also describes methods for adding radio buttons, check boxes,
-      etc.. A ButtonControl is not a RadioButton or CheckBox. Only the addButton... methods are used to
-      add a ButtonControl object.
+      etc.. Only the addButton... methods are used to add a ButtonControl object.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
@@ -280,7 +279,7 @@
 <secondary>ButtonControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~push-------------------------------><
+>>--push---------------------------------------><
 ]]>
 </programlisting>
 
@@ -326,14 +325,14 @@ return .true
 <secondary>ButtonControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~click-------------------------------><
+>>--click----------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  The click method programmatically clicks the associated button control.  It
-  simulates the user pusing the button and produces exactly the same behavior as
-  if the user had clicked on the button with the mouse.
+  The click method programmatically clicks the associated button control.  It simulates the user clicking
+  the button and produces exactly the same behavior as if the user had clicked on the button with the
+  mouse.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -359,12 +358,13 @@ self~getButtonControl(IDCANCEL)~click
 <indexterm><primary>State</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~State----------------------------------------><
+>>--state----------------------------------------><
 ]]>
 </programlisting>
 
-<para>The State method retrieves the current state of
-the associated button control.</para>
+<para>
+  The state method retrieves the current state of the associated button control.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>A text string that can contain one or more of the following keywords,
@@ -416,57 +416,60 @@ say button~State
 </variablelist>
 </section>
 
-<section id="statenew"><title>State=</title>
-<indexterm><primary>State=</primary></indexterm>
+<section id="statenew"><title>state=</title>
+<indexterm><primary>sState=</primary></indexterm>
 <programlisting>
 <![CDATA[
-                             +-------------------+
-                             V                   |
->>-aButtonControl~State=--"----+-CHECKED-------+-+--"----------><
-                               +-UNCHECKED-----+
-                               +-INDETERMINATE-+
-                               +-PUSHED--------+
-                               +-NOTPUSHED-----+
-                               +-FOCUS---------+
-
+>>--state=--newState-----------------------------><
 
 ]]>
 </programlisting>
 
-<para>The State= method sets the state for the associated
-button control.</para>
+<para>
+  The state= method sets the state for the associated button control.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
 <variablelist>
-<varlistentry><term>new_State</term>
-<listitem><para>A text string that contains one or more of the following
-keywords, separated by a blank:
-<variablelist>
-<varlistentry><term>CHECKED</term>
-<listitem><para>The radio button or the check box is to be set to the
-&quot;checked&quot; state.
-</para></listitem></varlistentry>
-<varlistentry><term>UNCHECKED</term>
-<listitem><para>The radio button or the check box is to be set to the
-&quot;unchecked&quot; state.
-</para></listitem></varlistentry>
-<varlistentry><term>INDETERMINATE</term>
-<listitem><para>The 3-state check box button is to be set to the
-&quot;indeterminate&quot; state.  This state can only be applied to 3-state
-check box buttons.
-</para></listitem></varlistentry>
-<varlistentry><term>PUSHED</term>
-<listitem><para>The button is to be set to the &quot;pushed&quot; state.
-</para></listitem></varlistentry>
-<varlistentry><term>NOTPUSHED</term>
-<listitem><para>The &quot;pushed&quot; state is to be removed from the button.
-</para></listitem></varlistentry>
-<varlistentry><term>FOCUS</term>
-<listitem><para>The button is to be set to the &quot;focused&quot; state.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+<varlistentry><term>newState</term>
+<listitem>
+  <para>
+    A text string that contains one or more of the following keywords, separated by a blank:
+    <simplelist type='horiz' columns='2'>
+    <member>CHECKED</member>       <member>UNCHECKED</member>
+    <member>PUSHED</member>        <member>NOTPUSHED</member>
+    <member>INDETERMINATE</member> <member>FOCUS</member>
+    </simplelist>
+    <variablelist>
+    <varlistentry><term>CHECKED</term>
+    <listitem><para>
+      The radio button or the check box is to be set to the &quot;checked&quot; state.
+    </para></listitem></varlistentry>
+    <varlistentry><term>UNCHECKED</term>
+    <listitem><para>
+      The radio button or the check box is to be set to the &quot;unchecked&quot; state.
+    </para></listitem></varlistentry>
+    <varlistentry><term>PUSHED</term>
+    <listitem><para>
+      The button is to be set to the &quot;pushed&quot; state.
+    </para></listitem></varlistentry>
+    <varlistentry><term>NOTPUSHED</term>
+    <listitem><para>
+      The &quot;pushed&quot; state is to be removed from the button.
+    </para></listitem></varlistentry>
+    <varlistentry><term>INDETERMINATE</term>
+    <listitem><para>
+      The 3-state check box button is to be set to the &quot;indeterminate&quot; state.  This state can
+      only be applied to 3-state check box buttons.
+    </para></listitem></varlistentry>
+    <varlistentry><term>FOCUS</term>
+    <listitem><para>
+      The button is to be set to the &quot;focused&quot; state.
+    </para></listitem></varlistentry>
+    </variablelist>
+  </para>
+</listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -475,7 +478,7 @@ check box buttons.
 <![CDATA[
 button = MyDialog~GetButtonControl("IDOK")
 if button == .Nil then return
-button~State="FOCUS PUSHED"
+button~state="FOCUS PUSHED"
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -505,48 +508,18 @@ one of the ooDialog methods that move the focus: <link linkend="tabtonext">TabTo
 </variablelist>
 </section>
 
-<section id="stylenew"><title>Style=</title>
-<indexterm><primary>Style=</primary>
+<section id="stylenew"><title>style=</title>
+<indexterm><primary>style=</primary>
 <secondary>ButtonControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~Style=--"--+-DEFPUSHBUTTON---+--"------------><
-                             +-PUSHBOX---------+
-                             +-RADIO-----------+
-                             +-AUTORADIO-------+
-                             +-CHECKBOX--------+
-                             +-AUTOCHECKBOX----+
-                             +-3STATE----------+
-                             +-AUTO3STATE------+
-                             +-GROUPBOX--------+
-                             +-OWNERDRAW-------+
-                             +-LEFTTEXT--------+
-                             +-RIGHTBUTTON-----+
-                             +-NOTLEFTTEXT-----+
-                             +-TEXT------------+
-                             +-ICON------------+
-                             +-BITMAP----------+
-                             +-LEFT------------+
-                             +-RIGHT-----------+
-                             +-HCENTER---------+
-                             +-TOP-------------+
-                             +-BOTTOM----------+
-                             +-VCENTER---------+
-                             +-PUSHLIKE--------+
-                             +-MULTILINE-------+
-                             +-NOTIFY----------+
-                             +-FLAT------------+
-                             +-NOTPUSHLIKE-----+
-                             +-NOTMULTILINE----+
-                             +-NOTNOTIFY-------+
-                             +-NOTFLAT---------+
-
+>>--style=--newStyle-----------------------------><
 
 ]]>
 </programlisting>
 
-<para>The Style= method changes the style of the associated
-button control.
+<para>
+  The style= method changes the style of the associated button control.
 <note><title>Note</title>
 <para>
   In the past, the documentation for this method was incomplete or misleading.
@@ -577,11 +550,26 @@ button control.
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
 <variablelist>
-<varlistentry><term>new_Style</term>
-<listitem><para>A text string containing at least one or more of the following
-  keywords.  Common sense should be used when constructing the new_Style string.
-  If mutually exclusive key words are used, the outcome will be dependent on the
-  order of the key words.
+<varlistentry><term>newStyle</term>
+<listitem>
+<para>
+  A text string containing one or more of the following keywords separated by blanks.  Common sense
+  should be used when constructing the newStyle string. If mutually exclusive key words are used, the
+  outcome will be dependent on the order of the key words.
+</para>
+<para>
+  <simplelist type='vert' columns='3'>
+  <member>DEFPUSHBUTTON</member> <member>LEFTTEXT   </member> <member>BOTTOM      </member>
+  <member>PUSHBOX      </member> <member>RIGHTBUTTON</member> <member>VCENTER     </member>
+  <member>RADIO        </member> <member>NOTLEFTTEXT</member> <member>PUSHLIKE    </member>
+  <member>AUTORADIO    </member> <member>TEXT       </member> <member>MULTILINE   </member>
+  <member>CHECKBOX     </member> <member>ICON       </member> <member>NOTIFY      </member>
+  <member>AUTOCHECKBOX </member> <member>BITMAP     </member> <member>FLAT        </member>
+  <member>3STATE       </member> <member>LEFT       </member> <member>NOTPUSHLIKE </member>
+  <member>AUTO3STATE   </member> <member>RIGHT      </member> <member>NOTMULTILINE</member>
+  <member>GROUPBOX     </member> <member>HCENTER    </member> <member>NOTNOTIFY   </member>
+  <member>OWNERDRAW    </member> <member>TOP        </member> <member>NOTFLAT     </member>
+  </simplelist>
 <variablelist>
 <varlistentry><term>DEFPUSHBUTTON</term>
 <listitem><para>In a dialog, the default push button is the button that is
@@ -593,11 +581,11 @@ button control.
   only the text appears.  This button style is not applicable when Windows
   themes are in use.
 </para></listitem></varlistentry>
-<varlistentry><term>RADIOBUTTON</term>
+<varlistentry><term>RADIO</term>
 <listitem><para>A radio button the state of which has to be maintained by the
   programmer.
 </para></listitem></varlistentry>
-<varlistentry><term>AUTORADIOBUTTON</term>
+<varlistentry><term>AUTO</term>
 <listitem><para>A radio button where the operating system maintains the check
 state for all radio buttons in the same group.  When one radio button in the
 group is checked by the user, the operating system unchecks all other buttons in
@@ -676,7 +664,7 @@ except that the operating system maintains the check state for the programmer.
 </para></listitem></varlistentry>
 <varlistentry><term>NOTIFY</term>
 <listitem><para>Enables a button to send the kill focus and set focus messages.
-  See the <link linkend="mthConnectButtonNotify">ConnectButtonNotify</link> method
+  See the <link linkend="mthConnectButtonNotify">connectButtonNotify</link> method
   of the <link linkend="clsMessageExtensions">MessageExtensions Class</link>.  If the button
   does not have this style, kill and set focus events will not be received, if
   the programmer does <computeroutput>connectButtonNotify()</computeroutput> to
@@ -708,7 +696,7 @@ except that the operating system maintains the check state for the programmer.
 <![CDATA[
 button = MyDialog~GetButtonControl("IDOK")
 if button == .Nil then return
-button~Style="DEFPUSHBUTTON"
+button~style="DEFPUSHBUTTON"
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -745,13 +733,13 @@ button~Style="DEFPUSHBUTTON"
 <indexterm><primary>getIdealSize</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~getIdealSize-------------------------------><
+>>--getIdealSize---------------------------------><
 
 ]]>
 </programlisting>
 <para>
-  This method queries the button control for its ideal size.  The ideal size is
-  the size that best fits its text or image.  (If the button has an image list.)
+  This method queries the button control for its ideal size.  The ideal size is the size that best fits
+  its text or image.  (If the button has an image list.)
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">ComCtl32 dependent </emphasis></term>
@@ -799,7 +787,7 @@ say 'The ideal width for the button is' size~width
 <indexterm><primary>getTextMargin</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~getTextMargin-------------------------------><
+>>--getTextMargin--------------------------------><
 ]]>
 </programlisting>
 
@@ -859,14 +847,13 @@ say '  Bottom:' margins~bottom
 <secondary>ButtonControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~setTextMargin(--margins--)------------------><
+>>--setTextMargin(--margins--)-------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  This method sets the margins for drawing text in the associated button
-  control.
+  This method sets the margins for drawing text in the associated button control.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">ComCtl32 dependent</emphasis></term>
@@ -916,7 +903,7 @@ self~getButtonControl(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 <secondary>ButtonControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~getImageList-------------------------------><
+>>--getImageList---------------------------------><
 
 ]]>
 </programlisting>
@@ -952,9 +939,12 @@ self~getButtonControl(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
   </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term>The <computeroutput>.nil</computeroutput> object</term>
-<listitem><para>The .nil object is returned if the button does not have an
-  image list, or for some other unanticipated error.
-</para></listitem></varlistentry>
+<listitem>
+  <para>
+    The .nil object is returned if the button does not have an image list, or for some other
+    unanticipated error.
+  </para>
+</listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -994,8 +984,8 @@ self~getButtonControl(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 <indexterm><primary>setImageList</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~setImageList(--imageList--,--+--------+--,--+-------+--)-><
-                                               +-margin-+     +-align-+
+>>--setImageList(--imageList--,--+--------+--,--+-------+--)-------------------><
+                                 +-margin-+     +-align-+
 
 ]]>
 </programlisting>
@@ -1629,7 +1619,7 @@ the methods listed in the
 </listitem></varlistentry>
 </variablelist>
 <para>Events for instances of the RadioButton class may be captured using the
-<link linkend="mthConnectButtonNotify">ConnectButtonNotify</link> method of the
+<link linkend="mthConnectButtonNotify">connectButtonNotify</link> method of the
 <link linkend="clsMessageExtensions">MessageExtensions Class</link>.</para>
 
 <section id="ischecked"><title>IsChecked</title>
@@ -1734,7 +1724,7 @@ file <computeroutput>oodwin32.cls</computeroutput>:</para>
 <link linkend="getcheckcontrol">GetCheckControl</link>)
 to retrieve an object of the CheckBox class.</para>
 <para>Events for instances of the CheckBox class may be captured using the
-<link linkend="mthConnectButtonNotify">ConnectButtonNotify</link> method of the
+<link linkend="mthConnectButtonNotify">connectButtonNotify</link> method of the
 <link linkend="clsMessageExtensions">MessageExtensions Class</link>.</para>
 </section>
 
