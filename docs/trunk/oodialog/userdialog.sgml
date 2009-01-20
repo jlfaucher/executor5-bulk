@@ -1093,7 +1093,7 @@ associated Object Rexx attribute. Add... methods cannot be used after
             <varlistentry><term>DISABLED</term>
             <listitem>
               <para>
-                The <link linkend="wsborder">not enabled</link> window style.
+                The <link linkend="wsdisabled">not enabled</link> window style.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>BORDER</term>
@@ -1105,13 +1105,13 @@ associated Object Rexx attribute. Add... methods cannot be used after
             <varlistentry><term>GROUP</term>
             <listitem>
               <para>
-                The <link linkend="wsborder">group</link> control style.
+                The <link linkend="wsgroup">group</link> control style.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>TAB</term>
             <listitem>
               <para>
-                The <link linkend="wsborder">tabstop</link> control style.
+                The <link linkend="wstabstop">tabstop</link> control style.
               </para>
             </listitem></varlistentry>
           </variablelist>
@@ -1133,29 +1133,8 @@ associated Object Rexx attribute. Add... methods cannot be used after
 <programlisting>
 <![CDATA[
 
->>-aUserDialog~addButton(--id--,--x--,--y--,--cx--,--cy--,-+--------+------>
-                                                           +-,-text-+
-
->--+-----------------------------------------------+--)--------><
-   +-,--msgToRaise--+----------------------------+-+
-                    |       .---------------+    |
-                    |       V               |    |
-                    +-,--"----+-DEFAULT---+-+--"-+
-                              +-OWNER-----+
-                              +-LEFT------+
-                              +-RIGHT-----+
-                              +-TOP-------+
-                              +-BOTTOM----+
-                              +-MULTILINE-+
-                              +-NOTIFY----+
-                              +-FLAT------+
-                              +-HIDDEN----+
-                              +-DISABLED--+
-                              +-GROUP-----+
-                              +-NOTAB-----+
-                              +-BORDER----+
-
-
+>>--addButton(--id-,-x-,-y-,-cx-,-cy-,-+--------+--+--------------+--+---------+-)--><
+                                       +-,-text-+  +-,-msgToRaise-+  +-,-style-+
 ]]>
 </programlisting>
 
@@ -1164,128 +1143,217 @@ associated Object Rexx attribute. Add... methods cannot be used after
   invoked whenever the button is clicked.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-  <varlistentry><term>id</term>
-  <listitem>
-    <para>
-      The resource <link linkend="idArgument">ID</link> for the button.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term>x, y, cx, cy</term>
-  <listitem>
-    <para>
-      The <link linkend="listCommonArguments">control coordinates</link>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term>text</term>
-  <listitem>
-    <para>
-      The text for the label of the button.  This can be the empty string.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term>msgToRaise</term>
-  <listitem>
-    <para>
-      Optional. The name of a method of the dialog class that is to be invoked each time the button is
-      clicked
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term>style</term>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The arguments are:
+  <variablelist>
+    <varlistentry><term>id</term>
     <listitem>
       <para>
-        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-        separated by spaces:
-        <variablelist>
-          <varlistentry><term>DEFAULT</term>
-          <listitem>
-            <para>
-              The button becomes the default button in the dialog.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>OWNER</term>
-          <listitem>
-            <para>
-              The programmer is completely responsible for drawing the button when the dialog receives
-              the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
-              implement in ooDialog.  A simpler approach for an owner drawn button is to use a bitmap
-              button.  See the <link linkend="mthAddBitmapButton">addBitmapButton</link> method.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>LEFT</term>
-          <listitem>
-            <para>
-              Left justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
-              the text is centered in the button rectangle.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>RIGHT</term>
-          <listitem><para>Right justifies the text in the button rectangle.  If neither
-          LEFT nor RIGHT are specified the text is centered in the button rectangle.
-          </para></listitem></varlistentry>
-          <varlistentry><term>TOP</term>
-          <listitem><para>The text is aligned at the top of the button rectangle.  If
-          neither TOP nor BOTTOM are specified the text is vertically centered in the
-          button rectangle.
-          </para></listitem></varlistentry>
-          <varlistentry><term>BOTTOM</term>
-          <listitem><para>The text is aligned at the bottom of the button rectangle.  If
-          neither TOP nor BOTTOM are specified the text is vertically centered in the
-          button rectangle.
-          </para></listitem></varlistentry>
-          <varlistentry><term>MULTILINE</term>
-          <listitem><para>If the text for the label of the button is longer than the width
-          of the button rectangle, the operating system will word wrap the text producing
-          more than one line.  The height of the button rectangle has to be sufficient to
-          display the extra line(s) or the text is clipped.
-          </para></listitem></varlistentry>
-          <varlistentry><term>NOTIFY</term>
-          <listitem><para>Enables the button to send notifications for the gained focus,
-          lost focus, and double click events.  This is only necessary when the <link
-          linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and
-          only for the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method.
-          </para></listitem></varlistentry>
-          <varlistentry><term>FLAT</term>
-          <listitem><para>The button is drawn with a flat appearance, i.e., it is drawn as
-          a flat rectangle the label text inside the rectangle.
-          </para></listitem></varlistentry>
-          <varlistentry><term>HIDDEN</term>
-          <listitem><para>The <link linkend="wsvisible">not visible</link> window style.
-          </para></listitem></varlistentry>
-          <varlistentry><term>DISABLED</term>
-          <listitem><para>The <link linkend="wsborder">not enabled</link> window style.
-          </para></listitem></varlistentry>
-          <varlistentry><term>BORDER</term>
-          <listitem><para>The <link linkend="wsborder">border</link> window style.
-          </para></listitem></varlistentry>
-          <varlistentry><term>GROUP</term>
-          <listitem><para>The <link linkend="wsborder">group</link> control style.
-          </para></listitem></varlistentry>
-          <varlistentry><term>NOTAB</term>
-          <listitem><para>The no <link linkend="wsborder">tabstop</link> control style.
+        The resource <link linkend="idArgument">ID</link> for the button.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>x, y, cx, cy</term>
+    <listitem>
+      <para>
+        The <link linkend="listCommonArguments">control coordinates</link>
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text</term>
+    <listitem>
+      <para>
+        Optional. The text for the label of the button.  The default is the empty string.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>msgToRaise</term>
+    <listitem>
+      <para>
+        Optional. The name of a method of the dialog class that is to be invoked each time the button is
+        clicked.  This serves the same purpose as the <link
+        linkend="mthConnectButtonNotify">connectButtonNotify</link>() method using the CLICKED event.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+          separated by spaces:
           </para>
-        </listitem></varlistentry>
-      </variablelist>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example creates a push button
-entitled "Get new Info" at position x=100, y=80 and size
-width=40, height=15. The button's ID is 555, and if the button is clicked,
-the getInfo message is sent to the dialog object.  The button is created without
-the tabstop style.  If the user navigates the dialog using the keyboard, the tab
-key will skip over the button.
-
+          <para>
+            <simplelist type='vert' columns='3'>
+            <member>DEFAULT  </member>
+            <member>OWNER    </member>
+            <member>BITMAP   </member>
+            <member>ICON     </member>
+            <member>LEFT     </member>
+            <member>RIGHT    </member>
+            <member>HCENTER  </member>
+            <member>TOP      </member>
+            <member>BOTTOM   </member>
+            <member>VCENTER  </member>
+            <member>MULTILINE</member>
+            <member>NOTIFY   </member>
+            <member>FLAT     </member>
+            <member>HIDDEN   </member>
+            <member>DISABLED </member>
+            <member>BORDER   </member>
+            <member>GROUP    </member>
+            <member>NOTAB    </member>
+            </simplelist>
+          <variablelist>
+            <varlistentry><term>DEFAULT</term>
+            <listitem>
+              <para>
+                The button becomes the default button in the dialog.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>OWNER</term>
+            <listitem>
+              <para>
+                The programmer is completely responsible for drawing the button when the dialog receives
+                the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
+                implement in ooDialog.  A simpler approach for an owner drawn button is to use a bitmap
+                button.  See the <link linkend="mthAddBitmapButton">addBitmapButton</link> method.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ICON</term>
+            <listitem>
+              <para>
+                The button displays an icon image.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BITMAP</term>
+            <listitem>
+              <para>
+                The button displays a bitmap image.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>LEFT</term>
+            <listitem>
+              <para>
+                Left justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
+                the text is centered in the button rectangle.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>RIGHT</term>
+            <listitem>
+              <para>
+                Right justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
+                the text is centered in the button rectangle.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HCENTER</term>
+            <listitem>
+              <para>
+                The button has its text centered horizontally in the button rectangle.  This is the default
+                if neither LEFT nor RIGHT are specified.
+            </para></listitem></varlistentry>
+            <varlistentry><term>TOP</term>
+            <listitem>
+              <para>
+                The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
+                specified the text is vertically centered in the button rectangle.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BOTTOM</term>
+            <listitem>
+              <para>
+                The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
+                specified the text is vertically centered in the button rectangle.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>VCENTER</term>
+            <listitem>
+              <para>
+                The text is vertically centered in the button rectanble.  This is the default if neither
+                TOP nor BOTTOM are specified.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>MULTILINE</term>
+            <listitem>
+              <para>
+                If the text for the label of the button is longer than the width of the button rectangle,
+                the operating system will word wrap the text producing more than one line.  The height of
+                the button rectangle has to be sufficient to display the extra line(s) or the text is
+                clipped.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>NOTIFY</term>
+            <listitem>
+              <para>
+                Enables the button to send notifications for the gained focus,lost focus, and double click
+                events.  This is only necessary when the <link
+                linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and only for
+                the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>FLAT</term>
+            <listitem>
+              <para>
+                The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
+                text inside the rectangle.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HIDDEN</term>
+            <listitem>
+              <para>
+                The <link linkend="wsvisible">not visible</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DISABLED</term>
+            <listitem>
+              <para>
+                The <link linkend="wsdisabled">not enabled</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BORDER</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">border</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GROUP</term>
+            <listitem>
+              <para>
+                The <link linkend="wsgroup">group</link> control style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>NOTAB</term>
+            <listitem>
+              <para>
+                The no <link linkend="wstabstop">tabstop</link> control style.
+              </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem><para>This method returns:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem><para>Success
+    </para></listitem></varlistentry>
+    <varlistentry><term>-2</term>
+    <listitem><para>The resource ID argument was specified, but it could not be resolved.
+    </para></listitem></varlistentry>
+    </variablelist>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example creates a push button entitled "Get new Info" at position x=100, y=80 and
+      size width=40, height=15. The button's ID is 555, and if the button is clicked, the getInfo message
+      is sent to the dialog object.  The button is created without the tabstop style.  If the user
+      navigates the dialog using the keyboard, the tab key will skip over the button.
 <programlisting>
 <![CDATA[
 MyDialog~addButton(555, 100, 80, 40, 15, "&Get new Info", ,
 "getInfo", "NOTAB")
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -1293,181 +1361,227 @@ MyDialog~addButton(555, 100, 80, 40, 15, "&Get new Info", ,
 <indexterm><primary>addBitmapButton</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~addBitmapButton(--id--,--x--,--y--,--+----+--,--->
-                                                    +-cx-+
+>>-addBitmapButton(--id-,-x-,-y--+------+-+------+-+--------+--+--------------+-,-normal-->
+                                 +-,-cx-+ +-,-cy-+ +-,-text-+  +-,-msgToRaise-+
 
->--+----+--,--+------+--,--+------------+--,--bmpNormal--,------>
-   +-cy-+     +-text-+     +-msgToRaise-+
-
->--+------------+--,--+-------------+--,--+-------------+------->
-   +-bmpFocused-+     +-bmpSelected-+     +-bmpDisabled-+
-
->--+---------------------------+--)----------------------------><
-   |       .--------------.    |
-   |       V              |    |
-   +-,--"----+-DEFAULT--+-+--"-+
-             +-FRAME----+
-             +-USEPAL---+
-             +-INMEMORY-+
-             +-STRETCH--+
-             +-NOTIFY---+
-             +-HIDDEN---+
-             +-DISABLED-+
-             +-GROUP----+
-             +-NOTAB----+
-             +-BORDER---+
-
-
+>--+------------+--+-------------+--+-------------+--+----------+------------------------><
+   +-,-focused--+  +-,-selected--+  +-,-disabled--+  +-,-style--+
 ]]>
 </programlisting>
-
-<para>The addBitmapButton method adds a push button with
-a bitmap (instead of plain text) to the dialog. You can provide four different
-bitmaps representing the four states of a button.</para>
-<para>The bitmaps can be specified by either a file name or a bitmap handle.
-You can retrieve a bitmap handle by loading a bitmap stored in a file into
-memory, using the method <link linkend="h000667">LoadBitmap</link>). If you pass
-a bitmap handle to the method, you must use the INMEMORY option.
+<para>
+  The addBitmapButton method adds a push button with a bitmap (instead of plain text) to the dialog. You
+  can provide four different bitmaps representing the four states of a button.  The bitmap push button is
+  an owner-drawn button, where ooDialog internally handles the drawing of the button.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> On Windows XP and later, using an <link
+  linkend="mthSetImageList">image list</link> with the button will produce a better overall appearance in
+  the dialog. Using an image list gives the button the same look and feel as other buttons on the system.
+  The buttons produced using this method and the <link
+  linkend="mthConnectBitmapButton">connectBitmapButton</link>() have the look and feel of Windows 98
+  buttons.  When an image list is used with a button, the other button styles, such as the NOTIFY style
+  can still be used. Whereas with the bitmap button the other button styles can not be used.  The image
+  list button supports all the features of the bitmap button, and more.
+</para>
+<para>
+  The bitmaps can be specified by either a file name or a bitmap handle. You can retrieve a bitmap handle
+  by loading a bitmap stored in a file into memory, using the method <link
+  linkend="h000667">LoadBitmap</link>). If you pass a bitmap handle to the method, you must use the
+  INMEMORY option.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:</para>
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The <link linkend="resourceid">resource ID</link> (numeric or
-symbolic) for the button.  Each control in a dialog (other than static controls)
-must be assigned a unique resource ID.
-</para></listitem></varlistentry>
-<varlistentry><term>x, y</term>
-<listitem><para>The position of the button's upper-left corner relative to the dialog
-measured in dialog units
-</para></listitem></varlistentry>
-<varlistentry><term>cx</term>
-<listitem><para>The width of the button in dialog units.  If you omit this
-argument the width of the button will be set to 0 and you will not be able to
-see the button.
-</para></listitem></varlistentry>
-<varlistentry><term>cy</term>
-<listitem><para>The height of the button in dialog units.  If you omit this
-argument the height of the button will be set to 0 and you will not be able to
-see the button.
-</para></listitem></varlistentry>
-<varlistentry><term>text</term>
-<listitem><para>The text label for the button.  Although the user will not see
-this text, (they see the bitmap instead,) the text is still associated with the
-button and can be retrieved by the programmer using the <link linkend="title">
-Title</link> method of the <computeroutput>DialogControl</computeroutput> class.
-</para></listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The name of a method of the dialog class that is to be invoked
-each time the button is clicked.
-</para></listitem></varlistentry>
-<varlistentry><term>bmpNormal</term>
-<listitem><para>A bitmap that is displayed when the button is in the normal
-state.  I.e., it is not focused, not selected, and not disabled.  This argument
-must be specified.  If any of the other three bitmap arguments are omitted, this
-bitmap will be used in its place.
-</para></listitem></varlistentry>
-<varlistentry><term>bmpFocused</term>
-<listitem><para>A bitmap that is displayed if the button is focused. When a
-button is focused it receives the keyboard input and can be clicked by using the
-Enter or Space keys.  Normally the focused button is surrounded by a dashed
-frame.  If this argument is omitted, the <computeroutput>bmpNormal</computeroutput>
-bitmap is displayed for the focused state.
-</para></listitem></varlistentry>
-<varlistentry><term>bmpSelected</term>
-<listitem><para>A bitmap that is displayed while the button is clicked and held
-down.  If this argument is omitted, the <computeroutput>bmpNormal</computeroutput>
-bitmap is displayed for the selected state.
-</para></listitem></varlistentry>
-<varlistentry><term>bmpDisabled</term>
-<listitem><para>A bitmap that is displayed if the button is disabled.  If this
-argument is omitted, the <computeroutput>bmpNormal</computeroutput> bitmap is
-displayed for the disabled state.
-</para></listitem></varlistentry>
-<varlistentry><term>style</term>
-<listitem><para>The last argument can be one or more of the following keywords:
-<variablelist>
-<varlistentry><term>DEFAULT</term>
-<listitem><para>The button becomes the default button in the dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>FRAME</term>
-<listitem><para>The button has a 3D frame. This gives your bitmap the same behavior
-as a standard Windows button.
-</para></listitem></varlistentry>
-<varlistentry><term>USEPAL</term>
-<listitem><para>The color palette of the bitmap is loaded and used. This argument should
-be specified for just one of the dialog buttons, because only one color palette
-can be active at any time.
-</para></listitem></varlistentry>
-<varlistentry><term>INMEMORY</term>
-<listitem><para>Specifies that the bitmap was loaded into memory before. If you switch
-often between different bitmaps within one button, the loading of all bitmaps
-into memory increases performance.
-</para></listitem></varlistentry>
-<varlistentry><term>STRETCH</term>
-<listitem><para>If this option is specified and the extent of the bitmap is smaller
-than the extent of the button rectangle, the bitmap is adapted to match the
-extent of the button.</para>
-</listitem></varlistentry>
-<varlistentry><term>NOTIFY</term>
-<listitem><para>Enables the button to send notifications for the gained focus
-and lost focus events.  This is only necessary when the <link
-linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and
-only for the GOTFOCUS and LOSTFOCUS keywords of that method.  Note that this
-style is not needed for bitmap buttons to receive the double click (DBLCLK)
-event as it is for other buttons.
-</para></listitem></varlistentry>
-<varlistentry><term>HIDDEN</term>
-<listitem><para>Create the button without the <link
-linkend="wsvisible">visible</link> style.
-</para></listitem></varlistentry>
-<varlistentry><term>DISABLED</term>
-<listitem><para>Create the button without the <link
-linkend="wsdisabled">enabled</link> style.
-</para></listitem></varlistentry>
-<varlistentry><term>GROUP</term>
-<listitem><para>Create the button with the <link linkend="wsgroup">group</link>
-style.
-</para></listitem></varlistentry>
-<varlistentry><term>NOTAB</term>
-<listitem><para>Create the button without the <link
-linkend="wstabstop">tabstop</link> style. By default the button is created
-with the tabstop style except in these conditions: the bmpFocused is omitted,
-and the bmpSelected is omitted, and the FRAME style keyword is not used.
-</para></listitem></varlistentry>
-<varlistentry><term>TAB</term>
-<listitem><para>Create the button with the
-<link linkend="wstabstop">tabstop</link> style. The button is normally created
-with the tabstop style and this keyword is not necessary.  However, if the
-bmpFocused argument is omitted, and the bmpSelected argument is omitted, and the FRAME style keyword is
-not used, the button is created without the tabstop style.  In this case only, it is necessary to use the
-TAB keyword to change the default behavior.
-</para></listitem></varlistentry>
-<varlistentry><term>BORDER</term>
-<listitem><para>Create the button with the <link
-linkend="wsborder">border</link> style.  By default the button is created
-without a border.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example defines a button with ID 601. The bitmap
-in the <computeroutput>Button1.bmp</computeroutput> file is displayed for the
-push button instead of a black text on a grey background. If the button is
-disabled (by using the DisableItem method, see page <link
-linkend="h001229">DisableItem</link>), the bitmap is exchanged and Button1D.bmp
-is shown instead. If the button is clicked, the BmpPushed message is sent.
-
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The arguments are:
+    </para>
+    <variablelist>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the control.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+        <para>
+          The <link linkend="listCommonArguments">control coordinates</link>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text</term>
+      <listitem>
+        <para>
+          The text label for the button.  Although the user will not see this text, (they see the bitmap
+          instead,) the text is still associated with the button and can be retrieved by the programmer
+          using the <link linkend="title"> Title</link> method of the
+          <computeroutput>DialogControl</computeroutput> class.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>msgToRaise</term>
+      <listitem>
+        <para>
+          The name of a method of the dialog class that is to be invoked each time the button is clicked.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>bmpNormal</term>
+      <listitem>
+        <para>
+          A bitmap that is displayed when the button is in the normal state.  I.e., it is not focused,
+          not selected, and not disabled.  This argument must be specified.  If any of the other three
+          bitmap arguments are omitted, this bitmap will be used in its place.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>focused</term>
+      <listitem>
+        <para>
+          A bitmap that is displayed if the button is focused. When a button is focused it receives the
+          keyboard input and can be clicked by using the Enter or Space keys.  Normally the focused
+          button is surrounded by a dashed frame.  If this argument is omitted, the
+          <computeroutput>normal</computeroutput> bitmap is displayed for the focused state.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>selected</term>
+      <listitem>
+        <para>
+          A bitmap that is displayed while the button is clicked and held down.  If this argument is
+          omitted, the <computeroutput>normal</computeroutput> bitmap is displayed for the selected
+          state.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>disabled</term>
+      <listitem>
+        <para>
+          A bitmap that is displayed if the button is disabled.  If this argument is omitted, the
+          <computeroutput>normal</computeroutput> bitmap is displayed for the disabled state.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <note><title>Note</title><para>
+          The 3.2.0 ooDialog documentation incorrectly stated you could use the NOTIFY style keyword.  Do
+          not do this. Owner-drawn buttons should not use any other button styles than owner-drawn. The
+          result of using the NOTIFY style will be less than satisfactory. An <link
+          linkend="mthSetImageList">image list</link> button allows the use of the NOTIFY style and will
+          give a better overall look to the dialog.  Using an image list button should be the preferred
+          method for non-text buttons
+        </para></note>
+        <para>
+          The last argument can be 0 or more of the following keywords:
+        </para>
+        <para>
+          <simplelist type='vert' columns='3'>
+          <member>DEFAULT  </member>
+          <member>FRAME    </member>
+          <member>USEPAL   </member>
+          <member>INMEMORY </member>
+          <member>STRETCH  </member>
+          <member>HIDDEN   </member>
+          <member>DISABLED </member>
+          <member>BORDER   </member>
+          <member>GROUP    </member>
+          <member>TAP      </member>
+          <member>NOTAB    </member>
+          </simplelist>
+        <variablelist>
+        <varlistentry><term>DEFAULT</term>
+        <listitem>
+          <para>
+            The button becomes the default button in the dialog.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>FRAME</term>
+        <listitem>
+          <para>
+            The button is drawn with a 3D frame. Internally, ooDialog draws the button. However, the
+            technique used is now out of date. This gives your bitmap the same appearance as buttons in
+            Windows 98. To have your buttons match the Window XP and Vista styles use an <link
+            linkend="mthSetImageList">image list</link> with the button as described in the opening
+            comments above.
+        </para></listitem></varlistentry>
+        <varlistentry><term>USEPAL</term>
+        <listitem>
+          <para>
+            The color palette of the bitmap is loaded and used. This argument should be specified for
+            just one of the dialog buttons, because only one color palette can be active at any time.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>INMEMORY</term>
+        <listitem>
+          <para>
+            Specifies that the bitmap is already loaded into memory. If you switch often between
+            different bitmaps within one button, the loading of all bitmaps into memory increases
+            performance.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>STRETCH</term>
+        <listitem>
+          <para>
+            If this option is specified and the extent of the bitmap is smaller than the extent of the
+            button rectangle, the bitmap is adapted to match the extent of the button.
+          </para>
+        </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+            <para>
+              The <link linkend="wsvisible">not visible</link> window style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+            <para>
+              The <link linkend="wsborder">not enabled</link> window style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BORDER</term>
+          <listitem>
+            <para>
+              The <link linkend="wsborder">border</link> window style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+            <para>
+              The <link linkend="wsborder">group</link> control style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+            <para>
+              The no <link linkend="wsborder">tabstop</link> control style. By default the button is
+              created with the tabstop style except in these conditions: the bmpFocused is omitted, and
+              the bmpSelected is omitted, and the FRAME style keyword is not used.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TAB</term>
+          <listitem>
+            <para>
+              The <link linkend="wsborder">tabstop</link> control style. The button is normally created
+              with the tabstop style and this keyword is not necessary.  However, if the bmpFocused
+              argument is omitted, and the bmpSelected argument is omitted, and the FRAME style keyword
+              is not used, the button is created without the tabstop style.  In this case only, it is
+              necessary to use the TAB keyword to change the default behavior.
+            </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para></listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example defines a button with ID 601. The bitmap in the
+      <computeroutput>Button1.bmp</computeroutput> file is displayed for the push button instead of a black
+      text on a grey background. If the button is disabled (by using the DisableItem method, see page <link
+      linkend="h001229">DisableItem</link>), the bitmap is exchanged and Button1D.bmp is shown instead. If
+      the button is clicked, the BmpPushed message is sent.
 <programlisting>
 <![CDATA[
 MyDialog~addBitmapButton(601, 20, 317, 80, 30, , "BmpPushed", ,
                          "Button1.bmp", , ,"Button1D.bmp","FRAME USEPAL")
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -1502,7 +1616,7 @@ in a column. </para>
 </para></listitem></varlistentry>
 <varlistentry><term>cx, cy</term>
 <listitem><para>The size of a single button. One or both arguments can be skipped. If
-so, the default values (cx=40, cy=12) are taken.
+so, the default values (cx=40, cy=12) are used.
 </para></listitem></varlistentry>
 <varlistentry><term>text ID msg</term>
 <listitem><para>These arguments are interpreted as one string
@@ -1973,7 +2087,6 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
 <indexterm><primary>addStatic</primary></indexterm>
 <programlisting>
 <![CDATA[
-                                              +-,-"TEXT"-+
 >>-dlg~addStatic(--+----+--,-x-,-y-,-cx-,-cy--+----------+--+---------+--)----><
                    +-id-+                     +-,-style--+--+-,-text--+
 
@@ -2285,11 +2398,16 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
     </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      This method always returns 0.
-    </para>
-  </listitem></varlistentry>
+  <listitem><para>This method returns:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem><para>Success
+    </para></listitem></varlistentry>
+    <varlistentry><term>-2</term>
+    <listitem><para>The resource ID argument was specified, but it could not be resolved.
+    </para></listitem></varlistentry>
+    </variablelist>
+  </para></listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
@@ -2487,11 +2605,16 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
     </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      This method always returns 0.
-    </para>
-  </listitem></varlistentry>
+  <listitem><para>This method returns:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem><para>Success
+    </para></listitem></varlistentry>
+    <varlistentry><term>-2</term>
+    <listitem><para>The resource ID argument was specified, but it could not be resolved.
+    </para></listitem></varlistentry>
+    </variablelist>
+  </para></listitem></varlistentry>
   <varlistentry id="exampleFramesRects"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
@@ -2751,11 +2874,16 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
     </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      This method always returns 0.
-    </para>
-  </listitem></varlistentry>
+  <listitem><para>This method returns:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem><para>Success
+    </para></listitem></varlistentry>
+    <varlistentry><term>-2</term>
+    <listitem><para>The resource ID argument was specified, but it could not be resolved.
+    </para></listitem></varlistentry>
+    </variablelist>
+  </para></listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
