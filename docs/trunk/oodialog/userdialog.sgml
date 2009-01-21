@@ -852,6 +852,13 @@ associated Object Rexx attribute. Add... methods cannot be used after
   programmer to change the default behavior and  / or appearance of the control.
 </para>
 <para>
+  An attempt is made for each method to list all the style keywords that will be accepted. However, the
+  behaviour and appearance that the specified style gives any particular control is determined by the
+  operating system, not ooDialog. For many of the dialog controls, certain combinations of styles do not
+  make much sense. It is up to the individual programmer to decide whether a style is appropriate for her
+  program.
+</para>
+<para>
   There are five styles that all dialog controls share:
 </para>
 <itemizedlist>
@@ -1062,7 +1069,7 @@ associated Object Rexx attribute. Add... methods cannot be used after
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control </link> coordinates
+          The  control <link linkend="listCommonArguments">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>text</term>
@@ -1123,6 +1130,26 @@ associated Object Rexx attribute. Add... methods cannot be used after
           The resource <link linkend="idArgument">ID</link> for the group box.
         </para>
       </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+      <listitem>
+        <para>
+          The possible return values are:
+          <variablelist>
+          <varlistentry><term>0</term>
+          <listitem>
+            <para>
+              Success.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>less than 0</term>
+          <listitem>
+            <para>
+              Error with the in-memory dialog template or with the resource ID.
+            </para>
+          </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
     </variablelist>
   </listitem></varlistentry>
 </variablelist>
@@ -1155,7 +1182,7 @@ associated Object Rexx attribute. Add... methods cannot be used after
     <varlistentry><term>x, y, cx, cy</term>
     <listitem>
       <para>
-        The <link linkend="listCommonArguments">control </link> coordinates
+        The  control <link linkend="listCommonArguments">coordinates</link>
       </para>
     </listitem></varlistentry>
     <varlistentry><term>text</term>
@@ -1169,7 +1196,7 @@ associated Object Rexx attribute. Add... methods cannot be used after
       <para>
         Optional. The name of a method of the dialog class that is to be invoked each time the button is
         clicked.  This serves the same purpose as the <link
-        linkend="mthConnectButtonNotify">connectButtonNotify</link>() method using the CLICKED event.
+        linkend="mthConnectButton">connectButton</link>() method.
       </para>
     </listitem></varlistentry>
     <varlistentry><term>style</term>
@@ -1211,8 +1238,9 @@ associated Object Rexx attribute. Add... methods cannot be used after
             <para>
               The programmer is completely responsible for drawing the button when the dialog receives
               the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
-              implement in ooDialog.  A simpler approach for an owner drawn button is to use a bitmap
-              button.  See the <link linkend="mthAddBitmapButton">addBitmapButton</link> method.
+              implement in ooDialog.  A simpler approach for an owner drawn button is to use an image
+              list with the button.  See the <link
+              linkend="mthSetImageList">setImageList</link>() method.
             </para>
           </listitem></varlistentry>
           <varlistentry><term>ICON</term>
@@ -1329,16 +1357,25 @@ associated Object Rexx attribute. Add... methods cannot be used after
   </variablelist>
   </para></listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem><para>This method returns:
-    <variablelist>
-    <varlistentry><term>0</term>
-    <listitem><para>Success
-    </para></listitem></varlistentry>
-    <varlistentry><term>-2</term>
-    <listitem><para>The resource ID argument was specified, but it could not be resolved.
-    </para></listitem></varlistentry>
-    </variablelist>
-  </para></listitem></varlistentry>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
@@ -1361,10 +1398,10 @@ MyDialog~addButton(555, 100, 80, 40, 15, "&Get new Info", ,
 <indexterm><primary>addBitmapButton</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-addBitmapButton(--id-,-x-,-y--+------+-+------+-+--------+--+--------------+-,-normal-->
-                                 +-,-cx-+ +-,-cy-+ +-,-text-+  +-,-msgToRaise-+
+>>-addBitmapButton(--id-,-x-,-y--+------+-+------+-+--------+--+-----------+-,-normal-->
+                                 +-,-cx-+ +-,-cy-+ +-,-text-+  +-,-msgName-+
 
->--+------------+--+-------------+--+-------------+--+----------+------------------------><
+>--+------------+--+-------------+--+-------------+--+----------+---------------------><
    +-,-focused--+  +-,-selected--+  +-,-disabled--+  +-,-style--+
 ]]>
 </programlisting>
@@ -1373,16 +1410,15 @@ MyDialog~addButton(555, 100, 80, 40, 15, "&Get new Info", ,
   can provide four different bitmaps representing the four states of a button.  The bitmap push button is
   an owner-drawn button, where ooDialog internally handles the drawing of the button.
 </para>
-<para>
-  <emphasis role="bold">Note:</emphasis> On Windows XP and later, using an <link
-  linkend="mthSetImageList">image list</link> with the button will produce a better overall appearance in
-  the dialog. Using an image list gives the button the same look and feel as other buttons on the system.
-  The buttons produced using this method and the <link
+<note><title>Note</title><para>
+  On Windows XP and later, using an <link linkend="mthSetImageList">image list</link> with the button
+  will produce a better overall appearance in the dialog. Using an image list gives the button the same
+  look and feel as other buttons on the system. The buttons produced using this method and the <link
   linkend="mthConnectBitmapButton">connectBitmapButton</link>() have the look and feel of Windows 98
   buttons.  When an image list is used with a button, the other button styles, such as the NOTIFY style
   can still be used. Whereas with the bitmap button the other button styles can not be used.  The image
   list button supports all the features of the bitmap button, and more.
-</para>
+</para></note>
 <para>
   The bitmaps can be specified by either a file name or a bitmap handle. You can retrieve a bitmap handle
   by loading a bitmap stored in a file into memory, using the method <link
@@ -1405,7 +1441,7 @@ MyDialog~addButton(555, 100, 80, 40, 15, "&Get new Info", ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control </link> coordinates
+          The  control <link linkend="listCommonArguments">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>text</term>
@@ -1566,6 +1602,26 @@ MyDialog~addButton(555, 100, 80, 40, 15, "&Get new Info", ,
       </para></listitem></varlistentry>
     </variablelist>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
@@ -1589,10 +1645,10 @@ MyDialog~addBitmapButton(601, 20, 317, 80, 30, , "BmpPushed", ,
 <indexterm><primary>addButtonGroup</primary></indexterm>
 <programlisting>
 <![CDATA[
-                                                 +----------------+
-                                                 V                |
->>--addButtonGroup(-x-,-y--+------+-+------+-,-"---txt- -id- -msg-+-"-+-------+-+---------+-><
-                           +-,-cx-+ +-,-cy-+                          +-,-row-+ +-,--opts-+
+                                             +---------------+
+                                             V               |
+>>-addButtonGroup(-x-,-y-+------+-+------+-,--txt- -id- -msg-+--+-------+-+--------+-)-><
+                         +-,-cx-+ +-,-cy-+                      +-,-row-+ +-,-opts-+
 ]]>
 </programlisting>
 
@@ -1618,10 +1674,10 @@ MyDialog~addBitmapButton(601, 20, 317, 80, 30, , "BmpPushed", ,
         <listitem>
           <para>
             These arguments are interpreted as one string containing three words (separated by blanks)
-            for each button. The first word is the text that is displayed on the button, the second is
-            the ID of the button, and the third is the name of a message that is sent to the object
-            whenever the button is clicked. The fourth to sixth words are for the next button, and so
-            forth.
+            for each button. The first word is the text that is displayed on the button. The second is
+            the resource <link linkend="idArgument">ID</link> of the button, and the third is the
+            name of a message that is sent to the object whenever the button is clicked. The fourth to
+            sixth words are for the next button, and so forth.
           </para>
         </listitem></varlistentry>
         <varlistentry><term>row</term>
@@ -1743,7 +1799,8 @@ MyDialog~addBitmapButton(601, 20, 317, 80, 30, , "BmpPushed", ,
                   Enables the button to send notifications for the gained focus,lost focus, and double click
                   events.  This is only necessary when the <link
                   linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and only for
-                  the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method.
+                  the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
+                  buttons and owner-drawn buttons will recieve the DBLCLK event.
                 </para>
               </listitem></varlistentry>
               <varlistentry><term>FLAT</term>
@@ -1789,6 +1846,26 @@ MyDialog~addBitmapButton(601, 20, 317, 80, 30, , "BmpPushed", ,
       </variablelist>
     </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
@@ -1818,16 +1895,36 @@ MyDialog~addButtonGroup(20, 235, , ,               -
 
 <para>
   The addOkCancelRightBottom method adds an OK and a Cancel push button horizontally to the lower-right
-  edge of the dialog. The method takes no arguments and does not return a value.
+  edge of the dialog.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem>
-  <para>
-    The following example adds the push buttons to the bottom of the dialog. It also overrides the
-    standard OK and Cancel methods.
-  </para>
-<programlisting>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example adds the push buttons to the bottom of the dialog. It also overrides the
+      standard OK and Cancel methods.
+    </para>
+  <programlisting>
 <![CDATA[
 ::class MyClass subclass UserDialog
 
@@ -1846,7 +1943,7 @@ MyDialog~addButtonGroup(20, 235, , ,               -
    if ret=1 then self~CANCEL:super
 ]]>
 </programlisting>
-</listitem></varlistentry>
+  </listitem></varlistentry>
 </variablelist>
 
 </section>
@@ -1862,8 +1959,30 @@ MyDialog~addButtonGroup(20, 235, , ,               -
 
 <para>
   The addOkCancelLeftBottom method adds an OK and a Cancel push button horizontally to the lower-left
-  edge of the dialog. The method takes no arguments and does not return a value.
+  edge of the dialog.
 </para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="mthAddOkCancelRightTop"><title>addOkCancelRightTop</title>
@@ -1878,8 +1997,30 @@ MyDialog~addButtonGroup(20, 235, , ,               -
 
 <para>
   The addOkCancelRightTop method adds an OK and a Cancel push button vertically to the upper-right edge
-  of the dialog. The method takes no arguments and does not return a value.
+  of the dialog.
 </para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="mthAddOkCancelLeftTop"><title>addOkCancelLeftTop</title>
@@ -1894,54 +2035,264 @@ MyDialog~addButtonGroup(20, 235, , ,               -
 
 <para>
   The addOkCancelLeftTop method adds an OK and a Cancel push button vertically to the upper-left edge of
-  the dialog. The method takes no arguments and does not return a value.
+  the dialog.
 </para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="mthAddRadioButton"><title>addRadioButton</title>
 <indexterm><primary>addRadioButton</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~addRadioButton(--id--,--+------+--,--x--,--y--,--cx-->
-                                       +-name-+
-
->--,--cy--,--text--+----------------+--)---------------------------><
-                   +-,--"--GROUP--"-+
-
-
+>>--addRadioButton(--id--+--------+--x-,-y-,-cx-,-cy-,-text--+---------+--)----><
+                         +-,-name-+                          +-,-style-+
 ]]>
 </programlisting>
 
-<para>The addRadioButton method adds a radio button to
-the dialog. </para>
+<para>
+  The addRadioButton method adds a radio button to the dialog.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are the same as for <link linkend="mthAddEntryLine">AddEntryLine</link>,
-with the changes listed below:
-<variablelist>
-<varlistentry><term>name</term>
-<listitem><para>The name of the radio button
-</para></listitem></varlistentry>
-<varlistentry><term>text</term>
-<listitem><para>The text that is displayed next to the radio button
-</para></listitem></varlistentry>
-<varlistentry><term>options</term>
-<listitem><para>Valid values for the last argument are:
-<variablelist>
-<varlistentry><term>GROUP</term>
-<listitem><para>Makes the radio button the beginning of a new group. Use this option
-just for the first radio button if you want to make all radio buttons dependent.
-In each group if you select a radio button, the previously selected button
-is automatically deselected.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example defines seven radio buttons with IDs 501 through
-507:
-
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The arguments are:
+      <variablelist>
+        <varlistentry><term>id</term>
+        <listitem>
+          <para>
+            The resource <link linkend="idArgument">ID</link> for the control.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>name</term>
+        <listitem>
+          <para>
+            The name of the data attribute associated with the dialog item. Using this argument performs
+            the same function as the <link linkend="mthConnectRadioButton">connectRadioButton</link>()
+            method. The <link linkend="mthConnectEntryLine">connectEntryLine</link>() documentation has a
+            good description of the concept of the data attribute.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>x, y, cx, cy</term>
+        <listitem>
+          <para>
+            The  control <link linkend="listCommonArguments">coordinates</link>
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>text</term>
+        <listitem>
+          <para>
+            The text that is displayed next to the radio button
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>style</term>
+        <listitem>
+          <para>
+            A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+            separated by spaces:
+          </para>
+          <para>
+            <simplelist type='vert' columns='3'>
+              <member>OWNER    </member>
+              <member>BITMAP   </member>
+              <member>ICON     </member>
+              <member>LEFT     </member>
+              <member>RIGHT    </member>
+              <member>HCENTER  </member>
+              <member>TOP      </member>
+              <member>BOTTOM   </member>
+              <member>VCENTER  </member>
+              <member>MULTILINE</member>
+              <member>NOTIFY   </member>
+              <member>PUSHLIKE </member>
+              <member>FLAT     </member>
+              <member>HIDDEN   </member>
+              <member>DISABLED </member>
+              <member>BORDER   </member>
+              <member>GROUP    </member>
+              <member>NOTAB    </member>
+            </simplelist>
+            <variablelist>
+              <varlistentry><term>OWNER</term>
+              <listitem>
+                <para>
+                  The programmer is completely responsible for drawing the button when the dialog receives
+                  the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
+                  implement in ooDialog. For a radio button, the difficulty would probably make this
+                  impractical.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>ICON</term>
+              <listitem>
+                <para>
+                  The button displays an icon image.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>BITMAP</term>
+              <listitem>
+                <para>
+                  The button displays a bitmap image.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>LEFT</term>
+              <listitem>
+                <para>
+                  Left justifies the text to the right of the radio button.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>RIGHT</term>
+              <listitem>
+                <para>
+                  Right justifies the text to the right side of the radio button.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>HCENTER</term>
+              <listitem>
+                <para>
+                  The text is centered horizontally to the right of the radio button.  This is the
+                  default if neither LEFT nor RIGHT are specified.
+              </para></listitem></varlistentry>
+              <varlistentry><term>TOP</term>
+              <listitem>
+                <para>
+                  The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
+                  specified the text is vertically centered in the button rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>BOTTOM</term>
+              <listitem>
+                <para>
+                  The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
+                  specified the text is vertically centered in the button rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>VCENTER</term>
+              <listitem>
+                <para>
+                  The text is vertically centered in the button rectanble.  This is the default if neither
+                  TOP nor BOTTOM are specified.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>MULTILINE</term>
+              <listitem>
+                <para>
+                  If the text for the label of the button is longer than the width of the button rectangle,
+                  the operating system will word wrap the text producing more than one line.  The height of
+                  the button rectangle has to be sufficient to display the extra line(s) or the text is
+                  clipped.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>NOTIFY</term>
+              <listitem>
+                <para>
+                  Enables the button to send notifications for the gained focus,lost focus, and double click
+                  events.  This is only necessary when the <link
+                  linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and only for
+                  the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
+                  buttons and owner-drawn buttons will recieve the DBLCLICK event.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>PUSHLIKE</term>
+              <listitem>
+                <para>
+                  Makes the button look and act like a push button. The button looks raised when it isn't
+                  pushed or checked, and sunken when it is pushed or checked. The button is drawn with a
+                  flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
+                  rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>FLAT</term>
+              <listitem>
+                <para>
+                  The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
+                  text inside the rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>HIDDEN</term>
+              <listitem>
+                <para>
+                  The <link linkend="wsvisible">not visible</link> window style.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>DISABLED</term>
+              <listitem>
+                <para>
+                  The <link linkend="wsdisabled">not enabled</link> window style.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>BORDER</term>
+              <listitem>
+                <para>
+                  The <link linkend="wsborder">border</link> window style.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>GROUP</term>
+              <listitem>
+                <para>
+                  The <link linkend="wsgroup">group</link> control style. For the auto radio buttons to
+                  work, the first radio button should be given the group style. None of the other radio
+                  buttons should have the group style. The first control that has the group style then
+                  ends the group.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>NOTAB</term>
+              <listitem>
+                <para>
+                  The no <link linkend="wstabstop">tabstop</link> control style.
+                </para>
+              </listitem></varlistentry>
+            </variablelist>
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </para>
+    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example defines seven radio buttons with IDs 501 through 507:
+    </para>
 <programlisting>
 <![CDATA[
 RText.1="Monday"
@@ -1957,12 +2308,12 @@ do i=1 to 7
 end
 ]]>
 </programlisting>
-
-<note><title>Note</title><para>
-There are also methods that create a whole group
-automatically (see the <link linkend="mthAddRadioGroup">addRadioGroup</link> method below and <link linkend="mthAddRadioStem">addRadioStem</link>).
-</para></note>
-</para></listitem></varlistentry>
+    <note><title>Note</title><para>
+      There are also methods that create a whole group automatically (see the <link
+      linkend="mthAddRadioGroup">addRadioGroup</link> method below and <link
+      linkend="mthAddRadioStem">addRadioStem</link>).
+    </para></note>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -1970,55 +2321,221 @@ automatically (see the <link linkend="mthAddRadioGroup">addRadioGroup</link> met
 <indexterm><primary>addRadioGroup</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~addRadioGroup(--startId--,--x--,--y--,--+----+--->
-                                                       +-cx-+
-
-         +------+
-         V      |
->--,--"----text-+--"--+----------------------------------+--)--><
-                      +-,--+------------+--+-----------+-+
-                           +-"NOBORDER"-+  +-,--idstat-+
-
-
+                                        +------+
+                                        V      |
+>>--addRadioGroup(id1,-x-,-y-+------+-,---text-+--+---------+----------+-)---><
+                             +-,-cx-+             +-,-style-+-,-idStat-+
 ]]>
 </programlisting>
 
-<para>The addRadioGroup method creates a group of radio
-buttons. </para>
+<para>
+  Creates a complete group of auto radiobuttons.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>startId</term>
-<listitem><para>The ID of the first radio button. The startId is
-increased by 1 for each additional radio button and then assigned to the dialog
-item.
-</para></listitem></varlistentry>
-<varlistentry><term>x, y</term>
-<listitem><para>The position of the first radio button control. The other radio buttons
-are positioned automatically.
-</para></listitem></varlistentry>
-<varlistentry><term>cx</term>
-<listitem><para>The length of the radio button plus text. If omitted, the space needed
-is calculated.
-</para></listitem></varlistentry>
-<varlistentry><term>text</term>
-<listitem><para>The text string for each radio button. Single strings have to be separated
-by blank spaces. This argument determines the number of radio buttons in total.
-</para></listitem></varlistentry>
-<varlistentry><term>options</term>
-<listitem><para>The only option is NOBORDER, which prevents
-the method from placing a group box around the group.
-</para></listitem></varlistentry>
-<varlistentry><term>idstat</term>
-<listitem><para>This argument is used to set the static frame ID.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example adds a group of three radio buttons with IDs 301,
-302, and 303 to the dialog (see <link linkend="fig53">Sample Radio Button Group</link>):
-
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The arguments are:
+      <variablelist>
+        <varlistentry><term>id1</term>
+        <listitem>
+          <para>
+            The resource <link linkend="idArgument">ID</link> for the first radio button. This id is
+            increased by 1 for each additional radio button and then assigned to the control.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>x, y, cx</term>
+        <listitem>
+          <para>
+            The control <link linkend="listCommonArguments">coordinates</link>.  x and y name the
+            position of the first radio button control. The other radio buttons are positioned
+            automatically. cx specifies the length of the radio button plus text. If omitted, the space
+            needed is calculated.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>text</term>
+        <listitem>
+          <para>
+            The text string for each radio button. Single words have to be separated by blank spaces.
+            This argument determines the number of radio buttons in total. Note that this prevents using
+            more than one word for the label of any radio button.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>style</term>
+        <listitem>
+          <para>
+            A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+            separated by spaces. Each radio button in the group is given the style specified by this
+            option.
+          </para>
+          <para>
+            <simplelist type='vert' columns='3'>
+              <member>OWNER    </member>
+              <member>BITMAP   </member>
+              <member>ICON     </member>
+              <member>LEFT     </member>
+              <member>RIGHT    </member>
+              <member>HCENTER  </member>
+              <member>TOP      </member>
+              <member>BOTTOM   </member>
+              <member>VCENTER  </member>
+              <member>MULTILINE</member>
+              <member>NOTIFY   </member>
+              <member>PUSHLIKE </member>
+              <member>FLAT     </member>
+              <member>HIDDEN   </member>
+              <member>DISABLED </member>
+              <member>NOBORDER </member>
+              <member>GROUP    </member>
+              <member>NOTAB    </member>
+            </simplelist>
+            <variablelist>
+              <varlistentry><term>OWNER</term>
+              <listitem>
+                <para>
+                  The programmer is completely responsible for drawing the button when the dialog receives
+                  the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
+                  implement in ooDialog. For a radio button, the difficulty would probably make this
+                  impractical.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>ICON</term>
+              <listitem>
+                <para>
+                  The button displays an icon image.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>BITMAP</term>
+              <listitem>
+                <para>
+                  The button displays a bitmap image.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>LEFT</term>
+              <listitem>
+                <para>
+                  Left justifies the text to the right of the radio button.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>RIGHT</term>
+              <listitem>
+                <para>
+                  Right justifies the text to the right side of the radio button.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>HCENTER</term>
+              <listitem>
+                <para>
+                  The text is centered horizontally to the right of the radio button.  This is the
+                  default if neither LEFT nor RIGHT are specified.
+              </para></listitem></varlistentry>
+              <varlistentry><term>TOP</term>
+              <listitem>
+                <para>
+                  The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
+                  specified the text is vertically centered in the button rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>BOTTOM</term>
+              <listitem>
+                <para>
+                  The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
+                  specified the text is vertically centered in the button rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>VCENTER</term>
+              <listitem>
+                <para>
+                  The text is vertically centered in the button rectanble.  This is the default if neither
+                  TOP nor BOTTOM are specified.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>MULTILINE</term>
+              <listitem>
+                <para>
+                  If the text for the label of the button is longer than the width of the button rectangle,
+                  the operating system will word wrap the text producing more than one line.  The height of
+                  the button rectangle has to be sufficient to display the extra line(s) or the text is
+                  clipped.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>NOTIFY</term>
+              <listitem>
+                <para>
+                  Enables the button to send notifications for the gained focus,lost focus, and double click
+                  events.  This is only necessary when the <link
+                  linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and only for
+                  the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
+                  buttons and owner-drawn buttons will recieve the DBLCLICK event.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>PUSHLIKE</term>
+              <listitem>
+                <para>
+                  Makes the button look and act like a push button. The button looks raised when it isn't
+                  pushed or checked, and sunken when it is pushed or checked. The button is drawn with a
+                  flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
+                  rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>FLAT</term>
+              <listitem>
+                <para>
+                  The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
+                  text inside the rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>HIDDEN</term>
+              <listitem>
+                <para>
+                  The <link linkend="wsvisible">not visible</link> window style.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>DISABLED</term>
+              <listitem>
+                <para>
+                  The <link linkend="wsdisabled">not enabled</link> window style.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>NOBORDER</term>
+              <listitem>
+                <para>
+                  Use this keyword to specify that a <link linkend="clsGroupBox">group box</link> is not
+                  added around the radio button group.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>GROUP</term>
+              <listitem>
+                <para>
+                  Do not use this keyword with this method. The group style is added correctly
+                  internally.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>NOTAB</term>
+              <listitem>
+                <para>
+                  The no <link linkend="wstabstop">tabstop</link> control style.
+                </para>
+              </listitem></varlistentry>
+            </variablelist>
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>idstat</term>
+        <listitem>
+          <para>
+            This argument is used to set the resource <link linkend="idArgument">ID</link> for the <link
+            linkend="clsGroupBox">group box</link>, if one is used. The argument is ignored if the
+            NOBORDER style is used.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example adds a group of three radio buttons with IDs 301, 302, and 303 to the dialog
+      (see <link linkend="fig53">Sample Radio Button Group</link>):
+    </para>
 <programlisting>
 <![CDATA[
 MyDialog = .UserDialog~new
@@ -2029,16 +2546,15 @@ MyDialog~Execute
 ]]>
 </programlisting>
 
-<figure id="fig53"><title>Sample Radio Button Group</title>
-<mediaobject>
-<imageobject>
-<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-<imagedata fileref="rxou0s17.jpg" scale="70">
-</imageobject>
-</mediaobject>
-</figure>
-
-</para></listitem></varlistentry>
+    <figure id="fig53"><title>Sample Radio Button Group</title>
+    <mediaobject>
+    <imageobject>
+    <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+    <imagedata fileref="rxou0s17.jpg" scale="70">
+    </imageobject>
+    </mediaobject>
+    </figure>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -2046,25 +2562,272 @@ MyDialog~Execute
 <indexterm><primary>addRadioStem</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~addRadioStem(--startid--,--x--,--y--,--+----+--,--textStem.--,--max-->
-                                                      +-cx-+
-
->--+-------------------------------------------------------------------------+-->
-   +-,--+---------+--+-----------------------------------------------------+-+
-        +-options-+  +-,--+--------+--+----------------------------------+-+
-                          +-idstat-+  +-,--+----------+--+-------------+-+
-                                           +-fontName-+  +-,--fontSize-+
-
->--)-----------------------------------------------------------><
-
-
+>>--addRadioStem(id1,-x-,-y-+------+-,-text.-,-max--+---------+----------+-)---><
+                            +-,-cx-+                +-,-style-+-,-idStat-+
 ]]>
 </programlisting>
 
-<para>The addRadioStem method adds a group of radio button
-controls to the dialog.</para>
-<para>See <link linkend="mthAddRadioGroup">addRadioGroup</link> for a description of the arguments
-and an example.</para>
+<para>
+  The addRadioStem method adds a group of radio button controls to the dialog. It is very similar to the
+  <link linkend="mthAddRadioGroup">addRadioGroup</link>() method.  It simply uses a stem to specify the
+  text label for each radio button. Notice that this will allow the labels to consist of more than one
+  word, which removes the restriction of the addRadioGroup() method that labels must be a single word.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <note><title>Note</title><para>
+      The documentation prior to version 4.0.0 listd a font name and font size arguments.  These
+      arguments do nothing and are ignored in ooDialog 4.0.0 and later.
+    </para></note>
+    <para>
+      The arguments are:
+      <variablelist>
+        <varlistentry><term>id1</term>
+        <listitem>
+          <para>
+            The resource <link linkend="idArgument">ID</link> for the first radio button. This id is
+            increased by 1 for each additional radio button and then assigned to the control.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>x, y, cx</term>
+        <listitem>
+          <para>
+            The control <link linkend="listCommonArguments">coordinates</link>.  x and y name the
+            position of the first radio button control. The other radio buttons are positioned
+            automatically. cx specifies the length of the radio button plus text. If omitted, the space
+            needed is calculated.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>text.</term>
+        <listitem>
+          <para>
+            A stem containing the text label for each radio button. The stem indexes shoud start at 1 and
+            continue consecutively, with each succeding number containing the the label for the next
+            radion button. This argument determines the number of radio buttons in total.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>max</term>
+        <listitem>
+          <para>
+            A number specifying the maximum radio buttons to put in a column. The programmer can use this
+            to balance the look of the group by placing the buttons in more than 1 column. For instance,
+            if there are 8 radio buttons and the max argument is 4 then the result will have 4 radio
+            buttons in 2 side-by-side columns.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>style</term>
+        <listitem>
+          <para>
+            A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+            separated by spaces. Each radio button in the group is given the style specified by this
+            option.
+          </para>
+          <para>
+            <simplelist type='vert' columns='3'>
+              <member>OWNER    </member>
+              <member>BITMAP   </member>
+              <member>ICON     </member>
+              <member>LEFT     </member>
+              <member>RIGHT    </member>
+              <member>HCENTER  </member>
+              <member>TOP      </member>
+              <member>BOTTOM   </member>
+              <member>VCENTER  </member>
+              <member>MULTILINE</member>
+              <member>NOTIFY   </member>
+              <member>PUSHLIKE </member>
+              <member>FLAT     </member>
+              <member>HIDDEN   </member>
+              <member>DISABLED </member>
+              <member>NOBORDER </member>
+              <member>GROUP    </member>
+              <member>NOTAB    </member>
+            </simplelist>
+            <variablelist>
+              <varlistentry><term>OWNER</term>
+              <listitem>
+                <para>
+                  The programmer is completely responsible for drawing the button when the dialog receives
+                  the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
+                  implement in ooDialog. For a radio button, the difficulty would probably make this
+                  impractical.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>ICON</term>
+              <listitem>
+                <para>
+                  The button displays an icon image.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>BITMAP</term>
+              <listitem>
+                <para>
+                  The button displays a bitmap image.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>LEFT</term>
+              <listitem>
+                <para>
+                  Left justifies the text to the right of the radio button.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>RIGHT</term>
+              <listitem>
+                <para>
+                  Right justifies the text to the right side of the radio button.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>HCENTER</term>
+              <listitem>
+                <para>
+                  The text is centered horizontally to the right of the radio button.  This is the
+                  default if neither LEFT nor RIGHT are specified.
+              </para></listitem></varlistentry>
+              <varlistentry><term>TOP</term>
+              <listitem>
+                <para>
+                  The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
+                  specified the text is vertically centered in the button rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>BOTTOM</term>
+              <listitem>
+                <para>
+                  The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
+                  specified the text is vertically centered in the button rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>VCENTER</term>
+              <listitem>
+                <para>
+                  The text is vertically centered in the button rectanble.  This is the default if neither
+                  TOP nor BOTTOM are specified.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>MULTILINE</term>
+              <listitem>
+                <para>
+                  If the text for the label of the button is longer than the width of the button rectangle,
+                  the operating system will word wrap the text producing more than one line.  The height of
+                  the button rectangle has to be sufficient to display the extra line(s) or the text is
+                  clipped.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>NOTIFY</term>
+              <listitem>
+                <para>
+                  Enables the button to send notifications for the gained focus,lost focus, and double click
+                  events.  This is only necessary when the <link
+                  linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and only for
+                  the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
+                  buttons and owner-drawn buttons will recieve the DBLCLICK event.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>PUSHLIKE</term>
+              <listitem>
+                <para>
+                  Makes the button look and act like a push button. The button looks raised when it isn't
+                  pushed or checked, and sunken when it is pushed or checked. The button is drawn with a
+                  flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
+                  rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>FLAT</term>
+              <listitem>
+                <para>
+                  The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
+                  text inside the rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>HIDDEN</term>
+              <listitem>
+                <para>
+                  The <link linkend="wsvisible">not visible</link> window style.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>DISABLED</term>
+              <listitem>
+                <para>
+                  The <link linkend="wsdisabled">not enabled</link> window style.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>NOBORDER</term>
+              <listitem>
+                <para>
+                  Use this keyword to specify that a <link linkend="clsGroupBox">group box</link> is not
+                  added around the radio button group.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>GROUP</term>
+              <listitem>
+                <para>
+                  Do not use this keyword with this method. The group style is added correctly
+                  internally.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>NOTAB</term>
+              <listitem>
+                <para>
+                  The no <link linkend="wstabstop">tabstop</link> control style.
+                </para>
+              </listitem></varlistentry>
+            </variablelist>
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>idstat</term>
+        <listitem>
+          <para>
+            This argument is used to set the resource <link linkend="idArgument">ID</link> for the <link
+            linkend="clsGroupBox">group box</link>, if one is used. The argument is ignored if the
+            NOBORDER style is used.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example is complete. It can be cut and pasted into a file and run as is. It adds a
+      group of four radio buttons with IDs 304, 305, 306, and 307, in a group with two buttons each in
+      two columns. The group box for the group is give a resource ID of 300.  In initDialog(), the group
+      box is then given a label and the first radio button is checked.
+    </para>
+<programlisting>
+<![CDATA[
+/* Simple test of add ... */
+
+  dlg = .SimpleRB~new
+
+  if dlg~initCode = 0 then do
+    dlg~createCenter(150, 83, "Testing Radio Buttons", "VISIBLE", , "Ms Shell Dlg 2", 8)
+    dlg~Execute("SHOWTOP")
+    dlg~Deinstall
+  end
+
+::requires "oodWin32.cls"
+
+::class 'SimpleRB' subclass UserDialog inherit AdvancedControls
+
+::method defineDialog
+
+  labels.1 = 'Upper class'
+  labels.2 = 'Middle class'
+  labels.3 = 'Business class'
+  labels.4 = 'Lower class'
+  self~addRadioStem(304, 10, 13, ,labels., 2, "LEFTTEXT", 300)
+
+  self~addButton(IDOK, 10, 60, 50, 14, "OK", ok, "DEFAULT GROUP")
+  self~addButton(IDCANCEL, 65, 60, 50, 14, "Cancel", cancel)
+
+::method initDialog
+  self~getGroupBox(300)~setTitle("Class Warfare")
+  self~getRadioControl(304)~check
+]]>
+</programlisting>
+  </listitem></varlistentry>
+</variablelist>
+
 </section>
 
 <section id="mthAddCheckBox"><title>addCheckBox</title>
@@ -2275,7 +3038,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control </link> coordinates
+          The  control <link linkend="listCommonArguments">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -2564,16 +3327,25 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
     </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem><para>This method returns:
-    <variablelist>
-    <varlistentry><term>0</term>
-    <listitem><para>Success
-    </para></listitem></varlistentry>
-    <varlistentry><term>-2</term>
-    <listitem><para>The resource ID argument was specified, but it could not be resolved.
-    </para></listitem></varlistentry>
-    </variablelist>
-  </para></listitem></varlistentry>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
@@ -2771,16 +3543,25 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
     </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem><para>This method returns:
-    <variablelist>
-    <varlistentry><term>0</term>
-    <listitem><para>Success
-    </para></listitem></varlistentry>
-    <varlistentry><term>-2</term>
-    <listitem><para>The resource ID argument was specified, but it could not be resolved.
-    </para></listitem></varlistentry>
-    </variablelist>
-  </para></listitem></varlistentry>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
   <varlistentry id="exampleFramesRects"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
@@ -2918,7 +3699,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control </link> coordinates
+          The  control <link linkend="listCommonArguments">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3040,16 +3821,25 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
     </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem><para>This method returns:
-    <variablelist>
-    <varlistentry><term>0</term>
-    <listitem><para>Success
-    </para></listitem></varlistentry>
-    <varlistentry><term>-2</term>
-    <listitem><para>The resource ID argument was specified, but it could not be resolved.
-    </para></listitem></varlistentry>
-    </variablelist>
-  </para></listitem></varlistentry>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
@@ -3092,7 +3882,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control </link> coordinates
+          The  control <link linkend="listCommonArguments">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3161,7 +3951,21 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      This method always returns 0.
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3194,7 +3998,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control </link> coordinates
+          The  control <link linkend="listCommonArguments">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3263,7 +4067,21 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      This method always returns 0.
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3296,7 +4114,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control </link> coordinates
+          The  control <link linkend="listCommonArguments">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3365,7 +4183,21 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      This method always returns 0.
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3398,7 +4230,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control </link> coordinates
+          The  control <link linkend="listCommonArguments">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3467,7 +4299,21 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      This method always returns 0.
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3500,7 +4346,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control </link> coordinates
+          The  control <link linkend="listCommonArguments">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3569,7 +4415,21 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      This method always returns 0.
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3602,7 +4462,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control </link> coordinates
+          The  control <link linkend="listCommonArguments">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3671,7 +4531,21 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      This method always returns 0.
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3703,7 +4577,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control </link> coordinates
+          The  control <link linkend="listCommonArguments">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3772,7 +4646,21 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      This method always returns 0.
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3804,7 +4692,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control </link> coordinates
+          The  control <link linkend="listCommonArguments">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3873,7 +4761,21 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      This method always returns 0.
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3905,7 +4807,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control </link> coordinates
+          The  control <link linkend="listCommonArguments">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3974,7 +4876,21 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      This method always returns 0.
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -4019,6 +4935,26 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
             or fully qualified file name should be used.
           </para>
         </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
       </variablelist>
     </para>
   </listitem></varlistentry>
@@ -4107,7 +5043,7 @@ controls) must be assigned a unique resource ID.
 <varlistentry><term>name</term>
 <listitem><para>This is the name of the edit control.  An attribute with
 exactly this name is added to the object and provides data for the dialog item
-automatically. See <link linkend="h000184">ConnectEntryLine</link>.
+automatically. See <link linkend="mthConnectEntryLine">ConnectEntryLine</link>.
 </para></listitem></varlistentry>
 <varlistentry><term>x, y</term>
 <listitem><para>The position of the upper-left corner relative to the dialog's client
@@ -4236,6 +5172,26 @@ with a border.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+      <para>
+        Success.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+      <para>
+        Error with the in-memory dialog template or with the resource ID.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+</listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example puts the edit control with ID 201 and
 length of 150 dialog units close to the upper-left corner of the dialog's client
@@ -4272,9 +5228,29 @@ the characters entered but displays the password character instead.  This method
 is a convenience method and is used exactly like
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>See <link linkend="mthAddEntryLine">AddEntryLine</link> for a description of the arguments.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>See <link linkend="mthAddEntryLine">AddEntryLine</link> for a description of the arguments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -4354,6 +5330,26 @@ box does not contain enough items.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+      <para>
+        Success.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+      <para>
+        Error with the in-memory dialog template or with the resource ID.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+</listitem></varlistentry>
 </variablelist>
 
 <note><title>Note</title><para>
@@ -4407,6 +5403,27 @@ items only.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+      <para>
+        Success.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+      <para>
+        Error with the in-memory dialog template or with the resource ID.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+</listitem></varlistentry>
+
 </variablelist>
 </section>
 
@@ -4476,6 +5493,26 @@ characters
 <listitem><para>An ID for the label
 </para></listitem></varlistentry>
 </variablelist>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+      <para>
+        Success.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+      <para>
+        Error with the in-memory dialog template or with the resource ID.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
 </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example creates an entry field and the label Your e-mail address (placed on the entry field's left side). It also
@@ -4552,6 +5589,26 @@ because labels are static controls.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+      <para>
+        Success.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+      <para>
+        Error with the in-memory dialog template or with the resource ID.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+</listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example creates a four-line input group. The single entry
 lines are accessible by IDs 301 through 304.
@@ -4682,6 +5739,26 @@ because labels are static controls.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+      <para>
+        Success.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+      <para>
+        Error with the in-memory dialog template or with the resource ID.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+</listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example shows how to use AddInputStem. It creates a four-line input group. For each entry line (with IDs 401
 through 404) an object attribute is provided. The names might be different
@@ -4764,6 +5841,26 @@ and has a predetermined width (if vertical) or height (if horizontal)
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+      <para>
+        Success.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+      <para>
+        Error with the in-memory dialog template or with the resource ID.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+</listitem></varlistentry>
 </variablelist>
 </section>
 

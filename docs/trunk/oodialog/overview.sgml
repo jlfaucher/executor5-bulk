@@ -222,7 +222,7 @@ remember than numeric IDs and can make the code easier to understand.
   attribute of the dialog classes.  This is a directory object where the indexes are symbolic IDs and the
   item at each index is the numerical value of the ID.
 </para>
-<para>
+<para id="paraReservedIDs">
   Some generic <link linkend="chapResources">resources</link> are bound to the oodialog.dll.  They can be
   used in any ooDialog program and are accessed using the <link
   linkend="clsResourceImage">.ResourceImage</link> class.  Programmers should always use their symbolic
@@ -354,10 +354,12 @@ can be retrieved from the system when needed.
   methods.  See the <link linkend="h000048">Execute</link> or <link linkend="popup">Popup</link> methods
   for example.  ooDialog provides four pre-defined icons for use in dialogs.  Custom icons can be used by
   including the icon in a binary (compiled) resource, a resource script, or by using the <link
-  linkend="mthAddIconClsUserDialog">addIcon</link> method of the UserDialog.  The following table shows the symbolic IDs
-  of the pre-defined icons.  The symbolic ID should always be used in case the numeric value is changed
-  in the future.  Their numeric IDs should be considered reserved.  There is a fifth symbolic ID that
-  represents the default dialog icon.  This ID can always be used where a dialog icon ID is needed.
+  linkend="mthAddIconClsUserDialog">addIcon</link> method of the UserDialog.  The following table shows
+  the symbolic IDs of the pre-defined icons.  The symbolic ID should always be used in case the numeric
+  value is changed in the future. In addition, the programmer should avoid using numeric IDs <link
+  linkend="paraReservedIDs">reserved</link> by ooDialog. The  IDI_DLG_DEFAULT is a fifth symbolic
+  ID that represents the default dialog icon. This ID can always be used where a dialog icon ID is
+  needed.
 </para>
 <table frame="all">
 <title>ooDialog Supplied Icons</title>
@@ -443,27 +445,28 @@ at the top left corner and include the window title and border.
   <para>
     Dialog box templates contain measurements that define the size and position of the dialog box and its
     controls. These measurements are device independent. This allows a single template to be used to
-    create the same dialog box for all types of display devices. Then the dialog box will have the same
-    proportions and appearance on all screens despite differing resolutions and aspect ratios between
-    screens.
+    create the same dialog box for all types of display devices. Using device independent measurements
+    allows a dialog box to have the same proportions and appearance on all screens despite differing
+    resolutions and aspect ratios between screens.
   </para>
   <para>
     These measurements are called dialog template units, often shortened to just dialog units in this
     documentation.
   </para>
   <para>
-    The following paragraph, which has been the sole documentation of dialog units in the ooDialog
-    documentation prior to version 4.0.0, is unfortunately incorrect.  The value of a dialog unit is
-    dependent on the font actually used in the dialog, not on the system font. The statements below were
-    probably true in very early versions of Windows when every dialog used system 8 pt font. Today it is
-    highly unusual for a dialog to use system 8 pt font. The factorX and factorY values are calculated
-    incorrectly. These values are only correct if the dialog is using system 8 pt font and are incorrect
-    for a dialog using any other font.
+    The following paragraph in italics, which has been the sole documentation of dialog units in the
+    ooDialog documentation prior to version 4.0.0, is unfortunately incorrect.  The value of a dialog
+    unit is dependent on the font actually used in the dialog, not on the system font. The statements
+    below were probably true in very early versions of Windows when every dialog used system 8 pt font.
+    Today it is highly unusual for a dialog to use system 8 pt font. The factorX and factorY values are
+    calculated incorrectly. These values are only correct if the dialog is using system 8 pt font and are
+    incorrect for a dialog using any other font.
   </para>
   <para>
-    There is a horizontal and a vertical dialog base unit to convert width and height of dialog boxes and
-    controls from dialog units to pixels and vice versa. The value of these base units depend on the
-    screen resolution and the active system font; they are stored in attributes of the UserDialog class.
+    <emphasis role="italic">There is a horizontal and a vertical dialog base unit to convert width and
+    height of dialog boxes and controls from dialog units to pixels and vice versa. The value of these
+    base units depend on the screen resolution and the active system font; they are stored in attributes
+    of the UserDialog class.</emphasis>
   <programlisting>
   <![CDATA[
   xPixels = xDialogUnits * self~FactorX
