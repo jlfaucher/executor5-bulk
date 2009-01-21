@@ -973,19 +973,19 @@ associated Object Rexx attribute. Add... methods cannot be used after
   (0,0). Moving to the left in this system increases the x value and moving down increases the y
   value.  Negative values for either x or y would then move off the screen.  (Normally. This simple
   explanation becomes more complicated with dual-monitor systems.)
-  <note><title>Note</title>
-  <para>
-    Unless otherwise stated, the coordinates (the x, y, cx, and cy arguments) of the dialog control
-    definitions are specified in dialog units.
-  </para></note>
-  <note><title>Note</title>
-  <para>
-    When dialog controls are defined, their position and size is specified in relation to the upper
-    left corner of the dialog's <emphasis role="italic">client window</emphasis>.  Specifying the
-    position relative to the screen would of course be meaningless as the dialog is moved
-    around.
-  </para></note>
 </para>
+<note><title>Note</title>
+<para>
+  Unless otherwise stated, the coordinates (the x, y, cx, and cy arguments) of the dialog control
+  definitions are specified in dialog units.
+</para></note>
+<note><title>Note</title>
+<para>
+  When dialog controls are defined, their position and size is specified in relation to the upper
+  left corner of the dialog's <emphasis role="italic">client window</emphasis>.  Specifying the
+  position relative to the screen would of course be meaningless as the dialog is moved
+  around.
+</para></note>
 <para>
   All the Add... Methods that create a single control have the following common arguments.  Some of
   the other Add... Methods that create a group of controls will only take the postion, or the size
@@ -1062,7 +1062,7 @@ associated Object Rexx attribute. Add... methods cannot be used after
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control coordinates</link>
+          The <link linkend="listCommonArguments">control </link> coordinates
         </para>
       </listitem></varlistentry>
       <varlistentry><term>text</term>
@@ -1155,7 +1155,7 @@ associated Object Rexx attribute. Add... methods cannot be used after
     <varlistentry><term>x, y, cx, cy</term>
     <listitem>
       <para>
-        The <link linkend="listCommonArguments">control coordinates</link>
+        The <link linkend="listCommonArguments">control </link> coordinates
       </para>
     </listitem></varlistentry>
     <varlistentry><term>text</term>
@@ -1173,155 +1173,155 @@ associated Object Rexx attribute. Add... methods cannot be used after
       </para>
     </listitem></varlistentry>
     <varlistentry><term>style</term>
-      <listitem>
-        <para>
-          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-          separated by spaces:
-          </para>
-          <para>
-            <simplelist type='vert' columns='3'>
-            <member>DEFAULT  </member>
-            <member>OWNER    </member>
-            <member>BITMAP   </member>
-            <member>ICON     </member>
-            <member>LEFT     </member>
-            <member>RIGHT    </member>
-            <member>HCENTER  </member>
-            <member>TOP      </member>
-            <member>BOTTOM   </member>
-            <member>VCENTER  </member>
-            <member>MULTILINE</member>
-            <member>NOTIFY   </member>
-            <member>FLAT     </member>
-            <member>HIDDEN   </member>
-            <member>DISABLED </member>
-            <member>BORDER   </member>
-            <member>GROUP    </member>
-            <member>NOTAB    </member>
-            </simplelist>
-          <variablelist>
-            <varlistentry><term>DEFAULT</term>
-            <listitem>
-              <para>
-                The button becomes the default button in the dialog.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>OWNER</term>
-            <listitem>
-              <para>
-                The programmer is completely responsible for drawing the button when the dialog receives
-                the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
-                implement in ooDialog.  A simpler approach for an owner drawn button is to use a bitmap
-                button.  See the <link linkend="mthAddBitmapButton">addBitmapButton</link> method.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>ICON</term>
-            <listitem>
-              <para>
-                The button displays an icon image.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>BITMAP</term>
-            <listitem>
-              <para>
-                The button displays a bitmap image.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>LEFT</term>
-            <listitem>
-              <para>
-                Left justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
-                the text is centered in the button rectangle.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>RIGHT</term>
-            <listitem>
-              <para>
-                Right justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
-                the text is centered in the button rectangle.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>HCENTER</term>
-            <listitem>
-              <para>
-                The button has its text centered horizontally in the button rectangle.  This is the default
-                if neither LEFT nor RIGHT are specified.
-            </para></listitem></varlistentry>
-            <varlistentry><term>TOP</term>
-            <listitem>
-              <para>
-                The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
-                specified the text is vertically centered in the button rectangle.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>BOTTOM</term>
-            <listitem>
-              <para>
-                The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
-                specified the text is vertically centered in the button rectangle.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>VCENTER</term>
-            <listitem>
-              <para>
-                The text is vertically centered in the button rectanble.  This is the default if neither
-                TOP nor BOTTOM are specified.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>MULTILINE</term>
-            <listitem>
-              <para>
-                If the text for the label of the button is longer than the width of the button rectangle,
-                the operating system will word wrap the text producing more than one line.  The height of
-                the button rectangle has to be sufficient to display the extra line(s) or the text is
-                clipped.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>NOTIFY</term>
-            <listitem>
-              <para>
-                Enables the button to send notifications for the gained focus,lost focus, and double click
-                events.  This is only necessary when the <link
-                linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and only for
-                the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>FLAT</term>
-            <listitem>
-              <para>
-                The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
-                text inside the rectangle.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>HIDDEN</term>
-            <listitem>
-              <para>
-                The <link linkend="wsvisible">not visible</link> window style.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>DISABLED</term>
-            <listitem>
-              <para>
-                The <link linkend="wsdisabled">not enabled</link> window style.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>BORDER</term>
-            <listitem>
-              <para>
-                The <link linkend="wsborder">border</link> window style.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>GROUP</term>
-            <listitem>
-              <para>
-                The <link linkend="wsgroup">group</link> control style.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>NOTAB</term>
-            <listitem>
-              <para>
-                The no <link linkend="wstabstop">tabstop</link> control style.
-              </para>
+    <listitem>
+      <para>
+        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+        separated by spaces:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>DEFAULT  </member>
+          <member>OWNER    </member>
+          <member>BITMAP   </member>
+          <member>ICON     </member>
+          <member>LEFT     </member>
+          <member>RIGHT    </member>
+          <member>HCENTER  </member>
+          <member>TOP      </member>
+          <member>BOTTOM   </member>
+          <member>VCENTER  </member>
+          <member>MULTILINE</member>
+          <member>NOTIFY   </member>
+          <member>FLAT     </member>
+          <member>HIDDEN   </member>
+          <member>DISABLED </member>
+          <member>BORDER   </member>
+          <member>GROUP    </member>
+          <member>NOTAB    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>DEFAULT</term>
+          <listitem>
+            <para>
+              The button becomes the default button in the dialog.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>OWNER</term>
+          <listitem>
+            <para>
+              The programmer is completely responsible for drawing the button when the dialog receives
+              the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
+              implement in ooDialog.  A simpler approach for an owner drawn button is to use a bitmap
+              button.  See the <link linkend="mthAddBitmapButton">addBitmapButton</link> method.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ICON</term>
+          <listitem>
+            <para>
+              The button displays an icon image.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BITMAP</term>
+          <listitem>
+            <para>
+              The button displays a bitmap image.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LEFT</term>
+          <listitem>
+            <para>
+              Left justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
+              the text is centered in the button rectangle.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RIGHT</term>
+          <listitem>
+            <para>
+              Right justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
+              the text is centered in the button rectangle.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HCENTER</term>
+          <listitem>
+            <para>
+              The button has its text centered horizontally in the button rectangle.  This is the default
+              if neither LEFT nor RIGHT are specified.
+          </para></listitem></varlistentry>
+          <varlistentry><term>TOP</term>
+          <listitem>
+            <para>
+              The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
+              specified the text is vertically centered in the button rectangle.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BOTTOM</term>
+          <listitem>
+            <para>
+              The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
+              specified the text is vertically centered in the button rectangle.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VCENTER</term>
+          <listitem>
+            <para>
+              The text is vertically centered in the button rectanble.  This is the default if neither
+              TOP nor BOTTOM are specified.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MULTILINE</term>
+          <listitem>
+            <para>
+              If the text for the label of the button is longer than the width of the button rectangle,
+              the operating system will word wrap the text producing more than one line.  The height of
+              the button rectangle has to be sufficient to display the extra line(s) or the text is
+              clipped.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTIFY</term>
+          <listitem>
+            <para>
+              Enables the button to send notifications for the gained focus,lost focus, and double click
+              events.  This is only necessary when the <link
+              linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and only for
+              the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FLAT</term>
+          <listitem>
+            <para>
+              The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
+              text inside the rectangle.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+            <para>
+              The <link linkend="wsvisible">not visible</link> window style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+            <para>
+              The <link linkend="wsdisabled">not enabled</link> window style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BORDER</term>
+          <listitem>
+            <para>
+              The <link linkend="wsborder">border</link> window style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+            <para>
+              The <link linkend="wsgroup">group</link> control style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+            <para>
+              The no <link linkend="wstabstop">tabstop</link> control style.
+            </para>
           </listitem></varlistentry>
         </variablelist>
       </para>
@@ -1405,7 +1405,7 @@ MyDialog~addButton(555, 100, 80, 40, 15, "&Get new Info", ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control coordinates</link>
+          The <link linkend="listCommonArguments">control </link> coordinates
         </para>
       </listitem></varlistentry>
       <varlistentry><term>text</term>
@@ -1589,86 +1589,244 @@ MyDialog~addBitmapButton(601, 20, 317, 80, 30, , "BmpPushed", ,
 <indexterm><primary>addButtonGroup</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~addButtonGroup(--x--,--y--,--+----+--,--+----+--,--"-->
-                                            +-cx-+     +-cy-+
-
-   +---------------------+
-   V                     |
->----text-- --id-- --msg-+--"---------------------------------------->
-
->--+-------------------------------+--)-----------------------------><
-   +-,--+--------+--+------------+-+
-        +-bottom-+  +-,--options-+
-
-
+                                                 +----------------+
+                                                 V                |
+>>--addButtonGroup(-x-,-y--+------+-+------+-,-"---txt- -id- -msg-+-"-+-------+-+---------+-><
+                           +-,-cx-+ +-,-cy-+                          +-,-row-+ +-,--opts-+
 ]]>
 </programlisting>
 
-<para>Use the addButtonGroup method to add more than
-one push button at once to the dialog. The buttons are arranged in a row or
-in a column. </para>
+<para>
+  Use the addButtonGroup method to add more than one push button at once to the dialog. The buttons are
+  arranged in a row or in a column.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x, y</term>
-<listitem><para>The position of the entire button group
-</para></listitem></varlistentry>
-<varlistentry><term>cx, cy</term>
-<listitem><para>The size of a single button. One or both arguments can be skipped. If
-so, the default values (cx=40, cy=12) are used.
-</para></listitem></varlistentry>
-<varlistentry><term>text ID msg</term>
-<listitem><para>These arguments are interpreted as one string
-containing three words (separated by blanks) for each
-button. The first word is the text that is displayed on the button, the second
-is the ID of the button, and the third is the name of a message that is sent
-to the object whenever the button is clicked. The fourth to sixth words are
-for the next button, and so forth.
-</para></listitem></varlistentry>
-<varlistentry><term>bottom</term>
-<listitem><para>This is a flag to switch between a vertical (=0) or horizontal (=1)
-placement of the buttons.
-</para></listitem></varlistentry>
-<varlistentry><term>options</term>
-<listitem><para>If DEFAULT is used, the first button becomes
-the default button. For the other options, see <link linkend="mthAddButton">addButton</link>.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example creates three buttons (Add, Delete, and Update):
-</para></listitem></varlistentry>
-</variablelist>
-
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The arguments are:
+      <variablelist>
+        <varlistentry><term>x, y, cx, cy</term>
+        <listitem>
+          <para>
+            The <link linkend="listCommonArguments">control </link> coordinates. In this case x and y are
+            the position of the entire group. cx and cy are the size of a single button and both are
+            optional. The default for cx is 40 and for cy 12.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>txt ID msg</term>
+        <listitem>
+          <para>
+            These arguments are interpreted as one string containing three words (separated by blanks)
+            for each button. The first word is the text that is displayed on the button, the second is
+            the ID of the button, and the third is the name of a message that is sent to the object
+            whenever the button is clicked. The fourth to sixth words are for the next button, and so
+            forth.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>row</term>
+        <listitem>
+          <para>
+            This is a flag to switch between horizontal or vertical placement of the buttons. If row is
+            true, the buttons are placed horizontal, if row is false the buttons are placed vertically.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>opts</term>
+        <listitem>
+          <para>
+            A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+            separated by spaces. Each button is given the same set of styles, except for the DEFAULT
+            style. This is only given to the first button:
+          </para>
+          <para>
+            <simplelist type='vert' columns='3'>
+              <member>DEFAULT  </member>
+              <member>OWNER    </member>
+              <member>BITMAP   </member>
+              <member>ICON     </member>
+              <member>LEFT     </member>
+              <member>RIGHT    </member>
+              <member>HCENTER  </member>
+              <member>TOP      </member>
+              <member>BOTTOM   </member>
+              <member>VCENTER  </member>
+              <member>MULTILINE</member>
+              <member>NOTIFY   </member>
+              <member>FLAT     </member>
+              <member>HIDDEN   </member>
+              <member>DISABLED </member>
+              <member>BORDER   </member>
+              <member>GROUP    </member>
+              <member>NOTAB    </member>
+            </simplelist>
+            <variablelist>
+              <varlistentry><term>DEFAULT</term>
+              <listitem>
+                <para>
+                  The button becomes the default button in the dialog.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>OWNER</term>
+              <listitem>
+                <para>
+                  The programmer is completely responsible for drawing the button when the dialog receives
+                  the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
+                  implement in ooDialog.  A simpler approach for an owner drawn button is to use a bitmap
+                  button.  See the <link linkend="mthAddBitmapButton">addBitmapButton</link> method.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>ICON</term>
+              <listitem>
+                <para>
+                  The button displays an icon image.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>BITMAP</term>
+              <listitem>
+                <para>
+                  The button displays a bitmap image.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>LEFT</term>
+              <listitem>
+                <para>
+                  Left justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
+                  the text is centered in the button rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>RIGHT</term>
+              <listitem>
+                <para>
+                  Right justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
+                  the text is centered in the button rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>HCENTER</term>
+              <listitem>
+                <para>
+                  The button has its text centered horizontally in the button rectangle.  This is the default
+                  if neither LEFT nor RIGHT are specified.
+              </para></listitem></varlistentry>
+              <varlistentry><term>TOP</term>
+              <listitem>
+                <para>
+                  The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
+                  specified the text is vertically centered in the button rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>BOTTOM</term>
+              <listitem>
+                <para>
+                  The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
+                  specified the text is vertically centered in the button rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>VCENTER</term>
+              <listitem>
+                <para>
+                  The text is vertically centered in the button rectanble.  This is the default if neither
+                  TOP nor BOTTOM are specified.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>MULTILINE</term>
+              <listitem>
+                <para>
+                  If the text for the label of the button is longer than the width of the button rectangle,
+                  the operating system will word wrap the text producing more than one line.  The height of
+                  the button rectangle has to be sufficient to display the extra line(s) or the text is
+                  clipped.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>NOTIFY</term>
+              <listitem>
+                <para>
+                  Enables the button to send notifications for the gained focus,lost focus, and double click
+                  events.  This is only necessary when the <link
+                  linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and only for
+                  the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>FLAT</term>
+              <listitem>
+                <para>
+                  The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
+                  text inside the rectangle.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>HIDDEN</term>
+              <listitem>
+                <para>
+                  The <link linkend="wsvisible">not visible</link> window style.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>DISABLED</term>
+              <listitem>
+                <para>
+                  The <link linkend="wsdisabled">not enabled</link> window style.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>BORDER</term>
+              <listitem>
+                <para>
+                  The <link linkend="wsborder">border</link> window style.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>GROUP</term>
+              <listitem>
+                <para>
+                  The <link linkend="wsgroup">group</link> control style.
+                </para>
+              </listitem></varlistentry>
+              <varlistentry><term>NOTAB</term>
+              <listitem>
+                <para>
+                  The no <link linkend="wstabstop">tabstop</link> control style.
+                </para>
+              </listitem></varlistentry>
+            </variablelist>
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example creates three buttons (Add, Delete, and Update):
+  </para>
 <programlisting>
 <![CDATA[
-MyDialog~addButtonGroup(20, 235, , , "&Add 301 AddItem"  ,
-"&Delete 302 DeleteItem"  ,
-"&Update 303 UpdateItem")
+MyDialog~addButtonGroup(20, 235, , ,               -
+                        "&Add 301 AddItem "        -
+                        "&Delete 302 DeleteItem "  -
+                        "&Update 303 UpdateItem")
 ]]>
 </programlisting>
+  </listitem></varlistentry>
+</variablelist>
+
 </section>
 
 <section id="mthAddOkCancelRightBottom"><title>addOkCancelRightBottom</title>
 <indexterm><primary>addOkCancelRightBottom</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~AddOkCancelRightBottom--------------------------><
-
+>>--addOkCancelRightBottom-----------------------><
 
 ]]>
 </programlisting>
 
-<para>The addOkCancelRightBottom method adds an OK and a Cancel push button to the lower-right
-edge of the dialog. </para>
+<para>
+  The addOkCancelRightBottom method adds an OK and a Cancel push button horizontally to the lower-right
+  edge of the dialog. The method takes no arguments and does not return a value.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example adds the two push buttons to the bottom of the
-dialog. It further overrides the standard OK and Cancel methods.
-</para></listitem></varlistentry>
-</variablelist>
-
+<listitem>
+  <para>
+    The following example adds the push buttons to the bottom of the dialog. It also overrides the
+    standard OK and Cancel methods.
+  </para>
 <programlisting>
 <![CDATA[
 ::class MyClass subclass UserDialog
@@ -1688,48 +1846,56 @@ dialog. It further overrides the standard OK and Cancel methods.
    if ret=1 then self~CANCEL:super
 ]]>
 </programlisting>
+</listitem></varlistentry>
+</variablelist>
+
 </section>
 
 <section id="mthAddOkCancelLeftBottom"><title>addOkCancelLeftBottom</title>
 <indexterm><primary>addOkCancelLeftBottom</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~AddOkCancelLeftBottom---------------------------><
-
+>>--addOkCancelLeftBottom------------------------><
 
 ]]>
 </programlisting>
 
-<para>The addOkCancelLeftBottom method adds an OK and a Cancel push button to the lower-left edge
-of the dialog.</para>
+<para>
+  The addOkCancelLeftBottom method adds an OK and a Cancel push button horizontally to the lower-left
+  edge of the dialog. The method takes no arguments and does not return a value.
+</para>
 </section>
 
 <section id="mthAddOkCancelRightTop"><title>addOkCancelRightTop</title>
 <indexterm><primary>addOkCancelRightTop</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~AddOkCancelRightTop-----------------------------><
+>>--addOkCancelRightTop--------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The addOkCancelRightTop method adds an OK and a Cancel push button vertically to the upper-right
-edge of the dialog.</para>
+<para>
+  The addOkCancelRightTop method adds an OK and a Cancel push button vertically to the upper-right edge
+  of the dialog. The method takes no arguments and does not return a value.
+</para>
 </section>
 
 <section id="mthAddOkCancelLeftTop"><title>addOkCancelLeftTop</title>
 <indexterm><primary>addOkCancelLeftTop</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~AddOkCancelLeftTop------------------------------><
+>>--addOkCancelLeftTop---------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The addOkCancelLeftTop method adds an OK and a Cancel push button vertically to the upper-left
-edge of the dialog.</para>
+<para>
+  The addOkCancelLeftTop method adds an OK and a Cancel push button vertically to the upper-left edge of
+  the dialog. The method takes no arguments and does not return a value.
+</para>
 </section>
 
 <section id="mthAddRadioButton"><title>addRadioButton</title>
@@ -2109,7 +2275,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control coordinates</link>
+          The <link linkend="listCommonArguments">control </link> coordinates
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -2448,7 +2614,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control coordinates</link>.  When cx and cy are
+          The <link linkend="listCommonArguments">control </link> coordinates.  When cx and cy are
           omitted, then width and height of the control are calculated automatically based on the width
           and height of the text string.
         </para>
@@ -2752,7 +2918,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control coordinates</link>
+          The <link linkend="listCommonArguments">control </link> coordinates
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -2926,7 +3092,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control coordinates</link>
+          The <link linkend="listCommonArguments">control </link> coordinates
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3028,7 +3194,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control coordinates</link>
+          The <link linkend="listCommonArguments">control </link> coordinates
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3130,7 +3296,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control coordinates</link>
+          The <link linkend="listCommonArguments">control </link> coordinates
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3232,7 +3398,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control coordinates</link>
+          The <link linkend="listCommonArguments">control </link> coordinates
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3334,7 +3500,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control coordinates</link>
+          The <link linkend="listCommonArguments">control </link> coordinates
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3436,7 +3602,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control coordinates</link>
+          The <link linkend="listCommonArguments">control </link> coordinates
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3537,7 +3703,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control coordinates</link>
+          The <link linkend="listCommonArguments">control </link> coordinates
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3638,7 +3804,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control coordinates</link>
+          The <link linkend="listCommonArguments">control </link> coordinates
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -3739,7 +3905,7 @@ MyDialog~addCheckBoxStem(501, 20, 20, ,CBNames, 2, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The <link linkend="listCommonArguments">control coordinates</link>
+          The <link linkend="listCommonArguments">control </link> coordinates
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
