@@ -46,7 +46,7 @@
 <para>This appendix describes how to interface applications to Rexx or extend
 the Rexx language by using Rexx C++ application programming interfaces (APIs).
 As used here, the term application refers to programs
-written in C++. 
+written in C++.
 </para>
 <para>The features described here let a C++ application extend many parts of the
 Rexx language or extend an application with Rexx. This includes creating handlers
@@ -67,7 +67,7 @@ The application programmer can tailor the Rexx interpreter behavior by
 replacing Rexx system requests.
 </para></listitem></varlistentry>
 </variablelist>
-<para>Methods, functions, and system exit handlers have similar coding, 
+<para>Methods, functions, and system exit handlers have similar coding,
 compilation, and packaging characteristics.
 </para>
 <para>In addition, applications can call methods defined on an ooRexx class and
@@ -79,8 +79,161 @@ RexxCreatInterpreter API.</para>
 </section>
 
 <section id="apiconcepts"><title>Introduction to API Vectors</title>
-<para>This section provides a general description of API vectors and how to use 
+<para>This section provides a general description of API vectors and how to use
 them.</para>
+</section>
+
+<section id="apitypes"><title>Data Types Used in APIs</title>
+<para>The ooRexx APIs rely on a variety of special C++ types for interfacing with
+the interpreter.  Some of these types are specific to the Rexx language, while
+others are standard types defined by C++.  Many of the APIs involve conversion
+between types, while others require having values of a specific type to function.
+This section explains the different types and the rules for using them.
+</para>
+<section id="objecttypes"><title>Rexx Object Types</title>
+<para>Open Object Rexx is fundamentally an object-oriented language.  All data in
+the language (including strings and numbers) are represented by object instances.
+For use in the APIs, there are a number of opaque types that represent instances
+of different core objects.  The defined object types are:</para>
+</para>
+<variablelist>
+<varlistentry><term>RexxObjectPtr</term>
+<listitem><para>a reference to a Rexx object instance.  This is the root of object
+hierarchy and can represent any type of object.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxStringObject</term>
+<listitem><para>an instance of the Rexx String class.  The APIs have a number of
+APIs that allow direct manipulation and creation of Rexx strings.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxArrayObject</term>
+<listitem><para>An instance of a Rexx single-dimension array.  Arrays are used
+in many places, and there are interfaces provided for direct manipulation of
+arrays.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxDirectoryObject</term>
+<listitem><para>An instance of Rexx Directory class.  Like arrays, there are
+APIs provided for access and manipulating data stored in a directory.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxStemObject</term>
+<listitem><para>An instance of Rexx Stem class.  The APIs include a number of
+utility routines for accessing and manipulating data in Stem objects.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxSupplierObject</term>
+<listitem><para>An instance of Rexx Supplier class.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxSupplierObject</term>
+<listitem><para>An instance of Rexx Supplier class.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxClassObject</term>
+<listitem><para>An instance of Rexx Class class.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxPackageObject</term>
+<listitem><para>An instance of Rexx Package class.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxMethodObject</term>
+<listitem><para>An instance of Rexx Method class.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxRoutineObject</term>
+<listitem><para>An instance of Rexx Routine class.  Routine objects
+can be invoked directly from C++ code.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxPointerObject</term>
+<listitem><para>A wrapper around a pointer value.  Pointer objects are designed
+for constructing Rexx classes that interface with native code subsystems.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxBufferObject</term>
+<listitem><para>An allocatable storage object that can be used for storing native
+C++ data.  Buffer objects and the contained data are managed using the Rexx object
+garbage collector.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+<section id="numerictypes"><title>Rexx Numeric Types</title>
+<para>The Routine and Method interfaces support a very complete set of C numeric types as
+arguments and return values.  In addition, there are also APIs provided for converting between
+Rexx Objects and numeric types (and the reverse transformation as well).  It is recommended that
+you allow the Rexx runtime and APIs to handle conversions between Rexx strings and numeric types to
+give behavior consistent with the Rexx built-in methods and functions.
+</para>
+<para>In addition to a full set of standard numeric types, there are two special types
+provided that implement the standard Rexx rules for numbers used internally by Rexx.
+These types are:</para>
+<variablelist>
+<varlistentry><term>wholenumber_t</term>
+<listitem><para>conversions involving the wholenumber_t conform to the Rexx whole number
+rules.  Values are converted using the same internal digits value used by the built-in functions.
+For 32-bit versions, this is numeric digits 9, giving a range of 999,999,999 to -999,999,999.
+On 64-bit systems, numeric digits 18 is used, giving a range of 999,999,999,999,999,999 to
+-999,999,999,999,999,999.
+</para></listitem></varlistentry>
+<varlistentry><term>stringsize_t</term>
+<listitem><para>stringsize_t conversions also conform to the Rexx whole number
+rules, with the added restriction that the value must be a non-negative whole number value.  The
+stringsize_t type is useful for arguments such as string lengths where only a non-negative value is
+allowed.  The range for 32-bit versions is 999,999,999 to 0, and
+999,999,999,999,999,999 to 0 on 64-bit platforms.
+</para></listitem></varlistentry>
+<varlistentry><term>logical_t</term>
+<listitem><para>a Rexx logical value.  On conversion from a string value, this must be
+either '1' (true) or '0' (false).  On conversion back to a string value, a non-zero binary value be converted
+to '1' (true) and zero will become '0' (false).
+</para></listitem></varlistentry>
+</variablelist>
+<para>A subset of the integer numeric types are of different sizes depending on the
+addressing mode of the system you are compiling on.  These types will be 32-bits in size
+or 64-bits.  The variable size types are: </para>
+<variablelist>
+<varlistentry><term>size_t</term>
+<listitem><para>An unsigned "size" value.  This is the value type returned by pointer subtraction.
+</para></listitem></varlistentry>
+<varlistentry><term>ssize_t</term>
+<listitem><para>The signed equivalent to size_t.
+</para></listitem></varlistentry>
+<varlistentry><term>uintptr_t</term>
+<listitem><para>An unsigned integer value that's guaranteed to be the same size as a pointer value.
+Use an uintptr_t type if you wish to return a pointer value as a Rexx number.
+</para></listitem></varlistentry>
+<varlistentry><term>intptr_t</term>
+<listitem><para>A signed equivalent to uintptr_t.
+</para></listitem></varlistentry>
+</variablelist>
+<para>The remainder of the numeric types have fixed sizes regardless of the addressing mode.</para>
+<variablelist>
+<varlistentry><term>int</term>
+<listitem><para>A 32-bit signed integer.
+</para></listitem></varlistentry>
+<varlistentry><term>int32_t</term>
+<listitem><para>A 32-bit signed integer.  This is equivalent to int.
+</para></listitem></varlistentry>
+<varlistentry><term>uint32_t</term>
+<listitem><para>An unsigned 32-bit integer.
+</para></listitem></varlistentry>
+<varlistentry><term>int64_t</term>
+<listitem><para>A signed 64-bit integer.
+</para></listitem></varlistentry>
+<varlistentry><term>uint64_t</term>
+<listitem><para>An unsigned 64-bit integer.
+</para></listitem></varlistentry>
+<varlistentry><term>int16_t</term>
+<listitem><para>A signed 16-bit integer.
+</para></listitem></varlistentry>
+<varlistentry><term>uint16_t</term>
+<listitem><para>An unsigned 16-bit integer.
+</para></listitem></varlistentry>
+<varlistentry><term>int8_t</term>
+<listitem><para>A signed 8-bit integer.
+</para></listitem></varlistentry>
+<varlistentry><term>uint8_t</term>
+<listitem><para>An unsigned 8-bit integer.
+</para></listitem></varlistentry>
+<varlistentry><term>float</term>
+<listitem><para>A 32-bit floating point number.
+</para></listitem></varlistentry>
+<varlistentry><term>double</term>
+<listitem><para>A 64-bit floating point number.
+</para></listitem></varlistentry>
+</variablelist
+</section>
 </section>
 
 <section id="instanceapi"><title>Rexx Interpreter Instance Interface</title>
@@ -857,7 +1010,7 @@ size_t sz;
 >>--sz = context->BufferLength(obj);-------------------------------------><
 ]]>
 </programlisting>
-<para>Return the length of the data buffer of a Rexx object. 
+<para>Return the length of the data buffer of a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -951,7 +1104,7 @@ size_t sz;
 >>--sz = context->BufferStringLength(obj);-------------------------------><
 ]]>
 </programlisting>
-<para>Return the length of the data buffer of a Rexx object. 
+<para>Return the length of the data buffer of a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -1187,8 +1340,8 @@ CSTRING str;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first converts a Rexx object into a C ASCIIZ string. 
-The second converts C ASCIIZ string into a Rexx object. 
+The first converts a Rexx object into a C ASCIIZ string.
+The second converts C ASCIIZ string into a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -1484,8 +1637,8 @@ logical_t flag;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first form converts C double value to a Rexx object. 
-The second form converts a Rexx object to a C double value. 
+The first form converts C double value to a Rexx object.
+The second form converts a Rexx object to a C double value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -1537,7 +1690,7 @@ double n;
 >>--obj = context->DoubleToObject(n);------------------------------------><
 ]]>
 </programlisting>
-<para>Converts C double value to a Rexx object. 
+<para>Converts C double value to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -1585,7 +1738,7 @@ double n;
 >>--obj = context->DoubleToObject(n, p);---------------------------------><
 ]]>
 </programlisting>
-<para>Converts C double value to a Rexx object with a specific precision. 
+<para>Converts C double value to a Rexx object with a specific precision.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -2223,7 +2376,7 @@ size_t n;
 >>--obj = context->GetArgument(n);------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the specified argument to the method or function context 
+<para>Returns the specified argument to the method or function context
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -2265,7 +2418,7 @@ RexxArrayObject arr;
 >>--arr = context->GetArguments();------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a Rexx array object of the arguments to the method or function context 
+<para>Returns a Rexx array object of the arguments to the method or function context
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -3563,7 +3716,7 @@ int32_t n;
 ]]>
 </programlisting>
 <para>There a two forms of this method.
-The first converts a C 32 bit integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object. 
+The first converts a C 32 bit integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
 The second converts a Rexx object to a C 32 bit integer pointer to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -3615,7 +3768,7 @@ int32_t n;
 >>--obj = context->Int32ToObject(n);-------------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C 32 bit integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object. 
+<para>Convert a C 32 bit integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -3666,7 +3819,7 @@ int64_t n;
 ]]>
 </programlisting>
 <para>There a two forms of this method.
-The first converts a C 64 bit integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object. 
+The first converts a C 64 bit integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
 The second converts a Rexx object to a C 64 bit integer pointer to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -3718,7 +3871,7 @@ int64_t n;
 >>--obj = context->Int64ToObject(n);-------------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C 64 bit integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object. 
+<para>Convert a C 64 bit integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -3813,8 +3966,8 @@ intptr_t n;
 ]]>
 </programlisting>
 <para>There are two formes of this method.
-The first converts a C signed integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object. 
-The second converts aRexx object to a C signed integer pointed to by <emphasis role="italic">n</emphasis>. 
+The first converts a C signed integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object.
+The second converts aRexx object to a C signed integer pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -3865,7 +4018,7 @@ intptr_t n;
 >>--obj = context->IntptrToObject(&n);-----------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C signed integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object. 
+<para>Convert a C signed integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -4538,8 +4691,8 @@ logical_t flag, n;
 ]]>
 </programlisting>
 <para>This method has two forms.
-The first form converts a Rexx object to a C logical value (0 or 1). 
-The second form converts C logical value to a Rexx object. 
+The first form converts a Rexx object to a C logical value (0 or 1).
+The second form converts C logical value to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -4591,7 +4744,7 @@ logical_t flag, n;
 >>--obj = context->LogicalToObject(n);-----------------------------------><
 ]]>
 </programlisting>
-<para>Converts C logical value to a Rexx object. 
+<para>Converts C logical value to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5309,7 +5462,7 @@ logical_t flag;
 >>--flag = context->ObjectToInt32(obj, &n);------------------------------><
 ]]>
 </programlisting>
-<para>Convert a 32 bit integer into a Rexx object. 
+<para>Convert a 32 bit integer into a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5360,7 +5513,7 @@ logical_t flag;
 >>--flag = context->ObjectToInt64(obj, &n);------------------------------><
 ]]>
 </programlisting>
-<para>Convert a 64 bit integer into a Rexx object. 
+<para>Convert a 64 bit integer into a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5412,7 +5565,7 @@ logical_t flag;
 >>--flag = context->ObjectToIntptr(obj, &n);-----------------------------><
 ]]>
 </programlisting>
-<para>Convert an integer into a Rexx object. 
+<para>Convert an integer into a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5463,7 +5616,7 @@ logical_t flag, n;
 >>--flag = context->ObjectToLogical(obj, &n);----------------------------><
 ]]>
 </programlisting>
-<para>Converts a Rexx object to a C logical value (0 or 1). 
+<para>Converts a Rexx object to a C logical value (0 or 1).
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5513,7 +5666,7 @@ RexxStringObject str;
 >>--str = context->ObjectToString(obj);----------------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object to a Rexx string object. 
+<para>Convert a Rexx object to a Rexx string object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5561,7 +5714,7 @@ logical_t flag;
 >>--flag = context->ObjectToStringSize(obj, &n);-------------------------><
 ]]>
 </programlisting>
-<para>Convert a string size number into a Rexx object. 
+<para>Convert a string size number into a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5611,7 +5764,7 @@ CSTRING str;
 >>--str = context->ObjectToStringValue(obj);-----------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object to a C ASCOOZ string. 
+<para>Convert a Rexx object to a C ASCOOZ string.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5659,7 +5812,7 @@ logical_t flag;
 >>--flag = context->ObjectToUintptr(obj, &n);----------------------------><
 ]]>
 </programlisting>
-<para>Convert an unsigned integer into a Rexx object. 
+<para>Convert an unsigned integer into a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5710,7 +5863,7 @@ logical_t flag;
 >>--flag = context->ObjectToUnsignedInt32(obj, &n);----------------------><
 ]]>
 </programlisting>
-<para>Convert an unsigned 32 bit integer into a Rexx object. 
+<para>Convert an unsigned 32 bit integer into a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5761,7 +5914,7 @@ logical_t flag;
 >>--flag = context->ObjectToUnsignedInt64(obj, &n);----------------------><
 ]]>
 </programlisting>
-<para>Convert an unsigned 64 bit integer into a Rexx object. 
+<para>Convert an unsigned 64 bit integer into a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5810,7 +5963,7 @@ logical_t flag;
 >>--flag = context->ObjectToValue(obj, &desc);---------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object to a ValueDescriptor struct. 
+<para>Convert a Rexx object to a ValueDescriptor struct.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5861,7 +6014,7 @@ logical_t flag;
 >>--flag = context->ObjectToWholeNumber(obj, &wn);-----------------------><
 ]]>
 </programlisting>
-<para>Convert a whole number into a Rexx object. 
+<para>Convert a whole number into a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7006,7 +7159,7 @@ CSTRING str;
 >>--str = context->StringData(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to the Rexx object C ASCIIZ string. 
+<para>Returns a pointer to the Rexx object C ASCIIZ string.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7054,7 +7207,7 @@ size_t c, len1, len2;
 >>--c = context->StringGet(obj, len1, str, len2);------------------------><
 ]]>
 </programlisting>
-<para>Copies all or part of the Rexx object string value to the C string buffer. 
+<para>Copies all or part of the Rexx object string value to the C string buffer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7113,7 +7266,7 @@ size_t sz;
 >>--sz = context->StringLength(obj);-------------------------------------><
 ]]>
 </programlisting>
-<para>Return the length of the string value of a Rexx object. 
+<para>Return the length of the string value of a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7206,7 +7359,7 @@ size_t sz;
 >>--obj = context->StringSize(sz);---------------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C size_t integer to a Rexx object. 
+<para>Convert a C size_t integer to a Rexx object.
 Alias of the <link linkend="mthStringSizeToObject">StringSizeToObject</link> method.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -7254,7 +7407,7 @@ size_t sz;
 >>--obj = context->StringSizeToObject(sz);-------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C size_t integer to a Rexx object. 
+<para>Convert a C size_t integer to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7615,8 +7768,8 @@ uintptr_t n;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first converts a C unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object. 
-The second converts a Rexx object into a C unsigned integer pointed to by <emphasis role="italic">n</emphasis>. 
+The first converts a C unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object.
+The second converts a Rexx object into a C unsigned integer pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7668,7 +7821,7 @@ uintptr_t n;
 >>--obj = context->UintptrToObject(&n);----------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object. 
+<para>Convert a C unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7719,8 +7872,8 @@ uint32_t n;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first convert a C 32 bit unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object. 
-The second converts a Rexx object  a C 32 bit unsigned integer pointed to by <emphasis role="italic">n</emphasis>. 
+The first convert a C 32 bit unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object.
+The second converts a Rexx object  a C 32 bit unsigned integer pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7772,7 +7925,7 @@ uint32_t n;
 >>--obj = context->UnsignedInt32ToObject(n);-----------------------------><
 ]]>
 </programlisting>
-<para>Convert a C 32 bit unsigned integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object. 
+<para>Convert a C 32 bit unsigned integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7823,8 +7976,8 @@ uint64_t n;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first convert a C 64 bit unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object. 
-The second converts a Rexx object  a C 64 bit unsigned integer pointed to by <emphasis role="italic">n</emphasis>. 
+The first convert a C 64 bit unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object.
+The second converts a Rexx object  a C 64 bit unsigned integer pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7876,7 +8029,7 @@ uint64_t n;
 >>--obj = context->UnsignedInt64ToObject(n);-----------------------------><
 ]]>
 </programlisting>
-<para>Convert a C 64 bit unsigned integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object. 
+<para>Convert a C 64 bit unsigned integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7921,7 +8074,7 @@ ValueDescriptor desc[3];
 >>--obj = context->ValuesToObject(desc);---------------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx ValueDescriptor struct array to a Rexx array object. 
+<para>Convert a Rexx ValueDescriptor struct array to a Rexx array object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7966,7 +8119,7 @@ ValueDescriptor desc;;
 >>--obj = context->ValueToObject(&desc);---------------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx valueDescriptor struct to a Rexx object. 
+<para>Convert a Rexx valueDescriptor struct to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -8017,8 +8170,8 @@ logical_t flag;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first form converts a C signed integer to a Rexx object. 
-The second form converts a a Rexx object to a C signed integer. 
+The first form converts a C signed integer to a Rexx object.
+The second form converts a a Rexx object to a C signed integer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -8070,7 +8223,7 @@ wholenumber_t n;
 >>--obj = context->WholeNumberToObject(n);-------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C signed integer to a Rexx object. 
+<para>Convert a C signed integer to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
