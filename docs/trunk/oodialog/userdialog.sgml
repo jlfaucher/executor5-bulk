@@ -2098,6 +2098,10 @@ MyDialog~addButtonGroup(20, 235, , ,               -
             method. The <link linkend="mthConnectEntryLine">connectEntryLine</link>() documentation has a
             good description of the concept of the data attribute.
           </para>
+          <para>
+            If you omitt this argument then the data attribute is constructed automatically and named by
+            concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA || id</computeroutput>.
+          </para>
         </listitem></varlistentry>
         <varlistentry><term>x, y, cx, cy</term>
         <listitem>
@@ -2871,6 +2875,10 @@ MyDialog~Execute
             the same function as the <link linkend="mthConnectCheckBox">connectCheckBox</link>()
             method. The <link linkend="mthConnectEntryLine">connectEntryLine</link>() documentation has a
             good description of the concept of the data attribute.
+          </para>
+          <para>
+            If you omitt this argument then the data attribute is constructed automatically and named by
+            concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA || id</computeroutput>.
           </para>
         </listitem></varlistentry>
         <varlistentry><term>x, y, cx, cy</term>
@@ -5692,6 +5700,10 @@ MyDialog~objectrexx = 1
           same function as the <link linkend="mthConnectEntryLine">connectEntryLine</link>() method. The
           documentation connectEntryLine() has a good description of the concept of the data attribute.
         </para>
+        <para>
+          If you omitt this argument then the data attribute is constructed automatically and named by
+          concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA || id</computeroutput>.
+        </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
@@ -5968,6 +5980,10 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
           same function as the <link linkend="mthConnectEntryLine">connectEntryLine</link>() method. The
           documentation connectEntryLine() has a good description of the concept of the data attribute.
         </para>
+        <para>
+          If you omitt this argument then the data attribute is constructed automatically and named by
+          concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA || id</computeroutput>.
+        </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
@@ -6219,6 +6235,10 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
           boxes. The documentation for the <link linkend="mthConnectEntryLine">connectEntryLine</link>()
           method has a good description of the concept of the data attribute.
         </para>
+        <para>
+          If you omitt this argument then the data attribute is constructed automatically and named by
+          concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA || id</computeroutput>.
+        </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
@@ -6429,6 +6449,11 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
           documentation for the <link linkend="mthConnectEntryLine">connectEntryLine</link>() method has
           a good description of the concept of the data attribute.
         </para>
+        <para>
+          If you omitt this argument then the data attribute is constructed automatically and named by
+          concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA ||
+          id</computeroutput>.
+        </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
@@ -6593,7 +6618,13 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
         <para>
           The name of the data attribute associated with the edit contorl Using this argument performs the
           same function as the <link linkend="mthConnectEntryLine">connectEntryLine</link>() method. The
-          documentation connectEntryLine() has a good description of the concept of the data attribute.
+          documentation for connectEntryLine() has a good description of the concept of the data
+          attribute.
+        </para>
+        <para>
+          If you omitt this argument then the data attribute is constructed automatically and named by
+          concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA ||
+          id</computeroutput>.
         </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y, cx1, cx2, cy</term>
@@ -6887,8 +6918,8 @@ MyUserDialog~addInput(402, , 20, 30, , 150, , "Your eMail address")
       <varlistentry><term>startid</term>
       <listitem>
         <para>
-          An ID that is assigned to the first edit control. Consecutive numbers are assigned to the other
-          edit controls
+          The resource <link linkend="idArgument">ID</link> that is assigned to the first edit control.
+          Consecutive numbers are assigned to the other edit controls
         </para>
       </listitem></varlistentry>
       <varlistentry><term>x, y</term>
@@ -7169,62 +7200,186 @@ MyDialog~addInputGroup(301, 20, 20, ,130, "Name FirstName Street City")
 <indexterm><primary>addComboInput</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~addComboInput(--id--,--+----------+--,--x--,--y--,-->
-                                      +-attrName-+
+>>-1addComboInput(-id-+--------+-,-x-,-y-+-------+-,-cx2-+----------+--->
+                      +-,-attr-+         +-,-cx1-+       +-,-clines-+
 
->--+-----+--,--cx2--,--+--------+--,--text--,---------------------->
-   +-cx1-+             +-clines-+
-
->--+---------------------------------------------+--)-------------><
-   +-,--+-----------------------+--+-----------+-+
-        |    +-------------+    |  +-,--idstat-+
-        |    V             |    |
-        +-"----+-SIMPLE--+-+--"-+
-               +-LIST----+
-               +-SORT----+
-               +-VSCROLL-+
-
-
+>--,--text---+---------+--+----------+-)-------------------------------><
+             +-,-style-+  +-,-idstat-+
 ]]>
 </programlisting>
 
-<para>The addComboInput method adds a combo box and a
-label string to the dialog. </para>
+<para>
+  The addComboInput method adds a combo box and a label (a static text control) to the dialog.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the combo box
-</para></listitem></varlistentry>
-<varlistentry><term>attrName</term>
-<listitem><para>The name of the combo box. This name is used as an object attribute
-name.
-</para></listitem></varlistentry>
-<varlistentry><term>x, y</term>
-<listitem><para>Position of the group (text string of combo box)
-</para></listitem></varlistentry>
-<varlistentry><term>cx1</term>
-<listitem><para>Length of the text string
-</para></listitem></varlistentry>
-<varlistentry><term>cx2</term>
-<listitem><para>Width of the combo box
-</para></listitem></varlistentry>
-<varlistentry><term>clines</term>
-<listitem><para>Vertical length of the combo box in number of lines
-</para></listitem></varlistentry>
-<varlistentry><term>text</term>
-<listitem><para>Label being displayed on the left-hand side of the combo box
-</para></listitem></varlistentry>
-<varlistentry><term>options</term>
-<listitem><para>See <link linkend="mthAddComboBox">addComboBox</link>
-</para></listitem></varlistentry>
-<varlistentry><term>idstat</term>
-<listitem><para>The ID of the label. Usually you do not have to specify this value because
-labels are static controls.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The arguments are:
+    </para>
+    <variablelist>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the control.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>attr</term>
+      <listitem>
+        <para>
+          The name of the data attribute associated with the combo box. Using this argument performs the
+          same function as the <link linkend="mthConnectComboBox">connectComboBox</link>() method. The
+          documentation for <link linkend="mthConnectEntryLine">connectEntryLine</link>() has a good
+          description of the concept of the data attribute.
+        </para>
+        <para>
+          If you omitt this argument then the data attribute is constructed automatically and named by
+          concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA ||
+          id</computeroutput>.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y, cx1, cx2, cy</term>
+      <listitem>
+        <para>
+          The  control <link linkend="listCommonArguments">coordinates</link>. x and y are the position of
+          the upper-left edge of the label. The combo box is aligned automatically.
+        </para>
+        <para>
+          cx1 is the length of the label. cx2 is the width of the combo box. clines is the height of the
+          combo box in lines.  If cx1 or cy are omitted, their values are calculated.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text</term>
+      <listitem>
+        <para>
+          The text of the label. The label is displayed on the left-hand side of the combo box.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+          separated by spaces:
+        </para>
+        <simplelist type='vert' columns='3'>
+          <member>SIMPLE   </member>
+          <member>LIST     </member>
+          <member>SORT     </member>
+          <member>VSCROLL  </member>
+          <member>NOHSCROLL</member>
+          <member>PARTIAL  </member>
+          <member>HIDDEN   </member>
+          <member>GROUP    </member>
+          <member>DISABLED </member>
+          <member>NOBORDER </member>
+          <member>NOTAB    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>SIMPLE</term>
+          <listitem>
+            <para>
+              Adds a simple combo box, which displays the list box at all times. If neither SIMPLE nor
+              LIST are specified, the combo box will be a drop-down combo box.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LIST</term>
+          <listitem>
+            <para>
+              Adds a drop-down list combo box. If neither SIMPLE nor LIST are specified, the combo box
+              will be a drop-down combo box.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SORT</term>
+          <listitem>
+            <para>
+              The items in the list are sorted by the combo box itself.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VSCROLL</term>
+          <listitem>
+            <para>
+              Adds a vertical scroll bar to the combo box.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOHSCROLL</term>
+          <listitem>
+            <para>
+              Normally the ComboBox automatically scrolls the text in an edit control to the right when
+              the user types a character at the end of the line. When the NOHSCROLL style is set, only
+              text that fits within the rectangular boundary is allowed.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PARTIAL</term>
+          <listitem>
+            <para>
+              Specifies that the size of the combo box is exactly the size specified by the application
+              when it created the combo box. Normally, the system sizes a combo box so that it does not
+              display partial items.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+            <para>
+              Create the control without the <link linkend="wsvisible">visible</link> style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+            <para>
+              Create the control without the <link linkend="wsdisabled">enabled</link> style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+            <para>
+              Create the control with the <link linkend="wsgroup">group</link> style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+            <para>
+              Create the control without the <link linkend="wstabstop">tabstop</link> style. By default
+              the combobox control is created with the tabstop style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOBORDER</term>
+          <listitem>
+            <para>
+              Create the control without the <link linkend="wsborder">border</link> style.  By default
+              combobox controls are created with a border.
+            </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </listitem></varlistentry>
+      <varlistentry><term>idstatic</term>
+      <listitem>
+        <para>
+          This argument is used to set the resource <link linkend="idArgument">ID</link> for the label, if
+          one is desired. If omitted, the default stactic control ID (-1) is used.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -7232,77 +7387,301 @@ labels are static controls.
 <indexterm><primary>addInputStem</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~addInputStem(--startid--,--x--,--y--,--+-----+--,-->
-                                                      +-cx1-+
 
->--cx2--,--textStem.--+-------------------------------+--)-----><
-                      +-,--+---------+--+-----------+-+
-                           +-options-+  +-,--idstat-+
-
-
+>>--addInputGroup(-id-,-x-,-y-+-------+-,-cx2-,-text.--+-----------+----------+-)--><
+                              +-,-cx1-+                +-,-style-+ +-,-idstat-+
 ]]>
 </programlisting>
 
-<para>The addInputStem method adds a group of input fields
-to the dialog. The difference between this method and the <link linkend="mthAddInputGroup">addInputGroup</link> method is that the titles (and names) of the single lines are
-passed to the method in a stem variable. Thus it is possible to use strings
-containing blank spaces. </para>
+<para>
+  The addInputStem method adds a group of input fields to the dialog. The difference between this method
+  and the <link linkend="mthAddInputGroup">addInputGroup</link> method is that the text for the static
+  text controls, the labels, is passed to the method in a stem variable. This makes it possible to use strings
+  containing blank spaces.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>startid</term>
-<listitem><para>The ID of the first entry line
-</para></listitem></varlistentry>
-<varlistentry><term>x, y</term>
-<listitem><para>The position of the whole group (upper-left corner)
-</para></listitem></varlistentry>
-<varlistentry><term>cx1</term>
-<listitem><para>The length of the text strings. If omitted, the size is calculated.
-</para></listitem></varlistentry>
-<varlistentry><term>cx2</term>
-<listitem><para>The width of the entry fields
-</para></listitem></varlistentry>
-<varlistentry><term>textStem.</term>
-<listitem><para>A stem variable containing all labels for the entry fields. The object
-attribute for each field is created on the basis of this string.
-</para></listitem></varlistentry>
-<varlistentry><term>options</term>
-<listitem><para>In addition to the options of the <link linkend="mthAddInput">addInput</link> method, NOBORDER can be used to prevent the method from placing
-a group box around the group.
-</para></listitem></varlistentry>
-<varlistentry><term>idstat</term>
-<listitem><para>The ID of the first label. Usually you do not have to specify this value
-because labels are static controls.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem>
-  <para>
-    The possible return values are:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The arguments are:
+    </para>
     <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-      <para>
-        Success.
-      </para>
-    </listitem></varlistentry>
-    <varlistentry><term>less than 0</term>
-    <listitem>
-      <para>
-        Error with the in-memory dialog template or with the resource ID.
-      </para>
-    </listitem></varlistentry>
+      <varlistentry><term>startid</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> that is assigned to the first edit control.
+          Consecutive numbers are assigned to the other edit controls
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y</term>
+      <listitem>
+        <para>
+          Position of the input group's upper-left <link
+          linkend="listCommonArguments">coordinates</link>.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>cx1</term>
+      <listitem>
+        <para>
+          Length of the label(s) for the edit control. If omitted, the length is calculated.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>cx2</term>
+      <listitem>
+        <para>
+          The length of the edit control(s).
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text.</term>
+      <listitem>
+        <para>
+          A stem containing the text used for each edit control's label. The text for the first label is
+          put at <computeroutput>text.1</computeroutput>, the text for the second label at
+          <computeroutput>text.2</computeroutput>, and so. The number of consecutive numeric tails of the
+          stem determines the total number of edit controls.
+        </para>
+        <para>
+          The data attribute for each edit control is created from the stem also.  The example below
+          should make clear how this is done.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+          separated by spaces.
+        </para>
+        <para>
+          <emphasis role="bold">Note:</emphasis> The behavior described here for the style keywords may
+          vary slightly depending on the version of Windows. Also note that every edit control will be
+          added with the style specified.
+        </para>
+        <simplelist type='vert' columns='3'>
+          <member>AUTOSCROLLH  </member>
+          <member>HSCROLL      </member>
+          <member>AUTOSCROLLV  </member>
+          <member>VSCROLL      </member>
+          <member>MULTILINE    </member>
+          <member>HIDESELECTION</member>
+          <member>NOWANTRETURN </member>
+          <member>READONLY     </member>
+          <member>KEEPSELECTION</member>
+          <member>PASSWORD     </member>
+          <member>CENTER       </member>
+          <member>RIGHT        </member>
+          <member>UPPER        </member>
+          <member>LOWER        </member>
+          <member>NUMBER       </member>
+          <member>OEM          </member>
+          <member>HIDDEN       </member>
+          <member>DISABLED     </member>
+          <member>GROUP        </member>
+          <member>NOTAB        </member>
+          <member>NOBORDER     </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>AUTOSCROLLH</term>
+          <listitem>
+            <para>
+              Automatically scrolls text to the right when the user types a character at the end of the
+              line.  In a single-line edit control text can not be added past the width of the control
+              without this style.  Multi-line edit controls do not need this style if a horizontal scroll
+              bar is added.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HSCROLL</term>
+          <listitem>
+            <para>
+              Adds a horizontal scroll bar to the bottom of the edit control. A horizontal scroll bar is
+              only functional in multi-line edit controls.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>AUTOSCROLLV</term>
+          <listitem>
+            <para>
+              Automatically scrolls text up when the user presses ENTER on the last line.  This style
+              only effects multi-line edit controls and is not needed if a vertical scroll bar is added.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VSCROLL</term>
+          <listitem>
+            <para>
+              Adds a vertical scroll bar to the right of the edit control.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MULTILINE</term>
+          <listitem>
+            <para>
+              Designates a multiple-line edit control. (The default is single line.)  Multi-line edit
+              controls have the WANTRETURN and KEEPSELECTION styles unless the NOWANTRETURN and / or
+              HIDESELECTION keywords are specified.
+            </para>
+            <para>
+              When a multi-line edit control has the WANTRETURN style, pressing the ENTER key inserts
+              a line break in the text of the control.  Without the WANTRETURN style, pressing the ENTER
+              key clicks the default button.  With the KEEPSELECTION style, any selected text in the edit
+              control keeps its highlight when the control loses focus.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDESELECTION</term>
+          <listitem>
+            <para>
+              Removes the KEEPSELECTION style from multi-line edit controls. This keyword only effects
+              multi-line edit controls.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOWANTRETURN</term>
+          <listitem>
+            <para>
+              Removes the WANTRETURN style from multi-line edit controls. This keyword only effects
+              multi-line edit controls.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>READONLY</term>
+          <listitem>
+            <para>
+              Prevents the user from entering or editing text in the edit control.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>KEEPSELECTION</term>
+          <listitem>
+            <para>
+              Selected text in an edit control keeps its highlight when the focus is shifted away from
+              the control.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PASSWORD</term>
+          <listitem>
+            <para>
+              Characters typed into the edit control are masked.  Rather than displaying the character
+              typed, the edit control displays the mask character.  Prior to Windows XP the default mask
+              character was the asterisk.  In Windows XP the default mask character is a black circle.
+              The default password character can be changed by using the <link
+              linkend="passwordcharset">PasswordChar=</link> method.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CENTER</term>
+          <listitem>
+            <para>
+              Centers text in an edit control.  (In Windows 95 and NT this style only effects multi-line
+              edit controls.)
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RIGHT</term>
+          <listitem>
+            <para>
+              Aligns text flush right in an edit control.  (In Windows 95 and NT this style only effects
+              multi-line edit controls.)
+            </para>
+            </listitem></varlistentry>
+          <varlistentry><term>UPPER</term>
+          <listitem>
+            <para>
+              Converts all characters to uppercase as they are typed into the edit control.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LOWER</term>
+          <listitem>
+            <para>
+              Converts all characters to lowercase as they are typed into the edit control.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NUMBER</term>
+          <listitem>
+            <para>
+              Only allows digits to be typed into the edit control.  If the user types an non-digit
+              character an information balloon is displayed informing the user that only digits are
+              allowed.  This style does not prevent the user from pasting non-digits into the control.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>OEM</term>
+          <listitem>
+            <para>
+              Converts text entered in the edit control from the Windows character set to the OEM
+              character set and then back again to the Windows character set. This ensures proper
+              character conversion in certain circumstances. Microsoft states that this style is most
+              useful when edit controls contain file names that will be used with file systems that do
+              not support Unicode. For further details see the <link linkend="windowsdoc">Windows
+              documentation</link> provided by Microsoft.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+            <para>
+              Create the edit control without the <link linkend="wsvisible">visible</link> style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+            <para>
+              Create the edit control without the <link linkend="wsdisabled">enabled</link> style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+            <para>
+              Create the edit control with the <link linkend="wsgroup">group</link> style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+            <para>
+              Create the edit control without the <link linkend="wstabstop">tabstop</link> style. By
+              default the edit control is created with the tabstop style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOBORDER</term>
+          <listitem>
+            <para>
+              The NOBORDER style has a special meaning for this method. It controls whether or not a
+              group box is drawn around the input group. If NOBORDER is used, the group box is not used,
+              otherwise it is.
+            </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </listitem></varlistentry>
+      <varlistentry><term>idstat</term>
+      <listitem>
+        <para>
+          This argument is used to set the resource <link linkend="idArgument">ID</link> for the first
+          static text control, the label for the first edit control. Normally, static text controls are
+          assigned the default (-1) static control ID, and the programmer does not need to specify this
+          argument.
+        </para>
+      </listitem></varlistentry>
     </variablelist>
-  </para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example shows how to use AddInputStem. It creates a four-line input group. For each entry line (with IDs 401
-through 404) an object attribute is provided. The names might be different
-from the title because not all characters can be used for Object Rexx symbols.
-In this example the NAME, FIRSTNAME, STREETNUMBER, and CITYZIP attributes are added to the object.
-
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example shows how to use AddInputStem. It creates a four-line input group. For each
+      entry line (with IDs 401 through 404) the text for the label, (the static text control,) is provided.
+    </para>
+    <para>
+      The labels also provide the attribute name for each edit control. The attribute names will be
+      slightly different from the title because the spaces and ampersands are removed. In this example the
+      NAME, FIRSTNAME, STREETNUMBER, and CITYZIP attributes are added to the object.
+    </para>
 <programlisting>
 <![CDATA[
 FNames.1="Name"
@@ -7312,8 +7691,8 @@ FNames.4="City & ZIP"
 
 MyDialog~addInputStem(401, 20, 20, , 150, FNames.)
 ]]>
-</programlisting>
-</para></listitem></varlistentry>
+  </programlisting>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -7321,64 +7700,112 @@ MyDialog~addInputStem(401, 20, 20, , 150, FNames.)
 <indexterm><primary>addScrollBar</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~addScrollBar(--id--,--x--,--y--,--cx--,--cy------>
-
->--+------------------------------+-- )------------------------><
-   |       +-----------------+    |
-   |       V                 |    |
-   +-,--"----+-VERTICAL----+-+--"-+
-             +-HORIZONTAL--+
-             +-TOPLEFT-----+
-             +-BOTTOMRIGHT-+
-             +-TAB---------+
-
-
+>>--addScrollBar(--id--,--x--,--y--,--cx--,--cy--+----------+--)---------------><
+                                                 +-,-style--+
 ]]>
 </programlisting>
 
-<para>The addScrollBar method adds a scroll bar to the
-dialog. </para>
+<para>
+  The addScrollBar method adds a scroll bar to the dialog.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>This must be a unique number
-</para></listitem></varlistentry>
-<varlistentry><term>x, y</term>
-<listitem><para>The position of the upper-left corner relative to the dialog's client
-area measured in dialog units
-</para></listitem></varlistentry>
-<varlistentry><term>cx</term>
-<listitem><para>The horizontal size of the scroll bar in dialog units
-</para></listitem></varlistentry>
-<varlistentry><term>cy</term>
-<listitem><para>The vertical size of the scroll bar
-</para></listitem></varlistentry>
-<varlistentry><term>options</term>
-<listitem><para>The last argument can be one or more of:
-<variablelist>
-<varlistentry><term>VERTICAL</term>
-<listitem><para>The scroll bar is positioned vertically (default)
-</para></listitem></varlistentry>
-<varlistentry><term>HORIZONTAL</term>
-<listitem><para>The scroll bar is positioned horizontally
-</para></listitem></varlistentry>
-<varlistentry><term>TOPLEFT</term>
-<listitem><para>The scroll bar is aligned to the top left of the given rectangle and
-has a predetermined width (if vertical) or height (if horizontal)
-</para></listitem></varlistentry>
-<varlistentry><term>BOTTOMRIGHT</term>
-<listitem><para>The scroll bar is aligned to the bottom right of the given rectangle
-and has a predetermined width (if vertical) or height (if horizontal)
-</para></listitem></varlistentry>
-<varlistentry><term>TAB</term>
-<listitem><para>The scroll bar is assigned a tab stop
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The arguments are:
+    </para>
+    <variablelist>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the control.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+        <para>
+          The  control <link linkend="listCommonArguments">coordinates</link>.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+          separated by spaces:
+        </para>
+        <simplelist type='vert' columns='3'>
+          <member>VERTICAL   </member>
+          <member>HORIZONTAL </member>
+          <member>TOPLEFT    </member>
+          <member>BOTTOMRIGHT</member>
+          <member>HIDDEN     </member>
+          <member>GROUP      </member>
+          <member>DISABLED   </member>
+          <member>BORDER     </member>
+          <member>TAB        </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>VERTICAL</term>
+          <listitem>
+            <para>
+               The scroll bar is positioned vertically. This is the default if HORIZONTAL is not
+               specified.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HORIZONTAL</term>
+          <listitem>
+            <para>
+              The scroll bar is positioned horizontally.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TOPLEFT</term>
+          <listitem>
+            <para>
+               The scroll bar is aligned to the top left of the given rectangle and has a predetermined
+               width (if vertical) or height (if horizontal.)
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BOTTOMRIGHT</term>
+          <listitem>
+            <para>
+              The scroll bar is aligned to the bottom right of the given rectangle and has a
+              predetermined width (if vertical) or height (if horizontal.)
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+            <para>
+              Create the control without the <link linkend="wsvisible">visible</link> style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+            <para>
+              Create the control without the <link linkend="wsdisabled">enabled</link> style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+            <para>
+              Create the control with the <link linkend="wsgroup">group</link> style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TAB</term>
+          <listitem>
+            <para>
+              Create the control with the <link linkend="wstabstop">tabstop</link> style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOBORDER</term>
+          <listitem>
+            <para>
+              Create the control with the <link linkend="wsborder">border</link> style.
+            </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem>
   <para>
