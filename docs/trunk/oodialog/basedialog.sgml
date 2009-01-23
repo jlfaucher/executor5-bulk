@@ -230,8 +230,8 @@ to Init.
 <entry><link linkend="h000380">AddListEntry</link></entry>
 </row>
 <row>
-<entry>AddUserMsg</entry>
-<entry><link linkend="h000141">AddUserMsg</link></entry>
+<entry>addUserMsg</entry>
+<entry><link linkend="mthAddUserMsg">addUserMsg</link></entry>
 </row>
 <row>
 <entry>AssignWindow</entry>
@@ -338,8 +338,8 @@ to Init.
 <entry><link linkend="mthConnectCheckBox">ConnectCheckBox</link></entry>
 </row>
 <row>
-<entry>ConnectComboBox</entry>
-<entry><link linkend="h000193">ConnectComboBox</link></entry>
+<entry>connectComboBox</entry>
+<entry><link linkend="mthConnectComboBox">connectComboBox</link></entry>
 </row>
 <row>
 <entry>ConnectControl</entry>
@@ -371,7 +371,7 @@ to Init.
 </row>
 <row>
 <entry>ConnectListBox</entry>
-<entry><link linkend="h000220">ConnectListBox</link></entry>
+<entry><link linkend="mthConnectListBox">ConnectListBox</link></entry>
 </row>
 <row>
 <entry>ConnectListLeftDoubleClick</entry>
@@ -391,7 +391,7 @@ to Init.
 </row>
 <row>
 <entry>ConnectMultiListBox</entry>
-<entry><link linkend="h000229">ConnectMultiListBox</link></entry>
+<entry><link linkend="mthConnectMultiListBox">ConnectMultiListBox</link></entry>
 </row>
 <row>
 <entry>ConnectPosChanged</entry>
@@ -3883,11 +3883,11 @@ self~ConnectScrollBar(255,"Increase","Decrease","Drag",1,20,6)
 </variablelist>
 </section>
 
-<section id="h000141"><title>AddUserMsg</title>
-<indexterm><primary>AddUserMsg</primary></indexterm>
+<section id="mthAddUserMsg"><title>addUserMsg</title>
+<indexterm><primary>addUserMsg</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~AddUserMsg(--msgToRaise--,--msgWindows----------->
+>>-aBaseDialog~addUserMsg(--msgToRaise--,--msgWindows----------->
 
 >--+--------------------------------------------------------------------+-->
    +-,--filt1--+------------------------------------------------------+-+
@@ -3902,7 +3902,7 @@ self~ConnectScrollBar(255,"Increase","Decrease","Drag",1,20,6)
 ]]>
 </programlisting>
 
-<para>The AddUserMsg method connects a Windows message with an Object Rexx
+<para>The addUserMsg method connects a Windows message with an Object Rexx
 method. This method is designed to be used by ooDialog programmers who are
 familiar with the Windows API.
 </para>
@@ -3961,7 +3961,7 @@ ConnectList method:</para>
       .
 ::method ConnectList
   use arg msgToRaise, id
-  self~AddUserMsg(msgToRaise, "0x00000111", "0xFFFFFFFF", ,
+  self~addUserMsg(msgToRaise, "0x00000111", "0xFFFFFFFF", ,
                  "0x0001"||id~d2x(4), "0xFFFFFFFF", 0, 0)
 ]]>
 </programlisting>
@@ -3985,7 +3985,7 @@ call ListChanged as well.</para></listitem>
 <para>The following example invokes a user-defined method <computeroutput>DoubleClick</computeroutput> each time the left mouse button is double-clicked: </para>
 <programlisting>
 <![CDATA[
-self~AddUserMsg("DoubleCick","0x00000203","0xFFFFFFFF",0,0,0,0)
+self~addUserMsg("DoubleCick","0x00000203","0xFFFFFFFF",0,0,0,0)
 ]]>
 </programlisting>
 </listitem></varlistentry>
@@ -4076,11 +4076,11 @@ say MyDialog~Name
 </variablelist>
 </section>
 
-<section id="h000193"><title>ConnectComboBox</title>
-<indexterm><primary>ConnectComboBox</primary></indexterm>
+<section id="mthConnectComboBox"><title>connectComboBox</title>
+<indexterm><primary>connectComboBox</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~ConnectComboBox(--id--+-------------------------------------+-->
+>>-aBaseDialog~connectComboBox(--id--+-------------------------------------+-->
                                      +-,--+---------------+--+-----------+-+
                                           +-attributeName-+  +-,--"LIST"-+
 
@@ -4090,7 +4090,7 @@ say MyDialog~Name
 ]]>
 </programlisting>
 
-<para>The ConnectComboBox method creates an attribute
+<para>The connectComboBox method creates an attribute
 and connects it to a combo box. The value of the combo box, that is, the text
 in the entry line or the selected list item, is associated with this attribute.
 See <link linkend="mthConnectEntryLine">ConnectEntryLine</link> for a more detailed description.</para>
@@ -4173,7 +4173,7 @@ See <link linkend="mthConnectEntryLine">ConnectEntryLine</link> for a more detai
 </variablelist>
 </section>
 
-<section id="h000220"><title>ConnectListBox</title>
+<section id="mthConnectListBox"><title>ConnectListBox</title>
 <indexterm><primary>ConnectListBox</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4204,7 +4204,7 @@ or receive it. See <link linkend="mthConnectEntryLine">ConnectEntryLine</link> f
 </variablelist>
 </section>
 
-<section id="h000229"><title>ConnectMultiListBox</title>
+<section id="mthConnectMultiListBox"><title>ConnectMultiListBox</title>
 <indexterm><primary>ConnectMultiListBox</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4248,7 +4248,7 @@ It then preselects the items Summer and Winter. After execution of the dialog, i
 <![CDATA[
 MyDialog = .ResDialog~new(...)
 MyDialog~NoAutoDetection
-MyDialog~AddListBox(205, ..., "MULTI")
+MyDialog~addListBox(205, ..., "MULTI")
 MyDialog~ConnectMultiListBox(205, "ListBox")
 seasons.1="Spring"
 seasons.2="Summer"
@@ -5682,7 +5682,7 @@ width of a list box, in dialog units. </para>
 <para>The SetListWidth method sets the scrollable width
 of a list box, in dialog units. If the scrollable width is greater than the
 width of the list box and the &quot;HSCROLL&quot; (WS_HSCROLL in the resource
-script) style is defined for the list box (see <link linkend="h001815">AddListBox</link>), a
+script) style is defined for the list box (see <link linkend="mthAddListBox">addListBox</link>), a
 horizontal scroll bar is displayed. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
