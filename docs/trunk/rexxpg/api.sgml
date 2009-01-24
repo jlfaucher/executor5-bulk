@@ -313,7 +313,6 @@ size_t version = context->instance->functions->InterpreterVersion(context->insta
 // context is a RexxThreadContext *
 size_t version = context->InterpreterVersion();
 </programlisting>
-</para>
 <para>When the Rexx interpreter makes calls to native code routines and methods, or invokes
 exit handlers, the call-outs use context structures specific to the type of callout.  These
 are the RexxCallContext, RexxMethodContext, and RexxExitContext structures.  Each structure
@@ -326,7 +325,7 @@ RexxThreadContext returned by RexxCreateInterpreter can only be used on the same
 as the RexxCreateInterpreter call, but is not valid for use in the context of a method, routine,
 or exit call-out.  In those contexts, the RexxThreadContext instance passed to the call-out
 must be used.  A RexxThreadContext instance created for a call-out is only valid until the
-call returns to the interpreter.<para>
+call returns to the interpreter.</para>
 </section>
 
 <section id="instanceapi"><title>Rexx Interpreter Instance Interface</title>
