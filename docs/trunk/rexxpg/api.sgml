@@ -78,11 +78,6 @@ execute them from externally defined methods and functions.</para>
 RexxCreatInterpreter API.</para>
 </section>
 
-<section id="apiconcepts"><title>Introduction to API Vectors</title>
-<para>This section provides a general description of API vectors and how to use
-them.</para>
-</section>
-
 <section id="apitypes"><title>Data Types Used in APIs</title>
 <para>The ooRexx APIs rely on a variety of special C++ types for interfacing with
 the interpreter.  Some of these types are specific to the Rexx language, while
@@ -236,9 +231,111 @@ Use an uintptr_t type if you wish to return a pointer value as a Rexx number.
 </section>
 </section>
 
+<section id="apiconcepts"><title>Introduction to API Vectors</title>
+<para>The Rexx APIs operate through a set of interface vectors that define a
+set of interpreter services that are available.  There are different inteface
+vectors used for different contexts, but they use very similar calling concepts.
+</para>
+<para>The first interface vector you'll encounter with the programming interfaces is
+the RexxInstance value returned by RexxCreateInterpreter.  The RexxInstance type is defined
+as a struct when compiled for C code, or a C++ class when compiled for ++.  The
+struct version looks like this:</para>
+<programlisting>
+struct RexxInstance_
+{
+    RexxInstanceInterface *functions;   // the interface function vector
+    void *applicationData;              // creator defined data pointer
+};
+</programlisting>
+<para>The field <emphasis role="italic">applicationData</emphasis> contains any
+value that was specified via the APPLICATION_DATA option on the RexxCreateInterpreter call.
+This provides easy access any application-specific data needed to interact with the interpreter.
+All other interface contexts will include a pointer to the RexxInstance structure, so it is
+always possible to recover this data pointer.</para>
+<para>The <emphasis role="italic">functions</emphasis> field is a pointer to a second structure
+that defines the RexxInstance programming interfaces.  The RexxInstance services are ones that
+may be called from any thread and in any context.  The services are called using C function pointer
+fields in the interface structure.  The RexxInstanceInterface looks like this:</para>
+<programlisting>
+typedef struct
+{
+    wholenumber_t interfaceVersion;    // The interface version identifier
+
+    void        (RexxEntry *Terminate)(RexxInstance *);
+    logical_t   (RexxEntry *AttachThread)(RexxInstance *, RexxThreadContext **);
+    size_t      (RexxEntry *InterpreterVersion)(RexxInstance *);
+    size_t      (RexxEntry *LanguageLevel)(RexxInstance *);
+    void        (RexxEntry *Halt)(RexxInstance *);
+    void        (RexxEntry *SetTrace)(RexxInstance *, logical_t);
+} RexxInstanceInterface;
+</programlisting>
+<para>The first thing to note is the interface struct contains a field named
+<emphasis role="italic">interfaceVersion</emphasis>.  The interfaceVersion field
+is a version marker that defines the services the called interpreter version supports.
+This interface version is incremented any time new functions are added to the interface.
+Using the interface version allows application code to reliably check that required
+interface functions are available.</para>
+<para>The remainder of the fields are functions that can be called to perform RexxInstance
+operations.  Note that the first argument to all of the functions is a pointer to a RexxInstance
+structure.  A call to the InterpreterVersion API from C code would look like this:</para>
+<programlisting>
+size_t version = context->functions->InterpreterVersion(context);
+</programlisting>
+<para>When using C++ code, the RexxContext struct has convenience methods that simplify calling
+these functions:</para>
+<programlisting>
+size_t version = context->InterpreterVersion();
+</programlisting>
+<para>Note that in the C++ call, it is no longer necessary to pass the RexxInstance as the
+first object.  That's handled automatically be the C++ method.</para>
+<para>The RexxThreadContext pointer returned from RexxCreateInterpreter functions the same way.
+RexxThreadContext looks like this:</para>
+<programlisting>
+struct RexxThreadContext_
+{
+    RexxInstance *instance;             // the owning instance
+    RexxThreadInterface *functions;     // the interface function vector
+}
+</programlisting>
+<para>The RexxThreadContext contains an embedded RexxInstance pointer for the instance it is
+associated with.  It also contains an interface vector for the functions available with a
+RexxThreadContext.  The RexxThreadInterface vector has its own version identifer and
+function pointer for each of the defined services.
+The RexxThreadContext functions all take a RexxThreadContext pointer as
+the first argument.  The RexxThreadContext struct defines C++ convience methods for accessing
+its own function and the functions for the RexxInstance as well.  For example, to call
+the InterpreterVersion() API from C code, it is necessary to use</para>
+<programlisting>
+size_t version = context->instance->functions->InterpreterVersion(context->instance);
+</programlisting>
+<para>The C++ version is simply</para>
+<programlisting>
+// context is a RexxThreadContext *
+size_t version = context->InterpreterVersion();
+</programlisting>
+</para>
+<para>When the Rexx interpreter makes calls to native code routines and methods, or invokes
+exit handlers, the call-outs use context structures specific to the type of callout.  These
+are the RexxCallContext, RexxMethodContext, and RexxExitContext structures.  Each structure
+contains a pointer to a RexxThreadContext instance that's valid for the until the call returns.
+Because of the embedded RexxThreadContext, each calls may use any of the RexxThreadContext
+functions in addition to the functions specific to the call-out type.  Each context defines
+C++ methods for the embedded RexxInstance and RexxThreadContext functions.</para>
+<para>Note that the RexxInstance interface can be used at any time and on any thread.  The
+RexxThreadContext returned by RexxCreateInterpreter can only be used on the same thread
+as the RexxCreateInterpreter call, but is not valid for use in the context of a method, routine,
+or exit call-out.  In those contexts, the RexxThreadContext instance passed to the call-out
+must be used.  A RexxThreadContext instance created for a call-out is only valid until the
+call returns to the interpreter.<para>
+</section>
+
 <section id="instanceapi"><title>Rexx Interpreter Instance Interface</title>
 <para>This section describes the Rexx interpreter instance interface and the methods it
 provides.</para>
+<section id="instancethread"><title>Attaching Threads</title>
+</section>
+<section id="gcmodel"><title>Garbage Collection Considerations</title>
+</section>
 </section>
 
 <section id="threadapi"><title>Rexx Thread Interface</title>
@@ -246,18 +343,18 @@ provides.</para>
 provides.</para>
 </section>
 
-<section id="methodapi"><title>Rexx Method Interface</title>
+<section id="buildinglibs"><title>Building an External Library</title>
+<para>This section describes how to build an external library.</para>
+
+<section id="methodapi"><title>Defining Library Methods</title>
 <para>This section describes the Rexx method interface and the methods it
 provides.</para>
 </section>
 
-<section id="functionapi"><title>Rexx Function Interface</title>
+<section id="functionapi"><title>Defining Library Routines</title>
 <para>This section describes the Rexx external function interface and the methods it
 provides.</para>
 </section>
-
-<section id="buildinglibs"><title>Building an External Library</title>
-<para>This section describes how to build an external library.</para>
 </section>
 
 <section id="exitsapi"><title>Rexx Exits Interface</title>
