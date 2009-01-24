@@ -868,19 +868,19 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testFloat01'
   val = 3.40282347E+38
-  self~assertFuzzyEquals(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 16)
+  self~assertFuzzyEquals(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 9)
   val = 1.17549435E-38
-  self~assertFuzzyEquals(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 16)
+  self~assertFuzzyEquals(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 9)
   val = -3.40282347E+38
-  self~assertFuzzyEquals(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 16)
+  self~assertFuzzyEquals(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 9)
   val = -1.17549435E-38
-  self~assertFuzzyEquals(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 16)
+  self~assertFuzzyEquals(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 9)
   val = 0
-  self~assertFuzzyEquals(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 16)
+  self~assertFuzzyEquals(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 9)
   val = 1
-  self~assertFuzzyEquals(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 16)
+  self~assertFuzzyEquals(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 9)
   val = -1
-  self~assertFuzzyEquals(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 16)
+  self~assertFuzzyEquals(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 9)
   val = "nan"
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType))
   val = "+infinity"
@@ -888,9 +888,9 @@ return .ooTestResult~new(5)~~addException(err)
   val = "-infinity"
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType))
   val = 3.40282347E+40
-  self~assertFuzzyEquals("+infinity", .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 16)
+  self~assertFuzzyEquals("+infinity", .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 9)
   val = -3.40282347E+40
-  self~assertFuzzyEquals("-infinity", .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 16)
+  self~assertFuzzyEquals("-infinity", .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~FloatType), 9)
 
 ::method 'testFloat02'
   self~expectSyntax('88.900')

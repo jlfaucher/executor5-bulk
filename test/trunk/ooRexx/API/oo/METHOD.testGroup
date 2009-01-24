@@ -655,19 +655,19 @@ return .ooTestResult~new(5)~~addException(err)
   tester = .METHODtester~new
   numeric digits 15
   val = 3.40282347E+38
-  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 16)
+  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 9)
   val = 1.17549435E-38
-  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 16)
+  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 9)
   val = -3.40282347E+38
-  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 16)
+  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 9)
   val = -1.17549435E-38
-  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 16)
+  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 9)
   val = 0
-  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 16)
+  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 9)
   val = 1
-  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 16)
+  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 9)
   val = -1
-  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 16)
+  self~assertFuzzyEquals(val, tester~TestFloatArg(val), 9)
   val = "nan"
   self~assertSame(val, tester~TestFloatArg(val))
   val = "+infinity"
@@ -675,15 +675,15 @@ return .ooTestResult~new(5)~~addException(err)
   val = "-infinity"
   self~assertSame(val, tester~TestFloatArg(val))
   val = 3.40282347E+40
-  self~assertFuzzyEquals("+infinity", tester~TestFloatArg(val), 16)
+  self~assertFuzzyEquals("+infinity", tester~TestFloatArg(val), 9)
   val = -3.40282347E+40
-  self~assertFuzzyEquals("-infinity", tester~TestFloatArg(val), 16)
+  self~assertFuzzyEquals("-infinity", tester~TestFloatArg(val), 9)
   val = 3.40282347E-50
-  self~assertFuzzyEquals(0, tester~TestFloatArg(val), 16)
+  self~assertFuzzyEquals(0, tester~TestFloatArg(val), 9)
   val = -3.40282347E-50
-  self~assertFuzzyEquals(0, tester~TestFloatArg(val), 16)
-  self~assertFuzzyEquals(1, tester~TestOptionalFloatArg(1), 16)
-  self~assertFuzzyEquals(0, tester~TestOptionalFloatArg(), 16)
+  self~assertFuzzyEquals(0, tester~TestFloatArg(val), 9)
+  self~assertFuzzyEquals(1, tester~TestOptionalFloatArg(1), 9)
+  self~assertFuzzyEquals(0, tester~TestOptionalFloatArg(), 9)
 
 ::method 'testFloat02'
   tester = .METHODtester~new
