@@ -391,7 +391,7 @@ selected:
 ::method CurrentState
   di = self~GetRadioControl("CHOICE1")
   if di == .Nil then return 0
-  id di~checked then say "The radio button is selected!"
+  if di~checked then say "The radio button is selected!"
 ]]>
 </programlisting>
 </para></listitem></varlistentry>

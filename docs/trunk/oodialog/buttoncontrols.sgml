@@ -367,8 +367,8 @@ self~getButtonControl(IDCANCEL)~click
 </section>
 
 
-<section id="state"><title>State</title>
-<indexterm><primary>State</primary></indexterm>
+<section id="state"><title>state</title>
+<indexterm><primary>state</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>--state----------------------------------------><
@@ -430,7 +430,7 @@ say button~State
 </section>
 
 <section id="statenew"><title>state=</title>
-<indexterm><primary>sState=</primary></indexterm>
+<indexterm><primary>state=</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>--state=--newState-----------------------------><
@@ -1833,9 +1833,9 @@ within the associated bitmap button from one position to another.</para>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
     <para>
-      A radio button is a button and the programmer uses the same methods to recieve notifications of
-      of events: the <link linkend="mthConnectButton">connectButton</link>() method, or the <link
-      linkend="mthConnectButtonNotify">connectButtonNotify</link>() method.
+      A radio button, is a button, and the programmer uses the same methods to recieve notifications of
+      of events as with a ButtonControl: the <link linkend="mthConnectButton">connectButton</link>()
+      method, or the <link linkend="mthConnectButtonNotify">connectButtonNotify</link>() method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term>Methods:</term>
@@ -2035,11 +2035,19 @@ end
     <para>
       The return value is a keyword indicating the checked state of the radio button and will exactly one
       of the following:
-      <simplelist type='vert' columns='1'>
-        <member>&quot;UNCHECKED&quot;  The radio button is not checked.</member>
-        <member>&quot;CHECKED&quot; The radio button is checked.       </member>
-        <member>&quot;UNKNOWN&quot; The object is not a radio button.  </member>
-      </simplelist>
+    </para>
+    <para>
+      <informaltable frame='none' colsep='0' rowsep='0'>
+      <tgroup cols='2'>
+      <colspec align='left' colwidth='1*'>
+      <colspec align='left' colwidth='4*'>
+      <tbody>
+      <row><entry>UNCHECKED</entry><entry>The radio button is not checked. </entry></row>
+      <row><entry>CHECKED  </entry><entry>The radio button is checked.     </entry></row>
+      <row><entry>UNKNOWN  </entry><entry>The object is not a radio button.</entry></row>
+      </tbody>
+      </tgroup>
+      </informaltable>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2196,9 +2204,9 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
     <para>
-      A check box is a button and the programmer uses the same methods to recieve notifications of of
-      events: the <link linkend="mthConnectButton">connectButton</link>() method, or the <link
-      linkend="mthConnectButtonNotify">connectButtonNotify</link>() method.
+      A check box, is a button, and the programmer uses the same methods to recieve notifications of
+      events as with the ButtonControl: the <link linkend="mthConnectButton">connectButton</link>()
+      method, or the <link linkend="mthConnectButtonNotify">connectButtonNotify</link>() method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term>Methods:</term>
