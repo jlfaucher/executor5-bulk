@@ -2033,10 +2033,8 @@ end
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The return value is a keyword indicating the checked state of the radio button and will exactly one
-      of the following:
-    </para>
-    <para>
+      The return value is a keyword indicating the checked state of the radio button and will be  exactly
+      one of the following:
       <informaltable frame='none' colsep='0' rowsep='0'>
       <tgroup cols='2'>
       <colspec align='left' colwidth='1*'>
@@ -2076,7 +2074,8 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 </programlisting>
 
 <para>
-  The check method puts the button in the checked state. The system will redraw the button as checked.
+  The check method puts the button in the checked state. The system will redraw the button with the check
+  mark appropriate for the button.
 </para>
 </section>
 
@@ -2090,8 +2089,8 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 </programlisting>
 
 <para>
-  The uncheck method puts the button in the unchecked state. The system will redraw the button as
-  unchecked.
+  The uncheck method puts the button in the unchecked state. The system will redraw the button without
+  the check mark.
 </para>
 </section>
 
@@ -2137,8 +2136,8 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 <para>
   There are four styles of check boxes: standard, automatic, three-state, and automatic three-state, The
   system manages the check state of automatic and automatic three-state check boxes. All check boxes have
-  two states, either checked or cleared (unchecked.) In addition three-state check boxes have a third
-  state called indeterminate, which the system draws as a grayed box inside the check box.
+  at least two states, either checked or cleared (unchecked.) In addition three-state check boxes have a
+  third state called indeterminate, which the system draws as a grayed box inside the check box.
 </para>
 <para>
   Repeatedly clicking standard and automatic check boxes toggles them back and forth from cleared to
@@ -2310,12 +2309,18 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
     <para>
       The return value is a keyword indicating the checked state of the check box and will exactly one of
       the following:
-      <simplelist type='vert' columns='1'>
-        <member>&quot;UNCHECKED&quot;  The check box is not checked.                 </member>
-        <member>&quot;CHECKED&quot; The check box is checked.                        </member>
-        <member>&quot;INDETRMINATE&quot; The check box is in the indeterminate state.</member>
-        <member>&quot;UNKNOWN&quot; The object is not a check box.                   </member>
-      </simplelist>
+      <informaltable frame='none' colsep='0' rowsep='0'>
+      <tgroup cols='2'>
+      <colspec align='left' colwidth='1*'>
+      <colspec align='left' colwidth='3*'>
+      <tbody>
+      <row><entry>UNCHECKED    </entry><entry>The check box is not checked.               </entry></row>
+      <row><entry>CHECKED      </entry><entry>The check box is checked.                   </entry></row>
+      <row><entry>INDETERMINATE</entry><entry>The check box is in the indeterminate state.</entry></row>
+      <row><entry>UNKNOWN      </entry><entry>The object is not a check box.              </entry></row>
+      </tbody>
+      </tgroup>
+      </informaltable>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
