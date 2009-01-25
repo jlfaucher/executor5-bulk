@@ -114,11 +114,11 @@ the methods listed in the
 </row>
 <row>
 <entry>GetButtonControl</entry>
-<entry><link linkend="getbuttoncontrol">GetButtonControl</link></entry>
+<entry><link linkend="mthGetButtonControl">GetButtonControl</link></entry>
 </row>
 <row>
 <entry>GetCheckControl</entry>
-<entry><link linkend="getcheckcontrol">GetCheckControl</link></entry>
+<entry><link linkend="mthGetCheckControl">GetCheckControl</link></entry>
 </row>
 <row>
 <entry>GetComboBox</entry>
@@ -129,8 +129,8 @@ the methods listed in the
 <entry><link linkend="geteditcontrol">GetEditControl</link></entry>
 </row>
 <row>
-<entry>GetGroupBox</entry>
-<entry><link linkend="getgroupbox">GetGroupBox</link></entry>
+<entry>getGroupBox</entry>
+<entry><link linkend="mthGetGroupBox">getGroupBox</link></entry>
 </row>
 <row>
 <entry>GetListBox</entry>
@@ -146,7 +146,7 @@ the methods listed in the
 </row>
 <row>
 <entry>GetRadioControl</entry>
-<entry><link linkend="getradiocontrol">GetRadioControl</link></entry>
+<entry><link linkend="mthGetRadioControl">GetRadioControl</link></entry>
 </row>
 <row>
 <entry>GetScrollBar</entry>
@@ -292,7 +292,7 @@ the invocation of <link linkend="h002048">StartIt</link>).
 </para></note>
 </section>
 
-<section id="getbuttoncontrol"><title>GetButtonControl</title>
+<section id="mthGetButtonControl"><title>GetButtonControl</title>
 <indexterm><primary>GetButtonControl</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -348,7 +348,7 @@ the invocation of <link linkend="h002048">StartIt</link>).
 </para></note>
 </section>
 
-<section id="getradiocontrol"><title>GetRadioControl</title>
+<section id="mthGetRadioControl"><title>GetRadioControl</title>
 <indexterm><primary>GetRadioControl</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -391,7 +391,7 @@ selected:
 ::method CurrentState
   di = self~GetRadioControl("CHOICE1")
   if di == .Nil then return 0
-  id di~IsChecked = "CHECKED" then say "The radio button is selected!"
+  id di~checked then say "The radio button is selected!"
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -405,7 +405,7 @@ the invocation of <link linkend="h002048">StartIt</link>).
 </para></note>
 </section>
 
-<section id="getcheckcontrol"><title>GetCheckControl</title>
+<section id="mthGetCheckControl"><title>GetCheckControl</title>
 <indexterm><primary>GetCheckControl</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -447,7 +447,7 @@ is checked:
 ::method CurrentState
   di = self~GetCheckControl("CHOICE1")
   if di == .Nil then return 0
-  if di~IsChecked = "CHECKED" then say "The check box is checked!"
+  if di~checked then say "The check box is checked!"
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -461,11 +461,11 @@ the invocation of <link linkend="h002048">StartIt</link>).
 </para></note>
 </section>
 
-<section id="getgroupbox"><title>GetGroupBox</title>
-<indexterm><primary>GetGroupBox</primary></indexterm>
+<section id="mthGetGroupBox"><title>getGroupBox</title>
+<indexterm><primary>getGroupBox</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anAdvancedControl~GetGroupBox(--id--+-------------+--)------><
+>>-anAdvancedControl~getGroupBox(--id--+-------------+--)------><
                                        +-,--category-+
 
 
@@ -473,7 +473,7 @@ the invocation of <link linkend="h002048">StartIt</link>).
 </programlisting>
 
 <para>
-  The GetGroupBox method returns an object of the GroupBox class that represents
+  The getGroupBox method returns an object of the GroupBox class that represents
   the group box with the specified resource ID. See the
   <link linkend="clsGroupBox">GroupBox Class</link> for more detail on group
   boxes.
@@ -518,7 +518,7 @@ control does not exist.
 
 <note><title>Note</title>
 <para>
-  GetGroupBox connects the ooDialog object with a Windows control.  If the
+  getGroupBox connects the ooDialog object with a Windows control.  If the
   control does not exist, this connection can not be made. Therefore, this
   method should only be used after the Windows dialog has been created. In
   <link linkend="mthInitDialog">initDialog()</link> or at some point in the life

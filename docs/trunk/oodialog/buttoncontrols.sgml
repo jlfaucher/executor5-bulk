@@ -102,8 +102,21 @@
 </tbody></tgroup>
 </table>
 </para>
+
 <section id="clsButtonControl"><title>ButtonControl Class</title>
 <indexterm><primary>ButtonControl class</primary></indexterm>
+<para>
+  Push buttons are rectangular controls containing a label (a text string,) an icon, or a bitmap defined
+  by the programmer. The label or image  indicates what the button does when it is pushed or clicked. A
+  push button is either standard or default.
+</para>
+<para>
+  Standard push  buttons usually start an operation. The button will receive the keyboard focus when the
+  user clicks it. On the other hand, the default push button will indicate the default choice, which
+  would normally be the most common choice. The default button does not have to have the input focus to
+  be selected. It is selected by the user pressing the ENTER key when the dialog box has the focus, no
+  matter which control currently has the input focus.
+</para>
 <para>
   The ButtonControl class provides methods to query and modify push button controls. In addition, the
   class has methods that allow the ooRexx programmer to partially implement owner drawn buttons using
@@ -145,7 +158,7 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
     <para>
-      Use the <link linkend="getbuttoncontrol">getButtonControl</link>() method to retrieve an object of
+      Use the <link linkend="mthGetButtonControl">getButtonControl</link>() method to retrieve an object of
       the button control class.
     </para>
   </listitem></varlistentry>
@@ -1757,245 +1770,739 @@ within the associated bitmap button from one position to another.</para>
 
 <section id="clsRadioButton"><title>RadioButton Class</title>
 <indexterm><primary>RadioButton class</primary></indexterm>
-<para>The RadioButton class provides methods to query
-and modify radio button controls. It inherits all methods of the ButtonControl
-and DialogControl classes (see
-<link linkend="clsButtonControl">ButtonControl Class</link>
-and <link linkend="clsDialogControl">DialogControl Class</link>).</para>
-<para>Use the GetRadioControl (see
-<link linkend="getradiocontrol">GetRadioControl</link>)
-to retrieve an object of the RadioButton class.</para>
+<para>
+   Radio buttons consist of a round button and a programmer defined label, icon, or bitmap that indicates
+   to the user a choice. Radio buttons are typically grouped together as a set of mutually exclusive
+   options. Radio buttons can be either standard or automatic. The system manages the check state of
+   automatic radio buttons. The state of a radio button can be either checked or cleared (unchecked.)
+</para>
+<para>
+  The RadioButton class provides methods to query and modify radio button controls.
+</para>
 <variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para>The RadioButton class requires the class definition
-file <computeroutput>oodwin32.cls</computeroutput>:
+  <varlistentry><term><emphasis role="bold">Requires</emphasis>:</term>
+  <listitem>
+    <para>
+      The RadioButton class requires the class definition file <computeroutput>oodWin32.cls
+      </computeroutput>:
 <programlisting>
 <![CDATA[
-::requires "oodwin32.cls"
+::requires "oodWin32.cls"
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>Methods:</term>
-<listitem><para>Instances of the RadioControl class implement
-the methods listed in the
-<link linkend="t000024">RadioButton Instance Methods</link> table.</para>
-
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
+  <listitem>
+    <para>
+      The radio button class is a direct subclass of the <link
+      linkend="clsButtonControl">ButtonControl</link> class, and therefore an indirect subclass of the
+      <link linkend="clsDialogControl">DialogControl class</link> class. Thus it inherits all the methods
+      of both classes.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Mixin Class Inherits:</emphasis></term>
+  <listitem>
+    <para>
+      The radio button class inherits from the following mixin classes, (indirectly through the
+      DialogControl class.)
+    </para>
+    <para>
+      The <link linkend="clsWindowBase">WindowBase</link>
+    </para>
+    <para>
+      The <link linkend="clsWindowExtensions">WindowExtensions</link>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+    <para>
+      Use the <link linkend="mthGetRadioControl">getRadioControl</link>() method to retrieve an object of
+      the radio button class.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+    <para>
+      To dynamically define a radio button in a <link linkend="clsUserDialog">UserDialog</link> class,
+      use one of the add button methods described in the <link linkend="sectAddButtonControls">Add Button
+      Control</link> section. That section also describes methods for adding push buttons, check boxes,
+      etc.. All the methods to add radio buttons begin with: <emphasis role="italic">addRadio</emphasis>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+    <para>
+      A radio button is a button and the programmer uses the same methods to recieve notifications of
+      of events: the <link linkend="mthConnectButton">connectButton</link>() method, or the <link
+      linkend="mthConnectButtonNotify">connectButtonNotify</link>() method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Methods:</term>
+  <listitem>
+    <para>
+      The RadioControl class implements the class and instance methods listed in the following table:
+    </para>
 <table id="t000024" frame="all">
-<title>RadioButton Instance Methods</title>
+<title>RadioButton Class and Instance Methods</title>
 <tgroup cols="2">
 <thead>
 <row>
 <entry>Method...</entry>
-<entry>...on page</entry>
+<entry>...Description</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>Check</entry>
-<entry><link linkend="check">Check</link></entry>
+<entry>checkInGroup (Class)</entry>
+<entry><link linkend="mthCheckInGroupCls">checkInGroup</link></entry>
 </row>
 <row>
-<entry>Indeterminate</entry>
-<entry><link linkend="indeterminate">Indeterminate</link></entry>
+<entry>check</entry>
+<entry><link linkend="mthCheck">check</link></entry>
 </row>
 <row>
-<entry>IsChecked</entry>
-<entry><link linkend="ischecked">IsChecked</link></entry>
+<entry>checked</entry>
+<entry><link linkend="mthChecked">checked</link></entry>
 </row>
 <row>
-<entry>Uncheck</entry>
-<entry><link linkend="uncheck">Uncheck</link></entry>
+<entry>getCheckState</entry>
+<entry><link linkend="mthGetCheckStateClsRadioButton">getCheckState</link></entry>
+</row>
+<row>
+<entry>indeterminate <emphasis role="bold">Deprecated</emphasis></entry>
+<entry><link linkend="deprecatedIndeterminate">indeterminate</link></entry>
+</row>
+<row>
+<entry>isChecked <emphasis role="bold">Deprecated</emphasis></entry>
+<entry><link linkend="mthIsChecked">isChecked</link></entry>
+</row>
+<row>
+<entry>uncheck</entry>
+<entry><link linkend="mthUncheck">uncheck</link></entry>
 </row>
 </tbody></tgroup>
 </table>
-</listitem></varlistentry>
+  </listitem></varlistentry>
 </variablelist>
-<para>Events for instances of the RadioButton class may be captured using the
-<link linkend="mthConnectButtonNotify">connectButtonNotify</link> method of the
-<link linkend="clsMessageExtensions">MessageExtensions Class</link>.</para>
 
-<section id="ischecked"><title>IsChecked</title>
-<indexterm><primary>IsChecked</primary></indexterm>
+
+<section id="mthcheckInGroupCls"><title>checkInGroup (Class)</title>
+<indexterm><primary>checkInGroup</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aRadioButton~IsChecked--------------------------------------><
-
+>>--checkInGroup(--dlg--,--idFirst--,--idLast--,--,--idCheck--)----------------><
 
 ]]>
 </programlisting>
 
-<para>The IsChecked method retrieves the current state
-of the associated button control.</para>
+<para>
+  Adds a check mark to (checks) the specified radio button in a group and removes a check mark from
+  (clears) all other radio buttons in the group.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>One of the following values:
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>dlg</term>
+      <listitem>
+        <para>
+          The dialog that contains the radio button to be checked.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>idFirst</term>
+      <listitem>
+        <para>
+          The resource ID of the first radio button in the group.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>idLast</term>
+      <listitem>
+        <para>
+          The resource ID of the last radio button in the group.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>idCheck</term>
+      <listitem>
+        <para>
+          The resource ID of the radio button that is to be checked.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method return 0 on success and a <link linkend="systemerrorcode">system error</link> code if a
+      problem is detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This method is simple to use:
+<programlisting>
+<![CDATA[
+ret = .RadioButton~checkInGroup(self, IDC_RB_WHITE, IDC_RB_BLACK, IDC_GREEN)
+return 0
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End RadioButton::checkInGroup() [class method] -->
+
+
+<section id="mthChecked"><title>checked</title>
+<indexterm><primary>checked</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--checked--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines if the button is checked, or not.
+</para>
 <variablelist>
-<varlistentry><term>&quot;CHECKED&quot;</term>
-<listitem><para>The radio button is selected or the check box is checked.
-</para></listitem></varlistentry>
-<varlistentry><term>&quot;UNCHECKED&quot;</term>
-<listitem><para>The radio button is not selected or the check box is unchecked.
-</para></listitem></varlistentry>
-<varlistentry><term>&quot;INDETERMINATE&quot;</term>
-<listitem><para>The Auto-3-State button is grayed to indicate an indeterminate
-state.
-</para></listitem></varlistentry>
-<varlistentry><term>&quot;UNKNOWN&quot;</term>
-<listitem><para>No information on the current state available.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      Returns true if the button is checked, otherwise false.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example determines if the user is choosing to print the current page, all pages, or a
+      selection:
+<programlisting>
+<![CDATA[
+if self~getRadioControl(IDC_RB_CURRENT)~checked then do
+  --Print the current page ...
+end
+else if self~getRadioControl(IDC_RB_ALL)~checked then do
+  -- Print all pages ...
+end
+else do
+  -- Must be print the selection ...
+end
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
+</section>  <!-- End RadioButton::checked() -->
+
+
+<section id="mthGetCheckStateClsRadioButton"><title>getCheckState</title>
+<indexterm><primary>getCheckState</primary>
+<secondary>RadioButton class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCheckState----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns a keyword indicating the check state of the radio button, checked or unchecked.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments to this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return value is a keyword indicating the checked state of the radio button and will exactly one
+      of the following:
+      <simplelist type='vert' columns='1'>
+        <member>&quot;UNCHECKED&quot;  The radio button is not checked.</member>
+        <member>&quot;CHECKED&quot; The radio button is checked.       </member>
+        <member>&quot;UNKNOWN&quot; The object is not a radio button.  </member>
+      </simplelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This method is straightforward to use:
+<programlisting>
+<![CDATA[
+rb = self~getRadioControl(IDC_RB_ITALIC)
+if rb~getCheckState == "CHECKED" then self~printInItalics()
+...
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End RadioButton::getCheckState() -->
 
-<section id="check"><title>Check</title>
-<indexterm><primary>Check</primary></indexterm>
+<section id="mthCheck"><title>check</title>
+<indexterm><primary>check</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aRadioButton~Check------------------------------------------><
-
+>>--check-----------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>The Check method marks the associated button control
-as checked.</para>
+<para>
+  The check method puts the button in the checked state. The system will redraw the button as checked.
+</para>
 </section>
 
-<section id="uncheck"><title>Uncheck</title>
-<indexterm><primary>Uncheck</primary></indexterm>
+<section id="mthUncheck"><title>uncheck</title>
+<indexterm><primary>uncheck</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aRadioButton~Uncheck----------------------------------------><
-
+>>--uncheck--------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>The Uncheck method deletes the check mark of the
-button control.</para>
+<para>
+  The uncheck method puts the button in the unchecked state. The system will redraw the button as
+  unchecked.
+</para>
 </section>
 
-<section id="indeterminate"><title>Indeterminate</title>
-<indexterm><primary>Indeterminate</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aRadioButton~Indeterminate----------------------------------><
+<section id="mthIsChecked"><title>isChecked (deprecated)</title>
 
+<note><title>Note</title><para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthGetCheckStateClsRadioButton">getCheckState</link>() method for radio buttons, and the
+  overridden <link linkend="mthGetCheckStateClsCheckBox">getCheckState</link>() method for check boxes.
+  This method was poorly named and in some circumstances produced inconsistent results.  Do not use this
+  method in new code. Try to migrate existing code to the appropriate
+  <computeroutput>getCheckState()</computeroutput> method. This method may not exist in
+  future versions of ooDialog.
+</para></note>
 
-]]>
-</programlisting>
-
-<para>The Indeterminate method grays the check box of
-an Auto-3-State button to indicate an indeterminate
-state.</para>
 </section>
+
+<section id="deprecatedIndeterminate"><title>indeterminate (deprecated)</title>
+
+<note><title>Note</title><para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetIndeterminate">setIndeterminate</link>() method of the <link
+  linkend="clsCheckBox">CheckBox</link> class. Radio buttons can not be set to indeterminate. Using this
+  method with a radio button sets it to the checked state, not the indeterminate state. In addition, this
+  method was poorly named. One can check a button, but one does not indeterminate a check box. Do not use
+  this method in new code. Try to migrate existing code to the
+  <computeroutput>setIndeterminate()</computeroutput> method. This method may not exist in future
+  versions of ooDialog.
+</para></note>
+
+</section>
+
 </section>
 
 <section id="clsCheckBox"><title>CheckBox Class</title>
 <indexterm><primary>CheckBox class</primary></indexterm>
-<para>The CheckBox class provides methods to query and
-modify check box controls. It inherits all methods of:</para>
-<itemizedlist>
-<listitem><para>The RadioButton class (see
-<link linkend="clsRadioButton">RadioButton Class</link>)</para></listitem>
-<listitem><para>The ButtonControl class (see
-<link linkend="clsButtonControl">ButtonControl Class</link>)</para></listitem>
-<listitem><para>The DialogControl class (see
-<link linkend="clsDialogControl">DialogControl Class</link>)
-</para></listitem>
-</itemizedlist>
-<para>The CheckBox class requires the class definition
-file <computeroutput>oodwin32.cls</computeroutput>:</para>
+<para>
+  Check boxes are similar in many ways to radio buttons. A check box consists of a square box and a
+  programmer defined label, icon, or bitmap that indicates to the user a choice. Check boxes are
+  typically grouped together as a set of independent options. Checking or unchecking one option usually
+  has no effect on the other check box options.
+</para>
+<para>
+  There are four styles of check boxes: standard, automatic, three-state, and automatic three-state, The
+  system manages the check state of automatic and automatic three-state check boxes. All check boxes have
+  two states, either checked or cleared (unchecked.) In addition three-state check boxes have a third
+  state called indeterminate, which the system draws as a grayed box inside the check box.
+</para>
+<para>
+  Repeatedly clicking standard and automatic check boxes toggles them back and forth from cleared to
+  checked, and back again. Doing the same with a three-state check box toggles it from cleared, to
+  checked, to indeterminate, and back again.
+</para>
+<para>
+  The CheckBox class provides methods to query and modify check box controls.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Requires</emphasis>:</term>
+  <listitem>
+    <para>
+      The CheckBox class requires the class definition file <computeroutput>oodWin32.cls
+      </computeroutput>:
 <programlisting>
 <![CDATA[
-::requires "oodwin32.cls"
+::requires "oodWin32.cls"
 ]]>
 </programlisting>
-<para>Use the GetCheckControl method (see
-<link linkend="getcheckcontrol">GetCheckControl</link>)
-to retrieve an object of the CheckBox class.</para>
-<para>Events for instances of the CheckBox class may be captured using the
-<link linkend="mthConnectButtonNotify">connectButtonNotify</link> method of the
-<link linkend="clsMessageExtensions">MessageExtensions Class</link>.</para>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
+  <listitem>
+    <para>
+      The check box class is a direct subclass of the <link linkend="clsRadioButton">RadioButton</link>
+      class, and therefore an indirect subclass of the <link
+      linkend="clsButtonControl">ButtonControl</link> class and the <link
+      linkend="clsDialogControl">DialogControl class</link> class. It inherits all the methods of all
+      three classes.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Mixin Class Inherits:</emphasis></term>
+  <listitem>
+    <para>
+      The check box class inherits from the following mixin classes, (indirectly through the
+      DialogControl class.)
+    </para>
+    <para>
+      The <link linkend="clsWindowBase">WindowBase</link>
+    </para>
+    <para>
+      The <link linkend="clsWindowExtensions">WindowExtensions</link>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+    <para>
+      Use the <link linkend="mthGetCheckControl">getCheckControl</link>() method to retrieve an object of
+      the check box class.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+    <para>
+      To dynamically define a check box in a <link linkend="clsUserDialog">UserDialog</link> class,
+      use one of the add button methods described in the <link linkend="sectAddButtonControls">Add Button
+      Control</link> section. That section also describes methods for adding push buttons, radio buttons,
+      etc.. All the methods to add check boxes begin with: <emphasis role="italic">addCheck</emphasis>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+    <para>
+      A check box is a button and the programmer uses the same methods to recieve notifications of of
+      events: the <link linkend="mthConnectButton">connectButton</link>() method, or the <link
+      linkend="mthConnectButtonNotify">connectButtonNotify</link>() method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Methods:</term>
+  <listitem>
+    <para>
+      The CheckBox class implements the instance methods listed in the following table:
+    </para>
+<table id="tblCheckBoxMethods" frame="all">
+<title>CheckBox Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>isIndeterminate</entry>
+<entry><link linkend="mthIsIndeterminate">isIndeterminate</link></entry>
+</row>
+<row>
+<entry>getCheckState</entry>
+<entry><link linkend="mthGetCheckStateClsCheckBox">getCheckState</link></entry>
+</row>
+<row>
+<entry>setIndeterminate</entry>
+<entry><link linkend="mthsetIndeterminate">setIndeterminate</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+  </listitem></varlistentry>
+</variablelist>
+
+<section id="mthIsIndeterminate"><title>isIndeterminate</title>
+<indexterm><primary>checked</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isIndeterminate------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines if the check box is in indeterminate state, or not.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      Returns true if the check box is in the indeterminate state, otherwise false.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example is from a program that sets the background color to black, white, or gray.
+
+<programlisting>
+<![CDATA[
+  chkBox = self~getCheckControl(IDC_CHK_BACKGROUND)
+  if chkBox~isIndeterminate then return self~grayBackground
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CheckBox::isIndeterminate() -->
+
+
+<section id="mthGetCheckStateClsCheckBox"><title>getCheckState</title>
+<indexterm><primary>getCheckState</primary>
+<secondary>CheckBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCheckState----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  This method over-rides the RadioButton <link
+  linkend="mthGetCheckStateClsRadioButton">getCheckState</link>() method to return a keyword indicating
+  the check state of the check box, checked, unchecked, or indeterminate.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments to this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return value is a keyword indicating the checked state of the check box and will exactly one of
+      the following:
+      <simplelist type='vert' columns='1'>
+        <member>&quot;UNCHECKED&quot;  The check box is not checked.                 </member>
+        <member>&quot;CHECKED&quot; The check box is checked.                        </member>
+        <member>&quot;INDETRMINATE&quot; The check box is in the indeterminate state.</member>
+        <member>&quot;UNKNOWN&quot; The object is not a check box.                   </member>
+      </simplelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example is a variation of the example for the isIndeterminate() method.
+<programlisting>
+<![CDATA[
+  state = self~getCheckControl(IDC_CHK_BACKGROUND)~getCheckState
+
+  select
+    when state == "CHECKED" then return self~blackBackground
+    when state == "UNCHECKED" then return self~whiteBackground
+    when state == "INDETERMINATE" then return self~grayBackground
+    otherwise nop  -- Drop through and do error handling
+  end
+  -- End select
+
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CheckBox::getCheckState() -->
+
+<section id="mthSetIndeterminate"><title>setIndeterminate</title>
+<indexterm><primary>setIndeterminate</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setIndterminate------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The setIndeterminate method puts the check box in the indeterminate state. The system will redraw the
+  check box to indicate the indeterminate state.
+</para>
+</section>
+
 </section>
 
 <section id="clsGroupBox"><title>GroupBox Class</title>
 <indexterm><primary>GroupBox class</primary></indexterm>
 <para>
-  The Windows Group Box control is actually a button control, not a static
-  control.  Its purpose is to group together a set of related controls.  It
-  consists of a label and a rectangle.  The related controls are placed within
-  the rectangle. Group boxes have no state, they can not be selected, and an
-  application can not send messages to the control. In addition, a group box
-  does not send notifications to its parent so there are no events to connect ot
-  a group box.
+  The Windows Group Box control is actually a button control, not a static control.  Its purpose is to
+  group together a set of related controls.  It consists of a label and a rectangle.  The related
+  controls are placed within the rectangle. Group boxes have no state, they can not be selected, and an
+  application can not send messages to the control. In addition, a group box does not send notifications
+  to its parent so there are no events to connect to a group box.
 </para>
 <para>
-  The GroupBox class provides methods to work with group box controls. It
-  inherits all methods of:
+  The GroupBox class provides methods to work with group box controls.
 </para>
-<itemizedlist>
-<listitem><para>The DialogControl class (see
-<link linkend="clsDialogControl">DialogControl Class</link>)
-</para></listitem>
-</itemizedlist>
-<para>The GroupBox class requires the class definition file
-<computeroutput>oodwin32.cls</computeroutput>:</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Requires</emphasis>:</term>
+  <listitem>
+    <para>
+      The GroupBoxe class requires the class definition file
+      <computeroutput>oodwin32.cls</computeroutput>:
 <programlisting>
 <![CDATA[
 ::requires "oodwin32.cls"
 ]]>
 </programlisting>
-<para>Use the GetGroupBox method (see
-<link linkend="getgroupbox">GetCheckControl</link>)
-to retrieve an object of the GroupBox class.</para>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
+  <listitem>
+    <para>
+      Although the group box is a button, since it does not have a state, can not be selected, does not
+      send notifications, etc., it does not inherit from the <link
+      linkend="clsButtonControl">ButtonControl</link> class. A group box does not share behaviour or
+      characteristics with the other button classes. Therefore, the group box class is a direct subclass
+      of the <link linkend="clsDialogControl">DialogControl</link> class. It therefore inherits all
+      methods of that class.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Mixin Class Inherits:</emphasis></term>
+  <listitem>
+    <para>
+      The group box class inherits from the following mixin classes, (indirectly through the
+      DialogControl class.)
+    </para>
+    <para>
+      The <link linkend="clsWindowBase">WindowBase</link>
+    </para>
+    <para>
+      The <link linkend="clsWindowExtensions">WindowExtensions</link>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+    <para>
+      Use the <link linkend="mthGetGroupBox">getGroupBox</link>() method to retrieve an object of
+      the group box class.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+    <para>
+      To dynamically define a group box in a <link linkend="clsUserDialog">UserDialog</link> class, use
+      the <link linkend="mthAddGroupBox">addGroupBox</link>() method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+    <para>
+      Group boxes do not generate notifications.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Methods</emphasis>:</term>
+  <listitem>
+  <para>
+    The GroupBox class only implements a few methods, (actually only one method at this time.)
+  </para>
+<table id="tblGroupBoxMethods" frame="all">
+<title>GroupBox Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>style=</entry>
+<entry><link linkend="mthGBStyleEquals">style=</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+  </listitem></varlistentry>
+</variablelist>
+
 
 <section id="mthGBStyleEquals"><title>Style=</title>
 <indexterm><primary>Style=</primary>
 <secondary>GroupBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aControl~style=-"--+-LEFT-----+--"-------------------><
-                      +-RIGHT----+
+>>--style=-styleKeyword--------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Assigns a new text alignment to the group box.  By default the text of a group
-  box is in the upper left corner.  The alignment can also be set to the right,
-  although this is not commonly done.
+  Assigns a new text alignment to the group box.  By default the text of a group box is in the upper left
+  corner.  The alignment can also be set to the right, although this is not commonly done.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>new_style</term>
-<listitem><para>A text string that is either:
-<variablelist>
-<varlistentry><term>LEFT</term>
-<listitem><para>The group box label is aligned to the upper left.
-</para></listitem></varlistentry>
-<varlistentry><term>RIGHT</term>
-<listitem><para>The label is aligned to the upper right.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The only argument is:
+      <variablelist>
+        <varlistentry><term>styleKeyword</term>
+        <listitem>
+          <para>
+            A text string that is either:
+            <variablelist>
+            <varlistentry><term>LEFT</term>
+            <listitem>
+              <para>
+                The group box label is aligned to the upper left.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>RIGHT</term>
+            <listitem>
+              <para>
+                The label is aligned to the upper right.
+              </para>
+            </listitem></varlistentry>
+            </variablelist>
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para> Changing the style is staightforward:
 <programlisting>
 <![CDATA[
-gb = dlg~getGroupBox(IDC_GB_AREACODES)
-if gb == .Nil then return
-gb~style="RIGHT"
+  gb = self~getGroupBox(IDC_GB_AREACODES)
+  if gb == .Nil then return
+  gb~style="RIGHT"
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
+
 </section>
 
 <section id="anibut"><title>AnimatedButton Class</title>

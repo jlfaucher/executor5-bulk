@@ -153,7 +153,7 @@ the methods listed in the
 </row>
 <row>
 <entry>Check</entry>
-<entry><link linkend="mthCheck">Check</link></entry>
+<entry><link linkend="mthCheckClsListControl">Check</link></entry>
 </row>
 <row>
 <entry>CheckAll</entry>
@@ -249,7 +249,7 @@ the methods listed in the
 </row>
 <row>
 <entry>IsChecked</entry>
-<entry><link linkend="mthIsChecked">IsChecked</link></entry>
+<entry><link linkend="mthIsCheckedClsListControl">IsChecked</link></entry>
 </row>
 <row>
 <entry>ItemInfo</entry>
@@ -433,7 +433,7 @@ the methods listed in the
 </row>
 <row>
 <entry>Uncheck</entry>
-<entry><link linkend="mthUncheck">Uncheck</link></entry>
+<entry><link linkend="mthUncheckClsListControl">Uncheck</link></entry>
 </row>
 <row>
 <entry>UncheckAll</entry>
@@ -1078,7 +1078,7 @@ view control does have the style.
   expose listView
 
   chkBox = self~getCheckControl(IDC_CHECK_USETRACKSELECT)
-  if chkBox~isChecked == "CHECKED" then
+  if chkBox~checked then
     listView~addExtendedStyle("TRACKSELECT")
   else
     listView~removeExtendedStyle("TRACKSELECT")
@@ -1152,7 +1152,7 @@ replaces the <computeroutput>GetExtendedStyle</computeroutput> invocation with a
   expose listView
 
   chkBox = self~getCheckControl(IDC_CHECK_USETRACKSELECT)
-  if chkBox~isChecked == "CHECKED" then
+  if chkBox~checked then
     listView~addExtendedStyle("TRACKSELECT")
   else
     listView~removeExtendedStyle("TRACKSELECT")
@@ -1295,7 +1295,7 @@ second the row is automatically selectd.
 </variablelist>
 </section>
 
-<section id="mthCheck"><title>Check</title>
+<section id="mthCheckClsListControl"><title>Check</title>
 <indexterm><primary>Check</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
@@ -1364,7 +1364,7 @@ with a specified zip code.
 </variablelist>
 </section>
 
-<section id="mthUncheck"><title>Uncheck</title>
+<section id="mthUncheckClsListControl"><title>Uncheck</title>
 <indexterm><primary>Uncheck</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
@@ -1612,7 +1612,7 @@ determine if a list view control currently has the check box extended style.
 </variablelist>
 </section>
 
-<section id="mthIsChecked"><title>IsChecked</title>
+<section id="mthIsCheckedClsListControl"><title>IsChecked</title>
 <indexterm><primary>IsChecked</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
