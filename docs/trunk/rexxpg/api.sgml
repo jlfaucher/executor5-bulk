@@ -346,16 +346,163 @@ provides.</para>
 provides.</para>
 </section>
 
-<section id="buildinglibs"><title>Building an External Library</title>
-<para>This section describes how to build an external library.</para>
+<section id="buildinglibs"><title>Building an External Native Library</title>
+<para>External libraries written in compiled languages (typically C or C++)
+provide a means to
+interface Rexx programs with other subsystems intended for compile languages.
+These libraries are packaged as Dynamic Link Libraries on Windows or shared libraries on
+Unix-based systems.
+A named library can be loaded using the the ::REQUIRES directive, the
+loadLibrary method on the Package class, or by using the EXTERNAL keyword on
+a ::ROUTINE or ::METHOD directive.
+</para>
+<para>When the library is loaded, the interpreter looks for an entry point
+in the library named RexxGetPackage().  An external library package is required
+to provide a RexxGetPackage() function that returns a pointer to a descriptor
+structure that defines the methods and routines contained within the library.
+The RexxGetPackage() routine takes no arguments and has a return value of
+RexxPackageEntry *.  This is normally created using the OOREXX_GET_PACKAGE()
+macro defined in the oorexxapi.h include file.</para>
+<programlisting>
+// package loading stub.
+OOREXX_GET_PACKAGE(package);
+</programlisting>
+<para>Where <emphasis role="italic">package</emphasis> is the name
+of the RexxPackageEntry table defined for this library.  The package
+entry table is a descriptor what is contained within the library.
+Note that on Windows, it is necessary to explicility export the
+RexxPackageEntry() function when the library is linked.  This is the
+only name that it's necessary to export.</para>
+<para>The RexxPackageEntry structure contains information about the
+package and descriptors of any methods and/or routines defined within
+the package.  The structure looks like this:</para>
+<programlisting>
+typedef struct _RexxPackageEntry
+{
+    int size;                      // size of the structure...helps compatibility
+    int apiVersion;                // version this was compiled with
+    int requiredVersion;           // minimum required interpreter version (0 means any)
+    const char *packageName;       // package identifier
+    const char  *packageVersion;   // package version #
+    RexxPackageLoader loader;      // the package loader
+    RexxPackageUnloader unloader;  // the package unloader
+    struct _RexxRoutineEntry *routines; // routines contained in this package
+    struct _RexxMethodEntry *methods;   // methods contained in this package
+} RexxPackageEntry;
+</programlisting>
+<para>The fields in the RexxPackageEntry have the following functions:</para>
+<variablelist>
+<varlistentry><term>size and apiVersion</term>
+<listitem><para>these fields give the size of the received table and identify
+the interpreter level this library has been compiled against.  These indicators
+will allow additional information to be added to the RexxPackageEntry in the future
+which out causing compatibility issues for older libraries.  Normally, these two
+fields are defined using the STANDARD_PACKAGE_HEADER macro, which will fill in
+both values.
+</para></listitem></varlistentry>
+<varlistentry><term>requiredVersion</term>
+<listitem><para>a library can specify the minimum interpreter level required by this
+library.  The interpreter will only load libraries that match the minimum compatibility
+requirement of the library package.  A zero value in this field means there's no
+minimum level requirement.  The macro REXX_CURRENT_INTERPRETER_VERSION will use
+the level of interpreter you are compiling against.  If REXX_CURRENT_INTERPRETER_VERSION
+is specified, then the library package will not load with previous releases.  The
+API header files will be updated with a macro for each interpreter version.  The
+version macros are of the form
+REXX_INTERPRETER_<emphasis role="italic">version</emphasis>_<emphasis role="italic">level</emphasis>_<emphasis role="italic">revison</emphasis>,
+where <emphasis role="italic">version</emphasis>, <emphasis role="italic">level</emphasis>,
+and <emphasis role="italic">revison</emphasis> refer to the corresponding values in an
+interpreter release number.  For example, REXX_INTERPRETER_4_0_0 would indicate that the
+4.0.0 interpreter level is the minimum required for the package.
+</para></listitem></varlistentry>
+<varlistentry><term>packageName</term>
+<listitem><para>a descriptive name for this library package.
+</para></listitem></varlistentry>
+<varlistentry><term>packageVersion</term>
+<listitem><para>a version string for this package.  The version can be
+in whatever form is appropriate for the package.
+</para></listitem></varlistentry>
+<varlistentry><term>packageLoader</term>
+<listitem><para>a function that will be called when the library package is
+first loaded by the interpreter.  The package loader function is passed a
+RexxThreadContext pointer, which will give the package access to Rexx
+interpreter services at initialization time.  The package loader is optional
+and is indicated by a NULL value in the descriptor.
+</para></listitem></varlistentry>
+<varlistentry><term>packageUnloader</term>
+<listitem><para>a function that will be called when the library package is
+unloaded by the interpreter.  The unloading process happens when the last
+interpreter instance is destroyed during the last cleanup stages.  This gives
+the loaded library an opportunity to clean up any global resources such as
+cached Rexx object references.
+The package loader is optional
+and is indicated by a NULL value in the descriptor.
+</para></listitem></varlistentry>
+<varlistentry><term>routines</term>
+<listitem><para>a pointer to an array of RexxRoutineEntry structures that define
+the routines provided by this package.  If there are no routines, NULL should
+be specified.
+See <link linkend="functionapi">Defining Library Routines</link> for details on
+creating the exported routine table.
+</para></listitem></varlistentry>
+<varlistentry><term>method</term>
+<listitem><para>a pointer to an array of RexxMethodEntry structures that define
+the methods provided by this package.  If there are no methods, NULL should
+be specified.
+See <link linkend="methodapi">Defining Library Methods</link> for details on
+creating the exported method table.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Here is an example of a RexxPackageEntry table taken from the rxmath
+library package:</para>
+<programlisting>
+// now build the actual entry list
+RexxRoutineEntry rxmath_functions[] =
+{
+    REXX_TYPED_ROUTINE(MathLoadFuncs, MathLoadFuncs),
+    REXX_TYPED_ROUTINE(MathDropFuncs, MathDropFuncs),
+    REXX_TYPED_ROUTINE(RxCalcPi,      RxCalcPi),
+    REXX_TYPED_ROUTINE(RxCalcSqrt,    RxCalcSqrt),
+    REXX_TYPED_ROUTINE(RxCalcExp,     RxCalcExp),
+    REXX_TYPED_ROUTINE(RxCalcLog,     RxCalcLog),
+    REXX_TYPED_ROUTINE(RxCalcLog10,   RxCalcLog10),
+    REXX_TYPED_ROUTINE(RxCalcSinH,    RxCalcSinH),
+    REXX_TYPED_ROUTINE(RxCalcCosH,    RxCalcCosH),
+    REXX_TYPED_ROUTINE(RxCalcTanH,    RxCalcTanH),
+    REXX_TYPED_ROUTINE(RxCalcPower,   RxCalcPower),
+    REXX_TYPED_ROUTINE(RxCalcSin,     RxCalcSin),
+    REXX_TYPED_ROUTINE(RxCalcCos,     RxCalcCos),
+    REXX_TYPED_ROUTINE(RxCalcTan,     RxCalcTan),
+    REXX_TYPED_ROUTINE(RxCalcCotan,   RxCalcCotan),
+    REXX_TYPED_ROUTINE(RxCalcArcSin,  RxCalcArcSin),
+    REXX_TYPED_ROUTINE(RxCalcArcCos,  RxCalcArcCos),
+    REXX_TYPED_ROUTINE(RxCalcArcTan,  RxCalcArcTan),
+    REXX_LAST_ROUTINE()
+};
 
-<section id="methodapi"><title>Defining Library Methods</title>
-<para>This section describes the Rexx method interface and the methods it
-provides.</para>
-</section>
+RexxPackageEntry rxmath_package_entry =
+{
+    STANDARD_PACKAGE_HEADER
+    REXX_INTERPRETER_4_0_0,              // anything after 4.0.0 will work
+    "RXMATH",                            // name of the package
+    "4.0",                               // package information
+    NULL,                                // no load/unload functions
+    NULL,
+    rxmath_functions,                    // the exported functions
+    NULL                                 // no methods in rxmath.
+};
+
+// package loading stub.
+OOREXX_GET_PACKAGE(rxmath);
+</programlisting>
 
 <section id="functionapi"><title>Defining Library Routines</title>
 <para>This section describes the Rexx external function interface and the methods it
+provides.</para>
+</section>
+
+<section id="methodapi"><title>Defining Library Methods</title>
+<para>This section describes the Rexx method interface and the methods it
 provides.</para>
 </section>
 </section>
