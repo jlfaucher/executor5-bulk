@@ -1046,7 +1046,17 @@ RexxReturnCode REXXENTRY Edit_Commands(
 <para>External functions written in Rexx do not need to be registered. These
 functions are found by a disk search for a Rexx procedure file that matches
 the function name.</para>
-
+<para>There are two styles of native code routines supported by Open Object Rexx.
+Registered External Functions are an older style of routine that is only capable
+of dealing with String data.  These routines do not have access to any of the
+object-oriented features of the language.  The registered external functions
+are described here, but should be considered only if compability with older
+versions of Object Rexx or other Rexx interpreters is a consideration.</para>
+<para>The newer style functions have access to Rexx objects and a fuller set of
+APIs for interfacing with the interpreter runtime.  These functions are the
+preferred method for writing Open Object Rexx extensions are are defined in
+<link linkend="buildinglibs">Building an External Native Library</link>.
+</para>
 <section id="xffmt"><title>Registering External Functions</title>
 <para>An external function can reside in the same module (executable
 or library)

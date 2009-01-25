@@ -497,13 +497,65 @@ OOREXX_GET_PACKAGE(rxmath);
 </programlisting>
 
 <section id="functionapi"><title>Defining Library Routines</title>
-<para>This section describes the Rexx external function interface and the methods it
-provides.</para>
+<para>The RexxRoutineEntry table defines routines that are exported by a library package.
+This table is an array of RexxRoutineEntry structures, terminated by an entry that
+contains nothing but zero values in the fields.  The REXX_LAST_ROUTINE() macro
+will generate a suitable table terminator entry.
+</para>
+<para>The remainder of table will be entries generated via either the
+REXX_CLASSIC_ROUTINE() or REXX_TYPED_ROUTINE() macros.  REXX_CLASSIC_ROUTINE()
+entries are for routines created using the older string-oriented function style.
+The classic routines allow packages to be migrated to the new package loading system
+without requiring a rewrite of all of the contained functions.
+See <link linkend="os2xfun">External Function Interface</link> for details on
+creating the functions in the classic style.</para>
+<para>Routine table entries defined using REXX_TYPED_ROUTINE() use the new
+object-oriented interfaces for creating routines.  These routines can use
+the interpreter runtime to convert call arguments from Rexx objects into primitive
+types and return values from primitive types back into Rexx objects.  These
+routines are also given access to a rich set of services via the RexxCallContext
+interface vector.<?para>
+<para>The REXX_CLASSIC_ROUTINE() and REXX_TYPED_ROUTINE() take two arguments.  The
+first entry is the package table name for this routine.  The second argument is the
+entry point name of the real native code routine that implements the function.
+These names are frequently the same, but need not be.</para>
+<para>Smaller function packages frequently place all of the contained functions
+and the package definition tables in the same file, with the package tables
+placed near the end of the source file so all of the functions are visible.  For
+larger packages, it may be desireable to place the functions in more than
+one source file.  For functions packaged as multiple source files, it is necessary
+to create a prototype declarations so the routine entry table can be generated.
+The oorexxapi.h header file includes REXX_CLASSIC_ROUTINE_PROTOTYPE() and
+REXX_TYPED_ROUTINE_PROTOTYPE() macros to generate the appropriate declarations.
+For example,<para>
+<programlisting>
+// create function declarations for the linker
+REXX_TYPED_ROUTINE(RxCalcPi);
+REXX_TYPED_ROUTINE(RxCalcSqrt);
+
+// now build the actual entry list
+RexxRoutineEntry rxmath_functions[] =
+{
+    REXX_TYPED_ROUTINE(RxCalcPi,      RxCalcPi),
+    REXX_TYPED_ROUTINE(RxCalcSqrt,    RxCalcSqrt),
+    REXX_LAST_ROUTINE()
+};
+</programlisting>
+
+<section id="routinedcl"><title>Routine Declarations</title>
+<para>This section describes how to define an external routine.
+</para>
+</section>
 </section>
 
 <section id="methodapi"><title>Defining Library Methods</title>
 <para>This section describes the Rexx method interface and the methods it
 provides.</para>
+
+<section id="routinedcl"><title>Method Declarations</title>
+<para>This section describes how to define an external method.
+</para>
+</section>
 </section>
 </section>
 
