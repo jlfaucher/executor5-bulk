@@ -41,28 +41,26 @@
     #
     #########################################################################
 -->
-<chapter id="man0099"><title>Standard Dialogs, External Functions, and
-Public Routines</title>
-<indexterm><primary>Standard Dialogs, External Functions,
-Public Routines</primary></indexterm>
-<para>The ooDialog framework provides a number of easy to use standard dialogs,
-external functions, and public routines that allow programmers to include simple
-graphical elements in their ooRexx applications.  A few of the functions, like
-<link linkend="rtnMSSleep">MSSleep</link> expose functionality that can be
-useful in any type of ooRexx application. The external functions and public
-routines can be called with a single line of code and the standard dialogs can
-usually be executed with only two lines of code. This does not require the
-programmer to do much set up and makes them simple to work with.
+<chapter id="man0099"><title>Standard Dialogs, and Public Routines</title>
+<indexterm><primary>Standard Dialogs, Public Routines</primary></indexterm>
+<para>
+  The ooDialog framework provides a number of easy to use standard dialogs and public routines that allow
+  programmers to include simple graphical elements in their ooRexx applications. A few of the functions,
+  like <link linkend="rtnMSSleep">MSSleep</link> expose functionality that can be useful in any type of
+  ooRexx application. The public routines can be called with a single line of code and the standard
+  dialogs can usually be executed with only two lines of code. This does not require the programmer to do
+  much set up and makes them simple to work with.
 </para>
-<para>The standard dialogs, external functions, and public routines are listed
-the following table:</para>
+<para>
+  The standard dialogs and public routines are listed the following table:
+</para>
 <table id="tStandardElements" frame="all">
-<title>Standard Dialogs, Functions, and Routines</title>
+<title>Standard Dialogs, and Routines</title>
 <tgroup cols="2">
 <thead>
 <row>
 <entry>Standard dialog...</entry>
-<entry>...on page</entry>
+<entry>...Description</entry>
 </row>
 </thead>
 <tbody>
@@ -106,57 +104,8 @@ the following table:</para>
 <tgroup cols="2">
 <thead>
 <row>
-<entry>External function...</entry>
-<entry>...on page</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry>ErrorMessage</entry>
-<entry><link linkend="fncErrorMessage">ErrorMessage function</link></entry>
-</row>
-<row>
-<entry>GetFileNameWindow</entry>
-<entry><link linkend="fncGetFileNameWindow">GetFileNameWindow function</link></entry>
-</row>
-<row>
-<entry>GetScreenSize</entry>
-<entry><link linkend="fncGetScreenSize">GetScreenSize function</link></entry>
-</row>
-<row>
-<entry>InfoMessage</entry>
-<entry><link linkend="fncInfoMessage">InfoMessage function</link></entry>
-</row>
-<row>
-<entry>PlaySoundFile</entry>
-<entry><link linkend="fncPlaySoundFile">PlaySoundFile function</link></entry>
-</row>
-<row>
-<entry>PlaySoundFileInLoop</entry>
-<entry><link linkend="fncPlaySoundFileInLoop">PlaySoundFileInLoop function</link></entry>
-</row>
-<row>
-<entry>SleepMS</entry>
-<entry><link linkend="fncSleepMS">SleepMS function</link></entry>
-</row>
-<row>
-<entry>StopSoundFile</entry>
-<entry><link linkend="fncStopSoundFile">StopSoundFile function</link></entry>
-</row>
-<row>
-<entry>WinTimer</entry>
-<entry><link linkend="fncWinTimer">WinTimer function</link></entry>
-</row>
-<row>
-<entry>YesNoMessage</entry>
-<entry><link linkend="fncYesNoMessage">YesNoMessage function</link></entry>
-</row>
-</tbody></tgroup>
-<tgroup cols="2">
-<thead>
-<row>
 <entry>Public routine...</entry>
-<entry>...on page</entry>
+<entry>...Description</entry>
 </row>
 </thead>
 <tbody>
@@ -1065,276 +1014,6 @@ say  "You Selected the month: " mon.s
 
 </section>
 
-<section id="sctExternalFunctions"><title>External Functions</title>
-<indexterm><primary>external functions</primary></indexterm>
-<para>The ooDialog framework provides external functions that can be used as
-callable functions in your Open Object Rexx programs. These functions are
-registered automatically when the first dialog is initialized. If no dialog has
-been created, the programmer must register the functions prior to calling them.
-An individual function is registered with:
-</para>
-<programlisting>
-<![CDATA[
-call RxFuncAdd functionname, "oodialog", functionname
-]]>
-</programlisting>
-<para>To register all the ooDialog functions in this group use:</para>
-<programlisting>
-<![CDATA[
-call RxFuncAdd InstMMFuncs, "oodialog", InstMMFuncs
-call InstMMFuncs
-]]>
-</programlisting>
-<para>A more convenient way to call many of these functions is provided by the
-<link linkend="sctPublicRoutines">Public Routines</link> in the ooDialog
-framework.  The public routines do not require that the programmer register any
-of the external functions.  That task is handled transparently by the routine.
-</para>
-<note><title>Note</title><para>
-The ooDialog framework includes a number of external functions that are not
-listed here.  In general, using the external functions not listed requires a
-good working knowledge of C and an understanding of the underlying Windows API.
-Therefore, those functions are not listed. The functions listed in this section
-are the functions that are convenient and easy to use in an ooRexx program for
-the general Rexx programmer.  They require no understanding of C or the Windows
-API.
-</para></note>
-
-<section id="fncInfoMessage"><title>InfoMessage</title>
-<indexterm><primary>InfoMessage</primary></indexterm>
-<indexterm><primary>external functions</primary>
-<secondary>InfoMessage</secondary></indexterm>
-<para>Displays an information message window:
-<programlisting>
-<![CDATA[
-call InfoMessage "some message text"
-ret = InfoMessage("another text")
-]]>
-</programlisting></para>
-<para>See also the public routine <link linkend="rtnInfoDialog">InfoDialog</link>.
-</para>
-</section>
-
-<section id="fncErrorMessage"><title>ErrorMessage</title>
-<indexterm><primary>ErrorMessage</primary></indexterm>
-<indexterm><primary>external functions</primary>
-<secondary>ErrorMessage</secondary></indexterm>
-<para>Displays an error message window:
-<programlisting>
-<![CDATA[
-call ErrorMessage "some error message text"
-ret = ErrorMessage("another error message")
-]]>
-</programlisting></para>
-<para>See also the public routine <link linkend="rtnErrorDialog">ErrorDialog</link>.
-</para>
-</section>
-
-<section id="fncYesNoMessage"><title>YesNoMessage</title>
-<indexterm><primary>YesNoMessage</primary></indexterm>
-<indexterm><primary>external functions</primary>
-<secondary>YesNoMessage</secondary></indexterm>
-<para>Displays a message and ask the user for a YES or NO answer:
-<programlisting>
-<![CDATA[
-ret = YesNoMessage("Delete these files?", "No")
-if ret=1 then /* this is yes */
-]]>
-</programlisting>
-</para>
-<para>The second argument is optional and can have a value of either Yes or
-No. An argument of Yes gives the Yes button the default focus, No gives the No
-button the default focus. If the argument is omitted the Yes button is given
-the default focus. Only the first letter of the argument is needed and case is
-not significant.</para>
-<para>See also the public routine <link linkend="rtnAskDialog">AskDialog</link>.
-</para>
-</section>
-
-<section id="fncGetScreenSize"><title>GetScreenSize</title>
-<indexterm><primary>GetScreenSize</primary></indexterm>
-<indexterm><primary>external functions</primary>
-<secondary>GetScreenSize</secondary></indexterm>
-<para>Queries the monitor size in dialog units and pixels:
-<programlisting>
-<![CDATA[
-val = GetScreenSize()
-parse var val dunitx dunity pixelx pixely
-]]>
-</programlisting>
-</para>
-<para>See also the public routine <link linkend="rtnScreenSize">ScreenSize</link>.
-</para>
-</section>
-
-<section><title>getSysMetrics (deprecated)</title>
-<note><title>Note</title><para>
-  This function is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the .DlgUtil class.  Do not
-  use this function in new code. Try to migrate existing code to to the
-  <computeroutput>.DlgUtil~getSystemMetrics()</computeroutput> method.  This function may not exist in
-  future versions of ooDialog.
-</para></note>
-
-</section>
-
-<section id="fncPlaySoundFile"><title>PlaySoundFile</title>
-<indexterm><primary>PlaySoundFile</primary></indexterm>
-<indexterm><primary>external functions</primary>
-<secondary>PlaySoundFile</secondary></indexterm>
-<para>Plays a sound file (.WAV):</para>
-<programlisting>
-<![CDATA[
-call PlaySoundFile "d:\wav\sound.wav"
-ret = PlaySoundFile("d:\wav\sound.wav","YES")
-]]>
-</programlisting>
-<para>The optional second
-parameter YES plays the file asynchronously, that is the program continues
-execution. See also the public routine <link linkend="rtnPlay">Play</link>.
-</para>
-</section>
-
-<section id="fncPlaySoundFileInLoop"><title>PlaySoundFileInLoop</title>
-<indexterm><primary>PlaySoundFileInLoop</primary></indexterm>
-<indexterm><primary>external functions</primary>
-<secondary>PlaySoundFileInLoop</secondary></indexterm>
-<para>Plays a sound file (.WAV) continuously and asynchronously:
-<programlisting>
-<![CDATA[
-call PlaySoundFileInLoop "d:\wav\sound.wav"
-]]>
-</programlisting>
-</para>
-</section>
-
-<section id="fncStopSoundFile"><title>StopSoundFile</title>
-<indexterm><primary>StopSoundFile</primary></indexterm>
-<indexterm><primary>external functions</primary>
-<secondary>StopSoundFile</secondary></indexterm>
-<para>Stops playing an asynchronous sound file (.WAV):
-<programlisting>
-<![CDATA[
-call StopSoundFile
-]]>
-</programlisting>
-</para>
-</section>
-
-<section id="fncGetFileNameWindow"><title>GetFileNameWindow</title>
-<indexterm><primary>GetFileNameWindow</primary></indexterm>
-<indexterm><primary>external functions</primary>
-<secondary>GetFileNameWindow</secondary></indexterm>
-<para>Displays an Open File window:</para>
-<programlisting>
-<![CDATA[
-file = GetFileNameWindow(filename,handle,filter,loadorsave,title, ,
-                         defExtension,multiSelect,sepChar)
-]]>
-</programlisting>
-<para>Parameters (optional):</para>
-<variablelist>
-<varlistentry><term><emphasis role="italic">filename</emphasis></term>
-<listitem><para>A preselected file name and / or initial directory information.</para>
-<para>This argument places a preselected file name in the &quot;File name&quot;
-field of the file selection dialog.  In addition this argument can also be used
-to specify the initial directory (folder) the dialog opens in.</para>
-<para>When this argument contains no path information, then the File name field
-will contain the argument and the initial directory is determined by the
-operating system.  Which directory the operating system picks varies slightly
-between Windows 98, Windows NT, Windows XP, etc.  But, in general, it will be a
-directory previously used in one of the Windows common dialogs, or a directory
-in the users My Documents.  (The exact behavior is documented by Microsoft.)</para>
-<para>If the argument contains file name and path information, the initial
-directory will be determined by the path information and the File name field
-will contain the file information.  When the filename argument contains only path
-information and no file name information, i.e. the argument ends with a back
-slash (&quot;\&quot;), then the initial directory will be that path and the File
-name field will be left blank.</para>
-<para>In cases where the argument contains incorrect path information the
-initial directory is determined as if no path information had been supplied and
-the entire value of the argument is placed in the File name field.</para>
-<note><title>Note</title><para>
-Windows treats normal wild card characters as valid for file names.  Therefore,
-values such as C:\*.* or C:\Windows\*.exe are acceptable for this argument.
-</para></note>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">handle</emphasis></term>
-<listitem><para>The parent window handle.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">filter</emphasis></term>
-<listitem><para>A file mask specification.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">loadorsave</emphasis></term>
-<listitem><para>If you specify 1, which is the default, you get the file name for a
-load operation. If you specify 0, you get the file name for a save operation.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">title</emphasis></term>
-<listitem><para>The window title. The default is &quot;Open a File&quot; or &quot;Save
-File As&quot;, depending on what you specify for <emphasis role="italic">loadorsave</emphasis>.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">defExtension</emphasis></term>
-<listitem><para>The default extension that is added if no extension was specified. The
-default is TXT.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">multiSelect</emphasis></term>
-<listitem><para>If you specify 1, you can select several files. In this case,
-<emphasis role="italic">loadorsave</emphasis> must also be 1. The result is
-then <emphasis role="italic">path file1 file2 file3 ...</emphasis>.</para>
-<para>If you specify 0 or omit this parameter, you get the selected file name or
-an empty string when the Open File window is canceled.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">sepChar</emphasis></term>
-<listitem><para>Specifies which character should be used for separating the file names
-when <emphasis role="italic">multiSelect</emphasis> = 1.</para>
-<para>This is needed for file names with blank
-characters. If this argument is omitted, the separation character is a blank.
-If the argument is specified, the returned path and file name
-uses this separation character. For example, if you specify "#" as the separation
-character, the return string might look as follows: </para>
-<programlisting>
-<![CDATA[
-C:\WINNT#file with blank.ext#fileWithNoBlank.TXT
-]]>
-</programlisting>
-</listitem></varlistentry>
-</variablelist>
-<para><emphasis role="bold">Example:</emphasis></para>
-<programlisting>
-"Text files (*.txt)"&apos;0&apos;x"*.TXT"&apos;0&apos;x ,
-"All files (*.*)"&apos;0&apos;x"*.*"
-</programlisting>
-</section>
-
-<section id="fncSleepMS"><title>SleepMS</title>
-<indexterm><primary>SleepMS</primary></indexterm>
-<indexterm><primary>external functions</primary>
-<secondary>SleepMS</secondary></indexterm>
-<para>Sleeps for a given time interval, in milliseconds:
-<programlisting>
-<![CDATA[
-call SleepMS(3000) /* 3 seconds */
-]]>
-</programlisting></para>
-<para>See also the public routine <link linkend="rtnMSSleep">MSSleep</link>.
-</para>
-</section>
-
-<section id="fncWinTimer"><title>WinTimer</title>
-<indexterm><primary>WinTimer</primary></indexterm>
-<indexterm><primary>external functions</primary>
-<secondary>WinTime</secondary></indexterm>
-<para>Starts, stops, and waits for a windows timer:
-<programlisting>
-<![CDATA[
-tid = WinTimer("START",300)   /* 0,3 seconds */
-call  WinTimer("WAIT,tid)     /* wait... */
-ret = WinTimer("STOP",tid)    /* stop premature */
-]]>
-</programlisting>
-</para>
-</section>
-</section>
 
 <section id="sctPublicRoutines"><title>Public Routines</title>
 <indexterm><primary>ooDialog public routines</primary></indexterm>
@@ -2101,5 +1780,156 @@ SingleSelection</computeroutput>class. However, instead of an input stem an
 array is passed into the function.
 </para>
 </section>
+</section>
+
+
+<section id="sctExternalFunctions"><title>External Functions (deprecated)</title>
+
+<para>
+  <emphasis role="bold">Do not directly use any of the ooDialog external functions.</emphasis>
+</para>
+<para>
+  The ooDialog documentation prior to ooDialog 4.0.0 documented ten external functions as <emphasis
+  role="italic">callable functions that can be used in your Object Rexx programs</emphasis>. It then
+  mentioned in passing that the <link linkend="sctPublicRoutines">Public Routines</link> were a more
+  convenient way to use these functions. It was noted that the external routines were registered
+  automatically when the first dialog was initialized, but if the programmer wanted to use the external
+  routines when no dialog was created, he could register the individual functions using
+  <computeroutput>RxFuncAdd</computeroutput>.
+</para>
+<para>
+  The 3.2.0 documentation expounded on that a little and also mentioned that there were other external
+  functions, noting that it would be difficult for ooDialog programmers to use these other functions
+  unless they were experienced C programmers. In hindsight that was a mistake. Each of the external
+  functions has a matching public routine. No mention of the external functions should have been made.
+  Instead, only the public routines should have been documented.
+</para>
+<para>
+  The reason for this is simple, the external functions are being removed. Prior to 4.0.0, ooDialog was
+  implemented using the original external naitve API. This API was useful, but somewhat limiting.
+  Particularly when used with the object-orientated paradigm. ooRexx 4.0.0 introduces a new native API
+  that is much more robust and flexible. Using this new API makes writing exernal packages like ooDialog
+  much easier.
+</para>
+<para>
+  ooDialog is in the process of being converted to use this new API. <emphasis
+  role="italic"><emphasis role="bold">All</emphasis> of the external functions will be
+  removed.</emphasis> If your programs directly uses any of the undocumented external functions, at some
+  point in future they will not work with a new release of ooDialog.
+</para>
+<para>
+  The documented external functions will be available as <emphasis role="bold">deprecated</emphasis>
+  functions, with the possibility of their removal in the future. However, they will simply map to the
+  corresponding public routine. The programmer can remove this extra level of indirection by calling the
+  public routine directly. It would be nice if ooDialog did not have to drag along this baggage forever
+  into the future.
+</para>
+<para>
+  It is no longer necessary to use RxFuncAdd(). Doing so is a nop. Likewise, registering InstMMFuncs()
+  and calling it does nothing. The ooDialog programmer should remove any references to RxFuncAdd (when
+  used to register any ooDialog external function,) and InstMMFuncs in their code as the opportunity
+  arises.
+</para>
+
+<section id="fncInfoMessage"><title>InfoMessage (deprecated)</title>
+<note><title>Note</title><para>
+  This method is deprecated. See this <link linkend="sctExternalFunctions">explanation</link>. Use the
+  public routine <link linkend="rtnInfoDialog">InfoDialog</link>. Do not use this method in new code. Try
+  to migrate existing code to InfoDialog. This function may not exist in future versions of ooDialog.
+</para></note>
+</section>
+
+<section id="fncErrorMessage"><title>ErrorMessage (deprecated)</title>
+<note><title>Note</title><para>
+  This method is deprecated. See this <link linkend="sctExternalFunctions">explanation</link>. Use the
+  public routine <link linkend="rtnErrorDialog">ErrorDialog</link>. Do not use this method in new code.
+  Try to migrate existing code to ErrorDialog. This function may not exist in future versions of
+  ooDialog.
+</para></note>
+</section>
+
+<section id="fncYesNoMessage"><title>YesNoMessage (deprecated)</title>
+<note><title>Note</title><para>
+  This method is deprecated. See this <link linkend="sctExternalFunctions">explanation</link>. Use the
+  public routine <link linkend="rtnAskDialog">AskDialog</link>. Do not use this method in new code. Try
+  to migrate existing code to AskDialog. This function may not exist in future versions of ooDialog.
+</para></note>
+</section>
+
+<section id="fncGetScreenSize"><title>GetScreenSize (deprecated)</title>
+<note><title>Note</title><para>
+  This method is deprecated. See this <link linkend="sctExternalFunctions">explanation</link>. Use the
+  public routine <link linkend="rtnScreenSize">ScreenSize</link>. Do not use this method in new code.
+  Try to migrate existing code to ScreenSize This function may not exist in future versions of
+  ooDialog.
+</para></note>
+</section>
+
+<section><title>getSysMetrics (deprecated)</title>
+<note><title>Note</title><para>
+  This function is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the .DlgUtil class.  Do not
+  use this function in new code. Try to migrate existing code to to the
+  <computeroutput>.DlgUtil~getSystemMetrics()</computeroutput> method.  This function may not exist in
+  future versions of ooDialog.
+</para></note>
+</section>
+
+<section id="fncPlaySoundFile"><title>PlaySoundFile (deprecated)</title>
+<note><title>Note</title><para>
+  This method is deprecated. See this <link linkend="sctExternalFunctions">explanation</link>. Use the
+  public routine <link linkend="rtnPlay">Play</link>. Do not use this method in new code.
+  Try to migrate existing code to Play. This function may not exist in future versions of
+  ooDialog.
+</para></note>
+</section>
+
+<section id="fncPlaySoundFileInLoop"><title>PlaySoundFileInLoop (deprecated)</title>
+<note><title>Note</title><para>
+  This method is deprecated. See this <link linkend="sctExternalFunctions">explanation</link>. Use the
+  public routine <link linkend="rtnPlay">Play</link>. Do not use this method in new code.
+  Try to migrate existing code to PLay. This function may not exist in future versions of
+  ooDialog.
+</para></note>
+</section>
+
+<section id="fncStopSoundFile"><title>StopSoundFile (deprecated)</title>
+<note><title>Note</title><para>
+  This method is deprecated. See this <link linkend="sctExternalFunctions">explanation</link>. Use the
+  public routine <link linkend="rtnPlay">Play</link>. Do not use this method in new code.
+  Try to migrate existing code to Play. This function may not exist in future versions of
+  ooDialog.
+</para></note>
+</section>
+
+<section id="fncGetFileNameWindow"><title>GetFileNameWindow (deprecated)</title>
+<note><title>Note</title><para>
+  This method is deprecated. See this <link linkend="sctExternalFunctions">explanation</link>. Use the
+  public routine <link linkend="rtnFileNameDialog">FileNameDialog</link>. Do not use this method in new
+  code. Try to migrate existing code to FileNameDialog. This function may not exist in future versions of
+  ooDialog.
+</para></note>
+</section>
+
+<section id="fncSleepMS"><title>SleepMS (deprecated)</title>
+<note><title>Note</title><para>
+  This method is deprecated. See this <link linkend="sctExternalFunctions">explanation</link>. Use the
+  public routine <link linkend="rtnMSSleep">MSSleep</link>. Do not use this method in new code. Try to
+  migrate existing code to MSSleep. This function may not exist in future versions of ooDialog.
+</para></note>
+</section>
+
+<section id="fncWinTimer"><title>WinTimer <emphasis role="bold">(deprecated)</emphasis></title>
+<note><title>Note</title><para>
+  This method is deprecated. See this <link linkend="sctExternalFunctions">explanation</link>. There is
+  no replacement for this function. Do not use this method in any code.
+</para></note>
+<para>
+  The implementation of this function is poor. It uses 100% of the CPU while waiting. It should be
+  possible to provide this functionality without consuming all the CPU. A future version of ooDialog may
+  provide a proper implementation for the functionality of waiting on a repeating timer.
+</para>
+</section>
+
 </section>
 </chapter>

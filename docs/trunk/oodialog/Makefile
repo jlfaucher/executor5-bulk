@@ -70,6 +70,7 @@ SGML_FILES = advcntlc.sgml \
 	     resdialog.sgml \
 	     scrollbarc.sgml \
 	     slidercontrolc.sgml \
+	     standarddialog.sgml \
 	     staticcontrolc.sgml \
 	     resources.sgml \
 	     menus.sgml \
