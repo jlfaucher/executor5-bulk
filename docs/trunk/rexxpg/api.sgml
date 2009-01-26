@@ -543,8 +543,47 @@ RexxRoutineEntry rxmath_functions[] =
 </programlisting>
 
 <section id="routinedcl"><title>Routine Declarations</title>
-<para>This section describes how to define an external routine.
+<para>Library routines are created using a series of macros that
+create the body of the function.  These macros define the routine
+arguments and return value in a form that allows the Rexx runtime
+to perform argument checking and conversions before calling the
+target routine.
+These macros are name "RexxRoutine<emphasis role="italic">n</emphasis>, where
+<emphasis role="italic">n</emphasis> is the number of arguments you wish to
+be passed to your routine.  For example,</para>
+<programlisting>
+RexxRoutine2(int, beep, wholenumber_t, frequency, wholenumber_t, duration)
+{
+    return Beep(frequency, duration);  /* sound beep                 */
+}
+</programlisting>
+<para>defines a <emphasis role="italic">beep</emphasis> routine that will be
+passed two <emphasis role="italic">wholenumber_t</emphasis> arguments
+(<emphasis role="italic">frequency</emphasis>
+and <emphasis role="italic">duration</emphasis>).
+The return value is an <emphasis role="italic">int</emphasis> value.
 </para>
+<para>An argument can be made optional by prefixing the type with "OPTIONAL_".  For example,</para>
+<programlisting>
+RexxRoutine2(int, beep, wholenumber_t, frequency, OPTIONAL_wholenumber_t, duration)
+{
+    return Beep(frequency, duration);  /* sound beep                 */
+}
+</programlisting>
+<para>would define a routine that takes two arguments.  The first argument is required, but the
+second is optional.  Any optional arguments will be passed using an appropriate zero
+value for the type.  The macros argumentExists(n) or argumentOmitted(n) can reliably test if
+an argument was passed.  The test argumentExists(2) can be used to test if the duration was specified.
+The <emphasis role="italic">n</emphasis> value is origin 1.  There are some special argument types
+that you can request as additional additional arguments.  This will add additional arguments
+to your native routine.  The argument value specified with argument exists maps to the
+arguments passed to your C++ routine rather than the arguments in the originating Rexx call.
+See below for details on the optional type arguments.<para>
+</section>
+
+<section id="routinetypes"><title>Routine Argument Types</title>
+<para>This section describes the Rexx method interface and the methods it
+provides.</para>
 </section>
 </section>
 
