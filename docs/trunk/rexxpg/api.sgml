@@ -222,10 +222,15 @@ Use an uintptr_t type if you wish to return a pointer value as a Rexx number.
 <listitem><para>An unsigned 8-bit integer.
 </para></listitem></varlistentry>
 <varlistentry><term>float</term>
-<listitem><para>A 32-bit floating point number.
+<listitem><para>A 32-bit floating point number.  When used as an
+argument to a routine or method, the strings "nan", "+infinity", and
+"-infinity" will be converted into the appropriate floating-point values.  The
+reverse conversion is used when converting floating-point values back into
+Rexx objects.
 </para></listitem></varlistentry>
 <varlistentry><term>double</term>
-<listitem><para>A 64-bit floating point number.
+<listitem><para>A 64-bit floating point number.  The Rexx runtime applies the
+same special processing for nan, +infinity, and -infinity values as float types.
 </para></listitem></varlistentry>
 </variablelist
 </section>
@@ -573,17 +578,145 @@ RexxRoutine2(int, beep, wholenumber_t, frequency, OPTIONAL_wholenumber_t, durati
 <para>would define a routine that takes two arguments.  The first argument is required, but the
 second is optional.  Any optional arguments will be passed using an appropriate zero
 value for the type.  The macros argumentExists(n) or argumentOmitted(n) can reliably test if
-an argument was passed.  The test argumentExists(2) can be used to test if the duration was specified.
-The <emphasis role="italic">n</emphasis> value is origin 1.  There are some special argument types
-that you can request as additional additional arguments.  This will add additional arguments
-to your native routine.  The argument value specified with argument exists maps to the
+an argument was passed.  For example, argumentExists(2) tests if the
+<emphasis role="italic">duration</emphasis> argument was specified when calling the beep() routine.
+The <emphasis role="italic">n</emphasis> value is origin 1.</para>
+<para>In addition to the arguments passed by the caller, there are some special argument types
+that provide your routine with additional information.  These special types will add
+This will add additional arguments to your native routine implementation.
+The argument value specified with argumentExists() or argumentOmitted() maps to the
 arguments passed to your C++ routine rather than the arguments in the originating Rexx call.
-See below for details on the optional type arguments.</para>
+See below for details on the details type arguments.
+</para>
+<para>All routine declarations have an undeclared special argument passed to the routine.  This
+special object is named <emphasis role="italic">context</emphasis>.  The
+<emphasis role="italic">context</emphasis> is a pointer to a RexxCallContext value and
+provides access to all APIs that are valid from a routine context.</para>
+<note><title>Note</title><para>
+void is not a valid return type for a routine.  There must be a real return
+type specified on the routine declaration.  If you wish to have a routine without
+a return value, declaring the routine with a return type of RexxObjectPtr and
+return the value NULLOBJECT.  Routines that do not return a real value may not
+be invoked as functions.  Only the CALL instruction allows a return without a
+value.
+</para></note>
 </section>
 
 <section id="routinetypes"><title>Routine Argument Types</title>
-<para>This section describes the Rexx method interface and the methods it
-provides.</para>
+<para>A routine argument or return value may be a
+<link linkend="numerictypes">numeric type</link> or an
+<link linkend="objecttypes">object type</link>.  For numeric types,
+the call arguments must be convertable from a Rexx object equivalent into the
+primitive value or an error will be raised.  For optional numeric arguments, a zero
+value is passed for omitted values.  When used as a return type, the
+numeric values are translated into an appropriate Rexx object value.
+</para>
+<para>If an argument is an object type, some addtional validation is performed
+on the arguments being passed.  If an argument does not meet the requirements for
+a given object type, an error will be raised.  If an object-type argument is
+optional and a value is not specificed on the call, the value NULLOBJECT is
+passed to your routine.
+The supported object types and the special processing
+rules are as follows:</para>
+<variablelist>
+<varlistentry><term>RexxObjectPtr</term>
+<listitem><para>a reference to any Rexx object instance.  Any arbitrary object type may
+be passed for a RexxObjectPtr argument.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxStringObject</term>
+<listitem><para>an instance of the Rexx String class.  The argument value must be
+a Rexx String value or convertable to a Rexx String value using the request('String')
+mechanism.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxArrayObject</term>
+<listitem><para>An instance of a Rexx single-dimension array.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxClassObject</term>
+<listitem><para>An instance of Rexx Class class.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxStemObject</term>
+<listitem><para>An instance of Rexx Stem class.  For routine calls, a stem argument
+may be specified either using the stem variable name directly or giving the stem
+variable name as a quoted string.  For example, for a routine defined using</para>
+<programlisting>
+RexxMethod1(int, MyRoutine, RexxStemObject, stem)
+</programlisting>
+<para>the following calls are equivalent:</para>
+<programlisting>
+x = MyRoutine(a.)
+x = MyRoutine('a.')
+</programlisting>
+<para>This special processing allows routines that currenly access
+stem variables using the RexxVariablePool API to be more easily converted to the
+more capable API set.</para>
+</para></listitem></varlistentry>
+</variablelist>
+<para>In addition to the numeric and object types, there are additional special
+types that provide additional information to the calling routine or perform common
+special conversions on argument values.  The special types available to routines are:</para>
+<variablelist>
+<varlistentry><term>CSTRING</term>
+<listitem><para>The argument is passed as an ASCII-Z string.  The source argument must be
+one that is valid as a RexxStringObject value.  The RexxStringObject is converted into a
+a pointer to an ASCII-Z string.  This is equivalent to the value returned from the
+<link linkend="mthObjectToStringValue">StringValue() API</link>
+from a RexxStringObject value.  For an optional CSTRING argument, a NULL pointer
+is provided when the argument is omitted.</para>
+<para>When CSTRING is used as a return value, the ASCII-Z string value will be
+converted into a Rexx String object.  CSTRING return values are best confined to
+returning C literal values.
+The Rexx runtime does not free any
+memory associated with a CSTRING return value, so care must be taken to avoid
+memory leaks.  Also, locally declared character buffers cannot be returned as
+the storage associated with buffer is no longer valid once your routine returns to
+the Rexx interpreter.  For example, the following is not valid:</para>
+<programlisting>
+RexxMethod0(CSTRING, MyRoutine)
+{
+   ....
+   char buffer[32];
+   sprintf(buffer, "%d:%d", major, minor);
+   return buffer;     // buffer is not valid once return executes
+}
+</programlisting>
+<para>A RexxStringObject return value and the String() API is more appropriate in this
+situation.</para>
+<programlisting>
+RexxMethod0(RexxStringObject, MyRoutine)
+{
+   ....
+   char buffer[32];
+   sprintf(buffer, "%d:%d", major, minor);
+   return context->String(buffer);     // creates a string object and returns it.
+}
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>POINTER</term>
+<listitem><para>an "unwrapped" Pointer or Buffer string object.  If the argument is a
+Pointer object, the wrapped pointer value is returned as a void * value..  If the argument is a Buffer object,
+then a pointer to buffer's storage area is returned.  A NULL pointer is returned for
+an omitted optional POINTER argument.</para>
+<para>When POINTER is used as a routine return value, any pointer value can be
+returned.  The Rexx runtime will wrap the pointer value in a Rexx Pointer object.</para>
+</para></listitem></varlistentry>
+<varlistentry><term>POINTERSTRING</term>
+<listitem><para>a pointer value that has been encoded in string form.  The string value must
+be in the format "0xnnnnnnnn", where the digits are valid hexadecimal digits.  On 64-bit platforms,
+the pointer value must be 16 digits long.  The string value is converted into a void * value.
+A NULL pointer is returned for
+an omitted optional POINTERSTRING argument.</para>
+<para>When POINTERSTRING is used as a routine return value, any pointer value can be
+returned.  The Rexx runtime will convert the pointer value back into an encoded string value.</para>
+</para></listitem></varlistentry>
+<varlistentry><term>NAME</term>
+<listitem><para>The name of the invoked routine, passed as a CSTRING.  NAME is not valid as a
+return value.
+</para></listitem></varlistentry>
+<varlistentry><term>ARGLIST</term>
+<listitem><para>A RexxArrayObject containing all arguments passed to the routine.  This is
+equivalent to using Arg(1, 'A') from Rexx code.
+</para></listitem></varlistentry>
+</variablelist>
 </section>
 </section>
 
