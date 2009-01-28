@@ -520,7 +520,7 @@ the interpreter runtime to convert call arguments from Rexx objects into primiti
 types and return values from primitive types back into Rexx objects.  These
 routines are also given access to a rich set of services via the RexxCallContext
 interface vector.</para>
-<para>The REXX_CLASSIC_ROUTINE() and REXX_TYPED_ROUTINE() take two arguments.  The
+<para>The REXX_CLASSIC_ROUTINE() and REXX_TYPED_ROUTINE() macros take two arguments.  The
 first entry is the package table name for this routine.  The second argument is the
 entry point name of the real native code routine that implements the function.
 These names are frequently the same, but need not be.</para>
@@ -553,7 +553,7 @@ create the body of the function.  These macros define the routine
 arguments and return value in a form that allows the Rexx runtime
 to perform argument checking and conversions before calling the
 target routine.
-These macros are name "RexxRoutine<emphasis role="italic">n</emphasis>, where
+These macros are named "RexxRoutine<emphasis role="italic">n</emphasis>, where
 <emphasis role="italic">n</emphasis> is the number of arguments you wish to
 be passed to your routine.  For example,</para>
 <programlisting>
@@ -583,19 +583,19 @@ an argument was passed.  For example, argumentExists(2) tests if the
 The <emphasis role="italic">n</emphasis> value is origin 1.</para>
 <para>In addition to the arguments passed by the caller, there are some special argument types
 that provide your routine with additional information.  These special types will add
-This will add additional arguments to your native routine implementation.
+additional arguments to your native routine implementation.
 The argument value specified with argumentExists() or argumentOmitted() maps to the
 arguments passed to your C++ routine rather than the arguments in the originating Rexx call.
-See below for details on the details type arguments.
+See below for details on the special argument types.
 </para>
 <para>All routine declarations have an undeclared special argument passed to the routine.  This
-special object is named <emphasis role="italic">context</emphasis>.  The
+special argument is named <emphasis role="italic">context</emphasis>.  The
 <emphasis role="italic">context</emphasis> is a pointer to a RexxCallContext value and
 provides access to all APIs that are valid from a routine context.</para>
 <note><title>Note</title><para>
 void is not a valid return type for a routine.  There must be a real return
 type specified on the routine declaration.  If you wish to have a routine without
-a return value, declaring the routine with a return type of RexxObjectPtr and
+a return value, declare the routine with a return type of RexxObjectPtr and
 return the value NULLOBJECT.  Routines that do not return a real value may not
 be invoked as functions.  Only the CALL instruction allows a return without a
 value.
@@ -639,7 +639,7 @@ mechanism.
 may be specified either using the stem variable name directly or giving the stem
 variable name as a quoted string.  For example, for a routine defined using</para>
 <programlisting>
-RexxMethod1(int, MyRoutine, RexxStemObject, stem)
+RexxRoutine1(int, MyRoutine, RexxStemObject, stem)
 </programlisting>
 <para>the following calls are equivalent:</para>
 <programlisting>
@@ -671,7 +671,7 @@ memory leaks.  Also, locally declared character buffers cannot be returned as
 the storage associated with buffer is no longer valid once your routine returns to
 the Rexx interpreter.  For example, the following is not valid:</para>
 <programlisting>
-RexxMethod0(CSTRING, MyRoutine)
+RexxRoutine0(CSTRING, MyRoutine)
 {
    ....
    char buffer[32];
@@ -682,7 +682,7 @@ RexxMethod0(CSTRING, MyRoutine)
 <para>A RexxStringObject return value and the String() API is more appropriate in this
 situation.</para>
 <programlisting>
-RexxMethod0(RexxStringObject, MyRoutine)
+RexxRoutine0(RexxStringObject, MyRoutine)
 {
    ....
    char buffer[32];
@@ -721,12 +721,253 @@ equivalent to using Arg(1, 'A') from Rexx code.
 </section>
 
 <section id="methodapi"><title>Defining Library Methods</title>
-<para>This section describes the Rexx method interface and the methods it
-provides.</para>
-
-<section id="methoddcl"><title>Method Declarations</title>
-<para>This section describes how to define an external method.
+<para>The RexxMethodEntry table defines method that are exported by a library package.
+This table is an array of RexxMethodEntry structures, terminated by an entry that
+contains nothing but zero values in the fields.  The REXX_LAST_METHOD() macro
+will generate a suitable table terminator entry.
 </para>
+<para>The remainder of table will be entries generated via
+the REXX_TYPED_METHOD() macro.
+Routine table entries defined using REXX_TYPED_METHOD() use the
+object-oriented interfaces for creating methods that can be defined on Rexx classes.
+These methodss can use
+the interpreter runtime to convert call arguments from Rexx objects into primitive
+types and return values from primitive types back into Rexx objects.  Native
+methods are also given access to a rich set of services via the RexxMethodContext
+interface vector.</para>
+<para>The REXX_TYPED_METHOD() macro take two arguments.  The
+first entry is the package table name for this method.  The second argument is the
+entry point name of the real native code method that implements the function.
+These names are frequently the same, but need not be.</para>
+<para>Smaller function packages frequently place all of the contained functions
+and the package definition tables in the same file, with the package tables
+placed near the end of the source file so all of the methods are visible.  For
+larger packages, it may be desireable to place the methods in more than
+one source file.  For libraries packaged as multiple source files, it is necessary
+to create a prototype declarations so the method entry table can be generated.
+The oorexxapi.h header file includes
+a REXX_TYPED_METHOD_PROTOTYPE() macro to generate the appropriate declarations.
+For example,</para>
+<programlisting>
+// create function declarations for the linker
+REXX_TYPED_METHOD(point_init);
+REXX_TYPED_METHOD(point_add);
+
+// now build the actual entry list
+RexxMethodEntry point_methods[] =
+{
+    REXX_TYPED_METHOD(point_init, point_init),
+    REXX_TYPED_METHOD(point_add,  point_add),
+    REXX_LAST_METHOD()
+};
+</programlisting>
+
+<section id="routinedcl"><title>Method Declarations</title>
+<para>Library methods are created using a series of macros that
+create the body of the method.  These macros define the method
+arguments and return value in a form that allows the Rexx runtime
+to perform argument checking and conversions before calling the
+target method.
+These macros are named "RexxMethod<emphasis role="italic">n</emphasis>, where
+<emphasis role="italic">n</emphasis> is the number of arguments you wish to
+be passed to your method.  For example,</para>
+<programlisting>
+RexxMethod2(int, beep, wholenumber_t, frequency, wholenumber_t, duration)
+{
+    return Beep(frequency, duration);  /* sound beep                 */
+}
+</programlisting>
+<para>defines a <emphasis role="italic">beep</emphasis> method that will be
+passed two <emphasis role="italic">wholenumber_t</emphasis> arguments
+(<emphasis role="italic">frequency</emphasis>
+and <emphasis role="italic">duration</emphasis>).
+The return value is an <emphasis role="italic">int</emphasis> value.
+</para>
+<para>An argument can be made optional by prefixing the type with "OPTIONAL_".  For example,</para>
+<programlisting>
+RexxMethod2(int, beep, wholenumber_t, frequency, OPTIONAL_wholenumber_t, duration)
+{
+    return Beep(frequency, duration);  /* sound beep                 */
+}
+</programlisting>
+<para>would define a method that takes two arguments.  The first argument is required, but the
+second is optional.  Any optional arguments will be passed using an appropriate zero
+value for the type.  The macros argumentExists(n) or argumentOmitted(n) can reliably test if
+an argument was passed.  For example, argumentExists(2) tests if the
+<emphasis role="italic">duration</emphasis> argument was specified when calling the beep() method.
+The <emphasis role="italic">n</emphasis> value is origin 1.</para>
+<para>In addition to the arguments passed by the caller, there are some special argument types
+that provide your routine with additional information.  These special types will add
+additional arguments to your native routine implementation.
+The argument position specified with argumentExists() or argumentOmitted() maps to the
+arguments passed to your C++ routine rather than the arguments in the originating Rexx call.
+See below for details on the special argument types.
+</para>
+<para>All method declarations have an undeclared special argument passed to the routine.  This
+special argument is named <emphasis role="italic">context</emphasis>.  The
+<emphasis role="italic">context</emphasis> is a pointer to a RexxMethodContext value and
+provides access to all APIs that are valid from a method context.</para>
+<note><title>Note</title><para>
+void is not a valid return type for a method.  There must be a real return
+type specified on the method declaration.  If you wish to have a method without
+a return value, declare the method with a return type of RexxObjectPtr and
+return the value NULLOBJECT.  Methods that do not return a real value may not
+be invoked within expression, but must be used as standalone method instructions.
+</para></note>
+</section>
+
+<section id="methodtypes"><title>Method Argument Types</title>
+<para>A method argument or return value may be a
+<link linkend="numerictypes">numeric type</link> or an
+<link linkend="objecttypes">object type</link>.  For numeric types,
+the arguments must be convertable from a Rexx object equivalent into the
+primitive value or an error will be raised.  For optional numeric arguments, a zero
+value is passed for omitted values.  When used as a return type, the
+numeric values are translated into an appropriate Rexx object value.
+</para>
+<para>If an argument is an object type, some addtional validation is performed
+on the arguments being passed.  If an argument does not meet the requirements for
+a given object type, an error will be raised.  If an object-type argument is
+optional and a value is not specificed on the call, the value NULLOBJECT is
+passed to your routine.
+The supported object types and the special processing
+rules are as follows:</para>
+<variablelist>
+<varlistentry><term>RexxObjectPtr</term>
+<listitem><para>a reference to any Rexx object instance.  Any arbitrary object type may
+be passed for a RexxObjectPtr argument.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxStringObject</term>
+<listitem><para>an instance of the Rexx String class.  The argument value must be
+a Rexx String value or convertable to a Rexx String value using the request('String')
+mechanism.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxArrayObject</term>
+<listitem><para>An instance of a Rexx single-dimension array.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxClassObject</term>
+<listitem><para>An instance of Rexx Class class.
+</para></listitem></varlistentry>
+<varlistentry><term>RexxStemObject</term>
+<listitem><para>An instance of Rexx Stem class.  For method calls, a stem argument
+must be specified using a stem variable name directly.
+For example, for a method defined using</para>
+<programlisting>
+RexxMethod1(int, MyMethod, RexxStemObject, stem)
+</programlisting>
+<para>the following call passes a stem object associated with a stem variable to the method:</para>
+<programlisting>
+x = o~myMethod(a.)
+</programlisting>
+</listitem></varlistentry>
+</variablelist>
+<para>In addition to the numeric and object types, there are additional special
+types that provide additional information to the calling routine or perform common
+special conversions on argument values.  The special types available to routines are:</para>
+<variablelist>
+<varlistentry><term>CSTRING</term>
+<listitem><para>The argument is passed as an ASCII-Z string.  The source argument must be
+one that is valid as a RexxStringObject value.  The RexxStringObject is converted into a
+a pointer to an ASCII-Z string.  This is equivalent to the value returned from the
+<link linkend="mthObjectToStringValue">StringValue() API</link>
+from a RexxStringObject value.  For an optional CSTRING argument, a NULL pointer
+is provided when the argument is omitted.</para>
+<para>When CSTRING is used as a return value, the ASCII-Z string value will be
+converted into a Rexx String object.  CSTRING return values are best confined to
+returning C literal values.
+The Rexx runtime does not free any
+memory associated with a CSTRING return value, so care must be taken to avoid
+memory leaks.  Also, locally declared character buffers cannot be returned as
+the storage associated with buffer is no longer valid once your method returns to
+the Rexx interpreter.  For example, the following is not valid:</para>
+<programlisting>
+RexxMethod0(CSTRING, MyMethod)
+{
+   ....
+   char buffer[32];
+   sprintf(buffer, "%d:%d", major, minor);
+   return buffer;     // buffer is not valid once return executes
+}
+</programlisting>
+<para>A RexxStringObject return value and the String() API is more appropriate in this
+situation.</para>
+<programlisting>
+RexxMethod0(RexxStringObject, MyMethod)
+{
+   ....
+   char buffer[32];
+   sprintf(buffer, "%d:%d", major, minor);
+   return context->String(buffer);     // creates a string object and returns it.
+}
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>POINTER</term>
+<listitem><para>an "unwrapped" Pointer or Buffer string object.  If the argument is a
+Pointer object, the wrapped pointer value is returned as a void * value..  If the argument is a Buffer object,
+then a pointer to buffer's storage area is returned.  A NULL pointer is returned for
+an omitted optional POINTER argument.</para>
+<para>When POINTER is used as a method return value, any pointer value can be
+returned.  The Rexx runtime will wrap the pointer value in a Rexx Pointer object.
+</para></listitem></varlistentry>
+<varlistentry><term>POINTERSTRING</term>
+<listitem><para>a pointer value that has been encoded in string form.  The string value must
+be in the format "0xnnnnnnnn", where the digits are valid hexadecimal digits.  On 64-bit platforms,
+the pointer value must be 16 digits long.  The string value is converted into a void * value.
+A NULL pointer is returned for
+an omitted optional POINTERSTRING argument.</para>
+<para>When POINTERSTRING is used as a method return value, any pointer value can be
+returned.  The Rexx runtime will convert the pointer value back into an encoded string value.
+</para></listitem></varlistentry>
+<varlistentry><term>NAME</term>
+<listitem><para>The name of the invoked method, passed as a CSTRING.  This is the
+message name that was used to invoke the method.
+NAME is not valid as a
+return value.
+</para></listitem></varlistentry>
+<varlistentry><term>ARGLIST</term>
+<listitem><para>A RexxArrayObject containing all arguments passed to the method.  This is
+equivalent to using Arg(1, 'A') from Rexx code.  ARGLIST is not valid as a return value.
+</para></listitem></varlistentry>
+<varlistentry><term>OSELF</term>
+<listitem><para>A RexxObjectPtr containing a reference to the object the method is running on.
+This is equivalent to the SELF variable that is set in Rexx method code.  OSELF is not valid as a return value.
+</para></listitem></varlistentry>
+<varlistentry><term>SUPER</term>
+<listitem><para>A RexxClassObject containing a reference to the super object for the method scope.
+This is equivalent to the SUPER variable that is set in Rexx method code.  SUPER is not valid as a return value.
+</para></listitem></varlistentry>
+<varlistentry><term>SCOPE</term>
+<listitem><para>A RexxObjectPtr containing a reference to the owning scope for the current method.  This
+is normally the class that defined the method currently being executed.
+SCOPE is not valid as a return value.
+</para></listitem></varlistentry>
+<varlistentry><term>CSELF</term>
+<listitem><para>CSELF is a special argument type used for classes to store native pointers or structures inside an
+object instance.  When a CSELF type is encountered, the runtime will seach all of the object's variable
+scopes searching for a variable named CSELF.  If a CSELF variable is located and the value is an instance
+of either the Pointer or Buffer class, the POINTER value will be passed to the method as a void * value.
+Objects that rely on CSELF values typically set the variable CSELF inside an init method for the object.  For
+example:</para>
+<programlisting>
+
+RexxMethod2(RexxObjectPtr, stream_init, OSELF, self, CSTRING, name)
+{
+    // create a new stream info member
+    StreamInfo *stream_info = new StreamInfo(self, name);
+    RexxPointerObject streamPtr = context->NewPointer(stream_info);
+    context->SetObjectVariable("CSELF", streamPtr);
+
+    return NULLOBJECT;
+}
+
+RexxMethod3(size_t, stream_charout, CSELF, streamPtr, OPTIONAL_RexxStringObject, data, OPTIONAL_int64_t, position)
+{
+    StreamInfo *stream_info = (StreamInfo *)streamPtr;
+    stream_info->setContext(context, context->False());
+</programlisting>
+<para>CSELF is not valid as a return value.
+</para></listitem></varlistentry>
+</variablelist>
 </section>
 </section>
 </section>
