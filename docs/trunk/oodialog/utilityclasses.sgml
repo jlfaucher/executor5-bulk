@@ -643,8 +643,8 @@ return .true
         parse value self~getWindowRect(self~dlgHandle) with x y .
 
         do dlg over dialogQueue
-          x = x + offSetX
-          y = y + offSetY
+          x += offSetX
+          y += offSetY
 
           self~setWindowRect(dlg~dlgHandle, x, y, 0, 0, "NOSIZE")
         end
