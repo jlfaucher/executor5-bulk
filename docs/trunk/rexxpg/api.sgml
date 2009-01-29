@@ -100,6 +100,11 @@ hierarchy and can represent any type of object.
 <listitem><para>an instance of the Rexx String class.  The APIs have a number of
 APIs that allow direct manipulation and creation of Rexx strings.
 </para></listitem></varlistentry>
+<varlistentry><term>RexxBufferStringObject</term>
+<listitem><para>an instance of the Rexx String class that can be written into.
+RexxBufferStringObject instances must be finalized to be converted into a usable
+RexxStringObject.
+</para></listitem></varlistentry>
 <varlistentry><term>RexxArrayObject</term>
 <listitem><para>An instance of a Rexx single-dimension array.  Arrays are used
 in many places, and there are interfaces provided for direct manipulation of
@@ -714,7 +719,12 @@ return value.
 </para></listitem></varlistentry>
 <varlistentry><term>ARGLIST</term>
 <listitem><para>A RexxArrayObject containing all arguments passed to the routine.  This is
-equivalent to using Arg(1, 'A') from Rexx code.
+equivalent to using Arg(1, 'A') from Rexx code.  The returned array contains all of the routine
+arguments that were specified in the original call.  Omitted arguments are empty slots in the
+returned array.  In addition, if a routine has an ARGLIST argument specified, the normal
+check for the maximum number of arguments is bypassed.  This makes possible routines with an
+open-ended number of arguments.
+ARGLIST is not valid as a return value.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -926,7 +936,12 @@ return value.
 </para></listitem></varlistentry>
 <varlistentry><term>ARGLIST</term>
 <listitem><para>A RexxArrayObject containing all arguments passed to the method.  This is
-equivalent to using Arg(1, 'A') from Rexx code.  ARGLIST is not valid as a return value.
+equivalent to using Arg(1, 'A') from Rexx code.  The returned array contains all of the method
+arguments that were specified in the original call.  Omitted arguments are empty slots in the
+returned array.  In addition, if a method has an ARGLIST argument specified, the normal
+check for the maximum number of arguments is bypassed.  This makes possible methods with an
+open-ended number of arguments.
+ARGLIST is not valid as a return value.
 </para></listitem></varlistentry>
 <varlistentry><term>OSELF</term>
 <listitem><para>A RexxObjectPtr containing a reference to the object the method is running on.
@@ -1090,7 +1105,7 @@ size_t n;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The number of elements in the Rexx array object.</para>
+<para>The index of the appended object.</para>
 </section>
 
 <section id="mthArrayAppendString"><title>ArrayAppendString</title>
@@ -1129,7 +1144,8 @@ size_t n, len;
 >>--n = context->ArrayAppendString(arr, str, len);-----------------------><
 ]]>
 </programlisting>
-<para>Append a Rexx object to the end of the Rexx array.
+<para>Append a Rexx object to the end of the Rexx array.  The appended object is
+a string created from a pointer and length.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -1140,11 +1156,11 @@ size_t n, len;
     <listitem><para>The CSTRING to be appended.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">len</emphasis></term>
-    <listitem><para>The length of the CSTRING.</para></listitem>
+    <listitem><para>The length of the CSTRING value in characters.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The number of elements in the Rexx array object.</para>
+<para>The array index of the appended object.</para>
 </section>
 
 <section id="mthArrayAt"><title>ArrayAt</title>
@@ -1195,7 +1211,8 @@ size_t idx;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx object at the specified index.</para>
+<para>The Rexx object at the specified index.
+Returns NULLOBJECT if there is no value at the specified index.</para>
 </section>
 
 <section id="mthArrayDimension"><title>ArrayDimension</title>
@@ -1637,7 +1654,10 @@ RexxThreadContext *tc
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>Boolean value. 0 = success, 1 = failure.</para>
+<para>Boolean value. 1 = success, 0 = failure.  If the call was successful,
+a RexxThreadContext object valid for the current context is returned via the
+<emphasis role="italic">tc</emphasis> argument.
+</para>
 </section>
 
 <section id="mthBufferData"><title>BufferData</title>
@@ -1675,7 +1695,7 @@ POINTER str;
 >>--str = context->BufferData(obj);--------------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer the Rexx object's data buffer.
+<para>Returns a pointer the Rexx Buffer object's data area.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -1684,7 +1704,7 @@ POINTER str;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The C pointer to the buffer.</para>
+<para>The C pointer to the buffer object's data area.</para>
 </section>
 
 <section id="mthBufferLength"><title>BufferLength</title>
@@ -1722,7 +1742,7 @@ size_t sz;
 >>--sz = context->BufferLength(obj);-------------------------------------><
 ]]>
 </programlisting>
-<para>Return the length of the data buffer of a Rexx object.
+<para>Return the length of the Rexx Buffer object's data area.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -1731,7 +1751,7 @@ size_t sz;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The string length of the Rexx object.</para>
+<para>The length of the Rexx Buffer object's data area.</para>
 </section>
 
 <section id="mthBufferStringData"><title>BufferStringData</title>
@@ -1769,7 +1789,7 @@ POINTER str;
 >>--str = context->BufferStringData(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer the Rexx object's data buffer.
+<para>Returns a pointer to a RexxBufferString object's data area.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -1778,7 +1798,11 @@ POINTER str;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The C pointer to the buffer.</para>
+<para>The C pointer to the RexxBufferString's data area.  This is a writable
+data area, but the RexxBufferString must be finalized using
+<link linkend="mthFinishBufferString">FinishBufferString()</link> before
+it can be used in any other context.
+</para>
 </section>
 
 <section id="mthBufferStringLength"><title>BufferStringLength</title>
@@ -1816,16 +1840,16 @@ size_t sz;
 >>--sz = context->BufferStringLength(obj);-------------------------------><
 ]]>
 </programlisting>
-<para>Return the length of the data buffer of a Rexx object.
+<para>Return the length of a RexxBufferStringObject instance.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The source Rexx object.</para></listitem>
+    <listitem><para>The source RexxBufferStringObject.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The string length of the Rexx object.</para>
+<para>The length of the RexxBufferStringObject.</para>
 </section>
 
 <section id="mthCallProgram"><title>CallProgram</title>
@@ -1869,7 +1893,7 @@ RexxArrayObject arr;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">name</emphasis></term>
-    <listitem><para>The ASCIIZ path/name of the Rexx program to call.</para></listitem>
+    <listitem><para>The ASCII-Z path/name of the Rexx program to call.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">arr</emphasis></term>
     <listitem><para>The array of Rexx object arguments to the specified program.</para></listitem>
@@ -1963,13 +1987,13 @@ logical_t flag;
 >>--flag = context->CheckCondition();------------------------------------><
 ]]>
 </programlisting>
-<para>Checks to see if a condition is active.
+<para>Checks to see if any conditions have resulted from a call to a Rexx API.  .
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.
 </para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = condition is active, 0 = no condition raised.</para>
+<para>1 = if a condition has been raised, 0 = no condition raised.</para>
 </section>
 
 <section id="mthClearCondition"><title>ClearCondition</title>
@@ -2004,7 +2028,7 @@ logical_t flag;
 >>--context->ClearCondition();-------------------------------------------><
 ]]>
 </programlisting>
-<para>Clears the current condition.
+<para>Clears any pending condition status.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.
@@ -2052,8 +2076,8 @@ CSTRING str;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first converts a Rexx object into a C ASCIIZ string.
-The second converts C ASCIIZ string into a Rexx object.
+The first converts a Rexx object into a C ASCII-Z string.
+The second converts C ASCII-Z string into a Rexx String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -2061,12 +2085,12 @@ The second converts C ASCIIZ string into a Rexx object.
     <listitem><para>The source Rexx object for the conversion for the first form of the method.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">str</emphasis></term>
-    <listitem><para>The source C ASCII string for the conversion for the second form of the method.</para></listitem>
+    <listitem><para>The source C ASCII-Z string for the conversion for the second form of the method.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>Returns an C ASCII string for the first form of the method.
-Returns a Rexx object for the second form of the method.</para>
+<para>For the first method form, a CSTRING representation of the object is returned.
+For the second form, a Rexx String object is created from the ASCII-Z string data..</para>
 </section>
 
 <section id="mthDecodeConditionInfo"><title>DecodeConditionInfo</title>
@@ -2145,8 +2169,8 @@ RexxCondition cond;
 >>--context->DetachThread()-------------;-------------------------------><
 ]]>
 </programlisting>
-<para>Detaches the current thread to the Rexx thread instance pointed to by the
-<emphasis role="italic">context</emphasis> pointer.
+<para>Detaches the thread represented by the RexxThreadContext object from it's
+interpreter instance.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None</para>
@@ -2202,7 +2226,8 @@ CSTRING str;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx object at the specified index.</para>
+<para>The Rexx object at the specified index.  Returns NULLOBJECT if the given index does not exist.
+</para>
 </section>
 
 <section id="mthDirectoryPut"><title>DirectoryPut</title>
@@ -2241,7 +2266,7 @@ CSTRING str;
 >>--context->DirectoryPut(dirobj, index, str);---------------------------><
 ]]>
 </programlisting>
-<para>Replace/add a CSTRING to a Rexx directory object at the specified index.
+<para>Replace/add a Rexx object to a Rexx directory object at the specified index.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -2249,10 +2274,10 @@ CSTRING str;
     <listitem><para>The source Rexx directory object.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">index</emphasis></term>
-    <listitem><para>The index into the Rexx directory object.</para></listitem>
+    <listitem><para>The ASCII-Z string index into the Rexx directory object.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">str</emphasis></term>
-    <listitem><para>The C ASCIIZ string value to be placed at the index.</para></listitem>
+    <listitem><para>The Rexx object instance to be stored at the index.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -2303,11 +2328,13 @@ CSTRING str;
     <listitem><para>The source Rexx directory object.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">str</emphasis></term>
-    <listitem><para>The index into the Rexx directory object.</para></listitem>
+    <listitem><para>The ASCII-Z index into the Rexx directory object.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx object removed at the specified index.</para>
+<para>The Rexx object removed at the specified index.  Returns NULLOBJECT if the index
+did not exist in the target directory.
+</para>
 </section>
 
 <section id="mthDouble"><title>Double</title>
@@ -2495,7 +2522,7 @@ CSTRING name;
 >>--context->DropContextVariable(name);-------------------------------><
 ]]>
 </programlisting>
-<para>Drops a Rexx variable in the current function context.
+<para>Drops a Rexx variable in the current routines caller's variable context.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -2535,7 +2562,7 @@ CSTRING str;
 >>--context->DropObjectVariable(str);------------------------------------><
 ]]>
 </programlisting>
-<para>Drops the Rexx object assigned to the object variable.
+<para>Drops an instance variable in the current method's scope.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -2681,12 +2708,12 @@ RexxObjectPtr obj;
 >>--obj = context->False();----------------------------------------------><
 ]]>
 </programlisting>
-<para>This method returns a Rexx false ( 0 ) object.
+<para>This method returns a Rexx .false ( 0 ) object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the new Rexx object.</para>
+<para>A pointer to the .false object.</para>
 </section>
 
 <section id="mthFindClass"><title>FindClass</title>
@@ -2724,12 +2751,12 @@ CSTRING name;
 >>--class = context->FindClass(name);---------------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to the specified class object.
+<para>Locates a class object in the current thread context.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">name</emphasis></term>
-    <listitem><para>An ASCIIZ string containing the name of the class.</para></listitem>
+    <listitem><para>An ASCII-Z string containing the name of the class.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -2821,23 +2848,23 @@ CSTRING name;
     <listitem><para>The package object which contains the class.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">name</emphasis></term>
-    <listitem><para>An ASCIIZ string containing the name of the class.</para></listitem>
+    <listitem><para>An ASCII-Z string containing the name of the class.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>A Pointer to the class object.</para>
 </section>
 
-<section id="mthFinishBufferStringData"><title>FinishBufferStringData</title>
-<indexterm><primary>FinishBufferStringData</primary></indexterm>
+<section id="mthFinishBufferString"><title>FinishBufferString</title>
+<indexterm><primary>FinishBufferString</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
-<secondary>FinishBufferStringData</secondary></indexterm>
+<secondary>FinishBufferString</secondary></indexterm>
 <indexterm><primary>Function context methods</primary>
-<secondary>FinishBufferStringData</secondary></indexterm>
+<secondary>FinishBufferString</secondary></indexterm>
 <indexterm><primary>Method context methods</primary>
-<secondary>FinishBufferStringData</secondary></indexterm>
+<secondary>FinishBufferString</secondary></indexterm>
 <indexterm><primary>Exit context methods</primary>
-<secondary>FinishBufferStringData</secondary></indexterm>
+<secondary>FinishBufferString</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="72pc">
@@ -2861,23 +2888,23 @@ RexxBufferStringObject obj;
 RexxStringObject strobj;
 size_t len;
 
->>--str = context->FinishBufferStringData(obj, len);---------------------------><
+>>--str = context->FinishBufferString(obj, len);---------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to the Rexx string object that contains the buffer and sets the
-length of the data in the buffer.
+<para>Converts a RexxBufferStringObject into a completed, immutable String object of the
+given length and returns a reference to the completed String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The source Rexx object.</para></listitem>
+    <listitem><para>The working RexxBufferStringObject.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">len</emphasis></term>
-    <listitem><para>The length of the data in the buffer.</para></listitem>
+    <listitem><para>The final length of the constructed string.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx string object.</para>
+<para>The finalized Rexx string object.</para>
 </section>
 
 <section id="mthForwardMessage"><title>ForwardMessage</title>
@@ -4346,7 +4373,7 @@ CSTRING name;
     <listitem><para>The Rexx object to query.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">name</emphasis></term>
-    <listitem><para>An ASCIIZ string containing the name of the method.</para></listitem>
+    <listitem><para>An ASCII-Z string containing the name of the method.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -5025,7 +5052,7 @@ logical_t flag;
     <listitem><para>A pointer to the Rexx object to be tested.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">class</emphasis></term>
-    <listitem><para>An ASCIIZ string containing the name of the Rexx class. This string will automatically be converted to upper case.</para></listitem>
+    <listitem><para>An ASCII-Z string containing the name of the Rexx class. This string will automatically be converted to upper case.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -5304,7 +5331,7 @@ RexxPackageObject pkg;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">name</emphasis></term>
-    <listitem><para>The ASCIIZ path/name of the Rexx package to load.</para></listitem>
+    <listitem><para>The ASCII-Z path/name of the Rexx package to load.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -5352,7 +5379,7 @@ RexxPackageObject pkg;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">name</emphasis></term>
-    <listitem><para>The ASCIIZ name of the Rexx package to load.</para></listitem>
+    <listitem><para>The ASCII-Z name of the Rexx package to load.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">data</emphasis></term>
     <listitem><para>String containing the ooRexx code of the package to load.</para></listitem>
@@ -5692,7 +5719,7 @@ size_t sz;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">name</emphasis></term>
-    <listitem><para>ASCIIZ name of the Rexx method.</para></listitem>
+    <listitem><para>ASCII-Z name of the Rexx method.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">code</emphasis></term>
     <listitem><para>String containing the ooRexx code for the new method.</para></listitem>
@@ -5793,7 +5820,7 @@ size_t sz;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">name</emphasis></term>
-    <listitem><para>ASCIIZ name of the Rexx routine.</para></listitem>
+    <listitem><para>ASCII-Z name of the Rexx routine.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">code</emphasis></term>
     <listitem><para>String containing the ooRexx code for the new routine.</para></listitem>
@@ -5896,7 +5923,7 @@ size_t len;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">str</emphasis></term>
-    <listitem><para>The ASCIIZ string to be converted.</para></listitem>
+    <listitem><para>The ASCII-Z string to be converted.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">len</emphasis></term>
     <listitem><para>Length of the <emphasis role="italic">str</emphasis> string.</para></listitem>
@@ -6485,7 +6512,7 @@ CSTRING str;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The C ASCII string.</para>
+<para>The C ASCII-Z string.</para>
 </section>
 
 <section id="mthObjectToUintptr"><title>ObjectToUintptr</title>
@@ -7267,7 +7294,7 @@ RexxArrayObject arr;
     <listitem><para>The object to receive the message.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">msg</emphasis></term>
-    <listitem><para>An ASCIIZ string containing the message name. This argument will be converted to upper case automatically.</para></listitem>
+    <listitem><para>An ASCII-Z string containing the message name. This argument will be converted to upper case automatically.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">arr</emphasis></term>
     <listitem><para>The array of message arguments.</para></listitem>
@@ -7320,7 +7347,7 @@ This is a short cut method when no arguments are needed by the receiving object 
     <listitem><para>The object to receive the message.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">msg</emphasis></term>
-    <listitem><para>An ASCIIZ string containing the message name. This argument will be converted to upper case automatically.</para></listitem>
+    <listitem><para>An ASCII-Z string containing the message name. This argument will be converted to upper case automatically.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -7370,7 +7397,7 @@ This is a short cut method when only one argument is needed by the receiving obj
     <listitem><para>The object to receive the message.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">msg</emphasis></term>
-    <listitem><para>An ASCIIZ string containing the message name. This argument will be converted to upper case automatically.</para></listitem>
+    <listitem><para>An ASCII-Z string containing the message name. This argument will be converted to upper case automatically.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">arg1</emphasis></term>
     <listitem><para>The first argument to the receiving method.</para></listitem>
@@ -7423,7 +7450,7 @@ This is a short cut method when only one argument is needed by the receiving obj
     <listitem><para>The object to receive the message.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">msg</emphasis></term>
-    <listitem><para>An ASCIIZ string containing the message name. This argument will be converted to upper case automatically.</para></listitem>
+    <listitem><para>An ASCII-Z string containing the message name. This argument will be converted to upper case automatically.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">arg1</emphasis></term>
     <listitem><para>The first argument to the receiving method.</para></listitem>
@@ -7826,7 +7853,7 @@ size_t len;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">str</emphasis></term>
-    <listitem><para>The ASCIIZ string to be converted.</para></listitem>
+    <listitem><para>The ASCII-Z string to be converted.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">len</emphasis></term>
     <listitem><para>Length of the <emphasis role="italic">str</emphasis> string.</para></listitem>
@@ -7871,7 +7898,7 @@ CSTRING str;
 >>--str = context->StringData(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to the Rexx object C ASCIIZ string.
+<para>Returns a pointer to the Rexx object C ASCII-Z string.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7880,7 +7907,7 @@ CSTRING str;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The C ASCII string.</para>
+<para>The C ASCII-Z string.</para>
 </section>
 
 <section id="mthStringGet"><title>StringGet</title>
