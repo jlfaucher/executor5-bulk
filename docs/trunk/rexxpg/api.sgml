@@ -2792,16 +2792,16 @@ RexxClassObject obj;
 >>--obj = context->FindContextClass(name);-------------------------------><
 ]]>
 </programlisting>
-<para>Return the Rexx class object of the current object context.
+<para>Locate a Rexx class object in the current method or routine's package context.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">name</emphasis></term>
-    <listitem><para>The context name to be searched.</para></listitem>
+    <listitem><para>The class name to be located.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx class object of the current object context.</para>
+<para>The resolved Rexx class object.  Returns NULLOBJECT if the class is not found.</para>
 </section>
 
 <section id="mthFindPackageClass"><title>FindPackageClass</title>
@@ -2840,19 +2840,19 @@ CSTRING name;
 >>--class = context->FindPackageClass(pkg, name);---------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to the specified class object.
+<para>Locate a class object in a given Package object's context.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">pkg</emphasis></term>
-    <listitem><para>The package object which contains the class.</para></listitem>
+    <listitem><para>The Package object used to resolve the cllass.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">name</emphasis></term>
     <listitem><para>An ASCII-Z string containing the name of the class.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the class object.</para>
+<para>A Pointer to the resolved class object.  Returns NULLOBJECT if the class cannot be located.</para>
 </section>
 
 <section id="mthFinishBufferString"><title>FinishBufferString</title>
@@ -2938,25 +2938,35 @@ RexxArrayObject arr;
 >>--ret = context->ForwardMessage(obj, str, cobj, arr);------------------><
 ]]>
 </programlisting>
-<para>Forwards a message to a different object.
+<para>Forwards a message to a different object or method.  This is
+equivalent to using a FORWARD CONTINUE instruction from Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The Rexx object to recieve the message.</para></listitem>
+    <listitem><para>The Rexx object to receive the message.  If NULL, the object
+    that is the target of the current method call is used.
+    </para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">str</emphasis></term>
-    <listitem><para>The message name to use.</para></listitem>
+    <listitem><para>The message name to use.  If NULL, then the name of the current method
+    is used.
+    </para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">cobj</emphasis></term>
-    <listitem><para>The object's class object.</para></listitem>
+    <listitem><para>The class scope used to located the method.  If NULL, this will be
+    an unscoped method call.
+    </para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">arr</emphasis></term>
-    <listitem><para>The array of message arguments to use.</para></listitem>
+    <listitem><para>The array of message arguments.  If NULL, the same arguments
+    that were used on the current method invocation will be used.
+    </para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The resulting Rexx object.</para>
+<para>The invoked message result.  NULLOBJECT will be returned if the
+target method does not return a result.</para>
 </section>
 
 <section id="mthGetAllContextVariables"><title>GetAllContextVariables</title>
@@ -2989,7 +2999,10 @@ RexxDirectoryObject obj;
 >>--obj = context->GetAllContextVariables();--------------------------><
 ]]>
 </programlisting>
-<para>Gets all the Rexx variables in the current function context.
+<para>Returns all the Rexx variables in the current routine's caller's context as
+a directory.  Only simple variables and stem variables are included in the directory.
+Stem variable entries will have a Stem object as the value.  Compound variables
+may be accessed via the Stem object values.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -3032,7 +3045,8 @@ RexxDirectoryObject obj;
 >>--obj = context->GetAllStemElements(sobj);-----------------------------><
 ]]>
 </programlisting>
-<para>Gets all elements of the Rexx stem object and puts them into a Rexx directory object.
+<para>Returns all elements of a Rexx stem object as a Rexx directory object.
+Each assigned Stem tail element will be an entry in the directory.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -3041,7 +3055,7 @@ RexxDirectoryObject obj;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx directory object.</para>
+<para>The Rexx directory object containing the Stem variable values.</para>
 </section>
 
 <section id="mthGetApplicationData"><title>GetApplicationData</title>
@@ -3076,12 +3090,13 @@ RexxDirectoryObject obj;
 >>--ptr = context->GetApplicationData();------------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to the thread specific application data.
+<para>Returns the application data pointer that was set via the APPLICATION_DATA
+option when the intepreter instance was created.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the application data.</para>
+<para>A Pointer to the instance application data.</para>
 </section>
 
 <section id="mthGetArgument"><title>GetArgument</title>
@@ -3115,7 +3130,8 @@ size_t n;
 >>--obj = context->GetArgument(n);------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the specified argument to the method or function context
+<para>Returns the specified argument to the method or routine.  This
+is equivalent to calling Arg(n) from within Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -3124,7 +3140,9 @@ size_t n;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx object.</para>
+<para>The Rexx object corresponding to the given argument position.  Returns
+NULLOBJECT if the argument was not specified.
+</para>
 </section>
 
 <section id="mthGetArguments"><title>GetArguments</title>
@@ -3157,12 +3175,13 @@ RexxArrayObject arr;
 >>--arr = context->GetArguments();------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a Rexx array object of the arguments to the method or function context
+<para>Returns a Rexx array object of the arguments to the method or routine.
+This is the same argument array returned by the ARGLIST argument type.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx array object.</para>
+<para>The Rexx array object containing the method or routine arguments.</para>
 </section>
 
 <section id="mthGetCallerContext"><title>GetCallerContext</title>
@@ -3195,12 +3214,13 @@ RexxObjectPtr obj;
 >>--obj = context->GetCallerContext();--------------------------------><
 ]]>
 </programlisting>
-<para>Get the context's current caller's context.
+<para>Get the RexxContext object corresponding to the routine or exit's
+calling context.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The current caller's context.</para>
+<para>The current exit or routine caller's RexxContext object.</para>
 </section>
 
 <section id="mthGetConditionInfo"><title>GetConditionInfo</title>
@@ -3238,11 +3258,14 @@ RexxDirectoryObject dir;
 ]]>
 </programlisting>
 <para>Returns a Rexx directory object containing the condition information.
+This is equivalent to calling Condition('O') from within Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The RexxDirectoryObject containing the condition information.</para>
+<para>The RexxDirectoryObject containing the condition information.  If
+there are no pending conditions, NULLOBJECT is returned.
+</para>
 </section>
 
 <section id="mthGetContextDigits"><title>GetContextDigits</title>
@@ -3273,7 +3296,7 @@ stringsize_t sz;
 >>--sz = context->GetContextDigits();---------------------------------><
 ]]>
 </programlisting>
-<para>Get the context's current NUMERIC DIGITS setting.
+<para>Get the routine caller's current NUMERIC DIGITS setting.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -3309,7 +3332,7 @@ stringsize_t sz;
 >>--sz = context->GetContextForm();-----------------------------------><
 ]]>
 </programlisting>
-<para>Get the context's current NUMERIC FORM setting.
+<para>Get the routine caller's current NUMERIC FORM setting.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -3345,7 +3368,7 @@ stringsize_t sz;
 >>--sz = context->GetContextFuzz();-----------------------------------><
 ]]>
 </programlisting>
-<para>Get the context's current NUMERIC FUZZ setting.
+<para>Get the routine caller's current NUMERIC FUZZ setting.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -3384,7 +3407,10 @@ CSTRING name;
 >>--obj = context->GetContextVariable(name);--------------------------><
 ]]>
 </programlisting>
-<para>Gets the value of a Rexx variable in the current function context.
+<para>Gets the value of a Rexx variable in the routine caller's variable context.
+Only simple variables and stem variables can be retrieved with GetContextVariable().
+The value returned for a stem variable will be the corresponding Stem object.
+Compound variable values can be retrieved from the corresponding Stem values.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -3393,7 +3419,8 @@ CSTRING name;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A RexxObjectPtr value.</para>
+<para>A the value of the named variable.  Returns NULLOBJECT if the variable
+has not been assigned a value.</para>
 </section>
 
 <section id="mthGetGlobalEnvironment"><title>GetGlobalEnvironment</title>
@@ -3430,12 +3457,12 @@ RexxDirectoryObject dir;
 >>--dir = context->GetGlobalEnvironment();----------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to a RexxDirectoryObject which contains the global environment variables and their values.
+<para>Returns the RexxDirectoryObject for the .environment directory.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to a RexxDirectoryObject.</para>
+<para>A RexxDirectoryObject pointer to the .environment directory.</para>
 </section>
 
 <section id="mthGetLocalEnvironment"><title>GetLocalEnvironment</title>
@@ -3472,12 +3499,12 @@ RexxDirectoryObject dir;
 >>--dir = context->GetLocalEnvironment();-----------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to a RexxDirectoryObject which contains the local environment variables and their values.
+<para>Returns RexxDirectoryObject pointer to the .local directory.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to a RexxDirectoryObject.</para>
+<para>A RexxDirectoryObject pointer to the .local directory.</para>
 </section>
 
 <section id="mthGetMessageName"><title>GetMessageName</title>
@@ -3544,12 +3571,12 @@ RexxMethodObject obj;
 >>--obj = context->GetMethod();---------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to a the current RexxMethodObject.
+<para>Returns the method object for the method currently being executed.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the current RexxMethodObject.</para>
+<para>A Pointer to the current Rexx Method object.</para>
 </section>
 
 <section id="mthGetMethodPackage"><title>GetMethodPackage</title>
@@ -3587,16 +3614,16 @@ RexxPackageObject pkg;
 >>--pkg = context->GetMethodPackage(obj);-----------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to a RexxPackageObject which contains the specified method object.
+<para>Returns the Rexx Package object associated with the specified method.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The Rexx method object to query.</para></listitem>
+    <listitem><para>The Rexx Method object to query.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to a RexxPackageObject.</para>
+<para>The method's defining Package object.</para>
 </section>
 
 <section id="mthGetObjectVariable"><title>GetObjectVariable</title>
@@ -3628,7 +3655,10 @@ RexxObjectPtr obj;
 >>--obj = context->GetObjectVariable(str);-------------------------------><
 ]]>
 </programlisting>
-<para>Returns the Rexx object assigned to the object variable.
+<para>Gets the value of a Rexx instance variable from the current method's object scope context.
+Only simple variables and stem variables can be retrieved with GetContextVariable().
+The value returned for a stem variable will be the corresponding Stem object.
+Compound variable values can be retrieved from the corresponding Stem values.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -3637,7 +3667,8 @@ RexxObjectPtr obj;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx object assigned to the object variable.</para>
+<para>The Rexx object assigned to the object variable.  Returns NULLOBJECT if the
+variable has not been assigned a value.</para>
 </section>
 
 <section id="mthGetPackageClasses"><title>GetPackageClasses</title>
@@ -3675,7 +3706,7 @@ RexxPackageObject pkg;
 >>--dir = context->GetPackageClasses(pkg);----------------------------><
 ]]>
 </programlisting>
-<para>Returns a RexxDirectoryObject pointer which contains the public and private classes (name and object) from the specified package object.
+<para>Returns a Rexx Directory object containing all public and private classes (name and object) from the specified package object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -3684,7 +3715,7 @@ RexxPackageObject pkg;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to a RexxDirectoryObject.</para>
+<para>A Rexx Directory object containing the package classes.</para>
 </section>
 
 <section id="mthGetPackageMethods"><title>GetPackageMethods</title>
@@ -3722,7 +3753,9 @@ RexxPackageObject pkg;
 >>--dir = context->GetPackageMethods(pkg);----------------------------><
 ]]>
 </programlisting>
-<para>Returns a RexxDirectoryObject pointer which contains the public unattached methods (name and object) from the specified package object.
+<para>Returns a Rexx Directory object containing the unattached methods
+(name and object) from the specified package object.  This is equivalent to
+using the .methods environment symbol from Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -3731,7 +3764,7 @@ RexxPackageObject pkg;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to a RexxDirectoryObject.</para>
+<para>A Directory object containing the unattached methods.</para>
 </section>
 
 <section id="mthGetPackagePublicClasses"><title>GetPackagePublicClasses</title>
@@ -3769,7 +3802,7 @@ RexxPackageObject pkg;
 >>--dir = context->GetPackagePublicClasses(pkg);----------------------><
 ]]>
 </programlisting>
-<para>Returns a RexxDirectoryObject pointer which contains the public classes (name and object) from the specified package object.
+<para>Returns a Directory object containing the public classes (name and object) from the specified package object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -3778,7 +3811,7 @@ RexxPackageObject pkg;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to a RexxDirectoryObject.</para>
+<para>A Directory object containing the public classes.</para>
 </section>
 
 <section id="mthGetPackagePublicRoutines"><title>GetPackagePublicRoutines</title>
@@ -3816,7 +3849,7 @@ RexxPackageObject pkg;
 >>--dir = context->GetPackagePublicRoutines(pkg);---------------------><
 ]]>
 </programlisting>
-<para>Returns a RexxDirectoryObject pointer which contains the public routines (name and object) from the specified package object.
+<para>Returns a Directory object containing the public routines (name and object) from the specified package object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -3825,7 +3858,7 @@ RexxPackageObject pkg;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to a RexxDirectoryObject.</para>
+<para>A Directory object containing the public routines.</para>
 </section>
 
 <section id="mthGetPackageRoutines"><title>GetPackageRoutines</title>
@@ -3863,7 +3896,7 @@ RexxPackageObject pkg;
 >>--dir = context->GetPackageRoutines(pkg);---------------------------><
 ]]>
 </programlisting>
-<para>Returns a RexxDirectoryObject pointer which contains the public and private routines (name and object) from the specified package object.
+<para>Returns a Directory object containing the public and private routines (name and object) from the specified package object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -3872,7 +3905,7 @@ RexxPackageObject pkg;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to a RexxDirectoryObject.</para>
+<para>A Directory object containing the routines.</para>
 </section>
 
 <section id="mthGetRoutine"><title>GetRoutine</title>
@@ -3903,12 +3936,12 @@ RexxRoutineObject obj;
 >>--obj = context->GetRoutine();--------------------------------------><
 ]]>
 </programlisting>
-<para>Returns current routine object.
+<para>Returns current Routine object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The current Rexx routine object.</para>
+<para>The current Rexx Routine object.</para>
 </section>
 
 <section id="mthGetRoutineName"><title>GetRoutineName</title>
@@ -3944,7 +3977,7 @@ CSTRING name;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the current routine name.</para>
+<para>A pointer ASCII-Z routine name.</para>
 </section>
 
 <section id="mthGetRoutinePackage"><title>GetRoutinePackage</title>
@@ -3982,7 +4015,7 @@ RexxPackageObject pkg;
 >>--pkg = context->GetRoutinePackage(obj);----------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to a RexxPackageObject which contains the specified routine object.
+<para>Returns Package object for the specified Routine object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -3991,7 +4024,7 @@ RexxPackageObject pkg;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to a RexxPackageObject.</para>
+<para>The Package object instance.</para>
 </section>
 
 <section id="mthGetScope"><title>GetScope</title>
@@ -4022,12 +4055,12 @@ RexxObjectPtr obj;
 >>--obj = context->GetScope();----------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to a the current object scope.
+<para>Returns a pointer to a the current method's scope.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the current Rexx object scope.</para>
+<para>The scope assigned to the currently executing method object.</para>
 </section>
 
 <section id="mthGetSelf"><title>GetSelf</title>
@@ -4058,13 +4091,14 @@ RexxObjectPtr obj;
 >>--obj = context->GetSelf();-----------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to a the current object context. This value can be safely used in a
-different context to refer to this Rexx object.
+<para>Returns a pointer to the object that is the execution context of the current method.  This
+is equivalent to the SELF variable on a Rexx method.  The same value can be accessed as a method
+argument by using the OSELF type.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the current Rexx object context.</para>
+<para>A reference to the current message target object.</para>
 </section>
 
 <section id="mthGetStemArrayElement"><title>GetStemArrayElement</title>
@@ -4103,7 +4137,7 @@ size_t n;
 >>--obj = context->GetStemArrayElement(sobj, n);-------------------------><
 ]]>
 </programlisting>
-<para>Gets an element of the Rexx stem object.
+<para>Gets an element of the Rexx stem object using a numeric index.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -4111,12 +4145,12 @@ size_t n;
     <listitem><para>The source Rexx stem object.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The Rexx stem object element number.
-       If no element exists with the specified number then NULL is returned.</para></listitem>
+    <listitem><para>The Rexx stem object element number.  The numeric index is
+       translated into the corresponding String tail.</listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx stem object element or NULL.</para>
+<para>The Rexx stem object element or NULLOBJECT if the target name has not been assigned a value.</para>
 </section>
 
 <section id="mthGetStemElement"><title>GetStemElement</title>
@@ -4163,16 +4197,15 @@ CSTRING name;
     <listitem><para>The source Rexx stem object.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">name</emphasis></term>
-    <listitem><para>The Rexx stem object element name.</para></listitem>
-    </varlistentry>
-    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The Rexx object value for the Rexx stem object element.
-       If no element exists for the specified name then NULL is returned.
-       </para></listitem>
+    <listitem><para>The Rexx stem object element name.  This is a fully
+    resolved tail name, taken as a constant.  No variable substitution is
+    performed on the tail.
+    </para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx stem object element or NULL.</para>
+<para>The Rexx stem object element or NULLOBJECT if the target element
+has not been assigned a value.</para>
 </section>
 
 <section id="mthGetStemValue"><title>GetStemValue</title>
@@ -4220,7 +4253,7 @@ CSTRING name;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx stem object containing the base name of the stem.</para>
+<para>The Rexx Stem object's default base value.</para>
 </section>
 
 <section id="mthGetSuper"><title>GetSuper</title>
@@ -4251,13 +4284,14 @@ RexxObjectPtr obj;
 >>--obj = context->GetSuper();----------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to a the current object's super class. This value can be safely used in a
-different context to refer to this Rexx object's super class.
+<para>Returns a pointer to a the current method's super class scope.  This is equivalent to the
+SUPER variable used from Rexx code.  This value can also be obtained via the SUPER method
+argument type.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the current Rexx object's super class.</para>
+<para>The current method's super scope.</para>
 </section>
 
 <section id="mthHalt"><title>Halt</title>
@@ -4286,7 +4320,7 @@ different context to refer to this Rexx object's super class.
 >>--context->Halt();-----------------------------------------------------><
 ]]>
 </programlisting>
-<para>Halts the interpreter.
+<para>Raise a HALT condition on all threads associated with the interpreter instance.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -4320,7 +4354,7 @@ different context to refer to this Rexx object's super class.
 >>--context->HaltThread();----------------------------------------------><
 ]]>
 </programlisting>
-<para>Halts the current thread pointed to by the
+<para>Raises a HALT condition on the thread corresponding to the current
 <emphasis role="italic">context</emphasis> pointer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -4408,7 +4442,9 @@ RexxDirectoryObject obj;
 >>--context->InvalidRoutine();----------------------------------------><
 ]]>
 </programlisting>
-<para>????????????????????????????????????????????
+<para>Raises the standard Error 40 Invalid call to routine error for the
+current routine.  This error will be raised by the Rexx runtime once your routine
+returns.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -4455,8 +4491,8 @@ int32_t n;
 ]]>
 </programlisting>
 <para>There a two forms of this method.
-The first converts a C 32 bit integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
-The second converts a Rexx object to a C 32 bit integer pointer to by <emphasis role="italic">n</emphasis>.
+The first converts a C 32-bit integer <emphasis role="italic">n</emphasis> to a Rexx object.
+The second converts a Rexx object to a C 32-bit integer, returning it in the location pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -4468,8 +4504,10 @@ The second converts a Rexx object to a C 32 bit integer pointer to by <emphasis 
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C integer in the first forms.
-The second for returns 0 = success, 1 = failure.</para>
+<para>A Rexx object that represents the C integer in the first form.
+The second form returns 1 = success, 0 = failure.  If successful, the converted value is
+stored at the location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 
 <section id="mthInt32ToObject"><title>Int32ToObject</title>
@@ -4507,16 +4545,16 @@ int32_t n;
 >>--obj = context->Int32ToObject(n);-------------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C 32 bit integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
+<para>Convert a C 32-bit integer <emphasis role="italic">n</emphasis> to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the interger to be converted.</para></listitem>
+    <listitem><para>The interger to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C integer.</para>
+<para>A Rexx object representing the integer value.</para>
 </section>
 
 <section id="mthInt64"><title>Int64</title>
@@ -4558,8 +4596,8 @@ int64_t n;
 ]]>
 </programlisting>
 <para>There a two forms of this method.
-The first converts a C 64 bit integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
-The second converts a Rexx object to a C 64 bit integer pointer to by <emphasis role="italic">n</emphasis>.
+The first converts a C 64-bit integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
+The second converts a Rexx object to a C 64-bit integer pointer to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -4610,7 +4648,7 @@ int64_t n;
 >>--obj = context->Int64ToObject(n);-------------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C 64 bit integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
+<para>Convert a C 64-bit integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -6201,7 +6239,7 @@ logical_t flag;
 >>--flag = context->ObjectToInt32(obj, &n);------------------------------><
 ]]>
 </programlisting>
-<para>Convert a 32 bit integer into a Rexx object.
+<para>Convert a 32-bit integer into a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -6252,7 +6290,7 @@ logical_t flag;
 >>--flag = context->ObjectToInt64(obj, &n);------------------------------><
 ]]>
 </programlisting>
-<para>Convert a 64 bit integer into a Rexx object.
+<para>Convert a 64-bit integer into a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -6602,7 +6640,7 @@ logical_t flag;
 >>--flag = context->ObjectToUnsignedInt32(obj, &n);----------------------><
 ]]>
 </programlisting>
-<para>Convert an unsigned 32 bit integer into a Rexx object.
+<para>Convert an unsigned 32-bit integer into a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -6653,7 +6691,7 @@ logical_t flag;
 >>--flag = context->ObjectToUnsignedInt64(obj, &n);----------------------><
 ]]>
 </programlisting>
-<para>Convert an unsigned 64 bit integer into a Rexx object.
+<para>Convert an unsigned 64-bit integer into a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -8611,8 +8649,8 @@ uint32_t n;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first convert a C 32 bit unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object.
-The second converts a Rexx object  a C 32 bit unsigned integer pointed to by <emphasis role="italic">n</emphasis>.
+The first convert a C 32-bit unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object.
+The second converts a Rexx object  a C 32-bit unsigned integer pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -8664,7 +8702,7 @@ uint32_t n;
 >>--obj = context->UnsignedInt32ToObject(n);-----------------------------><
 ]]>
 </programlisting>
-<para>Convert a C 32 bit unsigned integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
+<para>Convert a C 32-bit unsigned integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -8715,8 +8753,8 @@ uint64_t n;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first convert a C 64 bit unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object.
-The second converts a Rexx object  a C 64 bit unsigned integer pointed to by <emphasis role="italic">n</emphasis>.
+The first convert a C 64-bit unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object.
+The second converts a Rexx object  a C 64-bit unsigned integer pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -8768,7 +8806,7 @@ uint64_t n;
 >>--obj = context->UnsignedInt64ToObject(n);-----------------------------><
 ]]>
 </programlisting>
-<para>Convert a C 64 bit unsigned integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
+<para>Convert a C 64-bit unsigned integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
