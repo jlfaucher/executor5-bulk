@@ -4497,7 +4497,7 @@ The second converts a Rexx object to a C 32-bit integer, returning it in the loc
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the interger to be converted or the target of the conversion.</para></listitem>
+    <listitem><para>The C pointer to the integer to be converted or the target of the conversion.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
     <listitem><para>The Rexx object to be converted.</para></listitem>
@@ -4550,7 +4550,7 @@ int32_t n;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The interger to be converted.</para></listitem>
+    <listitem><para>The integer to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -4596,21 +4596,23 @@ int64_t n;
 ]]>
 </programlisting>
 <para>There a two forms of this method.
-The first converts a C 64-bit integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
-The second converts a Rexx object to a C 64-bit integer pointer to by <emphasis role="italic">n</emphasis>.
+The first converts a C 64-bit integer <emphasis role="italic">n</emphasis> to a Rexx object.
+The second converts a Rexx object to a C 64-bit integer and returns in the area pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the interger to be converted or the target of the conversion.</para></listitem>
+    <listitem><para>The integer to be converted or the location to return the converted integer.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
     <listitem><para>The Rexx object to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C integer in the first forms.
-The second for returns 0 = success, 1 = failure.</para>
+<para>A Rexx object version of the integer value in the first form.
+The second form returns 1 = success, 0 = failure.  If successful, the converted value is
+stored at the location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 
 <section id="mthInt64ToObject"><title>Int64ToObject</title>
@@ -4648,16 +4650,16 @@ int64_t n;
 >>--obj = context->Int64ToObject(n);-------------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C 64-bit integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
+<para>Convert the C 64-bit integer <emphasis role="italic">n</emphasis> to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the interger to be converted.</para></listitem>
+    <listitem><para>The integer to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C integer.</para>
+<para>A Rexx object representing the integer value.</para>
 </section>
 
 <section id="mthInterpreterVersion"><title>InterpreterVersion</title>
@@ -4696,7 +4698,14 @@ size_t version;
 >>--version = context->InterpreterVersion();----------------------------><
 ]]>
 </programlisting>
-<para>Returns the version of the interpreter.
+<para>Returns the version of the interpreter.  The returned version
+is encoded in the 3 least significant bytes of the returned value, using
+1 byte each for the interpreter version, release, and revision values.
+For example, on a 32-bit platform, this value would be 0x00040000 for
+version 4.0.0.  The oorexxapi.h header file will have a define matching
+these values using a the naming convention REXX_INTERPRETER_4_0_0 and the
+macro REXX_CURRENT_INTERPRETER_VERSION will give the interpreter version
+used to compile your code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -4742,14 +4751,15 @@ intptr_t n;
 >>--flag = context->Intptr(obj, &n);-------------------------------------><
 ]]>
 </programlisting>
-<para>There are two formes of this method.
-The first converts a C signed integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object.
-The second converts aRexx object to a C signed integer pointed to by <emphasis role="italic">n</emphasis>.
+<para>There are two forms of this method.
+The first converts the C signed integer <emphasis role="italic">n</emphasis> to a Rexx object.
+The second converts a Rexx object to a C signed integer and returns it in the location
+pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the signed interger to be converted in the first form.
+    <listitem><para>The C pointer to the signed integer to be converted in the first form.
        The target of the conversion in the second form.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
@@ -4757,7 +4767,10 @@ The second converts aRexx object to a C signed integer pointed to by <emphasis r
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C signed integer.</para>
+<para>A Rexx object version of the integer value in the first form.
+The second form returns 1 = success, 0 = failure.  If successful, the converted value is
+stored at the location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 
 <section id="mthIntptrToObject"><title>IntptrToObject</title>
@@ -4795,16 +4808,16 @@ intptr_t n;
 >>--obj = context->IntptrToObject(&n);-----------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C signed integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object.
+<para>Convert the C signed integer <emphasis role="italic">n</emphasis> to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the signed interger to be converted.</para></listitem>
+    <listitem><para>The signed integer to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C signed integer.</para>
+<para>A Rexx object representing the integer value.</para>
 </section>
 
 <section id="mthIsArray"><title>IsArray</title>
@@ -4842,7 +4855,9 @@ logical_t flag;
 >>--flag = context->IsArray(obj);---------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if it is a RexxDirectoryObject.
+<para>Tests an object to see if it is a Rexx Array.
+A true value indicates
+the RexxObjectPtr value may be safely cast to a RexxArrayObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -4889,7 +4904,9 @@ logical_t flag;
 >>--flag = context->IsBuffer(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if it is a RexxBufferObject.
+<para>Tests an object to see if it is a Rexx Buffer object.
+A true value indicates
+the RexxObjectPtr value may be safely cast to a RexxBufferObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -4936,7 +4953,9 @@ logical_t flag;
 >>--flag = context->IsDirectory(obj);-----------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if it is a RexxDirectoryObject.
+<para>Tests an object to see if it is a Rexx Directory object.
+A true value indicates
+the RexxObjectPtr value may be safely cast to a RexxDirectoryObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5034,7 +5053,9 @@ logical_t flag;
 >>--flag = context->IsMethod(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is a RexxMethodObject.
+<para>Tests an object to see if is a Rexx Method object.
+A true value indicates
+the RexxObjectPtr value may be safely cast to a RexxMethodObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5082,7 +5103,8 @@ logical_t flag;
 >>--flag = context->IsOfType(obj, class);-------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is an instance of or an instance of a subclass of the specified class.
+<para>Tests an object to see if is an instance of or an instance of a subclass of the named class.
+This method combines the operations of the FindClass() and IsInstanceOf() methods in a single call.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5090,11 +5112,13 @@ logical_t flag;
     <listitem><para>A pointer to the Rexx object to be tested.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">class</emphasis></term>
-    <listitem><para>An ASCII-Z string containing the name of the Rexx class. This string will automatically be converted to upper case.</para></listitem>
+    <listitem><para>An ASCII-Z string containing the name of the Rexx class.  The named class will
+    be located in the current context and the object will be tested.
+    </para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = is a member, 0 = not a member.</para>
+<para>1 = is a member, 0 = not a member or the named class cannot be located.</para>
 </section>
 
 <section id="mthIsPointer"><title>IsPointer</title>
@@ -5132,7 +5156,9 @@ logical_t flag;
 >>--flag = context->IsPointer(obj);-------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is a RexxPointerObject.
+<para>Tests an object to see if is a Rexx Pointer object.
+A true value indicates
+the RexxObjectPtr value may be safely cast to a RexxPointerObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5179,7 +5205,9 @@ logical_t flag;
 >>--flag = context->IsRoutine(obj);-------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is a RexxRoutineObject.
+<para>Tests an object to see if is a Rexx Routine object.
+A true value indicates
+the RexxObjectPtr value may be safely cast to a RexxPointerObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5226,7 +5254,9 @@ logical_t flag;
 >>--flag = context->IsStem(obj);----------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is a RexxStemObject.
+<para>Tests an object to see if is a Rexx Stem object.
+A true value indicates
+the RexxObjectPtr value may be safely cast to a RexxStemObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5235,7 +5265,7 @@ logical_t flag;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = is a routine, 0 = not a routine.</para>
+<para>1 = is a Stem object, 0 = not a Stem object.</para>
 </section>
 
 <section id="mthIsString"><title>IsString</title>
@@ -5273,7 +5303,9 @@ logical_t flag;
 >>--flag = context->IsString(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is a RexxStringObject.
+<para>Tests an object to see if is a Rexx String object.
+A true value indicates
+the RexxObjectPtr value may be safely cast to a RexxStringObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5282,7 +5314,7 @@ logical_t flag;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = is a routine, 0 = not a routine.</para>
+<para>1 = is a String object, 0 = not a Strng object.</para>
 </section>
 
 <section id="mthLanguageLevel"><title>LanguageLevel</title>
@@ -5322,6 +5354,14 @@ size_t langlevel;
 ]]>
 </programlisting>
 <para>Returns the language blevel of the interpreter.
+The returned language level
+is encoded in the 2 least significant bytes of the returned value, using
+1 byte each for the interpreter version, release, and revision values.
+For example, on a 32-bit platform, this value would be 0x00000603 for
+language level 6.03.  The oorexxapi.h header file will have a define matching
+these values using a the naming convention REXX_LANGUAGE_6_03 and the
+macro REXX_CURRENT_LANGUAGE_LEVEL will give the interpreter version
+used to compile your code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -5364,7 +5404,7 @@ RexxPackageObject pkg;
 >>--pkg = context->LoadPackage(name);---------------------------------><
 ]]>
 </programlisting>
-<para>Returns the loaded package object  from the specified file path/name.
+<para>Returns the package object loaded from the specified file path/name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5373,7 +5413,11 @@ RexxPackageObject pkg;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the loaded package object.</para>
+<para>A Pointer to the loaded package object.
+Any errors involved with loading
+the package will return a NULLOBJECT value.  Information about errors
+can be retrieved using <link linkend="mthGetConditionInfo">GetConditionInfo()</link>.
+</para>
 </section>
 
 <section id="mthLoadPackageFromData"><title>LoadPackageFromData</title>
@@ -5420,14 +5464,18 @@ RexxPackageObject pkg;
     <listitem><para>The ASCII-Z name of the Rexx package to load.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">data</emphasis></term>
-    <listitem><para>String containing the ooRexx code of the package to load.</para></listitem>
+    <listitem><para>Data buffer containing the Rexx code to load.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">sz</emphasis></term>
-    <listitem><para>The size of the <emphasis role="italic">data</emphasis> string.</para></listitem>
+    <listitem><para>The size of the <emphasis role="italic">data</emphasis> buffer.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the loaded package object.</para>
+<para>A Pointer to the loaded package object.
+Any errors involved with loading
+the package will return a NULLOBJECT value.  Information about errors
+can be retrieved using <link linkend="mthGetConditionInfo">GetConditionInfo()</link>.
+</para>
 </section>
 
 <section id="mthLogical"><title>Logical</title>
@@ -5469,21 +5517,23 @@ logical_t flag, n;
 </programlisting>
 <para>This method has two forms.
 The first form converts a Rexx object to a C logical value (0 or 1).
-The second form converts C logical value to a Rexx object.
+The second form converts a C logical value to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The Rexx object to be converted in the first form of the method.</para></listitem>
+    <listitem><para>The Rexx object to be converted.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>A C pointer to a logical_t to receive the conversion in the first form of the method.
-       A logical_t that is the source of the conversion in the second form of the method.</para></listitem>
+    <listitem><para>For the first method form, a C pointer to a logical_t to receive the conversion result.
+       For the second form, a logical_t to be converted to a Rexx object.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>0 = success, 1 = conversion error in the first form of the method. In the second form
-a Rexx object is returned.</para>
+<para>For the first method form, 1 = success and 0 = conversion error,  with the converted value returned in the
+location pointer to by <emphasis role="italic">n</emphasis>
+For the second form,
+a Rexx object version of the logical value is returned.</para>
 </section>
 
 <section id="mthLogicalToObject"><title>LogicalToObject</title>
@@ -5521,7 +5571,7 @@ logical_t flag, n;
 >>--obj = context->LogicalToObject(n);-----------------------------------><
 ]]>
 </programlisting>
-<para>Converts C logical value to a Rexx object.
+<para>Converts a C logical value to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5530,7 +5580,7 @@ logical_t flag, n;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object with the string value of 0 or 1 is returned.</para>
+<para>Either the .false or .true object is returned.</para>
 </section>
 
 <section id="mthNewArray"><title>NewArray</title>
@@ -5568,16 +5618,16 @@ size_t len;
 >>--obj = context->NewArray(d);------------------------------------------><
 ]]>
 </programlisting>
-<para>Create a Rexx array object with a specific number of dimensions.
+<para>Create a Rexx array object of the specified size.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">d</emphasis></term>
-    <listitem><para>The number of dimensions for the Rexx array.</para></listitem>
+    <listitem><para>The size of the Rexx array.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the new Rexx array object.</para>
+<para>The new Rexx array object.</para>
 </section>
 
 <section id="mthNewBuffer"><title>NewBuffer</title>
@@ -5615,7 +5665,7 @@ size_t len;
 >>--obj = context->NewBuffer(len);---------------------------------------><
 ]]>
 </programlisting>
-<para>Create a Rexx buffer object with a specific buffer size.
+<para>Create a Rexx Buffer object with a specific data size.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5624,7 +5674,7 @@ size_t len;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the new Rexx object.</para>
+<para>The new Buffer object.</para>
 </section>
 
 <section id="mthNewBufferString"><title>NewBufferString</title>
@@ -5662,7 +5712,10 @@ size_t len;
 >>--obj = context->NewBufferString(len);---------------------------------><
 ]]>
 </programlisting>
-<para>Create a Rexx string object with a specific buffer size.
+<para>Create a RexxBufferString with the indicated buffer size.  A RexxBufferString
+is a mutable String object that can be used to construct return values.  You
+must use <link linkend="mthFinishBufferString">FinishBufferString()<link> to
+transform this into a completed String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5671,7 +5724,7 @@ size_t len;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the new Rexx object.</para>
+<para>The pointer to the buffer string object.</para>
 </section>
 
 <section id="mthNewDirectory"><title>NewDirectory</title>
@@ -5708,12 +5761,12 @@ RexxDirectoryObject obj;
 >>--obj = context->NewDirectory();---------------------------------------><
 ]]>
 </programlisting>
-<para>Create a Rexx directory object.
+<para>Create a Rexx Directory object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the new Rexx directory object.</para>
+<para>The new Directory object.</para>
 </section>
 
 <section id="mthNewMethod"><title>NewMethod</title>
@@ -5760,14 +5813,18 @@ size_t sz;
     <listitem><para>ASCII-Z name of the Rexx method.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">code</emphasis></term>
-    <listitem><para>String containing the ooRexx code for the new method.</para></listitem>
+    <listitem><para>A data buffer containing the new method Rexx code.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">sz</emphasis></term>
-    <listitem><para>Size of the <emphasis role="italic">code</emphasis> string.</para></listitem>
+    <listitem><para>Size of the <emphasis role="italic">code</emphasis> buffer.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the new RexxMethodObject.</para>
+<para>The created Method object.
+Any errors involved with creating the method
+the package will return a NULLOBJECT value.  Information about errors
+can be retrieved using <link linkend="mthGetConditionInfo">GetConditionInfo()</link>.
+</para>
 </section>
 
 <section id="mthNewPointer"><title>NewPointer</title>
@@ -5805,7 +5862,7 @@ POINTER p;
 >>--obj = context->NewPointer(p);----------------------------------------><
 ]]>
 </programlisting>
-<para>Create a new RexxPointerObject from a C pointer.
+<para>Create a new Pointer object from a C pointer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5814,7 +5871,7 @@ POINTER p;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A new RexxPointerObject.</para>
+<para>The create Pointer object.</para>
 </section>
 
 <section id="mthNewRoutine"><title>NewRoutine</title>
@@ -5853,7 +5910,7 @@ size_t sz;
 >>--obj = context->NewRoutine(name, code, sz);---------------------------><
 ]]>
 </programlisting>
-<para>Add a new routine to the cuurrent context (method, function or thread).
+<para>Create a new Routine object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5861,14 +5918,18 @@ size_t sz;
     <listitem><para>ASCII-Z name of the Rexx routine.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">code</emphasis></term>
-    <listitem><para>String containing the ooRexx code for the new routine.</para></listitem>
+    <listitem><para>Buffer containing the routine Rexx code..</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">sz</emphasis></term>
-    <listitem><para>Size of the <emphasis role="italic">code</emphasis> string.</para></listitem>
+    <listitem><para>Size of the <emphasis role="italic">code</emphasis> buffer.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the new RexxRoutineObject.</para>
+<para>The pointer to the new Routine object.
+Any errors involved with creating the method
+the package will return a NULLOBJECT value.  Information about errors
+can be retrieved using <link linkend="mthGetConditionInfo">GetConditionInfo()</link>.
+</para>
 </section>
 
 <section id="mthNewStem"><title>NewStem</title>
@@ -5906,7 +5967,7 @@ CSTRING str;
 >>--obj = context->NewStem(str);-----------------------------------------><
 ]]>
 </programlisting>
-<para>Create an new Rexx stem object with the specified base name.
+<para>Create an new Rexx Stem object with the specified base name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5915,7 +5976,7 @@ CSTRING str;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the new Rexx stem object.</para>
+<para>The new Stem object.</para>
 </section>
 
 <section id="mthNewString"><title>NewString</title>
@@ -5956,19 +6017,21 @@ size_t len;
 >>--obj = context->NewString(str);---------------------------------------><
 ]]>
 </programlisting>
-<para>There are two forms of this method. Both create a new Rexx object from a C string.
+<para>There are two forms of this method. Both create a new Rexx String object from a C string.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">str</emphasis></term>
-    <listitem><para>The ASCII-Z string to be converted.</para></listitem>
+    <listitem><para>For the first form, a pointer to a null-terminated ASCII-Z string.
+    For the second form, a pointer to a data buffer containing the string data.
+    </para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">len</emphasis></term>
     <listitem><para>Length of the <emphasis role="italic">str</emphasis> string.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the new Rexx object.</para>
+<para>The new String object.</para>
 </section>
 
 <section id="mthNewSupplier"><title>NewSupplier</title>
@@ -6006,7 +6069,7 @@ RexxArrayObject arr1, arr2;
 >>--obj = context->NewSupplier(arr1, arr2);------------------------------><
 ]]>
 </programlisting>
-<para>This method returns a Rexx supplier object based on the supplied argument arrays.
+<para>This method returns a Rexx Supplier object based on the supplied argument arrays.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -6014,11 +6077,11 @@ RexxArrayObject arr1, arr2;
     <listitem><para>The array of supplier items.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">arr2</emphasis></term>
-    <listitem><para>The array of supplier item names.</para></listitem>
+    <listitem><para>The array of supplier item indexes.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the new Rexx object.</para>
+<para>The new Supplier object.</para>
 </section>
 
 <section id="mthNil"><title>Nil</title>
@@ -6055,12 +6118,12 @@ RexxObjectPtr obj;
 >>--obj = context->Nil();------------------------------------------------><
 ]]>
 </programlisting>
-<para>This method returns a Rexx nil object.
+<para>Returns the Rexx .nil object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the new Rexx object.</para>
+<para>The Rexx .nil object.</para>
 </section>
 
 <section id="mthNullString"><title>NullString</title>
@@ -6102,7 +6165,7 @@ RexxStringObject obj;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the new Rexx string object.</para>
+<para>A null String object.</para>
 </section>
 
 <section id="mthObjectToCSelf"><title>ObjectToCSelf</title>
@@ -6140,7 +6203,12 @@ POINTER ptr;
 >>--ptr = context->ObjectToCSelf(obj);--------------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to the specified Rexx object that can be saved for later use.
+<para>Returns a pointer to the CSELF value for another object.
+CSELF is a special argument type used for classes to store native pointers or structures inside an
+object instance.  ObjectToCSelf will seach all of the object's variable
+scopes searching for a variable named CSELF.  If a CSELF variable is located and the value is an instance
+of either the Pointer or Buffer class, the corresponding POINTER value will be returned as a void * value.
+Objects that rely on CSELF values typically set the variable CSELF inside an init method for the object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -6149,7 +6217,7 @@ POINTER ptr;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the Rexx object.</para>
+<para>The CSELF value for the Rexx object.  Returns NULL if no CSELF value was found in the target object.</para>
 </section>
 
 <section id="mthObjectToDouble"><title>ObjectToDouble</title>
@@ -6196,11 +6264,11 @@ logical_t flag;
     <listitem><para>The source Rexx object for the conversion.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>A C pointer to the double result.</para></listitem>
+    <listitem><para>A pointer to the location to store the converted double result.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>0 = success, 1 = conversion error.</para>
+<para>1 = success, 0 = conversion error.</para>
 </section>
 
 <section id="mthObjectToInt32"><title>ObjectToInt32</title>
@@ -6239,19 +6307,21 @@ logical_t flag;
 >>--flag = context->ObjectToInt32(obj, &n);------------------------------><
 ]]>
 </programlisting>
-<para>Convert a 32-bit integer into a Rexx object.
+<para>Convert a Rexx object into a 32-bit integer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The target Rexx object for the conversion.</para></listitem>
+    <listitem><para>The Rexx object to convert.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>A C pointer to a int64_t to be converted.</para></listitem>
+    <listitem><para>A pointer to the location used to return the conversion result.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>0 = success, 1 = conversion error.</para>
+<para>1 = success, 0 = conversion error.  The converted value is stored in the
+location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 
 <section id="mthObjectToInt64"><title>ObjectToInt64</title>
@@ -6290,19 +6360,21 @@ logical_t flag;
 >>--flag = context->ObjectToInt64(obj, &n);------------------------------><
 ]]>
 </programlisting>
-<para>Convert a 64-bit integer into a Rexx object.
+<para>Convert a Rexx object into a 64-bit integer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The target Rexx object for the conversion.</para></listitem>
+    <listitem><para>The Rexx object to be converted.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>A C pointer to a int64_t to be converted.</para></listitem>
+    <listitem><para>A pointer to the location used to return the conversion result.</para></listitem>
     </varlistentry>
 </variablelist>
 <section><title>Returns</title>
-<para>0 = success, 1 = conversion error.</para>
+<para>1 = success, 0 = conversion error.  The converted value is stored in the
+location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 </section>
 
@@ -6342,19 +6414,21 @@ logical_t flag;
 >>--flag = context->ObjectToIntptr(obj, &n);-----------------------------><
 ]]>
 </programlisting>
-<para>Convert an integer into a Rexx object.
+<para>Convert a Rexx object to an intptr_t value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The target Rexx object for the conversion.</para></listitem>
+    <listitem><para>The Rexx object to convert.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>A C pointer to a intptr_t to be converted.</para></listitem>
+    <listitem><para>A pointer to the location used to return the conversion result.</para></listitem>
     </varlistentry>
 </variablelist>
 <section><title>Returns</title>
-<para>0 = success, 1 = conversion error.</para>
+<para>1 = success, 0 = conversion error.  The converted value is stored in the
+location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 </section>
 
@@ -6398,14 +6472,16 @@ logical_t flag, n;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The Rexx object to be converted.</para></listitem>
+    <listitem><para>The Rexx object to convert.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>A C pointer to a logical_t to receive the conversion.</para></listitem>
+    <listitem><para>A pointer to the location used to return the conversion result.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>0 = success, 1 = conversion error.</para>
+<para>1 = success, 0 = conversion error.  The converted value is stored in the
+location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 
 <section id="mthObjectToString"><title>ObjectToString</title>
@@ -6443,7 +6519,7 @@ RexxStringObject str;
 >>--str = context->ObjectToString(obj);----------------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object to a Rexx string object.
+<para>Convert a Rexx object to a Rexx String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -6452,7 +6528,7 @@ RexxStringObject str;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx string object.</para>
+<para>The Rexx String object.</para>
 </section>
 
 <section id="mthObjectToStringSize"><title>ObjectToStringSize</title>
@@ -6491,19 +6567,21 @@ logical_t flag;
 >>--flag = context->ObjectToStringSize(obj, &n);-------------------------><
 ]]>
 </programlisting>
-<para>Convert a string size number into a Rexx object.
+<para>Convert a Rexx object to a string size number value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The target Rexx object for the conversion.</para></listitem>
+    <listitem><para>The Rexx object to convert.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>A C pointer to a size_t to be converted.</para></listitem>
+    <listitem><para>A pointer to the location used to return the conversion result.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>0 = success, 1 = conversion error.</para>
+<para>1 = success, 0 = conversion error.  The converted value is stored in the
+location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 
 <section id="mthObjectToStringValue"><title>ObjectToStringValue</title>
@@ -6541,7 +6619,7 @@ CSTRING str;
 >>--str = context->ObjectToStringValue(obj);-----------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object to a C ASCOOZ string.
+<para>Convert a Rexx object to a C ASCII-Z string.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -6589,19 +6667,21 @@ logical_t flag;
 >>--flag = context->ObjectToUintptr(obj, &n);----------------------------><
 ]]>
 </programlisting>
-<para>Convert an unsigned integer into a Rexx object.
+<para>Convert a Rexx object to an uintptr_t value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The target Rexx object for the conversion.</para></listitem>
+    <listitem><para>The Rexx object to convert.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>A C pointer to a uintptr_t to be converted.</para></listitem>
+    <listitem><para>A pointer to the location used to return the conversion result.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>0 = success, 1 = conversion error.</para>
+<para>1 = success, 0 = conversion error.  The converted value is stored in the
+location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 
 <section id="mthObjectToUnsignedInt32"><title>ObjectToUnsignedInt32</title>
@@ -6640,19 +6720,21 @@ logical_t flag;
 >>--flag = context->ObjectToUnsignedInt32(obj, &n);----------------------><
 ]]>
 </programlisting>
-<para>Convert an unsigned 32-bit integer into a Rexx object.
+<para>Convert a Rexx object to an uint32_t value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The target Rexx object for the conversion.</para></listitem>
+    <listitem><para>The Rexx object to convert.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>A C pointer to a uint32_t to be converted.</para></listitem>
+    <listitem><para>A pointer to the location used to return the conversion result.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>0 = success, 1 = conversion error.</para>
+<para>1 = success, 0 = conversion error.  The converted value is stored in the
+location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 
 <section id="mthObjectToUnsignedInt64"><title>ObjectToUnsignedInt64</title>
@@ -6691,19 +6773,21 @@ logical_t flag;
 >>--flag = context->ObjectToUnsignedInt64(obj, &n);----------------------><
 ]]>
 </programlisting>
-<para>Convert an unsigned 64-bit integer into a Rexx object.
+<para>Convert a Rexx object to an uint64_t value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The target Rexx object for the conversion.</para></listitem>
+    <listitem><para>The Rexx object to convert.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>A C pointer to a uint64_t to be converted.</para></listitem>
+    <listitem><para>A pointer to the location used to return the conversion result.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>0 = success, 1 = conversion error.</para>
+<para>1 = success, 0 = conversion error.  The converted value is stored in the
+location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 
 <section id="mthObjectToValue"><title>ObjectToValue</title>
@@ -6791,19 +6875,21 @@ logical_t flag;
 >>--flag = context->ObjectToWholeNumber(obj, &wn);-----------------------><
 ]]>
 </programlisting>
-<para>Convert a whole number into a Rexx object.
+<para>Convert a Rexx object to a whole number value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The target Rexx object for the conversion.</para></listitem>
+    <listitem><para>The Rexx object to convert.</para></listitem>
     </varlistentry>
-    <varlistentry><term><emphasis role="italic">wn</emphasis></term>
-    <listitem><para>A C pointer to a wholenumber_t to be converted.</para></listitem>
+    <varlistentry><term><emphasis role="italic">n</emphasis></term>
+    <listitem><para>A pointer to the location used to return the conversion result.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>0 = success, 1 = conversion error.</para>
+<para>1 = success, 0 = conversion error.  The converted value is stored in the
+location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 
 <section id="mthPointerValue"><title>PointerValue</title>
@@ -8551,7 +8637,7 @@ The second converts a Rexx object into a C unsigned integer pointed to by <empha
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned interger to be converted in the first form or
+    <listitem><para>The C pointer to the unsigned integer to be converted in the first form or
     the target of the conversion in the second form of the method.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
@@ -8559,8 +8645,10 @@ The second converts a Rexx object into a C unsigned integer pointed to by <empha
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C unsigned integer in the first form
-or 0 = success, 1 = failure in the second form.</para>
+<para>A Rexx object version of the integer value in the first form.
+The second form returns 1 = success, 0 = failure.  If successful, the converted value is
+stored at the location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 
 <section id="mthUintptrToObject"><title>UintptrToObject</title>
@@ -8603,7 +8691,7 @@ uintptr_t n;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned interger to be converted.</para></listitem>
+    <listitem><para>The C pointer to the unsigned integer to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -8655,16 +8743,18 @@ The second converts a Rexx object  a C 32-bit unsigned integer pointed to by <em
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned interger to be converted.for the first form of the method.
+    <listitem><para>The C pointer to the unsigned integer to be converted.for the first form of the method.
        For the second form this is the target of the conversion.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned interger to be converted.</para></listitem>
+    <listitem><para>The C pointer to the unsigned integer to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C unsigned integer for the first form
-and for the seconf form 0 = success, 1 = failure.</para>
+<para>A Rexx object version of the integer value in the first form.
+The second form returns 1 = success, 0 = failure.  If successful, the converted value is
+stored at the location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 
 <section id="mthUnsignedInt32ToObject"><title>UnsignedInt32ToObject</title>
@@ -8707,7 +8797,7 @@ uint32_t n;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned interger to be converted.</para></listitem>
+    <listitem><para>The C pointer to the unsigned integer to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -8759,16 +8849,18 @@ The second converts a Rexx object  a C 64-bit unsigned integer pointed to by <em
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned interger to be converted.for the first form of the method.
+    <listitem><para>The C pointer to the unsigned integer to be converted.for the first form of the method.
        For the second form this is the target of the conversion.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned interger to be converted.</para></listitem>
+    <listitem><para>The C pointer to the unsigned integer to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C unsigned integer for the first form
-and for the seconf form 0 = success, 1 = failure.</para>
+<para>A Rexx object version of the integer value in the first form.
+The second form returns 1 = success, 0 = failure.  If successful, the converted value is
+stored at the location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 
 <section id="mthUnsignedInt64ToObject"><title>UnsignedInt64ToObject</title>
@@ -8811,7 +8903,7 @@ uint64_t n;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned interger to be converted.</para></listitem>
+    <listitem><para>The C pointer to the unsigned integer to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -8960,8 +9052,9 @@ The second form converts a a Rexx object to a C signed integer.
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C whole number or
-0 = success, 1 = conversion error.
+<para>A Rexx object version of the integer value in the first form.
+The second form returns 1 = success, 0 = failure.  If successful, the converted value is
+stored at the location pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
