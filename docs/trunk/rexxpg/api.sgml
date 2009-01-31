@@ -1900,7 +1900,12 @@ RexxArrayObject arr;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the result Rexx object returned by the program.</para>
+<para>A Pointer to the result Rexx object returned by the program.
+Any errors involved with calling the routine
+will return a NULLOBJECT value.  The
+<link linkend="mthCheckCondition">CheckCondition()</link>.
+can be used to check in an error occurred during the call.
+</para>
 </section>
 
 <section id="mthCallRoutine"><title>CallRoutine</title>
@@ -1950,7 +1955,8 @@ RexxArrayObject arr;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the result Rexx object returned by the routine.</para>
+<para>A Pointer to the result Rexx object returned by the routine.
+</para>
 </section>
 
 <section id="mthCheckCondition"><title>CheckCondition</title>
@@ -6990,6 +6996,8 @@ RexxObjectPtr obj[
 </programlisting>
 <para>Raise a condition.  The raised condition is held in a pending
 state until the method, routine, or exit returns to the Rexx runtime.
+This is similar to using the RAISE instruction to raise a condition from
+Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7003,7 +7011,8 @@ state until the method, routine, or exit returns to the Rexx runtime.
     <listitem><para>A Rexx array object containing additional information for the condition.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The Rexx object which caused the condition.</para></listitem>
+    <listitem><para>A Rexx object object that will be returned as a routine or
+    method result if the raised condition is not trapped by the caller.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -7045,15 +7054,20 @@ RexxObjectPtr obj;
 >>--context->RaiseException(n, obj);-------------------------------------><
 ]]>
 </programlisting>
-<para>Raise an exception condition.
+<para>Raise a SYNTAX condition.  The raised condition is held in a pending
+state until the method, routine, or exit returns to the Rexx runtime.
+This is similar to using the RAISE instruction to raise a SYNTAX condition from
+Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The exception condition number.</para></listitem>
+    <listitem><para>The exception condition number.  There are #defines for the
+    recognized condition errors in the oorexxerrors.h include file.
+    </para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>An additional Rexx object for the exception.</para></listitem>
+    <listitem><para>An array of substitution values for the condition error message.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -7094,7 +7108,7 @@ size_t n;
 >>--context->RaiseException0(n);-----------------------------------------><
 ]]>
 </programlisting>
-<para>Raise an exception condition.
+<para>Raise an exception condition with no message substitution values.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7141,7 +7155,7 @@ RexxObjectPtr obj;
 >>--context->RaiseException1(n, obj);------------------------------------><
 ]]>
 </programlisting>
-<para>Raise an exception condition.
+<para>Raise an exception condition with a single message substitution value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7149,7 +7163,7 @@ RexxObjectPtr obj;
     <listitem><para>The exception condition number.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>An additional Rexx object for the exception.</para></listitem>
+    <listitem><para>A substitution value for the condition error message.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -7191,7 +7205,7 @@ RexxObjectPtr obj1, obj2;
 >>--context->RaiseException2(n, obj1, obj2);-----------------------------><
 ]]>
 </programlisting>
-<para>Raise an exception condition.
+<para>Raise an exception condition with two message substitution values.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7199,10 +7213,10 @@ RexxObjectPtr obj1, obj2;
     <listitem><para>The exception condition number.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">obj1</emphasis></term>
-    <listitem><para>An additional Rexx object for the exception.</para></listitem>
+    <listitem><para>The first substitution value.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">obj2</emphasis></term>
-    <listitem><para>An additional Rexx object for the exception.</para></listitem>
+    <listitem><para>The second substitution value.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -7240,15 +7254,17 @@ RexxObjectPtr obj1, obj2;
 <![CDATA[
 RexxObjectPtr ref;
 
->>--context->RequestGlobalReference(ref);--------------------------------><
+>>--context->ReleaseGlobalReference(ref);--------------------------------><
 ]]>
 </programlisting>
-<para>Release access to a global object reference.
+<para>Release access to a global object reference.  This removes the global
+garbage collection protection from the object reference.  Once released,
+<emphasis role="italic">ref</emphasis> should no longer be used for object operations.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">ref</emphasis></term>
-    <listitem><para>A pointer to the global Rexx object reference.</para></listitem>
+    <listitem><para>A the global Rexx object reference.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -7286,15 +7302,17 @@ RexxObjectPtr ref;
 <![CDATA[
 RexxObjectPtr ref;
 
->>--context->RequestLocalReference(ref);---------------------------------><
+>>--context->ReleaseLocalReference(ref);---------------------------------><
 ]]>
 </programlisting>
-<para>Release access to a local object reference.
+<para>Removes local context protection from an object reference.
+Once released,
+<emphasis role="italic">ref</emphasis> should no longer be used for object operations.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">ref</emphasis></term>
-    <listitem><para>A pointer to the local Rexx object reference.</para></listitem>
+    <listitem><para>The local Rexx object reference.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -7335,16 +7353,21 @@ RexxObjectPtr ref, obj;
 >>--ref = context->RequestGlobalReference(obj);--------------------------><
 ]]>
 </programlisting>
-<para>Request access to a global object reference.
+<para>Requests global garbage collection protection for an object reference.
+The returned value may be saved in native code and used as an object reference
+in any API context.  The <emphasis role="italic">obj</emphasis> will be protected
+from garbage collection until the global reference is released with
+<link linkend="mthReleaseGlobalReference">ReleaseGlobalReference()</link>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>Rexx object containing the name of the global object.</para></listitem>
+    <listitem><para>The Rexx object to be protected.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the global Rexx object or NULL if the object was not found.</para>
+<para>A global reference to this object that can be saved and used in any
+API context.</para>
 </section>
 
 <section id="mthResolveStemVariable"><title>ResolveStemVariable</title>
@@ -7376,16 +7399,22 @@ RexxStemObject stem;
 >>--stem = context->ResolveStemVariable(obj);-------------------------><
 ]]>
 </programlisting>
-<para>??????????????????????????????????????????
+<para>Resolves a stem variable object using the same mechanism applied to
+RexxStemObject arguments passed to routines.  If
+<emphasis role="italic">obj</emphasis> is a Stem object, the same Stem
+object will be returned.  If <emphasis role="italic">obj</emphasis>
+is a String object, the string value is used to resolve a stem variable
+from the caller's variable context.  The Stem object value of the referenced
+stem variable is returned as a result.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>??????????????????????????.</para></listitem>
+    <listitem><para>The source object to be resolved to a Stem object.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The RexxStemObject.</para>
+<para>The resolved Stem object.</para>
 </section>
 
 <section id="mthSendMessage"><title>SendMessage</title>
@@ -7438,7 +7467,13 @@ RexxArrayObject arr;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the returned Rexx object. If the method does not return an object then NULL is returned.</para>
+<para>The returned Rexx object. If the method does not return an object
+then NULLOBJECT is returned.
+Any errors involved with invoking the method
+will return a NULLOBJECT value.  The
+<link linkend="mthCheckCondition">CheckCondition()</link>.
+can be used to check in an error occurred during the call.
+</para>
 </section>
 
 <section id="mthSendMessage0"><title>SendMessage0</title>
@@ -7488,7 +7523,13 @@ This is a short cut method when no arguments are needed by the receiving object 
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the returned Rexx object. If the method does not return an object then NULL is returned.</para>
+<para>The returned Rexx object. If the method does not return an object
+then NULLOBJECT is returned.
+Any errors involved with invoking the method
+will return a NULLOBJECT value.  The
+<link linkend="mthCheckCondition">CheckCondition()</link>.
+can be used to check in an error occurred during the call.
+</para>
 </section>
 
 <section id="mthSendMessage1"><title>SendMessage1</title>
@@ -7541,7 +7582,13 @@ This is a short cut method when only one argument is needed by the receiving obj
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the returned Rexx object. If the method does not return an object then NULL is returned.</para>
+<para>The returned Rexx object. If the method does not return an object
+then NULLOBJECT is returned.
+Any errors involved with invoking the method
+will return a NULLOBJECT value.  The
+<link linkend="mthCheckCondition">CheckCondition()</link>.
+can be used to check in an error occurred during the call.
+</para>
 </section>
 
 <section id="mthSendMessage2"><title>SendMessage2</title>
@@ -7579,7 +7626,7 @@ RexxObjectPtr obj, ret, arg1, arg2;
 ]]>
 </programlisting>
 <para>Send a message to a Rexx object.
-This is a short cut method when only one argument is needed by the receiving object method.
+This is a short cut method when only two arguments are needed by the receiving object method.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7597,7 +7644,13 @@ This is a short cut method when only one argument is needed by the receiving obj
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the returned Rexx object. If the method does not return an object then NULL is returned.</para>
+<para>The returned Rexx object. If the method does not return an object
+then NULLOBJECT is returned.
+Any errors involved with invoking the method
+will return a NULLOBJECT value.  The
+<link linkend="mthCheckCondition">CheckCondition()</link>.
+can be used to check in an error occurred during the call.
+</para>
 </section>
 
 <section id="mthSetContextVariable"><title>SetContextVariable</title>
@@ -7632,6 +7685,10 @@ CSTRING name;
 ]]>
 </programlisting>
 <para>Sets the value of a Rexx variable in the current function context.
+Only simple and stem variables may be set using SetContextVariable().
+Compoune variable values may be set by retrieving the Stem object associated
+with a stem variable and using <link linkend="mthSetStemElement()">SetStemElement()</link>
+to set the associated compound variable.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7672,7 +7729,7 @@ CSTRING name;
 >>--context->SetGuardOff();----------------------------------------------><
 ]]>
 </programlisting>
-<para>Turn the guard flag off for this context.
+<para>Release the guard lock for this method scope.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -7706,7 +7763,7 @@ CSTRING name;
 >>--context->SetGuardOn();-----------------------------------------------><
 ]]>
 </programlisting>
-<para>Turn the guard flag on for this context.
+<para>Obtain the guard lock for this object scope.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -7743,7 +7800,8 @@ RexxObjectPtr obj;
 >>--context->SetObjectVariable(str, obj);--------------------------------><
 ]]>
 </programlisting>
-<para>Invokes the specified "str=" method on the current object and assigns it a new value.
+<para>Sets an instance variable in the current method's variable scope to a new value.
+Only simple and stem variables may be set using this API.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7857,10 +7915,10 @@ CSTRING name;
     <listitem><para>The target Rexx stem object.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">name</emphasis></term>
-    <listitem><para>The Rexx stem object element name.</para></listitem>
+    <listitem><para>The Rexx stem object element name.  This is a fully resolve stem tail element.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The Rexx object value for the Rexx stem object element.</para></listitem>
+    <listitem><para>The new Rexx object value to assign.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -7895,12 +7953,12 @@ logical_t flag;
 >>--context->SetThreadTrace(flag);---------------------------------------><
 ]]>
 </programlisting>
-<para>Sets the current thread trace flag of the interpreter.
+<para>Sets the current interactive thread trace flag of the interpreter.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">flag</emphasis></term>
-    <listitem><para>Logical boolean flag.</para></listitem>
+    <listitem><para>New state for interacetive trace.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -7935,7 +7993,8 @@ logical_t flag;
 >>--context->SetTrace(flag);---------------------------------------------><
 ]]>
 </programlisting>
-<para>Sets the trace flag of the interpreter.
+<para>Sets the trace flag of the interpreter instace.  This will enable tracing in
+all active threads for the interpreter instance.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -7997,7 +8056,7 @@ size_t len;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the new Rexx object.</para>
+<para>A new Rexx String object.</para>
 </section>
 
 <section id="mthStringData"><title>StringData</title>
