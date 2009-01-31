@@ -89,4 +89,18 @@ return testResult
   s = .string~new("hello")
   self~assertTrue(s~hasMethod("length"))
 
+::method testSend01
+  self~assertEquals("abc"~substr(1,2), "abc"~send('substr', 1, 2))
+
+::method testSendWith01
+  self~assertEquals("abc"~substr(1,2), "abc"~sendWith('substr', .array~of(1, 2)))
+
+::method testStart01
+  message = "abc"~start("substr", 1, 2)
+  self~assertEquals("abc"~substr(1,2), message~result)
+
+::method testStartWith01
+  message = "abc"~startWith("substr",  .array~of(1, 2))
+  self~assertEquals("abc"~substr(1,2), message~result)
+
 -- End of class: object.testGroup
