@@ -4602,7 +4602,7 @@ The second converts a Rexx object to a C 64-bit integer and returns in the area 
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The integer to be converted or the location to return the converted integer.</para></listitem>
+    <listitem><para>The integer to be converted or the location for returning the converted integer.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
     <listitem><para>The Rexx object to be converted.</para></listitem>
@@ -5805,7 +5805,7 @@ size_t sz;
 >>--obj = context->NewMethod(name, code, sz);----------------------------><
 ]]>
 </programlisting>
-<para>Add a new method to the cuurrent context (method, function or thread).
+<para>Create a new Method object from an in-memory buffer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5813,7 +5813,7 @@ size_t sz;
     <listitem><para>ASCII-Z name of the Rexx method.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">code</emphasis></term>
-    <listitem><para>A data buffer containing the new method Rexx code.</para></listitem>
+    <listitem><para>A data buffer containing the new method's Rexx code.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">sz</emphasis></term>
     <listitem><para>Size of the <emphasis role="italic">code</emphasis> buffer.</para></listitem>
@@ -5871,7 +5871,7 @@ POINTER p;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The create Pointer object.</para>
+<para>The created Pointer object.</para>
 </section>
 
 <section id="mthNewRoutine"><title>NewRoutine</title>
@@ -5910,7 +5910,7 @@ size_t sz;
 >>--obj = context->NewRoutine(name, code, sz);---------------------------><
 ]]>
 </programlisting>
-<para>Create a new Routine object.
+<para>Create a new Routine object from an in-memory buffer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -5918,7 +5918,7 @@ size_t sz;
     <listitem><para>ASCII-Z name of the Rexx routine.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">code</emphasis></term>
-    <listitem><para>Buffer containing the routine Rexx code..</para></listitem>
+    <listitem><para>Buffer containing the routine Rexx code.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">sz</emphasis></term>
     <listitem><para>Size of the <emphasis role="italic">code</emphasis> buffer.</para></listitem>
@@ -6017,7 +6017,7 @@ size_t len;
 >>--obj = context->NewString(str);---------------------------------------><
 ]]>
 </programlisting>
-<para>There are two forms of this method. Both create a new Rexx String object from a C string.
+<para>There are two forms of this method. Both create a new Rexx String object from program data.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -6264,11 +6264,13 @@ logical_t flag;
     <listitem><para>The source Rexx object for the conversion.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>A pointer to the location to store the converted double result.</para></listitem>
+    <listitem><para>A pointer to the location that receives the converted double result.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = success, 0 = conversion error.</para>
+<para>1 = success, 0 = conversion error.  The converted value is stored in the
+location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 
 <section id="mthObjectToInt32"><title>ObjectToInt32</title>
@@ -6567,7 +6569,7 @@ logical_t flag;
 >>--flag = context->ObjectToStringSize(obj, &n);-------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object to a string size number value.
+<para>Convert a Rexx object to a stringsize_t number value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -6628,7 +6630,7 @@ CSTRING str;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The C ASCII-Z string.</para>
+<para>The C ASCII-Z string representation of the object.</para>
 </section>
 
 <section id="mthObjectToUintptr"><title>ObjectToUintptr</title>
@@ -6824,7 +6826,12 @@ logical_t flag;
 >>--flag = context->ObjectToValue(obj, &desc);---------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object to a ValueDescriptor struct.
+<para>Convert a Rexx object to another type.  The target type is identified
+by the ValueDescriptor structure, and can by any of the types that may be
+used as a method or routine return types.  For many conversions, it may be
+more appropriate to use more targetted routins such as ObjectToWholeNumber().
+ObjectToValue is capable of conversions to types such as int8_t for which
+there are no specific conversion APIs.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -6832,11 +6839,16 @@ logical_t flag;
     <listitem><para>The Rexx object to be converted.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">desc</emphasis></term>
-    <listitem><para>A C pointer to a ValueDescriptor struct to receive the converted data.</para></listitem>
+    <listitem><para>A C pointer to a ValueDescriptor struct that identifies
+    the conversion type.  The converted value will be stored in the ValueDescriptor if successful.
+    </para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>0 = success, 1 = conversion error.</para>
+<para>1 = success, 0 = conversion error.  If successful,
+<emphasis role="italic">desc</emphasis> is updated with the converted
+value of the requested type.
+</para>
 </section>
 
 <section id="mthObjectToWholeNumber"><title>ObjectToWholeNumber</title>
@@ -6927,7 +6939,7 @@ POINTER p;
 >>--p = context->PointerValue(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Return the C pointer value from a RexxPointerObject.
+<para>Return the wrappered C pointer value from a RexxPointerObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -6936,7 +6948,7 @@ POINTER p;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A C pointer value.</para>
+<para>The wrappered C pointer value.</para>
 </section>
 
 <section id="mthRaiseCondition"><title>RaiseCondition</title>
@@ -6973,10 +6985,11 @@ RexxStringObject sobj;
 RexxArrayObject arr;
 RexxObjectPtr obj[
 
->>--context->RaiseCondition(str, sobj, arr obj);-------------------------><
+>>--context->RaiseCondition(str, sobj, arr, obj);-------------------------><
 ]]>
 </programlisting>
-<para>Raise a condition.
+<para>Raise a condition.  The raised condition is held in a pending
+state until the method, routine, or exit returns to the Rexx runtime.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -6984,10 +6997,10 @@ RexxObjectPtr obj[
     <listitem><para>The condition name.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">sobj</emphasis></term>
-    <listitem><para>The condition number as a Rexx string object.</para></listitem>
+    <listitem><para>The condition description as a Rexx String object.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">arr</emphasis></term>
-    <listitem><para>A Rexx array object containing the substitutable arguments for the condition message.</para></listitem>
+    <listitem><para>A Rexx array object containing additional information for the condition.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
     <listitem><para>The Rexx object which caused the condition.</para></listitem>

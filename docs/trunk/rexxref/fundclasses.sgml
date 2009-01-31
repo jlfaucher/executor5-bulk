@@ -609,6 +609,109 @@ for information private method restrictions.
 </orderedlist>
 </section>
 
+<section id="mthObjectSend"><title>send</title>
+<indexterm><primary>send method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>send method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+                    +---------------+
+                    V               |
+>>-send(messagename---+-----------+-+-)-----------------------><
+                      +-,argument-+
+]]>
+</programlisting>
+
+<para>Returns a result of invoking a method on the target object
+using the specified messange name and arguments.
+The send() method allows methods to be invoked using dynamically
+constructed method names.
+</para>
+<para>The <emphasis role="italic">messagename</emphasis> can be a string or
+an array. If <emphasis role="italic">messagename</emphasis> is an array object,
+its first item is the name of the message and its
+second item is a class object to use as the starting point for the method
+search. For more information, see
+<link linkend="meths1">Classes and Inheritance</link>.</para>
+<para>The language processor passes any
+<emphasis role="italic">argument</emphasis>s to the receiver as
+arguments for <emphasis role="italic">messagename</emphasis> in the order you
+specify them.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+world=.WorldObject~new
+// the following 3 calls are equivalent
+msg1=world~hello("Fred")
+msg2=world~send("HELLO", "Fred")
+msg3=.message~new(world,"HELLO", "i", "Fred")~~send
+
+say msg1~result           /* Produces Hello Fred 21:04:25.065000  */
+                          /* for example                          */
+say msg2~result           /* Produces Hello Fred 21:04:25.081000  */
+                          /* for example                          */
+say msg3~result           /* Produces Hello Fred 21:04:25.101000  */
+                          /* for example                          */
+
+::class 'WorldObject' public
+::method hello
+  use arg name
+  return "Hello" name time('L')
+</programlisting>
+</section>
+
+<section id="mthObjectSendWith"><title>sendWith</title>
+<indexterm><primary>sendWith method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>sendWith method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-sendWith(messagename,arguments)--------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a result of invoking a method on the target object
+using the specified messange name and arguments.
+The send() method allows methods to be invoked using dynamically
+constructed method names and arguments.
+</para>
+<para>The <emphasis role="italic">messagename</emphasis> can be a string or
+an array. If <emphasis role="italic">messagename</emphasis> is an array object,
+its first item is the name of the message and its
+second item is a class object to use as the starting point for the method
+search. For more information, see
+<link linkend="meths1">Classes and Inheritance</link>.</para>
+<para>The <emphasis role="italic">arguments</emphasis> argument must be
+a single-dimension array instance.
+The language processor passes the values contained in
+<emphasis role="italic">arguments</emphasis> to the receiver as
+arguments for <emphasis role="italic">messagename</emphasis> in the order you
+specify them.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+world=.WorldObject~new
+// the following 3 calls are equivalent
+msg1=world~hello("Fred")
+msg2=world~sendWith("HELLO", .array~of("Fred"))
+msg3=.message~new(world,"HELLO", "A", .array~of("Fred"))~~send
+
+say msg1~result           /* Produces Hello Fred 21:04:25.065000  */
+                          /* for example                          */
+say msg2~result           /* Produces Hello Fred 21:04:25.081000  */
+                          /* for example                          */
+say msg3~result           /* Produces Hello Fred 21:04:25.101000  */
+                          /* for example                          */
+
+::class 'WorldObject' public
+::method hello
+  use arg name
+  return "Hello" name time('L')
+</programlisting>
+</section>
+
 <section id="mthObjectSetMethod"><title>setMethod</title>
 <indexterm><primary>setMethod method</primary>
 <secondary>of Object class</secondary></indexterm>
@@ -714,6 +817,59 @@ say msg2~result           /* Produces Hello world 21:04:25.081000 */
 ::class 'WorldObject' public
 ::method hello
   return "Hello world" time('L')
+</programlisting>
+</section>
+
+<section id="mthObjectStartWith"><title>startWith</title>
+<indexterm><primary>startWith method</primary>
+<secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>startWith method</secondary>
+<tertiary>of Object class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-startWith(messagename,arguments)--------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a message object (see
+<link linkend="clsMessage">The Message Class</link>) and sends it a
+<emphasis role="bold">start</emphasis> message
+to start concurrent processing. The object receiving the message
+<emphasis role="italic">messagename</emphasis> processes this message
+concurrently with the sender's continued processing.</para>
+<para>The <emphasis role="italic">messagename</emphasis> can be a string or
+an array. If <emphasis role="italic">messagename</emphasis> is an array object,
+its first item is the name of the message and its
+second item is a class object to use as the starting point for the method
+search. For more information, see
+<link linkend="meths1">Classes and Inheritance</link>.</para>
+<para>The <emphasis role="italic">arguments</emphasis> argument must be
+a single-dimension array instance.
+The language processor passes the values contained in
+<emphasis role="italic">arguments</emphasis> to the receiver as
+arguments for <emphasis role="italic">messagename</emphasis> in the order you
+specify them.</para>
+<para>When the receiver object has finished processing the message, the message
+object retains its result and holds it until the sender requests it by sending
+a <emphasis role="bold">result</emphasis> message. For further details,
+see <link linkend="mthMessageStart">start</link>.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+world=.WorldObject~new
+msg1=world~startWith("HELLO", .array~of("Fred")                /* same as next line     */
+msg2=.message~new(world,"HELLO", 'i', .array~of("Fred"))~~start  /* same as previous line */
+
+say msg1~result           /* Produces Hello Fred 21:04:25.065000  */
+                          /* for example                          */
+say msg2~result           /* Produces Hello Fred 21:04:25.081000  */
+                          /* for example                          */
+
+::class 'WorldObject' public
+::method hello
+  use arg name
+  return "Hello" name time('L')
 </programlisting>
 </section>
 
