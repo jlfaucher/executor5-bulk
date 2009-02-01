@@ -1235,7 +1235,7 @@ to use <computeroutput>d2x</computeroutput> on the value.
 <note><title>Note</title><para>
 It is not necessary to convert the <computeroutput>style</computeroutput> value
 in the example to its hexadecimal string representation before using it as an
-argument in the <computeroutput>BinaryAnd</computeroutput> function.  That is
+argument in the <computeroutput>and</computeroutput>() method.  That is
 just done in the example for display purposes.
 </para></note>
 
@@ -1252,10 +1252,10 @@ just done in the example for display purposes.
   style = treeControl~getStyleRaw
   style = "0x" || style~d2x~right(8, '0')
 
-  if BinaryAnd( style, TVS_DISABLEDRAGDROP ) <> 0 then str1 = 'disabled'
+  if .DlgUtil~and( style, TVS_DISABLEDRAGDROP ) <> 0 then str1 = 'disabled'
   else str1 = 'enabled'
 
-  if BinaryAnd( style, TVS_EDITLABELS ) <> 0 then str2 = 'enabled'
+  if .DlgUtil~and( style, TVS_EDITLABELS ) <> 0 then str2 = 'enabled'
   else str2 = 'disabled'
 
   say 'Tree-view Control styles'

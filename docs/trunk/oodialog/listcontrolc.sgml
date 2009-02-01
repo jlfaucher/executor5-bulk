@@ -1160,7 +1160,7 @@ replaces the <computeroutput>GetExtendedStyle</computeroutput> invocation with a
 ::method onDecrement
   expose listView
 
-  if binaryAnd(listView~getExtendedStyleRaw, "0x00000008") <> 0 then return
+  if .DlgUtil~and(listView~getExtendedStyleRaw, "0x00000008") == 0 then return
 
   time = listView~getHoverTime - 100
   if time > 0 then listView~setHoverTime(time)
@@ -1168,7 +1168,7 @@ replaces the <computeroutput>GetExtendedStyle</computeroutput> invocation with a
 ::method onIncrement
   expose listView
 
-  if binaryAnd(listView~getExtendedStyleRaw, "0x00000008") <> 0 then return
+  if .DlgUtil~and(listView~getExtendedStyleRaw, "0x00000008") == 0 then return
 
   -- Let the user increase the hover time to any length they want.
   listView~setHoverTime(list~getHoverTime + 100)

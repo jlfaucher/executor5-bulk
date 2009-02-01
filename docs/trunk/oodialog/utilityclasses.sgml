@@ -216,6 +216,10 @@ System error code: 2
 <entry><link linkend="mthOrClsDlgUtil">or</link></entry>
 </row>
 <row>
+<entry>and (Class Method)</entry>
+<entry><link linkend="mthAndClsDlgUtil">and</link></entry>
+</row>
+<row>
 <entry>version (Class Method)</entry>
 <entry><link linkend="mthVersion">version</link></entry>
 </row>
@@ -519,11 +523,12 @@ return .true
 </programlisting>
 
 <para>
-  Combines any number of numerical values into a single number by 'or'ing the individual numbers
-  together.  This is the typical or operation used by assembly and C programmer's.  The ooDialog
-  programmer does not need to understand the concept to use this method.  Some arguments to some methods
-  in the ooDialog framework can take a value that is a combination of some individual <emphasis
-  role="italic">flags</emphasis>.  The or method is provided to construct this combination.</para>
+  Combines any number of numerical values into a single number by <emphasis
+  role="italic">oring</emphasis> the individual numbers together.  This is the typical or operation used
+  by assembly and C programmer's.  The ooDialog programmer does not need to understand the concept to use
+  this method.  Some arguments to some methods in the ooDialog framework can take a value that is a
+  combination of some individual <emphasis role="italic">flags</emphasis>.  The or method is provided to
+  construct this combination.</para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details for this method:</emphasis></term>
   <listitem>
@@ -533,8 +538,18 @@ return .true
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are a series of numbers separated by commas.  Each individual argument must be a
-       whole number.
+    <para>
+      There is no restriction on the number of arguments to this method, other than each argument must
+      represent a whole number.
+    </para>
+    <para>
+      As a convenience, the whole numbers can also be specified as a string with the following format:
+      <computeroutput>0x</computeroutput> followed by a series of hexidecimal digits with no spaces. Such
+      as <computeroutput>"0xff12abc9"</computeroutput> or <computeroutput>"0x1"</computeroutput> or
+      <computeroutput>"0x00000080"</computeroutput>. This makes it easy to look up and use the value of a
+      flag directly. For instance looking up the value of <computeroutput>ILC_COLOR24</computeroutput>,
+      one would see it is <computeroutput>0x00000018</computeroutput>. This value could be used directly
+      in the <computeroutput>or()</computeroutput> method. Case is not significant in the string.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -549,18 +564,125 @@ return .true
       One method that has an argument that can be the result of combining a number of flags is the <link
       linkend="mthCreateClsImageList">create()</link> method of the <link
       linkend="clsImage">.ImageList</link> class.  This is how the or method might be used
-      <programlisting>
-      <![CDATA[
-        flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+<programlisting>
+<![CDATA[
+  flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
 
-        -- Create an empty .ImageList object:
-        imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10);
-      ]]>
-      </programlisting>
+  -- Create an empty .ImageList object:
+  imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10);
+]]>
+</programlisting>
+    </para>
+    <para>
+      The following is equivalent to the above example:
+<programlisting>
+<![CDATA[
+  flags = .DlgUtil~or(0x00000018, 0x00000001)
+
+  -- Create an empty .ImageList object:
+  imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10);
+]]>
+</programlisting>
+    </para>
+    <para>
+      To round out the examples a little:
+<programlisting>
+<![CDATA[
+  flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+  say "Flags value:" flags
+
+  flags = .DlgUtil~or(0x00000018, 0x00000001)
+  say "Flags value:" flags
+
+::requires 'oodDialog.cls'
+
+/* Output would be:
+
+     Flags value: 25
+     Flags value: 25
+*/
+]]>
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DlgUtil::or() [class method] -->
+
+<section id="mthAndClsDlgUtil"><title>and (Class method)</title>
+<indexterm><primary>or</primary>
+<secondary>DlgUtil class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--.DlgUtil~and(--number1-,-number2--)----------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Combines two numbers into a single number by <emphasis role="italic">anding</emphasis> the individual
+  numbers together.  This is the typical <emphasis role="italic">and</emphasis> operation used by
+  assembly and C programmer's. The typical ooDialog programmer would have no need of the method. It is
+  provided as a convenience for use in sophisticated ooDialog programs.
+</para>
+<para>
+  The normal use of an <emphasis role="italic">and</emphasis> operation in ooDialog programs is to
+  extract the low or high words from an argument returned from the operating system. The addition of the
+  <link linkend="mthLoWord">loWord</link>() and <link linkend="mthHiWord">hiWord</link>() methods to the
+  ooDialog framework have eliminated the reason for this usage.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details for this method:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The required two arguments are the whole numbers to be <emphasis role="italic">anded</emphasis>
+      together.
+    </para>
+    <para>
+      As a convenience, the whole numbers can also be specified as a string with the following format:
+      <computeroutput>0x</computeroutput> followed by a series of hexidecimal digits with no spaces. Such
+      as <computeroutput>"0xff12abc9"</computeroutput> or <computeroutput>"0x1"</computeroutput> or
+      <computeroutput>"0x00000080"</computeroutput>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return value is the number that is the result of <emphasis role="italic">anding</emphasis> the
+      two arguments together.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example is part of a generic method in an application that returns the text of an
+      edit control. The application is a complex one and has many edit controls that are read only. The
+      text for read only controls is ignored. The method returns .nil for read only controls to
+      differentiate the difference between a read only control and a control that has the empty string.
+    </para>
+    <para>
+      The value of the ES_READONLY style is 0x0800.
+<programlisting>
+<![CDATA[
+
+::method getEditText private
+  use strict arg control
+
+  -- If the control is read only, we just return .nil
+  if .DlgUtil~and(control~getStyleRaw, 0x0800) <> 0 then return .nil
+
+  ...
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgUtil::and() [class method] -->
 
 <section id="mthGetSystemMetricsClsDlgUtil"><title>getSystemMetrics</title>
 <indexterm><primary>getSystemMetrics</primary>
