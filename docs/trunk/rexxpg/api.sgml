@@ -61,21 +61,200 @@ method as being contained in an external shared library.
 functions that extend the native Rexx function set. Functions can be general-purpose
 extensions or specific to an application.
 </para></listitem></varlistentry>
+<varlistentry><term>Command Handlers</term>
+<listitem><para>are programmer-defined handlers for named command environments.
+The application programmer can tailor the Rexx interpreter behavior by
+enabling different command environments for interfacing with different
+application environments.
+</para></listitem></varlistentry>
 <varlistentry><term>System exits</term>
 <listitem><para>are programmer-defined variations of the operating system.
 The application programmer can tailor the Rexx interpreter behavior by
 replacing Rexx system requests.
 </para></listitem></varlistentry>
 </variablelist>
-<para>Methods, functions, and system exit handlers have similar coding,
+<para>Methods, functions, system exit handlers, and command handlers have similar coding,
 compilation, and packaging characteristics.
 </para>
-<para>In addition, applications can call methods defined on an ooRexx class and
+<para>In addition, applications can call methods defined on an Rexx objects and
 execute them from externally defined methods and functions.</para>
 
 <section id="intertreterapi"><title>Rexx Interpreter API</title>
 <para>This section describes how to invoke the Rexx interpreter via the
 RexxCreatInterpreter API.</para>
+<section id="instanceoptions"><title>Interpreter Instance Options</title>
+<para>The third argument to RexxCreateInterpreter is an optional list of options
+that set characteristics of the of how the interpreter instance behaves.  This
+argument points to an array of RexxOption structures.  Each RexxOption instance
+contains information for a different named option.  The oorexxapi.h include file
+contains a #define for each option name.  The information required by an option
+varies with each option type, and is specified using a ValueDescriptor struct to
+handle a variety of data types.
+An entry with a NULL option
+name terminates the list.  The available interpreter options are:</para>
+<variablelist>
+<varlistentry><term>INITIAL_ADDRESS_ENVIRONMENT</term>
+<listitem><para>Contains the ASCII-Z name of the initial address enviroment
+that will be used for all Rexx programs run under this instance.</para>
+<programlisting>
+RexxOption options[2];
+
+options[0].optionName = INITIAL_ADDRESS_ENVIRONMENT;
+options[0].option = "EDITOR";
+options[1].optionName = NULL;
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>APPLICATION_DATA</term>
+<listitem><para>Contains a void * value that will be stored with the interpreter
+instance.  The application data can be retrieved using the
+<link linkend="mthGetApplicationData">GetApplicationData()</link> API.</para>
+<programlisting>
+RexxOption options[2];
+
+options[0].optionName = APPLICATION_DATA;
+options[0].option = (void *)editorInfo;
+options[1].optionName = NULL;
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>EXTERNAL_CALL_PATH</term>
+<listitem><para>Contains an ASCII-Z string defining an additional search path that
+is used when searching for Rexx program files.  The call path string uses the
+format appropriate for the host platform environment.  On Windows, the path elements
+are separated by semicolons (;).  On Unix-based systems, a colon (:) is used.
+</para>
+<programlisting>
+RexxOption options[2];
+
+options[0].optionName = EXTERNAL_CALL_PATH;
+options[0].option = myCallPath;
+options[1].optionName = NULL;
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>EXTERNAL_CALL_EXTENSIONS</term>
+<listitem><para>Contains an ASCII-Z string defining a list of extensions that will
+be used when searching for Rexx program files.  The specified extensions must include
+the extension ".".  Multiple extensions are separated by a comma (,).
+</para>
+<programlisting>
+RexxOption options[2];
+
+options[0].optionName = EXTERNAL_CALL_EXTENSIONS;
+options[0].option = ".ed,.mac";  // add ".ed" and ".mac" to search path.
+options[1].optionName = NULL;
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>LOAD_REQUIRED_LIBRARY</term>
+<listitem><para>Specifies the name of an external native library that will be loaded
+once the interpreter instance is created.  The library name is an ASCII-Z string
+with the library name in the same format used for ::REQUIRED LIBRARY.  Multiple libraries
+can be loaded by specifying this option multiple times.
+</para>
+<programlisting>
+RexxOption options[2];
+
+options[0].optionName = LOAD_REQUIRED_LIBRARY;
+options[0].option = "rxmath";
+options[1].optionName = NULL;
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>DIRECT_EXITS</term>
+<listitem><para>Specifies a list of system exits that will be used with this interpreter
+instance.  The exits are a list of RexxContextExit structs.  Each enabled exit is
+specified in a single RexxContextExit struct identifying the type of the exit and the
+exit entry point.
+The list is terminated by an instance using an
+exit type of 0.  The direct exits are called using the RexxExitConext calling convention.
+See <link linkend="exitsapi">Rexx Exits Interface</link> for details.
+</para>
+<programlisting>
+
+RexxContextExit exits[2];
+RexxOption options[2];
+
+
+exits[0].handler = functionExit;
+exits[0].sysexit_code = RXOFNC;
+exits[1].sysexit_code = 0;
+
+options[0].optionName = DIRECT_EXITS;
+options[0].option = (void *)exits;
+options[1].optionName = NULL;
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>DIRECT_ENVIRONMENTS</term>
+<listitem><para>Registers one or more subcommand handler environments with the interpreter
+instance.  The handlers are a list of RexxContextEnvironment structs.  Each enabled handler is
+specified in a single RexxContextEnvironment struct identifying the name of the handler and the
+handler entry point.
+The list is terminated by an instance using a
+handler name of NULL.  The direct environment handlers are called using the calling convention
+described in <link linkend="commandapi">Command Handler Interface</link>.
+</para>
+<programlisting>
+
+RexxContextEnvironments environments[2];
+RexxOption options[2];
+
+
+environments[0].handler = editorHandler;
+environments[0].name = "EDITOR";
+environments[1].name = NULL;
+
+options[0].optionName = DIRECT_ENVIRONMENTS;
+options[0].option = (void *)environments;
+options[1].optionName = NULL;
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>REGISTERED_EXITS</term>
+<listitem><para>Specifies a list of system exits that will be used with this interpreter
+instance.  The exits are a list of RXSYSEXIT structs.  Each enabled exit is
+specified in a single RXSYSEXIT struct identifying the type of the exit and the
+name of the registered exit handler.
+The list is terminated by an instance using an
+exit type of 0.  The registered exits are called using the RexxExitHandler calling convention.
+See <link linkend="sysex">Registered System Exits Interface</link> for details.
+</para>
+<programlisting>
+
+RXSYSEXIT exits[2];
+RexxOption options[2];
+
+
+exits[0].sysexit_name = "MyFunctionExit";
+exits[0].sysexit_code = RXOFNC;
+exits[1].sysexit_code = 0;
+
+options[0].optionName = REGISTERED_EXITS;
+options[0].option = (void *)exits;
+options[1].optionName = NULL;
+</programlisting>
+</listitem></varlistentry>
+<varlistentry><term>REGISTERED_ENVIRONMENTS</term>
+<listitem><para>Registers one or more subcommand handler environments with the interpreter
+instance.  The handlers are a list of RexxRegisteredEnvironment structs.  Each enabled handler is
+specified in a single RexxRegisteredEnvironment struct identifying the name of the environment and the
+registered subcom handler name.
+The list is terminated by an instance using a
+handler name of NULL.  The direct environment handlers are called using the calling convention
+described in <link linkend="subcom">Subcommand Interface</link>.
+</para>
+<programlisting>
+
+RexxRegisteredEnvironments environments[2];
+RexxOption options[2];
+
+
+environments[0].registeredName = "MyEditorName";
+environments[0].name = "EDITOR";
+environments[1].name = NULL;
+
+options[0].optionName = REGISTERED_ENVIRONMENTS;
+options[0].option = (void *)environments;
+options[1].optionName = NULL;
+</programlisting>
+</listitem></varlistentry>
+</variablelist>
+</section>
 </section>
 
 <section id="apitypes"><title>Data Types Used in APIs</title>
@@ -989,6 +1168,10 @@ RexxMethod3(size_t, stream_charout, CSELF, streamPtr, OPTIONAL_RexxStringObject,
 
 <section id="exitsapi"><title>Rexx Exits Interface</title>
 <para>This section describes how to define a Rexx exit.</para>
+</section>
+
+<section id="commandapi"><title>Command Handler Interface</title>
+<para>This section describes how to define a Rexx command handler.</para>
 </section>
 
 <section id="apilisting"><title>Rexx Methods Listing</title>
