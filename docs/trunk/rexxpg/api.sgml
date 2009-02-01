@@ -6835,8 +6835,8 @@ logical_t flag;
 <para>Convert a Rexx object to another type.  The target type is identified
 by the ValueDescriptor structure, and can by any of the types that may be
 used as a method or routine return types.  For many conversions, it may be
-more appropriate to use more targetted routins such as ObjectToWholeNumber().
-ObjectToValue is capable of conversions to types such as int8_t for which
+more appropriate to use more targetted routines such as ObjectToWholeNumber().
+ObjectToValue() is capable of conversions to types such as int8_t for which
 there are no specific conversion APIs.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -7864,7 +7864,7 @@ This method strictly uses numerics as the element name.
     <listitem><para>The Rexx stem object element number.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The Rexx object value for the Rexx stem object element.</para></listitem>
+    <listitem><para>The Rexx object value assigned to the Rexx stem object element.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -7918,7 +7918,7 @@ CSTRING name;
     <listitem><para>The Rexx stem object element name.  This is a fully resolve stem tail element.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The new Rexx object value to assign.</para></listitem>
+    <listitem><para>The Rexx object value assigned to the Rexx stem object element.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -7953,12 +7953,12 @@ logical_t flag;
 >>--context->SetThreadTrace(flag);---------------------------------------><
 ]]>
 </programlisting>
-<para>Sets the current interactive thread trace flag of the interpreter.
+<para>Sets the interactive trace state for the current thread.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">flag</emphasis></term>
-    <listitem><para>New state for interacetive trace.</para></listitem>
+    <listitem><para>New state for interactive trace.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -7993,13 +7993,13 @@ logical_t flag;
 >>--context->SetTrace(flag);---------------------------------------------><
 ]]>
 </programlisting>
-<para>Sets the trace flag of the interpreter instace.  This will enable tracing in
+<para>Sets the interactvive trace state for the interpreter instance.  This will enable tracing in
 all active threads for the interpreter instance.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">flag</emphasis></term>
-    <listitem><para>Logical boolean flag.</para></listitem>
+    <listitem><para>The new trace state.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -8094,16 +8094,16 @@ CSTRING str;
 >>--str = context->StringData(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to the Rexx object C ASCII-Z string.
+<para>Returns a read-only pointer to the string data of a Rexx String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The source Rexx object for the conversion.</para></listitem>
+    <listitem><para>The source Rexx String object for the data.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The C ASCII-Z string.</para>
+<para>A pointer to the String object's string data.</para>
 </section>
 
 <section id="mthStringGet"><title>StringGet</title>
@@ -8147,10 +8147,10 @@ size_t c, len1, len2;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The source Rexx object for the copy.</para></listitem>
+    <listitem><para>The source Rexx String object for the copy.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">len1</emphasis></term>
-    <listitem><para>The source Rexx object starting position for the copy.
+    <listitem><para>The starting position within the String for the copy.
        This argument is 1-based</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">str</emphasis></term>
@@ -8201,16 +8201,16 @@ size_t sz;
 >>--sz = context->StringLength(obj);-------------------------------------><
 ]]>
 </programlisting>
-<para>Return the length of the string value of a Rexx object.
+<para>Return the length a Rexx String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The source Rexx object.</para></listitem>
+    <listitem><para>The source String object.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The string length of the Rexx object.</para>
+<para>The string length of the String object.</para>
 </section>
 
 <section id="mthStringLower"><title>StringLower</title>
@@ -8247,7 +8247,7 @@ RexxObjectPtr srcobj, newobj;
 >>--newobj = context->StringLower(srcobj);-------------------------------><
 ]]>
 </programlisting>
-<para>Convert the string value of a Rexx object to lower case and return a new Rexx object.
+<para>Convert a Rexx String object to lower case, returning a new Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -8289,22 +8289,34 @@ RexxObjectPtr srcobj, newobj;
 <programlisting>
 <![CDATA[
 RexxObjectPtr obj;
-size_t sz;
+logical_t flag;
+stringsize_t n;
 
->>--obj = context->StringSize(sz);---------------------------------------><
+>>--obj = context->StringSize(&n);-------------------------------------------><
+
+>>--flag = context->StringSize(obj, &n);-------------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C size_t integer to a Rexx object.
-Alias of the <link linkend="mthStringSizeToObject">StringSizeToObject</link> method.
+<para>There are two forms of this method.
+The first converts the stringsize_t value <emphasis role="italic">n</emphasis> to a Rexx object.
+The second converts a Rexx object to a stringsize_t value and returns it in the location
+pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The size_t value to be converted.</para></listitem>
+    <listitem><para>The stringsize_t value to be converted in the first form.
+       The target of the conversion in the second form.</para></listitem>
+    </varlistentry>
+    <varlistentry><term><emphasis role="italic">obj</emphasis></term>
+    <listitem><para>The Rexx object to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C size_t integer.</para>
+<para>A Rexx object version of the integer value in the first form.
+The second form returns 1 = success, 0 = failure.  If successful, the converted value is
+stored at the location pointed to by <emphasis role="italic">n</emphasis>.
+</para>
 </section>
 
 <section id="mthStringSizeToObject"><title>StringSizeToObject</title>
@@ -8342,16 +8354,16 @@ size_t sz;
 >>--obj = context->StringSizeToObject(sz);-------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C size_t integer to a Rexx object.
+<para>Convert a stringsize_t value to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">sz</emphasis></term>
-    <listitem><para>The size_t value to be converted.</para></listitem>
+    <listitem><para>The stringsize_t value to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C size_t integer.</para>
+<para>A Rexx object that represents the C stringsize_t value.</para>
 </section>
 
 <section id="mthStringUpper"><title>StringUpper</title>
@@ -8388,16 +8400,16 @@ RexxObjectPtr srcobj, newobj;
 >>--newobj = context->StringUpper(srcobj);-------------------------------><
 ]]>
 </programlisting>
-<para>Convert the string value of a Rexx object to upper case and return a new Rexx object.
+<para>Convert a Rexx String object upper case, returning a new String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">srcobj</emphasis></term>
-    <listitem><para>The source Rexx object to be converted to upper case.</para></listitem>
+    <listitem><para>The source String object to be converted to upper case.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A new Rexx object with the string value upper cased.</para>
+<para>A new String object with the string value upper cased.</para>
 </section>
 
 <section id="mthSupplierAvailable"><title>SupplierAvailable</title>
@@ -8482,7 +8494,7 @@ RexxObjectPtr obj;
 >>--obj = context->SupplierIndex(sobj);----------------------------------><
 ]]>
 </programlisting>
-<para>Return the current Rexx supplier object index name.
+<para>Return the current Rexx supplier object index value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -8491,7 +8503,7 @@ RexxObjectPtr obj;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx object name at the current position in the supplier.</para>
+<para>The index object at the current supplier position.</para>
 </section>
 
 <section id="mthSupplierItem"><title>SupplierItem</title>
@@ -8529,7 +8541,7 @@ RexxObjectPtr obj;
 >>--obj = context->SupplierItem(sobj);-----------------------------------><
 ]]>
 </programlisting>
-<para>Return the current Rexx supplier object item.
+<para>Return the current Rexx supplier item object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -8538,7 +8550,7 @@ RexxObjectPtr obj;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx object item at the current position in the supplier.</para>
+<para>The Rexx object item at the current supplier position.</para>
 </section>
 
 <section id="mthSupplierNext"><title>SupplierNext</title>
@@ -8613,8 +8625,10 @@ RexxSupplierObjectPtr sobj;
 >>--context->Terminate();----------------------------------------------><
 ]]>
 </programlisting>
-<para>Terminates the current Rexx interpreter instance and releases
-all storage associated with that instance.
+<para>Terminates the current Rexx interpreter instance.  Terminate() may
+only be called from the thread context that originally created the interpreter
+instance.  This call will wait for all threads to complete processing before
+returning.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -8656,12 +8670,12 @@ RexxObjectPtr obj;
 >>--obj = context->True();-----------------------------------------------><
 ]]>
 </programlisting>
-<para>This method returns a Rexx true ( 1 ) object.
+<para>This method returns the Rexx .true object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the new Rexx object.</para>
+<para>The Rexx .true object.</para>
 </section>
 
 <section id="mthUintptr"><title>Uintptr</title>
@@ -8703,13 +8717,13 @@ uintptr_t n;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first converts a C unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object.
-The second converts a Rexx object into a C unsigned integer pointed to by <emphasis role="italic">n</emphasis>.
-</para>
+The first converts the uintptr_t value <emphasis role="italic">n</emphasis> to a Rexx object.
+The second converts a Rexx object to a uintptr_t value and returns it in the location
+pointed to by <emphasis role="italic">n</emphasis>.
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned integer to be converted in the first form or
+    <listitem><para>The uintptr_t value to be converted in the first form or
     the target of the conversion in the second form of the method.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
@@ -8758,16 +8772,16 @@ uintptr_t n;
 >>--obj = context->UintptrToObject(&n);----------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object.
+<para>Convert a uintptr_t value <emphasis role="italic">n</emphasis> to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned integer to be converted.</para></listitem>
+    <listitem><para>The uintptr_t value to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C unsigned integer.</para>
+<para>A Rexx object that represents the uintptr_t value.</para>
 </section>
 
 <section id="mthUnsignedInt32"><title>UnsignedInt32</title>
@@ -8809,17 +8823,18 @@ uint32_t n;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first convert a C 32-bit unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object.
-The second converts a Rexx object  a C 32-bit unsigned integer pointed to by <emphasis role="italic">n</emphasis>.
+The first convert a C 32-bit unsigned integer <emphasis role="italic">n</emphasis> to a Rexx object.
+The second converts a Rexx object to a uint32_t value and returns it in the location
+pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned integer to be converted.for the first form of the method.
+    <listitem><para>The uint32_t value to be converted.for the first form of the method.
        For the second form this is the target of the conversion.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned integer to be converted.</para></listitem>
+    <listitem><para>The Rexx object to be converted to a uint32_t value.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -8864,16 +8879,16 @@ uint32_t n;
 >>--obj = context->UnsignedInt32ToObject(n);-----------------------------><
 ]]>
 </programlisting>
-<para>Convert a C 32-bit unsigned integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
+<para>Convert a C 32-bit unsigned integer <emphasis role="italic">n</emphasis> to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned integer to be converted.</para></listitem>
+    <listitem><para>The uint32_t value to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C unsigned integer.</para>
+<para>A Rexx object that represents the C unsigned integer.</para>
 </section>
 
 <section id="mthUnsignedInt64"><title>UnsignedInt64</title>
@@ -8915,17 +8930,18 @@ uint64_t n;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first convert a C 64-bit unsigned integer pointed to by <emphasis role="italic">n</emphasis> to a Rexx object.
-The second converts a Rexx object  a C 64-bit unsigned integer pointed to by <emphasis role="italic">n</emphasis>.
+The first converts a C 64-bit unsigned integer <emphasis role="italic">n</emphasis> to a Rexx object.
+The second converts a Rexx object to a uint64_t value and returns it in the location
+pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned integer to be converted.for the first form of the method.
+    <listitem><para>The uint64_t value to be converted.for the first form of the method.
        For the second form this is the target of the conversion.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned integer to be converted.</para></listitem>
+    <listitem><para>The Rexx object to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -8970,16 +8986,16 @@ uint64_t n;
 >>--obj = context->UnsignedInt64ToObject(n);-----------------------------><
 ]]>
 </programlisting>
-<para>Convert a C 64-bit unsigned integer pointer to by <emphasis role="italic">n</emphasis> to a Rexx object.
+<para>Convert a C 64-bit unsigned integer <emphasis role="italic">n</emphasis> to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C pointer to the unsigned integer to be converted.</para></listitem>
+    <listitem><para>The uint64_t value to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C unsigned integer.</para>
+<para>A Rexx object that represents the C unsigned integer.</para>
 </section>
 
 <section id="mthValuesToObject"><title>ValuesToObject</title>
@@ -9015,16 +9031,18 @@ ValueDescriptor desc[3];
 >>--obj = context->ValuesToObject(desc);---------------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx ValueDescriptor struct array to a Rexx array object.
+<para>Converts an array of ValueDescriptor structs to an array of Rexx objects.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">desc</emphasis></term>
-    <listitem><para>A C pointer to the ValueDescriptor struct array to be converted.</para></listitem>
+    <listitem><para>A C pointer to the ValueDescriptor struct array to be converted.  The end of the
+    array is marked by a ValueDescriptor struct with all fields set to zero.
+    </para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx array object that contains the converted C ValueDescriptors.</para>
+<para>A Rexx array object containing the converted objects.</para>
 </section>
 
 <section id="mthValueToObject"><title>ValueToObject</title>
@@ -9060,16 +9078,21 @@ ValueDescriptor desc;;
 >>--obj = context->ValueToObject(&desc);---------------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx valueDescriptor struct to a Rexx object.
+<para>Convert a type to a Rexx object representation.  The source type is identified
+by the ValueDescriptor structure, and can by any of the types that may be
+used as a method or routine return types.  For many conversions, it may be
+more appropriate to use more targetted routines such as WholeNumberToObject().
+ValueToObject() is capable of converting to types such as int8_t for which
+there are no specific conversion APIs.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">desc</emphasis></term>
-    <listitem><para>A C pointer to the ValueDescriptor struct to be converted.</para></listitem>
+    <listitem><para>A C pointer to the ValueDescriptor struct describing the value to be converted.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C ValueDescriptor.</para>
+<para>The Rexx object representing the converted value.</para>
 </section>
 
 <section id="mthWholeNumber"><title>WholeNumber</title>
@@ -9111,16 +9134,17 @@ logical_t flag;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first form converts a C signed integer to a Rexx object.
-The second form converts a a Rexx object to a C signed integer.
+The second converts a Rexx object to a wholenumber_t value and returns it in the location
+pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
     <varlistentry><term><emphasis role="italic">n</emphasis></term>
-    <listitem><para>The C whole number to be converted.</para></listitem>
+    <listitem><para>The wholenumber_t value to be converted.for the first form of the method.
+       For the second form this is the target of the conversion.</para></listitem>
     </varlistentry>
     <varlistentry><term><emphasis role="italic">obj</emphasis></term>
-    <listitem><para>The target Rexx object of the conversion.</para></listitem>
+    <listitem><para>The source Rexx object for the conversion.</para></listitem>
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -9165,7 +9189,7 @@ wholenumber_t n;
 >>--obj = context->WholeNumberToObject(n);-------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C signed integer to a Rexx object.
+<para>Convert a C wholenumber_t value to a Rexx object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <variablelist>
@@ -9174,7 +9198,7 @@ wholenumber_t n;
     </varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the Rexx object that represents the C whole number.</para>
+<para>A Rexx object that represents the C whole number.</para>
 </section>
 
 
