@@ -62,7 +62,7 @@ more powerful than the List Box control.
 Styles</emphasis>: The List-View control has been updated by Microsoft to
 include a number of <emphasis role="italic">extended</emphasis> styles.  These
 styles are similar to the styles that can be used to create a ListControl, (see
-the <link linkend="addlistcontrol">AddListControl</link> method,) like the
+the <link linkend="mthAddListControl">AddListControl</link> method,) like the
 <computeroutput>NOHEADER</computeroutput> or
 <computeroutput>SINGLESEL</computeroutput> styles.  However, the way that they
 are added or removed from the ListControl is different.  For instance, the
@@ -228,6 +228,14 @@ the methods listed in the
 <entry><link linkend="mthGetCheck">GetCheck</link></entry>
 </row>
 <row>
+<entry>getColumnCount</entry>
+<entry><link linkend="mthGetColumnCount">getColumnCount</link></entry>
+</row>
+<row>
+<entry>getColumnOrder</entry>
+<entry><link linkend="mthGetColumnCount">getColumnOrder</link></entry>
+</row>
+<row>
 <entry>GetExtendedStyle</entry>
 <entry><link linkend="mthGetExtendedStyle">GetExtendedStyle</link></entry>
 </row>
@@ -238,6 +246,10 @@ the methods listed in the
 <row>
 <entry>GetHoverTime</entry>
 <entry><link linkend="mthGetHoverTime">GetHoverTime</link></entry>
+</row>
+<row>
+<entry>getImageList</entry>
+<entry><link linkend="mthGetImageList">getImageList</link></entry>
 </row>
 <row>
 <entry>Insert</entry>
@@ -324,8 +336,8 @@ the methods listed in the
 <entry><link linkend="redrawitems">RedrawItems</link></entry>
 </row>
 <row>
-<entry>RemoveImages</entry>
-<entry><link linkend="removeimages">RemoveImages</link></entry>
+<entry>RemoveImages <emphasis role="bold">Deprecated</emphasis></entry>
+<entry><link linkend="removeimages">RemoveImages</link> <emphasis role="bold">Deprecated</emphasis></entry>
 </row>
 <row>
 <entry>RemoveExtendedStyle</entry>
@@ -336,8 +348,8 @@ the methods listed in the
 <entry><link linkend="removestyle">RemoveStyle</link></entry>
 </row>
 <row>
-<entry>RemoveSmallImages</entry>
-<entry><link linkend="removesmallimages">RemoveSmallImages</link></entry>
+<entry>RemoveSmallImages <emphasis role="bold">Deprecated</emphasis></entry>
+<entry><link linkend="removesmallimages">RemoveSmallImages</link> <emphasis role="bold">Deprecated</emphasis></entry>
 </row>
 <row>
 <entry>ReplaceExtendedStyle</entry>
@@ -376,8 +388,16 @@ the methods listed in the
 <entry><link linkend="mthSetHoverTime">SetHoverTime</link></entry>
 </row>
 <row>
-<entry>SetImages</entry>
-<entry><link linkend="setimages">SetImages</link></entry>
+<entry>setImageList</entry>
+<entry><link linkend="mthSetImageList">setImageList</link></entry>
+</row>
+<row>
+<entry>SetImages <emphasis role="bold">Deprecated</emphasis></entry>
+<entry><link linkend="setimages">SetImages</link> <emphasis role="bold">Deprecated</emphasis></entry>
+</row>
+<row>
+<entry>setColumnOrder</entry>
+<entry><link linkend="mthSetColumnOrder">setColumnOrder</link></entry>
 </row>
 <row>
 <entry>SetItemPos</entry>
@@ -392,8 +412,8 @@ the methods listed in the
 <entry><link linkend="setitemtext">SetItemText</link></entry>
 </row>
 <row>
-<entry>SetSmallImages</entry>
-<entry><link linkend="setsmallimages">SetSmallImages</link></entry>
+<entry>SetSmallImages <emphasis role="bold">Deprecated</emphasis></entry>
+<entry><link linkend="setsmallimages">SetSmallImages</link> <emphasis role="bold">Deprecated</emphasis></entry>
 </row>
 <row>
 <entry>SmallSpacing</entry>
@@ -529,7 +549,7 @@ of a list view control and sets new styles.</para>
 <varlistentry><term>newStyle</term>
 <listitem><para>The new window styles to be set, which is one or more of the styles
 listed in the syntax diagram, separated by blanks. For an explanation
-of the different styles, refer to <link linkend="addlistcontrol">AddListControl</link>.
+of the different styles, refer to <link linkend="mthAddListControl">AddListControl</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -595,7 +615,7 @@ list view control.</para>
 <varlistentry><term>style</term>
 <listitem><para>The window styles to be added, which is one or more of the styles listed
 in the syntax diagram, separated by blanks. For an explanation of the different
-styles, refer to <link linkend="addlistcontrol">AddListControl</link>.
+styles, refer to <link linkend="mthAddListControl">AddListControl</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -649,7 +669,7 @@ styles of a list view control.</para>
 <varlistentry><term>style</term>
 <listitem><para>The window styles to be removed, which is one or more of the styles
 listed in the syntax diagram, separated by blanks. For an explanation of the
-different styles, refer to <link linkend="addlistcontrol">AddListControl</link>.
+different styles, refer to <link linkend="mthAddListControl">AddListControl</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -2017,6 +2037,277 @@ is sized automatically.
 </variablelist>
 </section>
 
+<section id="mthGetColumnCount"><title>getColumnCount</title>
+<indexterm><primary>getColumnCount</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getColumnCount----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  This method returns the number of columns in the list-view control when it is in report view.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns the number of colunms, or -1 on some error. An error is unlikely.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This method is straight forward to use:
+<programlisting>
+<![CDATA[
+colCount = list~getColumnCount
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListControl::getColumnCount() -->
+
+
+<section id="mthGetColumnOrder"><title>getColumnOrder</title>
+<indexterm><primary>getColumnOrder</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getColumnOrder----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the current column order of the list-view when in report view. The order of the columns can
+  be changed programmatically by using  the <link linkend="mthSetColumnOrder">setColumnOrder</link>()
+  method. In XP and later there is also an <link linkend="mthAddExtendedStyle">extended</link> style
+  which lets the user rearrange the order of the columns. If the list-view control has not had the
+  columns rearranged, then the column order will always be 0, 1, 2, ... of course.
+</para>
+<para>
+  One practical use of this method would be in conjuction with the <link
+  linkend="mthSetColumnOrder">setColumnOrder</link>() method. In an application where the user can
+  rearrange the column order, the programmer could get the order when a dialog closes, save it, and then
+  restore the order to the user's preference when the application is restarted.
+</para>
+<para>
+  Note that the list-view control does not have to have the HEADERDRAGDROP style for the get and set
+  column order methods to work. That style is only needed to allow the user to rearrange the columns
+  using drag and drop. The programmer can use <link linkend="mthSetColumnOrder">setColumnOrder</link>()
+  to change the order of the columns whether or not the list-view has the HEADERDRAGDROP style, or not.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>an <computeroutput>.Array</computeroutput> object</term>
+        <listitem>
+          <para>
+            An array is returned with the index numbers of the columns. The number at the first position
+            in the array is the column index of the left-most column. The number in the second position
+            in the array is the index of the second left-most column, etc..
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term><computeroutput>.nil</computeroutput></term>
+        <listitem>
+          <para>
+            <computeroutput>.nil</computeroutput> is returned for some unexpected error.  This is
+            unlikely.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example prints out the column order when the dialog is first initialized, and then prints out
+      the order when the dialog closes.
+<programlisting>
+<![CDATA[
+  ...
+  list = self~getListControl(100)
+
+  columnNames = .array~of("Occupation", "Name", "Age", "Sex")
+  list~addExtendedStyle("FULLROWSELECT GRIDLINES CHECKBOXES HEADERDRAGDROP")
+
+  list~InsertColumn(0, columnNames[1], 95)
+  list~InsertColumn(1, columnNames[2], 95)
+  list~InsertColumn(2, columnNames[3], 95)
+  list~InsertColumn(3, columnNames[4], 35)
+
+  self~printColumnOrder
+  ...
+
+::method close
+
+  self~printColumnOrder
+  return self~ok:super
+
+::method printColumnOrder private
+  expose list columnNames
+
+  cols = list~getColumnOrder
+  say 'cols:' cols
+  say 'Column count: ' list~getColumnCount
+  say 'Current order:'
+  if cols~isA(.array) then do c over cols
+    -- Column indexes are zero-based
+    c += 1
+    say " " columnNames[c]
+  end
+
+/* Output might be, (assuming the user changed the order):
+
+cols: an Array
+Column count:  4
+Current order:
+  Occupation
+  Name
+  Age
+  Sex
+
+cols: an Array
+Column count:
+Current order:
+  Age
+  Name
+  Sex
+  Occupation
+
+*/
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListControl::getColumnOrder() -->
+
+
+<section id="mthSetColumnOrder"><title>setColumnOrder</title>
+<indexterm><primary>setColumnOrder</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setColumnOrder(--order--)-----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Changes the column order of a list-view control to some other order. Typically this method might be
+  used along with the <link linkend="mthGetColumnOrder">getColumnOrder</link>() method to save and
+  restore the user's column order. But, it can also be used to programmatically change the column order
+  for any reason.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The single required argument is:
+    <variablelist>
+      <varlistentry><term>order</term>
+      <listitem>
+        <para>
+          An array containing the index numbers of the columns in their new order. The number at the
+          first position in the array is the column index of the column that should be the left-most. The
+          number at the second position in the array, and so on.
+        </para>
+        <para>
+          The array has to contain the same number of items as the number of columns with no empty
+          indexes.
+        </para>
+        <para>
+          If non-valid column indexes are intermingled with valid column indexes, then the columns are
+          re-ordered, but with no easily predictable pattern.  If all the number are invalid column
+          indexes, then the order of the columns remains unchanged. This behavior is the behavior of the
+          underlying control, ooDialog has no control over it.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term><computeroutput>.true</computeroutput></term>
+        <listitem>
+          <para>
+            The method succeeded.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term><computeroutput>.false</computeroutput></term>
+        <listitem>
+          <para>
+            Some error occurred. This is unlikely.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      In this example an application has two modes. One mode emphasizes the occupation of the people in a
+      database, the other mode emphasizes the people. The order of the columns is occupation, name, ...
+      for the first mode and name, occupation, ... for the second mode. When the mode of the application
+      changes, the order of the columns also changes.
+<programlisting>
+<![CDATA[
+  ...
+  list = self~getListControl(100)
+
+  columnNames = .array~of("Occupation", "Name", "Age", "Sex")
+  list~addExtendedStyle("FULLROWSELECT GRIDLINES CHECKBOXES")
+
+  list~InsertColumn(0, columnNames[1], 95)
+  list~InsertColumn(1, columnNames[2], 95)
+  list~InsertColumn(2, columnNames[3], 95)
+  list~InsertColumn(3, columnNames[4], 35)
+  ...
+
+::method toggleColumnOrder private
+  expose list
+
+  order = list~getColumnOrder
+  tmp = order[1]
+  order[1] = order[2]
+  order[2] = tmp
+  list~setColumnOrder(order)
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListControl::setColumnOrder() -->
+
 <section id="stringwidth"><title>StringWidth</title>
 <indexterm><primary>StringWidth</primary></indexterm>
 <programlisting>
@@ -3348,7 +3639,217 @@ This is the default.
 </variablelist>
 </section>
 
-<section id="setsmallimages"><title>SetSmallImages</title>
+<section id="mthSetImageListClsListControl"><title>setImageList</title>
+<indexterm><primary>setImageList</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setImageList(--newImageList-,-+----------+--)-------------------><
+                                  +--,-type--+
+]]>
+</programlisting>
+
+<para>
+  Assigns, or removes, an image list for the list-view control. Using
+  <computeroutput>.nil</computeroutput> for the first argument removes the current image list. The
+  list-view control can use image lists for a number of things, the large icons, small icons, the state
+  images and the group header images. (ooDialog does not yet support list-view groups.)
+</para>
+<para>
+  Unless a list-view has the LVS_SHAREIMAGELISTS style, (corresponds to the SHAREIMAGES style in the
+  <link linkend="mthAddListControl">addListControl</link>() method,) the list-view control will handle
+  releasing the image list(s). When the share image lists style is used, ownership of the image list
+  remains with the programmer. The <link linkend="clsImageList">ImageList</link> and <link
+  linkend="clsImage">Image</link> classes are used to manage image lists and images in ooDialog. The
+  documentation on both classes discusses when and why the programmer may want to release image lists.
+  The Image class documentation has the most detail on this subject.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>newImageList</term>
+      <listitem>
+        <para>
+          The <link linkend="clsImageList">image list</link> to assign to the list-view. If this argument
+          is <computeroutput>.nil</computeroutput> the existing image list, if any, is removed.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>type</term>
+      <listitem>
+        <para>
+          Optional. Specifies which image list to assign, (or remove.) You can use <link
+          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          following symbols:
+          <simplelist type='horiz' columns='2'>
+          <member>LVSIL_NORMAL</member>
+          <member>LVSIL_SMALL </member>
+          <member>LVSIL_STATE </member>
+          </simplelist>
+          or use the correct numeric value itself.  Note that there is also a LVSIL_GROUPHEADER symbol,
+          but ooDialog does not yet support it.
+        </para>
+        <para>
+          The default is LVSIL_NORMAL.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The existing image list is returned, if there is one. Otherwise,
+      <computeroutput>.nil</computeroutput> is returned.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example creates an image list using the application icons that ooDialog makes available
+      for general use. The image list is assigned as the normal icon image list.
+<programlisting>
+<![CDATA[
+::method initDialog
+  expose list
+
+  list  = self~getListControl(IDC_LV_IMAGES)
+
+  ids = .array~new()
+  ids[1] = self~constDir[IDI_DLG_OODIALOG]
+  ids[2] = self~constDir[IDI_DLG_APPICON]
+  ids[3] = self~constDir[IDI_DLG_APPICON2]
+  ids[4] = self~constDir[IDI_DLG_OOREXX]
+
+  SM_CXICON = 11
+  SM_CYICON = 12
+
+  size = .Size~new(.DlgUtil~getSystemMetrics(SM_CXICON), .DlgUtil~getSystemMetrics(SM_CYICON))
+
+  oodModule = .ResourceImage~new("oodialog.dll", self)
+  icons = oodModule~getImages(ids, .Image~id(IMAGE_ICON), size)
+
+  flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+  imageList = .ImageList~create(size, flags, 4, 0)
+  imageList~addImages(icons)
+
+  list~setImageList(imageList, .Image~id(LVSIL_NORMAL))
+
+  names = .array~new()
+  names[1] = "IDI_DLG_OODIALOG"
+  names[2] = "IDI_DLG_APPICON"
+  names[3] = "IDI_DLG_APPICON2"
+  names[4] = "IDI_DLG_OOREXX"
+
+  do i = 1 to ids~items
+    list~add(names[i], i - 1)
+  end
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListControl::setImageList() -->
+
+<section id="mthGetImageListClsListControl"><title>getImageList</title>
+<indexterm><primary>getImageList</primary>
+<secondary>ListControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getImageList(--+--------+--)------------------------------------><
+                   +--type--+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the current image list for the type specified. The default is to retrieve the image list for
+  the normal icons. See the <link linkend="mthSetImageListClsListControl"></link>() method for infomation
+  on assigning an image list to a list-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The single optional argument is:
+    <variablelist>
+      <varlistentry><term>type</term>
+      <listitem>
+        <para>
+          Optional. Specifies which image list to retrieve. You can use <link
+          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          following symbols:
+          <simplelist type='horiz' columns='2'>
+          <member>LVSIL_NORMAL</member>
+          <member>LVSIL_SMALL </member>
+          <member>LVSIL_STATE </member>
+          </simplelist>
+          or use the correct numeric value itself. Note that there is also a LVSIL_GROUPHEADER symbol,
+          but ooDialog does not yet support it.
+        </para>
+        <para>
+          The default is LVSIL_NORMAL.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns the current <link linkend="clsImageList">image list</link>, if there is one.
+      <computeroutput>.nil</computeroutput> is returned if there is no current image list of the type
+      specified.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example comes from a complex application that opens and closes a large number of dialogs and
+      uses many list-view controls. All the list-view controls share the same image lists. When the last
+      dialog is closed, the shared image lists are released to free up system resources as the
+      application enters its next phase.
+<programlisting>
+<![CDATA[
+::method ok
+  self~checkImageLists
+  return self~ok:super
+
+::method cancel
+  self~checkImageLists
+  return self~cancel:super
+
+::method checkImageLists
+  expose list
+
+  if self~amLastDialog then do
+    types = .array~of(LVSIL_NORMAL, LVSIL_SMALL, LVSIL_STATE)
+
+    do type over types
+      il = list~getImageList(type)
+      if il \== .nil then il~release
+    end
+  end
+
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListControl::getImageList() -->
+
+<section id="setsmallimages"><title>SetSmallImages (deprecated)</title>
 <indexterm><primary>SetSmallImages</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3396,7 +3897,7 @@ or specify 0, the height of the image in the image file is used.
 </variablelist>
 </section>
 
-<section id="setimages"><title>SetImages</title>
+<section id="setimages"><title>SetImages (deprecated)</title>
 <indexterm><primary>SetImages</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
@@ -3445,7 +3946,7 @@ or specify 0, the height of the image in the image file is used.
 </variablelist>
 </section>
 
-<section id="removesmallimages"><title>RemoveSmallImages</title>
+<section id="removesmallimages"><title>RemoveSmallImages (deprecated)</title>
 <indexterm><primary>RemoveSmallImages</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3472,7 +3973,7 @@ of a small-icon list view control.</para>
 </variablelist>
 </section>
 
-<section id="removeimages"><title>RemoveImages</title>
+<section id="removeimages"><title>RemoveImages (deprecated)</title>
 <indexterm><primary>RemoveImages</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
