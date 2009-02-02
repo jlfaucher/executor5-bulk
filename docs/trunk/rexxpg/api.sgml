@@ -207,8 +207,8 @@ options[1].optionName = NULL;
 </listitem></varlistentry>
 <varlistentry><term>REGISTERED_EXITS</term>
 <listitem><para>Specifies a list of system exits that will be used with this interpreter
-instance.  The exits are a list of RXSYSEXIT structs.  Each enabled exit is
-specified in a single RXSYSEXIT struct identifying the type of the exit and the
+instance.  The exits are a list of RXRexxContextExit structs.  Each enabled exit is
+specified in a single RXRexxContextExit struct identifying the type of the exit and the
 name of the registered exit handler.
 The list is terminated by an instance using an
 exit type of 0.  The registered exits are called using the RexxExitHandler calling convention.
@@ -1167,7 +1167,1048 @@ RexxMethod3(size_t, stream_charout, CSELF, streamPtr, OPTIONAL_RexxStringObject,
 </section>
 
 <section id="exitsapi"><title>Rexx Exits Interface</title>
-<para>This section describes how to define a Rexx exit.</para>
+<indexterm><primary>exits</primary></indexterm>
+<indexterm><primary>application programming interfaces</primary>
+<secondary>exit interface</secondary></indexterm>
+<indexterm><primary>application programming interfaces</primary>
+<secondary>exit handler</secondary></indexterm>
+<para>The Rexx system exits let the programmer create a customized Rexx operating
+environment. You can set up user-defined exit handlers to process specific
+Rexx activities.</para>
+<para>Applications can create exits for:</para>
+<itemizedlist>
+<listitem><para>The administration of resources at the beginning and the end
+of interpretation</para></listitem>
+<listitem><para>Linkages to external functions and subcommand handlers</para></listitem>
+<listitem><para>Special language features; for example, input and output to
+standard resources</para></listitem>
+<listitem><para>Polling for halt and external trace events</para></listitem>
+</itemizedlist>
+<para>Direct exit handlers are specified when the interpreter instance is created, and
+reside as entry points within the application that creates the terpreter instance.
+</para>
+
+<section id="writedirexithandler"><title>Writing Context Exit Handlers</title>
+<indexterm><primary>RexxContextExitHandler interface</primary>
+<secondary>definition</secondary></indexterm>
+<para>The following is a sample exit handler
+definition: </para>
+<programlisting>
+<![CDATA[
+int REXXENTRY Rexx_IO_exit(
+     RexxExitContext *context,   // the exit context API vector
+     int   exitNumber,           // code defining the exit function
+     int   subfunction,          // code defining the exit subfunction
+     PEXIT parmBlock);           // function-dependent control block
+]]>
+</programlisting>
+<para>where:</para>
+<variablelist>
+<varlistentry><term>context</term>
+<listitem><para>is RexxExitContext vector tha provides access to interpreter services
+for this call out.
+</para></listitem></varlistentry>
+<varlistentry><term>exitNumber</term>
+<listitem><para>is the major function code defining the type of exit call.
+</para></listitem></varlistentry>
+<varlistentry><term>subfunction</term>
+<listitem><para>is the subfunction code defining the exit event for the call.
+</para></listitem></varlistentry>
+<varlistentry><term>parmBlock</term>
+<listitem><para>is a pointer to the exit parameter list. </para>
+<para>The exit parameter list
+contains exit-specific information. See the exit descriptions following the
+parameter list formats. </para>
+
+<note>
+<para>Some exit subfunctions do not have
+parameters. <emphasis role="italic">parmBlock</emphasis> is set to null for exit subfunctions without
+parameters.</para></note>
+</listitem></varlistentry>
+</variablelist>
+
+<section id="exitrc"><title>Exit Return Codes</title>
+<para>Exit handlers return an integer value that signals one of the following
+actions:</para>
+<variablelist>
+<varlistentry><term>RXEXIT_HANDLED</term>
+<listitem><para>The exit handler processed the exit subfunction and updated the subfunction
+parameter list as required. The Rexx interpreter continues with processing
+as usual.
+</para></listitem></varlistentry>
+<varlistentry><term>RXEXIT_NOT_HANDLED</term>
+<listitem><para>The exit handler did not process the exit subfunction. The Rexx interpreter
+processes the subfunction as if the exit handler were not called.
+</para></listitem></varlistentry>
+<varlistentry><term>RXEXIT_RAISE_ERROR</term>
+<listitem><para>A fatal error occurred in the exit handler. The Rexx interpreter raises
+Rexx error 48 (&quot;Failure in system service&quot;).  Other errors can be
+raised using the <link linkend="mthRaiseException">RaiseException() API</link> provided
+by the exit context.
+</para></listitem></varlistentry>
+</variablelist>
+<para>For example, if an application creates an input/output exit handler, one
+of the following happens: </para>
+<itemizedlist>
+<listitem><para>When the exit handler returns RXEXIT_NOT_HANDLED for an RXSIOSAY
+subfunction, the Rexx interpreter writes the output line to STDOUT.</para></listitem>
+<listitem><para>When the exit handler returns RXEXIT_HANDLED for an RXSIOSAY subfunction,
+the Rexx interpreter assumes the exit handler has handled all required output.
+The interpreter does not write the output line to STDOUT.</para></listitem>
+<listitem><para>When the exit handler returns RXEXIT_RAISE_ERROR for an RXSIOSAY
+subfunction, the interpreter raises Rexx error 48, &quot;Failure in system
+service&quot;.</para></listitem>
+</itemizedlist>
+</section>
+
+<section id="exitparm"><title>Exit Parameters</title>
+<para>Each exit subfunction has a different parameter list. All RXSTRING exit
+subfunction parameters are passed as null-terminated strings. The terminating
+null is not included in the length stored in the RXSTRING structures.
+The string values pointed to by the RXSTRING structs
+may also contain null characters.</para>
+<para>For some exit subfunctions, the exit handler can return an RXSTRING
+character result in the parameter list. The interpreter provides a default 256-byte
+RXSTRING for the result string. If the result is longer than 256 bytes,
+a new RXSTRING can be allocated using
+<computeroutput>RexxAllocateMemory(size)</computeroutput>. The Rexx interpreter
+will release the allocated storage after the exit handler returns.</para>
+</section>
+
+<section id="identifyexithandl"><title>Identifying Exit Handlers to Rexx</title>
+<para>System exit handlers are specified using the DIRECT_EXITS option when
+the interpreter instance is created.
+The exits are specified using a RexxContextExit structure identifying which
+exits will be enabled.
+</para>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RexxContextExit data structure</secondary></indexterm>
+
+</section>
+</section>
+
+<section id="contextexitdef"><title>Context Exit Definitions</title>
+<para>The Rexx interpreter supports the following system exits: </para>
+<variablelist>
+<varlistentry><term>RXFNC
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXFNC exit</secondary></indexterm>
+</term>
+<listitem><para>External function call exit.
+<variablelist>
+<varlistentry><term>RXFNCCAL</term>
+<listitem><para>Call an external function.  This exit is
+called at the beginning of the search for external functions, allowing
+external functions calls to be intercepted.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>RXOFNC
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXOFNC exit</secondary></indexterm>
+</term>
+<listitem><para>Object oriented external function call exit.
+<variablelist>
+<varlistentry><term>RXOFNCCAL</term>
+<listitem><para>Call an external function.  This exit is
+called at the beginning of the search for external functions, allowing
+external functions calls to be intercepted.  This is an extended version of
+the RXFNC exit that passes arguments as object references and allows object return
+values.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>RXEXF
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXEXF exit</secondary></indexterm>
+</term>
+<listitem><para>Scripting external function call exit.
+<variablelist>
+<varlistentry><term>RXEXFCAL</term>
+<listitem><para>Call an external function.  This exit is
+called at the end of the search for external functions if no suitable call target
+has been found.  This allows applications to extend the external function search order.
+Like the RXOFNC exit, the RXEXF exit will pass function arguments and return values
+as Rexx objects.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>RXCMD
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXCMD exit</secondary></indexterm>
+</term>
+<listitem><para>Subcommand call exit.
+<variablelist>
+<varlistentry><term>RXCMDHST</term>
+<listitem><para>Call a subcommand handler.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>RXMSQ
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXMSQ exit</secondary></indexterm>
+</term>
+<listitem><para>External data queue exit.
+<variablelist>
+<varlistentry><term>RXMSQPLL</term>
+<listitem><para>Pull a line from the external data queue.
+</para></listitem></varlistentry>
+<varlistentry><term>RXMSQPSH</term>
+<listitem><para>Place a line in the external data queue.
+</para></listitem></varlistentry>
+<varlistentry><term>RXMSQSIZ</term>
+<listitem><para>Return the number of lines in the external data queue.
+</para></listitem></varlistentry>
+<varlistentry><term>RXMSQNAM</term>
+<listitem><para>Set the active external data queue name.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>RXSIO
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXSIO exit</secondary></indexterm>
+</term>
+<listitem><para>Standard input and output exit.
+<variablelist>
+<varlistentry><term>RXSIOSAY</term>
+<listitem><para>Write a line to the standard output stream for the SAY instruction.
+</para></listitem></varlistentry>
+<varlistentry><term>RXSIOTRC</term>
+<listitem><para>Write a line to the standard error stream for the Rexx trace or Rexx
+error messages.
+</para></listitem></varlistentry>
+<varlistentry><term>RXSIOTRD</term>
+<listitem><para>Read a line from the standard input stream for PULL or PARSE PULL.
+</para></listitem></varlistentry>
+<varlistentry><term>RXSIODTR</term>
+<listitem><para>Read a line from the standard input stream for interactive debugging.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>RXNOVAL
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXNOVAL exit</secondary></indexterm>
+</term>
+<listitem><para>NOVALUE exit.
+<variablelist>
+<varlistentry><term>RXNOVALCALL</term>
+<listitem><para>Process a variable NOVALUE condition.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>RXVALUE
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXVALUE exit</secondary></indexterm>
+</term>
+<listitem><para>VALUE built-in function extension.
+<variablelist>
+<varlistentry><term>RXVALUECALL</term>
+<listitem><para>Process a VALUE() built-in function call for an unknown named environment.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>RXHLT
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXHLT exit</secondary></indexterm>
+</term>
+<listitem><para>Halt processing exit.
+<variablelist>
+<varlistentry><term>RXHLTTST</term>
+<listitem><para>Test for a HALT condition.
+</para></listitem></varlistentry>
+<varlistentry><term>RXHLTCLR</term>
+<listitem><para>Clear a HALT condition.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>RXTRC
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXTRC exit</secondary></indexterm>
+</term>
+<listitem><para>External trace exit.
+<variablelist>
+<varlistentry><term>RXTRCTST</term>
+<listitem><para>Test for an external trace event.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>RXINI
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXINI exit</secondary></indexterm>
+</term>
+<listitem><para>Initialization exit.
+<variablelist>
+<varlistentry><term>RXINIEXT</term>
+<listitem><para>Allow additional Rexx procedure initialization.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term>RXTER
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXTER exit</secondary></indexterm>
+</term>
+<listitem><para>Termination exit.
+<variablelist>
+<varlistentry><term>RXTEREXT</term>
+<listitem><para>Process Rexx procedure termination.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+<para>The following sections describe each exit subfunction, including: </para>
+<itemizedlist>
+<listitem><para>The service the subfunction provides</para></listitem>
+<listitem><para>When Rexx calls the exit handler</para></listitem>
+<listitem><para>The default action when the exit is not provided or the exit handler does
+not process the subfunction</para></listitem>
+<listitem><para>The exit action</para></listitem>
+<listitem><para>The subfunction parameter list</para></listitem>
+</itemizedlist>
+
+<section id="oorxofnch"><title>RXOFNC</title>
+<indexterm><primary>external function exit</primary></indexterm>
+<indexterm><primary>RXOFNC exit</primary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXOFNC exit</secondary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>external function exit</secondary></indexterm>
+<para>Processes calls to external functions.</para>
+<para></para>
+<variablelist>
+<varlistentry><term>RXOFNCCAL</term>
+<listitem><para>Processes calls to external functions.</para>
+<itemizedlist>
+<listitem><para>When called: At beginning of the search for an external routine or
+function.</para></listitem>
+<listitem><para>Default action: Call the external routine using
+the usual external function search order.</para></listitem>
+<listitem><para>Exit action: Call the external routine, if possible.</para></listitem>
+<listitem><para>Continuation: If necessary, raise Rexx error 40
+(&quot;Incorrect call to routine&quot;), 43 (&quot;Routine not found&quot;),
+or 44 (&quot;Function or message did not return data&quot;).</para></listitem>
+<listitem><para>Parameter list: </para>
+<programlisting>
+<![CDATA[
+
+typedef  struct _RXOFNC_FLAGS {        /* fl */
+   unsigned rxfferr  : 1;              /* Invalid call to routine.   */
+   unsigned rxffnfnd : 1;              /* Function not found.        */
+   unsigned rxffsub  : 1;              /* Called as a subroutine     */
+}  RXOFNC_FLAGS ;
+
+typedef  struct _RXOFNCCAL_PARM {      /* fnc */
+   RXOFNC_FLAGS      rxfnc_flags ;     /* function flags             */
+   CONSTRXSTRING     rxfnc_name;       // the called function name
+   size_t            rxfnc_argc;       /* Number of args in list.    */
+   RexxObjectPtr    *rxfnc_argv;       /* Pointer to argument list.  */
+   RexxObjectPtr     rxfnc_retc;       /* Return value.              */
+}  RXOFNCCAL_PARM;
+]]>
+</programlisting>
+<para>The name of the external function is defined
+by <emphasis role="italic">rxfnc_name</emphasis> CONSTRXSTRING value.
+The arguments to the
+function are in <emphasis role="italic">rxfnc_argv</emphasis> array and
+<emphasis role="italic">rxfnc_argc</emphasis> gives the number of arguments.
+If you
+call the named external function with the Rexx CALL instruction (rather than
+using a function call), the flag <emphasis role="italic">rxffsub</emphasis>
+is TRUE.</para>
+<para>The exit
+handler can set <emphasis role="italic">rxfnc_flags</emphasis>
+to indicate whether the external function
+call was successful. If neither <emphasis role="italic">rxfferr</emphasis> nor
+<emphasis role="italic">rxffnfnd</emphasis> is
+TRUE, the exit handler successfully called the external function. The error
+flags are checked only when the exit handler handles the request.</para>
+<para>The exit handler sets <emphasis role="italic">rxffnfnd</emphasis>
+to TRUE when the exit handler cannot locate
+the external function. The interpreter raises Rexx error 43, &quot;Routine not
+found&quot;. The exit handler sets <emphasis role="italic">rxfferr</emphasis>
+to TRUE when the exit handler
+locates the external function, but the external function returned an error
+return code. The Rexx interpreter raises error 40,
+&quot;Incorrect call to routine.&quot;</para>
+<para>The exit handler returns the external function result in the
+<emphasis role="italic">rxfnc_retc</emphasis> RXSTRING.
+The Rexx interpreter raises error 44, &quot;Function
+or method did not return data,&quot; when the external routine is called as
+a function and the exit handler does not return a result. When the external
+routine is called with the Rexx CALL instruction, a result is not
+required.
+</para></listitem></itemizedlist>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="oorxexfh"><title>RXEXF</title>
+<indexterm><primary>scripting function exit</primary></indexterm>
+<indexterm><primary>RXEXF exit</primary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXEXF exit</secondary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>scripting function exit</secondary></indexterm>
+<para>Processes calls to external functions.</para>
+<para></para>
+<variablelist>
+<varlistentry><term>RXEXFCAL</term>
+<listitem><para>Processes calls to external functions.</para>
+<itemizedlist>
+<listitem><para>When called: At end of the search for an external routine or
+function when no suitable call target has been located.</para></listitem>
+<listitem><para>Default action: Raise error 43 (&quot;Routine not found&quot;).
+</para></listitem>
+<listitem><para>Exit action: Call the external routine, if possible.</para></listitem>
+<listitem><para>Continuation: If necessary, raise Rexx error 40
+(&quot;Incorrect call to routine&quot;), 43 (&quot;Routine not found&quot;),
+or 44 (&quot;Function or message did not return data&quot;).</para></listitem>
+<listitem><para>Parameter list: </para>
+<programlisting>
+<![CDATA[
+
+typedef  struct _RXEXF_FLAGS {         /* fl */
+   unsigned rxfferr  : 1;              /* Invalid call to routine.   */
+   unsigned rxffnfnd : 1;              /* Function not found.        */
+   unsigned rxffsub  : 1;              /* Called as a subroutine     */
+}  RXEXT_FLAGS ;
+
+typedef  struct _RXEXFCAL_PARM {       /* fnc */
+   RXEXF_FLAGS       rxfnc_flags ;     /* function flags             */
+   CONSTRXSTRING     rxfnc_name;       // the called function name
+   size_t            rxfnc_argc;       /* Number of args in list.    */
+   RexxObjectPtr    *rxfnc_argv;       /* Pointer to argument list.  */
+   RexxObjectPtr     rxfnc_retc;       /* Return value.              */
+}  RXEXFCAL_PARM;
+]]>
+</programlisting>
+<para>The name of the external function is defined
+by <emphasis role="italic">rxfnc_name</emphasis> CONSTRXSTRING value.
+The arguments to the
+function are in <emphasis role="italic">rxfnc_argv</emphasis> array and
+<emphasis role="italic">rxfnc_argc</emphasis> gives the number of arguments.
+If you
+call the named external function with the Rexx CALL instruction (rather than
+using a function call), the flag <emphasis role="italic">rxffsub</emphasis>
+is TRUE.</para>
+<para>The exit
+handler can set <emphasis role="italic">rxfnc_flags</emphasis>
+to indicate whether the external function
+call was successful. If neither <emphasis role="italic">rxfferr</emphasis> nor
+<emphasis role="italic">rxffnfnd</emphasis> is
+TRUE, the exit handler successfully called the external function. The error
+flags are checked only when the exit handler handles the request.</para>
+<para>The exit handler sets <emphasis role="italic">rxffnfnd</emphasis>
+to TRUE when the exit handler cannot locate
+the external function. The interpreter raises Rexx error 43, &quot;Routine not
+found&quot;. The exit handler sets <emphasis role="italic">rxfferr</emphasis>
+to TRUE when the exit handler
+locates the external function, but the external function returned an error
+return code. The Rexx interpreter raises error 40,
+&quot;Incorrect call to routine.&quot;</para>
+<para>The exit handler returns the external function result in the
+<emphasis role="italic">rxfnc_retc</emphasis> RXSTRING.
+The Rexx interpreter raises error 44, &quot;Function
+or method did not return data,&quot; when the external routine is called as
+a function and the exit handler does not return a result. When the external
+routine is called with the Rexx CALL instruction, a result is not
+required.
+</para></listitem></itemizedlist>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="oorxfnch"><title>RXFNC</title>
+<indexterm><primary>external function exit</primary></indexterm>
+<indexterm><primary>RXFNC exit</primary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXFNC exit</secondary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>external function exit</secondary></indexterm>
+<para>Processes calls to external functions.</para>
+<para></para>
+<variablelist>
+<varlistentry><term>RXFNCCAL</term>
+<listitem><para>Processes calls to external functions.</para>
+<itemizedlist>
+<listitem><para>When called: At beginning of the search for an external routine or
+function.</para></listitem>
+<listitem><para>Default action: Call the external routine using
+the usual external function search order.</para></listitem>
+<listitem><para>Exit action: Call the external routine, if possible.</para></listitem>
+<listitem><para>Continuation: If necessary, raise Rexx error 40
+(&quot;Incorrect call to routine&quot;), 43 (&quot;Routine not found&quot;),
+or 44 (&quot;Function or message did not return data&quot;).</para></listitem>
+<listitem><para>Parameter list: </para>
+<programlisting>
+<![CDATA[
+typedef struct {
+   struct {
+      unsigned rxfferr  : 1;           /* Invalid call to routine.    */
+      unsigned rxffnfnd : 1;           /* Function not found.         */
+      unsigned rxffsub  : 1;           /* Called as a subroutine if   */
+                                       /* TRUE.  Return values are    */
+                                       /* optional for subroutines,   */
+                                       /* required for functions.     */
+   } rxfnc_flags ;
+
+   const char *      rxfnc_name;       /* Pointer to function name.   */
+   unsigned short    rxfnc_namel;      /* Length of function name.    */
+   const char *      rxfnc_que;        /* Current queue name.         */
+   unsigned short    rxfnc_quel;       /* Length of queue name.       */
+   unsigned short    rxfnc_argc;       /* Number of args in list.     */
+   PCONSTRXSTRING    rxfnc_argv;       /* Pointer to argument list.   */
+                                       /* List mimics argv list for   */
+                                       /* function calls, an array of */
+                                       /* RXSTRINGs.                  */
+   RXSTRING          rxfnc_retc;       /* Return value.               */
+} RXFNCCAL_PARM;
+]]>
+</programlisting>
+<para>The name of the external function is defined
+by <emphasis role="italic">rxfnc_name</emphasis> and
+<emphasis role="italic">rxfnc_namel</emphasis>. The arguments to the
+function are in <emphasis role="italic">rxfnc_argc</emphasis> and
+<emphasis role="italic">rxfnc_argv</emphasis>. If you
+call the named external function with the Rexx CALL instruction (rather than
+using a function call), the flag <emphasis role="italic">rxffsub</emphasis>
+is TRUE.</para>
+<para>The exit
+handler can set <emphasis role="italic">rxfnc_flags</emphasis>
+to indicate whether the external function
+call was successful. If neither <emphasis role="italic">rxfferr</emphasis> nor
+<emphasis role="italic">rxffnfnd</emphasis> is
+TRUE, the exit handler successfully called the external function. The error
+flags are checked only when the exit handler handles the request.</para>
+<para>The exit handler sets <emphasis role="italic">rxffnfnd</emphasis>
+to TRUE when the exit handler cannot locate
+the external function. The interpreter raises Rexx error 43, &quot;Routine not
+found&quot;. The exit handler sets <emphasis role="italic">rxfferr</emphasis>
+to TRUE when the exit handler
+locates the external function, but the external function returned an error
+return code. The Rexx interpreter raises error 40,
+&quot;Incorrect call to routine.&quot;</para>
+<para>The exit handler returns the external function result in the
+<emphasis role="italic">rxfnc_retc</emphasis> RXSTRING.
+The Rexx interpreter raises error 44, &quot;Function
+or method did not return data,&quot; when the external routine is called as
+a function and the exit handler does not return a result. When the external
+routine is called with the Rexx CALL instruction, a result is not
+required.</para>
+<para>The RXFNC translates all call arguments to string values and only allows a
+string value as a return value.  To access call arguments as Rexx objects, use
+the RXOFNC exit.
+</para></listitem></itemizedlist>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="oorxcmdh"><title>RXCMD</title>
+<indexterm><primary>external command exit</primary></indexterm>
+<indexterm><primary>host command exit</primary></indexterm>
+<indexterm><primary>RXCMD exit</primary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXCMD exit</secondary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>host command exit</secondary></indexterm>
+<para>Processes calls to subcommand handlers. </para>
+<para></para>
+<variablelist>
+<varlistentry><term>RXCMDHST</term>
+<listitem><para>Calls a named subcommand handler.</para>
+<itemizedlist>
+<listitem><para>When called: When Rexx procedure issues a command.</para></listitem>
+<listitem><para>Default action: Call the named subcommand handler
+specified by the current Rexx ADDRESS setting.</para></listitem>
+<listitem><para>Exit action: Process the call to a named subcommand
+handler.</para></listitem>
+<listitem><para>Continuation: Raise the ERROR or FAILURE condition
+when indicated by the parameter list flags.</para></listitem>
+<listitem><para>Parameter list: </para>
+<programlisting>
+<![CDATA[
+typedef struct {
+   struct {                            /* Condition flags             */
+      unsigned rxfcfail : 1;           /* Command failed.  Trap with  */
+                                       /* CALL or SIGNAL on FAILURE.  */
+      unsigned rxfcerr  : 1;           /* Command ERROR occurred.     */
+                                       /* Trap with CALL or SIGNAL on */
+                                       /* ERROR.                      */
+   } rxcmd_flags;
+   const char *      rxcmd_address;    /* Pointer to address name.    */
+   unsigned short    rxcmd_addressl;   /* Length of address name.     */
+   const char *      rxcmd_dll;        /* dll name for command.       */
+   unsigned short    rxcmd_dll_len;    /* Length of dll name.  0 ==>  */
+                                       /* executable file.            */
+   CONSTRXSTRING     rxcmd_command;    /* The command string.         */
+   RXSTRING          rxcmd_retc;       /* Pointer to return code      */
+                                       /* buffer.  User allocated.    */
+} RXCMDHST_PARM;
+]]>
+</programlisting>
+<para>The <emphasis role="italic">rxcmd_command</emphasis> field contains
+the issued command. <emphasis role="italic">Rxcmd_address</emphasis>,
+<emphasis role="italic">rxcmd_addressl</emphasis>,
+<emphasis role="italic">rxcmd_dll</emphasis>, and
+<emphasis role="italic">rxcmd_dll_len</emphasis> fully define the current
+ADDRESS setting. <emphasis role="italic">Rxcmd_retc</emphasis> is an RXSTRING
+for the return code value assigned to Rexx special variable RC.</para>
+<para>The exit handler can set <emphasis role="italic">rxfcfail</emphasis>
+or <emphasis role="italic">rxfcerr</emphasis>
+to TRUE to raise an ERROR or FAILURE condition.</para></listitem>
+</itemizedlist>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="oorxmsqh"><title>RXMSQ</title>
+<indexterm><primary>external queue exit</primary></indexterm>
+<indexterm><primary>queue exit</primary></indexterm>
+<indexterm><primary>RXMSQ exit</primary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXMSQ exit</secondary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>queue exit</secondary></indexterm>
+<para>External data queue exit. </para>
+<variablelist>
+<varlistentry><term>RXMSQPLL</term>
+<listitem><para>Pulls a line from the external data queue. </para>
+<itemizedlist>
+<listitem><para>When called: When a Rexx PULL instruction, PARSE
+PULL instruction, or LINEIN built-in function reads a line from the external
+data queue.</para></listitem>
+<listitem><para>Default action: Remove a line from the current Rexx
+data queue.</para></listitem>
+<listitem><para>Exit action: Return a line from the data queue that
+the exit handler provided.</para></listitem>
+<listitem><para>Parameter list: </para>
+<programlisting>
+<![CDATA[
+typedef struct {
+   RXSTRING          rxmsq_retc;       /* Pointer to dequeued entry   */
+                                       /* buffer.  User allocated.    */
+} RXMSQPLL_PARM;
+]]>
+</programlisting>
+<para>The exit handler returns the queue line in
+the <emphasis role="italic">rxmsq_retc</emphasis> RXSTRING.</para>
+</listitem></itemizedlist>
+</listitem></varlistentry>
+<varlistentry><term>RXMSQPSH</term>
+<listitem><para>Places a line in the external data queue. </para>
+<itemizedlist>
+<listitem><para>When called: When a Rexx PUSH instruction, QUEUE
+instruction, or LINEOUT built-in function adds a line to
+the data queue.</para></listitem>
+<listitem><para>Default action: Add the line to the current Rexx
+data queue.</para></listitem>
+<listitem><para>Exit action: Add the line to the data queue that
+the exit handler provided.</para></listitem>
+<listitem><para>Parameter list: </para>
+<programlisting>
+<![CDATA[
+typedef struct {
+   struct {                            /* Operation flag              */
+      unsigned rxfmlifo : 1;           /* Stack entry LIFO when TRUE, */
+                                       /* FIFO when FALSE.            */
+   } rxmsq_flags;
+   CONSTRXSTRING     rxmsq_value;      /* The entry to be pushed.     */
+} RXMSQPSH_PARM;
+]]>
+</programlisting>
+<para>The <emphasis role="italic">rxmsq_value</emphasis> RXSTRING contains
+the line added to the queue. It is the responsibility of the exit handler
+to truncate the string if the exit handler data queue has a maximum length
+restriction. <emphasis role="italic">Rxfmlifo</emphasis>
+is the stacking order (LIFO or FIFO).</para></listitem></itemizedlist>
+</listitem></varlistentry>
+<varlistentry><term>RXMSQSIZ</term>
+<listitem><para>Returns the number of lines in the external data queue.</para>
+<itemizedlist>
+<listitem><para>When called: When the Rexx QUEUED built-in function
+requests the size of the external data queue.</para></listitem>
+<listitem><para>Default action: Request the size of the current
+Rexx data queue.</para></listitem>
+<listitem><para>Exit action: Return the size of the data queue that
+the exit handler provided.</para></listitem>
+<listitem><para>Parameter list: </para>
+<programlisting>
+<![CDATA[
+typedef struct {
+   size_t            rxmsq_size;       /* Number of Lines in Queue    */
+} RXMSQSIZ_PARM;
+]]>
+</programlisting>
+<para>The exit handler returns the number of queue
+lines in <emphasis role="italic">rxmsq_size</emphasis>.</para>
+</listitem></itemizedlist>
+</listitem></varlistentry>
+<varlistentry><term>RXMSQNAM</term>
+<listitem><para>Sets the name of the active external data queue.
+<itemizedlist>
+<listitem><para>When called: Called by
+the RXQUEUE("SET", <emphasis role="italic">newname</emphasis>)
+ built-in function.</para></listitem>
+<listitem><para>Default action: Change the current default queue
+to <emphasis role="italic">newname</emphasis>.</para></listitem>
+<listitem><para>Exit action: Change the default queue name for the
+data queue that the exit handler provided.</para></listitem>
+<listitem><para>Parameter list:</para>
+<programlisting>
+<![CDATA[
+typedef struct {
+   CONSTRXSTRING     rxmsq_name;       /* RXSTRING containing         */
+                                       /* queue name.                 */
+} RXMSQNAM_PARM;
+]]>
+</programlisting>
+<para><emphasis role="italic">rxmsq_name</emphasis> contains the new queue
+name.</para></listitem></itemizedlist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="oorxsioh"><title>RXSIO</title>
+<indexterm><primary>external I/O exit</primary></indexterm>
+<indexterm><primary>session I/O exit</primary></indexterm>
+<indexterm><primary>RXSIO exit</primary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXSIO exit</secondary></indexterm>
+<para>Standard input and output. </para>
+<note>
+<para>The PARSE LINEIN instruction
+and the LINEIN, LINEOUT, LINES, CHARIN, CHAROUT, and CHARS built-in functions
+do not call the RXSIO exit handler.</para></note>
+<para></para>
+<variablelist>
+<varlistentry><term>RXSIOSAY</term>
+<listitem><para>Writes a line to the standard output stream. </para>
+<itemizedlist>
+<listitem><para>When called: When the SAY instruction writes a line
+to the standard output stream.</para></listitem>
+<listitem><para>Default action: Write a line to the standard output
+stream (STDOUT).</para></listitem>
+<listitem><para>Exit action: Write a line to the output stream that
+the exit handler provided.</para></listitem>
+<listitem><para>Parameter list:</para>
+<programlisting>
+<![CDATA[
+typedef struct {
+   CONSTRXSTRING      rxsio_string;     /* String to display.          */
+} RXSIOSAY_PARM;
+]]>
+</programlisting>
+<para>The output line is contained in
+<emphasis role="italic">rxsio_string</emphasis>. The output line can be of any
+length. It is the responsibility of the
+exit handler to truncate or split the line if necessary.</para></listitem>
+</itemizedlist>
+</listitem></varlistentry>
+<varlistentry><term>RXSIOTRC</term>
+<listitem><para>Writes trace and error message output to the standard error
+stream.
+<itemizedlist>
+<listitem><para>When called: To output lines of trace output and
+Rexx error messages.</para></listitem>
+<listitem><para>Default action: Write a line to the standard error
+stream (.ERROR).</para></listitem>
+<listitem><para>Exit action: Write a line to the error output stream
+that the exit handler provided.</para></listitem>
+<listitem><para>Parameter list:</para>
+<programlisting>
+<![CDATA[
+typedef struct {
+   CONSTRXSTRING       rxsio_string;     /* Trace line to display.      */
+} RXSIOTRC_PARM;
+]]>
+</programlisting>
+<para>The output line is contained in
+<emphasis role="italic">rxsio_string</emphasis>. The output line can be of any
+length. It is the responsibility of the
+exit handler to truncate or split the line if necessary.</para></listitem>
+</itemizedlist>
+</para></listitem></varlistentry>
+<varlistentry><term>RXSIOTRD</term>
+<listitem><para>Reads from standard input stream.
+<itemizedlist>
+<listitem><para>When called: To read from the standard input stream
+for the Rexx PULL and PARSE PULL instructions.</para></listitem>
+<listitem><para>Default action: Read a line from the standard input
+stream (STDIN).</para></listitem>
+<listitem><para>Exit action: Return a line from the standard input
+stream that the exit handler provided.</para></listitem>
+<listitem><para>Parameter list:</para>
+<programlisting>
+<![CDATA[
+typedef struct {
+   RXSTRING          rxsiotrd_retc;    /* RXSTRING for input.         */
+} RXSIOTRD_PARM;
+]]>
+</programlisting>
+<para>The input stream line is returned in the
+<emphasis role="italic">rxsiotrd_retc</emphasis> RXSTRING.</para>
+</listitem></itemizedlist>
+</para></listitem></varlistentry>
+<varlistentry><term>RXSIODTR</term>
+<listitem><para>Interactive debug input.
+<itemizedlist>
+<listitem><para>When called: To read from the debug input stream
+for interactive debug prompts.</para></listitem>
+<listitem><para>Default action: Read a line from the standard input
+stream (STDIN).</para></listitem>
+<listitem><para>Exit action: Return a line from the standard debug
+stream that the exit handler provided.</para></listitem>
+<listitem><para>Parameter list: </para>
+<programlisting>
+<![CDATA[
+typedef struct {
+   RXSTRING          rxsiodtr_retc;    /* RXSTRING for input.         */
+} RXSIODTR_PARM;
+]]>
+</programlisting>
+<para>The input stream line is returned in the
+<emphasis role="italic">rxsiodtr_retc</emphasis> RXSTRING.</para>
+</listitem></itemizedlist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="oorxnoval"><title>RXNOVAL</title>
+<indexterm><primary>NOVALUE exit</primary></indexterm>
+<indexterm><primary>RXNOVAL exit</primary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXNOVAL exit</secondary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>NOVALUE exit</secondary></indexterm>
+<para>Processes NOVALUE variable conditions. </para>
+<para></para>
+<variablelist>
+<varlistentry><term>RXNOVALCALL</term>
+<listitem><para>Processes a Rexx NOVALUE condition.
+<itemizedlist>
+<listitem><para>When called: Before the interpreter raises a NOVALUE condition.
+The exit is given the opportunity to provide a value to the unassigned variable.</para></listitem>
+<listitem><para>Default action: Raise a NOVALUE condition for an unassigned variable. </para></listitem>
+<listitem><para>Exit action: Return an initial value for an unassigned variable.
+</para></listitem>
+<listitem><para>Continuation: If the exit provides a value for the unassigned variable,
+that value is assigned to the indicated variable.  The exit will not be called for the
+same variable on the next reference unless the variable is dropped.  If a value is not
+returned, a NOVALUE condition will be raised.  If SIGNAL ON NOVALUE is not enabled,
+the variable name will be returned as the value.
+.</para></listitem>
+<listitem><para>Parameter list:</para>
+<programlisting>
+<![CDATA[
+
+typedef  struct _RXVARNOVALUE_PARM {   /* var */
+   RexxStringObject  variable_name;    // the request variable name
+   RexxObjectPtr     value;            // returned variable value
+}  RXVARNOVALUE_PARM;
+]]>
+</programlisting>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="oorxvalue"><title>RXVALUE</title>
+<indexterm><primary>VALUE exit</primary></indexterm>
+<indexterm><primary>RXVALUE exit</primary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXVALUE exit</secondary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>NOVALUE exit</secondary></indexterm>
+<para>Extends the environments available to the VALUE() built-in function.</para>
+<para></para>
+<variablelist>
+<varlistentry><term>RXVALUECALL</term>
+<listitem><para>Processes an extended call to the VALUE() built-in function.
+<itemizedlist>
+<listitem><para>When called: When the VALUE() built-in function is called with an unknown
+environment name.
+The exit is given the opportunity to provide a value for the given environment selector.</para></listitem>
+<listitem><para>Default action: Raise a SYNTAX error for an unknown environment name. </para></listitem>
+<listitem><para>Exit action: Return a value for the given name/environment pair.
+</para></listitem>
+<listitem><para>Continuation: If the exit provides a value for the VALUE() call, that value is
+returned as a result.
+.</para></listitem>
+<listitem><para>Parameter list:</para>
+<programlisting>
+<![CDATA[
+
+typedef  struct _RXVALCALL_PARM {      /* val */
+   RexxStringObject  selector;         // the environment selector name
+   RexxStringObject  variable_name;    // the request variable name
+   RexxObjectPtr     value;            // returned variable value
+}  RXVALCALL_PARM;
+]]>
+</programlisting>
+<para>
+If the newValue argument is specified on the VALUE() built-in function, that value
+is assigned to <emphasis role="italic">value</emphasis> on the call to the exit.
+</para>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="oohltcon"><title>RXHLT</title>
+<indexterm><primary>external HALT exit</primary></indexterm>
+<indexterm><primary>RXHLT exit</primary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXHLT exit</secondary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>external HALT exit</secondary></indexterm>
+<para>HALT condition processing. </para>
+<para>Because the RXHLT exit handler
+is called after every Rexx instruction, enabling this exit slows Rexx program
+execution. The RexxSetHalt function can halt a Rexx program without
+between-instruction polling.</para>
+<variablelist>
+<varlistentry><term>RXHLTTST</term>
+<listitem><para>Tests the HALT indicator.
+<itemizedlist>
+<listitem><para>When called: When the interpreter polls externally
+raises HALT conditions. The exit will be called after completion of every
+Rexx instruction.</para></listitem>
+<listitem><para>Default action: The interpreter uses the system
+facilities for trapping Cntrl-Break signals.</para></listitem>
+<listitem><para>Exit action: Return the current state of the HALT
+condition (either TRUE or FALSE).</para></listitem>
+<listitem><para>Continuation: Raise the Rexx HALT condition if the
+exit handler returns TRUE.</para></listitem>
+<listitem><para>Parameter list:</para>
+<programlisting>
+<![CDATA[
+typedef struct {
+   struct {                            /* Halt flag                   */
+      unsigned rxfhhalt : 1;           /* Set if HALT occurred.       */
+   } rxhlt_flags;
+} RXHLTTST_PARM;
+]]>
+</programlisting>
+<para>If the exit handler sets <emphasis role="italic">rxfhhalt</emphasis> to
+TRUE, the HALT condition is raised in the Rexx program.</para>
+<para>The Rexx program can retrieve the reason string using the CONDITION("D")
+built-in function.</para></listitem></itemizedlist>
+</para></listitem></varlistentry>
+<varlistentry><term>RXHLTCLR</term>
+<listitem><para>Clears the HALT condition.
+<itemizedlist>
+<listitem><para>When called: When the interpreter has recognized
+and raised a HALT condition, to acknowledge processing of the HALT condition.</para></listitem>
+<listitem><para>Default action: The interpreter resets the Cntrl-Break
+signal handlers.</para></listitem>
+<listitem><para>Exit action: Reset exit handler HALT state to FALSE.</para></listitem>
+<listitem><para>Parameters: None.</para></listitem></itemizedlist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="oorxtrch"><title>RXTRC</title>
+<indexterm><primary>external trace exit</primary></indexterm>
+<indexterm><primary>RXTRC exit</primary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXTRC exit</secondary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>tracing exit</secondary></indexterm>
+<para>Tests the external trace indicator. </para>
+<note>
+<para>Because the RXTRC exit
+is called after every Rexx instruction, enabling this exit slows Rexx procedure
+execution. The <link linkend="mthSetThreadTrace">SetThreadTrace()</link>
+method can turn on Rexx tracing without the
+between-instruction polling.</para></note>
+<para></para>
+<variablelist>
+<varlistentry><term>RXTRCTST</term>
+<listitem><para>Tests the external trace indicator.
+<itemizedlist>
+<listitem><para>When called: When the interpreter polls for an external
+trace event. The exit is called after completion of every Rexx instruction.</para></listitem>
+<listitem><para>Default action: None.</para></listitem>
+<listitem><para>Exit action: Return the current state of external
+tracing (either TRUE or FALSE).</para></listitem>
+<listitem><para>Continuation: When the exit handler switches from
+FALSE to TRUE, the Rexx interpreter enters the interactive Rexx debug mode
+using TRACE ?R level of tracing. When the exit handler switches from TRUE
+to FALSE, the Rexx interpreter exits the interactive debug mode.</para></listitem>
+<listitem><para>Parameter list:</para>
+<programlisting>
+<![CDATA[
+typedef struct {
+   struct {
+      unsigned rxftrace : 1;        /* External trace setting        */
+   } rxtrc_flags;
+} RXTRCTST_PARM;
+]]>
+</programlisting>
+<para>If the exit handler switches <emphasis role="italic">rxftrace</emphasis>
+to TRUE, Rexx switches on the interactive debug mode. If the exit handler
+switches <emphasis role="italic">rxftrace</emphasis> to FALSE, Rexx switches
+off the interactive debug mode.</para></listitem></itemizedlist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="oorxinih"><title>RXINI</title>
+<indexterm><primary>RXINI exit</primary></indexterm>
+<indexterm><primary>initialization exit</primary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXINI exit</secondary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>initialization exit</secondary></indexterm>
+<para>Initialization processing. This exit is called as the last step of Rexx
+program initialization. </para>
+<variablelist>
+<varlistentry><term>RXINIEXT</term>
+<listitem><para>Initialization exit.
+<itemizedlist>
+<listitem><para>When called: Before the first instruction of the
+Rexx procedure is interpreted.</para></listitem>
+<listitem><para>Default action: None.</para></listitem>
+<listitem><para>Exit action: The exit handler can perform additional
+initialization. For example:
+<itemizedlist>
+<listitem><para>Use <link linkend="mthSetContextVariable">SetContextVariable()</link>
+API to initialize application-specific
+variables.</para></listitem>
+<listitem><para>Use <link linkend="mthSetThreadTrace">SetThreadTrace()</link> API
+to switch on the interactive Rexx debug mode.
+</para></listitem>
+</itemizedlist>
+</para></listitem>
+<listitem><para>Parameters: None.</para></listitem></itemizedlist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="oorxterh"><title>RXTER</title>
+<indexterm><primary>RXTER exit</primary></indexterm>
+<indexterm><primary>termination exit</primary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>RXTER exit</secondary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>termination exit</secondary></indexterm>
+<indexterm><primary>RexxContextExit interface</primary>
+<secondary>exit functions</secondary></indexterm>
+<para>Termination processing.</para>
+<para>The RXTER exit is called as the first step of Rexx program termination.</para>
+<variablelist>
+<varlistentry><term>RXTEREXT</term>
+<listitem><para>Termination exit.
+<itemizedlist>
+<listitem><para>When called: After the last instruction of the Rexx
+procedure has been interpreted.</para></listitem>
+<listitem><para>Default action: None.</para></listitem>
+<listitem><para>Exit action: The exit handler can perform additional
+termination activities. For example, the exit handler can use
+<link linkend="mthSetContextVariable">SetContextVariable()</link>
+to retrieve the Rexx variable values.</para></listitem>
+<listitem><para>Parameters: None.</para></listitem></itemizedlist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section>
 </section>
 
 <section id="commandapi"><title>Command Handler Interface</title>
