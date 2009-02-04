@@ -68,7 +68,7 @@ SGML_FILES = classes.sgml \
 IMAGE_FILES = ReportObject.png \
 	      BallObject.png \
 	      BallObjectData.png \
-	      EncapsulateObject.png \
+	      EncapsulatedObject.png \
 	      rxo90008.jpg \
 	      rxo90011.jpg \
 	      rxo90014.jpg \
