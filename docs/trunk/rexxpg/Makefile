@@ -65,9 +65,9 @@ SGML_FILES = classes.sgml \
 	     ../shared/gethelp.sgml \
 	     ../shared/CPLv1.0.sgml
 
-IMAGE_FILES = ReportObject.jpg \
-	      rxo90005.jpg \
-	      rxo90006.jpg \
+IMAGE_FILES = ReportObject.png \
+	      BallObject.png \
+	      BallObjectData.png \
 	      rxo90007.jpg \
 	      rxo90008.jpg \
 	      rxo90011.jpg \
