@@ -3849,156 +3849,48 @@ This is the default.
 </variablelist>
 </section>  <!-- End ListControl::getImageList() -->
 
-<section id="setsmallimages"><title>SetSmallImages (deprecated)</title>
-<indexterm><primary>SetSmallImages</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aListControl~SetSmallImages(--bitmap--+-----------------------------+--)-><
-                                         +-,--+-------+--+-----------+-+
-                                              +-width-+  +-,--height-+
-
-
-]]>
-</programlisting>
-
-<para>The SetSmallImages method assigns an image list
-to a small-icon list view control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>bitmap</term>
-<listitem><para>The name of, or handle to, a bitmap file that has already been loaded
-using the <link linkend="h000667">LoadBitmap</link> method.
-</para></listitem></varlistentry>
-<varlistentry><term>width</term>
-<listitem><para>The width of each image, in pixels. If you do not specify this argument
-or specify 0, the width of the image in the image file is used.
-</para></listitem></varlistentry>
-<varlistentry><term>height</term>
-<listitem><para>The height of each image, in pixels. If you do not specify this argument
-or specify 0, the height of the image in the image file is used.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the image list, or -1 if you did not specify <emphasis role="italic">bitmap</emphasis>, or 0 in all other cases.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example connects a bitmap file with a small-icon list:
-<programlisting>
-<![CDATA[
-::method InitSmallIconList
-  curList = self~GetListControl(104)
-  curList~SetSmallImages("oodlist.BMP",16,12)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
+<section id="setsmallimages"><title>setSmallImages (deprecated)</title>
+<indexterm><primary>setSmallImages</primary>
+<secondary>deprecated</secondary></indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsListControl">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para></note>
 </section>
 
-<section id="setimages"><title>SetImages (deprecated)</title>
-<indexterm><primary>SetImages</primary>
-<secondary>ListControl class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aListControl~SetImages(--bitmap--+-----------------------------+--)-><
-                                    +-,--+-------+--+-----------+-+
-                                         +-width-+  +-,--height-+
-
-
-]]>
-</programlisting>
-
-<para>The SetImages method assigns an image list to an
-icon list view control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>bitmap</term>
-<listitem><para>The name of, or handle to, a bitmap file that has already been loaded
-using the <link linkend="h000667">LoadBitmap</link> method.
-</para></listitem></varlistentry>
-<varlistentry><term>width</term>
-<listitem><para>The width of each image, in pixels. If you do not specify this argument
-or specify 0, the width of the image in the image file is used.
-</para></listitem></varlistentry>
-<varlistentry><term>height</term>
-<listitem><para>The height of each image, in pixels. If you do not specify this argument
-or specify 0, the height of the image in the image file is used.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the image list, or -1 if you did not specify <emphasis role="italic">bitmap</emphasis>, or 0 in all other cases.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example connects a bitmap file with an icon list:
-<programlisting>
-<![CDATA[
-::method InitIconList
-  curList = self~GetListControl(104)
-  curList~SetImages("oodlist.BMP",16,12)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
+<section id="setimages"><title>setImages (deprecated)</title>
+<indexterm><primary>setImages</primary>
+<secondary>deprecated</secondary></indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsListControl">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para></note>
 </section>
 
-<section id="removesmallimages"><title>RemoveSmallImages (deprecated)</title>
-<indexterm><primary>RemoveSmallImages</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aListControl~RemoveSmallImages------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The RemoveSmallImages method erases an image list
-of a small-icon list view control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The image list was erased.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>For all other cases.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
+<section id="removesmallimages"><title>removeSmallImages (deprecated)</title>
+<indexterm><primary>removeSmallImages</primary>
+<secondary>deprecated</secondary></indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsListControl">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para></note>
 </section>
 
-<section id="removeimages"><title>RemoveImages (deprecated)</title>
-<indexterm><primary>RemoveImages</primary>
-<secondary>ListControl class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aListControl~RemoveImages-----------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The RemoveImages method erases an image list of
-an icon list view control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The image list was erased.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>For all other cases.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
+<section id="removeimages"><title>removeImages (deprecated)</title>
+<indexterm><primary>removeImages</primary>
+<secondary>deprecated</secondary></indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsListControl">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para></note>
 </section>
 
 <section id="findlc"><title>Find</title>
