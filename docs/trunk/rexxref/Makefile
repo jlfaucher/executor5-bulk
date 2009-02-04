@@ -146,7 +146,7 @@ IMAGE_FILES = ooRexxObjectClass.png \
               ReportObject.png \
 	      BallObject.png \
 	      BallObjectData.png \
-	      rxo90007.jpg \
+	      EncapsulatedObject.png \
 	      rxo90008.jpg \
 	      rxo90011.jpg \
 	      rxo90014.jpg \
@@ -154,11 +154,11 @@ IMAGE_FILES = ooRexxObjectClass.png \
 	      rxo90018.jpg \
 	      rxo90019.jpg \
 	      rxo90020.jpg \
-	      rxor0f01.jpg \
-	      rxor0f08.jpg \
-	      rxor0f09.jpg \
-	      rxor0f10.jpg \
-	      rxor0f11.jpg \
+	      MultipleRequires.png \
+	      EarlyReply.png \
+	      BeforeReply.png \
+	      AfterReply.png \
+	      IndirectRecursion.png \
               externalFunction.png \
               externalFileSearch.png \
  	      oorexx.jpg \
