@@ -143,7 +143,7 @@ IMAGE_FILES = ooRexxObjectClass.png \
               templates1.png \
               templates2.png \
               templates3.png \
-              rxo90004.jpg \
+              ReportObject.jpg \
 	      rxo90005.jpg \
 	      rxo90006.jpg \
 	      rxo90007.jpg \
