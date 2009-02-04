@@ -1929,7 +1929,7 @@ for POSITION, which is to be 4:
   pos = .DlgUtil~hiWord(ev_pos)
 
   -- redraw scroll bar with new position
-  self~GetScrollBar("MYSCROLL")~SetPos(pos,1)
+  self~GetScrollBar("MYSCROLL")~setPos(pos,1)
 
   say "Pos:" pos
   say "Verify event code (should be 4):" .DlgUtil~loWord(ev_pos)
@@ -1953,7 +1953,7 @@ by extracting the high-order word.</para>
 ]]>
 </programlisting>
 <para>If the user changed the
-scroll bar position, you must set the scroll bar position with <link linkend="setpos">SetPos</link> to
+scroll bar position, you must set the scroll bar position with <link linkend="setpos">setPos</link> to
 keep the selected position.</para></listitem>
 </orderedlist>
 </note>

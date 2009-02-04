@@ -152,8 +152,8 @@ the methods listed in the
 <entry><link linkend="setpagestep">SetPageStep</link></entry>
 </row>
 <row>
-<entry>SetPos</entry>
-<entry><link linkend="setpossc">SetPos</link></entry>
+<entry>setPos</entry>
+<entry><link linkend="setpossc">setPos</link></entry>
 </row>
 <row>
 <entry>SetSelEnd</entry>
@@ -203,20 +203,20 @@ position.
 </variablelist>
 </section>
 
-<section id="setpossc"><title>SetPos</title>
-<indexterm><primary>SetPos</primary>
+<section id="setpossc"><title>setPos</title>
+<indexterm><primary>setPos</primary>
 <secondary>SliderControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                    +-0-+
->>-aSliderControl~SetPos(--pos--,--+---+--)--------------------><
+>>-aSliderControl~setPos(--pos--,--+---+--)--------------------><
                                    +-1-+
 
 
 ]]>
 </programlisting>
 
-<para>The SetPos method sets the new logical position
+<para>The setPos method sets the new logical position
 of the slider and redraws the slider if required.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -238,12 +238,12 @@ the new position is set regardless of the redraw argument.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example sets the slider to the maximum position, with
-the range of the slider already been set to 0 to 100 using the SetRange method:
+the range of the slider already been set to 0 to 100 using the setRange method:
 <programlisting>
 <![CDATA[
 ::method SetToMax
   ctrl=self~GetSliderControl("IDC_1")
-  ctrl~SetPos(100,1)
+  ctrl~setPos(100,1)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>

@@ -86,31 +86,31 @@ methods listed in the
 <entry><link linkend="range">Range</link></entry>
 </row>
 <row>
-<entry>SetRange</entry>
-<entry><link linkend="setrange">SetRange</link></entry>
+<entry>setRange</entry>
+<entry><link linkend="setrange">setRange</link></entry>
 </row>
 <row>
-<entry>SetPos</entry>
-<entry><link linkend="setpos">SetPos</link></entry>
+<entry>setPos</entry>
+<entry><link linkend="setpos">setPos</link></entry>
 </row>
 </tbody></tgroup>
 </table>
 </listitem></varlistentry>
 </variablelist>
 
-<section id="setrange"><title>SetRange</title>
-<indexterm><primary>SetRange</primary>
+<section id="setrange"><title>setRange</title>
+<indexterm><primary>setRange</primary>
 <secondary>ScrollBar class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aScrollBar~SetRange(--min--,--max--+-----------+--)---------><
+>>-aScrollBar~setRange(--min--,--max--+-----------+--)---------><
                                       +-,--redraw-+
 
 
 ]]>
 </programlisting>
 
-<para>The SetRange method sets the minimum and maximum
+<para>The setRange method sets the minimum and maximum
 positions for the associated scroll bar.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -163,19 +163,19 @@ positions of the associated scroll bar.</para>
 </variablelist>
 </section>
 
-<section id="setpos"><title>SetPos</title>
-<indexterm><primary>SetPos</primary>
+<section id="setpos"><title>setPos</title>
+<indexterm><primary>setPos</primary>
 <secondary>ScrollBar class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aScrollBar~SetPos(--position--+-----------+--)--------------><
+>>-aScrollBar~setPos(--position--+-----------+--)--------------><
                                  +-,--redraw-+
 
 
 ]]>
 </programlisting>
 
-<para>The SetPos method sets the position of the scroll
+<para>The setPos method sets the position of the scroll
 box for the associated scroll bar.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -272,7 +272,7 @@ by the scroll box or the arrow buttons.
 The position of a scroll bar cannot be modified directly by
 a user. The Object Rexx program must react to the notification that is the
 result of the user interaction and set the resulting position of the scroll
-box using <link linkend="setpos">SetPos</link>. Use the DeterminePosition
+box using <link linkend="setpos">setPos</link>. Use the DeterminePosition
 method to determine the resulting position within your notification handler
 for the scroll bar notification messages.
 </para></note>

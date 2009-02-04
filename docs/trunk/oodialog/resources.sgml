@@ -715,9 +715,9 @@
   255 inclusive.
 </para>
 <para>
-  Windows also defines 2 special values for a COLORREF, CLR_NONE and CLR_DEFAULT.  To get the numeric
-  value for either of these values, use the <link linkend="mthIdClsImage">.Image~id()</link> method.
-  I.e., <computeroutput>ref = .Image~id(CLR_NONE)</computeroutput>.
+  Windows also defines 2 special values for a COLORREF, CLR_NONE and CLR_DEFAULT. To get the numeric
+  value for either of these values use CLR_NONE or CLR_DEFAULT for the R argument. E.g.,
+  <computeroutput>ref = .Image~colorRef("CLR_NONE")</computeroutput>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -728,7 +728,8 @@
       <varlistentry><term>R</term>
       <listitem>
         <para>
-          The red component of the RGB color.
+          The red component of the RGB color, or one of the CLR_NONE / CLR_DEFAULT keywords. Case is not
+          significant for either of the two keywords.
         </para>
       </listitem></varlistentry>
       <varlistentry><term>G</term>
@@ -755,22 +756,21 @@
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <programlisting>
-    <![CDATA[
+<programlisting>
+<![CDATA[
+ ref = .Image~colorRef(245, 89, 255)
+ say 'A fancy purple:' ref '(0x' || ref~d2x~right(8, '0')')'
+ say
 
-     ref = .Image~colorRef(245, 89, 255)
-     say 'A fancy purple:' ref '(0x' || ref~d2x~right(8, '0')')'
-     say
+::requires 'oodPlain.cls'
 
-    ::requires 'oodPlain.cls'
+/* Output:
 
-    /* Output:
+A fancy purple: 16734709 (0x00FF59F5)
 
-    A fancy purple: 16734709 (0x00FF59F5)
-
-    */
-    ]]>
-    </programlisting>
+*/
+]]>
+</programlisting>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::colorRef() [class method] -->

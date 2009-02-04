@@ -41,194 +41,709 @@
     #
     #########################################################################
 -->
-<chapter id="progressbarc"><title>ProgressBar Class</title>
+<chapter id="clsProgressBar"><title>ProgressBar Class</title>
 <indexterm><primary>ProgressBar class</primary></indexterm>
-<para>A progress bar is a window that an application can use to indicate the
-progress of a lengthy operation. It consists of a rectangle that is gradually
-filled, from left to right, with the system highlight color as an operation
-progresses. It has a range and a current position. The range represents the
-entire duration of the operation, and the current position represents the
-progress that the application has made toward completing the operation.</para>
-<para>The ProgressBar class provides methods to
-change the range and the current position of the progress bar. The window
-procedure uses the range and the current position to determine the percentage
-of the progress bar.  The highest possible range or current position value
-is 65,535.</para>
-<para>Refer to OODPBAR.REX and PROPDEMO.REX in the OODIALOG\SAMPLES directory
-for an example.</para>
-<para>The ProgressBar class does not send any
-notification messages. For information about notification messages, refer
-to <link linkend="connectlistnotify">ConnectListNotify</link>.</para>
+<para>
+  A progress bar is a control that an application can use to indicate the progress of a lengthy
+  operation. It consists of a rectangle that is gradually filled, from left to right or from bottom to
+  top, with the system highlight color as an operation progresses. It has a range and a current position.
+  The range represents the entire duration of the operation, and the current position represents the
+  progress that the application has made toward completing the operation.
+</para>
+<para>
+  The underlying Windows progress bar control has been updated to allow a full 32-bit number to specify
+  the minimum and maximum range and current position. Previously, the highest possible range or current
+  position value wass 65,535. The range is now -2147483648 through 2147483647.
+</para>
+<para>
+  Some sample programs included in the ooRexx distribution have examples of how to use the progress bar
+  control. See for instance: <computeroutput>oodPBar.rex</computeroutput> and
+  <computeroutput>propDemo.rex</computeroutput> in the <computeroutput>samples\ooDialog</computeroutput>
+  directory.
+</para>
 <variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para>The ProgressBar class requires the class
-definition file <computeroutput>oodwin32.cls</computeroutput>:
+  <varlistentry><term><emphasis role="bold">Requires</emphasis>:</term>
+  <listitem>
+    <para>
+      The ProgressBar class requires the class definition file
+      <computeroutput>oodWin32.cls</computeroutput>:
 <programlisting>
 <![CDATA[
-::requires "oodwin32.cls"
+::requires "oodWin32.cls"
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>Methods:</term>
-<listitem><para>Instances of the ProgressBar class implement
-the methods listed in the
-<link linkend="t000029">ProgressBar Instance Methods</link> table.</para>
-
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
+  <listitem>
+    <para>
+      The progress bar class is a subclass of the <link
+      linkend="clsDialogControl">DialogControl</link> class and therefore inherits all methods of that
+      class.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Mixin Class Inherits:</emphasis></term>
+  <listitem>
+    <para>
+      The progress bar class inherits from the following mixin classes, (indirectly through the
+      DialogControl class.)
+    </para>
+    <para>
+      The <link linkend="clsWindowBase">WindowBase</link>
+    </para>
+    <para>
+      The <link linkend="clsWindowExtensions">WindowExtensions</link>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+    <para>
+      Use the <link linkend="mthGetProgressBar">getProgressBar</link>() method to retrieve an object of
+      the progress bar class.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+    <para>
+      To dynamically define a progress bar in a <link linkend="clsUserDialog">UserDialog</link> class,
+      use the <link linkend="mthAddProgressBar">addProgressBar</link>() method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+    <para>
+      The progress bar does not send notification messages.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Syntax Errors:</emphasis></term>
+  <listitem>
+    <para>
+      All methods of the progress bar class will raise syntax errors if incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>Methods:</term>
+  <listitem>
+    <para>
+      Instances of the ProgressBar class implement the methods listed in the following table.
+    </para>
 <table id="t000029" frame="all">
 <title>ProgressBar Instance Methods</title>
 <tgroup cols="2">
 <thead>
 <row>
 <entry>Method...</entry>
-<entry>...on page</entry>
+<entry>...Description</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>SetPos</entry>
-<entry><link linkend="setpospbc">SetPos</link></entry>
+<entry>backgroundColor</entry>
+<entry><link linkend="mthBackgroundColor">backgroundColor</link></entry>
 </row>
 <row>
-<entry>SetRange</entry>
-<entry><link linkend="setrangepbc">SetRange</link></entry>
+<entry>barColor</entry>
+<entry><link linkend="mthBarColor">barColor</link></entry>
 </row>
 <row>
-<entry>SetStep</entry>
-<entry><link linkend="setstep">SetStep</link></entry>
+<entry>getPos</entry>
+<entry><link linkend="mthGetPosClsProgressBar">getPos</link></entry>
 </row>
 <row>
-<entry>Step</entry>
-<entry><link linkend="step">Step</link></entry>
+<entry>getRange</entry>
+<entry><link linkend="mthGetRangeClsProgressBar">getRange</link></entry>
+</row>
+<row>
+<entry>setMarquee</entry>
+<entry><link linkend="mthSetMarquee">setMarquee</link></entry>
+</row>
+<row>
+<entry>setPos</entry>
+<entry><link linkend="mthSetPosClsProgressBar">setPos</link></entry>
+</row>
+<row>
+<entry>setRange</entry>
+<entry><link linkend="mthSetRangeClsProgressBar">setRange</link></entry>
+</row>
+<row>
+<entry>setStep</entry>
+<entry><link linkend="mthSetStepClsProgressBar">setStep</link></entry>
+</row>
+<row>
+<entry>step</entry>
+<entry><link linkend=mthStep>step</link></entry>
 </row>
 </tbody></tgroup>
 </table>
-</listitem></varlistentry>
+  </listitem></varlistentry>
 </variablelist>
 
-<section id="step"><title>Step</title>
-<indexterm><primary>Step</primary></indexterm>
+<section id=mthStep><title>step</title>
+<indexterm><primary>step</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aProgressBarControl~Step(--+-----------+--)-----------------><
-                              +-increment-+
+>>--step(--+-----------+--)---------------------><
+           +-increment-+
 
 
 ]]>
 </programlisting>
 
-<para>The Step method advances the current position of
-a progress bar or the increment set with the SetStep method (see
-<link linkend="setstep">SetStep</link>), and redraws the bar to reflect the new
-position.</para>
+<para>
+  The step method advances the current position of the progress bar. If <emphasis
+  role="italic">increment</emphasis> is specified, the current position is incremented by that amount. If
+  not specified, the current position is incremented by the amount set with the <link
+  linkend="mthSetStepClsProgressBar">setStep</link>() method. The progress bar is redrawn to reflect the
+  new position.
+</para>
+<para>
+  There is this important difference between using an increment, usually called a delta, and stepping by
+  the amount specified in the setStep() method. When an increment is used and the increment would
+  position the the progress bar past its maximum range, the progress bar is advanced to the end and
+  stays there.
+</para>
+<para>
+  On the other hand, when the default step is used and the progress bar reaches the end of its range, it
+  is reset to the minimum.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>increment</term>
-<listitem><para>The value for advancing the current position. If you do not specify
-this argument, the position is advanced by the value set with the SetStep
-method. If the position exceeds the maximum range value, the progress indicator
-starts at the beginning again.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The previous position.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The single optional argument is the amount to advance the current position. If this argument is not
+      used, the position is advanced by the value set with the setStep method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The previous position.
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="setpospbc"><title>SetPos</title>
-<indexterm><primary>SetPos</primary>
+<section id="mthSetPosClsProgressBar"><title>setPos</title>
+<indexterm><primary>setPos</primary>
 <secondary>ProgressBar class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aProgressBarControl~SetPos(--newpos--)----------------------><
-
-
-]]>
-</programlisting>
-
-<para>The SetPos method sets the new position for a progress
-bar and redraws the bar to reflect the new position.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>newpos</term>
-<listitem><para>The new position.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The previous position, or -1 if you do not specify
-<emphasis role="italic">newpos</emphasis>.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="setstep"><title>SetStep</title>
-<indexterm><primary>SetStep</primary></indexterm>
-<programlisting>
-<![CDATA[
-                                 +-10------+
->>-aProgressBarControl~SetStep(--+---------+--)----------------><
-                                 +-newstep-+
-
+>>--setPos(--newPos--)--------------------------><
 
 ]]>
 </programlisting>
 
-<para>The SetStep method specifies the step increment
-for a progress bar. The step increment is the amount by which the progress
-bar increases its current position whenever the method is called.</para>
+<para>
+  The setPos method sets the new position for a progress bar and redraws the bar to reflect the new
+  position.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>newstep</term>
-<listitem><para>The new step increment. The default step increment is 10.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The previous position, or -1 if you do not specify
-<emphasis role="italic">newpos</emphasis>.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The single required argument is the new position for the progress bar.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The previous position is returned.
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="setrangepbc"><title>SetRange</title>
-<indexterm><primary>SetRange</primary>
+
+<section id="mthGetPosClsProgressBar"><title>getPos</title>
+<indexterm><primary>getPos</primary>
 <secondary>ProgressBar class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                  +-0---+     +-100-+
->>-aProgressBarControl~SetRange(--+-----+--,--+-----+--)-------><
-                                  +-min-+     +-max-+
+>>--getPos--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  This method returns the current position of the progress bar.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The current position of the progress bar is retunred.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      In this example, the range for the progress bar is set to -200 to 200. At another point in the
+      program, the current position is printed to the screen. This is not real-world use case, just an
+      example:
+<programlisting>
+<![CDATA[
+  pb = self~getProgressBar("IDC_PB_COUNTDOWN")
+  if pb \= .Nil then do
+     pb~setRange(-200,200)
+     pb~setStep(10)
+     pb~setPos(-200)
+  end
+  ...
+
+::method display private
+  expose pb
+
+  pb~step
+  say 'Now at position' pb~getPos
+
+/* Output might be:
+
+Now at position -190
+Now at position -180
+Now at position -170
+Now at position -160
+...
+
+*/
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ProgressBar::getPos() -->
+
+<section id="mthSetStepClsProgressBar"><title>setStep</title>
+<indexterm><primary>setStep</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setStep(--+---------+--)--------------------><
+              +-newstep-+
+
+]]>
+</programlisting>
+
+<para>
+  This method specifies the step increment for the progress bar. The step increment is the amount by
+  which the progress bar advances its current position when the <link linkend="mthStep">step</link>()
+  method is called without an increment value.
+</para>
+<para>
+  By default, the underlying progress bar uses a default step of 10.  It is not neccessary to set the
+  step at all if 10 is satisfactory.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The single optional argument is the new step increment. The default step increment is 10.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns the previous step increment.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSetRangeClsProgressBar"><title>setRange</title>
+<indexterm><primary>setRange</primary>
+<secondary>ProgressBar class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setRange(--+-----+--,--+-----+--)-----------><
+               +-min-+     +-max-+
 
 
 ]]>
 </programlisting>
 
-<para>The SetRange method sets the minimum and maximum
-values for a progress bar and redraws the bar to reflect the new range.</para>
+<para>
+  The setRange method sets the minimum and maximum values for the progress bar. The minimum and maximum
+  values are signed numbers. To use the entire range possible the programmer would use -2147483648
+  through 2147483647 for the minimum and maximum.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>min</term>
-<listitem><para>The minimum range value. The default is 0.
-</para></listitem></varlistentry>
-<varlistentry><term>max</term>
-<listitem><para>The maximum range value. The default is 100.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>A string containing the minimum and maximum value of the
-previous range, separated by a blank, or 0 in all other cases.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The arguments are:
+    <variablelist>
+    <varlistentry><term>min</term>
+    <listitem>
+      <para>
+        Optional. The minimum range value. The default is 0.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>max</term>
+    <listitem>
+      <para>
+        Opitonal. The maximum range value. The default is 100.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      A string containing the minimum and maximum value of the previous range, separated by a blank. The
+      first word in the string is the old minimum and the second word is th old maximum.
+    </para>
+    <para>
+      Note that the underlying progress bar does not return the full 32-bit value of the range. It
+      returns the range within the old limit of 0 through 65535. If the programmer is using a range
+      outside those values, the returned previous value here will not be correct. To retrieve the correct
+      32-bit values, use the <link linkend="mthGetRangeClsProgressBar">getRange</link>() method
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthGetRangeClsProgressBar"><title>getRange</title>
+<indexterm><primary>getRange</primary>
+<secondary>ProgressBar class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getRange------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrives the current high and low limits of the range of the progress bar.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments to this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The range is returned in a <computeroutput>.Directory</computeroutput> object with the following
+      indexes:
+      <variablelist>
+        <varlistentry><term>min</term>
+        <listitem>
+          <para>
+            The current minimum limit, as a signed number, for the progress bar.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>max</term>
+        <listitem>
+          <para>
+            The current maximum limit, as a signed number, for the progress bar.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example demonstrates how the range is returned:
+<programlisting>
+<![CDATA[
+  pb = self~getProgressBar("IDC_PB_COUNTDOWN")
+  if pb \= .Nil then do
+     pb~setRange(-200,200)
+     pb~setStep(10)
+     pb~setPos(-200)
+  end
+  ...
+
+::method displayCurrentRange private
+  expose pb
+
+  range = pb~getRange
+  say 'Current minimum:' range~min 'current maximum:' range~max
+  say
+  say 'Current minimum:' pb~getRange~min 'current maximum:' pb~getRange~max
+
+/* Output would be:
+
+Current minimum: -200 current maximum: 200
+
+Current minimum: -200 current maximum: 200
+
+*/
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ProgressBar::getRange() -->
+
+<section id="mthSetMarquee"><title>setMarquee</title>
+<indexterm><primary>setMarquee</primary>
+<secondary>ProgressBar class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setMarquee(--+------+--+-----------+--)-----><
+                 +--on--+  +--,-pause--+
+]]>
+</programlisting>
+
+<para>
+  Sets the progress bar to marquee mode. This causes the progress bar to move in a scrolling manner. Use
+  this method when you do not know the amount of progress toward completion but wish to indicate that
+  progress is being made.
+</para>
+<para>
+  This method is used to start or stop the scrolling. Note that the progress bar has to have the
+  PBS_MARQUEE style. When using the <link linkend="mthAddProgressBar">addProgressBar</link>() method in
+  a <link linkend="clsUserDialog">UserDialog</link> class the style keyword is MARQUEE. Otherwise, a
+  resource editor will handle adding the PBS_MARQUEE style flag to the resource script.
+</para>
+<para>
+  Each time the marquee mode is turned on, the progress bar is reset to the minimum of its range.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      This method requires <link linkend="comctl32">Common Control Library</link> version 6.0 or later.
+      If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
+      determine the current version of the library.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Requires the progress bar to have the PBS_MARQUEE style.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>on</term>
+      <listitem>
+        <para>
+          Optional. True or false.  True to start the marquee, false to stop it. The default is true to
+          start the marquee.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>pause</term>
+      <listitem>
+        <para>
+          Optional. The time in milliseconds between the animation. The default is 1000 (one second.)
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method always returns <computeroutput>.true</computeroutput>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example turns marquee mode on and sets the time between updates at one half of a second:
+<programlisting>
+<![CDATA[
+  pb = self~getProgressBar("IDC_PB_SEARCHING")
+  if pb \== .nil then pb~setMarquee(.true, 500)
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ProgressBar::setMarquee() -->
+
+<section id="mthBarColor"><title>barColor</title>
+<indexterm><primary>barColor</primary>
+<secondary>ProgressBar class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--barColor(--colorRef--)--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the color of the progress indicator bar in the progress bar control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      This method is only effective in the Windows Classic theme.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The required argument is:
+    <variablelist>
+      <varlistentry><term>colorRef</term>
+      <listitem>
+        <para>
+          A COLORREF that specifies the new color for the bar in the progress bar, or CLR_DEFAULT to set
+          the bar color back to its default color. If needed, use the <link
+          linkend="mthColorRef">colorRef</link>() method of the <link linkend="clsImage">Image</link>
+          class to construct the proper value for this argument.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns the previous bar color, or CLR_DEFAULT if the progress bar was using the
+      default color.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example sets the bar color to a custom color. This will only have effect in Windows Classic
+      theme. It is not neccessary to set numeric digits to 11 to use this method. In the example this is
+      only done to allow the return to be displayed in hexadecimal.
+<programlisting>
+<![CDATA[
+  numeric digits 11
+
+  progressBar = self~getProgressBar("IDC_PB_CONNECTING")
+
+  say 'Going to set the bar color for the progress bar'
+  ret = progressBar~barColor(.Image~colorRef(180, 255, 110))
+  say 'Old bar color was:       ' ret  '(0x'ret~d2x')'
+
+/* Output might be:
+
+Going to set the bar color for the progress bar
+Old bar color was:        4278190080 (0xFF000000)
+
+*/
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ProgressBar::barColor() -->
+
+
+<section id="mthBackgroundColor"><title>backgroundColor</title>
+<indexterm><primary>backgroundColor</primary>
+<secondary>ProgressBar class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--backgroundColor(--colorRef--)--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the background color in the progress bar.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      This method is only effective in the Windows Classic theme.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The required argument is:
+    <variablelist>
+      <varlistentry><term>colorRef</term>
+      <listitem>
+        <para>
+          A COLORREF that specifies the new background color for the progress bar, or CLR_DEFAULT to set
+          the backgroun color back to its default color. If needed, use the <link
+          linkend="mthColorRef">colorRef</link>() method of the <link linkend="clsImage">Image</link>
+          class to construct the proper value for this argument.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns the previous background color, or CLR_DEFAULT if the progress bar was using the
+      default color.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example sets the background color to a custom color. This will only have effect in Windows
+      Classic theme. It is not neccessary to set numeric digits to 11 to use this method. In the example
+      this is only done to allow the return to be displayed in hexadecimal.
+<programlisting>
+<![CDATA[
+  numeric digits 11
+
+  progressBar = self~getProgressBar("IDC_PB_CONNECTING")
+
+  say 'Going to set the background color for the progress bar'
+  ret = progressBar~backgroundColor(.Image~colorRef(55, 111, 18))
+  say 'Old background color was:' ret '(0x'ret~d2x')'
+
+/* Output might be:
+
+Going to set the background color for the progress bar
+Old background color was: 4278190080 (0xFF000000)
+
+*/
+]]>
+</programlisting>
+    </para>
+</variablelist>
+</section>  <!-- End ProgressBar::backgroundColor() -->
+
 </chapter>
