@@ -55,7 +55,6 @@ SGML_FILES = advcntlc.sgml \
 	     categorydialog.sgml \
 	     comboboxc.sgml \
 	     dialogcontrolc.sgml \
-	     dialogcontrolCommon.sgml \
 	     editcontrolc.sgml \
 	     listboxc.sgml \
 	     listcontrolc.sgml \
@@ -73,7 +72,6 @@ SGML_FILES = advcntlc.sgml \
 	     standarddialog.sgml \
 	     staticcontrolc.sgml \
 	     resources.sgml \
-	     menus.sgml \
 	     tabcontrolc.sgml \
 	     treecontrolc.sgml \
 	     userdialog.sgml \
@@ -81,6 +79,8 @@ SGML_FILES = advcntlc.sgml \
 	     ../shared/legalstuff.sgml \
 	     ../shared/gethelp.sgml \
 	     ../shared/CPLv1.0.sgml
+#	     menus.sgml \                remove for 4.0.0 release
+#	     dialogcontrolCommon.sgml \  not complete yet
 # the following files are not used & are here only for historical reasons
 #	     conceptoverv.sgml \
 #	     graphui.sgml \

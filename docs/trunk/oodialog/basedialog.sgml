@@ -766,8 +766,9 @@ to Init.
 <entry><link linkend="mthGetStyleRaw">getStyleRaw</link></entry>
 </row>
 <row>
-<entry>getTextSize <emphasis role="bold">(Deprecated)</emphasis></entry>
-<entry><link linkend="mthGetTextSize">getTextSize</link> <emphasis role="bold">(Deprecated)</emphasis></entry>
+<entry>getTextSize <emphasis role="bold">(deprecated)</emphasis></entry>
+<entry><link linkend="mthGetTextSize">getTextSize</link> <emphasis role="bold">(deprecated)</emphasis></entry>
+
 </row>
 <row>
 <entry>getTextSizeDlg</entry>
@@ -6828,7 +6829,12 @@ used.
 </variablelist>
 </section>
 
-<section><title>getSystemMetrics (deprecated)</title>
+<section id="mthGetSystemMetricsClsBaseDialog"><title>getSystemMetrics <emphasis role="bold">(deprecated)</emphasis></title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>BaseDialog class</secondary>
+  <tertiary>getSystemMetrics</tertiary>
+</indexterm>
 <note><title>Note</title><para>
   This method is deprecated.  It is replaced by the functionally equivalent <link
   linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the .DlgUtil class.  Do not
@@ -9382,7 +9388,12 @@ do this is the <link linkend="leavi">Leaving</link> method.</para>
 <para></para>
 </section>
 
-<section id="mthGetTextSize"><title>GetTextSize (deprecated)</title>
+<section id="mthGetTextSize"><title>GetTextSize <emphasis role="bold">(deprecated)</emphasis></title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>PlainBaseDialog class</secondary>
+  <tertiary>getTextSize</tertiary>
+</indexterm>
 <note><title>Note</title>
 <para>
   This method is deprecated.  It is maintained for compatibility to versions of ooDialog previous to
@@ -9396,11 +9407,6 @@ do this is the <link linkend="leavi">Leaving</link> method.</para>
   This method never worked correctly, the previous documentation for this method was incorrect and /
   or misleading. That has been fixed with with getTextSizeDlg(). The documentation for getTextSizeDlg()
   correctly explains how the method works and, hopefully, is not misleading.
-</para>
-<para>
-  If this method is invoked, it simply forwards the invocation message to getTextSizeDlg().  However,
-  since the getTextSize() method previously returned a string, the return from getTextSizeDlg() is
-  converted from a <link linkend="clsSize">Size</link> object to a string object.
 </para></note>
 </section>
 

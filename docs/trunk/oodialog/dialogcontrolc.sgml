@@ -313,8 +313,8 @@ listed in the following DialogControl Instance Methods table.
 <entry><link linkend="mthGetStyleRaw">getStyleRaw</link></entry>
 </row>
 <row>
-<entry>getTextSize <emphasis role="bold">(Deprecated)</emphasis></entry>
-<entry><link linkend="mthGetTextSize">getTextSize</link> <emphasis role="bold">(Deprecated)</emphasis></entry>
+<entry>getTextSize <emphasis role="bold">(deprecated)</emphasis></entry>
+<entry><link linkend="mthGetTextSize">getTextSize</link> <emphasis role="bold">(deprecated)</emphasis></entry>
 </row>
 <row>
 <entry>getTextSizeScreen</entry>
@@ -3631,7 +3631,7 @@ to a device context at a given position. </para>
 <indexterm><primary>TransparentText</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~TransparentText(--dc--)---------------------->>
+>>-aDialogControl~TransparentText(--dc--)----------------------><
 
 
 ]]>
@@ -3923,21 +3923,21 @@ of the other arguments.</para>
       the controls, even if the two controls use different fonts.  (This is a contrived example, it was
       used for testing. Instead of having a space character in between the 2 strings, the ending "t" and
       the beginning "a" are positioned with no space between them.)
-      <programlisting>
-      <![CDATA[
-      stFont1 = self~getStaticControl(IDC_ST_FONT1)
-      stFont2 = self~getStaticControl(IDC_ST_FONT2)
+<programlisting>
+<![CDATA[
+stFont1 = self~getStaticControl(IDC_ST_FONT1)
+stFont2 = self~getStaticControl(IDC_ST_FONT2)
 
-      size = stFont1~getTextSizeScreen("San Diego is great")
-      stFont1~setText("San Diego is great")
-      stFont1~setRect(1, 1, size~width, size~height)
+size = stFont1~getTextSizeScreen("San Diego is great")
+stFont1~setText("San Diego is great")
+stFont1~setRect(1, 1, size~width, size~height)
 
-      nextX = 1 + size~width + 1
-      size = stFont2~getTextSizeScreen("and ooRexx is the best")
-      stFont2~setText("and ooRexx is the best")
-      stFont2~setRect(nextX, 1, size~width, size~height)
-      ]]>
-      </programlisting>
+nextX = 1 + size~width + 1
+size = stFont2~getTextSizeScreen("and ooRexx is the best")
+stFont2~setText("and ooRexx is the best")
+stFont2~setRect(nextX, 1, size~width, size~height)
+]]>
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3947,8 +3947,8 @@ of the other arguments.</para>
 <indexterm><primary>setFont</primary></indexterm>
 <programlisting>
 <![CDATA[
-<>>--setFont(--fontHandle--+---------+--)-------------------------><
-                           +-,redraw-+
+>>--setFont(--fontHandle--+---------+--)-------------------------><
+                          +-,redraw-+
 
 
 ]]>
