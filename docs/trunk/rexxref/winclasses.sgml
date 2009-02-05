@@ -62,7 +62,10 @@ appear in the Rexx program.</para>
 <listitem><para>findItem</para></listitem>
 <listitem><para>findSubmenu</para></listitem>
 <listitem><para>idOf</para></listitem>
+<listitem><para>ischecked</para></listitem>
 <listitem><para>isMenu</para></listitem>
+<listitem><para>isSubMenu</para></listitem>
+<listitem><para>isSeparator</para></listitem>
 <listitem><para>items</para></listitem>
 <listitem><para>processItem</para></listitem>
 <listitem><para>submenu</para></listitem>
@@ -82,6 +85,68 @@ appear in the Rexx program.</para>
 </programlisting>
 
 <para>Returns 1 if the associated window is a menu, otherwise 0.</para>
+</section>
+
+<section id="issubmenumo"><title>isSubMenu</title>
+<indexterm><primary>isSubMenu method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isSubMenu method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isSubMenu(--position--)-------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns <computeroutput>.true</computeroutput> if the menu item at the position specified is a submenu
+  of this menu, otherwise <computeroutput>.false</computeroutput>. Menu items are zero-based, so the
+  first menu item is at position 0.
+</para>
+</section>
+
+<section id="ischeckedmo"><title>isChecked</title>
+<indexterm><primary>isChecked method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isChecked method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isChecked(--position--)-------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns <computeroutput>.true</computeroutput> if the menu item at the position specified is checked,
+  otherwise <computeroutput>.false</computeroutput>. Menu items are zero-based, so the first menu item is
+  at position 0. Submenus and separators can be be checked.
+</para>
+<para>
+  This method can not be 100% reliable. Some applications do not set the check mark for a menu item until
+  the menu is displayed. To be confident of the result, the programmer should first test how a specific
+  application behaves.
+</para>
+</section>
+
+<section id="isseparatormo"><title>isSeparator</title>
+<indexterm><primary>isSeparator method</primary>
+<secondary>of MenuObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isSeparator method</secondary>
+<tertiary>of MenuObject class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isSeparator(--position--)-----------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns <computeroutput>.true</computeroutput> if the menu item at the position specified is a
+  separator line,, otherwise <computeroutput>.false</computeroutput>. Menu items are zero-based, so the
+  first menu item is at position 0.
+</para>
 </section>
 
 <section id="itemsmo"><title>items</title>
@@ -1319,7 +1384,7 @@ is provided in the <computeroutput>ooRexx\SAMPLES</computeroutput> directory.
 <para><emphasis role="bold">Methods the WindowsEventLog Class Defines</emphasis>
 </para>
 <itemizedlist>
-<listitem><para>init</para></listitem>
+<listitem><para>new (Class method)</para></listitem>
 <listitem><para>open</para></listitem>
 <listitem><para>close</para></listitem>
 <listitem><para>read</para></listitem>
@@ -1327,20 +1392,21 @@ is provided in the <computeroutput>ooRexx\SAMPLES</computeroutput> directory.
 <listitem><para>clear</para></listitem>
 <listitem><para>getNumber</para></listitem></itemizedlist>
 
-<section id="initwel"><title>init</title>
-<indexterm><primary>init method</primary>
+<section id="initwel"><title>new (Class method)</title>
+<indexterm><primary>new method</primary>
 <secondary>of WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>init method</secondary>
+<secondary>new method</secondary>
 <tertiary>of WindowsEventLog class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-init--------------------------------------------------------><
+>>--new--------------------------------------------------------><
 ]]>
 </programlisting>
 
-<para>Creates an instance of the WindowsEventLog class and loads the required
-function package.</para>
+<para>
+  Creates an instance of the WindowsEventLog class.
+</para>
 </section>
 
 <section id="openwel"><title>open</title>
@@ -2120,91 +2186,29 @@ ret = winmgr~broadcastSettingChanged(1000)
 <indexterm><primary>WindowsObject class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>WindowsObject class</secondary></indexterm>
-<para>The WindowObject class provides methods to query, manipulate, and
-interact with a particular window or one of its child windows.</para>
-<para>Access to WindowObjects requires that the following directive
-appear in the Rexx program.</para>
+<para>
+  The WindowObject class provides methods to query, manipulate, and interact with a particular window or
+  one of its child windows.
+</para>
+<para>
+  Access to WindowObjects requires that the following directive appear in the Rexx program.
+</para>
 <programlisting>
 ::requires 'winsystm.cls'
 </programlisting>
-<para>The WindowsObject class is designed to be primarily used in conjucture
-with the <link linkend="clsWinManager">WindowsManager</link> class.  The
-WindowsManager class will obtain the handle of an actual window and instantiate
-a WindowObject instance.  Because of this, the WindowObject does not regiser the
-C functions that are required for it to behave correctly. (The WindowsManager
-class has already registered the functions.)  Therefore, if the programmer uses
-the WindowObject outside of the context of the WindowsManager, she needs to
-ensure that the C functions get registered before using an instance of the
-WindowObject.
+<para>
+  <emphasis role="bold">Note.</emphasis> Prior to the release of ooRexx 4.0.0, the WindowsObject class
+  was implemented using the original external function API. That API required that the external functions
+  be registered with the interpreter. For the most part this was done transparently to the Rexx
+  programmer. However, with the WindowsObject class there was one scenario where the registration was not
+  done and prior documentation provided a work around.
 </para>
-<para>There are a couple of approaches that could be used here.  Perhaps the
-simplest is to instantiate a WindowsManager object prior to using a WindowObject
-instance.  The WindowsManage instance does not have to be used, the act of
-creating a new object causes the C functions to be registered.  The following
-code snippet comes from an ooDialog program.  The following code does not work,
-because the C functions needed by a WindowObject will not have benn registered:
+<para>
+  Starting with ooRexx 4.0.0, that work around is not needed.  There no longer is any need for the
+  programmer to register external functions at all. Requiring
+  <computeroutput>winsystm.cls</computeroutput> is all that is needed from ooRexx 4.0.0 and on. Disregard
+  the previous documentation concerning this.
 </para>
-<programlisting>
-<![CDATA[
-
-::method Cancel
-
-   handle = self~get()
-   winObj = .WindowObject~new(handle)
-   state = winObj~state~translate
-
-   -- Do not save the size/position if the dialog is Minimized or Maximized
-   if state~wordPos('MINIMIZED') = 0 & state~wordPos('ZOOMED') = 0 then
-   ...
-return self~ok:super
-]]>
-</programlisting>
-
-<para>The following is a simple way to fix this situation:</para>
-<programlisting>
-<![CDATA[
-
-::method Cancel
-
-   unusedObj = .WindowsManager~new
-
-   handle = self~get()
-   winObj = .WindowObject~new(handle)
-   state = winObj~state~translate
-
-   -- Do not save the size/position if the dialog is Minimized or Maximized
-   if state~wordPos('MINIMIZED') = 0 & state~wordPos('ZOOMED') = 0 then
-   ...
-return self~ok:super
-]]>
-</programlisting>
-
-<para>The programmer can also load the C functions herself to get the correct
-behavior from the WindowObject:</para>
-<programlisting>
-<![CDATA[
-
-::method Cancel
-
-   if RxFuncQuery("InstWinSysFuncs") \= 0 then do
-      if RxFuncAdd("InstWinSysFuncs","RXWINSYS.DLL","InstWinSysFuncs") = 0 then
-         InstWinSysFuncs()
-      else
-         return self~ok:super   -- Unexpected error, just quit
-   end
-
-   -- Okay, we have the needed C functions, continue.
-
-   handle = self~get()
-   winObj = .WindowObject~new(handle)
-   state = winObj~state~translate
-
-   -- Do not save the size/position if the dialog is Minimized or Maximized
-   if state~wordPos('MINIMIZED') = 0 & state~wordPos('ZOOMED') = 0 then
-   ...
-return self~ok:super
-]]>
-</programlisting>
 
 <para><emphasis role="bold">Methods the WindowObject Class Defines</emphasis>
 </para>
@@ -2221,6 +2225,7 @@ return self~ok:super
 <listitem><para>focusItem</para></listitem>
 <listitem><para>focusNextItem</para></listitem>
 <listitem><para>focusPreviousItem</para></listitem>
+<listitem><para>getStyle</para></listitem>
 <listitem><para>handle</para></listitem>
 <listitem><para>hide</para></listitem>
 <listitem><para>id</para></listitem>
@@ -2381,6 +2386,66 @@ one or more of the following constants:</para>
 <listitem><para>&quot;Visible&quot; or &quot;Invisible&quot;</para></listitem>
 <listitem><para>&quot;Zoomed&quot; or &quot;Minimized&quot;</para></listitem>
 <listitem><para>&quot;Foreground&quot;</para></listitem></itemizedlist>
+</section>
+
+<section id="getstylewo"><title>getStyle</title>
+<indexterm><primary>getStyle method</primary>
+<secondary>of WindowsObject class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>getStyle method</secondary>
+<tertiary>of WindowsObject class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getStyle---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the style and extended style flags of the window. This method is intended for use by
+  programmers that have some knowledge of the Windows API and would not be much use to Rexx programmers
+  that do not have any understanding of that API.
+</para>
+<para>
+  The styles are returned in a string of two words. The first word is the window style and the second
+  word is the extend window style. Each word is in the format:
+  <computeroutput>0xAAAAAAAA</computeroutput> where A represents any hexadecimal digit. If an error
+  happens, the numerical system error code is returned instead of a string with two words.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+
+-- This function will return an array with all matching windows.  An empty array
+-- signals no match.
+windows = fuzzyFindWindows(deskTop, text)
+
+if windows~items > 0 then do wnd over windows
+  say 'Found this window.'
+  say '  Title:   ' wnd~title
+  say '  Class:   ' wnd~wClass
+  say '  Position:' wnd~coordinates
+  say '  Styles:  ' wnd~getStyle
+  say
+end
+
+/* Output might be:
+
+Found this window.
+  Title:    GetMenuState Function - MSDN Library - Microsoft Document Explorer
+  Class:    wndclass_desked_gsk
+  Position: 0,0,1152,800
+  Styles:   0x16cf0000 0xc0040900
+
+Found this window.
+  Title:    C:\work.ooRexx\3.x\main
+  Class:    ExploreWClass
+  Position: 0,25,1150,804
+  Styles:   0x16cf0000 0xc0000900
+
+*/
+]]>
+</programlisting>
+
 </section>
 
 <section id="restorewo"><title>restore</title>
@@ -3188,6 +3253,10 @@ in the <computeroutput>ooRexx\SAMPLES</computeroutput> directory.</para>
 </thead>
 <tbody>
 <row>
+<entry>new (Class method)</entry>
+<entry><link linkend="wpinit">init</link> (Class method)</entry>
+</row>
+<row>
 <entry>addDeskTopIcon</entry>
 <entry><link linkend="adddesktopicon">addDesktopIcon</link></entry>
 </row>
@@ -3216,16 +3285,29 @@ in the <computeroutput>ooRexx\SAMPLES</computeroutput> directory.</para>
 <entry><link linkend="wpdeit">deleteItem</link></entry>
 </row>
 <row>
-<entry>init</entry>
-<entry><link linkend="wpinit">init</link></entry>
-</row>
-<row>
 <entry>showGroup</entry>
 <entry><link linkend="wpshgr">showGroup</link></entry>
 </row>
 </tbody>
 </tgroup>
 </table>
+
+<section id="wpinit"><title>new (Class method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of WindowsProgramManager class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of WindowsProgramManager class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Creates an instance of the WindowsProgramManager class.
+</para>
+</section>
 
 <section id="adddesktopicon"><title>addDesktopIcon</title>
 <indexterm><primary>addDesktopIcon method</primary>
@@ -3598,22 +3680,6 @@ the name of the program group to be deleted.</para>
 <listitem><para>The method failed.
 </para></listitem></varlistentry>
 </variablelist>
-</section>
-
-<section id="wpinit"><title>init</title>
-<indexterm><primary>init method</primary>
-<secondary>of WindowsProgramManager class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>init method</secondary>
-<tertiary>of WindowsProgramManager class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-init--------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Creates an instance of the WindowsProgramManager class and loads the
-required function package.</para>
 </section>
 
 <section id="wpshgr"><title>showGroup</title>
@@ -4111,6 +4177,7 @@ provided in the <computeroutput>ooRexx\SAMPLES</computeroutput> directory
 <para><emphasis role="bold">Methods the WindowsRegistry Class Defines</emphasis>
 </para>
 <itemizedlist>
+<listitem><para>new (Class method)</para></listitem>
 <listitem><para>classes_root</para></listitem>
 <listitem><para>classes_root=</para></listitem>
 <listitem><para>close</para></listitem>
@@ -4123,7 +4190,6 @@ provided in the <computeroutput>ooRexx\SAMPLES</computeroutput> directory
 <listitem><para>deleteValue</para></listitem>
 <listitem><para>flush</para></listitem>
 <listitem><para>getValue</para></listitem>
-<listitem><para>init</para></listitem>
 <listitem><para>list</para></listitem>
 <listitem><para>listValues</para></listitem>
 <listitem><para>load</para></listitem>
@@ -4138,6 +4204,23 @@ provided in the <computeroutput>ooRexx\SAMPLES</computeroutput> directory
 <listitem><para>unload</para></listitem>
 <listitem><para>users</para></listitem>
 <listitem><para>users=</para></listitem></itemizedlist>
+
+<section id="wrinit"><title>new (Class method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-new---------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Creates an instance of the WindowsRegistry class. The current key is set to HKEY_LOCAL_MACHINE.
+</para>
+</section>
 
 <section id="wrclro"><title>classes_root</title>
 <indexterm><primary>classes_root method</primary>
@@ -4378,22 +4461,6 @@ say "my default value is:" myval.data
 </programlisting>
 <para>Possible types: NORMAL, EXPAND, MULTI, NUMBER, BINARY, NONE,
 OTHER.</para>
-</section>
-
-<section id="wrinit"><title>init</title>
-<indexterm><primary>init method</primary>
-<secondary>of WindowsRegistry class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>init method</secondary>
-<tertiary>of WindowsRegistry class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-init--------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Creates an instance of the WindowsRegistry class and loads the required
-external function package. The current key is set to HKEY_LOCAL_MACHINE.</para>
 </section>
 
 <section id="wrlist"><title>list</title>
