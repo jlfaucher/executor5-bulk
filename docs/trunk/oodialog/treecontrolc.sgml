@@ -187,8 +187,8 @@ the methods listed in the
 <entry><link linkend="previousvisible">PreviousVisible</link></entry>
 </row>
 <row>
-<entry>RemoveImages</entry>
-<entry><link linkend="removeimagestrc">RemoveImages</link></entry>
+<entry>RemoveImages <emphasis role="bold">(deprecated)</emphasis></entry>
+<entry><link linkend="removeimagestrc">RemoveImages</link> <emphasis role="bold">(deprecated)</emphasis></entry>
 </row>
 <row>
 <entry>RestoreEditClass</entry>
@@ -207,8 +207,8 @@ the methods listed in the
 <entry><link linkend="selectedtrc">Selected</link></entry>
 </row>
 <row>
-<entry>SetImages</entry>
-<entry><link linkend="setimagestrc">SetImages</link></entry>
+<entry>SetImages <emphasis role="bold">(deprecated)</emphasis></entry>
+<entry><link linkend="setimagestrc">SetImages</link> <emphasis role="bold">(deprecated)</emphasis></entry>
 </row>
 <row>
 <entry>SortChildren</entry>
@@ -1739,88 +1739,210 @@ was not specified or is 0.
 </variablelist>
 </section>
 
-<section id="setimagestrc"><title>SetImages</title>
-<indexterm><primary>SetImages</primary>
+
+<section id="mthSetImageListClsTreeControl"><title>setImageList</title>
+<indexterm><primary>setImageList</primary>
 <secondary>TreeControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                      +-0-----+     +-0------+
->>-aTreeControl~SetImages(--hItem--,--+-------+--,--+--------+--)-><
-                                      +-width-+     +-height-+
-
-
+>>--setImageList(--newImageList--+----------+--)--------------------><
+                                 +--,-type--+
 ]]>
 </programlisting>
 
-<para>The SetImages method sets the image list for a
-tree view control and redraws the control using the new images.</para>
+<para>
+  Assigns, or removes, an image list for the tree-view control. Using
+  <computeroutput>.nil</computeroutput> for the first argument removes the current image list. Tree-view
+  controls can have two image lists. The normal image list, which contains selected, nonselected, and
+  overlay images for the items of a tree-view control. And, the state image list. The state images can be
+  used by the programmer to indicate application-defined item states. A state image is displayed to the
+  left of an item's selected or nonselected image.
+</para>
+<para>
+  The tree-view control does not destroy an image list that is associated with it. The programmer must
+  destroy the image list separately, if desired. This is useful if the same image list is assigned to
+  multiple tree-view controls. In essence, the ownership of the image list remains with the programmer.
+  The <link linkend="clsImageList">ImageList</link> and <link linkend="clsImage">Image</link> classes are
+  used to manage image lists and images in ooDialog. The documentation on both classes discusses when and
+  why the programmer may want to release image lists. The Image class documentation has the most detail
+  on this subject.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>bitmap</term>
-<listitem><para>The name of, or handle to, a bitmap file that is already loaded using
-the LoadBitmap method (see <link linkend="h000667">LoadBitmap</link>).
-</para></listitem></varlistentry>
-<varlistentry><term>width</term>
-<listitem><para>The width of each image, in pixels. If you specify 0 or omit
-this argument, the height of the image in the image file is used as width.
-</para></listitem></varlistentry>
-<varlistentry><term>height</term>
-<listitem><para>The height of each image, in pixels. If you specify 0 or omit
-this argument, the height of the image in the image file is used.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the previous image list, or -1 if you did not
-specify <emphasis role="italic">bitmap</emphasis>, or 0 in all other cases.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example sets the image list during dialog initialization:
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>newImageList</term>
+      <listitem>
+        <para>
+          The <link linkend="clsImageList">image list</link> to assign to the tree-view. If this argument
+          is <computeroutput>.nil</computeroutput> the existing image list, if any, is removed.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>type</term>
+      <listitem>
+        <para>
+          Optional. Specifies which image list to assign, (or remove.) You can use <link
+          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          following symbols:
+          <simplelist type='horiz' columns='2'>
+          <member>TVSIL_NORMAL</member>
+          <member>TVSIL_STATE </member>
+          </simplelist>
+          or use the correct numeric value itself.
+        </para>
+        <para>
+          The default is TVSIL_NORMAL.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The existing image list is returned, if there is one. Otherwise,
+      <computeroutput>.nil</computeroutput> is returned.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example creates an image list and assigns it to the tree-view control for use as the normal
+      image list.
 <programlisting>
 <![CDATA[
-::method InitDialog
-  expose bmpFile
-  InitDlgRet = self~InitDialog:super
-  curTree = self~GetTreeControl("IDC_TREE")
-  if curTree \= .Nil then
-  do
-    curTree~SetImages(bmpFile,16,12)
+
+  /* set images for the items */
+  image = .Image~getImage("bmp\psdemotv.bmp")
+  imageList = .ImageList~create(.Size~new(32, 32), .Image~id(ILC_COLOR8), 10, 0)
+  if \image~isNull,  \imageList~isNull then do
+     imageList~add(image)
+     tc~setImageList(imageList, .Image~id(TVSIL_NORMAL))
+     image~release
   end
-  return InitDlgRet
+
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+    </para>
+  </listitem></varlistentry>
 </variablelist>
+</section>  <!-- End TreeControl::setImageList() -->
+
+<section id="mthGetImageListClsTreeControl"><title>getImageList</title>
+<indexterm><primary>getImageList</primary>
+<secondary>TreeControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getImageList(--+--------+--)------------------------------------><
+                   +--type--+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the current image list for the type specified. The default is to retrieve the tree-views
+  normal image list.  See the <link linkend="mthSetImageListClsTreeControl"></link>() method for
+  infomation on assigning an image list to a tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The single optional argument is:
+    <variablelist>
+      <varlistentry><term>type</term>
+      <listitem>
+        <para>
+          Optional. Specifies which image list to retrieve. You can use <link
+          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          following symbols:
+          <simplelist type='horiz' columns='2'>
+          <member>TVSIL_NORMAL</member>
+          <member>TVSIL_STATE </member>
+          </simplelist>
+          or use the correct numeric value itself.
+        </para>
+        <para>
+          The default is TVSIL_NORMAL.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns the current <link linkend="clsImageList">image list</link>, if there is one.
+      <computeroutput>.nil</computeroutput> is returned if there is no current image list of the type
+      specified.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example releases the tree-view's image lists, if they exist, when the dialog ends.
+<programlisting> <![CDATA[ ::method ok
+  self~doImageLists return self~ok:super
+
+::method cancel
+  self~doImageLists
+  return self~cancel:super
+
+::method odImageLists
+  expose treeView
+
+  types = .array~of(TVSIL_NORMAL, TVSIL_STATE)
+
+  do type over types
+    il = treeView~getImageList(type)
+    if il \== .nil then il~release
+  end
+
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeControl::getImageList() -->
+
+
+<section id="setimagestrc"><title>setImages (deprecated)</title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>setImages</secondary>
+  <tertiary>TreeControl class</tertiary>
+</indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsTreeControl">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para></note>
 </section>
 
-<section id="removeimagestrc"><title>RemoveImages</title>
-<indexterm><primary>RemoveImages</primary>
-<secondary>TreeControl class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aTreeControl~RemoveImages-----------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The RemoveImages method destroys the image list
-of the tree view.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The image list was destroyed.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>For all other cases.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
+<section id="removeimagestrc"><title>removeImages (deprecated)</title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>removeImages</secondary>
+  <tertiary>TreeControl class</tertiary>
+</indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsTreeControl">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para></note>
 </section>
 
 <section id="hittest"><title>HitTest</title>

@@ -114,6 +114,10 @@ the methods listed in the
 <entry><link linkend="focusedtc">Focused</link></entry>
 </row>
 <row>
+<entry>getImageList</entry>
+<entry><link linkend="mthGetImageListClsTabControl">getImageList</link></entry>
+</row>
+<row>
 <entry>Insert</entry>
 <entry><link linkend="inserttc">Insert</link></entry>
 </row>
@@ -138,8 +142,8 @@ the methods listed in the
 <entry><link linkend="posrectangle">PosRectangle</link></entry>
 </row>
 <row>
-<entry>RemoveImages</entry>
-<entry><link linkend="removeimagestc">RemoveImages</link></entry>
+<entry>RemoveImages <emphasis role="bold">(deprecated)</emphasis></entry>
+<entry><link linkend="removeimagestc">RemoveImages</link> <emphasis role="bold">(deprecated)</emphasis></entry>
 </row>
 <row>
 <entry>RequiredWindowSize</entry>
@@ -166,8 +170,12 @@ the methods listed in the
 <entry><link linkend="selectedindextc">SelectedIndex</link></entry>
 </row>
 <row>
-<entry>SetImages</entry>
-<entry><link linkend="setimagestc">SetImages</link></entry>
+<entry>setImageList</entry>
+<entry><link linkend="mthSetImageListClsTabControl">setImageList</link></entry>
+</row>
+<row>
+<entry>SetImages <emphasis role="bold">(deprecated)</emphasis></entry>
+<entry><link linkend="setimagestc">SetImages</link> <emphasis role="bold">(deprecated)</emphasis></entry>
 </row>
 <row>
 <entry>SetPadding</entry>
@@ -207,8 +215,8 @@ last tab is increased by 1, starting with 0.
 <listitem><para>The label text for the inserted tab.
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
-<listitem><para>The index of the icon in the image list of the tab control, set with
-the SetImages method (see <link linkend="setimagestc">SetImages</link>).
+<listitem><para>The index of the icon in the image list of the tab control, set with the <link
+linkend="mthSetImageListClsTabControl">setImageList</link>() method.
 </para></listitem></varlistentry>
 <varlistentry><term>numValue</term>
 <listitem><para>An integer value stored together with the tab to save
@@ -228,7 +236,7 @@ with the specified text and a specific item:
   InitDlgRet = self~InitDialog:super
   curTab = self~GetTabControl("ID_TAB")
   if curTab \= .Nil then do
-    curTab~SetImages("oodtab.BMP",16,16)
+    curTab~setImageList(imageList)
     curTab~Insert(,"First Tab",0)
     curTab~Insert(,"Second Tab",1)
     curTab~Insert(,"Third Tab",2)
@@ -265,7 +273,7 @@ of a tab.</para>
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
 <listitem><para>The index of the icon in the image list of the tab control, set with
-the SetImages method (see <link linkend="setimagestc">SetImages</link>).
+the <link linkend="mthSetImageListClsTabControl">setImageList</link>() method.
 </para></listitem></varlistentry>
 <varlistentry><term>numValue</term>
 <listitem><para>An integer value stored together with the tab to save information.
@@ -355,7 +363,7 @@ value.</para>
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
 <listitem><para>The index of the icon in the image list of the tab control, set with
-the SetImages method (see <link linkend="setimagestc">SetImages</link>).
+the <link linkend="mthSetImageListClsTabControl">setImageList</link>() method.
 </para></listitem></varlistentry>
 <varlistentry><term>numValue</term>
 <listitem><para>An integer value stored together with the tab to save information.
@@ -374,7 +382,7 @@ icon:
   InitDlgRet = self~InitDialog:super
   curTab = self~GetTabControl("ID_TAB")
   if curTab \= .Nil then do
-    curTab~SetImages("oodtab.BMP",16,16)
+    curTab~setImageList(imageList)
     curTab~AddFullSeq("s11", 0, , "s12", 1, , "s13", 2, , "s14", 3)
   end
 return InitDlgRet
@@ -724,71 +732,181 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
 </variablelist>
 </section>
 
-<section id="setimagestc"><title>SetImages</title>
-<indexterm><primary>SetImages</primary>
+<section id="mthSetImageListClsTabControl"><title>setImageList</title>
+<indexterm><primary>setImageList</primary>
 <secondary>TabControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                      +-0-----+     +-0------+
->>-aTabControl~SetImages(--bitmap--,--+-------+--,--+--------+--)-><
-                                      +-width-+     +-height-+
-
-
+>>--setImageList(--newImageList--)---------------------------------------------><
 ]]>
 </programlisting>
 
-<para>The SetImages method assigns an image list to a
-tab control.</para>
+<para>
+  Assigns, or removes, an image list for the tab control. Using <computeroutput>.nil</computeroutput>
+  for the first argument removes the current image list. Each tab can have an icon associated with it,
+  which is specified by an index in the image list for the tab control.
+</para>
+<para>
+  Destroying a tab control does not destroy an image list that is associated with it. The programmer must
+  destroy the image list separately, if desired. This is useful if the programmer wants to assign the
+  same image list to multiple tab controls. In essence, the ownership of the image list remains with the
+  programmer. The <link linkend="clsImageList">ImageList</link> and <link linkend="clsImage">Image</link>
+  classes are used to manage image lists and images in ooDialog. The documentation on both classes
+  discusses when and why the programmer may want to release image lists. The Image class documentation
+  has the most detail on this subject.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The single required argument is
+    <variablelist>
+      <varlistentry><term>newImageList</term>
+      <listitem>
+        <para>
+          The <link linkend="clsImageList">image list</link> to assign to the tab control. If this
+          argument is <computeroutput>.nil</computeroutput> the existing image list, if any, is removed.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The existing image list is returned, if there is one. Otherwise,
+      <computeroutput>.nil</computeroutput> is returned.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example creates an image list from a bitmap file that is a series of 16x16 bitmaps, each one a
+      colored letter. The image list is then assigned to the tab control.
+<programlisting>
+<![CDATA[
+
+  -- Add all the tabs, including the index into the image list for an icon for
+  -- each tab.
+  tc~AddFullSeq("Red", 0, ,"Green", 1, , "Moss", 2, , "Blue", 3, , "Purple", 4, , -
+                "Cyan", 5, , "Gray", 6)
+
+  -- Create a COLORREF (pure white) and load our bitmap.  The bitmap is a
+  -- series of 16x16 images, each one a colored letter.
+  cRef = .Image~colorRef(255, 255, 255)
+  image = .Image~getImage("bmp\psdemoTab.bmp")
+
+  -- Create our image list, as a masked image list.
+  flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+  imageList = .ImageList~create(.Size~new(16, 16), flags, 10, 0)
+
+  if \image~isNull,  \imageList~isNull then do
+     imageList~addMasked(image, cRef)
+     tc~setImageList(imageList)
+
+     -- The image list makes a copy of each image added to it.  So, we can now
+     -- release the original image to free up some small amount of system
+     -- resoureces.
+     image~release
+  end
+  else do
+     -- do some type of error handling
+  end
+
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TabControl::setImageList() -->
+
+<section id="mthGetImageListClsTabControl"><title>getImageList</title>
+<indexterm><primary>getImageList</primary>
+<secondary>TabControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getImageList----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Retrieves the current image list from the tab control, if there is one.
+</para>
 <variablelist>
-<varlistentry><term>bitmap</term>
-<listitem><para>The name of, or the handle to, a bitmap file that is already loaded
-with LoadBitmap method (see <link linkend="h000667">LoadBitmap</link>).
-</para></listitem></varlistentry>
-<varlistentry><term>width</term>
-<listitem><para>The width, in pixels, of each image. If you specify 0 or omit
-this argument, the width of the image in the image file is used.
-</para></listitem></varlistentry>
-<varlistentry><term>height</term>
-<listitem><para>The height, in pixels, of each image. If you specify 0 or omit this
-argument, the height of the image in the image file is used.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments to this method.
+    </para>
+    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns the current <link linkend="clsImageList">image list</link>, if there is one.
+      <computeroutput>.nil</computeroutput> is returned if there is no current image list.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example gets the current image list from the tab control when the dialog is closed and
+      releases it as it is no longer userd.
+<programlisting>
+<![CDATA[
+
+::method ok
+  self~releaseImageLists
+  return self~ok:super
+
+::method cancel
+  self~releaseImageLists
+  return self~cancel:super
+
+::method releaseImageLists
+  expose tabControl
+
+  imageList = tabControl~getImageList
+  if imageList \== .nil then imageList~release
+
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the previous image list, or 0 for all other cases.
-</para></listitem></varlistentry>
-</variablelist>
+</section>  <!-- End TabControl::getImageList() -->
+
+<section id="setimagestc"><title>setImages (deprecated)</title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>setImages</secondary>
+  <tertiary>TabControl class</tertiary>
+</indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsTabControl">setImageList()</link> method. Do not use this method in new
+  code. Try to migrate existing code to to the
+  <computeroutput>setImageList()</computeroutput> method. This method may not exist in future versions of
+  ooDialog.
+</para></note>
 </section>
 
-<section id="removeimagestc"><title>RemoveImages</title>
-<indexterm><primary>RemoveImages</primary>
-<secondary>TabControl class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aTabControl~RemoveImages------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The RemoveImages method deletes an image list of
-a tab control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The image list was removed.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>In all other cases.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
+<section id="removeimagestc"><title>removeImages (deprecated)</title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>removeImages</secondary>
+  <tertiary>TabControl class</tertiary>
+</indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsTabControl">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para></note>
 </section>
 
 <section id="setpadding"><title>SetPadding</title>

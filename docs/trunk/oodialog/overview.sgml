@@ -622,40 +622,127 @@ direction as to how to go about using it.
   4.0.0 and so that they can influence the direction taken, if they choose to.
 </para>
 <variablelist>
+<varlistentry><term>New Native API</term>
+<listitem>
+  <para>
+    ooRexx 4.0.0 introduced a new native API for use in extending the ooRexx interpreter. This API is
+    object-orientated and gives external packages more access to features of the interpreter. One
+    important aspect of the new API is that not everything passed back and forth between the interpreter
+    and the external plackage (the ooDialog framework in this case) needs to be a string. This allows the
+    external packages to make better use of object-orientated design.
+  </para>
+  <para>
+    All new function added to ooDialog will use the new API. Existing function will be converted to take
+    full advantage of the new API. This conversion has started, but will take place over time. It is
+    expected that some of the original design that is not optimal due to the restrictions of the older
+    API will be phased out. Alongside of that, some design that, in hindsight, seems incorrect will also
+    be phased out.
+  </para>
+</listitem></varlistentry>
 <varlistentry><term>New Classes</term>
 <listitem>
   <para>
     In the past, the ooDialog framework made heavy use of two basic objects, a dialog and a dialog
-    control. Every method and every functionality was added to a dialog and to a dialog control. This
-    hasd the tendency to produce large monolithic class structures and in many ways negates some of the
-    value of using classes.
+    control. Every method and every functionality was added to a dialog and to a dialog control. This had
+    the tendency to produce large monolithic class structures and in many ways negates some of the value
+    of using classes.
   </para>
   <para>
-
+    In ooDialog 4.0.0 the process of introducing new, smaller, classes to handle related function began.
+    In addition, some effort started to factor out of the dialog or dialog control object function or
+    behavior that is not really part of a dialog or control object. One example of this is the matter of
+    bitmaps, icons, etc.. Bitmaps and icons are images. The data and methods to work with bitmaps or
+    other images are better suited to an image object than a dialog object.
+  </para>
+  <para>
+    The future evolution of ooDialog will be to add new smaller objects that better model the function
+    the programmer needs to produce sophisticated Windows dialogs. These classes may be introduced
+    slowly, with just the basic function introduced in one release and the functionality expanded in
+    later releases. For instance, in ooDialog 4.0.0 the <link linkend="clsRect">Rect</link> and <link
+    linkend="clsPoint">Point</link> classes were introduced without a lot of functionality. One common
+    behavior of rectangles and points is to ask the rectangle if it contains this point. The two classes
+    formed the basis to add that behavior in a later release.
   </para>
 </listitem></varlistentry>
-<varlistentry><term>Objects as arguments</term>
+<varlistentry><term>Objects as Arguments and Return Values</term>
 <listitem>
   <para>
-
+    The 4.0.0 native API makes passing objects as arguments to external packages much easier. And, the
+    flip side of this is returning objects from external packages. The older API forced everything to be
+    a string. ooDialog will migrate towards using more objects as arguments to, and return values from,
+    methods implemented externally. Ultimately, this will make things easier on the programmer, allow
+    better access to the underlying capabilities of the operating system, and produce more readable code.
   </para>
-</listitem></varlistentry>
-<varlistentry><term>Objects as return values</term>
-<listitem>
   <para>
+    For example, take the task of repositioning a dialog control on a dialog. The operating system
+    provides a means to get the current rectangle of any window on the screen, it provides a means to map
+    that rectangle on the screen to the client area of any other window, and it provides a means to move
+    any window from one position to another. Using the <link linkend="clsRect">Rect</link> class
+    mentioned above and some pseudo code, a future version of ooDialog might handle this task like
+    this:
+<programlisting>
+<![CDATA[
+  rectangle = dlgControl~getWindowRect
+  rectangle~mapToClient(dlg)
 
+  -- Shift the control left 10 pixels and up 5 pixels
+  rectangle~offset(10, -5)
+  dlg~moveControl(dlgControl, rectangle)
+]]>
+</programlisting>
+  </para>
+  <para>
+    Another example using the <link linkend="clsSize">Size</link> class:
+<programlisting>
+<![CDATA[
+  size = button~getIdealSize
+  button~setSize(size)
+
+  -- The above could also be written:
+  button~setSize(button~getIdealSize)
+
+]]>
+</programlisting>
   </para>
 </listitem></varlistentry>
 <varlistentry><term>Syntax errors</term>
 <listitem>
   <para>
-
+    In the past, ooDialog never raised any error conditions. This, in the author's opionion, lead to a
+    lot of user confusion. Things simply did not work and the user had no idea why. Quite often it was
+    merely a matter of using the wrong arguments. Going forward, ooDialog will begin making better use of
+    the Rexx facility of raising error conditions when things are not right.
+  </para>
+  <para>
+    Part of this will be the direct result of converting to the 4.0.0 API and will be unavoidable. In
+    many situations the API automatically raises syntax errors when arguments are not correct. As an
+    example, take the <computeroutput>createFont</computeroutput>() method. One argument to the
+    createFont method is the size of the font. In the Windows operating system font sizes are whole
+    numbers. If a programmer passes in, say 10.89, for a font size, when createFont is converted to use
+    the 4.0.0 API this will raise a syntax error.
+  </para>
+  <para>
+    All new methods added to the ooDialog framework will raise syntax errors for incorrect aruguments and
+    / or unrecoverable errors. Methods converted to use the 4.0.0 API will always raise syntax errors in
+    situations similar to the above. This change will help ooDialog programmers write more robust,
+    correct programs.
   </para>
 </listitem></varlistentry>
 <varlistentry><term>Deprecated methods</term>
 <listitem>
   <para>
-
+    Starting in ooDialog 4.0.0, methods began being marked as <emphasis
+    role="italic">deprecated</emphasis> in the documentation. The documentation for deprecated methods
+    points the programmer to the replacement for the deprecated methods. There are a number of reasons
+    for marking methods as deprecated, among which are incorrect implementation, duplication, sub-optimal
+    implementation, a desire to move to the cleaner 4.0.0 API, and a strong desire by the maintainers of
+    ooDialog to remove the bagge of the past.
+  </para>
+  <para>
+    The ooDialog programmer is <emphasis role="bold"><emphasis
+    role="italic">strongly</emphasis></emphasis> encouraged to take note of the deprecated methods. To
+    definitely not use depracted method in new code, and to migrate deprecated methods in existing code
+    to their replacements.
   </para>
 </listitem></varlistentry>
 </variablelist>
