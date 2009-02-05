@@ -69,13 +69,13 @@ IMAGE_FILES = ReportObject.png \
 	      BallObject.png \
 	      BallObjectData.png \
 	      EncapsulatedObject.png \
-	      rxo90008.jpg \
-	      rxo90011.jpg \
-	      rxo90014.jpg \
-	      rxo90017.jpg \
-	      rxo90018.jpg \
-	      rxo90019.jpg \
-	      rxo90020.jpg \
+	      SimpleClass.png \
+	      IconClass.png \
+	      IconClassInstances.png \
+	      Subclasses.png \
+	      ScreenObject.png \
+	      MultipleInheritance.png \
+	      Modules.png \
 	      rxoq0s01.jpg \
 	      rxoq0s02.jpg \
 	      rxoq0s03.jpg \
