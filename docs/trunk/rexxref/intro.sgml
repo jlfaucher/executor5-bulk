@@ -1925,13 +1925,13 @@ a comment (which has no effect) can appear between a token and the left
 parenthesis.</para>
 <para>You can use any number of <emphasis role="italic">expressions</emphasis>,
 separated by commas. The <emphasis role="italic">expressions</emphasis>
-are evaluated from left to right and form the argument during
-the execution of the routine. Any ARG, PARSE ARG, or USE ARG instruction or
-ARG built-in function in the called routine accesses these objects while the
-called routine is running. You can omit
+are evaluated from left to right and form the arguments during
+the execution of the called method. Any ARG, PARSE ARG, or USE ARG instruction or
+ARG() built-in function in the called method accesses these objects while the
+called method is running. You can omit
 <emphasis role="italic">expressions</emphasis>, if appropriate,
 by including extra commas.</para>
-<para>The <emphasis role="italic">receiver</emphasis> is evaluated, followed
+<para>The <emphasis role="italic">receiver</emphasis> object is evaluated, followed
 by one or more <emphasis role="italic">expression</emphasis> arguments.
 The message name (in uppercase) and the resulting argument
 objects are then sent to the receiver object. The receiver object selects
@@ -1939,7 +1939,7 @@ a method to be run based on the message name
 (see <link linkend="meths1">Classes and Inheritance</link>), and
 runs the selected method with the specified argument objects. The receiver
 eventually returns, allowing processing to continue.</para>
-<para>If the message term uses ~, the receiver must return a result object.
+<para>If the message term uses ~, the receiver method must return a result object.
 This object is included in the original expression as if the entire message
 term had been replaced by the name of a variable whose value is the returned
 object.</para>
@@ -1950,7 +1950,7 @@ c="escape"
 a="Position of &apos;e&apos; is:" c~pos("e",3)
 /* would set A to "Position of &apos;e&apos; is: 6" */
 </programlisting>
-<para>If the message term uses ~~, the receiver needs not return
+<para>If the message term uses ~~, the receiver method need not return
 a result object. Any result object is discarded, and the receiver object is
 included in the original expression in place of the message term.</para>
 <para>For example, the messages INHERIT and SUBCLASS are valid for classes
@@ -2022,8 +2022,9 @@ team~~insert("Jane")~~insert("Joe")~~insert("Steve")
 say "First on the team is:" team~firstitem     /* Bob   */
 say "Last on the team is:" team~lastitem       /* Steve */
 </programlisting>
-<para>Thus, you would use ~ when you want the returned result to incorporate
-the methods included in each stage of the message.</para>
+<para>Thus, you would use ~ when you want the returned result to be the
+receiver of the next message in the sequence.
+</para>
 </section>
 </section>
 
@@ -2062,7 +2063,7 @@ instruction is provided for this purpose.</para></note>
 Directives are nonexecutable code and can start in any column. They
 divide a program into separate executable units (methods and routines) and
 supply information about the program or its executable units. Directives perform
-various functions, such as associating methods with a particular class (::CLASS
+various functions, such as creating new Rexx classes (::CLASS
 directive) or defining a method (::METHOD directive). See
 <link linkend="dire">Directives</link> for
 more information about directives.</para>
@@ -2092,11 +2093,15 @@ characters.</para>
 and internal function calls. Label searches for CALL, SIGNAL, and internal
 function calls are case-sensitive. Label-search targets specified as symbols
 cannot match labels with lowercase characters. Literal-string or computed-label
-searches can locate labels with lowercase characters. More than one label
-can precede an instruction. Labels are treated as null clauses and can be
-traced selectively to aid debugging.</para>
+searches can locate labels with lowercase characters.
+</para>
 <para>Labels can be any number of successive clauses. Several labels can precede
-other clauses. Duplicate labels are permitted, but control is only passed
+other clauses.
+Labels are treated as null clauses and can be
+traced selectively to aid debugging.
+</para>
+<para>
+Duplicate labels are permitted, but control is only passed
 to the first of any duplicates in a program. The duplicate labels occurring
 later can be traced but cannot be used as a target of a CALL, SIGNAL, or
 function invocation.</para>
@@ -2211,9 +2216,7 @@ composed of other objects, such as an array or directory object.</para>
 <para>You can assign
 a new value to a variable with the ARG, PARSE, PULL, or USE instructions,
 the VALUE built-in function, or the
-<indexterm><primary>variable</primary>
-<secondary>pool interface</secondary></indexterm>
-variable pool interface, but the most
+but the most
 common way of changing the value of a variable is the assignment instruction
 itself. Any clause in the form</para>
 <para><emphasis role="italic">symbol</emphasis>=<emphasis role="italic">
@@ -2283,8 +2286,10 @@ might be preferable in many cases. See
 <indexterm><primary>variable</primary>
 <secondary>setting a new value</secondary></indexterm>
 <para>The character sequences <computeroutput>+=, -=, *= /=, %=, //=, ||=, &amp;=, |=, and &amp;&amp;=</computeroutput>
-can be used to create extended assignment instructions.  An extended assignment combines an binary operation with
-an assignment where the term on the left side of the assignment is also used as the left term of the operator.  For
+can be used to create extended assignment instructions.
+An extended assignment combines a non-prefix operator with
+an assignment where the term on the left side of the assignment
+is also used as the left term of the operator.  For
 example,</para>
 <programlisting>
     a += 1
@@ -2314,7 +2319,11 @@ alphabetic characters translated to uppercase).</para>
 17E-3
 </programlisting>
 <para>Symbols where the first character is a period and the second character
-is alphabetic are environment symbols.</para>
+is alphabetic are environment symbols.
+<link linkend="ensym">Environment symbols</link>).
+may have a
+value other other than the symbol name.
+</para>
 </section>
 
 <section id="simpsym"><title>Simple Symbols</title>
@@ -2342,29 +2351,52 @@ Whatagoodidea?    /* Same as WHATAGOODIDEA? */
 <indexterm><primary>array</primary>
 <secondary>initialization</secondary></indexterm>
 <para>A <emphasis role="italic">stem</emphasis> is
-a symbol that contains a period as the last character. It cannot start with
-a digit or a period.</para>
+a symbol that contains a single period as the last character of the name. It cannot start with
+a digit.</para>
 <para>These are stems: </para>
 <programlisting>
 FRED.
 A.
-</programlisting><para>By default, the value of a stem is a Stem object. (See
+</programlisting><para>The value of a stem is always a Stem object. (See
 <link linkend="clsStem">The Stem Class</link>.)
 The stem variable's Stem object is automatically created the first time
-you use the stem variable or a compound variable
-(see <link linkend="compsym">Compound Symbols</link>)
-containing the stem variable name. The Stem object's assigned name is
+you use the stem variable or a
+<link linkend="compsym">compound variable</link>)
+containing the stem variable name.
+The Stem object's assigned name is
 the name of the stem variable (with the characters translated to uppercase).
 If the stem variable has been assigned a value, or the Stem object has been
-given a default value, a reference to the stem variable returns the assigned
-default value.</para>
+given a default value, the assigned name override the default stem name.
+A reference to a stem variable will return the associate Stem object.
+</para>
 <indexterm><primary>compound</primary>
 <secondary>variable</secondary>
 <tertiary>setting new value</tertiary></indexterm>
 <indexterm><primary>stem of a variable</primary>
 <secondary>assignment to</secondary></indexterm>
-<para>Further, when a stem is the target of an assignment, a new Stem object
-is created and assigned to the stem variable. The new value assigned to the
+<para>When a stem is the target of an assignment, the action taken
+depends on the value being assigned.  If the new value is a Stem object,
+the new Stem object will replace the the Stem object that is currently associated
+with the stem variable.  This can result in multiple stem variables referring to
+a the same Stem object, effectively creating a variable alias.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+hole.   = "empty"
+hole.19 = "full"
+say  hole.1  hole.mouse  hole.19
+/* Says "empty empty full" */
+
+hole2. = hole.       /* copies reference to hole. stem to hole2. */
+
+say  hole2.1  hole2.mouse  hole2.19
+
+/* Also says "empty empty full" */
+</programlisting>
+<para>If the new value is not a Stem object,
+a new Stem object is created and assigned to the stem variable, replacing the
+Stem object currently associated with the stem variable.</para>
+<para>
+The new value assigned to the
 stem variable is given to the new Stem object as a default value. Following
 the assignment, a reference to any compound symbol with that stem variable
 returns the new value until another value is assigned to the stem, the Stem
@@ -2380,23 +2412,7 @@ say  hole.1  hole.mouse  hole.19
 <secondary>of arrays</secondary></indexterm>
 <indexterm><primary>initialization</primary>
 <secondary>of compound variables</secondary></indexterm>
-<para>Thus, you can give a whole collection of variables the same value.</para>
-<para>If the object assigned to a stem variable is already a Stem object, then
-a new Stem object is not created. The assignment updates the stem variable
-to refer to the existing Stem object.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
-<programlisting>
-hole.   = "empty"
-hole.19 = "full"
-say  hole.1  hole.mouse  hole.19
-/* Says "empty empty full" */
-
-hole2. = hole.       /* copies reference to hole. stem to hole2. */
-
-say  hole2.1  hole2.mouse  hole2.19
-
-/* Also says "empty empty full" */
-</programlisting>
+<para>Thus, you can initialize an entire collection of compound variables to the same value.</para>
 <para>You can pass stem collections as function, subroutine, or method
 arguments.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -2408,11 +2424,16 @@ do i = 1 to count
 end
 return
 </programlisting>
-
+<para>The USE ARG instruction functions as an assignment instruction.  The variable
+STEM. in the example above is functionally equivalent to:</para>
+<programlisting>
+stem. = arg(2)
+</programlisting>
 <note><title>Note</title>
 <para>USE ARG must be used to access the stem variable as a collection.
-PARSE and PARSE ARG force the stem to be a string value.</para></note>
+PARSE and PARSE ARG will force the stem to be a string value.</para></note>
 <para>Stems can also be returned as function, subroutine, or method results.
+The resulting return value is the Stem object associated with the stem variable.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -2423,18 +2444,24 @@ do i = 1 to count
 end
 return stem.
 </programlisting>
-
-<note><title>Note</title>
-<para>The value that has been assigned to the
-whole collection of variables can always be obtained by using the stem. However,
+<para>When a stem. variable is used in an expression context, the stem variable
+reference returns the associated Stem object.  The Stem object will forward
+many object messages to it's default value.  For example, the STRING method
+will return the Stem object's default value's string representation:</para>
+<programlisting>
+total. = 0
+say total.                         /* says "0" */
+</programlisting>
+<para>The [] method with no arguments will return the currently associated
+default value.
+ variables can always be obtained by using the stem. However,
 this is not the same as using a compound variable whose derived name is the
-null string.</para></note>
-<para><emphasis role="bold">Example:</emphasis></para>
+null string.</para>
 <programlisting>
 total. = 0
 null = ""
 total.null = total.null + 5
-say total. total.null              /* says "0 5" */
+say total.[] total.null              /* says "0 5" */
 </programlisting>
 <para>You can use the DROP, EXPOSE, and PROCEDURE instructions to manipulate
 collections of variables, referred to by their stems.
@@ -2453,14 +2480,14 @@ assigned to a stem variable. See <link linkend="keyDo">DO</link> for more detail
 <orderedlist>
 <listitem><para>When the ARG, PARSE, PULL, or USE instruction, the VALUE
 built-in function, or the variable pool interface changes a variable, the
-effect is identical with an assignment. Wherever a value can be assigned,
-using a stem sets an entire collection of variables.</para></listitem>
+effect is identical with an assignment.
+</para></listitem>
 <listitem><para>Any clause that starts with a symbol and whose second token is
 (or starts with) an equal sign (<computeroutput>=</computeroutput>)
 is an assignment, rather than an expression
 (or a keyword instruction). This is not a restriction, because you can ensure
 that the clause is processed as a command, such as by putting a null string
-before the first name, or by enclosing the first part of the expression in
+before the first name, or by enclosing the expression in
 parentheses. </para>
 <para>If you unintentionally use a Rexx keyword as the variable
 name in an assignment, this should not cause confusion.  For example, the
@@ -2471,10 +2498,12 @@ Address="10 Downing Street";
 </listitem>
 <listitem><para>You can use the VAR function (see
 <link linkend="bifVar">VAR</link>) to test whether
-a symbol has been assigned a value. In addition, you can set SIGNAL ON NOVALUE
+a symbol has been assigned a value. In addition, you can set
+<link linkend="uninit">SIGNAL ON NOVALUE</link>
 to trap the use of any uninitialized variables (except when they are tails
-in compound variables&mdash;see
-<link linkend="uninit">UNINIT</link>-or stems).</para></listitem>
+in compound variables or stem variables, which are always initialized with a Stem object
+when first used.
+</para></listitem>
 </orderedlist>
 </section>
 
