@@ -125,7 +125,7 @@ are independent of the data they operate on.</para>
 And each data module includes its own operations for performing actions directly
 related to its data.</para>
 
-<figure><title>Modular Data--a Report Object</title>
+<figure><title>Modular Data&mdash;a Report Object</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -136,8 +136,8 @@ related to its data.</para>
 
 <para>In the case of report, the report object would contain its own built-in
 PRINT, SEND, ERASE, and FILE operations.</para>
-<para>Object-oriented programming lets you model real-world objects--even
-very complex ones--precisely and elegantly. As a result, object manipulation
+<para>Object-oriented programming lets you model real-world objects&mdash;even
+very complex ones&mdash;precisely and elegantly. As a result, object manipulation
 becomes easier and computer instructions become simpler and can be modified
 later with minimal effort.</para>
 <para>Object-oriented programming <emphasis>hides</emphasis> any information
@@ -150,8 +150,8 @@ complexities. Complex tasks can then be initiated simply, at a very high level.
 <para>In object-oriented programming, objects are modeled to real-world objects.
 A real-world object has actions related to it and characteristics of its own.
 </para>
-<para>Take a ball, for example. A ball can be acted on--rolled, tossed,
-thrown, bounced, caught. But it also has its own physical characteristics--size,
+<para>Take a ball, for example. A ball can be acted on&mdash;rolled, tossed,
+thrown, bounced, caught. But it also has its own physical characteristics&mdash;size,
 shape, composition, weight, color, speed, position. An accurate data model
 of a real ball would define not only the physical characteristics but
 <emphasis>all</emphasis> related actions and characteristics in one package:
@@ -167,14 +167,14 @@ of a real ball would define not only the physical characteristics but
 </figure>
 
 <para>In object-oriented programming,
-objects are the basic building blocks--the fundamental units of data.</para>
+objects are the basic building blocks&mdash;the fundamental units of data.</para>
 <indexterm><primary>object</primary>
 <secondary>definition</secondary></indexterm>
 <indexterm><primary>object</primary>
 <secondary>kinds of</secondary></indexterm>
 <para>There are many kinds of objects; for example, character
-strings, collections, and input and output streams. An object--such as
-a character string--always consists of two parts: the possible actions
+strings, collections, and input and output streams. An object&mdash;such as
+a character string&mdash;always consists of two parts: the possible actions
 or operations related to it, and its characteristics or variables. A variable
 has a variable <emphasis>name</emphasis>, and an associated data value
 that can change over time. These actions and characteristics are so closely
@@ -357,7 +357,7 @@ the Windows system icon, shredder icon, and
 information icon <emphasis>acquire</emphasis> the methods and variables
 of that class. Instances behave as if they each had their own methods and
 variables of the same name. All instances, however, have their own unique
-properties--the <emphasis>data</emphasis> associated with the variables.
+properties&mdash;the <emphasis>data</emphasis> associated with the variables.
 Everything else can be stored at the class level.</para>
 
 <figure><title>Instances of the Icon Class</title>
@@ -712,10 +712,9 @@ marks can be detected on the line where they occur.</para>
 <secondary>literal strings</secondary></indexterm>
 <indexterm><primary>literal</primary>
 <secondary>implementation maximum</secondary></indexterm>
-A literal string can contain an unlimited number of characters. The length
-of the evaluated result of an expression, however, is limited only by the
-available virtual storage of your computer, with an additional limit of 512MB
-maximum per process.</para>
+A literal string has no upper bound on the number of characters, limited on
+by available memory.
+</para>
 <para>Note that a string immediately followed by a right bracket is considered
 to be the name of a function. If immediately followed by the symbol
 <varname>X</varname> or <varname>x</varname>, it is considered to be a
@@ -858,14 +857,12 @@ from the:</para>
 <listitem><para>English alphabetic characters
 (<computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>
 and <computeroutput>a</computeroutput>-<computeroutput>z</computeroutput>).
-Note that some code pages do not include lowercase
-English characters a-z.</para></listitem>
+</para></listitem>
 <listitem><para>Numeric characters
 (<computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>)
 </para></listitem>
 <listitem><para>Characters <computeroutput>. ! ?</computeroutput>
 and underscore (<computeroutput>_</computeroutput>).
-Note that the encoding of the exclamation mark depends on the code page used.
 </para></listitem></itemizedlist>
 <indexterm><primary>uppercase translation</primary>
 <secondary>of symbols</secondary></indexterm>
@@ -951,12 +948,15 @@ that the sequence <computeroutput>-17.9</computeroutput>
 (without quotation marks) in an expression
 is not simply a number. It is a minus operator (which can be prefix minus
 if no term is to the left of it) followed by a positive number. The result
-of the operation is a number.</para>
+of the operation is a number, which might be rounded or reformatted into
+exponential form depending on the size of the number and the current
+NUMERIC DIGITS setting.
+</para>
 <para>A <emphasis>whole number</emphasis> is a number that has a no decimal
 part and that the language
 processor would not usually express in exponential notation. That is, it has
 no more digits before the decimal point than the current setting of NUMERIC
-DIGITS (the default is nine).</para>
+DIGITS (the default is nine for 32-bit systems and 18 for 64-bit systems).</para>
 <para><emphasis role="bold">Implementation maximum:</emphasis>
 <indexterm><primary>numbers</primary>
 <secondary>implementation maximum</secondary></indexterm>
@@ -965,7 +965,7 @@ DIGITS (the default is nine).</para>
 <indexterm><primary>whole numbers</primary>
 <secondary>description</secondary></indexterm>
 The exponent of a number expressed in exponential notation can have
-up to nine digits.</para>
+up to nine digits on 32-bit systems and 18 digits on 64-bit systems.</para>
 </section>
 
 <section id="operatorchar"><title>Operator Characters</title>
@@ -979,14 +979,12 @@ up to nine digits.</para>
 <indexterm><primary>tokens</primary>
 <secondary>operator characters</secondary></indexterm>
 <para>The characters
-<computeroutput>+ -  \ /  %  *  | | &amp;  =  &not;  >  &lt;</computeroutput>
+<computeroutput>+ -  \ /  %  *  | &amp;  =  &not;  >  &lt;</computeroutput>
 and the sequences
 <computeroutput>>=  &lt;=  \>  \&lt;  \=  >&lt;  &lt;>  ==  \==  //  &amp;&amp;
 ||  ** &not;>  &not;&lt;  &not;=  &not;==  >>  &lt;&lt;  >>=  \&lt;&lt;
 &not;&lt;&lt;  \>> &not;>>  &lt;&lt;=</computeroutput> indicate operations
  (see <link linkend="opera">Operators</link>).
-(The <computeroutput>||</computeroutput> can also be used as the
-concatenation symbol.)
 A few of these are also used in parsing templates, and the equal sign
 <indexterm><primary>equal</primary>
 <secondary>sign</secondary>
@@ -1002,21 +1000,12 @@ characters are removed. Therefore, the following are identical in meaning:
 345 >= 123
 345 > = 123
 </programlisting>
-<para>Some of these characters (and some special characters--see the next
+<para>Some of these characters (and some special characters&mdash;see the next
 section) might not be available in all character sets. In this case,
 appropriate translations can be used.
 <indexterm><primary>logical OR operator</primary></indexterm>
 In particular, the vertical bar (|) is often
 shown as a split vertical bar (&brvbar;).</para>
-<para>Throughout the language, the NOT (&not;)
-<indexterm><primary>logical NOT character</primary></indexterm>
-<indexterm><primary>NOT operator</primary></indexterm>
-character is synonymous with the backslash
-<indexterm><primary>backslash, use of</primary></indexterm>
-(<computeroutput>\</computeroutput>). You can
-use the two characters interchangeably according to availability and personal
-preference.</para>
-
 <note><title>Note</title>
 <para>The Rexx interpreter uses ASCII character
 124 in the concatenation operator and as the logical OR operator. Depending
@@ -1027,6 +1016,15 @@ key. If you receive error 13,
 <computeroutput>Invalid character in program</computeroutput>, on
 an instruction including a vertical bar character, make sure this character
 is ASCII 124.</para></note>
+<para>Throughout the language, the NOT (&not;)
+<indexterm><primary>logical NOT character</primary></indexterm>
+<indexterm><primary>NOT operator</primary></indexterm>
+character is synonymous with the backslash
+<indexterm><primary>backslash, use of</primary></indexterm>
+(<computeroutput>\</computeroutput>). You can
+use the two characters interchangeably according to availability and personal
+preference.</para>
+
 <para>The Rexx interpreter recognizes both ASCII character 170 ('AA'X) and ASCII
 character 172 ('AC'X) for the logical NOT operator. Depending on your country,
 the &not; might not appear on your keyboard. If the character is not available,
@@ -1120,8 +1118,8 @@ line does not end in the middle of a comment.
 (Note that a comment is not a token.)</para></listitem>
 </itemizedlist></para>
 <para>Rexx automatically implies semicolons after colons (when following a single
-symbol, a label) and after certain keywords when they are in the correct context.
- The keywords that have this effect are ELSE, OTHERWISE, and THEN.  These
+symbol or literal string, a label) and after certain keywords when they are in the correct context.
+The keywords that have this effect are ELSE, OTHERWISE, and THEN.  These
 special cases reduce typographical errors significantly. </para>
 
 <note><title>Note</title>
@@ -1130,9 +1128,8 @@ special cases reduce typographical errors significantly. </para>
 <computeroutput>*/</computeroutput>, must not be split by a line end (that is,
 <computeroutput>/</computeroutput> and <computeroutput>*</computeroutput>
 should not appear on different lines) because they could not then
-be recognized correctly; an implied semicolon would be added. The two consecutive
-characters forming a literal quotation mark within a string are also subject
-to this line-end ruling.</para></note>
+be recognized correctly; an implied semicolon would be added.
+</para></note>
 </section>
 
 <section id="contin"><title>Continuations</title>
@@ -1180,7 +1177,7 @@ original data. All expressions evaluate to objects.
 <indexterm><primary>data</primary>
 <secondary>objects</secondary></indexterm>
 Rexx provides some objects, which are described in later sections. You can
-also define and create objects that are useful in particular applications--for
+also define and create objects that are useful in particular applications&mdash;for
 example, a menu object for user interaction. See
 <link linkend="objects">Modeling Objects</link> for
 more information.</para>
@@ -1281,7 +1278,7 @@ message (a null string). When the &not; character is used in an operator, it
 is changed to a <computeroutput>\</computeroutput>. That is, the operators
 &not;= and \= both send the message \= to the target object.</para>
 <para>For an operator that works on a single term (for example, the
-prefix&nbsp;- and prefix&nbsp;+ operators), Rexx sends a message to the operand,
+prefix&nbsp;- and prefix&nbsp;+ operators), Rexx sends a message to the term,
 with no arguments. This means <computeroutput>-z</computeroutput> has the
 same effect as <computeroutput>z~"-"</computeroutput>.</para>
 <para>See <link linkend="mthObjectOperators">Operator Methods</link> for operator methods of
@@ -1404,7 +1401,7 @@ result) </para></listitem></varlistentry>
 <varlistentry><term>//
 <indexterm><primary>remainder operator</primary></indexterm>
 </term>
-<listitem><para>Remainder (divide and return the remainder--not modulo, because
+<listitem><para>Remainder (divide and return the remainder&mdash;not modulo, because
 the result can be negative)
 </para></listitem></varlistentry>
 <varlistentry><term>**
@@ -1658,7 +1655,7 @@ two such values and return
 </para>
 <variablelist>
 <varlistentry><term>&amp;</term>
-<listitem><para>AND -- returns <computeroutput>1</computeroutput> if both
+<listitem><para>AND &mdash; returns <computeroutput>1</computeroutput> if both
 terms are true.
 <indexterm><primary>&amp; (AND logical operator) operator</primary></indexterm>
 <indexterm><primary>AND, logical operator</primary></indexterm>
@@ -1667,7 +1664,7 @@ terms are true.
 <indexterm><primary>inclusive OR operator</primary></indexterm>
 <indexterm><primary>OR, logical</primary></indexterm>
 </term>
-<listitem><para>Inclusive OR -- returns <computeroutput>1</computeroutput>
+<listitem><para>Inclusive OR &mdash; returns <computeroutput>1</computeroutput>
 if either term or both terms are true.
 <indexterm><primary>| inclusive OR operator</primary></indexterm>
 </para></listitem></varlistentry>
@@ -1675,7 +1672,7 @@ if either term or both terms are true.
 <indexterm><primary>exclusive OR operator</primary></indexterm>
 <indexterm><primary>XOR, logical</primary></indexterm>
 </term>
-<listitem><para>Exclusive OR -- returns <computeroutput>1</computeroutput>
+<listitem><para>Exclusive OR &mdash; returns <computeroutput>1</computeroutput>
 if either term, but not both terms, is true.
 <indexterm><primary>&amp;&amp; (exclusive OR operator)</primary></indexterm>
 </para></listitem></varlistentry>
@@ -1684,7 +1681,7 @@ if either term, but not both terms, is true.
 <indexterm><primary>negation</primary>
 <secondary>of logical values</secondary></indexterm>
 </term>
-<listitem><para>Logical NOT-- negates; <computeroutput>1</computeroutput>
+<listitem><para>Logical NOT&mdash; negates; <computeroutput>1</computeroutput>
 becomes <computeroutput>0</computeroutput>, and
 <computeroutput>0</computeroutput> becomes <computeroutput>1</computeroutput>.
 </para></listitem></varlistentry>
@@ -1703,9 +1700,9 @@ becomes <computeroutput>0</computeroutput>, and
 evaluation is from left to right; parentheses and operator precedence modify
 this:
 <itemizedlist>
-<listitem><para>When parentheses are encountered--other than those that
+<listitem><para>When parentheses are encountered&mdash;other than those that
 identify the arguments on messages (see
-<link linkend="mssg">Message Terms</link>) and function calls--the
+<link linkend="mssg">Message Terms</link>) and function calls&mdash;the
 entire subexpression between the parentheses is evaluated immediately when
 the term is required.</para></listitem>
 <listitem><para>When the sequence </para>
@@ -2440,7 +2437,7 @@ Address="10 Downing Street";
 <link linkend="bifVar">VAR</link>) to test whether
 a symbol has been assigned a value. In addition, you can set SIGNAL ON NOVALUE
 to trap the use of any uninitialized variables (except when they are tails
-in compound variables--see
+in compound variables&mdash;see
 <link linkend="uninit">UNINIT</link>-or stems).</para></listitem>
 </orderedlist>
 </section>
@@ -2711,8 +2708,8 @@ on the caller. Normally the default environment is the used shell, mostly "CMD"
 on Windows systems and "bash" on Linux systems.
 If called from an editor that accepts subcommands from
 the language processor, the default environment can be that editor.</para>
-<para>A Rexx program can issue commands--called
-<emphasis>subcommands</emphasis>--to other application programs.
+<para>A Rexx program can issue commands&mdash;called
+<emphasis>subcommands</emphasis>&mdash;to other application programs.
 For example, a Rexx program written
 for a text editor can inspect a file being edited, issue subcommands to make
 changes, test return codes to check that the subcommands have been processed
@@ -2740,7 +2737,7 @@ of the form:</para>
 expression;
 </programlisting>
 <para>The expression (which must not be an expression that forms a valid message
-instruction--see <link linkend="msgi">Message Instructions</link>)
+instruction&mdash;see <link linkend="msgi">Message Instructions</link>)
 is evaluated, resulting in a character string value
 (which can be the null string), which is then prepared as appropriate
 and submitted to the underlying system. Any part of the expression not to
@@ -2785,7 +2782,7 @@ cause the command to be traced if <computeroutput>TRACE E</computeroutput>
 or <computeroutput>TRACE F</computeroutput> is
 set. <computeroutput>TRACE Normal</computeroutput> is the same as
 <computeroutput>TRACE F</computeroutput> and is the
-default--see <link linkend="keyTrace">TRACE</link>.</para>
+default&mdash;see <link linkend="keyTrace">TRACE</link>.</para>
 <para>The .RS environment symbol can also be used to detect command failures
 and errors. When the command environment indicates that a command failure
 has occurred, the Rexx environment symbol .RS has the value
