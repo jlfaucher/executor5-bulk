@@ -1302,29 +1302,47 @@ for operator methods of the String class.</para>
 appending the second string to the right-hand end of the first string. The
 concatenation may occur with or without an intervening blank. The concatenation
 operators are: </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">(blank)</emphasis></term>
-<listitem><para>Concatenate terms with one blank in between
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
+<row>
+<entry>(blank)</entry>
+<entry>
+<para>Concatenate terms with one blank in between
 <indexterm><primary>blanks</primary></indexterm>
 <indexterm><primary>concatenation</primary>
 <secondary>as concatenation operator</secondary></indexterm>
 <indexterm><primary>concatenation</primary>
 <secondary>blank</secondary></indexterm>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">||</emphasis></term>
-<listitem><para>Concatenate without an intervening blank
+</para>
+</entry>
+</row>
+<row>
+<entry>||</entry>
+<entry>
+<para>Concatenate without an intervening blank
 <indexterm><primary>|| concatenation operator</primary></indexterm>
 <indexterm><primary>concatenation</primary>
 <secondary>operator</secondary>
 <tertiary>||</tertiary></indexterm>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">(abuttal)</emphasis></term>
-<listitem><para>Concatenate without an intervening blank
+</para>
+</entry>
+</row>
+<row>
+<entry>(abuttal)</entry>
+<entry>
+<para>Concatenate without an intervening blank
 <indexterm><primary>concatenation</primary>
 <secondary>abuttal</secondary></indexterm>
 <indexterm><primary>abuttal</primary></indexterm>
-</para></listitem></varlistentry>
-</variablelist>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
 <para>You can force concatenation without a blank by using the
 <computeroutput>||</computeroutput> operator.</para>
 <para>The abuttal operator is assumed between two terms that are not separated
@@ -1367,66 +1385,98 @@ in an abuttal, and evaluates to <computeroutput>37.40</computeroutput>.</para>
 <para>You can combine character strings that are
 valid numbers (see <link linkend="numbrs">Numbers</link>)
 using the following arithmetic operators: </para>
-<variablelist>
-<varlistentry><term>+
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
+<row>
+<entry>+</entry>
+<entry>
+<para>Add
 <indexterm><primary>+ (addition operator)</primary></indexterm>
 <indexterm><primary>addition operator</primary></indexterm>
-</term>
-<listitem><para>Add
-</para></listitem></varlistentry>
-<varlistentry><term>-
+</para>
+</entry>
+</row>
+<row>
+<entry>-</entry>
+<entry>
+<para>Subtract
 <indexterm><primary>- (subtraction operator)</primary></indexterm>
 <indexterm><primary>subtraction operator</primary></indexterm>
-</term>
-<listitem><para>Subtract
-</para></listitem></varlistentry>
-<varlistentry><term>*
+</para>
+</entry>
+</row>
+<row>
+<entry>*</entry>
+<entry>
+<para>Multiply
 <indexterm><primary>* (multiplication operator)</primary></indexterm>
 <indexterm><primary>multiplication operator</primary></indexterm>
-</term>
-<listitem><para>Multiply
-</para></listitem></varlistentry>
-<varlistentry><term>/
+</para>
+</entry>
+</row>
+<row>
+<entry>/</entry>
+<entry>
+<para>Divide
 <indexterm><primary>/ (division operator)</primary></indexterm>
 <indexterm><primary>division operator</primary></indexterm>
-</term>
-<listitem><para>Divide
-</para></listitem></varlistentry>
-<varlistentry><term>%
+</para>
+</entry>
+</row>
+<row>
+<entry>%</entry>
+<entry>
+<para>Integer divide (divide and return the integer part of the
+result)
 <indexterm><primary>% (integer division operator)</primary></indexterm>
 <indexterm><primary>integer division operator</primary></indexterm>
-</term>
-<listitem><para>Integer divide (divide and return the integer part of the
-result) </para></listitem></varlistentry>
-<varlistentry><term>//
-<indexterm><primary>remainder operator</primary></indexterm>
-</term>
-<listitem><para>Remainder (divide and return the remainder&mdash;not modulo, because
+</para>
+</entry>
+</row>
+<row>
+<entry>//</entry>
+<entry>
+<para>Remainder (divide and return the remainder&mdash;not modulo, because
 the result can be negative)
-</para></listitem></varlistentry>
-<varlistentry><term>**
+<indexterm><primary>remainder operator</primary></indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry>**</entry>
+<entry>
+<para>Power (raise a number to a whole-number power)
 <indexterm><primary>exponentiation</primary>
 <secondary>operator</secondary></indexterm>
-</term>
-<listitem><para>Power (raise a number to a whole-number power)
 <indexterm><primary>power operator</primary></indexterm>
-</para></listitem></varlistentry>
-<varlistentry><term>
-<emphasis role="bold">Prefix -</emphasis>
-<indexterm><primary>prefix - operator</primary></indexterm>
-<indexterm><primary>negation</primary>
-<secondary>of logical values</secondary></indexterm>
-</term>
-<listitem><para>Same as the subtraction:
+</para>
+</entry>
+</row>
+<row>
+<entry>Prefix -</entry>
+<entry>
+<para>Same as the subtraction:
 <computeroutput>0 - number</computeroutput>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Prefix +</emphasis>
-<indexterm><primary>prefix + operator</primary></indexterm>
-</term>
+<indexterm><primary>prefix - operator</primary></indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry>Prefix +</entry>
+<entry>
 <listitem><para>Same as the addition:
 <computeroutput>0 + number</computeroutput>
+<indexterm><primary>prefix + operator</primary></indexterm>
 </para></listitem></varlistentry>
-</variablelist><para> See <link linkend="numarit">Numbers and Arithmetic</link>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<para>See <link linkend="numarit">Numbers and Arithmetic</link>
 for details about precision, the format of valid numbers, and the
 operation rules for arithmetic. Note that if an arithmetic result is
 shown in exponential notation, it is likely that rounding has occurred.</para>
