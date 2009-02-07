@@ -157,8 +157,8 @@ or process that can process commands. The
 <emphasis role="italic">expression</emphasis> is evaluated
 to produce a character string value, and this string is routed to the
 <emphasis role="italic">environment</emphasis>
-to be processed as a command. (Enclose in quotation marks
-any part of the expression you do not want to be evaluated.) After execution
+to be processed as a command.
+After execution
 of the command, <emphasis role="italic">environment</emphasis>
 is set back to its original state, thus
 temporarily changing the destination for a single command. The special variable
@@ -223,7 +223,7 @@ selected environment name. You can retrieve the current address setting by
 using the ADDRESS built-in function. (See
 <link linkend="bifAddress">ADDRESS</link>.) The
 <citetitle pubwork="book">Open Object Rexx: Programming Guide</citetitle>
-describes the registration of alternative subcommand environments.</para>
+describes the creation of alternative subcommand environments.</para>
 </section>
 
 <section id="keyArg"><title>ARG</title>
@@ -279,12 +279,10 @@ template or list of templates separated by commas.
 Each template consists of one or more symbols separated by whitespace
 characters, patterns, or both.
 </para>
-<para>Unless a subroutine, internal function, or method is processed, the
-objects passed as parameters to the program are converted to string values
+<para>The objects passed to the program, routine, or method
+are converted to string values
 and parsed into variables according to the rules described in
 <link linkend="parsingch">Parsing</link>.</para>
-<para>If a subroutine, internal function, or method is processed, the data used
-are the argument objects that the caller passes to the routine.</para>
 <para>The language processor converts the objects to strings and translates the
 strings to uppercase (that is, lowercase
 <computeroutput>a</computeroutput>-<computeroutput>z</computeroutput> to
@@ -293,8 +291,7 @@ before processing them. Use the
 PARSE ARG instruction if you do not want uppercase translation.</para>
 <para>You can use the ARG and PARSE ARG instructions repeatedly on the same source
 objects (typically with different templates). The source objects do not change.
-The only restrictions on the length or content of the data parsed are those
-the caller imposes.</para>
+</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>ARG instruction</primary>
 <secondary>example</secondary></indexterm>
@@ -334,8 +331,8 @@ arguments. See <link linkend="bifArg">ARG (Argument)</link>.</para></listitem>
 of retrieving arguments. USE ARG performs a direct, one-to-one assignment
 of argument objects to Rexx variables. You should use this when your program
 needs a direct reference to the argument object, without string conversion
-or parsing. USE ARG also allows access to both string and non-string argument
-objects. ARG and PARSE ARG produce string values from the arguments, and the
+or parsing.
+ARG and PARSE ARG produce string values from the arguments, and the
 language processor then parses these.</para></listitem>
 </orderedlist>
 </section>
@@ -420,8 +417,9 @@ symbol that is taken as a constant. The
 taken as a constant. The routine called can be: </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">An internal routine</emphasis></term>
-<listitem><para>A function or subroutine that is in the same program as the CALL
-instruction or function call that calls it.
+<listitem><para>A subroutine that is in the same program as the CALL
+instruction or function call that calls it.  Internal routines are located
+using label instructions.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">A built-in routine</emphasis>
 <indexterm><primary>built-in functions</primary>
@@ -429,46 +427,31 @@ instruction or function call that calls it.
 <indexterm><primary>built-in functions</primary>
 <secondary>definition</secondary></indexterm>
 </term>
-<listitem><para>A function or subroutine that is defined as part of the
+<listitem><para>A function that is defined as part of the
 Rexx language.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">An external routine</emphasis>
 <indexterm><primary>external routine</primary></indexterm>
 </term>
-<listitem><para>A function or subroutine that is neither built-in nor in the
-same program as the CALL instruction or function call that calls it.
+<listitem><para>A subroutine that is neither built-in nor a label
+within the same same program as the CALL instruction call that invokes it.
+See <link linkend="xsearcho">Search Order</link> for details on the different
+types of external routines.
 </para></listitem></varlistentry>
 </variablelist>
 <indexterm><primary>subroutines</primary>
 <secondary>forcing built-in or external reference</secondary></indexterm>
-<para>If <emphasis role="italic">name</emphasis> is a string in which case you
-specify it in quotation marks, the search for internal routines is bypassed,
-and only a built-in function or an external routine is called. Note that the
-names of built-in functions are in uppercase. Therefore,
-write the name in the literal string in uppercase characters.</para>
-<para>For Windows, file names can be in uppercase, lowercase, or mixed case. The
-search for files is case-insensitive to case. Therefore, when using CALL to
-run a Rexx subroutine contained on a disk file (external routine), the case
-does not matter.</para>
-<para>For Unix, file names can be in uppercase, lowercase, or mixed case. The
-search for files uses the following rules:</para>
-<orderedlist>
-<listitem><para>If the <emphasis role="italic">name</emphasis> is a quoted
-string then no conversion of the <emphasis role="italic">name</emphasis>
-is performed prior to the search for the file.</para></listitem>
-<listitem><para>If the <emphasis role="italic">name</emphasis> is unquoted then
-it is first converted to all uppercase and then the search is performed. If the
-<emphasis role="italic">name</emphasis> is not found then it is converted
-to all lowercase and searched for again. A mixed case
-<emphasis role="italic">name</emphasis> search is NOT performed.
-</para></listitem>
-</orderedlist>
+<para>If <emphasis role="italic">name</emphasis> is a literal string
+(that is, specified in in quotation marks), the search for internal routines is bypassed,
+and only a built-in function or an external routine is called. Note that
+built-in function names are in uppercase. Therefore, a literal string call
+to a built-in function must also use uppercase characters.</para>
 <para>You can also specify (<emphasis role="italic">expr</emphasis>),
 any valid expression enclosed in
 parentheses. The expression is evaluated before any of the argument expressions,
 and the value is the target of the CALL instruction. The language processor
 does not translate the expression value into uppercase, so the evaluated name
-must exactly match any label name. (See
+must exactly match any label name or built-in function name. (See
 <link linkend="labels">Labels</link> for a description of label names.)</para>
 <para>The called routine can optionally return a result. In this case, the CALL
 instruction is functionally identical with the clause:</para>
@@ -482,8 +465,6 @@ instruction is functionally identical with the clause:</para>
 ]]>
 </programlisting>
 
-<para>If the called routine does not return a result, you get an error if you
-call it as a function.</para>
 <para>You can use any number of <emphasis role="italic">expression</emphasis>s,
 separated by
 <indexterm><primary>, (comma)</primary>
@@ -530,10 +511,7 @@ and any arguments:</para></note>
 call length "string"   /* Same as length("string") */
 say result             /* Produces: 6              */
 </programlisting>
-<para>However, if you
-include a trailing comma, you must include the semicolon to prevent the
-interpretation of the last comma as a continuation character.
-</para></listitem></varlistentry>
+</listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">External routines</emphasis></term>
 <listitem><para>Users can write or use routines that are external to the
 language processor and the calling program. You can code an external routine
@@ -550,7 +528,8 @@ are generally accessible. However, the PROCEDURE instruction can set up a
 local variables environment to protect the subroutine and caller from each
 other. The EXPOSE option on the PROCEDURE instruction can expose selected
 variables to a routine.</para>
-<para>Calling an external program as a subroutine is similar to calling an internal
+<para>Calling an external program or routine defined with a ::ROUTINE directive
+is similar to calling an internal
 routine. The external routine, however, is an implicit PROCEDURE in that all
 the caller's variables are always hidden. The status of internal values, for
 <indexterm><primary>NUMERIC instruction</primary>
@@ -558,8 +537,8 @@ the caller's variables are always hidden. The status of internal values, for
 example NUMERIC settings, start with their defaults (rather than inheriting
 those of the caller). In addition, you can use EXIT to return from the routine.</para>
 <para>When
-control reaches an internal routine but not a built-in function or external
-routine, the line number of the CALL instruction is available in the variable
+control reaches an internal routine,
+the line number of the CALL instruction is available in the variable
 SIGL (in the caller's variable environment). This can be used as a debug aid
 because it is possible to find out how control reached a routine. Note that
 if the internal routine uses the PROCEDURE instruction, it needs to EXPOSE
@@ -667,9 +646,6 @@ time clock is saved across routine calls, a subroutine or internal function
 can independently restart and use the clock without affecting its caller.
 For the same reason, a clock started within an internal routine is not
 available to the caller.</para></listitem>
-<listitem><para><emphasis role="bold">OPTIONS settings:</emphasis> ETMODE and
-EXMODE are saved and then restored on return. </para></listitem>
-</itemizedlist>
 </section>
 
 <section id="keyDo"><title>DO</title>
