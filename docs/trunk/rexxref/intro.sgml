@@ -2556,10 +2556,12 @@ substitutes in the compound symbol the character string values of any simple
 symbols in the tail (<computeroutput>I</computeroutput>,
 <computeroutput>J</computeroutput>, and
 <computeroutput>One</computeroutput> in the
-examples), thus generating a new, derived name. The value of a compound symbol
-is, by default, its derived name (used exactly as is) or, if it has been used
-as the target of an assignment, the value of the variable named by the derived
-name.</para>
+examples), thus generating a new, derived tail. The value of a compound symbol
+is, by default, its the name of the Stem object associated with the stem variable
+concatenated to the
+derived tail or, if it has been used
+as the target of an assignment, the value of Stem element named by the derived
+tail.</para>
 <para>The substitution in the symbol permits arbitrary indexing (subscripting)
 of collections of variables that have a common stem. Note that the values
 substituted can contain <emphasis>any</emphasis> characters (including
@@ -2581,7 +2583,7 @@ are the values of the constant or simple symbols
 Any of the symbols <computeroutput>s1</computeroutput> to
 <computeroutput>sn</computeroutput> can be null. The values
 <computeroutput>v1</computeroutput> to <computeroutput>vn</computeroutput>
-can also be null and can contain <emphasis>any</emphasis> characters.
+can also be null and can contain <emphasis>any</emphasis> characters (including periods).
 Lowercase characters are not translated to uppercase,
 blanks are not removed, and periods have no special significance. There is
 no limit on the length of the evaluated name.</para>
@@ -2610,7 +2612,7 @@ producing a form of associative memory (content-addressable).</para>
 <para>The value of a stem variable is always a Stem object (see
 <link linkend="clsStem">The Stem Class</link> for
 details). A Stem object is a type of collection that supports the []
-and []= methods used by other collection classes. The []
+and []= methods used by other collection classes. The [] method
 provides an alternate means of accessing compound variables that also allows
 embedded subexpressions.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -2639,12 +2641,14 @@ a.[c]  c.[a]  a.[fred] y.[a,z]
 This character must not be a digit. By default the value of an environment
 symbol is the string consisting of the characters of the symbol (translated
 to uppercase). If the symbol identifies an object in the current environment,
-its value is that object.</para>
+its value is the mapped object.</para>
 <para>These are environment symbols: </para>
 <programlisting>
-.method    /* Same as .METHOD */
+.method    // A reference to the Rexx Method class
 
-.true
+.true      // The Rexx "true" object.  Has the value "1"
+
+.xyz       // Normally the value .XYZ
 </programlisting>
 <para>When you use an environment symbol, the language processor performs a
 series of searches to see if the environment symbol has an assigned value. The
@@ -2652,10 +2656,14 @@ search locations and their ordering are:
 <orderedlist>
 <listitem><para>The directory of classes declared on ::CLASS directives (see
 <link linkend="clasdi">::CLASS</link>)
-within the current program file.</para></listitem>
+within the current program package or added to the current package using
+the <link linkend="mthPackageAddClass">addClass() method</link>.</para></listitem>
 <listitem><para>The directory of PUBLIC classes declared on ::CLASS directives
-of other files included with a ::REQUIRES directive.</para></listitem>
-<listitem><para>The local environment directory. The local
+of other files included with a ::REQUIRES directive or added to the current
+Package instance using the <link linkend="mthPackageAddClass">addPackage() method</link>.
+</para></listitem>
+<listitem><para>The local environment directory specific to the current
+interpreter instance. The local
 environment includes process-specific
 objects such as the .INPUT and .OUTPUT objects. You can directly access the
 local environment directory by using the .LOCAL environment symbol. (See
@@ -2666,17 +2674,19 @@ includes all
 permanent Rexx objects such as the Rexx supplied classes (.ARRAY and so on)
 and constants such as .TRUE and .FALSE. You can directly access the global
 environment by using the .ENVIRONMENT environment symbol (see
-<link linkend="envo">The Environment Object</link>)
-or the VALUE built-in function (see <link linkend="bifValue">VALUE</link>)
-with a null string for the
+<link linkend="envo">The Environment Object</link>).
+Entries in the global environment directory can also be accessed via the VALUE
+built-in function (see <link linkend="bifValue">VALUE</link>)
+by using a null string for the
 <emphasis role="italic">selector</emphasis> argument.</para></listitem>
 <listitem><para>Rexx defined symbols. Other simple environment symbols are
-reserved for use by Rexx built-in objects. The currently defined built-in
-objects are .RS, .LINE, and .METHODS.</para></listitem>
+reserved for use by <link linkend="builtinenvobj">Rexx built-in environment objects</link>.
+The currently defined built-in
+objects are .RS, .LINE, .METHODS, .ROUTINES, and .CONTEXT.</para></listitem>
 </orderedlist>
 </para>
 <para>If an entry is not found for an environment symbol, then the default
-character string value is used. </para>
+character string value is used.</para>
 
 <note><title>Note</title>
 <para>You can place entries in both the .LOCAL
@@ -2805,8 +2815,8 @@ expression;
 instruction&mdash;see <link linkend="msgi">Message Instructions</link>)
 is evaluated, resulting in a character string value
 (which can be the null string), which is then prepared as appropriate
-and submitted to the underlying system. Any part of the expression not to
-be evaluated must be enclosed in quotation marks.</para>
+and submitted to the environment specified by the current ADDRESS setting.
+</para>
 <para>The environment then processes the command and returns control
 to the language processor after setting a return code. A
 <emphasis>return code</emphasis> is a string, typically a number,
@@ -2865,8 +2875,7 @@ exten = "CAT"
 </programlisting>
 <para>would result in passing the string
 <computeroutput>TYPE CHESHIRE.CAT</computeroutput> to
-the command processor. On Windows 95, this is COMMAND.COM. On
-<trademark class="registered">Windows NT</trademark>, this is CMD.EXE.
+the command processor, CMD.EXE.
 The simpler expression:</para>
 <programlisting>
 "TYPE CHESHIRE.CAT"
@@ -2878,8 +2887,8 @@ not be found in the current directory.</para>
 
 <note><title>Note</title>
 <para>Remember that the expression is evaluated before
-it is passed to the environment. Enclose in quotation marks any part of the
-expression that is not to be evaluated.</para></note>
+it is passed to the environment. Constant portions of the command should be
+specified as literal strings.</para></note>
 <para><emphasis role="bold">Windows Example:</emphasis></para>
 <programlisting>
 delete "*".lst           /* not "multiplied by" */
@@ -2899,14 +2908,20 @@ w = any
 ls "/w"                  /* not "divided by ANY" */
 </programlisting>
 
-<para>Enclosing an entire message instruction in parentheses causes
+<para>
+Enclosing an entire message instruction in parentheses causes
 the message result to be used as a command. Any clause that is a message
 instruction is not treated as a command. Thus, for example, the clause </para>
 <programlisting>
 myfile~linein
 </programlisting>
 <para>causes the returned line to be assigned to the variable RESULT, not to
-be used as a command to an external environment.</para>
+be used as a command to an external environment, while</para>
+<programlisting>
+(myfile~linein)
+</programlisting>
+<para>would submit the return value from the linein method as a command to the external
+environment.</para>
 </section>
 </section>
 
