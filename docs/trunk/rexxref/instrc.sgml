@@ -332,8 +332,8 @@ of retrieving arguments. USE ARG performs a direct, one-to-one assignment
 of argument objects to Rexx variables. You should use this when your program
 needs a direct reference to the argument object, without string conversion
 or parsing.
-ARG and PARSE ARG produce string values from the arguments, and the
-language processor then parses these.</para></listitem>
+ARG and PARSE ARG produce string values from the argument objects, and the
+language processor then parses the string values.</para></listitem>
 </orderedlist>
 </section>
 
@@ -1827,7 +1827,8 @@ operations. The options of this instruction are described in detail in
 <listitem><para>controls the precision to which arithmetic operations and
 built-in functions are evaluated. If you omit
 <emphasis role="italic">expression1</emphasis>, the precision defaults to
-9 digits. Otherwise, the character string value result of
+9 digits on 32-bit systems and 18 on 64-bit systems.
+Otherwise, the character string value result of
 <emphasis role="italic">expression1</emphasis> must evaluate to a positive whole
 number and must be larger than the current NUMERIC FUZZ setting.</para>
 <para>There is no limit to the value for DIGITS
@@ -1949,10 +1950,10 @@ to the rules of parsing. (See <link linkend="parsingch">Parsing</link>.)</para>
 <secondary>with PARSE UPPER</secondary></indexterm>
 <indexterm><primary>lowercase translation</primary>
 <secondary>with PARSE LOWER</secondary></indexterm>
-UPPER or LOWER, any character strings to be parsed are first translated.
-Otherwise no translation takes place during the parsing. If you specify UPPER,
-the strings are translated to uppercase. If you specify LOWER, the strings are
-translated to lowercase.</para>
+If you specify UPPER,
+the strings to be parsed are translated to uppercase before parsing. If you specify LOWER, the strings are
+translated to lowercase. Otherwise no translation takes place.
+</para>
 <para>If you
 specify CASELESS, character string matches during parsing are made independent
 of the case. This means a letter in uppercase is equal to the same letter
@@ -1984,15 +1985,15 @@ instruction.</para>
 <indexterm><primary>arguments</primary>
 <secondary>retrieving with PARSE ARG instruction</secondary></indexterm>
 </term>
-<listitem><para>parses the strings passed to a program or internal routine as
+<listitem><para>parses the strings passed to a program, routine, or method as
 input arguments. (See the ARG instruction in
 <link linkend="keyArg">ARG</link> for details and examples.)
 
 <note><title>Note</title>
-<para>Parsing uses the argument string values. The
-USE ARG instruction provides access to string and non-string argument objects.
-You can also retrieve or check the argument objects to a Rexx program or
-internal routine with the ARG built-in function (see
+<para>Parsing uses the string values of the argument objects. The
+USE ARG instruction provides direct access to argument objects.
+You can also retrieve or check the argument objects to a Rexx program, routine, or
+method with the ARG built-in function (see
 <link linkend="bifArg">ARG (Argument)</link>).
 </para></note>
 </para></listitem></varlistentry>
@@ -2009,15 +2010,17 @@ is a shorter form of the following instruction:
 </para>
 <programlisting>
 <![CDATA[
->>-PARSE VALUE LINEIN()WITH--+---------------+--;--------------><
-                             +-template_list-+
+>>-PARSE VALUE LINEIN() WITH--+---------------+--;--------------><
+                              +-template_list-+
 ]]>
 </programlisting>
 
 <para>If no line is available, program execution usually pauses
 until a line is complete. Use PARSE LINEIN only when direct access to the
 character input stream is necessary. Use the PULL or PARSE PULL instructions
-for the usual line-by-line dialog with the user to maintain generality.</para>
+for the usual line-by-line dialog with the user to maintain generality.
+PARSE LINEIN will not pull lines from the external data queue.
+</para>
 <para>To check if any lines are available in the default input stream, use the
 built-in
 function LINES. See <link linkend="bifLines">LINES (Lines Remaining)</link>
@@ -2042,7 +2045,7 @@ programs written in Rexx. See also the PULL instruction in
 
 <note><title>Note</title>
 <para>PULL and PARSE PULL read the current data queue. If the queue is
-empty, they read the default input stream, STDIN (typically, the keyboard).
+empty, they read the default input stream, .INPUT (typically, the keyboard).
 </para></note>
 </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">PARSE SOURCE</emphasis>
@@ -2061,17 +2064,13 @@ program is running.</para>
 <para>The source string contains operating system name,
 followed by either <computeroutput>COMMAND</computeroutput>,
 <computeroutput>FUNCTION</computeroutput>,
-<computeroutput>METHOD</computeroutput>, or
-<computeroutput>SUBROUTINE</computeroutput>, depending on
+<computeroutput>SUBROUTINE</computeroutput>, or
+<computeroutput>METHOD</computeroutput>, depending on
 whether the program was called as a host command or from a function call in
-an expression or as a method of an object or using the CALL instruction. These
+an expression or using the CALL instruction or as a method of an object. These
 two tokens are followed by the complete path specification of the program
 file.</para>
 <para>The string parsed might, therefore, look like this:</para>
-<programlisting>
-Windows95 COMMAND C:\MYDIR\RexxTRY.CMD
-</programlisting>
-<para>or</para>
 <programlisting>
 WindowsNT COMMAND C:\MYDIR\RexxTRY.CMD
 </programlisting>
@@ -2140,11 +2139,11 @@ words:
 <listitem><para>The string <computeroutput>REXX-ooRexx</computeroutput></para>
 </listitem>
 <listitem><para>The language level description, for example
-<computeroutput>6.00</computeroutput>.</para></listitem>
+<computeroutput>6.03</computeroutput>.</para></listitem>
 <listitem><para>Three tokens that describe the language processor release
 date in the same format as the default for the DATE built-in function
 (see <link linkend="bifDate">DATE</link>),
-for example, &quot;27 Sep 1997&quot;.</para></listitem></itemizedlist>
+for example, &quot;27 Sep 2007&quot;.</para></listitem></itemizedlist>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -2186,7 +2185,7 @@ for example, &quot;27 Sep 1997&quot;.</para></listitem></itemizedlist>
 <para>PROCEDURE, within an internal
 routine (subroutine or function), protects the caller's variables by making
 them unknown to the instructions that follow it. After a RETURN instruction
-is processed, the original variables environment is restored and any variables
+is processed, the original variable environment is restored and any variables
 used in the routine (that were not exposed) are dropped. (An exposed variable
 is one belonging the caller of a routine that the PROCEDURE instruction has
 exposed. When the routine refers to, or alters, the variable, the original
@@ -2349,7 +2348,8 @@ for details and examples of how routines are called.</para>
 ]]>
 </programlisting>
 
-<para>PULL reads a string from the head of the external data queue.
+<para>PULL reads a string from the head of the external data queue or, if
+the external data queue is empty, from the standard input stream (typically the keyboard).
 (See <link linkend="iostrms">Input and Output Streams</link> for a
 discussion of Rexx input and output.) It is a short
 form of the following instruction:</para>
@@ -2384,8 +2384,8 @@ instruction if you do not desire uppercase translation. </para>
 <para>If the current
 data queue is empty, PULL reads from the standard input (typically, the
 keyboard). If there is a PULL from the standard input, the program waits for
-keyboard input with no prompt. The length of data read by the PULL instruction
-is restricted to the length of strings contained by variables.</para></note>
+keyboard input with no prompt.
+</para></note>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>PULL instruction</primary>
 <secondary>example</secondary></indexterm>
@@ -2594,7 +2594,7 @@ constant symbol, or expression enclosed in parentheses. The ADDITIONAL entry
 of the condition object and the
 <computeroutput>&quot;A&quot;</computeroutput> option of the CONDITION
 built-in function return this additional object information. For SYNTAX conditions,
-the ADDITIONAL value must evaluate to a Rexx array object.</para>
+the ADDITIONAL value must evaluate to a single-dimension Rexx array object.</para>
 <para>If you specify the ARRAY option, each
 <emphasis role="italic">expri</emphasis> is an expression (use
 commas to separate the expressions). The language processor evaluates the
@@ -2690,7 +2690,7 @@ syntax:
 <para>REPLY sends an early
 reply from a method to its caller. The method issuing REPLY returns control,
 and possibly a result, to its caller to the point from which the message was
-sent; meanwhile, the method issuing REPLY continues running.</para>
+sent; meanwhile, the method issuing REPLY continues running on a newly created thread.</para>
 <para>If you specify <emphasis role="italic">expression</emphasis>,
 it is evaluated and the object resulting from the evaluation is passed back.
 If you omit <emphasis role="italic">expression</emphasis>, no object
@@ -2716,11 +2716,11 @@ return
 <listitem><para>A method can execute only one REPLY instruction.</para>
 </listitem>
 <listitem><para>When the method issuing the REPLY instruction is the only
-method on the
-current activity with exclusive access to the object's variable pool,
-the method retains exclusive access on the new activity. When the other methods
-on the activity also have access, the method issuing REPLY releases its access
-and reacquires the access on the new activity. This might force the method
+active method on the
+current thread with exclusive access to the object's variable pool,
+the method retains exclusive access on the new thread.  When other methods
+on the thread also have access, the method issuing the REPLY releases its access
+and reacquires the access on the new thread. This might force the method
 to wait until the original activity has released its access.</para></listitem>
 </orderedlist>
 <para>See <link linkend="xconcur">Concurrency</link> for a complete
@@ -2752,11 +2752,11 @@ description of concurrency.</para>
 </programlisting>
 
 <para>RETURN returns control, and possibly a result, from a Rexx program,
-method, or internal routine to the point of its invocation.</para>
+method, or routine to the point of its invocation.</para>
 <para>If no internal routine (subroutine or function) is active, RETURN and EXIT
 are identical in their effect on the program that is run.
 (See <link linkend="keyExit">EXIT</link>.)</para>
-<para>If a subroutine is run, <emphasis role="italic">expression</emphasis>
+<para>If called as a routine, <emphasis role="italic">expression</emphasis>
 (if any) is evaluated, control is passed back to the caller, and the Rexx
 special variable
 <indexterm><primary>RESULT special variable</primary>
@@ -2766,7 +2766,7 @@ If you omit <emphasis role="italic">expression</emphasis>,
 the special variable RESULT is dropped (becomes uninitialized). The
 various settings saved at the time of the CALL (for example, tracing and
 addresses) are also restored. (See <link linkend="keyCall">CALL</link>.)</para>
-<para>If a function is processed, the action taken is identical, except that
+<para>If a function call is active, the action taken is identical, except that
 <emphasis role="italic">expression</emphasis> must be specified on the
 RETURN instruction. The result of <emphasis role="italic">expression</emphasis>
 is then used in the original expression at the point where the function
@@ -2785,11 +2785,11 @@ optional and is assigned to the Rexx special variable
 <indexterm><primary>special</primary>
 <secondary>variables</secondary>
 <tertiary>RESULT</tertiary></indexterm>
-RESULT if you specify
-it. If the method has previously issued a REPLY instruction, the RETURN instruction
+RESULT if a return <emphasis role="italic">expression</emphasis> is specified.
+If the method has previously issued a REPLY instruction, the RETURN instruction
 must not include a result <emphasis role="italic">expression</emphasis>.</para>
-<para>If a PROCEDURE instruction was processed within the routine (subroutine
-or internal function), all variables of the current generation are dropped
+<para>If a PROCEDURE instruction was processed within an internal subroutine
+or internal function, all variables of the current generation are dropped
 (and those of the previous generation are exposed) after
 <emphasis role="italic">expression</emphasis> is
 evaluated and before the result is used or assigned to RESULT.</para>
@@ -2845,7 +2845,7 @@ the null string is written.</para>
 <listitem><para>If you use SAY and omit
 <emphasis role="italic">expression</emphasis>, a null string is used.</para>
 </listitem>
-<listitem><para>CALL LINEOUT can raise NOTREADY; SAY cannot.</para></listitem>
+<listitem><para>CALL LINEOUT can raise NOTREADY; SAY will not.</para></listitem>
 </itemizedlist>
 <para>See <link linkend="bifLineout">LINEOUT (Line Output)</link>
 for details of the LINEOUT function.</para>
@@ -2865,7 +2865,7 @@ Say data "divided by 4 =>" data/4
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>Data from the SAY instruction is sent to the default output
-stream (STDOUT). However, the standard rules for redirecting output apply
+stream (.OUTPUT). However, the standard rules for redirecting output apply
 to the SAY output.
 </para></listitem>
 <listitem><para>The SAY instruction does not format data; the operating system
@@ -3434,8 +3434,21 @@ an indication of a syntax error when in interactive debugging.
 </term>
 <listitem><para>Identifies the result of an expression
 (for <computeroutput>TRACE R</computeroutput>) or the
-value assigned to a variable during parsing, the value returned from a
+the value returned from a
 subroutine call, or a value evaluated by execution of a DO loop.
+</para></listitem></varlistentry>
+<varlistentry><term><computeroutput>>=></computeroutput>
+<indexterm><primary>flag, tracing</primary>
+<secondary>>=></secondary></indexterm>
+<indexterm><primary>tracing flag</primary>
+<secondary>=>></secondary></indexterm>
+<indexterm><primary>>=> tracing flag</primary></indexterm>
+</term>
+<listitem><para>Identifies a variable assignment or a message assignment result.
+The trace message includes both the name of the assignment target and the
+assigned value.  Assignment trace lines are displayed by assignment instructions,
+variable assigned via PARSE, ARG, PULL, or USE ARG, as well as control variable
+updates for DO and LOOP instructions.
 </para></listitem></varlistentry>
 <varlistentry><term><computeroutput>>.></computeroutput>
 <indexterm><primary>flag, tracing</primary>
@@ -3535,6 +3548,9 @@ or constant symbol).
 </variablelist>
 <note><para>The characters <computeroutput>=></computeroutput> indicate the
 value of a variable or the result of an operation.</para>
+<para>The characters <computeroutput><=</computeroutput> indicate a value assignment.
+The name to the left of the marker is the assignment topic.  The data to the right
+of the marker is the assigned value.</para>
 <para>The character <computeroutput>?</computeroutput> could indicate a
 non-printable character in the output.</para>
 </note>
@@ -3574,7 +3590,7 @@ in error is always traced.</para>
 </programlisting>
 
 <para>USE ARG retrieves the argument objects provided in a program, routine,
-function, or method and assigns them to variables.</para>
+function, or method and assigns them to variables or message term assignments.</para>
 <para>Each <emphasis role="italic">name</emphasis> must be a valid variable
 name. The <emphasis role="italic">name</emphasis>s are
 assigned from left to right. For each <emphasis role="italic">name</emphasis>
@@ -3583,7 +3599,8 @@ the program, routine, function, or method call. If there is no corresponding
 argument, <emphasis role="italic">name</emphasis> is assigned the value
 of <emphasis role="italic">expr</emphasis>.  If <emphasis role="italic">expr</emphasis>
 is not specified for the given argument, the variable <emphasis role="italic">name</emphasis>
-is dropped.</para>
+is dropped.  If the assignment target is a messaging term, no action is taken for omitted arguments.
+</para>
 <para>A USE ARG instruction can be processed repeatedly and it always accesses
 the same current argument data.</para>
 <para>If <emphasis role="italic">expr</emphasis> is specified for an argument, the
@@ -3680,14 +3697,25 @@ There are [5] argument(s); v1,v2=[one,zwei]
  arg # 5=[five]
 --
 </programlisting>
+<para>The assignment targets may be any term that can be on the left side of
+an assignment statement.  For example,</para>
+<programlisting>
+expose myArray myDirectory
+use arg myArray[1], myDirectory~name
+</programlisting>
+<para>would be equivalent to</para>
+<programlisting>
+myArray[1] = arg(1)
+myDirectory~name = arg(2)
+</programlisting>
 <para>You can retrieve or check the arguments by using the ARG built-in function
 (see <link linkend="bifArg">ARG (Argument)</link>).
 The ARG and PARSE ARG instructions are alternative
 ways of retrieving arguments. ARG and PARSE ARG access the string values of
-arguments. USE ARG performs a direct, one-to-one assignment of arguments to
-Rexx variables. This is preferable when you need an exact copy of the argument,
+arguments. USE ARG performs a direct, one-to-one assignment of arguments.
+This is preferable when you need direct access to an argument,
 without translation or parsing. USE ARG also allows access to both string
-and non-string argument objects; ARG and PARSE ARG parse the string values
-of the arguments.</para>
+and non-string argument objects; ARG and PARSE ARG convert the arguments to values
+before parsing.</para>
 </section>
 </chapter>
