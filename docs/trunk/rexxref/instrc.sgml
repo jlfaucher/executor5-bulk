@@ -820,7 +820,7 @@ subsidiary list of variables to drop. Whitespace characters are not necessary
 inside or outside the parentheses, but you can add them if desired. This
 subsidiary list must follow the same rules as the original list, that is, be
 valid character strings separated by whitespace, except that no parentheses are
-allowed. The list needs not contain any names--that is, it can be empty.
+allowed. The list need not contain any names&mdash;that is, it can be empty.
 </para>
 <para>Variables are dropped from left to right. It is not an error to specify
 a name more than once or to drop a variable that is not known. If an exposed
@@ -900,9 +900,9 @@ Exit j*4
 </programlisting>
 <para>If you do not specify <emphasis role="italic">expression</emphasis>,
 no data is passed back to the
-caller. If the program was called as an external function, this is detected
-as an error--either immediately (if RETURN was used), or on return to
-the caller (if EXIT was used).</para>
+caller. If the program was called as a function, this is detected
+as an error.
+</para>
 <para>You can also use EXIT within a method. The method is stopped immediately,
 and the result object, if specified, is returned to the sender. If the method
 has previously issued a REPLY instruction
@@ -918,15 +918,14 @@ operating system. The returned string must be a whole number whose
 value fits in a 16-bit signed integer (within the range -(2**15) to (2**15-1).
 If the conversion fails, no error is raised, and a return code of 0 is returned.
 </para></listitem>
-<listitem><para>If you do not specify EXIT, EXIT is implied but no result
-string is returned.
+<listitem><para>If you do not specify EXIT, EXIT is implied at the end of the program,
+but no result
+value is returned.
 <indexterm><primary>bottom of program reached during execution
 </primary></indexterm>
 </para></listitem>
 <listitem><para>On Unix/Linux systems the returned value is limited to a
-numerical value between 0 and 255 (an unsigned byte). if no
-<emphasis role="italic">expression</emphasis> is given the default value
-returned to the operating system is zero.
+numerical value between 0 and 255 (an unsigned byte).
 </para></listitem>
 </orderedlist>
 </section>
@@ -956,7 +955,7 @@ of variables that is associated with an object rather than with any individual
 method.) Therefore, the values of existing variables are accessible, and any
 changes are persistent even after RETURN or EXIT from the method.</para>
 <para>Any changes a method makes to an object variable pool are immediately
-visible to any other methods that share the same object variable pool. All
+visible to any other methods that share the same object variable scope. All
 other variables that a method uses are local to the method and are dropped on
 RETURN or EXIT. If an EXPOSE instruction is included, it must be the first
 instruction of the method.</para>
@@ -1069,8 +1068,8 @@ commas to separate the expressions). The language processor evaluates the
 expression list to produce a set of arguments for the forwarded message. It
 is an error to use both the ARRAY and the ARGUMENTS options on the same FORWARD
 instruction.</para>
-<para>If you specify neither ARGUMENTS nor ARRAY, the language processor does
-not change the arguments used to call the method.</para>
+<para>If you specify neither ARGUMENTS nor ARRAY, the language processor uses
+the same arguments specified on the original method call.</para>
 <para>If you specify the MESSAGE option, the
 <emphasis role="italic">exprm</emphasis> is a literal string,
 a constant symbol, or an expression enclosed in parentheses. If you specify
@@ -3319,7 +3318,7 @@ that you are not taken out of interactive debugging unexpectedly.</para>
 <listitem><para>Entering <computeroutput>TRACE O</computeroutput>
 turns off all tracing.</para></listitem>
 <listitem><para>Entering <computeroutput>TRACE</computeroutput>
-with no options restores the defaults--it
+with no options restores the defaults&mdash;it
 turns off interactive debugging but continues tracing with TRACE Normal (which
 traces any failing command after execution).</para></listitem>
 <listitem><para>Entering <computeroutput>TRACE ?</computeroutput> turns off
@@ -3570,7 +3569,8 @@ in error is always traced.</para>
                             V                        |
 >>-USE--+-----------+--ARG----+--------------------+-+-----------------------><
         +-- STRICT--+         +-name-+----------+--+
-]]>                                  +-=--expr--+
+                                     +-=--expr--+
+]]>
 </programlisting>
 
 <para>USE ARG retrieves the argument objects provided in a program, routine,
