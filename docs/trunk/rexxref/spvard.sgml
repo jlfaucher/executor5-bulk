@@ -142,7 +142,13 @@ condition). See <link linkend="consigl">The Special Variable SIGL</link>.
 set when a method is activated. Its value is the class object that is the
 usual starting point for a superclass method lookup for the SELF object. This
 is the first immediate superclass of the class that defined the method currently
-running. (See <link linkend="xclass">Classes and Instances</link>.)</para>
+running. (See <link linkend="xclass">Classes and Instances</link>.)
+If the current method was defined by a class in the direct inheritance chain,
+SUPER will always refer
+to the immediate superclass that class.
+If the current method
+is defined by a mixin class, the SUPER variable will always be the superperclass of the mixin class.
+</para>
 <para>The special variable SUPER lets you
 call a method in the superclass of an object. For example, the following Savings
 class has INIT methods that the Savings class, Account class, and Object class

@@ -50,23 +50,24 @@ and object variables ("attributes"). Sending
 a message to an object causes the object to perform some action; a method
 whose name matches the message name defines the action that is performed.
 Only an object's methods can access the object variables belonging to
-an object. EXPOSE instructions within an object's methods specify object
-variables. Any variables not exposed are dropped on return from a method.</para>
+an object. EXPOSE instructions within an object's methods specify which object
+variables the methods will use. Any variables not exposed are local to the method and
+are dropped on return from a method.</para>
 <para>You can create
-an object by sending a message to a class object. An object created from a
-class is an <emphasis>instance</emphasis> of that class. Classes define
-the methods and method names for their instances. The methods a class defines
+an object by sending a message to a class object&mdashtypically a "new" method. An object created from a
+class is an <emphasis>instance</emphasis> of that class.
+The methods a class defines
 for its instances are called the <emphasis>instance methods</emphasis>
 <indexterm><primary>instance methods</primary></indexterm>
-of that class. These are the object methods for the instances. Classes can also
+of that class. These are the object methods that are available for every instance of the class.  Classes can also
 define <emphasis>class methods</emphasis>, which are a class's own
 object methods.</para>
 
 <note><title>Note</title>
-<para>When referring to object methods (for objects
-other than classes) or instance methods (for classes), this book uses the
+<para>When referring to instance methods (for objects
+other than classes) or class methods (for classes), this book uses the
 term <emphasis>methods</emphasis> when the meaning is clear from the context.
-When referring to object methods and class methods of classes, this book uses
+When referring to instance methods and class methods of classes, this book uses
 the qualified terms to avoid possible confusion.</para></note>
 
 <section id="typcla"><title>Types of Classes</title>
@@ -83,16 +84,20 @@ the qualified terms to avoid possible confusion.</para></note>
 <indexterm><primary>class</primary>
 <secondary>types</secondary>
 <tertiary>object</tertiary></indexterm>
-<para>An <emphasis>object class</emphasis> is like a factory
+<para>An <emphasis>object class</emphasis> is a factory
 for producing objects. An object class creates objects (instances) and provides
 methods that these objects can use. An object acquires the instance methods
 of the class to which it belongs at the time of its creation. If a class gains
 additional methods, objects created before the definition of these methods
-do not acquire these methods.</para>
-<para>Because the object methods also define the object variables, object
-classes are factories for creating Rexx objects. The Array class (see
-<link linkend="clsArray">The Array Class</link>)
-is an example of an object class.</para>
+do not acquire the new or changed methods.</para>
+<para>The instance variables within an object are created on demand whenever a method
+EXPOSEs an object variable.  The class creates the object instance, defines the methods
+the object has, and the object instance completes the job of constructing the object.
+<para>
+</para>
+The <link linkend="clsString">String class</link> and the
+<link linkend="clsArray">Array Class</link>)
+are examples of object classes.</para>
 </section>
 
 <section id="xmixin"><title>Mixin Classes</title>
@@ -107,8 +112,7 @@ to add a set of instance and class
 methods to other classes are called <emphasis>mixin classes</emphasis>,
 or simply mixins.</para>
 <para>You can add mixin methods to an existing class by sending an INHERIT
-message or using the INHERIT option on the ::CLASS directive. (See
-<link linkend="dire">Directives</link>.)
+message or using the INHERIT option on the <link linkend="classdi">::CLASS directive</link>.
 In either case, the class to be inherited must be a mixin. During both class
 creation and multiple inheritance, subclasses inherit both class and instance
 methods from their superclasses.</para>
@@ -116,7 +120,10 @@ methods from their superclasses.</para>
 <indexterm><primary>base class for mixins</primary></indexterm>
 with a <emphasis>base class</emphasis>, which is the mixin's first non-mixin
 superclass. Any subclass of the mixin's base class can (directly or indirectly)
-inherit a mixin; other classes cannot.</para>
+inherit a mixin; other classes cannot.  For example, a mixin class created
+as a subclass of the Array class can only be inherited by other Array subclasses.
+Mixins that use the Object class as a base class can be inherited by any class.
+</para>
 <para>To create a new mixin class, you send a MIXINCLASS message to an existing
 class or use the ::CLASS directive with the MIXINCLASS option. A mixin class
 is also an object class and can create instances of the class.</para>
@@ -133,7 +140,11 @@ but are not intended to create instances. Abstract classes often define the
 message interfaces that subclasses should implement.</para>
 <para>You create an abstract class like object or mixin classes. No extra
 messages or keywords on the ::CLASS directive are necessary. Rexx does not
-prevent users from creating instances of abstract classes.</para>
+prevent users from creating instances of abstract classes.
+It is possible to create abstract methods on a class.  An abstract method is a
+placeholder that subclasses are expected to override.  Failing to provide a real
+method implementation will result in an error when the abstract version is called.
+</para>
 </section>
 
 <section id="xmetac"><title>Metaclasses</title>
@@ -143,13 +154,13 @@ prevent users from creating instances of abstract classes.</para>
 <tertiary>metaclass</tertiary></indexterm>
 <para>A <emphasis>metaclass</emphasis> is a class you
 can use to create another class. The only metaclass that Rexx provides is
-.class, the Class class. The Class class is the metaclass of all the classes
-Rexx provides. This means that instances of .class are themselves classes.
+.Class, the Class class. The Class class is the metaclass of all the classes
+Rexx provides. This means that instances of .Class are themselves classes.
 The Class class is like a factory for producing the factories that produce
 objects.</para>
 <para>To change the behavior of an object that is an instance, you generally
 use subclassing. For example, you can create Statarray, a subclass of the
-Array class (see <link linkend="clsArray">The Array Class</link>).
+<link linkend="clsArray">Array class</link>).
 The statArray class can include a
 method for computing a total of all the numeric elements of an array.</para>
 <programlisting>
@@ -295,16 +306,19 @@ return instanceCount
 
 <section id="xcremet"><title>Creating and Using Classes and Methods</title>
 <para>You can define a class using either directives or messages.</para>
-<para>To define a class using directives, you place a ::CLASS directive at the
-end of your source program:</para>
+<para>To define a class using directives, you place a ::CLASS directive after the
+main part of your source program:</para>
 <programlisting>
 ::class "Account"
 </programlisting>
-<para>This creates an Account class that is a subclass of the Object class.
+<para>This creates an Account class that is a subclass of the Object class.  Object
+is the default superclass if one is not specified.
 (See <link linkend="clsObject">The Object Class</link> for a description of the
 Object class.)  The string &quot;Account&quot;
-is a string identifier for the new class.</para>
-<para>Now you can use ::METHOD directives to add methods to your new class. The
+is a string identifier for the new class.  The string identifier is both the internal
+class name and the name of the <link linkend="ensym">environment symbol</link> used to locate your new class instance.
+</para>
+<para>Now you can use <link linkend="methd">::METHOD directives</link> to add methods to your new class. The
 ::METHOD directives must immediately follow the ::CLASS directive that creates
 the class. </para>
 <programlisting>
@@ -348,15 +362,30 @@ the NAME and NAME= methods: </para>
   return name
 </programlisting>
 
-<para>You can replace this with a single ::METHOD directive with
-the ATTRIBUTE option. For example, the directive </para>
+<para>You can replace this with a single <link linkend="attrd">::ATTRIBUTE directive</link>.
+For example, the directive </para>
 <programlisting>
-::method name attribute
+::attribute name
 </programlisting>
 <para>adds two methods, NAME and NAME= to a class. These methods perform the
 same function as the NAME and NAME= methods in the original example. The NAME
 method returns the current value of the object variable NAME; the NAME= method
 assigns a new value to the object variable NAME.</para>
+<para>In addition to defining operational methods and attribute methods, you can add
+"constant" methods to a class using the <link linkend="constantd">::CONSTANT directive</link>.
+The ::CONSTANT directive will create both a class method and an instance method to the class
+definition.  The constant method will always return the same constant value, and can be
+invoked by sending a message to either the class or an instance method.  For example, you
+might add the following constant to your Account class:</para>
+<programlisting>
+::constant checkingMinimum 200
+</programlisting>
+<para>This value can be retrieved using either of the following methods</para>
+<programlisting>
+  say .Account~checkingMinimum    -- displays "200"
+  asave = .savings~new
+  say asave~checkingMinimum       -- also displays "200"
+</programlisting>
 
 <section id="usingcl"><title>Using Classes</title>
 <para>When you create a new class, it is always a subclass of an existing class.
@@ -381,11 +410,12 @@ myarray=.array~subclass("myarray")~~inherit(persistence)
 <secondary>scope</secondary></indexterm>
 <indexterm><primary>scope</primary>
 <secondary>description</secondary></indexterm>
-<para>A <emphasis>scope</emphasis> is the methods
-and object variables defined in a single class. Only methods defined in a
-particular scope can access object variables within that scope. This means
+<para>A <emphasis>scope</emphasis> refers to the methods
+and object variables defined for a single class (not including the superclasses).
+Only methods defined in a
+particular scope can access the object variables within that scope. This means
 that object variables in a subclass can have the same names as object variables
-in a superclass, because the object variables are at different scopes.</para>
+used by a superclass, because the variables are created at different scopes.</para>
 </section>
 
 <section id="usesem">
@@ -425,7 +455,7 @@ mycost=cost~new
 mycost~"%"        /* Produces:  Enter a price.             */
                   /* If the user specifies a price of 100, */
                   /* produces: 107.00                      */
-		  </programlisting>
+</programlisting>
 </section>
 
 <section id="xmeths"><title>Default Search Order for Method Selection</title>
@@ -464,7 +494,9 @@ result any result the UNKNOWN method returns. The UNKNOWN method arguments
 are the original message name and a Rexx array containing the original message
 arguments.</para>
 <para>If the object does not have an UNKNOWN method, the language processor
-raises a NOMETHOD condition.</para>
+raises a NOMETHOD condition.  If there are no active traps for the NOMETHOD condition,
+a syntax error is raised.
+</para>
 </section>
 
 <section id="unkno"><title>Defining an UNKNOWN Method</title>
@@ -474,10 +506,16 @@ If the object has an UNKNOWN method, the language processor calls UNKNOWN,
 passing two arguments. The first argument is the name of the method that was
 not located. The second argument is an array containing the arguments passed
 with the original message.</para>
-<para>If you define an UNKNOWN method, you can use the following syntax:</para>
+<para>For example, the following UNKNOWN method will print out the name of
+the invoked method and then invoke the same method on another object.  This
+can be used track the messages that are sent to an object:</para>
 <programlisting>
 <![CDATA[
->>-UNKNOWN(messagename,messageargs)----------------------------><
+::method unknown
+expose target      -- will receive all of the messages
+use arg name, arguments
+say name "invoked with" arguments~toString
+forward to(target)   -- send along the message with the original args
 ]]>
 </programlisting>
 </section>
@@ -490,8 +528,8 @@ with the original message.</para>
 <para>You can change the usual search order for methods by: </para>
 <orderedlist>
 <listitem><para>Ensuring that the receiver object is the sender object.
-(You usually do this by specifying the special variable SELF--see
-<link linkend="xself">SELF</link>.)</para></listitem>
+(You usually do this by specifying the special variable <link linkend="xself">SELF</link>.
+</para></listitem>
 <listitem><para>Specifying a colon and a class symbol after the message name.
 The class symbol can be a variable name or an environment symbol. It identifies
 the class object to be used as the starting point for the method search.</para>
@@ -737,8 +775,6 @@ description of concurrency.</para>
 <section id="classmeth"><title>Overview of Classes Provided by Rexx</title>
 <para>This section gives a brief overview of the classes and methods
 Rexx defines.</para>
-<para>Note that there might also be other classes in the system, depending
-on the operating system.</para>
 
 <section id="chi"><title>The Class Hierarchy</title>
 <para>Rexx provides the following classes belonging to the object class:</para>
@@ -809,9 +845,11 @@ on the operating system.</para>
 </itemizedlist>
 <para>(The classes are in a class hierarchy with subclasses indented below their
 superclasses.)</para>
-<para>Note that there might also be other classes in the system.</para>
+<para>Note that there might also be other classes in the system, depending
+on the operating system.  Additional classes may be accessed by using an
+appropriate ::requires directive to load the class definitions.</para>
 
-<para>The following figures show all the classes.</para>
+<para>The following figures show Rexx built-in classes.</para>
 
 <figure float="1">
 <title id="meths1">Classes and Inheritance (part 1 of 9)</title>
@@ -942,9 +980,9 @@ required kind in response to a conversion message. In particular, subclasses
 are acceptable in place of superclasses (unless overridden in a way that
 changes superclass behavior), because they inherit a suitable conversion method
 from their Rexx superclass.</para>
-<para>The REQUEST method of the Object class (see
-<link linkend="mthObjectRequest">request</link>)
-can perform this validation.</para></listitem>
+<para>The <link linkend="mthObjectIsA">isA method</link> of the Object class
+can perform this validation.
+</para></listitem>
 </orderedlist>
 </section>
 </section>
