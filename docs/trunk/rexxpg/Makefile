@@ -76,10 +76,10 @@ IMAGE_FILES = ReportObject.png \
 	      ScreenObject.png \
 	      MultipleInheritance.png \
 	      Modules.png \
-	      rxoq0s01.jpg \
-	      rxoq0s02.jpg \
-	      rxoq0s03.jpg \
-	      rxoq0s04.jpg \
+	      BillingApplication.png \
+	      SubclassInheritance.png \
+	      InstanceMethods.png \
+	      PartClass.png \
 	      rxoq0s05.jpg \
 	      rxoq0s06.jpg \
 	      rxoq0s07.jpg \
