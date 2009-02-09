@@ -1890,6 +1890,31 @@ internal subroutine and function calls. See the CALL instruction
 (<link linkend="keyCall">CALL</link>) for more details.</para></note>
 </section>
 
+<section id="keyOptions"><title>OPTIONS</title>
+<indexterm><primary>OPTIONS instruction</primary>
+<secondary>description</secondary></indexterm>
+<indexterm><primary>instructions</primary>
+<secondary>OPTIONS</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-OPTIONS--+------------+--;-------------------------------------><
+            +-expression-+
+]]>
+</programlisting>
+
+<para>The OPTIONS instruction is used to pass special requests to the
+language processor.</para>
+<para>The
+<emphasis role="italic">expression</emphasis> is evaluated, and individual words
+in the result that are meaningful to the language processor will be obeyed.
+Optiions might control how the interpreter optimizes code, enforces standards,
+enables implementation-dependent features, etc.).   Unrecognized words in the
+result are ignored, since they are assumed to be instructions for a different
+language processor.</para>
+<para>Open Object Rexx does not recognize any option keywords.</para>
+</section>
+
 <section id="keyParse"><title>PARSE</title>
 <indexterm><primary>PARSE instruction</primary>
 <secondary>description</secondary></indexterm>
