@@ -1,8 +1,8 @@
 <!--#########################################################################
     #
-    # Description: Open Object Rexx: Reference SGML file.
+    # Description: Open Object Rexx: WindowsEventLog Class Reference SGML file.
     #
-    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -46,19 +46,22 @@
 <indexterm><primary>WindowsEventLog class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
-<para>Object Rexx provides a class for interaction with the Windows NT event
-log. You can use this class to read, write, and clear event-log
-records. This class is specifically for Windows NT systems and might not be
-available on other systems.</para>
-<para>The WindowsEventLog class is not a built-in class; it is defined in the
-file <computeroutput>WINSYSTM.CLS</computeroutput>. Use a
-<computeroutput>::requires</computeroutput> statement to activate
-its function: </para>
+<para>
+  The <computeroutput>WindowsEventLog</computeroutput> class provides functionaliy to interact with the
+  Windows system event log. The programmer can use this class to read, write, and clear event-log
+  records.
+</para>
+<para>
+  The WindowsEventLog class is not a built-in class. It is defined in the file
+  <computeroutput>winSystm.cls</COMPUTEROUTPUT>. To use the class, place a
+  <computeroutput>::requires</computeroutput> statement in the program file:
+</para>
 <programlisting>
-::requires "winsystm.cls"
+::requires "winSystm.cls"
 </programlisting>
-<para>A sample program <computeroutput>EventLog.REX</computeroutput>
-is provided in the <computeroutput>ooRexx\SAMPLES</computeroutput> directory.
+<para>
+  A sample program <computeroutput>eventLog.REX</computeroutput> is provided in the
+  <computeroutput>samples\winsystem</computeroutput> directory.
 </para>
 <para><emphasis role="bold">Methods the WindowsEventLog Class Defines</emphasis>
 </para>

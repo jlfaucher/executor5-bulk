@@ -1,8 +1,8 @@
 <!--#########################################################################
     #
-    # Description: Open Object Rexx: Reference SGML file.
+    # Description: Open Object Rexx: OLE Automation Reference SGML file.
     #
-    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -42,17 +42,23 @@
     #########################################################################
 -->
 <chapter id="chapOLEAutomation"><title>OLE Automation</title>
-<para>This section describes the Windows-specific classes supplied with
-ooRexx.</para>
-
-<section id="clsWinOLEObject"><title>The Windows OLEObject Class</title>
-<indexterm><primary>OLEObject class</primary></indexterm>
-<indexterm><primary>class</primary>
-<secondary>OLEObject class</secondary></indexterm>
 <para>
-  This class provides support for OLE automation. OLE (Object Linking and Embedding) is an implementation
-  of COM (Component Object Model). OLE automation makes it possible for one application to manipulate
-  objects implemented in another application, or to expose objects so they can be manipulated.
+  OLE (Object Linking and Embedding) automation is a subset of COM (Component Object Model). These
+  technologies were first developed on Windows and are deeply embedded in the Windows operating system.
+  Although COM is not tied to the Windows operating system, in practice it is not seen much on other
+  operating systems. Because of this, the ooRexx classes supporting OLE Automation are currently Windows
+  only classes.
+</para>
+
+<section id="sectOLEAutomtion"><title>Overview of OLE Automation</title>
+<indexterm><primary>OLE Automation</primary>
+<secondary>overview</secondary></indexterm>
+<para>
+  OLE (Object Linking and Embedding) is an implementation of COM (Component Object Model). OLE automation
+  makes it possible for one application to manipulate objects implemented in another application, or to
+  expose objects so they can be manipulated. ooRexx provides two classes, <link
+  linkend="clsOLEOjbect">OLEObject</link> and <link linkend="clsOLEVariant">OLEVariant</link> that allow
+  the programmer to take advantage of this ability to manipulate objects that are exposed as OLE objects.
 </para>
 <para>
   An automation client is an application that can manipulate exposed objects belonging to another
@@ -95,10 +101,6 @@ ooRexx.</para>
   documentation of the application, or you can search the registry manually.
 </para>
 <para>
-  The OLEObject class is a built-in class. No <computeroutput>::requires</computeroutput> directive is
-  needed to use the class.
-</para>
-<para>
   Several sample programs are provided in the Open Object Rexx installation directory under
   <computeroutput>samples\ole</computeroutput>
 </para>
@@ -133,37 +135,11 @@ ooRexx.</para>
 </para>
 </listitem>
 </itemizedlist>
-<para>
-  <emphasis role="bold">Methods available to the OLEObject class:</emphasis>
-</para>
-<simplelist>
-<member>new (Class method)</member>
-<member>addEventMethod</member>
-<member>connectEvents</member>
-<member>disconnectEvents</member>
-<member>dispatch</member>
-<member>getConstant</member>
-<member>getKnownEvents</member>
-<member>getKnownMethods</member>
-<member>getObject(Class method)</member>
-<member>getOutParameters</member>
-<member>isConnected</member>
-<member>isConnectable</member>
-<member>removeEvents</member>
-<member>removeEventHandler</member>
-<member>unknown</member>
-</simplelist>
-<para>
-  <emphasis role="bold">Note:</emphasis> It is somewhat useful to think of the Rexx OLEObject object as a
-  proxy to the real OLE object. The real OLE object has its own methods. Which methods it has is
-  dependent on its individual implementation.  These methods are then accessed transparently through the
-  <link linkend="oleobunk">unknown</link>() method mechanism of the OLEObject by invoking a method of the
-  same name on the OLEObject object.
-</para>
+</section>
 
 <section id="oleevents"><title>OLE Events</title>
-<indexterm><primary>OLE Events</primary>
-<secondary>of OLEObject class</secondary></indexterm>
+<indexterm><primary>OLE Automation</primary>
+<secondary>OLE events</secondary></indexterm>
 <para>
   Some, but not all, OLE automation objects support <emphasis role="italic">events</emphasis>. The most
   prevalent use of OLE is for the automation server (the OLE object) to implement methods that the
@@ -427,6 +403,42 @@ return 0
 ]]>
 </programlisting>
 </section>
+
+<section id="clsOLEOjbect"><title>The OLEObject Class</title>
+<indexterm><primary>OLEObject class</primary></indexterm>
+<indexterm><primary>OLE Automation</primary>
+<secondary>OLEObject class</secondary></indexterm>
+<para>
+  The OLEObject class is a built-in class. No <computeroutput>::requires</computeroutput> directive is
+  needed to use the class.
+</para>
+<para>
+  <emphasis role="bold">Methods available to the OLEObject class:</emphasis>
+</para>
+<simplelist>
+<member>new (Class method)</member>
+<member>addEventMethod</member>
+<member>connectEvents</member>
+<member>disconnectEvents</member>
+<member>dispatch</member>
+<member>getConstant</member>
+<member>getKnownEvents</member>
+<member>getKnownMethods</member>
+<member>getObject(Class method)</member>
+<member>getOutParameters</member>
+<member>isConnected</member>
+<member>isConnectable</member>
+<member>removeEvents</member>
+<member>removeEventHandler</member>
+<member>unknown</member>
+</simplelist>
+<para>
+  <emphasis role="bold">Note:</emphasis> It is somewhat useful to think of the Rexx OLEObject object as a
+  proxy to the real OLE object. The real OLE object has its own methods. Which methods it has is
+  dependent on its individual implementation.  These methods are then accessed transparently through the
+  <link linkend="oleobunk">unknown</link>() method mechanism of the OLEObject by invoking a method of the
+  same name on the OLEObject object.
+</para>
 
 <section id="oleobjinit"><title>new (Class method)</title>
 <indexterm><primary>new method</primary>
@@ -1426,12 +1438,14 @@ handles this transparently.</para>
 </section>
 </section>
 
-<section id="clsWinOLEVariant"><title>The Windows OLEVariant Class</title>
+<section id="clsOLEVariant"><title>The Windows OLEVariant Class</title>
 <indexterm><primary>OLEVariant Class</primary></indexterm>
+<indexterm><primary>OLE Automation</primary>
+<secondary>OLEVariant class</secondary></indexterm>
 
 <para>
 The OLEVariant class enhances the support for OLE Automation provided by the
-<link linkend="clsWinOLEObject">OLEObject class</link> and is used in conjunction with
+<link linkend="clsOLEOjbect">OLEObject class</link> and is used in conjunction with
 that class.  An OLEVariant object is used as a parameter in a method call of
 an OLEObject object.  In the OLEObject's role as a proxy for a OLE / COM
 object, the parameters in method calls are forwarded on to the actual OLE /
