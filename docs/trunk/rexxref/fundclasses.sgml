@@ -89,15 +89,21 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <computeroutput>0</computeroutput> (false), the result of performing
 a specified comparison operation.
 </para>
-<para>For the Object class, the arguments must match the receiver object. If
-they do not match the receiver object, you can define subclasses of the Object
-class which override == to match the arguments.</para>
+<para>For the Object class, if <emphasis role="italic">argument</emphasis>
+is the same object as the receiver
+object, the result is <computeroutput>1</computeroutput> (true), otherwise
+<computeroutput>0</computeroutput> (false) is returned.  Subclasses may override
+this method to define equality using different criteria.  For example, the String
+class determines equality based on the value of the string data.
+</para>
 <note><title>Note</title>
 <para>The MapCollection classes such as Table and Relation use the == operator
-combined with the hashCode method to determine index equivalence.  It is generally necessary
-for a class to override the hashCode method whenever the == operator is overridden to maintain
-the contract for the hashCode method.
-See <link linkend="mthObjectHashCode">hashCode Method</link> for details.
+combined with the <link linkend="mthObjectHashCode">hashCode method</link> to determine index and
+item equivalence.
+It is generally necessary
+for a class to override both the hashCode method and the == operator method to maintain
+the contract specified for the hashCode method.
+See <link linkend="mthObjectHashCode">hashCode Method</link> for details on the contract.
 </para></note>
 <para>The comparison operators you can use in a message are: </para>
 <variablelist>
@@ -152,7 +158,7 @@ See <link linkend="mthObjectHashCode">hashCode Method</link> for details.
 ]]>
 </programlisting>
 
-<para>Returns a new string that is the concatenation the of receiver string with
+<para>Returns a new string that is the concatenation the of receiver object's string value with
 <emphasis role="italic">argument</emphasis>. (See
 <link linkend="strgcon">String Concatenation</link>.)
 The <emphasis role="italic">concatenation_operator</emphasis> can be: </para>
@@ -160,7 +166,7 @@ The <emphasis role="italic">concatenation_operator</emphasis> can be: </para>
 <varlistentry><term>&quot;&quot;</term>
 <listitem><para>concatenates without an intervening blank. The abuttal operator
 &quot;&quot;
-is the null string. The language processor uses the abuttal to concatenate
+is the null string. The language processor uses the abuttal operator to concatenate
 two terms that another operator does not separate.
 </para></listitem></varlistentry>
 <varlistentry><term>||
@@ -191,8 +197,8 @@ object and the <emphasis role="italic">argument</emphasis>.
 ]]>
 </programlisting>
 
-<para>Returns the class object that received the message that created the
-object.</para>
+<para>Returns the class object that created the object instance.
+</para>
 </section>
 
 <section id="mthObjectCopy"><title>copy</title>
@@ -218,6 +224,11 @@ myarray=.array~of("N","S","E","W")
 /* Copies array myarray to array directions */
 directions=myarray~copy
 </programlisting>
+<note><title>Note</title>
+<para>The copy method is a "shallow copy".  Only the target object is copied.  Additional
+objects referenced by the target object are not copied.  For example, copying an Array object instance
+only copies the array, it does not copy any of the objects stored in the array.
+</para></note>
 </section>
 
 <section id="mthObjectDefaultName"><title>defaultName</title>
@@ -259,9 +270,9 @@ example using <emphasis role="bold">defaultName</emphasis>.</para>
 ]]>
 </programlisting>
 
-<para>Returns a string value that is used as a hash value for MapCollection
-such as Table, Relation, Set, Bag, and Directory.  This string value
-is used by map collections to hash an object for hash table-based searches.</para>
+<para>Returns a string value that is used as a hash value for MapCollections
+such as Table, Relation, Set, Bag, and Directory.  MapCollections use this
+string value to hash an object for hash table-based searches.</para>
 <para>Object implementations are expected to abide by a general contract for hash code usage:</para>
 <itemizedlist>
 <listitem>
@@ -278,7 +289,7 @@ the same value.
 </listitem>
 <listitem>
 <para>
-It is not required that two object instances that compare unequal using "==" need return different hash code
+It is not required that two object instances that compare unequal using "==" return different hash code
 values.
 </para>
 </listitem>
@@ -312,7 +323,8 @@ Otherwise, it returns <computeroutput>0</computeroutput> (false). </para>
 <note><title>Note</title>
 <para>The hasMethod object will return true even if the target method is defined
 as private.  A private method has restricted access rules, so its possible to
-receive an unknown method error (error 97) even if hasMethod indicates the method exits.
+receive an unknown method error (error 97) when invoking <emphasis role="italic">methodname</emphasis>
+even if hasMethod indicates the method exists.
 See <link linkend="pubpri">Public versus Private Methods</link>
 for private method restrictions.
 </para></note>
@@ -330,8 +342,8 @@ for private method restrictions.
 ]]>
 </programlisting>
 
-<para>Returns an identity number for the object. This number is guaranteed
-to be unique during the run of a program.</para>
+<para>Returns a unique identity number for the object. This number is guaranteed
+to be unique for the receiver object until the object is garbage collected.</para>
 </section>
 
 <section id="mthObjectInit"><title>init</title>
@@ -347,7 +359,7 @@ to be unique during the run of a program.</para>
 </programlisting>
 
 <para>Performs any required object initialization. Subclasses of the Object
-class can override this method.</para>
+class can override this method to provide more specific initialization.</para>
 </section>
 
 <section id="mthObjectInstanceMethod"><title>instanceMethod</title>
@@ -362,7 +374,7 @@ class can override this method.</para>
 ]]>
 </programlisting>
 
-<para>Returns an instance of the Method class if the
+<para>Returns the corresponting Method class instance if the
 <emphasis role="italic">methodname</emphasis> is a valid method of the class.
 Otherwise it returns the Nil object.</para>
 </section>
@@ -375,33 +387,14 @@ Otherwise it returns the Nil object.</para>
 <tertiary>of Object class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-instanceMethods(classname)----------------------------------><
+>>-instanceMethods(class)----------------------------------><
 ]]>
 </programlisting>
 
-<para>Returns an instance of the Supplier class if the
-<emphasis role="italic">classname</emphasis> is the current class or a
-parent class. Otherwise it returns the Nil object.
-parent class. The returned Supplier object is a list of the method names and the
-associated method objects available to the
-<emphasis role="italic">classname</emphasis>.</para>
-</section>
-
-<section id="mthObjectInstanceOf"><title>instanceOf</title>
-<indexterm><primary>instanceOf method</primary>
-<secondary>of Object class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>instanceOf method</secondary>
-<tertiary>of Object class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-instanceOf(classname)---------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns an .True if the receiving object is an instance of the
-<emphasis role="italic">classname</emphasis>. Otherwise it
-returns .False.</para>
+<para>Returns a Supplier instance containing the names and corresponding method objects
+defined by
+<emphasis role="italic">class</emphasis>.  If the receiver object is not an
+instance of <emphasis role="italic">class</emphasis>, the Nil object is returned.
 </section>
 
 <section id="mthObjectIsA"><title>isA</title>
@@ -434,11 +427,10 @@ returns .False.</para>
 </programlisting>
 
 <para>Returns .true ("1") if the object is an instance of the specified
-<emphasis role="italic">class</emphasis>.
-Returns .false ("0") if the object is not an instance of the specified
-<emphasis role="italic">class</emphasis>.
+<emphasis role="italic">class</emphasis>, otherwise it
+returns .false ("0"),
 An object is an instance of a class if the object is directly an instance of the
-specified <emphasis role="italic">class</emphasis> or if the
+specified <emphasis role="italic">class</emphasis> or if
 <emphasis role="italic">class</emphasis> is in the object's direct or mixin
 class inheritance chain. For example:
 <programlisting>
@@ -463,8 +455,8 @@ class inheritance chain. For example:
 ]]>
 </programlisting>
 
-<para>Returns the receiver object's name that the
-<emphasis role="bold">objectName=</emphasis> method sets. If
+<para>Returns any name set on the receiver object using the
+<emphasis role="bold">objectName=</emphasis> method. If
 the receiver object does not have a name, this method returns the result of
 the <emphasis role="bold">defaultName</emphasis> method. See
 <link linkend="reqstr">Required String Values</link> for more information. See
@@ -957,7 +949,7 @@ method is a protected method.</para></listitem>
 <indexterm><primary>class</primary>
 <secondary>Class class</secondary></indexterm>
 
-<para>The Class class is like a factory producing the factories that
+<para>The Class class is like a factory that produces the factories that
 produce objects. It is a subclass of the
 <link linkend="clsObject">Object class</link>. The instance methods of the
 Class class are also the class methods of all classes.</para>
