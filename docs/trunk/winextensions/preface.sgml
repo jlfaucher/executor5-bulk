@@ -44,14 +44,22 @@
 <preface id="preface"><title>About This Book</title>
 <para>
   This book describes extensions to the Open Object Rexx Interpreter that are specific to the Windows
-  operating system. The extensions described in this book are currently only available on Windows. Each
-  of the extensions is implemented as a class. Some of the classes, such as the <link
-  linkend="clsWinEventLog">WindowsEventLog</link> and the <link
-  linkend="clsWinRegistry">WindowsRegistry</link> classes, by their nature, can only be Windows specific.
-  Some of the other classes, such as the <link linkend="clsWinMenuObject">MenuObject</link> or <link
-  linkend="clsWinObject">WindowObject</link> classes could certainly be
-  enhanced to be cross-platform. However, at this time there are no plans to do
-  so.
+  operating system. The extensions are in three main categories.
+</para>
+<para>
+  The first category is a number of classes implemented in a library package. These classes are used to
+  interact with Windows system objects like the event log and the clipboard. The second category is <link
+  linkend="chapOLEAutomation">OLE Automation</link>. And finally, there is the <link
+  linkend="chapWSH">Windows Scripting Host</link> engine.
+</para>
+<para>
+  The extensions described in this book are currently only available on Windows. The Windows Scripting
+  Host and OLE Automation can only be implemented on Windows.  Some of the classes, such as the <link
+  linkend="clsWindowsEventLog">WindowsEventLog</link> and the <link
+  linkend="clsWindowsRegistry">WindowsRegistry</link> classes, by their nature, must be Windows specific.
+  However, some of the other classes, such as the <link linkend="clsMenuObject">MenuObject</link> or
+  <link linkend="clsWindowObject">WindowObject</link> classes could certainly be enhanced to be
+  cross-platform. However, at this time there are no plans to do so.
 </para>
 <para>
   This book is intended for people who plan to develop applications using ooRexx and one or more of the

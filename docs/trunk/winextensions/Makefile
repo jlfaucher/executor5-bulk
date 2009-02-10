@@ -47,8 +47,15 @@ STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl \
 HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
 	                ../shared/oorexx.html.dsl
 
-SGML_FILES = winclasses.sgml \
-	           wsheng.sgml \
+SGML_FILES = winprogmanager.sgml \
+						 clipboard.sgml \
+						 winregistry.sgml \
+						 wineventlog.sgml \
+						 windowmanager.sgml \
+						 windowobj.sgml \
+						 menuobj.sgml \
+						 winole.sgml \
+						 wsheng.sgml \
 	           ../shared/legalstuff.sgml \
 	           ../shared/notices.sgml \
 	           ../shared/gethelp.sgml \
