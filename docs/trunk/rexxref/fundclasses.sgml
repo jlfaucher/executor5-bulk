@@ -1700,80 +1700,86 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.
 
 
 <note><title>Note</title>
-<para>For the prefix - and prefix + operators, omit the parentheses
-and <emphasis role="italic">argument</emphasis>.</para></note>
+<para>The syntax diagram above is for the non-prefix operators.  The prefix + and
+<emphasis role="italic">argument</emphasis>.</para></note>
 <para>Returns the result of performing the specified arithmetic operation on
 the receiver object. The receiver object and the
 <emphasis role="italic">argument</emphasis> must be
 valid numbers (see <link linkend="numbrs">Numbers</link>). The
 <emphasis role="italic">arithmetic_operator</emphasis> can be:
 </para>
-<variablelist>
-<varlistentry><term>+
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
+<row><entry>+
 <indexterm><primary>+ method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>+</secondary></indexterm>
-</term>
-<listitem><para>Addition
-</para></listitem></varlistentry>
-<varlistentry><term>-
+</entry>
+<entry><para>Addition
+</para></entry></row>
+<row><entry>-
 <indexterm><primary>- method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>-</secondary></indexterm>
-</term>
-<listitem><para>Subtraction
-</para></listitem></varlistentry>
-<varlistentry><term>*
+</entry>
+<entry><para>Subtraction
+</para></entry></row>
+<row><entry>*
 <indexterm><primary>* method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>*</secondary></indexterm>
-</term>
-<listitem><para>Multiplication
-</para></listitem></varlistentry>
-<varlistentry><term>/
+</entry>
+<entry><para>Multiplication
+</para></entry></row>
+<row><entry>/
 <indexterm><primary>/ method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>/</secondary></indexterm>
-</term>
-<listitem><para>Division
-</para></listitem></varlistentry>
-<varlistentry><term>%
+</entry>
+<entry><para>Division
+</para></entry></row>
+<row><entry>%
 <indexterm><primary>% method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>%</secondary></indexterm>
-</term>
-<listitem><para>Integer division (divide and return the integer part of the
-result)</para></listitem></varlistentry>
-<varlistentry><term>//
+</entry>
+<entry><para>Integer division (divide and return the integer part of the
+result)</para></entry></row>
+<row><entry>//
 <indexterm><primary>// method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>//</secondary></indexterm>
-</term>
-<listitem><para>Remainder (divide and return the remainder--not modulo, because
+</entry>
+<entry><para>Remainder (divide and return the remainder--not modulo, because
 the result can be negative)
-</para></listitem></varlistentry>
-<varlistentry><term>**
+</para></entry></row>
+<row><entry>**
 <indexterm><primary>** method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>**</secondary></indexterm>
-</term>
-<listitem><para>Exponentiation (raise a number to a whole-number power)
-</para></listitem></varlistentry>
-<varlistentry><term>Prefix -
+</entry>
+<entry><para>Exponentiation (raise a number to a whole-number power)
+</para></entry></row>
+<row><entry>Prefix -
 <indexterm><primary>method</primary>
 <secondary>prefix -</secondary></indexterm>
-</term>
-<listitem><para>Same as the subtraction:
+</entry>
+<entry><para>Same as the subtraction:
 <computeroutput>0 - number</computeroutput>
-</para></listitem></varlistentry>
-<varlistentry><term>Prefix +
+</para></entry></row>
+<row><entry>Prefix +
 <indexterm><primary>method</primary>
 <secondary>prefix +</secondary></indexterm>
-</term>
-<listitem><para>Same as the addition:
+</entry>
+<entry><para>Same as the addition:
 <computeroutput>0 + number</computeroutput>
-</para></listitem></varlistentry>
-</variablelist>
+</para></entry></row>
+</tbody>
+</tgroup>
+</informaltable>
 <para>See <link linkend="numarit">Numbers and Arithmetic</link> for details
 about precision, the format of valid
 numbers, and the operation rules for arithmetic. Note that if an arithmetic
@@ -1820,18 +1826,22 @@ string matches the string value of the .nil object ("The NIL object").
 </para>
 
 <para>The comparison operators you can use in a message are: </para>
-<variablelist>
-<varlistentry><term>=
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
+<row><entry>=
 <indexterm><primary>= method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>=</secondary>
 <tertiary>of String class</tertiary></indexterm>
-</term>
-<listitem><para>True if the terms are equal (for example, numerically or when
+</entry>
+<entry><para>True if the terms are equal (for example, numerically or when
 padded)
-</para></listitem></varlistentry>
-<varlistentry><term>\=, &gt;&lt;, &lt;&gt;
+</para></entry></row>
+<row><entry>\=, &gt;&lt;, &lt;&gt;
 <indexterm><primary>>&lt; method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>&gt;&lt; method</primary>
@@ -1847,52 +1857,54 @@ padded)
 <indexterm><primary>method</primary>
 <secondary>&lt;&gt;</secondary>
 <tertiary>of String class</tertiary></indexterm>
-</term>
-<listitem><para>True if the terms are not equal (inverse of =)
-</para></listitem></varlistentry>
-<varlistentry><term>&gt;
+</entry>
+<entry><para>True if the terms are not equal (inverse of =)
+</para></entry></row>
+<row><entry>&gt;
 <indexterm><primary>&gt; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>></secondary></indexterm>
-</term>
-<listitem><para>Greater than
-</para></listitem></varlistentry>
-<varlistentry><term>&lt;
+</entry>
+<entry><para>Greater than
+</para></entry></row>
+<row><entry>&lt;
 <indexterm><primary>&lt; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>&lt;</secondary></indexterm>
-</term>
-<listitem><para>Less than
-</para></listitem></varlistentry>
-<varlistentry><term>&gt;=
+</entry>
+<entry><para>Less than
+</para></entry></row>
+<row><entry>&gt;=
 <indexterm><primary>&gt;= method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>&gt;=</secondary></indexterm>
-</term>
-<listitem><para>Greater than or equal to
-</para></listitem></varlistentry>
-<varlistentry><term>\&lt;
+</entry>
+<entry><para>Greater than or equal to
+</para></entry></row>
+<row><entry>\&lt;
 <indexterm><primary>\&lt; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>\&lt;</secondary></indexterm>
-</term>
-<listitem><para>Not less than
-</para></listitem></varlistentry>
-<varlistentry><term>&lt;=
+</entry>
+<entry><para>Not less than
+</para></entry></row>
+<row><entry>&lt;=
 <indexterm><primary>&lt;= method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>&lt;=</secondary></indexterm>
-</term>
-<listitem><para>Less than or equal to
-</para></listitem></varlistentry>
-<varlistentry><term>\&gt;
+</entry>
+<entry><para>Less than or equal to
+</para></entry></row>
+<row><entry>\&gt;
 <indexterm><primary>\&gt; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>\&gt;</secondary></indexterm>
-</term>
-<listitem><para>Not greater than
-</para></listitem></varlistentry>
-</variablelist>
+</entry>
+<entry><para>Not greater than
+</para></entry></row>
+</tbody>
+</tgroup>
+</informaltable>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>comparison methods of String class</secondary></indexterm>
@@ -1940,67 +1952,73 @@ an ASCII environment, the digits are lower than the alphabetic characters,
 and lowercase alphabetic characters are higher than uppercase alphabetic
 characters.</para>
 <para>The strict comparison operators you can use in a message are: </para>
-<variablelist>
-<varlistentry><term>==
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
+<row><entry>==
 <indexterm><primary>== method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>==</secondary>
 <tertiary>of String class</tertiary></indexterm>
-</term>
-<listitem><para>True if terms are strictly equal (identical)
-</para></listitem></varlistentry>
-<varlistentry><term>\==
+</entry>
+<entry><para>True if terms are strictly equal (identical)
+</para></entry></row>
+<row><entry>\==
 <indexterm><primary>\== method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>\==</secondary>
 <tertiary>of String class</tertiary></indexterm>
-</term>
-<listitem><para>True if the terms are NOT strictly equal (inverse of ==)
-</para></listitem></varlistentry>
-<varlistentry><term>&gt;&gt;
+</entry>
+<entry><para>True if the terms are NOT strictly equal (inverse of ==)
+</para></entry></row>
+<row><entry>&gt;&gt;
 <indexterm><primary>&gt;&gt; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>>></secondary></indexterm>
-</term>
-<listitem><para>Strictly greater than
-</para></listitem></varlistentry>
-<varlistentry><term>&lt;&lt;
+</entry>
+<entry><para>Strictly greater than
+</para></entry></row>
+<row><entry>&lt;&lt;
 <indexterm><primary>&lt;&lt; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>&lt;&lt;</secondary></indexterm>
-</term>
-<listitem><para>Strictly less than
-</para></listitem></varlistentry>
-<varlistentry><term>&gt;&gt;=
+</entry>
+<entry><para>Strictly less than
+</para></entry></row>
+<row><entry>&gt;&gt;=
 <indexterm><primary>&gt;&gt;= method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>&gt;&gt;=</secondary></indexterm>
-</term>
-<listitem><para>Strictly greater than or equal to
-</para></listitem></varlistentry>
-<varlistentry><term>\&lt;&lt;
+</entry>
+<entry><para>Strictly greater than or equal to
+</para></entry></row>
+<row><entry>\&lt;&lt;
 <indexterm><primary>\&lt;&lt; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>\&lt;&lt;</secondary></indexterm>
-</term>
-<listitem><para>Strictly NOT less than
-</para></listitem></varlistentry>
-<varlistentry><term>&lt;&lt;=
+</entry>
+<entry><para>Strictly NOT less than
+</para></entry></row>
+<row><entry>&lt;&lt;=
 <indexterm><primary>&lt;&lt;= method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>&lt;&lt;=</secondary></indexterm>
-</term>
-<listitem><para>Strictly less than or equal to
-</para></listitem></varlistentry>
-<varlistentry><term>\&gt;&gt;
+</entry>
+<entry><para>Strictly less than or equal to
+</para></entry></row>
+<row><entry>\&gt;&gt;
 <indexterm><primary>\&gt;&gt; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>\&gt;&gt;</secondary></indexterm>
-</term>
-<listitem><para>Strictly NOT greater than
-</para></listitem></varlistentry>
-</variablelist>
+</entry>
+<entry><para>Strictly NOT greater than
+</para></entry></row>
+</tbody>
+</tgroup>
+</informaltable>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <programlisting>
 <![CDATA[
@@ -2042,42 +2060,48 @@ evaluate to <computeroutput>1</computeroutput> or
 </note>
 <para>The <emphasis role="italic">logical_operator</emphasis> can be: </para>
 
-<variablelist>
-<varlistentry><term>&amp;
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
+<row><entry>&amp;
 <indexterm><primary>&amp; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>&amp;</secondary></indexterm>
-</term>
-<listitem><para>AND (Returns <computeroutput>1</computeroutput>
+</entry>
+<entry><para>AND (Returns <computeroutput>1</computeroutput>
 if both terms are true.)
-</para></listitem></varlistentry>
-<varlistentry><term>|
+</para></entry></row>
+<row><entry>|
 <indexterm><primary>| method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>|</secondary></indexterm>
-</term>
-<listitem><para>Inclusive OR (Returns <computeroutput>1</computeroutput>
+</entry>
+<entry><para>Inclusive OR (Returns <computeroutput>1</computeroutput>
 if either term or both terms are
 true.)
-</para></listitem></varlistentry>
-<varlistentry><term>&amp;&amp;
+</para></entry></row>
+<row><entry>&amp;&amp;
 <indexterm><primary>&amp;&amp; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>&amp;&amp;</secondary></indexterm>
-</term>
-<listitem><para>Exclusive OR (Returns <computeroutput>1</computeroutput>
+</entry>
+<entry><para>Exclusive OR (Returns <computeroutput>1</computeroutput>
 if either term, but not both terms,
 is true.)
-</para></listitem></varlistentry>
-<varlistentry><term>Prefix \
+</para></entry></row>
+<row><entry>Prefix \
 <indexterm><primary>method</primary>
 <secondary>\</secondary></indexterm>
-</term>
-<listitem><para>Logical NOT (Negates; <computeroutput>1</computeroutput>
+</entry>
+<entry><para>Logical NOT (Negates; <computeroutput>1</computeroutput>
 becomes <computeroutput>0</computeroutput>, and
 <computeroutput>0</computeroutput> becomes <computeroutput>1</computeroutput>.)
-</para></listitem></varlistentry>
-</variablelist>
+</para></entry></row>
+</tbody>
+</tgroup>
+</informaltable>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>logical methods of String class</secondary></indexterm>
@@ -2105,27 +2129,33 @@ becomes <computeroutput>0</computeroutput>, and
 <emphasis role="italic">argument</emphasis>. (See
 <link linkend="strgcon">String Concatenation</link>.)
 The <emphasis role="italic">concatenation_operator</emphasis> can be: </para>
-<variablelist>
-<varlistentry><term>&quot;&quot;</term>
-<listitem><para>concatenates without an intervening blank. The abuttal operator
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
+<row><entry>&quot;&quot;</entry>
+<entry><para>concatenates without an intervening blank. The abuttal operator
 &quot;&quot;
 is the null string. The language processor uses the abuttal to concatenate
 two terms that another operator does not separate.
-</para></listitem></varlistentry>
-<varlistentry><term>||
+</para></entry></row>
+<row><entry>||
 <indexterm><primary>|| method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>||</secondary></indexterm>
-</term>
-<listitem><para>concatenates without an intervening blank.
-</para></listitem></varlistentry>
-<varlistentry><term>&quot;&nbsp;&quot;
-</term>
-<listitem><para>concatenates with one blank between the receiver
+</entry>
+<entry><para>concatenates without an intervening blank.
+</para></entry></row>
+<row><entry>&quot;&nbsp;&quot;
+</entry>
+<entry><para>concatenates with one blank between the receiver
 object and the <emphasis role="italic">argument</emphasis>.
 (The operator &quot;&nbsp;&quot; is a blank.)
-</para></listitem></varlistentry>
-</variablelist>
+</para></entry></row>
+</tbody>
+</tgroup>
+</informaltable>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>concatenation methods of String class</secondary></indexterm>
@@ -2199,8 +2229,6 @@ select  /* keyword1 is to be the default */
   otherwise nop;
 end;
 </programlisting>
-<para>(See <link linkend="bifAbbrev">ABBREV (Abbreviation)</link>
-for information about the ABBREV built-in function.)</para>
 </section>
 
 <section id="mthStringAbs"><title>abs</title>
@@ -2226,8 +2254,6 @@ sign and is formatted according to the current NUMERIC settings.</para>
 12.3~abs      ->     12.3
 "-0.307"~abs  ->     0.307
 </programlisting>
-<para>(See <link linkend="bifAbs">ABS (Absolute Value)</link>
-for information about the ABS built-in function.)</para>
 </section>
 
 <section id="mthStringB2x"><title>b2x</title>
@@ -2283,8 +2309,6 @@ with the methods <emphasis role="bold">x2d</emphasis> and
 number into other forms.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>"10111"~b2x~x2d  ->   "23"   /* decimal 23 */</programlisting>
-<para>(See <link linkend="bifB2x">B2X (Binary to Hexadecimal)</link>
-for information about the B2X built-in function.)</para>
 </section>
 
 <section id="mthStringBitAnd"><title>bitAnd</title>
@@ -2329,8 +2353,6 @@ the zero-length (null) string.</para>
 "pQrS"~bitAnd(,"DF"x)          ->    "PQRS"      /* ASCII   */
 ]]>
 </programlisting>
-<para>(See <link linkend="bifBitand">BITAND (Bit by Bit AND)</link>
-for information about the BITAND built-in function.)</para>
 </section>
 
 <section id="mthStringBitOr"><title>bitOr</title>
@@ -2376,8 +2398,6 @@ the zero-length (null) string.</para>
 "pQrS"~bitOr(,"20"x)          ->    "pqrs" /* ASCII   */
 ]]>
 </programlisting>
-<para>(See <link linkend="bifBitor">BITOR (Bit by Bit OR)</link>
-for information about the BITOR built-in function.)</para>
 </section>
 
 <section id="mthStringBitXor"><title>bitXor</title>
@@ -2427,9 +2447,6 @@ on the right before carrying out the logical operation. The default for
 "C711"x~bitXor("222222"x," ")     ->  "E53302"x  /* ASCII  */
 ]]>
 </programlisting>
-<para>(See <link linkend="bifBitxor">BITXOR (Bit by Bit Exclusive OR)</link>
-for information about the BITXOR built-in
-function.)</para>
 </section>
 
 <section id="mthStringC2d"><title>c2d</title>
@@ -2496,8 +2513,6 @@ been processed. If <emphasis role="italic">n</emphasis> is
 "0031"X~c2d(0)    ->        0
 ]]>
 </programlisting>
-<para>(See <link linkend="bifC2d">C2D (Character to Decimal)</link>
-for information about the C2D built-in function.)</para>
 </section>
 
 <section id="mthStringC2x"><title>c2x</title>
@@ -2540,8 +2555,6 @@ receiving string is null,
 "ZD8"~c2x      ->    "5A4438" /* "354134343338"X in ASCII */
 ]]>
 </programlisting>
-<para>(See <link linkend="bifC2x">C2X (Character to Hexadecimal)</link>
-for information about the C2X built-in function.)</para>
 </section>
 
 <section id="mthStringCaselessAbbrev"><title>caselessAbbrev</title>
@@ -3085,8 +3098,6 @@ abc~CENTER(8,"-")           ->    "--ABC---"
 "The blue sky"~centre(7)    ->    "e blue "
 ]]>
 </programlisting>
-<para>(See <link linkend="bifCenter">CENTER (or CENTRE)</link>
-for information about the CENTER built-in function.)</para>
 </section>
 
 <section id="mthStringChangeStr"><title>changeStr</title>
@@ -3119,9 +3130,6 @@ occurrences to be replaced.</para>
 101100~changeStr("1","X",1)  ->    "X01100"
 ]]>
 </programlisting>
-<para>(See <link linkend="bifChangestr">CHANGESTR</link>
-for information about the CHANGESTR built-in
-function.)</para>
 </section>
 
 <section id="mthStringCompare"><title>compare</title>
@@ -3162,8 +3170,6 @@ blank.</para>
 "ab-- "~compare("ab","-")    ->    5
 ]]>
 </programlisting>
-<para>(See <link linkend="bifCompare">COMPARE</link>  for information about the
-COMPARE built-in function.)</para>
 </section>
 
 <section id="mthStringCompareTo"><title>compareTo</title>
@@ -3247,8 +3253,6 @@ whole number or zero.</para>
 "abc"~copies(0)    ->    ""
 ]]>
 </programlisting>
-<para>(See <link linkend="bifCopies">COPIES</link>  for information about the
-COPIES built-in function.)</para>
 </section>
 
 <section id="mthStringCountStr"><title>countStr</title>
@@ -3275,9 +3279,6 @@ string that do not overlap.</para>
 "J0KKK0"~CountStr("KK")       ->    1
 ]]>
 </programlisting>
-<para>(See <link linkend="bifCountstr">COUNTSTR</link>
-for information about the COUNTSTR built-in
-function.)</para>
 </section>
 
 <section id="mthStringD2c"><title>d2c</title>
@@ -3329,8 +3330,6 @@ has no leading "00"x characters.</para>
 significant
 characters, although a longer result is possible if it has additional leading
 sign characters ("00"x and "FF"x).</para>
-<para>(See <link linkend="bifD2c">D2C (Decimal to Character)</link>
-for information about the D2C built-in function.)</para>
 </section>
 
 <section id="mthStringD2x"><title>d2x</title>
@@ -3387,8 +3386,6 @@ or zero, and the returned result has no leading zeros.</para>
 <para>Implementation maximum: The returned string must not have more than 500
 significant hexadecimal characters, although a longer result is possible if it
 has additional leading sign characters (0 and F).</para>
-<para>(See <link linkend="bifD2x">D2X (Decimal to Hexadecimal)</link>
-for information about the D2X built-in function.)</para>
 </section>
 
 <section id="mthStringDataType"><title>dataType</title>
@@ -3535,8 +3532,6 @@ the receiving string is a null string.
 method tests the meaning or type of characters in a
 string, independent of the encoding of those characters (for example, ASCII
 or EBCDIC).</para></note>
-<para>(See <link linkend="bifDatatype">DATATYPE</link> for information about the
-DATATYPE built-in function.)</para>
 </section>
 
 <section id="mthStringDecodeBase64"><title>decodeBase64</title>
@@ -3612,8 +3607,6 @@ string, the method returns the receiving string unchanged.</para>
 "abcde"~delStr(6)      ->    "abcde"
 ]]>
 </programlisting>
-<para>(See <link linkend="bifDelstr">DELSTR (Delete String)</link>
-for information about the DELSTR built-in function.)</para>
 </section>
 
 <section id="mthStringDelWord"><title>delWord</title>
@@ -3664,8 +3657,6 @@ preceding the first word involved.
 "Now is   the time"~delWord(3,1) ->  "Now is   time"
 ]]>
 </programlisting>
-<para>(See <link linkend="bifDelword">DELWORD (Delete Word)</link>
-for information about the DELWORD built-in function.)</para>
 </section>
 
 <section id="mthStringEncodeBase64"><title>encodeBase64</title>
@@ -3818,8 +3809,6 @@ expression.</para>
 "12345.73"~format(, ,3,6)   ->    "12345.73"
 "1234567e5"~format(,3,0)    ->    "123456700000.000"
 </programlisting>
-<para>(See <link linkend="bifFormat">FORMAT</link>  for information about the
-FORMAT built-in function.)</para>
 </section>
 
 <section id="mthStringHashCode"><title>hashCode</title>
@@ -3888,8 +3877,6 @@ truncates <emphasis role="italic">new</emphasis> to length
 "abc"~insert("123",5,6,"+")    ->    "abc++123+++"
 "abc"~insert("123", ,5,"-")    ->    "123--abc"
 </programlisting>
-<para>(See <link linkend="bifInsert">INSERT</link>
-for information about the INSERT built-in function.)</para>
 </section>
 
 <section id="mthStringLastPos"><title>lastPos</title>
@@ -3936,8 +3923,6 @@ number and defaults to <emphasis role="italic">start</emphasis>.
 "abc def ghi"~lastPos(" ",7)    ->    4
 "abc def ghi"~lastPos(" ",7,3)  ->    0
 </programlisting>
-<para>(See <link linkend="bifLastpos">LASTPOS (Last Position)</link>
-for information about the LASTPOS built-in function.)</para>
 </section>
 
 <section id="mthStringLeft"><title>left</title>
@@ -3979,8 +3964,6 @@ method is exactly equivalent to:</para>
 "abc d"~left(8,".")    ->    "abc d..."
 "abc  def"~left(7)     ->    "abc  de"
 </programlisting>
-<para>(See <link linkend="bifLeft">LEFT</link>
-for information about the LEFT built-in function.)</para>
 </section>
 
 <section id="mthStringLength"><title>length</title>
@@ -4009,8 +3992,6 @@ for information about the LEFT built-in function.)</para>
 "abc defg"~length     ->    8
 ""~length             ->    0
 </programlisting>
-<para>(See <link linkend="bifLength">LENGTH</link>
-for information about the LENGTH built-in function.)</para>
 </section>
 
 <section id="mthStringLower"><title>lower</title>
@@ -4042,8 +4023,6 @@ the default is to convert the remainder of the string.</para>
 "ABCDEF"~lower(4)            ->    "ABCdef"
 "ABCDEF"~lower(3,2)          ->    "ABcdEF"
 </programlisting>
-<para>(See <link linkend="bifLower">LOWER</link>
-for information about the LOWER built-in function.)</para>
 </section>
 
 <section id="mthStringMakeArray"><title>makeArray</title>
@@ -4197,8 +4176,6 @@ You can specify any number of <emphasis role="italic">number</emphasis>s.</para>
 "-7"~max("-3","-4.3")                                        ->    -3
 1~max(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21)   ->    21
 </programlisting>
-<para>(See <link linkend="bifMax">MAX (Maximum)</link>
-for information about the MAX built-in function.)</para>
 </section>
 
 <section id="mthStringMin"><title>min</title>
@@ -4230,8 +4207,6 @@ settings. You can specify any number of
 "-7"~MIN("-3","-4.3")                                        ->    -7
 21~min(20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)   ->     1
 </programlisting>
-<para>(See <link linkend="bifMin">MIN (Minimum)</link>
-for information about the MIN built-in function.)</para>
 </section>
 
 <section id="mthStringOverlay"><title>overlay</title>
@@ -4277,8 +4252,6 @@ and the default value for <emphasis role="italic">n</emphasis> is
 "abcd"~overlay("qq",4)          ->    "abcqq"
 "abc"~overlay("123",5,6,"+")    ->    "abc+123+++"
 </programlisting>
-<para>(See <link linkend="bifOverlay">OVERLAY</link>
-for information about the OVERLAY built-in function.)</para>
 </section>
 
 <section id="mthStringPos"><title>pos</title>
@@ -4328,8 +4301,6 @@ a non-negative whole number.
 "abc def ghi"~pos(" ",5)    ->    8
 "abc def ghi"~pos(" ",5,3)  ->    0
 </programlisting>
-<para>(See <link linkend="bifPos">POS (Position)</link>
-for information about the POS built-in function.)</para>
 </section>
 
 <section id="mthStringReplaceAt"><title>replaceAt</title>
@@ -4394,8 +4365,6 @@ default
 "ABc."~reverse    ->    ".cBA"
 "XYZ "~reverse    ->    " ZYX"
 </programlisting>
-<para>(See <link linkend="bifReverse">REVERSE</link>
-for information about the REVERSE built-in function.)</para>
 </section>
 
 <section id="mthStringRight"><title>right</title>
@@ -4436,8 +4405,6 @@ whole number or zero.</para>
 "abc def"~right(5)    ->    "c def"
 "12"~right(5,"0")     ->    "00012"
 </programlisting>
-<para>(See <link linkend="bifRight">RIGHT</link>
-for information about the RIGHT built-in function.)</para>
 </section>
 
 <section id="mthStringSign"><title>sign</title>
@@ -4469,8 +4436,6 @@ if it is greater than <computeroutput>0</computeroutput>.</para>
 " -0.307"~sign    ->    -1
 0.0~sign          ->     0
 </programlisting>
-<para>(See <link linkend="bifSign">SIGN</link>
-for information about the SIGN built-in function.)</para>
 </section>
 
 <section id="mthStringSpace"><title>space</title>
@@ -4511,8 +4476,6 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 "abc  def  "~space(0)        ->    "abcdef"
 "abc  def  "~space(2,"+")    ->    "abc++def"
 </programlisting>
-<para>(See <link linkend="bifSpace">SPACE</link>
-for information about the SPACE built-in function.)</para>
 </section>
 
 <section id="mthStringStrip"><title>strip</title>
@@ -4576,8 +4539,6 @@ long.</para>
 "12.7000"~strip(,0)      ->    "12.7"
 "0012.700"~strip(,0)     ->    "12.7"
 </programlisting>
-<para>(See <link linkend="bifStrip">STRIP</link>
-for information about the STRIP built-in function.)</para>
 </section>
 
 <section id="mthStringsubchar"><title>subchar</title>
@@ -4644,8 +4605,6 @@ of parsing templates are more convenient for selecting substrings, in particular
 if you need to extract more than one substring from a string. See also
 <link linkend="mthStringLeft">left</link> and <link linkend="mthStringRight">right</link>.
 </para></note>
-<para>(See <link linkend="bifSubstr">SUBSTR (Substring)</link>
-for information about the SUBSTR built-in function.)</para>
 </section>
 
 <section id="mthStringSubWord"><title>subWord</title>
@@ -4682,9 +4641,6 @@ between the selected words.
 "Now is the  time"~subWord(3)      ->    "the  time"
 "Now is the  time"~subWord(5)      ->    ""
 </programlisting>
-<para>(See <link linkend="bifSubword">SUBWORD</link>
-for information about the SUBWORD built-in
-function.)</para>
 </section>
 
 <section id="mthStringTranslate"><title>translate</title>
@@ -4761,9 +4717,6 @@ the string from the starting position to the end is used. </para>
 to reorder the characters in a string. In the example, the last character
 of any 4-character string specified as the first argument would be moved to
 the beginning of the string.</para></note>
-<para>(See <link linkend="bifTranslate">TRANSLATE</link>
-for information about the TRANSLATE built-in
-function.)</para>
 </section>
 
 <section id="mthStringTrunc"><title>trunc</title>
@@ -4812,8 +4765,6 @@ the result, any minus sign is removed.</para>
 <para>The <emphasis role="italic">number</emphasis> is rounded according to the
 current setting of NUMERIC DIGITS if necessary, before the method processes it.
 </para></note>
-<para>(See <link linkend="bifTrunc">TRUNC (Truncate)</link>
-for information about the TRUNC built-in function.)</para>
 </section>
 
 <section id="mthStringUpper"><title>upper</title>
@@ -4845,8 +4796,6 @@ the default is to convert the remainder of the string.</para>
 "abcdef"~upper(4)            ->    "abcDEF"
 "abcdef"~upper(3,2)          ->    "abCDef"
 </programlisting>
-<para>(See <link linkend="bifUpper">UPPER</link>
-for information about the UPPER built-in function.)</para>
 </section>
 
 <section id="mthStringVerify"><title>verify</title>
@@ -4922,8 +4871,6 @@ returns the <emphasis role="italic">start</emphasis> value.</para>
 "ABCDE"~verify("", ,3)                 ->    3
 "AB3CD5"~verify("1234567890","M",4)    ->    6
 </programlisting>
-<para>(See <link linkend="bifVerify">VERIFY</link>
-for information about the VERIFY built-in function.)</para>
 </section>
 
 <section id="mthStringWord"><title>word</title>
@@ -4957,8 +4904,6 @@ to <computeroutput>receiving_string~subWord(n,1)</computeroutput>.</para>
 "Now is the time"~word(3)    ->    "the"
 "Now is the time"~word(5)    ->    ""
 </programlisting>
-<para>(See <link linkend="bifWord">WORD</link>
-for information about the WORD built-in function.)</para>
 </section>
 
 <section id="mthStringWordIndex"><title>wordIndex</title>
@@ -4987,9 +4932,6 @@ role="italic">n</emphasis> must be a positive whole number.
 "Now is the time"~wordIndex(3)    ->    8
 "Now is the time"~wordIndex(6)    ->    0
 </programlisting>
-<para>(See <link linkend="bifWordindex">WORDINDEX</link>
-for information about the WORDINDEX built-in
-function.)</para>
 </section>
 
 <section id="mthStringWordLength"><title>wordLength</title>
@@ -5020,9 +4962,6 @@ The <emphasis role="italic">n</emphasis> must be a positive whole number.</para>
 "Now comes the time"~wordLength(2)    ->    5
 "Now is the time"~wordLength(6)       ->    0
 </programlisting>
-<para>(See <link linkend="bifWordlength">WORDLENGTH</link>
-for information about the WORDLENGTH built-in
-function.)</para>
 </section>
 
 <section id="mthStringWordPos"><title>wordPos</title>
@@ -5066,9 +5005,6 @@ the word at which the search is to be started.</para>
 "To be or not to be"~wordPos("be")            ->  2
 "To be or not to be"~wordPos("be",3)          ->  6
 </programlisting>
-<para>(See <link linkend="bifWordpos">WORDPOS (Word Position)</link>
-for information about the WORDPOS built-in
-function.)</para>
 </section>
 
 <section id="mthStringWords"><title>words</title>
@@ -5101,8 +5037,6 @@ function.)</para>
 "Now is the time"~words      ->    4
 " "~words                    ->    0
 </programlisting>
-<para>(See <link linkend="bifWords">WORDS</link>
-for information about the WORDS built-in function.)</para>
 </section>
 
 <section id="mthStringX2b"><title>x2b</title>
@@ -5150,8 +5084,6 @@ character strings into binary form.</para>
 "129"~d2x~x2b  ->  "10000001"
 "12"~d2x~x2b   ->  "1100"
 </programlisting>
-<para>(See <link linkend="bifX2b">X2B (Hexadecimal to Binary)</link>
-for information about the X2B built-in function.)</para>
 </section>
 
 <section id="mthStringX2c"><title>x2c</title>
@@ -5189,8 +5121,6 @@ ignored.
 "4865 6c6c 6f"~x2c ->  "Hello"     /*  ASCII             */
 "3732 73"~x2c      ->  "72s"       /*  ASCII             */
 </programlisting>
-<para>(See <link linkend="bifX2c">X2C (Hexadecimal to Character)</link>
-for information about the X2C built-in function.)</para>
 </section>
 
 <section id="mthStringX2d"><title>x2d</title>
@@ -5256,8 +5186,6 @@ the method returns <computeroutput>0</computeroutput>.</para>
 "F081"~x2d(1)    ->    1
 "0031"~x2d(0)    ->    0
 </programlisting>
-<para>(See <link linkend="bifX2d">X2D (Hexadecimal to Decimal)</link>
-for information about the X2D built-in function.)</para>
 </section>
 </section>
 
