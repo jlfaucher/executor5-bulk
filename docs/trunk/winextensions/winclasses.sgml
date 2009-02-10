@@ -41,7 +41,7 @@
     #
     #########################################################################
 -->
-<section id="winclasses"><title>The Windows Specific Classes</title>
+<chapter id="winclasses"><title>The Windows Specific Classes</title>
 <para>This section describes the Windows-specific classes supplied with
 ooRexx.</para>
 
@@ -700,7 +700,7 @@ return 0
   Instantiates a new OLEObject as a proxy for a COM / OLE object with the specified <emphasis
   role="italic">classID</emphasis> (the <computeroutput>ProgID</computeroutput> or
   <computeroutput>CLSID</computeroutput>). If the COM / OLE object can not be accessed or created, an
-  error will be raised. See the list of <link linkend="ERR92">OLE specific errors</link>.
+  error will be raised. See the list of OLE specific errors in the Open Object Rexx Reference document.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1499,7 +1499,7 @@ of A and B at position one, and the product at position two.</para>
 </para>
 <para>
   For further information on the details on how an <computeroutput>unknown</computeroutput> method works,
-  see <link linkend="unkno">Defining an unknown Method</link>.
+  see <emphasis role="italic">Defining an unknown Method</emphasis> in the Open Object Rexx Reference.
 </para>
 <para>
   The programmer can invoke the methods of the real OLE object by simply invoking the methods on the
@@ -1511,7 +1511,7 @@ myOLEObject~OLEMethodName
 <para>
   This calls the method <computeroutput>"OLEMethodName"</computeroutput> of the real OLE object for any
   message (method) <emphasis role="italic">that does not exist</emphasis> in the Rexx OLEObject object
-  through the <link linkend="unkno">unknown</link> method mechanism. The implementation for the
+  through the <emphasis role="italic">unknown</emphasis> method mechanism. The implementation for the
   <computeroutput>unknown</computeroutput>() method in the OLEObject class does this by dispatching the
   method call to the real OLE object.
 </para>
@@ -1522,8 +1522,8 @@ myOLEObject~OLEMethodName
 <para>
   One choice is for the programmer to call the <computeroutput>unknown</computeroutput> method directly.
   E.g., take an OLE object that has the method <computeroutput>copy</computeroutput> used to copy
-  something from a source to a destination. Since <link linkend="mthObjectCopy">copy</link> is a method
-  of the <link linkend="clsObject">Object</link> class, the copy method of the OLE object is a method
+  something from a source to a destination. Since <computeroutput>copy</computeroutput> is a method
+  of the <computeroutput>Object</computeroutput> class, the copy method of the OLE object is a method
   name already defined for the OLEObject. The programmer can invoke the
   <computeroutput>unknown</computeroutput> method directly, like this:
 </para>
@@ -5538,5 +5538,5 @@ not modify this attribute.</para>
 </section>
 </section>
 
-</section>
+</chapter>
 

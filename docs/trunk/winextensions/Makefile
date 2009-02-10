@@ -2,7 +2,7 @@
 #
 # Description: Makefile for the Object Rexx Reference Documents.
 #
-# Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+# Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -42,128 +42,20 @@
 
 
 STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl \
-             ../shared/oorexx.print.dsl
+	          ../shared/oorexx.print.dsl
+
 HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
-             ../shared/oorexx.html.dsl
+	                ../shared/oorexx.html.dsl
 
+SGML_FILES = winclasses.sgml \
+	           wsheng.sgml \
+	           ../shared/legalstuff.sgml \
+	           ../shared/notices.sgml \
+	           ../shared/gethelp.sgml \
+	           ../shared/CPLv1.0.sgml
 
-SGML_FILES = collclasses.sgml \
-	     condtra.sgml \
-	     classes.sgml \
-	     streamclasses.sgml \
-	     utilityclasses.sgml \
-	     winclasses.sgml \
-	     dire.sgml \
-	     errnum.sgml \
-	     errnums.sgml \
-	     funct.sgml \
-	     fundclasses.sgml \
-	     instrc.sgml \
-	     intro.sgml \
-	     iostrms.sgml \
-	     mig.sgml \
-	     numarit.sgml \
-	     oneof.sgml \
-	     parsingch.sgml \
-	     preface.sgml \
-	     provide.sgml \
-	     resvkey.sgml \
-	     rexutil.sgml \
-	     rexxref.sgml \
-	     secman.sgml \
-	     spvard.sgml \
-	     usepcom.sgml \
-	     wsheng.sgml \
-	     xconcur.sgml \
-	     xintdeb.sgml \
-	     collectionclassmethods.sgml \
-	     mapcollectionclassmethods.sgml \
-	     orderedcollectionclassmethods.sgml \
-	     ../shared/legalstuff.sgml \
-	     ../shared/notices.sgml \
-	     ../shared/gethelp.sgml \
-	     ../shared/CPLv1.0.sgml
-
-IMAGE_FILES = ooRexxObjectClass.png \
-              ooRexxClassClass.png \
-              ooRexxMethodClass.png \
-              ooRexxMessageClass.png \
-              ooRexxStringClass.png \
-              ooRexxArrayClass.png \
-              ooRexxCollectionsClass.png \
-              ooRexxOrderedCollectionClass.png \
-              ooRexxCircularQueueClass.png \
-              ooRexxListClass.png \
-              ooRexxQueueClass.png \
-              ooRexxDirectoryClass.png \
-              ooRexxPropertiesClass.png \
-              ooRexxStemClass.png \
-              ooRexxMapCollectionClass.png \
-              ooRexxRelationClass.png \
-              ooRexxTableClass.png \
-              ooRexxSetCollectionClass.png \
-              ooRexxSetClass.png \
-              ooRexxBagClass.png \
-              ooRexxStreamClass.png \
-              ooRexxInputStreamClass.png \
-              ooRexxInputOutputStreamClass.png \
-              ooRexxOutputStreamClass.png \
-              ooRexxComparableClass.png \
-              ooRexxAlarmClass.png \
-              ooRexxMonitorClass.png \
-              ooRexxMutableBufferClass.png \
-              ooRexxRegularExpressionClass.png \
-              ooRexxSupplierClass.png \
-              ooRexxComparatorClass.png \
-              ooRexxCaselessColumnComparatorClass.png \
-              ooRexxColumnComparatorClass.png \
-              ooRexxCaselessComparatorClass.png \
-              ooRexxCaselessDescendingComparatorClass.png \
-              ooRexxDescendingComparatorClass.png \
-              ooRexxInvertingComparatorClass.png \
-              ooRexxIteratorClass.png \
-              ooRexxCircularIteratorClass.png \
-              ooRexxStreamSupplierClass.png \
-              ooRexxRexxQueueClass.png \
-              ooRexxDateTimeClass.png \
-              ooRexxTimeSpanClass.png \
-              ooRexxClasses1.png \
-              ooRexxClasses2.png \
-              ooRexxClasses3.png \
-              ooRexxClasses4.png \
-              ooRexxClasses5.png \
-              ooRexxClasses6.png \
-              ooRexxClasses7.png \
-              doloopconcept.png \
-              doloopcollection.png \
-              parseconcepts1.png \
-              parseconcepts2.png \
-              parseconcepts3.png \
-              filerecord.png \
-              templates1.png \
-              templates2.png \
-              templates3.png \
-              ReportObject.png \
-	      BallObject.png \
-	      BallObjectData.png \
-	      EncapsulatedObject.png \
-	      SimpleClass.png \
-	      IconClass.png \
-	      IconClassInstances.png \
-	      Subclasses.png \
-	      ScreenObject.png \
-	      MultipleInheritance.png \
-	      Modules.png \
-	      MultipleRequires.png \
-	      EarlyReply.png \
-	      BeforeReply.png \
-	      AfterReply.png \
-	      IndirectRecursion.png \
-              externalFunction.png \
-              externalFileSearch.png \
- 	      oorexx.jpg \
- 	      docbook-1.png \
-	      new_rexxla.jpg
+IMAGE_FILES =	docbook-1.png \
+	            oorexx.jpg
 
 JADETEXFMT  = ./pdfjadetex.fmt
 HYPERREFCFG = ./hyperref.cfg
@@ -171,28 +63,27 @@ TEXMF       = /usr/share/texmf
 
 export TEXFORMATS=.:
 
-
 all: pdf html
 
-pdf: rexxref.pdf
+pdf: winextensions.pdf
 
-html: rexxref-html.zip
+html: winextensions-html.zip
 
-rexxref.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
-	docbook2pdf -d ../shared/oorexx.print.dsl rexxref.sgml
+winextensions.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
+	docbook2pdf -d ../shared/oorexx.print.dsl winextensions.sgml
 
 book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
-	docbook2html -d ../shared/oorexx.html.dsl rexxref.sgml
+	docbook2html -d ../shared/oorexx.html.dsl winextensions.sgml
 
-rexxref-html.zip: book1.htm
-	zip rexxref-html *.htm *.jpg
+winextensions-html.zip: book1.htm
+	zip winextensions-html *.htm *.jpg
 
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
 
 genindex.sgml: $(HTML_STYLESHEET) $(SGML_FILES) svnrev.tmp
 	collateindex.pl -N -o genindex.sgml
-	jade -t sgml -d ../shared/oorexx.html.dsl -V html-index rexxref.sgml
+	jade -t sgml -d ../shared/oorexx.html.dsl -V html-index winextensions.sgml
 	rm *.htm
 	collateindex.pl -p -g -o genindex.sgml HTML.index
 
@@ -200,9 +91,6 @@ svnrev.tmp:
 	svnversion > svnrev.tmp
 
 
-
-
 clean:
-	rm *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip \
-           HTML.index *.tmp
+	rm -f *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip HTML.index *.tmp
 
