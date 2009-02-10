@@ -1,0 +1,699 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference SGML file.
+    #
+    # Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+
+<chapter id="clsWinRegistry"><title>The WindowsRegistry Class</title>
+<indexterm><primary>WindowsRegistry class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>WindowsProgramManager class</secondary></indexterm>
+<para>Object Rexx provides a class for interaction with the WindowsRegistry.
+You can use this class to query the registry and modify, add, and delete entries.
+This class is specifically for Windows systems and may not be available
+on other systems.</para>
+<para>The WindowsRegistry class is not a built-in class; it is defined in the
+file WINSYSTM.CLS.</para>
+<para>Use a <computeroutput>::requires</computeroutput> statement to activate
+its function: </para>
+<programlisting>
+::requires "winsystm.cls"
+</programlisting>
+<para>A sample program, <computeroutput>REGISTRY.REX</computeroutput>, is
+provided in the <computeroutput>ooRexx\SAMPLES</computeroutput> directory
+</para>
+<para><emphasis role="bold">Methods the WindowsRegistry Class Defines</emphasis>
+</para>
+<itemizedlist>
+<listitem><para>new (Class method)</para></listitem>
+<listitem><para>classes_root</para></listitem>
+<listitem><para>classes_root=</para></listitem>
+<listitem><para>close</para></listitem>
+<listitem><para>create</para></listitem>
+<listitem><para>current_key</para></listitem>
+<listitem><para>current_key=</para></listitem>
+<listitem><para>current_user</para></listitem>
+<listitem><para>current_user=</para></listitem>
+<listitem><para>delete</para></listitem>
+<listitem><para>deleteValue</para></listitem>
+<listitem><para>flush</para></listitem>
+<listitem><para>getValue</para></listitem>
+<listitem><para>list</para></listitem>
+<listitem><para>listValues</para></listitem>
+<listitem><para>load</para></listitem>
+<listitem><para>local_machine</para></listitem>
+<listitem><para>local_machine=</para></listitem>
+<listitem><para>open</para></listitem>
+<listitem><para>query</para></listitem>
+<listitem><para>replace</para></listitem>
+<listitem><para>restore</para></listitem>
+<listitem><para>save</para></listitem>
+<listitem><para>setValue</para></listitem>
+<listitem><para>unload</para></listitem>
+<listitem><para>users</para></listitem>
+<listitem><para>users=</para></listitem></itemizedlist>
+
+<section id="wrinit"><title>new (Class method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-new---------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Creates an instance of the WindowsRegistry class. The current key is set to HKEY_LOCAL_MACHINE.
+</para>
+</section>
+
+<section id="wrclro"><title>classes_root</title>
+<indexterm><primary>classes_root method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>classes_root method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-classes_root------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the handle of the root key HKEY_CLASSES_ROOT.</para>
+</section>
+
+<section id="wrclroe"><title>classes_root=</title>
+<indexterm><primary>classes_root= method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>classes_root= method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-classes_root=-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is used by INIT to set the attribute CLASSES_ROOT to
+HKEY_CLASSES_ROOT. Do not modify this attribute.</para>
+</section>
+
+<section id="wrclse"><title>close</title>
+<indexterm><primary>close method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>close method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-close(-+------------+-)-------------------------------------><
+          +-key_handle-+
+]]>
+</programlisting>
+
+<para>Closes a previously opened key specified by its handle. Example:</para>
+<programlisting>
+rg~close(objectrexxkey)
+</programlisting>
+<para>It can take several seconds before all data is written to disk. You can
+use FLUSH to empty the cache.</para>
+<para>If <emphasis role="italic">key_handle</emphasis> is omitted,
+CURRENT_KEY is closed.</para>
+</section>
+
+<section id="wrconn"><title>connect</title>
+<indexterm><primary>connect method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>connect method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-connect(-key,computer-)-------------------------------------><
+]]>
+</programlisting>
+
+<para>Opens a key on a remote computer. This is supported only for
+HKEY_LOCAL_MACHINE and HKEY_USERS.</para>
+</section>
+
+<section id="wrcrt"><title>create</title>
+<indexterm><primary>create method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>create method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-create(-+--------+-,subkey)---------------------------------><
+           +-parent-+
+]]>
+</programlisting>
+
+<para>Adds a new named subkey to the registry and returns its handle. The
+parent key handle <emphasis role="italic">parent</emphasis> can be a root key
+or a key retrieved using OPEN. If the <emphasis role="italic">parent</emphasis>
+key is omitted, CURRENT_KEY is used. Example:</para>
+<programlisting>
+newkey = rg~create(rg~local_machine,"MyOwnKey")
+</programlisting>
+</section>
+
+<section id="wrcuky"><title>current_key</title>
+<indexterm><primary>current_key method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>current_key method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-current_key-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the handle of the current key. The current key is set by INIT,
+CREATE, and OPEN. It is used as a default value if the key is omitted in other
+methods.</para>
+</section>
+
+<section id="wrcukye"><title>current_key=</title>
+<indexterm><primary>current_key= method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>current_key= method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-current_key=------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Sets the handle of the current key.</para>
+</section>
+
+<section id="wrcuus"><title>current_user</title>
+<indexterm><primary>current_user method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>current_user method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-current_user------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the handle of the root key HKEY_CURRENT_USER.</para>
+</section>
+
+<section id="wrcuuse"><title>current_user=</title>
+<indexterm><primary>current_user= method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>current_user= method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-current_user=-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is used by INIT to set the attribute CURRENT_USER to
+HKEY_CURRENT_USER. Do not modify this attribute.</para>
+</section>
+
+<section id="wrdele"><title>delete</title>
+<indexterm><primary>delete method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>delete method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-delete(-+------------+-,subkeyname)-------------------------><
+           +-key_handle-+
+]]>
+</programlisting>
+
+<para>Deletes a given named subkey of an open key specified by its handle and
+all its subkeys and values. If <emphasis role="italic">key_handle</emphasis>
+is omitted, CURRENT_KEY is used.</para>
+</section>
+
+<section id="wrdeva"><title>deleteValue</title>
+<indexterm><primary>deleteValue method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>deleteValue method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-deleteValue(-+------------+-+--------+-)--------------------><
+                +-key_handle-+ +-,value-+
+]]>
+</programlisting>
+
+<para>Deletes the named value for a given key. If
+<emphasis role="italic">key_handle</emphasis> is omitted,
+CURRENT_KEY is used. If <emphasis role="italic">value</emphasis>
+is blank or omitted, the default value is deleted.</para>
+</section>
+
+<section id="wrflus"><title>flush</title>
+<indexterm><primary>flush method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>flush method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-flush(-+------------+-)-------------------------------------><
+          +-key_handle-+
+]]>
+</programlisting>
+
+<para>Forces the system to write the cache buffer of a given key to disk. If
+<emphasis role="italic">key_handle</emphasis> is omitted, CURRENT_KEY is
+flushed.</para>
+</section>
+
+<section id="wrgtva"><title>getValue</title>
+<indexterm><primary>getValue method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>getValue method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-getValue(-+------------+-+--------+-)-----------------------><
+             +-key_handle-+ +-,value-+
+]]>
+</programlisting>
+
+<para>Retrieves the data and type for a named value of a given key. The result
+is a compound variable with suffixes data and type. If
+<emphasis role="italic">key_handle</emphasis> is
+omitted, CURRENT_KEY is used. If named <emphasis role="italic">value</emphasis>
+is blank or omitted, the default value is retrieved. Example: </para>
+<programlisting>
+myval. = rg~getvalue(,"filesystem")        /* current key */
+say "Type is" myval.type
+if myval.type = "NORMAL" then say "Value is" myval.data
+myval. = rg~getvalue(mykey)
+say "my default value is:" myval.data
+myval. = rg~getvalue(mykey,"")
+say "my default value is:" myval.data
+</programlisting>
+<para>Possible types: NORMAL, EXPAND, MULTI, NUMBER, BINARY, NONE,
+OTHER.</para>
+</section>
+
+<section id="wrlist"><title>list</title>
+<indexterm><primary>list method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>list method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-list(-+------------+-,stem.)--------------------------------><
+         +-key_handle-+
+]]>
+</programlisting>
+
+<para>Retrieves the list of subkeys for a given key in a stem variable. The name
+of the stem variable must include the period. The keys are returned as stem.1,
+stem.2, and so on. Example: </para>
+<programlisting>
+rg~LIST(objectrexxkey,orexxkeys.)
+do i over orexxkeys.
+say orexxkeys.i
+end
+</programlisting>
+</section>
+
+<section id="wrliva"><title>listValues</title>
+<indexterm><primary>listValues method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>listValues method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-listValues(-+------------+-,variable.)----------------------><
+               +-key_handle-+
+]]>
+</programlisting>
+
+<para>Retrieves all value entries of a given key into a compound variable. The
+name of the variable must include the period. The suffixes of the compound
+variable are numbered starting with 1, and for each number the three values
+are the name (var.i.name), the data (var.i.data), and the type (var.i.type).
+The type is NORMAL for alphabetic values, EXPAND for expandable strings such
+as a path, NONE for no specified type, MULTI for multiple strings, NUMBER
+for a 4-byte value, and BINARY for any data format.</para>
+<para>If <emphasis role="italic">key_handle</emphasis> is omitted, the values
+of CURRENT_KEY are listed.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+qstem. = rg~QUERY(objectrexxkey)
+rg~LISTVALUES(objectrexxkey,lv.)
+do i=1 to qstem.values
+say "name of value:" lv.i.name "(type="lv.i.type")"
+if lv.i.type = "NORMAL" then
+say "data of value:" lv.i.data
+end
+</programlisting>
+</section>
+
+<section id="wrload"><title>load</title>
+<indexterm><primary>load method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>load method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-load(-+------------+-,subkeyname, filename)-----------------><
+         +-key_handle-+
+]]>
+</programlisting>
+
+<para>Load creates a named subkey under the open key key_handle and loads
+registry data from the file filename (created by
+<link linkend="wrsave">SAVE</link>) and stores the
+data under the newly created subkey.</para>
+<para>key_handle can only be HKEY_USERS or HKEY_LOCAL_MACHINE.
+Registry information is stored in the form of a hive - a discrete body
+of keys, subkeys, and values that is rooted at the top of the registry
+hierarchy. A hive is backed by a single file.</para>
+<para>If <emphasis role="italic">key_handle</emphasis> is omitted, the subkey
+is created under HKEY_LOCAL_MACHINE.</para>
+<para>Use <link linkend="wrunld">UNLOAD</link> to delete the subkey and to
+unlock the registry data file filename.</para>
+</section>
+
+<section id="wrloma"><title>local_machine</title>
+<indexterm><primary>local_machine method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>local_machine method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-local_machine-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the handle of the root key HKEY_LOCAL_MACHINE.</para>
+</section>
+
+<section id="wrlomae"><title>local_machine=</title>
+<indexterm><primary>local_machine= method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>local_machine= method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-local_machine=----------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is used by INIT to set the attribute LOCAL_MACHINE to
+HKEY_LOCAL_MACHINE. Do not modify this attribute.</para>
+</section>
+
+<section id="wropen"><title>open</title>
+<indexterm><primary>open method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>open method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-open(-+---------------+-,subkey-+--------------+-)----------><
+         +-parent_handle-+         +-,-| access |-+
+
+access:
+
+   +-ALL-+
+|--+-----+------------------------------------------------------>
+
+   +--------------------------------------------------------------+
+   V                                                              |
+>----+-------+-+------+-+-------+-+---------+-+--------+-+------+-+--|
+     +-WRITE-+ +-READ-+ +-QUERY-+ +-EXECUTE-+ +-NOTIFY-+ +-LINK-+
+]]>
+</programlisting>
+
+<para>Opens a named subkey and return its handle. See
+<link linkend="wrcrt">CREATE</link> for
+more information about <emphasis role="italic">parent_handle</emphasis>.
+Possible values for <emphasis role="italic">access</emphasis> are:</para>
+<variablelist>
+<varlistentry><term>ALL</term>
+<listitem><para>Default
+</para></listitem></varlistentry>
+<varlistentry><term>WRITE</term>
+<listitem><para>Create subkeys, set values
+</para></listitem></varlistentry>
+<varlistentry><term>READ</term>
+<listitem><para>Query subkeys and values
+</para></listitem></varlistentry>
+<varlistentry><term>QUERY</term>
+<listitem><para>Values
+</para></listitem></varlistentry>
+<varlistentry><term>EXECUTE</term>
+<listitem><para>Key access, no subkey access
+</para></listitem></varlistentry>
+<varlistentry><term>NOTIFY</term>
+<listitem><para>Change notification
+</para></listitem></varlistentry>
+<varlistentry><term>LINK</term>
+<listitem><para>Create symbolic links
+</para></listitem></varlistentry>
+</variablelist><para> More than one value can be specified separated by blanks.
+</para>
+<para>Notice that on Windows NT some keys require certain access
+rights and do not allow to open the key with all but only with certain access
+values.</para>
+</section>
+
+<section id="wrquer"><title>query</title>
+<indexterm><primary>query method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>query method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-query--(--+------------+--)---------------------------------><
+             +-key_handle-+
+]]>
+</programlisting>
+
+<para>Retrieves information about a given key in a compound variable. The
+values returned are <emphasis role="italic">class</emphasis> (class name),
+<emphasis role="italic">subkeys</emphasis> (number of subkeys)
+<emphasis role="italic">values</emphasis> (number of value entries),
+<emphasis role="italic">date</emphasis> and
+<emphasis role="italic">time</emphasis> of
+last modification. If <emphasis role="italic">key_handle</emphasis> is omitted,
+CURRENT_KEY is queried. Example:</para>
+<programlisting>
+myquery. = rg~query(objectrexxkey)
+say "class="myquery.class "at" myquery.date
+say "subkeys="myquery.subkeys "values="myquery.values
+</programlisting>
+</section>
+
+<section id="wrrepl"><title>replace</title>
+<indexterm><primary>replace method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>replace method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-replace(-+------------+-,-+------------+-,newfilename,oldfilename-)-><
+            +-key_handle-+   +-subkeyname-+
+]]>
+</programlisting>
+
+<para>Replaces the backup file of a key or subkey with a new file. Key must be
+an immediate descendant of HKEY_LOCAL_MACHINE or HKEY_USERS. If
+<emphasis role="italic">key_handle</emphasis> is omitted, the backup file of
+CURRENT_KEY is replaced. The values in the new file become active when the
+system is restarted. If <emphasis role="italic">subkeyname</emphasis> is
+omitted, the key and all its subkeys will be replaced.</para>
+</section>
+
+<section id="wrrest"><title>restore</title>
+<indexterm><primary>restore method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>restore method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-restore(-+------------+-,filename-+-------------+-)---------><
+            +-key_handle-+           +-,"VOLATILE"-+
+]]>
+</programlisting>
+
+<para>Restores a key from a file. If
+<emphasis role="italic">key_handle</emphasis> is omitted, CURRENT_KEY
+is restored. Example:</para>
+<programlisting>
+rg~restore(objectrexxkey,"\objrexx\orexx")
+</programlisting>
+<para>The VOLATILE keyword creates a new memory-only set of registry
+information that is valid only until the system is restarted.</para>
+</section>
+
+<section id="wrsave"><title>save</title>
+<indexterm><primary>save method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>save method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-save(-+------------+-,filename)-----------------------------><
+         +-key_handle-+
+]]>
+</programlisting>
+
+<para>Saves the entries of a given key into a file. If
+<emphasis role="italic">key_handle</emphasis> is
+omitted, CURRENT_KEY is saved. Example: </para>
+<programlisting>
+rg~SAVE(objectrexxkey,"\objrexx\orexx")
+</programlisting>
+<para>On a FAT system, do not use a file extension in
+<emphasis role="italic">filename</emphasis>.</para>
+</section>
+
+<section id="wrstva"><title>setValue</title>
+<indexterm><primary>setValue method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>setValue method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-setValue(-+------------+-,-+------+-,value-+---------+-)----><
+             +-key_handle-+   +-name-+        +-,NORMAL-+
+                                              +-,EXPAND-+
+                                              +-,MULTI--+
+                                              +-,NUMBER-+
+                                              +-,BINARY-+
+                                              +-,NONE---+
+]]>
+</programlisting>
+
+<para>Sets a named value of a given key. If
+<emphasis role="italic">name</emphasis> is blank or omitted,
+the default value is set. Examples: </para>
+<programlisting>
+rg~SETVALUE(objectrexxkey, ,"My default","NORMAL")
+rg~SETVALUE(objectrexxkey,"Product_Name","Object Rexx")
+rg~SETVALUE(objectrexxkey,"VERSION","1.0")
+</programlisting>
+</section>
+
+<section id="wrunld"><title>unload</title>
+<indexterm><primary>unload method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>unload method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-unload(-+------------+-,subkey)-----------------------------><
+           +-key_handle-+
+]]>
+</programlisting>
+
+<para>Removes a named subkey (created with <link linkend="wrload">LOAD</link>)
+and its dependents from the registry, but does not modify the file containing
+the registry information. If <emphasis role="italic">key_handle</emphasis>
+is omitted, the subkey under CURRENT_KEY is unloaded. Unload also unlocks the
+registry information file.</para>
+</section>
+
+<section id="wruse"><title>users</title>
+<indexterm><primary>users method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>users method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-users-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the handle of the root key HKEY_USERS.</para>
+</section>
+
+<section id="wrusee"><title>users=</title>
+<indexterm><primary>users= method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>users= method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-users=------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is used by INIT to set the attribute USERS to HKEY_USERS. Do
+not modify this attribute.</para>
+</section>
+
+</chapter>
+
