@@ -52,6 +52,7 @@ SGML_FILES = collclasses.sgml \
 	     classes.sgml \
 	     streamclasses.sgml \
 	     utilityclasses.sgml \
+	     winclasses.sgml \
 	     dire.sgml \
 	     errnum.sgml \
 	     errnums.sgml \
@@ -72,6 +73,7 @@ SGML_FILES = collclasses.sgml \
 	     secman.sgml \
 	     spvard.sgml \
 	     usepcom.sgml \
+	     wsheng.sgml \
 	     xconcur.sgml \
 	     xintdeb.sgml \
 	     collectionclassmethods.sgml \
