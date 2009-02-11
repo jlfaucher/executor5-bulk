@@ -892,7 +892,7 @@ method (<link linkend="mthObjectObjectName">OBJECTNAME</link>) and the
 (<link linkend="mthObjectDefaultName">defaultName</link>).</para>
 <para>The distinction between this method, the
 <emphasis role="bold">makeString</emphasis> method (which obtains
-string values--see <link linkend="mthStringMakeString">makeString</link>) and the
+string values&mdash;see <link linkend="mthStringMakeString">makeString</link>) and the
 <emphasis role="bold">request</emphasis>
 method (see <link linkend="mthObjectRequest">request</link>) is important. All objects
 have a <emphasis role="bold">string</emphasis> method, which returns
@@ -1753,7 +1753,7 @@ result)</para></entry></row>
 <indexterm><primary>method</primary>
 <secondary>//</secondary></indexterm>
 </entry>
-<entry><para>Remainder (divide and return the remainder--not modulo, because
+<entry><para>Remainder (divide and return the remainder&mdash;not modulo, because
 the result can be negative)
 </para></entry></row>
 <row><entry>**
@@ -1940,7 +1940,7 @@ comparison operators do not attempt to perform a numeric comparison on the
 two operands.</para>
 <para>For all the other comparison operators, if both terms
 are numeric, the language processor does a numeric comparison (ignoring, for
-example, leading zeros--see <link linkend="numcom">Numeric Comparisons</link>).
+example, leading zeros&mdash;see <link linkend="numcom">Numeric Comparisons</link>).
 Otherwise, it treats
 both terms as character strings, ignoring leading and trailing whitespace
 characters and padding the shorter string on the right with blanks.
@@ -5790,7 +5790,7 @@ available public classes under the name <emphasis role="italic">name</emphasis>.
 This is added to the package as a public class.</para>
 </section>
 
-<section id="mthPackageAddPublicRoutine"><title>addPurblicRoutine</title>
+<section id="mthPackageAddPublicRoutine"><title>addPublicRoutine</title>
 <indexterm><primary>addPublicRoutine method</primary>
 <secondary>of Package class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -5835,7 +5835,7 @@ non-public routine.</para>
 >>-classes----------------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a directory containing all classes defined by this packag or
+<para>Returns a directory containing all classes defined by this package or
 imported as public classes from another package.</para>
 </section>
 
@@ -5851,7 +5851,7 @@ imported as public classes from another package.</para>
 ]]>
 </programlisting>
 <para>Returns a directory containing all unattached methods defined by this
-package.  This is the same directory available to code within the package with
+package.  This is the same directory available to code within the package via
 the .METHODS environment symbol.</para>
 </section>
 
@@ -5866,8 +5866,8 @@ the .METHODS environment symbol.</para>
 >>-findClass(name)---------------------------------------------><
 ]]>
 </programlisting>
-<para>Performs the standard environment symbol searchs for a given class with
-the name <emphasis role="italic">name</emphasis>, which must be a string object.
+<para>Performs the standard environment symbol searches given class
+<emphasis role="italic">name</emphasis>.
 The search is performed using the same search mechanism used for environment
 symbols or class names specified on ::CLASS directives.
 If the name is not
@@ -5919,7 +5919,7 @@ packages.</para>
 ]]>
 </programlisting>
 <para>Returns a directory containing all public routines imported from other
-    packages.</para>
+packages.</para>
 </section>
 
 <section id="mthPackageLoadLibrary"><title>loadLibrary</title>
@@ -5937,7 +5937,7 @@ packages.</para>
 by the interpreter. The <emphasis role="italic">name</emphasis> identifies a
 native external library file that will be located and loaded as if it had been
 named on a ::REQUIRES LIBRARY directive.  If the library is successfully loaded,
-loadLibrary will return 1 (true), other wise it returns 0 (false).</para>
+loadLibrary will return 1 (true), otherwise it returns 0 (false).</para>
 </section>
 
 <section id="mthPackageLoadPackage"><title>loadPackage</title>
@@ -6003,7 +6003,7 @@ will be added to the receiving package object's dependent packages.</para>
 ]]>
 </programlisting>
 <para>Returns a directory containing all public routines defined in this
-    package.</para>
+package.</para>
 </section>
 
 <section id="mthPackageRoutines"><title>routines</title>
@@ -6018,7 +6018,7 @@ will be added to the receiving package object's dependent packages.</para>
 ]]>
 </programlisting>
 <para>Returns a directory containing all routines defined in this
-    package.</para>
+package.</para>
 </section>
 
 <section id="mthPackageSetSecurityManager"><title>setSecurityManager</title>
@@ -6096,11 +6096,11 @@ code is not available, 0 is returned.</para>
 
 <para>A message object provides for the deferred or
 asynchronous sending of a message. You can create a message object by using
-the <emphasis role="bold">new</emphasis> or
-<emphasis role="bold">enhanced</emphasis> method of the Message class or the
-<emphasis role="bold">start</emphasis> method of the
-Object class (see <link linkend="mthObjectStart">start</link>). The Message class is
-a subclass of the Object class.</para>
+the <emphasis role="bold">new</emphasis>
+method of the Message class or the
+<emphasis role="bold"><link linkend="mthObjectStart">start</link></emphasis> method of the
+Object class.
+</para>
 <figure><title>The Message class and methods</title>
 <mediaobject>
 <imageobject>
@@ -6207,8 +6207,8 @@ arguments. </para>
 ]]>
 </programlisting>
 <para>Returns <computeroutput>1</computeroutput> if the message object has
-completed its message, or <computeroutput>0</computeroutput>. You can use this
-method instead of sending
+completed executing its message, or <computeroutput>0</computeroutput>. You can use this
+method to test for completion as an alternative to calling
 <emphasis role="bold">result</emphasis> and waiting for
 the message to complete.</para>
 </section>
@@ -6225,8 +6225,8 @@ the message to complete.</para>
 ]]>
 </programlisting>
 
-<para>Returns an error condition object from an execution error in the message
-object's message. If the message completed normally, or is still executing,
+<para>Returns an error condition object from any execution error with the message
+object's message invocation. If the message completed normally, or is still executing,
 <emphasis role="bold">errorCondition</emphasis> returns the .nil object.</para>
 </section>
 
@@ -6400,10 +6400,10 @@ method sends the message to the <emphasis role="italic">target</emphasis>
 that you specified when the message object was created.
 This method returns as soon as possible and does not wait until
 message processing is complete. When message processing is complete, the
-message object retains any result and holds it until the sender requests it
-by sending a <emphasis role="bold">result</emphasis>
-message. You can use the <emphasis role="bold">notify</emphasis> method to request
-notification that message processing is complete.</para>
+message object retains any result and holds it until requested via
+the <emphasis role="bold">result</emphasis>
+method. You can use the <emphasis role="bold">notify</emphasis> method to request
+notification when message processing completes.</para>
 </section>
 
 <section id="exam"><title>Example</title>
@@ -6471,7 +6471,7 @@ Goodbye, Stan...
 ]]>
 </programlisting>
 
-<para>Returns the object that is the target of the invoked method.</para>
+<para>Returns the object that is the target of the invoked message.</para>
 </section>
 </section>
 
