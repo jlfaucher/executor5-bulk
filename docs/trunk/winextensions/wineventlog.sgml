@@ -60,21 +60,109 @@
 ::requires "winSystm.cls"
 </programlisting>
 <para>
-  A sample program <computeroutput>eventLog.REX</computeroutput> is provided in the
+  A sample program <computeroutput>eventLog.rex</computeroutput> is provided in the
   <computeroutput>samples\winsystem</computeroutput> directory.
 </para>
-<para><emphasis role="bold">Methods the WindowsEventLog Class Defines</emphasis>
+<para>
+  <emphasis role="bold">Methods:</emphasis>
 </para>
-<itemizedlist>
-<listitem><para>new (Class method)</para></listitem>
-<listitem><para>open</para></listitem>
-<listitem><para>close</para></listitem>
-<listitem><para>read</para></listitem>
-<listitem><para>write</para></listitem>
-<listitem><para>clear</para></listitem>
-<listitem><para>getNumber</para></listitem></itemizedlist>
+<para>
+  The WindowsEventLog class implements the class and instance methods listed in the following table.
+</para>
+<table id="t000023" frame="all">
+<title>WindowsEventLog Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Item</entry>
+<entry>...Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>new (Class method)</entry>
+<entry><link linkend="mthNewWindowsEventLog">new</link></entry>
+</row>
+<row>
+<entry><emphasis role="bold">Attributes</emphasis></entry>
+<entry><emphasis role="bold">Link</emphasis></entry>
+</row>
+<row>
+<entry>events</entry>
+<entry><link linkend="atrEvents">events</link></entry>
+</row>
+<row>
+<entry>minimumReadBuffer</entry>
+<entry><link linkend="atrMinimumReadBuffer">minimumReadBuffer</link></entry>
+</row>
+<row>
+<entry>minimumReadMin</entry>
+<entry><link linkend="atrMinimumReadMin">minimumReadMin</link></entry>
+</row>
+<row>
+<entry>minimumReadMax</entry>
+<entry><link linkend="atrMinimumReadMin">minimumReadMax</link></entry>
+</row>
+<row>
+<entry><emphasis role="bold">Methods</emphasis></entry>
+<entry><emphasis role="bold">Link</emphasis></entry>
+</row>
+<row>
+<entry>clear</entry>
+<entry><link linkend="mthClearWindowsEventLog">clear</link></entry>
+</row>
+<row>
+<entry>close</entry>
+<entry><link linkend="mthCloseWindowsEventLog">close</link></entry>
+</row>
+<row>
+<entry>getFirst</entry>
+<entry><link linkend="mthGetFirst">getFirst</link></entry>
+</row>
+<row>
+<entry>getLast</entry>
+<entry><link linkend="mthGetLast">getLast</link></entry>
+</row>
+<row>
+<entry>getLogNames</entry>
+<entry><link linkend="mthGetLogNames">getLogNames</link></entry>
+</row>
+<row>
+<entry>getNumber</entry>
+<entry><link linkend="mthGetNumber">getNumber</link></entry>
+</row>
+<row>
+<entry>isFull</entry>
+<entry><link linkend="mthIsFull">isFull</link></entry>
+</row>
+<row>
+<entry>minimumRead</entry>
+<entry><link linkend="mthMinimumRead">minimumRead</link></entry>
+</row>
+<row>
+<entry>minimumRead=</entry>
+<entry><link linkend="mthMinimumReadEquals">minimumRead=</link></entry>
+</row>
+<row>
+<entry>open</entry>
+<entry><link linkend="mthOpenWindowsEventLog">open</link></entry>
+</row>
+<row>
+<entry>read <emphasis role="bold">Deprecated</emphasis></entry>
+<entry><link linkend="mthReadWindowsEventLog">read</link> <emphasis role="bold">Deprecated</emphasis></entry>
+</row>
+<row>
+<entry>readRecords</entry>
+<entry><link linkend="mthReadRecords">readRecords</link></entry>
+</row>
+<row>
+<entry>write</entry>
+<entry><link linkend="mthWrite">write</link></entry>
+</row>
+</tbody></tgroup>
+</table>
 
-<section id="initwel"><title>new (Class method)</title>
+<section id="mthNewWindowsEventLog"><title>new (Class method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -82,7 +170,7 @@
 <tertiary>of WindowsEventLog class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>--new--------------------------------------------------------><
+>>--new---------------------------------><
 ]]>
 </programlisting>
 
@@ -91,7 +179,204 @@
 </para>
 </section>
 
-<section id="openwel"><title>open</title>
+<section id="atrMinimumReadMin"><title>minimumReadMin (Attribute)</title>
+<indexterm><primary>minimumReadMin</primary>
+<secondary>WindowsEventLog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--minimumReadMin----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments, <computeroutput>minimumReadMin=</computeroutput> is a private method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The minimum number of kilobytes that the read buffer can be set to.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+<programlisting>
+<![CDATA[
+
+ eventLog = .WindowsEventLog~new
+ say "Smallest possible read buffer is" eventLog~minimumReadMin "kilobytes"
+
+::requires 'winSystm.cls'
+
+/* Output might be:
+
+Smallest possible read buffer is 16 kilobytes
+
+*/
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowsEventLog::minimumReadMin() -->
+
+<section id="atrMinimumReadMax"><title>minimumReadMax (Attribute)</title>
+<indexterm><primary>minimumReadMax</primary>
+<secondary>WindowsEventLog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--minimumReadMin----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments, <computeroutput>minimumReadMin=</computeroutput> is a private method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The minimum number of kilobytes that the read buffer can be set to.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+<programlisting>
+<![CDATA[
+
+ eventLog = .WindowsEventLog~new
+ say "Smallest possible read buffer is" eventLog~minimumReadMin "kilobytes"
+
+::requires 'winSystm.cls'
+
+/* Output might be:
+
+Smallest possible read buffer is 16 kilobytes
+
+*/
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowsEventLog::minimumReadMin() -->
+
+<section id="atrMinimumReadBuffer"><title>minimumReadBuffer (Attribute)</title>
+<indexterm><primary>minimumReadBuffer</primary>
+<secondary>WindowsEventLog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--minimumReadMin----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments, <computeroutput>minimumReadMin=</computeroutput> is a private method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The minimum number of kilobytes that the read buffer can be set to.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+<programlisting>
+<![CDATA[
+
+ eventLog = .WindowsEventLog~new
+ say "Smallest possible read buffer is" eventLog~minimumReadMin "kilobytes"
+
+::requires 'winSystm.cls'
+
+/* Output might be:
+
+Smallest possible read buffer is 16 kilobytes
+
+*/
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowsEventLog::minimumReadMin() -->
+
+<section id="atrEvents"><title>events (Attribute)</title>
+<indexterm><primary>events</primary>
+<secondary>WindowsEventLog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--minimumReadMin----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments, <computeroutput>minimumReadMin=</computeroutput> is a private method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The minimum number of kilobytes that the read buffer can be set to.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+<programlisting>
+<![CDATA[
+
+ eventLog = .WindowsEventLog~new
+ say "Smallest possible read buffer is" eventLog~minimumReadMin "kilobytes"
+
+::requires 'winSystm.cls'
+
+/* Output might be:
+
+Smallest possible read buffer is 16 kilobytes
+
+*/
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowsEventLog::minimumReadMin() -->
+
+
+<section id="mthOpenWindowsEventLog"><title>open</title>
 <indexterm><primary>open method</primary>
 <secondary>of WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -189,7 +474,7 @@ end
 </variablelist>
 </section>
 
-<section id="closewel"><title>close</title>
+<section id="mthCloseWindowsEventLog"><title>close</title>
 <indexterm><primary>close method</primary>
 <secondary>of WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -204,7 +489,7 @@ end
 <para>Closes an open event log.</para>
 </section>
 
-<section id="readwel"><title>read</title>
+<section id="mthReadWindowsEventLog"><title>read</title>
 <indexterm><primary>read method</primary>
 <secondary>of WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -276,8 +561,6 @@ specified.
 <programlisting>
 evl = .WindowsEventLog~new
 
-if evl~InitCode \= 0 then exit
-
 say " reading complete System log forwards without opening it before "
 
 records = evl~read("FORWARDS", ,"System")
@@ -286,8 +569,6 @@ if records \= .nil then
   call DisplayRecords
 else
   say "==> Error reading complete System event log"
-
-evl~deinstall
 
 exit 0   /* leave program */
 
@@ -318,7 +599,76 @@ return
 </variablelist>
 </section>
 
-<section id="writewel"><title>write</title>
+
+<section id="mthReadRecords"><title>readRecords</title>
+<indexterm><primary>readRecords</primary>
+<secondary>WindowsEventLog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--readRecords(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowsEventLog::readRecords() -->
+
+<section id="mthWrite"><title>write</title>
 <indexterm><primary>write method</primary>
 <secondary>of WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -443,7 +793,7 @@ more examples.</para>
 </variablelist>
 </section>
 
-<section id="clearwel"><title>clear</title>
+<section id="mthClearWindowsEventLog"><title>clear</title>
 <indexterm><primary>clear method</primary>
 <secondary>of WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -527,7 +877,213 @@ event_log~CLEAR
 </variablelist>
 </section>
 
-<section id="getnumberwel"><title>getNumber</title>
+<section id="mthMinimumRead"><title>minimumRead</title>
+<indexterm><primary>minimumRead</primary>
+<secondary>WindowsEventLog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--minimumRead(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowsEventLog::minimumRead() -->
+
+<section id="mthMinimumReadEquals"><title>minimumRead=</title>
+<indexterm><primary>minimumRead=</primary>
+<secondary>WindowsEventLog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--minimumRead(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowsEventLog::minimumRead() -->
+
+
+<section id="mthIsFull"><title>isFull</title>
+<indexterm><primary>isFull</primary>
+<secondary>WindowsEventLog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isFull(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowsEventLog::isFull() -->
+
+
+<section id="mthGetNumber"><title>getNumber</title>
 <indexterm><primary>getNumber method</primary>
 <secondary>of WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -591,6 +1147,214 @@ num = event_log~getNumber
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+
+<section id="mthGetLogNames"><title>getLogNames</title>
+<indexterm><primary>getLogNames</primary>
+<secondary>WindowsEventLog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getLogNames(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowsEventLog::getLogNames() -->
+
+
+<section id="mthGetLast"><title>getLast</title>
+<indexterm><primary>getLast</primary>
+<secondary>WindowsEventLog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getLast(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowsEventLog::getLast() -->
+
+
+<section id="mthGetFirst"><title>getFirst</title>
+<indexterm><primary>getFirst</primary>
+<secondary>WindowsEventLog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getFirst(--x--,--y--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>x</term>
+      <listitem>
+        <para>
+          xx.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y</term>
+      <listitem>
+        <para>
+          yyy,
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+      <programlisting>
+      <![CDATA[
+      x = y
+      return 0
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowsEventLog::getFirst() -->
+
 
 </chapter>
 
