@@ -5255,8 +5255,37 @@ its scope is used.</para>
 <para>Returns a new instance of method class, which is an executable
 representation of the code contained in the file filename. The filename is a
 string.</para>
-<para>For an example of the use of this method, see the code example
-<link linkend="servex">Server implements Security Manager</link>.</para>
+</section>
+
+<section id="mthMethodLoadExternalMethod"><title>loadExternalMethod (Class Method)</title>
+<indexterm><primary>loadExternalMethod method</primary>
+<secondary>of Method class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>loadExternalMethod method</secondary>
+<tertiary>of Method class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-loadExternalMethod(name,descriptor)------------------------><
+]]>
+</programlisting>
+<para>Resolves a native method in an external library package and returns a
+Method object instance that can used to call the external method.  The
+<emphasis role="italic">descriptor</emphasis> is a string containing
+blank-delimited tokens that identify the location of the native method.
+function.  The first token identifies the type of native function and must be
+"LIBRARY".   The second token must identify
+the name of the external library.  The external library is located using
+platform-specific mechanisms for loading libraries.  For Unix-based systems, the
+library name is case-sensitive.  The third token is optional and specifies the
+name of the method within the library package.  If not specified,
+<emphasis role="italic">name</emphasis> is used.
+The method name is not case sensitive.
+If the target method cannot be resolved, .nil is returned.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+method = .Method~loadExternalMethod("homeAddress=", 'LIBRARY mylib setHomeAddress')
+</programlisting>
 </section>
 
 <section id="mthMethodIsGuarded"><title>isGuarded</title>
@@ -5305,33 +5334,6 @@ for details on private method restrictions.
 ]]>
 </programlisting>
 <para>Returns true ("1") if the method is a Protected method.  Returns false ("0") for unprotected methods.
-</para>
-</section>
-
-<section id="mthMethodLoadExternalMethod"><title>loadExternalMethod</title>
-<indexterm><primary>loadExternalMethod method</primary>
-<secondary>of Method class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>loadExternalMethod method</secondary>
-<tertiary>of Method class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-loadExternalMethod(name,descriptor)------------------------><
-]]>
-</programlisting>
-<para>Resolves a native method in an external library package and returns a
-Method object instance that can used to call the external method.  The
-<emphasis role="italic">descriptor</emphasis> is a string containing
-blank-delimited tokens that identify the location of the native method.
-function.  The first token identifies the type of native function and must be
-"LIBRARY".   The second token must identify
-the name of the external library.  The external library is located using
-platform-specific mechanisms for loading libraries.  For Unix-based systems, the
-library name is case-sensitive.  The third token is optional and specifies the
-name of the method within the library package.  If not specified,
-<emphasis role="italic">name</emphasis> is used.
-The method name is not case sensitive.
-If the target method cannot be resolved, .nil is returned.
 </para>
 </section>
 
