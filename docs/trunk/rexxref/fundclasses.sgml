@@ -5367,10 +5367,12 @@ referenced by the method code.</para>
 ]]>
 </programlisting>
 
-<para>Reverses any previous
-<emphasis role="bold">setUnguarded</emphasis> messages, restoring the receiver to
-the default guarded status. If the receiver is already guarded, a
-<emphasis role="bold">setGuarded</emphasis> message has no effect.</para>
+<para>Specifies that the method is a guarded method that requires
+exclusive access to its scope variable pool to run.
+If the receiver is already guarded, a
+<emphasis role="bold">setGuarded</emphasis> message has no effect.
+Guarded is the default state for method objects.
+</para>
 </section>
 
 <section id="mthMethodSetPrivate"><title>setPrivate</title>
@@ -5404,9 +5406,8 @@ for details on private method restrictions.
 ]]>
 </programlisting>
 
-<para>Specifies that a method is a protected method. If a method
-object does not receive a <emphasis role="bold">setProtected</emphasis>
-message, the method is not protected.
+<para>Specifies that a method is a protected method. Method objects are not
+protected by default.
 (See <link linkend="secman">The Security Manager</link> for details.)</para>
 </section>
 
@@ -5443,17 +5444,15 @@ existing security manager is removed.</para>
 ]]>
 </programlisting>
 
-<para>Lets an object run a method even when
-another method is active on the same object. If a method object does not receive
-a <emphasis role="bold">setUnguarded</emphasis>
-message, it requires exclusive use of its object variable pool.
-A method can be active for an object only when no other method requiring exclusive
+<para>Turns off the guared attribute of the method, allowing this method to
+run on an object even if another method has acquired exclusive access to the scope
+variable pool.  Methods are unguarded by default.</para>
+<para>
+A guarded method can be active for an object only when no other method requiring exclusive
 access to the object's variable pool is active in the same object. This
 restriction does not apply if an object sends itself a message to run a method
 and it already has exclusive use of the same object variable pool. In this
-case, the method runs immediately and has exclusive use of its object variable
-pool, regardless of whether it received a
-<emphasis role="bold">setUnguarded</emphasis> message.</para>
+case, the method runs immediately regardless of its guarded state.
 </section>
 
 <section id="mthMethodSource"><title>source</title>
@@ -5544,6 +5543,37 @@ string.
 </para>
 </section>
 
+<section id="mthRoutineLoadExternalRoutine"><title>loadExternalRoutine (Class method)</title>
+<indexterm><primary>loadExternalRoutine method</primary>
+<secondary>of Routine class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>loadExternalRoutine method</secondary>
+<tertiary>of Routine class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-loadExternalRoutine(name,descriptor)------------------------><
+]]>
+</programlisting>
+<para>Resolves a native routine in an external library package and returns a
+Routine object instance that can used to call the external routine.  The
+<emphasis role="italic">descriptor</emphasis> is a string containing
+blank-delimited tokens that identify the location of the native routine.
+function.  The first token identifies the type of native routine and must be
+"LIBRARY".   The second token must identify
+the name of the external library.  The external library is located using
+platform-specific mechanisms for loading libraries.  For Unix-based systems, the
+library name is case-sensitive.  The third token is optional and specifies the
+name of the routine within the library package.  If not specified,
+<emphasis role="italic">name</emphasis> is used.
+The routine name is not case sensitive. If the target routine cannot be
+resolved, .nil is returned.
+</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+routine = .Routine~loadExternalRoutine("Pi", "LIBRARY rxmath RxCalcPi")
+</programlisting>
+</section>
+
 <section id="mthRoutineCall"><title>call</title>
 <indexterm><primary>call method</primary>
 <secondary>of Routine class</secondary></indexterm>
@@ -5579,33 +5609,6 @@ value will be any value returned by the executed routine.</para>
 to its corresponding call argument.  The code in the routine object is called as
 if it was an external routine call. The return value will be any value returned
 by the executed routine.
-</para>
-</section>
-
-<section id="mthRoutineLoadExternalRoutine"><title>loadExternalRoutine</title>
-<indexterm><primary>loadExternalRoutine method</primary>
-<secondary>of Routine class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>loadExternalRoutine method</secondary>
-<tertiary>of Routine class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-loadExternalRoutine(name,descriptor)------------------------><
-]]>
-</programlisting>
-<para>Resolves a native routine in an external library package and returns a
-Routine object instance that can used to call the external routine.  The
-<emphasis role="italic">descriptor</emphasis> is a string containing
-blank-delimited tokens that identify the location of the native routine.
-function.  The first token identifies the type of native routine and must be
-"LIBRARY".   The second token must identify
-the name of the external library.  The external library is located using
-platform-specific mechanisms for loading libraries.  For Unix-based systems, the
-library name is case-sensitive.  The third token is optional and specifies the
-name of the routine within the library package.  If not specified,
-<emphasis role="italic">name</emphasis> is used.
-The routine name is not case sensitive. If the target routine cannot be
-resolved, .nil is returned.
 </para>
 </section>
 
