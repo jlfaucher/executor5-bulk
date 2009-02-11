@@ -190,29 +190,33 @@
 </programlisting>
 
 <para>
-  Description
+  The programmer can <link linkend="mthMinimumReadEquals">set the size</link> of the minimum read buffer,
+  within limits. <computeroutput>minimumReadMin</computeroutput> is the lowest acceptable size of the
+  minimum read buffer.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">~minimumReadMin=</emphasis> (set minimumReadMin)</term>
   <listitem>
     <para>
-      There are no arguments, <computeroutput>minimumReadMin=</computeroutput> is a private method.
+      <computeroutput>minimumReadMin=</computeroutput> is a private method, not intended to be changed by
+      the programmer.
     </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">~minimumReadMin</emphasis> (get minimumReadMin)</term>
   <listitem>
     <para>
-      The minimum number of kilobytes that the read buffer can be set to.
+      The minimum number of kilobytes that the minimum read buffer can be set to.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
+      The use of the attribute is straight-forward.
 <programlisting>
 <![CDATA[
 
- eventLog = .WindowsEventLog~new
- say "Smallest possible read buffer is" eventLog~minimumReadMin "kilobytes"
+eventLog = .WindowsEventLog~new
+say "Smallest possible read buffer is" eventLog~minimumReadMin "kilobytes"
 
 ::requires 'winSystm.cls'
 
@@ -233,41 +237,44 @@ Smallest possible read buffer is 16 kilobytes
 <secondary>WindowsEventLog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--minimumReadMin----------------------><
+>>--minimumReadMax----------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  The programmer can <link linkend="mthMinimumReadEquals">set the size</link> of the minimum read buffer,
+  within limits. The <computeroutput>minimumReadMax</computeroutput> value is the largest acceptable size
+  for the minimum read buffer.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">~minimumReadMax=</emphasis> (set minimumReadMax)</term>
   <listitem>
     <para>
-      There are no arguments, <computeroutput>minimumReadMin=</computeroutput> is a private method.
+      <computeroutput>minimumReadMax=</computeroutput> is a private method, not inteneded to be changed
+      by the programmer.
     </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">~minimumReadMax</emphasis> (get minmumReadMax)</term>
   <listitem>
     <para>
-      The minimum number of kilobytes that the read buffer can be set to.
+      The maximum number of kilobytes that the minimum read buffer can be set to.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
+    <para> This example displays the maximum size the programmer can set the minimum read buffer to.
 <programlisting>
 <![CDATA[
 
  eventLog = .WindowsEventLog~new
- say "Smallest possible read buffer is" eventLog~minimumReadMin "kilobytes"
+ say "Largest possible minimum read buffer is" eventLog~minimumReadMax "kilobytes"
 
 ::requires 'winSystm.cls'
 
 /* Output might be:
 
-Smallest possible read buffer is 16 kilobytes
+Largest possible minimum read buffer is 256 kilobytes
 
 */
 ]]>
@@ -275,48 +282,57 @@ Smallest possible read buffer is 16 kilobytes
     </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End WindowsEventLog::minimumReadMin() -->
+</section>  <!-- End WindowsEventLog::minimumReadMax() -->
 
 <section id="atrMinimumReadBuffer"><title>minimumReadBuffer (Attribute)</title>
 <indexterm><primary>minimumReadBuffer</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--minimumReadMin----------------------><
+>>--minimumReadBuffer-------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Returns the current size of the minimum read buffer in bytes. The programmer can <link
+  linkend="mthMinimumReadEquals">adjust the size</link> of the minimum read buffer. The value of this
+  attribute reflects that size.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">~minimumReadBuffer=</emphasis> (set minimumReadBuffer)</term>
   <listitem>
     <para>
-      There are no arguments, <computeroutput>minimumReadMin=</computeroutput> is a private method.
+      <computeroutput>minimumReadBuffer=</computeroutput> is a private method, not intended to be changed
+      by the programmer.
     </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">~minimumReadBuffer</emphasis> (get minimumReadBuffer)</term>
   <listitem>
     <para>
-      The minimum number of kilobytes that the read buffer can be set to.
+      The current size in bytes of the minimum read buffer.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
+      This example displays the size of the minimum read buffer when a new WindowsEventLog object is
+      created and then displays the size after the programmer has changed the minimum.
 <programlisting>
 <![CDATA[
 
  eventLog = .WindowsEventLog~new
- say "Smallest possible read buffer is" eventLog~minimumReadMin "kilobytes"
+ say "Current size of the minimum read buffer is" eventLog~minimumReadBuffer "bytes"
+
+ eventLog~minimumRead = 64
+  say "Adjusted size of the minimum read buffer to" eventLog~minimumReadBuffer "bytes"
 
 ::requires 'winSystm.cls'
 
 /* Output might be:
 
-Smallest possible read buffer is 16 kilobytes
+Current size of the minimum read buffer is 16384 bytes
+Adjusted size of the minimum read buffer to 65536 bytes
 
 */
 ]]>
@@ -324,48 +340,61 @@ Smallest possible read buffer is 16 kilobytes
     </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End WindowsEventLog::minimumReadMin() -->
+</section>  <!-- End WindowsEventLog::minimumReadBuffer() -->
 
 <section id="atrEvents"><title>events (Attribute)</title>
 <indexterm><primary>events</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--minimumReadMin----------------------><
+>>--events------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  The <computeroutput>events</computeroutput> attribute is an array that holds the event log records that
+  are read from the event log during a call to <link linkend="mthReadRecords">readRecords</link>(). The
+  array is empty if no calls to <computeroutput>readRecords()</computeroutput> has been made. Each time
+  <computeroutput>readRecords()</computeroutput> is called the array is first emptied.
+</para>
+<para>
+  Each index in the array holds one event record in the form of a string with a fixed format. The <link
+  linkend="mthReadRecords">readRecords</link> documentation has the details of this format.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">~events=</emphasis> (set events)</term>
   <listitem>
     <para>
-      There are no arguments, <computeroutput>minimumReadMin=</computeroutput> is a private method.
+      <computeroutput>events=</computeroutput> is a private method, not intended to be changed by the
+      programmer.
     </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">~events</emphasis> (get events)</term>
   <listitem>
     <para>
-      The minimum number of kilobytes that the read buffer can be set to.
+      Returns the array holding the event log records from the last <link
+      linkend="mthReadRecords">readRecords</link>() call. The array will be empty if no call to
+      <computeroutput>readRecords()</computeroutput> has been made.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
+      This example displays the number of event log records that.
 <programlisting>
 <![CDATA[
 
- eventLog = .WindowsEventLog~new
- say "Smallest possible read buffer is" eventLog~minimumReadMin "kilobytes"
+  eventLog = .WindowsEventLog~new
+  if eventLog~readRecords("BACKWARDS", , "System") == 0 then do
+    say 'The System log has' eventLog~events~items 'records'
+  end
 
 ::requires 'winSystm.cls'
 
 /* Output might be:
 
-Smallest possible read buffer is 16 kilobytes
+The System log has 1983 records
 
 */
 ]]>
@@ -373,7 +402,7 @@ Smallest possible read buffer is 16 kilobytes
     </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End WindowsEventLog::minimumReadMin() -->
+</section>  <!-- End WindowsEventLog::events() -->
 
 
 <section id="mthOpenWindowsEventLog"><title>open</title>
@@ -384,10 +413,8 @@ Smallest possible read buffer is 16 kilobytes
 <tertiary>of WindowsEventLog class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-open-+---------------------------------+--------------------><
-        +-(--+-----------------------+--)-+
-             +-server--+-----------+-+
-                       +-,--source-+
+>>--open(--+---------+--+------------+--)-----------------------><
+           +-server--+  +-,--source--+
 ]]>
 </programlisting>
 
