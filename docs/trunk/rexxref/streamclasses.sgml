@@ -436,10 +436,9 @@ It also inherits methods from the
 ]]>
 </programlisting>
 
-<para>Initializes a stream object for a stream
-named <emphasis role="italic">name</emphasis>, but does not open the stream.
-See <link linkend="creo">Initialization</link> for
-more information. Returns the new stream object</para>
+<para>Initializes a stream object for stream
+<emphasis role="italic">name</emphasis>, but does not open the stream.
+Returns the new stream object</para>
 </section>
 
 <section id="mthStreamArrayIn"><title>arrayIn</title>
@@ -478,8 +477,12 @@ method, the first line can be a partial line.
 ]]>
 </programlisting>
 
-<para>Returns a stream object that contains the data from
-<emphasis role="italic">array</emphasis>.</para>
+<para>Writes the data in array
+<emphasis role="italic">array</emphasis> to the stream.
+If LINES is specified, each element of the array is written using
+lineout().  If CHARS is specified, each element is written using charout().  The
+default method is LINES.
+</para>
 </section>
 
 <section id="mthStreamCharIn"><title>charIn</title>
@@ -497,16 +500,14 @@ method, the first line can be a partial line.
 </programlisting>
 
 <para>Returns a string of up to <emphasis role="italic">length</emphasis>
-characters from the character input stream receiving the message. The language
-processor advances the read pointer. If you omit
+characters from the input stream. The stream advances
+advances the read pointer by the number of characters read. If you omit
 <emphasis role="italic">length</emphasis>, it defaults to
 <computeroutput>1</computeroutput>. If you specify
 <emphasis role="italic">start</emphasis>, this positions the read pointer
-before reading. If the stream is not already open, the language processor tries
-to open the stream for reading and writing. If that fails, the language
-processor opens the stream for read only. (See
-<link linkend="bifCharin">CHARIN (Character Input)</link>  for information
-about the CHARIN built-in function.)</para>
+before reading. If the stream is not already open, the stream attempts to
+open for reading and writing. If that fails, the stream opens for input only.
+</para>
 </section>
 
 <section id="mthStreamCharOut"><title>charOut</title>
@@ -524,8 +525,8 @@ about the CHARIN built-in function.)</para>
 </programlisting>
 
 <para>Returns the count of characters remaining after trying to write
-<emphasis role="italic">string</emphasis> to the character output stream
-receiving the message. The language processor
+<emphasis role="italic">string</emphasis> to the output stream.
+The stream also
 advances the write pointer.</para>
 <para>The <emphasis role="italic">string</emphasis> can be the null string.
 In this case, <emphasis role="bold">charOut</emphasis> writes
@@ -533,14 +534,13 @@ no characters to the stream and returns <computeroutput>0</computeroutput>.
 If you omit <emphasis role="italic">string</emphasis>,
 <emphasis role="bold">charOut</emphasis> writes no
 characters to the stream and returns <computeroutput>0</computeroutput>.
-The language processor closes the stream.</para>
+The stream is also closed.</para>
 <para>If you specify <emphasis role="italic">start</emphasis>, this positions
 the write pointer before
-writing. If the stream is not already open, the language processor tries to
-open the stream for reading and writing. If that fails, the language processor
-opens the stream for write only. (See <link linkend="bifCharout">CHAROUT
-(Character Output)</link>  for information
-about the CHAROUT built-in function.)</para>
+writing. If the stream is not already open, the stream attempts to open
+for reading and writing. If that fails, the stream opens for
+for output only.
+</para>
 </section>
 
 <section id="mthStreamChars"><title>chars</title>
@@ -556,9 +556,9 @@ about the CHAROUT built-in function.)</para>
 </programlisting>
 
 <para>Returns the total number of characters remaining in the
-character input stream receiving the message. The default input stream is
-STDIN. The count includes any line separator characters, if these are defined
-for the stream. In the case of persistent streams, it is the count of characters
+input stream.
+The count includes any line separator characters, if these are defined
+for the stream. For persistent the count is the count of characters
 from the current read position. (See
 <link linkend="iostrms">Input and Output Streams</link> for a discussion
 of Rexx input and output.) The total number of characters remaining cannot
@@ -566,9 +566,8 @@ be determined for some streams (for example, STDIN). For these streams. the
 CHARS method returns <computeroutput>1</computeroutput>
 to indicate that data is present, or <computeroutput>0</computeroutput>
 if no data is present. For Windows devices,
-CHARS always returns <computeroutput>1</computeroutput>. (See
-<link linkend="bifChars">CHARS (Characters Remaining)</link> for information
-about the CHARS built-in function.)</para>
+CHARS always returns <computeroutput>1</computeroutput>.
+</para>
 </section>
 
 <section id="mthStreamClose"><title>close</title>
@@ -583,7 +582,7 @@ about the CHARS built-in function.)</para>
 ]]>
 </programlisting>
 
-<para>Closes the stream that receives the message.
+<para>Closes the stream.
 <emphasis role="bold">close</emphasis> returns
 <computeroutput>READY:</computeroutput> if closing the stream is successful,
 or an appropriate error message.
@@ -627,8 +626,8 @@ is set whenever one of the file system primitives returns with a
 
 <section id="StreamCommandStrings"><title>Command Strings</title>
 <para>The argument <emphasis role="italic">stream_command</emphasis>
-can be any expression that the language processor evaluates to a command string
-that corresponds to the following diagram:</para>
+can be any expression that to one of the following command strings:
+</para>
 <programlisting>
 <![CDATA[
            +-BOTH--| Write Options |-+
@@ -685,13 +684,13 @@ that corresponds to the following diagram:</para>
 
 <variablelist>
 <varlistentry><term>OPEN</term>
-<listitem><para>Opens the stream object receiving the message and returns
+<listitem><para>Opens the stream object and returns
 <computeroutput>READY:</computeroutput>. (If unsuccessful, the previous
 information about return codes applies.)
 The default for OPEN is to open the stream for both reading and writing data,
 for example: <computeroutput>&apos;OPEN BOTH&apos;</computeroutput>. To specify that the
-<emphasis role="italic">stream_name</emphasis> receiving the message can be
-only read or written to, add READ or WRITE, to the command string. </para>
+stream be only opened for input or output,
+add READ or WRITE, to the command string. </para>
 <para>The following is a description of the options for
 OPEN: </para>
 <variablelist>
@@ -703,7 +702,7 @@ OPEN: </para>
 </para></listitem></varlistentry>
 <varlistentry><term>BOTH</term>
 <listitem><para>Opens the stream for both reading and writing. (This is the
-default.) The language processor maintains separate read and write pointers.
+default.) The stream maintains separate read and write pointers.
 </para></listitem></varlistentry>
 <varlistentry><term>APPEND</term>
 <listitem><para>Positions the write pointer at the end of the stream. The write
@@ -738,8 +737,7 @@ order in which it was written.
 <listitem><para>Opens the stream in binary mode.
 This means that line end characters
 are ignored; they are treated like any other byte of data. This is intended
-to force file operations that are compatible with other
-Rexx language processors that run on record-based systems, or to process
+to process
 binary data using the line operations.</para>
 
 <note><title>Note</title>
@@ -771,9 +769,9 @@ stream_name~command("open read shared")
 </programlisting>
 </listitem></varlistentry>
 <varlistentry><term>CLOSE</term>
-<listitem><para>closes the stream object receiving the message. The COMMAND
+<listitem><para>closes the stream object. The COMMAND
 method with the CLOSE option returns <computeroutput>READY:</computeroutput>
-if the receiving stream object
+if the stream
 is successfully closed or an appropriate error message otherwise. If an attempt
 to close an unopened file occurs, then the COMMAND method with the CLOSE option
 returns a null string (&quot;&quot;).
@@ -793,7 +791,7 @@ positions are set.</para>
 <para>See <link linkend="iostrms">Input and Output Streams</link>  for a
 discussion of read and write positions in a persistent stream.</para></note>
 <para>To
-use this command, you must first open the receiving stream object (with the
+use this command, you must first open the stream (with the
 OPEN stream command described previously or implicitly with an input or output
 operation). One of the following characters can precede the
 <emphasis role="italic">offset</emphasis> number. </para>
@@ -868,8 +866,8 @@ stream_name~command("seek <"fromend read)
 <para>Used with these <emphasis role="italic">stream_command</emphasis>s, the
 COMMAND method returns
 specific information about a stream. Except for QUERY HANDLE and QUERY POSITION,
-the language processor returns the query information even if the stream is
-not open. The language processor returns the null string for nonexistent streams.
+the stream returns the query information even if the stream is
+not open. The stream returns the null string for nonexistent streams.
 </para>
 </listitem>
 </varlistentry>
@@ -888,8 +886,8 @@ stream_name~command("query datetime")
 </programlisting>
 </listitem></varlistentry>
 <varlistentry><term>QUERY EXISTS</term>
-<listitem><para>Returns the full path specification of the stream object
-receiving the message, if it exists, or a null string. For example: </para>
+<listitem><para>Returns the full path specification of the stream object,
+if it exists, or a null string. For example: </para>
 <indexterm><primary>examples</primary>
 <secondary>command method</secondary>
 <tertiary>QUERY EXISTS option</tertiary></indexterm>
@@ -902,8 +900,8 @@ c:\data\file.txt
 </programlisting>
 </listitem></varlistentry>
 <varlistentry><term>QUERY HANDLE</term>
-<listitem><para>Returns the handle associated with the open stream that is the
-receiving stream object. For example: </para>
+<listitem><para>Returns the handle associated with the open stream.
+For example: </para>
 <indexterm><primary>examples</primary>
 <secondary>command method</secondary>
 <tertiary>QUERY HANDLE option</tertiary></indexterm>
@@ -915,8 +913,8 @@ stream_name~command("query handle")
 
 </listitem></varlistentry>
 <varlistentry><term>QUERY POSITION</term>
-<listitem><para>Returns the current read or write position for the receiving
-stream object, as qualified by the following options:
+<listitem><para>Returns the current read or write position for the stream,
+as qualified by the following options:
 <variablelist>
 <varlistentry><term>READ</term>
 <listitem><para>Returns the current read position.
@@ -960,8 +958,8 @@ characters.
 <listitem><para>Is a synonym for QUERY POSITION.
 </para></listitem></varlistentry>
 <varlistentry><term>QUERY SIZE</term>
-<listitem><para>Returns the size in bytes of a persistent stream that is the
-receiving stream object. For example: </para>
+<listitem><para>Returns the size, in bytes, of a persistent stream.
+For example: </para>
 <programlisting>
 stream_name~command("query size")
 </programlisting>
@@ -971,13 +969,13 @@ stream_name~command("query size")
 </programlisting>
 </listitem></varlistentry>
 <varlistentry><term>QUERY STREAMTYPE</term>
-<listitem><para>Returns a string indicating whether the receiving stream object
+<listitem><para>Returns a string indicating whether the stream
 is <computeroutput>PERSISTENT</computeroutput>,
 <computeroutput>TRANSIENT</computeroutput>, or
 <computeroutput>UNKNOWN</computeroutput>.
 </para></listitem></varlistentry>
 <varlistentry><term>QUERY TIMESTAMP</term>
-<listitem><para>Returns the date and time stamps of the receiving stream object
+<listitem><para>Returns the date and time stamps of a persistent stream
 in an international format. This is the preferred method of getting date and
 time because it provides the full 4-digit year. For example:</para>
 <programlisting>
@@ -1026,9 +1024,9 @@ available, additional information about ERROR or NOTREADY states. (The
 ]]>
 </programlisting>
 
-<para>Returns <computeroutput>READY:</computeroutput>. It forces any data
-currently buffered for writing
-to be written to the stream receiving the message.</para>
+<para>Returns <computeroutput>READY:</computeroutput>. It forces the stream to write
+any buffered data to the output stream.
+</para>
 </section>
 
 <section id="mthStreamInit"><title>init</title>
@@ -1064,7 +1062,7 @@ to be written to the stream receiving the message.</para>
 
 <para>Returns the next <emphasis role="italic">count</emphasis> lines. The
 count must be <computeroutput>0</computeroutput> or
-<computeroutput>1</computeroutput>. The language processor advances the read
+<computeroutput>1</computeroutput>. The stream advances the read
 pointer. If you omit <emphasis role="italic">count</emphasis>, it defaults to
 <computeroutput>1</computeroutput>. A <emphasis role="italic">line</emphasis>
 number may be given to set the read position to the start of a specified
@@ -1072,10 +1070,9 @@ line. This line number must be positive and within the bounds of the stream,
 and must not be specified for a transient stream. A value of 1 for
 <emphasis role="italic">line</emphasis> refers to the first line in the stream.
 If the stream is not already
-open, the language processor tries to open the stream for reading and writing.
-If that fails, the language processor opens the stream for read-only. (See
-<link linkend="bifLinein">LINEIN (Line Input)</link>  for information about the
-LINEIN built-in function.)</para>
+open, the it tries to open the stream for reading and writing.
+If that fails, the stream is opened for input only.
+</para>
 </section>
 
 <section id="mthStreamLineOut"><title>lineOut</title>
@@ -1093,17 +1090,16 @@ LINEIN built-in function.)</para>
 </programlisting>
 
 <para>Returns <computeroutput>0</computeroutput> if successful in writing
-<emphasis role="italic">string</emphasis> to the character output stream
-receiving the message or <computeroutput>1</computeroutput> if
-an error occurs while writing the line. The language processor advances the
+<emphasis role="italic">string</emphasis> to the output stream
+or <computeroutput>1</computeroutput> if
+an error occurs while writing the line. The stream advances the
 write pointer. If you omit <emphasis role="italic">string</emphasis>, the
-language processor closes the stream. If you specify
+stream is closed.  If you specify
 <emphasis role="italic">line</emphasis>, this positions the write pointer
-before writing. If the stream is not already open, the language processor
-tries to open the stream for reading and writing. If that fails, the language
-processor opens the stream for write-only. (See
-<link linkend="bifLineout">LINEOUT (Line Output)</link>  for
-information about the LINEOUT built-in function.)</para>
+before writing. If the stream is not already open, the stream
+attempts to open for reading and writing. If that fails, the stream is
+opened for output only.
+</para>
 </section>
 
 <section id="mthStreamLines"><title>lines</title>
@@ -1120,8 +1116,8 @@ information about the LINEOUT built-in function.)</para>
 ]]>
 </programlisting>
 
-<para>Returns the number of completed lines that remain in the character input
-stream receiving the message. If the stream has already been read with
+<para>Returns the number of completed lines that available for input.
+If the stream has already been read with
 <emphasis role="bold">charIn</emphasis>emphasis.
 this can include an initial partial line. For persistent streams the count
 starts at the current read position. In effect,
@@ -1131,9 +1127,8 @@ action of charIn (see <link linkend="mthStreamCharIn">charIn</link>) or lineIn (
 input and output, see
 <link linkend="iostrms">Input and Output Streams</link>.)</para>
 <para>For a Queue, <emphasis role="bold">lines</emphasis>
-returns the actual number of lines. (See
-<link linkend="bifLines">LINES (Lines Remaining)</link> for
-information about the LINES built-in function.)</para>
+returns the actual number of lines.
+</para>
 <para> </para>
 
 <note><title>Note</title>
@@ -1145,9 +1140,9 @@ method determines the actual number of lines by scanning the stream starting
 at the current position and counting the lines. For large streams, this can
 be a time-consuming operation.  Therefore, avoid the use of the LINES method
 in the  condition of a loop reading a stream. It is recommended that you use
-the <emphasis role="bold">chars</emphasis>
-method (see <link linkend="mthStreamChars">chars</link>) or the LINES
-built-in function for this purpose.</para></note>
+the <emphasis role="bold"><link linkend="mthStreamChars">chars</link></emphasis>
+method.
+</para></note>
 
 <para>The ANSI Standard has extended this function to allow an option: "Count".
 If this option is used, <emphasis role="bold">lines</emphasis>
@@ -1159,11 +1154,6 @@ lines remaining in the stream, irrespective of how long this operation takes.
 remaining in the file or 0 if no lines remain.</para>
 
 <para>The default is "Count".</para>
-
-<para>The defaults of the <emphasis role="bold">lines</emphasis>
-method and function are different because of
-compatibility reasons.</para>
-
 </section>
 
 <section id="mthStreamMakeArray"><title>makeArray</title>
@@ -1221,7 +1211,7 @@ method, the first line can be a partial line.
 ]]>
 </programlisting>
 
-<para>Opens the stream to which you send the message and returns
+<para>Opens the stream and returns
 <computeroutput>READY:</computeroutput>. If the method is unsuccessful, it
 returns an error message string in the same form that the
 <emphasis role="bold">description</emphasis> method uses.</para>
@@ -1233,20 +1223,20 @@ which is set whenever one of the file system primitives returns with a
 <para>By default, <emphasis role="bold">open</emphasis>
 opens the stream for both reading and writing data, for
 example: <computeroutput>&apos;open BOTH&apos;</computeroutput>. To specify that the
-stream receiving
-the message can be only read or only written to, specify READ or WRITE.</para>
+stream be only opened for input or output,
+specify READ or WRITE.</para>
 <para>The options for the
 <emphasis role="bold">open</emphasis> method are: </para>
 <variablelist>
 <varlistentry><term>READ</term>
-<listitem><para>Opens the stream only for reading.
+<listitem><para>Opens the stream for input only.
 </para></listitem></varlistentry>
 <varlistentry><term>WRITE</term>
-<listitem><para>Opens the stream only for writing.
+<listitem><para>Opens the stream for output only.
 </para></listitem></varlistentry>
 <varlistentry><term>BOTH</term>
-<listitem><para>Opens the stream for both reading and writing. (This is the
-default.) The language processor maintains separate read and write pointers.
+<listitem><para>Opens the stream for both input and output.  (This is the
+default.) The stream maintains separate read and write pointers.
 </para></listitem></varlistentry>
 <varlistentry><term>APPEND</term>
 <listitem><para>Positions the write pointer at the end of the stream.
@@ -1281,9 +1271,7 @@ order in which it was written.
 <varlistentry><term>BINARY</term>
 <listitem><para>Opens the stream in binary mode. This means that line-end
 characters are ignored; they are treated like any other byte of data. This is
-intended to force file operations that are compatible with
-other Rexx language processors
-that run on record-based systems, or to process binary data using the line
+for processing binary record data using the line
 operations. </para>
 
 <note><title>Note</title>
@@ -1379,12 +1367,12 @@ not be open.</para>
 method returns specific information about a stream. Except for
 <emphasis role="bold">query</emphasis> HANDLE and
 <emphasis role="bold">query</emphasis> POSITION, the
-language processor
-returns the query information even if the stream is not open. The language
-processor returns the null string for nonexistent streams. </para>
+stream
+returns the query information even if the stream is not open. A null string
+is returned for nonexistent streams. </para>
 <variablelist>
 <varlistentry><term>DATETIME</term>
-<listitem><para>returns the date and time stamps of the receiving stream object
+<listitem><para>returns the date and time stamps of a persistent stream
 in US format. For example:</para>
 <programlisting>
 stream_name~query("datetime")
@@ -1396,8 +1384,8 @@ be: </para>
 </programlisting>
 </listitem></varlistentry>
 <varlistentry><term>EXISTS</term>
-<listitem><para>returns the full path specification of the receiving stream
-object, if it exists, or a null string. For example: </para>
+<listitem><para>returns the full path specification of the stream,
+if it exists, or a null string. For example: </para>
 <indexterm><primary>examples</primary>
 <secondary>query method</secondary></indexterm>
 <programlisting>
@@ -1409,8 +1397,8 @@ c:\data\file.txt
 </programlisting>
 </listitem></varlistentry>
 <varlistentry><term>HANDLE</term>
-<listitem><para>returns the handle associated with the open stream that is the
-receiving stream object. For example:</para>
+<listitem><para>returns the handle associated with the open stream.
+For example:</para>
 <programlisting>
 <emphasis role="italic">stream_name</emphasis>~query("handle")
 </programlisting>
@@ -1420,8 +1408,8 @@ receiving stream object. For example:</para>
 </programlisting>
 </listitem></varlistentry>
 <varlistentry><term>POSITION</term>
-<listitem><para>returns the current read or write position for the receiving
-stream object, as qualified by the following options:
+<listitem><para>returns the current read or write position for the
+stream, as qualified by the following options:
 <variablelist>
 <varlistentry><term>READ</term>
 <listitem><para>returns the current read position.
@@ -1432,7 +1420,7 @@ stream object, as qualified by the following options:
 <note><title>Note</title>
 <para>If the stream is
 open for both reading and writing, this returns the read position by default.
-Otherwise, this returns the appropriate position by default.</para></note>
+Otherwise, this returns the specified position.</para></note>
 </listitem></varlistentry>
 <varlistentry><term>CHAR</term>
 <listitem><para>returns the position in terms of characters.
@@ -1461,8 +1449,8 @@ characters. </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term>SIZE</term>
-<listitem><para>returns the size, in bytes, of a persistent stream that is the
-receiving stream object. For example: </para>
+<listitem><para>returns the size, in bytes, of a persistent stream.
+For example: </para>
 <programlisting>
 <emphasis role="italic">stream_name</emphasis>~query("size")
 </programlisting>
@@ -1472,13 +1460,13 @@ receiving stream object. For example: </para>
 </programlisting>
 </listitem></varlistentry>
 <varlistentry><term>STREAMTYPE</term>
-<listitem><para>returns a string indicating whether the receiving stream
+<listitem><para>returns a string indicating whether the stream
 object is <computeroutput>PERSISTENT</computeroutput>,
 <computeroutput>TRANSIENT</computeroutput>, or
 <computeroutput>UNKNOWN</computeroutput>.
 </para></listitem></varlistentry>
 <varlistentry><term>TIMESTAMP</term>
-<listitem><para>returns the date and time stamps of the receiving stream object
+<listitem><para>returns the date and time stamps of a persistent stream
 in an international format. This is the preferred method of getting the date and
 time because it provides the full 4-digit year. For example:</para>
 <programlisting>
@@ -1507,8 +1495,8 @@ time because it provides the full 4-digit year. For example:</para>
 </programlisting>
 
 <para>Returns <computeroutput>0</computeroutput> if successful in writing
-<emphasis role="italic">string</emphasis> to the character output stream
-receiving the message or <computeroutput>1</computeroutput> if
+<emphasis role="italic">string</emphasis> to the output stream
+or <computeroutput>1</computeroutput> if
 an error occurs while writing the line.</para>
 </section>
 
@@ -1538,7 +1526,7 @@ positions are set. </para>
 <para>See <link linkend="iostrms">Input and Output Streams</link>
 for a discussion
 of read and write positions in a persistent stream.</para></note>
-<para>To use this method, you must first open the receiving stream object (with
+<para>To use this method, you must first open the stream object (with
 the OPEN method described previously or implicitly with an input or output
 operation). One of the following characters can precede the
 <emphasis role="italic">offset</emphasis> number:</para>
@@ -1618,8 +1606,8 @@ fromend  = 125
 ]]>
 </programlisting>
 
-<para>Returns a string that indicates the current state of the specified
-stream.</para>
+<para>Returns a string indicating the current stream state.
+</para>
 <para>The returned strings are as follows: </para>
 <variablelist>
 <varlistentry><term>ERROR</term>
@@ -1681,10 +1669,8 @@ represents i.e. the name of the file.
 ]]>
 </programlisting>
 
-<para>Returns a supplier object for the stream. When you send appropriate
-messages to the supplier object (see
-<link linkend="clsSupplier">The Supplier Class</link>), it enumerates all the lines
-in the stream object. The supplier enumerates the items in their line order.
+<para>Returns a <link linkend="clsSupplier">Supplier object</link> for the stream containing the remaining stream
+lines and linenumber positions for the stream.
 </para>
 </section>
 
@@ -1709,7 +1695,7 @@ class.
 <emphasis role="bold">uninit</emphasis>
 method then that method must invoke the superclass
 <emphasis role="bold">uninit</emphasis> method.
-The following example shows how to accomplish this.</para>
+For example:</para>
 <programlisting>
 <![CDATA[
 ::class CustomStream subclass Stream
