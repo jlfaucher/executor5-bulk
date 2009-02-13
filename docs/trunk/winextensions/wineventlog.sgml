@@ -48,8 +48,7 @@
 <secondary>WindowsEventLog class</secondary></indexterm>
 <para>
   The <computeroutput>WindowsEventLog</computeroutput> class provides functionaliy to interact with the
-  Windows system event log. The programmer can use this class to read, write, and clear event-log
-  records.
+  Windows system event log.
 </para>
 <para>
   The WindowsEventLog class is not a built-in class. It is defined in the file
@@ -161,6 +160,140 @@
 </row>
 </tbody></tgroup>
 </table>
+
+<section id="sectCommonWindowsEventLog"><title>Using WindowsEventLog</title>
+<indexterm><primary>usage</primary>
+<secondary>of WindowsEventLog class</secondary></indexterm>
+<para>
+  In Windows the Event Log service provides a central facility for both the operating system and
+  applications to log important events. The primary purpose for logging an event is to give
+  administrators a way to determine the cause of errors and to prevent future errors. The Event Log
+  service provides several standard logs: Application, Security, and System. The service also allows for
+  applications to register and create Custom logs. Each event is logged as a single event log record in a
+  single log.
+</para>
+<para>
+  The ooRexx WindowsEventLog class has methods that allow the programmer to query, read from,  write to,
+  back up, and clear event logs. Logs on both the local machine and remote machines accessed through the
+  network can be worked with. Full access to any log is governed by the security settings of the system.
+  Therefore an ooRexx program that interacts with the Event Log service will be restricted to the
+  privilege level of the user running the program.
+</para>
+<para>
+  The Event Log service uses information stored registry. This information controls how the service
+  operates. The following list discusses some of the event logging elements to help the programmer better
+  understand the methods and method arguments of the WindowsEventLog class:
+</para>
+<variablelist>
+  <varlistentry id="eventLogKey"><term>Eventlog key</term>
+  <listitem>
+    <para>
+      The Eventlog key is the key in the registry where all information for the Event Log service is
+      stored. There are several subkeys under the EventLog key. Each subkey names an event <emphasis
+      role="italic">log</emphasis>. The following shows the structure of the Eventlog key. The names and
+      number of <emphasis role="italic">Custom logs</emphasis> is dependent on the system.
+<programlisting>
+HKEY_LOCAL_MACHINE
+  System
+    CurrentControlSet
+      Services
+      EventLog
+        Application
+        Security
+        System
+        CustomLog
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry id="server"><term>Server</term>
+  <listitem>
+    <para>
+      Many of WindowsEventLog instance methods have a <emphasis role="italic">server</emphasis> argument.
+      This argument indentifies which machine contains the desired event log. The argument is always
+      optional, with the default server being the local machine. In all cases, using the empty string is
+      the same as omitting the argument.
+    </para>
+    <para>
+      To work with a log on a remote system, the server name must be in Universal Naming Convention (UNC)
+      format. For instance, <computeroutput>\\Osprey</computeroutput>.
+    </para>
+    <para>
+      <emphasis role="bold">Note</emphasis> that once an event log has been opened using the <link
+      linkend="mthOpenWindowsEventLog">open</link>() method, that opened log is always used until it has
+      been closed. The log can be closed using the <link linkend="mthCloseWindowsEventLog">close</link>()
+      method, or by another call to the <computeroutput>open()</computeroutput> method. This means that
+      if there is an open log, the server argument <emphasis role="italic">is always ignored</emphasis>.
+      The only exception to this is the <link linkend="mthWrite">write</link>() method. Each time a
+      record is written to a log, the log is specifically opened for writing and then closed.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry id="eventSource"><term>Event Source</term>
+  <listitem>
+    <para>
+      The <emphasis role="italic">event source</emphasis> is the name of the software or driver that logs
+      the event. Event sources are usually the name of the application, or a component of the application
+      if the application is large, or the driver name. Event source names are stored in the registry as
+      subkeys of the log they are used in. For example, in the following registry example:
+<programlisting>
+HKEY_LOCAL_MACHINE
+  System
+    CurrentControlSet
+      Services
+      EventLog
+        Application
+          WinApp1
+          LoadPerf
+        Security
+          Security
+        System
+          Dhcp
+          atapi
+</programlisting>
+      <emphasis role="italic">WinApp1, LoadPerf, Security, Dhcp,</emphasis> and <emphasis
+      role="italic">atapi</emphasis> are all event sources.
+    </para>
+    <para>
+      Like the <link linkend="server">server</link> argument, many of the WindowsEventLog instance
+      methods have a <emphasis role="italic">source</emphasis> argument. This argument specifies the
+      event source and therefore determines exactly which event log is used. The argument is always
+      optional, the default is Application, and the empty string is the same as omitting the argument. In
+      the same manner as the server argument, if there is an open event log, the <emphasis
+      role="italic">source</emphasis> argument is ignored.
+    </para>
+    <para>
+      <emphasis role="bold">Note</emphasis> that if the Event Log service can not find the event source
+      name in the registry, then the service also uses Application for the source.
+    </para>
+    <para>
+      When opening, querying, or reading event logs using an event source name is no different than using
+      the log name itself. For the above registry example, using:
+<programlisting>
+eventLog~open( , "WinApp1")
+</programlisting>
+      or:
+<programlisting>
+eventLog~open( , "LoadPerf")
+</programlisting>
+      is exactly the same as:
+<programlisting>
+eventLog~open( , "Application")
+</programlisting>
+    </para>
+    <para>
+      However, when writing to an event log, the event source is included as part of the event log
+      record. Therefore:
+<programlisting>
+eventLog~open( , "WinApp1")
+</programlisting>
+      produces a different result using:
+<programlisting>
+eventLog~open( , "LoadPerf")
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>
 
 <section id="mthNewWindowsEventLog"><title>new (Class method)</title>
 <indexterm><primary>new method</primary>
@@ -418,78 +551,76 @@ The System log has 1983 records
 ]]>
 </programlisting>
 
-<para>Opens the specified event log.</para>
-<variablelist>
-<varlistentry><term>Arguments:</term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>server</term>
-<listitem><para>The UNC (universal naming convention) name of the server on which
-the event log is to be opened. If this argument is not specified, the log is
-opened at the local machine.
-</para></listitem></varlistentry>
-<varlistentry><term>source</term>
-<listitem><para>The name of the source of the event log. It must be a subkey of
-a log file entry under the EventLog key in the registry. If, for example, the
-registry looks as follows:
-<programlisting>
-HKEY_LOCAL_MACHINE
-  System
-    CurrentControlSet
-      Services
-      EventLog
-        Application
-          WinApp1
-        Security
-          WinApp2
-        System
-</programlisting>
-&quot;Application&quot;, &quot;Security&quot;, &quot;System&quot;,
-&quot;WinApp1&quot;, and &quot;WinApp2&quot; are valid sources.
-If the source is not found, the &quot;Application
-Log&quot; is used.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term>Return value:</term>
-<listitem><para>The method returns:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The open succeeded.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>The open failed.
-</para></listitem></varlistentry>
-</variablelist></para></listitem>
-</varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following two code snippets are equivalent.  They both open
-the Application log on the local machine if they succeed:
+<para>
+  Opens the specified event log. <link linkend="sectCommonWindowsEventLog">Using the WindowsEventLog
+  Class</link>, in the <link linkend="server">server</link> and <link
+  linkend="eventSource"></link> sections has some important notes about opening an event log.
 </para>
+<para>
+  If an event log is already open, then it is first closed before the specified log is opened.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The arguments are:
+      <variablelist>
+        <varlistentry><term>server</term>
+        <listitem>
+          <para>
+            The name of the <link linkend="server">server</link> on which the event log is to be
+            opened.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>source</term>
+        <listitem>
+          <para>
+            The <link linkend="eventSource">event source</link>.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns 0 on success, and the operating system error code on failure.
+      </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following two code snippets are equivalent.  They both open the Application log on the local
+      machine if they succeed:
+    </para>
 <programlisting>
-event_log1 = .WindowsEventLog~new
-rc = event_log1~open
-if rc == 1 then do
-  say 'Failed to open the event log'
+eventLog1 = .WindowsEventLog~new
+ret = eventLog1~open
+if ret <> 0 then do
+  say 'Failed to open the event log:'
+  say '  Error' ret':'SysGetErrortext(ret)
   ...
 end
 
-event_log = .WindowsEventLog~new
-rc = event_log~open(,"Application")
-if rc == 1 then do
+eventLog2 = .WindowsEventLog~new
+ret = eventLog2~open( , "Application")
+if ret <> 0 then do
   say 'Failed to open the event log'
+  say '  Error' ret':'SysGetErrortext(ret)
   ...
 end
 </programlisting>
-<para>The following example opens the System log on SERVER01:</para>
+  <para>
+    The following example opens the System log on SERVER01:
+  </para>
 <programlisting>
 
-event_log = .WindowsEventLog~new
-rc = event_log~open("\\SERVER01","System")
-if rc == 0 then do
+eventLog = .WindowsEventLog~new
+ret = eventLog~open("\\SERVER01", "System")
+if ret == 0 then do
   -- Do something with the event log
   ...
-  event_log~close
+  eventLog~close
   ...
 end
 else do
@@ -497,7 +628,7 @@ else do
   ...
 end
 </programlisting>
-</listitem></varlistentry>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
