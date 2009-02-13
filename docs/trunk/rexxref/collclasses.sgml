@@ -51,69 +51,62 @@ retrieve the item from the collection with the AT or [] methods.</para>
 following collection classes:</para>
 
 <variablelist>
-<varlistentry><term>Array</term>
+<varlistentry><term><link linkend="clsArray">Array</link></term>
 <listitem><para>A sequenced collection of objects ordered by whole-number
-indexes. See <link linkend="clsArray">The Array Class</link> for details.
+indexes.
 </para></listitem></varlistentry>
-<varlistentry><term>Bag</term>
+<varlistentry><term><link linkend="clsBag">Bag</link></term>
 <listitem><para>A collection where the index and the item are the same object. Bag indexes
-can be any object (as with the table class) and each index can appear more
-than once. See <link linkend="clsBag">The Bag Class</link> for details.
+can be any object and each index can appear more than once.
 </para></listitem></varlistentry>
-<varlistentry><term>CircularQueue</term>
+<varlistentry><term><link linkend="clsCircularQueue">CircularQueue</link></term>
 <listitem><para>
 The CircularQueue class allows for storing objects in a circular queue
 of a predefined size. Once the end of the queue has been reached, new item
 objects are inserted from the beginning, replacing earlier entries.
 The collected objects can be processed in FIFO (first in, first out) or in a
 stack-like LIFO (last in, first out) order.
-See <link linkend="clsCircularQueue">The CircularQueue Class</link> for details
 </para></listitem>
 </varlistentry>
-<varlistentry><term>Directory</term>
+<varlistentry><term><link linkend="clsDirectory">Directory</link></term>
 <listitem><para>A collection with character string indexes. Index comparisons are performed
-using the string == comparison method. See
-<link linkend="clsDirectory">The Directory Class</link> for details.
+using the string == comparison method.
 </para></listitem></varlistentry>
-<varlistentry><term>List</term>
+<varlistentry><term><link linkend="clsList">List</link></term>
 <listitem><para>A sequenced collection that lets you add new items at any position in
 the sequence. A list generates and returns an index value for each item placed
 in the list. The returned index remains valid until the item is removed from
-the list. See <link linkend="clsList">The List Class</link> for details.
+the list.
 </para></listitem></varlistentry>
-<varlistentry><term>Queue</term>
+<varlistentry><term><link linkend="clsQueue">Queue</link></term>
 <listitem><para>A sequenced collection with the items ordered as a queue. You can remove
 items from the head of the queue and add items at either its tail or its head.
 Queues index the items with whole-number indexes, in the order in which the
 items would be removed. The current head of the queue has index 1, the item
-after the head item has index 2, up to the number of items in the queue. See
-<link linkend="clsQueue">The Queue Class</link> for details.
+after the head item has index 2, up to the number of items in the queue.
 </para></listitem></varlistentry>
-<varlistentry><term>Relation</term>
-<listitem><para>A collection with indexes that can be any object (as with the table
-class). A relation can contain duplicate indexes. See
-<link linkend="clsRelation">The Relation Class</link> for details.
+<varlistentry><term><link linkend="clsRelation">Relation</link></term>
+<listitem><para>A collection with indexes that can be any object.  A relation
+can contain duplicate indexes.
 </para></listitem></varlistentry>
-<varlistentry><term>Set</term>
+<varlistentry><term><link linkend="clsSet">Set</link></term>
 <listitem><para>A collection where the index and the item are the same object. Set indexes
-can be any object (as with the table class) and each index is unique. See
-<link linkend="clsSet">The Set Class</link> for details.
+can be any object and each index is unique.
 </para></listitem></varlistentry>
-<varlistentry><term>Table</term>
-<listitem><para>A collection with indexes that can be any object. For example, string
-objects, array objects, alarm objects, or any user-created object can be a
-table index.  The table class determines the index match by using the == comparison
-method. A table contains no duplicate indexes. See
-<link linkend="clsTable">The Table Class</link> for details.
+<varlistentry><term><link linkend="clsStem">Stem</link></term>
+<listitem><para>A collection with character string indexes constructed from one
+or more string segments.  Index comparisons are performed using the string ==
+comparison method.
 </para></listitem></varlistentry>
-<varlistentry><term>IdentityTable</term>
-<listitem><para>A collection with indexes that can be any object. For example, string
-objects, array objects, alarm objects, or any user-created object can be a
-table index.  The table class determines index item matches by using an object
-identity comparison.  With object identity matches, an index will only match if
-the same object instance is used as a table index.  An identity table contains
-no duplicate indexes. See
-<link linkend="clsIdentityTable">The IdentityTable Class</link> for details.
+<varlistentry><term><link linkend="clsTable">Table</link></term>
+<listitem><para>A collection with indexes that can be any object.
+A table contains no duplicate indexes.
+</para></listitem></varlistentry>
+<varlistentry><term><link linkend="clsIdentityTable">IdentityTable</link></term>
+<listitem><para>A collection with indexes that can be any object. The
+IdentityTable class determines index item matches by using an object identity
+comparison. With object identity matches, an index will only match the same
+object instance.  An identity table contains no duplicate indexes.
 </para></listitem></varlistentry>
 </variablelist>
 
@@ -147,6 +140,10 @@ the organization of the classes.</para>
 
 <section id="clsCollection"><title>The Collection Class</title>
 <indexterm><primary>Collection class</primary></indexterm>
+<para>The Collection class is a MIXIN class that defines the basic set of
+methods implemented by all Collections.  Many of the Collection class methods
+are abstract and must be implemented the inheriting subclasses.
+</para>
 <figure><title>The Collection Class</title>
 <mediaobject>
 <imageobject>
@@ -170,8 +167,14 @@ the organization of the classes.</para>
 ]]>
 </programlisting>
 
-<para>This is an abstract method that must be implemented by a subclass
-if this class.</para>
+<para>Returns the item associated with the specified
+<emphasis role="italic">index</emphasis> or
+<emphasis role="italic">index</emphasis>es. If the collection has no item associated
+with the specified <emphasis role="italic">index</emphasis> or
+<emphasis role="italic">index</emphasis>es, this method returns the
+Nil object.  This is an abstract method that must be implemented by a
+subclasses.
+</para>
 </section>
 
 <section id="mthCollectionPutSet"><title>[]=</title>
@@ -188,8 +191,9 @@ if this class.</para>
 ]]>
 </programlisting>
 
-<para>This is an abstract method that must be implemented by a subclass
-if this class.</para>
+<para>Add an item to the collection at the specified index.  This is an abstract
+method that must be implemented by a subclasses.
+</para>
 </section>
 
 <section id="mthCollectionAllIndexes"><title>allIndexes</title>
@@ -204,8 +208,9 @@ if this class.</para>
 ]]>
 </programlisting>
 
-<para>This is an abstract method which must be implemented by a subclass
-of this class.</para>
+<para>Return an array of all indexes used by this collection.  This is an
+abstract method that must be implemented by a subclasses.
+</para>
 </section>
 
 <section id="mthCollectionAllItems"><title>allItems</title>
@@ -220,8 +225,8 @@ of this class.</para>
 ]]>
 </programlisting>
 
-<para>This is an abstract method which must be implemented by a subclass
-of this class.</para>
+<para>Return an array containing all items stored in the collection.
+This is an abstract method that must be implemented by a subclasses.</para>
 </section>
 
 <section id="mthCollectionAt"><title>at</title>
@@ -243,7 +248,8 @@ of this class.</para>
 <emphasis role="italic">index</emphasis>es. If the collection has no item associated
 with the specified <emphasis role="italic">index</emphasis> or
 <emphasis role="italic">index</emphasis>es, this method returns the
-Nil object.</para>
+Nil object.
+This is an abstract method that must be implemented by a subclasses.</para>
 </section>
 
 <section id="mthCollectionDifference"><title>difference</title>
@@ -315,8 +321,11 @@ the specified item at any index location.  Returns
 ]]>
 </programlisting>
 
-<para>This is an abstract method which must be implemented by a subclass
-of this class.</para>
+<para>Return the index associated with <emphasis role="italic">item</link>.  If
+item occurs more than once in the collection, the returned index value is
+undetermined.  This is an abstract method which must be implemented by a
+subclass of this class.
+</para>
 </section>
 
 <section id="mthCollectionIntersection"><title>intersection</title>
@@ -387,8 +396,9 @@ Items in the new array will have the same order as the source array.
 ]]>
 </programlisting>
 
-<para>This is an abstract method that must be implemented by a subclass
-if this class.</para>
+<para>Add an item to the collection at the specified index.  This is an abstract
+method that must be implemented by a subclass if this class.
+</para>
 </section>
 
 <section id="mthCollectionSubset"><title>subset</title>
@@ -425,10 +435,10 @@ index values in the receiver collection.</para>
 ]]>
 </programlisting>
 
-<para>Returns a supplier object for the collection. After you have obtained a
-supplier, you can send it messages (see
-<link linkend="clsSupplier">The Supplier Class</link>) to enumerate
-all the items that were in the collection at the time of the supplier's creation.
+<para>Returns a <link linkend="clsSupplier">Supplier object</link> for the
+collection. The supplier allows you to enumerate through the index/item pairs
+for the collection.  The supplier is created from a snapshot of the collection
+and is unaffected by subsequent changes to the collection's contents.
 </para>
 </section>
 
@@ -484,6 +494,10 @@ index values in the receiver collection.</para>
 
 <section id="clsMapCollection"><title>The MapCollection Class</title>
 <indexterm><primary>MapCollection class</primary></indexterm>
+<para>The MapCollection class is a MIXIN class that defines the basic set of
+methods implemented by all collections that use create a mapping from an index
+object to a value.
+</para>
 <figure><title>The MapCollection class</title>
 <mediaobject>
 <imageobject>
@@ -544,6 +558,10 @@ The index objects will not be ordered in any predictable order.
 
 <section id="clsOrderedCollection"><title>The OrderedCollection Class</title>
 <indexterm><primary>OrderedCollection class</primary></indexterm>
+<para>The OrderedCollection class is a MIXIN class that defines the basic set of
+methods implemented by all collections that have an inherent index ordering,
+such as an array or a list.
+</para>
 <figure><title>The OrderedCollection class</title>
 <mediaobject>
 <imageobject>
@@ -567,7 +585,8 @@ The index objects will not be ordered in any predictable order.
 ]]>
 </programlisting>
 
-<para>This is an abstract method that must be implemented by a subclass
+<para>Append an item to the end of the collection ordering.
+This is an abstract method that must be implemented by a subclass
 if this class.</para>
 </section>
 
@@ -601,12 +620,10 @@ if this class.</para>
 </programlisting>
 
 <para>Returns a new collection (of the same class as the receiver) containing
-only those items from the receiver whose indexes the
-<emphasis role="italic">argument</emphasis> collection
-does not contain. The <emphasis role="italic">argument</emphasis> can be any
-collection class object. The
-<emphasis role="italic">argument</emphasis> must also
-allow all of the index values in the receiver collection.</para>
+only those items from the receiver that are not also contained in the
+<emphasis role="italic">argument</emphasis> collection.  The
+<emphasis role="italic">argument</emphasis> can be any collection class object.
+</para>
 </section>
 
 <section id="mthOrderedCollectionIntersection"><title>intersection</title>
@@ -622,12 +639,10 @@ allow all of the index values in the receiver collection.</para>
 </programlisting>
 
 <para>Returns a new collection (of the same class as the receiver) containing
-only those items from the receiver whose indexes are in both the receiver
-collection and the <emphasis role="italic">argument</emphasis> collection.
-The <emphasis role="italic">argument</emphasis> can be any
-collection class object.
-The <emphasis role="italic">argument</emphasis> must also allow all of the
-index values in the receiver collection.</para>
+only those items from the receiver that are in both the receiver collection and
+the <emphasis role="italic">argument</emphasis> collection. The <emphasis
+role="italic">argument</emphasis> can be any collection class object.
+</para>
 </section>
 
 <section id="mthOrderedCollectionSubset"><title>subset</title>
@@ -642,14 +657,13 @@ index values in the receiver collection.</para>
 ]]>
 </programlisting>
 
-<para>Returns <computeroutput>1</computeroutput> (true) if all indexes in the
+<para>Returns <computeroutput>1</computeroutput> (true) if all items in the
 receiver collection are also contained in the
 <emphasis role="italic">argument</emphasis> collection; returns
 <computeroutput>0</computeroutput> (false) otherwise. The
 <emphasis role="italic">argument</emphasis> can be any
 collection class object.
-The <emphasis role="italic">argument</emphasis> must also allow all of the
-index values in the receiver collection.</para>
+</para>
 </section>
 
 <section id="mthOrderedCollectionUnion"><title>union</title>
@@ -668,15 +682,14 @@ index values in the receiver collection.</para>
 all the items from the receiver collection and selected items from the
 <emphasis role="italic">argument</emphasis> collection. This method includes
 an item from <emphasis role="italic">argument</emphasis> in
-the new collection only if there is no item with the same associated index
-in the receiver collection and the method has not already included an item
-with the same index. The order in which this method selects items in
+the new collection only if there is no equivalent item
+in the receiver collection and the method has not already included. The order in
+which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified (the program
 should not rely on any order.). The
 <emphasis role="italic">argument</emphasis> can be any
-collection class object. The
-<emphasis role="italic">argument</emphasis> must also allow all of the
-index values in the receiver collection.</para>
+collection class object.
+</para>
 </section>
 
 <section id="mthOrderedCollectionXor"><title>xor</title>
@@ -694,18 +707,18 @@ index values in the receiver collection.</para>
 <para>Returns a new collection of the same class as the receiver that contains
 all items from the receiver collection and the
 <emphasis role="italic">argument</emphasis> collection;
-all indexes that appear in both collections are removed. The
+all items that appear in both collections are removed. The
 <emphasis role="italic">argument</emphasis> can be any
 collection class object.
-The <emphasis role="italic">argument</emphasis> must also allow all of the
-index values in the receiver collection.</para>
+</para>
 </section>
 </section>
 
 <section id="clsSetCollection"><title>The SetCollection Class</title>
 <indexterm><primary>SetCollection class</primary></indexterm>
 <para>This is a tagging mixin class only and does not define any methods of
-its own.</para>
+its own.  Collections that implement SetCollection are MapCollections that
+constrain the index and item to be be the same object.</para>
 <figure><title>The SetCollection class</title>
 <mediaobject>
 <imageobject>
@@ -736,9 +749,10 @@ its own.</para>
 that are positive whole numbers. You can reference array items by using one
 or more indexes. The number of indexes is the same as the number of dimensions
 of the array. This number is called the dimensionality of the array.</para>
-<para>Array items can be any valid ooRexx object. If an object has not been
+<para>Array items can be any valid Rexx object. If an object has not been
 assigned to an array index then that index is considered to contain the NIL
-object.</para>
+object.
+</para>
 <figure><title>The Array class and methods</title>
 <mediaobject>
 <imageobject>
@@ -751,7 +765,7 @@ object.</para>
 <para>The Array class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="clsOrderedCollection">Ordered Collection
-class</link>, although there are not currently any methods defined in that class.
+class</link>.
 </para></note>
 <para>Array objects are variable-sized. The dimensionality of an array is fixed,
 but the size of each dimension is variable. When you create an array, you
@@ -759,6 +773,17 @@ can specify a hint about how many elements you expect to put into the array
 or the array's dimensionality. However, you do not need to specify a size
 or dimensionality of an array when you are creating it. You can use any
 whole-number indexes to reference items in an array.</para>
+<para>For any array method that take an index, the index may be specified as
+either individual argumentss or as an array of indexes.  For example, the
+following are equivalent:</para>
+<programlisting>
+    x = myarray[1,2,3]   -- retrieves an item from a multi-dimension array
+    index = .array~of(1,2,3)  -- create an index list
+    x = myarray[index]   -- also retrieves from "1,2,3"
+</programlisting>
+<para>Methods such as <link linkend="mthArrayIndex">index()</link> that return
+index items will return a single numeric value for single-dimension arrays and
+an array of indexes for multi-dimension arrays.</para>
 
 <section><title>Inherited Methods</title>
 
@@ -784,13 +809,14 @@ whole-number indexes to reference items in an array.</para>
 </programlisting>
 
 <para> Returns a new empty array. If you specify
-any <emphasis role="italic">size</emphasis>,
+any <emphasis role="italic">size</emphasis> arguments,
 the size is taken as a hint about how big each dimension
-should be. The language processor uses this only to allocate the array object
-initially. For multiple dimension arrays, you can also specify how much space
-is to be allocated initially for each dimension of the array.</para>
-<para>Each <emphasis role="italic">size</emphasis> argument must be
-<computeroutput>0</computeroutput> or a positive whole number.
+should be. The Array classes uses this only to allocate the initial array
+object.  For multiple dimension arrays, you can also specify how much
+space is to be allocated initially for each dimension of the array.
+</para>
+<para>Each <emphasis role="italic">size</emphasis> argument must a non-negative
+whole number.
 If it is <computeroutput>0</computeroutput>, the corresponding dimension is
 initially empty.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -849,9 +875,8 @@ does not include the indexes corresponding to those you omitted.</para>
 ]]>
 </programlisting>
 
-<para>Returns the same value as the
-<emphasis role="bold">at</emphasis> method, which follows. See
-<link linkend="mthArrayAt">at</link>.</para>
+<para>Returns the same value as the <link linkend="mthArrayAt">at()</link>
+method.
 </section>
 
 <section id="mthArrayPutSet"><title>[]=</title>
@@ -868,9 +893,7 @@ does not include the indexes corresponding to those you omitted.</para>
 ]]>
 </programlisting>
 
-<para>This method is the same as the
-<emphasis role="bold">put</emphasis> method, which follows. See
-<link linkend="mthArrayPut">put</link>.</para>
+<para>This method is the same as the <link linkend="mthArrayPut">put()</link> method.
 </section>
 
 <section id="mthArrayAllIndexes"><title>allIndexes</title>
@@ -885,7 +908,10 @@ does not include the indexes corresponding to those you omitted.</para>
 ]]>
 </programlisting>
 
-<para>Returns an array of all index positions in the array containing items.</para>
+<para>Returns an array of all index positions in the array containing items.
+For multi-dimension arrays, each returned index will be an array of index
+values.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>allIndexes method</secondary></indexterm>
@@ -947,8 +973,8 @@ does not include the indexes corresponding to those you omitted.</para>
 ]]>
 </programlisting>
 
-<para>Appends an item to the array after the last item (the item with the highest index.  The
-return value is the index of newly added item.
+<para>Appends an item to the array after the last item (the item with the
+highest index).  The return value is the index of newly added item.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -1058,8 +1084,9 @@ returns <computeroutput>0</computeroutput>.</para>
 </programlisting>
 
 <para>Returns the index of the first item in the array or the Nil object if the
-array is empty. The <emphasis role="bold">first</emphasis>
-method is valid only for single-index arrays.</para>
+array is empty.  For multi-dimention arrays, the index is returned as an array
+of index values.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>first method</secondary></indexterm>
@@ -1112,7 +1139,9 @@ an item associated with the specified index or indexes. Returns
 
 <para>Returns <computeroutput>1</computeroutput> (true) if the array contains
 the specified item at any index location.  Returns
-<computeroutput>0</computeroutput> (false) otherwise.</para>
+<computeroutput>0</computeroutput> (false) otherwise.
+Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>hasItem method</secondary></indexterm>
@@ -1137,8 +1166,10 @@ the specified item at any index location.  Returns
 
 <para>Returns the index of the specified item within the array.  If the
 target item appears at more than one index, the first located index will
-be returned.  If the array does not contain the specified item, .nil is
-returned.
+be returned.  For multi-dimension arrays, the index is returned as an array of
+index values.  If the array does not contain the specified item, .nil is
+returned. Item equality is determined by using the == method of <emphasis
+role="italic">item</emphasis>.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -1210,8 +1241,9 @@ empty.  Returns
 </programlisting>
 
 <para>Returns the index of the last item in the array or the NIL object if the
-array is empty. The <emphasis role="bold">last</emphasis>
-method is valid only for single-index arrays.</para>
+array is empty.  For multi-dimension arrays, index is returned as an array of
+index items.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>last method</secondary></indexterm>
@@ -1236,6 +1268,8 @@ method is valid only for single-index arrays.</para>
 <para>Returns a single-index array with the same number of items as the receiver
 object. Any index with no associated item is omitted from the new array.
 Items in the new array will have the same order as the source array.
+Multi-dimension arrays arrays will be converted into a non-sparse single
+dimension array.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -1261,12 +1295,12 @@ Items in the new array will have the same order as the source array.
 ]]>
 </programlisting>
 
-<para>Returns a string that contains the data of an array (one to n dimensional).
-The elements of the array are treated either in line or character format,
-starting at the first element in the array. The line format is the default.
-If the line format is use, a <emphasis role="italic">separator</emphasis> string
-can be specified.  The separator will be used between concatenated elements instead of the
-default line end separator.</para>
+<para>Returns a string that contains the data of an array. The elements of the
+array are treated either in line or character format, starting at the first
+element in the array. The line format is the default. If the line format is use,
+a <emphasis role="italic">separator</emphasis> string can be specified. The
+separator will be used between concatenated elements instead of the default line
+end separator.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <para>See <link linkend="mthArrayToString">toString</link> for examples.</para>
 </section>
@@ -1287,8 +1321,11 @@ default line end separator.</para>
 follows the array item having index <emphasis role="italic">index</emphasis>
 or returns the Nil object if the item having that index is last in the array.
 The <emphasis role="bold">next</emphasis> method uses the same ordering as the
-<emphasis role="bold">allItems</emphasis> method to convert a multidimensional
-array into a non-sparse array.</para>
+<emphasis role="bold">allItems</emphasis> method to determine the next position
+of a multi-dimension array.  For multi-dimension array, the index is returned as
+an array of index values.
+Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>next method</secondary></indexterm>
@@ -1313,8 +1350,12 @@ array into a non-sparse array.</para>
 <para>Returns the index of the item that precedes the array item having index
 <emphasis role="italic">index</emphasis> or the Nil object if the
 item having that index is first in the
-array. The <emphasis role="bold">previous</emphasis>
-method is valid only for single-index arrays.</para>
+array.
+The <emphasis role="bold">previous</emphasis> method uses the same ordering as
+the
+<emphasis role="bold">allItems</emphasis> method to determine the previous
+position of a multi-dimension array.  For multi-dimension array, the index is
+returned as an array of index values.
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>previous method</secondary></indexterm>
@@ -1411,7 +1452,9 @@ no item is removed.</para>
 </programlisting>
 
 <para>Removes an item from the array.  If the target item exists at more than
-one index, the first located item is removed.  The return value is the
+one index, the first located item is removed.
+Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+The return value is the
 removed item.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -1562,10 +1605,9 @@ See <link linkend="sortarray">Sorting Arrays</link> for details.
 ]]>
 </programlisting>
 
-<para>Returns a supplier object for the collection. After you have obtained a
-supplier, you can send it messages (see
-<link linkend="clsSupplier">The Supplier Class</link>) to enumerate
-all the items that were in the array at the time of the supplier's creation.
+<para>Returns a <link linkend="clsSupplier">Supplier</link> object for the
+collection. The supplier allows you to iterate over the index/item pairs
+for the collection.
 The supplier enumerates the array items in their sequenced order.
 For multi-dimensional arrays, the supplier index method will return the
 index values as an array of index numbers.

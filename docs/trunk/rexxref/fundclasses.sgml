@@ -5222,8 +5222,8 @@ metaclass, the Class class, defines.</para></note>
 <tertiary>of Method class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-new(name,source--+------------------+---)-------------------><
-                    +--, methodobject--+
+>>-new(name,source--+-------------+---)-------------------><
+                    +--, context--+
 ]]>
 </programlisting>
 
@@ -5234,9 +5234,13 @@ representation of the code contained in the
 The <emphasis role="italic">source</emphasis> can be a single string or an
 array of strings containing individual method lines.</para>
 
-<para>The third parameter influences the scope of the method. If none is
-given, the program scope is used. If another method object is given,
-its scope is used.</para>
+<para>The <emphasis role="italic">context</emphasis> allows the created method
+to inherit class and routine lookup scope from another source.  If specified,
+<emphasis role="italic">context</emphasis> can be a Method object, a Routine
+object, a Package object, or the string "PROGRAMSCOPE".  PROGRAMSCOPE is the
+default, and specifies that the newly created method will inherit the class and
+routine search scope from the caller of new method.
+</para>
 
 </section>
 
@@ -5444,8 +5448,8 @@ existing security manager is removed.</para>
 ]]>
 </programlisting>
 
-<para>Turns off the guared attribute of the method, allowing this method to
-run on an object even if another method has acquired exclusive access to the scope
+<para>Turns off the guard attribute of the method, allowing this method to run
+on an object even if another method has acquired exclusive access to the scope
 variable pool.  Methods are unguarded by default.</para>
 <para>
 A guarded method can be active for an object only when no other method requiring exclusive
@@ -5508,6 +5512,18 @@ metaclass, the Class class, defines.</para></note>
 <tertiary>of Routine class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
+>>-new(name,source--+-------------+---)-------------------><
+                    +--, context--+
+]]>
+</programlisting>
+<para>The <emphasis role="italic">context</emphasis> allows the created method
+to inherit class and routine lookup scope from another source.  If specified,
+<emphasis role="italic">context</emphasis> can be a Method object, a Routine
+object, a Package object, or the string "PROGRAMSCOPE".  PROGRAMSCOPE is the
+default, and specifies that the newly created method will inherit the class and
+routine search scope from the caller of new method.
+</para>
+<![CDATA[
 >>-new(name,source--+------------------+---)-------------------><
                     +--, methodobject--+
 ]]>
@@ -5520,9 +5536,12 @@ representation of the code contained in the
 The <emphasis role="italic">source</emphasis> can be a single string or an
 array of strings containing individual method lines.</para>
 
-<para>The third parameter influences the scope of the routine. If none is given,
-the program scope is used. If another method or routine object is specified, the
-scope of the provided method or routine is used.
+<para>The <emphasis role="italic">context</emphasis> allows the created routine
+to inherit class and routine lookup scope from another source.  If specified,
+<emphasis role="italic">context</emphasis> can be a Method object, a Routine
+object, or a Package object.  If not specified,
+the newly created method will inherit the class and routine search scope from
+the caller of new method.
 </para>
 </section>
 
