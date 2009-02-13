@@ -165,25 +165,27 @@
   single log.
 </para>
 <para>
-  The ooRexx WindowsEventLog class has methods that allow the programmer to query, read from,  write to,
-  back up, and clear event logs. Logs on both the local machine and remote machines accessed through the
-  network can be worked with. Full access to any log is governed by the security settings of the system.
-  Therefore an ooRexx program that interacts with the Event Log service will be restricted to the
-  privilege level of the user running the program.
+  The ooRexx <computeroutput>WindowsEventLog</computeroutput> class has methods that allow the programmer
+  to query, read from, write to, back up, and clear event logs. The class can access logs on both the
+  local machine and on remote machines accessed through the network. Full access to any log is governed
+  by the security settings of the system. Therefore an ooRexx program that interacts with the Event Log
+  service will be restricted to the privilege level of the user running the program.
 </para>
 <para>
   The Event Log service uses information stored registry. This information controls how the service
   operates. The following list discusses some of the event logging elements to help the programmer better
-  understand the methods and method arguments of the WindowsEventLog class:
+  understand the methods and method arguments of the <computeroutput>WindowsEventLog</computeroutput> class:
 </para>
 <variablelist>
-  <varlistentry id="eventLogKey"><term>Eventlog key</term>
+  <varlistentry id="eventLogKey"><term><emphasis role="bold">Eventlog key</emphasis></term>
   <listitem>
     <para>
       The Eventlog key is the key in the registry where all information for the Event Log service is
       stored. There are several subkeys under the EventLog key. Each subkey names an event <emphasis
-      role="italic">log</emphasis>. The following shows the structure of the Eventlog key. The names and
-      number of <emphasis role="italic">Custom logs</emphasis> is dependent on the system.
+      role="italic">log</emphasis>. The following shows the structure of the Eventlog key. The <emphasis
+      role="italic">Application, Security</emphasis> and <emphasis role="italic">System</emphasis>
+      subkeys below name the standard logs provided by the system. The actual name(s) and the number of
+      <emphasis role="italic">Custom logs</emphasis> are dependent on the system.
 <programlisting>
 HKEY_LOCAL_MACHINE
   System
@@ -197,35 +199,31 @@ HKEY_LOCAL_MACHINE
 </programlisting>
     </para>
   </listitem></varlistentry>
-  <varlistentry id="server"><term>Server</term>
+  <varlistentry id="server"><term><emphasis role="bold">Server</emphasis></term>
   <listitem>
     <para>
-      Many of WindowsEventLog instance methods have a <emphasis role="italic">server</emphasis> argument.
-      This argument indentifies which machine contains the desired event log. The argument is always
-      optional, with the default server being the local machine. In all cases, using the empty string is
-      the same as omitting the argument.
+      Many of <computeroutput>WindowsEventLog</computeroutput> instance methods have a <emphasis
+      role="italic">server</emphasis> argument. This argument indentifies which machine contains the
+      desired event log. The argument is always optional, with the default server being the local
+      machine. In all cases, using the empty string is the same as omitting the argument.
     </para>
     <para>
       To work with a log on a remote system, the server name must be in Universal Naming Convention (UNC)
       format. For instance, <computeroutput>\\Osprey</computeroutput>.
     </para>
     <para>
-      <emphasis role="bold">Note</emphasis> that once an event log has been opened using the <link
-      linkend="mthOpenWindowsEventLog">open</link>() method, that opened log is always used until it has
-      been closed. The log can be closed using the <link linkend="mthCloseWindowsEventLog">close</link>()
-      method, or by another call to the <computeroutput>open()</computeroutput> method. This means that
-      if there is an open log, the server argument <emphasis role="italic">is always ignored</emphasis>.
-      The only exception to this is the <link linkend="mthWrite">write</link>() method. Each time a
-      record is written to a log, the log is specifically opened for writing and then closed.
+      <emphasis role="bold">Note</emphasis> that if there is an <link linkend="openedEventLog">open
+      event log</link>, the <emphasis role="italic">server</emphasis> argument is ignored.
     </para>
   </listitem></varlistentry>
-  <varlistentry id="eventSource"><term>Event Source</term>
+  <varlistentry id="eventSource"><term><emphasis role="bold">Event Source</emphasis></term>
   <listitem>
     <para>
       The <emphasis role="italic">event source</emphasis> is the name of the software or driver that logs
-      the event. Event sources are usually the name of the application, or a component of the application
-      if the application is large, or the driver name. Event source names are stored in the registry as
-      subkeys of the log they are used in. For example, in the following registry example:
+      the event. Event source names are usually the name of the application, or a component of the
+      application if the application is large, or the driver name. Applications normally use the
+      Application log, while drivers normally use the System log. Event source names are stored in the
+      registry as subkeys of the log they are used in. Take the following registry example:
 <programlisting>
 HKEY_LOCAL_MACHINE
   System
@@ -249,16 +247,16 @@ HKEY_LOCAL_MACHINE
       methods have a <emphasis role="italic">source</emphasis> argument. This argument specifies the
       event source and therefore determines exactly which event log is used. The argument is always
       optional, the default is Application, and the empty string is the same as omitting the argument. In
-      the same manner as the server argument, if there is an open event log, the <emphasis
-      role="italic">source</emphasis> argument is ignored.
+      the same manner as the server argument, if there is an <link linkend="openedEventLog">open
+      event log</link>, the <emphasis role="italic">source</emphasis> argument is ignored.
     </para>
     <para>
       <emphasis role="bold">Note</emphasis> that if the Event Log service can not find the event source
       name in the registry, then the service also uses Application for the source.
     </para>
     <para>
-      When opening, querying, or reading event logs using an event source name is no different than using
-      the log name itself. For the above registry example, using:
+      When opening, querying, or reading event logs, using an event source name is no different than
+      using the log name itself. For the above registry example, using:
 <programlisting>
 eventLog~open( , "WinApp1")
 </programlisting>
@@ -277,10 +275,32 @@ eventLog~open( , "Application")
 <programlisting>
 eventLog~open( , "WinApp1")
 </programlisting>
-      produces a different result using:
+      produces a different result than using:
 <programlisting>
 eventLog~open( , "LoadPerf")
 </programlisting>
+      Although both event records will be written to the System log, the records will show the event
+      source as WinApp1 in the first record and LoadPerf for the source in the second record.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry id="openedEventLog"><term><emphasis role="bold">Opened event log</emphasis></term>
+  <listitem>
+    <para>
+      When an event log has been opened using the <link linkend="mthOpenWindowsEventLog">open</link>()
+      method, that opened log is always used until it has been closed. The log can be closed using the
+      <link linkend="mthCloseWindowsEventLog">close</link>() method, or by another call to the
+      <computeroutput>open()</computeroutput> method. This means that if there is an open log, the
+      <emphasis role="italic">server</emphasis> and <emphasis role="italic">source</emphasis> arguments
+      are <emphasis role="bold">always</emphasis> ignored. The only exception to this is the <link
+      linkend="mthWrite">write</link>() method. Each time a record is written to a log, the log is
+      specifically opened for writing and then closed.
+    </para>
+    <para>
+      <emphasis role="bold">Note</emphasis> that when there is not an open event log, then all the
+      instance methods behave as the <computeroutput>write()</computeroutput> method. That is, methods
+      like <link linkend="mthReadRecords">readRecords</link>, <link linkend="mthIsFull">isFull</link>,
+      etc., will open the log specified in the method call and then explicitly close the log before
+      returning.
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -429,7 +449,8 @@ Largest possible minimum read buffer is 256 kilobytes
   <listitem>
     <para>
       <computeroutput>minimumReadBuffer=</computeroutput> is a private method, not intended to be changed
-      by the programmer.
+      by the programmer. The programmer changes the size of the buffer using the <link
+      linkend="mthMinimumReadEquals">minimumRead=</link> method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">~minimumReadBuffer</emphasis> (get minimumReadBuffer)</term>
@@ -506,7 +527,7 @@ Adjusted size of the minimum read buffer to 65536 bytes
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example displays the number of event log records that.
+      This example displays the number of event log records that were read from the System log.
 <programlisting>
 <![CDATA[
 
@@ -544,9 +565,9 @@ The System log has 1983 records
 </programlisting>
 
 <para>
-  Opens the specified event log. <link linkend="sectCommonWindowsEventLog">Using the WindowsEventLog
-  Class</link>, in the <link linkend="server">server</link> and <link
-  linkend="eventSource"></link> sections has some important notes about opening an event log.
+  Opens the specified event log. Once an event log is opened, other methods of the
+  <computeroutput>WindowsEventLog</computeroutput> instance will use that opened log until it has been
+  <link linkend="mthCloseWindowsEventLog">closed</link>.
 </para>
 <para>
   If an event log is already open, then it is first closed before the specified log is opened.
