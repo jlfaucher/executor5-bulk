@@ -73,90 +73,82 @@
 <tgroup cols="2">
 <thead>
 <row>
-<entry>Item</entry>
-<entry>...Description</entry>
+<entry>Method</entry>
+<entry>Category</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>new (Class method)</entry>
 <entry><link linkend="mthNewWindowsEventLog">new</link></entry>
+<entry>Class method</entry>
 </row>
 <row>
-<entry><emphasis role="bold">Attributes</emphasis></entry>
-<entry><emphasis role="bold">Link</emphasis></entry>
-</row>
-<row>
-<entry>events</entry>
 <entry><link linkend="atrEvents">events</link></entry>
+<entry>Attribute</entry>
 </row>
 <row>
-<entry>minimumReadBuffer</entry>
 <entry><link linkend="atrMinimumReadBuffer">minimumReadBuffer</link></entry>
+<entry>Attribute</entry>
 </row>
 <row>
-<entry>minimumReadMin</entry>
 <entry><link linkend="atrMinimumReadMin">minimumReadMin</link></entry>
+<entry>Attribute</entry>
 </row>
 <row>
-<entry>minimumReadMax</entry>
 <entry><link linkend="atrMinimumReadMin">minimumReadMax</link></entry>
+<entry>Attribute</entry>
 </row>
 <row>
-<entry><emphasis role="bold">Methods</emphasis></entry>
-<entry><emphasis role="bold">Link</emphasis></entry>
-</row>
-<row>
-<entry>clear</entry>
 <entry><link linkend="mthClearWindowsEventLog">clear</link></entry>
+<entry>Instance method</entry>
 </row>
 <row>
-<entry>close</entry>
 <entry><link linkend="mthCloseWindowsEventLog">close</link></entry>
+<entry>Instance method</entry>
 </row>
 <row>
-<entry>getFirst</entry>
 <entry><link linkend="mthGetFirst">getFirst</link></entry>
+<entry>Instance method</entry>
 </row>
 <row>
-<entry>getLast</entry>
 <entry><link linkend="mthGetLast">getLast</link></entry>
+<entry>Instance method</entry>
 </row>
 <row>
-<entry>getLogNames</entry>
 <entry><link linkend="mthGetLogNames">getLogNames</link></entry>
+<entry>Instance method</entry>
 </row>
 <row>
-<entry>getNumber</entry>
 <entry><link linkend="mthGetNumber">getNumber</link></entry>
+<entry>Instance method</entry>
 </row>
 <row>
-<entry>isFull</entry>
 <entry><link linkend="mthIsFull">isFull</link></entry>
+<entry>Instance method</entry>
 </row>
 <row>
-<entry>minimumRead</entry>
 <entry><link linkend="mthMinimumRead">minimumRead</link></entry>
+<entry>Instance method</entry>
 </row>
 <row>
-<entry>minimumRead=</entry>
 <entry><link linkend="mthMinimumReadEquals">minimumRead=</link></entry>
+<entry>Instance method</entry>
 </row>
 <row>
-<entry>open</entry>
 <entry><link linkend="mthOpenWindowsEventLog">open</link></entry>
+<entry>Instance method</entry>
 </row>
 <row>
-<entry>read <emphasis role="bold">Deprecated</emphasis></entry>
-<entry><link linkend="mthReadWindowsEventLog">read</link> <emphasis role="bold">Deprecated</emphasis></entry>
+<entry><emphasis role="bold">Deprecated</emphasis>  <link linkend="mthReadWindowsEventLog">read</link></entry>
+<entry><emphasis role="bold">Deprecated</emphasis> instance method</entry>
 </row>
 <row>
-<entry>readRecords</entry>
 <entry><link linkend="mthReadRecords">readRecords</link></entry>
+<entry>Instance method</entry>
 </row>
 <row>
-<entry>write</entry>
 <entry><link linkend="mthWrite">write</link></entry>
+<entry>Instance method</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -596,7 +588,7 @@ The System log has 1983 records
 <programlisting>
 eventLog1 = .WindowsEventLog~new
 ret = eventLog1~open
-if ret <> 0 then do
+if ret \== 0 then do
   say 'Failed to open the event log:'
   say '  Error' ret':'SysGetErrortext(ret)
   ...
@@ -604,7 +596,7 @@ end
 
 eventLog2 = .WindowsEventLog~new
 ret = eventLog2~open( , "Application")
-if ret <> 0 then do
+if ret \== 0 then do
   say 'Failed to open the event log'
   say '  Error' ret':'SysGetErrortext(ret)
   ...
