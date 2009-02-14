@@ -567,7 +567,7 @@ if the receiver object had defined the method by using
 <para>If you specify the Individual or Array option, any remaining
 <emphasis role="italic">argument</emphasis>s are arguments for the method.
 (You need to specify only the first letter;
-the language processor ignores all characters following it.) </para>
+all characters following the first character are ignored.) </para>
 <variablelist>
 <varlistentry><term>Individual</term>
 <listitem><para>Passes any remaining arguments to the method as arguments in
@@ -576,10 +576,10 @@ the order you specify them.
 <varlistentry><term>Array</term>
 <listitem><para>Requires <emphasis role="italic">argument</emphasis>,
 which is an array object. (See <link linkend="clsArray">The Array Class</link>.)
-The language processor passes the member items of the array to the method
+The member items of the array are passed to the method
 as arguments. The first argument is at index 1, the second argument at index
-2, and so on. If you omitted any indexes when creating the array, the language
-processor omits their corresponding arguments when passing the arguments.
+2, and so on. If you omitted any indexes when creating the array, the
+corresponding arguments are omitted when passing the arguments.
 </para></listitem></varlistentry>
 </variablelist>
 <para>If you specify neither Individual nor Array, the method runs without
@@ -628,8 +628,8 @@ its first item is the name of the message and its
 second item is a class object to use as the starting point for the method
 search. For more information, see
 <link linkend="meths1">Classes and Inheritance</link>.</para>
-<para>The language processor passes any
-<emphasis role="italic">argument</emphasis>s to the receiver as
+<para>Any
+<emphasis role="italic">argument</emphasis>s are passed to the receiver as
 arguments for <emphasis role="italic">messagename</emphasis> in the order you
 specify them.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -679,8 +679,8 @@ search. For more information, see
 <link linkend="meths1">Classes and Inheritance</link>.</para>
 <para>The <emphasis role="italic">arguments</emphasis> argument must be
 a single-dimension array instance.
-The language processor passes the values contained in
-<emphasis role="italic">arguments</emphasis> to the receiver as
+The values contained in
+<emphasis role="italic">arguments</emphasis> are passed to the receiver as
 arguments for <emphasis role="italic">messagename</emphasis> in the order you
 specify them.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -723,7 +723,7 @@ say msg3~result           /* Produces Hello Fred 21:04:25.101000  */
 <para>Adds a method to the receiver object's
 collection of object methods. The <emphasis role="italic">methodname</emphasis>
 is the name of the new
-method. (The language processor translates this name to uppercase.) If you
+method. This name is translated to uppercase.  If you
 previously defined a method with the same name using
 <emphasis role="bold">setMethod</emphasis>, the new method
 replaces the earlier one. If you omit <emphasis role="italic">method</emphasis>,
@@ -787,8 +787,8 @@ its first item is the name of the message and its
 second item is a class object to use as the starting point for the method
 search. For more information, see
 <link linkend="meths1">Classes and Inheritance</link>.</para>
-<para>The language processor passes any
-<emphasis role="italic">argument</emphasis>s to the receiver as
+<para>Any
+<emphasis role="italic">argument</emphasis>s are passed to the receiver as
 arguments for <emphasis role="italic">messagename</emphasis> in the order you
 specify them.</para>
 <para>When the receiver object has finished processing the message, the message
@@ -839,8 +839,8 @@ search. For more information, see
 <link linkend="meths1">Classes and Inheritance</link>.</para>
 <para>The <emphasis role="italic">arguments</emphasis> argument must be
 a single-dimension array instance.
-The language processor passes the values contained in
-<emphasis role="italic">arguments</emphasis> to the receiver as
+Any values contained in
+<emphasis role="italic">arguments</emphasis> are passed to the receiver as
 arguments for <emphasis role="italic">messagename</emphasis> in the order you
 specify them.</para>
 <para>When the receiver object has finished processing the message, the message
@@ -1033,8 +1033,8 @@ say .savings~defaultName   /* Displays "The Savings class" */
 </programlisting>
 
 <para>Incorporates the method object <emphasis role="italic">method</emphasis>
-in the receiver class's collection of instance methods. The language processor
-translates the method name <emphasis role="italic">methodname</emphasis>
+in the receiver class's collection of instance methods. The
+method name <emphasis role="italic">methodname</emphasis> is translated to
 to uppercase. Using the <emphasis role="bold">define</emphasis>
 method replaces any existing definition for
 <emphasis role="italic">methodname</emphasis> in the receiver class.</para>
@@ -1301,8 +1301,8 @@ method in <link linkend="mthClassSubclass">subClass</link>.</para>
 method name <emphasis role="italic">methodname</emphasis>. If the receiver
 class defined <emphasis role="italic">methodname</emphasis> as unavailable,
 this method returns the Nil object. If the receiver
-class did not define <emphasis role="italic">methodname</emphasis>, the
-language processor raises an error.</para>
+class did not define <emphasis role="italic">methodname</emphasis>, an
+error is raised.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>method method</secondary></indexterm>
@@ -1939,7 +1939,7 @@ of another, then it is smaller than (less than) the other. The strict
 comparison operators do not attempt to perform a numeric comparison on the
 two operands.</para>
 <para>For all the other comparison operators, if both terms
-are numeric, the language processor does a numeric comparison (ignoring, for
+are numeric, the String class does a numeric comparison (ignoring, for
 example, leading zeros&mdash;see <link linkend="numcom">Numeric Comparisons</link>).
 Otherwise, it treats
 both terms as character strings, ignoring leading and trailing whitespace
@@ -2281,7 +2281,7 @@ binary string converted to hexadecimal.</para>
 (<computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>)
 digits. It can be of any length. It can optionally include whitespace characters
 (at 4-digit boundaries only, not leading or trailing). These are to improve
-readability; the language processor ignores them.
+readability and are ignored.
 </para>
 <para>The returned string uses uppercase alphabetic characters for the values
 <computeroutput>A</computeroutput>-<computeroutput>F</computeroutput> and does
@@ -2289,8 +2289,8 @@ not include whitespace.</para>
 <para>If the receiving binary string is a null string,
 <emphasis role="bold">b2x</emphasis> returns a null string.
 If the number of binary digits in the receiving string is not a multiple of
-four, the language processor adds up to three <computeroutput>0</computeroutput>
-digits on the left
+four, up to three <computeroutput>0</computeroutput>
+digits are added on the left
 before the conversion to make a total that is a multiple of four.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -3070,8 +3070,8 @@ the word at which the search is to be started.</para>
 </programlisting>
 
 <para>Returns a string of length <emphasis role="italic">length</emphasis>
-with the receiving string centered in it. The language processor adds
-<emphasis role="italic">pad</emphasis> characters as necessary to
+with the receiving string centered in it. The
+<emphasis role="italic">pad</emphasis> characters are added as necessary to
 make up length. The <emphasis role="italic">length</emphasis> must be a
 positive whole number or zero. The default
 <emphasis role="italic">pad</emphasis> character is blank. If the receiving
@@ -4512,7 +4512,7 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 or both, removed, based on the <emphasis role="italic">option</emphasis> you
 specify. The following are valid <emphasis role="italic">option</emphasis>s.
 (You need to specify only the first capitalized
-letter; the language processor ignores all characters following it.) </para>
+letter; all characters following it are ignored.) </para>
 <variablelist>
 <varlistentry><term>Both</term>
 <listitem><para>Removes both leading and trailing characters. This is the
@@ -4685,8 +4685,8 @@ translated to uppercase (that is, lowercase
 to uppercase
 <computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>),
 but if you include <emphasis role="italic">pad</emphasis>
-the language processor translates the entire
-string to <emphasis role="italic">pad</emphasis> characters.
+the entire
+string is translated to <emphasis role="italic">pad</emphasis> characters.
 <emphasis role="italic">tablei</emphasis> defaults to
 <computeroutput>XRANGE("00"x,"FF"x)</computeroutput>, and
 <emphasis role="italic">tableo</emphasis> defaults to the null string and
@@ -4827,9 +4827,8 @@ returns the position of the first character in the receiving string not in
 <para>The <emphasis role="italic">option</emphasis> can be either
 <computeroutput>Nomatch</computeroutput> (the
 default) or <computeroutput>Match</computeroutput>. (You need to specify only
-the first capitalized and highlighted letter; the language processor ignores
-all characters following the first character, which can be in uppercase or
-lowercase.)</para>
+the first capitalized and highlighted letter;
+all characters following the first character are ignored)</para>
 <para>If you specify <computeroutput>Match</computeroutput>, the method returns
 the position of the first character in the receiving string that is in
 <emphasis role="italic">reference</emphasis>, or returns
@@ -6154,25 +6153,25 @@ search. For more information, see
 <link linkend="meths1">Classes and Inheritance</link>.</para>
 <para>If you specify the Individual or Array option, any remaining arguments
 are arguments for the message. (You need to specify only the first letter;
-the language processor ignores all characters following it.) </para>
+all characters following the first are ignored.) </para>
 <variablelist>
 <varlistentry><term>Individual</term>
 <listitem><para>If you specify this option, specifying
 <emphasis role="italic">argument</emphasis> is optional.
-The language processor passes any <emphasis role="italic">argument</emphasis>s
-as message arguments
+Any <emphasis role="italic">argument</emphasis>s
+are passed as message arguments
 to <emphasis role="italic">target</emphasis> in the order you specify them.
 </para></listitem></varlistentry>
 <varlistentry><term>Array</term>
 <listitem><para>If you specify this option, you must specify an
 <emphasis role="italic">argument</emphasis>, which
 is an array object. (See <link linkend="clsArray">The Array Class</link>.)
-The language processor then passes the member items of the array to
-<emphasis role="italic">target</emphasis>. When the language
-processor passes the arguments taken from the array, the first argument is
+The member items of the array are passed to
+<emphasis role="italic">target</emphasis> as arguments.
+The first argument is
 at index 1, the second argument at index 2, and so on. If you omitted any
-indexes when creating the array, the language processor omits their
-corresponding message arguments when passing the arguments.
+indexes when creating the array, the
+corresponding message arguments are also omitted.
 </para></listitem></varlistentry>
 </variablelist>
 <para>If you specify neither Individual nor Array, the message sent has no

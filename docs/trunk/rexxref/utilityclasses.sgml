@@ -153,8 +153,7 @@ or the null string ("").  A blank (" ") is the default separator.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
-number value. The default <emphasis role="italic">offset</emphasis> is offset of
-the location from UTC.
+number value. The default <emphasis role="italic">offset</emphasis> is the current system offset timezone offset.
 </para>
 </section>
 
@@ -184,8 +183,7 @@ The time component will be set to the beginning of the input day (00:00:00.00000
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
-number value. The default <emphasis role="italic">offset</emphasis> is offset of
-the location from UTC.
+number value. The default <emphasis role="italic">offset</emphasis> is the current system offset timezone offset.
 </para>
 </section>
 
@@ -214,8 +212,7 @@ The time component will be set to the beginning of the input day (00:00:00.00000
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
-number value. The default <emphasis role="italic">offset</emphasis> is offset of
-the location from UTC.
+number value. The default <emphasis role="italic">offset</emphasis> is the current system offset timezone offset.
 </para>
 </section>
 
@@ -243,8 +240,7 @@ or the null string ("").  A null string ("") is the default separator.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
-number value. The default <emphasis role="italic">offset</emphasis> is offset of
-the location from UTC.
+number value. The default <emphasis role="italic">offset</emphasis> is the current system offset timezone offset.
 </para>
 </section>
 
@@ -272,8 +268,7 @@ or the null string ("").  A slash ("/") is the default separator.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
-number value. The default <emphasis role="italic">offset</emphasis> is offset of
-the location from UTC.
+number value. The default <emphasis role="italic">offset</emphasis> is the current system offset timezone offset.
 </para>
 </section>
 
@@ -296,8 +291,7 @@ The date component will be set to 1 January 0001.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
-number value. The default <emphasis role="italic">offset</emphasis> is offset of
-the location from UTC.
+number value. The default <emphasis role="italic">offset</emphasis> is the current system offset timezone offset.
 </para>
 </section>
 
@@ -320,8 +314,7 @@ The date component will be set to 1 January 0001.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
-number value. The default <emphasis role="italic">offset</emphasis> is offset of
-the location from UTC.
+number value. The default <emphasis role="italic">offset</emphasis> is the current system offset timezone offset.
 </para>
 </section>
 
@@ -344,8 +337,7 @@ The date component will be set to 1 January 0001.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
-number value. The default <emphasis role="italic">offset</emphasis> is offset of
-the location from UTC.
+number value. The default <emphasis role="italic">offset</emphasis> is the current system offset timezone offset.
 </para>
 </section>
 
@@ -368,8 +360,7 @@ The time component will be set to the beginning of the input day (00:00:00.00000
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
-number value. The default <emphasis role="italic">offset</emphasis> is offset of
-the location from UTC.
+number value. The default <emphasis role="italic">offset</emphasis> is the current system offset timezone offset.
 </para>
 </section>
 
@@ -393,8 +384,7 @@ of the <link linkend="bifDate">Date()</link> or
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
-number value. The default <emphasis role="italic">offset</emphasis> is offset of
-the location from UTC.
+number value. The default <emphasis role="italic">offset</emphasis> is the current system offset timezone offset.
 </para>
 </section>
 
@@ -418,8 +408,7 @@ the ISO format as the string form of a DateTime object.
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
-number value. The default <emphasis role="italic">offset</emphasis> is offset of
-the location from UTC.
+number value. The default <emphasis role="italic">offset</emphasis> is the current system offset timezone offset.
 </para>
 </section>
 
@@ -484,8 +473,7 @@ component.  For example, <emphasis role="italic">year</emphasis> must be in the 
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be valid whole
-number value. The default <emphasis role="italic">offset</emphasis> is offset of
-the location from UTC.
+number value. The default <emphasis role="italic">offset</emphasis> is the current system offset timezone offset.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <programlisting>
@@ -499,181 +487,6 @@ day = .DateTime~new(2007, 9, 30)
 day = .DateTime~new(2007, 9, 30, 10, 33, 00)
 ]]>
 </programlisting>
-</section>
-
-<section id="mthDateTimeComparisonMethods"><title>Comparison Methods</title>
-<indexterm><primary>method</primary>
-<secondary>comparison methods</secondary>
-<tertiary>of DateTime class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-comparison_operator(argument)-------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) or
-<computeroutput>0</computeroutput> (false), the result of performing
-the specified comparison operation. The receiver object and the
-<emphasis role="italic">argument</emphasis> are the terms compared. Both must
-be DateTime objects.
-If <emphasis role="italic">argument</emphasis> is not a DateTime object, a SYNTAX
-error condition is raised.
-</para>
-
-<para>The comparison operators you can use in a message are: </para>
-<variablelist>
-<varlistentry><term>=
-<indexterm><primary>= method</primary>
-<secondary>of DateTime class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>=</secondary>
-<tertiary>of DateTime class</tertiary></indexterm>
-</term>
-<listitem><para>True if the terms are equal
-</para></listitem></varlistentry>
-<varlistentry><term>\=, &gt;&lt;, &lt;&gt;
-<indexterm><primary>>&lt; method</primary>
-<secondary>of DateTime class</secondary></indexterm>
-<indexterm><primary>&gt;&lt; method</primary>
-<secondary>of DateTime class</secondary></indexterm>
-<indexterm><primary>&lt;&gt; method</primary>
-<secondary>of DateTime class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\=</secondary>
-<tertiary>of DateTime class</tertiary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>>&lt;</secondary>
-<tertiary>of DateTime class</tertiary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&lt;&gt;</secondary>
-<tertiary>of DateTime class</tertiary></indexterm>
-</term>
-<listitem><para>True if the terms are not equal (inverse of =)
-</para></listitem></varlistentry>
-<varlistentry><term>&gt;
-<indexterm><primary>&gt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>></secondary></indexterm>
-</term>
-<listitem><para>Greater than
-</para></listitem></varlistentry>
-<varlistentry><term>&lt;
-<indexterm><primary>&lt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&lt;</secondary></indexterm>
-</term>
-<listitem><para>Less than
-</para></listitem></varlistentry>
-<varlistentry><term>&gt;=
-<indexterm><primary>&gt;= method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&gt;=</secondary></indexterm>
-</term>
-<listitem><para>Greater than or equal to
-</para></listitem></varlistentry>
-<varlistentry><term>\&lt;
-<indexterm><primary>\&lt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\&lt;</secondary></indexterm>
-</term>
-<listitem><para>Not less than
-</para></listitem></varlistentry>
-<varlistentry><term>&lt;=
-<indexterm><primary>&lt;= method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&lt;=</secondary></indexterm>
-</term>
-<listitem><para>Less than or equal to
-</para></listitem></varlistentry>
-<varlistentry><term>\&gt;
-<indexterm><primary>\&gt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\&gt;</secondary></indexterm>
-</term>
-<listitem><para>Not greater than
-</para></listitem></varlistentry>
-</variablelist>
-<para><emphasis role="bold">Examples:</emphasis></para>
-<indexterm><primary>examples</primary>
-<secondary>comparison methods of DateTime class</secondary></indexterm>
-<programlisting>
-<![CDATA[
-d = .DateTime~new       -- get the current time
-midnight = d~date       -- get the start of the day
-startTime = midnight~addHours(10)  -- time the bank opens
-endTime = startTime~addHours(7)    -- bank closing time
-
-if startTime <= d & d <= endTime then do
-    say "The bank is open"
-end
-]]>
-</programlisting>
-<para>All strict comparison operations have one of the characters doubled that
-define the operator. The DateTime strict comparison operators produce the same
-results as the non-strict comparisons.
-</para>
-<para>The strict comparison operators you can use in a message are: </para>
-<variablelist>
-<varlistentry><term>==
-<indexterm><primary>== method</primary>
-<secondary>of DateTime class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>==</secondary>
-<tertiary>of DateTime class</tertiary></indexterm>
-</term>
-<listitem><para>True if terms are strictly equal
-</para></listitem></varlistentry>
-<varlistentry><term>\==
-<indexterm><primary>\== method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\==</secondary>
-<tertiary>of DateTime class</tertiary></indexterm>
-</term>
-<listitem><para>True if the terms are NOT strictly equal (inverse of ==)
-</para></listitem></varlistentry>
-<varlistentry><term>&gt;&gt;
-<indexterm><primary>&gt;&gt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>>></secondary></indexterm>
-</term>
-<listitem><para>Strictly greater than
-</para></listitem></varlistentry>
-<varlistentry><term>&lt;&lt;
-<indexterm><primary>&lt;&lt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&lt;&lt;</secondary></indexterm>
-</term>
-<listitem><para>Strictly less than
-</para></listitem></varlistentry>
-<varlistentry><term>&gt;&gt;=
-<indexterm><primary>&gt;&gt;= method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&gt;&gt;=</secondary></indexterm>
-</term>
-<listitem><para>Strictly greater than or equal to
-</para></listitem></varlistentry>
-<varlistentry><term>\&lt;&lt;
-<indexterm><primary>\&lt;&lt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\&lt;&lt;</secondary></indexterm>
-</term>
-<listitem><para>Strictly NOT less than
-</para></listitem></varlistentry>
-<varlistentry><term>&lt;&lt;=
-<indexterm><primary>&lt;&lt;= method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&lt;&lt;=</secondary></indexterm>
-</term>
-<listitem><para>Strictly less than or equal to
-</para></listitem></varlistentry>
-<varlistentry><term>\&gt;&gt;
-<indexterm><primary>\&gt;&gt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\&gt;&gt;</secondary></indexterm>
-</term>
-<listitem><para>Strictly NOT greater than
-</para></listitem></varlistentry>
-</variablelist>
 </section>
 
 <section id="mthDateTimeArithmeticMethods"><title>Arithmetic Methods</title>
@@ -696,41 +509,47 @@ object.  See the description of the individual operations for details.
 The
 <emphasis role="italic">arithmetic_operator</emphasis> can be:
 </para>
-<variablelist>
-<varlistentry><term>+
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
+<row><entry>+
 <indexterm><primary>+ method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>+</secondary></indexterm>
-</term>
-<listitem><para>Addition.  Adds a TimeSpan to the DateTime object, returning a new DateTime
+</entry>
+<entry><para>Addition.  Adds a TimeSpan to the DateTime object, returning a new DateTime
 instance.  The receiver DateTime object is not changed.  The TimeSpan may be either positive or negative.
-</para></listitem></varlistentry>
-<varlistentry><term>-
+</para></entry></row>
+<row><entry>-
 <indexterm><primary>- method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>-</secondary></indexterm>
-</term>
-<listitem><para>Subtraction.  If <emphasis role="italic">argument</emphasis> is a DateTime
+</entry>
+<entry><para>Subtraction.  If <emphasis role="italic">argument</emphasis> is a DateTime
 object, the two times are subtracted, and a TimeSpan object representing the interval between the
 two times is returned.  If the receiver DateTime is less than the <emphasis role="italic">argument</emphasis>
 argument DateTime, a negative TimeSpan interval is returned.  The receiver DateTime object is not changed.</para>
 <para>If <emphasis role="italic">argument</emphasis> is a TimeSpan object, subtracts the TimeSpan
 from the DateTime object, returning a new DateTime
 instance.  The receiver DateTime object is not changed.  The TimeSpan may be either positive or negative.
-</para></listitem></varlistentry>
-<varlistentry><term>Prefix -
+</para></entry></row>
+<row><entry>Prefix -
 <indexterm><primary>method</primary>
 <secondary>prefix -</secondary></indexterm>
-</term>
-<listitem><para>A prefix - operation on a DateTime object will raise a SYNTAX error condition.
-</para></listitem></varlistentry>
-<varlistentry><term>Prefix +
+</entry>
+<entry><para>A prefix - operation on a DateTime object will raise a SYNTAX error condition.
+</para></entry></row>
+<row><entry>Prefix +
 <indexterm><primary>method</primary>
 <secondary>prefix +</secondary></indexterm>
-</term>
-<listitem><para>Returns a new instance of the DateTime object with the same time value.
-</para></listitem></varlistentry>
-</variablelist>
+</entry>
+<entry><para>Returns a new instance of the DateTime object with the same time value.
+</para></entry></row>
+</tbody>
+</tgroup>
+</informaltable>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>arithmetic methods of DateTime class</secondary></indexterm>
@@ -1734,7 +1553,7 @@ a date in the default format (<computeroutput>&apos;dd Mmm yyyy&apos;</computero
 after the time with a single blank separating the time and date. Leading and
 trailing whitespace characters are not allowed in the
 <emphasis role="italic">atime</emphasis>. If you do not
-specify a date, the language processor uses the first future occurrence of the
+specify a date, the Alarm uses the first future occurrence of the
 specified time. You can use the <emphasis role="bold">cancel</emphasis>
 method to cancel a pending alarm. See
 <link linkend="creo">Initialization</link> for more information.</para>
@@ -1755,8 +1574,6 @@ time = .DateTime~fromIsoDate("2007-12-15T17:10:00.000000")
 
 a=.alarm~new(time, msg)
 exit
-/* <link linkend="clasdi">::Class</link>  describes the ::CLASS directive */
-/* <link linkend="methd">::Method</link>  describes the ::METHOD directive */
 ::class MyMessageClass public
 ::method init
 expose inmsg
@@ -2012,183 +1829,6 @@ span = .TimeSpan~new(6, 4, 33, 15, 100)
 </programlisting>
 </section>
 
-<section id="mthTimeSpanComparisonMethods"><title>Comparison Methods</title>
-<indexterm><primary>method</primary>
-<secondary>comparison methods</secondary>
-<tertiary>of TimeSpan class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-comparison_operator(argument)-------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) or
-<computeroutput>0</computeroutput> (false), the result of performing
-the specified comparison operation. The receiver object and the
-<emphasis role="italic">argument</emphasis> are the terms compared. Both must
-be TimeSpan objects.
-If <emphasis role="italic">argument</emphasis> is not a TimeSpan object, a SYNTAX
-error condition is raised.
-</para>
-
-<para>The comparison operators you can use in a message are: </para>
-<variablelist>
-<varlistentry><term>=
-<indexterm><primary>= method</primary>
-<secondary>of TimeSpan class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>=</secondary>
-<tertiary>of TimeSpan class</tertiary></indexterm>
-</term>
-<listitem><para>True if the terms are equal
-</para></listitem></varlistentry>
-<varlistentry><term>\=, &gt;&lt;, &lt;&gt;
-<indexterm><primary>>&lt; method</primary>
-<secondary>of TimeSpan class</secondary></indexterm>
-<indexterm><primary>&gt;&lt; method</primary>
-<secondary>of TimeSpan class</secondary></indexterm>
-<indexterm><primary>&lt;&gt; method</primary>
-<secondary>of TimeSpan class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\=</secondary>
-<tertiary>of TimeSpan class</tertiary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>>&lt;</secondary>
-<tertiary>of TimeSpan class</tertiary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&lt;&gt;</secondary>
-<tertiary>of TimeSpan class</tertiary></indexterm>
-</term>
-<listitem><para>True if the terms are not equal (inverse of =)
-</para></listitem></varlistentry>
-<varlistentry><term>&gt;
-<indexterm><primary>&gt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>></secondary></indexterm>
-</term>
-<listitem><para>Greater than
-</para></listitem></varlistentry>
-<varlistentry><term>&lt;
-<indexterm><primary>&lt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&lt;</secondary></indexterm>
-</term>
-<listitem><para>Less than
-</para></listitem></varlistentry>
-<varlistentry><term>&gt;=
-<indexterm><primary>&gt;= method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&gt;=</secondary></indexterm>
-</term>
-<listitem><para>Greater than or equal to
-</para></listitem></varlistentry>
-<varlistentry><term>\&lt;
-<indexterm><primary>\&lt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\&lt;</secondary></indexterm>
-</term>
-<listitem><para>Not less than
-</para></listitem></varlistentry>
-<varlistentry><term>&lt;=
-<indexterm><primary>&lt;= method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&lt;=</secondary></indexterm>
-</term>
-<listitem><para>Less than or equal to
-</para></listitem></varlistentry>
-<varlistentry><term>\&gt;
-<indexterm><primary>\&gt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\&gt;</secondary></indexterm>
-</term>
-<listitem><para>Not greater than
-</para></listitem></varlistentry>
-</variablelist>
-<para><emphasis role="bold">Examples:</emphasis></para>
-<indexterm><primary>examples</primary>
-<secondary>comparison methods of TimeSpan class</secondary></indexterm>
-<programlisting>
-<![CDATA[
-
-
-                                   -- get the current time
-currentTime = .DateTime~new~timeOfDay
-startTime = .timespan~new(10)
-endTime = startTime~addHours(7)    -- bank closing time
-
-if startTime <= currentTime & currentTime <= endTime then do
-    say "The bank is open"
-end
-]]>
-</programlisting>
-<para>All strict comparison operations have one of the characters doubled that
-define the operator. The TimeSpan strict comparison operators produce the same
-results as the non-strict comparisons.
-</para>
-<para>The strict comparison operators you can use in a message are: </para>
-<variablelist>
-<varlistentry><term>==
-<indexterm><primary>== method</primary>
-<secondary>of TimeSpan class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>==</secondary>
-<tertiary>of TimeSpan class</tertiary></indexterm>
-</term>
-<listitem><para>True if terms are strictly equal
-</para></listitem></varlistentry>
-<varlistentry><term>\==
-<indexterm><primary>\== method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\==</secondary>
-<tertiary>of TimeSpan class</tertiary></indexterm>
-</term>
-<listitem><para>True if the terms are NOT strictly equal (inverse of ==)
-</para></listitem></varlistentry>
-<varlistentry><term>&gt;&gt;
-<indexterm><primary>&gt;&gt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>>></secondary></indexterm>
-</term>
-<listitem><para>Strictly greater than
-</para></listitem></varlistentry>
-<varlistentry><term>&lt;&lt;
-<indexterm><primary>&lt;&lt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&lt;&lt;</secondary></indexterm>
-</term>
-<listitem><para>Strictly less than
-</para></listitem></varlistentry>
-<varlistentry><term>&gt;&gt;=
-<indexterm><primary>&gt;&gt;= method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&gt;&gt;=</secondary></indexterm>
-</term>
-<listitem><para>Strictly greater than or equal to
-</para></listitem></varlistentry>
-<varlistentry><term>\&lt;&lt;
-<indexterm><primary>\&lt;&lt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\&lt;&lt;</secondary></indexterm>
-</term>
-<listitem><para>Strictly NOT less than
-</para></listitem></varlistentry>
-<varlistentry><term>&lt;&lt;=
-<indexterm><primary>&lt;&lt;= method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&lt;&lt;=</secondary></indexterm>
-</term>
-<listitem><para>Strictly less than or equal to
-</para></listitem></varlistentry>
-<varlistentry><term>\&gt;&gt;
-<indexterm><primary>\&gt;&gt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\&gt;&gt;</secondary></indexterm>
-</term>
-<listitem><para>Strictly NOT greater than
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="mthTimeSpanArithmeticMethods"><title>Arithmetic Methods</title>
 <indexterm><primary>method</primary>
 <secondary>arithmetic methods</secondary>
@@ -2209,13 +1849,17 @@ object, or a number.  See the description of the individual operations for detai
 The
 <emphasis role="italic">arithmetic_operator</emphasis> can be:
 </para>
-<variablelist>
-<varlistentry><term>+
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
+<row><entry>+
 <indexterm><primary>+ method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>+</secondary></indexterm>
-</term>
-<listitem><para>Addition.
+</entry>
+<entry><para>Addition.
 If <emphasis role="italic">argument</emphasis> is a DateTime object, the TimeSpan
 is added to the DateTime object, returning a new DateTime
 instance.
@@ -2226,85 +1870,87 @@ The TimeSpan may be either positive or negative.</para>
 two TimeSpans are added together, and a new TimeSpan instance is returned.
 Neither the TimeSpan object is altered
 by this operation.
-</para></listitem></varlistentry>
-<varlistentry><term>-
+</para></entry></row>
+<row><entry>-
 <indexterm><primary>- method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>-</secondary></indexterm>
-</term>
-<listitem><para>Subtraction.
+</entry>
+<entry><para>Subtraction.
 The <emphasis role="italic">argument</emphasis> must be a TimeSpan object.  The
 <emphasis role="italic">argument</emphasis> TimeSpan is subtracted from the receiver
 TimeSpan and a new TimeSpan instance is returned.
 Neither the TimeSpan object is altered
 by this operation.
-</para></listitem></varlistentry>
-<varlistentry><term>*
+</para></entry></row>
+<row><entry>*
 <indexterm><primary>* method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>*</secondary></indexterm>
-</term>
-<listitem><para>Multiplication.
+</entry>
+<entry><para>Multiplication.
 The <emphasis role="italic">argument</emphasis> must be a valid Rexx number.  The
 TimeSpan is multiplied by the
 <emphasis role="italic">argument</emphasis> value,
 and a new TimeSpan instance is returned.
 The receiver TimeSpan object is not altered
 by this operation.
-</para></listitem></varlistentry>
-<varlistentry><term>/
+</para></entry></row>
+<row><entry>/
 <indexterm><primary>/ method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>/</secondary></indexterm>
-</term>
-<listitem><para>Division.
+</entry>
+<entry><para>Division.
 The <emphasis role="italic">argument</emphasis> must be a valid Rexx number.  The
 TimeSpan is divided by the
 <emphasis role="italic">argument</emphasis> value,
 and a new TimeSpan instance is returned.
 The receiver TimeSpan object is not altered
 by this operation.  The / operator and % produce the same result.
-</para></listitem></varlistentry>
-<varlistentry><term>%
+</para></entry></row>
+<row><entry>%
 <indexterm><primary>% method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>%</secondary></indexterm>
-</term>
-<listitem><para>Integer Division.
+</entry>
+<entry><para>Integer Division.
 The <emphasis role="italic">argument</emphasis> must be a valid Rexx number.  The
 TimeSpan is divided by the
 <emphasis role="italic">argument</emphasis> value,
 and a new TimeSpan instance is returned.
 The receiver TimeSpan object is not altered
 by this operation.  The / operator and % produce the same result.
-</para></listitem></varlistentry>
-<varlistentry><term>//
+</para></entry></row>
+<row><entry>//
 <indexterm><primary>// method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>//</secondary></indexterm>
-</term>
-<listitem><para>Remainder Division.
+</entry>
+<entry><para>Remainder Division.
 The <emphasis role="italic">argument</emphasis> must be a valid Rexx number.  The
 TimeSpan is divided by the
 <emphasis role="italic">argument</emphasis> value and the division remainder is
 returned as a new TimeSpan instance.
 The receiver TimeSpan object is not altered
 by this operation.
-</para></listitem></varlistentry>
-<varlistentry><term>Prefix -
+</para></entry></row>
+<row><entry>Prefix -
 <indexterm><primary>method</primary>
 <secondary>prefix -</secondary></indexterm>
-</term>
-<listitem><para>The TimeSpan is negated, returning a new TimeSpan instance.  The receiver TimeSpan
+</entry>
+<entry><para>The TimeSpan is negated, returning a new TimeSpan instance.  The receiver TimeSpan
 is not altered by this operation.
-</para></listitem></varlistentry>
-<varlistentry><term>Prefix +
+</para></entry></row>
+<row><entry>Prefix +
 <indexterm><primary>method</primary>
 <secondary>prefix +</secondary></indexterm>
-</term>
-<listitem><para>Returns a new instance of the TimeSpan object with the same time value.
-</para></listitem></varlistentry>
-</variablelist>
+</entry>
+<entry><para>Returns a new instance of the TimeSpan object with the same time value.
+</para></entry></row>
+</tbody>
+</tgroup>
+</informaltable>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>arithmetic methods of DateTime class</secondary></indexterm>
@@ -2741,10 +2387,206 @@ smaller than the receiving object.</para>
 </section>
 </section>
 
+<section id="clsOrderable"><title>The Orderable Class</title>
+<indexterm><primary>Orderable class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Orderable class</secondary></indexterm>
+
+<para>The Orderable class can be inherited by classes which wish to provide
+    each of the comparison operator methods without needing to implement each of
+    the individual methods.  The inheriting class need only implement the
+    <link linkend="mthComparableCompareTo">Comparable compareTo() method</link>.
+    See This class is defined as a mixin class.
+</para>
+
+<figure><title>The Orderable class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxOrderableClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
+
+<section id="mthOrderableComparisonMethods"><title>Comparison Methods</title>
+<indexterm><primary>method</primary>
+<secondary>comparison methods</secondary>
+<tertiary>of Orderable class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-comparison_operator(argument)-------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) or
+<computeroutput>0</computeroutput> (false), the result of performing
+the specified comparison operation. The receiver object and the
+<emphasis role="italic">argument</emphasis> are the terms compared.
+</para>
+
+<para>The comparison operators you can use in a message are: </para>
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
+<row><entry>=
+<indexterm><primary>= method</primary>
+<secondary>of Orderable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>=</secondary>
+<tertiary>of Orderable class</tertiary></indexterm>
+</entry>
+<entry><para>True if the terms are equal
+</para></entry></row>
+<row><entry>\=, &gt;&lt;, &lt;&gt;
+<indexterm><primary>>&lt; method</primary>
+<secondary>of Orderable class</secondary></indexterm>
+<indexterm><primary>&gt;&lt; method</primary>
+<secondary>of Orderable class</secondary></indexterm>
+<indexterm><primary>&lt;&gt; method</primary>
+<secondary>of Orderable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\=</secondary>
+<tertiary>of Orderable class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>>&lt;</secondary>
+<tertiary>of Orderable class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;&gt;</secondary>
+<tertiary>of Orderable class</tertiary></indexterm>
+</entry>
+<entry><para>True if the terms are not equal (inverse of =)
+</para></entry></row>
+<row><entry>&gt;
+<indexterm><primary>&gt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>></secondary></indexterm>
+</entry>
+<entry><para>Greater than
+</para></entry></row>
+<row><entry>&lt;
+<indexterm><primary>&lt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;</secondary></indexterm>
+</entry>
+<entry><para>Less than
+</para></entry></row>
+<row><entry>&gt;=
+<indexterm><primary>&gt;= method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&gt;=</secondary></indexterm>
+</entry>
+<entry><para>Greater than or equal to
+</para></entry></row>
+<row><entry>\&lt;
+<indexterm><primary>\&lt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\&lt;</secondary></indexterm>
+</entry>
+<entry><para>Not less than
+</para></entry></row>
+<row><entry>&lt;=
+<indexterm><primary>&lt;= method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;=</secondary></indexterm>
+</entry>
+<entry><para>Less than or equal to
+</para></entry></row>
+<row><entry>\&gt;
+<indexterm><primary>\&gt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\&gt;</secondary></indexterm>
+</entry>
+<entry><para>Not greater than
+</para></entry></row>
+</variablelist>
+<para>All strict comparison operations have one of the characters doubled that
+define the operator. The Orderable strict comparison operators produce the same
+results as the non-strict comparisons.
+</para>
+<para>The strict comparison operators you can use in a message are: </para>
+<variablelist>
+<row><entry>==
+<indexterm><primary>== method</primary>
+<secondary>of Orderable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>==</secondary>
+<tertiary>of Orderable class</tertiary></indexterm>
+</entry>
+<entry><para>True if terms are strictly equal
+</para></entry></row>
+<row><entry>\==
+<indexterm><primary>\== method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\==</secondary>
+<tertiary>of Orderable class</tertiary></indexterm>
+</entry>
+<entry><para>True if the terms are NOT strictly equal (inverse of ==)
+</para></entry></row>
+<row><entry>&gt;&gt;
+<indexterm><primary>&gt;&gt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>>></secondary></indexterm>
+</entry>
+<entry><para>Strictly greater than
+</para></entry></row>
+<row><entry>&lt;&lt;
+<indexterm><primary>&lt;&lt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;&lt;</secondary></indexterm>
+</entry>
+<entry><para>Strictly less than
+</para></entry></row>
+<row><entry>&gt;&gt;=
+<indexterm><primary>&gt;&gt;= method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&gt;&gt;=</secondary></indexterm>
+</entry>
+<entry><para>Strictly greater than or equal to
+</para></entry></row>
+<row><entry>\&lt;&lt;
+<indexterm><primary>\&lt;&lt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\&lt;&lt;</secondary></indexterm>
+</entry>
+<entry><para>Strictly NOT less than
+</para></entry></row>
+<row><entry>&lt;&lt;=
+<indexterm><primary>&lt;&lt;= method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;&lt;=</secondary></indexterm>
+</entry>
+<entry><para>Strictly less than or equal to
+</para></entry></row>
+<row><entry>\&gt;&gt;
+<indexterm><primary>\&gt;&gt; method</primary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\&gt;&gt;</secondary></indexterm>
+</entry>
+<entry><para>Strictly NOT greater than
+</para></entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+</section>
+</section>
+
 <section id="clsComparator"><title>The Comparator Class</title>
 <indexterm><primary>Comparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Comparator class</secondary></indexterm>
+<para>The Comparator class is the base class for implementing Comparator objects
+    that can be used with the Array <link linkend="mthArraySortWith">sortWith()</link>
+    or <link linkend="mthArrayStableSortWith">stableSortWith()</link> method.
+    The compare() method implements some form of comparison that determines the relative ordering
+    of two objects.   Many Comparator implementations are specific to particilar object types.
+</para>
 <figure><title>The Comparator class and methods</title>
 <mediaobject>
 <imageobject>
@@ -2780,260 +2622,9 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <emphasis role="italic">first</emphasis>
 object, "0" if the two objects are equal, and "1" <emphasis role="italic">second</emphasis> is
 smaller than <emphasis role="italic">first</emphasis> .</para>
-<para>This method is defined as an abstract method.  Inheriting classes are expected to define
-an implementation specific to the comparison being performed.
-</para>
-</section>
-</section>
-
-<section id="clsOrderable"><title>The Orderable Class</title>
-<indexterm><primary>Orderable class</primary></indexterm>
-<indexterm><primary>class</primary>
-<secondary>Orderable class</secondary></indexterm>
-
-<para>The Orderable class can be inherited by classes which wish to provide
-    each of the comparison operator methods without needing to implement each of
-    the individual methods.  The inheriting class need only implement the
-    <link linkend="mthComparableCompareTo">Comparable compareTo method</link>.
-    See This class is defined as a mixin class.
-</para>
-
-<figure><title>The Orderable class and methods</title>
-<mediaobject>
-<imageobject>
-<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-<imagedata fileref="ooRexxOrderableClass.png" align="left">
-</imageobject>
-</mediaobject>
-</figure>
-<section><title>Inherited Methods</title>
-
-&objclsmthods;
-
-</section>
-
-<section id="mthOrderableComparisonMethods"><title>Comparison Methods</title>
-<indexterm><primary>method</primary>
-<secondary>comparison methods</secondary>
-<tertiary>of Orderable class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-comparison_operator(argument)-------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) or
-<computeroutput>0</computeroutput> (false), the result of performing
-the specified comparison operation. The receiver object and the
-<emphasis role="italic">argument</emphasis> are the terms compared.
-</para>
-
-<para>The comparison operators you can use in a message are: </para>
-<variablelist>
-<varlistentry><term>=
-<indexterm><primary>= method</primary>
-<secondary>of Orderable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>=</secondary>
-<tertiary>of Orderable class</tertiary></indexterm>
-</term>
-<listitem><para>True if the terms are equal
-</para></listitem></varlistentry>
-<varlistentry><term>\=, &gt;&lt;, &lt;&gt;
-<indexterm><primary>>&lt; method</primary>
-<secondary>of Orderable class</secondary></indexterm>
-<indexterm><primary>&gt;&lt; method</primary>
-<secondary>of Orderable class</secondary></indexterm>
-<indexterm><primary>&lt;&gt; method</primary>
-<secondary>of Orderable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\=</secondary>
-<tertiary>of Orderable class</tertiary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>>&lt;</secondary>
-<tertiary>of Orderable class</tertiary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&lt;&gt;</secondary>
-<tertiary>of Orderable class</tertiary></indexterm>
-</term>
-<listitem><para>True if the terms are not equal (inverse of =)
-</para></listitem></varlistentry>
-<varlistentry><term>&gt;
-<indexterm><primary>&gt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>></secondary></indexterm>
-</term>
-<listitem><para>Greater than
-</para></listitem></varlistentry>
-<varlistentry><term>&lt;
-<indexterm><primary>&lt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&lt;</secondary></indexterm>
-</term>
-<listitem><para>Less than
-</para></listitem></varlistentry>
-<varlistentry><term>&gt;=
-<indexterm><primary>&gt;= method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&gt;=</secondary></indexterm>
-</term>
-<listitem><para>Greater than or equal to
-</para></listitem></varlistentry>
-<varlistentry><term>\&lt;
-<indexterm><primary>\&lt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\&lt;</secondary></indexterm>
-</term>
-<listitem><para>Not less than
-</para></listitem></varlistentry>
-<varlistentry><term>&lt;=
-<indexterm><primary>&lt;= method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&lt;=</secondary></indexterm>
-</term>
-<listitem><para>Less than or equal to
-</para></listitem></varlistentry>
-<varlistentry><term>\&gt;
-<indexterm><primary>\&gt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\&gt;</secondary></indexterm>
-</term>
-<listitem><para>Not greater than
-</para></listitem></varlistentry>
-</variablelist>
-<para>All strict comparison operations have one of the characters doubled that
-define the operator. The Orderable strict comparison operators produce the same
-results as the non-strict comparisons.
-</para>
-<para>The strict comparison operators you can use in a message are: </para>
-<variablelist>
-<varlistentry><term>==
-<indexterm><primary>== method</primary>
-<secondary>of Orderable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>==</secondary>
-<tertiary>of Orderable class</tertiary></indexterm>
-</term>
-<listitem><para>True if terms are strictly equal
-</para></listitem></varlistentry>
-<varlistentry><term>\==
-<indexterm><primary>\== method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\==</secondary>
-<tertiary>of Orderable class</tertiary></indexterm>
-</term>
-<listitem><para>True if the terms are NOT strictly equal (inverse of ==)
-</para></listitem></varlistentry>
-<varlistentry><term>&gt;&gt;
-<indexterm><primary>&gt;&gt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>>></secondary></indexterm>
-</term>
-<listitem><para>Strictly greater than
-</para></listitem></varlistentry>
-<varlistentry><term>&lt;&lt;
-<indexterm><primary>&lt;&lt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&lt;&lt;</secondary></indexterm>
-</term>
-<listitem><para>Strictly less than
-</para></listitem></varlistentry>
-<varlistentry><term>&gt;&gt;=
-<indexterm><primary>&gt;&gt;= method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&gt;&gt;=</secondary></indexterm>
-</term>
-<listitem><para>Strictly greater than or equal to
-</para></listitem></varlistentry>
-<varlistentry><term>\&lt;&lt;
-<indexterm><primary>\&lt;&lt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\&lt;&lt;</secondary></indexterm>
-</term>
-<listitem><para>Strictly NOT less than
-</para></listitem></varlistentry>
-<varlistentry><term>&lt;&lt;=
-<indexterm><primary>&lt;&lt;= method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>&lt;&lt;=</secondary></indexterm>
-</term>
-<listitem><para>Strictly less than or equal to
-</para></listitem></varlistentry>
-<varlistentry><term>\&gt;&gt;
-<indexterm><primary>\&gt;&gt; method</primary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>\&gt;&gt;</secondary></indexterm>
-</term>
-<listitem><para>Strictly NOT greater than
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-</section>
-
-<section id="clsCaselessColumnComparator"><title>The CaselessColumnComparator Class</title>
-<indexterm><primary>CaselessColumnComparator class</primary></indexterm>
-<indexterm><primary>class</primary>
-<secondary>CaselessColumnComparator class</secondary></indexterm>
-
-<figure><title>The CaselessColumnComparator class and methods</title>
-<mediaobject>
-<imageobject>
-<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-<imagedata fileref="ooRexxCaselessColumnComparatorClass.png" align="left">
-</imageobject>
-</mediaobject>
-</figure>
-<note><title>Note</title>
-<para>The CaselessColumnComparator class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-
-<para>This class is defined as a mixin class.</para>
-
-<section><title>Inherited Methods</title>
-
-&objclsmthods;
-
-<para>Methods inherited from the
-<link linkend="clsComparator">Comparator class</link>.</para>
-<simplelist type="vert" columns="3">
-<member><link linkend="mthComparatorCompare">compare</link></member>
-</simplelist>
-
-</section>
-
-<section id="mthCaselessColumnComparatorCompare"><title>compare</title>
-<indexterm><primary>compare method</primary>
-<secondary>of CaselessColumnComparator class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>compare method</secondary>
-<tertiary>of CaselessColumnComparator class</tertiary></indexterm>
-
-<programlisting>
-<![CDATA[
->>-compare(first,second)--------------------------------><
-]]>
-</programlisting>
-<para>This method returns "-1" if the <emphasis role="italic">second</emphasis> is larger than
-<emphasis role="italic">first</emphasis>
-object, "0" if the two objects are equal, and "1" <emphasis role="italic">second</emphasis> is
-smaller than <emphasis role="italic">first</emphasis>.  Only the defined columns of the strings are compared,
-using a caseless comparison.</para>
-</section>
-
-<section id="mthCaselessColumnComparatorInit"><title>init</title>
-<indexterm><primary>init method</primary>
-<secondary>of CaselessColumnComparator class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>init method</secondary>
-<tertiary>of CaselessColumnComparator class</tertiary></indexterm>
-
-<programlisting>
-<![CDATA[
->>-init(start, length)----------------------------------><
-]]>
-</programlisting>
-<para>Initializes a comparator to sort strings starting at position <emphasis role="italic">start</emphasis> for
-<emphasis role="italic">length</emphasis> characters.
+<para>The default Comparator compare() method assumes that <emphasis role="italic">first</emphasis>
+is an object that implements the Comparable <link linkend="mthComparableCompareTo">compareTo()</link> method.
+Subclasses may override this to implement more specific comparisons.
 </para>
 </section>
 </section>
@@ -3042,6 +2633,7 @@ using a caseless comparison.</para>
 <indexterm><primary>CaselessComparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>CaselessComparator class</secondary></indexterm>
+<para>The CaselessComparator class performs caseless orderings of String objects.</para>
 
 <figure><title>The CaselessComparator class and methods</title>
 <mediaobject>
@@ -3089,10 +2681,12 @@ smaller than <emphasis role="italic">first</emphasis>.  The two strings are comp
 </section>
 </section>
 
+
 <section id="clsColumnComparator"><title>The ColumnComparator Class</title>
 <indexterm><primary>ColumnComparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>ColumnComparator class</secondary></indexterm>
+<para>The CaselessColumnComparator class performs orderings based on specific substrings of String objects.</para>
 
 <figure><title>The ColumnComparator class and methods</title>
 <mediaobject>
@@ -3157,10 +2751,145 @@ smaller than <emphasis role="italic">first</emphasis>.  Only the defined columns
 </section>
 </section>
 
+
+<section id="clsCaselessColumnComparator"><title>The CaselessColumnComparator Class</title>
+<indexterm><primary>CaselessColumnComparator class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>CaselessColumnComparator class</secondary></indexterm>
+<para>The CaselessColumnComparator class performs caseless orderings of specific substrings of String objects.</para>
+
+<figure><title>The CaselessColumnComparator class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxCaselessColumnComparatorClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The CaselessColumnComparator class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<para>This class is defined as a mixin class.</para>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+<para>Methods inherited from the
+<link linkend="clsComparator">Comparator class</link>.</para>
+<simplelist type="vert" columns="3">
+<member><link linkend="mthComparatorCompare">compare</link></member>
+</simplelist>
+
+</section>
+
+<section id="mthCaselessColumnComparatorCompare"><title>compare</title>
+<indexterm><primary>compare method</primary>
+<secondary>of CaselessColumnComparator class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>compare method</secondary>
+<tertiary>of CaselessColumnComparator class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-compare(first,second)--------------------------------><
+]]>
+</programlisting>
+<para>This method returns "-1" if the <emphasis role="italic">second</emphasis> is larger than
+<emphasis role="italic">first</emphasis>
+object, "0" if the two objects are equal, and "1" <emphasis role="italic">second</emphasis> is
+smaller than <emphasis role="italic">first</emphasis>.  Only the defined columns of the strings are compared,
+using a caseless comparison.</para>
+</section>
+
+<section id="mthCaselessColumnComparatorInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of CaselessColumnComparator class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of CaselessColumnComparator class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-init(start, length)----------------------------------><
+]]>
+</programlisting>
+<para>Initializes a comparator to sort strings starting at position <emphasis role="italic">start</emphasis> for
+<emphasis role="italic">length</emphasis> characters.
+</para>
+</section>
+</section>
+
+
+<section id="clsDescendingComparator"><title>The DescendingComparator Class</title>
+<indexterm><primary>DescendingComparator class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>DescendingComparator class</secondary></indexterm>
+
+<para>The DescendingComparator class performs sort orderings in descending order.  This is the inverse of
+a <link linkend="clsComparator">Comparator</link> sort order.
+</para>
+
+<para>This class is defined as a mixin class. It must be used
+by inheriting from it as a mixin.</para>
+<figure><title>The DescendingComparator class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxDescendingComparatorClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The DescendingComparator class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<para>This class is defined as a mixin class.</para>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+<para>Methods inherited from the
+<link linkend="clsComparator">Comparator class</link>.</para>
+<simplelist type="vert" columns="3">
+<member><link linkend="mthComparatorCompare">compare</link></member>
+</simplelist>
+
+</section>
+
+<section id="mthDescendingComparatorCompare"><title>compare</title>
+<indexterm><primary>compare method</primary>
+<secondary>of DescendingComparator class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>compare method</secondary>
+<tertiary>of DescendingComparator class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-compare(first,second)--------------------------------><
+]]>
+</programlisting>
+<para>This method returns "1" if the <emphasis role="italic">second</emphasis> is larger than
+<emphasis role="italic">first</emphasis>
+object, "0" if the two objects are equal, and "-1" <emphasis role="italic">second</emphasis> is
+smaller than <emphasis role="italic">first</emphasis>, resulting in a descending sort sequence.
+The DescendingComparator assumes the <emphasis role="italic">first</emphasis> object implements
+the Comparable <link linkend="mthComparableCompareTo">compareTo()</link> method.
+</para>
+</section>
+</section>
+
+
 <section id="clsCaselessDescendingComparator"><title>The CaselessDescendingComparator Class</title>
 <indexterm><primary>CaselessDescendingComparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>CaselessDescendingComparator class</secondary></indexterm>
+
+<para>The CaselessDescendingComparator class performs caseless string sort orderings in descending order.  This is the inverse of
+a <link linkend="clsCaselessComparator">CaselessComparator</link> sort order.
+</para>
 <figure><title>The CaselessDescendingComparator class and methods</title>
 <mediaobject>
 <imageobject>
@@ -3207,66 +2936,14 @@ smaller than <emphasis role="italic">first</emphasis>.  The two strings are comp
 </section>
 </section>
 
-<section id="clsDescendingComparator"><title>The DescendingComparator Class</title>
-<indexterm><primary>DescendingComparator class</primary></indexterm>
-<indexterm><primary>class</primary>
-<secondary>DescendingComparator class</secondary></indexterm>
-
-<para>This class is defined as a mixin class. It must be used
-by inheriting from it as a mixin.</para>
-<figure><title>The DescendingComparator class and methods</title>
-<mediaobject>
-<imageobject>
-<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-<imagedata fileref="ooRexxDescendingComparatorClass.png" align="left">
-</imageobject>
-</mediaobject>
-</figure>
-<note><title>Note</title>
-<para>The DescendingComparator class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-
-<para>This class is defined as a mixin class.</para>
-
-<section><title>Inherited Methods</title>
-
-&objclsmthods;
-
-<para>Methods inherited from the
-<link linkend="clsComparator">Comparator class</link>.</para>
-<simplelist type="vert" columns="3">
-<member><link linkend="mthComparatorCompare">compare</link></member>
-</simplelist>
-
-</section>
-
-<section id="mthDescendingComparatorCompare"><title>compare</title>
-<indexterm><primary>compare method</primary>
-<secondary>of DescendingComparator class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>compare method</secondary>
-<tertiary>of DescendingComparator class</tertiary></indexterm>
-
-<programlisting>
-<![CDATA[
->>-compare(first,second)--------------------------------><
-]]>
-</programlisting>
-<para>This method returns "1" if the <emphasis role="italic">second</emphasis> is larger than
-<emphasis role="italic">first</emphasis>
-object, "0" if the two objects are equal, and "-1" <emphasis role="italic">second</emphasis> is
-smaller than <emphasis role="italic">first</emphasis>, resulting in a descending sort sequence.
-</para>
-</section>
-</section>
-
 <section id="clsInvertingComparator"><title>The InvertingComparator Class</title>
 <indexterm><primary>InvertingComparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>InvertingComparator class</secondary></indexterm>
 
-<para>This class is defined as a mixin class. It must be used
-by inheriting from it as a mixin.</para>
+<para>The InvertingComparator class inverts the comparison results of
+another Comparator object to reverse the resulting sort order.</para>
+
 <figure><title>The InvertingComparator class and methods</title>
 <mediaobject>
 <imageobject>
@@ -3336,8 +3013,10 @@ The InvertingComparator will invert the ordering returned by the provided Compar
 <indexterm><primary>class</primary>
 <secondary>Monitor class</secondary></indexterm>
 
-<para>The Monitor class forwards messages to a destination object. It is a
-subclass of the Object class.</para>
+<para>The Monitor class acts as a proxy for other objects.  Messages sent to the
+Monitor object are forwarded to a different target object.  The message target can be
+changed dynamically.
+</para>
 
 <figure><title>The Monitor class and methods</title>
 <mediaobject>
@@ -3447,10 +3126,12 @@ current_output_destination_stream_object=.output~current
 <indexterm><primary>class</primary>
 <secondary>MutableBuffer class</secondary></indexterm>
 
-<para>The MutableBuffer class is a buffer that contains a string on which
+<para>The MutableBuffer class is a buffer on which
 certain string operations such as concatenation can be performed very
-efficiently. (Frequent concatenation of long strings without using this
-class might result in weak performance, large memory allocation, or both.)
+efficiently.  Unlike String objects, MutableBuffers can be altered without
+requiring a new object allocation.  A MutableBuffer object can provide better
+performance for algorithms that involve frequent concatenations to build up
+longer string objects because it creates fewer intermediate objects.
 </para>
 <figure><title>The MutableBuffer class and methods</title>
 <mediaobject>
@@ -3479,15 +3160,14 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 
 <programlisting>
 <![CDATA[
-                   +-----,-256------+
->>-new(-+--------+-+----------------+-)--------------------><
-        +-string-+ +-,-buffer size--+
+>>-new(-+--------+-+---------------+-)--------------------><
+        +-string-+ +-,-buffersize--+
 ]]>
 </programlisting>
 
 <para>Initialize the buffer, optionally assign a buffer content and
 a starting <emphasis>buffer size</emphasis>. The default size is 256; the buffer
-size increases to the length of the <emphasis>string</emphasis> if the string
+size increases to the length of <emphasis>string</emphasis> if the string
 does not fit into the buffer.</para>
 </section>
 
@@ -3504,7 +3184,7 @@ does not fit into the buffer.</para>
 ]]>
 </programlisting>
 
-<para>Appends string to the buffer content. The buffer size
+<para>Appends <emphasis role="italic">string</emphasis> to the buffer content. The buffer size
 is increased if necessary.</para>
 </section>
 
@@ -3522,7 +3202,7 @@ is increased if necessary.</para>
 ]]>
 </programlisting>
 
-<para>Returns the receiver object with
+<para>Returns the receiver MutableBuffer
 <emphasis role="italic">newneedle</emphasis> replacing occurrences of <emphasis
 role="italic">needle</emphasis>. If <emphasis role="italic">count</emphasis> is
 not specified, all occurrences of
@@ -3552,7 +3232,7 @@ using caseless comparisons.
 </programlisting>
 
 <para>Returns a count of the occurrences of
-<emphasis role="italic">needle</emphasis> in the receiving mutable buffer that
+<emphasis role="italic">needle</emphasis> in the receiving MutableBuffer that
 do not overlap. All matches are made using caseless comparisons.
 </para>
 </section>
@@ -3662,7 +3342,7 @@ not require new string objects be extracted from the target string.
 character of the string <emphasis role="italic">chars</emphasis>.  Returns .false ("0") if the character does not
 match any of the characters in the reference set.  The match is made using caseless comparisons.
 The argument <emphasis role="italic">n</emphasis> must be
-a positive whole number less than or equal to the length of the target string.</para>
+a positive whole number less than or equal to the length of the target MutableBuffer.</para>
 </section>
 
 <section id="mthMutableBufferCaselessPos"><title>caselessPos</title>
@@ -3753,7 +3433,7 @@ the word at which the search is to be started.</para>
 ]]>
 </programlisting>
 
-<para>Returns the receiver object with
+<para>Returns the receiver MutableBuffer with
 <emphasis role="italic">newneedle</emphasis> replacing occurrences of <emphasis
 role="italic">needle</emphasis>.</para>
 <para>If <emphasis role="italic">count</emphasis> is not specified, all occurrences of
@@ -3826,7 +3506,7 @@ the <emphasis>n</emphasis>'th character). The length must be a positive integer
 or zero. The <emphasis>n</emphasis> must be a positive integer. If
 <emphasis>n</emphasis> is greater than
 the length of the buffer or zero, the method does not modify the
-buffer content.  The delstr() method is the same as the delete() method.  If
+buffer content.  The delstr() method is the same as the delete() method.  It
 is provided for polymorphism with the String class.
 </para>
 </section>
@@ -3850,7 +3530,7 @@ is provided for polymorphism with the String class.
 ]]>
 </programlisting>
 
-<para>Deletes a substring from the mutable buffer substring that starts at the
+<para>Deletes a substring from the MutableBuffer the substring that starts at the
 <emphasis role="italic">n</emphasis>th word and is of
 <emphasis role="italic">length</emphasis> whitespace-delimited words. If you
 omit
@@ -4050,8 +3730,8 @@ less than or equal to the length of <emphasis role="italic">other</emphasis>.
 must be a positive whole number and the combination of <emphasis role="italic">n</emphasis> and
 <emphasis role="italic">length</emphasis> must be a valid substring within the bounds of
 <emphasis role="italic">other</emphasis>.</para>
-<para>The match method is useful fort efficient string parsing as it does not
-require new string objects be extracted from the target string.
+<para>The match method is useful for efficient string parsing as it does not
+require new string objects be extracted from the target buffer.
 </para>
 </section>
 
@@ -4213,7 +3893,7 @@ in the <emphasis role="bold">init</emphasis> method.</para>
 ]]>
 </programlisting>
 
-<para>Retrieves the content of the buffer (a string).</para>
+<para>Retrieves the content of the buffer as a string.</para>
 </section>
 
 <section id="mthMutableBufferSubchar"><title>subchar</title>
@@ -4230,8 +3910,8 @@ in the <emphasis role="bold">init</emphasis> method.</para>
 </programlisting>
 
 <para>Returns the <emphasis>n</emphasis>'th character of the receiving
-string. <emphasis>n</emphasis> must be a positive whole number. If
-<emphasis>n</emphasis> is greater that the length of the receiving string
+buffer. <emphasis>n</emphasis> must be a positive whole number. If
+<emphasis>n</emphasis> is greater that the length of the receiving buffer
 then a zero-length string is returned.</para>
 </section>
 
@@ -4312,8 +3992,8 @@ characters between the selected words.
 </programlisting>
 
 <para>Returns the receiving buffer with each character translated to another
-character or unchanged. You can also use this method to reorder the characters
-in the output table.</para>
+character or unchanged.
+</para>
 <para>The output table is <emphasis role="italic">tableo</emphasis>
 and the input translation table is <emphasis role="italic">tablei</emphasis>.
 <emphasis role="bold">translate</emphasis> searches
@@ -4332,7 +4012,7 @@ translated to uppercase (that is, lowercase
 to uppercase
 <computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>),
 but if you include <emphasis role="italic">pad</emphasis>
-the language processor translates the entire
+the buffer translates the entire
 string to <emphasis role="italic">pad</emphasis> characters.
 <emphasis role="italic">tablei</emphasis> defaults to
 <computeroutput>XRANGE("00"x,"FF"x)</computeroutput>, and
@@ -4360,7 +4040,7 @@ the buffer from the starting position to the end is used. </para>
 ]]>
 </programlisting>
 
-<para>Returns teh receiving buffer with the characters of the target string
+<para>Returns the receiving buffer with the characters of the target string
 beginning with character <emphasis role="italic">n</emphasis> for <emphasis role="italic">length</emphasis>
 characters converted to uppercase.  If <emphasis role="italic">n</emphasis> is specified, it must
 be a positive whole number.  If <emphasis role="italic">n</emphasis> is not specified, the case
@@ -4388,7 +4068,7 @@ the default is to convert the remainder of the buffer.</para>
 ]]>
 </programlisting>
 
-<para>Returns a number that, by default, indicates whether the receiving string
+<para>Returns a number that, by default, indicates whether the receiving buffer
 is composed only of characters from
 <emphasis role="italic">reference</emphasis>. It returns
 <computeroutput>0</computeroutput> if all characters in the receiving buffer are
@@ -4399,8 +4079,8 @@ first character in the receiving buffer not in
 <para>The <emphasis role="italic">option</emphasis> can be either
 <computeroutput>Nomatch</computeroutput> (the
 default) or <computeroutput>Match</computeroutput>. (You need to specify only
-the first capitalized and highlighted letter; the language processor ignores
-all characters following the first character, which can be in uppercase or
+the first capitalized and highlighted letter;
+all characters following the first character are ignored, which can be in uppercase or
 lowercase.)</para>
 <para>If you specify <computeroutput>Match</computeroutput>, the method returns
 the position of the first character in the receiving buffer that is in
@@ -4474,7 +4154,7 @@ to <computeroutput>receiving_buffer~subWord(n,1)</computeroutput>.</para>
 <para>Returns the position of the first character in the
 <emphasis role="italic">n</emphasis>th whitespace-delimited word in the
 receiving buffer. It returns
-           <computeroutput>0</computeroutput> if the receiving buffer has fewer
+<computeroutput>0</computeroutput> if the receiving buffer has fewer
 than
 <emphasis role="italic">n</emphasis> words. The
 <emphasis role="italic">n</emphasis> must be a positive whole number.
@@ -4571,13 +4251,11 @@ expression is a pattern you can use to match strings.</para>
 <note><para>The RegularExpression class is not a built-in class
 and is NOT preloaded. It is defined
 in the <computeroutput>rxregexp.cls</computeroutput>
-file. This means, you must either explicitly call the program file or
+file. This means you must
 use a <computeroutput>::requires </computeroutput>
 statement to activate its functionality, as follows:</para></note>
 <programlisting>
 <![CDATA[
-call "rxregexp.cls"
-      or
 ::requires "rxregexp.cls"
 ]]>
 </programlisting>
@@ -4596,80 +4274,92 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 
 <para>Here is a description of the syntax:</para>
 
-<variablelist>
-<varlistentry><term>|</term>
-<listitem><para>OR operator between the left and right expression
-</para></listitem></varlistentry>
-<varlistentry><term>?</term>
-<listitem><para>Matches any single character
-</para></listitem></varlistentry>
-<varlistentry><term>*</term>
-<listitem><para>Matches the previous expression zero or more times
-</para></listitem></varlistentry>
-<varlistentry><term>+</term>
-<listitem><para>Matches the previous expression one or more times
-</para></listitem></varlistentry>
-<varlistentry><term>\</term>
-<listitem><para>"Escape" symbol: use the next character literally
-</para></listitem></varlistentry>
-<varlistentry><term>()</term>
-<listitem><para>Expression in parenthesis (use where needed)
-</para></listitem></varlistentry>
-<varlistentry><term>{n}</term>
-<listitem><para>Matches previous expression n times (n>1)
-</para></listitem></varlistentry>
-<varlistentry><term>[]</term>
-<listitem><para>Set definition: matches any single character out of the defined
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
+<row><entry>|</entry>
+<entry><para>OR operator between the left and right expression
+</para></entry></row>
+<row><entry>?</entry>
+<entry><para>Matches any single character
+</para></entry></row>
+<row><entry>*</entry>
+<entry><para>Matches the previous expression zero or more times
+</para></entry></row>
+<row><entry>+</entry>
+<entry><para>Matches the previous expression one or more times
+</para></entry></row>
+<row><entry>\</entry>
+<entry><para>"Escape" symbol: use the next character literally
+</para></entry></row>
+<row><entry>()</entry>
+<entry><para>Expression in parenthesis (use where needed)
+</para></entry></row>
+<row><entry>{n}</entry>
+<entry><para>Matches previous expression n times (n>1)
+</para></entry></row>
+<row><entry>[]</entry>
+<entry><para>Set definition: matches any single character out of the defined
 set.</para>
 <para>A &apos;^&apos; right after the opening bracket means that none of the
 following characters should be matched.</para>
 <para>A &apos;-&apos; (if not used with &apos;\&apos;) defines a range between the last
 specified character and the one following &apos;-&apos;. If it is the
 first character in the set definition, it is used literally.
-</para></listitem></varlistentry>
-</variablelist>
+</para></entry></row>
+</tbody>
+</tgroup>
+</informaltable>
 
 <para>The following symbolic names (they must start and end with &apos;:&apos;) can
 be used to abbreviate common sets:</para>
 
-<variablelist>
-<varlistentry><term>:ALPHA:</term>
-<listitem><para>Characters in the range A-Z and a-z
-</para></listitem></varlistentry>
-<varlistentry><term>:LOWER:</term>
-<listitem><para>Characters in the range a-z
-</para></listitem></varlistentry>
-<varlistentry><term>:UPPER:</term>
-<listitem><para>Characters in the range A-Z
-</para></listitem></varlistentry>
-<varlistentry><term>:DIGIT:</term>
-<listitem><para>Characters in the range 0-9
-</para></listitem></varlistentry>
-<varlistentry><term>:ALNUM:</term>
-<listitem><para>Characters in :DIGIT: and :ALPHA:
-</para></listitem></varlistentry>
-<varlistentry><term>:XDIGIT:</term>
-<listitem><para>Characters in :DIGIT:, A-F and a-f
-</para></listitem></varlistentry>
-<varlistentry><term>:BLANK:</term>
-<listitem><para>Space and tab characters
-</para></listitem></varlistentry>
-<varlistentry><term>:SPACE:</term>
-<listitem><para>Characters "09"x to "0D"x and space
-</para></listitem></varlistentry>
-<varlistentry><term>:CNTRL:</term>
-<listitem><para>Characters "00"x to "1F"x and "7F"x
-</para></listitem></varlistentry>
-<varlistentry><term>:PRINT:</term>
-<listitem><para>Characters in the range "20"x to "7E"x
-</para></listitem></varlistentry>
-<varlistentry><term>:GRAPH:</term>
-<listitem><para>Characters in :PRINT: without space
-</para></listitem></varlistentry>
-<varlistentry><term>:PUNCT:</term>
-<listitem><para>All :PRINT: characters without space and not in :ALNUM:
-</para></listitem></varlistentry>
-</variablelist>
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
+<row><entry>:ALPHA:</entry>
+<entry><para>Characters in the range A-Z and a-z
+</para></entry></row>
+<row><entry>:LOWER:</entry>
+<entry><para>Characters in the range a-z
+</para></entry></row>
+<row><entry>:UPPER:</entry>
+<entry><para>Characters in the range A-Z
+</para></entry></row>
+<row><entry>:DIGIT:</entry>
+<entry><para>Characters in the range 0-9
+</para></entry></row>
+<row><entry>:ALNUM:</entry>
+<entry><para>Characters in :DIGIT: and :ALPHA:
+</para></entry></row>
+<row><entry>:XDIGIT:</entry>
+<entry><para>Characters in :DIGIT:, A-F and a-f
+</para></entry></row>
+<row><entry>:BLANK:</entry>
+<entry><para>Space and tab characters
+</para></entry></row>
+<row><entry>:SPACE:</entry>
+<entry><para>Characters "09"x to "0D"x and space
+</para></entry></row>
+<row><entry>:CNTRL:</entry>
+<entry><para>Characters "00"x to "1F"x and "7F"x
+</para></entry></row>
+<row><entry>:PRINT:</entry>
+<entry><para>Characters in the range "20"x to "7E"x
+</para></entry></row>
+<row><entry>:GRAPH:</entry>
+<entry><para>Characters in :PRINT: without space
+</para></entry></row>
+<row><entry>:PUNCT:</entry>
+<entry><para>All :PRINT: characters without space and not in :ALNUM:
+</para></entry></row>
+</tbody>
+</tgroup>
+</informaltable>
 
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -4751,11 +4441,11 @@ myRE2 = .RegularExpression~new("Hello?*")
 
 <programlisting>
 <![CDATA[
->>-match(-String-)-----------------------------------------><
+>>-match(-string-)-----------------------------------------><
 ]]>
 </programlisting>
 
-<para>This method tries to match the given string to the regular
+<para>This method tries to match <emphasis role="italic">string</emphasis> to the regular
 expression that was defined on the "new" invocation or on the
 "parse" invocation. It returns 0 on an unsuccessful match and 1
 on a successful match. For an example see
@@ -4779,7 +4469,7 @@ on a successful match. For an example see
 ]]>
 </programlisting>
 
-<para>This method creates the automation used to match a string from the
+<para>This method creates the matcher used to match a string from the
 regular expression specified with
 <emphasis>Pattern</emphasis>. The RegularExpression
 object uses this regular expression until a new invocation of Parse
@@ -4918,13 +4608,13 @@ myRE2 (maximal) matched <p>Paragraph 1</p><p>Paragraph 2</p>
 
 <programlisting>
 <![CDATA[
->>-pos-(-Haystack-)----------------------------------------><
+>>-pos-(-haystack-)----------------------------------------><
 ]]>
 </programlisting>
 
 <para>This method tries to locate a string defined by the regular
 expression on the "new" invocation or on the "parse" invocation
-in the given haystack string.
+in the given <emphasis role="italic">haystack</emphasis> string.
 It returns 0 on an unsuccessful match or the starting position
 on a successful match. The end position of the match can be
 retrieved with the <link linkend="mthRegularExpressionPosition">position</link> method.</para>
@@ -4966,8 +4656,8 @@ Found the number 2002 in this sentence.
 ]]>
 </programlisting>
 
-<para>Returns the character position at which either Parse, Pos or Match
-ended, depending on what was invoked last.</para>
+<para>Returns the character position at which the last parse(), pos(), or match()
+method ended.</para>
 
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -4993,6 +4683,8 @@ say myRE~position                     -- will be 2 (failure to match)
 <indexterm><primary>RexxQueue class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>RexxQueue class</secondary></indexterm>
+
+<para>The RexxQueue class provides object-style access to Rexx external data queues.</para>
 
 <figure><title>The RexxQueue class and methods</title>
 <mediaobject>
@@ -5050,23 +4742,6 @@ programming interface.
 </para>
 </section>
 
-<section id="mthRexxQueueDelete"><title>delete</title>
-<indexterm><primary>delete method</primary>
-<secondary>of RexxQueue class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>delete method</secondary>
-<tertiary>of RexxQueue class</tertiary></indexterm>
-
-<programlisting>
-<![CDATA[
->>-delete------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Deletes the Rexx external queue associated with this RexxQueue instance.
-</para>
-</section>
-
 <section id="mthRexxQueueExists"><title>exists (Class Method)</title>
 <indexterm><primary>exists method</primary>
 <secondary>of RexxQueue class</secondary></indexterm>
@@ -5098,6 +4773,23 @@ programming interface.
 </programlisting>
 <para>Tests if the external Rexx named queue <emphasis role="italic">name</emphasis>exists and
 creates the queue if it does not.
+</para>
+</section>
+
+<section id="mthRexxQueueDelete"><title>delete</title>
+<indexterm><primary>delete method</primary>
+<secondary>of RexxQueue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>delete method</secondary>
+<tertiary>of RexxQueue class</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-delete------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Deletes the Rexx external queue associated with this RexxQueue instance.
 </para>
 </section>
 
@@ -5225,7 +4917,7 @@ The external queue is emptied.
 </programlisting>
 
 <para>Reads a line from the Rexx external queue.  If the queue is currently empty,
-this method will immediately return .nil without waiting for lines to be added to the queue.
+this method will immediately return the Nil Object without waiting for lines to be added to the queue.
 </para>
 </section>
 
@@ -5317,150 +5009,22 @@ this method will immediately return .nil without waiting for lines to be added t
 ]]>
 </programlisting>
 
-<para>Switches the Rexx external queue associated with RexxQueue instance.  The new queue must have
+<para>Switches the Rexx external queue associated with the RexxQueue instance.  The new queue must have
 been previously created.  The method return value is the name of current queue being used by the instance.
 </para>
 </section>
 </section>
 
-<section id="clsStreamSupplier"><title>The StreamSupplier Class</title>
-<indexterm><primary>StreamSupplier class</primary></indexterm>
-<indexterm><primary>class</primary>
-<secondary>StreamSupplier class</secondary></indexterm>
-
-<para>A supplier object that will provided stream lines using supplier semantics.</para>
-<figure><title>The StreamSupplier class and methods</title>
-<mediaobject>
-<imageobject>
-<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-<imagedata fileref="ooRexxStreamSupplierClass.png" align="left">
-</imageobject>
-</mediaobject>
-</figure>
-<note><title>Note</title>
-<para>The StreamSupplier class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-
-<section><title>Inherited Methods</title>
-
-&objclsmthods;
-
-<para>Methods inherited from the
-<link linkend="clsSupplier">Supplier class</link>.</para>
-<simplelist type="vert" columns="3">
-<member><link linkend="mthSupplierNew">new (class method)</link></member>
-<member><link linkend="mthSupplierAllIndexes">allIndexes</link></member>
-<member><link linkend="mthSupplierAllItems">allItems</link></member>
-<member><link linkend="mthSupplierAvailable">available</link></member>
-<member><link linkend="mthSupplierIndex">index</link></member>
-<member><link linkend="mthSupplierInit">init</link></member>
-<member><link linkend="mthSupplierItem">item</link></member>
-<member><link linkend="mthSupplierNext">next</link></member>
-<member><link linkend="mthSupplierSupplier">supplier</link></member>
-</simplelist>
-
-</section>
-
-<section id="mthStreamSupplierAvailable"><title>available</title>
-<indexterm><primary>available method</primary>
-<secondary>of StreamSupplier class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>available method</secondary>
-<tertiary>of StreamSupplier class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-available---------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if an item is available
-from the supplier (that is, if the
-<emphasis role="bold">item</emphasis> method would return a value). It returns
-<computeroutput>0</computeroutput> (false) if the collection is empty or the
-supplier has already enumerated the entire collection.</para>
-</section>
-
-<section id="mthStreanSupplierIndex"><title>index</title>
-<indexterm><primary>index method</primary>
-<secondary>of StreamSupplier class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>index method</secondary>
-<tertiary>of StreamSupplier class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-index-------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the index of the current
-item in the collection. If no item is available, that is, if
-<emphasis role="bold">available</emphasis> would
-return false, the language processor raises an error.</para>
-</section>
-
-<section id="mthStreamSupplierInit"><title>init</title>
-<indexterm><primary>init method</primary>
-<secondary>of StreamSupplier class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>init method</secondary>
-<tertiary>of StreamSupplier class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-init--------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Initializes the object instance.</para>
-</section>
-
-<section id="mthStreamSupplierItem"><title>item</title>
-<indexterm><primary>item method</primary>
-<secondary>of StreamSupplier class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>item method</secondary>
-<tertiary>of StreamSupplier class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-item--------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns the current item in the collection. If no item is available, that
-is, if <emphasis role="bold">available</emphasis>
-would return false, the language processor raises an error.
-</para>
-</section>
-
-<section id="mthStreamSupplierNext"><title>next</title>
-<indexterm><primary>next method</primary>
-<secondary>of StreamSupplier class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>next method</secondary>
-<tertiary>of StreamSupplier class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-next--------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>Moves to the next item in the collection.
-By repeatedly sending <emphasis role="bold">next</emphasis>
-to the supplier (as long as <emphasis role="bold">available</emphasis>
- returns true),
-you can enumerate all items in the collection. If no item is available, that
-is, if <emphasis role="bold">available</emphasis>
-would return false, the language processor raises an error.
-</para>
-</section>
-</section>
 
 <section id="clsSupplier"><title>The Supplier Class</title>
 <indexterm><primary>Supplier class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Supplier class</secondary></indexterm>
 
-<para>You can use a supplier object to enumerate the items a collection
-contained at the time of the supplier's creation.</para>
+<para>You can use a supplier object to iterate over items of a collection.
+Supplier objects are created from a snapshot of a collection.  The iteration
+results are not affected by later changes to the source collection object.
+</para>
 <figure><title>The Supplier class and methods</title>
 <mediaobject>
 <imageobject>
@@ -5472,14 +5036,6 @@ contained at the time of the supplier's creation.</para>
 <note><title>Note</title>
 <para>The Supplier class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
-<para>The following methods return a supplier object: </para>
-<itemizedlist>
-<listitem><para>The <emphasis role="bold">supplier</emphasis>
-methods of the Array, Bag, Directory, List, Queue,
-Relation, Set, Table, and Stream classes</para></listitem>
-<listitem><para>The <emphasis role="bold">methods</emphasis>
-method of the Class class</para></listitem>
-</itemizedlist>
 
 <section><title>Inherited Methods</title>
 
@@ -5495,16 +5051,17 @@ method of the Class class</para></listitem>
 <tertiary>of Supplier class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-new(values,indexes)-----------------------------------------><
+>>-new(items,indexes)-----------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns a new supplier object. The
-<emphasis role="italic">values</emphasis> argument must be an
-array of values over which the supplier iterates. The
+<emphasis role="italic">items</emphasis> argument must be an
+array of objects over which the supplier iterates. The
 <emphasis role="italic">indexes</emphasis> argument
 is an array of index values with a one-to-one correspondence to the objects
-contained in the values array. The created supplier iterates over the arrays,
+contained in the <emphasis role="italic">items</emphasis> array.
+The created supplier iterates over the arrays,
 returning elements of the values array in response to
 <emphasis role="bold">items</emphasis> messages, and
 elements of the indexes array in response to
@@ -5584,7 +5141,7 @@ supplier has already enumerated the entire collection.</para>
 <para>Returns the index of the current
 item in the collection. If no item is available, that is, if
 <emphasis role="bold">available</emphasis> would
-return false, the language processor raises an error.</para>
+return false, the supplier raises an error.</para>
 </section>
 
 <section id="mthSupplierInit"><title>init</title>
@@ -5616,7 +5173,7 @@ return false, the language processor raises an error.</para>
 
 <para>Returns the current item in the collection. If no item is available, that
 is, if <emphasis role="bold">available</emphasis>
-would return false, the language processor raises an error.
+would return false, the supplier raises an error.
 </para>
 </section>
 
@@ -5635,10 +5192,10 @@ would return false, the language processor raises an error.
 <para>Moves to the next item in the collection.
 By repeatedly sending <emphasis role="bold">next</emphasis>
 to the supplier (as long as <emphasis role="bold">available</emphasis>
- returns true),
+returns true),
 you can enumerate all items in the collection. If no item is available, that
 is, if <emphasis role="bold">available</emphasis>
-would return false, the language processor raises an error.
+would return false, the supplier raises an error.
 </para>
 </section>
 
@@ -5683,6 +5240,138 @@ supplier to be passed to methods that expect an object that implements a
 </para>
 </section>
 </section>
+
+<section id="clsStreamSupplier"><title>The StreamSupplier Class</title>
+<indexterm><primary>StreamSupplier class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>StreamSupplier class</secondary></indexterm>
+
+<para>A supplier object that will provided stream lines using supplier semantics.</para>
+<figure><title>The StreamSupplier class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxStreamSupplierClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The StreamSupplier class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+<para>Methods inherited from the
+<link linkend="clsSupplier">Supplier class</link>.</para>
+<simplelist type="vert" columns="3">
+<member><link linkend="mthSupplierNew">new (class method)</link></member>
+<member><link linkend="mthSupplierAllIndexes">allIndexes</link></member>
+<member><link linkend="mthSupplierAllItems">allItems</link></member>
+<member><link linkend="mthSupplierAvailable">available</link></member>
+<member><link linkend="mthSupplierIndex">index</link></member>
+<member><link linkend="mthSupplierInit">init</link></member>
+<member><link linkend="mthSupplierItem">item</link></member>
+<member><link linkend="mthSupplierNext">next</link></member>
+<member><link linkend="mthSupplierSupplier">supplier</link></member>
+</simplelist>
+
+</section>
+
+<section id="mthStreamSupplierAvailable"><title>available</title>
+<indexterm><primary>available method</primary>
+<secondary>of StreamSupplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>available method</secondary>
+<tertiary>of StreamSupplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-available---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if an item is available
+from the supplier (that is, if the
+<emphasis role="bold">item</emphasis> method would return a value). It returns
+<computeroutput>0</computeroutput> (false) if the collection is empty or the
+supplier has already enumerated the entire collection.</para>
+</section>
+
+<section id="mthStreanSupplierIndex"><title>index</title>
+<indexterm><primary>index method</primary>
+<secondary>of StreamSupplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>index method</secondary>
+<tertiary>of StreamSupplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-index-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index of the current
+item in the collection. If no item is available, that is, if
+<emphasis role="bold">available</emphasis> would
+return false, the supplier raises an error.</para>
+</section>
+
+<section id="mthStreamSupplierInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of StreamSupplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of StreamSupplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Initializes the object instance.</para>
+</section>
+
+<section id="mthStreamSupplierItem"><title>item</title>
+<indexterm><primary>item method</primary>
+<secondary>of StreamSupplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>item method</secondary>
+<tertiary>of StreamSupplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-item--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the current item in the collection. If no item is available, that
+is, if <emphasis role="bold">available</emphasis>
+would return false, the supplier raises an error.
+</para>
+</section>
+
+<section id="mthStreamSupplierNext"><title>next</title>
+<indexterm><primary>next method</primary>
+<secondary>of StreamSupplier class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>next method</secondary>
+<tertiary>of StreamSupplier class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-next--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Moves to the next item in the collection.
+By repeatedly sending <emphasis role="bold">next</emphasis>
+to the supplier (as long as <emphasis role="bold">available</emphasis>
+returns true),
+you can enumerate all items in the collection. If no item is available, that
+is, if <emphasis role="bold">available</emphasis>
+would return false, the supplier raises an error.
+</para>
+</section>
+</section>
+
 
 <section id="clsRexxContext"><title>The RexxContext Class</title>
 <indexterm><primary>RexxContext class</primary></indexterm>
