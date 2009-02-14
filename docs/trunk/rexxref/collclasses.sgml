@@ -78,6 +78,10 @@ the sequence. A list generates and returns an index value for each item placed
 in the list. The returned index remains valid until the item is removed from
 the list.
 </para></listitem></varlistentry>
+<varlistentry><term><link linkend="clsProperties">Properties</link></term>
+<listitem><para>A collection with character string indexes and values.
+Properties collections include support for saving and loading from disk files.
+</para></listitem></varlistentry>
 <varlistentry><term><link linkend="clsQueue">Queue</link></term>
 <listitem><para>A sequenced collection with the items ordered as a queue. You can remove
 items from the head of the queue and add items at either its tail or its head.
@@ -2485,12 +2489,15 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.
 It also inherits methods from the <link linkend="clsMapCollection">Map Collection
 class</link>, although there are not currently any methods defined in that class.
 </para></note>
-<para>Directories let you refer to objects by name, for example:</para>
-<programlisting>
-.environment~array
-</programlisting>
-<para>For directories, items are often referred to as entries.</para>
+<para>In addition to the standard put() and at() methods defined for
+Collections, Directories provide access to objects using methods.  For
+example:</para>
 
+<programlisting>
+mydir = .directory~new
+mydir~name = "Mike"   -- same as mydir~put("Mike", "NAME")
+say mydir~name        -- same as say mydir['NAME']
+</programlisting>
 <section><title>Inherited Methods</title>
 
 &objclsmthods;
@@ -2526,9 +2533,9 @@ class</link>, although there are not currently any methods defined in that class
 ]]>
 </programlisting>
 
-<para>Returns the same item as the
-<emphasis role="bold">at</emphasis> method, which follows. See
-<link linkend="mthDirectoryAt">at</link>.</para>
+<para>Returns the item corresponding to <emphasis role="italic">name</emphasis>.
+This method is the same as the <link linkend="mthDirectoryPut">at</link>
+method.</para>
 </section>
 
 <section id="mthDirectoryPutSet"><title>[]=</title>
@@ -2543,9 +2550,10 @@ class</link>, although there are not currently any methods defined in that class
 ]]>
 </programlisting>
 
-<para>This method is the same as the
-<emphasis role="bold">put</emphasis> method. See
-<link linkend="mthDirectoryPut">put</link>.</para>
+<para>Adds or replaces the entry at index <emphasis role="italic">name</emphasis>.
+This method is the same as the <link linkend="mthDirectoryPut">put</link>
+method.
+</para>
 </section>
 
 <section id="mthDirectoryAllIndexes"><title>allIndexes</title>
@@ -2560,7 +2568,7 @@ class</link>, although there are not currently any methods defined in that class
 ]]>
 </programlisting>
 
-<para>Returns an array of all the directory indices, including those of all
+<para>Returns an array of all the directory indexes, including those of all
 the <link linkend="mthDirectorySetMethod">setMethod</link> methods.</para>
 </section>
 
@@ -2576,7 +2584,10 @@ the <link linkend="mthDirectorySetMethod">setMethod</link> methods.</para>
 ]]>
 </programlisting>
 
-<para>Returns an array of all items contained in the directory.</para>
+<para>Returns an array of all items contained in the directory, including those
+of all the <link linkend="mthDirectorySetMethod">setMethod</link>
+methods.</para>
+</para>
 </section>
 
 <section id="mthDirectoryAt"><title>at</title>
@@ -2592,12 +2603,12 @@ the <link linkend="mthDirectorySetMethod">setMethod</link> methods.</para>
 </programlisting>
 
 <para>Returns the item associated with index
-<emphasis role="italic">name</emphasis>. If a method that
-<emphasis role="bold">setMethod</emphasis> supplies is associated with index
-<emphasis role="italic">name</emphasis>, the result of running
-this method is returned. If the collection has no item or method associated
-with index <emphasis role="italic">name</emphasis>, this method returns
-the Nil object.</para>
+<emphasis role="italic">name</emphasis>. If a method defined using <link
+linkend="mthDirectorySetMethod">setMethod</link> is associated with index
+<emphasis role="italic">name</emphasis>, the result of running this method is
+returned. If the collection has no item or method associated with index
+<emphasis role="italic">name</emphasis>, the Nill object is returned.
+</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
 say .environment~at("OBJECT")   /* Produces: "The Object class" */
@@ -2616,7 +2627,9 @@ say .environment~at("OBJECT")   /* Produces: "The Object class" */
 ]]>
 </programlisting>
 
-<para>Removes all items from the directory.</para>
+<para>Removes all items from the directory.  Empty also removes
+all methods added using <link linkend="mthDirectorySetMethod">setMethod</link>.
+</para>
 </section>
 
 <section id="mthDirectoryEntry"><title>entry</title>
@@ -2635,10 +2648,9 @@ say .environment~at("OBJECT")   /* Produces: "The Object class" */
 <emphasis role="italic">name</emphasis> (translated to uppercase).
 If there is no such entry, <emphasis role="italic">name</emphasis>
 returns the item for any method that
-<emphasis role="bold">setMethod</emphasis> supplied. If there is
-neither an entry nor a method for <emphasis role="italic">name</emphasis>
-or for <emphasis role="bold">unknown</emphasis>,
-the language processor raises an error.</para>
+<link linkend="mthDirectorySetMethod">setMethod</link> supplied. If there is
+neither an entry nor a method for <emphasis role="italic">name</emphasis> the
+Nil object is returned.</para>
 </section>
 
 <section id="mthDirectoryHasEntry"><title>hasEntry</title>
@@ -2684,13 +2696,15 @@ contains any item associated with index
 <tertiary>of Directory class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-hasItem(value)----------------------------------------------><
+>>-hasItem(item)----------------------------------------------><
 ]]>
 </programlisting>
 
 <para>Returns <computeroutput>1</computeroutput> (true) if the collection
-contains the <emphasis role="italic">value</emphasis> at any index position or
-otherwise returns <computeroutput>0</computeroutput> (false).</para>
+contains the <emphasis role="italic">item</emphasis> at any index position or
+otherwise returns <computeroutput>0</computeroutput> (false).
+Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+</para>
 </section>
 
 <section id="mthDirectoryIndex"><title>index</title>
@@ -2707,8 +2721,9 @@ otherwise returns <computeroutput>0</computeroutput> (false).</para>
 
 <para>Returns the index of the specified item within the directory.  If the
 target item appears at more than one index, the first located index will
-be returned.  If the directory does not contain the specified item, .nil is
-returned.
+be returned.  If the directory does not contain the specified item, the Nil
+object is returned.
+Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -2796,13 +2811,11 @@ associated with index <emphasis role="italic">name</emphasis>.</para>
 <para>Returns and removes the member item with index
 <emphasis role="italic">name</emphasis> from a collection.
 If a method is associated with
-<emphasis role="bold">setMethod</emphasis> for index
+<link linkend="mthDirectorySetMethod">setMethod</link> for index
 <emphasis role="italic">name</emphasis>,
-<emphasis role="bold">remove</emphasis> removes
-the method and returns the result of running it. If there is no item or method
-with index <emphasis role="italic">name</emphasis>, the
-<emphasis role="bold">unknown</emphasis> method returns
-the Nil object and removes nothing.</para>
+the method is removed and running the method is returned. If there is no item or
+method with index
+<emphasis role="italic">name</emphasis>, the Nil object is returned.</para>
 </section>
 
 <section id="mthDirectoryRemoveItem"><title>removeItem</title>
@@ -2820,6 +2833,7 @@ the Nil object and removes nothing.</para>
 <para>Removes an item from the directory. If the target item exists at more than
 one index, the first located item is removed.  The return value is the
 removed item.
+Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -2859,31 +2873,23 @@ method with this <emphasis role="italic">name</emphasis>.</para>
 
 <para>Associates entry name <emphasis role="italic">name</emphasis>
 (translated to uppercase) with method <emphasis role="italic">method</emphasis>.
-Thus, the language processor returns the result of running
+Thus, the object returns the result of running
 <emphasis role="italic">method</emphasis> when you access this entry.
-This occurs when you specify <emphasis role="italic">name</emphasis> on the
-<emphasis role="bold">at</emphasis>,
-<emphasis role="bold">entry</emphasis>, or
-<emphasis role="bold">remove</emphasis> method. This method replaces any existing
-item or method for <emphasis role="italic">name</emphasis>.</para>
-<para>You can specify the name <emphasis role="bold">unknown</emphasis> as
+This occurs when you specify <emphasis role="italic">name</emphasis> on the at,
+entry, or remove method. This method replaces any existing item or method for
+<emphasis role="italic">name</emphasis>.</para>
+<para>You can specify the name "UNKNOWN" as
 <emphasis role="italic">name</emphasis>. Doing so supplies a
-method to run whenever an <emphasis role="bold">at</emphasis> or
-<emphasis role="bold">entry</emphasis> message specifies a name for which no item
-or method exists in the collection. This method's first argument is the
-specified directory index. This method has no effect on the action of any
-<emphasis role="bold">hasEntry</emphasis>,
-<emphasis role="bold">hasIndex</emphasis>,
-<emphasis role="bold">items</emphasis>,
-<emphasis role="bold">remove</emphasis>, or
-<emphasis role="bold">supplier</emphasis> message sent to the collection.
+method that is run whenever an at() or entry() message specifies a name for
+which no item or method exists in the collection. This method's first argument
+is the specified directory index. This method has no effect on the action of any
+hasEntry, hasIndex, items, remove, or supplier message sent to the collection.
 </para>
 <para>The <emphasis role="italic">method</emphasis> can be a
 string containing a method source line instead
 of a method object. Alternatively, an array of strings containing individual
-method lines can be passed. In either case,
-<emphasis role="bold">setMethod</emphasis> creates an equivalent
-method object.</para>
+method lines can be passed. In either case, an equivalent method object is
+created. </para>
 <para>If you omit <emphasis role="italic">method</emphasis>,
 <emphasis role="bold">setMethod</emphasis> removes the entry with the specified
 <emphasis role="italic">name</emphasis>.</para>
@@ -2901,12 +2907,11 @@ method object.</para>
 ]]>
 </programlisting>
 
-<para>Returns a supplier object for the collection. After you have obtained a
-supplier, you can send it messages (see
-<link linkend="clsSupplier">The Supplier Class</link>) to enumerate
-all the items that were in the collection at the time of the supplier's
-creation. The supplier enumerates the items in an unspecified order. (The
-program should not rely on any order.)</para>
+<para>Returns a <link linkend="clsSupplier">Supplier</link>
+object for the collection.  The supplier allows you to iterate over
+the index/item pairs in the directory at the time the supplier was created.
+The supplier iterates the items in an unspecified order.
+</para>
 </section>
 
 <section id="mthDirectoryUnknown"><title>unknown</title>
@@ -2921,17 +2926,15 @@ program should not rely on any order.)</para>
 ]]>
 </programlisting>
 
-<para>Runs either the <emphasis role="bold">entry</emphasis> or
-<emphasis role="bold">setEntry</emphasis> method, depending on whether
+<para>Runs either the <link linkend="mthDirectoryEntry">entry</link> or
+<link linkend="mthDirectorySetEntry">setEntry</link> method, depending on
+whether
 <emphasis role="italic">messagename</emphasis> ends with an equal sign. If
 <emphasis role="italic">messagename</emphasis> does not end with an
-equal sign, this method runs the
-<emphasis role="bold">entry</emphasis> method, passing
-<emphasis role="italic">messagename</emphasis> as
-its argument. The language processor ignores any arguments specified in the
-array <emphasis role="italic">messageargs</emphasis>. In this case,
-<emphasis role="bold">unknown</emphasis>
-returns the result of the <emphasis role="bold">entry</emphasis> method.</para>
+equal sign, this method runs the entry() method, passing
+<emphasis role="italic">messagename</emphasis> as its argument. The <emphasis
+role="italic">messageargs</emphasis> argument is ignored. The entry() method is
+the return result.</para>
 <para>If <emphasis role="italic">messagename</emphasis> does end with an equal
 sign, this method runs the
 <emphasis role="bold">setEntry</emphasis> method, passing the first part of
@@ -2971,8 +2974,8 @@ as its second argument. In this case,
 ]]>
 </programlisting>
 
-<para>Returns a new collection of the same class as the receiver that contains
-all items from the receiver collection and the
+<para>Returns a new Directory object containing all items from the receiver
+collection and the
 <emphasis role="italic">argument</emphasis> collection;
 all indexes that appear in both collections are removed. The
 <emphasis role="italic">argument</emphasis> can be any
