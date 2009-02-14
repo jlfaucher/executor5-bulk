@@ -1713,7 +1713,8 @@ end
 
 <para>A bag is a non-sparse collection that restricts the elements
 to having an item that is the same as the index. Any object can be placed
-in a bag, and the same object can be placed in a bag several times.</para>
+in a bag, and the same object can be placed in a bag several times.
+</para>
 <figure><title>The Bag class and methods</title>
 <mediaobject>
 <imageobject>
@@ -1768,23 +1769,6 @@ methods, it inherits the methods of the Object class and the Relation class.</pa
 
 </section>
 
-<section id="mthBagPutSet"><title>[]=</title>
-<indexterm><primary>[]= method</primary>
-<secondary>of Bag class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[]= method</secondary>
-<tertiary>of Bag class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-[index]=item------------------------------------------------><
-]]>
-</programlisting>
-
-<para>This method is the same as the
-<emphasis role="bold">put</emphasis> method. See
-<link linkend="mthBagPut">put</link>.</para>
-</section>
-
 <section id="mthBagOf"><title>of (Class Method)</title>
 <indexterm><primary>of method</primary>
 <secondary>of Bag class</secondary></indexterm>
@@ -1803,6 +1787,23 @@ methods, it inherits the methods of the Object class and the Relation class.</pa
 <emphasis role="italic">item</emphasis> objects.</para>
 </section>
 
+<section id="mthBagPutSet"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-[index]=item------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Adds an item to the Bag.  This method is the same as the
+<emphasis role="bold">put</emphasis> method. See
+<link linkend="mthBagPut">put</link>.</para>
+</section>
+
 <section id="mthBagDifference"><title>difference</title>
 <indexterm><primary>difference method</primary>
 <secondary>of Bag class</secondary></indexterm>
@@ -1810,22 +1811,17 @@ methods, it inherits the methods of the Object class and the Relation class.</pa
 <secondary>difference method</secondary>
 <tertiary>of Bag class</tertiary></indexterm>
 
-<para>This method overrides the
-<link linkend="mthRelationDifference">difference method</link> from the
-<link linkend="clsRelation">Relation class</link>.</para>
 <programlisting>
 <![CDATA[
 >>-difference(argument)----------------------------------------><
 ]]>
 </programlisting>
 
-<para>Returns a new collection (of the same class as the receiver) containing
-only those items from the receiver whose indexes the
+<para>Returns a new Bag containing only those items from the receiver that the
+the
 <emphasis role="italic">argument</emphasis> collection
 does not contain. The <emphasis role="italic">argument</emphasis> can be any
-collection class object. The
-<emphasis role="italic">argument</emphasis> must also
-allow all of the index values in the receiver collection.</para>
+collection class object.
 </section>
 
 <section id="mthBagHasIndex"><title>hasIndex</title>
@@ -1842,7 +1838,9 @@ allow all of the index values in the receiver collection.</para>
 
 <para>Returns <computeroutput>1</computeroutput> (true) if the collection
 contains any item associated with index <emphasis role="italic">index</emphasis>,
-or <computeroutput>0</computeroutput> (false).</para>
+or <computeroutput>0</computeroutput> (false). Index equality is determined by
+using the == method of <emphasis role="italic">index</emphasis>.
+</para>
 </section>
 
 <section id="mthBagIntersection"><title>intersection</title>
@@ -1852,22 +1850,16 @@ or <computeroutput>0</computeroutput> (false).</para>
 <secondary>intersection method</secondary>
 <tertiary>of Bag class</tertiary></indexterm>
 
-<para>This method overrides the
-<link linkend="mthRelationIntersection">intersection method</link> from the
-<link linkend="clsRelation">Relation class</link>.</para>
 <programlisting>
 <![CDATA[
 >>-intersection(argument)--------------------------------------><
 ]]>
 </programlisting>
 
-<para>Returns a new collection (of the same class as the receiver) containing
-only those items from the receiver whose indexes are in both the receiver
-collection and the <emphasis role="italic">argument</emphasis> collection.
-The <emphasis role="italic">argument</emphasis> can be any
-collection class object.
-The <emphasis role="italic">argument</emphasis> must also allow all of the
-index values in the receiver collection.</para>
+<para>Returns a new Bag containing only those items from the receiver that are
+in also in the
+<emphasis role="italic">argument</emphasis> collection. The <emphasis
+role="italic">argument</emphasis> can be any collection class object.
 </section>
 
 <section id="mthBagPut"><title>put</title>
@@ -1898,9 +1890,6 @@ the same index, without removing any existing member items.</para>
 <secondary>putAll method</secondary>
 <tertiary>of Bag class</tertiary></indexterm>
 
-<para>This method overrides the
-<link linkend="mthMapCollectionPutAll">putAll method</link> from the
-<link linkend="clsMapCollection">Map Collection class</link>.</para>
 <programlisting>
 <![CDATA[
 >>-putAll(collection)------------------------------------------><
@@ -1908,8 +1897,8 @@ the same index, without removing any existing member items.</para>
 </programlisting>
 <para>Adds all items <emphasis role="italic">collection</emphasis> to the target bag.  The
 <emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
-method.  Items from <emphasis role="italic">collection</emphasis> are added using the index values
-returned by the supplier.
+method.  Items from <emphasis role="italic">collection</emphasis> are added
+using the item values returned by the supplier.
 </para>
 </section>
 
@@ -1920,9 +1909,6 @@ returned by the supplier.
 <secondary>subset method</secondary>
 <tertiary>of Bag class</tertiary></indexterm>
 
-<para>This method overrides the
-<link linkend="mthRelationSubset">subset method</link> from the
-<link linkend="clsRelation">Relation class</link>.</para>
 <programlisting>
 <![CDATA[
 >>-subset(argument)--------------------------------------------><
@@ -1935,8 +1921,6 @@ receiver collection are also contained in the
 <computeroutput>0</computeroutput> (false) otherwise. The
 <emphasis role="italic">argument</emphasis> can be any
 collection class object.
-The <emphasis role="italic">argument</emphasis> must also allow all of the
-index values in the receiver collection.</para>
 </section>
 
 <section id="mthBagUnion"><title>union</title>
@@ -1946,17 +1930,14 @@ index values in the receiver collection.</para>
 <secondary>union method</secondary>
 <tertiary>of Bag class</tertiary></indexterm>
 
-<para>This method overrides the
-<link linkend="mthRelationUnion">union method</link> from the
-<link linkend="clsRelation">Relation class</link>.</para>
 <programlisting>
 <![CDATA[
 >>-union(argument)---------------------------------------------><
 ]]>
 </programlisting>
 
-<para>Returns a new collection of the same class as the receiver that contains
-all the items from the receiver collection and selected items from the
+<para>Returns a new Bag that contains all the items from the receiver collection
+and selected items from the
 <emphasis role="italic">argument</emphasis> collection. The order in which this
 method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified. (The program
@@ -1965,9 +1946,7 @@ should not rely on any order.) See the
 (<link linkend="mthCollectionUnion">union</link>) and Relation
 (<link linkend="mthRelationUnion">union</link>) classes. The
 <emphasis role="italic">argument</emphasis> can be any
-collection class object. The
-<emphasis role="italic">argument</emphasis> must also allow all of the
-index values in the receiver collection.</para>
+collection class object.
 </section>
 
 <section id="mthBagXor"><title>xor</title>
@@ -1977,23 +1956,18 @@ index values in the receiver collection.</para>
 <secondary>xor method</secondary>
 <tertiary>of Bag class</tertiary></indexterm>
 
-<para>This method overrides the
-<link linkend="mthRelationXor">xor method</link> from the
-<link linkend="clsRelation">Relation class</link>.</para>
 <programlisting>
 <![CDATA[
 >>-xor(argument)-----------------------------------------------><
 ]]>
 </programlisting>
 
-<para>Returns a new collection of the same class as the receiver that contains
-all items from the receiver collection and the
-<emphasis role="italic">argument</emphasis> collection;
-all indexes that appear in both collections are removed. The
+<para>Returns a new Bag that contains all items from the receiver collection and
+the
+<emphasis role="italic">argument</emphasis> collection; items that appear in
+both collections are removed. The
 <emphasis role="italic">argument</emphasis> can be any
 collection class object.
-The <emphasis role="italic">argument</emphasis> must also allow all of the
-index values in the receiver collection.</para>
 </section>
 
 <section id="bagex"><title>Examples</title>
@@ -2099,11 +2073,6 @@ stack-like LIFO (last in, first out) order.
       +-(----item-+--)-+
 ]]>
 </programlisting>
-
-
-<para>This method overrides the
-<link linkend="mthQueueOf">of method</link> from the
-<link linkend="clsQueue">Queue class</link>.</para>
 <para>
 Returns a newly created circular queue containing the specified
 <emphasis role="italic">item</emphasis> objects. The first
@@ -2144,15 +2113,11 @@ Performs initialization of the circular queue.
 
 <programlisting>
 <![CDATA[
-              +-Fifo----+
 >>-makeArray(-+---------+-)------------------------------------><
               +--order--+
 ]]>
 </programlisting>
 
-<para>This method overrides the
-<link linkend="mthQueueMakeArray">makeArray method</link> from the
-<link linkend="clsQueue">Queue class</link>.</para>
 <para>
 Returns a single-index array containing the items of the circular queue in the
 specified <emphasis role="italic">order</emphasis>.
@@ -2166,13 +2131,13 @@ the capitalized letter is needed; all characters following it are ignored.)
 <variablelist>
 <varlistentry><term>Fifo</term>
 <listitem>
-<para>First-in, first-out, default
+<para>First-in, first-out order.  This is the default.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Lifo</term>
 <listitem>
-<para>Last-in, first-out (stacklike)
+<para>Last-in, first-out order (stacklike).
 </para>
 </listitem>
 </varlistentry>
@@ -2190,15 +2155,11 @@ the capitalized letter is needed; all characters following it are ignored.)
 
 <programlisting>
 <![CDATA[
-             +--,Normal---+
 >>-push(item-+------------+)-------------------------------------><
-             +--,Unique---+
+             +--,option---+
 ]]>
 </programlisting>
 
-<para>This method overrides the
-<link linkend="mthQueuePush">push method</link> from the
-<link linkend="clsQueue">Queue class</link>.</para>
 <para>
 Makes the object <emphasis role="italic">item</emphasis> a member item of
 the circular queue, inserting the item object in front of the first item in
@@ -2213,10 +2174,14 @@ will be deleted, before the insertion takes place. In this case the
 </para>
 
 <para>
-If the second parameter is 'Unique' (Only the capitalized letter is needed;
-all characters following it are ignored.) then if the item already exists in
-the circular queue, it will be removed before the operation is performed.
-This allows you to maintain a list like the recent files list of an editor.
+If <emphasis role="italic">option</emphasis> is specified, it may be "Normal" or
+"Unique".  The default is "Normal".  Only the first letter of the option
+capitalized letter is required; all characters following it are ignored. If
+<emphasis role="italic">option</emphasis> is 'Unique', any matching item already
+in the queue will be removed before before <emphasis
+role="italic">item</emphasis> is added to the queue.
+removed before the operation is performed. This allows you to maintain a list
+like the recent files list of an editor.
 </para>
 </section>
 
@@ -2238,9 +2203,6 @@ This allows you to maintain a list like the recent files list of an editor.
 ]]>
 </programlisting>
 
-<para>This method overrides the
-<link linkend="mthQueueQueue">queue method</link> from the
-<link linkend="clsQueue">Queue class</link>.</para>
 <para>
 Makes the object <emphasis role="italic">item</emphasis> a member item of the circular queue, inserting the item
 at the end of the circular queue.
@@ -2253,9 +2215,14 @@ will be returned, otherwise <emphasis role="italic">.nil</emphasis>.
 </para>
 
 <para>
-If the second parameter is 'Unique' (Only the capitalized letter is needed;
-all characters following it are ignored.) then if the item already exists in
-the circular queue it will be removed before the operation is performed.
+If <emphasis role="italic">option</emphasis> is specified, it may be "Normal" or
+"Unique".  The default is "Normal".  Only the first letter of the option
+capitalized letter is required; all characters following it are ignored. If
+<emphasis role="italic">option</emphasis> is 'Unique', any matching item already
+in the queue will be removed before before <emphasis
+role="italic">item</emphasis> is added to the queue.
+removed before the operation is performed. This allows you to maintain a list
+like the recent files list of an editor.
 </para>
 </section>
 
@@ -2270,7 +2237,6 @@ the circular queue it will be removed before the operation is performed.
 
 <programlisting>
 <![CDATA[
-                   +--,Fifo---+
 >>-resize(-newSize-+----------+-)------------------------------><
                    +--,order--+
 ]]>
@@ -2280,7 +2246,7 @@ the circular queue it will be removed before the operation is performed.
 Resizes the circular queue object to be able to contain
 <emphasis role="italic">newSize</emphasis> items.
 If the previous size was larger than <emphasis role="italic">newSize</emphasis>,
-then the now superfluous items are removed in the specified
+any extra items are removed in the specified
 <emphasis role="italic">order</emphasis>.
 </para>
 
@@ -2292,13 +2258,15 @@ the capitalized letter is needed; all characters following it are ignored.)
 <variablelist>
 <varlistentry><term>Fifo</term>
 <listitem>
-<para>First-in, first-out, default: keeps the newest entries
+<para>First-in, first-out.  This keeps the most recently added items.  This is
+the default action.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Lifo</term>
 <listitem>
-<para>Last-in, first-out (stacklike): keeps the oldest entries
+<para>Last-in, first-out (stacklike).  This removes the most recently added
+items.
 </para>
 </listitem>
 </varlistentry>
@@ -2306,8 +2274,8 @@ the capitalized letter is needed; all characters following it are ignored.)
 
 <note><title>Note:</title>
 <para>
-Resizing with a value of <computeroutput>0</computeroutput> effectively removes all
-items from the circular queue.
+Resizing with a value of <computeroutput>0</computeroutput> removes all items
+from the circular queue.
 </para>
 </note>
 </section>
@@ -2369,7 +2337,7 @@ the capitalized letter is needed; all characters following it are ignored.)
 <variablelist>
 <varlistentry><term>Fifo</term>
 <listitem>
-<para>First-in, first-out, default
+<para>First-in, first-out.  This is the default
 </para>
 </listitem>
 </varlistentry>
@@ -2393,24 +2361,19 @@ the capitalized letter is needed; all characters following it are ignored.)
 
 <programlisting>
 <![CDATA[
-             +--Fifo----+
 >>-supplier(-+----------+-)------------------------------------><
              +--order---+
 ]]>
 </programlisting>
 
-<para>This method overrides the
-<link linkend="mthQueueSupplier">supplier method</link> from the
-<link linkend="clsQueue">Queue class</link>.</para>
 <para>
-Returns a supplier object for the collection. After you have obtained a
-supplier, you can send it messages (see
-<link linkend="clsSupplier">The Supplier Class</link>) to enumerate
-all the items that were in the queue at the time of the supplier's creation.
+Returns a <link linkend="clsSupplier">Supplier</link> object for the collection.
+The supplier allows you to iterate over the items that were in the queue at the
+time of the supplier's creation.
 </para>
 
 <para>
-The supplier will enumerate the items in the specified
+The supplier will iterate over the items in the specified
 <emphasis role="italic">order</emphasis>. (Only the capitalized
 letter is needed; all characters following it are ignored.)
 </para>
@@ -2504,9 +2467,9 @@ content: [3,2], content (LIFO): [2->3]
 <indexterm><primary>Map Collection classes</primary>
 <secondary>Directory class</secondary></indexterm>
 
-<para>A directory is a non-sparse collection with unique
-indexes that are character strings representing names. The items of the collect
-can be any valid ooRexx object.</para>
+<para>A Directory is a MapCollection using unique charcter string indexes.  The
+items of the collect can be any valid Rexx object.
+</para>
 <figure><title>The Directory class and methods</title>
 <mediaobject>
 <imageobject>
@@ -3728,9 +3691,6 @@ are added to the receiver Properties value using name as the index for the value
 <secondary>[]= method</secondary>
 <tertiary>of Properties class</tertiary></indexterm>
 
-<para>This method overrides the
-<link linkend="mthDirectoryPutSet">[]= method</link> from the
-<link linkend="clsDirectory">Directory class</link>.</para>
 <programlisting>
 <![CDATA[
 >>-[name]=item-------------------------------------------------><
@@ -3830,9 +3790,6 @@ same names as existing items will replace the current entries.
 <secondary>put method</secondary>
 <tertiary>of Properties class</tertiary></indexterm>
 
-<para>This method overrides the
-<link linkend="mthDirectoryPut">put method</link> from the
-<link linkend="clsDirectory">Directory class</link>.</para>
 <programlisting>
 <![CDATA[
 >>-put(item,name)----------------------------------------------><
@@ -4514,9 +4471,6 @@ class</link>, although there are not currently any methods defined in that class
 ]]>
 </programlisting>
 
-<para>This method overrides the
-<link linkend="mthObjectNew">new class method</link> from the
-<link linkend="clsObject">Object class</link>.</para>
 <para>Returns an empty Relation object.</para>
 </section>
 
@@ -5105,9 +5059,6 @@ and the Table class.</para>
 <secondary>intersection method</secondary>
 <tertiary>of Set class</tertiary></indexterm>
 
-<para>This method overrides the
-<link linkend="mthCollectionIntersection">intersection method</link> from the
-<link linkend="clsCollection">Collection class</link>.</para>
 <programlisting>
 <![CDATA[
 >>-intersection(argument)--------------------------------------><
@@ -5148,9 +5099,6 @@ items associated with index <emphasis role="italic">index</emphasis>.</para>
 <secondary>putAll method</secondary>
 <tertiary>of Set class</tertiary></indexterm>
 
-<para>This method overrides the
-<link linkend="mthMapCollectionPutAll">putAll method</link> from the
-<link linkend="clsMapCollection">Map Collection class</link>.</para>
 <programlisting>
 <![CDATA[
 >>-putAll(collection)------------------------------------------><
@@ -5175,9 +5123,6 @@ supplier will overwrite previous items with the same index.
 <secondary>subset method</secondary>
 <tertiary>of Set class</tertiary></indexterm>
 
-<para>This method overrides the
-<link linkend="mthCollectionSubset">subset method</link> from the
-<link linkend="clsCollection">Collection class</link>.</para>
 <programlisting>
 <![CDATA[
 >>-subset(argument)--------------------------------------------><
@@ -5201,9 +5146,6 @@ index values in the receiver collection.</para>
 <secondary>union method</secondary>
 <tertiary>of Set class</tertiary></indexterm>
 
-<para>This method overrides the
-<link linkend="mthCollectionUnion">union method</link> from the
-<link linkend="clsCollection">Collection class</link>.</para>
 <programlisting>
 <![CDATA[
 >>-union(argument)---------------------------------------------><
@@ -5235,9 +5177,6 @@ index values in the receiver collection.</para>
 <secondary>xor method</secondary>
 <tertiary>of Set class</tertiary></indexterm>
 
-<para>This method overrides the
-<link linkend="mthCollectionXor">xor method</link> from the
-<link linkend="clsCollection">Collection class</link>.</para>
 <programlisting>
 <![CDATA[
 >>-xor(argument)-----------------------------------------------><
@@ -5330,9 +5269,6 @@ the methods =, ==, \=, \==, &lt;>, and >&lt; using the DEFINE method.</para>
 ]]>
 </programlisting>
 
-<para>This method overrides the
-<link linkend="mthObjectNew">new class method</link> from the
-<link linkend="clsObject">Object class</link>.</para>
 <para>Returns a new stem object. If you specify a string
 <emphasis role="italic">name</emphasis>, this
 value is used to create the derived name of compound variables. The default
@@ -5737,9 +5673,6 @@ class</link>, although there are not currently any methods defined in that class
 ]]>
 </programlisting>
 
-<para>This method overrides the
-<link linkend="mthObjectNew">new class method</link> from the
-<link linkend="clsObject">Object class</link>.</para>
 <para>Returns an empty Table object.</para>
 </section>
 
@@ -6068,9 +6001,6 @@ class</link>, although there are not currently any methods defined in that class
 ]]>
 </programlisting>
 
-<para>This method overrides the
-<link linkend="mthObjectNew">new class method</link> from the
-<link linkend="clsObject">Object class</link>.</para>
 <para>Returns an empty IdentityTable object.</para>
 </section>
 
