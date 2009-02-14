@@ -10,9 +10,9 @@ program.</para>
 <section><title>Installation</title>
 <indexterm><primary>installation, socket class</primary></indexterm>
 <indexterm><primary>socket class installation</primary></indexterm>
-<para>The Socket class package is contained in the file socket.cls. This file 
+<para>The Socket class package is contained in the file socket.cls. This file
 must be placed in a directory listed in your PATH. To get access to the class
-and methods in the Socket class, include the following statement in your ooRexx 
+and methods in the Socket class, include the following statement in your Rexx
 program:
 <programlisting>
 ::requires 'socket.cls'
@@ -41,7 +41,7 @@ program:
 ]]>
 </programlisting>
 
-<para>This is a class method. It returns an instance of the 
+<para>This is a class method. It returns an instance of the
 <link linkend="clsHostInfo">HostInfo</link> class.
 </para>
 </section>
@@ -58,7 +58,7 @@ program:
 ]]>
 </programlisting>
 
-<para>This is a class method. It returns an instance of the 
+<para>This is a class method. It returns an instance of the
 <link linkend="clsHostInfo">HostInfo</link> class.
 </para>
 </section>
@@ -75,7 +75,7 @@ program:
 ]]>
 </programlisting>
 
-<para>This is a class method. It returns the dotted decimal host id of the local 
+<para>This is a class method. It returns the dotted decimal host id of the local
 machine.
 </para>
 </section>
@@ -92,7 +92,7 @@ machine.
 ]]>
 </programlisting>
 
-<para>This method returns a new socket class instance that is connected to a 
+<para>This method returns a new socket class instance that is connected to a
 remote host that has requested a connection from a server socket.
 </para>
 </section>
@@ -110,7 +110,7 @@ remote host that has requested a connection from a server socket.
 </programlisting>
 
 <para>This method binds a socket to a particular local ip address specified by
-an instance of the <link linkend="clsInetAddress">InetAddress</link> class 
+an instance of the <link linkend="clsInetAddress">InetAddress</link> class
 contained in the <emphasis role="italic">address</emphasis> argument.
 </para>
 </section>
@@ -144,7 +144,7 @@ contained in the <emphasis role="italic">address</emphasis> argument.
 </programlisting>
 
 <para>This method connect the socket to a remote address specified by an
-instance of the <link linkend="clsInetAddress">InetAddress</link> class 
+instance of the <link linkend="clsInetAddress">InetAddress</link> class
 contained in the <emphasis role="italic">address</emphasis> argument.
 </para>
 </section>
@@ -181,7 +181,7 @@ following:
    <member>SO_SNDBUF     </member>
    <member>SO_SNDLOWAT   </member>
    <member>SO_SNDTIMEO   </member>
-   <member>SO_TYPE       </member> 
+   <member>SO_TYPE       </member>
    <member>SO_USELOOPBACK</member>
 </simplelist>
 </para>
@@ -216,7 +216,7 @@ following:
 </programlisting>
 
 <para>This method returns an instance of the
-<link linkend="clsInetAddress">InetAddress</link> class than is the name 
+<link linkend="clsInetAddress">InetAddress</link> class than is the name
 information of the remote machine.
 </para>
 </section>
@@ -253,7 +253,7 @@ information of the remote machine.
    </varlistentry>
    <varlistentry>
       <term><emphasis role="bold">protocol</emphasis></term>
-      <listitem><para>If specified, this argument must be 0, 
+      <listitem><para>If specified, this argument must be 0,
                     IPPROTO_UDP or IPPROTO_TCP. 0 is the default.
       </para></listitem>
    </varlistentry>
@@ -310,7 +310,7 @@ requests the socket should cache.
 
 <para>This method recieves data on a socket connection. The
 <emphasis role="italic">length</emphasis> is the maximum number of bytes the
-socket should receive. This method returns the data received, which could be 
+socket should receive. This method returns the data received, which could be
 less than the maximum length specified.
 </para>
 </section>
@@ -327,7 +327,7 @@ less than the maximum length specified.
 ]]>
 </programlisting>
 
-<para>This method recieves data on a socket connection from the specified 
+<para>This method recieves data on a socket connection from the specified
 <emphasis role="italic">address</emphasis>. The <emphasis role="italic">
 address</emphasis> must be an instance of the <link linkend="clsInetAddress">InetAddress
 </link> class. The <emphasis role="italic">length</emphasis> is the maximum
@@ -348,8 +348,8 @@ received, which could be less than the maximum length specified.
 ]]>
 </programlisting>
 
-<para>This method monitors activity on a set of sockets. It returns the number 
-of sockets ready for activity. Upon return the input argument arrays will be 
+<para>This method monitors activity on a set of sockets. It returns the number
+of sockets ready for activity. Upon return the input argument arrays will be
 reset to only the sockets that are ready.
 </para>
 <variablelist>
@@ -360,19 +360,19 @@ reset to only the sockets that are ready.
    </varlistentry>
    <varlistentry>
       <term><emphasis role="bold">writes</emphasis></term>
-      <listitem><para>An array of socket instances to monitor for write 
+      <listitem><para>An array of socket instances to monitor for write
                     activity.
       </para></listitem>
    </varlistentry>
    <varlistentry>
       <term><emphasis role="bold">excepts</emphasis></term>
-      <listitem><para>An array of socket instances to monitor for exception 
+      <listitem><para>An array of socket instances to monitor for exception
                     activity.
       </para></listitem>
    </varlistentry>
    <varlistentry>
       <term><emphasis role="bold">timeout</emphasis></term>
-      <listitem><para>The timeout in seconds. This must be a whole number (no 
+      <listitem><para>The timeout in seconds. This must be a whole number (no
                    fractions allowed).
       </para></listitem>
    </varlistentry>
@@ -391,8 +391,8 @@ reset to only the sockets that are ready.
 ]]>
 </programlisting>
 
-<para>This method sends the <emphasis role="italic">data</emphasis> on the 
-socket. It returns the number of bytes sent, which could be less than the length 
+<para>This method sends the <emphasis role="italic">data</emphasis> on the
+socket. It returns the number of bytes sent, which could be less than the length
 of <emphasis role="italic">data</emphasis>.
 </para>
 </section>
@@ -550,7 +550,7 @@ with the data in <emphasis role="italic">value</emphasis>. See the method
 ]]>
 </programlisting>
 
-<para>This method returns a stem variable set to the current values of the 
+<para>This method returns a stem variable set to the current values of the
 instance. This method has limited usefulness to the programmer.
 </para>
 </section>
@@ -675,7 +675,7 @@ instance. This method has limited usefulness to the programmer.
 ]]>
 </programlisting>
 
-<para>This method create an instance of the HostInfo class and sets all the 
+<para>This method create an instance of the HostInfo class and sets all the
 attribute methods of the instance. The <emphasis role="italic">hostname</emphasis>
 can be either a valid DNS host name or an ip address.
 </para>
@@ -693,7 +693,7 @@ can be either a valid DNS host name or an ip address.
 ]]>
 </programlisting>
 
-<para>This method returns a stem variable set to the current values of the 
+<para>This method returns a stem variable set to the current values of the
 instance. This method has limited usefulness to the programmer.
 </para>
 </section>

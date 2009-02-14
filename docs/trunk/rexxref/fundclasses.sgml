@@ -42,7 +42,7 @@
     #########################################################################
 -->
 <section id="fundclasses"><title>The Fundamental Classes</title>
-<para>This section describes the fundamental classes supplied by ooRexx.</para>
+<para>This section describes the Rexx fundamental classes.</para>
 
 <section id="clsObject"><title>The Object Class</title>
 <indexterm><primary>Object class</primary></indexterm>
@@ -1300,7 +1300,7 @@ method in <link linkend="mthClassSubclass">subClass</link>.</para>
 <para>Returns the method object for the receiver class's definition for the
 method name <emphasis role="italic">methodname</emphasis>. If the receiver
 class defined <emphasis role="italic">methodname</emphasis> as unavailable,
-this method returns the NIL object. If the receiver
+this method returns the Nil object. If the receiver
 class did not define <emphasis role="italic">methodname</emphasis>, the
 language processor raises an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -1565,7 +1565,7 @@ the original class used on a <emphasis role="bold">subClass</emphasis> or a
 <indexterm><primary>examples</primary>
 <secondary>superClass method</secondary></indexterm>
 <programlisting>
-say .object~superclass    -- displays "The NIL object"
+say .object~superclass    -- displays "The Nil object"
 say .class~superclass     -- displays "The Object class"
 say .set~superclass       -- displays "The Table class"
 </programlisting>
@@ -1819,10 +1819,10 @@ the specified comparison operation. The receiver object and the
 be string objects.
 If <emphasis role="italic">argument</emphasis> is not a string object, it is converted
 to its string representation for the comparison.
-The one exception is when <emphasis role="italic">argument</emphasis> is the .nil object
+The one exception is when <emphasis role="italic">argument</emphasis> is the Nil object
 for the ==, \==, =, \=, &gt;&lt;, and &lt;&gt; operators.
-A string object will never compare equal to the .nil object, even when the
-string matches the string value of the .nil object ("The NIL object").
+A string object will never compare equal to the Nil object, even when the
+string matches the string value of the Nil object ("The Nil object").
 </para>
 
 <para>The comparison operators you can use in a message are: </para>
@@ -5678,7 +5678,7 @@ items.</para>
 <indexterm><primary>class</primary>
 <secondary>Package class</secondary></indexterm>
 
-<para>The Package class contains the source code for a package of ooRexx code. A
+<para>The Package class contains the source code for a package of Rexx code. A
 package instance holds all of the routines, classes, and methods created from a
 source code unit and also manages external dependencies refereced by ::REQUIRES
 directives.  The files loaded by ::REQUIRES are also contained in Package class
@@ -6234,7 +6234,7 @@ the message to complete.</para>
 
 <para>Returns an error condition object from any execution error with the message
 object's message invocation. If the message completed normally, or is still executing,
-<emphasis role="bold">errorCondition</emphasis> returns the .nil object.</para>
+<emphasis role="bold">errorCondition</emphasis> returns the Nil object.</para>
 </section>
 
 <section id="mthMessageHasError"><title>hasError</title>
