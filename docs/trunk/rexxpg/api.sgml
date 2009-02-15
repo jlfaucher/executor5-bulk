@@ -368,11 +368,17 @@ allowed.  The range for 32-bit versions is 999,999,999 to 0, and
 either '1' (true) or '0' (false).  On conversion back to a string value, a non-zero binary value be converted
 to '1' (true) and zero will become '0' (false).
 </para></entry></row>
-</variablelist>
+</tbody>
+</tgroup>
+</informaltable>
 <para>A subset of the integer numeric types are of different sizes depending on the
 addressing mode of the system you are compiling on.  These types will be 32-bits in size
 or 64-bits.  The variable size types are: </para>
-<variablelist>
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
 <row><entry>size_t</entry>
 <entry><para>An unsigned "size" value.  This is the value type returned by pointer subtraction.
 </para></entry></row>
@@ -386,9 +392,15 @@ Use an uintptr_t type if you wish to return a pointer value as a Rexx number.
 <row><entry>intptr_t</entry>
 <entry><para>A signed equivalent to uintptr_t.
 </para></entry></row>
-</variablelist>
+</tbody>
+</tgroup>
+</informaltable>
 <para>The remainder of the numeric types have fixed sizes regardless of the addressing mode.</para>
-<variablelist>
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
 <row><entry>int</entry>
 <entry><para>A 32-bit signed integer.
 </para></entry></row>
