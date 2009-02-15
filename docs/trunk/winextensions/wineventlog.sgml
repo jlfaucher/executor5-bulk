@@ -283,6 +283,187 @@ eventLog~open( , "LoadPerf")
       source as WinApp1 in the first record and LoadPerf for the source in the second record.
     </para>
   </listitem></varlistentry>
+  <varlistentry id="eventLogRecord"><term><emphasis role="bold">Event Log Record</emphasis></term>
+  <listitem>
+    <para>
+      Each event is stored in an event log as a single record. The information in the record includes
+      things like: time, type, category, record number, etc.. Each record contains the same fields,
+      although some fields, like the binary data field, are not always filled in.
+    </para>
+    <para id="paraEventRecordNumber">
+      Each record has a record number. The first record written to a log is number 1 and records are then
+      written consecutively. This makes the record with the lowest record number the oldest record.
+      Likewise the highest record number makes that record the youngest record. The user can set a
+      property for an event log to overwrite records when the maximum log size is reached. Because of
+      this, the oldest record is not always record number 1. The <link
+      linkend="mthGetFirst">getFirst</link>() and <link linkend="mthGetLast">getLast</link>() methods can
+      be used to get the absolute record numbers of the oldest and youngest records.
+    </para>
+    <para>
+      Record numbers can be used in the <link linkend="mthReadRecords">readRecords</link>() method to
+      read portions of the event log rather than the entire log.
+    </para>
+    <para>
+      When the <link linkend="mthReadRecords">readRecords</link>() method reads a record it converts the
+      information in the record to a string with a defined format that makes it easy to parse. The parts
+      (fields) of the string are as follows, in order:
+    </para>
+<table id="tblEventRecord" frame="all">
+<title>Event Record Fields</title>
+<tgroup cols="3">
+<colspec align='left' colwidth='1*'>
+<colspec align='left' colwidth='3*'>
+<colspec align='left' colwidth='1*'>
+<thead>
+<row>
+<entry>Field</entry>
+<entry>Description</entry>
+<entry>Format</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>type</entry>
+<entry>The <link linkend="eventType">event type</link></entry>
+<entry>Single word</entry>
+</row>
+<row>
+<entry>date</entry>
+<entry>The date the event was written</entry>
+<entry>Single word</entry>
+</row>
+<row>
+<entry>time</entry>
+<entry>The time the event was written</entry>
+<entry>Single word</entry>
+</row>
+<row>
+<entry>source</entry>
+<entry>The <link linkend="eventSource">The event source</link></entry>
+<entry>Enclosed in single quotes</entry>
+</row>
+<row>
+<entry>id</entry>
+<entry>The <link linkend="eventIdentifier">event ID</link></entry>
+<entry>Single word</entry>
+</row>
+<row>
+<entry>userID</entry>
+<entry>The user ID, if applicable</entry>
+<entry>Single word</entry>
+</row>
+<row>
+<entry>computer</entry>
+<entry>The machine generating the event</entry>
+<entry>Single word</entry>
+</row>
+<row>
+<entry>description</entry>
+<entry>A descripiton of the event</entry>
+<entry>Enclosed in single quotes</entry>
+</row>
+<row>
+<entry>data</entry>
+<entry>Binary data associated with the event</entry>
+<entry>Enclosed in single quotes</entry>
+</row>
+</tbody></tgroup>
+</table>
+    <para>
+      Assuming that <emphasis role="italic">eventRec</emphasis> is the event record string, the following
+      shows how to parse the string into its component fields:
+    </para>
+<programlisting>
+parse var eventRec type date time "'" source "'" id userID computer "'" description "'" "'" data "'"
+</programlisting>
+  </listitem></varlistentry>
+  <varlistentry id="eventType"><term><emphasis role="bold">Event Type</emphasis></term>
+  <listitem>
+    <para>
+      Each event recorded in an event log is a single type. There are five types of events that can be
+      logged. Each event type has well-defined common data and some optional data that is specific to the
+      event. When an event is logged the event type is included.
+    </para>
+    <para>
+      When the <computeroutput>WindowsEventLog</computeroutput> instance reads a record, the event type
+      is indicated by a keyword. When the programmer writes to the event log using a
+      <computeroutput>WindowsEventLog</computeroutput> object, she specifies the event type with its
+      numeric value. The following table contains information on the five event types and shows the event
+      type keywords and numeric values.
+    </para>
+<table id="tblEventType" frame="all">
+<title>Event Types</title>
+<tgroup cols="4">
+<colspec align='left' colwidth='1*'>
+<colspec align='left' colwidth='4*'>
+<colspec align='left' colwidth='1*'>
+<colspec align='left' colwidth='1*'>
+<thead>
+<row>
+<entry>Type</entry>
+<entry>Description</entry>
+<entry>Keyword</entry>
+<entry>Value</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>Error</entry>
+<entry>
+  An event that indicates a significant problem such as loss of data or loss of functionality. For example, if a service
+  fails to load during startup, an Error event is logged.
+</entry>
+<entry>Error</entry>
+<entry>1 (0x01)</entry>
+</row>
+<row>
+<entry>Warning</entry>
+<entry>
+  An event that is not necessarily significant, but may indicate a possible future problem. For example, when disk space is
+  low, a Warning event is logged. If an application can recover from an event without loss of functionality or data, it can
+  generally classify the event as a warning event.
+</entry>
+<entry>Warning</entry>
+<entry>2 (0x02)</entry>
+</row>
+<row>
+<entry>Information</entry>
+<entry>
+  An event that describes the successful operation of an application, driver, or service. For example, when a network driver
+  loads successfully, it may be appropriate to log an Information event. Note that it is generally inappropriate for a
+  desktop application to log each time it starts.
+</entry>
+<entry>Infomation</entry>
+<entry>4 (0x04)</entry>
+</row>
+<row>
+<entry>Success Audit</entry>
+<entry>
+  An event that records an audited security access attempt that is successful. For example, a user's successful attempt to
+  log on to the system is logged as a Success Audit event.
+</entry>
+<entry>Success</entry>
+<entry>8 (0x08)</entry>
+</row>
+<row>
+<entry>Failure Audit</entry>
+<entry>
+  An event that records an audited security access attempt that fails. For example, if a user tries to access a network drive
+  and fails, the attempt is logged as a Failure Audit event.
+</entry>
+<entry>Failure</entry>
+<entry>16 (0x10)</entry>
+</row>
+</tbody></tgroup>
+</table>
+  </listitem></varlistentry>
+  <varlistentry id="eventIdentifier"><term><emphasis role="bold">Event ID</emphasis></term>
+  <listitem>
+    <para>
+      The event identifier value is specific to the event source for the event. It is used with source
+      name to locate a description string in the message file for the event source.
+    </para>
+  </listitem></varlistentry>
   <varlistentry id="openedEventLog"><term><emphasis role="bold">Opened event log</emphasis></term>
   <listitem>
     <para>
@@ -505,8 +686,8 @@ Adjusted size of the minimum read buffer to 65536 bytes
   <computeroutput>readRecords()</computeroutput> is called the array is first emptied.
 </para>
 <para>
-  Each index in the array holds one event record in the form of a string with a fixed format. The <link
-  linkend="mthReadRecords">readRecords</link> documentation has the details of this format.
+  Each index in the array holds one event record in the form of a string with a <link
+  linkend="eventLogRecord">fixed format</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">~events=</emphasis> (set events)</term>
@@ -566,8 +747,9 @@ The System log has 1983 records
 
 <para>
   Opens the specified event log. Once an event log is opened, other methods of the
-  <computeroutput>WindowsEventLog</computeroutput> instance will use that opened log until it has been
-  <link linkend="mthCloseWindowsEventLog">closed</link>.
+  <computeroutput>WindowsEventLog</computeroutput> instance will use that <link
+  linkend="openedEventLog">opened log</link> until it has been <link
+  linkend="mthCloseWindowsEventLog">closed</link>.
 </para>
 <para>
   If an event log is already open, then it is first closed before the specified log is opened.
@@ -581,14 +763,14 @@ The System log has 1983 records
         <varlistentry><term>server</term>
         <listitem>
           <para>
-            The name of the <link linkend="server">server</link> on which the event log is to be
-            opened.
+            Optional. The name of the <link linkend="server">server</link> on which the event log is to
+            be opened.
           </para>
         </listitem></varlistentry>
         <varlistentry><term>source</term>
         <listitem>
           <para>
-            The <link linkend="eventSource">event source</link>.
+            Optional. The <link linkend="eventSource">event source</link>.
           </para>
         </listitem></varlistentry>
       </variablelist>
@@ -598,7 +780,7 @@ The System log has 1983 records
   <listitem>
     <para>
       This method returns 0 on success, and the operating system error code on failure.
-      </para>
+    </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
@@ -653,187 +835,255 @@ end
 <tertiary>of WindowsEventLog class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-close-------------------------------------------------------><
+>>-close--------------------------------><
 ]]>
 </programlisting>
 
-<para>Closes an open event log.</para>
-</section>
-
-<section id="mthReadWindowsEventLog"><title>read</title>
-<indexterm><primary>read method</primary>
-<secondary>of WindowsEventLog class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>read method</secondary>
-<tertiary>of WindowsEventLog class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-read--+---------------------------------------------------+-->
-         |    +-FORWARDS--+                                  |
-         +-(--+-----------+--,--+--------+--,--+--------+--,-+
-              +-BACKWARDS-+     +-server-+     +-source-+
-
->--+--------------------------+--------------------------------><
-   +-+-------+--,--+-----+--)-+
-     +-start-+     +-num-+
-]]>
-</programlisting>
-
-<para>Reads an event log and returns an array containing the event records. If
-the event log was not opened with the OPEN method, the event log specified by
-the <emphasis role="italic">server</emphasis> and <emphasis
-role="italic">source</emphasis> is opened and closed after processing.
+<para>
+  Closes an <link linkend="openedEventLog">open event log</link>. If no log is open, this method does
+  nothing.
 </para>
 <variablelist>
-<varlistentry><term>Arguments:</term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>server</term>
-<listitem><para>The UNC (universal naming convention) name of the server on which
-the event log is to be opened. If this argument is not specified, the log is
-opened at the local machine.</para>
-<para>This argument is only used if the event log was not
-opened before.</para>
-</listitem></varlistentry>
-<varlistentry><term>source</term>
-<listitem><para>The name of the source of the event log. It must be a subkey of
-a log file entry under the EventLog key in the registry. If, for example, the
-registry looks as follows:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns 0 on success. If there is an error closing the event log the operating
+      system error code is returned. An error is highly unlikely.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following code snippet opens the default event log (the Application log,) displays some
+      information about the log, then closes the open log.
+    </para>
 <programlisting>
-HKEY_LOCAL_MACHINE
-  System
-    CurrentControlSet
-      Services
-      EventLog
-        Application
-          WinApp1
-        Security
-          WinApp2
-        System
-</programlisting>
-&quot;Application&quot;, &quot;Security&quot;, &quot;System&quot;,
-&quot;WinApp1&quot;, and &quot;WinApp2&quot; are valid sources. If the source is
-not found, the &quot;Application Log&quot; is used.</para>
-<para>This argument is only used if the event log was not opened
-before.</para>
-</listitem></varlistentry>
-<varlistentry><term>start</term>
-<listitem><para>The record number of the event log record to be started.
-The oldest record is always the first record regardless of the direction
-specified.
-</para></listitem></varlistentry>
-<varlistentry><term>num</term>
-<listitem><para>The number of the event log record to be read.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-<programlisting>
-evl = .WindowsEventLog~new
 
-say " reading complete System log forwards without opening it before "
+log = .WindowsEventLog~new
 
-records = evl~read("FORWARDS", ,"System")
-
-if records \= .nil then
-  call DisplayRecords
-else
-  say "==> Error reading complete System event log"
-
-exit 0   /* leave program */
-
-DisplayRecords:
-
-say records~items "records read"
-
-do i=1 to records~items
-  say "============================================================="
-  temp = records[i]
-  parse var temp type date time "&apos;" sourcename"&apos;" id,
-  userid computer "&apos;" string "&apos;" "&apos;" data "&apos;"
-  say "Type	: "type
-  say "Date	: "date
-  say "Time	: "time
-  say "Source	: "sourcename
-  say "ID	: "id
-  say "UserId	: "userid
-  say "Computer : "computer
-  say "Detail	: "string
-  say "Data 	: "data
+ret = log~open( , name)
+if ret == 0 then do
+  say "  Total records:     " log~getNumber
+  say "  First record number" log~getFirst
+  say "  Last record number " log~getLast
+  say "  Log is full?       " log~isFull
+  log~close
 end
-return
 
-::requires "winsystm.cls"
+/* Output might be:
+
+  Total records:      1827
+  First record number 1
+  Last record number  1827
+  Log is full?        0
+
+/*
 </programlisting>
-</para></listitem></varlistentry>
+  </listitem></varlistentry>
 </variablelist>
+
 </section>
 
+<section id="mthReadWindowsEventLog"><title>read <emphasis role="bold">(deprecated)</emphasis></title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>WindowsEventLog class</secondary>
+  <tertiary>read</tertiary>
+</indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthReadRecords">readRecords()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>readRecords()</computeroutput> method.
+  This method may not exist in future versions of ooRexx.
+</para></note>
+</section>
 
 <section id="mthReadRecords"><title>readRecords</title>
 <indexterm><primary>readRecords</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--readRecords(--x--,--y--)---------------------------------------><
+>>--readRecords(-+-----------+-+----------+-+----------+-+---------+-+---------+--)--><
+                 +-direction-+ +-,-server-+ +-,-source-+ +-,-start-+ +-,-count-+
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Reads the desired event records from the specified server. Each record is stored in the <link
+  linkend="atrEvents">events</link> array. After a successful read, all records will be contained in the
+  <computeroutput>events</computeroutput> array in the order there were read. Prior to starting the read
+  opereation the array is emptied.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
+      This method will raise syntax errors if the <emphasis role="italic">start</emphasis> or <emphasis
+      role="italic">count</emphasis> arguments are used incorrectly. These arguments, if used, must
+      specify records actually contained in the event log. Use any combination of the <link
+      linkend="mthGetFirst">getFirst</link>(), <link linkend="mthGetLast">getLast</link>(), or <link
+      linkend="mthGetNumber">getNumber</link>() methods to determine the absolute <link
+      linkend="paraEventRecordNumber">record numbers</link> contained in the log.
+    </para>
+    <para>
+      During a read operation, if a single event record is larger than the read buffer an execution error
+      will be raised. The text of the error will read: An event log record is too large (<emphasis
+      role="italic">recordSize</emphasis>) for the read buffer (<emphasis
+      role="italic">bufferSize</emphasis>.) Where <emphasis role="italic">recordSize</emphasis> is the
+      size of the record and <emphasis role="italic">bufferSize</emphasis> is the size of the read buffer
+      at the time of the error.
+    </para>
+    <para>
+      The minimum size of the read buffer can be increased by using the <link
+      linkend="mthMinimumReadEquals">minimumRead=</link> method. If this error occurred, the minimum read
+      buffer should be set larger than the size of the offending record.
+    </para>
+    <para>
+      <emphasis role="bold">Note well:</emphasis> It seems inconceivable that the read buffer could be
+      smaller than a single event record. The minimum possible size of the buffer is 16 KB and the
+      average size of an event record is between 100 and 200 bytes. The ooRexx programmer should
+      <emphasis role="bold">not</emphasis> worry about this. This unlikely possibility is simple
+      documented for the sake of completeness.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The arguments are:
       <variablelist>
-        <varlistentry><term>0</term>
+        <varlistentry><term>direction</term>
         <listitem>
           <para>
-            Success
+            Optional. The direction to read the from the event log, forwards or backwards. The default is
+            to read forwards. If this argument is not omitted, it must be exactly one of the keywords,
+            BACKWARDS or FORWARDS. Case is not significant.
           </para>
         </listitem></varlistentry>
-        <varlistentry><term>-1</term>
+        <varlistentry><term>server</term>
         <listitem>
           <para>
-            Some error.
+            Optional. The name of the <link linkend="server">server</link> on which the event log is to
+            be opened.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>source</term>
+        <listitem>
+          <para>
+            Optional. The <link linkend="eventSource">event source</link>.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>start</term>
+        <listitem>
+          <para>
+            Optional. The starting <link linkend="paraEventRecordNumber">record number</link> for the
+            read operation. The start and the count arguments must be used together. Either both must be
+            specified or neither. If neither argument is specified, the entire log is read. When both are
+            specified, the read starts with the record number specified and reads in the direction
+            specified for <emphasis role="italic">count</emphasis> records.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>count</term>
+        <listitem>
+          <para>
+            Optional. The count of records to be read during the read operation. The start and the count
+            arguments must be used together. Either both must be specified or neither. If neither
+            argument is specified, the entire log is read. When both are specified, the read starts with
+            the record number specified and reads in the direction specified for <emphasis
+            role="italic">count</emphasis> records.
           </para>
         </listitem></varlistentry>
       </variablelist>
     </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns 0 on success and the operating system error code on failure.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
+      This example reads the 5 most recent event records in the System event log and displays them to the
+      console. (If there are less than 5 records in the log, then all the records are read.)
+<programlisting>
+<![CDATA[
+  log = .WindowsEventLog~new
+
+  startRec = log~getLast( , "System")
+  count = log~getNumber~min(5)
+
+  ret = log~readRecords("BACKWARDS", , "System", startRec, count)
+
+  if ret == 0 then do
+    c = displayRecords(log~events)
+    say 'Displayed' c 'records'
+  end
+  else do
+    say "Error reading the System event log rc:" ret "-" SysGetErrorText(ret)
+  end
+
+::requires 'winSystm.cls'
+
+/* Routine to display the event log records */
+::routine displayRecords
+  use strict arg records
+
+  do record over records
+    say "=========================================================================="
+    parse var record type date time "'" sourcename"'" id userid computer "'" string "'" "'" data "'"
+    say 'Type     : 'type
+    say 'Date     : 'date
+    say 'Time     : 'time
+    say 'Source   : 'sourcename
+    say 'ID       : 'id
+    say 'UserId   : 'userid
+    say 'Computer : 'computer
+    say 'Detail   : 'string
+    say 'Data     : 'data
+  end
+  say "=========================================================================="
+return records~items
+
+/* The output (shortened to 2 records) might be:
+
+==========================================================================
+Type     : Information
+Date     : 02/14/09
+Time     : 11:32:21
+Source   : WinHttpAutoProxySvc
+ID       : 12503
+UserId   : N/A
+Computer : OSPREY
+Detail   : The WinHTTP Web Proxy Auto-Discovery Service has been idle for
+15 minutes, it will be shut down.
+
+Data     :
+==========================================================================
+Type     : Information
+Date     : 02/14/09
+Time     : 11:15:51
+Source   : Service Control Manager
+ID       : 7036
+UserId   : N/A
+Computer : OSPREY
+Detail   : The WinHTTP Web Proxy Auto-Discovery Service service entered
+the running state.
+
+Data     :
+==========================================================================
+Displayed 5 records
+
+*/
+]]>
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
