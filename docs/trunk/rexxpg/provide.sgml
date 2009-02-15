@@ -78,15 +78,19 @@ are described later in this chapter are printed in bold:</para>
         Array
         List
         Queue
+        CircularQueue
+        IdentityTable
         Table
         Set
         Directory
+        Stem
         Relation
         Bag
     Message
     Method
+    Routine
+    Package
     Monitor
-    Stem
     Stream
     String
     Supplier
@@ -161,34 +165,35 @@ once.
 <section id="msgcl"><title>The Message Class</title>
 <indexterm><primary>classes</primary>
 <secondary>Message class</secondary></indexterm>
-<para>To manipulate message
-objects, you use the Message class. Methods created
-for this class are used, for example, to send a message, to notify the sender
-object when an error occurs or when message processing is complete, to return
-the results of that processing to the sender or to some other object, or to
-process the message object concurrently with the sender object.</para>
+<para>Message objects allow you to run concurrently methods on other threads or to
+invoke dynamically calculated messages.
+Methods of
+for this class are used, for example, to start a message on another thread, to notify the sender
+object when an error occurs or when message processing is complete, or to return
+the results of that processing to the sender or to some other object.
+</para>
 </section>
 
 <section id="moncl"><title>The Monitor Class</title>
 <indexterm><primary>classes</primary>
 <secondary>Monitor class</secondary></indexterm>
 <para>The Monitor class provides a way to forward messages to a specified destination.
-Monitor methods let you initialize a monitor object, specify a destination
-object or use a previously specified one, and obtain the name of the current
-destination object.</para>
+The Monitor creates a proxy that can route dynamically route messages to different destinations.
+Monitor methods change or restore a destination object.
+</para>
 </section>
 
 <section id="stemcl"><title>The Stem Class</title>
 <indexterm><primary>classes</primary>
 <secondary>Stem class</secondary></indexterm>
-<para>A stem is a symbol that
+<para>A stem variable is a symbol that
 must start with a letter and end with a period, like &quot;FRED.&quot; or &quot;A.&quot;.
-The value of a stem is a stem object by default. A stem object is a collection
-of unique indexes that are character strings. Stem objects are automatically
+The value of a stem variable is a Stem <emphasis role="italic">object</emphasis>. A stem object is a collection
+of unique character string indexes. Stem objects are automatically
 created when a Rexx stem variable or Rexx compound variable is used. In addition
 to the items assigned to the collection indexes, a stem object also has a
 default value that is used for all uninitialized indexes of the collection.
-You can assign a default value to a stem object and later retrieve this value.</para>
+</para>
 </section>
 
 <section id="streacl"><title>The Stream Class</title>
@@ -224,16 +229,12 @@ can be accomplished using the String class of objects.</para>
 <section id="supplcl"><title>The Supplier Class</title>
 <indexterm><primary>classes</primary>
 <secondary>Supplier class</secondary></indexterm>
-<para>Some collections
-have suppliers: a bakery, for example, can supply certain breads, cookies,
-cakes and pies; a financial report can supply certain data, statistics, tables,
-and reports. The  Supplier class is used to enumerate
-items that a collection contained when the supplier was created. For example,
-this class contains methods to verify if an item is available from a supplier
-(Does the Pie-by-Night Bakery sell chocolate cake?). Another method returns
-the index of the current item in a collection (What is the position of the
-apple pie record?). Others return the current collection item in a collection
-object, and the next item in the collection.</para>
+<para>All collections
+have suppliers
+The  Supplier class is used to enumerate
+items that a collection contained when the supplier was created.  The supplier
+gives access to each index/value pair stored in the collection as a sequence.
+</para>
 </section>
 </section>
 
@@ -242,16 +243,16 @@ object, and the next item in the collection.</para>
 hierarchies.</para>
 
 <section id="objcl"><title>The Object Class</title>
-<para>Because the topmost class in the hierarchy, or the root class,
+<para>Because the root class in the hierarchy,
 is the Object class, everything below it is an object.
 To interact with each other, objects require their own actions, called methods.
 These methods, which encode actions that are needed by all objects, belong
 to the Object class.</para>
 <para>Every other class in the hierarchy inherits the methods of the root class.
 Inheritance is the handing down of methods from a &quot;parent&quot;
-class--called a superclass--to
-all of its &quot;descendent&quot; classes--called subclasses. Finally,
-instances acquire methods from their classes. Any method created for the Object
+class&mdash;called a superclass&mdash;to
+all of its &quot;descendent&quot; classes&mdash;called subclasses. Finally,
+instances acquire methods from their own classes. Any method created for the Object
 class is automatically made available to every other class in the hierarchy.</para>
 </section>
 
@@ -264,9 +265,8 @@ Class-like characteristics are methods and related variables, which reside
 in Class, to be used by all classes.</para>
 <para>A class that can be used to create another class is called a
 <indexterm><primary>metaclasses</primary></indexterm>
-metaclass. The Class class
-is unique among Rexx classes in that it is the only metaclass that Rexx provides
-(see <link linkend="meta">Metaclasses</link>).
+<link linkend="meta">metaclass</link>. The Class class
+is unique among Rexx classes in that it is the only metaclass that Rexx provides.
 As such, the Class's methods not only make
 new classes, they make methods for use by the new class and its instances.
 They also make methods that only the new class itself can use, but not its
@@ -292,11 +292,9 @@ created to manipulate pizzas would be instance methods:</para>
 <para>As a programmer, you typically create classes by using directives, rather
 than the methods of the Class class. In particular,
 you'll use the ::CLASS directive, described later in this section. The
-::CLASS directive is a kind of Rexx clause that allows class definitions to
-be saved permanently, in a file, where they can be reused by other programs.
-Creating classes by using Class methods sent as messages is not recommended
-if permanency or reuse is required. At any rate, directives have class-creating
-powers similar to the Class methods.</para>
+::CLASS directive is a kind of Rexx clause that declares class definitions in a
+simple, static form in your programs.
+</para>
 </section>
 </section>
 
@@ -306,7 +304,7 @@ powers similar to the Class methods.</para>
 <para>The following are the supplied Rexx classes.</para>
 
 <figure float="1">
-<title id="meths1">Classes and Inheritance (part 1 of 7)</title>
+<title id="meths1">Classes and Inheritance (part 1 of 9)</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -316,7 +314,7 @@ powers similar to the Class methods.</para>
 </figure>
 
 <figure float="1">
-<title id="meths2">Classes and Inheritance (part 2 of 7)</title>
+<title id="meths2">Classes and Inheritance (part 2 of 9)</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -326,7 +324,7 @@ powers similar to the Class methods.</para>
 </figure>
 
 <figure float="1">
-<title id="meths3">Classes and Inheritance (part 3 of 7)</title>
+<title id="meths3">Classes and Inheritance (part 3 of 9)</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -336,7 +334,7 @@ powers similar to the Class methods.</para>
 </figure>
 
 <figure float="1">
-<title id="meths4">Classes and Inheritance (part 4 of 7)</title>
+<title id="meths4">Classes and Inheritance (part 4 of 9)</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -346,7 +344,7 @@ powers similar to the Class methods.</para>
 </figure>
 
 <figure float="1">
-<title id="meths5">Classes and Inheritance (part 5 of 7)</title>
+<title id="meths5">Classes and Inheritance (part 5 of 9)</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -356,7 +354,7 @@ powers similar to the Class methods.</para>
 </figure>
 
 <figure float="1">
-<title id="meths6">Classes and Inheritance (part 6 of 7)</title>
+<title id="meths6">Classes and Inheritance (part 6 of 9)</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
@@ -366,11 +364,31 @@ powers similar to the Class methods.</para>
 </figure>
 
 <figure float="1">
-<title id="meths7">Classes and Inheritance (part 7 of 7)</title>
+<title id="meths7">Classes and Inheritance (part 7 of 9)</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
 <imagedata fileref="ooRexxClasses7.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths7">Classes and Inheritance (part 8 of 9)</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxClasses8.png" align="left" scale="90">
+</imageobject>
+</mediaobject>
+</figure>
+
+<figure float="1">
+<title id="meths7">Classes and Inheritance (part 9 of 9)</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxClasses9.png" align="left" scale="90">
 </imageobject>
 </mediaobject>
 </figure>
@@ -383,8 +401,8 @@ powers similar to the Class methods.</para>
 can determine what classes need to be created.  You can create a class using
 messages or directives. Directives are a new kind of Rexx clause, and they
 are preferred over messages because the code is easier to read and understand,
-especially in large programs. They also provide an easy way for you to save
-your class definitions and share them with others using the PUBLIC option.</para>
+especially in large programs. They also provide an easy way for you to
+your class definitions with others using the PUBLIC option.</para>
 
 <section id="whatdir"><title>What Are Directives?</title>
 <indexterm><primary>directives</primary>
@@ -465,28 +483,36 @@ The next directive in the program, or the end of the program, ends the method.</
 <para>Some classes you define have an INIT method. INIT is called whenever a
 NEW message is sent to a class. The INIT method must contain whatever code
 is needed to initialize the object.</para>
-<para>It is not required that a ::METHOD directive be preceded by a ::CLASS directive.
-However, without it the method is only accessible by the executable part of
-the program through Rexx's .METHODS environment symbol. This symbol identifies
-a directory of methods that you can refer to by name. For each method name
-only one method directive can appear that is not associated with a class.</para>
 <para>The ::METHOD directive can be used for: </para>
 <itemizedlist>
 <listitem><para>Creating a class method for the most-recent ::CLASS
 directive (the CLASS option).</para></listitem>
 <listitem><para>Creating a private method; that is, a method that
 works like a subroutine and can only be activated by the objects of the same type it belongs
-to--otherwise the method is public by default, and any sender can activate
+to&mdash;otherwise the method is public by default, and any sender can activate
 it.</para></listitem>
 <listitem><para>Creating a method that can be called while other methods are active on
 the same object, as described in
 <link linkend="activat">Activating Methods</link> (the UNGUARDED option).
 </para></listitem>
-<listitem><para>Creating the instance methods
-<emphasis role="italic">method_name</emphasis> and
-<emphasis role="italic">method_name</emphasis>= for the preceding ::CLASS
-directive (the ATTRIBUTE option).</para></listitem>
 </itemizedlist>
+</section>
+
+<section id="attrdir"><title>The ::ATTRIBUTE Directive</title>
+<indexterm><primary>directives</primary>
+<secondary>::ATTRIBUTE</secondary></indexterm>
+<para>A ::CLASS directive can also be followed by ::ATTRIBUTE directives, which
+are used to create methods that directly access internal attributes of an object.
+For example, the Account class could define</para>
+<programlisting>
+::attribute balance
+</programlisting>
+<para>Which would allow the account balance to be set or retrieved.</para>
+<programlisting>
+  anAccount~balance = 10000     -- set a new account balance
+  say anAccount~balance         -- display the current account balance
+</programlisting>
+<para>The access methods can created as read-only, or given private scope.</para>
 </section>
 
 <section id="routdir"><title>The ::ROUTINE Directive</title>
@@ -495,14 +521,12 @@ directive (the ATTRIBUTE option).</para></listitem>
 <para>You use the ::ROUTINE directive to create a named routine within a program.
 The ::ROUTINE directive starts the named routine and another directive (or
 the end of the program) ends the routine.</para>
-<para>The ::ROUTINE directive is useful for defining lower-level routines that
-are called by several methods. These methods might be in unrelated classes
-or in different applications. You use ::ROUTINE when you have a utility that
-you do not want to appear as a method.</para>
+<para>The ::ROUTINE directive is useful organizing functions that are not specific to
+a particular class type.
+</para>
 <para>The ::ROUTINE directive includes a PUBLIC option for making the routine
 available to programs outside its containing Rexx program. The outside program
 must reference the routine by using a ::REQUIRES directive.</para>
-<para>Only one ::ROUTINE directive can appear for a routine name within a program.</para>
 </section>
 
 <section id="requdir"><title>The ::REQUIRES Directive</title>
@@ -517,13 +541,13 @@ and objects of another program. This directive has the following form: </para>
 ::REQUIRES program_name
 ]]>
 </programlisting>
-<para>The ::REQUIRES directive must precede all other directives, and the order
+<para>::REQUIRES directives are processed before other directives and the order
 of the ::REQUIRES directives determines the search order for the classes and
 routines defined in the named programs.</para>
 <para>Local routine or class definitions within a program override routines or
-classes of the same name in programs that are accessed through ::REQUIRES
-directives. Another directive (or the end of the program) must follow a ::REQUIRES
-directive.</para>
+classes of imported through ::REQUIRES
+directives.
+</para>
 </section>
 </section>
 
@@ -555,16 +579,14 @@ asav~name= "John Smith"          /* executable code ends   */
 
 ::class Account                  /* directives begin ...   */
 
-  ::method "TYPE"
+  ::method type
     return "an account"
 
-  ::method "NAME="
-    expose name
-    use arg name
+  ::attribute name
 
 ::class Savings subclass Account
 
-  ::method "TYPE"
+  ::method type
     return "a savings account"   /* ... directives end     */
 ]]>
 </programlisting>
@@ -574,27 +596,22 @@ asav~name= "John Smith"          /* executable code ends   */
 subclass. In the <computeroutput>::class Account</computeroutput>
 expression, the ::CLASS directive
 precedes the name of the new class, Account.</para>
-<para>The example program also uses the ::METHOD directive to create TYPE and
-NAME= methods for Account. In the
-<computeroutput>::method "TYPE"</computeroutput> expression, the
+<para>The example program also uses the ::METHOD directive to create a TYPE method and
+::ATTRIBUTE to create NAME and NAME= methods for Account. In the
+<computeroutput>::method type</computeroutput> instruction, the
 ::METHOD directive precedes the method name, and is immediately followed by
 the code for the method. Methods for any new class follow its ::CLASS directive
 in the program, and precede the next ::CLASS directive.</para>
-<para>In the <computeroutput>::method "NAME="</computeroutput>
-method, the USE ARG instruction retrieves the argument.
-<indexterm><primary>USE ARG instruction</primary></indexterm>
-<indexterm><primary>EXPOSE instruction</primary></indexterm>
-<indexterm><primary>variables</primary>
-<secondary>exposing</secondary></indexterm>
-The EXPOSE instruction, which must immediately follow the ::METHOD directive,
-makes the value (here, &quot;John Smith&quot;) available for use by other methods.
-A variable in an EXPOSE instruction is called an object
-variable.</para>
+<para>In the <computeroutput>::attribute name</computeroutput>
+directive, we're creating a pair of methods.  The NAME method returns the
+current value of the NAME object variable.  The NAME= method can assign
+a new value to the NAME object variable.
+</para>
 <para>You do not have to associate object variables with a specific object. Rexx
 keeps track of object variables for you. Whenever you send a message to savings
 account Asav, which points to the Name object, Rexx knows what internal object
 value to use. If you assign another value to Asav (such as &quot;Mary Smith&quot;),
-Rexx deletes the object that was associated with Asav (&quot;John Smith&quot;)
+Rexx recovers the object that was associated with Asav (&quot;John Smith&quot;)
 as part of its normal garbage-collection operations.</para>
 <para>In the Savings subclass, a second TYPE method is created that supersedes
 the TYPE method Savings would otherwise have inherited from Account. Note
@@ -663,68 +680,6 @@ exit
 </section>
 </section>
 
-<section id="createm"><title>Creating Classes Using Messages</title>
-<indexterm><primary>creating classes</primary></indexterm>
-<indexterm><primary>classes</primary>
-<secondary>creating with messages</secondary></indexterm>
-<indexterm><primary>messages</primary>
-<secondary>creating classes with</secondary></indexterm>
-<para>You can create a class using messages as well as directives.
-Though classes are available only to the program that creates them, there
-are occasions when this is useful and public availability is not required.
-The following sections demonstrate the message technique using the Savings
-Account example previously shown with directives.</para>
-
-<section id="definec"><title>Defining a New Class</title>
-<para>To define a new class using messages, you send a SUBCLASS message to the
-new class's superclass. That is, you send the message to the class that
-precedes the new class in the hierarchy. To define a subclass of the Object
-class called Account, you enter: </para>
-<programlisting>
-<![CDATA[
-account = .object~subclass("Account")
-]]>
-</programlisting>
-<para>Here, <computeroutput>.object</computeroutput> is a reference to the
-Rexx Object class. <computeroutput>.object</computeroutput> is an environment
-symbol indicating the intention to create
-a new class that is a subclass of the Object class. Environment symbols represent
-objects in a directory of public objects, called the Environment
-object. These public objects are available to all other objects, and
-include all the classes that Rexx provides. Environment symbols begin with
-a period and are followed by the class name. Thus the Object class is represented
-by <computeroutput>.object,</computeroutput> the Alarm class by
-<computeroutput>.alarm,</computeroutput> the Array class
-by <computeroutput>.array,</computeroutput> and so on.</para>
-<para>The twiddle (~) is the &quot;message send&quot; symbol,
-<computeroutput>subclass</computeroutput> is a method of Class, and the string
-identifier in parentheses is an
-argument of SUBCLASS that names the new class, Account.</para>
-</section>
-
-<section id="definem"><title>Adding a Method to a Class</title>
-<para>You use the DEFINE method to define methods for your new class. To define
-a TYPE method and a NAME= method, you enter: </para>
-<programlisting>
-<![CDATA[
-account~define("TYPE", "return ""an account""")
-account~define("NAME=", "expose name; use arg name")
-]]>
-</programlisting>
-</section>
-
-<section id="defines"><title>Defining a Subclass of the New Class</title>
-<para>Using the SUBCLASS method, you can define a subclass for your new class
-and then a method for that subclass. To define a Savings subclass for the
-Account class, and a TYPE method for Savings, you enter: </para>
-<programlisting>
-<![CDATA[
-savings = account~subclass("Savings Account")
-savings~define("TYPE", "return ""a savings account""")
-]]>
-</programlisting>
-</section>
-
 <section id="definei"><title>Defining an Instance</title>
 <para>You use the NEW method to define an instance of the new class,
 and then call methods that the instance inherited from its superclass. To
@@ -741,13 +696,15 @@ newaccount~name = "John Smith"
 </section>
 
 <section id="types"><title>Types of Classes</title>
-<para>In Rexx there are three class types: </para>
+<para>In Rexx there are four class types: </para>
 <itemizedlist>
 <listitem><para>Object classes</para></listitem>
 <listitem><para>Abstract classes</para></listitem>
-<listitem><para>Mixin classes</para></listitem></itemizedlist>
+<listitem><para>Metaclasses</para></listitem>
+<listitem><para>Mixin classes</para></listitem>
+</itemizedlist>
 <para>An object class (the default) can create instances
-of the object in response to receiving a NEW or ENHANCED message. An abstract
+of the object in response to receiving a NEW. An abstract
 class serves mainly to organize other classes in the hierarchy
 and define their message interface. A mixin class,
 through multiple inheritance, is an additional superclass to a class. The
@@ -828,7 +785,7 @@ by the new factory as its class methods.</para>
 <para>The classes Rexx provides do not permit changes or additions to their method
 definitions. As a result, all new factories inherit these unchangeable actions
 from the Class class, and thus operate the same way. So if you want to create
-a new class--a new factory--that behaves
+a new class&mdash;a new factory&mdash;that behaves
 differently from the others, you can do either of the following: </para>
 <itemizedlist>
 <listitem><para>Write additional class methods for the new class, using
