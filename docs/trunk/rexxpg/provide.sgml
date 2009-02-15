@@ -694,190 +694,237 @@ newaccount~name = "John Smith"
 </programlisting>
 </section>
 
-<section id="types"><title>Types of Classes</title>
-<para>In Rexx there are four class types: </para>
+<section id="typcla"><title>Types of Classes</title>
+<para>There are four kinds of classes: </para>
 <itemizedlist>
 <listitem><para>Object classes</para></listitem>
-<listitem><para>Abstract classes</para></listitem>
-<listitem><para>Metaclasses</para></listitem>
 <listitem><para>Mixin classes</para></listitem>
-</itemizedlist>
-<para>An object class (the default) can create instances
-of the object in response to receiving a NEW. An abstract
-class serves mainly to organize other classes in the hierarchy
-and define their message interface. A mixin class,
-through multiple inheritance, is an additional superclass to a class. The
-mixin class typically possesses methods useful to the class that inherits
-it, but these must be specifically added because they
-lie outside the class's normal line of inheritance.</para>
-<para>The following sections explain these class types in more detail.</para>
+<listitem><para>Abstract classes</para></listitem>
+<listitem><para>Metaclasses</para></listitem></itemizedlist>
+<para> The following sections explain these.</para>
 
 <section id="objcla"><title>Object Classes</title>
 <indexterm><primary>object classes</primary></indexterm>
-<indexterm><primary>classes</primary>
-<secondary>object</secondary></indexterm>
-<para>An object class creates instances and
-provides  methods that these instances can use. At the time of its creation,
-an instance acquires all instance methods of the class it belongs to. If a
-class adds new methods later, existing instances do not acquire them. Instances
-created after the new methods do acquire them.</para>
-<para>Because classes define methods for their instances, and methods define
-the variables that instances use, object classes are factories for creating
-Rexx instances. The Array class is an example of an object class.</para>
+<indexterm><primary>class</primary>
+<secondary>types</secondary>
+<tertiary>object</tertiary></indexterm>
+<para>An <emphasis>object class</emphasis> is a factory
+for producing objects. An object class creates objects (instances) and provides
+methods that these objects can use. An object acquires the instance methods
+of the class to which it belongs at the time of its creation. If a class gains
+additional methods, objects created before the definition of these methods
+do not acquire the new or changed methods.</para>
+<para>The instance variables within an object are created on demand whenever a method
+EXPOSEs an object variable.  The class creates the object instance, defines the methods
+the object has, and the object instance completes the job of constructing the object.
+</para>
+<para>
+The <link linkend="clsString">String class</link> and the
+<link linkend="clsArray">Array Class</link>)
+are examples of object classes.</para>
+</section>
+
+<section id="xmixin"><title>Mixin Classes</title>
+<indexterm><primary>mixin classes</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>types</secondary>
+<tertiary>mixin</tertiary></indexterm>
+<para>Classes can inherit from more than the single superclass from
+which they were created. This is called
+<emphasis>multiple inheritance</emphasis>. Classes designed
+to add a set of instance and class
+methods to other classes are called <emphasis>mixin classes</emphasis>,
+or simply mixins.</para>
+<para>You can add mixin methods to an existing class by sending an INHERIT
+message or using the INHERIT option on the <link linkend="clasdi">::CLASS directive</link>.
+In either case, the class to be inherited must be a mixin. During both class
+creation and multiple inheritance, subclasses inherit both class and instance
+methods from their superclasses.</para>
+<para>Mixins are always associated
+<indexterm><primary>base class for mixins</primary></indexterm>
+with a <emphasis>base class</emphasis>, which is the mixin's first non-mixin
+superclass. Any subclass of the mixin's base class can (directly or indirectly)
+inherit a mixin; other classes cannot.  For example, a mixin class created
+as a subclass of the Array class can only be inherited by other Array subclasses.
+Mixins that use the Object class as a base class can be inherited by any class.
+</para>
+<para>To create a new mixin class, you send a MIXINCLASS message to an existing
+class or use the ::CLASS directive with the MIXINCLASS option. A mixin class
+is also an object class and can create instances of the class.</para>
 </section>
 
 <section id="abscla"><title>Abstract Classes</title>
-<indexterm><primary>abstract classes, definition</primary></indexterm>
-<indexterm><primary>classes</primary>
-<secondary>abstract</secondary></indexterm>
-<para>An abstract class defines methods
-its subclasses can inherit, but typically has no instances. Rather, it serves
-to organize other classes in the hierarchy. An abstract class can be used
-to &quot;filter out&quot; a group of shared methods from a number of subclasses,
-so they do not have to exist in two places.</para>
-<para>An abstract class pushes common elements further up the hierarchy, thus
-providing a higher level of organization. By filtering out and moving common
-methods upwards, the abstract class refines the message interface for its
-subclasses. This lays the groundwork for polymorphism, creating well-defined
-interfaces for users of the hierarchy. Abstract classes inherit the instance
-methods of the Class class.</para>
-<para>You can create a new abstract class like an object class. You use a simple
-::CLASS directive; no options are required. While abstract classes are not
-intended for creating instances, Rexx does not prevent you from doing so.</para>
+<indexterm><primary>abstract class, definition</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>types</secondary>
+<tertiary>abstract</tertiary></indexterm>
+<para><emphasis>Abstract classes</emphasis> provide definitions for instance
+methods and class methods
+but are not intended to create instances. Abstract classes often define the
+message interfaces that subclasses should implement.</para>
+<para>You create an abstract class like object or mixin classes. No extra
+messages or keywords on the ::CLASS directive are necessary. Rexx does not
+prevent users from creating instances of abstract classes.
+It is possible to create abstract methods on a class.  An abstract method is a
+placeholder that subclasses are expected to override.  Failing to provide a real
+method implementation will result in an error when the abstract version is called.
+</para>
 </section>
 
-<section id="mixin"><title>Mixin Classes</title>
-<indexterm><primary>mixin classes</primary></indexterm>
-<indexterm><primary>classes</primary>
-<secondary>mixin</secondary></indexterm>
-<para>The mixin class lets you optionally add a set of instance and class methods to one or
-more other classes using inheritance. You use mixins to extend the scope of
-a class beyond the usual lines of inheritance defined by the hierarchy. This
-is like widening a class's inheritance to accept methods from a sibling
-or cousin, as well as a parent. When a class inherits from more than just
-its parent superclass, it is called multiple inheritance.</para>
-<para>You can add mixin methods to a class by using the INHERIT option on the
-::CLASS directive. The class to be inherited must be a mixin class. During
-class creation and multiple inheritance, subclasses inherit both class and
-instance methods from their superclasses.</para>
-<para>A mixin's first non-mixin superclass is its base
-<indexterm><primary>SUBCLASS option</primary></indexterm>
-class. Any subclass of a mixin's base class can directly or indirectly
-inherit a mixin; other classes cannot.</para>
-<para>To create a new mixin class, you use the ::CLASS directive with the MIXINCLASS
-option. A mixin class is also an object class and can create its own instances.</para>
-</section>
-</section>
-
-<section id="meta"><title>Metaclasses</title>
+<section id="xmetac"><title>Metaclasses</title>
 <indexterm><primary>metaclasses</primary></indexterm>
-<indexterm><primary>classes</primary>
-<secondary>metaclass</secondary></indexterm>
-<para>A metaclass is
-a class you can use to create another class. Rexx provides just one metaclass,
-the Class class. A class is a factory for creating instances, and the Class
-class is a factory for creating factories. Whenever you create a new factory,
-or class, the new class is an instance
-of Class. The instance methods of Class provide the
-operations needed to run the new factories. These instance methods are inherited
-by the new factory as its class methods.</para>
-<para>The classes Rexx provides do not permit changes or additions to their method
-definitions. As a result, all new factories inherit these unchangeable actions
-from the Class class, and thus operate the same way. So if you want to create
-a new class&mdash;a new factory&mdash;that behaves
-differently from the others, you can do either of the following: </para>
-<itemizedlist>
-<listitem><para>Write additional class methods for the new class, using
-the ::METHOD directive with the CLASS option</para></listitem>
-<listitem><para>Use a metaclass</para></listitem></itemizedlist>
-<para>If you plan to create many factories with the same operational changes,
-you use the metaclass.</para>
-<para>Any metaclass you create is
-a subclass of the Class class. To make your own metaclass, specify
-<computeroutput>class</computeroutput> as a SUBCLASS option in the ::CLASS
-directive: </para>
+<indexterm><primary>class</primary>
+<secondary>types</secondary>
+<tertiary>metaclass</tertiary></indexterm>
+<para>A <emphasis>metaclass</emphasis> is a class you
+can use to create another class. The only metaclass that Rexx provides is
+.Class, the Class class. The Class class is the metaclass of all the classes
+Rexx provides. This means that instances of .Class are themselves classes.
+The Class class is like a factory for producing the factories that produce
+objects.</para>
+<para>To change the behavior of an object that is an instance, you generally
+use subclassing. For example, you can create Statarray, a subclass of the
+<link linkend="clsArray">Array class</link>).
+The statArray class can include a
+method for computing a total of all the numeric elements of an array.</para>
 <programlisting>
-<![CDATA[
-/* Create a new metaclass  */
-::class your_metaclass subclass class
-]]>
-</programlisting>
-<para>The instance methods of
-<emphasis role="italic">your_metaclass</emphasis> becomes the class methods
-for any new class created using
-<emphasis role="italic">your_metaclass.</emphasis> For example, you
-could create a metaclass called InstanceCounter that includes instance methods
-for tracking how many instances the class creates: </para>
-<programlisting>
-<![CDATA[
-/* Create a new metaclass that counts its instances        */
-::class InstanceCounter subclass class
-  ::method init
-  ...
-]]>
-</programlisting>
-<para>Instead of having to add instance-counting class methods to other new classes
-you write, you can make InstanceCounter their metaclass. When you create the
-new class, you specify InstanceCounter as a METACLASS option in the ::CLASS
-directive. Creating a Point class might look like this: </para>
-<programlisting>
-<![CDATA[
-/* Create a public Point class using the InstanceCounter metaclass  */
-::class point public metaclass InstanceCounter
-  ::method init
-  ...
-]]>
-</programlisting>
-<para>The instance methods in your new InstanceCounter metaclass become the class
-methods of the Point class, and any other classes that you create in the future
-using a similar directive. Here is a complete example: </para>
-<programlisting>
-<![CDATA[
-/* A metaclass example */
+/* Creating an array subclass for statistics */
 
-a = .point~new(1,1)                   /* Create point instances       */
-say "Created point instance" a        /* a, b, and c.                 */
+::class statArray subclass array public
+
+::method init    /*  Initialize running total and forward to superclass */
+  expose total
+  total = 0
+  /* <link linkend="mthMessageNew">init</link>  describes the init method.  */
+  forward class (super)
+
+::method put     /*  Modify to increment running total */
+  expose total
+  use arg value
+  total = total + value  /* Should verify that value is numeric!!! */
+  forward class (super)
+
+::method "[]="   /*  Modify to increment running total */
+  forward message "PUT"
+
+::method remove  /*  Modify to decrement running total */
+  expose total
+  use arg index
+  forward message "AT" continue
+  total = total - result
+  forward class (super)
+
+::method average /*  Return the average of the array elements */
+  expose total
+  return total / self~items
+
+::method total   /*  Return the running total of the array elements */
+  expose total
+  return total
+</programlisting>
+<para>You can use this method on the individual array
+<emphasis>instances</emphasis>, so it is an
+<emphasis>instance method</emphasis>.</para>
+<para>However, if you want to change the behavior of the factory producing the
+arrays, you need a new class method. One way to do
+this is to use the ::METHOD directive with the CLASS option. Another way to
+add a <emphasis>class</emphasis> method is to create a new metaclass that
+changes the behavior
+of the Statarray class. A new metaclass is a subclass of .class.</para>
+<para>You can use a metaclass by specifying it in a SUBCLASS or MIXINCLASS
+message or on a ::CLASS directive with the METACLASS option.</para>
+<para>If you are adding a highly specialized class method useful only for a
+particular class, use the ::METHOD directive with the CLASS option. However,
+if you are adding a class method that would be useful for many classes, such
+as an instance counter that counts how many instances a class creates,
+you use a metaclass.</para>
+<para>The following examples add a class method that keeps a running total of
+instances created. The first version uses the ::METHOD directive with the
+CLASS option. The second version uses a metaclass.</para>
+<para><emphasis role="bold">Version 1</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>metaclass</secondary></indexterm>
+<programlisting>
+/* Adding a class method using ::METHOD */
+
+a = .point~new(1,1)               /* Create some point instances  */
+say "Created point instance" a
+b = .point~new(2,2)               /* create another point instance */
+say "Created point instance" b
+c = .point~new(3,3)               /* create another point instance */
+say "Created point instance" c
+                                  /* ask the point class how many */
+                                  /* instances it has created     */
+say "The point class has created" .point~instances "instances."
+
+
+
+::class point public                /* create Point class           */
+
+::method init class
+  expose instanceCount
+  instanceCount = 0                 /* Initialize instanceCount     */
+  forward class (super)             /* Forward INIT to superclass   */
+
+::method new class
+  expose instanceCount              /* Creating a new instance      */
+  instanceCount = instanceCount + 1 /* Bump the count               */
+  forward class (super)             /* Forward NEW to superclass    */
+
+::method instances class
+  expose instanceCount              /* Return the instance count    */
+  return instanceCount
+
+
+::method init
+  expose xVal yVal                  /* Set object variables         */
+  use arg xVal, yVal                /* as passed on NEW             */
+
+::method string
+  expose xVal yVal                  /* Use object variables         */
+  return "("xVal","yVal")"          /* to return string value       */
+</programlisting>
+<para><emphasis role="bold">Version 2</emphasis></para>
+<programlisting>
+/* Adding a class method using a metaclass  */
+
+a = .point~new(1,1)                    /* Create some point instances  */
+say "Created point instance" a
 b = .point~new(2,2)
 say "Created point instance" b
 c = .point~new(3,3)
 say "Created point instance" c
-
-                                      /* Ask the Point class how many */
-                                      /* instances it has created.    */
+                                       /* ask the point class how many */
+                                       /* instances it has created     */
 say "The point class has created" .point~instances "instances."
 
-                                      /* Create a new metaclass that  */
-                                      /* counts its instances.        */
-::class InstanceCounter subclass class
-  ::method init                       /* Create an INIT method to     */
-    expose instanceCount              /* initialize instanceCount.    */
-    instanceCount = 0                 /* Forward INIT to superclass.  */
+::class InstanceCounter subclass class /* Create a new metaclass that */
+                                       /* will count its instances     */
+::method init
+  expose instanceCount
+  instanceCount = 0                    /* Initialize instanceCount     */
+  forward class (super)                /* Forward INIT to superclass   */
 
-    .message~new(self, .array~of("INIT",super), "a", arg(1,"A"))~send
+::method new
+  expose instanceCount                 /* Creating a new instance      */
+  instanceCount = instanceCount + 1    /* Bump the count               */
+  forward class (super)                /* Forward NEW to superclass    */
 
-  ::method new                        /* Create a NEW instance method.*/
-    expose instanceCount              /* Create a new instance.       */
-    instanceCount = instanceCount + 1 /* Bump the count.              */
-
-                                      /* Forward NEW to superclass.   */
-    return .message~new(self, .array~of("NEW",super), "a", arg(1,"A"))~send
+::method instances
+expose instanceCount                   /* Return the instance count    */
+return instanceCount
 
 
-  ::method instances                  /* Create an INSTANCES method.  */
-    expose instanceCount              /* Return the instance count.   */
-    return instanceCount
+::class point public metaclass InstanceCounter  /* Create Point class */
+                                       /* using InstanceCounter metaclass */
+::method init
+  expose xVal yVal                     /* Set object variables         */
+  use arg xVal, yVal                   /* as passed on NEW             */
 
-                                      /* Create Point class using     */
-                                      /* InstanceCounter metaclass.   */
-::class point public metaclass InstanceCounter
-  ::method init                       /* Create an INIT method.       */
-    expose xVal yVal                  /* Set object variables         */
-    use arg xVal, yVal                /* as passed on NEW.            */
-
-  ::method string                     /* Create a STRING method.      */
-    expose xVal yVal                  /* Use object variables         */
-    return "("xVal","yVal")"          /* to return string value.      */
-]]>
+::method string
+  expose xVal yVal                     /* Use object variables         */
+  return "("xVal","yVal")"             /* to return string value       */
 </programlisting>
+</section>
 </section>
 </chapter>
