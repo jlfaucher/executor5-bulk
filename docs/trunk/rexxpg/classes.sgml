@@ -44,17 +44,17 @@
 <chapter id="classes"><title>A Closer Look at Objects</title>
 <indexterm><primary>variables</primary>
 <secondary>in objects</secondary></indexterm>
-<para>This chapter covers the mechanics of using objects and methods in more
+<para>This chapter covers the mechanics of using objects in more
 detail. First, a quick refresher.</para>
 <para>A Rexx object consists
 of:</para>
 <itemizedlist>
 <listitem><para>Actions coded as methods</para></listitem>
-<listitem><para>Characteristics, coded as variables, and their
+<listitem><para>Attributes, coded as variables, and their
 values, sometimes referred to as &quot;state data&quot;</para></listitem>
 </itemizedlist>
 <para>Sending a message to an object causes it to perform a related action. The
-method whose name matches the message performs the action. The message is
+method with the matching name performs the action. The message is
 the interface to the object, and with information hiding, only methods
 that belong to an object can access its variables.</para>
 <para>Objects are grouped hierarchically into classes. The
@@ -66,19 +66,21 @@ to one another. Unless designated otherwise, any class directly above a class
 in the hierarchy is a superclass. And any class below is a subclass.</para>
 <para>From a class you can create instances of the class. Instances
 are merely similar objects that fit the template
-of the class; they belong to the class, but are not classes themselves. Instances
-are the most basic, most elemental of objects.</para>
+of the class; they are "of" the the class, but are not classes themselves.
+</para>
 <para>Both the classes
 and their instances contain variables and methods. The methods a class provides
-for use by its various instances are called instance methods. In effect,
-these define which messages an instance can respond to. Instance
-methods are the most common methods in Rexx, and are therefore called methods.</para>
+for use by its instances are called instance methods. The instance methods
+define which messages an object can respond to.
+</para>
 <para>The methods available
-to the class itself are called class methods. (They
-are actually the instance methods of the Class class.) They define messages
-that only the class--and not its instances--can respond to. Class
-methods generally exist to create instances and are
-much less common.</para>
+to the class itself are called class methods.
+Many of the methods
+are actually the instance methods of the Class class, but a class many have its
+own unique class methods.
+They define messages
+that only the class&mdash;and not its instances&mdash;can respond to.
+</para>
 
 <figure><title>Instance Methods and Class Methods</title>
 <indexterm><primary>class methods</primary></indexterm>
@@ -91,11 +93,11 @@ much less common.</para>
 </mediaobject>
 </figure>
 
-<section id="xclauses"><title>Using Objects in Rexx Clauses</title>
+<section id="xclauses"><title>Using Objects in Rexx</title>
 <indexterm><primary>clauses</primary>
 <secondary>using object in</secondary></indexterm>
 <para>The following
-examples with Myarray illustrate how to use new objects in Rexx clauses.</para>
+examples with Myarray illustrate how to use new objects in Rexx programs.</para>
 <para></para>
 <programlisting>
 <![CDATA[
@@ -103,12 +105,14 @@ myarray=.array~new(5)
 ]]>
 </programlisting>
 <para>creates a new instance of the Array
-class, Myarray. The period precedes a class name in an expression, to distinguish
-the class from other variables. The Myarray array object has five elements.</para>
-<para>After Myarray is created, you can assign values to it. One way is with
+class, and assigns to the variable MYARRAY. The period precedes a class name
+in an expression, to distinguish
+the class environment symbol from other variables.
+The MYARRAY array object has five elements.</para>
+<para>After the array is created, you can assign values to it. One way is with
 the PUT method. PUT has two arguments, which must be enclosed in parentheses.
-The first argument is the string to be placed in the element. The second is
-the number of the element in which to place the string. Here, the string
+The first argument is the value added to the array, the second is
+the number of the element in which to place the value. Here, the string
 object <computeroutput>Hello</computeroutput> is associated with the third
 element of Myarray: </para>
 <programlisting>
@@ -116,7 +120,6 @@ element of Myarray: </para>
 myarray~put("Hello",3)
 ]]>
 </programlisting>
-<para>Rexx dynamically adjusts the size of the array to accommodate the new element.</para>
 <para>One way to retrieve values from an array object is by sending it an AT message.
 In the next example, the SAY instruction displays the third element of Myarray: </para>
 <programlisting>
@@ -132,20 +135,20 @@ Hello
 <indexterm><primary>SAY instruction</primary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>SAY instruction</secondary></indexterm>
-instruction expects the string object as input, which is what AT returns. If you
-put a nonstring object in the SAY instruction, SAY sends a STRING message
-to the object.  The STRING method for Rexx's built-in objects returns
+instruction expects a string object as input, which is what AT returns. If you
+try to display a non-string object in the SAY instruction, SAY sends a STRING message
+to the object.  The STRING method returns
 a human-readable string representation for the object. In this example, the
 <indexterm><primary>STRING method</primary></indexterm>
-STRING method for Myarray returns the string
-<computeroutput>an array</computeroutput>: </para>
+STRING method for an Array object returns the string
+<computeroutput>an Array</computeroutput>: </para>
 <programlisting>
 <![CDATA[
 say myarray  /* SAY sends STRING message to Myarray */
 
 Results:
 
-an array
+an Array
 ]]>
 </programlisting>
 <para>Whenever a method returns a string, you can use it within expressions that
@@ -159,7 +162,7 @@ Results:
 HelloHelloHelloHello
 ]]>
 </programlisting>
-<para>This example gets the same result using only methods: </para>
+<para>This example produces the same result using only methods: </para>
 <programlisting>
 <![CDATA[
 say myarray~at(3)~copies(4)
@@ -178,7 +181,7 @@ say myarray[4]
 ]]>
 </programlisting>
 <para>Although the previous instructions look like an ordinary array assignment
-and array reference, they are actually messages to the Myarray object. You
+and array reference, they are actually messages to the Array object referenced by MYARRAY. You
 can prove this by executing these equivalent instructions, which use the twiddle
 to send the messages: </para>
 <programlisting>
@@ -195,8 +198,8 @@ say 2+3      /* Displays 5 */
 say 2~"+"(3) /* Displays 5 */
 ]]>
 </programlisting>
-<para>In the second SAY instruction, quotes are needed around the + message because
-it is a character not allowed in a Rexx symbol.</para>
+<para>In the second SAY instruction, "+" must be a literal string because the message name
+contains characters not allowed in a Rexx symbol.</para>
 </section>
 
 <section id="creo"><title>Common Methods</title>
@@ -208,16 +211,17 @@ automatically when appropriate, are INIT, UNINIT, and STRING.</para>
 When these instances require initialization, you'll want to define an
 INIT method to set a particular starting value or initiate some startup processing.
 Rexx looks for an INIT method whenever a new object is created and runs it.</para>
-<para>The purpose of initialization is to ensure that the variable is set correctly
+<para>The purpose of initialization is to ensure that the
+instance variables are initialized correctly
 before using it in an operation. If an INIT method is defined, Rexx runs it
 after creating the instance. Any initialization arguments specified in the
-NEW or ENHANCED message are passed to the
-<indexterm><primary>INIT instruction</primary></indexterm>
+NEW message are passed to the
+<indexterm><primary>INIT method</primary></indexterm>
 INIT method, which can use them
 to set the initial state of object variables.</para>
-<para>If an instance has more than one INIT method (for example, INIT is defined
-in several classes), each INIT method must forward the INIT message up the
-hierarchy and run the topmost version of INIT, to properly initialize the
+<para>If a class overrides the INIT method it inhertits from a superclass,
+the new INIT method must forward the INIT message up the
+hierarchy, to properly initialize the
 instance. An example in the next section demonstrates the use of INIT.</para>
 </section>
 
@@ -236,7 +240,7 @@ representation for the object. For example, if you instruct Rexx
 to <computeroutput>say a,</computeroutput> and
 <computeroutput>a</computeroutput> is an array object, Rexx returns an array.
 You can take advantage of this automatic use of STRING by overriding Rexx's
-STRING method with your own, and extract the object data itself--in this
+STRING method with your own, and extract the object data itself&mdash;in this
 case, the actual array data.</para>
 <para>The following programs
 demonstrate STRING and INIT. In the first program, the Part class is created,
@@ -264,12 +268,11 @@ return "Part name:" name
 <para>In the ::CLASS directive, the
 keyword PUBLIC indicates that the class can be shared with other programs.
 The two ::METHOD directives define
-<indexterm><primary>INIT instruction</primary></indexterm>
 INIT and STRING. Whenever Rexx creates
-a new instance of a class, it calls the INIT method for the class. The sample
+a new instance of a class, it calls the INIT method the new instance.. The sample
 INIT method uses an EXPOSE instruction to make the name, description, and
 number variables available to other methods. These exposed variables are object
-variables, and are associated with a particular instance of a class:</para>
+variables, and are associated with a single instance of a class:</para>
 
 <figure><title>Instances in the Part Class</title>
 <mediaobject>
@@ -280,7 +283,7 @@ variables, and are associated with a particular instance of a class:</para>
 </mediaobject>
 </figure>
 
-<para>INIT expects to be passed three arguments.
+<para>The INIT method expects to be passed three arguments.
 <indexterm><primary>Rexx</primary>
 <secondary>USE ARG instruction</secondary></indexterm>
 <indexterm><primary>USE ARG instruction</primary></indexterm>
@@ -295,7 +298,7 @@ by the name of a part. The STRING method does not expect any arguments. It uses
 <secondary>EXPOSE instruction</secondary></indexterm>
 <indexterm><primary>variables</primary>
 <secondary>exposing</secondary></indexterm>
-the EXPOSE instruction to tap the object variables.  The RETURN instruction
+the EXPOSE instruction to identify which object variables it requires.  The RETURN instruction
 returns the result string.</para>
 <para>The following
 example shows how to use the Part class: </para>
@@ -339,25 +342,24 @@ MypartB. Because the STRING method is invoked for MypartB, it automatically
 accesses the variables for MypartB. You do not need to pass the name of the
 object to the method in order to distinguish different sets of object variables;
 Rexx keeps track of them for you.</para>
-<para>Another way to define classes
-<indexterm><primary>SUBCLASS method</primary></indexterm>
-is by using the SUBCLASS method. You can send a SUBCLASS method to any desired
-superclass to create a class.</para>
 </section>
 
 <section id="destroy"><title>Uninitializing and Deleting Instances Using UNINIT</title>
 <indexterm><primary>UNINIT method</primary></indexterm>
 <indexterm><primary>instances</primary>
 <secondary>uninitializing and deleting</secondary></indexterm>
-<para> Object
+<para>Normally, object
 classes can create instances but have no direct control over their deletion.
-If you assign a new value to a variable, Rexx automatically reclaims the storage
+Once an object is no longer referenced by any variables,
+Rexx automatically reclaims the storage
 for the old value in a process called garbage collection.</para>
-<para>If variables of other objects
-no longer reference an instance, Rexx automatically reclaims that instance.
-If the instance has allocated other system resources, you must release them
-at this time using an UNINIT method. Rexx cannot automatically release these
-resources because it is unaware that the instance has allocated them.</para>
+<para>
+If the instance has allocated other system resources,
+Rexx cannot automatically release these
+resources because it is unaware that the instance has allocated them.
+An UNINIT method give an object the opportunity to perform resource cleanup before
+the object is reclaimed by the garbage collector.
+</para>
 <para>In the following example, the value passed to
 <emphasis role="italic">text</emphasis> is initialized
 by Rexx using INIT and deleted by Rexx using UNINIT. This program makes visible
@@ -384,57 +386,39 @@ exit
     return
 </programlisting>
 <para>Whether uninitialization processing is needed depends on the circumstances,
-for example when a message object holds an unreported error that should be
-reported and cleared. If an object requires uninitialization, define an UNINIT
-method to specify the processing you want.</para>
-<para>If UNINIT is defined, Rexx runs it before reclaiming the object's storage.
-If an instance has more than one UNINIT method (for example, UNINIT is defined
-in several classes), each UNINIT method is responsible for sending the UNINIT
-message up the hierarchy, using the SUPERCLASS overrides, to run the topmost
-version of UNINIT.</para>
+If the object only contains references to normal Rexx objects, an UNINIT method
+is generally not needed.  If the object contains references to external system
+resources such as open network connections or database connections, an UNINIT method
+might be required to release those resources.
+If an object requires uninitialization, define an UNINIT
+method to perform the cleanup processing you require.</para>
+<para>If an object has UNINIT an method, Rexx runs it before reclaiming the object's storage.
+If an instance overrides an UNINIT method of a superclass,
+each UNINIT method is responsible for sending the UNINIT
+message up the hierarchy, using the SUPERCLASS overrides, so that each inherited UNINIT method
+has the opportunity to run.</para>
 </section>
 </section>
 
-<section id="spvar"><title>Special Variables</title>
+<section id="spvar"><title>Special Method Variables</title>
 <indexterm><primary>special variable</primary></indexterm>
 <indexterm><primary>variables</primary>
 <secondary>special</secondary></indexterm>
-<para>When writing methods, you
-can use special variables available in Rexx. A special variable can be set
-automatically during the processing of a Rexx program. Rexx supports the following
+<para>When writing methods, there are several special variables
+that are set automatically when a method runs.
+Rexx supports the following
 variables: </para>
 <variablelist>
-<varlistentry><term>RC
-<indexterm><primary>RC special variable</primary></indexterm>
-</term>
-<listitem><para>is set to the return code from any executed command,
-including those submitted with the ADDRESS instruction. After the trapping
-of ERROR or FAILURE conditions, it is also set to the command return code.
-When the SYNTAX condition is trapped, RC is set to the syntax error number
-(1-99). RC is unchanged when any other condition is trapped.
-
-<note>
-<para>Tracing interactively does not change the value of RC.</para></note>
-</para></listitem></varlistentry>
-<varlistentry><term>RESULT
-<indexterm><primary>RESULT special variable</primary></indexterm>
-</term>
-<listitem><para>is set by a RETURN
-instruction in a subroutine that has been called, or a method that was activated
-by a message instruction, if the RETURN instruction specifies an expression.
-If the RETURN instruction has no expression on it, RESULT is dropped (becomes
-uninitialized). RESULT is also set by an EXIT or REPLY instruction.
-</para></listitem></varlistentry>
 <varlistentry><term>SELF
 <indexterm><primary>SELF special variable</primary></indexterm>
 </term>
 <listitem><para>is set when a method
 is activated. Its value is the object that forms the execution context for
-the method (that is, the receiver object of the activating message). </para>
+the method (that is, the object that received the activating message). </para>
 <para>You
 can use SELF to:</para>
 <itemizedlist>
-<listitem><para>Run a method in an object in which a method is already running.
+<listitem><para>Send messages to the currently active object.
 For example, a FIND_CLUES method is running in an object called Mystery_Novel.
 When FIND_CLUES finds a clue, it sends a READ_LAST_PAGE message to Mystery_Novel:
 <programlisting>
@@ -452,13 +436,6 @@ Singer2~duet(self)
 would give the DUET method access to the same Song.</para>
 </listitem></itemizedlist>
 </listitem></varlistentry>
-<varlistentry><term>SIGL
-<indexterm><primary>SIGL special variable</primary></indexterm>
-</term>
-<listitem><para>is set to the line
-number of the last instruction that caused a transfer of control to a label
-(that is, any SIGNAL, CALL, internal function call, or trapped condition).
-</para></listitem></varlistentry>
 <varlistentry><term>SUPER
 <indexterm><primary>SUPER special variable</primary></indexterm>
 </term>
@@ -505,25 +482,15 @@ self~init:super(balance)
 </programlisting><para>This instruction calls
 the INIT method of the Account class rather than recursively calling the INIT
 method of the Savings class. When the INIT method of the Account class is
-called, the variable SUPER is assigned to the Object class. For example: </para>
+called, the variable SUPER is assigned to the Object class. So in the Account class INIT: </para>
 <programlisting>
 <![CDATA[
 self~init:super
 ]]>
-</programlisting><para> This instruction calls the INIT method the Object
-class defines.</para>
+</programlisting><para>calls the INIT method of the Object
+class.</para>
 </listitem></varlistentry>
 </variablelist>
-<para>You can alter these variables, just like any other variable, but Rexx continues
-to set RC, RESULT, and SIGL automatically when appropriate. EXPOSE, PROCEDURE,
-USE, and DROP instructions affect these variables in their usual way.</para>
-<para>Rexx also supplies functions that indirectly affect the execution
-of a program. An example is the name that the program was called by and the
-source of the program (which are available using the PARSE SOURCE instruction).
-In addition, PARSE VERSION makes available the language version and date of
-Rexx implementation that is running. The built-in functions ADDRESS, DIGITS,
-FUZZ, FORM, and TRACE return other settings that affect the execution of a
-program.</para>
 </section>
 
 <section id="pubobj"><title>Public, Local, and Built-In Environment Objects</title>
@@ -544,7 +511,9 @@ objects available:</para>
 <section id="publicenvobj"><title>The Public Environment Object (.environment)</title>
 <indexterm><primary>Environment objects</primary></indexterm>
 <para>The Environment object is a directory of public objects that are always
-accessible throughout the whole process. To place something in the Environment
+accessible throughout the whole process.  The Rexx built-in classes are stored in the
+Environment directory.
+To place something in the Environment
 directory, you use the form: </para>
 <programlisting>
 .environment~<emphasis role="italic">your.object</emphasis> = <emphasis role="italic">value</emphasis>
@@ -559,7 +528,7 @@ say .environment~<emphasis role="italic">your.object</emphasis>
 <indexterm><primary>symbols</primary>
 <secondary>.environment symbol</secondary></indexterm>
 the current process.</para>
-<para>You use an environment symbol  to access the entries of this
+<para>You use an environment symbol to access the entries of this
 directory. An environment symbol starts with a period and has at least one
 other character, which must not be a digit. You have seen environment symbols
 earlier; for example in: </para>
@@ -654,26 +623,6 @@ objects that all programs can use. To access these built-in
 objects, you use the special environment symbols whose first character
 is a period (.).</para>
 <variablelist>
-<varlistentry><term>.methods
-<indexterm><primary>symbols</primary>
-<secondary>.methods symbol</secondary></indexterm>
-</term>
-<listitem><para>The .methods environment symbol identifies a
-directory of methods that ::METHOD directives in the currently running program
-define. The directory indexes are the method names. The directory values are
-the method objects. Only methods that are not preceded by a ::CLASS directive
-are in the .methods directory. If there are no such methods, the .methods
-symbol has the default value of ".METHODS". Here is an example:
-<programlisting>
-<![CDATA[
-use arg class, methname
-class~define(methname,.methods["a"])
-::method a
-use arg text
-say text
-]]>
-</programlisting>
-</para></listitem></varlistentry>
 <varlistentry><term>.line
 <indexterm><primary>symbols</primary>
 <secondary>.line symbol</secondary></indexterm>
@@ -721,15 +670,17 @@ such as .TRUE and .FALSE. You can directly access the global environment by
 using the .environment symbol or using the VALUE built-in function with a
 null string for the <emphasis role="italic">selector</emphasis> argument.</para></listitem>
 <listitem><para>Rexx defined symbols. Other simple environment symbols are reserved for
-use by Rexx for built-in objects. The currently defined built-in objects are
-.RS and .METHODS.</para></listitem>
+use by Rexx for built-in objects.
+</para></listitem>
 </orderedlist>
 <para>If an entry is not found for an environment symbol, the default character
 string value is used. </para>
 
 <note>
 <para>You can place entries in both the .local
-and .environment directories for programs to use. To avoid conflicts with
+and .environment directories for programs to use, but .local should be preferred over
+.environment to avoid accidentally overwriting system-defined values.
+To avoid conflicts with
 future Rexx-defined entries, it is recommended that entries you place in either
 of these directories include at least one period in the entry name.</para></note>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -781,8 +732,8 @@ class to which they belong:</para>
 
 <para>Each class in a class hierarchy has a scope different from any other class.
 This is what allows a variable in a subclass to have the same name as a variable
-in a superclass, even though the methods that use the variables may be completely
-different.</para>
+in a superclass, even though the methods that use the variables for completely unrelated
+purposes.</para>
 </section>
 
 <section id="objwownsc"><title>Objects with Their Own Unique Scope</title>
@@ -915,17 +866,18 @@ can change the default search order for methods by doing both of the following: 
 object the sender object. You usually do this by specifying the special variable
 <indexterm><primary>variables</primary>
 <secondary>special</secondary></indexterm>
-SELF. SELF holds the value of the object in which a method is running. You
-can use SELF to run another method in an object where a method is already
-running or pass references about an object to the methods of other objects.</para></listitem>
-<listitem><para>Specifying a colon and a class symbol after the message name. The class
-symbol identifies the class object to use as the starting point for the search.
-This class object must be:
+SELF. SELF holds the value of the object in which a method is running.
+</para></listitem>
+<listitem><para>Specifying a colon and a starting scope after the message name. The
+starting scope is a variable or environment symbol that
+identifies the scope object to use as the method search starting point.
+This scope object can be:
 <itemizedlist>
 <listitem><para>A direct superclass of the class that defines the active method</para></listitem>
-<listitem><para>The object's own class, if you used SETMETHOD to define the
-active method</para>
-<para>The class symbol is usually the special variable
+<listitem><para>The object itself (for example, the value of the variable SELF), if you used SETMETHOD to add
+methods to the object.
+</para>
+<para>The scope variable is usually the special variable
 <indexterm><primary>variables</primary>
 <secondary>special</secondary></indexterm>
 SUPER, but it can be any environment symbol
@@ -1029,7 +981,7 @@ method of its class.  For example:</para>
   accountNumber = self~class~allocateAccountNumber
 ]]>
 </programlisting>
-<para>The instance init method of the Savings class is able to invoke the allocateAccountNumber private
+<para>The instance INIT method of the Savings class is able to invoke the allocateAccountNumber private
 method of the .Savings class object because it is owned by an instance of the .Savings class.</para>
 </listitem>
 </orderedlist>
@@ -1066,7 +1018,7 @@ it involves objects, as opposed to, for example, processes or threads.</para>
 following forms: </para>
 <itemizedlist>
 <listitem><para>Inter-object concurrency, where several objects
-are active--exchanging messages, synchronizing, running their methods--at
+are active&mdash;exchanging messages, synchronizing, running their methods&mdash;at
 the same time</para></listitem>
 <listitem><para>Intra-object concurrency, where several methods
 are able to run on the same object at the same time</para></listitem>
@@ -1081,7 +1033,7 @@ concurrency.</para>
 concurrency, where several objects in a program can run at the same time,
 in the following ways: </para>
 <itemizedlist>
-<listitem><para>By early reply, by means of the
+<listitem><para>By early reply, using the
 <indexterm><primary>REPLY instruction</primary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>REPLY instruction</secondary></indexterm>
@@ -1116,42 +1068,41 @@ represent the Rexx programs running on the activity. An invocation can be:</para
 <para>An invocation is pushed onto an activity when an executable unit is invoked.
 It is removed (or popped) when execution completes.</para>
 
-<section id="objvarpools"><title>Object Variable Pools</title>
+<section id="objvarpools"><title>Object Instance Variables</title>
 <indexterm><primary>variables</primary>
-<secondary>in variable pools</secondary></indexterm>
-<indexterm><primary>object variable pools</primary></indexterm>
-<para>Every object has its own set of variables, called its object
-variable pool. These are variables associated solely with the
+<indexterm><primary>object instance variables</primary></indexterm>
+<para>Every object has its own set of instance variables.
+These are variables associated solely with the
 object. When an object's method runs, it first identifies the object variables
 it intends to work with. Technically, it &quot;exposes&quot; these variables, using
 <indexterm><primary>variables</primary>
 <secondary>exposing</secondary></indexterm>
 the Rexx instruction EXPOSE. Exposing the object's variables distinguishes
 them from variables used by the method itself, which are not exposed. Every
-method an object owns--that is, all the instance methods in the object's
-class--can expose variables from the object's variable pool.</para>
-<para>Therefore, an object variable pool includes variables:</para>
+method an object owns&mdash;that is, all the instance methods in the object's
+class&mdash;can expose variables from the object's instance variables.</para>
+<para>Therefore, an object's instance variables includes variables:</para>
 <itemizedlist>
-<listitem><para>Exposed by methods in the object's class. This set of variables is
-called a subpool.</para></listitem>
-<listitem><para>Inherited from classes elsewhere in the hierarchy (in the form
-of additional subpools).</para></listitem>
+<listitem><para>Exposed by methods defined by the object's class. This set of variables is
+called a variable pool.</para></listitem>
+<listitem><para>Exposed by methods defined by other classes in the inheritance hierarchy.
+The methods of each class share variables in a pool scoped to just that class.</para></listitem>
 </itemizedlist>
-<para>All of a class's variables, together with the methods that expose them,
+<para>A class's variable pool, together with the methods that expose them,
 are called a class scope. Rexx exploits this class
-scope to achieve concurrency. To explain, the object variable pool is a collection
-of variable subpools. Each subpool is at a different scope in the object's
-inheritance chain. As long as the methods running on the object are at different
-scopes, they can run simultaneously.</para>
+scope to achieve concurrency. To explain, the object's instance variables are contained in a collection
+of variable pools. Each pool is at a different scope in the object's
+inheritance chain. Methods defined at different class scopes do not directly share data and
+can run simultaneiously.</para>
 <para>Scopes, like objects, hide and protect data from outside manipulation.
-Methods of the same scope share the variable subpools of that scope. The scope
-shields the variable subpools from methods operating at other scopes. Thus,
+Methods of the same scope share the variable pool of that scope. The scope
+shields the variable pool from methods operating at other scopes. Thus,
 you can reuse variable names from class to class, without the variables being
 accessed and possibly corrupted by a method outside their own class. So class
-scopes divide an object's variable pool into subpools that can operate
-independently of one another. Several methods can use the same variable pool
+scopes divide an object's instance variables into pools that can operate
+independently of one another. Several methods can use the same object instance variables
 concurrently, as long as they confine themselves to variables in their own
-subpools.</para>
+scope.</para>
 </section>
 
 <section id="prioritizeaccess"><title>Prioritizing Access to Variables</title>
@@ -1161,9 +1112,9 @@ subpools.</para>
 <para>Even with class scopes and subpools,
 a variable is vulnerable if several methods within the scope try to access
 it at the same time. To handle this, Rexx ensures that when a particular method
-is activated and exposes variables from its subpool, that method has exclusive
-use of the subpool until processing is complete. Until then, Rexx delays the
-execution of any other method that needs the same subpool.</para>
+is activated and exposes variables from its scope, that method has exclusive
+use of the scope variable pool until processing is complete. Until then, Rexx delays the
+execution of any other method that needs the same scope variables.</para>
 <para>Thus if different activities send several messages to the same object,
 Rexx forces the methods to run sequentially within a single scope. This
 &quot;first-in, first-out&quot; processing of methods in a scope
@@ -1174,7 +1125,7 @@ corrupting the data.</para>
 <section id="sendmsgwact"><title>Sending Messages within an Activity</title>
 <indexterm><primary>sending messages within an activity</primary></indexterm>
 <para>Rexx makes one
-exception to sequential processing--when a method sends a message to
+exception to sequential processing&mdash;when a method sends a message to
 itself. Assume that method M1 has exclusive access to object O, and then tries
 to run a second, internal method M2, also belonging
 to O. Internal method M2 would try to run, but Rexx would delay it until the
@@ -1207,7 +1158,7 @@ processes them on a &quot;first-in, first-out&quot; basis, while treating intern
 methods as subroutines. You can, however, achieve full intra-object concurrency.
 Rexx offers several mechanisms for this, including: </para>
 <itemizedlist>
-<listitem><para>The SETUNGUARDED method of the Method class and the UNGUARDED option of
+<listitem><para>The UNGUARDED option of
 the ::METHOD directive, which provide unconditional intra-object concurrency.</para></listitem>
 <listitem><para>The
 <indexterm><primary>GUARD instruction</primary></indexterm>
@@ -1223,25 +1174,25 @@ for the same object variables.</para>
 
 <section id="activat"><title>Activating Methods</title>
 <para>By default, Rexx assumes that an active method requires exclusive use of
-its object variable pool. If another method attempts access at that time,
-it is locked out until the first method is finished with the variable pool.
+its scope variable pool. If another method attempts access at that time,
+it is locked out until the first method finishes.
 This default intra-object concurrency maintains the integrity of the variable
 pool and prevents unexpected results. Rexx manages queues for incoming requests
 that result in messages being sent to the same object.</para>
 <para>Some methods can run concurrently without affecting variable pool integrity
 or yielding unexpected results. When a method does not need exclusive use
-of its object variable pool, you can use the SETUNGUARDED method or the UNGUARDED
+of its object variable pool, the UNGUARDED
 option of the ::METHOD directive to provide unconditional intra-object concurrency.
 These mechanisms control the locking of an object's scope when a method
 is invoked.</para>
-<para>Many methods cannot use SETUNGUARDED and UNGUARDED
+<para>Many methods cannot UNGUARDED
 because they sometimes require exclusive use of their variable pool. At other
 times, they must perform some action that involves the concurrent use of the
 same pool by a method on another activity. In this case, you can use the GUARD
 built-in function. When the method reaches the point in its processing where
-it requires concurrent use of the variable pool, this function calls the GUARD
-OFF function. GUARD OFF lets another method that runs on a different activity
-become active on the same object. If the method needs to regain exclusive
+it no longer requires exclusive use of the variable pool it can use the GUARD OFF instruction
+to allow methods running on different activities to become active on the same scope.
+If the method needs to regain exclusive
 use, it calls GUARD ON.</para>
 <para>For more flexibility when activating methods, you can use GUARD ON/OFF
 with the &quot;WHEN <emphasis role="italic">expression</emphasis>&quot;
