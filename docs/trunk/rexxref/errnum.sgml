@@ -68,15 +68,6 @@ When an error subcode is available, additional information that
 further defines the source of the error is given. The ERRORTEXT built-in function
 cannot retrieve the secondary message, but it is available from the condition
 object created when SIGNAL ON SYNTAX traps an error.</para>
-<para>Some errors are only or not displayed under certain conditions:</para>
-<itemizedlist>
-<listitem><para>Errors 3 and 5 cannot be trapped by SIGNAL ON SYNTAX.</para></listitem>
-<listitem><para>Error 4 can only be trapped by SIGNAL ON HALT or CALL ON HALT.
-</para></listitem>
-<listitem><para>Errors 6 and 30 can only be trapped by SIGNAL ON SYNTAX if they occur
-during the execution of an INTERPRET instruction.</para></listitem>
-</itemizedlist>
-
 
 &errnums;
 

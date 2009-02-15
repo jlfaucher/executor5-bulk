@@ -122,10 +122,12 @@ see <link linkend="aropxmp">Operator Examples</link>.</para>
 according to specific rules. The most important rules are: </para>
 <itemizedlist>
 <listitem><para>Results are calculated up to a maximum number of significant
-digits. The default is <computeroutput>9</computeroutput>, but you can alter
+digits. The default is <computeroutput>9</computeroutput> for 32-bit systems and
+<computeroutput>19</computeroutput> for 64-bit systems,
+but you can alter
 it with the NUMERIC DIGITS instruction.
 <indexterm><primary>DIGITS option of NUMERIC instruction</primary></indexterm>
-Thus, if a result requires more than 9 digits, it is rounded to 9 digits.
+Thus, with NUMERIC DIGITS 9, if a result requires more than 9 digits, it is rounded to 9 digits.
 For example, the division of 2 by 3 results in 0.666666667.</para></listitem>
 <listitem><para>Except for division and power, trailing zeros are preserved.
 For example:
@@ -143,8 +145,8 @@ STRIP function (see <link linkend="bifStrip">STRIP</link>), or by division by 1.
 <listitem><para>A zero result is always expressed as the single digit
 <computeroutput>0</computeroutput>.</para></listitem>
 <listitem><para>Exponential form is used for a result depending on its value
-and the setting of NUMERIC DIGITS (the default is
-<computeroutput>9</computeroutput>). If the number of places needed
+and the setting of NUMERIC DIGITS.
+If the number of places needed
 before the decimal point exceeds the NUMERIC DIGITS setting, or the number
 of places after the point exceeds twice the NUMERIC DIGITS setting, the number
 is expressed in exponential notation:
@@ -170,14 +172,14 @@ from an operation. This is controlled by the instruction:
 ]]>
 </programlisting>
 <para>
- The <emphasis role="italic">expression</emphasis> is evaluated and must result in a positive
+The <emphasis role="italic">expression</emphasis> is evaluated and must result in a positive
 whole number. This defines the precision (number of significant digits) of
 a calculation.  Results are rounded to that precision, if necessary.</para>
 <para>If you do not specify <emphasis role="italic">expression</emphasis>
 in this instruction, or if no
 NUMERIC DIGITS instruction has been processed since the start of a program,
 the default precision is used. The Rexx standard for the default precision
-is <computeroutput>9</computeroutput>.</para>
+is <computeroutput>9</computeroutput> for 32-bit systems and 18 for 64-bit systems.</para>
 <para>NUMERIC DIGITS can set values smaller than nine. However, use small
 values with care because the loss of precision and rounding affects all Rexx
 computations, including, for example, the computation of new values for the
@@ -525,7 +527,11 @@ say  4.9999 < 5     /* Displays "0"    */
 <secondary>use in the language</secondary></indexterm>
 <para> When Rexx uses numbers directly,
 that is, numbers that have not been involved in an arithmetic operation, they
-are rounded, if necessary, according to the setting of NUMERIC DIGITS.</para>
+are rounded, if necessary, according to the setting of NUMERIC DIGITS.  The normal
+whole number limit depends on the platform default NUMERIC DIGITS setting.  If the
+default setting is 9, the whole number limit is 999999999.  If the default DIGITS
+value is 18, the whole number limit is 999999999999999999.
+</para>
 <para>The following table shows which numbers must be whole numbers and what
 their limits are:</para>
 
@@ -535,28 +541,28 @@ their limits are:</para>
 <tbody>
 <row>
 <entry>Power values (right-hand operand of the power operator)</entry>
-<entry>999999999</entry>
+<entry>The platform whole number limit.</entry>
 </row>
 <row>
 <entry>Values of <emphasis role="italic">exprr</emphasis> and
 <emphasis role="italic">exprf</emphasis> in the DO instruction</entry>
-<entry>The current numeric precision (up to 999999999)</entry>
+<entry>The platform whole number limit</entry>
 </row>
 <row>
 <entry>Values given for DIGITS or FUZZ in the NUMERIC instruction
 <indexterm><primary>functions</primary>
 <secondary>numeric arguments of</secondary></indexterm>
 </entry>
-<entry>999999999  (Note: FUZZ must always be less than DIGITS.)</entry>
+<entry>The platform whole number limits  (Note: FUZZ must always be less than DIGITS.)</entry>
 </row>
 <row>
 <entry>Positional patterns in parsing templates</entry>
-<entry>999999999</entry>
+<entry>The platform whole number limit</entry>
 </row>
 <row>
 <entry>Number given for <emphasis role="italic">option</emphasis> in the TRACE
 instruction</entry>
-<entry>999999999</entry>
+<entry>The platform whole number limit</entry>
 </row>
 </tbody>
 </tgroup>
@@ -577,10 +583,13 @@ a result exceeds the range that the language processor can handle, when the
 result is formatted according to the current settings of NUMERIC DIGITS and
 NUMERIC FORM.  The language defines a minimum capability for the exponential
 part, namely the largest number that can be expressed as an exact integer
-in default precision. Because the default precision is
+in default precision. On 32-bit systems, because the default precision is
 <computeroutput>9</computeroutput>, you can
 use exponents in the range <computeroutput>-999999999</computeroutput> through
-<computeroutput>999999999</computeroutput>.</para>
+<computeroutput>999999999</computeroutput>.  On 64-bit systems, these increase to
+the range <computeroutput>-999999999999999999</computeroutput> through
+<computeroutput>999999999999999999</computeroutput>.
+</para>
 <para>Because this allows for (very) large exponents, overflow or underflow
 is treated as a syntax error.</para></listitem>
 <listitem><para>Insufficient storage.</para>

@@ -453,7 +453,8 @@ The following are general notes on the built-in functions: </para>
 <listitem><para>The parentheses in a function are always needed, even if no arguments
 are required. The first parenthesis must follow the name of the function with
 no whitespace in between.</para></listitem>
-<listitem><para>The built-in functions internally work with NUMERIC DIGITS 9 and NUMERIC
+<listitem><para>The built-in functions internally work with NUMERIC DIGITS 9 for
+32-bit systems or NUMERIC DIGITS 18 for 64-bit systems, and NUMERIC
 FUZZ 0 and are unaffected by changes to the NUMERIC settings, except where
 stated. Any argument named as a <emphasis role="italic">number</emphasis>
 is rounded, if necessary, according to the current setting of NUMERIC DIGITS
@@ -483,12 +484,12 @@ function <link linkend="bifLeft">LEFT</link>.</para></listitem>
 <emphasis role="italic">option</emphasis> that you can select by specifying
 the first character of a string, that character can be in uppercase or
 lowercase.</para></listitem>
-<listitem><para>Many of the built-in functions send messages the String class defines
-(see <link linkend="clsString">The String Class</link>).
+<listitem><para>Many of the built-in functions invoked methos of the
+<link linkend="clsString">String</link> class.
 For the functions ABBREV, ABS, BITAND, BITOR, BITXOR,
 B2X, CENTER, CENTRE, CHANGESTR, COMPARE, COPIES, COUNTSTR, C2D, C2X, DATATYPE,
-DELSTR, DELWORD, D2C, D2X, FORMAT, LEFT, LENGTH, MAX, MIN, REVERSE, RIGHT,
-SIGN, SPACE, STRIP, SUBSTR, SUBWORD, TRANSLATE, TRUNC, VERIFY, WORD, WORDINDEX,
+DELSTR, DELWORD, D2C, D2X, FORMAT, LEFT, LENGTH, LOWER, MAX, MIN, REVERSE, RIGHT,
+SIGN, SPACE, STRIP, SUBSTR, SUBWORD, TRANSLATE, TRUNC, UPPER, VERIFY, WORD, WORDINDEX,
 WORDLENGTH, WORDS, X2B, X2C, and X2D, the first argument to the built-in function
 is used as the receiver object for the message sent, and the remaining arguments
 are used in the same order as the message arguments. For example,
@@ -3163,7 +3164,7 @@ or the presence of data in a transient stream.</para></note>
 
 <programlisting>
 <![CDATA[
->>-lower(string-+----------------------------+--)--------------><
+>>-LOWER(string-+----------------------------+--)--------------><
                 +--,--+-----+--+-----------+-+
                       +--n--+  +--,length--+
 ]]>
@@ -5057,7 +5058,7 @@ it.
 
 <programlisting>
 <![CDATA[
->>-upper(string-+----------------------------+--)--------------><
+>>-UPPER(string-+----------------------------+--)--------------><
                 +--,--+-----+--+-----------+-+
                       +--n--+  +--,length--+
 ]]>

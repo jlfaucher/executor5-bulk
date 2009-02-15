@@ -1554,7 +1554,7 @@ after the time with a single blank separating the time and date. Leading and
 trailing whitespace characters are not allowed in the
 <emphasis role="italic">atime</emphasis>. If you do not
 specify a date, the Alarm uses the first future occurrence of the
-specified time. You can use the <emphasis role="bold">cancel</emphasis>
+specified time. You can use the cancel()
 method to cancel a pending alarm. See
 <link linkend="creo">Initialization</link> for more information.</para>
 </section>
@@ -3009,7 +3009,7 @@ The InvertingComparator will invert the ordering returned by the provided Compar
 ]]>
 </programlisting>
 <para>Initializes an inverting comparator to sort strings using an inversion of the result from the
-<emphasis role="italic">comparator</emphasis> <emphasis role="bold">compare</emphasis> method.
+<emphasis role="italic">comparator</emphasis> compare() method.
 </para>
 </section>
 </section>
@@ -3588,20 +3588,20 @@ preceding the first word involved.
 ]]>
 </programlisting>
 
-<para>Inserts the string <emphasis>new</emphasis>, padded or truncated to
-length <emphasis>length</emphasis>, into the mutable buffer after the
+<para>Inserts the string <emphasis role="italic">new</emphasis>, padded or truncated to
+length <emphasis role="italic">length</emphasis>, into the mutable buffer after the
 <emphasis>n</emphasis>'th character. The default
-value for <emphasis>n</emphasis> is 0, which means insertion at the beginning
-of the string. If specified, <emphasis>n</emphasis> and length must be
-positive integers or zeros. If <emphasis>n</emphasis> is greater than the
+value for <emphasis role="italic">n</emphasis> is 0, which means insertion at the beginning
+of the string. If specified, <emphasis role="italic">n</emphasis> and length must be
+positive integers or zeros. If <emphasis role="italic">n</emphasis> is greater than the
 length of the buffer contents,
 the string new is padded at the beginning. The default value for
-<emphasis>length</emphasis> is the length of <emphasis>new</emphasis>.
+<emphasis role="italic">length</emphasis> is the length of <emphasis role="italic">new</emphasis>.
 If length is less than the length of
-string <emphasis>new</emphasis>,
-<emphasis role="bold">insert</emphasis> truncates <emphasis>new</emphasis>
-to length <emphasis>length</emphasis>. The default
-<emphasis>pad</emphasis> character is a blank.</para>
+string <emphasis role="italic">new</emphasis>,
+insert truncates <emphasis role="italic">new</emphasis>
+to length <emphasis role="italic">length</emphasis>. The default
+<emphasis role="italic">pad</emphasis> character is a blank.</para>
 </section>
 
 <section id="mthMutableBufferLastPos"><title>lastPos</title>
@@ -5416,7 +5416,7 @@ subclass of the <link linkend="clsObject">Object class</link>.</para>
 ]]>
 </programlisting>
 <para>Returns the arguments used to invoke the current context as an array.
-This is equivalent to using the Args(1, 'A') builtin function.
+This is equivalent to using the <link linkend="bifArg">Arg(1, 'A')</link> built-in function.
 </para>
 </section>
 
@@ -5431,9 +5431,9 @@ This is equivalent to using the Args(1, 'A') builtin function.
 >>-condition----------------------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the current context condition object, or .nil if the context does
+<para>Returns the current context condition object, or the Nil object if the context does
 not currently have a trapped condition.  This is equivalent to using the
-Condition('O') builtin function.
+<link linkend="bifCondition">Condition('O')</link> built-in function.
 </para>
 </section>
 
@@ -5449,7 +5449,7 @@ Condition('O') builtin function.
 ]]>
 </programlisting>
 <para>Returns the current context digits setting. This is equivalent to using
-the digits() builtin function.
+the <link linkend="bifDigits">digits()</link> built-in function.
 </para>
 </section>
 
@@ -5465,7 +5465,8 @@ the digits() builtin function.
 ]]>
 </programlisting>
 <para>Returns the current executable object for the current context.  The
-executable will be either a routine or method object, depending on the type of
+executable will be either a <link linkend="clsRoutine">Routine</link> or
+<link linkend="clsMethod">Method</link> object, depending on the type of
 the active context.
 </para>
 </section>
@@ -5482,7 +5483,7 @@ the active context.
 ]]>
 </programlisting>
 <para>Returns the current context form setting. This is equivalent to using the
-form() builtin function.
+<link linkend="bifForm">form()</link> built-in function.
 </para>
 </section>
 
@@ -5498,7 +5499,7 @@ form() builtin function.
 ]]>
 </programlisting>
 <para>Returns the current context fuzz setting. This is equivalent to using the
-fuzz() builtin function.
+<link linkend="bifFuzzZ">fuzz()</link> built-in function.
 </para>
 </section>
 
@@ -5513,8 +5514,8 @@ fuzz() builtin function.
 >>-line-------------------------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the context current execution line.  This is equivalent to use the
-.LINE environment symbol.
+<para>Returns the context current execution line.  This is equivalent to using the
+<link linkend="linee">.LINE</link> environment symbol.
 </para>
 </section>
 
@@ -5529,7 +5530,8 @@ fuzz() builtin function.
 >>-package----------------------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the package object associated with the current executable object.
+<para>Returns the <link linkend="clsPackage">Package</link> object
+associated with the current executable object.
 </para>
 </section>
 
@@ -5545,8 +5547,8 @@ fuzz() builtin function.
 ]]>
 </programlisting>
 <para>Returns the context current return status value.  If no host commands have
-been issued in the current context, .nil is returned.  This is equivalent to use
-the .RS environment symbol.
+been issued in the current context, the Nil object is returned.  This is equivalent to using
+the <link linkend="rs">.RS</link> environment symbol.
 </para>
 </section>
 
@@ -5575,14 +5577,6 @@ variable names.
 <indexterm><primary>WeakReference class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>WeakReference class</secondary></indexterm>
-<figure><title>The WeakReference class and methods</title>
-<mediaobject>
-<imageobject>
-<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-<imagedata fileref="ooRexxWeakReferenceClass.png" align="left">
-</imageobject>
-</mediaobject>
-</figure>
 <para>A WeakReference instance maintains a non-pinning reference to another
 object.  A non-pinning reference does not prevent an object from getting garbage
 collected or having its uninit method run when there are no longer normal
@@ -5591,6 +5585,14 @@ garbage collection, the reference inside the WeakReference instance will be
 cleared and the VALUE method will return .nil on all subsequent calls.
 WeakReferences are useful for maintaining caches of objects without preventing
 the objects from being reclaimed by the garbage collector when needed.</para>
+<figure><title>The WeakReference class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxWeakReferenceClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
 <note><title>Note</title>
 <para>The WeakReference class also has available class methods that its
 metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
@@ -5629,7 +5631,7 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 <para>This method returns the referenced object.  If the object has been garbage
-collected, then .nil is returned.
+collected, then the Nil object is returned.
 </para>
 </section>
 </section>
@@ -5690,8 +5692,12 @@ a specified comparison operation.
 <para>For the Pointer class, the argument object must be a pointer object instance and
 the wrappered pointer value must be the same.</para>
 <para>The comparison operators you can use in a message are: </para>
-<variablelist>
-<varlistentry><term>=, ==
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
+<row><entry>=, ==
 <indexterm><primary>= method</primary>
 <secondary>of Pointer class</secondary></indexterm>
 <indexterm><primary>== method</primary>
@@ -5702,10 +5708,10 @@ the wrappered pointer value must be the same.</para>
 <indexterm><primary>method</primary>
 <secondary>==</secondary>
 <tertiary>of Pointer class</tertiary></indexterm>
-</term>
-<listitem><para>True if the wrappered pointer values are the same.
-</para></listitem></varlistentry>
-<varlistentry><term>\=, >&lt;, &lt;>, \==
+</entry>
+<entry><para>True if the wrappered pointer values are the same.
+</para></entry></row>
+<row><entry>\=, >&lt;, &lt;>, \==
 <indexterm><primary>\= method</primary>
 <secondary>of Pointer class</secondary></indexterm>
 <indexterm><primary>>&lt; method</primary>
@@ -5726,10 +5732,12 @@ the wrappered pointer value must be the same.</para>
 <indexterm><primary>method</primary>
 <secondary>\==</secondary>
 <tertiary>of Pointer class</tertiary></indexterm>
-</term>
-<listitem><para>True if the wrappered pointer values are not the same.
-</para></listitem></varlistentry>
-</variablelist>
+</entry>
+<entry><para>True if the wrappered pointer values are not the same.
+</para></entry></row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 
 <section id="mthPointerIsNull"><title>isNull</title>

@@ -44,7 +44,7 @@
 <appendix id="mig"><title>Migration</title>
 <para>This appendix lists some differences between Object Rexx and
 earlier versions of Rexx, and between Object Rexx for OS/2 and Open Object
-Rexx for Windows NT, Windows 95 and *nix environments.</para>
+Rexx for Windows NT and *nix environments.</para>
 
 <section id="ecrc"><title>Error Codes and Return Codes</title>
 <para>Some error codes have changed and some have been added. Also, for most
@@ -54,13 +54,6 @@ additional and more detailed information. So, for example, where you formerly
 received &quot;Invalid Call to Routine&quot;, you now get further information
 on what is wrong with the call.</para>
 <para>Also, the return codes of host commands might be different.</para>
-<para>In Windows 95, you do not get return codes
-for external commands that:</para>
-<itemizedlist>
-<listitem><para>Are internal commands of the command interpreter COMMAND.COM,
-such as DIR, COPY, or MD</para></listitem>
-<listitem><para>Are 16-bit applications</para></listitem>
-<listitem><para>Redirect input or output</para></listitem></itemizedlist>
 </section>
 
 <section id="errordetect"><title>Error Detection and Reporting</title>
@@ -97,7 +90,8 @@ it can cause unpredictable results. For example, using the LINEOUT method
 and the LINEOUT function on the same persistent stream object can cause overlays.
 </para>
 <para>When a Rexx I/O function creates a stream object, the language processor
-maintains the stream object. When an I/O method creates a stream object, it
+stores the reference to the stream object in an internal table.
+When an I/O method creates a stream object, it
 is returned to the program to be maintained. Therefore, these two stream objects
 are separate stream objects with different read and write pointers. The program
 needs to synchronize the read and write pointers of both stream objects.
@@ -105,8 +99,8 @@ Otherwise, overlays would occur.</para>
 </section>
 
 <section id="envdir"><title>.Environment</title>
-<para>The .Environment directory in Windows is local and not system-global
-as in OS/2. This means that in Windows there is no difference between
+<para>The .Environment directory is local and not system-global
+as in OS/2. This means that there is no difference between
 the scope of the .Local and .Environment directories.</para>
 </section>
 
@@ -117,22 +111,9 @@ Use Value(envvar,.nil,&quot;ENVIRONMENT&quot;)
 to delete an environment variable.</para>
 </section>
 
-<section id="queuing"><title>Queuing</title>
-<para>To improve performance it is recommended that you use the Queue class
-instead of RXQUEUE whenever the queued data is not to be shared among processes.
-</para>
-</section>
-
 <section id="traceinmacrospace"><title>Trace in Macrospace</title>
 <para>Functions in macrospace cannot be traced using the TRACE keyword. These
 functions are stored in an optimized format without source code. If you want
 to trace functions, do not load them into macrospace.</para>
 </section>
-
-<section id="rxmessageboxfunction"><title>The RxMessageBox Function</title>
-<para>In Windows, the RxMessageBox function does not support
-all the options available in OS/2. The following button styles are not
-available in Windows: CANCEL, ENTER, and ENTERCANCEL.</para>
-</section>
-
 </appendix>
