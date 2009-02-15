@@ -682,7 +682,7 @@ Adjusted size of the minimum read buffer to 65536 bytes
 <para>
   The <computeroutput>events</computeroutput> attribute is an array that holds the event log records that
   are read from the event log during a call to <link linkend="mthReadRecords">readRecords</link>(). The
-  array is empty if no calls to <computeroutput>readRecords()</computeroutput> has been made. Each time
+  array is empty if no call to <computeroutput>readRecords()</computeroutput> has been made. Each time
   <computeroutput>readRecords()</computeroutput> is called the array is first emptied.
 </para>
 <para>
@@ -763,8 +763,7 @@ The System log has 1983 records
         <varlistentry><term>server</term>
         <listitem>
           <para>
-            Optional. The name of the <link linkend="server">server</link> on which the event log is to
-            be opened.
+            Optional. The name of the <link linkend="server">server</link> where the event log resides.
           </para>
         </listitem></varlistentry>
         <varlistentry><term>source</term>
@@ -867,7 +866,7 @@ end
 
 log = .WindowsEventLog~new
 
-ret = log~open( , name)
+ret = log~open
 if ret == 0 then do
   say "  Total records:     " log~getNumber
   say "  First record number" log~getFirst
@@ -916,7 +915,7 @@ end
 </programlisting>
 
 <para>
-  Reads the desired event records from the specified server. Each record is stored in the <link
+  Reads the desired event records from the specified event log. Each record is stored in the <link
   linkend="atrEvents">events</link> array. After a successful read, all records will be contained in the
   <computeroutput>events</computeroutput> array in the order there were read. Prior to starting the read
   opereation the array is emptied.
@@ -969,8 +968,7 @@ end
         <varlistentry><term>server</term>
         <listitem>
           <para>
-            Optional. The name of the <link linkend="server">server</link> on which the event log is to
-            be opened.
+            Optional. The name of the <link linkend="server">server</link> where the event log resides
           </para>
         </listitem></varlistentry>
         <varlistentry><term>source</term>
@@ -984,19 +982,20 @@ end
           <para>
             Optional. The starting <link linkend="paraEventRecordNumber">record number</link> for the
             read operation. The start and the count arguments must be used together. Either both must be
-            specified or neither. If neither argument is specified, the entire log is read. When both are
-            specified, the read starts with the record number specified and reads in the direction
-            specified for <emphasis role="italic">count</emphasis> records.
+            used or neither. If both arguments are omitted, the entire log is read. When both arguments
+            are used, the read begins with the record number specified by <emphasis
+            role="italic">start</emphasis> and reads in the direction specified for <emphasis
+            role="italic">count</emphasis> records.
           </para>
         </listitem></varlistentry>
         <varlistentry><term>count</term>
         <listitem>
           <para>
             Optional. The count of records to be read during the read operation. The start and the count
-            arguments must be used together. Either both must be specified or neither. If neither
-            argument is specified, the entire log is read. When both are specified, the read starts with
-            the record number specified and reads in the direction specified for <emphasis
-            role="italic">count</emphasis> records.
+            arguments must be used together. Either both must be used or neither. If both arguments are
+            omitted, the entire log is read. When both arguments are specified, the read begins with the
+            record number specified by <emphasis role="italic">start</emphasis> and reads in the
+            direction specified for <emphasis role="italic">count</emphasis> records.
           </para>
         </listitem></varlistentry>
       </variablelist>
@@ -1440,164 +1439,160 @@ event_log~CLEAR
 <secondary>WindowsEventLog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isFull(--x--,--y--)---------------------------------------><
-
+>>--isFull(--+---------+-+----------+--)----------------------><
+             +--server-+ +-,-source-+
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Determines if the event log is full.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      The possible return values are:
       <variablelist>
-        <varlistentry><term>0</term>
+        <varlistentry><term>server</term>
         <listitem>
           <para>
-            Success
+            Optional. The <link linkend="server">server</link> where the event log resides.
           </para>
         </listitem></varlistentry>
-        <varlistentry><term>-1</term>
+        <varlistentry><term>source</term>
         <listitem>
           <para>
-            Some error.
+            Optional. The <link linkend="eventSource">event source</link>.
           </para>
         </listitem></varlistentry>
       </variablelist>
     </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The method returns <computeroutput>.true</computeroutput> or
+      <computeroutput>.false</computeroutput>. True if the event log is full, otherwise false.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
+      This example is a snippet of code from an application that monitors the system log. When the log
+      gets full, the log is backed up and cleared.
+<programlisting>
+<![CDATA[
+
+::routine checkLog
+  use strict arg sysLog, monitor
+
+  if sysLog~isFull then do
+    success = monitor~backupLog(sysLog)
+    if \ success then monitor~notifyAdmin
+    else sysLog~clear
+  end
+return success
+
+]]>
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End WindowsEventLog::isFull() -->
 
 
-<section id="mthGetNumber"><title>getNumber</title>
-<indexterm><primary>getNumber method</primary>
-<secondary>of WindowsEventLog class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>getNumber method</secondary>
-<tertiary>of WindowsEventLog class</tertiary></indexterm>
+<section id="mthgetNumber"><title>getNumber</title>
+<indexterm><primary>getNumber</primary>
+<secondary>WindowsEventLog class</secondary></indexterm>
+<indexterm><primary>WindowsEventLog class</primary>
+<secondary>getNumber</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-getNumber-+---------------------------------+---------------><
-             +-(--+-----------------------+--)-+
-                  +-server--+-----------+-+
-                            +-,--source-+
+>>--getNumber(--+---------+-+----------+--)----------------------><
+                +--server-+ +-,-source-+
 ]]>
 </programlisting>
 
-<para>Retrieves the number of records in the specified event log. If the event
-log was not opened with the Open method, the event log specified by the
-<emphasis role="italic">server</emphasis> and
-<emphasis role="italic">source</emphasis> is opened and closed after processing.
+<para>
+  Determines the number of records in the event log.
 </para>
 <variablelist>
-<varlistentry><term>Arguments:</term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>server</term>
-<listitem><para>The UNC (universal naming convention) name of the server on
-which the event log is to be opened. If this argument is not specified, the log
-is opened at the local machine.</para>
-<para>This argument is only used if the event log was not
-opened before.</para>
-</listitem></varlistentry>
-<varlistentry><term>source</term>
-<listitem><para>The name of the source of the event log. It must be a subkey of
-a log file entry under the EventLog key in the registry. If, for example, the
-registry looks as follows:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The arguments are:
+      <variablelist>
+        <varlistentry><term>server</term>
+        <listitem>
+          <para>
+            Optional. The <link linkend="server">server</link> where the event log resides.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>source</term>
+        <listitem>
+          <para>
+            Optional. The <link linkend="eventSource">event source</link>.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      On success, the count of event records in the log. On error, the return is the negated
+      system error code.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example opens the system log on the Osprey server. It then checks that there are at least 10
+      records before reading the log:
 <programlisting>
-HKEY_LOCAL_MACHINE
-  System
-    CurrentControlSet
-      Services
-      EventLog
-        Application
-          WinApp1
-        Security
-          WinApp2
-        System
-</programlisting>
-&quot;Application&quot;, &quot;Security&quot;, &quot;System&quot;,
-&quot;WinApp1&quot;, and &quot;WinApp2&quot; are valid sources. If the source
-is not found, the &quot;Application Log&quot; is used.</para>
-<para>This argument is only used if the event log was not opened
-before.</para>
-</listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example returns the number of event log records
-in the Application log of the local machine:
-<programlisting>
-num = event_log~getNumber
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+<![CDATA[
 
+  log = .WindowsEventLog~new
+  log~open("\\Osprey", "System")
+  if log~getNumber > 10 then do
+    log~readRecords
+    say 'Read' log~events~items 'records.'
+  end
+
+::requires 'winSystm.cls'
+
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowsEventLog::getNumber() -->
 
 <section id="mthGetLogNames"><title>getLogNames</title>
 <indexterm><primary>getLogNames</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
+<indexterm><primary>WindowsEventLog class</primary>
+<secondary>getLogNames</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getLogNames(--x--,--y--)---------------------------------------><
+>>--getLogNames(--names--)--------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Obtains a list of all the event log names on the current system.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
+    <para>The single argument is:
     <variablelist>
-      <varlistentry><term>x</term>
+      <varlistentry><term>names</term>
       <listitem>
         <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
+          An array object. On return the array will contain the names of the event logs on the current
+          system. This will include any custom logs, if there are any.  The array is emptied before the
+          names are added. If an error happens, the array will be empty.
         </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1606,33 +1601,35 @@ num = event_log~getNumber
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      This method returns 0 on success, and the operating system error code on failure.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
+      This example displays the names of all the event logs on the current system.
+<programlisting>
+<![CDATA[
+
+logNames = .array~new
+ret = log~getLogNames(logNames)
+
+if ret == 0 then do name over logNames
+  say "Log:" name
+end
+
+::requires 'winSystm.cls'
+
+/* Output might be:
+
+Log: Application
+Log: Internet Explorer
+Log: Security
+Log: System
+
+*/
+]]>
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1644,64 +1641,85 @@ num = event_log~getNumber
 <secondary>WindowsEventLog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getLast(--x--,--y--)---------------------------------------><
-
+>>--getLast(--+---------+-+----------+--)----------------------><
+              +--server-+ +-,-source-+
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Determines the absolute <link linkend="paraEventRecordNumber">record number</link> of the last record
+  in the event log.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
     <para>
-      The possible return values are:
+      The arguments are:
       <variablelist>
-        <varlistentry><term>0</term>
+        <varlistentry><term>server</term>
         <listitem>
           <para>
-            Success
+            Optional. The <link linkend="server">server</link> where the event log resides.
           </para>
         </listitem></varlistentry>
-        <varlistentry><term>-1</term>
+        <varlistentry><term>source</term>
         <listitem>
           <para>
-            Some error.
+            Optional. The <link linkend="eventSource">event source</link>.
           </para>
         </listitem></varlistentry>
       </variablelist>
     </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      On success, the record number of the last (most recently written) event record. On error, the
+      return is the negated system error code.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
+      This example displays the last record written to application log.
+<programlisting>
+<![CDATA[
+
+  log = .WindowsEventLog~new~~open
+  log~readRecords( , , , log~getLast, 1)
+  rec = log~events[1]
+  if rec \== .nil then do
+
+    parse var rec type date time "'" src"'" id user computer "'" string "'" "'" data "'"
+    say 'Type     : 'type
+    say 'Date     : 'date
+    say 'Time     : 'time
+    say 'Source   : 'src
+    say 'ID       : 'id
+    say 'UserId   : 'user
+    say 'Computer : 'computer
+    say 'Detail   : 'string
+    say 'Data     : 'data
+  end
+
+::requires 'winSystm.cls'
+
+/* Output might be:
+
+Type     : Error
+Date     : 02/14/09
+Time     : 16:55:08
+Source   : Windows Search Service
+ID       : 3083
+UserId   : N/A
+Computer : OSPREY
+Detail   : The protocol handler Search.Mapi2Handler.1 cannot be loaded. Error
+description: Class not registered.
+Data     :
+
+*/
+]]>
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1713,69 +1731,89 @@ num = event_log~getNumber
 <secondary>WindowsEventLog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getFirst(--x--,--y--)---------------------------------------><
-
+>>--getFirst(--+---------+-+----------+--)----------------------><
+               +--server-+ +-,-source-+
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Determines the absolute <link linkend="paraEventRecordNumber">record number</link> of the first record
+  in the event log.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      The possible return values are:
       <variablelist>
-        <varlistentry><term>0</term>
+        <varlistentry><term>server</term>
         <listitem>
           <para>
-            Success
+            Optional. The <link linkend="server">server</link> where the event log resides.
           </para>
         </listitem></varlistentry>
-        <varlistentry><term>-1</term>
+        <varlistentry><term>source</term>
         <listitem>
           <para>
-            Some error.
+            Optional. The <link linkend="eventSource">event source</link>.
           </para>
         </listitem></varlistentry>
       </variablelist>
     </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      On success, the first record number in the event log. On error, the return is the negated system
+      error code.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
+      This example displays the first record written to the application log. It is somewhat interesting
+      to note that this first record was written right after the operating system had been installed,
+      prior to the computer being added to a work group and given the Osprey name.
+<programlisting>
+<![CDATA[
+
+  log = .WindowsEventLog~new~~open("\\Osprey", "System")
+  log~readRecords( , , , log~getFirst, 1)
+  rec = log~events[1]
+  if rec \== .nil then do
+
+    parse var rec type date time "'" src"'" id user computer "'" string "'" "'" data "'"
+    say 'Type     : 'type
+    say 'Date     : 'date
+    say 'Time     : 'time
+    say 'Source   : 'src
+    say 'ID       : 'id
+    say 'UserId   : 'user
+    say 'Computer : 'computer
+    say 'Detail   : 'string
+    say 'Data     : 'data
+  end
+
+::requires 'winSystm.cls'
+
+/* Output might be:
+
+Type     : Information
+Date     : 08/16/08
+Time     : 04:27:01
+Source   : EventLog
+ID       : 6009
+UserId   : N/A
+Computer : MACHINENAME
+Detail   : 5.02. 3790 Service Pack 1 Multiprocessor Free
+Data     :
+
+*/
+]]>
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End WindowsEventLog::getFirst() -->
-
 
 </chapter>
 
