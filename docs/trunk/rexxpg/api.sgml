@@ -271,62 +271,68 @@ the language (including strings and numbers) are represented by object instances
 For use in the APIs, there are a number of opaque types that represent instances
 of different core objects.  The defined object types are:
 </para>
-<variablelist>
-<varlistentry><term>RexxObjectPtr</term>
-<listitem><para>a reference to a Rexx object instance.  This is the root of object
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
+<row><entry>RexxObjectPtr</entry>
+<entry><para>a reference to a Rexx object instance.  This is the root of object
 hierarchy and can represent any type of object.
-</para></listitem></varlistentry>
-<varlistentry><term>RexxStringObject</term>
-<listitem><para>an instance of the Rexx String class.  The APIs have a number of
+</para></entry></row>
+<row><entry>RexxStringObject</entry>
+<entry><para>an instance of the Rexx String class.  The APIs have a number of
 APIs that allow direct manipulation and creation of Rexx strings.
-</para></listitem></varlistentry>
-<varlistentry><term>RexxBufferStringObject</term>
-<listitem><para>an instance of the Rexx String class that can be written into.
+</para></entry></row>
+<row><entry>RexxBufferStringObject</entry>
+<entry><para>an instance of the Rexx String class that can be written into.
 RexxBufferStringObject instances must be finalized to be converted into a usable
 RexxStringObject.
-</para></listitem></varlistentry>
-<varlistentry><term>RexxArrayObject</term>
-<listitem><para>An instance of a Rexx single-dimension array.  Arrays are used
+</para></entry></row>
+<row><entry>RexxArrayObject</entry>
+<entry><para>An instance of a Rexx single-dimension array.  Arrays are used
 in many places, and there are interfaces provided for direct manipulation of
 arrays.
-</para></listitem></varlistentry>
-<varlistentry><term>RexxDirectoryObject</term>
-<listitem><para>An instance of Rexx Directory class.  Like arrays, there are
+</para></entry></row>
+<row><entry>RexxDirectoryObject</entry>
+<entry><para>An instance of Rexx Directory class.  Like arrays, there are
 APIs provided for access and manipulating data stored in a directory.
-</para></listitem></varlistentry>
-<varlistentry><term>RexxStemObject</term>
-<listitem><para>An instance of Rexx Stem class.  The APIs include a number of
+</para></entry></row>
+<row><entry>RexxStemObject</entry>
+<entry><para>An instance of Rexx Stem class.  The APIs include a number of
 utility routines for accessing and manipulating data in Stem objects.
-</para></listitem></varlistentry>
-<varlistentry><term>RexxSupplierObject</term>
-<listitem><para>An instance of Rexx Supplier class.
-</para></listitem></varlistentry>
-<varlistentry><term>RexxSupplierObject</term>
-<listitem><para>An instance of Rexx Supplier class.
-</para></listitem></varlistentry>
-<varlistentry><term>RexxClassObject</term>
-<listitem><para>An instance of Rexx Class class.
-</para></listitem></varlistentry>
-<varlistentry><term>RexxPackageObject</term>
-<listitem><para>An instance of Rexx Package class.
-</para></listitem></varlistentry>
-<varlistentry><term>RexxMethodObject</term>
-<listitem><para>An instance of Rexx Method class.
-</para></listitem></varlistentry>
-<varlistentry><term>RexxRoutineObject</term>
-<listitem><para>An instance of Rexx Routine class.  Routine objects
+</para></entry></row>
+<row><entry>RexxSupplierObject</entry>
+<entry><para>An instance of Rexx Supplier class.
+</para></entry></row>
+<row><entry>RexxSupplierObject</entry>
+<entry><para>An instance of Rexx Supplier class.
+</para></entry></row>
+<row><entry>RexxClassObject</entry>
+<entry><para>An instance of Rexx Class class.
+</para></entry></row>
+<row><entry>RexxPackageObject</entry>
+<entry><para>An instance of Rexx Package class.
+</para></entry></row>
+<row><entry>RexxMethodObject</entry>
+<entry><para>An instance of Rexx Method class.
+</para></entry></row>
+<row><entry>RexxRoutineObject</entry>
+<entry><para>An instance of Rexx Routine class.  Routine objects
 can be invoked directly from C++ code.
-</para></listitem></varlistentry>
-<varlistentry><term>RexxPointerObject</term>
-<listitem><para>A wrapper around a pointer value.  Pointer objects are designed
+</para></entry></row>
+<row><entry>RexxPointerObject</entry>
+<entry><para>A wrapper around a pointer value.  Pointer objects are designed
 for constructing Rexx classes that interface with native code subsystems.
-</para></listitem></varlistentry>
-<varlistentry><term>RexxBufferObject</term>
-<listitem><para>An allocatable storage object that can be used for storing native
+</para></entry></row>
+<row><entry>RexxBufferObject</entry>
+<entry><para>An allocatable storage object that can be used for storing native
 C++ data.  Buffer objects and the contained data are managed using the Rexx object
 garbage collector.
-</para></listitem></varlistentry>
-</variablelist>
+</para></entry></row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 <section id="numerictypes"><title>Rexx Numeric Types</title>
 <para>The Routine and Method interfaces support a very complete set of C numeric types as
@@ -338,86 +344,92 @@ give behavior consistent with the Rexx built-in methods and functions.
 <para>In addition to a full set of standard numeric types, there are two special types
 provided that implement the standard Rexx rules for numbers used internally by Rexx.
 These types are:</para>
-<variablelist>
-<varlistentry><term>wholenumber_t</term>
-<listitem><para>conversions involving the wholenumber_t conform to the Rexx whole number
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="4*">
+<tbody>
+<row><entry>wholenumber_t</entry>
+<entry><para>conversions involving the wholenumber_t conform to the Rexx whole number
 rules.  Values are converted using the same internal digits value used by the built-in functions.
 For 32-bit versions, this is numeric digits 9, giving a range of 999,999,999 to -999,999,999.
 On 64-bit systems, numeric digits 18 is used, giving a range of 999,999,999,999,999,999 to
 -999,999,999,999,999,999.
-</para></listitem></varlistentry>
-<varlistentry><term>stringsize_t</term>
-<listitem><para>stringsize_t conversions also conform to the Rexx whole number
+</para></entry></row>
+<row><entry>stringsize_t</entry>
+<entry><para>stringsize_t conversions also conform to the Rexx whole number
 rules, with the added restriction that the value must be a non-negative whole number value.  The
 stringsize_t type is useful for arguments such as string lengths where only a non-negative value is
 allowed.  The range for 32-bit versions is 999,999,999 to 0, and
 999,999,999,999,999,999 to 0 on 64-bit platforms.
-</para></listitem></varlistentry>
-<varlistentry><term>logical_t</term>
-<listitem><para>a Rexx logical value.  On conversion from a string value, this must be
+</para></entry></row>
+<row><entry>logical_t</entry>
+<entry><para>a Rexx logical value.  On conversion from a string value, this must be
 either '1' (true) or '0' (false).  On conversion back to a string value, a non-zero binary value be converted
 to '1' (true) and zero will become '0' (false).
-</para></listitem></varlistentry>
+</para></entry></row>
 </variablelist>
 <para>A subset of the integer numeric types are of different sizes depending on the
 addressing mode of the system you are compiling on.  These types will be 32-bits in size
 or 64-bits.  The variable size types are: </para>
 <variablelist>
-<varlistentry><term>size_t</term>
-<listitem><para>An unsigned "size" value.  This is the value type returned by pointer subtraction.
-</para></listitem></varlistentry>
-<varlistentry><term>ssize_t</term>
-<listitem><para>The signed equivalent to size_t.
-</para></listitem></varlistentry>
-<varlistentry><term>uintptr_t</term>
-<listitem><para>An unsigned integer value that's guaranteed to be the same size as a pointer value.
+<row><entry>size_t</entry>
+<entry><para>An unsigned "size" value.  This is the value type returned by pointer subtraction.
+</para></entry></row>
+<row><entry>ssize_t</entry>
+<entry><para>The signed equivalent to size_t.
+</para></entry></row>
+<row><entry>uintptr_t</entry>
+<entry><para>An unsigned integer value that's guaranteed to be the same size as a pointer value.
 Use an uintptr_t type if you wish to return a pointer value as a Rexx number.
-</para></listitem></varlistentry>
-<varlistentry><term>intptr_t</term>
-<listitem><para>A signed equivalent to uintptr_t.
-</para></listitem></varlistentry>
+</para></entry></row>
+<row><entry>intptr_t</entry>
+<entry><para>A signed equivalent to uintptr_t.
+</para></entry></row>
 </variablelist>
 <para>The remainder of the numeric types have fixed sizes regardless of the addressing mode.</para>
 <variablelist>
-<varlistentry><term>int</term>
-<listitem><para>A 32-bit signed integer.
-</para></listitem></varlistentry>
-<varlistentry><term>int32_t</term>
-<listitem><para>A 32-bit signed integer.  This is equivalent to int.
-</para></listitem></varlistentry>
-<varlistentry><term>uint32_t</term>
-<listitem><para>An unsigned 32-bit integer.
-</para></listitem></varlistentry>
-<varlistentry><term>int64_t</term>
-<listitem><para>A signed 64-bit integer.
-</para></listitem></varlistentry>
-<varlistentry><term>uint64_t</term>
-<listitem><para>An unsigned 64-bit integer.
-</para></listitem></varlistentry>
-<varlistentry><term>int16_t</term>
-<listitem><para>A signed 16-bit integer.
-</para></listitem></varlistentry>
-<varlistentry><term>uint16_t</term>
-<listitem><para>An unsigned 16-bit integer.
-</para></listitem></varlistentry>
-<varlistentry><term>int8_t</term>
-<listitem><para>A signed 8-bit integer.
-</para></listitem></varlistentry>
-<varlistentry><term>uint8_t</term>
-<listitem><para>An unsigned 8-bit integer.
-</para></listitem></varlistentry>
-<varlistentry><term>float</term>
-<listitem><para>A 32-bit floating point number.  When used as an
+<row><entry>int</entry>
+<entry><para>A 32-bit signed integer.
+</para></entry></row>
+<row><entry>int32_t</entry>
+<entry><para>A 32-bit signed integer.  This is equivalent to int.
+</para></entry></row>
+<row><entry>uint32_t</entry>
+<entry><para>An unsigned 32-bit integer.
+</para></entry></row>
+<row><entry>int64_t</entry>
+<entry><para>A signed 64-bit integer.
+</para></entry></row>
+<row><entry>uint64_t</entry>
+<entry><para>An unsigned 64-bit integer.
+</para></entry></row>
+<row><entry>int16_t</entry>
+<entry><para>A signed 16-bit integer.
+</para></entry></row>
+<row><entry>uint16_t</entry>
+<entry><para>An unsigned 16-bit integer.
+</para></entry></row>
+<row><entry>int8_t</entry>
+<entry><para>A signed 8-bit integer.
+</para></entry></row>
+<row><entry>uint8_t</entry>
+<entry><para>An unsigned 8-bit integer.
+</para></entry></row>
+<row><entry>float</entry>
+<entry><para>A 32-bit floating point number.  When used as an
 argument to a routine or method, the strings "nan", "+infinity", and
 "-infinity" will be converted into the appropriate floating-point values.  The
 reverse conversion is used when converting floating-point values back into
 Rexx objects.
-</para></listitem></varlistentry>
-<varlistentry><term>double</term>
-<listitem><para>A 64-bit floating point number.  The Rexx runtime applies the
+</para></entry></row>
+<row><entry>double</entry>
+<entry><para>A 64-bit floating point number.  The Rexx runtime applies the
 same special processing for nan, +infinity, and -infinity values as float types.
-</para></listitem></varlistentry>
-</variablelist
+</para></entry></row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 </section>
 
