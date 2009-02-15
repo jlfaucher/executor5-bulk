@@ -41,7 +41,7 @@
     #
     #########################################################################
 -->
-<chapter id="meet"><title>Meet Object Rexx</title>
+<chapter id="meet"><title>Meet Open Object Rexx (ooRexx)</title>
 <para>Rexx is a versatile, free-format language. Its simplicity makes it a good first
 language for beginners. For more experienced users and computer professionals,
 Rexx offers powerful functions and the ability to issue commands to several
@@ -54,15 +54,15 @@ environments.</para>
 
 <section id="oop"><title>Object-Oriented Programming</title>
 <para>Object-oriented extensions have been added to traditional Rexx, but its
-existing functions and instructions have not changed. The Object Rexx interpreter
-is actually an enhanced version of its predecessor, but with new support for: </para>
+existing functions and instructions have not changed. The Open Object Rexx interpreter
+is an enhanced version of its predecessor with support for:</para>
 <itemizedlist>
 <listitem><para>Classes, objects, and methods</para></listitem>
 <listitem><para>Messaging and polymorphism</para></listitem>
 <listitem><para>Inheritance and multiple inheritance</para></listitem></itemizedlist>
-<para>Object Rexx supplies the user with a base set of classes: ALARM, CLASS,
-ARRAY, LIST, QUEUE, TABLE, SET, DIRECTORY, RELATION, BAG, MESSAGE,
-METHOD, MONITOR, STEM, STREAM, STRING, and SUPPLIER. Object Rexx is fully
+<para>Object Rexx supplies the user with a base set of built-in classes providing
+many useful functions.
+Open Object Rexx is fully
 compatible with earlier versions of Rexx that were not object-oriented.</para>
 </section>
 
@@ -73,16 +73,14 @@ DO...END, and EXIT.</para>
 </section>
 
 <section id="crossplat"><title>Cross-Platform Versatility</title>
-<para>Versions of Object Rexx are now available for a wide variety
+<para>Versions of ooRexx are now available for a wide variety
 of platforms, and the programs you create with Object Rexx will run on any
 of these, including
-<trademark>Linux</trademark> for <trademark>Intel</trademark>,
-<trademark class="registered">Linux for S/390</trademark>, and
+<trademark>Linux</trademark>,
 <trademark class="registered">AIX</trademark>, as well as
-<trademark>Windows 95</trademark>,
-<trademark>Windows 98</trademark>,
-<trademark class="registered">Windows NT</trademark>, and
-<trademark class="registered">Windows 2000</trademark>.</para>
+<trademark class="registered">Windows XP</trademark>, and
+<trademark class="registered">Windows Vista</trademark>.
+It is also available in 64-bit versions that can exploit larger address spaces.
 </section>
 
 <section id="fewrule"><title>Fewer Rules</title>
@@ -100,8 +98,8 @@ at a time. Languages that are not interpreted must be compiled into object
 code before they can be run.</para>
 </section>
 
-<section id="builtin"><title>Built-In Functions and Methods</title>
-<para>Rexx has built-in functions and methods that perform various processing,
+<section id="builtin"><title>Built-In Classes and Functions</title>
+<para>Rexx has built-in classes and functions that perform various processing,
 searching, and comparison operations for text and numbers and provide formatting
 capabilities and arithmetic calculations.</para>
 </section>
@@ -128,12 +126,11 @@ debugging tool.</para>
 </section>
 
 <section id="devtool"><title>Impressive Development Tools</title>
-<para>The Open Object Rexx Windows places many powerful tools at
+<para>The ooRexx places many powerful tools at
 your disposal. These include
 a Rexx API to other languages like C/C++ or Cobol,
-OLE/ActiveX support, a mathematical functions package, file encryption
-functions for the Windows 2000 file system, and Windows Scripting
-Host support.</para>
+OLE/ActiveX support, a mathematical functions package.
+</para>
 </section>
 </section>
 
@@ -143,8 +140,8 @@ Host support.</para>
 <indexterm><primary>Rexx</primary>
 <secondary>and Unix</secondary></indexterm>
 <para>The most important role Rexx plays is as a programming
-language for Windows and Unix. A Rexx program can serve as a
-script for the operating system to follow. Using
+language for Windows and Unix-based systems. A Rexx program can serve as a
+script for the operating system. Using
 Rexx, you can reduce long, complex, or repetitious tasks to a single command
 or program.</para>
 </section>
@@ -157,10 +154,8 @@ or program.</para>
 changing its existing functions and instructions. So you can continue to use
 Rexx's procedural instructions, and incorporate objects as you become
 more comfortable with the technology. In general, your current Rexx programs
-will work without change. In contrast to the traditional Rexx interpreter,
-the Object Rexx interpreter checks <emphasis role="italic">all</emphasis>
-the syntax at start-up time, and this means that any syntax errors that
-exist will be found.</para>
+will work without change.
+</para>
 <para>In object-oriented technology,
 <indexterm><primary>objects</primary></indexterm>
 <emphasis role="italic">objects</emphasis> are used in programs to model the
@@ -202,17 +197,19 @@ ERASE methods.</para>
 <secondary>traditional</secondary></indexterm>
 <para>In traditional (classic) Rexx, all data was stored as strings.
 The strings represented character data as well as numeric data.
-From an object-oriented perspective, traditional Rexx had one kind of objects:
-strings. In object-oriented terminology, each string variable is an
+From an object-oriented perspective, traditional Rexx had just one kind of object:
+the string. In object-oriented terminology, each string variable is a
 <indexterm><primary>strings</primary></indexterm>
 <indexterm><primary>objects</primary></indexterm>
 <emphasis role="italic">object</emphasis> that is an
 <indexterm><primary>instances</primary></indexterm>
-instance of the String class.</para>
-<para>In
-Object Rexx, variables can now reference objects other than strings. In addition
-to a string class, Rexx now includes classes for creating arrays, queues,
-streams, and many other useful objects. Objects in these new Rexx classes
+reference to an instance of the String class.</para>
+<para>With
+ooRexx, variables can now reference objects other than strings. In addition
+to the String class, Rexx includes classes for creating arrays, queues,
+streams, and many other useful objects. Additionally, you can create your own
+classes that can interoperate seamlessly with the language built-in classes.
+Objects in these Rexx classes
 are manipulated by methods instead of traditional
 functions. To activate a method, you just send a message to the object.</para>
 <para>For example, instead of using the SUBSTR function on a string
@@ -242,11 +239,17 @@ is to the left of the twiddle. The message sent is to the right. In this example
 the Name object is sent the SUBSTR message. The numbers in parentheses (2,3)
 are arguments sent as part of the message. The SUBSTR method is run for the
 Name object, and the result is assigned to the
-<emphasis role="italic">s</emphasis> string object.</para>
+<emphasis role="italic">s</emphasis> string object.
+Conceptually, you are "asking" the String object refered to by variable NAME to
+give you its substring starting at character 2 for 3 characters.  Many String
+operations are available as both class methods and built-in functions, but the
+String class also provides many method enhancements for which there are no corresponding
+built-in functions.
+</para>
 
-<para>For the new
-classes (such as array or queue), methods are provided, but not equivalent
-functions. For example, suppose you want to use a Rexx array object instead
+<para>For
+classes other than String (such as Array or Queue), methods are provided, but not equivalent
+built-in functions. For example, suppose you want to use a Rexx Array object instead
 of the traditional string-based
 <indexterm><primary>string</primary></indexterm>
 <indexterm><primary>stem</primary></indexterm>
@@ -259,16 +262,29 @@ myarray=.array~new(5)
 
 ]]>
 </programlisting>
-<para>A new instance, named Myarray, of the Array class is created. A period
-and the class name identify the class. The period is necessary because it
-precedes the class name in an expression. The Myarray array object has five
-elements. Some of the other methods, besides NEW, for array objects are PUT,
-AT, REMOVE, SIZE, [], and []=.</para>
+<para>A new instance of the Array class is created and reference
+to it is stored in the variable MyArray.
+A period and the class name identify the class, .Array.  The period tells the
+interpreter to look in the Rexx environment for a class named "ARRAY".
+The Myarray array object has five
+elements, but the array itself is currently empty.  Items can be added using methods
+defined by the array class.</para>
+<programlisting>
+<![CDATA[
+myarray[1] = "Rick"
+myarray[2] = "David"
+myarray[3] = "Mark"
+
+say myarray[1] myarray[2] myarray[3]
+]]>
+</programlisting>
+<para>The Array class implements many more methods.  See the ooRexx reference for
+details on what additional methods are provided.</para>
 <para>By adding object technology
 to its repertoire of traditional programming techniques, Rexx has evolved
-into an object-oriented language, like Smalltalk. Object Rexx accommodates
+into an object-oriented language, like Smalltalk. Rexx accommodates
 the programming techniques of traditional Rexx while adding new ones. With
-Object Rexx, you can use the new technology as much or as little as you like,
+ooRexx, you can use the new technology as much or as little as you like,
 at whatever pace you like. You can mix classic and object techniques. You
 can ease into the object world gradually, building on the Rexx skills and
 knowledge you already have.</para>
@@ -293,12 +309,12 @@ place (inheritance and functional decomposition).</para>
 <listitem><para>Cost-savings potential</para></listitem>
 <listitem><para>Increased adaptability and scalability</para></listitem>
 </itemizedlist>
-<para>With Object Rexx, you get the user-friendliness of Rexx in an
+<para>With ooRexx, you get the user-friendliness of Rexx in an
 object-oriented environment.</para>
 <para>Object Rexx provides a Sockets API for Rexx.
-So you can script Object Rexx clients and servers, and run them in the Internet.</para>
+So you can script Rexx clients and servers, and run them in the Internet.</para>
 <para>Object Rexx also provides access to FTP commands by means of
-its RxFtp package, and to the use of mathematical functions by means of its
+its RxFtp package, and the use of mathematical functions by means of its
 RxMath utility package. The Sockets, FTP, and mathematical functions packages
 are each supplied with separate, full documentation.</para>
 </section>
