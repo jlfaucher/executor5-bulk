@@ -2289,7 +2289,7 @@ to retrieve the Rexx variable values.</para></listitem>
 <para>This section describes how to define a Rexx command handler.</para>
 </section>
 
-<section id="apilisting"><title>Rexx Methods Listing</title>
+<section id="apilisting"><title>Rexx Interface Methods Listing</title>
 <para>This section describes each available method and its associated context.</para>
 
 <section id="mthArray"><title>Array</title>
@@ -2334,25 +2334,25 @@ RexxObjectPtr obj1, obj2, obj3, obj4;
 ]]>
 </programlisting>
 <para>This method has four forms.
-It create a new one-dimension array with the specified objects.
+It create a new one-dimension Array with the specified objects.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj1</emphasis></entry>
-    <entry><para>The Rexx object to be added.</para></entry>
+    <entry><para>The first object to be added.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj2</emphasis></entry>
-    <entry><para>The Rexx object to be added.</para></entry>
+    <entry><para>The second object to be added.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj3</emphasis></entry>
-    <entry><para>The Rexx object to be added.</para></entry>
+    <entry><para>The third object to be added.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj4</emphasis></entry>
-    <entry><para>The Rexx object to be added.</para></entry>
+    <entry><para>The fourth object to be added.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The new Rexx array object.</para>
+<para>The new Array object.</para>
 </section>
 
 <section id="mthArrayAppend"><title>ArrayAppend</title>
@@ -2391,15 +2391,15 @@ size_t n;
 >>--n = context->ArrayAppend(arr, obj);----------------------------------><
 ]]>
 </programlisting>
-<para>Append a Rexx object to the end of the Rexx array.
+<para>Append an Object to the end of a Array.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>The source Rexx array object.</para></entry>
+    <entry><para>The target Array object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to be appended.</para></entry>
+    <entry><para>The object to be appended.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -2442,23 +2442,23 @@ size_t n, len;
 >>--n = context->ArrayAppendString(arr, str, len);-----------------------><
 ]]>
 </programlisting>
-<para>Append a Rexx object to the end of the Rexx array.  The appended object is
-a string created from a pointer and length.
+<para>Append an object to the end of an Array.  The appended object is
+a String object created from a pointer and length.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>The source Rexx array object.</para></entry>
+    <entry><para>The target Array object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">str</emphasis></entry>
-    <entry><para>The CSTRING to be appended.</para></entry>
+    <entry><para>A pointer to the string data to be appended.</para></entry>
     </row>
     <row><entry><emphasis role="italic">len</emphasis></entry>
-    <entry><para>The length of the CSTRING value in characters.</para></entry>
+    <entry><para>The length of the string value in characters.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The array index of the appended object.</para>
+<para>The Array index of the appended object.</para>
 </section>
 
 <section id="mthArrayAt"><title>ArrayAt</title>
@@ -2497,19 +2497,19 @@ size_t idx;
 >>--obj = context->ArrayAt(arr, idx);------------------------------------><
 ]]>
 </programlisting>
-<para>Return the object at the specified index.
+<para>Retrieve an object from a specified Array index.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>The source Rexx array object.</para></entry>
+    <entry><para>The source Array object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">idx</emphasis></entry>
-    <entry><para>The index into the Rexx array object. This argument is 1-based.</para></entry>
+    <entry><para>The index of the required object.  This argument is 1-based.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx object at the specified index.
+<para>The object at the specified index.
 Returns NULLOBJECT if there is no value at the specified index.</para>
 </section>
 
@@ -2548,16 +2548,16 @@ size_t sz;
 >>--sz = context->ArrayDimension(arr);-----------------------------------><
 ]]>
 </programlisting>
-<para>Returns number of dimensions of the Rexx array.
+<para>Returns number of dimensions of an Array.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>The source Rexx array object.</para></entry>
+    <entry><para>The target Array object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The number of dimensions of the Rexx array.</para>
+<para>The number of Array dimensions.</para>
 </section>
 
 <section id="mthArrayItems"><title>ArrayItems</title>
@@ -2595,16 +2595,16 @@ size_t sz;
 >>--sz = context->ArrayItems(arr);---------------------------------------><
 ]]>
 </programlisting>
-<para>Returns number of elements in the Rexx array.
+<para>Returns number of elements in an Array.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>The source Rexx array object.</para></entry>
+    <entry><para>The source Array object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The number of elements in the Rexx array.</para>
+<para>The number of Array elements.</para>
 </section>
 
 <section id="mthArrayOfFour"><title>ArrayOfFour</title>
@@ -2642,25 +2642,25 @@ RexxObjectPtr obj1, obj2, obj3, obj4;
 >>--arr = context->ArrayOfFour(obj1, obj2, obj3, obj4);------------------><
 ]]>
 </programlisting>
-<para>Create a new one-dimension array with the specified objects.
+<para>Create a new one-dimension Array with the specified objects.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj1</emphasis></entry>
-    <entry><para>The Rexx object to be added.</para></entry>
+    <entry><para>The first object to be added.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj2</emphasis></entry>
-    <entry><para>The Rexx object to be added.</para></entry>
+    <entry><para>The second object to be added.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj3</emphasis></entry>
-    <entry><para>The Rexx object to be added.</para></entry>
+    <entry><para>The third object to be added.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj4</emphasis></entry>
-    <entry><para>The Rexx object to be added.</para></entry>
+    <entry><para>The fourth object to be added.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The new Rexx array object.</para>
+<para>The new Array object.</para>
 </section>
 
 <section id="mthArrayOfThree"><title>ArrayOfThree</title>
@@ -2698,22 +2698,22 @@ RexxObjectPtr obj1, obj2, obj3;
 >>--arr = context->ArrayOfThree(obj1, obj2, obj3);-----------------------><
 ]]>
 </programlisting>
-<para>Create a new one-dimension array with the specified objects.
+<para>Create a new one-dimension Array with the specified objects.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj1</emphasis></entry>
-    <entry><para>The Rexx object to be added.</para></entry>
+    <entry><para>The first object to be added.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj2</emphasis></entry>
-    <entry><para>The Rexx object to be added.</para></entry>
+    <entry><para>The second object to be added.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj3</emphasis></entry>
-    <entry><para>The Rexx object to be added.</para></entry>
+    <entry><para>The third object to be added.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The new Rexx array object.</para>
+<para>The new Array object.</para>
 </section>
 
 <section id="mthArrayOfTwo"><title>ArrayOfTwo</title>
@@ -2751,19 +2751,19 @@ RexxObjectPtr obj1, obj2;
 >>--arr = context->ArrayOfTwo(obj1, obj2);-------------------------------><
 ]]>
 </programlisting>
-<para>Create a new one-dimension array with the specified objects..
+<para>Create a new one-dimension Array with the specified objects..
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj1</emphasis></entry>
-    <entry><para>The Rexx object to be added.</para></entry>
+    <entry><para>The first object to be added.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj2</emphasis></entry>
-    <entry><para>The Rexx object to be added.</para></entry>
+    <entry><para>The second object to be added.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The new Rexx array object.</para>
+<para>The new Array object.</para>
 </section>
 
 <section id="mthArrayOfOne"><title>ArrayOfOne</title>
@@ -2801,16 +2801,16 @@ RexxObjectPtr obj;
 >>--arr = context->ArrayOfOne(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Create a new one-dimension array with the specified object.
+<para>Create a new one-dimension Array with the specified object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to be added.</para></entry>
+    <entry><para>The object to be added.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The new Rexx array object.</para>
+<para>The new Array object.</para>
 </section>
 
 <section id="mthArrayPut"><title>ArrayPut</title>
@@ -2849,18 +2849,18 @@ size_t idx;
 >>--context->ArrayPut(arr, obj, idx);------------------------------------><
 ]]>
 </programlisting>
-<para>Replace/add a Rexx object to the Rexx array at the specified index.
+<para>Replace/add an Object to an Array.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>The source Rexx array object.</para></entry>
+    <entry><para>The target Array object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to be added/replaced.</para></entry>
+    <entry><para>The object to be added.</para></entry>
     </row>
     <row><entry><emphasis role="italic">idx</emphasis></entry>
-    <entry><para>The index into the Rexx array object. This argument is 1-based.</para></entry>
+    <entry><para>The index into the Array object. This argument is 1-based.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -2902,16 +2902,16 @@ size_t sz;
 >>--sz = context->ArraySize(arr);----------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the 1-based index of the last element of the Rexx array.
+<para>Returns the size of an Array.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>The source Rexx array object.</para></entry>
+    <entry><para>The source Array object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The index of the last element of the Rexx array.</para>
+<para>The Array size.</para>
 </section>
 
 <section id="mthAttachThread"><title>AttachThread</title>
@@ -2942,13 +2942,13 @@ RexxThreadContext *tc
 >>--success = context->AttachThread(&tc);-------------------------------><
 ]]>
 </programlisting>
-<para>Attaches the current thread to the Rexx interpreter instance pointed to by the
+<para>Attaches the current thread to the Rexx interpreter instance
 <emphasis role="italic">context</emphasis> pointer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">tc</emphasis></entry>
-    <entry><para>Pointer to a RexxThreadContext pointer.</para></entry>
+    <entry><para>Pointer to a RexxThreadContext pointer used to return a RexxThreadContext for the attached thread.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -2993,16 +2993,16 @@ POINTER str;
 >>--str = context->BufferData(obj);--------------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer the Rexx Buffer object's data area.
+<para>Returns a pointer to a Buffer object's data area.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The source Rexx object.</para></entry>
+    <entry><para>The source Buffer object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The C pointer to the buffer object's data area.</para>
+<para>The C pointer to the Buffer object's data area.</para>
 </section>
 
 <section id="mthBufferLength"><title>BufferLength</title>
@@ -3040,16 +3040,16 @@ size_t sz;
 >>--sz = context->BufferLength(obj);-------------------------------------><
 ]]>
 </programlisting>
-<para>Return the length of the Rexx Buffer object's data area.
+<para>Return the length of a Buffer object's data area.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The source Rexx object.</para></entry>
+    <entry><para>The source Buffer object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The length of the Rexx Buffer object's data area.</para>
+<para>The length of the Buffer object's data area.</para>
 </section>
 
 <section id="mthBufferStringData"><title>BufferStringData</title>
@@ -3090,9 +3090,9 @@ POINTER str;
 <para>Returns a pointer to a RexxBufferString object's data area.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The source Rexx object.</para></entry>
+    <entry><para>The source object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -3141,7 +3141,7 @@ size_t sz;
 <para>Return the length of a RexxBufferStringObject instance.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source RexxBufferStringObject.</para></entry>
     </row>
@@ -3189,16 +3189,16 @@ RexxArrayObject arr;
 <para>Returns the result object of the routine.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>The ASCII-Z path/name of the Rexx program to call.</para></entry>
     </row>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>The array of Rexx object arguments to the specified program.</para></entry>
+    <entry><para>The Array of object arguments to the specified program.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the result Rexx object returned by the program.
+<para>A Pointer to the result object returned by the program.
 Any errors involved with calling the routine
 will return a NULLOBJECT value.  The
 <link linkend="mthCheckCondition">CheckCondition()</link>.
@@ -3244,16 +3244,16 @@ RexxArrayObject arr;
 <para>Returns the result object of the routine.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx routine object to call.</para></entry>
+    <entry><para>The routine object to call.</para></entry>
     </row>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>The array of Rexx object arguments to the specified routine.</para></entry>
+    <entry><para>The Array of object arguments to the specified routine.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the result Rexx object returned by the routine.
+<para>A Pointer to the result object returned by the routine.
 </para>
 </section>
 
@@ -3380,13 +3380,13 @@ CSTRING str;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first converts a Rexx object into a C ASCII-Z string.
-The second converts C ASCII-Z string into a Rexx String object.
+The first converts an Object into a C ASCII-Z string.
+The second converts C ASCII-Z string into a String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The source Rexx object for the conversion for the first form of the method.</para></entry>
+    <entry><para>The source object for the conversion for the first form of the method.</para></entry>
     </row>
     <row><entry><emphasis role="italic">str</emphasis></entry>
     <entry><para>The source C ASCII-Z string for the conversion for the second form of the method.</para></entry>
@@ -3394,7 +3394,7 @@ The second converts C ASCII-Z string into a Rexx String object.
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>For the first method form, a CSTRING representation of the object is returned.
-For the second form, a Rexx String object is created from the ASCII-Z string data..</para>
+For the second form, a String object is created from the ASCII-Z string data..</para>
 </section>
 
 <section id="mthDecodeConditionInfo"><title>DecodeConditionInfo</title>
@@ -3435,9 +3435,9 @@ RexxCondition cond;
 <para>Decodes the condition information into a RexxCondition structure.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">dir</emphasis></entry>
-    <entry><para>The source Rexx directory object containing the condition information.</para></entry>
+    <entry><para>The source Directory object containing the condition information.</para></entry>
     </row>
     <row><entry><emphasis role="italic">cond</emphasis></entry>
     <entry><para>A pointer to the RexxCondition structure.</para></entry>
@@ -3521,16 +3521,16 @@ CSTRING str;
 <para>Return the object at the specified index.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">dirobj</emphasis></entry>
-    <entry><para>The source Rexx directory object.</para></entry>
+    <entry><para>The source Directory object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">str</emphasis></entry>
-    <entry><para>The index into the Rexx directory object.</para></entry>
+    <entry><para>The index into the Directory object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx object at the specified index.  Returns NULLOBJECT if the given index does not exist.
+<para>The object at the specified index.  Returns NULLOBJECT if the given index does not exist.
 </para>
 </section>
 
@@ -3570,18 +3570,18 @@ CSTRING str;
 >>--context->DirectoryPut(dirobj, index, str);---------------------------><
 ]]>
 </programlisting>
-<para>Replace/add a Rexx object to a Rexx directory object at the specified index.
+<para>Replace/add an Object to a Directory object at the specified index.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">dirobj</emphasis></entry>
-    <entry><para>The source Rexx directory object.</para></entry>
+    <entry><para>The source Directory object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">index</emphasis></entry>
-    <entry><para>The ASCII-Z string index into the Rexx directory object.</para></entry>
+    <entry><para>The ASCII-Z string index into the Directory object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">str</emphasis></entry>
-    <entry><para>The Rexx object instance to be stored at the index.</para></entry>
+    <entry><para>The object instance to be stored at the index.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -3627,17 +3627,17 @@ CSTRING str;
 <para>Removes and returns the object at the specified index.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">dirobj</emphasis></entry>
-    <entry><para>The source Rexx directory object.</para></entry>
+    <entry><para>The source Directory object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">str</emphasis></entry>
-    <entry><para>The ASCII-Z index into the Rexx directory object.</para></entry>
+    <entry><para>The ASCII-Z index into the Directory object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx object removed at the specified index.  Returns NULLOBJECT if the index
-did not exist in the target directory.
+<para>The object removed at the specified index.  Returns NULLOBJECT if the index
+did not exist in the target Directory.
 </para>
 </section>
 
@@ -3680,21 +3680,21 @@ logical_t flag;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first form converts C double value to a Rexx object.
-The second form converts a Rexx object to a C double value.
+The first form converts C double value to an Object.
+The second form converts an Object to a C double value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The double value to be converted in the first form of the method.
        The target of the conversion in the second form of the method.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to be converted..</para></entry>
+    <entry><para>The object to be converted..</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>Returns a Rexx object with the string value of the double value in the first form of the method.
+<para>Returns an Object with the string value of the double value in the first form of the method.
 0 - success, 1 = failure in the second form of the method.</para>
 </section>
 
@@ -3733,16 +3733,16 @@ double n;
 >>--obj = context->DoubleToObject(n);------------------------------------><
 ]]>
 </programlisting>
-<para>Converts C double value to a Rexx object.
+<para>Converts C double value to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The double value to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object with the string value of the double value.</para>
+<para>an Object with the string value of the double value.</para>
 </section>
 
 <section id="mthDoubleToObjectWithPrecision"><title>DoubleToObjectWithPrecision</title>
@@ -3781,10 +3781,10 @@ double n;
 >>--obj = context->DoubleToObject(n, p);---------------------------------><
 ]]>
 </programlisting>
-<para>Converts C double value to a Rexx object with a specific precision.
+<para>Converts C double value to an Object with a specific precision.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The double value to be converted.</para></entry>
     </row>
@@ -3793,7 +3793,7 @@ double n;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object with the string value of the double value.</para>
+<para>an Object with the string value of the double value.</para>
 </section>
 
 <section id="mthDropContextVariable"><title>DropContextVariable</title>
@@ -3829,7 +3829,7 @@ CSTRING name;
 <para>Drops a Rexx variable in the current routines caller's variable context.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>The name of the Rexx variable.</para></entry>
     </row>
@@ -3869,7 +3869,7 @@ CSTRING str;
 <para>Drops an instance variable in the current method's scope.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">str</emphasis></entry>
     <entry><para>The name of the object variable.</para></entry>
     </row>
@@ -3913,15 +3913,15 @@ size_t n;
 >>--context->DropStemArrayElement(sobj, n);------------------------------><
 ]]>
 </programlisting>
-<para>Drops an element of the Rexx stem object.
+<para>Drops an element of the Stem object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
-    <entry><para>The target Rexx stem object.</para></entry>
+    <entry><para>The target Stem object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The Rexx stem object element number.</para></entry>
+    <entry><para>The Stem object element number.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -3963,15 +3963,15 @@ CSTRING name;
 >>--context->DropStemElement(sobj, name);--------------------------------><
 ]]>
 </programlisting>
-<para>Drops an element of the Rexx stem object.
+<para>Drops an element of the Stem object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
-    <entry><para>The target Rexx stem object.</para></entry>
+    <entry><para>The target Stem object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">name</emphasis></entry>
-    <entry><para>The Rexx stem object element name.</para></entry>
+    <entry><para>The Stem object element name.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -4012,7 +4012,7 @@ RexxObjectPtr obj;
 >>--obj = context->False();----------------------------------------------><
 ]]>
 </programlisting>
-<para>This method returns a Rexx .false ( 0 ) object.
+<para>This method returns the Rexx .false ( 0 ) object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -4058,7 +4058,7 @@ CSTRING name;
 <para>Locates a class object in the current thread context.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>An ASCII-Z string containing the name of the class.</para></entry>
     </row>
@@ -4099,13 +4099,13 @@ RexxClassObject obj;
 <para>Locate a Rexx class object in the current method or routine's package context.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>The class name to be located.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The resolved Rexx class object.  Returns NULLOBJECT if the class is not found.</para>
+<para>The resolved class object.  Returns NULLOBJECT if the class is not found.</para>
 </section>
 
 <section id="mthFindPackageClass"><title>FindPackageClass</title>
@@ -4147,7 +4147,7 @@ CSTRING name;
 <para>Locate a class object in a given Package object's context.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">pkg</emphasis></entry>
     <entry><para>The Package object used to resolve the cllass.</para></entry>
     </row>
@@ -4199,7 +4199,7 @@ size_t len;
 given length and returns a reference to the completed String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The working RexxBufferStringObject.</para></entry>
     </row>
@@ -4246,9 +4246,9 @@ RexxArrayObject arr;
 equivalent to using a FORWARD CONTINUE instruction from Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to receive the message.  If NULL, the object
+    <entry><para>The object to receive the message.  If NULL, the object
     that is the target of the current method call is used.
     </para></entry>
     </row>
@@ -4263,7 +4263,7 @@ equivalent to using a FORWARD CONTINUE instruction from Rexx code.
     </para></entry>
     </row>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>The array of message arguments.  If NULL, the same arguments
+    <entry><para>The Array of message arguments.  If NULL, the same arguments
     that were used on the current method invocation will be used.
     </para></entry>
     </row>
@@ -4304,7 +4304,7 @@ RexxDirectoryObject obj;
 ]]>
 </programlisting>
 <para>Returns all the Rexx variables in the current routine's caller's context as
-a directory.  Only simple variables and stem variables are included in the directory.
+a Directory.  Only simple variables and stem variables are included in the Directory.
 Stem variable entries will have a Stem object as the value.  Compound variables
 may be accessed via the Stem object values.
 </para>
@@ -4349,17 +4349,17 @@ RexxDirectoryObject obj;
 >>--obj = context->GetAllStemElements(sobj);-----------------------------><
 ]]>
 </programlisting>
-<para>Returns all elements of a Rexx stem object as a Rexx directory object.
-Each assigned Stem tail element will be an entry in the directory.
+<para>Returns all elements of a Stem object as a Directory object.
+Each assigned Stem tail element will be an entry in the Directory.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
-    <entry><para>The source Rexx stem object.</para></entry>
+    <entry><para>The source Stem object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx directory object containing the Stem variable values.</para>
+<para>The Directory object containing the Stem variable values.</para>
 </section>
 
 <section id="mthGetApplicationData"><title>GetApplicationData</title>
@@ -4438,13 +4438,13 @@ size_t n;
 is equivalent to calling Arg(n) from within Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The argument number (1-based).</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx object corresponding to the given argument position.  Returns
+<para>The object corresponding to the given argument position.  Returns
 NULLOBJECT if the argument was not specified.
 </para>
 </section>
@@ -4479,13 +4479,13 @@ RexxArrayObject arr;
 >>--arr = context->GetArguments();------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a Rexx array object of the arguments to the method or routine.
-This is the same argument array returned by the ARGLIST argument type.
+<para>Returns an Array object of the arguments to the method or routine.
+This is the same argument Array returned by the ARGLIST argument type.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx array object containing the method or routine arguments.</para>
+<para>The Array object containing the method or routine arguments.</para>
 </section>
 
 <section id="mthGetCallerContext"><title>GetCallerContext</title>
@@ -4561,7 +4561,7 @@ RexxDirectoryObject dir;
 >>--dir = context->GetConditionInfo();--------------------------------><
 ]]>
 </programlisting>
-<para>Returns a Rexx directory object containing the condition information.
+<para>Returns a Directory object containing the condition information.
 This is equivalent to calling Condition('O') from within Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -4717,7 +4717,7 @@ The value returned for a stem variable will be the corresponding Stem object.
 Compound variable values can be retrieved from the corresponding Stem values.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>The name of the Rexx variable.</para></entry>
     </row>
@@ -4761,12 +4761,12 @@ RexxDirectoryObject dir;
 >>--dir = context->GetGlobalEnvironment();----------------------------><
 ]]>
 </programlisting>
-<para>Returns the RexxDirectoryObject for the .environment directory.
+<para>Returns the RexxDirectoryObject for the .environment Directory.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A RexxDirectoryObject pointer to the .environment directory.</para>
+<para>A RexxDirectoryObject pointer to the .environment Directory.</para>
 </section>
 
 <section id="mthGetLocalEnvironment"><title>GetLocalEnvironment</title>
@@ -4803,12 +4803,12 @@ RexxDirectoryObject dir;
 >>--dir = context->GetLocalEnvironment();-----------------------------><
 ]]>
 </programlisting>
-<para>Returns RexxDirectoryObject pointer to the .local directory.
+<para>Returns RexxDirectoryObject pointer to the .local Directory.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A RexxDirectoryObject pointer to the .local directory.</para>
+<para>A RexxDirectoryObject pointer to the .local Directory.</para>
 </section>
 
 <section id="mthGetMessageName"><title>GetMessageName</title>
@@ -4880,7 +4880,7 @@ RexxMethodObject obj;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the current Rexx Method object.</para>
+<para>A Pointer to the current Method object.</para>
 </section>
 
 <section id="mthGetMethodPackage"><title>GetMethodPackage</title>
@@ -4918,12 +4918,12 @@ RexxPackageObject pkg;
 >>--pkg = context->GetMethodPackage(obj);-----------------------------><
 ]]>
 </programlisting>
-<para>Returns the Rexx Package object associated with the specified method.
+<para>Returns the Package object associated with the specified method.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx Method object to query.</para></entry>
+    <entry><para>The Method object to query.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -4965,13 +4965,13 @@ The value returned for a stem variable will be the corresponding Stem object.
 Compound variable values can be retrieved from the corresponding Stem values.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">str</emphasis></entry>
     <entry><para>The name of the object variable.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx object assigned to the object variable.  Returns NULLOBJECT if the
+<para>The object assigned to the object variable.  Returns NULLOBJECT if the
 variable has not been assigned a value.</para>
 </section>
 
@@ -5010,16 +5010,16 @@ RexxPackageObject pkg;
 >>--dir = context->GetPackageClasses(pkg);----------------------------><
 ]]>
 </programlisting>
-<para>Returns a Rexx Directory object containing all public and private classes (name and object) from the specified package object.
+<para>Returns a Directory object containing all public and private classes (name and object) from the specified package object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx package object to query.</para></entry>
+    <entry><para>The package object to query.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx Directory object containing the package classes.</para>
+<para>A Directory object containing the package classes.</para>
 </section>
 
 <section id="mthGetPackageMethods"><title>GetPackageMethods</title>
@@ -5057,14 +5057,14 @@ RexxPackageObject pkg;
 >>--dir = context->GetPackageMethods(pkg);----------------------------><
 ]]>
 </programlisting>
-<para>Returns a Rexx Directory object containing the unattached methods
+<para>Returns a Directory object containing the unattached methods
 (name and object) from the specified package object.  This is equivalent to
 using the .methods environment symbol from Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx package routine object to query.</para></entry>
+    <entry><para>The package routine object to query.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -5109,9 +5109,9 @@ RexxPackageObject pkg;
 <para>Returns a Directory object containing the public classes (name and object) from the specified package object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx package object to query.</para></entry>
+    <entry><para>The package object to query.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -5156,9 +5156,9 @@ RexxPackageObject pkg;
 <para>Returns a Directory object containing the public routines (name and object) from the specified package object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx package object to query.</para></entry>
+    <entry><para>The package object to query.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -5203,9 +5203,9 @@ RexxPackageObject pkg;
 <para>Returns a Directory object containing the public and private routines (name and object) from the specified package object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx package routine object to query.</para></entry>
+    <entry><para>The package routine object to query.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -5245,7 +5245,7 @@ RexxRoutineObject obj;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The current Rexx Routine object.</para>
+<para>The current Routine object.</para>
 </section>
 
 <section id="mthGetRoutineName"><title>GetRoutineName</title>
@@ -5322,9 +5322,9 @@ RexxPackageObject pkg;
 <para>Returns Package object for the specified Routine object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx routine object to query.</para></entry>
+    <entry><para>The routine object to query.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -5396,7 +5396,7 @@ RexxObjectPtr obj;
 ]]>
 </programlisting>
 <para>Returns a pointer to the object that is the execution context of the current method.  This
-is equivalent to the SELF variable on a Rexx method.  The same value can be accessed as a method
+is equivalent to the SELF variable in a Rexx method.  The same value can be accessed as a method
 argument by using the OSELF type.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -5441,20 +5441,20 @@ size_t n;
 >>--obj = context->GetStemArrayElement(sobj, n);-------------------------><
 ]]>
 </programlisting>
-<para>Gets an element of the Rexx stem object using a numeric index.
+<para>Gets an element of the Stem object using a numeric index.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
-    <entry><para>The source Rexx stem object.</para></entry>
+    <entry><para>The source Stem object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The Rexx stem object element number.  The numeric index is
+    <entry><para>The Stem object element number.  The numeric index is
        translated into the corresponding String tail.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx stem object element or NULLOBJECT if the target name has not been assigned a value.</para>
+<para>The Stem object element or NULLOBJECT if the target name has not been assigned a value.</para>
 </section>
 
 <section id="mthGetStemElement"><title>GetStemElement</title>
@@ -5493,22 +5493,22 @@ CSTRING name;
 >>--obj = context->GetStemElement(sobj, name);---------------------------><
 ]]>
 </programlisting>
-<para>Gets an element of the Rexx stem object.
+<para>Gets an element of the Stem object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
-    <entry><para>The source Rexx stem object.</para></entry>
+    <entry><para>The source Stem object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">name</emphasis></entry>
-    <entry><para>The Rexx stem object element name.  This is a fully
+    <entry><para>The Stem object element name.  This is a fully
     resolved tail name, taken as a constant.  No variable substitution is
     performed on the tail.
     </para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx stem object element or NULLOBJECT if the target element
+<para>The Stem object element or NULLOBJECT if the target element
 has not been assigned a value.</para>
 </section>
 
@@ -5548,16 +5548,16 @@ CSTRING name;
 >>--obj = context->GetStemValue(sobj);-----------------------------------><
 ]]>
 </programlisting>
-<para>Gets the base name value of the Rexx stem object.
+<para>Gets the base name value of the Stem object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
-    <entry><para>The source Rexx stem object.</para></entry>
+    <entry><para>The source Stem object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx Stem object's default base value.</para>
+<para>The Stem object's default base value.</para>
 </section>
 
 <section id="mthGetSuper"><title>GetSuper</title>
@@ -5589,7 +5589,7 @@ RexxObjectPtr obj;
 ]]>
 </programlisting>
 <para>Returns a pointer to a the current method's super class scope.  This is equivalent to the
-SUPER variable used from Rexx code.  This value can also be obtained via the SUPER method
+SUPER variable used from code.  This value can also be obtained via the SUPER method
 argument type.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -5706,9 +5706,9 @@ CSTRING name;
 <para>Returns a boolean indicating if an object has the specified method available.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to query.</para></entry>
+    <entry><para>The object to query.</para></entry>
     </row>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>An ASCII-Z string containing the name of the method.</para></entry>
@@ -5795,20 +5795,20 @@ int32_t n;
 ]]>
 </programlisting>
 <para>There a two forms of this method.
-The first converts a C 32-bit integer <emphasis role="italic">n</emphasis> to a Rexx object.
-The second converts a Rexx object to a C 32-bit integer, returning it in the location pointed to by <emphasis role="italic">n</emphasis>.
+The first converts a C 32-bit integer <emphasis role="italic">n</emphasis> to an Object.
+The second converts an Object to a C 32-bit integer, returning it in the location pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The C pointer to the integer to be converted or the target of the conversion.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to be converted.</para></entry>
+    <entry><para>The object to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object that represents the C integer in the first form.
+<para>an Object that represents the C integer in the first form.
 The second form returns 1 = success, 0 = failure.  If successful, the converted value is
 stored at the location pointed to by <emphasis role="italic">n</emphasis>.
 </para>
@@ -5849,16 +5849,16 @@ int32_t n;
 >>--obj = context->Int32ToObject(n);-------------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C 32-bit integer <emphasis role="italic">n</emphasis> to a Rexx object.
+<para>Convert a C 32-bit integer <emphasis role="italic">n</emphasis> to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The integer to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object representing the integer value.</para>
+<para>an Object representing the integer value.</para>
 </section>
 
 <section id="mthInt64"><title>Int64</title>
@@ -5900,20 +5900,20 @@ int64_t n;
 ]]>
 </programlisting>
 <para>There a two forms of this method.
-The first converts a C 64-bit integer <emphasis role="italic">n</emphasis> to a Rexx object.
-The second converts a Rexx object to a C 64-bit integer and returns in the area pointed to by <emphasis role="italic">n</emphasis>.
+The first converts a C 64-bit integer <emphasis role="italic">n</emphasis> to an Object.
+The second converts an Object to a C 64-bit integer and returns in the area pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The integer to be converted or the location for returning the converted integer.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to be converted.</para></entry>
+    <entry><para>The object to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object version of the integer value in the first form.
+<para>an Object version of the integer value in the first form.
 The second form returns 1 = success, 0 = failure.  If successful, the converted value is
 stored at the location pointed to by <emphasis role="italic">n</emphasis>.
 </para>
@@ -5954,16 +5954,16 @@ int64_t n;
 >>--obj = context->Int64ToObject(n);-------------------------------------><
 ]]>
 </programlisting>
-<para>Convert the C 64-bit integer <emphasis role="italic">n</emphasis> to a Rexx object.
+<para>Convert the C 64-bit integer <emphasis role="italic">n</emphasis> to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The integer to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object representing the integer value.</para>
+<para>an Object representing the integer value.</para>
 </section>
 
 <section id="mthInterpreterVersion"><title>InterpreterVersion</title>
@@ -6056,22 +6056,22 @@ intptr_t n;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first converts the C signed integer <emphasis role="italic">n</emphasis> to a Rexx object.
-The second converts a Rexx object to a C signed integer and returns it in the location
+The first converts the C signed integer <emphasis role="italic">n</emphasis> to an Object.
+The second converts an Object to a C signed integer and returns it in the location
 pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The C pointer to the signed integer to be converted in the first form.
        The target of the conversion in the second form.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to be converted.</para></entry>
+    <entry><para>The object to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object version of the integer value in the first form.
+<para>an Object version of the integer value in the first form.
 The second form returns 1 = success, 0 = failure.  If successful, the converted value is
 stored at the location pointed to by <emphasis role="italic">n</emphasis>.
 </para>
@@ -6112,16 +6112,16 @@ intptr_t n;
 >>--obj = context->IntptrToObject(&n);-----------------------------------><
 ]]>
 </programlisting>
-<para>Convert the C signed integer <emphasis role="italic">n</emphasis> to a Rexx object.
+<para>Convert the C signed integer <emphasis role="italic">n</emphasis> to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The signed integer to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object representing the integer value.</para>
+<para>an Object representing the integer value.</para>
 </section>
 
 <section id="mthIsArray"><title>IsArray</title>
@@ -6159,14 +6159,14 @@ logical_t flag;
 >>--flag = context->IsArray(obj);---------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if it is a Rexx Array.
+<para>Tests an object to see if it is a Array.
 A true value indicates
 the RexxObjectPtr value may be safely cast to a RexxArrayObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the Rexx object to be tested.</para></entry>
+    <entry><para>A pointer to the object to be tested.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -6208,14 +6208,14 @@ logical_t flag;
 >>--flag = context->IsBuffer(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if it is a Rexx Buffer object.
+<para>Tests an object to see if it is a Buffer object.
 A true value indicates
 the RexxObjectPtr value may be safely cast to a RexxBufferObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the Rexx object to be tested.</para></entry>
+    <entry><para>A pointer to the object to be tested.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -6257,14 +6257,14 @@ logical_t flag;
 >>--flag = context->IsDirectory(obj);-----------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if it is a Rexx Directory object.
+<para>Tests an object to see if it is a Directory object.
 A true value indicates
 the RexxObjectPtr value may be safely cast to a RexxDirectoryObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the Rexx object to be tested.</para></entry>
+    <entry><para>A pointer to the object to be tested.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -6310,12 +6310,12 @@ logical_t flag;
 <para>Tests an object to see if it is an instance of or an instance of a subclass of the specified class.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the Rexx object to be tested.</para></entry>
+    <entry><para>A pointer to the object to be tested.</para></entry>
     </row>
     <row><entry><emphasis role="italic">class</emphasis></entry>
-    <entry><para>A pointer to the Rexx class object to be tested for membership.</para></entry>
+    <entry><para>A pointer to the class object to be tested for membership.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -6357,14 +6357,14 @@ logical_t flag;
 >>--flag = context->IsMethod(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is a Rexx Method object.
+<para>Tests an object to see if is a Method object.
 A true value indicates
 the RexxObjectPtr value may be safely cast to a RexxMethodObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the Rexx object to be tested.</para></entry>
+    <entry><para>A pointer to the object to be tested.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -6411,9 +6411,9 @@ logical_t flag;
 This method combines the operations of the FindClass() and IsInstanceOf() methods in a single call.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the Rexx object to be tested.</para></entry>
+    <entry><para>A pointer to the object to be tested.</para></entry>
     </row>
     <row><entry><emphasis role="italic">class</emphasis></entry>
     <entry><para>An ASCII-Z string containing the name of the Rexx class.  The named class will
@@ -6460,14 +6460,14 @@ logical_t flag;
 >>--flag = context->IsPointer(obj);-------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is a Rexx Pointer object.
+<para>Tests an object to see if is a Pointer object.
 A true value indicates
 the RexxObjectPtr value may be safely cast to a RexxPointerObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the Rexx object to be tested.</para></entry>
+    <entry><para>A pointer to the object to be tested.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -6509,14 +6509,14 @@ logical_t flag;
 >>--flag = context->IsRoutine(obj);-------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is a Rexx Routine object.
+<para>Tests an object to see if is a Routine object.
 A true value indicates
 the RexxObjectPtr value may be safely cast to a RexxPointerObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the Rexx object to be tested.</para></entry>
+    <entry><para>A pointer to the object to be tested.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -6558,14 +6558,14 @@ logical_t flag;
 >>--flag = context->IsStem(obj);----------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is a Rexx Stem object.
+<para>Tests an object to see if is a Stem object.
 A true value indicates
 the RexxObjectPtr value may be safely cast to a RexxStemObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the Rexx object to be tested.</para></entry>
+    <entry><para>A pointer to the object to be tested.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -6607,14 +6607,14 @@ logical_t flag;
 >>--flag = context->IsString(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is a Rexx String object.
+<para>Tests an object to see if is a String object.
 A true value indicates
 the RexxObjectPtr value may be safely cast to a RexxStringObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the Rexx object to be tested.</para></entry>
+    <entry><para>A pointer to the object to be tested.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -6711,7 +6711,7 @@ RexxPackageObject pkg;
 <para>Returns the package object loaded from the specified file path/name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>The ASCII-Z path/name of the Rexx package to load.</para></entry>
     </row>
@@ -6763,7 +6763,7 @@ RexxPackageObject pkg;
 <para>Returns the loaded package object  from the specified file path/name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>The ASCII-Z name of the Rexx package to load.</para></entry>
     </row>
@@ -6820,24 +6820,24 @@ logical_t flag, n;
 ]]>
 </programlisting>
 <para>This method has two forms.
-The first form converts a Rexx object to a C logical value (0 or 1).
-The second form converts a C logical value to a Rexx object.
+The first form converts an Object to a C logical value (0 or 1).
+The second form converts a C logical value to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to be converted.</para></entry>
+    <entry><para>The object to be converted.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>For the first method form, a C pointer to a logical_t to receive the conversion result.
-       For the second form, a logical_t to be converted to a Rexx object.</para></entry>
+       For the second form, a logical_t to be converted to an Object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>For the first method form, 1 = success and 0 = conversion error,  with the converted value returned in the
 location pointer to by <emphasis role="italic">n</emphasis>
 For the second form,
-a Rexx object version of the logical value is returned.</para>
+an Object version of the logical value is returned.</para>
 </section>
 
 <section id="mthLogicalToObject"><title>LogicalToObject</title>
@@ -6875,10 +6875,10 @@ logical_t flag, n;
 >>--obj = context->LogicalToObject(n);-----------------------------------><
 ]]>
 </programlisting>
-<para>Converts a C logical value to a Rexx object.
+<para>Converts a C logical value to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The logical_t value to be converted..</para></entry>
     </row>
@@ -6922,16 +6922,16 @@ size_t len;
 >>--obj = context->NewArray(d);------------------------------------------><
 ]]>
 </programlisting>
-<para>Create a Rexx array object of the specified size.
+<para>Create an Array object of the specified size.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">d</emphasis></entry>
-    <entry><para>The size of the Rexx array.</para></entry>
+    <entry><para>The size of the Array.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The new Rexx array object.</para>
+<para>The new Array object.</para>
 </section>
 
 <section id="mthNewBuffer"><title>NewBuffer</title>
@@ -6969,10 +6969,10 @@ size_t len;
 >>--obj = context->NewBuffer(len);---------------------------------------><
 ]]>
 </programlisting>
-<para>Create a Rexx Buffer object with a specific data size.
+<para>Create a Buffer object with a specific data size.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">len</emphasis></entry>
     <entry><para>The maximum length of the buffer.</para></entry>
     </row>
@@ -7022,7 +7022,7 @@ must use <link linkend="mthFinishBufferString">FinishBufferString()</link> to
 transform this into a completed String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">len</emphasis></entry>
     <entry><para>The maximum length of the buffer.</para></entry>
     </row>
@@ -7065,7 +7065,7 @@ RexxDirectoryObject obj;
 >>--obj = context->NewDirectory();---------------------------------------><
 ]]>
 </programlisting>
-<para>Create a Rexx Directory object.
+<para>Create a Directory object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None</para>
@@ -7112,9 +7112,9 @@ size_t sz;
 <para>Create a new Method object from an in-memory buffer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
-    <entry><para>ASCII-Z name of the Rexx method.</para></entry>
+    <entry><para>ASCII-Z name of the method.</para></entry>
     </row>
     <row><entry><emphasis role="italic">code</emphasis></entry>
     <entry><para>A data buffer containing the new method's Rexx code.</para></entry>
@@ -7169,7 +7169,7 @@ POINTER p;
 <para>Create a new Pointer object from a C pointer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">p</emphasis></entry>
     <entry><para>The source C pointer.</para></entry>
     </row>
@@ -7217,9 +7217,9 @@ size_t sz;
 <para>Create a new Routine object from an in-memory buffer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
-    <entry><para>ASCII-Z name of the Rexx routine.</para></entry>
+    <entry><para>ASCII-Z name of the routine.</para></entry>
     </row>
     <row><entry><emphasis role="italic">code</emphasis></entry>
     <entry><para>Buffer containing the routine Rexx code.</para></entry>
@@ -7271,12 +7271,12 @@ CSTRING str;
 >>--obj = context->NewStem(str);-----------------------------------------><
 ]]>
 </programlisting>
-<para>Create an new Rexx Stem object with the specified base name.
+<para>Create an new Stem object with the specified base name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">str</emphasis></entry>
-    <entry><para>The base name for the new Rexx stem object.</para></entry>
+    <entry><para>The base name for the new Stem object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -7321,10 +7321,10 @@ size_t len;
 >>--obj = context->NewString(str);---------------------------------------><
 ]]>
 </programlisting>
-<para>There are two forms of this method. Both create a new Rexx String object from program data.
+<para>There are two forms of this method. Both create a new String object from program data.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">str</emphasis></entry>
     <entry><para>For the first form, a pointer to a null-terminated ASCII-Z string.
     For the second form, a pointer to a data buffer containing the string data.
@@ -7373,15 +7373,15 @@ RexxArrayObject arr1, arr2;
 >>--obj = context->NewSupplier(arr1, arr2);------------------------------><
 ]]>
 </programlisting>
-<para>This method returns a Rexx Supplier object based on the supplied argument arrays.
+<para>This method returns a Supplier object based on the supplied argument Arrays.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">arr1</emphasis></entry>
-    <entry><para>The array of supplier items.</para></entry>
+    <entry><para>The Array of supplier items.</para></entry>
     </row>
     <row><entry><emphasis role="italic">arr2</emphasis></entry>
-    <entry><para>The array of supplier item indexes.</para></entry>
+    <entry><para>The Array of supplier item indexes.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -7464,7 +7464,7 @@ RexxStringObject obj;
 >>--obj = context->NullString();-----------------------------------------><
 ]]>
 </programlisting>
-<para>This method returns a Rexx string object of zero length.
+<para>This method returns a string object of zero length.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -7515,13 +7515,13 @@ of either the Pointer or Buffer class, the corresponding POINTER value will be r
 Objects that rely on CSELF values typically set the variable CSELF inside an init method for the object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The source Rexx object.</para></entry>
+    <entry><para>The source object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The CSELF value for the Rexx object.  Returns NULL if no CSELF value was found in the target object.</para>
+<para>The CSELF value for the object.  Returns NULL if no CSELF value was found in the target object.</para>
 </section>
 
 <section id="mthObjectToDouble"><title>ObjectToDouble</title>
@@ -7560,12 +7560,12 @@ logical_t flag;
 >>--flag = context->ObjectToDouble(obj, &n);-----------------------------><
 ]]>
 </programlisting>
-<para>Converts a Rexx object to a C double value.
+<para>Converts an Object to a C double value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The source Rexx object for the conversion.</para></entry>
+    <entry><para>The source object for the conversion.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>A pointer to the location that receives the converted double result.</para></entry>
@@ -7613,12 +7613,12 @@ logical_t flag;
 >>--flag = context->ObjectToInt32(obj, &n);------------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object into a 32-bit integer.
+<para>Convert an Object into a 32-bit integer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to convert.</para></entry>
+    <entry><para>The object to convert.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>A pointer to the location used to return the conversion result.</para></entry>
@@ -7666,12 +7666,12 @@ logical_t flag;
 >>--flag = context->ObjectToInt64(obj, &n);------------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object into a 64-bit integer.
+<para>Convert an Object into a 64-bit integer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to be converted.</para></entry>
+    <entry><para>The object to be converted.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>A pointer to the location used to return the conversion result.</para></entry>
@@ -7719,12 +7719,12 @@ logical_t flag;
 >>--flag = context->ObjectToIntptr(obj, &n);-----------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object to an intptr_t value.
+<para>Convert an Object to an intptr_t value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to convert.</para></entry>
+    <entry><para>The object to convert.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>A pointer to the location used to return the conversion result.</para></entry>
@@ -7771,12 +7771,12 @@ logical_t flag, n;
 >>--flag = context->ObjectToLogical(obj, &n);----------------------------><
 ]]>
 </programlisting>
-<para>Converts a Rexx object to a C logical value (0 or 1).
+<para>Converts an Object to a C logical value (0 or 1).
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to convert.</para></entry>
+    <entry><para>The object to convert.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>A pointer to the location used to return the conversion result.</para></entry>
@@ -7823,16 +7823,16 @@ RexxStringObject str;
 >>--str = context->ObjectToString(obj);----------------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object to a Rexx String object.
+<para>Convert an Object to a String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The source Rexx object for the conversion.</para></entry>
+    <entry><para>The source object for the conversion.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx String object.</para>
+<para>The String object.</para>
 </section>
 
 <section id="mthObjectToStringSize"><title>ObjectToStringSize</title>
@@ -7871,12 +7871,12 @@ logical_t flag;
 >>--flag = context->ObjectToStringSize(obj, &n);-------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object to a stringsize_t number value.
+<para>Convert an Object to a stringsize_t number value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to convert.</para></entry>
+    <entry><para>The object to convert.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>A pointer to the location used to return the conversion result.</para></entry>
@@ -7923,12 +7923,12 @@ CSTRING str;
 >>--str = context->ObjectToStringValue(obj);-----------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object to a C ASCII-Z string.
+<para>Convert an Object to a C ASCII-Z string.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The source Rexx object for the conversion.</para></entry>
+    <entry><para>The source object for the conversion.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -7971,12 +7971,12 @@ logical_t flag;
 >>--flag = context->ObjectToUintptr(obj, &n);----------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object to an uintptr_t value.
+<para>Convert an Object to an uintptr_t value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to convert.</para></entry>
+    <entry><para>The object to convert.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>A pointer to the location used to return the conversion result.</para></entry>
@@ -8024,12 +8024,12 @@ logical_t flag;
 >>--flag = context->ObjectToUnsignedInt32(obj, &n);----------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object to an uint32_t value.
+<para>Convert an Object to an uint32_t value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to convert.</para></entry>
+    <entry><para>The object to convert.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>A pointer to the location used to return the conversion result.</para></entry>
@@ -8077,12 +8077,12 @@ logical_t flag;
 >>--flag = context->ObjectToUnsignedInt64(obj, &n);----------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object to an uint64_t value.
+<para>Convert an Object to an uint64_t value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to convert.</para></entry>
+    <entry><para>The object to convert.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>A pointer to the location used to return the conversion result.</para></entry>
@@ -8136,9 +8136,9 @@ ObjectToValue() is capable of conversions to types such as int8_t for which
 there are no specific conversion APIs.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to be converted.</para></entry>
+    <entry><para>The object to be converted.</para></entry>
     </row>
     <row><entry><emphasis role="italic">desc</emphasis></entry>
     <entry><para>A C pointer to a ValueDescriptor struct that identifies
@@ -8189,12 +8189,12 @@ logical_t flag;
 >>--flag = context->ObjectToWholeNumber(obj, &wn);-----------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx object to a whole number value.
+<para>Convert an Object to a whole number value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to convert.</para></entry>
+    <entry><para>The object to convert.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>A pointer to the location used to return the conversion result.</para></entry>
@@ -8244,7 +8244,7 @@ POINTER p;
 <para>Return the wrappered C pointer value from a RexxPointerObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source RexxPointerObject.</para></entry>
     </row>
@@ -8296,18 +8296,18 @@ This is similar to using the RAISE instruction to raise a condition from
 Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">str</emphasis></entry>
     <entry><para>The condition name.</para></entry>
     </row>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
-    <entry><para>The condition description as a Rexx String object.</para></entry>
+    <entry><para>The condition description as a String object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>A Rexx array object containing additional information for the condition.</para></entry>
+    <entry><para>A Array object containing additional information for the condition.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A Rexx object object that will be returned as a routine or
+    <entry><para>an Object object that will be returned as a routine or
     method result if the raised condition is not trapped by the caller.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
@@ -8356,14 +8356,14 @@ This is similar to using the RAISE instruction to raise a SYNTAX condition from
 Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The exception condition number.  There are #defines for the
     recognized condition errors in the oorexxerrors.h include file.
     </para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>An array of substitution values for the condition error message.</para></entry>
+    <entry><para>An Array of substitution values for the condition error message.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -8407,7 +8407,7 @@ size_t n;
 <para>Raise an exception condition with no message substitution values.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The exception condition number.</para></entry>
     </row>
@@ -8454,7 +8454,7 @@ RexxObjectPtr obj;
 <para>Raise an exception condition with a single message substitution value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The exception condition number.</para></entry>
     </row>
@@ -8504,7 +8504,7 @@ RexxObjectPtr obj1, obj2;
 <para>Raise an exception condition with two message substitution values.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The exception condition number.</para></entry>
     </row>
@@ -8558,9 +8558,9 @@ garbage collection protection from the object reference.  Once released,
 <emphasis role="italic">ref</emphasis> should no longer be used for object operations.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">ref</emphasis></entry>
-    <entry><para>A the global Rexx object reference.</para></entry>
+    <entry><para>A global Rexx object reference.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -8606,7 +8606,7 @@ Once released,
 <emphasis role="italic">ref</emphasis> should no longer be used for object operations.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">ref</emphasis></entry>
     <entry><para>The local Rexx object reference.</para></entry>
     </row>
@@ -8656,7 +8656,7 @@ from garbage collection until the global reference is released with
 <link linkend="mthReleaseGlobalReference">ReleaseGlobalReference()</link>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The Rexx object to be protected.</para></entry>
     </row>
@@ -8704,7 +8704,7 @@ from the caller's variable context.  The Stem object value of the referenced
 stem variable is returned as a result.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source object to be resolved to a Stem object.</para></entry>
     </row>
@@ -8748,10 +8748,10 @@ RexxArrayObject arr;
 >>--ret = context->SendMessage(obj, meg, arr);---------------------------><
 ]]>
 </programlisting>
-<para>Send a message to a Rexx object.
+<para>Send a message to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to receive the message.</para></entry>
     </row>
@@ -8759,11 +8759,11 @@ RexxArrayObject arr;
     <entry><para>An ASCII-Z string containing the message name. This argument will be converted to upper case automatically.</para></entry>
     </row>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>The array of message arguments.</para></entry>
+    <entry><para>The Array of message arguments.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The returned Rexx object. If the method does not return an object
+<para>The returned object. If the method does not return an object
 then NULLOBJECT is returned.
 Any errors involved with invoking the method
 will return a NULLOBJECT value.  The
@@ -8806,11 +8806,11 @@ RexxObjectPtr obj, ret;
 >>--ret = context->SendMessage0(obj, meg);-------------------------------><
 ]]>
 </programlisting>
-<para>Send a message to a Rexx object.
+<para>Send a message to an Object.
 This is a short cut method when no arguments are needed by the receiving object method.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to receive the message.</para></entry>
     </row>
@@ -8819,7 +8819,7 @@ This is a short cut method when no arguments are needed by the receiving object 
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The returned Rexx object. If the method does not return an object
+<para>The returned object. If the method does not return an object
 then NULLOBJECT is returned.
 Any errors involved with invoking the method
 will return a NULLOBJECT value.  The
@@ -8862,11 +8862,11 @@ RexxObjectPtr obj, ret, arg1;
 >>--ret = context->SendMessage2(obj, meg, arg1);-------------------------><
 ]]>
 </programlisting>
-<para>Send a message to a Rexx object.
+<para>Send a message to an Object.
 This is a short cut method when only one argument is needed by the receiving object method.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to receive the message.</para></entry>
     </row>
@@ -8878,7 +8878,7 @@ This is a short cut method when only one argument is needed by the receiving obj
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The returned Rexx object. If the method does not return an object
+<para>The returned object. If the method does not return an object
 then NULLOBJECT is returned.
 Any errors involved with invoking the method
 will return a NULLOBJECT value.  The
@@ -8921,11 +8921,11 @@ RexxObjectPtr obj, ret, arg1, arg2;
 >>--ret = context->SendMessage2(obj, meg, arg1, arg2);-------------------><
 ]]>
 </programlisting>
-<para>Send a message to a Rexx object.
+<para>Send a message to an Object.
 This is a short cut method when only two arguments are needed by the receiving object method.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to receive the message.</para></entry>
     </row>
@@ -8940,7 +8940,7 @@ This is a short cut method when only two arguments are needed by the receiving o
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The returned Rexx object. If the method does not return an object
+<para>The returned object. If the method does not return an object
 then NULLOBJECT is returned.
 Any errors involved with invoking the method
 will return a NULLOBJECT value.  The
@@ -8987,12 +8987,12 @@ with a stem variable and using <link linkend="mthSetStemElement">SetStemElement(
 to set the associated compound variable.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>The name of the Rexx variable.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The object to assign to the Rexx variable.</para></entry>
+    <entry><para>The object to assign to the variable.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -9100,12 +9100,12 @@ RexxObjectPtr obj;
 Only simple and stem variables may be set using this API.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">str</emphasis></entry>
     <entry><para>The name of the object variable.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to assign to the object variable.</para></entry>
+    <entry><para>The object to assign to the object variable.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -9148,19 +9148,19 @@ size_t n;
 >>--context->SetStemArrayElement(sobj, n, obj);--------------------------><
 ]]>
 </programlisting>
-<para>Sets an element of the Rexx stem object. If the element exists it is replaced.
+<para>Sets an element of the Stem object. If the element exists it is replaced.
 This method strictly uses numerics as the element name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
-    <entry><para>The target Rexx stem object.</para></entry>
+    <entry><para>The target Stem object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The Rexx stem object element number.</para></entry>
+    <entry><para>The Stem object element number.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object value assigned to the Rexx stem object element.</para></entry>
+    <entry><para>The object value assigned to the Stem object element.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -9203,18 +9203,18 @@ CSTRING name;
 >>--context->SetStemElement(sobj, name, obj);----------------------------><
 ]]>
 </programlisting>
-<para>Sets an element of the Rexx stem object. If the element exists it is replaced.
+<para>Sets an element of the Stem object. If the element exists it is replaced.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
-    <entry><para>The target Rexx stem object.</para></entry>
+    <entry><para>The target Stem object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">name</emphasis></entry>
-    <entry><para>The Rexx stem object element name.  This is a fully resolve stem tail element.</para></entry>
+    <entry><para>The Stem object element name.  This is a fully resolve Stem tail element.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object value assigned to the Rexx stem object element.</para></entry>
+    <entry><para>The object value assigned to the Stem object element.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -9252,7 +9252,7 @@ logical_t flag;
 <para>Sets the interactive trace state for the current thread.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">flag</emphasis></entry>
     <entry><para>New state for interactive trace.</para></entry>
     </row>
@@ -9293,7 +9293,7 @@ logical_t flag;
 all active threads for the interpreter instance.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">flag</emphasis></entry>
     <entry><para>The new trace state.</para></entry>
     </row>
@@ -9340,10 +9340,10 @@ size_t len;
 >>--obj = context->String(str);------------------------------------------><
 ]]>
 </programlisting>
-<para>There are two forms of this method. Both create a new Rexx object from a C string.
+<para>There are two forms of this method. Both create a new object from a C string.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">str</emphasis></entry>
     <entry><para>The ASCII-Z string to be converted.</para></entry>
     </row>
@@ -9352,7 +9352,7 @@ size_t len;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A new Rexx String object.</para>
+<para>A new String object.</para>
 </section>
 
 <section id="mthStringData"><title>StringData</title>
@@ -9390,12 +9390,12 @@ CSTRING str;
 >>--str = context->StringData(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a read-only pointer to the string data of a Rexx String object.
+<para>Returns a read-only pointer to the string data of a String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The source Rexx String object for the data.</para></entry>
+    <entry><para>The source String object for the data.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -9438,12 +9438,12 @@ size_t c, len1, len2;
 >>--c = context->StringGet(obj, len1, str, len2);------------------------><
 ]]>
 </programlisting>
-<para>Copies all or part of the Rexx object string value to the C string buffer.
+<para>Copies all or part of the object string value to the C string buffer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The source Rexx String object for the copy.</para></entry>
+    <entry><para>The source String object for the copy.</para></entry>
     </row>
     <row><entry><emphasis role="italic">len1</emphasis></entry>
     <entry><para>The starting position within the String for the copy.
@@ -9497,10 +9497,10 @@ size_t sz;
 >>--sz = context->StringLength(obj);-------------------------------------><
 ]]>
 </programlisting>
-<para>Return the length a Rexx String object.
+<para>Return the length a String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source String object.</para></entry>
     </row>
@@ -9543,16 +9543,16 @@ RexxObjectPtr srcobj, newobj;
 >>--newobj = context->StringLower(srcobj);-------------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx String object to lower case, returning a new Rexx object.
+<para>Convert a String object to lower case, returning a new String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">srcobj</emphasis></entry>
-    <entry><para>The source Rexx object to be converted to lower case.</para></entry>
+    <entry><para>The source String object to be converted to lower case.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A new Rexx object with the string value lower cased.</para>
+<para>A new String object with the string value lower cased.</para>
 </section>
 
 <section id="mthStringSize"><title>StringSize</title>
@@ -9594,22 +9594,22 @@ stringsize_t n;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first converts the stringsize_t value <emphasis role="italic">n</emphasis> to a Rexx object.
-The second converts a Rexx object to a stringsize_t value and returns it in the location
+The first converts the stringsize_t value <emphasis role="italic">n</emphasis> to an Object.
+The second converts an Object to a stringsize_t value and returns it in the location
 pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The stringsize_t value to be converted in the first form.
        The target of the conversion in the second form.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to be converted.</para></entry>
+    <entry><para>The object to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object version of the integer value in the first form.
+<para>an Object version of the integer value in the first form.
 The second form returns 1 = success, 0 = failure.  If successful, the converted value is
 stored at the location pointed to by <emphasis role="italic">n</emphasis>.
 </para>
@@ -9650,16 +9650,16 @@ size_t sz;
 >>--obj = context->StringSizeToObject(sz);-------------------------------><
 ]]>
 </programlisting>
-<para>Convert a stringsize_t value to a Rexx object.
+<para>Convert a stringsize_t value to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sz</emphasis></entry>
     <entry><para>The stringsize_t value to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object that represents the C stringsize_t value.</para>
+<para>an Object that represents the C stringsize_t value.</para>
 </section>
 
 <section id="mthStringUpper"><title>StringUpper</title>
@@ -9696,10 +9696,10 @@ RexxObjectPtr srcobj, newobj;
 >>--newobj = context->StringUpper(srcobj);-------------------------------><
 ]]>
 </programlisting>
-<para>Convert a Rexx String object upper case, returning a new String object.
+<para>Convert a String object upper case, returning a new String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">srcobj</emphasis></entry>
     <entry><para>The source String object to be converted to upper case.</para></entry>
     </row>
@@ -9746,9 +9746,9 @@ logical_t flag;
 <para>Returns 1 if there is another supplier item available.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
-    <entry><para>The source Rexx supplier object.</para></entry>
+    <entry><para>The source supplier object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -9790,12 +9790,12 @@ RexxObjectPtr obj;
 >>--obj = context->SupplierIndex(sobj);----------------------------------><
 ]]>
 </programlisting>
-<para>Return the current Rexx supplier object index value.
+<para>Return the current supplier object index value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
-    <entry><para>The source Rexx supplier object.</para></entry>
+    <entry><para>The source supplier object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -9837,16 +9837,16 @@ RexxObjectPtr obj;
 >>--obj = context->SupplierItem(sobj);-----------------------------------><
 ]]>
 </programlisting>
-<para>Return the current Rexx supplier item object.
+<para>Return the current supplier item object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
-    <entry><para>The source Rexx supplier object.</para></entry>
+    <entry><para>The source supplier object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx object item at the current supplier position.</para>
+<para>The object item at the current supplier position.</para>
 </section>
 
 <section id="mthSupplierNext"><title>SupplierNext</title>
@@ -9883,12 +9883,12 @@ RexxSupplierObjectPtr sobj;
 >>--context->SupplierNext(sobj);-----------------------------------------><
 ]]>
 </programlisting>
-<para>Move the Rexx supplier object item pointer to the next item.
+<para>Move the supplier object item pointer to the next item.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
-    <entry><para>The source Rexx supplier object.</para></entry>
+    <entry><para>The source supplier object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -10013,22 +10013,22 @@ uintptr_t n;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first converts the uintptr_t value <emphasis role="italic">n</emphasis> to a Rexx object.
-The second converts a Rexx object to a uintptr_t value and returns it in the location
+The first converts the uintptr_t value <emphasis role="italic">n</emphasis> to an Object.
+The second converts an Object to a uintptr_t value and returns it in the location
 pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The uintptr_t value to be converted in the first form or
     the target of the conversion in the second form of the method.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Rexx object to be converted.</para></entry>
+    <entry><para>The object to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object version of the integer value in the first form.
+<para>an Object version of the integer value in the first form.
 The second form returns 1 = success, 0 = failure.  If successful, the converted value is
 stored at the location pointed to by <emphasis role="italic">n</emphasis>.
 </para>
@@ -10069,16 +10069,16 @@ uintptr_t n;
 >>--obj = context->UintptrToObject(&n);----------------------------------><
 ]]>
 </programlisting>
-<para>Convert a uintptr_t value <emphasis role="italic">n</emphasis> to a Rexx object.
+<para>Convert a uintptr_t value <emphasis role="italic">n</emphasis> to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The uintptr_t value to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object that represents the uintptr_t value.</para>
+<para>an Object that represents the uintptr_t value.</para>
 </section>
 
 <section id="mthUnsignedInt32"><title>UnsignedInt32</title>
@@ -10120,22 +10120,22 @@ uint32_t n;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first convert a C 32-bit unsigned integer <emphasis role="italic">n</emphasis> to a Rexx object.
-The second converts a Rexx object to a uint32_t value and returns it in the location
+The first convert a C 32-bit unsigned integer <emphasis role="italic">n</emphasis> to an Object.
+The second converts an Object to a uint32_t value and returns it in the location
 pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The uint32_t value to be converted.for the first form of the method.
        For the second form this is the target of the conversion.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The Rexx object to be converted to a uint32_t value.</para></entry>
+    <entry><para>The object to be converted to a uint32_t value.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object version of the integer value in the first form.
+<para>an Object version of the integer value in the first form.
 The second form returns 1 = success, 0 = failure.  If successful, the converted value is
 stored at the location pointed to by <emphasis role="italic">n</emphasis>.
 </para>
@@ -10176,16 +10176,16 @@ uint32_t n;
 >>--obj = context->UnsignedInt32ToObject(n);-----------------------------><
 ]]>
 </programlisting>
-<para>Convert a C 32-bit unsigned integer <emphasis role="italic">n</emphasis> to a Rexx object.
+<para>Convert a C 32-bit unsigned integer <emphasis role="italic">n</emphasis> to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The uint32_t value to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object that represents the C unsigned integer.</para>
+<para>an Object that represents the C unsigned integer.</para>
 </section>
 
 <section id="mthUnsignedInt64"><title>UnsignedInt64</title>
@@ -10227,22 +10227,22 @@ uint64_t n;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first converts a C 64-bit unsigned integer <emphasis role="italic">n</emphasis> to a Rexx object.
-The second converts a Rexx object to a uint64_t value and returns it in the location
+The first converts a C 64-bit unsigned integer <emphasis role="italic">n</emphasis> to an Object.
+The second converts an Object to a uint64_t value and returns it in the location
 pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The uint64_t value to be converted.for the first form of the method.
        For the second form this is the target of the conversion.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The Rexx object to be converted.</para></entry>
+    <entry><para>The object to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object version of the integer value in the first form.
+<para>an Object version of the integer value in the first form.
 The second form returns 1 = success, 0 = failure.  If successful, the converted value is
 stored at the location pointed to by <emphasis role="italic">n</emphasis>.
 </para>
@@ -10283,16 +10283,16 @@ uint64_t n;
 >>--obj = context->UnsignedInt64ToObject(n);-----------------------------><
 ]]>
 </programlisting>
-<para>Convert a C 64-bit unsigned integer <emphasis role="italic">n</emphasis> to a Rexx object.
+<para>Convert a C 64-bit unsigned integer <emphasis role="italic">n</emphasis> to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The uint64_t value to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object that represents the C unsigned integer.</para>
+<para>an Object that represents the C unsigned integer.</para>
 </section>
 
 <section id="mthValuesToObject"><title>ValuesToObject</title>
@@ -10328,10 +10328,10 @@ ValueDescriptor desc[3];
 >>--obj = context->ValuesToObject(desc);---------------------------------><
 ]]>
 </programlisting>
-<para>Converts an array of ValueDescriptor structs to an array of Rexx objects.
+<para>Converts an array of ValueDescriptor structs to an Array of objects.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">desc</emphasis></entry>
     <entry><para>A C pointer to the ValueDescriptor struct array to be converted.  The end of the
     array is marked by a ValueDescriptor struct with all fields set to zero.
@@ -10339,7 +10339,7 @@ ValueDescriptor desc[3];
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx array object containing the converted objects.</para>
+<para>A Array object containing the converted objects.</para>
 </section>
 
 <section id="mthValueToObject"><title>ValueToObject</title>
@@ -10375,7 +10375,7 @@ ValueDescriptor desc;;
 >>--obj = context->ValueToObject(&desc);---------------------------------><
 ]]>
 </programlisting>
-<para>Convert a type to a Rexx object representation.  The source type is identified
+<para>Convert a type to an Object representation.  The source type is identified
 by the ValueDescriptor structure, and can by any of the types that may be
 used as a method or routine return types.  For many conversions, it may be
 more appropriate to use more targetted routines such as WholeNumberToObject().
@@ -10383,13 +10383,13 @@ ValueToObject() is capable of converting to types such as int8_t for which
 there are no specific conversion APIs.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">desc</emphasis></entry>
     <entry><para>A C pointer to the ValueDescriptor struct describing the value to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Rexx object representing the converted value.</para>
+<para>The object representing the converted value.</para>
 </section>
 
 <section id="mthWholeNumber"><title>WholeNumber</title>
@@ -10431,21 +10431,21 @@ logical_t flag;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The second converts a Rexx object to a wholenumber_t value and returns it in the location
+The second converts an Object to a wholenumber_t value and returns it in the location
 pointed to by <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The wholenumber_t value to be converted.for the first form of the method.
        For the second form this is the target of the conversion.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The source Rexx object for the conversion.</para></entry>
+    <entry><para>The source object for the conversion.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object version of the integer value in the first form.
+<para>an Object version of the integer value in the first form.
 The second form returns 1 = success, 0 = failure.  If successful, the converted value is
 stored at the location pointed to by <emphasis role="italic">n</emphasis>.
 </para>
@@ -10486,23 +10486,17 @@ wholenumber_t n;
 >>--obj = context->WholeNumberToObject(n);-------------------------------><
 ]]>
 </programlisting>
-<para>Convert a C wholenumber_t value to a Rexx object.
+<para>Convert a C wholenumber_t value to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="4*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The C whole number to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Rexx object that represents the C whole number.</para>
+<para>an Object that represents the C whole number.</para>
 </section>
-
-
-
-
-
-
 
 </section>
 </chapter>
