@@ -99,7 +99,7 @@
 <entry>Attribute</entry>
 </row>
 <row>
-<entry><link linkend="mthClearWindowsEventLog">clear</link></entry>
+<entry><link linkend="mthClearClsWindowsEventLog">clear</link></entry>
 <entry>Instance method</entry>
 </row>
 <row>
@@ -370,11 +370,11 @@ eventLog~open( , "LoadPerf")
 </tbody></tgroup>
 </table>
     <para>
-      Assuming that <emphasis role="italic">eventRec</emphasis> is the event record string, the following
+      Assuming that <emphasis role="italic">rec</emphasis> is the event record string, the following
       shows how to parse the string into its component fields:
     </para>
 <programlisting>
-parse var eventRec type date time "'" source "'" id userID computer "'" description "'" "'" data "'"
+parse var rec type date time "'" source "'" id userID computer "'" description "'" "'" data "'"
 </programlisting>
   </listitem></varlistentry>
   <varlistentry id="eventType"><term><emphasis role="bold">Event Type</emphasis></term>
@@ -433,8 +433,18 @@ parse var eventRec type date time "'" source "'" id userID computer "'" descript
   loads successfully, it may be appropriate to log an Information event. Note that it is generally inappropriate for a
   desktop application to log each time it starts.
 </entry>
-<entry>Infomation</entry>
+<entry>Information</entry>
 <entry>4 (0x04)</entry>
+</row>
+<row>
+<entry>Information*</entry>
+<entry>
+  * The Windows API allows the numeric value of 0. This is not a separate event type, but rather a mapping of 0 to the
+  Infomation event type. The <computeroutput>WindowsEventLog</computeroutput> also allows the use of 0 for the numeric value
+  of an event type and maps it to Information.
+</entry>
+<entry>Information</entry>
+<entry>0 (0x00)</entry>
 </row>
 <row>
 <entry>Success Audit</entry>
@@ -482,6 +492,19 @@ parse var eventRec type date time "'" source "'" id userID computer "'" descript
       like <link linkend="mthReadRecords">readRecords</link>, <link linkend="mthIsFull">isFull</link>,
       etc., will open the log specified in the method call and then explicitly close the log before
       returning.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry id="eventCategory"><term><emphasis role="bold">Event Category</emphasis></term>
+  <listitem>
+    <para>
+      Categories are used to organize events so that an event viewer can filter them. Each <link
+      linkend="eventSource">event source</link> can define its own numbered categories and the text
+      strings to which they are mapped.
+    </para>
+    <para>
+      The categories must be numbered consecutively, beginning with  the number 1. The categories
+      themselves are defined in a message file and the category number maps to a text string in the
+      message file.
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1004,7 +1027,7 @@ end
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      This method returns 0 on success and the operating system error code on failure.
+      This method returns 0 on success, and the operating system error code on failure.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1014,6 +1037,7 @@ end
       console. (If there are less than 5 records in the log, then all the records are read.)
 <programlisting>
 <![CDATA[
+
   log = .WindowsEventLog~new
 
   startRec = log~getLast( , "System")
@@ -1088,222 +1112,16 @@ Displayed 5 records
 </variablelist>
 </section>  <!-- End WindowsEventLog::readRecords() -->
 
+
 <section id="mthWrite"><title>write</title>
-<indexterm><primary>write method</primary>
-<secondary>of WindowsEventLog class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>write method</secondary>
-<tertiary>of WindowsEventLog class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-write--+-------------------------------------------------------------+-->
-          |                                  +-1--+     +-0--------+    |
-          +-(--+--------+--,--+--------+--,--+----+--,--+----------+--,-+
-               +-server-+     +-source-+     +-0--+     +-category-+
-                                             +-2--+
-                                             +-4--+
-                                             +-8--+
-                                             +-10-+
-
->--+---------------------------------------+-------------------><
-   | +-0--.                                |
-   +-+----+--,--+------+--,--+--------+--)-+
-     +-id-+     +-data-+     +-string-+
-]]>
-</programlisting>
-
-<para>Writes event log records. If the event log was not opened with the Open
-method, the event log specified by the <emphasis role="italic">server</emphasis>
-and <emphasis role="italic">source</emphasis> is
-opened and closed after processing.</para>
-<variablelist>
-<varlistentry><term>Arguments:</term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>server</term>
-<listitem><para>The UNC (universal naming convention) name of the server on
-which the event log is to be opened. If this argument is not specified, the
-log is opened at the local machine.
-</para></listitem></varlistentry>
-<varlistentry><term>source</term>
-<listitem><para>The name of the source of the event log. It must be a subkey of
-a log file entry under the EventLog key in the registry. If, for example, the
-registry looks as follows:
-<programlisting>
-HKEY_LOCAL_MACHINE
-  System
-    CurrentControlSet
-      Services
-      EventLog
-        Application
-          WinApp1
-        Security
-          WinApp2
-        System
-</programlisting>
-&quot;Application&quot;, &quot;Security&quot;, &quot;System&quot;,
-&quot;WinApp1&quot;, and &quot;WinApp2&quot; are valid sources. If the source
-is not found, the &quot;Application Log&quot; is used.
-</para></listitem></varlistentry>
-<varlistentry><term>type</term>
-<listitem><para>The type of the events to be logged. It can be one of the
-numbers listed in the syntax diagram:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>SUCCESS
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>ERROR, which is the default
-</para></listitem></varlistentry>
-<varlistentry><term>2</term>
-<listitem><para>WARNING
-</para></listitem></varlistentry>
-<varlistentry><term>4</term>
-<listitem><para>INFORMATION
-</para></listitem></varlistentry>
-<varlistentry><term>8</term>
-<listitem><para>AUDIT SUCCESS
-</para></listitem></varlistentry>
-<varlistentry><term>10</term>
-<listitem><para>AUDIT FAILURE
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The event category. This is source-specific information that
-can have any value. The default is 0.
-</para></listitem></varlistentry>
-<varlistentry><term>id</term>
-<listitem><para>The event identifier specifying the message that, together with
-the event, is an entry in the message file associated with the event source.
-The default is 0.
-</para></listitem></varlistentry>
-<varlistentry><term>data</term>
-<listitem><para>The binary data. This is source-specific information and can
-be omitted.
-</para></listitem></varlistentry>
-<varlistentry><term>string</term>
-<listitem><para>The strings merged into the message.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example writes the strings and the data to the
-system log. &quot;MyApplication&quot; must be a subkey of a log file entry
-under the EventLog key in the registry. If the source name cannot be found,
-event logging uses the Application log file.</para>
-<programlisting>
-HKEY_LOCAL_MACHINE
-  System
-    CurrentControlSet
-      Services
-        EventLog
-        Application
-        Security
-          System
-            MyApplication
-	    </programlisting>
-<programlisting>
-evl~Write(,"MyApplication", , , ,"1A 1B 1C 0000 00"x, ,
-"First String", "Second String")
-</programlisting>
-<para>See the <computeroutput>EventLog.REX</computeroutput> for
-more examples.</para>
-</listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthClearWindowsEventLog"><title>clear</title>
-<indexterm><primary>clear method</primary>
-<secondary>of WindowsEventLog class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>clear method</secondary>
-<tertiary>of WindowsEventLog class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-clear-+------------------------------------------------------------+-><
-         +-(--+--------------------------------------------------+--)-+
-              +-server--+--------------------------------------+-+
-                        +-,--+--------+--+-------------------+-+
-                             +-source-+  +-,--backupFileName-+
-]]>
-</programlisting>
-
-<para>Clears the specified event log and, optionally, saves a copy of the
-current log file as a backup file. If the event log was not opened with the
-Open method, the event log specified by the
-<emphasis role="italic">server</emphasis> and
-<emphasis role="italic">source</emphasis> is opened.
-The event log is closed after it is cleared.</para>
-<variablelist>
-<varlistentry><term>Arguments:</term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>server</term>
-<listitem><para>The UNC (universal naming convention) name of the server on
-which the event log is to be opened. If this argument is not specified, the
-log is opened at the local machine.</para>
-<para>This argument is only used if the event log was not
-opened before.</para>
-</listitem></varlistentry>
-<varlistentry><term>source</term>
-<listitem><para>The name of the source of the event log. It must be a subkey
-of a log file entry under the EventLog key in the registry. If, for example,
-the registry looks as follows:
-<programlisting>
-HKEY_LOCAL_MACHINE
-  System
-    CurrentControlSet
-      Services
-      EventLog
-        Application
-          WinApp1
-        Security
-          WinApp2
-        System
-</programlisting>
-&quot;Application&quot;, &quot;Security&quot;, &quot;System&quot;,
-&quot;WinApp1&quot;, and &quot;WinApp2&quot; are valid sources. If the source
-is not found, the &quot;Application Log&quot; is used.</para>
-<para>This argument is only used if the event log was not opened
-before.</para>
-</listitem></varlistentry>
-<varlistentry><term>backupFileName</term>
-<listitem><para>The name of a file to which the copy of the current event log
-file is to be written. If this file already exists, the function fails.
-The file can reside on a remote server. </para>
-<para>If you omit this argument, the current event
-log file is not backed up but cleared.</para>
-</listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example creates a backup of the Application event log
-of the local machine and clears it:</para>
-<programlisting>
-event_log~CLEAR(, ,"e:\evlbackup\application.evt")
-</programlisting>
-<para>The following example creates a backup of the System event log on
-the server \\SERVER01 and clears it:</para>
-<programlisting>
-event_log~CLEAR("\\SERVER01","System","e:\evlbackup\system_server01.evt")
-</programlisting>
-<para>The following example clears the Application log on the local
-machine without a backup:</para>
-<programlisting>
-event_log~CLEAR
-</programlisting>
-</listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthMinimumRead"><title>minimumRead</title>
-<indexterm><primary>minimumRead</primary>
+<indexterm><primary>write</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--minimumRead(--x--,--y--)---------------------------------------><
-
+                                                                          +-,--------+
+                                                                          V          |
+>>-write(-+------+-+-------+-+-------+-+------------+-+------+-+--------+-+----------+-)--><
+          +-srvr-+ +-,-src-+ +-,type-+ +-,-category-+ +-,-id-+ +-,-data-+ +-,-string-+
 ]]>
 </programlisting>
 
@@ -1314,52 +1132,242 @@ event_log~CLEAR
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      The possible return values are:
       <variablelist>
-        <varlistentry><term>0</term>
+        <varlistentry><term>srvr</term>
         <listitem>
           <para>
-            Success
+            Optional. The name of the <link linkend="server">server</link> where the event log resides
           </para>
         </listitem></varlistentry>
-        <varlistentry><term>-1</term>
+        <varlistentry><term>src</term>
         <listitem>
           <para>
-            Some error.
+            Optional. The <link linkend="eventSource">event source</link>.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">type</emphasis></term>
+        <listitem>
+          <para>
+            Optional. The <link linkend="eventType">event type</link> for the record. The default is the
+            <emphasis role="italic">Error</emphasis> (1) event type. When used, this argument must be the
+            numeric value of a valid <link linkend="eventType">event type</link>.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">category</emphasis></term>
+        <listitem>
+          <para>
+            Optional. The <link linkend="eventCategory">event category</link> for the record. The default
+            is 0, which is the same as no category (none.)
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">id</emphasis></term>
+        <listitem>
+          <para>
+            Optional. The <link linkend="eventIdentifier">event identifier</link> for the record.. The
+            default is 0.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">data</emphasis></term>
+        <listitem>
+          <para>
+            Optional. The binary data for the record. The default is none. This is binary information
+            specific to the event being logged and to the source that generated the entry. It could for
+            example be the contents of the processor registers when a device driver got an error, a dump
+            of an invalid packet that was received from the network, etc..
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">string</emphasis></term>
+        <listitem>
+          <para>
+            Optional. The default is no string. This last argument can be repeated any number of times.
+            Each additional argument is a string used as a substitution string in the description string.
+          </para>
+          <para>
+            The <link linkend="eventIdentifier">event identifier</link> together with the <link
+            linkend="eventSource">event source</link> name identify a description string contained in
+            a message file that describes the event in more detail. The description string can contain
+            substitution place holders. The substitution strings named by this argument are used to
+            replace the substitution place holders in the description string.
           </para>
         </listitem></varlistentry>
       </variablelist>
     </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns 0 on success, and the operating system error code on failure.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
+      This example writes some fictious data to an event log.
+<programlisting>
+<![CDATA[
+
+  log = .WindowsEventLog~new
+
+  source     = "MyApplication"
+  type       = 4  -- Information
+  category   = 22
+  id         = 33
+  binaryData = "01 1a ff 4b 0C"x
+
+  ret = log~write( , source, type, category, id, binaryData, "String1", "String2")
+  if ret == 0 then
+    say "Record" source "successfully written"
+  else
+    say "Error writing record" source "rc:" ret ":" SysGetErrorText(ret)
+
+
+::requires 'winSystm.cls'
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowsEventLog::write() -->
+
+
+<section id="mthClearClsWindowsEventLog"><title>clear</title>
+<indexterm><primary>clear</primary>
+<secondary>WindowsEventLog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--clear(--+---------+--+----------+--+------------------+--)-----------------><
+            +-server--+  +-,-source-+  +-,-backupFileName-+
+]]>
+</programlisting>
+
+<para>
+  Clears (removes) all event records from the log. Optionally will back up the log first. When the
+  optional backup file name is supplied and for some reason the back up fails, then the event records are
+  not cleared.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+      <variablelist>
+        <varlistentry><term>srvr</term>
+        <listitem>
+          <para>
+            Optional. The name of the <link linkend="server">server</link> where the event log resides
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>src</term>
+        <listitem>
+          <para>
+            Optional. The <link linkend="eventSource">event source</link>.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>backupFileName</term>
+        <listitem>
+          <para>
+            Optional. The path name to a back up file. If this argument is specified, the event log is
+            first backed up before it is cleared. If the back up fails, the log is not cleared. The back
+            will fail if the file name specified already exists.
+          </para>
+          <para>
+            The back up file will be created on the system that the event log file itself is on. This
+            means that if an event log on a remote system is specified, the log will be created on that
+            remote system.  The file name must therefore be a valid file name on the remote system.
+          </para>
+          <para>
+            If the file name does not contain an extension, the the normal extension for event log back
+            ups, <computeroutput>.evt</computeroutput>, will be used.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns 0 on success, and the operating system error code on failure.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example backs up the Application event log on the remote Eagle system and then clears the log.
+      If the back up fails, the log will not be cleared. The back up file will be named
+      eagle_application.evt and will be located <emphasis role="italic">on</emphasis> the Eagle system,
+      not on the local machine.
+<programlisting>
+<![CDATA[
+
+  log = .WindowsEventLog~new
+
+  ret = log~open("\\Eagle", "Application")
+  if ret == 0 then do
+    ret = log~clear( , , "C:\eagle_application")
+    if ret == 0 then do
+      say 'Backed up the Application event log on Eagle to:'
+      say '  C:\eagle_application.evt on the Eagle system.'
+    end
+    else do
+      say 'Failure backing up event log:' ret ":" SysGetErrorText(ret)
+    end
+  end
+
+::requires 'winSystm.cls'
+
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowsEventLog::clear() -->
+
+<section id="mthMinimumRead"><title>minimumRead</title>
+<indexterm><primary>minimumRead</primary>
+<secondary>WindowsEventLog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--minimumRead--------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines the current minimum size, in kilobytes, of the buffer used to <link
+  linkend="mthReadRecords">read</link> event log records.  The minimum size of this buffer can be <link
+  linkend="mthMinimumReadEquals">adjusted</link> by the programmer.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>There are no arguments to this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The size in kilobytes of the minimum read buffer.  For example if the minimum buffer size is
+      32,768, this method will return 32. (32 KB.)
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example displays the current value of the minimum read buffer size.
+<programlisting>
+<![CDATA[
+
+  log = .WindowsEventLog~new
+  say 'Current minimum size of the read buffer is:' log~minimumRead "KB"
+
+::requires 'winSystm.cls'
+
+/* Output might be:
+
+Current minimum size of the read buffer is: 16 KB
+
+*/
+]]>
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1370,29 +1378,53 @@ event_log~CLEAR
 <secondary>WindowsEventLog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--minimumRead(--x--,--y--)---------------------------------------><
+>>--minimumRead-=-sizeKB-----------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Description
+  Adjusts the minimum size of the read buffer in increments of 1024 bytes. <emphasis
+  role="bold">Note</emphasis> that the programmer need not worry about the read buffer. This method is
+  documented because it does exist and for the sake of the rare Rexx programmer that might need to change
+  the minimum size of the read buffer.
+</para>
+<para>
+  The read buffer is used by the underlying implementation during the <link
+  linkend="mthReadRecords">readRecords</link>() method only. During a read operation, the
+  <computeroutput>WindowsEventLog</computeroutput> attempts to allocate a buffer that is big enough to
+  read in all the records at once. The size of the buffer is guessed at by using the number of records in
+  the event log. The size is constrained by a <link linkend="atrMinimumReadMin">minimum</link> and <link
+  linkend="atrMinimumReadMax">maximum</link>. The buffer will never be larger than the maximum and never
+  smaller than the minimum.  The maximum value is fixed.  The minimum value can be adjusted by the
+  programmer by this, the <computeroutput>minimumRead()</computeroutput> method.
+</para>
+<para>
+  In almost all cases, the size of the buffer will be set towards the maximum constraint and the minimum
+  constraint will not come into play at all. There is only one circumstance where the Rexx programmer
+  would need to change the minimum constraint, which is this:
+</para>
+<para>
+  The Windows Event Log Service will only place whole records into the buffer. If a record is bigger in
+  size than the buffer, the record can not be read and an execution error will be raised by the
+  <computeroutput>WindowsEventLog</computeroutput> object. In this case the minimum constraint for the
+  buffer size would need to be set to a size bigger than the record size. The text of the error message
+  lists both the record size and the buffer size. To read the record, the programmer would set the
+  minimum constraint larger than the record size.
+</para>
+<para>
+  Again, it <emphasis role="italic">must be stressed</emphasis> that the above scenario is extremely
+  unlikely.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
+    <para>The single argument is:
     <variablelist>
-      <varlistentry><term>x</term>
+      <varlistentry><term>sizeKB</term>
       <listitem>
         <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
+          The minimum size to allocate the read buffer, in kilobytes.
         </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1401,33 +1433,29 @@ event_log~CLEAR
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      There is no return.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
+      This method is straight forward to use:
+<programlisting>
+<![CDATA[
+
+  log = .WindowsEventLog~new
+  log~minimumRead = 64
+  say 'Current minimum read is' log~minimumRead 'KB.'
+
+::requires 'winSystm.cls'
+
+/* Output might be:
+
+Current minimum size of the read buffer is: 64 KB
+
+*/
+]]>
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1488,7 +1516,6 @@ event_log~CLEAR
   if sysLog~isFull then do
     success = monitor~backupLog(sysLog)
     if \ success then monitor~notifyAdmin
-    else sysLog~clear
   end
 return success
 
@@ -1770,9 +1797,12 @@ Data     :
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example displays the first record written to the application log. It is somewhat interesting
-      to note that this first record was written right after the operating system had been installed,
-      prior to the computer being added to a work group and given the Osprey name.
+      This example displays the first record written to the application log.
+    </para>
+    <para>
+      It is somewhat interesting to note that this first record was written right after the operating
+      system had been installed, prior to the computer being added to a work group and given the Osprey
+      name.  This can be seen when the record is displayed, the Computer field is MACHINENAME.
 <programlisting>
 <![CDATA[
 
