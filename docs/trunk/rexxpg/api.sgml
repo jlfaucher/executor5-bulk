@@ -154,7 +154,7 @@ code will run a program using a created instance:</para>
 <para>The example above creates a series of Rexx String objects for each argument we pass to the
 program and stores them in a Rexx array.  It then calls "myprogram.rex", passing the string
 arguments to the program using CallProgram().  On return, it checks to see if an Rexx SYNTAX errors
-occurred, and if they did, the error message is displayed to the consolve.  Finally, if the program
+occurred, and if they did, the error message is displayed to the console.  Finally, if the program
 exited normally and returned a value, the ASCII-Z value of that result is copied to a buffer.  As
 a final step, the interpreter instance is destroyed once we're finished using it.</para>
 <section id="createinterpreter"><title>RexxCreateInterpreter</title>
@@ -185,7 +185,7 @@ if (RexxCreateInterpreter(&amp;instance, &amp;threadContext, options)) {
     </row>
     <row><entry><emphasis role="italic">options</emphasis></entry>
     <entry><para>An array of RexxOption structures that control the initialization of the interpreter
-    instance.  See <link linkend="instanceoptions">Interpeter Instance Options</link> for details on
+    instance.  See <link linkend="instanceoptions">Interpreter Instance Options</link> for details on
     the available options.
     </para></entry>
     </row>
@@ -207,7 +207,7 @@ An entry with a NULL option
 name terminates the list.  The available interpreter options are:</para>
 <variablelist>
 <varlistentry><term>INITIAL_ADDRESS_ENVIRONMENT</term>
-<listitem><para>Contains the ASCII-Z name of the initial address enviroment
+<listitem><para>Contains the ASCII-Z name of the initial address environment
 that will be used for all Rexx programs run under this instance.</para>
 <programlisting>
 RexxOption options[2];
@@ -276,7 +276,7 @@ instance.  The exits are a list of RexxContextExit structs.  Each enabled exit i
 specified in a single RexxContextExit struct identifying the type of the exit and the
 exit entry point.
 The list is terminated by an instance using an
-exit type of 0.  The direct exits are called using the RexxExitConext calling convention.
+exit type of 0.  The direct exits are called using the RexxExitContext calling convention.
 See <link linkend="exitsapi">Rexx Exits Interface</link> for details.
 </para>
 <programlisting>
@@ -305,7 +305,7 @@ described in <link linkend="commandapi">Command Handler Interface</link>.
 </para>
 <programlisting>
 
-RexxContextEnvironments environments[2];
+RexxContextEnvironment environments[2];
 RexxOption options[2];
 
 
@@ -320,8 +320,8 @@ options[1].optionName = NULL;
 </listitem></varlistentry>
 <varlistentry><term>REGISTERED_EXITS</term>
 <listitem><para>Specifies a list of system exits that will be used with this interpreter
-instance.  The exits are a list of RXRexxContextExit structs.  Each enabled exit is
-specified in a single RXRexxContextExit struct identifying the type of the exit and the
+instance.  The exits are a list of RexxContextExit structs.  Each enabled exit is
+specified in a single RexxContextExit struct identifying the type of the exit and the
 name of the registered exit handler.
 The list is terminated by an instance using an
 exit type of 0.  The registered exits are called using the RexxExitHandler calling convention.
@@ -353,7 +353,7 @@ described in <link linkend="subcom">Subcommand Interface</link>.
 </para>
 <programlisting>
 
-RexxRegisteredEnvironments environments[2];
+RexxRegisteredEnvironment environments[2];
 RexxOption options[2];
 
 
@@ -386,7 +386,7 @@ of different core objects.  The defined object types are:
 <informaltable frame="none" colsep="0" rowsep="0">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*">
-<colspec colnum="2" colwidth="4*">
+<colspec colnum="2" colwidth="3*">
 <tbody>
 <row><entry>RexxObjectPtr</entry>
 <entry><para>a reference to a Rexx object instance.  This is the root of object
@@ -559,7 +559,7 @@ same special processing for nan, +infinity, and -infinity values as float types.
 
 <section id="apiconcepts"><title>Introduction to API Vectors</title>
 <para>The Rexx APIs operate through a set of interface vectors that define a
-set of interpreter services that are available.  There are different inteface
+set of interpreter services that are available.  There are different interface
 vectors used for different contexts, but they use very similar calling concepts.
 </para>
 <para>The first interface vector you'll encounter with the programming interfaces is
@@ -607,7 +607,7 @@ structure.  A call to the InterpreterVersion API from C code would look like thi
 <programlisting>
 size_t version = context->functions->InterpreterVersion(context);
 </programlisting>
-<para>When using C++ code, the RexxContext struct has convenience methods that simplify calling
+<para>When using C++ code, the RexxThreadContext struct has convenience methods that simplify calling
 these functions:</para>
 <programlisting>
 size_t version = context->InterpreterVersion();
@@ -625,10 +625,10 @@ struct RexxThreadContext_
 </programlisting>
 <para>The RexxThreadContext contains an embedded RexxInstance pointer for the instance it is
 associated with.  It also contains an interface vector for the functions available with a
-RexxThreadContext.  The RexxThreadInterface vector has its own version identifer and
+RexxThreadContext.  The RexxThreadInterface vector has its own version identifier and
 function pointer for each of the defined services.
 The RexxThreadContext functions all take a RexxThreadContext pointer as
-the first argument.  The RexxThreadContext struct defines C++ convience methods for accessing
+the first argument.  The RexxThreadContext struct defines C++ convince methods for accessing
 its own function and the functions for the RexxInstance as well.  For example, to call
 the InterpreterVersion() API from C code, it is necessary to use</para>
 <programlisting>
@@ -655,20 +655,20 @@ call returns to the interpreter.</para>
 </section>
 
 <section id="instancethread"><title>Threading Considerations</title>
-<para>When use RexxCreateInterpreter() to create a new interpeter instance, a RexxThreadContext
+<para>When use RexxCreateInterpreter() to create a new interpreter instance, a RexxThreadContext
 pointer is returned with the interpreter instance.  The thread context vector allows
 you to perform operations such as running Rexx programs while in the same thread context as the
 RexxCreateInterpreter() call.
 </para>
 <para>A given interpreter instance can process calls from multiple threads, but a RexxThreadContext instance
 must be obtained for each additional thread you wish to use.  A new thread context is obtained
-by calling AttachThread() using the RexxInstance API vector returned from RexxCreateContext().  Once
+by calling AttachThread() using the RexxInstance API vector returned from RexxCreateInterpreter().  Once
 a valid RexxThreadContext interface has been created for the thread, any of the operations defined
 for a thread context are usable on that thread.  Before the thread terminates,
 the <link linkend="mthDetachThread">DetachThread()</link>
 API must be called to remove the attached thread from the interpreter instance.</para>
 <para>The interpreter is capable of asynchronous calls to interpreter APIs from signal or event
-handlers.  When called in this manner, it is possbile that AttachThread will be called while
+handlers.  When called in this manner, it is possible that AttachThread will be called while
 running on a thread that is already attached to the interpreter instance.  When a nested
 AttachThread() call is made, the previous thread context is suspended and the newly created
 thread context is now the active one for the source thread.  It is very important that
@@ -723,7 +723,7 @@ provide a means to
 interface Rexx programs with other subsystems intended for compile languages.
 These libraries are packaged as Dynamic Link Libraries on Windows or shared libraries on
 Unix-based systems.
-A named library can be loaded using the the ::REQUIRES directive, the
+A named library can be loaded using the ::REQUIRES directive, the
 loadLibrary method on the Package class, or by using the EXTERNAL keyword on
 a ::ROUTINE or ::METHOD directive.
 </para>
@@ -741,7 +741,7 @@ OOREXX_GET_PACKAGE(package);
 <para>Where <emphasis role="italic">package</emphasis> is the name
 of the RexxPackageEntry table defined for this library.  The package
 entry table is a descriptor what is contained within the library.
-Note that on Windows, it is necessary to explicility export the
+Note that on Windows, it is necessary to explicitly export the
 RexxPackageEntry() function when the library is linked.  This is the
 only name that it's necessary to export.</para>
 <para>The RexxPackageEntry structure contains information about the
@@ -780,9 +780,9 @@ the level of interpreter you are compiling against.  If REXX_CURRENT_INTERPRETER
 is specified, then the library package will not load with previous releases.  The
 API header files will be updated with a macro for each interpreter version.  The
 version macros are of the form
-REXX_INTERPRETER_<emphasis role="italic">version</emphasis>_<emphasis role="italic">level</emphasis>_<emphasis role="italic">revison</emphasis>,
+REXX_INTERPRETER_<emphasis role="italic">version</emphasis>_<emphasis role="italic">level</emphasis>_<emphasis role="italic">revision</emphasis>,
 where <emphasis role="italic">version</emphasis>, <emphasis role="italic">level</emphasis>,
-and <emphasis role="italic">revison</emphasis> refer to the corresponding values in an
+and <emphasis role="italic">revision</emphasis> refer to the corresponding values in an
 interpreter release number.  For example, REXX_INTERPRETER_4_0_0 would indicate that the
 4.0.0 interpreter level is the minimum required for the package.
 </para></listitem></varlistentry>
@@ -893,7 +893,7 @@ These names are frequently the same, but need not be.</para>
 <para>Smaller function packages frequently place all of the contained functions
 and the package definition tables in the same file, with the package tables
 placed near the end of the source file so all of the functions are visible.  For
-larger packages, it may be desireable to place the functions in more than
+larger packages, it may be desirable to place the functions in more than
 one source file.  For functions packaged as multiple source files, it is necessary
 to create a prototype declarations so the routine entry table can be generated.
 The oorexxapi.h header file includes REXX_CLASSIC_ROUTINE_PROTOTYPE() and
@@ -972,15 +972,15 @@ value.
 <para>A routine argument or return value may be a
 <link linkend="numerictypes">numeric type</link> or an
 <link linkend="objecttypes">object type</link>.  For numeric types,
-the call arguments must be convertable from a Rexx object equivalent into the
+the call arguments must be convertible from a Rexx object equivalent into the
 primitive value or an error will be raised.  For optional numeric arguments, a zero
 value is passed for omitted values.  When used as a return type, the
 numeric values are translated into an appropriate Rexx object value.
 </para>
-<para>If an argument is an object type, some addtional validation is performed
+<para>If an argument is an object type, some additional validation is performed
 on the arguments being passed.  If an argument does not meet the requirements for
 a given object type, an error will be raised.  If an object-type argument is
-optional and a value is not specificed on the call, the value NULLOBJECT is
+optional and a value is not specified on the call, the value NULLOBJECT is
 passed to your routine.
 The supported object types and the special processing
 rules are as follows:</para>
@@ -991,7 +991,7 @@ be passed for a RexxObjectPtr argument.
 </para></listitem></varlistentry>
 <varlistentry><term>RexxStringObject</term>
 <listitem><para>an instance of the Rexx String class.  The argument value must be
-a Rexx String value or convertable to a Rexx String value using the request('String')
+a Rexx String value or convertible to a Rexx String value using the request('String')
 mechanism.
 </para></listitem></varlistentry>
 <varlistentry><term>RexxArrayObject</term>
@@ -1012,7 +1012,7 @@ RexxRoutine1(int, MyRoutine, RexxStemObject, stem)
 x = MyRoutine(a.)
 x = MyRoutine('a.')
 </programlisting>
-<para>This special processing allows routines that currenly access
+<para>This special processing allows routines that currently access
 stem variables using the RexxVariablePool API to be more easily converted to the
 more capable API set.
 </para></listitem></varlistentry>
@@ -1024,7 +1024,7 @@ special conversions on argument values.  The special types available to routines
 <varlistentry><term>CSTRING</term>
 <listitem><para>The argument is passed as an ASCII-Z string.  The source argument must be
 one that is valid as a RexxStringObject value.  The RexxStringObject is converted into a
-a pointer to an ASCII-Z string.  This is equivalent to the value returned from the
+ pointer to an ASCII-Z string.  This is equivalent to the value returned from the
 <link linkend="mthObjectToStringValue">StringValue() API</link>
 from a RexxStringObject value.  For an optional CSTRING argument, a NULL pointer
 is provided when the argument is omitted.</para>
@@ -1101,7 +1101,7 @@ will generate a suitable table terminator entry.
 the REXX_TYPED_METHOD() macro.
 Routine table entries defined using REXX_TYPED_METHOD() use the
 object-oriented interfaces for creating methods that can be defined on Rexx classes.
-These methodss can use
+These methods can use
 the interpreter runtime to convert call arguments from Rexx objects into primitive
 types and return values from primitive types back into Rexx objects.  Native
 methods are also given access to a rich set of services via the RexxMethodContext
@@ -1113,7 +1113,7 @@ These names are frequently the same, but need not be.</para>
 <para>Smaller function packages frequently place all of the contained functions
 and the package definition tables in the same file, with the package tables
 placed near the end of the source file so all of the methods are visible.  For
-larger packages, it may be desireable to place the methods in more than
+larger packages, it may be desirable to place the methods in more than
 one source file.  For libraries packaged as multiple source files, it is necessary
 to create a prototype declarations so the method entry table can be generated.
 The oorexxapi.h header file includes
@@ -1191,15 +1191,15 @@ be invoked within expression, but must be used as standalone method instructions
 <para>A method argument or return value may be a
 <link linkend="numerictypes">numeric type</link> or an
 <link linkend="objecttypes">object type</link>.  For numeric types,
-the arguments must be convertable from a Rexx object equivalent into the
+the arguments must be convertible from a Rexx object equivalent into the
 primitive value or an error will be raised.  For optional numeric arguments, a zero
 value is passed for omitted values.  When used as a return type, the
 numeric values are translated into an appropriate Rexx object value.
 </para>
-<para>If an argument is an object type, some addtional validation is performed
+<para>If an argument is an object type, some additional validation is performed
 on the arguments being passed.  If an argument does not meet the requirements for
 a given object type, an error will be raised.  If an object-type argument is
-optional and a value is not specificed on the call, the value NULLOBJECT is
+optional and a value is not specified on the call, the value NULLOBJECT is
 passed to your routine.
 The supported object types and the special processing
 rules are as follows:</para>
@@ -1210,7 +1210,7 @@ be passed for a RexxObjectPtr argument.
 </para></listitem></varlistentry>
 <varlistentry><term>RexxStringObject</term>
 <listitem><para>an instance of the Rexx String class.  The argument value must be
-a Rexx String value or convertable to a Rexx String value using the request('String')
+a Rexx String value or convertible to a Rexx String value using the request('String')
 mechanism.
 </para></listitem></varlistentry>
 <varlistentry><term>RexxArrayObject</term>
@@ -1239,7 +1239,7 @@ special conversions on argument values.  The special types available to routines
 <varlistentry><term>CSTRING</term>
 <listitem><para>The argument is passed as an ASCII-Z string.  The source argument must be
 one that is valid as a RexxStringObject value.  The RexxStringObject is converted into a
-a pointer to an ASCII-Z string.  This is equivalent to the value returned from the
+ pointer to an ASCII-Z string.  This is equivalent to the value returned from the
 <link linkend="mthObjectToStringValue">StringValue() API</link>
 from a RexxStringObject value.  For an optional CSTRING argument, a NULL pointer
 is provided when the argument is omitted.</para>
@@ -1319,7 +1319,7 @@ SCOPE is not valid as a return value.
 </para></listitem></varlistentry>
 <varlistentry><term>CSELF</term>
 <listitem><para>CSELF is a special argument type used for classes to store native pointers or structures inside an
-object instance.  When a CSELF type is encountered, the runtime will seach all of the object's variable
+object instance.  When a CSELF type is encountered, the runtime will search all of the object's variable
 scopes searching for a variable named CSELF.  If a CSELF variable is located and the value is an instance
 of either the Pointer or Buffer class, the POINTER value will be passed to the method as a void * value.
 Objects that rely on CSELF values typically set the variable CSELF inside an init method for the object.  For
@@ -1367,7 +1367,7 @@ standard resources</para></listitem>
 <listitem><para>Polling for halt and external trace events</para></listitem>
 </itemizedlist>
 <para>Direct exit handlers are specified when the interpreter instance is created, and
-reside as entry points within the application that creates the terpreter instance.
+reside as entry points within the application that creates the interpreter instance.
 </para>
 
 <section id="writedirexithandler"><title>Writing Context Exit Handlers</title>
@@ -1387,7 +1387,7 @@ int REXXENTRY Rexx_IO_exit(
 <para>where:</para>
 <variablelist>
 <varlistentry><term>context</term>
-<listitem><para>is RexxExitContext vector tha provides access to interpreter services
+<listitem><para>is RexxExitContext vector that provides access to interpreter services
 for this call out.
 </para></listitem></varlistentry>
 <varlistentry><term>exitNumber</term>
