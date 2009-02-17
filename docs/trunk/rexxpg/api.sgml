@@ -2391,7 +2391,7 @@ size_t n;
 >>--n = context->ArrayAppend(arr, obj);----------------------------------><
 ]]>
 </programlisting>
-<para>Append an Object to the end of a Array.
+<para>Append an Object to the end of an Array.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -3198,11 +3198,11 @@ RexxArrayObject arr;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the result object returned by the program.
-Any errors involved with calling the routine
+<para>Any result object returned by the program, if any.
+Any errors involved with calling the program
 will return a NULLOBJECT value.  The
 <link linkend="mthCheckCondition">CheckCondition()</link>.
-can be used to check in an error occurred during the call.
+can be used to check if an error occurred during the call.
 </para>
 </section>
 
@@ -3253,7 +3253,11 @@ RexxArrayObject arr;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the result object returned by the routine.
+<para>Any result object returned by the routine, if any.
+Any errors involved with calling the routine
+will return a NULLOBJECT value.  The
+<link linkend="mthCheckCondition">CheckCondition()</link>.
+can be used to check if an error occurred during the call.
 </para>
 </section>
 
@@ -4017,7 +4021,7 @@ RexxObjectPtr obj;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the .false object.</para>
+<para>The Rexx .false object.</para>
 </section>
 
 <section id="mthFindClass"><title>FindClass</title>
@@ -4055,7 +4059,7 @@ CSTRING name;
 >>--class = context->FindClass(name);---------------------------------><
 ]]>
 </programlisting>
-<para>Locates a class object in the current thread context.
+<para>Locates a Class object in the current thread context.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -4064,7 +4068,7 @@ CSTRING name;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the class object.</para>
+<para>The located Class object.  Returns NULLOBJECT if the class is not found.</para>
 </section>
 
 <section id="mthFindContextClass"><title>FindContextClass</title>
@@ -4096,7 +4100,7 @@ RexxClassObject obj;
 >>--obj = context->FindContextClass(name);-------------------------------><
 ]]>
 </programlisting>
-<para>Locate a Rexx class object in the current method or routine's package context.
+<para>Locate a Class object in the current Method or Routine Package context.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -4105,7 +4109,7 @@ RexxClassObject obj;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The resolved class object.  Returns NULLOBJECT if the class is not found.</para>
+<para>The located Class object.  Returns NULLOBJECT if the class is not found.</para>
 </section>
 
 <section id="mthFindPackageClass"><title>FindPackageClass</title>
@@ -4156,7 +4160,7 @@ CSTRING name;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the resolved class object.  Returns NULLOBJECT if the class cannot be located.</para>
+<para>The located Class object.  Returns NULLOBJECT if the class is not found.</para>
 </section>
 
 <section id="mthFinishBufferString"><title>FinishBufferString</title>
@@ -4400,7 +4404,7 @@ option when the intepreter instance was created.
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the instance application data.</para>
+<para>The application instance data set when the interpreter instance was created.</para>
 </section>
 
 <section id="mthGetArgument"><title>GetArgument</title>
@@ -4761,7 +4765,7 @@ RexxDirectoryObject dir;
 >>--dir = context->GetGlobalEnvironment();----------------------------><
 ]]>
 </programlisting>
-<para>Returns the RexxDirectoryObject for the .environment Directory.
+<para>Returns a reference to the .environment Directory.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -4803,7 +4807,7 @@ RexxDirectoryObject dir;
 >>--dir = context->GetLocalEnvironment();-----------------------------><
 ]]>
 </programlisting>
-<para>Returns RexxDirectoryObject pointer to the .local Directory.
+<para>Returns a reference to the interpreter instance .local Directory.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -4839,12 +4843,12 @@ CSTRING str;
 >>--str = context->GetMessageName(obj);-------------------------------><
 ]]>
 </programlisting>
-<para>Returns name of the current message context.
+<para>Returns the message name used to invoke the current Method.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A pointer to the current context message name.</para>
+<para>The current Method message name.</para>
 </section>
 
 <section id="mthGetMethod"><title>GetMethod</title>
@@ -4880,7 +4884,7 @@ RexxMethodObject obj;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the current Method object.</para>
+<para>The current Method object.</para>
 </section>
 
 <section id="mthGetMethodPackage"><title>GetMethodPackage</title>
@@ -5359,12 +5363,12 @@ RexxObjectPtr obj;
 >>--obj = context->GetScope();----------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to a the current method's scope.
+<para>Return the scope of the currently active Method.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The scope assigned to the currently executing method object.</para>
+<para>The current Method's scope.</para>
 </section>
 
 <section id="mthGetSelf"><title>GetSelf</title>
@@ -5395,14 +5399,14 @@ RexxObjectPtr obj;
 >>--obj = context->GetSelf();-----------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to the object that is the execution context of the current method.  This
+<para>Returns the Object that was the target of the current method invocation.  This
 is equivalent to the SELF variable in a Rexx method.  The same value can be accessed as a method
 argument by using the OSELF type.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A reference to the current message target object.</para>
+<para>The current SELF object.</para>
 </section>
 
 <section id="mthGetStemArrayElement"><title>GetStemArrayElement</title>
@@ -5588,14 +5592,14 @@ RexxObjectPtr obj;
 >>--obj = context->GetSuper();----------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a pointer to a the current method's super class scope.  This is equivalent to the
-SUPER variable used from code.  This value can also be obtained via the SUPER method
+<para>Returns the current method's super class scope.  This is equivalent to the
+SUPER variable used from Rexx code.  This value can also be obtained via the SUPER method
 argument type.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The current method's super scope.</para>
+<para>The current method's SUPER scope.</para>
 </section>
 
 <section id="mthHalt"><title>Halt</title>
@@ -5801,7 +5805,7 @@ The second converts an Object to a C 32-bit integer, returning it in the locatio
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The C pointer to the integer to be converted or the target of the conversion.</para></entry>
+    <entry><para>The to be converted or a pointer to return the conversion result.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be converted.</para></entry>
@@ -5963,7 +5967,7 @@ int64_t n;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object representing the integer value.</para>
+<para>An Object representing the integer value.</para>
 </section>
 
 <section id="mthInterpreterVersion"><title>InterpreterVersion</title>
@@ -6071,7 +6075,7 @@ pointed to by <emphasis role="italic">n</emphasis>.
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object version of the integer value in the first form.
+<para>An Object version of the integer value in the first form.
 The second form returns 1 = success, 0 = failure.  If successful, the converted value is
 stored at the location pointed to by <emphasis role="italic">n</emphasis>.
 </para>
@@ -6159,18 +6163,18 @@ logical_t flag;
 >>--flag = context->IsArray(obj);---------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if it is a Array.
-A true value indicates
+<para>Tests if an Object is an Array.
+A true result indicates
 the RexxObjectPtr value may be safely cast to a RexxArrayObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the object to be tested.</para></entry>
+    <entry><para>The object to be tested.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = is a RexxArrayObject, 0 = not a RexxArrayObject.</para>
+<para>1 = is an Array object, 0 = not an Array object.</para>
 </section>
 
 <section id="mthIsBuffer"><title>IsBuffer</title>
@@ -6208,18 +6212,18 @@ logical_t flag;
 >>--flag = context->IsBuffer(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if it is a Buffer object.
-A true value indicates
+<para>Tests if an Object is a Buffer object.
+A true result indicates
 the RexxObjectPtr value may be safely cast to a RexxBufferObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the object to be tested.</para></entry>
+    <entry><para>The object to be tested.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = is a RexxBufferObject, 0 = not a RexxBufferObject.</para>
+<para>1 = is a Buffer object, 0 = not a Buffer object.</para>
 </section>
 
 <section id="mthIsDirectory"><title>IsDirectory</title>
@@ -6257,18 +6261,18 @@ logical_t flag;
 >>--flag = context->IsDirectory(obj);-----------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if it is a Directory object.
-A true value indicates
+<para>Tests if an Object is a Directory object.
+A true result indicates
 the RexxObjectPtr value may be safely cast to a RexxDirectoryObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the object to be tested.</para></entry>
+    <entry><para>The object to be tested.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = is a RexxDirectoryObject, 0 = not a RexxDirectoryObject.</para>
+<para>1 = is a Directory object, 0 = not a Directory object.</para>
 </section>
 
 <section id="mthIsInstanceOf"><title>IsInstanceOf</title>
@@ -6307,19 +6311,19 @@ logical_t flag;
 >>--flag = context->IsInstanceOf(obj, class);---------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if it is an instance of or an instance of a subclass of the specified class.
+<para>Tests if an Object is an instance of the specified class.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the object to be tested.</para></entry>
+    <entry><para>The Object to be tested.</para></entry>
     </row>
     <row><entry><emphasis role="italic">class</emphasis></entry>
-    <entry><para>A pointer to the class object to be tested for membership.</para></entry>
+    <entry><para>The Class object for the instance test.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = is a member, 0 = not a member.</para>
+<para>1 = is an instance, 0 = not an instance.</para>
 </section>
 
 <section id="mthIsMethod"><title>IsMethod</title>
@@ -6357,18 +6361,18 @@ logical_t flag;
 >>--flag = context->IsMethod(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is a Method object.
-A true value indicates
+<para>Tests if an Object is a Method object.
+A true result indicates
 the RexxObjectPtr value may be safely cast to a RexxMethodObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the object to be tested.</para></entry>
+    <entry><para>The object to be tested.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = is a method, 0 = not a method.</para>
+<para>1 = is a Method object, 0 = not a Method object.</para>
 </section>
 
 <section id="mthIsOfType"><title>IsOfType</title>
@@ -6407,22 +6411,22 @@ logical_t flag;
 >>--flag = context->IsOfType(obj, class);-------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is an instance of or an instance of a subclass of the named class.
+<para>Tests an object to see if is an of the named class.
 This method combines the operations of the FindClass() and IsInstanceOf() methods in a single call.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the object to be tested.</para></entry>
+    <entry><para>The object to be tested.</para></entry>
     </row>
     <row><entry><emphasis role="italic">class</emphasis></entry>
     <entry><para>An ASCII-Z string containing the name of the Rexx class.  The named class will
-    be located in the current context and the object will be tested.
+    be located in the current context and used in an IsInstanceOf() test.
     </para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = is a member, 0 = not a member or the named class cannot be located.</para>
+<para>1 = is an instance, 0 = not an instance or the named class cannot be located.</para>
 </section>
 
 <section id="mthIsPointer"><title>IsPointer</title>
@@ -6460,18 +6464,18 @@ logical_t flag;
 >>--flag = context->IsPointer(obj);-------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is a Pointer object.
-A true value indicates
+<para>Tests if an Object is a Pointer object.
+A true result indicates
 the RexxObjectPtr value may be safely cast to a RexxPointerObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the object to be tested.</para></entry>
+    <entry><para>The object to be tested.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = is a RexxPointerObject, 0 = not a RexxPointerObject.</para>
+<para>1 = is a Pointer object, 0 = not a Pointer object.</para>
 </section>
 
 <section id="mthIsRoutine"><title>IsRoutine</title>
@@ -6509,18 +6513,18 @@ logical_t flag;
 >>--flag = context->IsRoutine(obj);-------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is a Routine object.
-A true value indicates
+<para>Tests if an Object a Routine object.
+A true result indicates
 the RexxObjectPtr value may be safely cast to a RexxPointerObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the object to be tested.</para></entry>
+    <entry><para>The object to be tested.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = is a routine, 0 = not a routine.</para>
+<para>1 = is a Routine object, 0 = not a Routine object.</para>
 </section>
 
 <section id="mthIsStem"><title>IsStem</title>
@@ -6558,14 +6562,14 @@ logical_t flag;
 >>--flag = context->IsStem(obj);----------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is a Stem object.
-A true value indicates
+<para>Tests if an Object is a Stem object.
+A true result indicates
 the RexxObjectPtr value may be safely cast to a RexxStemObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the object to be tested.</para></entry>
+    <entry><para>The object to be tested.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -6607,18 +6611,18 @@ logical_t flag;
 >>--flag = context->IsString(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is a String object.
-A true value indicates
+<para>Tests if an Object is a String object.
+A true result indicates
 the RexxObjectPtr value may be safely cast to a RexxStringObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A pointer to the object to be tested.</para></entry>
+    <entry><para>The object to be tested.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = is a String object, 0 = not a Strng object.</para>
+<para>1 = is a String object, 0 = not a String object.</para>
 </section>
 
 <section id="mthLanguageLevel"><title>LanguageLevel</title>
@@ -6717,7 +6721,7 @@ RexxPackageObject pkg;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the loaded package object.
+<para>The loaded Package object.
 Any errors involved with loading
 the package will return a NULLOBJECT value.  Information about errors
 can be retrieved using <link linkend="mthGetConditionInfo">GetConditionInfo()</link>.
@@ -6775,7 +6779,7 @@ RexxPackageObject pkg;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Pointer to the loaded package object.
+<para>The loaded Package object.
 Any errors involved with loading
 the package will return a NULLOBJECT value.  Information about errors
 can be retrieved using <link linkend="mthGetConditionInfo">GetConditionInfo()</link>.
@@ -6835,7 +6839,7 @@ The second form converts a C logical value to an Object.
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>For the first method form, 1 = success and 0 = conversion error,  with the converted value returned in the
-location pointer to by <emphasis role="italic">n</emphasis>
+location pointed to by <emphasis role="italic">n</emphasis>
 For the second form,
 an Object version of the logical value is returned.</para>
 </section>
@@ -7024,11 +7028,11 @@ transform this into a completed String object.
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">len</emphasis></entry>
-    <entry><para>The maximum length of the buffer.</para></entry>
+    <entry><para>The maximum length of the final String object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The pointer to the buffer string object.</para>
+<para>A new RexxBufferString value.</para>
 </section>
 
 <section id="mthNewDirectory"><title>NewDirectory</title>
@@ -7229,7 +7233,7 @@ size_t sz;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The pointer to the new Routine object.
+<para>The new Routine object.
 Any errors involved with creating the method
 the package will return a NULLOBJECT value.  Information about errors
 can be retrieved using <link linkend="mthGetConditionInfo">GetConditionInfo()</link>.
@@ -7509,10 +7513,10 @@ POINTER ptr;
 </programlisting>
 <para>Returns a pointer to the CSELF value for another object.
 CSELF is a special argument type used for classes to store native pointers or structures inside an
-object instance.  ObjectToCSelf will seach all of the object's variable
+object instance.  ObjectToCSelf() will search all of the object's variable
 scopes searching for a variable named CSELF.  If a CSELF variable is located and the value is an instance
-of either the Pointer or Buffer class, the corresponding POINTER value will be returned as a void * value.
-Objects that rely on CSELF values typically set the variable CSELF inside an init method for the object.
+of either the Pointer or the Buffer class, the corresponding POINTER value will be returned as a void * value.
+Objects that rely on CSELF values typically set the variable CSELF inside an INIT method for the class.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -9883,7 +9887,7 @@ RexxSupplierObjectPtr sobj;
 >>--context->SupplierNext(sobj);-----------------------------------------><
 ]]>
 </programlisting>
-<para>Move the supplier object item pointer to the next item.
+<para>Advance a Supplier object to the next enumeration position.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
