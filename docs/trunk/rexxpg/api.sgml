@@ -43,22 +43,23 @@
 -->
 <chapter id="api4x">
 <title>Rexx C++ Application Programming Interfaces</title>
-<para>This appendix describes how to interface applications to Rexx or extend
+<para>This chapter describes how to interface applications to Rexx or extend
 the Rexx language by using Rexx C++ application programming interfaces (APIs).
 As used here, the term application refers to programs
 written in C++.
 </para>
 <para>The features described here let a C++ application extend many parts of the
 Rexx language or extend an application with Rexx. This includes creating handlers
-for Rexx methods, external functions, and system exits. </para>
+for Rexx methods, external functions, and system exits.</para>
 <variablelist>
 <varlistentry><term>Rexx methods</term>
-<listitem><para>are extensions to Rexx classes. A Rexx class can define a
-method as being contained in an external shared library.
+<listitem><para>are methods for Rexx classes written in C++. The methods reside in dynamically
+loaded external shared libraries.
 </para></listitem></varlistentry>
 <varlistentry><term>Functions</term>
-<listitem><para>are direct extensions of the Rexx language. An application can create
-functions that extend the native Rexx function set. Functions can be general-purpose
+<listitem><para>are function extensions of the Rexx language written in C++.  Like the native
+methods, functions are packaged in external libraries.
+Functions can be general-purpose
 extensions or specific to an application.
 </para></listitem></varlistentry>
 <varlistentry><term>Command Handlers</term>
@@ -68,9 +69,9 @@ enabling different command environments for interfacing with different
 application environments.
 </para></listitem></varlistentry>
 <varlistentry><term>System exits</term>
-<listitem><para>are programmer-defined variations of the operating system.
+<listitem><para>are programmer-defined variations of the interpreter.
 The application programmer can tailor the Rexx interpreter behavior by
-replacing Rexx system requests.
+using the defined exit points to control Rexx resources.
 </para></listitem></varlistentry>
 </variablelist>
 <para>Methods, functions, system exit handlers, and command handlers have similar coding,
@@ -80,8 +81,119 @@ compilation, and packaging characteristics.
 execute them from externally defined methods and functions.</para>
 
 <section id="intertreterapi"><title>Rexx Interpreter API</title>
-<para>This section describes how to invoke the Rexx interpreter via the
-RexxCreatInterpreter API.</para>
+<para>Rexx programs run in an environment controlled by an interpreter instance.
+An interpreter instance environment is created with a specific set of exit handlers and
+a customized environment.  Interpreter instances may have multiple threads associated
+with them and each interpreter instance has a unique version of the .local environment
+directory, allowing programs to run with some degree of isolation.
+</para>
+<para>If you use the older <link linkend="rexxstartfu">RexxStart()</link> API to run
+a Rexx program, the Rexx environment initializes, runs a single program, and the
+environment is terminated.  With the RexxCreateInterpreter() API, you have finer grained
+control over how the environment is used.  You are able to create a tailored environment, perform
+multiple operations (potentially, on multiple threads), create objects that persist for longer
+than the life of a single program, etc.</para>
+<para>Interpreter environments are created using the
+<link linkend="createinterpreter">RexxCreateInterpreter()</link> API:</para>
+<programlisting>
+RexxInstance *instance;
+RexxThreadContext *threadContext;
+RexxOption options[25];
+
+if (RexxCreateInterpreter(&instance, &threadContext, options)) {
+&hellip;
+}
+</programlisting>
+<para>Once the interpreter instance is created, the APIs provided by the
+RexxInstance or RexxThreadContext interface can be used to perform operations
+like running programs, loading class packages, etc.  For example, the following
+code will run a program using a created instance:</para>
+<programlisting>
+<![CDATA[
+    // create an Array object to hold the program arguments
+    RexxArrayObject args = threadContext->NewArray(instanceInfo->argCount);
+    // we're passing a variable number of arguments, so we need to create
+    // String objects and insert them into the array
+    for (size_t i = 0; i < argCount; i++)
+    {
+        if (arguments[i] != NULL)
+        {
+            // add the argument to the array, if specified.  Note that ArrayPut() requires an
+            // index that is origin-1, unlike C arrays which are origin-0.
+            threadContext->ArrayPut(args, threadContext->String(arguments[i]), i + 1);
+        }
+    }
+
+    // call our program, using the provided arguments.
+    RexxObjectPtr result = threadContext->CallProgram("myprogram.rex", args);
+    // if an error occurred, get the decoded exception information
+    if (threadContext->CheckCondition())
+    {
+        RexxCondition condition;
+
+        // retrieve the error information and get it into a decoded form
+        RexxDirectoryObject cond = threadContext->GetConditionInfo();
+        threadContext->DecodeConditionInfo(cond, &condition);
+        // display the errors
+        printf("error %d: %s\n%s\n", condition.code, threadContext->CString(condition.errortext),
+           threadContext->CString(condition.message));
+    }
+    else
+    {
+        // Copy any return value as a string
+        if (result != NULLOBJECT)
+        {
+            CSTRING resultString = threadContext->CString(result);
+            strncpy(returnResult, resultString, sizeof(returnResult));
+        }
+    }
+    // make sure we terminate this first
+    instance->Terminate();
+]]>
+</programlisting>
+<para>The example above creates a series of Rexx String objects for each argument we pass to the
+program and stores them in a Rexx array.  It then calls "myprogram.rex", passing the string
+arguments to the program using CallProgram().  On return, it checks to see if an Rexx SYNTAX errors
+occurred, and if they did, the error message is displayed to the consolve.  Finally, if the program
+exited normally and returned a value, the ASCII-Z value of that result is copied to a buffer.  As
+a final step, the interpreter instance is destroyed once we're finished using it.</para>
+<section id="createinterpreter"><title>RexxCreateInterpreter</title>
+<indexterm><primary>application programming interfaces</primary>
+<secondary>RexxCreateInterpreter</secondary></indexterm>
+<indexterm><primary>RexxCreateInterpreter</primary></indexterm>
+<para>RexxCreateInterpreter creates an interpreter instance and an associated
+thread context interface for the current thread.</para>
+<programlisting>
+RexxInstance *instance;
+RexxThreadContext *threadContext;
+RexxOption options[25];
+
+if (RexxCreateInterpreter(&instance, &threadContext, options)) {
+&hellip;
+}
+</programlisting>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+    <row><entry><emphasis role="italic">instance</emphasis></entry>
+    <entry><para>The returned RexxInstance interface vector.  The interface
+    vector provide access to APIs that apply to the global interpreter environment.</para></entry>
+    </row>
+    <row><entry><emphasis role="italic">threadContext</emphasis></entry>
+    <entry><para>The returned RexxThreadContext interface vector for the thread that creates the
+    interpreter instance.  The thread context vector provides access to thread specific services.
+    </para></entry>
+    </row>
+    <row><entry><emphasis role="italic">options</emphasis></entry>
+    <entry><para>An array of RexxOption structures that control the initialization of the interpreter
+    instance.  See <link linkend="instanceoptions">Interpeter Instance Options</link> for details on
+    the available options.
+    </para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>1 (TRUE) if the interpreter instance was successfully created, 0 (FALSE) for any
+failure to create the interpreter.</para>
+</section>
 
 <section id="instanceoptions"><title>Interpreter Instance Options</title>
 <para>The third argument to RexxCreateInterpreter is an optional list of options
@@ -502,7 +614,7 @@ size_t version = context->InterpreterVersion();
 </programlisting>
 <para>Note that in the C++ call, it is no longer necessary to pass the RexxInstance as the
 first object.  That's handled automatically be the C++ method.</para>
-<para>The RexxThreadContext pointer returned from RexxCreateInterpreter functions the same way.
+<para>The RexxThreadContext pointer returned from RexxCreateInterpreter() functions the same way.
 RexxThreadContext looks like this:</para>
 <programlisting>
 struct RexxThreadContext_
@@ -535,8 +647,8 @@ Because of the embedded RexxThreadContext, each calls may use any of the RexxThr
 functions in addition to the functions specific to the call-out type.  Each context defines
 C++ methods for the embedded RexxInstance and RexxThreadContext functions.</para>
 <para>Note that the RexxInstance interface can be used at any time and on any thread.  The
-RexxThreadContext returned by RexxCreateInterpreter can only be used on the same thread
-as the RexxCreateInterpreter call, but is not valid for use in the context of a method, routine,
+RexxThreadContext returned by RexxCreateInterpreter() can only be used on the same thread
+as the RexxCreateInterpreter() call, but is not valid for use in the context of a method, routine,
 or exit call-out.  In those contexts, the RexxThreadContext instance passed to the call-out
 must be used.  A RexxThreadContext instance created for a call-out is only valid until the
 call returns to the interpreter.</para>
