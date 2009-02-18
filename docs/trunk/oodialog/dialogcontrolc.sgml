@@ -165,8 +165,12 @@ listed in the following DialogControl Instance Methods table.
 <entry><link linkend="h001026">CreateBrush</link></entry>
 </row>
 <row>
-<entry>CreateFont</entry>
-<entry><link linkend="createfont">CreateFont</link></entry>
+<entry>createFont</entry>
+<entry><link linkend="mthCreateFont">createFont</link></entry>
+</row>
+<row>
+<entry>CreateFontEx</entry>
+<entry><link linkend="mthCreateFontEx">CreateFontEx</link></entry>
 </row>
 <row>
 <entry>CreatePen</entry>
@@ -438,7 +442,7 @@ listed in the following DialogControl Instance Methods table.
 </row>
 <row>
 <entry>SetFont</entry>
-<entry><link linkend="mthSetFont">SetFont</link></entry>
+<entry><link linkend="mthSetFont">setFont</link></entry>
 </row>
 <row>
 <entry>SetForegroundWindow</entry>
@@ -3955,7 +3959,7 @@ stFont2~setRect(nextX, 1, size~width, size~height)
 </programlisting>
 
 <para>
-  The SetFont method assigns another font to be used for the text in a dialog or dialog control.
+  The setFont method assigns another font to be used for the text in a dialog or dialog control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3964,9 +3968,9 @@ stFont2~setRect(nextX, 1, size~width, size~height)
   <varlistentry><term>fontHandle</term>
   <listitem>
     <para>
-      The handle to the font that is to be used by the dialog or dialog control There are several methods
-      to get the font handle, including <link linkend="createfont">createFont</link>() or <link
-      linkend="mthGetFont">getFont</link>().
+      The handle to the font that is to be used by the dialog or dialog control. There are several
+      methods to get the font handle, including <link linkend="mthCreateFontEx">createFontEx</link>() or
+      <link linkend="mthGetFont">getFont</link>().
     </para>
   </listitem></varlistentry>
   <varlistentry><term>redraw</term>
@@ -3991,7 +3995,7 @@ stFont2~setRect(nextX, 1, size~width, size~height)
     control FILES, which is forced to be redrawn.
 <programlisting>
 <![CDATA[
-hfnt = Mydialog~createFont("Arial", 14)
+hfnt = Mydialog~createFontEx("Arial", 14)
 MyDialog~getTreeControl("FILES")~setFont(hfnt, .true)
 ]]>
 </programlisting>
@@ -4049,81 +4053,493 @@ MyDialog~getTreeControl("FILES")~setFont(hfnt, .true)
 </variablelist>
 </section>  <!-- End ::getFont() -->
 
-
-<section id="createfont"><title>CreateFont</title>
-<indexterm><primary>CreateFont</primary></indexterm>
+<section id="mthCreateFont"><title>createFont</title>
+<indexterm><primary>createFont</primary></indexterm>
 <programlisting>
 <![CDATA[
-<                              +-"SYSTEM"-+     +-10-------+
->>-aDialogControl~CreateFont(--+----------+--,--+----------+--,-->
-                               +-fontName-+     +-fontSize-+
-
-      +----------------+
-      V                |
->--"----+-THIN-------+-+--"--+--------------+--)---------------><
-        +-EXTRALIGHT-+       +-,--fontWidth-+
-        +-LIGHT------+
-        +-MEDIUM-----+
-        +-SEMIBOLD---+
-        +-EXTRABOLD--+
-        +-BOLD-------+
-        +-HEAVY------+
-        +-UNDERLINE--+
-        +-ITALIC-----+
-        +-STRIKEOUT--+
-
-
+>>--createFont(--+----------+-+------------+-+---------+-+-------------+--)----><
+                 +-fontName-+ +-,-fontSize-+ +-,-style-+ +-,-fontWidth-+
 ]]>
 </programlisting>
 
-<para>The CreateFont method creates a font. It returns
-a handle that you can use in the FontToDC method (see page <link linkend="h000948">FontToDC</link>) to activate the font in a device context or in the SetItemFont
-method (see page <link linkend="sifm">SetItemFont</link>) to change the font of
-a dialog or dialog item. </para>
+<para>
+  The createFont method creates a font and returns its handle.
+</para>
+<para>
+  <emphasis role="bold">Note</emphasis> the implementation of this method is incorrect. It does not
+  return the font specified. The correct method to use is <link
+  linkend="mthCreateFontEx">createFontEx</link>(). This method is maintained for program compatibility.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>fontName</term>
-<listitem><para>The name of a font. You can look for valid fonts in the Fonts folder of your Windows Control Panel. If omitted, the
-SYSTEM font is used.
-</para></listitem></varlistentry>
-<varlistentry><term>fontSize</term>
-<listitem><para>The size of the font. If omitted, the standard size (10) is used.
-</para></listitem></varlistentry>
-<varlistentry><term>fontStyle</term>
-<listitem><para>One or more of the keywords listed in the syntax diagram, separated
-by blanks.
-</para></listitem></varlistentry>
-<varlistentry><term>fontWidth</term>
-<listitem><para>This argument is optional if it differs from fontSize.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example creates a 16-point italic Arial font:
-
-<programlisting>
-<![CDATA[
-hfnt = MyDialog~CreateFont("Arial", 16, "ITALIC")
-]]>
-</programlisting>
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The arguments are:
+      <variablelist>
+        <varlistentry><term>fontName</term>
+        <listitem>
+          <para>
+            Optional. The name of the font. the default is System.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>fontSize</term>
+        <listitem>
+          <para>
+            Optional. The size of the font. The default is 10.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>style</term>
+        <listitem>
+          <para>
+            One or more of the following keyword, separated by blanks.
+            <simplelist type='horiz' columns='2'>
+            <member>THIN      </member>
+            <member>EXTRALIGHT</member>
+            <member>LIGHT     </member>
+            <member>MEDIUM    </member>
+            <member>SEMIBOLD  </member>
+            <member>EXTRABOLD </member>
+            <member>BOLD     </member>
+            <member>HEAVY    </member>
+            <member>UNDERLINE</member>
+            <member>ITALIC   </member>
+            <member>STRIKEOUT</member>
+            </simplelist>
+        </para></listitem></varlistentry>
+        <varlistentry><term>fontWidth</term>
+        <listitem>
+          <para>
+            Optional. The average width of the characters in the font. If omitted, the width is set to
+            the value of <emphasis role="italic">fontSize</emphasis>.
+        </para></listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="deletefont"><title>DeleteFont</title>
-<indexterm><primary>DeleteFont</primary></indexterm>
+<section id="mthCreateFontEx"><title>createFontEx</title>
+<indexterm><primary>createFontEx</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~DeleteFont(--hFont--)------------------------><
+>>--createFontEx(--fontName-+--------------+--+---------------+--)-------------><
+                            +-,-pointSize--+  +-,-additional--+
+]]>
+</programlisting>
+
+<para>
+  Creates a logical font with the characteristics requested. This should be the preferred method to
+  create fonts in ooDialog. The <link linkend="mthCreateFont">createFont</link>() method does <emphasis
+  role="bold">not</emphasis> properly create the font requested.
+</para>
+<para>
+  The returned font can be used in any method that takes a font, such as, <link
+  linkend="mthSetFont">setFont</link>(), <link linkend="sifm">setItemFont</link>(), or <link
+  linkend="h000948">fontToDC</link>().
+</para>
+<para>
+  The Windows operating system uses a font mapper to map a logical font to the characteristics of the
+  font requested. Because available fonts can vary from system to system, the returned font is not always
+  the same as the requested font. For example, if a font named Palatino is requested, but no such font is
+  available on the system, the font mapper will substitute a font that has similar attributes but a
+  different name.
+</para>
+<para>
+  The interface to the font mapper takes a wide range of arguments to specify many different attributes
+  of the requested font. The <emphasis role="italic">additional</emphasis> argument gives the ooRexx
+  programmer the ability to use any, or all, of these arguments. On the other hand, The
+  <computeroutput>createFontEx</computeroutput>() method has good defaults for each of the arguments,
+  allowing the programmer to use the method with a minimum of effort.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      This method provides an interface to the Win32 API: <computeroutput>CreateFont()</computeroutput>.
+      Use the <link linkend="windowsdoc">MSDN library</link> documentation to get more information on the
+      arguments to this method.
+    </para>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term><emphasis role="italic">fontName</emphasis></term>
+      <listitem>
+        <para>
+          The typeface name of the requested font. The <emphasis role="italic">fonts</emphasis> folder,
+          accessed from the Control Panel, on Windows lists the typeface names of all fonts installed on
+          the system.
+        </para>
+        <para>
+          As noted above, the font mapper will try substitute a similar font if the typeface name does
+          not match any of the installed fonts.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="italic">pointSize</emphasis></term>
+      <listitem>
+        <para>
+          Optional. The point size of the requested font. The default is 8.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="italic">additional</emphasis></term>
+      <listitem>
+        <para>
+          Optional. A <computeroutput>.Directory</computeroutput> object whose indexes define additional
+          characteristics of the requested font. For any missing index, the default value is used for
+          that characteristic. If this argument is omitted then the default value for all characteristics
+          is used.
+        </para>
+        <para>
+          The indexes are listed below. Each index maps to an argument of the Win32 API,
+          <computeroutput>CreateFont()</computeroutput>. As suggested above, the programmer should
+          consult the <link linkend="windowsdoc">MSDN library</link> documentation to get complete
+          information on the individual arguments. The value for each index must be either numeric or
+          logical, depending on the index.
+        </para>
+        <para>
+          The indexes below are listed in the same order as the arguments to
+          <computeroutput>CreateFont()</computeroutput> from <emphasis role="italic">nWidth</emphasis> to
+          <emphasis role="italic">fdwPitchAndFamily</emphasis>. Where an index has a link, the link
+          provides some more information on the possible values for index. The valid indexes are:
+          <informaltable frame='none' colsep='0' rowsep='0'>
+          <tgroup cols='3'>
+          <colspec align='left' colwidth='2*'>
+          <colspec align='left' colwidth='3*'>
+          <colspec align='left' colwidth='2*'>
+          <thead>
+          <row><entry>Index</entry><entry>Meaning</entry><entry>Default</entry></row>
+          </thead>
+          <tbody>
+          <row>
+            <entry><link linkend="cfxWidth">WIDTH</link></entry>
+            <entry>The average width of the characters in the requested font</entry>
+            <entry>0</entry>
+          </row>
+          <row>
+            <entry><link linkend="cfxEscarpment">ESCARPMENT</link></entry>
+            <entry>The angle between the escapement vector and the x-axis of the device</entry>
+            <entry>0</entry>
+          </row>
+          <row>
+            <entry><link linkend="cfxOrientation">ORIENTATION</link></entry>
+            <entry>The angle between each character's base line and the x-axis of the device</entry>
+            <entry>0</entry>
+          </row>
+          <row>
+            <entry><link linkend="cfxWeight">WEIGHT</link></entry>
+            <entry>The weight of the font</entry>
+            <entry>FW_NORMAL</entry>
+          </row>
+          <row>
+            <entry>ITALIC</entry>
+            <entry>True for an italic font</entry>
+            <entry>false</entry>
+          </row>
+          <row>
+            <entry>UNDERLINE</entry>
+            <entry>True for an uderlined font</entry>
+            <entry>false</entry>
+          </row>
+          <row>
+            <entry>STRIKEOUT</entry>
+            <entry>True for a strikeout font</entry>
+            <entry>false</entry>
+          </row>
+          <row>
+            <entry><link linkend="cfxCharset">CHARSET</link>CHARSET</entry>
+            <entry>Specifies the character set</entry>
+            <entry>DEFAULT_CHARSET</entry>
+          </row>
+          <row>
+            <entry><link linkend="cfxOutputPrecision">OUTPUTPRECISION</link></entry>
+            <entry>Specifies the output precision</entry>
+            <entry>OUT_TT_PRECIS</entry>
+          </row>
+          <row>
+            <entry><link linkend="cfxClipPrecision">CLIPPRECISION</link></entry>
+            <entry>Specifies the clipping precision</entry>
+            <entry>CLIP_DEFAULT_PRECIS</entry>
+          </row>
+          <row>
+            <entry><link linkend="cfxQuality">QUALITY</link></entry>
+            <entry>Specifies the output quality</entry>
+            <entry>DEFAULT_QUALITY</entry>
+          </row>
+          <row>
+            <entry><link linkend="cfxPitchAndFamily">PITCHANDFAMILY</link></entry>
+            <entry>Specifies the pitch and family of the font</entry>
+            <entry>FF_DONTCARE</entry>
+          </row>
+          </tbody>
+          </tgroup>
+          </informaltable>
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+        <varlistentry><term>0</term>
+        <listitem>
+          <para>
+            Success
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>-1</term>
+        <listitem>
+          <para>
+            Some error.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example creates a 16 point italic Ariel font.
+<programlisting>
+<![CDATA[
+
+additional = .directory~new
+additional~italic = .true
+
+hFont = self~createFontEx("Arial", 16, additional)
+
+]]>
+</programlisting>
+    </para>
+    <para>
+      This example creates a 14 point bold, italic Times New Roman font and instructs the font mapper to
+      only choose from true type fonts. If there are no true type fonts installed on the system, then the
+      font mapper returns to its default behavior.
+<programlisting>
+<![CDATA[
+
+FW_BOLD = 700
+OUT_TT_ONLY_PRECIS = 7
+
+additional = .directory~new
+additional~italic = .true
+additional~weight = FW_BOLD
+additional~outputPrecison = OUT_TT_ONLY_PRECIS
+
+hFont = self~createFontEx("Times New Roman", 14, additional)
+
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+
+<section id="sectFontAttributes"><title>createFontEx Argument Valus</title>
+<variablelist>
+  <varlistentry id="cfxWidth"><term><emphasis role="bold">width</emphasis></term>
+  <listitem>
+    <para>
+      Must be an integer.
+    </para>
+    <para>
+      Specifies the average width, in logical units, of the characters in the requested font. The default
+      value of zero, tells the font mapper to choose a closest match value. This is likely to produce the
+      best results, unless the programmer has some need that requires specifying the character width.
+    </para>
+    <para>
+      The closest match value is determined by comparing the absolute values of the difference between
+      the current device's aspect ratio and the digitized aspect ratio of available fonts.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry id="cfxEscarpment"><term><emphasis role="bold">escarpment</emphasis></term>
+  <listitem>
+    <para>
+      Must be an integer.
+    </para>
+    <para>
+      Specifies the angle, in tenths of degrees, between the escapement vector and the x-axis of the
+      device. The escapement vector is parallel to the base line of a row of text. Windows has no
+      predefined values for this argument.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry id="cfxOrientation"><term><emphasis role="bold">orientation</emphasis></term>
+  <listitem>
+    <para>
+      Must be an integer.
+    </para>
+    <para>
+      Specifies the angle, in tenths of degrees, between each character's base line and the x-axis of the
+      device. Windows has no predefined values for this argument.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry id="cfxWeight"><term><emphasis role="bold">weight</emphasis></term>
+  <listitem>
+    <para>
+      Must be an integer.
+    </para>
+    <para>
+      Specifies the weight of the font in the range 0 through 1000. For example, 400 is normal and 700 is
+      bold. If this value is zero, a default weight is used. The following table shows Windows predefined
+      values for this argument:
+    </para>
+    <table id="tblCfxWeight" frame="all">
+    <title>Font Weight</title>
+    <tgroup cols="2">
+    <thead>
+    <row><entry>Value</entry><entry>Weight</entry></row>
+    </thead>
+    <tbody>
+    <row><entry>FW_DONTCARE  </entry><entry>  0</entry></row>
+    <row><entry>FW_THIN      </entry><entry>100</entry></row>
+    <row><entry>FW_EXTRALIGHT</entry><entry>200</entry></row>
+    <row><entry>FW_ULTRALIGHT</entry><entry>200</entry></row>
+    <row><entry>FW_LIGHT     </entry><entry>300</entry></row>
+    <row><entry>FW_NORMAL    </entry><entry>400</entry></row>
+    <row><entry>FW_REGULAR   </entry><entry>400</entry></row>
+    <row><entry>FW_MEDIUM    </entry><entry>500</entry></row>
+    <row><entry>FW_SEMIBOLD  </entry><entry>600</entry></row>
+    <row><entry>FW_DEMIBOLD  </entry><entry>600</entry></row>
+    <row><entry>FW_BOLD      </entry><entry>700</entry></row>
+    <row><entry>FW_EXTRABOLD </entry><entry>800</entry></row>
+    <row><entry>FW_ULTRABOLD </entry><entry>800</entry></row>
+    <row><entry>FW_HEAVY     </entry><entry>900</entry></row>
+    <row><entry>FW_BLACK     </entry><entry>900</entry></row>
+    </tbody></tgroup>
+    </table>
+  </listitem></varlistentry>
+  <varlistentry id="cfxCharset"><term><emphasis role="bold">charset</emphasis></term>
+  <listitem>
+    <para>
+      Must be an integer.
+    </para>
+    <para>
+
+    </para>
+    <table id="tblCfxCharset" frame="all">
+    <title>Character Set</title>
+    <tgroup cols="2">
+    <thead>
+    <row><entry>Value</entry><entry>Weight</entry></row>
+    </thead>
+    <tbody>
+    <row><entry></entry><entry></entry></row>
+    <row><entry></entry><entry></entry></row>
+    <row><entry></entry><entry></entry></row>
+    </tbody></tgroup>
+    </table>
+  </listitem></varlistentry>
+  <varlistentry id="cfxOutputPrecision"><term><emphasis role="bold">outputPrecsion</emphasis></term>
+  <listitem>
+    <para>
+      Must be an integer.
+    </para>
+    <para>
+
+    </para>
+    <table id="tblCfxOutputPrecision" frame="all">
+    <title>Output Precision</title>
+    <tgroup cols="2">
+    <thead>
+    <row><entry>Value</entry><entry>Weight</entry></row>
+    </thead>
+    <tbody>
+    <row><entry></entry><entry></entry></row>
+    <row><entry></entry><entry></entry></row>
+    <row><entry></entry><entry></entry></row>
+    </tbody></tgroup>
+    </table>
+  </listitem></varlistentry>
+  <varlistentry id="cfxClipPrecision"><term><emphasis role="bold">clipPrecision</emphasis></term>
+  <listitem>
+    <para>
+      Must be an integer.
+    </para>
+    <para>
+
+    </para>
+    <table id="tblCfxClipPrecision" frame="all">
+    <title>Clip Precision</title>
+    <tgroup cols="3">
+    <thead>
+    <row><entry>Value</entry><entry>Weight</entry></row>
+    </thead>
+    <tbody>
+    <row><entry></entry><entry></entry><entry></entry></row>
+    <row><entry></entry><entry></entry><entry></entry></row>
+    <row><entry></entry><entry></entry><entry></entry></row>
+    </tbody></tgroup>
+    </table>
+  </listitem></varlistentry>
+  <varlistentry id="cfxQuality"><term><emphasis role="bold">quality</emphasis></term>
+  <listitem>
+    <para>
+      Must be an integer.
+    </para>
+    <para>
+
+    </para>
+    <table id="tblCfxQuality" frame="all">
+    <title>Font Quality</title>
+    <tgroup cols="2">
+    <thead>
+    <row><entry>Value</entry><entry>Weight</entry></row>
+    </thead>
+    <tbody>
+    <row><entry></entry><entry></entry></row>
+    <row><entry></entry><entry></entry></row>
+    <row><entry></entry><entry></entry></row>
+    </tbody></tgroup>
+    </table>
+  </listitem></varlistentry>
+  <varlistentry id="cfxPitchAndFamily"><term><emphasis role="bold">pitchAndFamily</emphasis></term>
+  <listitem>
+    <para>
+      Must be an integer.
+    </para>
+    <para>
+
+    </para>
+    <table id="tblCfxPitchAndFamily" frame="all">
+    <title>Font Pitch and Family</title>
+    <tgroup cols="2">
+    <thead>
+    <row><entry>Value</entry><entry>Weight</entry></row>
+    </thead>
+    <tbody>
+    <row><entry></entry><entry></entry></row>
+    <row><entry></entry><entry></entry></row>
+    <row><entry></entry><entry></entry></row>
+    </tbody></tgroup>
+    </table>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End createFontEx Argument Values -->
+
+</section>  <!-- End WindowExtensions::createFontEx() -->
+
+<section id="deletefont"><title>deleteFont</title>
+<indexterm><primary>deleteFont</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~deleteFont(--hFont--)------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The DeleteFont method deletes a font. This method
-is to be used to delete a font created with the CreateFont method (see page <link linkend="createfont">CreateFont</link>). </para>
+<para>
+  The deleteFont method deletes a font. This method is to be used to delete a font created with the <link
+  linkend="mthCreateFontEx">createFontEx</link>() method.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -4148,10 +4564,10 @@ is to be used to delete a font created with the CreateFont method (see page <lin
 
 <para>The FontToDC method loads a font into a device
 context and returns the handle of the previous font. Use the <link linkend="h001062">GetWindowDC</link>, <link linkend="getdc">GetDC</link>, or <link linkend="h001077">GetButtonDC</link> method
-to retrieve a device context, and the <link linkend="createfont">CreateFont</link> method
-to get a font handle. To reset the font to the original state, use another
-FontToDC call with the handle of the previous font. To release the device
-context, use the <link linkend="h001086">FreeWindowDC</link>, <link linkend="freedc">FreeDC</link>, or <link linkend="h001105">FreeButtonDC</link> method.</para>
+to retrieve a device context, and the <link linkend="mthCreatefontEx">createFontEx</link>() method to get
+a font handle. To reset the font to the original state, use another FontToDC call with the handle of the
+previous font. To release the device context, use the <link linkend="h001086">FreeWindowDC</link>, <link
+linkend="freedc">FreeDC</link>, or <link linkend="h001105">FreeButtonDC</link> method.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -4169,7 +4585,9 @@ context, use the <link linkend="h001086">FreeWindowDC</link>, <link linkend="fre
 
 <programlisting>
 <![CDATA[
-hfnt = MyDialog~CreateFont("Arial", 16, "ITALIC")
+additional = .directory~new
+additional~italic = .true
+hfnt = MyDialog~createFontEx("Arial", 16, additional)
 dc   = MyDialog~GetDC
 oldf = MyDialog~FontToDC(dc,hfnt)  /* activate font */
 ...

@@ -414,8 +414,8 @@ to Init.
 <entry><link linkend="h001026">CreateBrush</link></entry>
 </row>
 <row>
-<entry>CreateFont</entry>
-<entry><link linkend="createfont">CreateFont</link></entry>
+<entry>createFontEx</entry>
+<entry><link linkend="mthCreateFontEx">createFontEx</link></entry>
 </row>
 <row>
 <entry>CreatePen</entry>
@@ -9370,7 +9370,7 @@ do this is the <link linkend="leavi">Leaving</link> method.</para>
 <listitem><para>The ID of the dialog item.
 </para></listitem></varlistentry>
 <varlistentry><term>fonthandle</term>
-<listitem><para>The handle returned by <link linkend="createfont">CreateFont</link>.
+<listitem><para>The handle returned by <link linkend="mthCreateFontEx">createFontEx</link>.
 </para></listitem></varlistentry>
 <varlistentry><term>redraw</term>
 <listitem><para>
@@ -9393,7 +9393,7 @@ do this is the <link linkend="leavi">Leaving</link> method.</para>
      .
      .
      .
-   hFont=self~CreateFont("Arial",12)
+   hFont=self~createFontEx("Arial",12)
    self~SetItemFont(101,hFont,0)
 ]]>
 </programlisting>
