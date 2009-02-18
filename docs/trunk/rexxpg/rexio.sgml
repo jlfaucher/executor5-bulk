@@ -47,58 +47,53 @@
 <indexterm><primary>stream I/O model</primary></indexterm>
 <indexterm><primary>stream object</primary></indexterm>
 <para>Object Rexx supports a stream
-I/O model. In the stream model, your program reads data from various devices
+I/O model. Using streams, your program reads data from various devices
 (such as hard disks, CD-ROMs, and keyboards) as a continuous stream of characters.
 Your program also writes data as a continuous stream of characters.</para>
 <para>In the stream model, a text file is represented as a stream of characters
 with special new-line characters marking the end of each line of text in the
 stream. A binary file is a stream of characters without an inherent line structure.
-Rexx lets you read streams as lines or as characters.</para>
-<para>To support the stream
-model, Object Rexx includes a Stream class and many methods to use on stream
-objects. To input or output data, you first create an instance of the Stream
+A Rexx stream object allows you read from a data stream using either the text-file
+line methods or using a continous data stream method.
+</para>
+<para>The Rexx Stream class is the mechanism for accessing I/O streams.
+To input or output data, you first create an instance of the Stream
 class that represents the device or file you want to use. For example, the
-following clause creates a stream object for the file C:\CONFIG.SYS: </para>
+following clause creates a stream object for the file C:\out.dat: </para>
 <programlisting>
 <![CDATA[
-/* Create a stream object for CONFIG.SYS */
-file=.stream~new("c:\config.sys")
+/* Create a stream object for out.dat */
+file=.stream~new("c:\out.dat")
 ]]>
 </programlisting>
-<para>Then you send the stream object messages that are appropriate
-for the device or data. CONFIG.SYS is a text file, so you would normally use methods
-that read or write data as lines. Some of these methods are LINES, LINEIN,
-and LINEOUT.</para>
-<para>If the stream represents a binary file (such as a WAV,
-GIF, TIF, AVI, or EXE file), you can use methods that read and write
-data as characters. Some of these methods are CHARS, CHARIN, and CHAROUT.</para>
-<para>The Stream class includes other methods for opening and closing streams,
+<para>Then you use the appropriate stream methods access the data.
+OUT.DAT is a text file, so you would normally use the LINES(), LINEIN, and
+LINEOUT() methods that
+that read or write data as delimited lines.
+If the stream represents a binary file (such as a WAV,
+GIF, TIF, AVI, or EXE file), you would use the CHAR, CHARIN, and CHAROUT methods that read and write
+data as characters.</para>
+<para>The Stream class includes additional methods for opening and closing streams,
 flushing buffers, seeking, retrieving stream status, and other input/output
 operations.</para>
-<para>Many of the methods of the Stream class are also available as Rexx built-in
-functions. Although you can use the functions, it is preferable to use the
-Stream class.</para>
-
-<note><para>
-In any case, do not mix functions and methods on the same stream to avoid unpredictable results.
-</para></note>
 
 <section id="streamobj"><title>More about Stream Objects</title>
-<para>To use streams in Object Rexx, you create new instances of the Stream class.
+<para>To use streams in Rexx, you create new instances of the Stream class.
 These stream objects represent the various data sources and destinations available
 to your program, such as hard disks, CD-ROMs, keyboards, displays, printers,
-serial interfaces, network.  Because these sources are represented as objects,
-you can work with them in similar (but not identical) ways.</para>
+serial interfaces, network.
+</para>
 <para>Stream objects can be transient or persistent.  An example of a transient
 (or dynamic) stream object is a serial interface. Data can be sent or received
 from serial interfaces, but the data is not stored permanently by the serial
-interface itself.  Consequently, you cannot, for example, search a position
-in the data stream. Once you read or write it, the data cannot be read again.</para>
+interface itself.  Consequently, you cannot, for example,read from a random position
+in the data stream&mdash;it can only be read as a sequential stream of characters.
+Once you write to the stream, the data cannot be read again.</para>
 <para>A disk file is an example of a persistent stream object.  Because the data
-is stored on disk, you can search forward and backward in the stream and read
+is stored on disk, you can search forward and backward in the stream and reread
 data that you have previously read. Rexx maintains separate read and write
-pointers to a stream. You can move the pointers independently using arguments
-on methods such as LINEIN, LINEOUT, CHARIN, and CHAROUT. Rexx also provides
+pointers to a stream that you can move the pointers independently using arguments
+on methods such as LINEIN, LINEOUT, CHARIN, and CHAROUT. The Stream class also provides
 SEEK and POSITION methods for setting the read and write positions.</para>
 </section>
 
@@ -132,7 +127,7 @@ end
 say count                   /* Display the count                   */
 ]]>
 </programlisting>
-<para>To read a file, COUNT first creates a stream object for the file by sending
+<para>To read a file, COUNT first creates a Stream object for the file by sending
 the NEW message to the Stream class. The file name (with or without a path)
 is specified as an argument on the NEW method.</para>
 <para>Within the DO loop, COUNT reads the lines of the file by sending LINEIN messages
@@ -176,18 +171,18 @@ for other uses.</para>
 </section>
 
 <section id="textfilearray"><title>Reading a Text File into an Array</title>
-<indexterm><primary>MAKEARRAY method, using</primary></indexterm>
+<indexterm><primary>ARRAYIN method, using</primary></indexterm>
 <indexterm><primary>arrays, reading streams into</primary></indexterm>
 <indexterm><primary>reading</primary>
 <secondary>streams into arrays</secondary></indexterm>
 <indexterm><primary>text files</primary>
 <secondary>reading into an array</secondary></indexterm>
 <para> Rexx
-provides a Stream method, named MAKEARRAY, that reads the contents of a stream
-into an array object. MAKEARRAY is convenient when you need to read an entire
+provides a Stream method, named ARRAYIN, that reads the contents of a stream
+into an array object. ARRAYIN is convenient when you need to read an entire
 file into memory for processing. You can read the entire file with a single
 Rexx clause--no looping is necessary.</para>
-<para>The following example (CVIEW.CMD) uses the MAKEARRAY method
+<para>The following example (CVIEW.CMD) uses the ARRAYIN method
 to read the entire CONFIG.SYS file into an array object. CVIEW displays selected
 lines from CONFIG.SYS. A search argument can be specified when starting CVIEW: </para>
 <programlisting>
@@ -204,22 +199,22 @@ response to the prompt. </para>
 /* CVIEW - display lines from CONFIG.SYS                               */
 parse upper arg search_string      /* Get any command line argument  */
 file=.stream~new("c:\config.sys")  /* Create stream object */
-lines=file~makearray(line)         /* Read file into an array object */
+lines=file~arrayin                 /* Read file into an array object */
                                    /* LINES points to the array obj. */
-do forever
+loop forever
    if search_string="" then do     /* Prompt for user input          */
       say "Enter a search string or Q to quit:"
       parse upper pull search_string
       if search_string="Q" then exit
-   end  /* Do */
-   do i over lines                  /* Scan the array                */
+   end
+   loop i over lines                /* Scan the array                */
       if pos(search_string,translate(i))>0 then do
          say i                      /* Display any line that matches */
          say "="~copies(20)
-      end  /* Do */
-   end /* do */
+      end
+   end
    search_string=""                 /* Reset for next search         */
-end /* do */
+end
 ]]>
 </programlisting>
 </section>
@@ -367,7 +362,10 @@ line feed (ASCII value of 10). Rexx adds these characters to the end of every
 line written using the LINEOUT method. Text-processing applications,
 such as the Windows Notepad, also add the characters. When
 reading a text file with CHARIN,
-interpret an ASCII sequence of 13 followed by 10 as the end of a line.</para>
+interpret an ASCII sequence of 13 followed by 10 as the end of a line.  As
+a convenience, Rexx has an environment symbol name .ENDOFLINE that contains the
+linend sequence used by the Stream class on the current system.
+</para>
 <para>As an example, run the following program. It writes lines to a file using
 LINEOUT and then reads those lines using CHARIN. You can mix line methods
 and character methods. Rexx maintains separate read and write pointers, so
@@ -395,30 +393,6 @@ end /* do */
 file~close                       /* Close the file                  */
 ]]>
 </programlisting>
-<para>Some text-processing programs also write an end-of-file character
-(ASCII value 26) after the last line. You can check for that character also
-when processing text files with character methods. The following program shows
-how to handle EOF characters in files.</para>
-<programlisting>
-<![CDATA[
-/* EOFCHAR.CMD - demonstrate end-of-file characters                 */
-file=.stream~new("test.dat")  /* Create a new stream object         */
-
-do while file~chars<>0     /* Read the file a character at a time   */
-   byte=file~charin        /* Read a character                      */
-   ascii_value=byte~c2d    /* Convert character to a decimal value  */
-   if ascii_value=13 then        /* Carriage return?                */
-      say "Carriage return"
-   else if ascii_value=10 then   /* Line feed?                      */
-      say "Line feed"
-   else if ascii_value=26 then   /* End of file?                    */
-      say "End of File"
-   else say byte ascii_value     /* Ordinary character              */
-end /* do */
-]]>
-</programlisting>
-<para>Rexx does not write end-of-file characters when it closes a file that has
-been opened for writing.</para>
 <para>It is not recommended to use line methods to read binary files. Your binary
 file might not contain any new-line characters. And, if it did, the characters
 probably are not meant to be interpreted as new-line characters.</para>
@@ -459,9 +433,8 @@ filebin~charout("Jack is loosing it.",30) /* start writing at character 30 */
 <para>In the example, the file is explicitly opened and closed. If
 you do not open the file, Rexx attempts to open the file for both reading
 and writing. If you do not close the file, Rexx closes it when the procedure
-ends. If you omit the CLOSE method in the example, the TYPE command does
-not type the file. To Windows, the file does not exist yet because
-it is not closed yet.</para>
+ends.
+</para>
 </section>
 
 <section id="closefiles"><title>Closing Files</title>
@@ -471,11 +444,10 @@ it is not closed yet.</para>
 <indexterm><primary>text files</primary>
 <secondary>closing</secondary></indexterm>
 <para>If
-you do not explicitly close a file, Rexx closes the file for you at the end
-of the procedure (that is, the end of the CMD file in which the files
-were opened). If your procedure is called
-as an external procedure by another Rexx program, Rexx closes the files before
-returning to the caller. In any case, it is recommended to explicitly close
+you do not explicitly close a file, Rexx closes the file when the Stream object
+is reclaimed by the garbage collector.  This frequently does not occur until
+your program exits, so it is good practice to
+explicitly close
 files when you are finished with them.</para>
 </section>
 
