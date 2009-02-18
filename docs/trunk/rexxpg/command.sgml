@@ -46,30 +46,29 @@
 <para>From a Rexx program you can
 pass commands to Windows and Unix/Linux shells or to applications designed to
 work with Rexx. When used to run operating system commands, Rexx becomes a
-powerful substitute for the Windows Batch Facility or the Unix shell. You can
+powerful substitute for the Windows Batch Facility or Unix shell scripts. You can
 use variables, control structures,
-mathematics, and parsing to create procedures that would be
-impossible to implement with the Windows Batch Facility.</para>
+mathematics, and parsing, and the full object oriented features of Rexx.
+</para>
 <para>Applications that are designed to
 <indexterm><primary>scriptable applications</primary></indexterm>
 <indexterm><primary>environment for scriptable applications</primary></indexterm>
 <indexterm><primary>macros</primary>
 <secondary>definition</secondary></indexterm>
 work with Rexx are often referred to as scriptable applications.
-To work with Rexx, a scriptable application registers an environment with Rexx.
+To work with Rexx, a scriptable application registers a command environment with Rexx.
 An environment serves as a kind of workspace
-shared between Rexx and the application. Environments accept application
-subcommands issued from Rexx programs.</para>
+shared between Rexx and the application that accepts application
+commands issued from your Rexx programs.</para>
 <para>For example, many editors
-provide a command prompt or dialog box from which you can issue subcommands
+provide a command prompt or dialog box from which you can issue commands
 to set margins or add lines. If the editor is scriptable from Rexx, you can
-issue editor subcommands from a Rexx program. These Rexx programs are referred
+issue the same editor commands from a Rexx program. These Rexx programs are referred
 to as macros.</para>
 <para>When an application runs a Rexx macro, Rexx directs commands to the application's
-environment. If you issue a subcommand that the application does not recognize,
-it might pass the command to Windows, depending on the application.</para>
-<para> To let you
-specify which environment processes a command, Rexx includes an
+environment. The application processes the command, and returns a status indicator as
+a return code.</para>
+<para>The Rexx
 <indexterm><primary>ADDRESS instruction</primary></indexterm>
 <indexterm><primary>instructions</primary>
 <secondary>ADDRESS</secondary></indexterm>
@@ -77,19 +76,22 @@ specify which environment processes a command, Rexx includes an
 <secondary>ADDRESS instruction</secondary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>default environment</secondary></indexterm>
-ADDRESS instruction.
-Starting your Rexx programs from the Windows command line  makes Windows the
-default environment for Rexx commands.</para>
+ADDRESS instruction allows you select which named command environment commands get
+directed to.  There is always at least one active command environment, and all
+Rexx programs start with a default environment selected.  For programs launched from
+a command shell, an operating-specific command handler is the normal default.  Applications
+such as an editor can choose to make their own command environment the default.
+</para>
 
 <section id="cmds"><title>How to Issue Commands</title>
 <para>Rexx makes it easy to issue commands. The basic rule is that whatever Rexx
-cannot process it passes to the default environment. You can: </para>
+cannot process directly gets passed to the current command environment. You can: </para>
 <itemizedlist>
 <listitem><para>Allow Rexx to evaluate part or all of a clause as an expression. Rexx
 automatically passes the resulting string to the default environment.</para></listitem>
 <listitem><para>Enclose the entire clause in quotation marks. This makes it a literal
 string for Rexx to pass to the default environment.</para></listitem>
-<listitem><para>Send a command explicitly to Windows or Unix/Linux by using
+<listitem><para>Send a command explicitly to a command environment using
 the ADDRESS instruction.</para></listitem>
 </itemizedlist>
 <para>Rexx processes your program one clause at a time. It examines each clause
@@ -124,11 +126,11 @@ price = cost * 1.2
 <listitem><para>A label for calling other routines</para></listitem>
 <listitem><para>A null (empty) clause</para></listitem></itemizedlist>
 <para>If the clause is none of the above, Rexx evaluates the entire clause as
-an expression and passes the resulting string to Windows.</para>
-<para>If the string is a valid operating system command, the OS processes
-it as though you had typed the string at the command prompt and pressed the
-Enter key.</para>
-<para>The following example shows a Rexx clause that uses the DIR
+an expression and passes the resulting string to the current command environment.</para>
+<para>If the string is a valid valid command for that environment, the command
+handler will process it as if you had entered it at the command prompt.
+</para>
+<para>The following example shows a Rexx clause that uses the Windows DIR
 command to display a list of files in the current directory. </para>
 <programlisting>
 <![CDATA[
@@ -148,8 +150,8 @@ command in this case is
 an incorrect Rexx expression. The program ends with an error.</para>
 <para>A safer way to issue commands is by enclosing the command in
 quotes, which makes the command a literal string. Rexx does not evaluate the
-contents of strings. Because the string is not a Rexx instruction or label,
-Rexx passes the string to Windows. Here is an example using the PATH command:</para>
+contents of strings, so the string is passed to Windows as-is.
+Here is an example using the PATH command:</para>
 <programlisting>
 <![CDATA[
 /* display current path      */
@@ -208,8 +210,8 @@ PATH=C:\WINDOWS
 
 <note>
 <para>Usually, when executing a host command addressed to the Windows or
-Unix/Linux command shell, that is, an expression that is passed to
-the system by address CMD as described above, a new process is
+Unix/Linux command shell,
+a new process is
 created in the system command handler to execute the command.
 Changes in a child process environment do not change
 the parent process environment. Therefore, any change in the
@@ -265,17 +267,6 @@ for <computeroutput>cd</computeroutput>, <computeroutput>set</computeroutput>, e
 </note>
 </section>
 
-<section id="suppres"><title>Command Echo</title>
-<indexterm><primary>echoing commands</primary></indexterm>
-<para>When your Rexx program issues a Windows or Unix/Linux command, Rexx
-passes the command to the Windows or the Unix/Linux command handler for
-processing. This processing does not include displaying, or echoing, the
-command on the screen.</para>
-<para>Therefore using the Windows
-ECHO OFF command in your Rexx program or putting an
-at sign (@) in front of the command has no effect.</para>
-</section>
-
 <section id="batch"><title>Rexx and Batch Files</title>
 <indexterm><primary>Windows batch (CMD) files</primary></indexterm>
 <para>You can use a Rexx program whenever you now use Windows batch files
@@ -329,53 +320,6 @@ end
 exit
 ]]>
 </programlisting>
-</section>
-
-<section id="callcmd"><title>Issuing a Command to Call a .CMD File</title>
-<indexterm><primary>calling .CMD files</primary></indexterm>
-<indexterm><primary>CMD files, calling</primary></indexterm>
-<indexterm><primary>Windows CALL command</primary></indexterm>
-<para>If you issue a command to have
-the system run one of its built-in commands or other programs, you can call
-it by name. However, to run another .CMD program from your Rexx program,
-you must call it using a CALL instruction
-instead of its name. You can use the Rexx CALL instruction
-or the Windows CALL command.</para>
-<indexterm><primary>CALL instruction</primary></indexterm>
-<indexterm><primary>instructions</primary>
-<secondary>CALL</secondary></indexterm>
-<indexterm><primary>Rexx</primary>
-<secondary>CALL instruction</secondary></indexterm>
-<para>The Rexx CALL instruction calls other Rexx programs. To call a Rexx program
-named MYSUB1, your CALL instruction could look like this: </para>
-<programlisting>
-<![CDATA[
-call mysub1
-]]>
-</programlisting>
-<para>Rexx recognizes the CALL instruction, handles the call, and processes
-MYSUB1 as a Rexx program.</para>
-<indexterm><primary>CALL command, Windows</primary></indexterm>
-<para>The Rexx CALL instruction does not call
-a non-Rexx .CMD file. Instead, you would use the Windows CALL command. To call
-a non-Rexx .CMD program named MYSUB2, you could write the CALL instruction
-like this: </para>
-<programlisting>
-<![CDATA[
-"call mysub2"
-]]>
-</programlisting>
-<para>Rexx evaluates the expression and passes it to the Windows command
-handler for processing. The command handler recognizes the CALL command and
-processes MYSUB2 as a .CMD program.</para>
-<para>The quotation marks around <computeroutput>call mysub2</computeroutput>
-indicate that this is the Windows CALL command instead of a Rexx CALL
-instruction.</para>
-<para>You can also execute another Rexx program within a new process by invoking
-the interpreter followed by the Rexx program name like this:</para>
-<para><computeroutput>"rexx mysub2"</computeroutput></para>
-<para>However, remember that running the interpreter concurrently requires additional
-startup time and system resources.</para>
 </section>
 
 <section id="bldcom"><title>Using Variables to Build Commands</title>
