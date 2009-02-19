@@ -411,26 +411,23 @@ arrays.
 APIs provided for access and manipulating data stored in a directory.
 </para></entry></row>
 <row><entry>RexxStemObject</entry>
-<entry><para>An instance of Rexx Stem class.  The APIs include a number of
+<entry><para>An instance of the Rexx Stem class.  The APIs include a number of
 utility routines for accessing and manipulating data in Stem objects.
 </para></entry></row>
 <row><entry>RexxSupplierObject</entry>
-<entry><para>An instance of Rexx Supplier class.
-</para></entry></row>
-<row><entry>RexxSupplierObject</entry>
-<entry><para>An instance of Rexx Supplier class.
+<entry><para>An instance of the Rexx Supplier class.
 </para></entry></row>
 <row><entry>RexxClassObject</entry>
-<entry><para>An instance of Rexx Class class.
+<entry><para>An instance of the Rexx Class class.
 </para></entry></row>
 <row><entry>RexxPackageObject</entry>
-<entry><para>An instance of Rexx Package class.
+<entry><para>An instance of the Rexx Package class.
 </para></entry></row>
 <row><entry>RexxMethodObject</entry>
-<entry><para>An instance of Rexx Method class.
+<entry><para>An instance of the Rexx Method class.
 </para></entry></row>
 <row><entry>RexxRoutineObject</entry>
-<entry><para>An instance of Rexx Routine class.  Routine objects
+<entry><para>An instance of the Rexx Routine class.  Routine objects
 can be invoked directly from C++ code.
 </para></entry></row>
 <row><entry>RexxPointerObject</entry>
@@ -708,13 +705,98 @@ remove the local lock, and thus limit the overhead.
 </section>
 
 <section id="instanceapi"><title>Rexx Interpreter Instance Interface</title>
-<para>This section describes the Rexx interpreter instance interface and the methods it
-provides.</para>
+<para>The Interpreter Instance API is defined by the RexxInstance interface vector.  The RexxInstance
+defines methods that affect the global state of the interpreter instance.  Most of the instance APIs
+call be called from any thread without requiring any extra steps to access the instance.
+The two most important instance operations are <link linkend="mthAttachThread">AttachThread()</link> and
+<link linkend="mthTerminate">Terminate()</link>.  AttachThread()
+allows additional externally identified threads to be included
+in the interpreter instance threadpool.  AttachThread returns a
+<link linkend="threadcontext">RexxThreadContext</link> interface vector
+that enables a wider range of capability for the attached thread.
+The Terminate() API shuts down an interpreter instance when it is no longer needed.
+</para>
 </section>
 
-<section id="threadapi"><title>Rexx Thread Interface</title>
-<para>This section describes the Rexx thread interface and the methods it
-provides.</para>
+<section id="threadcontext"><title>Rexx Thread Context Interface</title>
+<para>The RexxThreadContext interface vector provides a very wide range of functions
+to your application code.  There are roughly 125 functions defined on a RexxThreadContext.
+Among the services provide are:
+</para>
+<itemizedlist>
+<listitem><para>Running Rexx programs</para></listitem>
+<listitem><para>Loading Rexx packages</para></listitem>
+<listitem><para>Invoking methods of Rexx objects</para></listitem>
+<listitem><para>Converting between objects and various C++ types</para></listitem>
+<listitem><para>Creating and manipulating some common Rexx object types</para></listitem>
+<listitem><para>Raising/handling Rexx syntax errors</para></listitem>
+</itemizedlist>
+<para>The C++ methods defined on a RexxThreadContext C++ object include the methods defined
+by the <link linkend="instanceapi">RexxInstance</link> class,
+so the single context vector is used to access both thread context
+and interpreter instance APIs.</para>
+<para>A RexxThreadContext instance is returned with the original
+<link linkend="createinterpreter">RexxCreateInterpreter()</link> call that create the
+interpreter instance.  The <link linkend="mthAttachThread">AttachThread()</link> method
+will create a RexxThreadContext instance for additional threads that you add to an interpreter
+instance.  Additionally, the <link linkend="methodcontext">RexxMethodContext</link>,
+<link linkend="callcontext">RexxCallContext</link>,
+and <link linkend="exitcontext">RexxExitContext</link>
+objects embed a RexxThreadContext object the same way that a RexxThreadContext object embeds
+a RexxInstance object.</para>
+</section>
+
+<section id="methodcontext"><title>Rexx Method Context Interface</title>
+<para>A RexxMethodContext object is included as an argument
+to any <link linkend="methodapi">native C++ method</link>
+defined in external libraries.  The method context provides services that are specific to
+a method call, including:
+</para>
+<itemizedlist>
+<listitem><para>Accessing method-specific values such as SELF, SUPER, etc.</para></listitem>
+<listitem><para>Manipulating object instance variables</para></listitem>
+<listitem><para>Forwarding messages</para></listitem>
+<listitem><para>Manipulating GUARD state</para></listitem>
+<listitem><para>Locating classes defined in the method's package scope</para></listitem>
+</itemizedlist>
+<para>In addition to the method-specific functions, the RexxMethodContext object has an embedded
+a <link linend="threadcontext">RexxThreadContext</link>
+object created specifically for this environment.  The RexxThreadContext provides approximately 125
+additional methods to the method environment.</para>
+</section>
+
+<section id="callcontext"><title>Rexx Call Context Interface</title>
+<para>A RexxCallContext object is included as an argument to any
+<link linkend="functionapi">native C++ routine</link>
+defined in external libraries.  The method context provides services that are specific to
+a routine call, including:
+</para>
+<itemizedlist>
+<listitem><para>Accessing caller context specific values such as the current numeric settings</para></listitem>
+<listitem><para>Manipulating variables in the caller's variable context</para></listitem>
+<listitem><para>Locating classes defined in the routine's package scope</para></listitem>
+</itemizedlist>
+<para>In addition to the method-specific functions, the RexxCallContext object has an embedded
+a <link linend="threadcontext">RexxThreadContext</link>
+object created specifically for this environment.  The RexxThreadContext provides approximately 125
+additional methods to the method environment.</para>
+</section>
+
+<section id="exitcontext"><title>Rexx Exit Context Interface</title>
+<para>A RexxExitContext object is included as an argument to any
+<link linkend="contextexitdef">system exit</link> or
+<link linkend="commandapi">command handler</link>.
+The exit context provides services that are specific to
+a exit call, including:
+</para>
+<itemizedlist>
+<listitem><para>Accessing caller context specific values such as the current numeric settings</para></listitem>
+<listitem><para>Manipulating variables in the caller's variable context</para></listitem>
+</itemizedlist>
+<para>In addition to the exit-specific functions, the RexxExitContext object has an embedded
+a <link linend="threadcontext">RexxThreadContext</link>
+object created specifically for this environment.  The RexxThreadContext provides approximately 125
+additional methods to the method environment.</para>
 </section>
 
 <section id="buildinglibs"><title>Building an External Native Library</title>
@@ -2398,7 +2480,71 @@ to retrieve the Rexx variable values.</para></listitem>
 </section>
 
 <section id="commandapi"><title>Command Handler Interface</title>
-<para>This section describes how to define a Rexx command handler.</para>
+<para>Applications can create custom command handlers that function like operating command shell environments.
+These named evironments can be targetted with the Rexx ADDRESS instuction and applications can create
+Rexx instances that direct commands to application command handlers by default.
+</para>
+<para>Command handlers are created by registering the handers with an interpreter instance when it is created.
+See <link linkend="instanceoptions">Interpreter Instance Options</link> for how to register a handler with
+an interpreter instance.</para>
+<para>The command handlers are registered as a function pointer to a handler routine.  When a Rexx program
+issues a command to the named ADDRESS target, the handler is called with the evaluated command string and the
+name of the address environment.  The handler is responsible for executing the command and returning a
+return code value back to the Rexx program.  Handlers are called using the following function signature:</para>
+
+<programlisting>
+RexxObjectPtr RexxEntry TestCommandHandler(RexxExitContext *context,
+     RexxStringObject address, RexxStringObject command)
+</programlisting>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+    <row><entry><emphasis role="italic">context</emphasis></entry>
+    <entry><para>A <link linkend="exitcontext">RexxExitContext</link> interface vector for the handler call.
+    The RexxExitContext provides access to runtime services appropriate to a command handler.  For example, the
+    exit context can set or get Rexx variables, invoke methods on objects, and raise ERROR or FAILURE conditions.
+    </para></entry>
+    </row>
+    <row><entry><emphasis role="italic">address</emphasis></entry>
+    <entry><para>A String object containing the target command environment name.
+    </para></entry>
+    </row>
+    <row><entry><emphasis role="italic">command</emphasis></entry>
+    <entry><para>A String object containing the issued command string.
+    </para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Any object that should be used as the command return code.  This value will be assigned to the
+variable RC upon return.  If NULLOBJECT is returned, a 0 is used as the return code.  The return
+code value is traditionally a numeric value, but any value can be returned, including more complex object
+return values, if desired.
+</para>
+<para>For normal commands, the command is processed and a return code is given back to the Rexx program.
+The interpreter recognizes two different abnormal return states for commands, ERROR and FAILURE.
+An ERROR condition indicates there was some sort of error return state involved with executing a command.
+These could be command syntax errors, semantic errors, etc.  FAILURE conditions are more serious conditions.
+One traditional FAILURE condition is the unknown command error.</para>
+<para>Command handlers raise ERROR and FAILURE conditions using the
+<link linkend="mthRaiseCondition">RaiseCondition()</link> API provided by the RexxExitContext.  For
+example:</para>
+<programlisting>
+</programlisting>
+// if this was an unknown command, give our generic unknown command return code
+if (errorStatus == COMMAND_FAILURE) {
+    // Note:  The return code needs to be included with the FAILURE condition
+    context->RaiseCondition("FAILURE", command, NULLOBJECT, context->WholeNumber(-1));
+    // just return null...the RC value is picked up from the condition.
+    return NULLOBJECT;
+}
+else if (errorStatus == COMMAND_ERROR) {
+    // Note:  The return code needs to be included with the ERROR condition
+    context->RaiseCondition("ERROR", command, NULLOBJECT, context->WholeNumber(rc));
+    // just return null...the RC value is picked up from the condition.
+    return NULLOBJECT;
+}
+// return the RC value for the command, which need not be 0
+return context->WholeNumber(rc);
+</programlisting>
 </section>
 
 <section id="apilisting"><title>Rexx Interface Methods Listing</title>
