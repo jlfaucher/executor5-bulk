@@ -767,7 +767,7 @@ additional methods to the method environment.</para>
 
 <section id="callcontext"><title>Rexx Call Context Interface</title>
 <para>A RexxCallContext object is included as an argument to any
-<link linkkend="functionapi">native C++ routine</link>
+<link linkend="functionapi">native C++ routine</link>
 defined in external libraries.  The method context provides services that are specific to
 a routine call, including:
 </para>
@@ -2528,7 +2528,7 @@ One traditional FAILURE condition is the unknown command error.</para>
 <link linkend="mthRaiseCondition">RaiseCondition()</link> API provided by the RexxExitContext.  For
 example:</para>
 <programlisting>
-</programlisting>
+<![CDATA[
 // if this was an unknown command, give our generic unknown command return code
 if (errorStatus == COMMAND_FAILURE) {
     // Note:  The return code needs to be included with the FAILURE condition
@@ -2544,6 +2544,7 @@ else if (errorStatus == COMMAND_ERROR) {
 }
 // return the RC value for the command, which need not be 0
 return context->WholeNumber(rc);
+]]>
 </programlisting>
 </section>
 
