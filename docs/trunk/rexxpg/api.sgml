@@ -635,10 +635,10 @@ struct RexxThreadContext_
 associated with.  It also contains an interface vector for the functions available with a
 RexxThreadContext.  The RexxThreadInterface vector has its own version identifier and
 function pointer for each of the defined services.
-The RexxThreadContext functions all take a RexxThreadContext pointer as
-the first argument.  The RexxThreadContext struct defines C++ convince methods for accessing
+The RexxThreadContext functions all require a RexxThreadContext pointer as
+the first argument.  The RexxThreadContext struct also defines C++ convince methods for accessing
 its own function and the functions for the RexxInstance as well.  For example, to call
-the InterpreterVersion() API from C code, it is necessary to use</para>
+the InterpreterVersion() API using a RexxThreadContext from C code, it is necessary to code</para>
 <programlisting>
 size_t version = context->instance->functions->InterpreterVersion(context->instance);
 </programlisting>
@@ -648,11 +648,14 @@ size_t version = context->instance->functions->InterpreterVersion(context->insta
 size_t version = context->InterpreterVersion();
 </programlisting>
 <para>When the Rexx interpreter makes calls to native code routines and methods, or invokes
-exit handlers, the call-outs use context structures specific to the type of callout.  These
-are the RexxCallContext, RexxMethodContext, and RexxExitContext structures.  Each structure
-contains a pointer to a RexxThreadContext instance that's valid for the until the call returns.
-Because of the embedded RexxThreadContext, each calls may use any of the RexxThreadContext
-functions in addition to the functions specific to the call-out type.  Each context defines
+exit handlers, the call-outs use context structures specific to the callout context.  These
+are the <link linkend="callcontext">RexxCallContext</link>,
+<link linkend="methodcontext">RexxMethodContext</link>, and
+<link linkend="exitcontext">RexxExitContext</link> structures.  Each structure
+contains a pointer to a RexxThreadContext instance that's valid until the call returns.
+Through the embedded RexxThreadContext, each call may use any of the
+RexxThreadContext or RexxInstance
+functions in addition to the context-specific functions.  Each context defines
 C++ methods for the embedded RexxInstance and RexxThreadContext functions.</para>
 <para>Note that the RexxInstance interface can be used at any time and on any thread.  The
 RexxThreadContext returned by RexxCreateInterpreter() can only be used on the same thread
@@ -684,7 +687,7 @@ DetachThread() be called to restore the original thread context before you retur
 the signal handler.</para>
 </section>
 <section id="gcmodel"><title>Garbage Collection Considerations</title>
-<para>When any context API has a return result that is an instance of a Rexx object,
+<para>When any context API has a return result that is a Rexx object instance,
 the source API context will protect that object instance from garbage collection
 for as long as the source API context is valid.  Once the API context is destroyed,
 the accessed objects might become eligible for garbage collection and be reclaimed
@@ -692,9 +695,9 @@ by the interpreter runtime.
 These object references are only
 valid until the current context is destroyed.  They cannot be stored in native code
 control blocks and be used in other thread contexts.  If you wish to store object references so
-that they can be accessed in other thread contexts, you can create a globally valid object
+that they can be accessed by other thread contexts, you can create a globally valid object
 reference using the <link linkend="mthRequestGlobalReference">RequestGlobalReference()</link>
-API.  A global reference will create a global lock for an object that will protect the
+API.  A global reference will create a global on an object that will protect the
 object from the garbage collector until the interpreter instance is terminated.  Protecting
 the object will also protect any objects referenced by the protected object.  For example,
 using RequestGlobalReference() to protect a Directory object will also protect all of the
@@ -702,15 +705,17 @@ directory keys and values.
 The global
 reference can be used with any API context valid for the same interpreter instance.
 Once you are finished with a locked object,
-<link linkend="mthReleaseGlobalReference">ReleaseGlobalReference()</link> will remove the
-object lock and remove the garbage collection protection.
+<link linkend="mthReleaseGlobalReference">ReleaseGlobalReference()</link> cab remove the
+object lock and make the object eligible for garbage collection.
 </para>
-<para>On the flip side if this, sometimes it is desirable to remove the local API context
-protection of an object.  For example, if you use the ArrayAt() API to iterate through all
-of the elements of an Array object, each object returned by ArrayAt() will be added to the
-API context's protection tables.  There is a small overhead associated with each reference
-that is protected by the context, so iterating through a large array would accumulate that
-overhead for each element of the array.  Using ReleaseLocalReference() on an object reference you are no longer using will
+<para>On the flip side of this, sometimes it is desirable to remove the local API context
+protection from an object.  For example, if you use the ArrayAt() API to iterate through all
+of the elements of an Array, each object ArrayAt() returns will be added to the
+API context's protection table.
+There is a small overhead associated with each protected reference,
+so iterating through a large array would accumulate that
+overhead for each array element.  Using ReleaseLocalReference() on an object reference
+you are no longer require will
 remove the local lock, and thus limit the overhead.
 </para>
 </section>
@@ -732,14 +737,14 @@ The Terminate() API shuts down an interpreter instance when it is no longer need
 <section id="threadcontext"><title>Rexx Thread Context Interface</title>
 <para>The RexxThreadContext interface vector provides a very wide range of functions
 to your application code.  There are roughly 125 functions defined on a RexxThreadContext.
-Among the services provide are:
+Among the services provided are:
 </para>
 <itemizedlist>
 <listitem><para>Running Rexx programs</para></listitem>
 <listitem><para>Loading Rexx packages</para></listitem>
 <listitem><para>Invoking methods of Rexx objects</para></listitem>
 <listitem><para>Converting between objects and various C++ types</para></listitem>
-<listitem><para>Creating and manipulating some common Rexx object types</para></listitem>
+<listitem><para>Creating and manipulating common Rexx object types</para></listitem>
 <listitem><para>Raising/handling Rexx syntax errors</para></listitem>
 </itemizedlist>
 <para>The C++ methods defined on a RexxThreadContext C++ object include the methods defined
@@ -790,7 +795,7 @@ a routine call, including:
 <para>In addition to the method-specific functions, the RexxCallContext object has an embedded
 a <link linkend="threadcontext">RexxThreadContext</link>
 object created specifically for this environment.  The RexxThreadContext provides approximately 125
-additional methods to the method environment.</para>
+additional methods to the routine environment.</para>
 </section>
 
 <section id="exitcontext"><title>Rexx Exit Context Interface</title>
@@ -807,7 +812,7 @@ a exit call, including:
 <para>In addition to the exit-specific functions, the RexxExitContext object has an embedded
 a <link linkend="threadcontext">RexxThreadContext</link>
 object created specifically for this environment.  The RexxThreadContext provides approximately 125
-additional methods to the method environment.</para>
+additional methods to the exit environment.</para>
 </section>
 
 <section id="buildinglibs"><title>Building an External Native Library</title>
@@ -817,26 +822,27 @@ interface Rexx programs with other subsystems intended for compile languages.
 These libraries are packaged as Dynamic Link Libraries on Windows or shared libraries on
 Unix-based systems.
 A named library can be loaded using the ::REQUIRES directive, the
-loadLibrary method on the Package class, or by using the EXTERNAL keyword on
+loadLibrary() method on the Package class, or by using the EXTERNAL keyword on
 a ::ROUTINE or ::METHOD directive.
 </para>
-<para>When the library is loaded, the interpreter looks for an entry point
+<para>When the library is loaded, the interpreter searches for an entry point
 in the library named RexxGetPackage().  An external library package is required
-to provide a RexxGetPackage() function that returns a pointer to a descriptor
-structure that defines the methods and routines contained within the library.
-The RexxGetPackage() routine takes no arguments and has a return value of
-RexxPackageEntry *.  This is normally created using the OOREXX_GET_PACKAGE()
+to provide a RexxGetPackage() function that returns a pointer to the descriptor
+structure defining the methods and routines contained within the library.
+The RexxGetPackage() routine takes no arguments and has a RexxPackageEntry *return value.
+This is normally created using the OOREXX_GET_PACKAGE()
 macro defined in the oorexxapi.h include file.</para>
 <programlisting>
 // package loading stub.
 OOREXX_GET_PACKAGE(package);
 </programlisting>
 <para>Where <emphasis role="italic">package</emphasis> is the name
-of the RexxPackageEntry table defined for this library.  The package
-entry table is a descriptor what is contained within the library.
+of the RexxPackageEntry table for this library.  The package
+entry table is a descriptor contained within the library.
 Note that on Windows, it is necessary to explicitly export the
 RexxPackageEntry() function when the library is linked.  This is the
-only name that it's necessary to export.</para>
+only name you are required to export.  Calls are made to the library
+routines and methods using addresses stored in the RexxPackageEntry table.</para>
 <para>The RexxPackageEntry structure contains information about the
 package and descriptors of any methods and/or routines defined within
 the package.  The structure looks like this:</para>
@@ -856,28 +862,29 @@ typedef struct _RexxPackageEntry
 </programlisting>
 <para>The fields in the RexxPackageEntry have the following functions:</para>
 <variablelist>
-<varlistentry><term>size and apiVersion</term>
+<varlistentry><term><emphasis role="italic">size</emphasis>
+and <emphasis role="italic">apiVersion</emphasis></term>
 <listitem><para>these fields give the size of the received table and identify
 the interpreter level this library has been compiled against.  These indicators
 will allow additional information to be added to the RexxPackageEntry in the future
-which out causing compatibility issues for older libraries.  Normally, these two
-fields are defined using the STANDARD_PACKAGE_HEADER macro, which will fill in
+with out causing compatibility issues for older libraries.  Normally, these two
+fields are defined using the STANDARD_PACKAGE_HEADER macro, which sets
 both values.
 </para></listitem></varlistentry>
-<varlistentry><term>requiredVersion</term>
-<listitem><para>a library can specify the minimum interpreter level required by this
-library.  The interpreter will only load libraries that match the minimum compatibility
+<varlistentry><term><emphasis role="italic">requiredVersion</emphasis></term>
+<listitem><para>a library can specify the minimum interpreter level it requires.
+The interpreter will only load libraries that match the minimum compatibility
 requirement of the library package.  A zero value in this field means there's no
-minimum level requirement.  The macro REXX_CURRENT_INTERPRETER_VERSION will use
+minimum level requirement.  The macro REXX_CURRENT_INTERPRETER_VERSION will set
 the level of interpreter you are compiling against.  If REXX_CURRENT_INTERPRETER_VERSION
-is specified, then the library package will not load with previous releases.  The
+is specified, then the library package will not load with older releases.  The
 API header files will be updated with a macro for each interpreter version.  The
 version macros are of the form
 REXX_INTERPRETER_<emphasis role="italic">version</emphasis>_<emphasis role="italic">level</emphasis>_<emphasis role="italic">revision</emphasis>,
 where <emphasis role="italic">version</emphasis>, <emphasis role="italic">level</emphasis>,
 and <emphasis role="italic">revision</emphasis> refer to the corresponding values in an
 interpreter release number.  For example, REXX_INTERPRETER_4_0_0 would indicate that the
-4.0.0 interpreter level is the minimum required for the package.
+4.0.0 interpreter level is the minimum this library requires.
 </para></listitem></varlistentry>
 <varlistentry><term>packageName</term>
 <listitem><para>a descriptive name for this library package.
@@ -904,15 +911,13 @@ and is indicated by a NULL value in the descriptor.
 </para></listitem></varlistentry>
 <varlistentry><term>routines</term>
 <listitem><para>a pointer to an array of RexxRoutineEntry structures that define
-the routines provided by this package.  If there are no routines, NULL should
-be specified.
+the routines provided by this package.  If there are no routines, this field should be NULL.
 See <link linkend="functionapi">Defining Library Routines</link> for details on
 creating the exported routine table.
 </para></listitem></varlistentry>
 <varlistentry><term>method</term>
 <listitem><para>a pointer to an array of RexxMethodEntry structures that define
-the methods provided by this package.  If there are no methods, NULL should
-be specified.
+the methods provided by this package.  If there are no methods, this field should be NULL.
 See <link linkend="methodapi">Defining Library Methods</link> for details on
 creating the exported method table.
 </para></listitem></varlistentry>
@@ -977,18 +982,21 @@ creating the functions in the classic style.</para>
 object-oriented interfaces for creating routines.  These routines can use
 the interpreter runtime to convert call arguments from Rexx objects into primitive
 types and return values from primitive types back into Rexx objects.  These
-routines are also given access to a rich set of services via the RexxCallContext
+routines are also given access to a rich set of services through the
+<link linkend="callcontext">RexxCallContext</link>
 interface vector.</para>
 <para>The REXX_CLASSIC_ROUTINE() and REXX_TYPED_ROUTINE() macros take two arguments.  The
 first entry is the package table name for this routine.  The second argument is the
 entry point name of the real native code routine that implements the function.
-These names are frequently the same, but need not be.</para>
+These names are frequently the same, but need not be.  The package table name is the
+name this routine will be called with from Rexx code.
+</para>
 <para>Smaller function packages frequently place all of the contained functions
 and the package definition tables in the same file, with the package tables
 placed near the end of the source file so all of the functions are visible.  For
 larger packages, it may be desirable to place the functions in more than
 one source file.  For functions packaged as multiple source files, it is necessary
-to create a prototype declarations so the routine entry table can be generated.
+to create prototype declarations so the routine entry table can be generated.
 The oorexxapi.h header file includes REXX_CLASSIC_ROUTINE_PROTOTYPE() and
 REXX_TYPED_ROUTINE_PROTOTYPE() macros to generate the appropriate declarations.
 For example,</para>
@@ -1035,17 +1043,17 @@ RexxRoutine2(int, beep, wholenumber_t, frequency, OPTIONAL_wholenumber_t, durati
 }
 </programlisting>
 <para>would define a routine that takes two arguments.  The first argument is required, but the
-second is optional.  Any optional arguments will be passed using an appropriate zero
-value for the type.  The macros argumentExists(n) or argumentOmitted(n) can reliably test if
+second is optional.  Any optional arguments, when omitted on a call, will be passed using a zero
+value appropriate to the type.  The macros argumentExists(n) or argumentOmitted(n) can reliably test if
 an argument was passed.  For example, argumentExists(2) tests if the
-<emphasis role="italic">duration</emphasis> argument was specified when calling the beep() routine.
+<emphasis role="italic">duration</emphasis> argument was specified when beep() was called.
 The <emphasis role="italic">n</emphasis> value is origin 1.</para>
 <para>In addition to the arguments passed by the caller, there are some special argument types
 that provide your routine with additional information.  These special types will add
 additional arguments to your native routine implementation.
 The argument value specified with argumentExists() or argumentOmitted() maps to the
 arguments passed to your C++ routine rather than the arguments in the originating Rexx call.
-See below for details on the special argument types.
+See <link linkend="routinetypes">Routine ArgumentTypes</link> for details on the special argument types.
 </para>
 <para>All routine declarations have an undeclared special argument passed to the routine.  This
 special argument is named <emphasis role="italic">context</emphasis>.  The
