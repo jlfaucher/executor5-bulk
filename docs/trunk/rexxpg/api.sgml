@@ -65,7 +65,7 @@ extensions or specific to an application.
 <varlistentry><term>Command Handlers</term>
 <listitem><para>are programmer-defined handlers for named command environments.
 The application programmer can tailor the Rexx interpreter behavior by
-enabling different command environments for interfacing with different
+creating named command environments to interfacing with
 application environments.
 </para></listitem></varlistentry>
 <varlistentry><term>System exits</term>
@@ -77,22 +77,24 @@ using the defined exit points to control Rexx resources.
 <para>Methods, functions, system exit handlers, and command handlers have similar coding,
 compilation, and packaging characteristics.
 </para>
-<para>In addition, applications can call methods defined on an Rexx objects and
+<para>In addition, applications can call methods defined of Rexx objects and
 execute them from externally defined methods and functions.</para>
 
 <section id="intertreterapi"><title>Rexx Interpreter API</title>
 <para>Rexx programs run in an environment controlled by an interpreter instance.
-An interpreter instance environment is created with a specific set of exit handlers and
-a customized environment.  Interpreter instances may have multiple threads associated
-with them and each interpreter instance has a unique version of the .local environment
+An interpreter instance environment is created with an enable set of exit handlers and
+a customized environment.  An instance may have multiple active threads
+and each interpreter instance has a unique version of the .local environment
 directory, allowing programs to run with some degree of isolation.
 </para>
 <para>If you use the older <link linkend="rexxstartfu">RexxStart()</link> API to run
 a Rexx program, the Rexx environment initializes, runs a single program, and the
-environment is terminated.  With the RexxCreateInterpreter() API, you have finer grained
+environment is terminated.  With the RexxCreateInterpreter() API, you have fine grain
 control over how the environment is used.  You are able to create a tailored environment, perform
 multiple operations (potentially, on multiple threads), create objects that persist for longer
-than the life of a single program, etc.</para>
+than the life of a single program, etc.  An application can create an interpreter instance once, and
+reuse it to run multiple programs.
+</para>
 <para>Interpreter environments are created using the
 <link linkend="createinterpreter">RexxCreateInterpreter()</link> API:</para>
 <programlisting>
@@ -104,10 +106,10 @@ if (RexxCreateInterpreter(&amp;instance, &amp;threadContext, options)) {
 &hellip;
 }
 </programlisting>
-<para>Once the interpreter instance is created, the APIs provided by the
-RexxInstance or RexxThreadContext interface can be used to perform operations
+<para>Once you've created an interpreter instance, you can use the APIs provided by the
+RexxInstance or RexxThreadContext interface to perform operations
 like running programs, loading class packages, etc.  For example, the following
-code will run a program using a created instance:</para>
+code will run a program using a created instance, checking for syntax errors upon completion:</para>
 <programlisting>
 <![CDATA[
     // create an Array object to hold the program arguments
@@ -151,10 +153,11 @@ code will run a program using a created instance:</para>
     instance->Terminate();
 ]]>
 </programlisting>
-<para>The example above creates a series of Rexx String objects for each argument we pass to the
-program and stores them in a Rexx array.  It then calls "myprogram.rex", passing the string
-arguments to the program using CallProgram().  On return, it checks to see if an Rexx SYNTAX errors
-occurred, and if they did, the error message is displayed to the console.  Finally, if the program
+<para>The example above creates a Rexx String object for each program argument
+stores them in a Rexx array.  It then uses
+<link linkend="mthCallProgram">CallProgram()</link> to call "myprogram.rex", passing the array object
+as the program arguments.  On return, if the program terminated with a Rexx SYNTAX error, it
+displays the error message to the console.  Finally, if the program
 exited normally and returned a value, the ASCII-Z value of that result is copied to a buffer.  As
 a final step, the interpreter instance is destroyed once we're finished using it.</para>
 <section id="createinterpreter"><title>RexxCreateInterpreter</title>
@@ -176,16 +179,16 @@ if (RexxCreateInterpreter(&amp;instance, &amp;threadContext, options)) {
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">instance</emphasis></entry>
     <entry><para>The returned RexxInstance interface vector.  The interface
-    vector provide access to APIs that apply to the global interpreter environment.</para></entry>
+    vector provides access to APIs that apply to the global interpreter environment.</para></entry>
     </row>
     <row><entry><emphasis role="italic">threadContext</emphasis></entry>
     <entry><para>The returned RexxThreadContext interface vector for the thread that creates the
-    interpreter instance.  The thread context vector provides access to thread specific services.
+    interpreter instance.  The thread context vector provides access to thread-specific services.
     </para></entry>
     </row>
     <row><entry><emphasis role="italic">options</emphasis></entry>
-    <entry><para>An array of RexxOption structures that control the initialization of the interpreter
-    instance.  See <link linkend="instanceoptions">Interpreter Instance Options</link> for details on
+    <entry><para>An array of RexxOption structures that control the interpreter
+    instance initialization.  See <link linkend="instanceoptions">Interpreter Instance Options</link> for details on
     the available options.
     </para></entry>
     </row>
@@ -196,15 +199,18 @@ failure to create the interpreter.</para>
 </section>
 
 <section id="instanceoptions"><title>Interpreter Instance Options</title>
-<para>The third argument to RexxCreateInterpreter is an optional list of options
-that set characteristics of the of how the interpreter instance behaves.  This
-argument points to an array of RexxOption structures.  Each RexxOption instance
-contains information for a different named option.  The oorexxapi.h include file
+<para>The third argument to RexxCreateInterpreter is an options array
+that sets characteristics of the interpreter instance.  The
+<emphasis role="bold">options</emphasis>
+argument points to an array of RexxOption structures, and can be NULL if no options are required.
+Each RexxOption instance
+contains information for named options that can be specified in any order and even multiple times.
+The oorexxapi.h include file
 contains a #define for each option name.  The information required by an option
 varies with each option type, and is specified using a ValueDescriptor struct to
 handle a variety of data types.
 An entry with a NULL option
-name terminates the list.  The available interpreter options are:</para>
+name terminates the option list.  The available interpreter options are:</para>
 <variablelist>
 <varlistentry><term>INITIAL_ADDRESS_ENVIRONMENT</term>
 <listitem><para>Contains the ASCII-Z name of the initial address environment
@@ -220,7 +226,10 @@ options[1].optionName = NULL;
 <varlistentry><term>APPLICATION_DATA</term>
 <listitem><para>Contains a void * value that will be stored with the interpreter
 instance.  The application data can be retrieved using the
-<link linkend="mthGetApplicationData">GetApplicationData()</link> API.</para>
+<link linkend="mthGetApplicationData">GetApplicationData()</link> API.  The application
+data pointer allows methods, functions, exits, and command handlers to recover
+access to globally defined application data.
+</para>
 <programlisting>
 RexxOption options[2];
 
@@ -273,8 +282,8 @@ options[1].optionName = NULL;
 <varlistentry><term>DIRECT_EXITS</term>
 <listitem><para>Specifies a list of system exits that will be used with this interpreter
 instance.  The exits are a list of RexxContextExit structs.  Each enabled exit is
-specified in a single RexxContextExit struct identifying the type of the exit and the
-exit entry point.
+specified in a single RexxContextExit struct that identifies exit type and
+handler entry point.
 The list is terminated by an instance using an
 exit type of 0.  The direct exits are called using the RexxExitContext calling convention.
 See <link linkend="exitsapi">Rexx Exits Interface</link> for details.
@@ -297,8 +306,8 @@ options[1].optionName = NULL;
 <varlistentry><term>DIRECT_ENVIRONMENTS</term>
 <listitem><para>Registers one or more subcommand handler environments with the interpreter
 instance.  The handlers are a list of RexxContextEnvironment structs.  Each enabled handler is
-specified in a single RexxContextEnvironment struct identifying the name of the handler and the
-handler entry point.
+specified in a single RexxContextEnvironment struct identifying the handler name and
+entry point.
 The list is terminated by an instance using a
 handler name of NULL.  The direct environment handlers are called using the calling convention
 described in <link linkend="commandapi">Command Handler Interface</link>.
@@ -374,14 +383,14 @@ options[1].optionName = NULL;
 <para>The ooRexx APIs rely on a variety of special C++ types for interfacing with
 the interpreter.  Some of these types are specific to the Rexx language, while
 others are standard types defined by C++.  Many of the APIs involve conversion
-between types, while others require having values of a specific type to function.
-This section explains the different types and the rules for using them.
+between types, while others require values of a specific type as arguments.
+This section explains the different types and the rules for using these types.
 </para>
 <section id="objecttypes"><title>Rexx Object Types</title>
 <para>Open Object Rexx is fundamentally an object-oriented language.  All data in
 the language (including strings and numbers) are represented by object instances.
-For use in the APIs, there are a number of opaque types that represent instances
-of different core objects.  The defined object types are:
+The ooRexx APIs use a number of opaque types that represent instances
+of Rexx built-in objects.  The defined object types are:
 </para>
 <informaltable frame="none" colsep="0" rowsep="0">
 <tgroup cols="2">
@@ -393,18 +402,19 @@ of different core objects.  The defined object types are:
 hierarchy and can represent any type of object.
 </para></entry></row>
 <row><entry>RexxStringObject</entry>
-<entry><para>an instance of the Rexx String class.  The APIs have a number of
-APIs that allow direct manipulation and creation of Rexx strings.
+<entry><para>an instance of the Rexx String class.  The API set allows String objects
+to be created and manipulated.
 </para></entry></row>
 <row><entry>RexxBufferStringObject</entry>
 <entry><para>an instance of the Rexx String class that can be written into.
+Buffer strings are used for constructing String objects "in-place" to avoid
+needing to create a String from a separate buffer.
 RexxBufferStringObject instances must be finalized to be converted into a usable
-RexxStringObject.
+Rexx String object.
 </para></entry></row>
 <row><entry>RexxArrayObject</entry>
 <entry><para>An instance of a Rexx single-dimension array.  Arrays are used
-in many places, and there are interfaces provided for direct manipulation of
-arrays.
+in many places, and there are interfaces provided for direct array manipulation.
 </para></entry></row>
 <row><entry>RexxDirectoryObject</entry>
 <entry><para>An instance of Rexx Directory class.  Like arrays, there are
@@ -474,14 +484,15 @@ allowed.  The range for 32-bit versions is 999,999,999 to 0, and
 </para></entry></row>
 <row><entry>logical_t</entry>
 <entry><para>a Rexx logical value.  On conversion from a string value, this must be
-either '1' (true) or '0' (false).  On conversion back to a string value, a non-zero binary value be converted
+either '1' (true) or '0' (false).  On conversion back to a string value,
+a non-zero binary value will be converted
 to '1' (true) and zero will become '0' (false).
 </para></entry></row>
 </tbody>
 </tgroup>
 </informaltable>
-<para>A subset of the integer numeric types are of different sizes depending on the
-addressing mode of the system you are compiling on.  These types will be 32-bits in size
+<para>A subset of the integer numeric types are of differing sizes depending on the
+addressing mode of the system you are compiling on.  These types will be either 32-bits
 or 64-bits.  The variable size types are: </para>
 <informaltable frame="none" colsep="0" rowsep="0">
 <tgroup cols="2">
