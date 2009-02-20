@@ -2341,39 +2341,65 @@ or 0 in all other cases.
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                      +-0------+              +-0----+
->>-aListControl~Insert(--+------+--,--+--------+--,--text--,--+------+--)-><
-                         +-item-+     +-column-+              +-icon-+
-
+>>-aListControl~Insert(--+------+--,--+---------+--,--text--,--+------+--)-><
+                         +-item-+     +-subitem-+              +-icon-+
 
 ]]>
 </programlisting>
 
-<para>The Insert method inserts a new item in a list
-view control.</para>
+<para>
+  The Insert method inserts a new item into the list-view control.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>item</term>
-<listitem><para>The number of the item. If you omit this argument, the number of the
-last item is increased by 1.
-</para></listitem></varlistentry>
-<varlistentry><term>column</term>
-<listitem><para>The number of the column. If you omit this argument, 0 is assumed. This
-argument only applies to report views.
-</para></listitem></varlistentry>
+<listitem>
+<para>
+  The index of the item to insert.
+</para>
+<para>
+  When this argument is omitted, ooDialog uses the number of the last item added to the list-view
+  control, plus 1, as the item index. If no items have yet been added, then 0 is used as the item index.
+</para>
+</listitem></varlistentry>
+<varlistentry><term>subitem</term>
+<listitem>
+<para>
+  The sub-item number. This argument is only used for report view. In report view, the text for the item
+  is always placed in column 0. The text for the first sub-item is placed in column 1, the text for the
+  second sub-item is placed in column 2, and so on. If you omit this argument, or use 0, the the
+  <emphasis role="italic">text</emphasis> argument is assigned as the text of the item. If you use this
+  argument and it is greater than 1, then the <emphasis role="italic">text</emphasis> argument is
+  assigned as the text of that sub-item.
+</para>
+</listitem></varlistentry>
 <varlistentry><term>text</term>
-<listitem><para>The text of the item.
-</para></listitem></varlistentry>
+<listitem>
+  <para>
+    The text of the item, or of the sub-item, depending on the <emphasis role="italic">column</emphasis>
+    argument.
+</para>
+</listitem></varlistentry>
 <varlistentry><term>icon</term>
-<listitem><para>The index of the icon of the list view item within the bitmap file,
-set with the SetImages or SetSmallImages method (see page <link linkend="setsmallimages">SetSmallImages</link>). The SetImages method must be used for the icon view and
-the SetSmallImages for the list, report, and small-icon views.</para>
-<para>In a report
-view, this argument can only be used for the first column.</para>
-<para>If you omit
-this argument, 0 is assumed.</para>
+<listitem>
+<para>
+  The index within the image list for the list-view of the icon for this item. Use the <link
+  linkend="mthSetImageListClsListControl">setImageList</link>() method to assign an image list to the
+  list-view control. Use the LVSIL_SMALL type to set the small icons and the LVSIL_NORMAL type for the
+  normal size icons.
+</para>
+<para>
+  The normal size icons are used for the icon view and the small icons are used for the list, report, and
+  small-icon views. Note that there is only one index for each list-view item. This implies that the
+  normal icon for an item must be at the same index in the normal image list as the small icon is at in
+  the small icon image list.
+</para>
+<para>
+  Currently in ooDialog, the icon index should only be used when inserting the item, not when inserting
+  the text for sub-items. If the argument is omitted, -1 is used to indicate there is no item index.
+</para>
 </listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>

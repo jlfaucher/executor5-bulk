@@ -202,7 +202,7 @@ listed in the following DialogControl Instance Methods table.
 </row>
 <row>
 <entry>DeleteFont</entry>
-<entry><link linkend="deletefont">DeleteFont</link></entry>
+<entry><link linkend="mthDeleteFont">DeleteFont</link></entry>
 </row>
 <row>
 <entry>DeleteObject</entry>
@@ -4068,7 +4068,9 @@ MyDialog~getTreeControl("FILES")~setFont(hfnt, .true)
 <para>
   <emphasis role="bold">Note</emphasis> the implementation of this method is incorrect. It does not
   return the font specified. The correct method to use is <link
-  linkend="mthCreateFontEx">createFontEx</link>(). This method is maintained for program compatibility.
+  linkend="mthCreateFontEx">createFontEx</link>(). <computeroutput>createFont</computeroutput>() is
+  maintained for program compatibility. Some existing programs may rely on using the (incorrect) font
+  returned.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4091,8 +4093,8 @@ MyDialog~getTreeControl("FILES")~setFont(hfnt, .true)
         <varlistentry><term>style</term>
         <listitem>
           <para>
-            One or more of the following keyword, separated by blanks.
-            <simplelist type='horiz' columns='2'>
+            Optional. One or more of the following keyword, separated by blanks.
+            <simplelist type='horiz' columns='3'>
             <member>THIN      </member>
             <member>EXTRALIGHT</member>
             <member>LIGHT     </member>
@@ -4135,7 +4137,9 @@ MyDialog~getTreeControl("FILES")~setFont(hfnt, .true)
 <para>
   The returned font can be used in any method that takes a font, such as, <link
   linkend="mthSetFont">setFont</link>(), <link linkend="sifm">setItemFont</link>(), or <link
-  linkend="h000948">fontToDC</link>().
+  linkend="h000948">fontToDC</link>(). When the programmer is done with the font, the operating system
+  resources used by the font can be released with the <link linkend="mthDeleteFont">deleteFont</link>()
+  method.
 </para>
 <para>
   The Windows operating system uses a font mapper to map a logical font to the characteristics of the
@@ -4150,6 +4154,12 @@ MyDialog~getTreeControl("FILES")~setFont(hfnt, .true)
   programmer the ability to use any, or all, of these arguments. On the other hand, The
   <computeroutput>createFontEx</computeroutput>() method has good defaults for each of the arguments,
   allowing the programmer to use the method with a minimum of effort.
+</para>
+<para>
+  If an application will run on different systems, where the programmer does not know in advance what
+  fonts will be available on each system, carefully specifying the font characteristics will help give
+  the application the same look on each system. The font mapper will pick a font on each system that most
+  closely matches the requested attributes.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -4178,7 +4188,7 @@ MyDialog~getTreeControl("FILES")~setFont(hfnt, .true)
           the system.
         </para>
         <para>
-          As noted above, the font mapper will try substitute a similar font if the typeface name does
+          As noted above, the font mapper will try to substitute a similar font if the typeface name does
           not match any of the installed fonts.
         </para>
       </listitem></varlistentry>
@@ -4210,9 +4220,9 @@ MyDialog~getTreeControl("FILES")~setFont(hfnt, .true)
           provides some more information on the possible values for index. The valid indexes are:
           <informaltable frame='none' colsep='0' rowsep='0'>
           <tgroup cols='3'>
-          <colspec align='left' colwidth='2*'>
-          <colspec align='left' colwidth='3*'>
-          <colspec align='left' colwidth='2*'>
+          <colspec align='left' colwidth='1*'>
+          <colspec align='left' colwidth='1*'>
+          <colspec align='left' colwidth='1*'>
           <thead>
           <row><entry>Index</entry><entry>Meaning</entry><entry>Default</entry></row>
           </thead>
@@ -4253,7 +4263,7 @@ MyDialog~getTreeControl("FILES")~setFont(hfnt, .true)
             <entry>false</entry>
           </row>
           <row>
-            <entry><link linkend="cfxCharset">CHARSET</link>CHARSET</entry>
+            <entry><link linkend="cfxCharset">CHARSET</link></entry>
             <entry>Specifies the character set</entry>
             <entry>DEFAULT_CHARSET</entry>
           </row>
@@ -4288,42 +4298,34 @@ MyDialog~getTreeControl("FILES")~setFont(hfnt, .true)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      The return is a handle to a font that can be used in any ooDialog method that requires a font
+      handle. Because of the way the font mapper works, it is hard to conceive of a circustance where
+      this method would fail. However, if it were to fail, the <link
+      linkend="dotSystemErrorCode">.SystemErrorCode</link> variable would be non-zero.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example creates a 16 point italic Ariel font.
+      This example creates a 16 point, italic, underlined, Ariel font and then uses the font for a static
+      control.
 <programlisting>
 <![CDATA[
 
 additional = .directory~new
 additional~italic = .true
+additional~underline = .true
 
 hFont = self~createFontEx("Arial", 16, additional)
-
+hOldFont = self~getStaticControl(IDC_ST_ALERT)~setFont(hFont)
+...
 ]]>
 </programlisting>
     </para>
     <para>
-      This example creates a 14 point bold, italic Times New Roman font and instructs the font mapper to
-      only choose from true type fonts. If there are no true type fonts installed on the system, then the
-      font mapper returns to its default behavior.
+      This example creates a 14 point, bold, italic, Times New Roman font and instructs the font mapper
+      to only choose from true type fonts. If there are no true type fonts installed on the system, then
+      the font mapper returns to its default behavior.
 <programlisting>
 <![CDATA[
 
@@ -4343,13 +4345,15 @@ hFont = self~createFontEx("Times New Roman", 14, additional)
   </listitem></varlistentry>
 </variablelist>
 
-<section id="sectFontAttributes"><title>createFontEx Argument Valus</title>
+<section id="sectFontAttributes"><title>createFontEx Argument Values</title>
+<para>
+  The following list is the indexes of the <computeroutput>.Directory</computeroutput> object that can be
+  used for the third argument of the <link linkend="mthCreateFontEx">createFontEx</link>() method. The
+  list provides additional information on the meaning of values that can be assigned to each index.
+</para>
 <variablelist>
-  <varlistentry id="cfxWidth"><term><emphasis role="bold">width</emphasis></term>
+  <varlistentry id="cfxWidth"><term><emphasis role="bold">width</emphasis> Must be an integer.</term>
   <listitem>
-    <para>
-      Must be an integer.
-    </para>
     <para>
       Specifies the average width, in logical units, of the characters in the requested font. The default
       value of zero, tells the font mapper to choose a closest match value. This is likely to produce the
@@ -4360,40 +4364,32 @@ hFont = self~createFontEx("Times New Roman", 14, additional)
       the current device's aspect ratio and the digitized aspect ratio of available fonts.
     </para>
   </listitem></varlistentry>
-  <varlistentry id="cfxEscarpment"><term><emphasis role="bold">escarpment</emphasis></term>
+  <varlistentry id="cfxEscarpment"><term><emphasis role="bold">escarpment</emphasis> Must be an integer.</term>
   <listitem>
-    <para>
-      Must be an integer.
-    </para>
     <para>
       Specifies the angle, in tenths of degrees, between the escapement vector and the x-axis of the
       device. The escapement vector is parallel to the base line of a row of text. Windows has no
       predefined values for this argument.
     </para>
   </listitem></varlistentry>
-  <varlistentry id="cfxOrientation"><term><emphasis role="bold">orientation</emphasis></term>
+  <varlistentry id="cfxOrientation"><term><emphasis role="bold">orientation</emphasis> Must be an integer.</term>
   <listitem>
-    <para>
-      Must be an integer.
-    </para>
     <para>
       Specifies the angle, in tenths of degrees, between each character's base line and the x-axis of the
       device. Windows has no predefined values for this argument.
     </para>
   </listitem></varlistentry>
-  <varlistentry id="cfxWeight"><term><emphasis role="bold">weight</emphasis></term>
+  <varlistentry id="cfxWeight"><term><emphasis role="bold">weight</emphasis> Must be an integer.</term>
   <listitem>
-    <para>
-      Must be an integer.
-    </para>
     <para>
       Specifies the weight of the font in the range 0 through 1000. For example, 400 is normal and 700 is
       bold. If this value is zero, a default weight is used. The following table shows Windows predefined
       values for this argument:
     </para>
-    <table id="tblCfxWeight" frame="all">
-    <title>Font Weight</title>
+    <informaltable id="tblCfxWeight" frame="all">
     <tgroup cols="2">
+    <colspec align='left' colwidth='4*'>
+    <colspec align='right' colwidth='2*'>
     <thead>
     <row><entry>Value</entry><entry>Weight</entry></row>
     </thead>
@@ -4414,119 +4410,360 @@ hFont = self~createFontEx("Times New Roman", 14, additional)
     <row><entry>FW_HEAVY     </entry><entry>900</entry></row>
     <row><entry>FW_BLACK     </entry><entry>900</entry></row>
     </tbody></tgroup>
-    </table>
+    </informaltable>
   </listitem></varlistentry>
-  <varlistentry id="cfxCharset"><term><emphasis role="bold">charset</emphasis></term>
+  <varlistentry><term><emphasis role="bold">italic</emphasis> Must be a logical.</term>
   <listitem>
     <para>
-      Must be an integer.
+      Set this index to <computeroutput>.true</computeroutput> to request an italic font. The default is
+      <computeroutput>.false</computeroutput>.
     </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">underline</emphasis> Must be a logical.</term>
+  <listitem>
     <para>
-
+      Set this index to <computeroutput>.true</computeroutput> to request an underlined font. The default
+      is <computeroutput>.false</computeroutput>.
     </para>
-    <table id="tblCfxCharset" frame="all">
-    <title>Character Set</title>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">strikeout</emphasis> Must be a logical.</term>
+  <listitem>
+    <para>
+      Set this index to <computeroutput>.true</computeroutput> to request a strike out font. The default
+      is <computeroutput>.false</computeroutput>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry id="cfxCharset"><term><emphasis role="bold">charset</emphasis> Must be an integer.</term>
+  <listitem>
+    <para>
+      Specifies the character set. The following values are predefined in Windows:
+    </para>
+    <informaltable id="tblCfxCharset" frame="all">
     <tgroup cols="2">
+    <colspec align='left' colwidth='4*'>
+    <colspec align='right' colwidth='2*'>
     <thead>
-    <row><entry>Value</entry><entry>Weight</entry></row>
+    <row><entry>Symbol</entry><entry>Value</entry></row>
     </thead>
     <tbody>
-    <row><entry></entry><entry></entry></row>
-    <row><entry></entry><entry></entry></row>
-    <row><entry></entry><entry></entry></row>
+    <row><entry>ANSI_CHARSET       </entry><entry>0</entry></row>
+    <row><entry>BALTIC_CHARSET     </entry><entry>186</entry></row>
+    <row><entry>CHINESEBIG5_CHARSET</entry><entry>136</entry></row>
+    <row><entry>DEFAULT_CHARSET    </entry><entry>1</entry></row>
+    <row><entry>EASTEUROPE_CHARSET </entry><entry>238</entry></row>
+    <row><entry>GB2312_CHARSET     </entry><entry>134</entry></row>
+    <row><entry>GREEK_CHARSET      </entry><entry>161</entry></row>
+    <row><entry>HANGUL_CHARSET     </entry><entry>129</entry></row>
+    <row><entry>MAC_CHARSET        </entry><entry>77</entry></row>
+    <row><entry>OEM_CHARSET        </entry><entry>255</entry></row>
+    <row><entry>RUSSIAN_CHARSET    </entry><entry>204</entry></row>
+    <row><entry>SHIFTJIS_CHARSET   </entry><entry>128</entry></row>
+    <row><entry>SYMBOL_CHARSET     </entry><entry>2</entry></row>
+    <row><entry>TURKISH_CHARSET    </entry><entry>162</entry></row>
+    <row><entry>VIETNAMESE_CHARSET </entry><entry>163</entry></row>
     </tbody></tgroup>
-    </table>
+    </informaltable>
   </listitem></varlistentry>
-  <varlistentry id="cfxOutputPrecision"><term><emphasis role="bold">outputPrecsion</emphasis></term>
+  <varlistentry id="cfxOutputPrecision"><term><emphasis role="bold">outputPrecsion</emphasis> Must be an integer.</term>
   <listitem>
     <para>
-      Must be an integer.
+      The output precision defines how closely the output must match the requested font's height, width,
+      character orientation, escapement, pitch, and font type.
     </para>
     <para>
-
-    </para>
-    <table id="tblCfxOutputPrecision" frame="all">
-    <title>Output Precision</title>
-    <tgroup cols="2">
-    <thead>
-    <row><entry>Value</entry><entry>Weight</entry></row>
-    </thead>
-    <tbody>
-    <row><entry></entry><entry></entry></row>
-    <row><entry></entry><entry></entry></row>
-    <row><entry></entry><entry></entry></row>
-    </tbody></tgroup>
-    </table>
-  </listitem></varlistentry>
-  <varlistentry id="cfxClipPrecision"><term><emphasis role="bold">clipPrecision</emphasis></term>
-  <listitem>
-    <para>
-      Must be an integer.
+      Applications can use the OUT_DEVICE_PRECIS, OUT_RASTER_PRECIS, OUT_TT_PRECIS, and
+      OUT_PS_ONLY_PRECIS values to control how the font mapper chooses a font when the operating system
+      contains more than one font with a specified name. For example, if an operating system contains a
+      font named Symbol in raster and TrueType form, specifying OUT_TT_PRECIS forces the font mapper to
+      choose the TrueType version. Specifying OUT_TT_ONLY_PRECIS forces the font mapper to choose a
+      TrueType font, even if it must substitute a TrueType font of another name.
     </para>
     <para>
-
+      It can be one of the following values:
     </para>
-    <table id="tblCfxClipPrecision" frame="all">
-    <title>Clip Precision</title>
+    <informaltable id="tblCfxOutputPrecision" frame="all">
     <tgroup cols="3">
+    <colspec align='left' colwidth='3*'>
+    <colspec align='left' colwidth='4*'>
+    <colspec align='right' colwidth='1*'>
     <thead>
-    <row><entry>Value</entry><entry>Weight</entry></row>
+    <row><entry>Symbol</entry><entry>Meaning</entry><entry>Value</entry></row>
     </thead>
     <tbody>
-    <row><entry></entry><entry></entry><entry></entry></row>
-    <row><entry></entry><entry></entry><entry></entry></row>
-    <row><entry></entry><entry></entry><entry></entry></row>
+    <row>
+      <entry>OUT_CHARACTER_PRECIS</entry>
+      <entry>Not used.</entry>
+      <entry>2</entry></row>
+    <row>
+      <entry>OUT_DEFAULT_PRECIS  </entry>
+      <entry>
+        Specifies the default font mapper behavior.
+      </entry>
+      <entry>0</entry></row>
+    <row>
+      <entry>OUT_DEVICE_PRECIS   </entry>
+      <entry>
+        Instructs the font mapper to choose a Device font when the system contains multiple fonts with the same name.
+      </entry>
+      <entry>5</entry></row>
+    <row>
+      <entry>OUT_OUTLINE_PRECIS  </entry>
+      <entry>
+        This value instructs the font mapper to choose from TrueType and other outline-based fonts.
+      </entry>
+      <entry>8</entry></row>
+    <row>
+      <entry>OUT_PS_ONLY_PRECIS  </entry>
+      <entry>
+        Instructs the font mapper to choose from only PostScript fonts. If there are no PostScript fonts installed in the
+        system, the font mapper returns to default behavior.
+      </entry>
+      <entry>10</entry></row>
+    <row>
+      <entry>OUT_RASTER_PRECIS   </entry>
+      <entry>
+        Instructs the font mapper to choose a raster font when the system contains multiple fonts with the same name.
+      </entry>
+      <entry>6</entry></row>
+    <row>
+      <entry>OUT_STRING_PRECIS   </entry>
+      <entry>Not used.</entry>
+      <entry>1</entry></row>
+    <row>
+      <entry>OUT_STROKE_PRECIS   </entry>
+      <entry>Not used.</entry>
+      <entry>3</entry></row>
+    <row>
+      <entry>OUT_TT_ONLY_PRECIS  </entry>
+      <entry>
+        Instructs the font mapper to choose from only TrueType fonts. If there are no TrueType fonts installed in the system,
+        the font mapper returns to default behavior.
+      </entry>
+      <entry>7</entry></row>
+    <row>
+      <entry>OUT_TT_PRECIS       </entry>
+      <entry>
+        Instructs the font mapper to choose a TrueType font when the system contains multiple fonts with the same name.
+      </entry>
+      <entry>4</entry></row>
     </tbody></tgroup>
-    </table>
+    </informaltable>
   </listitem></varlistentry>
-  <varlistentry id="cfxQuality"><term><emphasis role="bold">quality</emphasis></term>
+  <varlistentry id="cfxClipPrecision"><term><emphasis role="bold">clipPrecision</emphasis> Must be an integer.</term>
   <listitem>
     <para>
-      Must be an integer.
+      The clipping precision defines how to clip characters that are partially outside the clipping
+      region. It can be one or more of the following values. Use <link
+      linkend="mthOrClsDlgUtil">.DlgUtil~or</link> to combine values.
     </para>
-    <para>
-
-    </para>
-    <table id="tblCfxQuality" frame="all">
-    <title>Font Quality</title>
-    <tgroup cols="2">
+    <informaltable id="tblCfxClipPrecision" frame="all">
+    <tgroup cols="3">
+    <colspec align='left' colwidth='2*'>
+    <colspec align='left' colwidth='3*'>
+    <colspec align='right' colwidth='1*'>
     <thead>
-    <row><entry>Value</entry><entry>Weight</entry></row>
+    <row><entry>Symbol</entry><entry>Meaning</entry><entry>Value</entry></row>
     </thead>
     <tbody>
-    <row><entry></entry><entry></entry></row>
-    <row><entry></entry><entry></entry></row>
-    <row><entry></entry><entry></entry></row>
+    <row>
+      <entry>CLIP_CHARACTER_PRECIS
+      </entry><entry>Not used.</entry>
+      <entry>1 (0x01)</entry>
+    </row>
+    <row>
+      <entry>CLIP_DEFAULT_PRECIS</entry>
+      <entry>Specifies default clipping behavior.</entry>
+      <entry>0 (0x00)</entry>
+    </row>
+    <row>
+      <entry>CLIP_DFA_DISABLE</entry>
+      <entry>
+        Windows XP SP1: Turns off font association for the font. Note that this flag is not guaranteed to have any effect on
+        any platform after Windows Server 2003.
+      </entry>
+      <entry>64 (0x40)</entry>
+    </row>
+    <row>
+      <entry>CLIP_EMBEDDED</entry>
+      <entry>
+        You must specify this flag to use an embedded read-only font.
+      </entry>
+      <entry>128 (0x80)</entry>
+    </row>
+    <row>
+      <entry>CLIP_LH_ANGLES</entry>
+      <entry>
+        When this value is used, the rotation for all fonts depends on whether the orientation of the coordinate system is
+        left-handed or right-handed. If not used, device fonts always rotate counterclockwise, but the rotation of other
+        fonts is dependent on the orientation of the coordinate system. For more information about the orientation of
+        coordinate systems, see the description of the orientation parameter.
+      </entry>
+      <entry>16 (0x10)</entry>
+    </row>
+    <row>
+      <entry>CLIP_MASK</entry>
+      <entry>Not used.</entry>
+      <entry>15 (0x0f)</entry>
+    </row>
+    <row>
+      <entry>CLIP_STROKE_PRECIS</entry>
+      <entry>Not used.</entry>
+      <entry>2 (0x02)</entry>
+    </row>
+    <row>
+      <entry>CLIP_TT_ALWAYS</entry>
+      <entry>Not used.</entry>
+      <entry>32 (0x20)</entry>
+    </row>
     </tbody></tgroup>
-    </table>
+    </informaltable>
   </listitem></varlistentry>
-  <varlistentry id="cfxPitchAndFamily"><term><emphasis role="bold">pitchAndFamily</emphasis></term>
+  <varlistentry id="cfxQuality"><term><emphasis role="bold">quality</emphasis> Must be an integer.</term>
   <listitem>
     <para>
-      Must be an integer.
+      The output quality defines how carefully the font mapper must attempt to match the logical-font
+      attributes to those of an actual physical font.
     </para>
     <para>
-
+      <emphasis role="bold">Note</emphasis> that if neither ANTIALIASED_QUALITY nor
+      NONANTIALIASED_QUALITY is selected, the font is antialiased only if the user chooses "smooth screen
+      fonts" in Control Panel. Quality can be one of the following values:
     </para>
-    <table id="tblCfxPitchAndFamily" frame="all">
-    <title>Font Pitch and Family</title>
-    <tgroup cols="2">
+    <informaltable id="tblCfxQuality" frame="all">
+    <tgroup cols="3">
+    <colspec align='left' colwidth='3*'>
+    <colspec align='left' colwidth='4*'>
+    <colspec align='right' colwidth='1*'>
     <thead>
-    <row><entry>Value</entry><entry>Weight</entry></row>
+    <row><entry>Symbol</entry><entry>Meaning</entry><entry>Value</entry></row>
     </thead>
     <tbody>
-    <row><entry></entry><entry></entry></row>
-    <row><entry></entry><entry></entry></row>
-    <row><entry></entry><entry></entry></row>
+    <row>
+      <entry>ANTIALIASED_QUALITY</entry>
+      <entry>
+        Font is antialiased, or smoothed, if the font supports it and the size of the font is not too small or too large.
+      </entry>
+      <entry>4</entry>
+    </row>
+    <row>
+      <entry>CLEARTYPE_QUALITY</entry>
+      <entry>
+        If set, text is rendered (when possible) using ClearType antialiasing method. See Remarks for more information.
+      </entry>
+      <entry>6</entry>
+    </row>
+    <row>
+      <entry>DEFAULT_QUALITY</entry>
+      <entry>
+        Appearance of the font does not matter.
+      </entry>
+      <entry>0</entry>
+    </row>
+    <row>
+      <entry>DRAFT_QUALITY</entry>
+      <entry>
+        Appearance of the font is less important than when the PROOF_QUALITY value is used. For GDI raster fonts, scaling is
+        enabled, which means that more font sizes are available, but the quality may be lower. Bold, italic, underline, and
+        strikeout fonts are synthesized, if necessary.
+      </entry>
+      <entry>1</entry>
+    </row>
+    <row>
+      <entry>NONANTIALIASED_QUALITY</entry>
+      <entry>
+        Font is never antialiased, that is, font smoothing is not done.
+      </entry>
+      <entry>3</entry>
+    </row>
+    <row>
+      <entry>PROOF_QUALITY</entry>
+      <entry>
+        Character quality of the font is more important than exact matching of the logical-font attributes. For GDI raster
+        fonts, scaling is disabled and the font closest in size is chosen. Although the chosen font size may not be mapped
+        exactly when PROOF_QUALITY is used, the quality of the font is high and there is no distortion of appearance. Bold,
+        italic, underline, and strikeout fonts are synthesized, if necessary.
+      </entry>
+      <entry>2</entry>
+    </row>
     </tbody></tgroup>
-    </table>
+    </informaltable>
+  </listitem></varlistentry>
+  <varlistentry id="cfxPitchAndFamily"><term><emphasis role="bold">pitchAndFamily</emphasis> Must be an integer.</term>
+  <listitem>
+    <para>
+      Specifies the pitch and family of the font. Font families describe the look of a font in a general
+      way. They are intended for specifying fonts when the exact typeface requested is not available.
+    </para>
+    <para>
+      Combine one pitch value with one family value. The values are combined using a boolean or, but in
+      this case they could simply be added. The programmer can also use <link
+      linkend="mthOrClsDlgUtil">.DlgUtil~or</link> to combine values.
+    </para>
+    <informaltable id="tblCfxPitchAndFamily" frame="all">
+    <tgroup cols="3">
+    <colspec align='left' colwidth='2*'>
+    <colspec align='left' colwidth='4*'>
+    <colspec align='right' colwidth='1*'>
+    <thead>
+    <row><entry>Symbol</entry><entry>Meaning</entry><entry>Value</entry></row>
+    </thead>
+    <tbody>
+    <row><entry><emphasis role="bold">Pitch</emphasis></entry><entry></entry><entry></entry></row>
+    <row><entry>DEFAULT_PITCH </entry><entry></entry><entry>0</entry></row>
+    <row><entry>FIXED_PITCH   </entry><entry></entry><entry>1</entry></row>
+    <row><entry>VARIABLE_PITCH</entry><entry></entry><entry>2</entry></row>
+    <row><entry><emphasis role="bold">Family</emphasis></entry></row>
+    <row>
+      <entry>FF_DECORATIVE</entry>
+      <entry>
+        Novelty fonts. Old English is an example.
+      </entry>
+      <entry>128 (0x80)</entry>
+    </row>
+    <row>
+      <entry>FF_DONTCARE</entry>
+      <entry>
+        Use default font.
+      </entry>
+      <entry>4 (0x04)</entry>
+    </row>
+    <row>
+      <entry>FF_MODERN</entry>
+      <entry>
+        Fonts with constant stroke width, with or without serifs. Pica, Elite, and Courier New are examples.
+      </entry>
+      <entry>32 (0x20)</entry>
+    </row>
+    <row>
+      <entry>FF_ROMAN</entry>
+      <entry>
+        Fonts with variable stroke width and with serifs. MS Serif is an example.
+      </entry>
+      <entry>8 (10x08)</entry>
+    </row>
+    <row>
+      <entry>FF_SCRIPT</entry>
+      <entry>
+        Fonts designed to look like handwriting. Script and Cursive are examples.
+      </entry>
+      <entry>64 (0x40)</entry>
+    </row>
+    <row>
+      <entry>FF_SWISS</entry>
+      <entry>
+        Fonts with variable stroke width and without serifs. MS Sans Serif is an example.
+      </entry>
+      <entry>16 (0x10)</entry>
+      </row>
+    </tbody></tgroup>
+    </informaltable>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End createFontEx Argument Values -->
 
 </section>  <!-- End WindowExtensions::createFontEx() -->
 
-<section id="deletefont"><title>deleteFont</title>
+<section id="mthDeleteFont"><title>deleteFont</title>
 <indexterm><primary>deleteFont</primary></indexterm>
 <programlisting>
 <![CDATA[
