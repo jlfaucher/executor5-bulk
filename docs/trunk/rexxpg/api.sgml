@@ -779,6 +779,16 @@ a method call, including:
 a <link linkend="threadcontext">RexxThreadContext</link>
 object created specifically for this environment.  The RexxThreadContext provides approximately 125
 additional methods to the method environment.</para>
+<para>API calls made using the RexxMethodContext APIs may cause Rexx
+syntax errors or other condition to be raised.  These calls
+are invoked as if the current context is operating with SIGNAL ON ALL enabled.  Any
+conditions will be trapped and
+held in a pending condition until the current context returns.  At the return, if a
+condition is still pending, the appropriate condition is reraised in the caller's context.
+These
+errors can be checked using the <link linkend="mthCheckCondition">CheckCondition()</link> API, and
+pending conditions can be cancelled using <link linkend="mthCancelCondition">CancelCondition()</link>.
+</para>
 </section>
 
 <section id="callcontext"><title>Rexx Call Context Interface</title>
@@ -796,6 +806,16 @@ a routine call, including:
 a <link linkend="threadcontext">RexxThreadContext</link>
 object created specifically for this environment.  The RexxThreadContext provides approximately 125
 additional methods to the routine environment.</para>
+<para>API calls made using the RexxCallContext APIs may cause Rexx
+syntax errors or other condition to be raised.  These calls are invoked
+as if the current context is operating with SIGNAL ON ALL enabled.  Any
+conditions will be trapped and
+held in a pending condition until the current context returns.  At the return, if a
+condition is still pending, the appropriate condition is reraised in the caller's context.
+These
+errors can be checked using the <link linkend="mthCheckCondition">CheckCondition()</link> API, and
+pending conditions can be cancelled using <link linkend="mthCancelCondition">CancelCondition()</link>.
+</para>
 </section>
 
 <section id="exitcontext"><title>Rexx Exit Context Interface</title>
@@ -813,6 +833,16 @@ a exit call, including:
 a <link linkend="threadcontext">RexxThreadContext</link>
 object created specifically for this environment.  The RexxThreadContext provides approximately 125
 additional methods to the exit environment.</para>
+<para>API calls made using the RexxExitContext APIs may cause Rexx
+syntax errors or other condition to be raised.  These calls are invoked
+as if the current context is operating with SIGNAL ON ALL enabled.  Any
+conditions will be trapped and
+held in a pending condition until the current context returns.  At the return, if a
+condition is still pending, the appropriate condition is reraised in the caller's context.
+These
+errors can be checked using the <link linkend="mthCheckCondition">CheckCondition()</link> API, and
+pending conditions can be cancelled using <link linkend="mthCancelCondition">CancelCondition()</link>.
+</para>
 </section>
 
 <section id="buildinglibs"><title>Building an External Native Library</title>
@@ -5005,7 +5035,7 @@ CSTRING name;
 >>--obj = context->GetContextVariable(name);--------------------------><
 ]]>
 </programlisting>
-<para>Gets the value of a Rexx variable in the routine caller's variable context.
+<para>Gets the value of a Rexx variable in the routine or exit caller's variable context.
 Only simple variables and stem variables can be retrieved with GetContextVariable().
 The value returned for a stem variable will be the corresponding Stem object.
 Compound variable values can be retrieved from the corresponding Stem values.
@@ -5017,7 +5047,7 @@ Compound variable values can be retrieved from the corresponding Stem values.
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A the value of the named variable.  Returns NULLOBJECT if the variable
+<para>The value of the named variable.  Returns NULLOBJECT if the variable
 has not been assigned a value.</para>
 </section>
 
@@ -5138,7 +5168,7 @@ CSTRING str;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The current Method message name.</para>
+<para>The current method message name.</para>
 </section>
 
 <section id="mthGetMethod"><title>GetMethod</title>
@@ -5169,7 +5199,7 @@ RexxMethodObject obj;
 >>--obj = context->GetMethod();---------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the method object for the method currently being executed.
+<para>Returns the Method object for the currently executing method.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -5212,16 +5242,16 @@ RexxPackageObject pkg;
 >>--pkg = context->GetMethodPackage(obj);-----------------------------><
 ]]>
 </programlisting>
-<para>Returns the Package object associated with the specified method.
+<para>Returns the Package object associated with the specified Method instance.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The Method object to query.</para></entry>
+    <entry><para>The source Method object..</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The method's defining Package object.</para>
+<para>The Method's defining Package object.</para>
 </section>
 
 <section id="mthGetObjectVariable"><title>GetObjectVariable</title>
@@ -5253,8 +5283,8 @@ RexxObjectPtr obj;
 >>--obj = context->GetObjectVariable(str);-------------------------------><
 ]]>
 </programlisting>
-<para>Gets the value of a Rexx instance variable from the current method's object scope context.
-Only simple variables and stem variables can be retrieved with GetContextVariable().
+<para>Retrieves a Rexx instance variable value from the current object's method scope context.
+Only simple variables and stem variables can be retrieved with GetObjectVariable().
 The value returned for a stem variable will be the corresponding Stem object.
 Compound variable values can be retrieved from the corresponding Stem values.
 </para>
@@ -5265,7 +5295,7 @@ Compound variable values can be retrieved from the corresponding Stem values.
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The object assigned to the object variable.  Returns NULLOBJECT if the
+<para>The object assigned to the named object variable.  Returns NULLOBJECT if the
 variable has not been assigned a value.</para>
 </section>
 
@@ -5304,7 +5334,7 @@ RexxPackageObject pkg;
 >>--dir = context->GetPackageClasses(pkg);----------------------------><
 ]]>
 </programlisting>
-<para>Returns a Directory object containing all public and private classes (name and object) from the specified package object.
+<para>Returns a Directory object containing the Package public and private classes, indexed by class name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -5351,8 +5381,8 @@ RexxPackageObject pkg;
 >>--dir = context->GetPackageMethods(pkg);----------------------------><
 ]]>
 </programlisting>
-<para>Returns a Directory object containing the unattached methods
-(name and object) from the specified package object.  This is equivalent to
+<para>Returns a Directory object containing the Package unattached methods, indexed by Method name.
+This is equivalent to
 using the .methods environment symbol from Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -5362,7 +5392,7 @@ using the .methods environment symbol from Rexx code.
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>A Directory object containing the unattached methods.</para>
+<para>A Directory object containing the Package's unattached methods.</para>
 </section>
 
 <section id="mthGetPackagePublicClasses"><title>GetPackagePublicClasses</title>
@@ -5400,7 +5430,7 @@ RexxPackageObject pkg;
 >>--dir = context->GetPackagePublicClasses(pkg);----------------------><
 ]]>
 </programlisting>
-<para>Returns a Directory object containing the public classes (name and object) from the specified package object.
+<para>Returns a Directory object containing the Package public classes, indexed by class name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -5447,7 +5477,7 @@ RexxPackageObject pkg;
 >>--dir = context->GetPackagePublicRoutines(pkg);---------------------><
 ]]>
 </programlisting>
-<para>Returns a Directory object containing the public routines (name and object) from the specified package object.
+<para>Returns a Directory object containing the Package public routines, indexed by routine name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -5494,7 +5524,7 @@ RexxPackageObject pkg;
 >>--dir = context->GetPackageRoutines(pkg);---------------------------><
 ]]>
 </programlisting>
-<para>Returns a Directory object containing the public and private routines (name and object) from the specified package object.
+<para>Returns a Directory object containing the Package public and private routines, indexed by routine name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -5570,7 +5600,7 @@ CSTRING name;
 >>--name = context->GetRoutineName();---------------------------------><
 ]]>
 </programlisting>
-<para>Returns name of the current routine.
+<para>Returns the name of the current routine.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None</para>
@@ -5613,7 +5643,7 @@ RexxPackageObject pkg;
 >>--pkg = context->GetRoutinePackage(obj);----------------------------><
 ]]>
 </programlisting>
-<para>Returns Package object for the specified Routine object.
+<para>Returns Routine object's associated Package object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -5653,7 +5683,7 @@ RexxObjectPtr obj;
 >>--obj = context->GetScope();----------------------------------------><
 ]]>
 </programlisting>
-<para>Return the scope of the currently active Method.
+<para>Return the current active method's scope.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -5689,9 +5719,9 @@ RexxObjectPtr obj;
 >>--obj = context->GetSelf();-----------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the Object that was the target of the current method invocation.  This
+<para>Returns the Object that is the current method's message target.  This
 is equivalent to the SELF variable in a Rexx method.  The same value can be accessed as a method
-argument by using the OSELF type.
+argument using the OSELF type.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -5735,7 +5765,7 @@ size_t n;
 >>--obj = context->GetStemArrayElement(sobj, n);-------------------------><
 ]]>
 </programlisting>
-<para>Gets an element of the Stem object using a numeric index.
+<para>Retrieves an element of a Stem object using a numeric index.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -5748,7 +5778,7 @@ size_t n;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Stem object element or NULLOBJECT if the target name has not been assigned a value.</para>
+<para>The Object stored at the target index or NULLOBJECT if the target index has not been assigned a value.</para>
 </section>
 
 <section id="mthGetStemElement"><title>GetStemElement</title>
@@ -5787,7 +5817,7 @@ CSTRING name;
 >>--obj = context->GetStemElement(sobj, name);---------------------------><
 ]]>
 </programlisting>
-<para>Gets an element of the Stem object.
+<para>Retrieves an element of a Stem object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -5802,7 +5832,7 @@ CSTRING name;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The Stem object element or NULLOBJECT if the target element
+<para>The the object at the target index or NULLOBJECT if the target index
 has not been assigned a value.</para>
 </section>
 
@@ -5842,7 +5872,7 @@ CSTRING name;
 >>--obj = context->GetStemValue(sobj);-----------------------------------><
 ]]>
 </programlisting>
-<para>Gets the base name value of the Stem object.
+<para>Retrieves the base name value of a Stem object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -5997,19 +6027,19 @@ CSTRING name;
 >>--flag = context->HasMethod(obj, name);-------------------------------><
 ]]>
 </programlisting>
-<para>Returns a boolean indicating if an object has the specified method available.
+<para>Tests if an object supports the specified method name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The object to query.</para></entry>
+    <entry><para>The target object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">name</emphasis></entry>
-    <entry><para>An ASCII-Z string containing the name of the method.</para></entry>
+    <entry><para>An ASCII-Z method name.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = has the method available, 0 = does not have the method available.</para>
+<para>1 = the method exists, 0 = the method does not exist.</para>
 </section>
 
 <section id="mthInvalidRoutine"><title>InvalidRoutine</title>
@@ -6040,8 +6070,8 @@ RexxDirectoryObject obj;
 >>--context->InvalidRoutine();----------------------------------------><
 ]]>
 </programlisting>
-<para>Raises the standard Error 40 Invalid call to routine error for the
-current routine.  This error will be raised by the Rexx runtime once your routine
+<para>Raises the standard Error 40,  "Invalid call to routine" synatx error for the
+current routine.  This error will be raised by the Rexx runtime once the routine
 returns.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -6089,21 +6119,21 @@ int32_t n;
 ]]>
 </programlisting>
 <para>There a two forms of this method.
-The first converts a C 32-bit integer <emphasis role="italic">n</emphasis> to an Object.
-The second converts an Object to a C 32-bit integer, returning it in <emphasis role="italic">n</emphasis>.
+The first form converts a C 32-bit integer <emphasis role="italic">n</emphasis> to an Object.
+The second form converts an Object to a C 32-bit integer, returning it in <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>For the first form, the to be converted.  For the second form, the converted result.</para></entry>
+    <entry><para>For the first form, the value to be converted.  For the second form, the converted result.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object that represents the C integer in the first form.
-The second form returns 1 = success, 0 = failure.  If successful, the converted value is
+<para>For the first form, n Object representation of the integer value.
+For the second form,  returns 1 = success, 0 = failure.  If successful, the converted value is
 placed in <emphasis role="italic">n</emphasis>.
 </para>
 </section>
@@ -6152,7 +6182,7 @@ int32_t n;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object representing the integer value.</para>
+<para>An Object representation of the integer value.</para>
 </section>
 
 <section id="mthInt64"><title>Int64</title>
@@ -6194,8 +6224,8 @@ int64_t n;
 ]]>
 </programlisting>
 <para>There a two forms of this method.
-The first converts a C 64-bit integer <emphasis role="italic">n</emphasis> to an Object.
-The second converts an Object to a C 64-bit integer and returns in <emphasis role="italic">n</emphasis>.
+The first form converts a C 64-bit integer <emphasis role="italic">n</emphasis> to an Object.
+The second form converts an Object to a C 64-bit integer and returns in <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -6207,8 +6237,8 @@ The second converts an Object to a C 64-bit integer and returns in <emphasis rol
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object version of the integer value in the first form.
-The second form returns 1 = success, 0 = failure.  If successful, the converted value is
+<para>For the first form, an Object representation of the integer value.
+For the second form,  returns 1 = success, 0 = failure.  If successful, the converted value is
 placed in <emphasis role="italic">n</emphasis>.
 </para>
 </section>
@@ -6301,7 +6331,7 @@ is encoded in the 3 least significant bytes of the returned value, using
 1 byte each for the interpreter version, release, and revision values.
 For example, on a 32-bit platform, this value would be 0x00040000 for
 version 4.0.0.  The oorexxapi.h header file will have a define matching
-these values using a the naming convention REXX_INTERPRETER_4_0_0 and the
+these values using the naming convention REXX_INTERPRETER_4_0_0 and the
 macro REXX_CURRENT_INTERPRETER_VERSION will give the interpreter version
 used to compile your code.
 </para>
@@ -6350,8 +6380,8 @@ intptr_t n;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first converts the C signed integer <emphasis role="italic">n</emphasis> to an Object.
-The second converts an Object to a C signed integer and returns it in
+The first form converts the C signed integer <emphasis role="italic">n</emphasis> to an Object.
+The second form converts an Object to a C signed integer and returns it in
 <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -6365,8 +6395,8 @@ The second converts an Object to a C signed integer and returns it in
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>An Object version of the integer value in the first form.
-The second form returns 1 = success, 0 = failure.  If successful, the converted value is
+<para>For the first form, an Object version of the integer value.
+For the second form, returns 1 = success, 0 = failure.  If successful, the converted value is
 placed in <emphasis role="italic">n</emphasis>.
 </para>
 </section>
@@ -6415,7 +6445,7 @@ intptr_t n;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object representing the integer value.</para>
+<para>An Object representing the integer value.</para>
 </section>
 
 <section id="mthIsArray"><title>IsArray</title>
@@ -6701,7 +6731,7 @@ logical_t flag;
 >>--flag = context->IsOfType(obj, class);-------------------------------><
 ]]>
 </programlisting>
-<para>Tests an object to see if is an of the named class.
+<para>Tests an object to see if it is an instance of the named class.
 This method combines the operations of the FindClass() and IsInstanceOf() methods in a single call.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -7002,17 +7032,17 @@ RexxPackageObject pkg;
 >>--pkg = context->LoadPackage(name);---------------------------------><
 ]]>
 </programlisting>
-<para>Returns the package object loaded from the specified file path/name.
+<para>Returns the Package object loaded from the specified file path/name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
-    <entry><para>The ASCII-Z path/name of the Rexx package to load.</para></entry>
+    <entry><para>The ASCII-Z path/name of the Rexx package source file.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>The loaded Package object.
-Any errors involved with loading
+Any errors resulting from loading
 the package will return a NULLOBJECT value.  Information about errors
 can be retrieved using <link linkend="mthGetConditionInfo">GetConditionInfo()</link>.
 </para>
@@ -7059,10 +7089,10 @@ RexxPackageObject pkg;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
-    <entry><para>The ASCII-Z name of the Rexx package to load.</para></entry>
+    <entry><para>The ASCII-Z name assigned to the package.</para></entry>
     </row>
     <row><entry><emphasis role="italic">data</emphasis></entry>
-    <entry><para>Data buffer containing the Rexx code to load.</para></entry>
+    <entry><para>Data buffer containing the package Rexx.</para></entry>
     </row>
     <row><entry><emphasis role="italic">sz</emphasis></entry>
     <entry><para>The size of the <emphasis role="italic">data</emphasis> buffer.</para></entry>
@@ -7070,7 +7100,7 @@ RexxPackageObject pkg;
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>The loaded Package object.
-Any errors involved with loading
+Any errors resulting from loading
 the package will return a NULLOBJECT value.  Information about errors
 can be retrieved using <link linkend="mthGetConditionInfo">GetConditionInfo()</link>.
 </para>
@@ -7419,8 +7449,8 @@ size_t sz;
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>The created Method object.
-Any errors involved with creating the method
-the package will return a NULLOBJECT value.  Information about errors
+Any errors resulting from creating the method
+will return a NULLOBJECT value.  Information about any error
 can be retrieved using <link linkend="mthGetConditionInfo">GetConditionInfo()</link>.
 </para>
 </section>
@@ -7524,8 +7554,8 @@ size_t sz;
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>The new Routine object.
-Any errors involved with creating the method
-the package will return a NULLOBJECT value.  Information about errors
+Any errors resulting from creating the
+the routine will return a NULLOBJECT value.  Information about errors
 can be retrieved using <link linkend="mthGetConditionInfo">GetConditionInfo()</link>.
 </para>
 </section>
@@ -8424,7 +8454,7 @@ logical_t flag;
 </programlisting>
 <para>Convert a Rexx object to another type.  The target type is identified
 by the ValueDescriptor structure, and can by any of the types that may be
-used as a method or routine return types.  For many conversions, it may be
+used as a method or routine return type.  For many conversions, it may be
 more appropriate to use more targetted routines such as ObjectToWholeNumber().
 ObjectToValue() is capable of conversions to types such as int8_t for which
 there are no specific conversion APIs.
@@ -8495,7 +8525,7 @@ logical_t flag;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = success, 0 = conversion error.  The converted value is placed
+<para>1 = success, 0 = conversion error.  The converted value is placed in
 <emphasis role="italic">n</emphasis>.
 </para>
 </section>
@@ -8595,13 +8625,13 @@ Rexx code.
     <entry><para>The condition name.</para></entry>
     </row>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
-    <entry><para>The condition description as a String object.</para></entry>
+    <entry><para>The optional condition description as a String object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>A Array object containing additional information for the condition.</para></entry>
+    <entry><para>A optional Array object containing additional condition information.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>an Object object that will be returned as a routine or
+    <entry><para>A Object that will be returned as a routine or
     method result if the raised condition is not trapped by the caller.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
@@ -8657,7 +8687,7 @@ Rexx code.
     </para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>An Array of substitution values for the condition error message.</para></entry>
+    <entry><para>An Array of error message substitution values.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -8944,7 +8974,7 @@ RexxObjectPtr ref, obj;
 ]]>
 </programlisting>
 <para>Requests global garbage collection protection for an object reference.
-The returned value may be saved in native code and used as an object reference
+The returned value may be saved in native code control blocks and used as an object reference
 in any API context.  The <emphasis role="italic">obj</emphasis> will be protected
 from garbage collection until the global reference is released with
 <link linkend="mthReleaseGlobalReference">ReleaseGlobalReference()</link>.
@@ -9059,10 +9089,10 @@ RexxArrayObject arr;
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>The returned object. If the method does not return an object
 then NULLOBJECT is returned.
-Any errors involved with invoking the method
+Any errors resulting from invoking the method
 will return a NULLOBJECT value.  The
 <link linkend="mthCheckCondition">CheckCondition()</link>.
-can be used to check in an error occurred during the call.
+can be used to check if an error occurred during the call.
 </para>
 </section>
 
@@ -9115,10 +9145,10 @@ This is a short cut method when no arguments are needed by the receiving object 
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>The returned object. If the method does not return an object
 then NULLOBJECT is returned.
-Any errors involved with invoking the method
+Any errors resulting from invoking the method
 will return a NULLOBJECT value.  The
 <link linkend="mthCheckCondition">CheckCondition()</link>.
-can be used to check in an error occurred during the call.
+can be used to check if an error occurred during the call.
 </para>
 </section>
 
@@ -9174,10 +9204,10 @@ This is a short cut method when only one argument is needed by the receiving obj
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>The returned object. If the method does not return an object
 then NULLOBJECT is returned.
-Any errors involved with invoking the method
+Any errors resulting from invoking the method
 will return a NULLOBJECT value.  The
 <link linkend="mthCheckCondition">CheckCondition()</link>.
-can be used to check in an error occurred during the call.
+can be used to check if an error occurred during the call.
 </para>
 </section>
 
@@ -9236,10 +9266,10 @@ This is a short cut method when only two arguments are needed by the receiving o
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>The returned object. If the method does not return an object
 then NULLOBJECT is returned.
-Any errors involved with invoking the method
+Any errors resulting from invoking the method
 will return a NULLOBJECT value.  The
 <link linkend="mthCheckCondition">CheckCondition()</link>.
-can be used to check in an error occurred during the call.
+can be used to check if an error occurred during the call.
 </para>
 </section>
 
@@ -9276,7 +9306,7 @@ CSTRING name;
 </programlisting>
 <para>Sets the value of a Rexx variable in the current function context.
 Only simple and stem variables may be set using SetContextVariable().
-Compoune variable values may be set by retrieving the Stem object associated
+Compound variable values may be set by retrieving the Stem object associated
 with a stem variable and using <link linkend="mthSetStemElement">SetStemElement()</link>
 to set the associated compound variable.
 </para>
@@ -9443,7 +9473,7 @@ size_t n;
 ]]>
 </programlisting>
 <para>Sets an element of the Stem object. If the element exists it is replaced.
-This method strictly uses numerics as the element name.
+This method uses a numeric index as the element name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -9634,7 +9664,7 @@ size_t len;
 >>--obj = context->String(str);------------------------------------------><
 ]]>
 </programlisting>
-<para>There are two forms of this method. Both create a new object from a C string.
+<para>There are two forms of this method. Both create a new String object from a C string.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -9684,7 +9714,7 @@ CSTRING str;
 >>--str = context->StringData(obj);--------------------------------------><
 ]]>
 </programlisting>
-<para>Returns a read-only pointer to the string data of a String object.
+<para>Returns a read-only pointer to the String object's string data.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -9732,15 +9762,15 @@ size_t c, len1, len2;
 >>--c = context->StringGet(obj, len1, str, len2);------------------------><
 ]]>
 </programlisting>
-<para>Copies all or part of the object string value to the C string buffer.
+<para>Copies all or part of the String object to a C string buffer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The source String object for the copy.</para></entry>
+    <entry><para>The source String object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">len1</emphasis></entry>
-    <entry><para>The starting position within the String for the copy.
+    <entry><para>The starting position within the String.
        This argument is 1-based</para></entry>
     </row>
     <row><entry><emphasis role="italic">str</emphasis></entry>
@@ -9903,8 +9933,8 @@ The second converts an Object to a stringsize_t value and returns it in
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object version of the integer value in the first form.
-The second form returns 1 = success, 0 = failure.  If successful, the converted value is
+<para>For the first form, an Object representation of the integer value.
+For the second form, 1 = success, 0 = failure.  If successful, the converted value is
 placed in <emphasis role="italic">n</emphasis>.
 </para>
 </section>
@@ -9995,7 +10025,7 @@ RexxObjectPtr srcobj, newobj;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">srcobj</emphasis></entry>
-    <entry><para>The source String object to be converted to upper case.</para></entry>
+    <entry><para>The source String object.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -10322,7 +10352,7 @@ The second converts an Object to a uintptr_t value and returns it in
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>For the first method form, an Object version of the integer.
+<para>For the first form, an Object version of the integer.
 The second form returns 1 = success, 0 = failure.
 If successful, the converted value is placed in
 <emphasis role="bold">n</emphasis>.</para>
@@ -10372,7 +10402,7 @@ uintptr_t n;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object that represents the uintptr_t value.</para>
+<para>An Object that represents the uintptr_t value.</para>
 </section>
 
 <section id="mthUnsignedInt32"><title>UnsignedInt32</title>
@@ -10414,23 +10444,23 @@ uint32_t n;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The first convert a C 32-bit unsigned integer <emphasis role="italic">n</emphasis> to an Object.
+The first converts a C 32-bit unsigned integer <emphasis role="italic">n</emphasis> to an Object.
 The second converts an Object to a uint32_t value and returns it in
 <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>For the first method form, the uint32_t value to be converted.
-       For the second method form, the target of the conversion.</para></entry>
+    <entry><para>For the first form, the uint32_t value to be converted.
+       For the second form, the target of the conversion.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The object to be converted to a uint32_t value.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object version of the integer value in the first form.
-The second form returns 1 = success, 0 = failure.  If successful, the converted value is
+<para>For the first form, an Object version of the integer value.
+For the second form, returns 1 = success, 0 = failure.  If successful, the converted value is
 placed in <emphasis role="italic">n</emphasis>.
 </para>
 </section>
@@ -10479,7 +10509,7 @@ uint32_t n;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object that represents the C unsigned integer.</para>
+<para>An Object that represents the C unsigned integer.</para>
 </section>
 
 <section id="mthUnsignedInt64"><title>UnsignedInt64</title>
@@ -10528,16 +10558,16 @@ The second converts an Object to a uint64_t value and returns it in
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>For the first method form, the uint64_t value to be converted.
-       For the second form this, the target of the conversion.</para></entry>
+    <entry><para>For the first form, the uint64_t value to be converted.
+       For the second form, the target of the conversion.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The object to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object version of the integer value in the first form.
-The second form returns 1 = success, 0 = failure.  If successful, the converted value is
+<para>For the first form, an Object version of the integer value.
+For the second form, returns 1 = success, 0 = failure.  If successful, the converted value is
 placed in <emphasis role="italic">n</emphasis>.
 </para>
 </section>
@@ -10586,7 +10616,7 @@ uint64_t n;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object that represents the C unsigned integer.</para>
+<para>An Object that represents the C unsigned integer.</para>
 </section>
 
 <section id="mthValuesToObject"><title>ValuesToObject</title>
@@ -10672,14 +10702,14 @@ ValueDescriptor desc;;
 <para>Convert a type to an Object representation.  The source type is identified
 by the ValueDescriptor structure, and can by any of the types that may be
 used as a method or routine return types.  For many conversions, it may be
-more appropriate to use more targetted routines such as WholeNumberToObject().
+more appropriate to use more targeted routines such as WholeNumberToObject().
 ValueToObject() is capable of converting to types such as int8_t for which
 there are no specific conversion APIs.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">desc</emphasis></entry>
-    <entry><para>A C pointer to the ValueDescriptor struct describing the value to be converted.</para></entry>
+    <entry><para>A C pointer to the ValueDescriptor struct describing the source value.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -10725,7 +10755,8 @@ logical_t flag;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The second converts an Object to a wholenumber_t value and returns it in
+The first form converts a wholenumber_t value to an Object.
+The second form converts an Object to a wholenumber_t value and returns it in
 <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -10739,8 +10770,8 @@ The second converts an Object to a wholenumber_t value and returns it in
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object version of the integer value in the first form.
-The second form returns 1 = success, 0 = failure.  If successful, the converted value is
+<para>For the first form, an Object version of the integer value.
+For the second form, returns 1 = success, 0 = failure.  If successful, the converted value is
 placed in <emphasis role="italic">n</emphasis>.
 </para>
 </section>
@@ -10789,7 +10820,7 @@ wholenumber_t n;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object that represents the C whole number.</para>
+<para>An Object that represents the C whole number.</para>
 </section>
 
 </section>
