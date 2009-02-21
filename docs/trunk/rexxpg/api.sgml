@@ -1125,7 +1125,7 @@ special conversions on argument values.  The special types available to routines
 <varlistentry><term>CSTRING</term>
 <listitem><para>The argument is passed as an ASCII-Z string.  The source argument must be
 one that is valid as a RexxStringObject value.  The RexxStringObject is converted into a
- pointer to an ASCII-Z string.  This is equivalent to the value returned from the
+pointer to an ASCII-Z string.  This is equivalent to the value returned from the
 <link linkend="mthObjectToStringValue">StringValue() API</link>
 from a RexxStringObject value.  For an optional CSTRING argument, a NULL pointer
 is provided when the argument is omitted.</para>
@@ -1146,7 +1146,8 @@ RexxRoutine0(CSTRING, MyRoutine)
    return buffer;     // buffer is not valid once return executes
 }
 </programlisting>
-<para>A RexxStringObject return value and the String() API is more appropriate in this
+<para>A RexxStringObject return value and the
+<link linkend="mthString">String()</link> API is more appropriate in this
 situation.</para>
 <programlisting>
 RexxRoutine0(RexxStringObject, MyRoutine)
@@ -1161,8 +1162,8 @@ RexxRoutine0(RexxStringObject, MyRoutine)
 <varlistentry><term>POINTER</term>
 <listitem><para>an "unwrapped" Pointer or Buffer string object.  If the argument is a
 Pointer object, the wrapped pointer value is returned as a void * value..  If the argument is a Buffer object,
-then a pointer to buffer's storage area is returned.  A NULL pointer is returned for
-an omitted optional POINTER argument.</para>
+then a pointer to the buffer's data area is returned.  A NULL pointer is returned for
+an omitted OPTIONAL_POINTER argument.</para>
 <para>When POINTER is used as a routine return value, any pointer value can be
 returned.  The Rexx runtime will wrap the pointer value in a Rexx Pointer object.
 </para></listitem></varlistentry>
@@ -1263,8 +1264,8 @@ RexxMethod2(int, beep, wholenumber_t, frequency, OPTIONAL_wholenumber_t, duratio
 }
 </programlisting>
 <para>would define a method that takes two arguments.  The first argument is required, but the
-second is optional.  Any optional arguments will be passed using an appropriate zero
-value for the type.  The macros argumentExists(n) or argumentOmitted(n) can reliably test if
+second is optional.  Any omitted optional arguments will be passed using a zero
+value appropriate for the type.  The macros argumentExists(n) or argumentOmitted(n) can reliably test if
 an argument was passed.  For example, argumentExists(2) tests if the
 <emphasis role="italic">duration</emphasis> argument was specified when calling the beep() method.
 The <emphasis role="italic">n</emphasis> value is origin 1.</para>
@@ -1277,14 +1278,15 @@ See below for details on the special argument types.
 </para>
 <para>All method declarations have an undeclared special argument passed to the routine.  This
 special argument is named <emphasis role="italic">context</emphasis>.  The
-<emphasis role="italic">context</emphasis> is a pointer to a RexxMethodContext value and
-provides access to all APIs that are valid from a method context.</para>
+<emphasis role="italic">context</emphasis> is a pointer to a
+<link linkend="methodcontext">RexxMethodContext</link> value and
+provides access to all APIs valid from a method context.</para>
 <note><title>Note</title><para>
 void is not a valid return type for a method.  There must be a real return
 type specified on the method declaration.  If you wish to have a method without
 a return value, declare the method with a return type of RexxObjectPtr and
 return the value NULLOBJECT.  Methods that do not return a real value may not
-be invoked within expression, but must be used as standalone method instructions.
+be invoked within expression, but must be used as standalone message instructions.
 </para></note>
 </section>
 
@@ -1321,7 +1323,7 @@ mechanism.
 <listitem><para>An instance of Rexx Class class.
 </para></listitem></varlistentry>
 <varlistentry><term>RexxStemObject</term>
-<listitem><para>An instance of Rexx Stem class.  For method calls, a stem argument
+<listitem><para>An instance of Rexx Stem class.  To pass a Stem to a method, a stem argument
 must be specified using a stem variable name directly.
 For example, for a method defined using</para>
 <programlisting>
@@ -1406,15 +1408,15 @@ open-ended number of arguments.
 ARGLIST is not valid as a return value.
 </para></listitem></varlistentry>
 <varlistentry><term>OSELF</term>
-<listitem><para>A RexxObjectPtr containing a reference to the object the method is running on.
-This is equivalent to the SELF variable that is set in Rexx method code.  OSELF is not valid as a return value.
+<listitem><para>A RexxObjectPtr containing a reference to the object that was the message target for the current method.
+This is equivalent to the SELF variable that is available in Rexx method code.  OSELF is not valid as a return value.
 </para></listitem></varlistentry>
 <varlistentry><term>SUPER</term>
-<listitem><para>A RexxClassObject containing a reference to the super object for the method scope.
+<listitem><para>A RexxClassObject containing a reference to the super scope object for the current method.
 This is equivalent to the SUPER variable that is set in Rexx method code.  SUPER is not valid as a return value.
 </para></listitem></varlistentry>
 <varlistentry><term>SCOPE</term>
-<listitem><para>A RexxObjectPtr containing a reference to the owning scope for the current method.  This
+<listitem><para>A RexxObjectPtr containing a reference to the current method's owning scope.  This
 is normally the class that defined the method currently being executed.
 SCOPE is not valid as a return value.
 </para></listitem></varlistentry>
@@ -1475,7 +1477,7 @@ reside as entry points within the application that creates the interpreter insta
 <indexterm><primary>RexxContextExitHandler interface</primary>
 <secondary>definition</secondary></indexterm>
 <para>The following is a sample exit handler
-definition: </para>
+declaration: </para>
 <programlisting>
 <![CDATA[
 int REXXENTRY Rexx_IO_exit(
@@ -1488,8 +1490,8 @@ int REXXENTRY Rexx_IO_exit(
 <para>where:</para>
 <variablelist>
 <varlistentry><term>context</term>
-<listitem><para>is RexxExitContext vector that provides access to interpreter services
-for this call out.
+<listitem><para>is the RexxExitContext vector that provides access to interpreter services
+for this exit handler.
 </para></listitem></varlistentry>
 <varlistentry><term>exitNumber</term>
 <listitem><para>is the major function code defining the type of exit call.
@@ -1505,7 +1507,7 @@ parameter list formats. </para>
 
 <note>
 <para>Some exit subfunctions do not have
-parameters. <emphasis role="italic">parmBlock</emphasis> is set to null for exit subfunctions without
+parameters. <emphasis role="italic">parmBlock</emphasis> is set to NULL for exit subfunctions without
 parameters.</para></note>
 </listitem></varlistentry>
 </variablelist>
@@ -1583,6 +1585,9 @@ exits will be enabled.
 <listitem><para>Call an external function.  This exit is
 called at the beginning of the search for external functions, allowing
 external functions calls to be intercepted.
+The RXFNCCAL converts all function arguments to RXSTRING values and
+can only return RXSTRING values as a function result.  For full object access,
+the RXOFNC exit is also provided.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -2500,10 +2505,10 @@ to retrieve the Rexx variable values.</para></listitem>
 
 <section id="commandapi"><title>Command Handler Interface</title>
 <para>Applications can create custom command handlers that function like operating command shell environments.
-These named evironments can be targetted with the Rexx ADDRESS instuction and applications can create
-Rexx instances that direct commands to application command handlers by default.
+These named evironments can be invoked with the Rexx ADDRESS instuction and applications can create
+Rexx instances that direct commands to custom application command handlers by default.
 </para>
-<para>Command handlers are created by registering the handers with an interpreter instance when it is created.
+<para>Command handlers are registered with an interpreter instance when it is created.
 See <link linkend="instanceoptions">Interpreter Instance Options</link> for how to register a handler with
 an interpreter instance.</para>
 <para>The command handlers are registered as a function pointer to a handler routine.  When a Rexx program
@@ -3472,15 +3477,16 @@ RexxArrayObject arr;
     <entry><para>The ASCII-Z path/name of the Rexx program to call.</para></entry>
     </row>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>The Array of object arguments to the specified program.</para></entry>
+    <entry><para>An Array of object program arguments.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>Any result object returned by the program, if any.
+<para>Any result object returned by the program.  NULLOBJECT is returned if the
+program does not return a value.
 Any errors involved with calling the program
-will return a NULLOBJECT value.  The
+will will return a NULLOBJECT result.  The
 <link linkend="mthCheckCondition">CheckCondition()</link>.
-can be used to check if an error occurred during the call.
+can be used to check if any errors occurred during the call.
 </para>
 </section>
 
@@ -3527,15 +3533,16 @@ RexxArrayObject arr;
     <entry><para>The routine object to call.</para></entry>
     </row>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>The Array of object arguments to the specified routine.</para></entry>
+    <entry><para>An Array of routine argument objects.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>Any result object returned by the routine, if any.
-Any errors involved with calling the routine
-will return a NULLOBJECT value.  The
+<para>Any result object returned by the Routine.  NULLOBJECT is returned if the
+program does not return a value.
+Any errors involved with calling the program
+will will return a NULLOBJECT result.  The
 <link linkend="mthCheckCondition">CheckCondition()</link>.
-can be used to check if an error occurred during the call.
+can be used to check if any errors occurred during the call.
 </para>
 </section>
 
@@ -3668,10 +3675,10 @@ The second converts C ASCII-Z string into a String object.
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The source object for the conversion for the first form of the method.</para></entry>
+    <entry><para>The source object for the conversion.</para></entry>
     </row>
     <row><entry><emphasis role="italic">str</emphasis></entry>
-    <entry><para>The source C ASCII-Z string for the conversion for the second form of the method.</para></entry>
+    <entry><para>The source C ASCII-Z string for the conversion.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -3726,7 +3733,9 @@ RexxCondition cond;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>Void.</para>
+<para>Void.  The <emphasis role="bold">cond</emphasis> structure is updated with information from
+<emphasis role="italic">dir</emphasis>.
+</para>
 </section>
 
 <section id="mthDetachThread"><title>DetachThread</title>
@@ -3756,7 +3765,8 @@ RexxCondition cond;
 ]]>
 </programlisting>
 <para>Detaches the thread represented by the RexxThreadContext object from it's
-interpreter instance.
+interpreter instance.  Once DetachThread() is called, the RexxThreadContext object
+issuing the call is no longer a valid, active interface.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None</para>
@@ -3852,7 +3862,7 @@ CSTRING str;
 >>--context->DirectoryPut(dirobj, index, str);---------------------------><
 ]]>
 </programlisting>
-<para>Replace/add an Object to a Directory object at the specified index.
+<para>Replace/add an Object at the specified Directory index.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -3906,7 +3916,7 @@ CSTRING str;
 >>--obj = context->DirectoryRemove(dirobj, str);-------------------------><
 ]]>
 </programlisting>
-<para>Removes and returns the object at the specified index.
+<para>Removes and returns the object at the specified Directory index.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -3968,16 +3978,18 @@ The second form converts an Object to a C double value.
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The double value to be converted in the first form of the method.
-       The target of the conversion in the second form of the method.</para></entry>
+    <entry><para>For the first method form, the double value to be converted.
+       For the second method form, the target of the conversion.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be converted..</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>Returns an Object with the string value of the double value in the first form of the method.
-0 - success, 1 = failure in the second form of the method.</para>
+<para>For the first method form, returns an Object version of the double value.
+For the second method form, 0 - success, 1 = failure.
+If successful, the converted value is placed in
+<emphasis role="bold">n</emphasis>.<</para>
 </section>
 
 <section id="mthDoubleToObject"><title>DoubleToObject</title>
@@ -4024,7 +4036,7 @@ double n;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object with the string value of the double value.</para>
+<para>An Object representation of the double value.</para>
 </section>
 
 <section id="mthDoubleToObjectWithPrecision"><title>DoubleToObjectWithPrecision</title>
@@ -4075,7 +4087,7 @@ double n;
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object with the string value of the double value.</para>
+<para>An Object representation of the double value.</para>
 </section>
 
 <section id="mthDropContextVariable"><title>DropContextVariable</title>
@@ -4108,7 +4120,7 @@ CSTRING name;
 >>--context->DropContextVariable(name);-------------------------------><
 ]]>
 </programlisting>
-<para>Drops a Rexx variable in the current routines caller's variable context.
+<para>Drops a Rexx variable in the current routine's caller variable context.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -4431,7 +4443,7 @@ CSTRING name;
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">pkg</emphasis></entry>
-    <entry><para>The Package object used to resolve the cllass.</para></entry>
+    <entry><para>The Package object used to resolve the class.</para></entry>
     </row>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>An ASCII-Z string containing the name of the class.</para></entry>
@@ -5121,7 +5133,7 @@ CSTRING str;
 >>--str = context->GetMessageName(obj);-------------------------------><
 ]]>
 </programlisting>
-<para>Returns the message name used to invoke the current Method.
+<para>Returns the message name used to invoke the current method.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <para>None.</para>
@@ -6078,12 +6090,12 @@ int32_t n;
 </programlisting>
 <para>There a two forms of this method.
 The first converts a C 32-bit integer <emphasis role="italic">n</emphasis> to an Object.
-The second converts an Object to a C 32-bit integer, returning it in the location pointed to by <emphasis role="italic">n</emphasis>.
+The second converts an Object to a C 32-bit integer, returning it in <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The to be converted or a pointer to return the conversion result.</para></entry>
+    <entry><para>For the first form, the to be converted.  For the second form, the converted result.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be converted.</para></entry>
@@ -6092,7 +6104,7 @@ The second converts an Object to a C 32-bit integer, returning it in the locatio
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>an Object that represents the C integer in the first form.
 The second form returns 1 = success, 0 = failure.  If successful, the converted value is
-stored at the location pointed to by <emphasis role="italic">n</emphasis>.
+placed in <emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
@@ -6183,12 +6195,12 @@ int64_t n;
 </programlisting>
 <para>There a two forms of this method.
 The first converts a C 64-bit integer <emphasis role="italic">n</emphasis> to an Object.
-The second converts an Object to a C 64-bit integer and returns in the area pointed to by <emphasis role="italic">n</emphasis>.
+The second converts an Object to a C 64-bit integer and returns in <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The integer to be converted or the location for returning the converted integer.</para></entry>
+    <entry><para>For the first form, the integer to be converted.  For the second form, the converted integer.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be converted.</para></entry>
@@ -6197,7 +6209,7 @@ The second converts an Object to a C 64-bit integer and returns in the area poin
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>an Object version of the integer value in the first form.
 The second form returns 1 = success, 0 = failure.  If successful, the converted value is
-stored at the location pointed to by <emphasis role="italic">n</emphasis>.
+placed in <emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
@@ -6339,14 +6351,14 @@ intptr_t n;
 </programlisting>
 <para>There are two forms of this method.
 The first converts the C signed integer <emphasis role="italic">n</emphasis> to an Object.
-The second converts an Object to a C signed integer and returns it in the location
-pointed to by <emphasis role="italic">n</emphasis>.
+The second converts an Object to a C signed integer and returns it in
+<emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The C pointer to the signed integer to be converted in the first form.
-       The target of the conversion in the second form.</para></entry>
+    <entry><para>For the first form, the value to be converted.
+       For the second form, the conversion result.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be converted.</para></entry>
@@ -6355,7 +6367,7 @@ pointed to by <emphasis role="italic">n</emphasis>.
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>An Object version of the integer value in the first form.
 The second form returns 1 = success, 0 = failure.  If successful, the converted value is
-stored at the location pointed to by <emphasis role="italic">n</emphasis>.
+placed in <emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
@@ -7116,10 +7128,10 @@ The second form converts a C logical value to an Object.
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>For the first method form, 1 = success and 0 = conversion error,  with the converted value returned in the
-location pointed to by <emphasis role="italic">n</emphasis>
+<para>For the first method form, 1 = success and 0 = conversion error,  with the converted value placed in
+<emphasis role="italic">n</emphasis>
 For the second form,
-an Object version of the logical value is returned.</para>
+an Object version of the logical value.</para>
 </section>
 
 <section id="mthLogicalToObject"><title>LogicalToObject</title>
@@ -7850,12 +7862,12 @@ logical_t flag;
     <entry><para>The source object for the conversion.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>A pointer to the location that receives the converted double result.</para></entry>
+    <entry><para>A returned converted value.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = success, 0 = conversion error.  The converted value is stored in the
-location pointed to by <emphasis role="italic">n</emphasis>.
+<para>1 = success, 0 = conversion error.  The converted value is placed in
+<emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
@@ -7903,12 +7915,12 @@ logical_t flag;
     <entry><para>The object to convert.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>A pointer to the location used to return the conversion result.</para></entry>
+    <entry><para>The conversion result.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = success, 0 = conversion error.  The converted value is stored in the
-location pointed to by <emphasis role="italic">n</emphasis>.
+<para>1 = success, 0 = conversion error.  The converted value is placed in
+<emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
@@ -7956,12 +7968,12 @@ logical_t flag;
     <entry><para>The object to be converted.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>A pointer to the location used to return the conversion result.</para></entry>
+    <entry><para>The conversion result.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = success, 0 = conversion error.  The converted value is stored in the
-location pointed to by <emphasis role="italic">n</emphasis>.
+<para>1 = success, 0 = conversion error.  The converted value is placed in
+<emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
@@ -8009,12 +8021,12 @@ logical_t flag;
     <entry><para>The object to convert.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>A pointer to the location used to return the conversion result.</para></entry>
+    <entry><para>The conversion result.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = success, 0 = conversion error.  The converted value is stored in the
-location pointed to by <emphasis role="italic">n</emphasis>.
+<para>1 = success, 0 = conversion error.  The converted value is placed in
+<emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
@@ -8061,12 +8073,12 @@ logical_t flag, n;
     <entry><para>The object to convert.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>A pointer to the location used to return the conversion result.</para></entry>
+    <entry><para>The conversion result.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = success, 0 = conversion error.  The converted value is stored in the
-location pointed to by <emphasis role="italic">n</emphasis>.
+<para>1 = success, 0 = conversion error.  The converted value is placed in
+<emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
@@ -8161,12 +8173,12 @@ logical_t flag;
     <entry><para>The object to convert.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>A pointer to the location used to return the conversion result.</para></entry>
+    <entry><para>The conversion result.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = success, 0 = conversion error.  The converted value is stored in the
-location pointed to by <emphasis role="italic">n</emphasis>.
+<para>1 = success, 0 = conversion error.  The converted value is placed in
+<emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
@@ -8261,12 +8273,12 @@ logical_t flag;
     <entry><para>The object to convert.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>A pointer to the location used to return the conversion result.</para></entry>
+    <entry><para>The conversion result.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = success, 0 = conversion error.  The converted value is stored in the
-location pointed to by <emphasis role="italic">n</emphasis>.
+<para>1 = success, 0 = conversion error.  The converted value is placed in
+<emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
@@ -8314,12 +8326,12 @@ logical_t flag;
     <entry><para>The object to convert.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>A pointer to the location used to return the conversion result.</para></entry>
+    <entry><para>The conversion result.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = success, 0 = conversion error.  The converted value is stored in the
-location pointed to by <emphasis role="italic">n</emphasis>.
+<para>1 = success, 0 = conversion error.  The converted value is placed in
+<emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
@@ -8367,12 +8379,12 @@ logical_t flag;
     <entry><para>The object to convert.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>A pointer to the location used to return the conversion result.</para></entry>
+    <entry><para>The conversion result.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = success, 0 = conversion error.  The converted value is stored in the
-location pointed to by <emphasis role="italic">n</emphasis>.
+<para>1 = success, 0 = conversion error.  The converted value is placed in
+<emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
@@ -8479,12 +8491,12 @@ logical_t flag;
     <entry><para>The object to convert.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>A pointer to the location used to return the conversion result.</para></entry>
+    <entry><para>The conversion result.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>1 = success, 0 = conversion error.  The converted value is stored in the
-location pointed to by <emphasis role="italic">n</emphasis>.
+<para>1 = success, 0 = conversion error.  The converted value is placed
+<emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
@@ -9877,14 +9889,14 @@ stringsize_t n;
 </programlisting>
 <para>There are two forms of this method.
 The first converts the stringsize_t value <emphasis role="italic">n</emphasis> to an Object.
-The second converts an Object to a stringsize_t value and returns it in the location
-pointed to by <emphasis role="italic">n</emphasis>.
+The second converts an Object to a stringsize_t value and returns it in
+<emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The stringsize_t value to be converted in the first form.
-       The target of the conversion in the second form.</para></entry>
+    <entry><para>For the first form, the stringsize_t value to be converted.
+       For the second form, the target of the conversion.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be converted.</para></entry>
@@ -9893,7 +9905,7 @@ pointed to by <emphasis role="italic">n</emphasis>.
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>an Object version of the integer value in the first form.
 The second form returns 1 = success, 0 = failure.  If successful, the converted value is
-stored at the location pointed to by <emphasis role="italic">n</emphasis>.
+placed in <emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
@@ -10296,23 +10308,24 @@ uintptr_t n;
 </programlisting>
 <para>There are two forms of this method.
 The first converts the uintptr_t value <emphasis role="italic">n</emphasis> to an Object.
-The second converts an Object to a uintptr_t value and returns it in the location
-pointed to by <emphasis role="italic">n</emphasis>.
+The second converts an Object to a uintptr_t value and returns it in
+<emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The uintptr_t value to be converted in the first form or
-    the target of the conversion in the second form of the method.</para></entry>
+    <entry><para>For the first form, the uintptr_t value to be converted.
+    For the second form, the target of the conversion.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be converted.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>an Object version of the integer value in the first form.
-The second form returns 1 = success, 0 = failure.  If successful, the converted value is
-stored at the location pointed to by <emphasis role="italic">n</emphasis>.
+<para>For the first method form, an Object version of the integer.
+The second form returns 1 = success, 0 = failure.
+If successful, the converted value is placed in
+<emphasis role="bold">n</emphasis>.<</para>
 </para>
 </section>
 
@@ -10403,14 +10416,14 @@ uint32_t n;
 </programlisting>
 <para>There are two forms of this method.
 The first convert a C 32-bit unsigned integer <emphasis role="italic">n</emphasis> to an Object.
-The second converts an Object to a uint32_t value and returns it in the location
-pointed to by <emphasis role="italic">n</emphasis>.
+The second converts an Object to a uint32_t value and returns it in
+<emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The uint32_t value to be converted.for the first form of the method.
-       For the second form this is the target of the conversion.</para></entry>
+    <entry><para>For the first method form, the uint32_t value to be converted.
+       For the second method form, the target of the conversion.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The object to be converted to a uint32_t value.</para></entry>
@@ -10419,7 +10432,7 @@ pointed to by <emphasis role="italic">n</emphasis>.
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>an Object version of the integer value in the first form.
 The second form returns 1 = success, 0 = failure.  If successful, the converted value is
-stored at the location pointed to by <emphasis role="italic">n</emphasis>.
+placed in <emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
@@ -10510,14 +10523,14 @@ uint64_t n;
 </programlisting>
 <para>There are two forms of this method.
 The first converts a C 64-bit unsigned integer <emphasis role="italic">n</emphasis> to an Object.
-The second converts an Object to a uint64_t value and returns it in the location
-pointed to by <emphasis role="italic">n</emphasis>.
+The second converts an Object to a uint64_t value and returns it in
+<emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The uint64_t value to be converted.for the first form of the method.
-       For the second form this is the target of the conversion.</para></entry>
+    <entry><para>For the first method form, the uint64_t value to be converted.
+       For the second form this, the target of the conversion.</para></entry>
     </row>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The object to be converted.</para></entry>
@@ -10526,7 +10539,7 @@ pointed to by <emphasis role="italic">n</emphasis>.
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>an Object version of the integer value in the first form.
 The second form returns 1 = success, 0 = failure.  If successful, the converted value is
-stored at the location pointed to by <emphasis role="italic">n</emphasis>.
+placed in <emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
@@ -10713,14 +10726,14 @@ logical_t flag;
 ]]>
 </programlisting>
 <para>There are two forms of this method.
-The second converts an Object to a wholenumber_t value and returns it in the location
-pointed to by <emphasis role="italic">n</emphasis>.
+The second converts an Object to a wholenumber_t value and returns it in
+<emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The wholenumber_t value to be converted.for the first form of the method.
-       For the second form this is the target of the conversion.</para></entry>
+    <entry><para>For the first form, the wholenumber_t value to be converted.
+       For the second form, the target of the conversion.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source object for the conversion.</para></entry>
@@ -10729,7 +10742,7 @@ pointed to by <emphasis role="italic">n</emphasis>.
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>an Object version of the integer value in the first form.
 The second form returns 1 = success, 0 = failure.  If successful, the converted value is
-stored at the location pointed to by <emphasis role="italic">n</emphasis>.
+placed in <emphasis role="italic">n</emphasis>.
 </para>
 </section>
 
