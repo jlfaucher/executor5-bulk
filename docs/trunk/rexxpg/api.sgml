@@ -1497,7 +1497,7 @@ still needed.  The usual protection mechanism it to store the buffer object in a
 instance variable using <link linkend="mthSetObjectVariable">SetObjectVariable()</link>.  Once
 assigned to a variable, the Buffer is protected from garbage collection until its associated
 object instance is also reclaimed.  The buffer is part of the persistent state of the
-the object.<para>
+the object.</para>
 <para>Buffer objects are allocated using the <link linkend="mthNewBuffer">NewBuffer()</link> that's part
 of the RexxThreadContext interface.  Once created, you access the Buffer's data area using
 <link linkend="mthBufferData">BufferData()</link>, which returns a pointer to the beginning of the
@@ -1630,7 +1630,7 @@ code might look like this:</para>
 
 ::method privateSetTitle PRIVATE EXTERNAL "LIBRARY mygui setTitle"
 </programlisting>
-<para>The corresponding C++ method would look like this:
+<para>The corresponding C++ method would look like this:</para>
 <programlisting>
 <![CDATA[
 RexxMethod2(RexxObjectPtr, setTitle, POINTER, handle, CSTRING, title)
@@ -1646,7 +1646,7 @@ RexxMethod2(RexxObjectPtr, setTitle, POINTER, handle, CSTRING, title)
 create a Pointer object instance that wrappers the returned void *value.  The created
 Pointer instance is the result returned to the Rexx code.</para>
 </section>
-<section id="clsPointer"><title>The POINTER method type</title>
+<section id="clsPointerType"><title>The POINTER method type</title>
 <para>There's one additional concept using Pointer and Buffer objects supported by the
 C++ APIs.  When a method definition specifies the special type CSELF, the runtime will
 look for an object variable named CSELF.  If the variable is found, and if the variable
@@ -1720,6 +1720,7 @@ of a class using the CSELF convention to access the backing native data.
 object instance.  The other object instance might be of the same class or another class that is designed
 to interoperate with the current class.  The <link linkend="mthObjectToCSelf">ObjectToCSelf()</link> allows
 the CSELF information for an object other than the current active object to be retieved.</para>
+</section>
 </section>
 </section>
 </section>
