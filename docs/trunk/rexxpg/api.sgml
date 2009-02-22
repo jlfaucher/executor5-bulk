@@ -1478,6 +1478,249 @@ RexxMethod3(size_t, stream_charout, CSELF, streamPtr, OPTIONAL_RexxStringObject,
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="cself"><title>Pointer, Buffer, and CSELF</title>
+<para>Methods written in C++ frequently need to acquire access to data that is associated
+with an object instance.  ooRexx provides two classes, Buffer and Pointer, that allow
+these associations to be made.  Both classes are real Rexx classes that can be passed
+as arguments, returned as method results, and assigned to object instance variables.  For
+the Rexx prgrammer who might encounter one of these instances, these are opaque objects that
+don't appear to be of much use.  To the native library writer, the usefulness derives from
+what's stored inside these objects.</para>
+<section id="clsBuffer"><title>The Buffer class</title>
+<para>The Buffer class allows the library writer to allocate blocks of memory from the
+Rexx object space.  The memory is a part of the Buffer object instance, and will be reclaimed
+automatically when the Buffer object is garbage collected.  This means the programmer does not
+need to explicitly release a Buffer object, this is handled automatically.  It does, however,
+require that steps be taken to protect the Buffer object from garbage collection while it is
+still needed.  The usual protection mechanism it to store the buffer object in an object
+instance variable using <link linkend="mthSetObjectVariable">SetObjectVariable()</link>.  Once
+assigned to a variable, the Buffer is protected from garbage collection until its associated
+object instance is also reclaimed.  The buffer is part of the persistent state of the
+the object.<para>
+<para>Buffer objects are allocated using the <link linkend="mthNewBuffer">NewBuffer()</link> that's part
+of the RexxThreadContext interface.  Once created, you access the Buffer's data area using
+<link linkend="mthBufferData">BufferData()</link>, which returns a pointer to the beginning of the
+data buffer.  The data buffer area is writeable storage, into which any data may be placed.  This
+is frequently used to allocate a C++ struct or class instance that is the native embodiment of the
+class implementation.  For example</para>
+<programlisting>
+<![CDATA[
+RexxMethod0(RexxObjectPtr, myclass_init)
+{
+    // create a buffer for my internal data.
+    RexxBufferObject data = context->NewBuffer(sizeof(MyDataClass));
+    // store this someplace safe
+    context->SetObjectVariable("MYDATA", data);
+    // get access to the data area
+    void *dataPtr = context->BufferData(data);
+    // construct a C++ object in place in the buffer
+    MyDataClass *myData = new (dataPtr) MyDataClass();
+    // initialize the data below
+    ...
+
+    return NULLOBJECT;
+}
+]]>
+</programlisting>
+<para>This example allocates a Buffer object instance, creates a C++ class in its data area, and
+stores a reference to the Buffer in the MYDATA object variable.  Other C++ methods can access
+this instance by using the C++ equivalent to the Rexx EXPOSE instruction.</para>
+<programlisting>
+<![CDATA[
+RexxMethod0(RexxObjectPtr, myclass_dosomething)
+{
+    // retrieve my instance buffer
+    RexxBufferObject data = (RexxBufferObject)context->GetObjectVariable("MYDATA");
+    // Get the data pointer and cast it back to my class type
+    MyDataClass *myData = (MyDataClass *)context->BufferData(data);
+    // perform the operation below
+    ...
+}
+]]>
+</programlisting>
+<para>Since Buffer object instances are reclaimed automatically when the object
+is gabage collected, no additional steps are required to cleanup that memory.
+However, if there are additional dymanically allocated resources associated with
+the Buffer, such as pointers to system allocated resources or dynamically allocated
+memory, it may be necessary to add an UNINIT method to your class to ensure the
+resources are not leaked.</para>
+<programlisting>
+<![CDATA[
+RexxMethod0(RexxObjectPtr, myclass_uninit)
+{
+    // retrieve my instance buffer
+    RexxBufferObject data = context->GetObjectVariable("MYDATA");
+    // Get the data pointer and cast it back to my class type
+    MyDataClass *myData = (MyDataClass *)context->BufferData(data);
+    // delete any resources I've obtained (but not the MyDataClass
+    // instance itself
+    delete ((void *)myData) myData;
+}
+]]>
+</programlisting>
+</section>
+<section id="clsPointer"><title>The Pointer class</title>
+<para>The Pointer class has similar uses as the Buffer class, but Pointer instances
+only hold a single pointer value to native C/C++ resources.  A Pointer instance is
+effectively a Buffer object where the buffer data area is a single void * pointer.
+Like Buffer objects, Pointers can be stored in Rexx variables and retrieved in
+native methods.  Pointer object instances are garbage collected just like Buffer
+objects, but when a Pointer is reclaimed, whatever values refererenced by the
+Pointer instance are not cleaned up.  If additional cleanup is required, then
+it will be necessary to implement an UNINIT method to handle the cleanup.  Here
+are the Buffer examples above reworked for the Pointer class:</para>
+<programlisting>
+<![CDATA[
+RexxMethod0(RexxObjectPtr, myclass_init)
+{
+    // construct a C++ object to associate with the object
+    MyDataClass *myData = new MyDataClass();
+    // create a Pointer to store this in the object
+    RexxPointerObject data = context->NewPointer(myData);
+    // store this someplace safe
+    context->SetObjectVariable("MYDATA", data);
+    // initialize the data below
+    ...
+
+    return NULLOBJECT;
+}
+
+
+RexxMethod0(RexxObjectPtr, myclass_dosomething)
+{
+    // retrieve my instance data
+    RexxPointerObject data = (RexxPointerObject)context->GetObjectVariable("MYDATA");
+    // Get the data pointer and cast it back to my class type
+    MyDataClass *myData = (MyDataClass *)context->PointerValue(data);
+    // perform the operation below
+    ...
+}
+
+
+RexxMethod0(RexxObjectPtr, myclass_uninit)
+{
+    // retrieve my instance data
+    RexxPointerObject data = (RexxPointerObject)context->GetObjectVariable("MYDATA");
+    // Get the data pointer and cast it back to my class type
+    MyDataClass *myData = (MyDataClass *)context->PointerValue(data);
+    // delete the backing instance
+    delete myData;
+}
+]]>
+</programlisting>
+</section>
+<section id="clsPointer"><title>The POINTER method type</title>
+<para>The Rexx runtime has some special support for Pointer and Buffer objects
+when they are passed as method arguments and also when used as return values.  The
+RexxMethod macros used to define method instances support the POINTER special argument
+type.  When an argument is defined as a POINTER, then the argument value must be either
+a Buffer object or a Pointer object.  The Rexx runtime will automatically pass this
+argument to the native method as the Buffer BufferData() value or the Pointer PointerValue()
+value, thus removing the need to unwrapper these in the method code.  The POINTER type
+is generally used for private methods of a class where the Rexx versions of the methods
+pass Pointer or Buffer references to the private native code.  For example, the Rexx
+code might look like this:</para>
+<programlisting>
+::method setTitle
+  expose title prefix handle
+  use arg title
+  // set the title to the title concatenated to the prefix
+  self~privateSetTitle(handle, prefix title)
+
+::method privateSetTitle PRIVATE EXTERNAL "LIBRARY mygui setTitle"
+</programlisting>
+<para>The corresponding C++ method would look like this:
+<programlisting>
+<![CDATA[
+RexxMethod2(RexxObjectPtr, setTitle, POINTER, handle, CSTRING, title)
+{
+    // the pointer object was unwrapped for me
+    MyWindowHandle *myHandle = (MyWindowHandle *)handle;
+
+    // other stuff here
+}
+]]>
+</programlisting>
+<para>When POINTER is used as a method return type, the runtime will automatically
+create a Pointer object instance that wrappers the returned void *value.  The created
+Pointer instance is the result returned to the Rexx code.</para>
+</section>
+<section id="clsPointer"><title>The POINTER method type</title>
+<para>There's one additional concept using Pointer and Buffer objects supported by the
+C++ APIs.  When a method definition specifies the special type CSELF, the runtime will
+look for an object variable named CSELF.  If the variable is found, and if the variable
+is assigned to an instance of Pointer or Buffer, then the corresponding data pointer
+is returned as the argument.  The CSELF is most useful when just a single anchor to
+native C++ data is backing an object instance and the backing data is created in the
+object INIT method.  Here's the Pointer example above reworked to use CSELF:</para>
+<programlisting>
+<![CDATA[
+RexxMethod0(RexxObjectPtr, myclass_init)
+{
+    // construct a C++ object to associate with the object
+    MyDataClass *myData = new MyDataClass();
+    // create a Pointer to store this in the object
+    RexxPointerObject data = context->NewPointer(myData);
+    // assign this to the special CSELF variable
+    context->SetObjectVariable("CSELF", data);
+    // initialize the data below
+    ...
+
+    return NULLOBJECT;
+}
+
+
+RexxMethod1(RexxObjectPtr, myclass_dosomething, CSELF, cself)
+{
+    // We can just cast this to our data value
+    MyDataClass *myData = (MyDataClass *)cself;
+    // perform the operation below
+    ...
+}
+
+
+RexxMethod1(RexxObjectPtr, myclass_uninit, CSELF, cself)
+{
+    // We can just cast this to our data value
+    MyDataClass *myData = (MyDataClass *)cself;
+    // delete the backing instance
+    delete myData;
+}
+]]>
+</programlisting>
+<para>Using the CSELF argument type eliminates the need to directly
+access the Rexx variable used to anchor the value in every method except
+the INIT method.  This produces generally smaller code and more reliable too
+since the runtime is managing the retrieval.</para>
+<para>There are other advantages to using the CSELF convention.
+The example above is equivalent to the examples using Pointer and Buffer
+objects.  If, however, you were to create a subclass of the Buffer example and
+try to access the value stored in MYDATA from a subclass method, you'll find that
+GetObjectVariable("MYDATA") will return NULLOBJECT.  The GetObjectVariable() method
+retrieves variables from the current method's variable scope.  Since the INIT method
+that set MYDATA originally and the subclass method that wishes to access the data
+are defined at different class scopes, GetObjectVariable() will access different variable
+pools and MYDATA will not be found.  One solution would be to create a private
+attributed method in the base class:</para>
+<programlisting>
+::attribute mydata get private
+</programlisting>
+<para>The subclass method can then access the method using <link linkend="mthSendMessage0">SendMessage0()</link>
+to access the value.</para>
+<programlisting>
+RexxPointerObject = context->SendMessage0("MYDATA");
+</programlisting>
+<para>The CSELF type handles this detail automatically.  When used as an argument,
+all variable scopes of the object's class hiearchy are searched for a variable named CSELF.
+if one is located, it will be used for the value passed to the method.  This allows all subclasses
+of a class using the CSELF convention to access the backing native data.
+</para>
+<para>Frequently, one class instance might need access to the native information associated with another
+object instance.  The other object instance might be of the same class or another class that is designed
+to interoperate with the current class.  The <link linkend="mthObjectToCSelf">ObjectToCSelf()</link> allows
+the CSELF information for an object other than the current active object to be retieved.</para>
+</section>
 </section>
 </section>
 

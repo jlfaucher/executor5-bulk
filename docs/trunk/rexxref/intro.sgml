@@ -53,10 +53,14 @@
 <listitem><para>Prototyping</para></listitem>
 <listitem><para>Personal computing</para></listitem>
 </itemizedlist></para>
-<para> As an object-oriented language, Rexx provides, for example, data
+<para> As an object-oriented language, Rexx provides data
 encapsulation,
 polymorphism, an object class hierarchy, class-based inheritance of methods,
-and concurrency. Object Rexx is compatible with earlier Rexx versions. It
+and concurrency.  It includes a number of useful base classes and allows you
+create new object classes of your own.</para>
+<para>
+Open Object Rexx is compatible with earlier,
+non-object based Rexx versions. It
 has the usual structured-programming instructions, for example IF, SELECT,
 DO WHILE, and LEAVE, and a number of useful built-in functions.</para>
 <para>The language imposes few restrictions
@@ -64,20 +68,12 @@ DO WHILE, and LEAVE, and a number of useful built-in functions.</para>
 <indexterm><primary>restrictions</primary>
 <secondary>in programming</secondary></indexterm>
 on the program format. There can be more than one clause on a line, or a single
-clause can occupy more than one line. Indentation is allowed. You can,
+clause can occupy more than one line. Any indentation scheme is allowed. You can,
 therefore, code programs in a format that emphasizes their structure,
 making them easier to read.</para>
 <para>There is no limit to the size of variable values, as long as
 all values fit into the storage available. There are no restrictions on
 the types of data that variables can contain.</para>
-<para>The limit on the length of symbols (variable names) is 250 characters.
-You can use compound symbols, such as </para>
-<programlisting>
-NAME.Y.Z
-</programlisting>
-<para>where <varname>Y</varname> and <varname>Z</varname> can be the names
-of variables or can
-be constant symbols, for constructing arrays and for other purposes.</para>
 <indexterm><primary>execution</primary>
 <secondary>by language processor</secondary></indexterm>
 <indexterm><primary>language</primary>
@@ -100,8 +96,9 @@ the desired result.</para>
 <para>Real-world objects, such as a company's employees, money in a bank
 account, or a report, are stored as data so the computer can act upon it.
 For example, when you print a report, print is the action
-and report is the object acted upon. Often several actions apply; you could
-also send or erase the report.</para>
+and report is the object acted upon.  Essentially, the objects are the
+"nouns", while the actions are the "verbs".
+</para>
 </section>
 
 <section id="module"><title>Modularizing Data</title>
@@ -111,8 +108,10 @@ also send or erase the report.</para>
 <para> In conventional, structured programming, actions like print
 are often isolated from the data by placing them in subroutines or modules.
 A module typically contains an operation for implementing one simple action.
-You might have a PRINT module, a SEND module, an ERASE module. These actions
-are independent of the data they operate on.</para>
+You might have a PRINT module, a SEND module, an ERASE module. The data these
+modules operate on must be constructed by the programmer and passed in to the
+modules.
+</para>
 
 <mediaobject>
 <imageobject>
@@ -123,7 +122,9 @@ are independent of the data they operate on.</para>
 
 <para>But with object-oriented programming, it is the data that is modularized.
 And each data module includes its own operations for performing actions directly
-related to its data.</para>
+related to its data.  The programmer that uses the objects need only be aware of the
+operations an object performs and not how the data is organized internall.
+</para>
 
 <figure><title>Modular Data&mdash;a Report Object</title>
 <mediaobject>
@@ -176,9 +177,11 @@ objects are the basic building blocks&mdash;the fundamental units of data.</para
 strings, collections, and input and output streams. An object&mdash;such as
 a character string&mdash;always consists of two parts: the possible actions
 or operations related to it, and its characteristics or variables. A variable
-has a variable <emphasis>name</emphasis>, and an associated data value
-that can change over time. These actions and characteristics are so closely
-associated that they cannot be separated:</para>
+has a <emphasis>name</emphasis>, and an associated data value
+that can change over time.
+The variables represent the internal state of the object, and can be directly
+accessed only by the code that implementes the object's actions.
+</para>
 
 <figure><title>Ball Object with Variable Names and Values</title>
 <mediaobject>
@@ -203,7 +206,7 @@ is through one of these surrounding actions. The encapsulated internal
 characteristics of an object are its
 <indexterm><primary>variables</primary>
 <secondary>in objects</secondary></indexterm>
-<emphasis>variables</emphasis>. Variables are associated
+<emphasis>variables</emphasis>. The variables are associated
 with an object and exist for the lifetime of that object:</para>
 
 <figure><title>Encapsulated 5 Object</title>
@@ -214,11 +217,6 @@ with an object and exist for the lifetime of that object:</para>
 </imageobject>
 </mediaobject>
 </figure>
-
-<para>Rexx comes with a basic set of classes for creating objects (see
-<link linkend="provide">Objects and Classes</link>). Therefore, you can create
-objects that exactly match the needs of a particular application.</para>
-</section>
 
 <section id="interac"><title>How Objects Interact</title>
 <indexterm><primary>messages</primary></indexterm>
