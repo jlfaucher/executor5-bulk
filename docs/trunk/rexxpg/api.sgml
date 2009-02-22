@@ -1610,7 +1610,7 @@ RexxMethod0(RexxObjectPtr, myclass_uninit)
 ]]>
 </programlisting>
 </section>
-<section id="clsPointer"><title>The POINTER method type</title>
+<section id="clsPointerType"><title>The POINTER method type</title>
 <para>The Rexx runtime has some special support for Pointer and Buffer objects
 when they are passed as method arguments and also when used as return values.  The
 RexxMethod macros used to define method instances support the POINTER special argument
@@ -1646,7 +1646,7 @@ RexxMethod2(RexxObjectPtr, setTitle, POINTER, handle, CSTRING, title)
 create a Pointer object instance that wrappers the returned void *value.  The created
 Pointer instance is the result returned to the Rexx code.</para>
 </section>
-<section id="clsPointerType"><title>The POINTER method type</title>
+<section id="cself"><title>The CSELF method type</title>
 <para>There's one additional concept using Pointer and Buffer objects supported by the
 C++ APIs.  When a method definition specifies the special type CSELF, the runtime will
 look for an object variable named CSELF.  If the variable is found, and if the variable
