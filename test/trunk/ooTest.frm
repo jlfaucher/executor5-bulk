@@ -2109,8 +2109,8 @@ return suite
   ::attribute id get
   ::attribute id set private
 
-  ::attribute isTicking private
-  ::attribute endTicking private
+  ::attribute isTicking private unguarded
+  ::attribute endTicking private unguarded
 
   ::method init
     use strict arg file, id
