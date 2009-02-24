@@ -109,8 +109,8 @@ and report is the object acted upon.  Essentially, the objects are the
 are often isolated from the data by placing them in subroutines or modules.
 A module typically contains an operation for implementing one simple action.
 You might have a PRINT module, a SEND module, an ERASE module. The data these
-modules operate on must be constructed by the programmer and passed in to the
-modules.
+modules operate on must be constructed by the programmer and passed to the
+modules to perform an action.
 </para>
 
 <mediaobject>
@@ -180,7 +180,7 @@ or operations related to it, and its characteristics or variables. A variable
 has a <emphasis>name</emphasis>, and an associated data value
 that can change over time.
 The variables represent the internal state of the object, and can be directly
-accessed only by the code that implementes the object's actions.
+accessed only by the code that implements the object's actions.
 </para>
 
 <figure><title>Ball Object with Variable Names and Values</title>
@@ -221,7 +221,7 @@ with an object and exist for the lifetime of that object:</para>
 
 <section id="interac"><title>How Objects Interact</title>
 <indexterm><primary>messages</primary></indexterm>
-<para>The actions within an object
+<para>The actions defined by an object
 are its only interface to other objects. Actions form a kind of &quot;wall&quot;
 that encapsulates the object, and shields its internal information from outside
 objects. This shielding is called
@@ -245,7 +245,7 @@ which is called the <emphasis>twiddle</emphasis>
 <indexterm><primary>message-send operator (~)</primary></indexterm>
 </para></listitem>
 <listitem><para>The action and, optionally in parentheses, any parameters
-required</para></listitem>
+required by the action</para></listitem>
 </itemizedlist></para>
 <para>So the message format looks like this: </para>
 <programlisting>
@@ -264,11 +264,11 @@ to use its REVERSE action: </para>
 <indexterm><primary>method</primary>
 <secondary>definition</secondary></indexterm>
 <para>Sending a message to
-an object results in performing some action; that is, it results in running
+an object results in performing some action; that is, it executes
 some underlying code. The action-generating code is called a
 <emphasis>method</emphasis>. When you send a message to an object,
-you specify its method
-name in the message. Method names are character strings like REVERSE. In the
+the message is the name of the target method.
+Method names are character strings like REVERSE. In the
 preceding example, sending the <computeroutput>reverse</computeroutput> message
 to the <computeroutput>!iH</computeroutput> object causes it to run the
 REVERSE method. Most objects are capable
