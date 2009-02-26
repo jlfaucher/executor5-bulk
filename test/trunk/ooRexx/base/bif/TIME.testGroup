@@ -1759,6 +1759,13 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    use strict arg startTime
    return (time() > startTime)
 
+/** ensureEmptyQueue()  Make sure the queue is empty at this point.
+ */
+::method ensureEmptyQueue private
+  do while queued()
+    pull
+  end
+
 ::method "test_2"
    currentTime = time()
 
@@ -1839,6 +1846,7 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
 
 
 ::method "test_4"
+   self~ensureEmptyQueue
    currentTime = time()
 
    currentTime = time()
@@ -1867,6 +1875,7 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
 
 
 ::method "test_5"
+   self~ensureEmptyQueue
    currentTime = time()
 
    cb1=TIME('r')||'*'||TIME('R')
@@ -2002,6 +2011,7 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
 
 
 ::method "test_10"
+   self~ensureEmptyQueue
    currentTime = time()
 
    cb1=TIME('rage')||'*'||TIME('RAGE')
@@ -2029,6 +2039,7 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
 
 
 ::method "test_11"
+   self~ensureEmptyQueue
    currentTime = time()
 
    cb1=TIME('rage')||'*'||TIME('RAGE')
