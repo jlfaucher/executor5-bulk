@@ -158,6 +158,9 @@ return testResult
       self~assertEquals(2, q~queued, 'subTest21: Queueing 2 adds two lines')
       self~assertEquals(s2, q~pull,  'subTest22: Queued line correct FIFO')
 
+      -- Using the session queue, be sure it is empty when we finish this test.
+      q~empty
+
   -- End test_push( )
 
   /* test_queue_external  - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
