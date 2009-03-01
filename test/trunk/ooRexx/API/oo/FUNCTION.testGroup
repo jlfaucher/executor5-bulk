@@ -408,12 +408,12 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, TestWholeNumberArg(val))
   val = -1
   self~assertSame(val, TestWholeNumberArg(val))
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 999999999
   else
       val = 999999999999999999
   self~assertSame(val, TestWholeNumberArg(val))
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = -999999999
   else
       val = -999999999999999999
@@ -421,14 +421,14 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testWholenumber02'
   self~expectSyntax('88.907')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       TestWholeNumberArg(1000000000)
   else
       TestWholeNumberArg(1000000000000000000)
 
 ::method 'testWholenumber03'
   self~expectSyntax('88.907')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       TestWholeNumberArg(-1000000000)
   else
       TestWholeNumberArg(-1000000000000000000)

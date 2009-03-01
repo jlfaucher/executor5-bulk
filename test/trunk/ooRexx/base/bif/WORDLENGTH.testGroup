@@ -81,13 +81,13 @@ return testResult
     xre = wordLength('WORD1 WORD2',2.000000009)
 
 ::method 'test0004'
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         self~assertSame('5', wordLength('WORD1 WORD2',1.000000004))
     else
         self~assertSame('5', wordLength('WORD1 WORD2',1.000000000000000004))
 
 ::method 'test0005'
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         self~assertSame('5', wordLength('WORD1 WORD2',2.000000004))
     else
         self~assertSame('5', wordLength('WORD1 WORD2',2.000000000000000004))

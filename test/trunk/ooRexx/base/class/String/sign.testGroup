@@ -97,35 +97,35 @@ return testResult
 
 ::method 'test015'
     self~expectSyntax(93.943)
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         xre = '999999999e999999999'~sign()
     else
         xre = '999999999e999999999999999999'~sign()
 
 ::method 'test016'
     self~expectSyntax(93.943)
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         xre = '-1.0e-999999999'~sign()
     else
         xre = '-1.0e-999999999999999999'~sign()
 
 ::method 'test017'
     self~expectSyntax(93.943)
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         xre = '0.1e-999999999'~sign()
     else
         xre = '0.1e-999999999999999999'~sign()
 
 ::method 'test018'
     self~expectSyntax(93.943)
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         xre = '0.1e-9999999999'~sign()
     else
         xre = '0.1e-9999999999999999999'~sign()
 
 ::method 'test019'
     self~expectSyntax(93.943)
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         xre = '0.1e9999999999'~sign()
     else
         xre = '0.1e9999999999999999999'~sign()
@@ -135,14 +135,14 @@ return testResult
 
 ::method 'test021'
     self~expectSyntax(93.943)
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         xre = 999e999999999~sign()
     else
         xre = 999e999999999999999999~sign()
 
 ::method 'test022'
     self~expectSyntax(93.943)
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         xre = -0.1e-999999999~sign()
     else
         xre = -0.1e-999999999999999999~sign()

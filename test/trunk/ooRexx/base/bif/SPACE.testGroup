@@ -77,25 +77,25 @@ return testResult
     xre = space('space1 space2',2.000000009)
 
 ::method 'test004'
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         self~assertSame('space1 space2', space('space1 space2',1.000000000000000004))
     else
         self~assertSame('space1 space2', space('space1 space2',1.000000000000000004))
 
 ::method 'test005'
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         self~assertSame('space1  space2', space('space1 space2',2.000000000000000004))
     else
         self~assertSame('space1  space2', space('space1 space2',2.000000000000000004))
 
 ::method 'test006'
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         self~assertSame('space1 space2', space('space1 space2',1.000000000000000004,' '))
     else
         self~assertSame('space1 space2', space('space1 space2',1.000000000000000004,' '))
 
 ::method 'test007'
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         self~assertSame('space1  space2', space('space1 space2',2.000000000000000004,'20'x))
     else
         self~assertSame('space1  space2', space('space1 space2',2.000000000000000004,'20'x))

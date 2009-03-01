@@ -166,7 +166,7 @@ return testResult
     self~doDts(' c2   0D       ab  ',  '000000000C')
     self~doDts('  c2   0D       ab ',  '000000000C')
 
-    if digits() == 9 then do
+    if .ooRexxUnit.architecture == 32 then do
         self~doDts('123456789',                   '100011011N')
         self~doDts('1234567890',                  '100011001N')
         self~doDts('12345678901',                 '100011001N')
@@ -397,7 +397,7 @@ return erg
     self~assertTrue(DATATYPE('-1'   ,'9'))
     self~assertTrue(DATATYPE('12345' ,'9')) -- ?
     self~assertTrue(DATATYPE('1E3'   ,'9')) -- ?
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         self~assertFalse(DATATYPE('1E9'  ,'9')) -- ?
     else
         self~assertFalse(DATATYPE('1E18'  ,'9')) -- ?

@@ -80,13 +80,13 @@ return testResult
     xre = word('WORD1 WORD2',2.000000009)
 
 ::method 'test004'
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         self~assertSame('WORD1', word('WORD1 WORD2',1.000000004))
     else
         self~assertSame('WORD1', word('WORD1 WORD2',1.000000000000000004))
 
 ::method 'test005'
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         self~assertSame('WORD2', word('WORD1 WORD2',2.000000004))
     else
         self~assertSame('WORD2', word('WORD1 WORD2',2.000000000000000004))

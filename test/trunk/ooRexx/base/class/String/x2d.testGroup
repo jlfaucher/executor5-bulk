@@ -77,28 +77,28 @@ return testResult
 
 ::method 'test006'
     self~expectSyntax(93.935)
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         xre = '1123456789'~x2d()
     else
         xre = '1123456789999999999'~x2d()
 
 ::method 'test007'
     self~expectSyntax(93.935)
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         xre = '11 23 4567 89'~x2d()
     else
         xre = '11 23 4567 89 99 99 99 99'~x2d()
 
 ::method 'test008'
     self~expectSyntax(93.935)
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         xre = '123456789'~x2d()
     else
         xre = '12345678999999999'~x2d()
 
 ::method 'test009'
     self~expectSyntax(93.935)
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         xre = '1 23 4567 89'~x2d()
     else
         xre = '1 23 4567 89 99 99 99 99'~x2d()

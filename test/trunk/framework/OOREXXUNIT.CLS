@@ -159,8 +159,6 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-if \ .local~hasEntry(ooRexxUnit.version) then do
-
   -- Define the version number with: x.x.x_y.y.y  Where x is the ooRexxUnit.cls
   -- version, and y is the minimum ooRexx interpreter level required.
   .local~ooRexxUnit.version=2.0.0_3.2.0
@@ -174,6 +172,7 @@ if \ .local~hasEntry(ooRexxUnit.version) then do
 
   .local~ooRexxUnit.shellName=ooRexxUnit.getShellName()
   .local~ooRexxUnit.OSName   =ooRexxUnit.getOSName()
+
 
   -- define end-of-line chars
   .local~ooRexxUnit.line.separator=.endOfLine
@@ -208,7 +207,16 @@ if \ .local~hasEntry(ooRexxUnit.version) then do
   -- Add the test utility class to the local environment so that it is available
   -- to anyone running in this process.
   .local~put(.TESTUTIL, 'TESTUTIL')
-end
+
+  architecture = 32
+  signal on syntax name not64
+  -- this will force a syntax error on 32-bit systems
+  x = delstr("abc", 1000000000, 1)
+  architecture = 64
+
+  not64:
+  signal off syntax
+  .local~ooRexxUnit.architecture = architecture
 
 -- End of entry point.
 

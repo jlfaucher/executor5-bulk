@@ -161,7 +161,7 @@ return testResult
 ::method 'test018'
     self~expectSyntax(93.924)
     mb = .mutablebuffer~new('hasdghj')
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
        xre = mb~substr(1E10)
     else
        xre = mb~substr(1E19)

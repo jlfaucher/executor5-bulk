@@ -225,7 +225,7 @@ return testResult
 
 ::method "test_31"
    self~expectSyntax(26.5)
-   if digits() == 9 then
+   if .ooRexxUnit.architecture == 32 then
        Numeric Digits 9999999999
    else
        Numeric Digits 9999999999999999999
@@ -348,7 +348,7 @@ return testResult
 
 ::method "test_50"
    self~expectSyntax(26.6)
-   use32 = digits() == 9
+   use32 = .ooRexxUnit.architecture == 32
 
    Numeric Digits 1000
    if use32 then

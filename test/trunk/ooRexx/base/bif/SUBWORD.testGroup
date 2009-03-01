@@ -75,13 +75,13 @@ return testResult
     xre = subWord('SUBWORD1 SUBWORD2',2.000000009)
 
 ::method 'test003'
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         self~assertSame('SUBWORD1 SUBWORD2', subWord('SUBWORD1 SUBWORD2',1.000000000000000004))
     else
         self~assertSame('SUBWORD1 SUBWORD2', subWord('SUBWORD1 SUBWORD2',1.000000000000000004))
 
 ::method 'test004'
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         self~assertSame('SUBWORD2', subWord('SUBWORD1 SUBWORD2',2.000000000000000004))
     else
         self~assertSame('SUBWORD2', subWord('SUBWORD1 SUBWORD2',2.000000000000000004))
@@ -332,13 +332,13 @@ return testResult
     xre = subWord('SUBWORD1 SUBWORD2',2.000000009,2.000000009)
 
 ::method 'test077'
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
        self~assertSame('SUBWORD1', subWord('SUBWORD1 SUBWORD2',1.000000000000000004,1.000000000000000004))
     else
        self~assertSame('SUBWORD1', subWord('SUBWORD1 SUBWORD2',1.000000000000000004,1.000000000000000004))
 
 ::method 'test078'
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         self~assertSame('SUBWORD2', subWord('SUBWORD1 SUBWORD2',2.000000000000000004,2.0000000000000000004))
     else
         self~assertSame('SUBWORD2', subWord('SUBWORD1 SUBWORD2',2.000000000000000004,2.0000000000000000004))

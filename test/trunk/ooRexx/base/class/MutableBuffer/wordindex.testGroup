@@ -79,13 +79,13 @@ return testResult
     xre = .mutablebuffer~new('WORD1 WORD2')~wordindex(2.000000009)
 
 ::method 'test004'
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         self~assertSame('1', .mutablebuffer~new('WORD1 WORD2')~wordindex(1.000000004))
     else
         self~assertSame('1', .mutablebuffer~new('WORD1 WORD2')~wordindex(1.000000000000000004))
 
 ::method 'test005'
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         self~assertSame('7', .mutablebuffer~new('WORD1 WORD2')~wordindex(2.000000004))
     else
         self~assertSame('7', .mutablebuffer~new('WORD1 WORD2')~wordindex(2.000000000000000004))

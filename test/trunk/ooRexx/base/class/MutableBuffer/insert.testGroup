@@ -200,7 +200,7 @@ return testResult
 ::method 'test034'
     mb = .mutablebuffer~new('hasdghj')
     self~expectSyntax(93.906)
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         xre = mb~insert('A',1E10)
     else
         xre = mb~insert('A',1E19)

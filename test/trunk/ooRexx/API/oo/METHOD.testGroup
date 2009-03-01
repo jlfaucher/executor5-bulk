@@ -486,12 +486,12 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestWholeNumberArg(val))
   val = 1
   self~assertSame(val, tester~TestWholeNumberArg(val))
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 999999999
   else
       val = 999999999999999999
   self~assertSame(val, tester~TestWholeNumberArg(val))
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = -999999999
   else
       val = -999999999999999999
@@ -502,7 +502,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testWholenumber02'
   tester = .METHODtester~new
   self~expectSyntax('88.907')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       tester~TestWholeNumberArg(1000000000)
   else
       tester~TestWholeNumberArg(1000000000000000000)
@@ -510,7 +510,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testWholenumber03'
   tester = .METHODtester~new
   self~expectSyntax('88.907')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       tester~TestWholeNumberArg(-1000000000)
   else
       tester~TestWholeNumberArg(-1000000000000000000)
@@ -524,7 +524,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, tester~TestStringSizeArg(val))
   val = 1
   self~assertSame(val, tester~TestStringSizeArg(val))
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 999999999
   else
       val = 999999999999999999
@@ -535,7 +535,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testStringSize02'
   tester = .METHODtester~new
   self~expectSyntax('88.907')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       tester~TestStringSizeArg(1000000000)
   else
       tester~TestStringSizeArg(1000000000000000000)
@@ -1813,13 +1813,13 @@ return .ooTestResult~new(5)~~addException(err)
   val = 1
   self~assertSame(val, tester~TestWholeNumberToObject(val))
   self~assertSame(val, tester~TestWholeNumberToObjectAlt(val))
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 999999999
   else
       val = 999999999999999999
   self~assertSame(val, tester~TestWholeNumberToObject(val))
   self~assertSame(val, tester~TestWholeNumberToObjectAlt(val))
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = -999999999
   else
       val = -999999999999999999
@@ -1837,13 +1837,13 @@ return .ooTestResult~new(5)~~addException(err)
   val = 1
   self~assertSame(val, tester~TestObjectToWholeNumber(val))
   self~assertSame(val, tester~TestObjectToWholeNumberAlt(val))
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 999999999
   else
       val = 999999999999999999
   self~assertSame(val, tester~TestObjectToWholeNumber(val))
   self~assertSame(val, tester~TestObjectToWholeNumberAlt(val))
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = -999999999
   else
       val = -999999999999999999
@@ -1853,7 +1853,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testObjectToWholenumber02'
   tester = .METHODtester~new
   self~expectSyntax('88.900')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       tester~TestObjectToWholeNumber(1000000000)
   else
       tester~TestObjectToWholeNumber(1000000000000000000)
@@ -1861,7 +1861,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testObjectToWholenumber02a'
   tester = .METHODtester~new
   self~expectSyntax('88.900')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       tester~TestObjectToWholeNumberAlt(1000000000)
   else
       tester~TestObjectToWholeNumberAlt(1000000000000000000)
@@ -1869,7 +1869,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testObjectToWholenumber03'
   tester = .METHODtester~new
   self~expectSyntax('88.900')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       tester~TestObjectToWholeNumber(-1000000000)
   else
       tester~TestObjectToWholeNumber(-1000000000000000000)
@@ -1877,7 +1877,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testObjectToWholenumber03a'
   tester = .METHODtester~new
   self~expectSyntax('88.900')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       tester~TestObjectToWholeNumberAlt(-1000000000)
   else
       tester~TestObjectToWholeNumberAlt(-1000000000000000000)
@@ -1894,7 +1894,7 @@ return .ooTestResult~new(5)~~addException(err)
   val = 1
   self~assertSame(val, tester~TestStringSizeToObject(val))
   self~assertSame(val, tester~TestStringSizeToObjectAlt(val))
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 999999999
   else
       val = 999999999999999999
@@ -1913,7 +1913,7 @@ return .ooTestResult~new(5)~~addException(err)
   val = 1
   self~assertSame(val, tester~TestObjectToStringSize(val))
   self~assertSame(val, tester~TestObjectToStringSizeAlt(val))
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 999999999
   else
       val = 999999999999999999
@@ -1923,7 +1923,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testObjectToStringSize02'
   tester = .METHODtester~new
   self~expectSyntax('88.900')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       tester~TestObjectToStringSize(1000000000)
   else
       tester~TestObjectToStringSize(1000000000000000000)
@@ -1931,7 +1931,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testObjectToStringSize02a'
   tester = .METHODtester~new
   self~expectSyntax('88.900')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       tester~TestObjectToStringSizeAlt(1000000000)
   else
       tester~TestObjectToStringSizeAlt(1000000000000000000)
@@ -2172,7 +2172,7 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testIntptr01'
   tester = .METHODtester~new
-  if digits() == 9 then do
+  if .ooRexxUnit.architecture == 32 then do
       val = 2147483647
       self~assertSame(val, tester~TestIntptrArg(val))
       val = '-2147483648'
@@ -2200,7 +2200,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testIntptr02'
   tester = .METHODtester~new
   self~expectSyntax('88.907')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       tester~TestIntptrArg(2147483648)
   else
       tester~TestIntptrArg(9223372036854775808)
@@ -2208,14 +2208,14 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testIntptr03'
   tester = .METHODtester~new
   self~expectSyntax('88.907')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       tester~TestIntptrArg('-2147483649')
   else
       tester~TestIntptrArg('-9223372036854775809')
 
 ::method 'testIntptrToObject01'
   tester = .METHODtester~new
-  if digits() == 9 then do
+  if .ooRexxUnit.architecture == 32 then do
       val = 2147483647
       self~assertSame(val, tester~TestIntptrToObject(val))
       self~assertSame(val, tester~TestIntptrToObjectAlt(val))
@@ -2251,7 +2251,7 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testObjectToIntptr01'
   tester = .METHODtester~new
-  if digits() == 9 then do
+  if .ooRexxUnit.architecture == 32 then do
       val = 2147483647
       self~assertSame(val, tester~TestObjectToIntptr(val))
       self~assertSame(val, tester~TestObjectToIntptrAlt(val))
@@ -2289,7 +2289,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testObjectToIntptr02'
   tester = .METHODtester~new
   self~expectSyntax('88.900')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       tester~TestObjectToIntptr(2147483648)
   else
       tester~TestObjectToIntptr(9223372036854775808)
@@ -2297,7 +2297,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testObjectToIntptr02a'
   tester = .METHODtester~new
   self~expectSyntax('88.900')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       tester~TestObjectToIntptrAlt(2147483648)
   else
       tester~TestObjectToIntptrAlt(9223372036854775808)
@@ -2305,7 +2305,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testObjectToIntptr03'
   tester = .METHODtester~new
   self~expectSyntax('88.900')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       tester~TestObjectToIntptr('-2147483649')
   else
       tester~TestObjectToIntptr('-9223372036854775809')
@@ -2313,7 +2313,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testObjectToIntptr03a'
   tester = .METHODtester~new
   self~expectSyntax('88.900')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
       tester~TestObjectToIntptrAlt('-2147483649')
   else
       tester~TestObjectToIntptrAlt('-9223372036854775809')
@@ -2322,7 +2322,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testuintptr01'
   tester = .METHODtester~new
 
-  if digits() == 9 then do
+  if .ooRexxUnit.architecture == 32 then do
       val = 4294967295
       self~assertSame(val, tester~TestUintptrArg(val))
   end
@@ -2340,7 +2340,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testuintptr02'
   tester = .METHODtester~new
   self~expectSyntax('88.907')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
      tester~TestUintptrArg(4294967296)
   else
      tester~TestUintptrArg(18446744073709551616)
@@ -2353,7 +2353,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testUintptrToObject01'
   tester = .METHODtester~new
 
-  if digits() == 9 then do
+  if .ooRexxUnit.architecture == 32 then do
       val = 4294967295
       self~assertSame(val, tester~TestUintptrToObject(val))
       self~assertSame(val, tester~TestUintptrToObjectAlt(val))
@@ -2374,7 +2374,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testObjectToUintptr01'
   tester = .METHODtester~new
 
-  if digits() == 9 then do
+  if .ooRexxUnit.architecture == 32 then do
       val = 4294967295
       self~assertSame(val, tester~TestObjectToUintptr(val))
       self~assertSame(val, tester~TestObjectToUintptrAlt(val))
@@ -2394,7 +2394,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testObjectToUintptr02'
   tester = .METHODtester~new
   self~expectSyntax('88.900')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
      tester~TestObjectToUintptr(4294967296)
   else
      tester~TestObjectToUintptr(18446744073709551616)
@@ -2402,7 +2402,7 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testObjectToUintptr02a'
   tester = .METHODtester~new
   self~expectSyntax('88.900')
-  if digits() == 9 then
+  if .ooRexxUnit.architecture == 32 then
      tester~TestObjectToUintptrAlt(4294967296)
   else
      tester~TestObjectToUintptrAlt(18446744073709551616)

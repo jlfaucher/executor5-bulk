@@ -121,7 +121,7 @@ return testResult
     self~assertSame('2', length(17+4))
 
 ::method 'test019'
-    if digits() == 9 then
+    if .ooRexxUnit.architecture == 32 then
         self~assertSame('14', length(+10000000000000000000000000000000000))
     else
         self~assertSame('23', length(+10000000000000000000000000000000000))

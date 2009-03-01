@@ -226,7 +226,7 @@ return testResult
 
 ::method "test_42"
    self~expectSyntax(41.1)
-   if digits() == 9 then
+   if .ooRexxUnit.architecture == 32 then
        xre=0+9E9999999999+ft()
    else
        xre=0+9E9999999999999999999+ft()
@@ -235,7 +235,7 @@ return testResult
 
 ::method "test_43"
    self~expectSyntax(41.1)
-   if digits() == 9 then
+   if .ooRexxUnit.architecture == 32 then
        XX9999999999=9e9999999999;
    else
        XX9999999999=9e9999999999999999999;
@@ -245,7 +245,7 @@ return testResult
 
 ::method "test_44"
    self~expectSyntax(41.1)
-   if digits() == 9 then
+   if .ooRexxUnit.architecture == 32 then
        xre=ft()+9E9999999999+0
    else
        xre=ft()+9E9999999999999999999+0
@@ -260,7 +260,7 @@ return testResult
 
 ::method "test_46"
    self~expectSyntax(42.901)
-   if digits() == 9 then do
+   if .ooRexxUnit.architecture == 32 then do
        a=9E999999999
        xre=a+2E999999999/ft()
    end
@@ -273,7 +273,7 @@ return testResult
 
 ::method "test_47"
    self~expectSyntax(42.901)
-   if digits() == 9 then do
+   if .ooRexxUnit.architecture == 32 then do
        a=9E999999999
        xre=(a+2E999999999)/ft()
    end
