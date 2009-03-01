@@ -122,10 +122,10 @@ see <link linkend="aropxmp">Operator Examples</link>.</para>
 according to specific rules. The most important rules are: </para>
 <itemizedlist>
 <listitem><para>Results are calculated up to a maximum number of significant
-digits. The default is <computeroutput>9</computeroutput> for 32-bit systems and
+digits. The default is <computeroutput>9</computeroutput>, but can be overridden
+on a source-file basis with the <link linkend="optionsd">::OPTIONS directive</link>.
 <computeroutput>19</computeroutput> for 64-bit systems,
-but you can alter
-it with the NUMERIC DIGITS instruction.
+The default setting can be altered with the NUMERIC DIGITS instruction.
 <indexterm><primary>DIGITS option of NUMERIC instruction</primary></indexterm>
 Thus, with NUMERIC DIGITS 9, if a result requires more than 9 digits, it is rounded to 9 digits.
 For example, the division of 2 by 3 results in 0.666666667.</para></listitem>
@@ -179,7 +179,9 @@ a calculation.  Results are rounded to that precision, if necessary.</para>
 in this instruction, or if no
 NUMERIC DIGITS instruction has been processed since the start of a program,
 the default precision is used. The Rexx standard for the default precision
-is <computeroutput>9</computeroutput> for 32-bit systems and 18 for 64-bit systems.</para>
+is <computeroutput>9</computeroutput>.  The default may be overridden on a
+source-file basis using the <link linkend="optionsd">::OPTIONS directive</link>.
+</para>
 <para>NUMERIC DIGITS can set values smaller than nine. However, use small
 values with care because the loss of precision and rounding affects all Rexx
 computations, including, for example, the computation of new values for the
@@ -583,12 +585,10 @@ a result exceeds the range that the language processor can handle, when the
 result is formatted according to the current settings of NUMERIC DIGITS and
 NUMERIC FORM.  The language defines a minimum capability for the exponential
 part, namely the largest number that can be expressed as an exact integer
-in default precision. On 32-bit systems, because the default precision is
+in default precision. Because the default precision is
 <computeroutput>9</computeroutput>, you can
 use exponents in the range <computeroutput>-999999999</computeroutput> through
-<computeroutput>999999999</computeroutput>.  On 64-bit systems, these increase to
-the range <computeroutput>-999999999999999999</computeroutput> through
-<computeroutput>999999999999999999</computeroutput>.
+<computeroutput>999999999</computeroutput>.
 </para>
 <para>Because this allows for (very) large exponents, overflow or underflow
 is treated as a syntax error.</para></listitem>

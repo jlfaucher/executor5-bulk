@@ -1827,8 +1827,9 @@ operations. The options of this instruction are described in detail in
 <listitem><para>controls the precision to which arithmetic operations and
 built-in functions are evaluated. If you omit
 <emphasis role="italic">expression1</emphasis>, the precision defaults to
-9 digits on 32-bit systems and 18 on 64-bit systems.
-Otherwise, the character string value result of
+9 digits, but can be overridden on a source-file basis using the
+<link linkend="optionsd">::OPTIONS directive</link>.  Otherwise, the character
+string value result of
 <emphasis role="italic">expression1</emphasis> must evaluate to a positive whole
 number and must be larger than the current NUMERIC FUZZ setting.</para>
 <para>There is no limit to the value for DIGITS
