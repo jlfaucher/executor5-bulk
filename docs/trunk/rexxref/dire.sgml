@@ -348,7 +348,7 @@ PUBLIC in any order. </para></listitem>
 </section>
 
 <section id="constantd"><title>::CONSTANT</title>
-<indexterm><primary>:: CONSTANT directive</primary></indexterm>
+<indexterm><primary>::CONSTANT directive</primary></indexterm>
 <indexterm><primary>directives</primary>
 <secondary>::CONSTANT</secondary></indexterm>
 <indexterm><primary>attribute</primary>
@@ -375,16 +375,14 @@ is not associated with a class but is accessible to the main (executable) part
 of a program through the .METHODS built-in object. Only one ::CONSTANT directive
 can appear for any method name not associated with a class. See
 <link linkend="methe">.METHODS</link>  for more details.</para>
-<para>The methods created by a ::CONSTANT directive will have a return result
-that is specified by <emphasis role="italic">value</emphasis>.  The constant
-value must be a single literal string or symbol that is taken as a constant.
-Also permitted is the single character "-" or "+" followed by a literal string
-or symbol that is a valid number.  Here are some examples of valid
-constants:</para>
-<programlisting>
-::class MathConstants public
-::constant pi 3.1415926
-::constant author "Isaac Asimov"
+<para>The methods created by a ::CONSTANT directive are UNGUARDED and will have
+a return result that is specified by
+<emphasis role="italic">value</emphasis>.  The constant value must be a single
+literal string or symbol that is taken as a constant. Also permitted is the
+single character "-" or "+" followed by a literal string or symbol that is a
+valid number.  Here are some examples of valid constants:</para>
+<programlisting> ::class MathConstants public
+::constant pi 3.1415926 ::constant author "Isaac Asimov"
 ::constant absolute_zero -273.15
 </programlisting>
 <para>A ::CONSTANT directive is a shorthand syntax for creating constants
@@ -583,6 +581,119 @@ class and use the same <emphasis role="italic">methodname</emphasis>.
 </para></listitem>
 </orderedlist>
 
+</section>
+
+<section id="optionsd"><title>::OPTIONS</title>
+<indexterm><primary>::OPTIONS directive</primary></indexterm>
+<indexterm><primary>directives</primary>
+<secondary>::OPTIONS</secondary></indexterm>
+
+<para>The ::OPTIONS directive defines default values for numeric and trace
+settings for all Rexx code contained within a package.
+</para>
+
+<programlisting>
+<![CDATA[
+>>-::OPTIONS--+---------------+--+-----------+--+-----------+---->
+              +-DIGITS-digits-+  +-FORM-form-+  +-FUZZ-fuzz-+
+
+ >------------+--+----------+------------------------------------><
+              +-TRACE-trace-+
+]]>
+</programlisting>
+
+<para>A ::CONSTANT directive defines a method that returns a constant value.
+This is useful for creating named constants associated with a class.
+</para>
+<para>Any of the options may be specified on a single ::OPTIONS directive in any
+order.  If an option is specified more than once, the last specified value
+will the be one used.  If more than ::OPTIONS directive appears in a source file,
+the options are processed in the order they appear and the effect is accumulative.
+If a give option type is specified on more than directive, the last specified will be
+the value used.</para>
+<para>The specified options will override the normal default settings for all Rexx
+code contained in the source file.  For example, </para>
+<programlisting>
+::OPTIONS DIGITS 20
+</programlisting>
+<para>would direct that all method and routine code defined in this source package
+execute with an initial <link linkend="keyNumeric">NUMERIC DIGITS</link> setting of
+20 digits.  The ::OPTIONS directive controls only the initial setting.  A method
+or routine may change the current setting with the NUMERIC DIGITS instruction as normal.
+The values specified with ::OPTIONS only apply to code that appears in the same source file.
+It does not apply to code in other source files that may reference or use this code.
+For example, a subclass of a class defined in this source package will not inherit the
+::OPTIONS settings if the subclass code is located in a different source package.
+</para>
+<para>The following options may be specified on an ::OPTIONS directive:</para>
+<informaltable frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="1*">
+<colspec colnum="2" colwidth="5*">
+<tbody>
+<row><entry>DIGITS
+<indexterm><primary>::OPTIONS directive</primary>
+<secondary>DIGITS option</secondary></indexterm>
+</entry>
+<entry>
+<para>controls the precision to which arithmetic operations and
+built-in functions are evaluated.
+The value <emphasis role="italic">digits</emphasis> must be a symbol or string
+that is a valid positive whole number value and must be larger than the
+current FUZZ ::OPTIONS setting.</para>
+<para>There is no limit to the value for DIGITS
+(except the amount of storage available), but high precisions are likely to
+require a great amount of processing time. It is recommended that you use
+the default value whenever possible.</para>
+</entry></row>
+<row><entry>FORM
+<indexterm><primary>::OPTIONS directive</primary>
+<secondary>FORM option</secondary></indexterm>
+</entry>
+<entry>
+<para>controls the form of exponential notation
+for the result of arithmetic
+operations and built-in functions. This can be either SCIENTIFIC (in which
+case only one, nonzero digit appears before the decimal point) or ENGINEERING
+(in which case the power of 10 is always a multiple of 3). The default is
+SCIENTIFIC. The subkeywords SCIENTIFIC or ENGINEERING must be specified as
+symbols.
+</para>
+</entry></row>
+<row><entry>FUZZ
+<indexterm><primary>::OPTIONS directive</primary>
+<secondary>FUZZ option</secondary></indexterm>
+</entry>
+<entry>
+<para>controls how many digits, at full precision, are ignored during
+a numeric
+comparison operation. (See <link linkend="numcom">Numeric Comparisons</link>.)
+The value <emphasis role="italic">fuzz</emphasis> must be a symbol or string
+that is a valid positive whole number value and must be smaller than the
+current DIGIT ::OPTIONS setting.</para>
+<para>NUMERIC FUZZ temporarily
+reduces the value of NUMERIC DIGITS by the NUMERIC FUZZ value during every
+numeric comparison. The numbers are subtracted under a precision of DIGITS
+minus FUZZ digits during the comparison and are then compared with 0.</para>
+</entry></row>
+<row><entry>TRACE
+<indexterm><primary>::OPTIONS directive</primary>
+<secondary>TRACE option</secondary></indexterm>
+</entry>
+<para>TRACE option controls the tracing action (that is, how much is displayed to the
+user) during the processing of all Rexx code contained in the package.
+Tracing describes some or all
+of the clauses in a program, producing descriptions of clauses as they are
+processed. TRACE is mainly used for debugging.
+The value <emphasis role="italic">trace</emphasis> must be one of the
+<link linkend="alphaco">Trace Alphabetic Character (Word) Options</link>
+valid for the <link linkend="keyTrace">Trace instruction</link>.
+</para>
+<entry>
+</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
 </section>
 
 <section id="requ"><title>::REQUIRES</title>
