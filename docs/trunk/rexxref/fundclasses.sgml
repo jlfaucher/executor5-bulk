@@ -5861,6 +5861,24 @@ package.  This is the same directory available to code within the package via
 the .METHODS environment symbol.</para>
 </section>
 
+<section id="mthPackageDigits"><title>digits</title>
+<indexterm><primary>digits method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>digits method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-digits------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the initial <link linkend="keyNumeric">NUMERIC DIGITS</link>
+setting used for all Rexx code contained within the package.  The default
+value is 9.  The <link linkend="optionsd">::OPTIONS directive</link> can
+override the default value.
+</para>
+</section>
+
 <section id="mthPackageFindClass"><title>findClass</title>
 <indexterm><primary>findClass method</primary>
 <secondary>of Package class</secondary></indexterm>
@@ -5896,6 +5914,44 @@ found, .nil will be returned.</para>
 packages, or routines added using the addRoutine method. The argument
 <emphasis role="italic">name</emphasis> must be a string object. If the name is
 not found, .nil will be returned.</para>
+</section>
+
+<section id="mthPackageForm"><title>form</title>
+<indexterm><primary>form method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>form method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-form--------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the initial <link linkend="keyNumeric">NUMERIC FORM</link> setting
+used for all Rexx code contained within the package.  The default value is
+SCIENTIFIC.  The
+<link linkend="optionsd">::OPTIONS directive</link> can override the default
+value.
+</para>
+</section>
+
+<section id="mthPackageFuzz"><title>fuzz</title>
+<indexterm><primary>fuzz method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fuzz method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fuzz--------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the initial <link linkend="keyNumeric">NUMERIC FUZZ</link> setting
+used for all Rexx code contained within the package.  The default value is 0.
+The
+<link linkend="optionsd">::OPTIONS directive</link> can override the default
+value.
+</para>
 </section>
 
 <section id="mthPackageImportedClasses"><title>importedClasses</title>
@@ -6092,6 +6148,24 @@ not exist, a null stirng is returned.</para>
 </programlisting>
 <para>Returns the size of the source code for the package object. If the source
 code is not available, 0 is returned.</para>
+</section>
+
+<section id="mthPackageTrace"><title>trace</title>
+<indexterm><primary>trace method</primary>
+<secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>trace method</secondary>
+<tertiary>of Package class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-trace-------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the initial <link linkend="keyTrace">TRACE</link> setting used for
+all Rexx code contained within the package.  The default value is Normal. The
+<link linkend="optionsd">::OPTIONS directive</link> can override the default
+value.
+</para>
 </section>
 </section>
 

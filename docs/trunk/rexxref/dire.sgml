@@ -640,7 +640,10 @@ For example, a subclass of a class defined in this source package will not inher
 built-in functions are evaluated.
 The value <emphasis role="italic">digits</emphasis> must be a symbol or string
 that is a valid positive whole number value and must be larger than the
-current FUZZ ::OPTIONS setting.</para>
+current FUZZ ::OPTIONS setting.
+The package value can be retrieved using the Package class
+<link linkend="mthPackageDigits">digits</link> method.
+</para>
 <para>There is no limit to the value for DIGITS
 (except the amount of storage available), but high precisions are likely to
 require a great amount of processing time. It is recommended that you use
@@ -658,6 +661,8 @@ case only one, nonzero digit appears before the decimal point) or ENGINEERING
 (in which case the power of 10 is always a multiple of 3). The default is
 SCIENTIFIC. The subkeywords SCIENTIFIC or ENGINEERING must be specified as
 symbols.
+The package value can be retrieved using the Package class
+<link linkend="mthPackageDigits">form</link> method.
 </para>
 </entry></row>
 <row><entry>FUZZ
@@ -670,11 +675,15 @@ a numeric
 comparison operation. (See <link linkend="numcom">Numeric Comparisons</link>.)
 The value <emphasis role="italic">fuzz</emphasis> must be a symbol or string
 that is a valid positive whole number value and must be smaller than the
-current DIGIT ::OPTIONS setting.</para>
+current DIGIT ::OPTIONS setting.
+The package value can be retrieved using the Package class
+<link linkend="mthPackageDigits">fuzz</link> method.
+</para>
 <para>NUMERIC FUZZ temporarily
 reduces the value of NUMERIC DIGITS by the NUMERIC FUZZ value during every
 numeric comparison. The numbers are subtracted under a precision of DIGITS
-minus FUZZ digits during the comparison and are then compared with 0.</para>
+minus FUZZ digits during the comparison and are then compared with 0.
+</para>
 </entry></row>
 <row><entry>TRACE
 <indexterm><primary>::OPTIONS directive</primary>
@@ -689,6 +698,8 @@ processed. TRACE is mainly used for debugging.
 The value <emphasis role="italic">trace</emphasis> must be one of the
 <link linkend="alphaco">Trace Alphabetic Character (Word) Options</link>
 valid for the <link linkend="keyTrace">Trace instruction</link>.
+The package value can be retrieved using the Package class
+<link linkend="mthPackageDigits">trace</link> method.
 </para>
 </entry></row>
 </tbody>
