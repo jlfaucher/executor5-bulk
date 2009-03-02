@@ -681,8 +681,9 @@ return 0
     verbose = self~getVerbosity
 
     say
-    say "Interpreter:" self~rexxVersion
-    say "ooRexxUnit: " self~unitVersion  '09'x || "ooTest:" self~ooTestVersion
+    say "Interpreter:    " self~rexxVersion
+    say 'Addressing Mode:' .ooRexxUnit.architecture
+    say "ooRexxUnit:     " self~unitVersion  '09'x || "ooTest:" self~ooTestVersion
     say
     say "Tests ran:"~left(20)  stats~tests
     say "Assertions:"~left(20) stats~asserts
