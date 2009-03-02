@@ -436,7 +436,6 @@ return .ooTestResult~new(5)~~addException(err)
 
 -- test size_t
 ::method 'testSize01'
-  defaultDigits = digits()
   numeric digits 20
   val = 0
   self~assertSame(val, TestSizeArg(val))
@@ -444,7 +443,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, TestSizeArg(val))
   val = 1
   self~assertSame(val, TestSizeArg(val))
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**32-1
   else
       val = 2**64-1
@@ -452,9 +451,8 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testSize02'
   self~expectSyntax('88.907')
-  defaultDigits = digits()
   numeric digits 20
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**32
   else
       val = 2**64
@@ -466,7 +464,6 @@ return .ooTestResult~new(5)~~addException(err)
 
 -- test ssize_t
 ::method 'testSSize01'
-  defaultDigits = digits()
   numeric digits 20
   val = 0
   self~assertSame(val, TestSSizeArg(val))
@@ -474,12 +471,12 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, TestSSizeArg(val))
   val = 1
   self~assertSame(val, TestSSizeArg(val))
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**31-1
   else
       val = 2**63-1
   self~assertSame(val, TestSSizeArg(val))
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = -2**31
   else
       val = -2**63
@@ -487,9 +484,8 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testSSize02'
   self~expectSyntax('88.907')
-  defaultDigits = digits()
   numeric digits 20
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**31
   else
       val = 2**63
@@ -497,9 +493,8 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testSSize03'
   self~expectSyntax('88.907')
-  defaultDigits = digits()
   numeric digits 20
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = -2**31 - 1
   else
       val = -2**63 - 1

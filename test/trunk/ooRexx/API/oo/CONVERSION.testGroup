@@ -480,7 +480,6 @@ return .ooTestResult~new(5)~~addException(err)
 
 -- test uintptr_t
 ::method 'testUintptr01'
-  defaultDigits = digits()
   numeric digits 20
   val = 0
   self~assertSame(val, .CONVERSIONTester~TestObjectToUintptr(val))
@@ -488,7 +487,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, .CONVERSIONTester~TestObjectToUintptr(val))
   val = 1
   self~assertSame(val, .CONVERSIONTester~TestObjectToUintptr(val))
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**32-1
   else
       val = 2**64-1
@@ -496,9 +495,8 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testUintptr02'
   self~expectSyntax('88.900')
-  defaultDigits = digits()
   numeric digits 20
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**32
   else
       val = 2**64
@@ -510,7 +508,6 @@ return .ooTestResult~new(5)~~addException(err)
 
 -- test uintptr_t
 ::method 'testUintptr04'
-  defaultDigits = digits()
   numeric digits 20
   val = 0
   self~assertSame(val, .CONVERSIONTester~TestUintptrToObject(val))
@@ -518,14 +515,13 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, .CONVERSIONTester~TestUintptrToObject(val))
   val = 1
   self~assertSame(val, .CONVERSIONTester~TestUintptrToObject(val))
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**32-1
   else
       val = 2**64-1
   self~assertSame(val, .CONVERSIONTester~TestUintptrToObject(val))
 
 ::method 'testUintptr05'
-  defaultDigits = digits()
   numeric digits 20
   val = 0
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~UintptrType))
@@ -533,7 +529,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~UintptrType))
   val = 1
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~UintptrType))
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**32-1
   else
       val = 2**64-1
@@ -541,9 +537,8 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testUintptr06'
   self~expectSyntax('88.900')
-  defaultDigits = digits()
   numeric digits 20
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**32
   else
       val = 2**64
@@ -556,7 +551,6 @@ return .ooTestResult~new(5)~~addException(err)
 
 -- test ssize_t
 ::method 'testIntptr01'
-  defaultDigits = digits()
   numeric digits 20
   val = 0
   self~assertSame(val, .CONVERSIONTester~TestObjectToIntptr(val))
@@ -564,12 +558,12 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, .CONVERSIONTester~TestObjectToIntptr(val))
   val = 1
   self~assertSame(val, .CONVERSIONTester~TestObjectToIntptr(val))
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**31-1
   else
       val = 2**63-1
   self~assertSame(val, .CONVERSIONTester~TestObjectToIntptr(val))
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = -2**31
   else
       val = -2**63
@@ -577,9 +571,8 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testIntptr02'
   self~expectSyntax('88.900')
-  defaultDigits = digits()
   numeric digits 20
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**31
   else
       val = 2**63
@@ -587,9 +580,8 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testIntptr03'
   self~expectSyntax('88.900')
-  defaultDigits = digits()
   numeric digits 20
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = -2**31 - 1
   else
       val = -2**63 - 1
@@ -597,7 +589,6 @@ return .ooTestResult~new(5)~~addException(err)
 
 -- test ssize_t
 ::method 'testIntptr04'
-  defaultDigits = digits()
   numeric digits 20
   val = 0
   self~assertSame(val, .CONVERSIONTester~TestIntptrToObject(val))
@@ -605,19 +596,18 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, .CONVERSIONTester~TestIntptrToObject(val))
   val = 1
   self~assertSame(val, .CONVERSIONTester~TestIntptrToObject(val))
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**31-1
   else
       val = 2**63-1
   self~assertSame(val, .CONVERSIONTester~TestIntptrToObject(val))
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = -2**31
   else
       val = -2**63
   self~assertSame(val, .CONVERSIONTester~TestIntptrToObject(val))
 
 ::method 'testIntptr05'
-  defaultDigits = digits()
   numeric digits 20
   val = 0
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~IntptrType))
@@ -625,12 +615,12 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~IntptrType))
   val = 1
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~IntptrType))
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**31-1
   else
       val = 2**63-1
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~IntptrType))
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = -2**31
   else
       val = -2**63
@@ -638,9 +628,8 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testIntptr06'
   self~expectSyntax('88.900')
-  defaultDigits = digits()
   numeric digits 20
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**31
   else
       val = 2**63
@@ -648,16 +637,14 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testIntptr07'
   self~expectSyntax('88.900')
-  defaultDigits = digits()
   numeric digits 20
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = -2**31 - 1
   else
       val = -2**63 - 1
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~IntptrType))
 
 ::method 'testSize01'
-  defaultDigits = digits()
   numeric digits 20
   val = 0
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~SizeType))
@@ -665,7 +652,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~SizeType))
   val = 1
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~SizeType))
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**32-1
   else
       val = 2**64-1
@@ -673,9 +660,8 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testSize02'
   self~expectSyntax('88.900')
-  defaultDigits = digits()
   numeric digits 20
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**32
   else
       val = 2**64
@@ -687,7 +673,6 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~SizeType))
 
 ::method 'testSSize05'
-  defaultDigits = digits()
   numeric digits 20
   val = 0
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~SSizeType))
@@ -695,12 +680,12 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~SSizeType))
   val = 1
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~SSizeType))
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**31-1
   else
       val = 2**63-1
   self~assertSame(val, .CONVERSIONTester~TestObjectToValue(val, .CONVERSIONTester~SSizeType))
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = -2**31
   else
       val = -2**63
@@ -708,9 +693,8 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testSSize06'
   self~expectSyntax('88.900')
-  defaultDigits = digits()
   numeric digits 20
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = 2**31
   else
       val = 2**63
@@ -718,9 +702,8 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testSSize07'
   self~expectSyntax('88.900')
-  defaultDigits = digits()
   numeric digits 20
-  if defaultDigits == 9 then
+  if .ooRexxUnit.architecture == 32 then
       val = -2**31 - 1
   else
       val = -2**63 - 1

@@ -432,26 +432,16 @@ return testResult
 
 ::method "test_81"
    self~expectSyntax(42.1)
-   defaultDigits = digits()
    Numeric Digits 100
-   if defaultDigits == 9 then
-       x = 9E999999999 ** 999999999
-   else
-       x = 9E999999999999999999 ** 999999999
+   x = 9E999999999 ** 999999999
 
 ::method "test_82"
    self~expectSyntax(42.1)
-   if .ooRexxUnit.architecture == 32 then
-       x = 9E999999999 ** 999999999
-   else
-       x = 9E999999999999999999 ** 999999999
+   x = 9E999999999 ** 999999999
 
 ::method "test_83"
    self~expectSyntax(41.1)
-   if .ooRexxUnit.architecture == 32 then
-       op = 0.1E-999999999
-   else
-       op = 0.1E-999999999999999999
+   op = 0.1E-999999999
    x = op ** 999999999
 
 ::method "test_84"
@@ -459,33 +449,21 @@ return testResult
 
 ::method "test_85"
    self~expectSyntax(42.1)
-   if .ooRexxUnit.architecture == 32 then
-       x = 1E-999999999 ** 3
-   else
-       x = 1E-999999999999999999 ** 3
+   x = 1E-999999999 ** 3
 
 ::method "test_86"
    self~expectSyntax(41.1)
-   if .ooRexxUnit.architecture == 32 then
-       op = 0.1E-999999999
-   else
-       op = 0.1E-999999999999999999
+   op = 0.1E-999999999
    x = op ** 1
 
 ::method "test_87"
    self~expectSyntax(41.1)
-   if .ooRexxUnit.architecture == 32 then
-       op = 0.1E-999999999
-   else
-       op = 0.1E-999999999999999999
+   op = 0.1E-999999999
    x = op ** 3
 
 ::method "test_88"
    self~expectSyntax(26.8)
-   if .ooRexxUnit.architecture == 32 then
-       x = 2 ** 9999999999
-   else
-       x = 2 ** 9999999999999999999
+   x = 2 ** 9999999999
 
 ::method "test_89"
    Numeric Digits 1
