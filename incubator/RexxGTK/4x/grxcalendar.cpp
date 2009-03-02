@@ -238,9 +238,9 @@ RexxMethod1(RexxObjectPtr,             // Return type
 {
     guint year, month, day;
     char date[24];
-    char *months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-    char *smonth;
+    const char *months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                              "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    const char *smonth;
 
     gtk_calendar_get_date(GTK_CALENDAR(self), &year, &month, &day);
     smonth = months[month - 1];

@@ -46,7 +46,7 @@
 /* Global variables                                                           */
 /*----------------------------------------------------------------------------*/
 
-char * rexxgtk_argv[] = {"rexxgtk", "\0"};
+const char * rexxgtk_argv[] = {"rexxgtk", "\0"};
 int rexxgtk_argc = 1;
 
 

@@ -58,7 +58,7 @@
 /* Global variables                                                           */
 /*----------------------------------------------------------------------------*/
 
-extern char * rexxgtk_argv[];
+extern const char * rexxgtk_argv[];
 extern int rexxgtk_argc;
 
 typedef struct _cbcb {
