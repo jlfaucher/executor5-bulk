@@ -208,15 +208,7 @@
   -- to anyone running in this process.
   .local~put(.TESTUTIL, 'TESTUTIL')
 
-  architecture = 32
-  signal on syntax name not64
-  -- this will force a syntax error on 32-bit systems
-  x = delstr("abc", 1000000000, 1)
-  architecture = 64
-
-  not64:
-  signal off syntax
-  .local~ooRexxUnit.architecture = architecture
+  .local~ooRexxUnit.architecture = getAddressingMode()
 
 -- End of entry point.
 
@@ -539,6 +531,24 @@ return .false
   end
 
   return lineNumber
+
+/** getAddressingMode()
+ * Determine if this is a 32-bit or 64-bit interpreter.
+ */
+::routine getAddressingMode
+
+  tmpOutFile = 'tmpXXX_delete.me'
+
+  'rexx -v >' tmpOutFile '2>&1'
+
+  fsObj = .stream~new(tmpOutFile)
+  tmpArray = fsObj~arrayin
+  parse value tmpArray[3] with . . mode
+  fsObj~close
+
+  j = SysFileDelete(tmpOutFile)
+
+return mode
 
 
 /* class: TestUtil - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
