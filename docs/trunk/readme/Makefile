@@ -47,6 +47,7 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
              ../shared/oorexx.html.dsl
 
 SGML_FILES = readme.sgml \
+     newinrelease.sgml \
      windows.sgml \
      unix.sgml \
      ../shared/notices.sgml \

@@ -1,6 +1,7 @@
 <?xml version="1.0" standalone="no">
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.2//EN"
 [
+<!ENTITY newinrelease     SYSTEM "newinrelease.sgml">
 <!ENTITY windows          SYSTEM "windows.sgml">
 <!ENTITY unix             SYSTEM "unix.sgml">
 <!ENTITY gethelp          SYSTEM "../shared/gethelp.sgml">
@@ -76,8 +77,9 @@
     #######################################################################-->
 
 <legalnotice>
-<para>This program and the accompanying materials are made available under the
-terms of the <link linkend="cplv10" endterm="cplv10.title"></link>.
+<para>
+  This program and the accompanying materials are made available under the terms of the <link
+  linkend="cplv10" endterm="cplv10.title"></link>.
 </para>
 </legalnotice>
 
@@ -85,8 +87,8 @@ terms of the <link linkend="cplv10" endterm="cplv10.title"></link>.
 
 <section><title>About The 4.0.0 Release</title>
 <para>
-Open Object Rexx Version 4.0.0 is based on the previous version
-of ooRexx&trade; (3.2.0). Version 4.0.0 has both enhancements and bug fixes.
+  Open Object Rexx Version 4.0.0 is based on the previous version of ooRexx&trade; (3.2.0). Version 4.0.0
+  has both enhancements and bug fixes.
 </para>
 <note><title>IMPORTANT</title>
 <para>
@@ -95,43 +97,16 @@ of ooRexx&trade; (3.2.0). Version 4.0.0 has both enhancements and bug fixes.
   ooRexx can not be installed side-by-side.
 </para>
 <para>
-  If a previous version of ooRexx is installed, it should be uninstalled prior to installing 4.0.0. Start
-  the installation program. The installer will recognize that a previous version is installed and present
-  an option to uninstall the previous version before proceeding with the 4.0.0 install. Alternatively,
-  the previous version may be uninstalled prior to the 4.0.0 installation.
+  If a previous version of ooRexx is installed, it should be uninstalled prior to installing 4.0.0. When
+  the installation program is started, the installer will recognize that a previous version is installed.
+  It will then present an option to uninstall the previous version before proceeding with the 4.0.0
+  install. Alternatively, you can unistall the previous version from the Start menu item for ooRexx or
+  from the Control Panel Add / Remove Software item, prior to starting the 4.0.0 installation.
 </para></note>
 
+<!-- New in this Release -->
+&newinrelease;
 
-<section><title>New in this Release</title>
-<para>
-This section describes the enhancements introduced since Open Object Rexx 3.2.0.
-</para>
-<para>You should refer to the CHANGES document accompanying the release for
-a complete list of the changes and bug fixes.
-</para>
-
-<section><title>New Installation Path for Unix/Linux</title>
-<para>
-The installation path for the Unix/Linux version of ooRexx has been changed
-from /usr/local to /opt/ooRexx. This will make ooRexx much more compliant
-with the Linux Standard Base.
-</para>
-</section>
-
-<section><title>Additions to the REXXUTIL Function Package</title>
-<para>
-There are some new functions included in the RexxUtil library. They begin with
-the prefix SysIs*.
-</para>
-</section>
-
-<section><title>Getting Help Documentation</title>
-<para>
-Each document in the ooRexx documentation set now contains a section on getting
-help for ooRexx. It is located in the preface of each document.
-</para>
-</section>
-</section>
 </section>
 
 <!-- Install/config info for Windows -->
@@ -142,12 +117,16 @@ help for ooRexx. It is located in the preface of each document.
 
 <section><title>Known Limitations, Problems and Workarounds</title>
 <itemizedlist>
-<listitem><para>The global directory .environment is process local.
-</para></listitem>
-<listitem><para>When you start Open Object Rexx, a file called RXAPI
-(RXAPI.EXE on Windows) is started.
-The process executing this file remains open after your Open Object Rexx
-program terminates if:</para>
+<listitem>
+<para>
+  The global directory .environment is process local.
+</para>
+</listitem>
+<listitem>
+<para>
+  When you start Open Object Rexx, a file called RXAPI (RXAPI.EXE on Windows) is started. The process
+  executing this file remains open after your Open Object Rexx program terminates if:
+</para>
 <itemizedlist>
 <listitem><para>an external function is registered (including REXXUTIL),
 </para></listitem>
@@ -162,47 +141,23 @@ program terminates if:</para>
 <listitem><para>a macro space is loaded.
 </para></listitem>
 </itemizedlist>
-<para>If you need RXAPI to be closed, remove any global data (see list above)
-before leaving your program. Don't forget to call SysDropFuncs().
-</para></listitem>
-<listitem><para>Windows Scripting Host</para>
-<para>The support for the Windows Scripting Host has the following limitations:
-<itemizedlist>
-<listitem><para>Do not rely on a global availability of objects provided
-by the host.
-</para></listitem>
-<listitem><para>Running ActiveX objects, like the Open Object Rexx scripting engine,
-may pose a security threat. If you do not want the engine to be
-enabled on your machine, do not select the ActiveX component
-at installation time ("ApplicationFiles\WSHFiles"). You can
-manually unregister the scripting DLL from the system by stating
-"regsvr32 /u orxscrpt.dll" on the command line (re-registration
-can be done with "regsvr32 orxscrpt.dll").
-</para></listitem>
-<listitem><para>You will find several sample scripts that describe how to use
-Open Object Rexx with the Windows Scripting Host (WSH) in the directory
-SAMPLES\WSH\.
-</para></listitem>
-</itemizedlist>
-<listitem><para>Under Unix/Linux only piped "|" input and redirected output
-("&gt;") can be evaluated by Open Object Rexx. Redirected input ("&lt;")
-can not be evaluated.
-</para></listitem>
-<listitem><para>
-Open Object Rexx on Unix/Linux uses a shared memory for function
-registration and data exchange between different Rexx processes.
-If a running Rexx process must be interrupted (by using the command
-"kill -9 pid"), the shared memory might be left in disorder.  In this
-case, the interpreter tries to restore the shared memory. If this
-fails, use the binary "rxdelipc" to delete the shared memory.
-</para></listitem>
+<para>
+  If you need RXAPI to be closed, remove any global data (see list above) before leaving your program.
+  Don't forget to call SysDropFuncs().
+</para>
+</listitem>
+<listitem>
+<para>
+  Under Unix/Linux only piped "|" input and redirected output ("&gt;") can be evaluated by Open Object
+  Rexx. Redirected input ("&lt;") can not be evaluated.
+</para>
+</listitem>
 </itemizedlist>
 </section>
 
 <section><title>Documentation</title>
 <para>
-All documentation is now contained in PDF files and zipped HTML package
-files and is available online at
+All documentation is contained in PDF files and zipped HTML package files and is available online at
 http://www.oorexx.org/docs.html.
 </para>
 <para>
@@ -217,6 +172,11 @@ The following documents are available:
 <varlistentry>
 <term>rexxpg.pdf</term>
 <listitem><para>This is the <citetitle>Open Object Rexx: Programming Guide</citetitle>.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term>winextensions.pdf</term>
+<listitem><para>This is the <citetitle>Open Object Rexx: Windows Extensions Reference</citetitle>.
 </para></listitem>
 </varlistentry>
 <varlistentry>
