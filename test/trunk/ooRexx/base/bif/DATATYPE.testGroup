@@ -166,28 +166,15 @@ return testResult
     self~doDts(' c2   0D       ab  ',  '000000000C')
     self~doDts('  c2   0D       ab ',  '000000000C')
 
-    if .ooRexxUnit.architecture == 32 then do
-        self~doDts('123456789',                   '100011011N')
-        self~doDts('1234567890',                  '100011001N')
-        self~doDts('12345678901',                 '100011001N')
-        self~doDts('1e999999999',                 '100011001N')
-        self~doDts('1e1000000000',                '100001001C')
-        self~doDts('1e+999999999',                '000011000N')
-        self~doDts('1e+1000000000',               '000001000C')
-        self~doDts('1e-999999999',                '000011000N')
-        self~doDts('1e-1000000000',               '000001000C')
-    end
-    else do
-        self~doDts('123456789999999999',          '100011011N')
-        self~doDts('1234567899999999990',         '100011001N')
-        self~doDts('12345678999999999901',        '100011001N')
-        self~doDts('1e999999999999999999',        '100011001N')
-        self~doDts('1e1000000000000000000',       '100001001C')
-        self~doDts('1e+999999999999999999',       '000011000N')
-        self~doDts('1e+1000000000000000000',      '000001000C')
-        self~doDts('1e-999999999999999999',       '000011000N')
-        self~doDts('1e-1000000000000000000',      '000001000C')
-    end
+    self~doDts('123456789',                   '100011011N')
+    self~doDts('1234567890',                  '100011001N')
+    self~doDts('12345678901',                 '100011001N')
+    self~doDts('1e999999999',                 '100011001N')
+    self~doDts('1e1000000000',                '100001001C')
+    self~doDts('1e+999999999',                '000011000N')
+    self~doDts('1e+1000000000',               '000001000C')
+    self~doDts('1e-999999999',                '000011000N')
+    self~doDts('1e-1000000000',               '000001000C')
 
 ::method doDts
   use arg test, expected
