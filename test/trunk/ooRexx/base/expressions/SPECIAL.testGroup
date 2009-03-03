@@ -260,27 +260,15 @@ return testResult
 
 ::method "test_46"
    self~expectSyntax(42.901)
-   if .ooRexxUnit.architecture == 32 then do
-       a=9E999999999
-       xre=a+2E999999999/ft()
-   end
-   else do
-       a=9E999999999999999999
-       xre=a+2E999999999999999999/ft()
-   end
+   a=9E999999999
+   xre=a+2E999999999/ft()
    return
    ft:  x=6 ; Return 1
 
 ::method "test_47"
    self~expectSyntax(42.901)
-   if .ooRexxUnit.architecture == 32 then do
-       a=9E999999999
-       xre=(a+2E999999999)/ft()
-   end
-   else do
-       a=9E999999999999999999
-       xre=(a+2E999999999999999999)/ft()
-   end
+   a=9E999999999
+   xre=(a+2E999999999)/ft()
    return
    ft:  x=6 ; Return 1
 

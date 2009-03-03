@@ -408,17 +408,11 @@ return testResult
 
 ::method "test_77"
    self~expectSyntax(42.1)
-   if .ooRexxUnit.architecture == 32 then
-       x = 9E999999999 ** 3
-   else
-       x = 9E999999999999999999 ** 3
+   x = 9E999999999 ** 3
 
 ::method "test_78"
    self~expectSyntax(42.1)
-   if .ooRexxUnit.architecture == 32 then
-       x = 9E999999999 ** 999999999
-   else
-       x = 9E999999999999999999 ** 999999999
+   x = 9E999999999 ** 999999999
 
 ::method "test_79"
    self~expectSyntax(26.8)

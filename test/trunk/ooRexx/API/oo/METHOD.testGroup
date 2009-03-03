@@ -494,7 +494,7 @@ return .ooTestResult~new(5)~~addException(err)
   if .ooRexxUnit.architecture == 32 then
       val = -999999999
   else
-      val = -999999999999999999
+      val = '-999999999999999999'
   self~assertSame(val, tester~TestWholeNumberArg(val))
   self~assertSame(1, tester~TestOptionalWholeNumberArg(1))
   self~assertSame(0, tester~TestOptionalWholeNumberArg())
@@ -1817,7 +1817,7 @@ return .ooTestResult~new(5)~~addException(err)
   if .ooRexxUnit.architecture == 32 then
       val = -999999999
   else
-      val = -999999999999999999
+      val = '-999999999999999999'
   self~assertSame(val, tester~TestWholeNumberToObject(val))
   self~assertSame(val, tester~TestWholeNumberToObjectAlt(val))
 
@@ -1841,7 +1841,7 @@ return .ooTestResult~new(5)~~addException(err)
   if .ooRexxUnit.architecture == 32 then
       val = -999999999
   else
-      val = -999999999999999999
+      val = '-999999999999999999'
   self~assertSame(val, tester~TestObjectToWholeNumber(val))
   self~assertSame(val, tester~TestObjectToWholeNumberAlt(val))
 
