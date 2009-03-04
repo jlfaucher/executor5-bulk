@@ -4974,14 +4974,14 @@ the string from the starting position to the end is used. </para>
 <indexterm><primary>examples</primary>
 <secondary>TRANSLATE function</secondary></indexterm>
 <programlisting>
-TRANSLATE("abcdef")                    ->    "ABCDEF"
-TRANSLATE("abcdef",,,,2,3)             ->    "ABCDEF"
-TRANSLATE("abcdef","12","ec")          ->    "ab2d1f"
-TRANSLATE("abcdef","12","abcd",".")    ->    "12..ef"
-TRANSLATE("APQRV", ,"PR")              ->    "A Q V"
-TRANSLATE("APQRV",XRANGE("00"X,"Q"))   ->    "APQ  "
-TRANSLATE("4123","abcd","1234",,2,2)   ->    "1ab4"
-TRANSLATE("4123","abcd","1234")        ->    "dabc"
+TRANSLATE("abcdef")                        ->    "ABCDEF"
+TRANSLATE("abcdef", , , , 2, 3)            ->    "ABCDEF"
+TRANSLATE("abcdef", "12", "ec")            ->    "ab2d1f"
+TRANSLATE("abcdef", "12", "abcd", ".")     ->    "12..ef"
+TRANSLATE("APQRV", , "PR")                 ->    "A Q V"
+TRANSLATE("APQRV", XRANGE("00"X, "Q"))     ->    "APQ  "
+TRANSLATE("4123", "abcd", "1234", , 2, 2)  ->    "1ab4"
+TRANSLATE("4123", "abcd", "1234")          ->    "dabc"
 </programlisting>
 
 <note><title>Note</title>

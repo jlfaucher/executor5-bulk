@@ -4701,14 +4701,14 @@ the string from the starting position to the end is used. </para>
 <indexterm><primary>examples</primary>
 <secondary>translate method</secondary></indexterm>
 <programlisting>
-"abcdef"~translate                     ->    "ABCDEF"
-"abcdef"~translate(,,,3,2)             ->    "abcDEf"
-"abcdef"~translate("12","ec")          ->    "ab2d1f"
-"abcdef"~translate("12","abcd",".")    ->    "12..ef"
-"APQRV"~translate(,"PR")               ->    "A Q V"
-"APQRV"~translate(XRANGE("00"X,"Q"))   ->    "APQ  "
-"4123"~translate("abcd","1234",,2,2)   ->    "1ab4"
-"4123"~translate("abcd","1234")        ->    "dabc"
+"abcdef"~translate                         ->    "ABCDEF"
+"abcdef"~translate(, , , 3, 2)             ->    "abcDEf"
+"abcdef"~translate("12", "ec")             ->    "ab2d1f"
+"abcdef"~translate("12", "abcd", ".")      ->    "12..ef"
+"APQRV"~translate(, "PR")                  ->    "A Q V"
+"APQRV"~translate(XRANGE("00"X, "Q"))      ->    "APQ  "
+"4123"~translate("abcd", "1234", , 2, 2)   ->    "1ab4"
+"4123"~translate("abcd", "1234")           ->    "dabc"
 </programlisting>
 
 <note><title>Note</title>
