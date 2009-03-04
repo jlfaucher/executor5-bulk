@@ -58,11 +58,7 @@
 
 <orgname>Rexx Language Association</orgname>
 <copyright>
-   <year>2005</year>
-   <year>2006</year>
-   <year>2007</year>
-   <year>2008</year>
-   <year>2009</year>
+   <year>2005 - 2009</year>
    <holder>Rexx Language Association. All rights reserved.</holder>
 </copyright>
 
@@ -92,16 +88,28 @@
 </para>
 <note><title>IMPORTANT</title>
 <para>
-  If you already have an earlier version of IBM Object Rexx&trade; installed on your system, you must
-  remove it before starting with the installation of this package. The two packages, Object Rexx and
-  ooRexx can not be installed side-by-side.
+  If you have a version of IBM Object Rexx&trade; installed on your system, you must remove it before
+  starting with the installation of this package. The two packages, Object Rexx and ooRexx can not be
+  installed side-by-side.
 </para>
 <para>
-  If a previous version of ooRexx is installed, it should be uninstalled prior to installing 4.0.0. When
-  the installation program is started, the installer will recognize that a previous version is installed.
-  It will then present an option to uninstall the previous version before proceeding with the 4.0.0
-  install. Alternatively, you can unistall the previous version from the Start menu item for ooRexx or
-  from the Control Panel Add / Remove Software item, prior to starting the 4.0.0 installation.
+  If a previous version of ooRexx is installed, it should be uninstalled prior to installing 4.0.0.
+</para>
+<para>
+  On Windows, when the installation program is started, the installer will recognize that a previous
+  version is installed. It will then present an option to uninstall the previous version before
+  proceeding with the 4.0.0 install. Alternatively, you can unistall the previous version prior to
+  starting the 4.0.0 installation.
+</para>
+<para>
+  On a Unix-like system use the appropriate package manager to uninstall the previous version. For
+  instance, on Linux with a rpm install, you could use the command:
+<programlisting>
+<![CDATA[
+rpm -iv ooRexx
+]]>
+</programlisting>
+  to uninstall ooRexx.
 </para></note>
 
 <!-- New in this Release -->
@@ -119,7 +127,7 @@
 <itemizedlist>
 <listitem>
 <para>
-  The global directory .environment is process local.
+  The global directory .environment is process local, global to the system.
 </para>
 </listitem>
 <listitem>
