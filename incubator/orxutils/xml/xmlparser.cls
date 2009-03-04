@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Description: Very simple class to parse XML.                               */
 /*                                                                            */
-/* Copyright (c) 2006 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2006-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -185,11 +185,6 @@ if self~currentchar() <> '<' then do
          chunk~text = chunk~text || .endofline
          curline = lineidx
          end
-      end
-    if eof = .true & chunk~text~strip <> '' then do
-      errortxt = 'Error line' errlineidx 'column 'errcharidx': EOF within CDATA.'
-      self~error(self~create_error(errortxt, errlineidx, errcharidx)) -- call the public override method
-      return .nil
       end
    chunk~text = self~xlatetext(chunk~text)
    if chunk~text~strip <> '' then ,
