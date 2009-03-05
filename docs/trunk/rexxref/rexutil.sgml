@@ -190,6 +190,10 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
+<entry><link linkend="utlSysFileExists">SysFileExists</link></entry><entry>YES</entry><entry>YES</entry>
+<entry></entry>
+</row>
+<row>
 <entry><link linkend="utlSysfilemove">SysFileMove</link></entry><entry>YES</entry><entry>NO</entry>
 <entry></entry>
 </row>
@@ -1266,6 +1270,42 @@ code</link> is returned.  This may be one of the following, but could be others.
 /* Code */
 parse arg InputFile OutputFile
 call SysFileDelete OutputFile   /* unconditionally erase output file */
+</programlisting>
+</section>
+
+<section id="utlSysFileExists"><title>SysFileExists</title>
+<indexterm><primary>SysFileExists</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysFileExists</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysFileExists(filename)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>Checks for the existence of a file. This function does not support
+wildcard specifications.  Returns true if any file system entity with the
+given name exists.  In particular, this will return true for both regular
+files and directories.</para>
+<para><emphasis role="bold">Parameters:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">filename</emphasis></term>
+<listitem><para>The name of the file to check for the existence of.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The file does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The file exists.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+if SysFileExists(InputFile) then say "File Exists!"
+else say "File does not exist."
 </programlisting>
 </section>
 
