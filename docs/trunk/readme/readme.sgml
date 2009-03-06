@@ -123,14 +123,16 @@ rpm -iv ooRexx
 <!-- Install/config info for Unix/Linux -->
 &unix;
 
-<section><title>Known Limitations, Problems and Workarounds</title>
-<itemizedlist>
-<listitem>
+<section><title>The <computeroutput>rxapi</computeroutput> Daemon Process</title>
 <para>
-  The global directory .environment is process local, not global to the system.
+  <emphasis role="bold">This section needs to be rewritten, or removed, or??</emphasis>
 </para>
-</listitem>
-<listitem>
+<para>
+  Part of ooRexx is <computeroutput>rxapi</computeroutput> which is is a daemon process that manages all data
+  that can persist across interpreter invocations or is used for cross-process communications. The rxapi
+  process manages the Rexx data queues, the macrospace, and all of the external function, subcommand handler
+  and exit registrations.
+</para>
 <para>
   When you start Open Object Rexx, a file called RXAPI (RXAPI.EXE on Windows) is started. The process
   executing this file remains open after your Open Object Rexx program terminates if:
@@ -152,6 +154,15 @@ rpm -iv ooRexx
 <para>
   If you need RXAPI to be closed, remove any global data (see list above) before leaving your program.
   Don't forget to call SysDropFuncs().
+</para>
+
+</section>
+
+<section><title>Known Limitations, Problems and Workarounds</title>
+<itemizedlist>
+<listitem>
+<para>
+  The global directory .environment is process local, not global to the system.
 </para>
 </listitem>
 <listitem>

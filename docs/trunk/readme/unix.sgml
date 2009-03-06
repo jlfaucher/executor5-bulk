@@ -49,130 +49,305 @@
 <listitem><para>12 MB free disk space for the program (20 MB for AIX)
 </para></listitem>
 <listitem><para>13.5 MB free disk space for online documentation</para></listitem>
-<listitem><para>IBM-compatible, Pentium or AMD processor,
-or higher for an x86 platform</para></listitem>
-<listitem><para>Power 4 processor or higher for a PPC platform</para></listitem>
-<listitem><para>Sparc processor for a SUN Solaris (Sparc) platform</para></listitem>
+<listitem><para>
+  IBM-compatible, Pentium or AMD processor, or higher, for an x86 32-bit or 64-bit
+  platform.
+</para></listitem>
+<listitem><para>
+  Power 4 processor or higher for a PPC platform
+</para></listitem>
+<listitem><para>
+  Sparc processor for a SUN Solaris (Sparc) platform
+</para></listitem>
 </itemizedlist>
 </section>
 
 <section><title>Software Requirements</title>
 <itemizedlist>
-<listitem><para>Linux ELF system (i386) and your kernel must support
-System V IPC. Open Object Rexx must run with Linux kernel version 2.4.1
-or higher.</para></listitem>
-<listitem><para>SUN Sparc system running Solaris V2.8
-or higher.</para></listitem>
+<listitem><para>
+  Linux ELF system (i386 or x86_64.) Linux kernel version 2.4.1 or higher. The kernel must support System
+  V IPC.
+</para></listitem>
+<listitem><para>
+  Linux PowerPC system ???
+</para></listitem>
+<listitem><para>
+  AIX system ???
+</para></listitem>
+<listitem><para>
+  MacOSX system ???
+</para></listitem>
+<listitem><para>
+  SUN Sparc system running Solaris V2.8 or higher.
+</para></listitem>
 </itemizedlist>
 </section>
 
-<section><title>Installation, Update and Configuration Information</title>
+<section><title>Installation and Configuration Information</title>
 <para>
-This new version of Open Object Rexx cannot coexist with a previous version
-of Open Object Rexx or IBM Object REXX in your installation.
-If you have previously installed Object Rexx, you must first
-deinstall this Object Rexx program. If there are two different
-versions of Object Rexx installed, this leads to unpredictable results.
-The installation program of Object Rexx starts and the Object Rexx Installation
-logo appears on your screen (this automatic startup may take a while).
-Follow the installation program instructions to complete the Object Rexx
-installation. Object Rexx can be installed as a common or as a personal
-program. To install Object Rexx as a common program, the current user
-must have administrator rights.
+  This new version of Open Object Rexx cannot coexist with a previous installed version of Open Object
+  Rexx or IBM Object REXX on your system. If you have previously installed IBM Object Rexx or Open Object
+  Rexx, you must first deinstall that program.
 </para>
 
 <section><title>Installation/Removal of the RPM Package</title>
 <note><title>Note</title>
-<para>The installation of Open Object Rexx requires that all steps be
-run with root authority.
+<para>
+  The installation of Open Object Rexx requires that all steps be run with root authority.
 </para></note>
 <para>
-To install the &apos;rpm&apos; package, use your rpm-package-manager. Select
-the &apos;ooRexx-3.1.n.0-n.i386.rpm&apos; package for the installation. Refer
-to your package manager for further information. The package manager
-adds orexx to your local rpm-database. The command with the command
-line rpm-package-manager is:
-</para>
-<programlisting>
-   rpm -i ooRexx-3.1.n-n.i386.rpm
-</programlisting>
-<para>
-Open Object Rexx is installed in the directory
-<computeroutput>/opt/ooRexx</computeroutput>. Links are created in
-<computeroutput>/usr/lib</computeroutput>
-and <computeroutput>/usr/bin</computeroutput> for the ooRexx shared libraries
-and executables respectively. An additional link is created in
-<computeroutput>/usr/include</computeroutput> for the
-<computeroutput>rexx.h</computeroutput>header file.
+  To install the &apos;rpm&apos; package, use your rpm package manager. Refer to your package manager for
+  further information. The package manager adds orexx to your local rpm-database. Select the appropriate
+  package for your system. Although the 32-bit version of ooRexx can be installed on some 64-bit Linux
+  distributions it is recommended that the 64-bit version of ooRexx be installed on all 64-bit Linux
+  systems.
 </para>
 <para>
-The command <computeroutput>rpm</computeroutput>
-can also be used to remove the package from the database
-if it is entered at the command line:
+  There may be several rpm packages available. Each package name will indicate the processor architecture
+  (i386, x86_64, ppc, etc.,) it is intended for, and the Linux distribution it was built on. In general,
+  the Linux distribution the package was compiled on does not make a difference. The ooRexx rpm will
+  install on any Linux system that supports rpms. However, sometimes, because of the libraries present on
+  a system, the ooRexx rpm will not install. For instance, the Fedora Core 10 rpm may not install on a
+  SuSE 9.3 system. Because of this, when resources are available, the ooRexx project will make available
+  rpm packages built for older Linux distributions.
+</para>
+<para>
+  To install with the command line rpm package manager, a typical command line might be:
+<programlisting>
+   rpm -i ooRexx-4.0.0-1.i386.fedora10.rpm
+</programlisting>
+  or
+<programlisting>
+   rpm -i ooRexx-4.0.0-1.x86_64.fedora10.rpm
+</programlisting>
+</para>
+<para>
+  Open Object Rexx is installed in the directory <computeroutput>/opt/ooRexx</computeroutput>. Links are
+  created in <computeroutput>/usr/lib</computeroutput> and <computeroutput>/usr/bin</computeroutput> for
+  the ooRexx shared libraries and executables respectively. Additional links are created in
+  <computeroutput>/usr/include</computeroutput> for the native API header files.
+</para>
+<para>
+  Use the rpm package manager to remove ooRexx from the system. The command line
+  <computeroutput>rpm</computeroutput> can also be used to remove the package from the system. The
+  command to enter is:
 </para>
 <programlisting>
-   rpm -e ooRexx-3.1.n-n
+   rpm -e ooRexx
 </programlisting>
+</section>
+
+<section><title>Installation/Removal of the DEB Package</title>
+<note><title>Note</title>
+<para>
+  The installation of Open Object Rexx requires that all steps be run with root authority.
+</para></note>
+<para>
+  Debian based Linux distributions (Kubuntu, Ubuntu, etc.,) use the debian package manager. If you use
+  one of the ... refer to the documentation for that tool. On the other hand, ooRexx installs easily from
+  the command line. Use the following command to install a <computeroutput>.deb</computeroutput> package
+  from the command line:
+<programlisting>
+<![CDATA[
+   dpkg -i <packageFile>
+]]>
+</programlisting>
+  For example:
+<programlisting>
+   tom@Loon:~/downloads$ dpkg -i ooRexx-4.0.0-1.i386.kubuntu810.deb
+</programlisting>
+</para>
+<para>
+  Open Object Rexx is installed in the directory <computeroutput>/opt/ooRexx</computeroutput>.
+</para>
+<para>
+  The command <computeroutput>dpkg --purge</computeroutput> is used to remove ooRexx from the system. For
+  example:
+<programlisting>
+   tom@Loon:/$ dpkg --purged ooRexx
+</programlisting>
+  Or, use the same package manager you used to install to remove ooRexx from a debian based system.
+</para>
 </section>
 
 <section><title>Installation of the &apos;tgz&apos; Package</title>
 <note><title>Note</title>
-<para>The installation of Open Object Rexx requires that all steps be
-run with root authority.
+<para>
+  The installation of Open Object Rexx requires that all steps be run with root authority.
 </para></note>
 <para>
-If you have the package maintenance tool &apos;pkgtool&apos; on your system,
-you can use it to install or deinstall Open Object Rexx via a graphical
-tool. Start pkgtool as &apos;root&apos; and install the &apos;ooRexx-3.1.n-n.i386.tgz&apos;
-package. All files will be copied to the directory &apos;/opt/ooRexx/&apos;.
+  If you have the package maintenance tool <computeroutput>pkgtool</computeroutput> on your system, you
+  can use it to install or deinstall Open Object Rexx via a graphical tool. Start pkgtool as root and
+  install the <computeroutput>ooRexx-4.0.0-1.i386.tar.gz</computeroutput> or
+  <computeroutput>ooRexx-4.0.0-1.x86_64.tar.gz</computeroutput>, as appropriate package. All files will
+  be copied to the directory <computeroutput>/opt/ooRexx/</computeroutput>.
 </para>
 <para>
-If &apos;pkgtool&apos; is not available, you can install Open Object Rexx by copying the
-ooRexx-3.1.n-n.i386.tgz file to the root directory ( / ) and decompress
-the package with the following command:
+  If <computeroutput>pkgtool</computeroutput> is not available, you can install Open Object Rexx by
+  copying the <computeroutput>ooRexx-4.0.0-1.i386.tar.gz</computeroutput> (or x86_64) file to the root
+  directory ( / ) and decompress the package with the following command:
 </para>
 <programlisting>
-  tar -zxvf ooRexx-3.1.n-n.i386.tgz
+  tar -zxvf ooRexx-4.0.0-1.i386.tar.gz
 </programlisting>
 <para>
-You must manually add the following links:
+  Then, you must manually execute the following commands, or cut and paste the following into a shell
+  script and execute the script:
 </para>
 <programlisting>
-cd /opt/ooRexx/bin
-ln -sf ./rexx /usr/bin/rexx
-ln -sf ./rexxc /usr/bin/rexxc
-ln -sf ./rxqueue /usr/bin/rxqueue
-ln -sf ./rxsubcom /usr/bin/rxsubcom
-ln -sf ./rxdelipc /usr/bin/rxdelipc
-ln -sf ./rxmigrate /usr/bin/rxmigrate
-ln -sf ./rexx.img /usr/bin/rexx.img
-ln -sf ./rexx.cat /usr/bin/rexx.cat
-ln -sf ./rxregexp.cls /usr/bin/rxregexp.cls
-ln -sf ./rxftp.cls /usr/bin/rxftp.cls
-cd /opt/ooRexx/%{_lib}
-ln -sf ./librexx.so.%{version} %{_libdir}/librexx.so.3
-ln -sf ./librexx.so.%{version} %{_libdir}/librexx.so
-ln -sf ./librexxapi.so.%{version} %{_libdir}/librexxapi.so.3
-ln -sf ./librexxapi.so.%{version} %{_libdir}/librexxapi.so
-ln -sf ./librxsock.so.%{version} %{_libdir}/librxsock.so.3
-ln -sf ./librxsock.so.%{version} %{_libdir}/librxsock.so
-ln -sf ./librxmath.so.%{version} %{_libdir}/librxmath.so.3
-ln -sf ./librxmath.so.%{version} %{_libdir}/librxmath.so
-ln -sf ./librxregexp.so.%{version} %{_libdir}/librxregexp.so.3
-ln -sf ./librxregexp.so.%{version} %{_libdir}/librxregexp.so
-ln -sf ./librexxutil.so.%{version} %{_libdir}/librexxutil.so.3
-ln -sf ./librexxutil.so.%{version} %{_libdir}/librexxutil.so
-cd /opt/ooRexx/man
-ln -sf ./rexx.1 /usr/share/man/man1/rexx.1
-ln -sf ./rexxc.1 /usr/share/man/man1/rexxc.1
-ln -sf ./rxsubcom.1 /usr/share/man/man1/rxsubcom.1
-ln -sf ./rxqueue.1 /usr/share/man/man1/rxqueue.1
-ln -sf ./rxmigrate.1 /usr/share/man/man1/rxmigrate.1
-cd /opt/ooRexx/include
-ln -sf ./rexx.h /usr/include/rexx.h
-cd /opt/ooRexx/samples
-ln -sf ./rexxtry.rex /usr/bin/rexxtry.rex
+<![CDATA[
+if [ -d /opt/ooRexx ]; then
+   ln -sf /opt/ooRexx/bin/rexx                             /usr/bin/rexx
+   ln -sf /opt/ooRexx/bin/rexxc                            /usr/bin/rexxc
+   ln -sf /opt/ooRexx/bin/rxapi                            /usr/bin/rxapi
+   ln -sf /opt/ooRexx/bin/rxqueue                          /usr/bin/rxqueue
+   ln -sf /opt/ooRexx/bin/rxsubcom                         /usr/bin/rxsubcom
+   ln -sf /opt/ooRexx/bin/rexx.img                         /usr/bin/rexx.img
+   ln -sf /opt/ooRexx/bin/rexx.cat                         /usr/bin/rexx.cat
+   ln -sf /opt/ooRexx/bin/rxregexp.cls                     /usr/bin/rxregexp.cls
+   ln -sf /opt/ooRexx/bin/rxftp.cls                        /usr/bin/rxftp.cls
+   ln -sf /opt/ooRexx/bin/socket.cls                       /usr/bin/socket.cls
+   ln -sf /opt/ooRexx/bin/oorexx-config                    /usr/bin/oorexx-config
+   ln -sf /opt/ooRexx/lib/ooRexx/librexx.so.4.0.0     /usr/lib/librexx.so.4.0.0
+   ln -sf /opt/ooRexx/lib/ooRexx/librexx.so.4.0.0     /usr/lib/librexx.so.4
+   ln -sf /opt/ooRexx/lib/ooRexx/librexx.so.4.0.0     /usr/lib/librexx.so
+   ln -sf /opt/ooRexx/lib/ooRexx/librexx.la                       /usr/lib/librexx.la
+   ln -sf /opt/ooRexx/lib/ooRexx/librexxapi.so.4.0.0  /usr/lib/librexxapi.so.4.0.0
+   ln -sf /opt/ooRexx/lib/ooRexx/librexxapi.so.4.0.0  /usr/lib/librexxapi.so.4
+   ln -sf /opt/ooRexx/lib/ooRexx/librexxapi.so.4.0.0  /usr/lib/librexxapi.so
+   ln -sf /opt/ooRexx/lib/ooRexx/librexxapi.la                    /usr/lib/librexxapi.la
+   ln -sf /opt/ooRexx/lib/ooRexx/librxsock.so.4.0.0   /usr/lib/librxsock.so.4.0.0
+   ln -sf /opt/ooRexx/lib/ooRexx/librxsock.so.4.0.0   /usr/lib/librxsock.so.4
+   ln -sf /opt/ooRexx/lib/ooRexx/librxsock.so.4.0.0   /usr/lib/librxsock.so
+   ln -sf /opt/ooRexx/lib/ooRexx/librxsock.la                     /usr/lib/librxsock.la
+   ln -sf /opt/ooRexx/lib/ooRexx/librxmath.so.4.0.0   /usr/lib/librxmath.so.4.0.0
+   ln -sf /opt/ooRexx/lib/ooRexx/librxmath.so.4.0.0   /usr/lib/librxmath.so.4
+   ln -sf /opt/ooRexx/lib/ooRexx/librxmath.so.4.0.0   /usr/lib/librxmath.so
+   ln -sf /opt/ooRexx/lib/ooRexx/librxmath.la                     /usr/lib/librxmath.la
+   ln -sf /opt/ooRexx/lib/ooRexx/librxregexp.so.4.0.0 /usr/lib/librxregexp.so.4.0.0
+   ln -sf /opt/ooRexx/lib/ooRexx/librxregexp.so.4.0.0 /usr/lib/librxregexp.so.4
+   ln -sf /opt/ooRexx/lib/ooRexx/librxregexp.so.4.0.0 /usr/lib/librxregexp.so
+   ln -sf /opt/ooRexx/lib/ooRexx/librxregexp.la                   /usr/lib/librxregexp.la
+   ln -sf /opt/ooRexx/lib/ooRexx/librexxutil.so.4.0.0 /usr/lib/librexxutil.so.4.0.0
+   ln -sf /opt/ooRexx/lib/ooRexx/librexxutil.so.4.0.0 /usr/lib/librexxutil.so.4
+   ln -sf /opt/ooRexx/lib/ooRexx/librexxutil.so.4.0.0 /usr/lib/librexxutil.so
+   ln -sf /opt/ooRexx/lib/ooRexx/librexxutil.la                   /usr/lib/librexxutil.la
+   ln -sf /opt/ooRexx/include/rexx.h                       /usr/include/rexx.h
+   ln -sf /opt/ooRexx/include/rexxapidefs.h                /usr/include/rexxapidefs.h
+   ln -sf /opt/ooRexx/include/rexxapitypes.h               /usr/include/rexxapitypes.h
+   ln -sf /opt/ooRexx/include/rexxplatformapis.h           /usr/include/rexxplatformapis.h
+   ln -sf /opt/ooRexx/include/rexxplatformdefs.h           /usr/include/rexxplatformdefs.h
+   ln -sf /opt/ooRexx/include/oorexxapi.h                  /usr/include/oorexxapi.h
+   ln -sf /opt/ooRexx/include/oorexxerrors.h               /usr/include/oorexxerrors.h
+   ln -sf /opt/ooRexx/share/man/man1/oorexx-config.1       /usr/share/man/man1/oorexx-config.1
+   ln -sf /opt/ooRexx/share/man/man1/rexx.1                /usr/share/man/man1/rexx.1
+   ln -sf /opt/ooRexx/share/man/man1/rexxc.1               /usr/share/man/man1/rexxc.1
+   ln -sf /opt/ooRexx/share/man/man1/rxsubcom.1            /usr/share/man/man1/rxsubcom.1
+   ln -sf /opt/ooRexx/share/man/man1/rxqueue.1             /usr/share/man/man1/rxqueue.1
+   ln -sf /opt/ooRexx/share/ooRexx/rexxtry.rex             /usr/bin/rexxtry.rex
+# allow backwards compatibility to Object REXX 2.x
+   ln -sf /opt/ooRexx/lib/ooRexx/librexxapi.so.4.0.0  /usr/lib/librexxapi.so.2
+fi
+if [ -d /etc/rc.d/init.d ]; then
+   # Red Hat
+   cp /opt/ooRexx/bin/rxapid          /etc/rc.d/init.d
+   ln -sf /etc/rc.d/init.d/rxapid    /etc/rc.d/rc3.d/S89rxapid
+   ln -sf /etc/rc.d/init.d/rxapid    /etc/rc.d/rc5.d/S89rxapid
+   ldconfig
+   /etc/rc.d/init.d/rxapid start
+else
+   # Suse
+   cp /opt/ooRexx/bin/rxapid          /etc/rc.d
+   ln -sf /etc/rc.d/rxapid           /etc/rc.d/rc3.d/S89rxapid
+   ln -sf /etc/rc.d/rxapid           /etc/rc.d/rc5.d/S89rxapid
+   ldconfig
+   /etc/rc.d/rxapid start
+fi
+]]>
+</programlisting>
+<para>
+  To remove ooRexx after installing using the tar file, just reverse the process.  Manually execute, or
+  cut and paste into a shell script the following commands:
+</para>
+<programlisting>
+<![CDATA[
+rm -f /usr/bin/rexx
+rm -f /usr/bin/rexxc
+rm -f /usr/bin/rxapi
+rm -f /usr/bin/rxqueue
+rm -f /usr/bin/rxsubcom
+rm -f /usr/bin/rexx.img
+rm -f /usr/bin/rexx.cat
+rm -f /usr/bin/rxregexp.cls
+rm -f /usr/bin/rxftp.cls
+rm -f /usr/bin/socket.cls
+rm -f /usr/bin/oorexx-config
+rm -f /usr/lib/librexx.so
+rm -f /usr/lib/librexx.4.0.0
+rm -f /usr/lib/librexx.4
+rm -f /usr/lib/librexxapi.so
+rm -f /usr/lib/librexxapi.4.0.0
+rm -f /usr/lib/librexxapi.4
+rm -f /usr/lib/librxsock.so
+rm -f /usr/lib/librxsock.4.0.0
+rm -f /usr/lib/librxsock.4
+rm -f /usr/lib/librxmath.so
+rm -f /usr/lib/librxmath.4.0.0
+rm -f /usr/lib/librxmath.4
+rm -f /usr/lib/librxregexp.so
+rm -f /usr/lib/librxregexp.4.0.0
+rm -f /usr/lib/librxregexp.4
+rm -f /usr/lib/librexxutil.so
+rm -f /usr/lib/librexxutil.4.0.0
+rm -f /usr/lib/librexxutil.4
+rm -f /usr/share/man/man1/oorexx-config.1
+rm -f /usr/share/man/man1/rexx.1
+rm -f /usr/share/man/man1/rexxc.1
+rm -f /usr/share/man/man1/rxsubcom.1
+rm -f /usr/share/man/man1/rxqueue.1
+rm -f /usr/include/rexx.h
+rm -f /usr/include/rexxapidefs.h
+rm -f /usr/include/rexxapitypes.h
+rm -f /usr/include/rexxplatformapis.h
+rm -f /usr/include/rexxplatformdefs.h
+rm -f /usr/include/oorexxapi.h
+rm -f /usr/include/oorexxerrors.h
+rm -f /usr/bin/rexxtry.rex
+rm -rf /usr/share/ooRexx
+if [ -d /etc/rc.d/init.d ]; then
+   # Red Hat
+   /etc/rc.d/init.d/rxapid stop
+   rm /etc/rc.d/rc3.d/S89rxapid
+   rm /etc/rc.d/rc5.d/S89rxapid
+   rm /etc/rc.d/init.d/rxapid
+else
+   # Suse
+   /etc/rc.d//rxapid stop
+   rm /etc/rc.d/rc3.d/S89rxapid
+   rm /etc/rc.d/rc5.d/S89rxapid
+   rm /etc/rc.d/rxapid
+fi
 ldconfig
+# Do no change this to rm -rf /opt/ooRexx
+# If you do you could wipe out the all the /usr subdirs!
+if [ -d /opt/ooRexx ]; then
+   rm -rf /opt/ooRexx
+fi
+
+]]>
+</programlisting>
+<para>
+  Then delete the ooRexx directory in <computeroutput>/opt</computeroutput>. Be careful you delete what
+  you mean to delete:
+</para>
+<programlisting>
+<![CDATA[
+cd /opt
+# Check that the ooRexx directory is there:
+ls ooRexx
+# If the ooRexx directory is there:
+rm -rf ooRexx/
+]]>
 </programlisting>
 </section>
 
@@ -204,6 +379,7 @@ if it is entered at the command line:
    pkgrm ooRexx
 </programlisting>
 </section>
+
 </section>
 
 <section><title>Configuration</title>
