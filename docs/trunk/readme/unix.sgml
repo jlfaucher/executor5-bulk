@@ -353,27 +353,26 @@ rm -rf ooRexx/
 
 <section><title>Installation/Removal of the PKG Package</title>
 <note><title>Note</title>
-<para>The installation of Open Object Rexx requires that all steps be
-run with root authority.
+<para>
+  The installation of Open Object Rexx requires that all steps be run with root authority.
 </para></note>
 <para>
-To install the &apos;pkg&apos; package, use your package-manager. Select
-the &apos;ooRexx-3.1.n-sparc-sun-solaris2.8.pkg&apos; package for the installation. Refer
-to your package manager for further information. The package manager
-adds orexx to your local pkg-database. The command with the command
-line package-manager is:
+  To install the <computeroutput>pkg</computeroutput> package, use your package-manager. Select the
+  appropriate  package for the installation. Refer to your package manager for further information. The
+  package manager adds orexx to your local pkg-database. The basic command for the command line
+  package-manager is:
 </para>
 <programlisting>
-   pkgadd -d ooRexx-3.1.0-n-sparc-sun-solaris2.8.pkg
+<![CDATA[
+   pkgadd -d <packageName>
+]]>
 </programlisting>
 <para>
-Open Object Rexx is installed in the directory
-<computeroutput>/opt/ooRexx</computeroutput>.
+  Open Object Rexx is installed in the directory <computeroutput>/opt/ooRexx</computeroutput>.
 </para>
 <para>
-The command <computeroutput>pkgrm</computeroutput>
-can also be used to remove the package from the database
-if it is entered at the command line:
+  The command <computeroutput>pkgrm</computeroutput> can also be used to remove the package from the
+  database if it is entered at the command line:
 </para>
 <programlisting>
    pkgrm ooRexx
@@ -388,36 +387,31 @@ if it is entered at the command line:
 
 <section><title>Open Object Rexx and Other Rexx Interpreters</title>
 <para>
-If you have other Rexx interpreters installed, you may have to set the
-PATH manually because Open Object Rexx and the other Rexx
-interpreters may both use the name "rexx" for invoking the interpreter.
-Interpreter error messages that begin with "Rexx: " indicate that another
-Rexx interpreter was called instead of Open Object Rexx. You can verify which
-Rexx interpreter is running either by the form of the error messages,
-by running <computeroutput>rexxtry</computeroutput>
-and executing SAY VERSION, or by invoking
-<computeroutput>rexx -v</computeroutput>,
-which then should display information about the Rexx interpreter that is
-invoked. If no information is displayed, it is not Open Object Rexx. If you
-don't want the other Rexx interpreter to be invoked, you should remove
-it from the PATH, delete it, or rename the "rexx" binary in the
-<computeroutput>/usr/bin</computeroutput> directory
-to "orx" and use <computeroutput>orx</computeroutput> to invoke the interpreter.
+  If you have other Rexx interpreters installed, you may have to set the PATH manually because Open
+  Object Rexx and the other Rexx interpreters may both use the name "rexx" for invoking the interpreter.
+  Interpreter error messages that begin with "Rexx: " indicate that another Rexx interpreter was called
+  instead of Open Object Rexx. You can verify which Rexx interpreter is running either by the form of the
+  error messages, by running <computeroutput>rexxtry</computeroutput> and executing SAY VERSION, or by
+  invoking <computeroutput>rexx -v</computeroutput>, which then should display information about the Rexx
+  interpreter that is invoked. If no information is displayed, it is not Open Object Rexx. If you don't
+  want the other Rexx interpreter to be invoked, you should remove it from the PATH, delete it, or rename
+  the <computeroutput>rexx</computeroutput> binary in the <computeroutput>/usr/bin</computeroutput>
+  directory to <computeroutput>orx</computeroutput> and use <computeroutput>orx</computeroutput> to
+  invoke the interpreter.
 </para>
 </section>
 
 <section><title>Exploring Open Object Rexx for Unix/Linux</title>
 <para>
-Once you have installed the Open Object Rexx files you can run Object Rexx
-scripts by issuing the command
-<computeroutput>rexx</computeroutput> followed by your Object Rexx script
-at the command prompt. To interactively try Object Rexx statements,
-open a command window and type <computeroutput>rexx rexxtry</computeroutput>.
-Enter <computeroutput>exit</computeroutput> to end the program.
+  Once you have installed the Open Object Rexx files you can run Rexx scripts by issuing the command
+  <computeroutput>rexx</computeroutput> followed by the name of your script at the command prompt. To
+  interactively try Rexx statements, from a command prompt type <computeroutput>rexx
+  rexxtry</computeroutput>. Enter <computeroutput>exit</computeroutput> to end the
+  program.
 </para>
 <para>
-To help you explore programming in Open Object Rexx, the following sample programs
-are provided in the <computeroutput>/opt/ooRexx/share/ooRexx</computeroutput>:
+  To help you explore programming in Open Object Rexx, the following sample programs are provided in the
+  <computeroutput>/opt/ooRexx/share/ooRexx</computeroutput>:
 </para>
 <variablelist>
 <varlistentry>
@@ -466,6 +460,11 @@ are provided in the <computeroutput>/opt/ooRexx/share/ooRexx</computeroutput>:
 </para></listitem>
 </varlistentry>
 <varlistentry>
+<term><varname>properties.rex</varname></term>
+<listitem><para>shows usage of the .Properties class and some Sys functions
+</para></listitem>
+</varlistentry>
+<varlistentry>
 <term><varname>qdate.rex</varname></term>
 <listitem><para>date query program
 </para></listitem>
@@ -476,13 +475,8 @@ are provided in the <computeroutput>/opt/ooRexx/share/ooRexx</computeroutput>:
 </para></listitem>
 </varlistentry>
 <varlistentry>
-<term><varname>semcls.rex</varname></term>
-<listitem><para>semaphore class
-</para></listitem>
-</varlistentry>
-<varlistentry>
 <term><varname>rexxcps.rex</varname></term>
-<listitem><para>measure Rexx clauses per second
+<listitem><para>measures Rexx clauses per second
 </para></listitem>
 </varlistentry>
 <varlistentry>
@@ -491,8 +485,18 @@ are provided in the <computeroutput>/opt/ooRexx/share/ooRexx</computeroutput>:
 </para></listitem>
 </varlistentry>
 <varlistentry>
+<term><varname>scclient.rex scserver.rex</varname></term>
+<listitem><para>a client / server demonstration using the .Socket class from socket.cls
+</para></listitem>
+</varlistentry>
+<varlistentry>
 <term><varname>semcls.rex</varname></term>
 <listitem><para>implements a semaphore class on ooRexx
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><varname>sfclient.rex sfserver.rex</varname></term>
+<listitem><para>a client / server demonstration using the external rxsock library
 </para></listitem>
 </varlistentry>
 <varlistentry>
@@ -502,7 +506,7 @@ are provided in the <computeroutput>/opt/ooRexx/share/ooRexx</computeroutput>:
 </varlistentry>
 <varlistentry>
 <term><varname>usecomp.rex</varname></term>
-<listitem><para>program that uses the complex number class (see note below)
+<listitem><para>program that uses the complex number class
 </para></listitem>
 </varlistentry>
 <varlistentry>
@@ -513,17 +517,10 @@ are provided in the <computeroutput>/opt/ooRexx/share/ooRexx</computeroutput>:
 </variablelist>
 
 <note><para>
-To run these programs, you must either add the
-<computeroutput>/opt/ooRexx/share/ooRexx</computeroutput> directory.
-to the PATH or execute them directly from the
-<computeroutput>/opt/ooRexx/share/ooRexx</computeroutput> directory.
+  To run these programs, you must either add the
+  <computeroutput>/opt/ooRexx/share/ooRexx</computeroutput> directory to the PATH or execute them
+  directly from the <computeroutput>/opt/ooRexx/share/ooRexx</computeroutput> directory.
 </para></note>
-<para>
-To help you with programming external function libraries, the WPIPE
-samples are provided in the
-<computeroutput>/opt/ooRexx/share/ooRexx/api/wpipe</computeroutput> directory.
-See the README in this directory.
-</para>
 </section>
 </section>
 
