@@ -631,14 +631,14 @@ struct RexxThreadContext_
     RexxThreadInterface *functions;     // the interface function vector
 }
 </programlisting>
-<para>The RexxThreadContext contains an embedded RexxInstance pointer for the instance it is
+<para>The RexxThreadContext struct contains an embedded RexxInstance pointer for the instance it is
 associated with.  It also contains an interface vector for the functions available with a
 RexxThreadContext.  The RexxThreadInterface vector has its own version identifier and
 function pointer for each of the defined services.
 The RexxThreadContext functions all require a RexxThreadContext pointer as
-the first argument.  The RexxThreadContext struct also defines C++ convince methods for accessing
-its own function and the functions for the RexxInstance as well.  For example, to call
-the InterpreterVersion() API using a RexxThreadContext from C code, it is necessary to code</para>
+the first argument.  The RexxThreadContext struct also defines C++ convenience methods for accessing its
+own function and the functions for the RexxInstance as well.  For example, to call the
+InterpreterVersion() API using a RexxThreadContext from C code, it is necessary to code</para>
 <programlisting>
 size_t version = context->instance->functions->InterpreterVersion(context->instance);
 </programlisting>
@@ -666,10 +666,10 @@ call returns to the interpreter.</para>
 </section>
 
 <section id="instancethread"><title>Threading Considerations</title>
-<para>When use RexxCreateInterpreter() to create a new interpreter instance, a RexxThreadContext
-pointer is returned with the interpreter instance.  The thread context vector allows
-you to perform operations such as running Rexx programs while in the same thread context as the
-RexxCreateInterpreter() call.
+<para>When using the <link linkend="createinterpreter">RexxCreateInterpreter()</link> API to create a new
+interpreter instance, a RexxThreadContext pointer is returned with the interpreter instance.  The thread
+context vector allows you to perform operations such as running Rexx programs while in the same thread
+context as the RexxCreateInterpreter() call.
 </para>
 <para>A given interpreter instance can process calls from multiple threads, but a RexxThreadContext instance
 must be obtained for each additional thread you wish to use.  A new thread context is obtained
@@ -681,10 +681,11 @@ API must be called to remove the attached thread from the interpreter instance.<
 <para>The interpreter is capable of asynchronous calls to interpreter APIs from signal or event
 handlers.  When called in this manner, it is possible that AttachThread will be called while
 running on a thread that is already attached to the interpreter instance.  When a nested
-AttachThread() call is made, the previous thread context is suspended and the newly created
-thread context is now the active one for the source thread.  It is very important that
-DetachThread() be called to restore the original thread context before you return from
-the signal handler.</para>
+<link linkend="mthAttachThread"> AttachThread()</link> call is made, the previous thread context is
+suspended and the newly created thread context is now the active one for the source thread.  It is very
+important that DetachThread() be called to restore the original thread context before you return from the
+signal handler.
+</para>
 </section>
 <section id="gcmodel"><title>Garbage Collection Considerations</title>
 <para>When any context API has a return result that is a Rexx object instance,
@@ -702,35 +703,31 @@ object from the garbage collector until the interpreter instance is terminated. 
 the object will also protect any objects referenced by the protected object.  For example,
 using RequestGlobalReference() to protect a Directory object will also protect all of the
 directory keys and values.
-The global
-reference can be used with any API context valid for the same interpreter instance.
-Once you are finished with a locked object,
-<link linkend="mthReleaseGlobalReference">ReleaseGlobalReference()</link> cab remove the
-object lock and make the object eligible for garbage collection.
+The global reference can be used with any API context valid for the same interpreter instance. Once you
+are finished with a locked object, <link
+linkend="mthReleaseGlobalReference">ReleaseGlobalReference()</link> cac remove the object lock and make
+the object eligible for garbage collection.
 </para>
 <para>On the flip side of this, sometimes it is desirable to remove the local API context
 protection from an object.  For example, if you use the ArrayAt() API to iterate through all
-of the elements of an Array, each object ArrayAt() returns will be added to the
-API context's protection table.
-There is a small overhead associated with each protected reference,
-so iterating through a large array would accumulate that
-overhead for each array element.  Using ReleaseLocalReference() on an object reference
-you are no longer require will
-remove the local lock, and thus limit the overhead.
+of the elements of an Array, each object ArrayAt() returns will be added to the API context's protection
+table. There is a small overhead associated with each protected reference, so iterating through a large
+array would accumulate that overhead for each array element.  Using <link
+linkend="mthReleaseLocalReference"></link>ReleaseLocalReference() on an object reference you no longer
+require will remove the local lock, and thus limit the overhead.
 </para>
 </section>
 
 <section id="instanceapi"><title>Rexx Interpreter Instance Interface</title>
 <para>The Interpreter Instance API is defined by the RexxInstance interface vector.  The RexxInstance
-defines methods that affect the global state of the interpreter instance.  Most of the instance APIs
-call be called from any thread without requiring any extra steps to access the instance.
-The two most important instance operations are <link linkend="mthAttachThread">AttachThread()</link> and
-<link linkend="mthTerminate">Terminate()</link>.  AttachThread()
-allows additional externally identified threads to be included
-in the interpreter instance threadpool.  AttachThread returns a
-<link linkend="threadcontext">RexxThreadContext</link> interface vector
-that enables a wider range of capability for the attached thread.
-The Terminate() API shuts down an interpreter instance when it is no longer needed.
+defines methods that affect the global state of the interpreter instance.  Most of the instance APIs can
+be called from any thread without requiring any extra steps to access the instance. The two most
+important instance operations are <link linkend="mthAttachThread">AttachThread()</link> and <link
+linkend="mthTerminate">Terminate()</link>.  AttachThread() allows additional externally identified
+threads to be included in the interpreter instance threadpool.  AttachThread returns a
+<link linkend="threadcontext">RexxThreadContext</link> interface vector that enables a wider range of
+capability for the attached thread. The Terminate() API shuts down an interpreter instance when it is no
+longer needed.
 </para>
 </section>
 
@@ -777,8 +774,9 @@ a method call, including:
 </itemizedlist>
 <para>In addition to the method-specific functions, the RexxMethodContext object has an embedded
 a <link linkend="threadcontext">RexxThreadContext</link>
-object created specifically for this environment.  The RexxThreadContext provides approximately 125
-additional methods to the method environment.</para>
+object created specifically for this environment.  The RexxThreadContext provides a large number of
+additional methods to the method environment.
+</para>
 <para>API calls made using the RexxMethodContext APIs may cause Rexx
 syntax errors or other condition to be raised.  These calls
 are invoked as if the current context is operating with SIGNAL ON ALL enabled.  Any
@@ -794,7 +792,7 @@ pending conditions can be cancelled using <link linkend="mthClearCondition">Clea
 <section id="callcontext"><title>Rexx Call Context Interface</title>
 <para>A RexxCallContext object is included as an argument to any
 <link linkend="functionapi">native C++ routine</link>
-defined in external libraries.  The method context provides services that are specific to
+defined in external libraries.  The call context provides services that are specific to
 a routine call, including:
 </para>
 <itemizedlist>
@@ -802,10 +800,10 @@ a routine call, including:
 <listitem><para>Manipulating variables in the caller's variable context</para></listitem>
 <listitem><para>Locating classes defined in the routine's package scope</para></listitem>
 </itemizedlist>
-<para>In addition to the method-specific functions, the RexxCallContext object has an embedded
+<para>In addition to the call-specific functions, the RexxCallContext object has an embedded
 a <link linkend="threadcontext">RexxThreadContext</link>
-object created specifically for this environment.  The RexxThreadContext provides approximately 125
-additional methods to the routine environment.</para>
+object created specifically for this environment.  The RexxThreadContext provides a large number of
+additional methods to the call environment.</para>
 <para>API calls made using the RexxCallContext APIs may cause Rexx
 syntax errors or other condition to be raised.  These calls are invoked
 as if the current context is operating with SIGNAL ON ALL enabled.  Any
@@ -831,7 +829,7 @@ a exit call, including:
 </itemizedlist>
 <para>In addition to the exit-specific functions, the RexxExitContext object has an embedded
 a <link linkend="threadcontext">RexxThreadContext</link>
-object created specifically for this environment.  The RexxThreadContext provides approximately 125
+object created specifically for this environment.  The RexxThreadContext provides a large number of
 additional methods to the exit environment.</para>
 <para>API calls made using the RexxExitContext APIs may cause Rexx
 syntax errors or other condition to be raised.  These calls are invoked
@@ -848,7 +846,7 @@ pending conditions can be cancelled using <link linkend="mthClearCondition">Clea
 <section id="buildinglibs"><title>Building an External Native Library</title>
 <para>External libraries written in compiled languages (typically C or C++)
 provide a means to
-interface Rexx programs with other subsystems intended for compile languages.
+interface Rexx programs with other subsystems intended for compiled languages.
 These libraries are packaged as Dynamic Link Libraries on Windows or shared libraries on
 Unix-based systems.
 A named library can be loaded using the ::REQUIRES directive, the
@@ -896,10 +894,9 @@ typedef struct _RexxPackageEntry
 and <emphasis role="italic">apiVersion</emphasis></term>
 <listitem><para>these fields give the size of the received table and identify
 the interpreter level this library has been compiled against.  These indicators
-will allow additional information to be added to the RexxPackageEntry in the future
-with out causing compatibility issues for older libraries.  Normally, these two
-fields are defined using the STANDARD_PACKAGE_HEADER macro, which sets
-both values.
+will allow additional information to be added to the RexxPackageEntry in the future without causing
+compatibility issues for older libraries.  Normally, these two fields are defined using the
+STANDARD_PACKAGE_HEADER macro, which sets both values.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">requiredVersion</emphasis></term>
 <listitem><para>a library can specify the minimum interpreter level it requires.
@@ -1001,7 +998,7 @@ This table is an array of RexxRoutineEntry structures, terminated by an entry th
 contains nothing but zero values in the fields.  The REXX_LAST_ROUTINE() macro
 will generate a suitable table terminator entry.
 </para>
-<para>The remainder of table will be entries generated via either the
+<para>The remainder of the table will be entries generated via either the
 REXX_CLASSIC_ROUTINE() or REXX_TYPED_ROUTINE() macros.  REXX_CLASSIC_ROUTINE()
 entries are for routines created using the older string-oriented function style.
 The classic routines allow packages to be migrated to the new package loading system
@@ -1011,7 +1008,7 @@ creating the functions in the classic style.</para>
 <para>Routine table entries defined using REXX_TYPED_ROUTINE() use the new
 object-oriented interfaces for creating routines.  These routines can use
 the interpreter runtime to convert call arguments from Rexx objects into primitive
-types and return values from primitive types back into Rexx objects.  These
+types and return values converted from primitive types back into Rexx objects.  These
 routines are also given access to a rich set of services through the
 <link linkend="callcontext">RexxCallContext</link>
 interface vector.</para>
@@ -1032,8 +1029,8 @@ REXX_TYPED_ROUTINE_PROTOTYPE() macros to generate the appropriate declarations.
 For example,</para>
 <programlisting>
 // create function declarations for the linker
-REXX_TYPED_ROUTINE(RxCalcPi);
-REXX_TYPED_ROUTINE(RxCalcSqrt);
+REXX_TYPED_ROUTINE_PROTOTYPE(RxCalcPi);
+REXX_TYPED_ROUTINE_PROTOTYPE(RxCalcSqrt);
 
 // now build the actual entry list
 RexxRoutineEntry rxmath_functions[] =
@@ -1229,7 +1226,7 @@ This table is an array of RexxMethodEntry structures, terminated by an entry tha
 contains nothing but zero values in the fields.  The REXX_LAST_METHOD() macro
 will generate a suitable table terminator entry.
 </para>
-<para>The remainder of table will be entries generated via
+<para>The remainder of the table will be entries generated via
 the REXX_TYPED_METHOD() macro.
 Routine table entries defined using REXX_TYPED_METHOD() use the
 object-oriented interfaces for creating methods that can be defined on Rexx classes.
@@ -1253,8 +1250,8 @@ a REXX_TYPED_METHOD_PROTOTYPE() macro to generate the appropriate declarations.
 For example,</para>
 <programlisting>
 // create function declarations for the linker
-REXX_TYPED_METHOD(point_init);
-REXX_TYPED_METHOD(point_add);
+REXX_TYPED_METHOD_PROTOTYPE(point_init);
+REXX_TYPED_METHOD_PROTOTYPE(point_add);
 
 // now build the actual entry list
 RexxMethodEntry point_methods[] =
@@ -1468,11 +1465,21 @@ RexxMethod2(RexxObjectPtr, stream_init, OSELF, self, CSTRING, name)
 
     return NULLOBJECT;
 }
+</programlisting>
 
+<para>
+Then, within a method for the object, the CSELF variable is used as an argument to the method, the void *
+is retrieved and cast to the correct type:
+</para>
+
+<programlisting>
 RexxMethod3(size_t, stream_charout, CSELF, streamPtr, OPTIONAL_RexxStringObject, data, OPTIONAL_int64_t, position)
 {
     StreamInfo *stream_info = (StreamInfo *)streamPtr;
     stream_info->setContext(context, context->False());
+
+    ...
+}
 </programlisting>
 <para>CSELF is not valid as a return value.
 </para></listitem></varlistentry>
@@ -1484,7 +1491,7 @@ RexxMethod3(size_t, stream_charout, CSELF, streamPtr, OPTIONAL_RexxStringObject,
 with an object instance.  ooRexx provides two classes, Buffer and Pointer, that allow
 these associations to be made.  Both classes are real Rexx classes that can be passed
 as arguments, returned as method results, and assigned to object instance variables.  For
-the Rexx prgrammer who might encounter one of these instances, these are opaque objects that
+the Rexx programmer who might encounter one of these instances, these are opaque objects that
 don't appear to be of much use.  To the native library writer, the usefulness derives from
 what's stored inside these objects.</para>
 <section id="clsBuffer"><title>The Buffer class</title>
@@ -1514,7 +1521,7 @@ RexxMethod0(RexxObjectPtr, myclass_init)
     context->SetObjectVariable("MYDATA", data);
     // get access to the data area
     void *dataPtr = context->BufferData(data);
-    // construct a C++ object in place in the buffer
+    // construct a C++ object to place in the buffer
     MyDataClass *myData = new (dataPtr) MyDataClass();
     // initialize the data below
     ...
@@ -1709,7 +1716,8 @@ attributed method in the base class:</para>
 <para>The subclass method can then access the method using <link linkend="mthSendMessage0">SendMessage0()</link>
 to access the value.</para>
 <programlisting>
-RexxPointerObject = context->SendMessage0("MYDATA");
+RexxObjectPtr self = context->GetSelf()
+RexxPointerObject = context->SendMessage0(self, "MYDATA");
 </programlisting>
 <para>The CSELF type handles this detail automatically.  When used as an argument,
 all variable scopes of the object's class hiearchy are searched for a variable named CSELF.
@@ -2068,7 +2076,7 @@ typedef  struct _RXOFNCCAL_PARM {      /* fnc */
 ]]>
 </programlisting>
 <para>The name of the external function is defined
-by <emphasis role="italic">rxfnc_name</emphasis> CONSTRXSTRING value.
+by the <emphasis role="italic">rxfnc_name</emphasis> <link linkend="rxstrings">CONSTRXSTRING</link> value.
 The arguments to the
 function are in <emphasis role="italic">rxfnc_argv</emphasis> array and
 <emphasis role="italic">rxfnc_argc</emphasis> gives the number of arguments.
@@ -2092,7 +2100,7 @@ locates the external function, but the external function returned an error
 return code. The Rexx interpreter raises error 40,
 &quot;Incorrect call to routine.&quot;</para>
 <para>The exit handler returns the external function result in the
-<emphasis role="italic">rxfnc_retc</emphasis> RXSTRING.
+<emphasis role="italic">rxfnc_retc</emphasis> RexxObjectPtr.
 The Rexx interpreter raises error 44, &quot;Function
 or method did not return data,&quot; when the external routine is called as
 a function and the exit handler does not return a result. When the external
@@ -2143,8 +2151,8 @@ typedef  struct _RXEXFCAL_PARM {       /* fnc */
 }  RXEXFCAL_PARM;
 ]]>
 </programlisting>
-<para>The name of the external function is defined
-by <emphasis role="italic">rxfnc_name</emphasis> CONSTRXSTRING value.
+<para>The name of the external function is defined by the <emphasis role="italic">rxfnc_name</emphasis>
+CONSTRXSTRING value.
 The arguments to the
 function are in <emphasis role="italic">rxfnc_argv</emphasis> array and
 <emphasis role="italic">rxfnc_argc</emphasis> gives the number of arguments.
@@ -2168,12 +2176,10 @@ locates the external function, but the external function returned an error
 return code. The Rexx interpreter raises error 40,
 &quot;Incorrect call to routine.&quot;</para>
 <para>The exit handler returns the external function result in the
-<emphasis role="italic">rxfnc_retc</emphasis> RXSTRING.
-The Rexx interpreter raises error 44, &quot;Function
-or method did not return data,&quot; when the external routine is called as
-a function and the exit handler does not return a result. When the external
-routine is called with the Rexx CALL instruction, a result is not
-required.
+<emphasis role="italic">rxfnc_retc</emphasis> RexxObjectPtr. The Rexx interpreter raises error 44,
+&quot;Function or method did not return data,&quot; when the external routine is called as a function and
+the exit handler does not return a result. When the external routine is called with the Rexx CALL
+instruction, a result is not required.
 </para></listitem></itemizedlist>
 </listitem></varlistentry>
 </variablelist>
@@ -2627,7 +2633,7 @@ is assigned to <emphasis role="italic">value</emphasis> on the call to the exit.
 <para>HALT condition processing. </para>
 <para>Because the RXHLT exit handler
 is called after every Rexx instruction, enabling this exit slows Rexx program
-execution. The RexxSetHalt function can halt a Rexx program without
+execution. The RexxSetHalt() function can halt a Rexx program without
 between-instruction polling.</para>
 <variablelist>
 <varlistentry><term>RXHLTTST</term>
@@ -4826,8 +4832,8 @@ equivalent to using a FORWARD CONTINUE instruction from Rexx code.
     </para></entry>
     </row>
     <row><entry><emphasis role="italic">cobj</emphasis></entry>
-    <entry><para>The class scope used to located the method.  If NULL, this will be
-    an unscoped method call.
+    <entry><para>The class scope used to locate the method.  If NULL, this will be an unscoped method
+    call.
     </para></entry>
     </row>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
@@ -8699,9 +8705,8 @@ logical_t flag;
 <para>Convert a Rexx object to another type.  The target type is identified
 by the ValueDescriptor structure, and can by any of the types that may be
 used as a method or routine return type.  For many conversions, it may be
-more appropriate to use more targetted routines such as ObjectToWholeNumber().
-ObjectToValue() is capable of conversions to types such as int8_t for which
-there are no specific conversion APIs.
+more appropriate to use more targeted routines such as ObjectToWholeNumber(). ObjectToValue() is capable
+of conversions to types such as int8_t for which there are no specific conversion APIs.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
@@ -8853,7 +8858,7 @@ POINTER p;
 CSTRING str;
 RexxStringObject sobj;
 RexxArrayObject arr;
-RexxObjectPtr obj[
+RexxObjectPtr obj;
 
 >>--context->RaiseCondition(str, sobj, arr, obj);-------------------------><
 ]]>
