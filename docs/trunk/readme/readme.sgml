@@ -125,17 +125,15 @@ rpm -iv ooRexx
 
 <section><title>The <computeroutput>rxapi</computeroutput> Daemon Process</title>
 <para>
-  <emphasis role="bold">This section needs to be rewritten, or removed, or??</emphasis>
-</para>
-<para>
-  Part of ooRexx is <computeroutput>rxapi</computeroutput> which is is a daemon process that manages all data
-  that can persist across interpreter invocations or is used for cross-process communications. The rxapi
-  process manages the Rexx data queues, the macrospace, and all of the external function, subcommand handler
+  Part of ooRexx is <computeroutput>rxapi</computeroutput> which is is a daemon process that manages all
+  data that can persist across interpreter invocations or is used for cross-process communications. The rxapi process manages the Rexx data
+  queues, the macrospace, and all of the external function, subcommand handler
   and exit registrations.
 </para>
 <para>
-  When you start Open Object Rexx, a file called RXAPI (RXAPI.EXE on Windows) is started. The process
-  executing this file remains open after your Open Object Rexx program terminates if:
+  Ideally <computeroutput>rxapi</computeroutput> should run as a service. When you install ooRexx from a package on Linux, rxapi
+  will be set up to run as a system service.  executing this file remains open after your Open Object
+  Rexx program terminates if:
 </para>
 <itemizedlist>
 <listitem><para>an external function is registered (including REXXUTIL),

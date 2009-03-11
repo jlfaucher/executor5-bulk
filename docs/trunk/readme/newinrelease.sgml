@@ -156,8 +156,12 @@
 </para>
 <para>
   Due to a bug in prior releases, methods created with ::METHOD ATTRIBUTE or ::ATTRIBUTE did not properly
-  recognize the GUARDED status of methods. All attribute methods behaved like they were UNGUARDED. This
-  bug has been fixed.
+  recognize the GUARDED status of methods. All attribute methods behaved as though they were UNGUARDED.
+  This bug has been fixed. <emphasis role="bold">Note</emphasis>, if you have ooRexx programs that use
+  concurrency and attributes, that hang under 4.0.0, this is the first area to check. It may be that your
+  program is written incorrectly and previously only worked because of the bug. You may have an attribute
+  defined as GUARDED that should be UNGUARDED. Remember that GUARDED is the default if neither GUARDED
+  nor UNGUARDED is specified.
 </para>
 <para>
   The RxFuncAdd now checks that a registered function can be resolved at registration time and will
