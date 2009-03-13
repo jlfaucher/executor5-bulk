@@ -125,33 +125,72 @@ rpm -iv ooRexx
 
 <section><title>The <computeroutput>rxapi</computeroutput> Daemon Process</title>
 <para>
-  Part of ooRexx is <computeroutput>rxapi</computeroutput> which is is a daemon process that manages all
-  data that can persist across interpreter invocations or is used for cross-process communications. The rxapi process manages the Rexx data
-  queues, the macrospace, and all of the external function, subcommand handler
-  and exit registrations.
+  Part of ooRexx is <computeroutput>rxapi</computeroutput> which is a daemon process that manages all
+  data that can persist across interpreter invocations or is used for cross-process communications. The
+  <computeroutput>rxapi</computeroutput> process manages the Rexx data queues, the macrospace, and all of
+  the external function, subcommand handler and exit registrations.
 </para>
 <para>
-  Ideally <computeroutput>rxapi</computeroutput> should run as a service. When you install ooRexx from a package on Linux, rxapi
-  will be set up to run as a system service.  executing this file remains open after your Open Object
-  Rexx program terminates if:
+  In ooRexx 4.0.0 the interpreter and <computeroutput>rxapi</computeroutput> communicate through a socket
+  interface, rather than through shared memory as in previous versions of ooRexx.
 </para>
-<itemizedlist>
-<listitem><para>an external function is registered (including REXXUTIL),
-</para></listitem>
-<listitem><para>a queue contains data entries,
-</para></listitem>
-<listitem><para>a named queue exists,
-</para></listitem>
-<listitem><para>a system exit is installed,
-</para></listitem>
-<listitem><para>a subcommand handler is installed, or
-</para></listitem>
-<listitem><para>a macro space is loaded.
-</para></listitem>
-</itemizedlist>
 <para>
-  If you need RXAPI to be closed, remove any global data (see list above) before leaving your program.
-  Don't forget to call SysDropFuncs().
+  Ideally, <computeroutput>rxapi</computeroutput> should run as a service. When you install ooRexx from a
+  package on Linux, <computeroutput>rxapi</computeroutput> will be set up to run as a system service.
+  When installing the Windows package, the default is to install <computeroutput>rxapi</computeroutput>
+  as a Windows service. In this scenario, the operating system will start the
+  <computeroutput>rxapi</computeroutput> daemon on boot up and shut the daemon down when the system is
+  halted.
+</para>
+<para>
+  If <computeroutput>rxapi</computeroutput> is not installed as a service, the first time the interpreter
+  executes, and needs the function provided by <computeroutput>rxapi</computeroutput>, the intepreter
+  will start the daemon process. Once started, the <computeroutput>rxapi</computeroutput> process will
+  continue to run until the system is halted.
+</para>
+<para>
+  There is little or no point in stopping the <computeroutput>rxapi</computeroutput> process once it is
+  started. <emphasis role="bold">Be aware</emphasis> that if you do stop the
+  <computeroutput>rxapi</computeroutput> process, all queues, all registered subcommand handlers, system
+  exits, and external functions, and the macrospace,
+  disappear.
+</para>
+<para>
+  When <computeroutput>rxapi</computeroutput> is installed as a service, it can be started and stopped by
+  the user, if the user has the proper authority, in the same manner as other services. On Windows, the
+  services manager can be used to start or stop <computeroutput>rxapi</computeroutput>. Or, from the
+  command line, net stop or net start can also be used:
+<programlisting>
+<![CDATA[
+C:\work.ooRexx>net stop rxapi
+The RXAPI service is stopping.
+The RXAPI service was stopped successfully.
+
+C:\work.ooRexx>net start rxapi
+
+The RXAPI service was started successfully.
+
+C:\work.ooRexx>
+]]>
+</programlisting>
+  On Linux, the following can be used from the command line:
+<programlisting>
+<![CDATA[
+
+[root@Falcon work.ooRexx]# /etc/init.d/rxapid stop
+Stopping rxapi:                                            [  OK  ]
+[root@Falcon work.ooRexx]# /etc/init.d/rxapid start
+Starting rxapi:                                            [  OK  ]
+[root@Falcon work.ooRexx]#
+]]>
+</programlisting>
+  It is likely that your installation of Linux also has a graphical means of starting or stopping
+  services.
+</para>
+<para>
+  If <computeroutput>rxapi</computeroutput> is not installed as a service, it can be stopped by using an
+  appropriate process killer for your platform.  Typically the Task Manager on Windows and
+  <computeroutput>kill</computeroutput> on a unix-like system.
 </para>
 
 </section>

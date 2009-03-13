@@ -54,6 +54,9 @@
   platform.
 </para></listitem>
 <listitem><para>
+  Any system capable of running AIX 5L 5.3 / AIX 6.1 for an AIX platform
+</para></listitem>
+<listitem><para>
   Power 4 processor or higher for a PPC platform
 </para></listitem>
 <listitem><para>
@@ -65,17 +68,11 @@
 <section><title>Software Requirements</title>
 <itemizedlist>
 <listitem><para>
-  Linux ELF system (i386 or x86_64.) Linux kernel version 2.4.1 or higher. The kernel must support System
-  V IPC.
+  Linux ELF system (i386 or x86_64,) or Linux PPC system. Linux kernel version 2.4.1 or higher. The
+  kernel must support System V IPC.
 </para></listitem>
 <listitem><para>
-  Linux PowerPC system ???
-</para></listitem>
-<listitem><para>
-  AIX system ???
-</para></listitem>
-<listitem><para>
-  MacOSX system ???
+  AIX 5L 5.3 / AIX 6.1
 </para></listitem>
 <listitem><para>
   SUN Sparc system running Solaris V2.8 or higher.
@@ -96,11 +93,11 @@
   The installation of Open Object Rexx requires that all steps be run with root authority.
 </para></note>
 <para>
-  To install the &apos;rpm&apos; package, use your rpm package manager. Refer to your package manager for
-  further information. The package manager adds orexx to your local rpm-database. Select the appropriate
-  package for your system. Although the 32-bit version of ooRexx can be installed on some 64-bit Linux
-  distributions it is recommended that the 64-bit version of ooRexx be installed on all 64-bit Linux
-  systems.
+  To install the <computeroutput>rpm</computeroutput> package, use your rpm package manager. Refer to
+  your package manager for further information. The package manager adds orexx to your local
+  rpm-database. Select the appropriate package for your system. Although the 32-bit version of ooRexx can
+  be installed on some 64-bit Linux distributions it is recommended that the 64-bit version of ooRexx be
+  installed on all 64-bit Linux systems.
 </para>
 <para>
   There may be several rpm packages available. Each package name will indicate the processor architecture
@@ -170,7 +167,21 @@
 </para>
 </section>
 
-<section><title>Installation of the &apos;tgz&apos; Package</title>
+<section><title>Installation/Removal of the BFF Package</title>
+<para>
+  To install or remove the <computeroutput>bff</computeroutput> package, use smitty.
+</para>
+<programlisting>
+<![CDATA[
+ smitty
+ -> Software Installation and Maintenance
+   -> Install and Update Software
+     -> Install Software
+]]>
+</programlisting>
+</section>
+
+<section><title>Installation of the TGZ Package</title>
 <note><title>Note</title>
 <para>
   The installation of Open Object Rexx requires that all steps be run with root authority.
@@ -179,7 +190,7 @@
   If you have the package maintenance tool <computeroutput>pkgtool</computeroutput> on your system, you
   can use it to install or deinstall Open Object Rexx via a graphical tool. Start pkgtool as root and
   install the <computeroutput>ooRexx-4.0.0-1.i386.tar.gz</computeroutput> or
-  <computeroutput>ooRexx-4.0.0-1.x86_64.tar.gz</computeroutput>, as appropriate package. All files will
+  <computeroutput>ooRexx-4.0.0-1.x86_64.tar.gz</computeroutput>, as appropriate, package. All files will
   be copied to the directory <computeroutput>/opt/ooRexx/</computeroutput>.
 </para>
 <para>
