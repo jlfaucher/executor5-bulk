@@ -120,8 +120,8 @@ the methods listed in the
 <entry><link linkend="addlc">Add</link></entry>
 </row>
 <row>
-<entry>AddRow</entry>
-<entry><link linkend="addrow">AddRow</link></entry>
+<entry>addRow</entry>
+<entry><link linkend="mthAddRow">addRow</link></entry>
 </row>
 <row>
 <entry>AddExtendedStyle</entry>
@@ -252,8 +252,8 @@ the methods listed in the
 <entry><link linkend="mthGetImageList">getImageList</link></entry>
 </row>
 <row>
-<entry>Insert</entry>
-<entry><link linkend="insertlc">Insert</link></entry>
+<entry>insert</entry>
+<entry><link linkend="mthInsertClsListControl">insert</link></entry>
 </row>
 <row>
 <entry>InsertColumn</entry>
@@ -296,8 +296,8 @@ the methods listed in the
 <entry><link linkend="lastselected">LastSelected</link></entry>
 </row>
 <row>
-<entry>Modify</entry>
-<entry><link linkend="modifylc">Modify</link></entry>
+<entry>modify</entry>
+<entry><link linkend="mthModify">modify</link></entry>
 </row>
 <row>
 <entry>ModifyColumn</entry>
@@ -389,7 +389,7 @@ the methods listed in the
 </row>
 <row>
 <entry>setImageList</entry>
-<entry><link linkend="mthSetImageList">setImageList</link></entry>
+<entry><link linkend="mthSetImageListClsListControl">setImageList</link></entry>
 </row>
 <row>
 <entry>SetImages <emphasis role="bold">Deprecated</emphasis></entry>
@@ -408,8 +408,8 @@ the methods listed in the
 <entry><link linkend="setitemstate">SetItemState</link></entry>
 </row>
 <row>
-<entry>SetItemText</entry>
-<entry><link linkend="setitemtext">SetItemText</link></entry>
+<entry>setItemText</entry>
+<entry><link linkend="mthSetItemText">setItemText</link></entry>
 </row>
 <row>
 <entry>SetSmallImages <emphasis role="bold">Deprecated</emphasis></entry>
@@ -2383,19 +2383,23 @@ or 0 in all other cases.
 </variablelist>
 </section>
 
-<section id="insertlc"><title>Insert</title>
-<indexterm><primary>Insert</primary>
+<section id="mthInsertClsListControl"><title>insert</title>
+<indexterm><primary>insert</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~Insert(--+------+--,--+---------+--,--text--,--+------+--)-><
-                         +-item-+     +-subitem-+              +-icon-+
+>>--insert(--+------+--,--+---------+--,--text--+--------+--)------------------><
+             +-item-+     +-subitem-+           +-,-icon-+
 
 ]]>
 </programlisting>
 
 <para>
-  The Insert method inserts a new item into the list-view control.
+  The <computeroutput>insert</computeroutput> method inserts a new item into the list-view control, or
+  inserts the text of a subitem.
+</para>
+<para>
+  Remember that in a list-view, items and columns use a 0-based index. Subitems use a 1-based index.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2404,28 +2408,33 @@ or 0 in all other cases.
 <varlistentry><term>item</term>
 <listitem>
 <para>
-  The index of the item to insert.
+  The index of the item to insert or the item whose subitem text is inserted.
 </para>
 <para>
-  When this argument is omitted, ooDialog uses the number of the last item added to the list-view
-  control, plus 1, as the item index. If no items have yet been added, then 0 is used as the item index.
+  When this argument is omitted <emphasis role="bold">and</emphasis> <emphasis
+  role="italic">subitem</emphasis> is omitted or 0, ooDialog uses the index of the last item added to the
+  list-view control, plus 1, as the item index. If the argument is omitted and <emphasis
+  role="italic">subitem</emphasis> is greater than 0, then the index of the last item added is used. If
+  no items have yet been added, then 0 is used.
 </para>
 </listitem></varlistentry>
 <varlistentry><term>subitem</term>
 <listitem>
 <para>
-  The sub-item number. This argument is only used for report view. In report view, the text for the item
-  is always placed in column 0. The text for the first sub-item is placed in column 1, the text for the
-  second sub-item is placed in column 2, and so on. If you omit this argument, or use 0, the the
-  <emphasis role="italic">text</emphasis> argument is assigned as the text of the item. If you use this
-  argument and it is greater than 1, then the <emphasis role="italic">text</emphasis> argument is
-  assigned as the text of that sub-item.
+  The subitem number. This argument is used to insert the text for a subitem of the item. In report view,
+  the label (text) for the item is placed in column 0. The text for subitem 1 is placed in column 1, the
+  text for subitem 2 is placed in column 2, and so on. If you omit this argument, or use 0, the the
+  <emphasis role="italic">text</emphasis> argument is assigned as the label (text) of the item. If you
+  use this argument and it is greater than 0, then the <emphasis role="italic">text</emphasis> argument
+  is assigned as the text of that subitem. <emphasis role="bold">Note</emphasis> that when this argument
+  is greater than 0, no new item is inserted into the list-view. Rather, the text of the subitem is
+  inserted into an existing list-view item.
 </para>
 </listitem></varlistentry>
 <varlistentry><term>text</term>
 <listitem>
   <para>
-    The text of the item, or of the sub-item, depending on the <emphasis role="italic">column</emphasis>
+    The text of the item, or of the subitem, depending on the <emphasis role="italic">subitem</emphasis>
     argument.
 </para>
 </listitem></varlistentry>
@@ -2434,8 +2443,8 @@ or 0 in all other cases.
 <para>
   The index of the icon within the image list for this item. Use the <link
   linkend="mthSetImageListClsListControl">setImageList</link>() method to assign an image list to the
-  list-view control. Use the LVSIL_SMALL type to set the small icons and the LVSIL_NORMAL type for the
-  normal size icons.
+  list-view control. With <computeroutput>setImageList</computeroutput>(), use the LVSIL_SMALL type to
+  set the image list for the small icons and the LVSIL_NORMAL type for the normal size icon image list.
 </para>
 <para>
   The normal size icons are used for the icon view and the small icons are used for the list, report, and
@@ -2444,8 +2453,8 @@ or 0 in all other cases.
   the small icon image list.
 </para>
 <para>
-  Currently in ooDialog, the icon index should only be used when inserting the item, not when inserting
-  the text for sub-items. If the argument is omitted, -1 is used to indicate there is no item index.
+  Use -1 or simply omit this argument to indicate there is no icon for the item being inserted. This
+  argument is ignored completely if <emphasis role="italic">subitem</emphasis> is greater than 0.
 </para>
 </listitem></varlistentry>
 </variablelist>
@@ -2457,13 +2466,13 @@ or 0 in all other cases.
 <listitem><para>The following example inserts items in a list:
 <programlisting>
 <![CDATA[
-::method InitReport
-  curList = self~GetListControl(102)
-  if curList \= .Nil then
+::method initReport
+  curList = self~getListControl(102)
+  if curList \= .nil then
   do
-    curList~Insert(, ,"First")
-    curList~Insert(, ,"Second")
-    curList~Insert(, ,"Third")
+    curList~insert(, ,"First")
+    curList~insert(, ,"Second")
+    curList~insert(, ,"Third")
   end
 ]]>
 </programlisting>
@@ -2471,40 +2480,45 @@ or 0 in all other cases.
 </variablelist>
 </section>
 
-<section id="modifylc"><title>Modify</title>
-<indexterm><primary>Modify</primary>
+<section id="mthModify"><title>modify</title>
+<indexterm><primary>modify</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                      +-0------+
->>-aListControl~Modify(--+------+--,--+--------+--,--text--------->
-                         +-item-+     +-column-+
-
-      +-0----+
->--,--+------+--)------------------------------------------------><
-      +-icon-+
-
-
+>>--modify(--+------+--,--+---------+--,--text--+--------+--)------------------><
+             +-item-+     +-subitem-+           +-,-icon-+
 ]]>
 </programlisting>
 
 <para>
-  The Modify method sets some or all attributes of a list view item.
+  The <emphasis role="italic">modify</emphasis> method modifies or sets the text for the item label, or
+  the text for a subitem, for a list-view item. Optionally, it sets or modifies the icon index for a
+  list-view item.
+</para>
+<para>
+  Remember that in a list-view, items and columns use a 0-based index. Subitems use a 1-based index.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>item</term>
-<listitem><para>The number of the item. If you omit this argument, the selected item
-is used.
+<listitem><para>
+  The index of the item to be modified. If you omit this argument, the selected item is used.
 </para></listitem></varlistentry>
-<varlistentry><term>column</term>
-<listitem><para>The number of the column. If you omit this argument, 0 is assumed. This
-argument only applies to report views.
+<varlistentry><term>subitem</term>
+<listitem><para>
+  This method works in a similar manner as the <link linkend="mthInsertClsListControl">insert</link>()
+  method. The use of the <emphasis role="italic">subitem</emphasis> argument controls whether the
+  <emphasis role="italic">text</emphasis> argument applies to the label of the item or the text of a
+  subitem. When <emphasis role="italic">subitem</emphasis> is omitted or 0, then the label of the item is
+  set to <emphasis role="italic">text</emphasis>. When <emphasis role="italic">subitem</emphasis> is
+  greater than 0, then the text of that subitem is set to <emphasis role="italic">text</emphasis>.
 </para></listitem></varlistentry>
 <varlistentry><term>text</term>
-<listitem><para>The new text for the item.
+<listitem><para>
+  The new text for the item label, or the new text for the subitem of the item, depending on the value of
+  <emphasis role="italic">subitem</emphasis>.
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
 <listitem><para>
@@ -2514,10 +2528,9 @@ argument only applies to report views.
   flag for the icon view icons and the LVSIL_SMALL flag for the list, report, and small-icon view icons.
 </para>
 <para>
-  In a report view, this argument is only used for the icon for the first column. ooDialog does not yet
-  support setting the icon index for the other columns in a report view.
+  Use -1 or simply omit this argument to leave the icon index unchanged. If <emphasis
+  role="italic">subitem</emphasis> is greater than 0, this argument is ignored.
 </para>
-<para>If you omit this argument, 0 is assumed.</para>
 </listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -2533,49 +2546,73 @@ argument only applies to report views.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example modifies the icon of the item that is double-clicked:
+<listitem><para>
+  The following example modifies the icon for an item when it is activated. A method,
+  <computeroutput>onActivate</computeroutput>, is connected to the ACTIVATE notification. When an item is
+  activated it also gains the focus. The <computeroutput>onActivate</computeroutput>() method is invoked
+  when an item is activated, and the example determines which item was activated by seeing which item has
+  the focus.
 <programlisting>
 <![CDATA[
-::method OnActivate
-  curList = self~GetListControl(102)
-  if curList \= .Nil then
-  do
-    si = curlist~Focused
-    curList~Modify(si, , ,2)
-  end
+
+::method initDialog
+  expose list
+
+  list  = self~getListControl(IDC_LV_VIEWS)
+  self~connectListNotify(IDC_LV_VIEWS, 'ACTIVATE', 'onActivate')
+
+  ...
+
+::method onActivate
+  expose list
+
+  focusedItem = list~focused
+  text = list~itemText(focusedItem)
+
+  list~modify(focusedItem, , text, 2)
+
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="setitemtext"><title>SetItemText</title>
-<indexterm><primary>SetItemText</primary></indexterm>
+<section id="mthSetItemText"><title>setItemText</title>
+<indexterm><primary>setItemText</primary></indexterm>
 <programlisting>
 <![CDATA[
-                                       +-0------+
->>-aListControl~SetItemText(--item--,--+--------+--,--text--)--><
-                                       +-column-+
-
+>>--setItemText(--item--,--+-----------+--,--text--)--><
+                           +--subitem--+
 
 ]]>
 </programlisting>
 
-<para>The SetItemText method changes the text of a list
-view item or a column.</para>
+<para>
+  The setItemText method changes the text of a label, or the text of a subitem, of a list view item.
+</para>
+<para>
+  Remember that in a list-view, items and columns use a 0-based index. Subitems use a 1-based index.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>item</term>
-<listitem><para>The number of the item.
+<listitem><para>The index of the item.
 </para></listitem></varlistentry>
-<varlistentry><term>column</term>
-<listitem><para>The number of the column. If you omit this argument, 0 is assumed. This
-argument only applies to report views.
+<varlistentry><term>subitme</term>
+<listitem><para>
+  This method works in a similar manner as the <link linkend="mthInsertClsListControl">insert</link>()
+  method. The use of the <emphasis role="italic">subitem</emphasis> argument controls whether the
+  <emphasis role="italic">text</emphasis> argument applies to the label of the item or the text of a
+  subitem. When <emphasis role="italic">subitem</emphasis> is omitted or 0, then the label of the item is
+  set to <emphasis role="italic">text</emphasis>. When <emphasis role="italic">subitem</emphasis> is
+  greater than 0, then the text of that subitem is set to <emphasis role="italic">text</emphasis>.
 </para></listitem></varlistentry>
 <varlistentry><term>text</term>
-<listitem><para>The text of the item or a column.
+<listitem><para>
+  The text for the item or a subitem, depending on the value of <emphasis
+  role="italic">subitem</emphasis>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -2586,7 +2623,7 @@ argument only applies to report views.
 <listitem><para>The change was successful.
 </para></listitem></varlistentry>
 <varlistentry><term>-1</term>
-<listitem><para>You did not specify <emphasis role="italic">column</emphasis>.
+<listitem><para>You did not specify <emphasis role="italic">item</emphasis>.
 </para></listitem></varlistentry>
 <varlistentry><term>1</term>
 <listitem><para>For all other cases.
@@ -2681,39 +2718,38 @@ and on the system colors used for a selection.
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                      +-------+
-                      V       |
->>-aListControl~add(----+---+-+--text--+--------+--)-------><
-                        +-,-+          +-,-icon-+
-
+          +-------+
+          V       |
+>>--add(----+-----+--text--+--------+--)-------><
+            +--,--+        +-,-icon-+
 
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">add</emphasis> method adds a new item to a list-view. It can be used to
-  fill a list-view sequentially. It can also be used to define the text for the sub-items when the
-  list-view is in report view. Remember that in a list-view, items and columns are 0-based.
+  The <emphasis role="italic">add</emphasis> method adds a new item to a list-view, or defines the text
+  for a subitem. It can be used to fill a list-view sequentially.
 </para>
 <para>
-  The number of commas preceding the <emphasis role="italic">text</emphasis> argument determines whether
-  it is the first argument, or the second the second argument, or the <emphasis
-  role="italic">nth</emphasis> argument. When <emphasis role="italic">text</emphasis> is the first
-  argument, then <emphasis role="italic">text</emphasis> is the label for a new item. (The label for an
-  item is the same as the text for column 0 in report view.) The new item is added as the item after the
-  last item to be placed in the list-view. In other words, if the last item placed in the list-view was
-  item 34, then the <emphasis role="italic">add</emphasis> method would place this new item as item 35 in
-  the list-view. If there are no items in the list-view, then the item is added as the first (index 0)
-  item.
+  Remember that in a list-view, items and columns use a 0-based index. Subitems use a 1-based index.
 </para>
 <para>
-  When <emphasis role="italic">text</emphasis> is not the first argument, then it is the text for a
-  subitem. In this case, the <emphasis role="italic">add</emphasis> method does not add a new item to the
-  list-view. Instead it adds a subitem to an existing item. The <emphasis role="italic">text</emphasis>
-  argument is the text for the subitem and the number of commas preceding the argument determines which
-  subitem. The existing item to which the subitem is added is determined by the last item to be placed in
-  the list-view. Normally this form of the <emphasis role="italic">add</emphasis> method is used in a
-  fashion similar to the example below, but it does not have to be used that way.
+  The number of commas preceding the <emphasis role="italic">text</emphasis> argument determines whether a
+  new item is added to the list-view or the text for a subitem is being defined. When there is no comma
+  preceding <emphasis role="italic">text</emphasis> then a new item is added to the list-view.
+</para>
+<para>
+  When 1 or more commas precede <emphasis role="italic">text</emphasis>, then no item is added to the
+  list-view. Rather, the text for a subitem is defined. When 1 comma precedes <emphasis
+  role="italic">text</emphasis>, then the text for subitem 1 is being defined. When 2 commas precedes the
+  <emphasis role="italic">text</emphasis> argument, then the text for subitem 2 is being defined, and so
+  on.
+</para>
+<para>
+  When an item is added, it is always added directly <emphasis role="italic">after</emphasis> the last
+  item to be placed in the list-view. Or as item 0 if the list-view currently has no items. When the text
+  of a subitem is being defined, then the text is defined for the subitem of last item placed in the
+  list-view.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2721,12 +2757,13 @@ and on the system colors used for a selection.
 <variablelist>
 <varlistentry><term>,</term>
 <listitem><para>
-  The number of commas specifies which subitem of the item the text is for. For example, one comma
-  specifies that the text is for subitem 1 of the item. In report view, the text would be placed in
-  column 1. (In report view, the label for the item is placed in column 0.)
+  As explained above, this argument determines if an item is added to the list-view, or if the text of a
+  subitem is defined.
 </para></listitem></varlistentry>
 <varlistentry><term>text</term>
-<listitem><para>The text for the item, or for the subitem of a item.
+<listitem><para>
+  The text for the item label, or the text for the subitem of a item, depending on whether an item is
+  being added or the text for a subitem is being defined.
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
 <listitem><para>
@@ -2736,19 +2773,17 @@ and on the system colors used for a selection.
   icons and the LVSIL_SMALL flag for the list, report, and small-icon view icons.
 </para>
 <para>
-  This argument is only used when the <emphasis role="italic">text</emphasis> argument is the first
-  argument. ooDialog does not yet support setting the icon index for the other columns in a report view.
-</para>
-<para>
-  If you omit this argument, -1 is used to indicate there is no icon for this item.
+  Use -1 or simply omit this arugment to indicate there is no icon for the item being added. This
+  argument is ignored completely when the text for a subitem is being defined.
 </para>
 </listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example adds three columns and two items to a report list
-control. To get the following result:</para>
-
+<listitem><para>
+  The following example adds three columns and two items to a report list control. To get the following
+  result:
+</para>
 <informaltable frame="all">
 <tgroup cols="3">
 <thead>
@@ -2777,56 +2812,62 @@ control. To get the following result:</para>
 </para>
 <programlisting>
 <![CDATA[
-::method InitDialog
-  InitDlgRet = self~InitDialog:super
+::method initDialog
 
-  curList = self~GetListControl("IDC_LIST_REP")
-  if curList \= .Nil then
-  do
+  curList = self~getListControl(IDC_LIST_REP)
+  if curList \= .nil then do
     imageList = .ImageList~create(.Size~new(16), .Image~id(ILC_COLOR24), 9, 0)
     imageList~add(.Image~getImage("E:\oodlist\oodlist.BMP"))
     list~setImageList(imageList, .Image~id(LVSIL_SMALL))
 
-    curList~InsertColumn(0,"First Name",50)
-    curList~InsertColumn(1,"Last Name",50)
-    curList~InsertColumn(2,"Age",50)
+    curList~insertColumn(0,"First Name",50)
+    curList~insertColumn(1,"Last Name",50)
+    curList~insertColumn(2,"Age",50)
 
     -- 3 is the index in the image list for the icon for item 0
-    curList~Add("Mike", 3)
-    curList~Add(,"Miller")
-    curList~Add(, ,"30")
+    curList~add("Mike", 3)
+    curList~add(,"Miller")
+    curList~add(, ,"30")
 
     -- 0 is the index in the image list for the icon for item 1
-    curList~~Add("Sue", 0)~~Add(,"Thaxton")~~Add(, ,"29")
+    curList~~add("Sue", 0)~~add(,"Thaxton")~~add(, ,"29")
   end
-  return InitDlgRet
+
 ]]>
 </programlisting>
 </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="addrow"><title>AddRow</title>
-<indexterm><primary>AddRow</primary></indexterm>
+<section id="mthAddRow"><title>addRow</title>
+<indexterm><primary>addRow</primary></indexterm>
 <programlisting>
 <![CDATA[
-                                               +-,----+
-                                               V      |
->>-aListControl~AddRow(--+------+--,--icon--,----text-+--)-----><
-                         +-item-+
-
+                                   +-,----+
+                                   V      |
+>>--addRow(--+------+--,--icon--,----text-+--)-----><
+             +-item-+
 
 ]]>
 </programlisting>
 
-<para>The AddRow method adds a new item to a list.</para>
+<para>
+  The <emphasis role="italic">addRow</emphasis> method adds a new item to a list-view. This method is
+  most useful when adding items that have subitems to the list-view. But, despite its name, it can be
+  used to add any item, with or without subitems, to a list-view.
+</para>
+<para>
+  Remember that in a list-view, items and columns use a 0-based index. Subitems use a 1-based index.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>item</term>
-<listitem><para>The number of the item. If you omit this argument, the number of the
-last item is increased by 1.
+<listitem><para>
+  The index of the item. If you omit this argument, the item is added immediately after the last item
+  added or inserted in the list-view. That is, the index defaults to the index of the last item added
+  plus 1. If there are no items in the list-view then the item is added at index 0.
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
 <listitem><para>
@@ -2835,15 +2876,15 @@ last item is increased by 1.
   <computeroutput>setImageList</computeroutput>() method, use the LVSIL_NORMAL flag for the icon view
   icons and the LVSIL_SMALL flag for the list, report, and small-icon views icons.
 </para>
-<para>
-  In report view, this argument is only used for the icon for the first column. ooDialog does not yet
-  support setting the icon index for the other columns in a report view.
-</para>
 </listitem></varlistentry>
 <varlistentry><term>text</term>
-<listitem><para>Any number of text strings. The first is used for the first column,
-the second for the second column, and so on. If you specify more text entries
-than there are columns, the extra entries are ignored.
+<listitem><para>
+  Any number of text strings. The first text string is used for the label of the item. Successive strings
+  are used for the text of subitems of the item. For example, the text of the second string is used for
+  the text of subitem 1. The text of the third string is used for the text of subitem 2, and so on. If
+  the first string is omitted, then the empty string is used for the item label. If other strings are
+  omitted, than no text is set for the corresponding subitem. If you specify more text entries than there
+  are columns, the extra entries are ignored.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -2856,9 +2897,9 @@ than there are columns, the extra entries are ignored.
 <![CDATA[
 ::method InitList
   curList = self~GetListControl(101)
-  curList~AddRow(, ,"Mike","Miller")
-  curList~AddRow(, ,"Sue","Muller")
-  curList~AddRow(, ,"Chris","Watson")
+  curList~addRow(, ,"Mike","Miller")
+  curList~addRow(, ,"Sue","Muller")
+  curList~addRow(, ,"Chris","Watson")
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -3774,16 +3815,51 @@ This is the default.
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setImageList(--newImageList--+----------+--)--------------------><
-                                 +--,-type--+
+>>--setImageList(--src-+---------------+-+----------+-+----------+-)-----------><
+                       +-,-typeOrWidth-+ +-,-height-+ +-,-ilType-+
 ]]>
 </programlisting>
 
 <para>
   Assigns, or removes, an image list for the list-view control. Using
-  <computeroutput>.nil</computeroutput> for the first argument removes the current image list. The
-  list-view control can use image lists for a number of things, the large icons, small icons, the state
-  images and the group header images. (ooDialog does not yet support list-view groups.)
+  <computeroutput>.nil</computeroutput> for the first argument removes the current image list.
+</para>
+<para>
+  The list-view control uses image lists for a number of things, the large icons, the small icons, the
+  state images, and the group header images. (ooDialog does not yet support list-view groups.) The
+  <emphasis role="italic">src</emphasis> argument can be either an <link
+  linkend="clsImageList">ImageList</link> object, or a single bitmap.
+</para>
+<para>
+  Using an image list object is the most flexible option. The programmer creates the image list in the
+  manner most suitable to the program. When the program is enhanced or changed it is easy to change the
+  image list.
+</para>
+<para>
+  When <emphasis role="italic">src</emphasis> is a single bitmap it is used in this way: A single bitmap
+  is created that consists of all the images for the image list. All the images must be the same width
+  and height. The images are arranged in the bitmap in a row, side-by-side, in the order they should
+  appear in the image list. ooDialog uses this bitmap to create a <emphasis
+  role="italic">.ImageList</emphasis> object and assigns it to the list-view. The <emphasis
+  role="italic">src</emphasis> argument can be either the file name of the bitmap or a bitmap <link
+  linkend="clsImage">Image</link> object.
+</para>
+<para>
+  Although using a single bitmap will allow the programmer to save a couple of lines of code, it has a
+  number of disadvantages. The image list is created with the exact number of images in the bitmap and no
+  extra room to add images. The image list is created as an unmasked image list, with a color of 8 bit
+  per pixel. If the program is enhanced or changed in a way that requires even a slight change
+  to the image list, the single bitmap would need to be re-created.
+</para>
+<para>
+  When using a single bitmap, if the system fails to create the image list from the details supplied by
+  ooDialog, the method of informing the programmer of the error is not as robust as it is when the
+  programmer creates the image list herself. However, ooDialog will set the <link
+  linkend="dotSystemErrorCode">.SystemErrorCode</link> variable for any cases where the operating system
+  reports an error. Also note that when using a single bitmap, ooDialog will instantiate a <emphasis
+  role="italic">.ImageList</emphasis> object. The programmer can retrieve this object using the <link
+  linkend="mthGetImageListClsListControl">getImageList</link>() method and then manipulate it using the
+  methods of the <link linkend="clsImageList">ImageList</link> class.
 </para>
 <para>
   Unless a list-view has the LVS_SHAREIMAGELISTS style, (corresponds to the SHAREIMAGES style in the
@@ -3798,6 +3874,9 @@ This is the default.
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
     <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    <para>
       Raises syntax errors when incorrect arguments are detected.
     </para>
   </listitem></varlistentry>
@@ -3805,29 +3884,61 @@ This is the default.
   <listitem>
     <para>The arguments are:
     <variablelist>
-      <varlistentry><term>newImageList</term>
+      <varlistentry><term>src</term>
       <listitem>
         <para>
-          The <link linkend="clsImageList">image list</link> to assign to the list-view. If this argument
-          is <computeroutput>.nil</computeroutput> the existing image list, if any, is removed.
+          The source for the image list. The most flexible way to use this method is to provide an <link
+          linkend="clsImageList">image list</link> object to assign to the list-view.
+        </para>
+        <para>
+          However, as explained above, this argument can also be a single bitmap from which the image
+          list is to be created. In this case, the argument can be either the file name of the bitmap or
+          a bitmap <link linkend="clsImage">Image</link> object.
+        </para>
+        <para>
+          If this argument is <computeroutput>.nil</computeroutput> the existing image list, if any, is
+          removed.
         </para>
       </listitem></varlistentry>
-      <varlistentry><term>type</term>
+      <varlistentry><term>typeOrWidth</term>
       <listitem>
         <para>
-          Optional. Specifies which image list to assign, (or remove.) You can use <link
-          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
-          following symbols:
+          Optional.
+        </para>
+        <para>
+          <emphasis role="bold">type</emphasis>: When <emphasis role="italic">src</emphasis> is an
+          <computeroutput>ImageList</computeroutput> object, this argument specifies which image list to
+          assign, (or remove.) You can use <link linkend="mthIdClsImage">.Image~id()</link> to get the
+          correct numeric value for one of the following symbols:
           <simplelist type='horiz' columns='2'>
           <member>LVSIL_NORMAL</member>
           <member>LVSIL_SMALL </member>
           <member>LVSIL_STATE </member>
           </simplelist>
           or use the correct numeric value itself.  Note that there is also a LVSIL_GROUPHEADER symbol,
-          but ooDialog does not yet support it.
+          but ooDialog does not yet support it. The default is LVSIL_NORMAL.
         </para>
         <para>
-          The default is LVSIL_NORMAL.
+          <emphasis role="bold">width</emphasis>: When <emphasis role="italic">src</emphasis> is a
+          single bitmap, this argument can be used to specify the width of a single image in the bitmap.
+          The default is the actual height of the bitmap.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>height</term>
+      <listitem>
+        <para>
+          Optional. This argument is only used when <emphasis role="italic">src</emphasis> is a single
+          bitmap. In that case <emphasis role="italic">height</emphasis> specifies the height of an image
+          in the bitmap. The default is to use the actual height of the bitmap.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ilType</term>
+      <listitem>
+        <para>
+          Optional. This argument is only used when <emphasis role="italic">src</emphasis> is a single
+          bitmap. It is used to specify which image list is being assigned. Its usage is exactly the same
+          as is documented for the <emphasis role="italic">type</emphasis> role of the <emphasis
+          role="italic">typeOrWidth</emphasis> argument above. If omitted, the default is LVSIL_NORMAL.
         </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3843,14 +3954,34 @@ This is the default.
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example creates an image list using the application icons that ooDialog makes available
-      for general use. The image list is assigned as the normal icon image list.
+      This is a complete working example. It creates an image list using the application icons that
+      ooDialog makes available for general use. The image list is assigned as the normal icon image list.
 <programlisting>
 <![CDATA[
-::method initDialog
-  expose list
 
-  list  = self~getListControl(IDC_LV_IMAGES)
+  dlg = .ImageDisplay~new
+  if dlg~initCode = 0 then do
+    dlg~constDir[IDC_LV_IMAGES] = 100
+    dlg~create(30, 30, 320, 155, "ooDialog Icon Resources", , , "Tahoma")
+    dlg~Execute("SHOWTOP", IDI_DLG_OOREXX)
+    dlg~Deinstall
+  end
+
+::requires "OODWIN32.CLS"
+
+::class 'ImageDisplay' subclass UserDialog inherit AdvancedControls
+
+::method defineDialog
+
+  self~addListControl(IDC_LV_IMAGES, , 10, 10, 300, 135, "ICON SINGLESEL");
+
+::method initDialog
+
+  names = .array~new()
+  names[1] = "IDI_DLG_OODIALOG"
+  names[2] = "IDI_DLG_APPICON"
+  names[3] = "IDI_DLG_APPICON2"
+  names[4] = "IDI_DLG_OOREXX"
 
   ids = .array~new()
   ids[1] = self~constDir[IDI_DLG_OODIALOG]
@@ -3870,16 +4001,11 @@ This is the default.
   imageList = .ImageList~create(size, flags, 4, 0)
   imageList~addImages(icons)
 
+  list = self~getListControl(IDC_LV_IMAGES)
   list~setImageList(imageList, .Image~id(LVSIL_NORMAL))
 
-  names = .array~new()
-  names[1] = "IDI_DLG_OODIALOG"
-  names[2] = "IDI_DLG_APPICON"
-  names[3] = "IDI_DLG_APPICON2"
-  names[4] = "IDI_DLG_OOREXX"
-
   do i = 1 to ids~items
-    list~add(names[i], i - 1)
+    list~add(names[i] '('ids[i]')', i - 1)
   end
 ]]>
 </programlisting>
