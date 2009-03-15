@@ -154,8 +154,8 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
-<entry><link linkend="utlSyscreatepipe">SysCreatePipe</link></entry><entry>YES</entry><entry>YES</entry>
-<entry>AIX only</entry>
+<entry><link linkend="utlSyscreatepipe">SysCreatePipe</link></entry><entry>NO</entry><entry>NO*</entry>
+<entry>AIX only*</entry>
 </row>
 <row>
 <entry><link linkend="utlSyscurpos">SysCurPos</link></entry><entry>YES</entry><entry>NO</entry>
@@ -175,6 +175,10 @@ platforms on which they are available.</para>
 </row>
 <row>
 <entry><link linkend="utlSysdropfuncs">SysDropFuncs</link></entry><entry>YES</entry><entry>YES</entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="utlSysdroprexxmacro">SysDropRexxMacro</link></entry><entry>YES</entry><entry>YES</entry>
 <entry></entry>
 </row>
 <row>
@@ -278,6 +282,10 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
+<entry><link linkend="utlSyslinver">SysLinVer</link></entry><entry>NO</entry><entry>NO*</entry>
+<entry>Linux only*</entry>
+</row>
+<row>
 <entry><link linkend="utlSysloadfuncs">SysLoadFuncs</link></entry><entry>YES</entry><entry>YES</entry>
 <entry></entry>
 </row>
@@ -334,6 +342,10 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
+<entry><link linkend="utlSyssaverexxmacrospace">SysSaveRexxMacroSpace</link></entry><entry>YES</entry><entry>YES</entry>
+<entry></entry>
+</row>
+<row>
 <entry><link linkend="utlSyssearchpath">SysSearchPath</link></entry><entry>YES</entry><entry>YES</entry>
 <entry></entry>
 </row>
@@ -374,6 +386,10 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
+<entry><link linkend="utlSyssystemdirectory">SysSystemDirectory</link></entry><entry>YES</entry><entry>NO</entry>
+<entry></entry>
+</row>
+<row>
 <entry><link linkend="utlSystempfilename">SysTempFileName</link></entry><entry>YES</entry><entry>YES</entry>
 <entry></entry>
 </row>
@@ -402,8 +418,8 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
-<entry><link linkend="utlSyswait">SysWait</link></entry><entry>YES</entry><entry>YES</entry>
-<entry>AIX only</entry>
+<entry><link linkend="utlSyswait">SysWait</link></entry><entry>NO</entry><entry>NO*</entry>
+<entry>AIX only*</entry>
 </row>
 <row>
 <entry><link linkend="utlSyswaiteventsem">SysWaitEventSem</link></entry><entry>YES</entry><entry>YES</entry>
@@ -1088,8 +1104,8 @@ C: D: E: F: W:
 ]]>
 </programlisting>
 
-<para>Drops all RexxUtil functions. After a Rexx program calls SysDropFuncs,
-the RexxUtil functions are not available in any operating system sessions.
+<para>
+  From ooRexx 4.0.0 and on this function does nothing.
 </para>
 </section>
 
@@ -2200,8 +2216,6 @@ exit
 <para></para>
 <programlisting>
 /****  Type all WIN.INI file information to the screen  *****/
-call rxfuncadd sysloadfuncs, rexxutil, sysloadfuncs
-call sysloadfuncs
 call SysIni "WIN.INI", "All:", "Apps."
 if Result \= "ERROR:" then
 do i = 1 to Apps.0
@@ -2526,6 +2540,26 @@ else say "File is not Temporary."
 </programlisting>
 </section>
 
+<section id="utlSyslinver"><title>SysLinVer (Linux Only)</title>
+<indexterm><primary>SysLinVer</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysLinVer</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysLinVer()-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns a string identifying the Linux system version. The first word of the returned string is Linux
+  and the second word in the string identifies the kernel version. A possible output for a Linux system
+  might be:
+</para>
+<programlisting>
+Say SysLinVer()   ->  "Linux 2006.2.6.18-1.2798.fc6"
+</programlisting>
+</section>
+
 <section id="utlSysloadfuncs"><title>SysLoadFuncs</title>
 <indexterm><primary>SysLoadFuncs</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
@@ -2536,8 +2570,9 @@ else say "File is not Temporary."
 ]]>
 </programlisting>
 
-<para>Loads all RexxUtil functions. After a Rexx program calls SysLoadFuncs,
-the RexxUtil functions are available in all operating system sessions.</para>
+<para>
+  From ooRexx 4.0.0 and on this function does nothing.
+</para>
 </section>
 
 <section id="utlSysloadrexxmacrospace"><title>SysLoadRexxMacroSpace</title>
@@ -3607,15 +3642,23 @@ Call SysStemSort "MyStem.", , ,10, 20, 1, 10
 ]]>
 </programlisting>
 
-<para>Makes the named application the foreground application.</para>
+<para>
+  Brings the named window to the foreground. Modern versions of Windows do not always allow a window to
+  be brought to the foreground programmatically. Instead, the icon for the window on the task bar is set
+  to flashing.
+</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">name</emphasis></term>
-<listitem><para>The name of the application you want to be the foreground
-application.</para></listitem></varlistentry>
+<listitem><para>
+  The name of the window you want to be the foreground window. The name of the window must exactly match
+  the title of the window, but is not case sensitive. The title of a window is the text displayed in its
+  title bar.
+</para></listitem></varlistentry>
 </variablelist>
-<para>O is returned on success and a <link linkend="systemerrorcodes">Windows
-System Error code </link> on failure.
+<para>
+  O is returned on success and a <link linkend="systemerrorcodes">Windows System Error code </link> on
+  failure.
 </para>
 </section>
 
@@ -3932,23 +3975,24 @@ If RxFuncQuery("SysSetFileDateTime") = 1 Then
 ]]>
 </programlisting>
 
-<para>Returns a string to identify the operating system and version.
-The first word of the returned string contains the identifier for the operating
-system and the second word the version:
-<computeroutput>WindowsNT x.xx</computeroutput> or
-<computeroutput>Windows95 x.xx</computeroutput>.</para>
-<para>Return code: The operating system and
-version. Possible output for operating systems supported by Object Rexx are:
+<para>
+  Returns a string to identify the operating system and version. The first word of the returned string
+  contains the identifier for the operating system and the rest of the string contains a operating
+  specific version string. Something like: <computeroutput>WindowsNT x</computeroutput> or
+  <computeroutput>Linux x</computeroutput>.
+</para>
+<para>
+  Some possible output for operating systems supported by ooRexx might be:
 </para>
 <programlisting>
-Say SysVersion()   ->  "WindowsNT 4.00"
+Say SysVersion()   ->  "Linux #1 SMP Mon Oct 16 14:54:20 EDT 2006.2.6.18-1.2798.fc6"
 Say SysVersion()   ->  "WindowsNT 5.00"
 </programlisting>
 
-<note><title>Note</title>
-<para>This function can be
-used to replace the operating-system-specific functions SysOS2Ver(),
-SysWinVer(), and SysLinVer().</para></note>
+<note><title>Note</title><para>
+  This function can be used to replace the operating-system-specific functions SysWinVer(), and
+  SysLinVer().
+</para></note>
 </section>
 
 <section id="utlSysvolumelabel"><title>SysVolumeLabel (Windows only)</title>
