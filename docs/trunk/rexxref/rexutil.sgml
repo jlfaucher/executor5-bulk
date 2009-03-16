@@ -154,8 +154,8 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
-<entry><link linkend="utlSyscreatepipe">SysCreatePipe</link></entry><entry>NO</entry><entry>NO*</entry>
-<entry>AIX only*</entry>
+<entry><link linkend="utlSyscreatepipe">SysCreatePipe</link></entry><entry>NO</entry><entry>Yes</entry>
+<entry></entry>
 </row>
 <row>
 <entry><link linkend="utlSyscurpos">SysCurPos</link></entry><entry>YES</entry><entry>NO</entry>
@@ -215,7 +215,7 @@ platforms on which they are available.</para>
 </row>
 <row>
 <entry><link linkend="utlSysfork">SysFork</link></entry><entry>NO</entry><entry>YES</entry>
-<entry>*nix environments only</entry>
+<entry></entry>
 </row>
 <row>
 <entry><link linkend="utlSysfromunicode">SysFromUnicode</link></entry><entry>YES</entry><entry>NO</entry>
@@ -418,8 +418,8 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
-<entry><link linkend="utlSyswait">SysWait</link></entry><entry>NO</entry><entry>NO*</entry>
-<entry>AIX only*</entry>
+<entry><link linkend="utlSyswait">SysWait</link></entry><entry>NO</entry><entry>YES</entry>
+<entry></entry>
 </row>
 <row>
 <entry><link linkend="utlSyswaiteventsem">SysWaitEventSem</link></entry><entry>YES</entry><entry>YES</entry>
@@ -890,7 +890,7 @@ case-sensitive.
 </variablelist>
 </section>
 
-<section id="utlSyscreatepipe"><title>SysCreatePipe (AIX only)</title>
+<section id="utlSyscreatepipe"><title>SysCreatePipe (Unix only)</title>
 <indexterm><primary>SysCreatePipe</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysCreatePipe</secondary></indexterm>
@@ -1692,7 +1692,7 @@ end
 </programlisting>
 </section>
 
-<section id="utlSysfork"><title>SysFork (Linux, AIX, Solaris only)</title>
+<section id="utlSysfork"><title>SysFork (Unix only)</title>
 <indexterm><primary>SysFork</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysFork</secondary></indexterm>
@@ -1705,6 +1705,69 @@ end
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the process id to the parent process.</para>
 <para>Returns <computeroutput>0</computeroutput> to the spawned process.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<para>
+  This is a complete working example. It can be cut and pasted into a file and executed on a Unix system.
+<programlisting>
+<![CDATA[
+
+/* Example Unix SysFork() and SysWait() */
+
+  pid = SysFork()
+
+  if pid == 0 then do
+    say "I am the child."
+    code = executeChild()
+    say "Child : done with execution, will exit with" code
+    exit code
+  end
+  else do
+    say 'I am the parent, child pid is:' pid
+    code = executeParent()
+    say 'Parent: going to wait for child.'
+    code = SysWait()
+    say 'Parent: back from waiting. Child exit code:' code
+  end
+
+  say 'Operating system version:' SysVersion()
+
+::routine executeChild
+
+    say 'Child : will sleep 1 second.'
+    j = SysSleep(1)
+    say 'Child : done sleeping 1. Will do some calculations.'
+
+    total = 0
+    do 786
+      total += 3
+    end
+    say 'Child : 3 * 786 is:' total
+
+    say 'Child : will sleep 2 seconds.'
+    j = SysSleep(2)
+    say 'Child : done sleeping 2. Will do some calculations.'
+
+    total = 0
+    do 1865
+      total += 7
+    end
+    say 'Child : 7 * 1865 is:' total
+
+    say 'Child : will sleep 2 seconds.'
+    j = SysSleep(2)
+    say 'Child : done sleeping 2.'
+    say 'Child : done executing, will return 0.'
+    return 0
+
+::routine executeParent
+
+    say 'Parent: 3 * 786 is:' (3 * 786)
+    j = SysSleep(2)
+    say 'Parent: 7 * 1865 is:' (7 * 1865)
+    return 0
+]]>
+</programlisting>
+</para>
 </section>
 
 <section id="utlSysfromunicode"><title>SysFromUnicode (Windows only)</title>
@@ -4034,7 +4097,7 @@ is omitted than the current drive is used.
 </variablelist>
 </section>
 
-<section id="utlSyswait"><title>SysWait (AIX only)</title>
+<section id="utlSyswait"><title>SysWait (Unix only)</title>
 <indexterm><primary>SysWait</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysWait</secondary></indexterm>
@@ -4047,6 +4110,10 @@ is omitted than the current drive is used.
 <para>Waits for all child processes to end.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
 <para>The exit code from the child process.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<para>
+  <link linkend="utlSysfork">SysFork</link>() has an example that uses
+  <computeroutput>wait()</computeroutput>.</para>
 </section>
 
 <section id="utlSyswaiteventsem"><title>SysWaitEventSem</title>
