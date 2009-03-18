@@ -4039,8 +4039,14 @@ the default is to convert the remainder of the string.</para>
 </programlisting>
 
 <para>This method returns an array of strings containing the single
-lines that were separated using the separator character. The
-default separator is the newline character.</para>
+lines that were separated using the <emphasis role="bold">separator</emphasis> string.
+The separator may be any string, including the null string.  If the null string
+is used, an array containing each character of the string is returned.
+If the target string starts with the separator, the first array item will be a null
+string.  If the string ends with a separator, no extra null string item will be added.
+The
+default separator is the newline character.
+</para>
 
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -4052,6 +4058,9 @@ say "the second line is:" array[2]  /*  world  */
 string = "hello*world*this is an array."
 array = string~makeArray("*")
 say "the third line is:" array[3]  /*  this is an array.  */
+
+string = "hello*world*this is an array.*"
+array = string~makeArray("*")     /* contains 3 items */
 ]]>
 </programlisting>
 </section>
