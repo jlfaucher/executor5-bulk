@@ -1,0 +1,480 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>ooRexx Apache External Functions</title>
+</head>
+<body>
+
+<center><h1>ooRexx Apache External Functions</h1></center>
+
+<p>The following are the Apache functions available to the ooRexx programmer.
+Each of these external functions is automatically available at program startup.
+The ooRexx programmer does not have to register them before using them.</p>
+
+<br /><br />
+<h2>Table of Contents</h2>
+<a href="#WWWAddCookie">
+WWWAddCookie</a> - Set a new cookie to be returned to the browser
+<br /><a href="#WWWConstruct_URL">
+WWWConstruct_URL</a> - Return a URL from the specified path
+<br /><a href="#WWWEscape_Path">
+WWWEscape_Path</a> - Convert pathmame to a properly escaped URL
+<br /><a href="#WWWGetArgs">
+WWWGetArgs</a> - Get the GET/POST request arguments
+<br /><a href="#WWWGetCookies">
+WWWGetCookies</a> - Get the GET/POST request cookies
+<br /><a href="#WWWGetVersion">
+WWWGetVersion</a> - Get the Mod_ooRexx version string
+<br /><a href="#WWWHTTP_time">
+WWWHTTP_time</a> - Return the current RFC 822/1123 time
+<br /><a href="#WWWInternal_Redirect">
+WWWInternal_Redirect</a> - Create a new request from the specified URI
+<br /><a href="#WWWLogError">
+WWWLogError</a> - Log an error message to the Apache log file
+<br /><a href="#WWWLogInfo">
+WWWLogInfo</a> - Log an informational message to the Apache log file
+<br /><a href="#WWWLogWarning">
+WWWLogWarning</a> - Log a warning message to the Apache log file
+<br /><a href="#WWWRun_Sub_Req">
+WWWRun_Sub_Req</a> - Run an Apache subrequest
+<br /><a href="#WWWSendHTTPHeader">
+WWWSendHTTPHeader</a> - Set the MIME content and send the HTTP header
+<br /><a href="#WWWSetHeaderValue">
+WWWSetHeaderValue</a> - Set a new value for an existing cookie
+<br /><a href="#WWWSub_Req_Lookup_File">
+WWWSub_Req_Lookup_File</a> - Run a subrequest on a filename
+<br /><a href="#WWWSub_Req_Lookup_URI">
+WWWSub_Req_Lookup_URI</a> - Run a subrequest on a URI
+
+<br /><br />
+<h2><a name="WWWAddCookie">WWWAddCookie</a></h2>
+<p>Sets a new value for an existing cookie in the returned HTTP request header.</p>
+<h3>ooRexx Function Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+call WWWAddCookie(r, cookie_value);
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Function Parameters</h3>
+<dl>
+   <dt><b>r</b></dt>
+   <dd>The Apache request handle. This is passed to the ooRexx program as arg(1).</dd>
+   <dt><b>cookie_value</b></dt>
+   <dd>The value of the cookie. No check is performed on the validity of the
+       cookie value. This function should be called prior to the SendHTTPHeader
+       function.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="WWWConstruct_URL">WWWConstruct_URL</a></h2>
+<p>Construct  a fully qualified URL from the path specified.</p>
+<h3>ooRexx Function Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+URL = WWWConstruct_URL(r, path);
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Function Parameters</h3>
+<dl>
+   <dt><b>escURL</b></dt>
+   <dd>The <i>path</i> cnverted to a fully qualified URL based on the current request
+       record (r).</dd>
+   <dt><b>r</b></dt>
+   <dd>The Apache request handle. This is passed to the ooRexx program as arg(1).</dd>
+   <dt><b>path</b></dt>
+   <dd>The filesystem pathname.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="WWWEscape_Path">WWWEscape_Path</a></h2>
+<p>Takes a filesystem pathname and converts it into a properly escaped URI.
+If the partial flag is 0 then the function will a (/) to the beginning of the URI,
+otherwise a (/) will not be added.</p>
+<p>This function does NOT convert spaces to (+) signs. This action should be performed
+after a call to this function.</p>
+<h3>ooRexx Function Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+escURI = WWWEscape_Path(r, path, partial);
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Function Parameters</h3>
+<dl>
+   <dt><b>escURI</b></dt>
+   <dd>The <i>path</i> cnverted to a properly escaped URL.</dd>
+   <dt><b>r</b></dt>
+   <dd>The Apache request handle. This is passed to the ooRexx program as arg(1).</dd>
+   <dt><b>path</b></dt>
+   <dd>The filesystem pathname.</dd>
+   <dt><b>partial</b></dt>
+   <dd>If the <i>partial</i> flage is 0 then a (/) will be added to the beginning of the
+       returned <i>escURL</i> unless the <i>path</i> already begins with a slash(/).
+       Otherwise a (/) will not be added.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="WWWGetArgs">WWWGetArgs</a></h2>
+<p>Returns the GET/POST request arguments.</p>
+<p>Note: This function is NOT optional and must appear in your ooRexx script.</p>
+<h3>ooRexx Function Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+call WWWGetArgs r
+/* WWWARGS.0 now contains the number of arguments */
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Function Parameters</h3>
+<dl>
+   <dt><b>r</b></dt>
+   <dd>The Apache request handle. This is passed to the ooRexx program as arg(1).</dd>
+</dl>
+<h3>Example</h3>
+<p>The GET query string arguments or the passed POST arguments can be accessed
+using the following example. The name/value pairs are stored in a ooRexx stem array.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+call WWWGetArgs r
+say 'The number of arguments is' wwwargs.0'.'
+do i = 1 to wwwcookies.0
+   say 'WWWARGS.'i'.!NAME =' wwwargs.i.!name
+   say 'WWWARGS.'i'.!VALUE =' wwwargs.i.!value
+end
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Notes</h3>
+<p>Calling WWWGetArgs more than one time per Apache request can cause major problems
+including catastrophic errors with the Apache server. ONLY CALL WWWGETARGS ONE TIME
+PER APACHE REQUEST!</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="WWWGetCookies">WWWGetCookies</a></h2>
+<p>Returns the cookies passed from the browser.</p>
+<h3>ooRexx Function Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+call WWWGetCookies r
+/* WWWCOOKIES.0 contains the number of cookies */
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Function Parameters</h3>
+<dl>
+   <dt><b>r</b></dt>
+   <dd>The Apache request handle. This is passed to the ooRexx program as arg(1).</dd>
+</dl>
+<h3>Example</h3>
+<p>The cookies can be accessed
+using the following example. The name/value pairs are stored in a ooRexx stem array.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+call WWWGetCookies r
+say 'The number of cookies is' wwwcookies.0'.'
+do i = 1 to wwwcookies.0
+   say 'WWWCOOKIES.'i'.!NAME =' wwwcookies.i.!name
+   say 'WWWCOOKIES.'i'.!VALUE =' wwwcookies.i.!value
+end
+</pre>
+</td></tr>
+</table>
+</center>
+
+<br /><br /><br /><br /><br />
+<h2><a name="WWWGetVersion">WWWGetVersion</a></h2>
+<p>Returns the Mod_ooRexx module version string.</p>
+<h3>ooRexx Function Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+version = WWWGetVersion();
+/* version = "Mod_ooRexx/2.2.0 Jun 06 2009 09:23:11" */
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Function Parameters</h3>
+<p>None.</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="WWWHTTP_time">WWWHTTP_time</a></h2>
+<p>Returns the time/date formatted per RFC 822 and 1123.</p>
+<h3>ooRexx Function Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+timestamp = WWWHTTP_time(r);
+/* timestamp = "Tue 15 Sep 1998 14:36:31 GMT" */
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Function Parameters</h3>
+<dl>
+   <dt><b>r</b></dt>
+   <dd>The Apache request handle. This is passed to the ooRexx program as arg(1).</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="WWWInternal_Redirect">WWWInternal_Redirect</a></h2>
+<p>Creates a new request from the indicated URI and then runs it.</p>
+<h3>ooRexx Function Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+call WWWInternal_Redirect r, uri,
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Function Parameters</h3>
+<dl>
+   <dt><b>r</b></dt>
+   <dd>The Apache request handle. This is passed to the ooRexx program as arg(1).</dd>
+   <dt><b>uri</b></dt>
+   <dd>The URI to use in creating the subrequest.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="WWWLogError">WWWLogError</a></h2>
+<p>Places a error level message in the server's error log.</p>
+<h3>ooRexx Function Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+call WWWLogError r, message
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Function Parameters</h3>
+<dl>
+   <dt><b>r</b></dt>
+   <dd>The Apache request handle. This is passed to the ooRexx program as arg(1).</dd>
+   <dt><b>message</b></dt>
+   <dd>The message to be placed in the error log.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="WWWLogInfo">WWWLogInfo</a></h2>
+<p>Places a informational level message in the server's error log.</p>
+<h3>ooRexx Function Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+call WWWLogInfo r, message
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Function Parameters</h3>
+<dl>
+   <dt><b>r</b></dt>
+   <dd>The Apache request handle. This is passed to the ooRexx program as arg(1).</dd>
+   <dt><b>message</b></dt>
+   <dd>The message to be placed in the error log.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="WWWLogWarning">WWWLogWarning</a></h2>
+<p>Places a warning level message in the server's error log.</p>
+<h3>ooRexx Function Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+call WWWLogWarning r, message
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Function Parameters</h3>
+<dl>
+   <dt><b>r</b></dt>
+   <dd>The Apache request handle. This is passed to the ooRexx program as arg(1).</dd>
+   <dt><b>message</b></dt>
+   <dd>The message to be placed in the error log.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="WWWRun_Sub_Req">WWWRun_Sub_Req</a></h2>
+<p>Returns the return code from running the handlers for a subrequest.</p>
+<p><b>Warning!!!</b> During subrequest processing <b>none</b> of the ooRexx handlers
+will be invoked. They will always DECLINE the request.</p>
+<h3>ooRexx Function Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+retc = WWWRun_Sub_Req(r);
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Function Parameters</h3>
+<dl>
+   <dt><b>retc</b></dt>
+   <dd>The return code from the subrequest.</dd>
+   <dt><b>r</b></dt>
+   <dd>The Apache subrequest handle.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="WWWSendHTTPHeader">WWWSendHTTPHeader</a></h2>
+<p>Sets the mime content-type and then sends the headers to the browser.</p>
+<p>Note: This function is NOT optional and must appear in your ooRexx script.</p>
+<h3>ooRexx Function Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+return_code = WWWSendHTTPHeader(r, type);
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Function Parameters</h3>
+<dl>
+   <dt><b>return_code</b></dt>
+   <dd>The return code from the Apache function</dd>
+   <dt><b>r</b></dt>
+   <dd>The Apache request handle. This is passed to the ooRexx program as arg(1).</dd>
+   <dt><b>type</b></dt>
+   <dd>The content-type. Usually this will be the string "text/html"</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="WWWSetHeaderValue">WWWSetHeaderValue</a></h2>
+<p>Sets a new value for an existing cookie in the returned HTTP request header.</p>
+<h3>ooRexx Function Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+call WWWSetHeaderValue(r, key, value);
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Function Parameters</h3>
+<dl>
+   <dt><b>r</b></dt>
+   <dd>The Apache request handle. This is passed to the ooRexx program as arg(1).</dd>
+   <dt><b>key</b></dt>
+   <dd>The header key to be replaced.</dd>
+   <dt><b>value</b></dt>
+   <dd>The value to be applied to the header key.
+       This function should be called prior to the SendHTTPHeader function.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="WWWSub_Req_Lookup_File">WWWSub_Req_Lookup_File</a></h2>
+<p>Returns the resulting request record pointer from a subrequest from the given
+filename.</p>
+<h3>ooRexx Function Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+subrec = WWWSub_Req_Lookup_File(file, r);
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Function Parameters</h3>
+<dl>
+   <dt><b>subreq</b></dt>
+   <dd>The subrequest record pointer</dd>
+   <dt><b>file</b></dt>
+   <dd>The filename to use in creating the subrequest.</dd>
+   <dt><b>r</b></dt>
+   <dd>The Apache request handle. This is passed to the ooRexx program as arg(1).</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="WWWSub_Req_Lookup_URI">WWWSub_Req_Lookup_URI</a></h2>
+<p>Returns the resulting request record pointer from a subrequest from the given URI.</p>
+<h3>ooRexx Function Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+subrec = WWWSub_Req_Lookup_URI(uri, r);
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Function Parameters</h3>
+<dl>
+   <dt><b>subreq</b></dt>
+   <dd>The subrequest record pointer</dd>
+   <dt><b>uri</b></dt>
+   <dd>The URI to use in creating the subrequest.</dd>
+   <dt><b>r</b></dt>
+   <dd>The Apache request handle. This is passed to the ooRexx program as arg(1).</dd>
+</dl>
+
+<br />
+<table border="0" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="middle">
+  <a href="http://validator.w3.org/check/referer">
+  <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!"
+       height="31" width="88" />
+  </a>
+</td>
+<td valign="middle">
+<img src="./pb_apache_oorexx.gif" alt="Powered by Rexx" />
+<br />Copyright (C) W. David Ashley 2004-2008. All Rights Reserved.
+<br />Copyright (C) Rexx Language Association 2009-2009. All Rights Reserved.
+</td></tr>
+</table>
+
+</body>
+</html>

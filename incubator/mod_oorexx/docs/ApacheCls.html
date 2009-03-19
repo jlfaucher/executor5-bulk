@@ -1,0 +1,1148 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Apache Object ooRexx Class Documentation</title>
+</head>
+<body>
+
+<center><h1>Apache Object ooRexx Class Documentation</h1></center>
+
+<p>In addition to the more standard CGI-like interface that Mod_ooRexx supplies,
+an object interface is also available. The object interface is composed of
+three classes and their accompanying methods.</p>
+
+<p>The file <b>Apache.cls</b> contains the class definitions for the object
+interface to Apache. To use it, just include a <b>::Requires</b> directive
+in your ooRexx program.</p>
+
+<p>When using any of the classes to interface to Apache, you should
+<b>only</b> use the methods to accesss or set values. Using other external
+ooRexx functions to access the Apache internal structures may cause subsequent
+problems in your program.</p>
+
+<p>The classes and methods for the object interface are documented below.</p>
+
+<br /><br />
+<h2>Table of Contents</h2>
+<a href="#Request_rec">
+Request_rec Class</a>
+<br /><a href="#Connx_rec">
+Connection_rec Class</a>
+<br /><a href="#Server_rec">
+Server_rec Class</a>
+
+<hr /><br /><br />
+<h1><a name="Request_rec">Request_rec Class</a></h1>
+
+<p>The request record class (request_rec) supplies an interface to the Apache
+internal request record. There are methods for retrieving values from the
+internal request record and (in some cases) setting the value in the internal
+request record (which can then be used in a subsequent phase of the request
+processing). The methods supplied with the class enforce certian rules about
+how values are retrieved and set in the internal request record in order that
+the Apache server is always aware of any changes to the request record.</p>
+
+<p>To instantiate a request_rec class use the arg(1) value passed to the
+ooRexx program. The following is an example of how to create a request_rec
+object.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+rxptr = arg(1)
+request = .request_rec~new(rxptr)
+</pre>
+</td></tr>
+</table>
+</center>
+<p>The methods for the request_rec class are documented below.</p>
+
+<br /><br />
+<h2>Requect_rec Method Table of Contents</h2>
+<a href="#allowed">allowed</a> - Get/Set the allowed bits
+<br /><a href="#args">args</a> - Get the raw query string
+<br /><a href="#auth_type">auth_type</a> - Get the field
+<br /><a href="#connection">connection</a> - Get the connection object pointer
+<br /><a href="#content_encoding">content_encoding</a> - Get/Set the field
+<br /><a href="#content_languages">content_languages</a> - Get/Set the field
+<br /><a href="#content_type">content_type</a> - Get/Set the field
+<br /><a href="#err_header_out">err_header_out</a> - Get the field
+<br /><a href="#filename">filename</a> - Get/Set the field
+<br /><a href="#finfo_stmode">finfo_stmode</a> - Get the file status bits
+<br /><a href="#handler">handler</a> - Get/Set the field
+<br /><a href="#header_only">header_only</a> - Get the field
+<br /><a href="#headers_in">headers_in</a> - Get the field
+<br /><a href="#headers_out">headers_out</a> - Get the field
+<br /><a href="#ismain">ismain</a> - Get the field
+<br /><a href="#main">main</a> - Get the request object pointer
+<br /><a href="#method">method</a> - Get/Set the method name
+<br /><a href="#method_number">method_number</a> - Get/Set the method number
+<br /><a href="#next">next</a> - Get the next request object pointer
+<br /><a href="#no_cache">no_cache</a> - Get the field
+<br /><a href="#notes">notes</a> - Get the field
+<br /><a href="#path_info">path_info</a> - Get/Set the field
+<br /><a href="#prev">prev</a> - Get the previous request object pointer
+<br /><a href="#protocol">protocol</a> - Get the field
+<br /><a href="#proxyreq">proxyreq</a> - Get the field
+<br /><a href="#server">server</a> - Get the server object pointer
+<br /><a href="#status">status</a> - Get/Set the field
+<br /><a href="#status_line">status_line</a> - Get/Set the field
+<br /><a href="#subprocess_env">subprocess_env</a> - Get the field
+<br /><a href="#the_request">the_request</a> - Get the field
+<br /><a href="#uri">uri</a> - Get the field
+<br /><a href="#user">user</a> - Get the field
+
+<br /><br /><br /><br /><br />
+<h2><a name="allowed">Method: allowed</a></h2>
+<p>This method can return a copy of bit vector that the handler or set a
+new value.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve a copy of the allowed bits.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+allowed = request~allowed
+</pre>
+</td></tr>
+</table>
+</center>
+<p>This is a example of how to set the allowed bits.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+allowed = request~allowed(new_allowed)
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<dl>
+   <dt><b>new_allowed</b></dt>
+   <dd>The new value to be assigned to the allowed bits in the request record.
+       You should only supply this parameter when you want to assign a new value
+       to the allowed bits.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="args">Method: args</a></h2>
+<p>This method returns the args (the raw query string).</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve the args field.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+argspath = request~args
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None.</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="auth_type">Method: auth_type</a></h2>
+<p>Retrieves auth_type field in the request record.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+authorization_type = request~auth_type
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="connection">Method: connection</a></h2>
+<p>Retrieves the value to be used to create a connection object. See the
+documentation on the connection_rec class below.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+cxptr = request~connection
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="content_encoding">Method: content_encoding</a></h2>
+<p>This method can return or set the content_encoding field.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve the content_encoding.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+content_encoding = request~content_encoding
+</pre>
+</td></tr>
+</table>
+</center>
+<p>This is a example of how to set the content_encoding field.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+content_encoding = request~content_encoding(new_content_encoding)
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<dl>
+   <dt><b>new_content_encoding</b></dt>
+   <dd>The new value to be assigned to the content_encoding field.
+       You should only supply this parameter when you want to assign a new value
+       to the content_encoding field.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="content_languages">Method: content_languages</a></h2>
+<p>This method can return or add a new entry to the content_languages array.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve the list of content_languages.
+The list is a comma seperated.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+content_languages = request~content_languages
+</pre>
+</td></tr>
+</table>
+</center>
+<p>This is a example of how to add an entry the content_languages array.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+content_languages = request~content_languages(new_entry)
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<dl>
+   <dt><b>new_entry</b></dt>
+   <dd>The new entry to be assigned to the content_languages array.
+       You should only supply this parameter when you want to assign a new value
+       to the content_languages array.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="content_type">Method: content_type</a></h2>
+<p>This method can return or set the content_type field.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve the content_type.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+content_type = request~content_type
+</pre>
+</td></tr>
+</table>
+</center>
+<p>This is a example of how to set the content_type field.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+content_type = request~content_type(new_content_type)
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<dl>
+   <dt><b>new_content_type</b></dt>
+   <dd>The new value to be assigned to the content_type field.
+       You should only supply this parameter when you want to assign a new value
+       to the content_type field.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="err_header_out">Method: err_header_out</a></h2>
+<p>This method can return a copy of the outgoing HTTP error header.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve a copy of the err_header_out field.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+err_header_out = request~err_header_out
+</pre>
+</td></tr>
+</table>
+</center>
+<p>This is a example of how to set the headers_out field.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+err_header_out = request~err_header_out(new_err_header_out)
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<dl>
+   <dt><b>new_err_header_out</b></dt>
+   <dd>The new value to be assigned to the err_header_out field in the request record.
+       You should only supply this parameter when you want to assign a new value
+       to the err_header_out field.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="filename">Method: filename</a></h2>
+<p>This method can return or set the filename field.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve the filename field.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+filename = request~filename
+</pre>
+</td></tr>
+</table>
+</center>
+<p>This is a example of how to set the filename field.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+filename = request~filename(new_filename)
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<dl>
+   <dt><b>new_filename</b></dt>
+   <dd>The new value to be assigned to the filename field.
+       You should only supply this parameter when you want to assign a new value
+       to the filename field.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="finfo_stmode">Method: finfo_stmode</a></h2>
+<p>This method returns the file status bits of the <i>filename</i> field
+as a hexadecimal string. You can use the ooRexx builtin function
+<b>x2b()</b> to turn it into a bit string for easier examination.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve the file status bits.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+status = request~finfo_stmode
+/* status = '81ed' */
+status = request~finfo_stmode~x2b
+/* status = '1000000111101101' */
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None.</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="handler">Method: handler</a></h2>
+<p>This method can return or set the handler field.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve the handler name.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+handler = request~handler
+</pre>
+</td></tr>
+</table>
+</center>
+<p>This is a example of how to set the handler name field.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+handler = request~handler(new_handler)
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<dl>
+   <dt><b>new_handler</b></dt>
+   <dd>The new value to be assigned to the handler name field.
+       You should only supply this parameter when you want to assign a new value
+       to the handler field.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="header_only">Method: header_only</a></h2>
+<p>Returns .true if the request should only return header information.
+Otherwise it returns .false.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+if request~header_only = .true then do
+   /* perform some processing */
+   end
+else do
+   /* perform other procesing */
+   end
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="headers_in">Method: headers_in</a></h2>
+<p>This method can return a copy of the incoming HTTP headers.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve a copy of the headers_in field.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+headers_in = request~headers_in
+</pre>
+</td></tr>
+</table>
+</center>
+<p>This is a example of how to set the headers_in field.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+headers_in = request~headers_in(new_headers_in)
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<dl>
+   <dt><b>new_headers_in</b></dt>
+   <dd>The new value to be assigned to the headers_in field in the request record.
+       You should only supply this parameter when you want to assign a new value
+       to the headers_in field.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="headers_out">Method: headers_out</a></h2>
+<p>This method can return a copy of the outgoing HTTP headers.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve a copy of the headers_out field.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+headers_out = request~headers_out
+</pre>
+</td></tr>
+</table>
+</center>
+<p>This is a example of how to set the headers_out field.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+headers_out = request~headers_out(new_headers_out)
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<dl>
+   <dt><b>new_headers_out</b></dt>
+   <dd>The new value to be assigned to the headers_out field in the request record.
+       You should only supply this parameter when you want to assign a new value
+       to the headers_out field.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="ismain">Method: ismain</a></h2>
+<p>Returns .true if this is the main request object (the first object in a
+possible chain of request objects). Otherwise it returns .false.</p>
+<p><b>Note:</b> Because of a limitation in the Mod_ooRexx package, this
+method will always return .true.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+if request~main = .true then do
+   /* perform some processing */
+   end
+else do
+   /* perform other procesing */
+   end
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="main">Method: main</a></h2>
+<p>Retrieves the value to be used to create a request object. In some cases the
+Apache server can chain requests together. If the current request is a chained
+request then this method will return a valid pointer to the first request record.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+rxptr = request~main
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="method">Method: method</a></h2>
+<p>This method can return a copy of the HTTP method name or set its value.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve a copy of the method name.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+if request~method = 'POST' then do
+   /* perform some processing */
+   end
+else do
+   /* perform other procesing */
+   end
+</pre>
+</td></tr>
+</table>
+</center>
+<p>This is a example of how to set the method name.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+new_method = request~method('GET')
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<dl>
+   <dt><b>new_method</b></dt>
+   <dd>The new value to be assigned to the method in the request record.
+       You should only supply this parameter when you want to assign a new value
+       to the method.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="method_number">Method: method_number</a></h2>
+<p>This method can return a copy of the HTTP method_number or set its value.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve a copy of the method_number.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+method_number = request~method_number
+</pre>
+</td></tr>
+</table>
+</center>
+<p>This is a example of how to set the method_number.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+method_number = request~method_number(new_method_number)
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<dl>
+   <dt><b>new_method_number</b></dt>
+   <dd>The new value to be assigned to the method_number in the request record.
+       You should only supply this parameter when you want to assign a new value
+       to the method_number.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="next">Method: next</a></h2>
+<p>Retrieves the value to be used to create a request object. In some cases the
+Apache server can chain requests together. If the current request is a chained
+request then this method will return a valid pointer to the next request record.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+rxptr = request~next
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="no_cache">Method: no_cache</a></h2>
+<p>This method can return or the no_cache setting.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve the no_cache setting.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+no_cache = request~no_cache
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None.</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="notes">Method: notes</a></h2>
+<p>This method can return a copy of the notes table.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve a value in the notes table.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+value = request~notes(key)
+</pre>
+</td></tr>
+</table>
+</center>
+<p>This is a example of how to set a value in the notes table.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+value = request~notes(key, new_value)
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<dl>
+   <dt><b>key</b></dt>
+   <dd>The key lookup.</dd>
+   <dt><b>new_value</b></dt>
+   <dd>The new value to be assigned to the entry with the lookup <i>key</i>.
+       If the <i>key</i> does not exist in the table, it will be added.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="path_info">Method: path_info</a></h2>
+<p>This method can return or set the path_info field.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve the path_info field.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+path_info = request~path_info
+</pre>
+</td></tr>
+</table>
+</center>
+<p>This is a example of how to set the path_info field.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+path_info = request~path_info(new_path_info)
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<dl>
+   <dt><b>new_path_info</b></dt>
+   <dd>The new value to be assigned to the path_info field.
+       You should only supply this parameter when you want to assign a new value
+       to the path_info field.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="prev">Method: prev</a></h2>
+<p>Retrieves the value to be used to create a request object. In some cases the
+Apache server can chain requests together. If the current request is a chained
+request then this method will return a valid pointer to the previous request record.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+rxptr = request~prev
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="protocol">Method: protocol</a></h2>
+<p>Returns a copy of the request protocol name.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+protocol = request~protocol
+if protocol = 'HTTP v1.0' then do
+   /* perform some processing */
+   end
+else do
+   /* perform other procesing */
+   end
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="proxyreq">Method: proxyreq</a></h2>
+<p>Returns .true if the request is a proxy request. Otherwise it returns .false.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+if request~proxyreq = .true then do
+   /* perform some processing */
+   end
+else do
+   /* perform other procesing */
+   end
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="server">Method: server</a></h2>
+<p>Retrieves the value to be used to create a server object. See the documentation
+on the server_rec class below.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+sxptr = request~server
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="status">Method: status</a></h2>
+<p>This method can return a copy of the status or set its value.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve a copy of the status.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+status = request~status
+</pre>
+</td></tr>
+</table>
+</center>
+<p>This is a example of how to set the status.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+status = request~status(new_status)
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<dl>
+   <dt><b>new_status</b></dt>
+   <dd>The new value to be assigned to the status in the request record.
+       You should only supply this parameter when you want to assign a new value
+       to the status.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="status_line">Method: status_line</a></h2>
+<p>This method can return a copy of the status line or set its value.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve a copy of the status line.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+status_line = request~status_line
+</pre>
+</td></tr>
+</table>
+</center>
+<p>This is a example of how to set the status line.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+status_line = request~status_line(new_status_line)
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<dl>
+   <dt><b>new_line</b></dt>
+   <dd>The new value to be assigned to the status line in the request record.
+       You should only supply this parameter when you want to assign a new value
+       to the status_line.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="subprocess_env">Method: subprocess_env</a></h2>
+<p>This method can return a copy of the subprocess environment.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve a copy of the subprocess environment.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+subprocess_env = request~subprocess_env
+</pre>
+</td></tr>
+</table>
+</center>
+<p>This is a example of how to set the subprocess environment field.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+subprocess_env = request~subprocess_env(new_subprocess_env)
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<dl>
+   <dt><b>new_subprocess_env</b></dt>
+   <dd>The new value to be assigned to the subprocess_env field in the request record.
+       You should only supply this parameter when you want to assign a new value
+       to the subprocess_env field.</dd>
+</dl>
+
+<br /><br /><br /><br /><br />
+<h2><a name="the_request">Method: the_request</a></h2>
+<p>Returns a copy of the HTTP request.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+http_request = request~the_request
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="uri">Method: uri</a></h2>
+<p>This method returns the path part of the URI.</p>
+<h3>Example</h3>
+<p>This is a example of how to retrieve the uri field.</p>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+uripath = request~uri
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None.</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="user">Method: user</a></h2>
+<p>Retrieves user field in the request record.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+username = request~user
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br />
+<hr />
+<br />
+
+<h1><a name="Connx_rec">Connection_rec Class</a></h1>
+
+<p>The connection record class (connection_rec) supplies an interface to the Apache
+internal connection record. There are methods for retrieving values from the
+internal connection record.
+The methods supplied with the class enforce certian rules about
+how values are retrieved and set in the internal connection record in order that
+the Apache server is always aware of any changes to the connection record.</p>
+
+<p>To instantiate a connection_rec class use the value returned from the request_rec
+method connection. The following is an example of how to create a connection_rec
+object.</p>
+
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+/* establish the request record object */
+rxptr = arg(1)
+connx = .request_rec~new(rxptr~connection)
+
+/* now establish the connection record object */
+connx = .connection_rec~new(request~connection)
+</pre>
+</td></tr>
+</table>
+</center>
+
+<p>The methods for the connection_rec class are documented below.</p>
+
+<br /><br />
+<h2>Connection_rec Method Table of Contents</h2>
+<a href="#aborted">aborted</a> - Get the field
+
+<br /><br /><br /><br /><br />
+<h2><a name="aborted">Method: aborted</a></h2>
+<p>Retrieves aborted field in the connection record.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+abort = connx~aborted
+/* abort is now set to either .true or .false */
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br />
+<hr />
+<br />
+
+<h1><a name="Server_rec">Server_rec Class</a></h1>
+
+<p>The server record class (connection_rec) supplies an interface to the Apache
+internal server record. There are methods for retrieving values from the
+internal server record.
+The methods supplied with the class enforce certian rules about
+how values are retrieved and set in the internal server record in order that
+the Apache server is always aware of any changes to the server record.</p>
+
+<p>To instantiate a server_rec class use the value returned from the request_rec
+method server. The following is an example of how to create a server_rec
+object.</p>
+
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+/* establish the request record object */
+rxptr = arg(1)
+request = .request_rec~new(rxptr)
+
+/* now establish the server record object */
+srvr = .server_rec~new(request~server)
+</pre>
+</td></tr>
+</table>
+</center>
+
+<p>The methods for the server_rec class are documented below.</p>
+
+<br /><br />
+<h2>Server_rec Method Table of Contents</h2>
+<a href="#admin">admin</a> - Get the field
+<br /><a href="#hostname">hostname</a> - Get the field
+<br /><a href="#is_virtual">is_virtual</a> - Get the field
+<br /><a href="#port">port</a> - Get the field
+
+<br /><br /><br /><br /><br />
+<h2><a name="admin">Method: admin</a></h2>
+<p>Retrieves admin field in the server record.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+admin_email_addr = srvr~admin
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="hostname">Method: hostname</a></h2>
+<p>Retrieves hostname field in the server record.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+srvr_host_name = srvr~hostname
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="is_virtual">Method: is_virtual</a></h2>
+<p>Retrieves is_virtual field in the server record.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+virtual_srvr = srvr~is_virtual
+/* if virtual_srvr is set to .true then the request was to a virtual server */
+/* if virtual_srvr is set to .false then the request was to the main server */
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br /><br /><br /><br /><br />
+<h2><a name="port">Method: port</a></h2>
+<p>Retrieves port field in the server record.</p>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+port_num = srvr~port
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Method Parameters</h3>
+<p>None</p>
+
+<br />
+<table border="0" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="middle">
+  <a href="http://validator.w3.org/check/referer">
+  <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!"
+       height="31" width="88" />
+  </a>
+</td>
+<td valign="middle">
+<img src="./pb_apache_oorexx.gif" alt="Powered by Rexx" />
+<br />Copyright (C) W. David Ashley 2004-2008. All Rights Reserved.
+<br />Copyright (C) Rexx Language Association 2009-2009. All Rights Reserved.
+</td></tr>
+</table>
+
+</body>
+</html>

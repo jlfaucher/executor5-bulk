@@ -1,0 +1,567 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Mod_ooRexx Configuration Apache Directives</title>
+</head>
+<body>
+
+<center><h1>Mod_ooRexx Configuration Apache Directives</h1></center>
+
+<p>This section lists the configuration directives the Mod_ooRexx Package makes
+available. Most of the directives install handlers, but there are a few that
+affect the ooRexx execution engine in other ways.</p>
+
+<br /><br />
+<h2>Table of Contents</h2>
+<a href="#RexxAccessHandler">
+RexxAccessHandler</a> - Set the request access phase handler
+<br /><a href="#RexxAuthenHandler">
+RexxAuthenHandler</a> - Set the request authentication phase handler
+<br /><a href="#RexxAuthzHandler">
+RexxAuthzHandler</a> - Set the request authorization phase handler
+<br /><a href="#RexxFixupHandler">
+RexxFixupHandler</a> - Set the request fixup phase handler
+<br /><a href="#RexxHandler">
+RexxHandler</a> - Set the request content phase handler
+<br /><a href="#RexxHeaderParserHandler">
+RexxHeaderParserHandler</a> - Set the request header/parser phase handler
+<br /><a href="#RexxLogHandler">
+RexxLogHandler</a> - Set the request log phase handler
+<br /><a href="#RexxPostReadRequestHandler">
+RexxPostReadRequestHandler</a> - Set the request post read phase handler
+<br /><a href="#RexxRspCompiler">
+RexxRspCompiler</a> - Set the RSP compiler Rexx script
+<br /><a href="#RexxSetVar">
+RexxSetVar</a> - Set a Rexx variable for a handler
+<br /><a href="#RexxTempFileNameTemplate">
+RexxTempFileNameTemplate</a> - Set a Rexx temporary file name template
+<br /><a href="#RexxTransHandler">
+RexxTransHandler</a> - Set the request uri translation phase handler
+<br /><a href="#RexxTypeHandler">
+RexxTypeHandler</a> - Set the request MIME type handler
+
+<br /><br /><br /><br /><br />
+<h2><a name="RexxAccessHandler">RexxAccessHandler</a></h2>
+<p>The <i>access_checker</i> phase is the first of three phases involved in
+authentication and authorization.</p>
+<p>This handler is designed to do simple access control based on the browser's
+ip address or any other method the programmer wishes to apply that have nothing to
+do with the user's identity.</p>
+<p>This directive can appear anywhere including <i>&lt;Directory&gt;</i>,
+<i>&lt;Location&gt;</i>,
+<i>&lt;Files&gt;</i> sections, or <i>.htaccess</i> files.</p>
+<h3>Directive Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxAccessHandler rexxprocname
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Directive Parameters</h3>
+<dl>
+   <dt><b>rexxprocname</b></dt>
+   <dd>The name of the ooRexx procedure file to be executed for this handler.
+       If the <i>rexxprocname</i> contains embedded blanks then it should
+       be enclosed within a set of double-quotes(").</dd>
+</dl>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxAccessHandler "c:/handlers/acshandlr.rex"
+</pre>
+</td></tr>
+</table>
+</center>
+
+<br /><br /><br /><br /><br />
+<h2><a name="RexxAuthenHandler">RexxAuthenHandler</a></h2>
+<p>The <i>authentication</i> phase is called when the file is password protected.</p>
+<p>This handler checks a user's identity and credentials, usually by checking the
+username and password against a database.</p>
+<p>This directive can appear anywhere including <i>&lt;Directory&gt;</i>,
+<i>&lt;Location&gt;</i>,
+<i>&lt;Files&gt;</i> sections, or <i>.htaccess</i> files.</p>
+<h3>Directive Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxAuthenHandler rexxprocname
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Directive Parameters</h3>
+<dl>
+   <dt><b>rexxprocname</b></dt>
+   <dd>The name of the ooRexx procedure file to be executed for this handler.
+       If the <i>rexxprocname</i> contains embedded blanks then it should
+       be enclosed within a set of double-quotes(").</dd>
+</dl>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxAuthenHandler "c:/handlers/athhandlr.rex"
+</pre>
+</td></tr>
+</table>
+</center>
+
+<br /><br /><br /><br /><br />
+<h2><a name="RexxAuthzHandler">RexxAuthzHandler</a></h2>
+<p>Once the user's identity has been verified in the <i>authentication</i> phase,
+this handler determines whether the the user is authorized the requested URI.</p>
+<p>This directive can appear anywhere including <i>&lt;Directory&gt;</i>,
+<i>&lt;Location&gt;</i>,
+<i>&lt;Files&gt;</i> sections, or <i>.htaccess</i> files.</p>
+<h3>Directive Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxAuthzHandler rexxprocname
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Directive Parameters</h3>
+<dl>
+   <dt><b>rexxprocname</b></dt>
+   <dd>The name of the ooRexx procedure file to be executed for this handler.
+       If the <i>rexxprocname</i> contains embedded blanks then it should
+       be enclosed within a set of double-quotes(").</dd>
+</dl>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxAuthzHandler "c:/handlers/athhandlr.rex"
+</pre>
+</td></tr>
+</table>
+</center>
+
+<br /><br /><br /><br /><br />
+<h2><a name="RexxFixupHandler">RexxFixupHandler</a></h2>
+<p>After the <i>type_checker</i> phase but before content handling the <i>fixup</i>
+is called. Here you can make any last minute changes to the transaction before
+the response document is sent.</p>
+<p>This directive can appear anywhere including <i>&lt;Directory&gt;</i>,
+<i>&lt;Location&gt;</i>,
+<i>&lt;Files&gt;</i> sections, or <i>.htaccess</i> files.</p>
+<h3>Directive Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxFixupHandler rexxprocname
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Directive Parameters</h3>
+<dl>
+   <dt><b>rexxprocname</b></dt>
+   <dd>The name of the ooRexx procedure file to be executed for this handler.
+       If the <i>rexxprocname</i> contains embedded blanks then it should
+       be enclosed within a set of double-quotes(").</dd>
+</dl>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxFixupHandler "c:/handlers/fixhandlr.rex"
+</pre>
+</td></tr>
+</table>
+</center>
+
+<br /><br /><br /><br /><br />
+<h2><a name="RexxHandler">RexxHandler</a></h2>
+<p>This handler is used to provide a special content handler for the transaction
+response. Usually used with the Apache
+<i>SetHandler</i> or <i>AddHandler</i> directive.</p>
+<p>This directive can appear anywhere including <i>&lt;Directory&gt;</i>,
+<i>&lt;Location&gt;</i>,
+<i>&lt;Files&gt;</i> sections, or <i>.htaccess</i> files.</p>
+<h3>Directive Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxHandler rexxprocname
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Directive Parameters</h3>
+<dl>
+   <dt><b>rexxprocname</b></dt>
+   <dd>The name of the ooRexx procedure file to be executed for this handler.
+       If the <i>rexxprocname</i> contains embedded blanks then it should
+       be enclosed within a set of double-quotes(").</dd>
+</dl>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxHandler "c:/handlers/cnthandlr.rex"
+</pre>
+</td></tr>
+</table>
+</center>
+
+<br /><br /><br /><br /><br />
+<h2><a name="RexxHeaderParserHandler">RexxHeaderParserHandler</a></h2>
+<p>After the URI translation phase Apache give you another chance to examine the
+request headers and take special actions in the <i>header_parser</i> phase.</p>
+<p>This handler phase is free to change request fields in the HTTP header or
+abort the transaction entirely.</p>
+<p>This directive can appear in the <i>&lt;Directory&gt;</i>,
+<i>&lt;Location&gt;</i>,
+<i>&lt;Files&gt;</i> sections, or <i>.htaccess</i> files.</p>
+<h3>Directive Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxHeaderParserHandler rexxprocname
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Directive Parameters</h3>
+<dl>
+   <dt><b>rexxprocname</b></dt>
+   <dd>The name of the ooRexx procedure file to be executed for this handler.
+       If the <i>rexxprocname</i> contains embedded blanks then it should
+       be enclosed within a set of double-quotes(").</dd>
+</dl>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxHeaderParserHandler "c:/handlers/hdphandlr.rex"
+</pre>
+</td></tr>
+</table>
+</center>
+
+<br /><br /><br /><br /><br />
+<h2><a name="RexxLogHandler">RexxLogHandler</a></h2>
+<p>This phase is called after the transaction is either aborted or completed.
+You can perform any special logging for the transaction during this phase.</p>
+<p>This directive can appear in the <i>&lt;Directory&gt;</i>,
+<i>&lt;Location&gt;</i>,
+<i>&lt;Files&gt;</i> sections, or <i>.htaccess</i> files.</p>
+<h3>Directive Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxLogHandler rexxprocname
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Directive Parameters</h3>
+<dl>
+   <dt><b>rexxprocname</b></dt>
+   <dd>The name of the ooRexx procedure file to be executed for this handler.
+       If the <i>rexxprocname</i> contains embedded blanks then it should
+       be enclosed within a set of double-quotes(").</dd>
+</dl>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxLogHandler "c:/handlers/loghandlr.rex"
+</pre>
+</td></tr>
+</table>
+</center>
+
+<br /><br /><br /><br /><br />
+<h2><a name="RexxPostReadRequestHandler">RexxPostReadRequestHandler</a></h2>
+<p>The <i>post_read_request</i> handler is called every time an Apache process
+receives an incomming request. At the point this handler is invoked the incomming
+request's data has been read and the HTTP header fields have been parsed, but the
+server has not translated the URI to a filename.</p>
+<p>This handler phase is usually used to perform processing which must be done
+for each incomming transaction</p>
+<p>This directive can appear in the main configuration file and within virtual
+host sections, but not within <i>&lt;Directory&gt;</i>, <i>&lt;Location&gt;</i>,
+<i>&lt;Files&gt;</i> sections, or <i>.htaccess</i> files.</p>
+<h3>Directive Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxPostReadRequestHandler rexxprocname
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Directive Parameters</h3>
+<dl>
+   <dt><b>rexxprocname</b></dt>
+   <dd>The name of the ooRexx procedure file to be executed for this handler.
+       If the <i>rexxprocname</i> contains embedded blanks then it should
+       be enclosed within a set of double-quotes(").</dd>
+</dl>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxPostReadRequestHandler "c:/handlers/prrhandlr.rex"
+</pre>
+</td></tr>
+</table>
+</center>
+
+<br /><br /><br /><br /><br />
+<h2><a name="RexxRspCompiler">RexxRspCompiler</a></h2>
+<p>This specifies the Rexx script to be used to compile an RSP file into a
+Rexx program.</p>
+<p>You only need to specify this directive if you want to override the
+default location (in the PATH) or the name (rspcomp.rex).</p>
+<p>This directive can appear anywhere including <i>&lt;Directory&gt;</i>,
+<i>&lt;Location&gt;</i>,
+<i>&lt;Files&gt;</i> sections, or <i>.htaccess</i> files.</p>
+<h3>Directive Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxRspCompiler rspcomp
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Directive Parameters</h3>
+<dl>
+   <dt><b>rspcomp</b></dt>
+   <dd>The name of the ooRexx procedure file to be used to create the temporary
+       Rexx program version of an RSP file. If this is specified without a
+       leading directory path specification
+       then Rexx will try to locate the script in the current PATH.
+       <br /><br />If the directive is not found in Apache's configuration file
+       then Mod_ooRexx will look for the file "rspcomp.rex" in the PATH.</dd>
+</dl>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxRspCompiler "c:/WINNT/rspcomp.rex"
+</pre>
+</td></tr>
+</table>
+</center>
+
+<br /><br /><br /><br /><br />
+<h2><a name="RexxSetVar">RexxSetVar</a></h2>
+<p>Initializes a Rexx variable prior to the handler being executed.
+This directive is only valid when used with one of the Mod_ooRexx handler
+directives.</p>
+<h3>Directive Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxSetVar varname varvalue
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Directive Parameters</h3>
+<dl>
+   <dt><b>varname</b></dt>
+   <dd>The name of the ooRexx variable to be initialized.</dd>
+   <dt><b>varvalue</b></dt>
+   <dd>The value to be assigned to the Rexx variable. If the value contains
+       embedded blanks then it should be enclosed within a set of
+       double-quotes(").</dd>
+</dl>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxSetVar config_file "c:/Apache/my_app/conf.txt"
+</pre>
+</td></tr>
+</table>
+</center>
+
+<br /><br /><br /><br /><br />
+<h2><a name="RexxTempFileNameTemplate">RexxTempFileNameTemplate</a></h2>
+<p>This directive specifies the location and pattern to be used when the RSP
+compilation process creates temporary files. This directive is
+<b>required</b> when the Apache document tree contains RSP files.</p>
+<p>This directive can appear anywhere including <i>&lt;Directory&gt;</i>,
+<i>&lt;Location&gt;</i>,
+<i>&lt;Files&gt;</i> sections, or <i>.htaccess</i> files.</p>
+<h3>Directive Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxTempFileNameTemplate location_template
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Directive Parameters</h3>
+<dl>
+   <dt><b>location_template</b></dt>
+   <dd>This template is used by Mod_ooRexx to create a temporary file to hold
+       the compiled version of the RSP file. The format of this template
+       should conform to the Rexx rexxutil library external function
+       SysTempFileName(). See your Rexx reference documentation for
+       more information on the required format of the template.
+       The '?' character is the only valid filter character for this directive
+       and the template can contain a maximum of 5 filter characters.
+       <p>Be sure that Apache has write access to the location you specify.</p>
+       </dd>
+</dl>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxTempFileNameTemplate "c:/temp/execrsp?????.rex"
+</pre>
+</td></tr>
+</table>
+</center>
+
+<br /><br /><br /><br /><br />
+<h2><a name="RexxTransHandler">RexxTransHandler</a></h2>
+<p>The <i>uri_translate</i> handler is called after Apache has parsed out the
+request. This handler is responsible for translating the partial URI into filename.
+The handler can also alter the URI itself or to change the request method.</p>
+<p>This handler phase is usually used to recognize and handle proxy requests.</p>
+<p>This directive can appear in the main configuration file and within virtual
+host sections, but not within <i>&lt;Directory&gt;</i>, <i>&lt;Location&gt;</i>,
+<i>&lt;Files&gt;</i> sections, or <i>.htaccess</i> files.</p>
+<h3>Directive Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxTransHandler rexxprocname
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Directive Parameters</h3>
+<dl>
+   <dt><b>rexxprocname</b></dt>
+   <dd>The name of the ooRexx procedure file to be executed for this handler.
+       If the <i>rexxprocname</i> contains embedded blanks then it should
+       be enclosed within a set of double-quotes(").</dd>
+</dl>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxTransHandler "c:/handlers/transhandlr.rex"
+</pre>
+</td></tr>
+</table>
+</center>
+
+<br /><br /><br /><br /><br />
+<h2><a name="RexxTypeHandler">RexxTypeHandler</a></h2>
+<p>After all the access and authentication phases, the <i>type_checker</i> phase
+assigns a MIME type to the requested document.</p>
+<p>This directive can appear anywhere including <i>&lt;Directory&gt;</i>,
+<i>&lt;Location&gt;</i>,
+<i>&lt;Files&gt;</i> sections, or <i>.htaccess</i> files.</p>
+<h3>Directive Prototype</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxTypeHandler rexxprocname
+</pre>
+</td></tr>
+</table>
+</center>
+<h3>Directive Parameters</h3>
+<dl>
+   <dt><b>rexxprocname</b></dt>
+   <dd>The name of the ooRexx procedure file to be executed for this handler.
+       If the <i>rexxprocname</i> contains embedded blanks then it should
+       be enclosed within a set of double-quotes(").</dd>
+</dl>
+<h3>Example</h3>
+<br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+RexxTypeHandler "c:/handlers/typhandlr.rex"
+</pre>
+</td></tr>
+</table>
+</center>
+
+<br />
+<table border="0" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="middle">
+  <a href="http://validator.w3.org/check/referer">
+  <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!"
+       height="31" width="88" />
+  </a>
+</td>
+<td valign="middle">
+<img src="./pb_apache_oorexx.gif" alt="Powered by Rexx" />
+<br />Copyright (C) W. David Ashley 2004-2008. All Rights Reserved.
+<br />Copyright (C) Rexx Language Association 2009-2009. All Rights Reserved.
+</td></tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+#-- Makefile -------------------------------------------------------------------
+#
+# Author:      W. David Ashley
+#
+# Description: Makefile for mod_oorexx.dll using Microsoft Visual C++
+#
+# Copyright (C) W. David Ashley 2004-2009. All Rights Reserved.
+#
+# This software is subject to the terms of the Commom Public License. You
+# must accept the terms of this license to use this software. Refer to
+# the file CPLv1.0.htm included in this package for more information.
+#
+# The program is provided "as is" without any warranty express or implied,
+# including the warranty of non-infringement and the implied warranties of
+# merchantibility and fitness for a particular purpose.
+#
+# Notes:
+#
+#-------------------------------------------------------------------------------
+
+
+#-------------------------------------------------------------------------------
+#
+#  Start user modification section
+#
+#-------------------------------------------------------------------------------
+
+# Set the base Apache path.
+AP_PATH     = "c:\Program Files\Apache Software Foundation\Apache2.2"
+
+# Set the base Rexx path.
+RX_PATH     = "c:\Program Files\ooRexx"
+
+#-------------------------------------------------------------------------------
+#
+#  End user modification section
+#
+#-------------------------------------------------------------------------------
+
+LIBS          = $(AP_PATH)\lib\libhttpd.lib \
+                $(AP_PATH)\lib\libapr-1.lib \
+                $(RX_PATH)\api\rexx.lib \
+                $(RX_PATH)\api\rexxapi.lib
+INCLUDES    = /I $(AP_PATH)\include \
+              /I $(RX_PATH)\api
+DEFINES     = /DHAVE_RexxWaitForTermination
+GCFLAGS       = /nologo /c /GX /MT /W1 /D_X86=1 $(DEFINES) \
+                /D_CONSOLE /DWIN32 $(INCLUDES)
+GLFLAGS       = /nologo /DLL /machine:IX86
+GLBDEP        = mod_oorexx.h makefile.nt
+OBJS          = mod_oorexx.obj dirconfig.obj rxfuncs.obj handlers.obj
+
+all           : mod_rexx.dll
+
+mod_oorexx.dll  : $(OBJS)
+                link $(OBJS) $(GLFLAGS) $(LIBS) /OUT:$(@R).dll /implib:$(@R).lib /PDB:$(@R).pdb
+
+mod_oorexx.obj  : $(@R).cpp $(GLBDEP)
+                cl $(GCFLAGS) $(@R).cpp
+
+dirconfig.obj : $(@R).cpp $(GLBDEP)
+                cl $(GCFLAGS) $(@R).cpp
+
+rxfuncs.obj   : $(@R).cpp $(GLBDEP)
+                cl $(GCFLAGS) $(@R).cpp
+
+handlers.obj  : $(@R).cpp $(GLBDEP)
+                cl $(GCFLAGS) $(@R).cpp
+
+cleanall      :
+                del *.obj *.pdb *.idb *.ilk *.exp vc6?.* mod_rexx.dll mod_rexx.lib
+

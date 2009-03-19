@@ -1,0 +1,191 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Available ooRexx Variables</title>
+</head>
+<body>
+<center><h1>Available ooRexx Variables</h1></center>
+
+<p>The Mod_ooRexx interface constructs some ooRexx variables
+prior to the start of the ooRexx program. Others are constructed during a call
+to an external ooRexx function (these are noted in their descriptions).
+Note that if a variable has no valid value then it is assigned a zero-length
+string.</p>
+
+<p>The program TEST.REX is a short example of what can be done with the
+Mod_ooRexx interface.
+All available ooRexx variables set by the interface start with 'WWW' and are used in
+the TEST.REX program.</p>
+
+<br /><table border="1">
+<tr><th>ooRexx Variable</th><th>Contents</th></tr>
+
+<tr><td>WWWARGS.0</td>
+<td>This is the number of arguments passed to the ooRexx program by a GET or PUT
+HTTP request.
+<p>Note: This variable is only valid after a call to the ooRexx external function
+WWWGetArgs.</p>
+</td></tr>
+
+<tr><td>WWWARGS.n.!NAME and <br />WWWARGS.n.!VALUE</td>
+<td>This is the list of arguments passed to the ooRexx program. If this is a GET
+request then this is the list of QUERY_STRING name=value pairs in the URI. If
+this is a POST request then this is the list of POST variable name=value pairs.
+<p>In addition, the array is also available through ooRexx variable indirection i.e.
+if WWWARGS.1.!NAME = 'hiddenfield' then WWWARGS.'hiddenfield' = WWWARGS.1.!VALUE.
+Note that the case of the variable in the HTML document and the case of the
+ooRexx variable stem tail are significant.</p>
+<p>Note: This variable stem array is only valid after a call to the ooRexx external
+function WWWGetArgs.</p>
+</td></tr>
+
+<tr><td>WWWAUTH_TYPE</td>
+<td>This is the authentication method.</td></tr>
+
+<tr><td>WWWCONTENT_LENGTH</td>
+<td>This is the length of the data buffer sent by the client.</td></tr>
+
+<tr><td>WWWCONTENT_TYPE</td>
+<td>This is content type of the passed data.</td></tr>
+
+<tr><td>WWWCOOKIES.0</td>
+<td>This is the number of cookies passed to the ooRexx program.
+<p>Note: This variable is only valid after a call to the ooRexx external function
+WWWGetCookies.</p>
+</td></tr>
+
+<tr><td>WWWCOOKIES.n.!NAME and <br />WWWCOOKIES.n.!VALUE</td>
+<td>This is the list name=value cookie pairs passed to the ooRexx program.
+<p>In addition, the array is also available through ooRexx variable indirection i.e.
+if WWWCOOKIES.1.!NAME = 'SESSION_ID' then
+WWWCOOKIES.'sessionid' = WWWCOOKIES.1.!VALUE.
+Note that the case of the variable in the cookie and the case of the
+ooRexx variable stem tail are significant.</p>
+<p>Note: This variable stem array is only valid after a call to the ooRexx external
+function WWWGetCookies.</p>
+</td></tr>
+
+<tr><td>WWWDEFAULT_TYPE</td>
+<td>This is the value of the <i>DefaultType</i> directive or
+<b>text/plain</b> if not configured.</td></tr>
+
+<tr><td>WWWFILENAME</td>
+<td>This is the fully qualified path and filename which has been translated from
+the URI passed to the server.</td></tr>
+
+<tr><td>WWWFNAMETEMPLATE</td>
+<td>This is the temporary filename template that will be passed to Mod_ooRexx.
+It specifies the fully qualified path and filename template
+for producing a temporary ooRexx file at a specified location. Apache
+needs to have write access to the specified file and directory.
+<p>The format and rules for the template are the same as for the ooRexx external
+function SysTempFileName(). See the ooRexx Reference manual for more
+information.</p></td></tr>
+
+<tr><td>WWWGATEWAY_INTERGACE</td>
+<td>This is the name and version of the gateway interface.</td></tr>
+
+<tr><td>WWWHOSTNAME</td>
+<td>This is the hostname in the URI.</td></tr>
+
+<tr><td>WWWHTTP_USER_ACCEPT</td>
+<td>This is a list of the Mime types the browser client will accept.</td></tr>
+
+<tr><td>WWWHTTP_USER_AGENT</td>
+<td>This is the browser type and version used by the client.</td></tr>
+
+<tr><td>WWWIS_MAIN_REQUEST</td>
+<td><b>1</b> if this is an initial request or for requests triggered by internal
+redirects, <b>0</b> for subrequests.
+<br /><b>Note:</b> Because of a limitation imposed in the Mod_ooRexx package,
+the value of this variable will always be <b>1</b>.</td></tr>
+
+<tr><td>WWWPATH_INFO</td>
+<td>This is the filename of the script.</td></tr>
+
+<tr><td>WWWPATH_TRANSLATED</td>
+<td>This is the fully qualified path and filename of the script.</td></tr>
+
+<tr><td>WWWPOST_STRING</td>
+<td>If the WWWREQUESTTYPE is "POST" then this is the unparsed name/value pairs
+read from the browser. Otherwise this variable is a zero-length string.
+<p>Note: This variable is only valid after a call to the ooRexx external
+function WWWGetArgs.</p>
+</td></tr>
+
+<tr><td>WWWQUERY_STRING</td>
+<td>If the WWWREQUESTTYPE is "GET" then this is the unparsed
+QUERY_STRING portion of the URI.
+Otherwise this variable is a zero-length string.</td></tr>
+
+<tr><td>WWWREMOTE_ADDR</td>
+<td>This is the TCP/IP address of the requesting host.</td></tr>
+
+<tr><td>WWWREMOTE_HOST</td>
+<td>This is the DNS name of the requesting host (if available).</td></tr>
+
+<tr><td>WWWREMOTE_IDENT</td>
+<td>This is the remote user name.</td></tr>
+
+<tr><td>WWWREMOTE_USER</td>
+<td>This is the authenticated username.</td></tr>
+
+<tr><td>WWWREQUEST_METHOD</td>
+<td>This is the request method, usually either "GET" or "POST".</td></tr>
+
+<tr><td>WWWRSPCOMPILER</td>
+<td>This is the name of the ooRexx RSP compiler program.</td></tr>
+
+<tr><td>WWWSCRIPT_NAME</td>
+<td>This is the fully qualified URI path and name of the script. If an
+RSP file was requested this is the fully qualified URI path and name
+of the RSP file.</td></tr>
+
+<tr><td>WWWSERVER_NAME</td>
+<td>This is the host name of the server.</td></tr>
+
+<tr><td>WWWSERVER_ROOT</td>
+<td>This is the HTTP server's root path.</td></tr>
+
+<tr><td>WWWSERVER_PORT</td>
+<td>This is the server's port number.</td></tr>
+
+<tr><td>WWWSERVER_PROTOCOL</td>
+<td>This is the request HTTP protocol version.</td></tr>
+
+<tr><td>WWWSERVER_SOFTWARE</td>
+<td>This is the name and version of the WWW server software.</td></tr>
+
+<tr><td>WWWUNPARSEDURI</td>
+<td>This is the unparsed portion of the request URI.</td></tr>
+
+<tr><td>WWWURI</td>
+<td>This is the entire request URI.</td></tr>
+</table>
+
+<p>In addition, you can create additional initialized ooRexx variables by using
+the <b>RexxSetVar</b> directive in the httpd.conf file.</p>
+<p>You can include as many <b>RexxSetVar</b> directives as you need.
+They will all be initialized prior to the start of the ooRexx script.
+Additional information can be found in the
+<a href="./RexxDirs.html#RexxSetVar">RexxSetVar</a>
+directive documentation.</p>
+
+<br />
+<table border="0" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="middle">
+  <a href="http://validator.w3.org/check/referer">
+  <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!"
+       height="31" width="88" />
+  </a>
+</td>
+<td valign="middle">
+<img src="./pb_apache_oorexx.gif" alt="Powered by Rexx" />
+<br />Copyright (C) W. David Ashley 2004-2008. All Rights Reserved.
+<br />Copyright (C) Rexx Language Association 2009-2009. All Rights Reserved.
+</td></tr>
+</table>
+
+</body>
+</html>

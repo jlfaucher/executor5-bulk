@@ -1,0 +1,398 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>ooRexx Server Pages</title>
+</head>
+<body bgcolor="#FFFFFF">
+
+<center>
+<h1>ooRexx Server Pages</h1>
+</center>
+
+<br /><br />
+<h2>Table of Contents</h2>
+<a href="#Intro">
+Introduction to ooRexx Server Pages</a>
+<br /><a href="#HowItWorks">
+How It Works</a>
+<br /><a href="#Directives">
+Mod_ooRexx RSP Directives</a>
+<br /><a href="#Syntax">
+RSP Syntax Rules</a>
+<br /><a href="#RSPCOMP">
+The RSP Compiler</a>
+<br /><a href="#Examples">
+Examples</a>
+
+<br /><br />
+<hr />
+<br />
+
+<h2><a name="Intro">
+Introduction to ooRexx Server Pages</a></h2>
+<p>ooRexx Server Pages (RSPs) are similar to Java Server Pages and PHP pages.
+RSPs allow the programmer to embed ooRexx code into an HTML page. This allows
+HTML pages to be created dynamically at run time. The following is a small
+example RSP.</p>
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+&lt;html&gt;
+&lt;body&gt;
+&lt;center&gt;&lt;h1&gt;RSP Test Page&lt;/h1&gt;&lt;/center&gt;
+&lt;p&gt;This is some straight HTML text in the RSP file.
+&lt;p&gt;The current date and time is
+&lt;?rexx
+/* the following is a ooRexx statement */
+say date() time()
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</td></tr>
+</table>
+</center>
+<p>RSP-enabled web pages are created just like standard HTML pages using the
+editor of your choice.</p>
+<p>ooRexx statements are delimited from HTML lines in an RSP using special tags.
+There are three available delimiters.</p>
+<h3>Short Form Delimiter</h3>
+<p>The easy and shortest form of the ooRexx statement delimiters is the
+<b>&lt;?rexx</b> and <b>?&gt;</b> form.</p>
+<p>Here is an example.</p>
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+&lt;p&gt;The current date and time is
+&lt;?rexx
+/* the following is a ooRexx statement */
+say date() time()
+?&gt;
+</pre>
+</td></tr>
+</table>
+</center>
+<p>Note that the <b>&lt;?rexx</b> and <b>?&gt;</b> parts of the tag must each
+be placed on lines by themselves in the RSP file.</p>
+<h3>Long Delimiter Form</h3>
+<p>The long delimiter form uses the standard HTML <b>&lt;script&gt;</b> tag
+to delimit ooRexx statements.</p>
+<p>Here is an example.</p>
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+&lt;p&gt;The current date and time is
+&lt;script type="rexx"&gt;
+/* the following is a ooRexx statement */
+say date() time()
+&lt;/script&gt;
+</pre>
+</td></tr>
+</table>
+</center>
+<p>Note that the <b>&lt;script&gt;</b> and <b>&lt;/script&gt;</b>
+tags must be placed on lines by themselves in the RSP file.</p>
+<h3>Depricated Long Delimiter Form</h3>
+<p>The long delimiter form can also use the depricated form of the
+HTML <b>&lt;script&gt;</b> tag to delimit ooRexx Statements. You should
+note that this form is depricated in the HTML v4.0 specifications.</p>
+<p>Here is an example.</p>
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+&lt;p&gt;The current date and time is
+&lt;script language="rexx"&gt;
+/* the following is a ooRexx statement */
+say date() time()
+&lt;/script&gt;
+</pre>
+</td></tr>
+</table>
+</center>
+<p>Note that the <b>&lt;script&gt;</b> and <b>&lt;/script&gt;</b>
+tags must be placed on lines by themselves in the RSP file.</p>
+
+<br /><br />
+<hr />
+<br />
+
+<h2><a name="HowItWorks">
+How It Works</a></h2>
+<p>When a request is made to Apache and Mod_ooRexx for an RSP-enabled file the
+request is processed in four stages by Mod_ooRexx and
+a ooRexx program/script (the RSP compiler).</p>
+<ol>
+<li>Mod_ooRexx creates a temporary file for the compiled version of the
+RSP file.</li>
+<li>RSPCOMP.REX (the RSP compiler)
+is called to compile the RSP file into a real ooRexx
+program and place it in the temporary file.</li>
+<li>Mod_ooRexx calls the newly created ooRexx program.</li>
+<li>Mod_ooRexx removes the temporary file.</li>
+</ol>
+<p>The compile process happens very fast and the execution of the ooRexx
+program created by the process is only limited to the actions it invokes.
+Typically the created program also executes quickly provided it does not
+access databases or other external environments.</p>
+<p>See the section <a href="#RSPCOMP">The RSP Compiler</a> for details on
+how the compiler works and other tasks the compiler can perform for you.</p>
+
+<br /><br />
+<hr />
+<br />
+
+<h2><a name="Directives">
+Mod_ooRexx RSP Directives</a></h2>
+<p>ooRexx Server Page support is enabled in Apache using Directives in the
+httpd.conf file. In addition to the LoadModule
+statement(s) which load the Mod_ooRexx module into Apache at runtime, there are
+two other required Directives.</p>
+<pre>
+AddType application/x-httpd-rexx-rsp .rsp
+RexxTempFileNameTemplate "c:\xxx?????.rex"
+</pre>
+<p>The following specify all the directives concerning RSP processing.</p>
+
+<h3>AddType Directive</h3>
+<p>The AddType directive adds a new MIME-type to Apache and associates all
+files that have the specified extension to that type. When a user requests a
+file from Apache that has that extension it will pass control to Mod_ooRexx
+which will then process the file as an RSP-enabled file.</p>
+<p>The AddType directive can have multiple file extensions associated with it so
+if you do not like using the .rsp extension or you would like additional
+extensions to be treated as RSP files you can just add them on to the end of
+the directive. An example might be:</p>
+<pre>
+AddType application/x-httpd-rexx-rsp .rsp .rxsp .rxhtml
+</pre>
+<p>This directive is required to support RSP execution.</p>
+
+<h3>RexxTempFileNameTemplate Directive</h3>
+<p>The <a href="./RexxDirs.html#RexxTempFileNameTemplate">
+RexxTempFileNameTemplate</a> directive specifies the location and a template
+for the filename for use when Mod_ooRexx creates a temporary file to hold the
+compiled version of the RSP file. This template must be in a form acceptable
+to the rexxutil external API SysTempFileName (although the SysTempFileName()
+external function is not used during the RSP compile process).
+See your rexxutil library documentation for more information on the
+SysTempFileName external function argument requirements.</p>
+<p>Be sure that Apache has write access to the location you specify in the
+RexxTempFileNameTemplate directive.</p>
+<p>An example for Windows might be:</p>
+<pre>
+RexxTempFileNameTemplate "c:\xxx?????.rex"
+</pre>
+<p>Or for Unix it might be:</p>
+<pre>
+RexxTempFileNameTemplate "/tmp/xxx?????.rex"
+</pre>
+<p>This directive is required to support RSP execution.</p>
+
+<h3>RexxRspCompiler Directive</h3>
+<p>The <a href="./RexxDirs.html#RexxRspCompiler">
+RexxRspCompiler</a> directive specifies the name and location of the ooRexx
+program/script which is responsible for compiling the RSP file into a
+real ooRexx program/script. That script is then executed by Mod_ooRexx.</p>
+<p>This directive is optional. The default is "rspcomp.rex" and Mod_ooRexx
+expects that file to be in Apache's <b>PATH</b>. However, it is recommended
+that you place "rspcomp.rex" in a location not in the <b>PATH</b> so that the
+program is not accessible to anyone but Apache. An example might be:</p>
+<pre>
+RexxRspCompiler "c:\rspfiles\rspcomp.rsp"
+</pre>
+
+<br /><br />
+<hr />
+<br />
+
+<h2><a name="Syntax">
+RSP Syntax Rules</a></h2>
+<p>The syntax rules for RSP files are very strict. This is due to the
+parser (rspcomp.rex) used to scan the RSP file and the syntax restrictions
+imposed by the Rexx language.</p>
+<p>Because Rexx is a line-oriented language (Rexx assumes a semicolon at
+the end of each line unless the continuation character is present) the compiler
+scan of the RSP file is performed one line at a time and the tags used for
+delimiting Rexx statements must appear on lines by themselves. This not only
+simplifies the scan but it also enforces Rexx syntax rules.</p>
+<p>Here are the RSP file syntax rules.</p>
+<ol>
+<li>The delimiter tags for Rexx program statements in an RSP file <b>MUST</b>
+appear on a line by themselves. The following are valid lines in an RSP file.
+<br /><br />
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<b>Example 1</b>
+<pre>
+&lt;?rexx
+say date() time()
+?&gt;
+</pre>
+<b>Example 2</b>
+<pre>
+&lt;script type="rexx"&gt;
+say date() time()
+&lt;/script&gt;
+</pre>
+<b>Example 3</b>
+<pre>
+&lt;script language="rexx"&gt;
+say date() time()
+&lt;/script&gt;
+</pre>
+</td></tr>
+</table>
+</center>
+<p>The following examples are all invalid and will cause incorrect parsing of
+the RSP file.</p>
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<b>Example 1 (Incorrect Syntax)</b>
+<pre>
+&lt;p&gt;The current date is &lt;?rexx say date() ?&gt;
+</pre>
+<b>Example 2 (Incorrect Syntax)</b>
+<pre>
+&lt;p&gt;The current date is &lt;?rexx say date()
+?&gt;
+</pre>
+<b>Example 3 (Incorrect Syntax)</b>
+<pre>
+&lt;p&gt;The current date is
+&lt;?rexx say date() ?&gt;
+</pre>
+<b>Example 4 (Incorrect Syntax)</b>
+<pre>
+&lt;p&gt;The current date is &lt;script type="rexx"&gt; say date() &lt;/script&gt;
+</pre>
+<b>Example 5 (Incorrect Syntax)</b>
+<pre>
+&lt;p&gt;The current date is &lt;script type="rexx"&gt; say date()
+&lt;/script&gt;
+</pre>
+<b>Example 6 (Incorrect Syntax)</b>
+<pre>
+&lt;p&gt;The current date is
+&lt;script type="rexx"&gt; say date() &lt;/script&gt;
+</pre>
+</td></tr>
+</table>
+</center>
+</li>
+<li>Short forms of the <b>&lt;?rexx</b> tag such as <b>&lt;?</b> are not allowed.</li>
+<li>The attributes <i>charset</i>, <i>defer</i> and <i>src</i> can be
+specified on the <b>&lt;script&gt;</b> tag but they will be ignored.</li>
+<li>The value assigned to the <i>type</i> or <i>language</i> attributes of the
+<b>&lt;script&gt;</b> tag is considered to be case insensitive. The following
+are all valid:
+<pre>
+type="REXX"
+type="rexx"
+type="Rexx"
+</pre>
+</li>
+<li>ooRexx statements must conform to the normal Rexx syntax rules.</li>
+<li>Standard HTML lines may be formated in any form
+subject to the previous rules concerning RSP delimiter tags.</li>
+</ol>
+
+<br /><br />
+<hr />
+<br />
+
+<h2><a name="RSPCOMP">
+The RSP Compiler</a></h2>
+<p>The RSP Compiler (rspcomp.rex) is used by Mod_ooRexx to parse an RSP file
+and turn it into a standard ooRexx program which can be executed under the
+Mod_ooRexx environment.</p>
+
+<h3>RSP File Parsing</h3>
+<p>The RSP Compiler is a one-pass parser. It parses the RSP file from top to
+bottom processing HTML, RSP tags, and ooRexx statements in the order they
+are found. The output file is a real ooRexx program/script which is really only
+executable under Mod_ooRexx. The following are
+the parsing rules:</p>
+<ol>
+<li>Before processing the input RSP file the RSP Compiler places some header
+Rexx comments and statements into the output file which support the Mod_ooRexx
+environment.</li>
+<li>HTML lines are turned into Rexx Say statements and appended to the output
+file in the order they are found.</li>
+<li>Rexx statements contained within RSP delimiter tags are appended unchanged
+to the output file in the order they were found.</li>
+<li>When the HTML tag &lt;/html&gt; is found a Rexx "return 0" statement is
+appended to the output file after the HTML line. This is done so that when
+ooRexx executes the script execution does not attempt to fall into Rexx
+procedures which may appear at the end of the RSP file.</li>
+</ol>
+<p>If the parsing was successful the output ooRexx program should be executable
+in the Mod_ooRexx environment.</p>
+
+<h3>Using the RSP Compiler from the Command Line</h3>
+<p>The RSP Compiler is designed to be called either from Mod_ooRexx
+or from the command Line. The command line version can
+be used to turn your RSP files into ooRexx programs executable by Mod_ooRexx.
+By using the compiled version you can improve the performance of Mod_ooRexx.</p>
+<p>The command line syntax is</p>
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+rexx rspcomp.rex rspfilename rexfilename [errmsg]
+</pre>
+</td></tr>
+</table>
+</center>
+<p>where</p>
+<dl>
+<dt><b>rspfilename</b></dt>
+<dd>The name of the RSP input file.</dd>
+<dt><b>rexfilename</b></dt>
+<dd>The name of the output Rexx file.</dd>
+<dt><b>errmsg</b></dt>
+<dd>This argument is optional and if supplied should be the literal string
+"errmsg". If supplied the RSP Compiler will send output error and informational
+messages to the console. If the argument is not supplied the RSP Compiler
+operates in silent mode.</dd>
+</dl>
+<p>By using the compiled version of your RSP file you can save the extra step
+of compiling your RSP file each time it is requested from Apache by a user.</p>
+
+<h2><a name="Examples">
+Examples</a></h2>
+<p>The following will compile the RSP file into a ooRexx program.</p>
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+rexx rspcomp.rex rsptest1.rsp rextest1.rex
+</pre>
+</td></tr>
+</table>
+</center>
+
+<br />
+<table border="0" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="middle">
+  <a href="http://validator.w3.org/check/referer">
+  <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!"
+       height="31" width="88" />
+  </a>
+</td>
+<td valign="middle">
+<img src="./pb_apache_oorexx.gif" alt="Powered by Rexx" />
+<br />Copyright (C) W. David Ashley 2004-2008. All Rights Reserved.
+<br />Copyright (C) Rexx Language Association 2009-2009. All Rights Reserved.
+</td></tr>
+</table>
+
+</body>
+</html>
+

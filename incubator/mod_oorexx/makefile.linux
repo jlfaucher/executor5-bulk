@@ -1,0 +1,93 @@
+#                                                                         
+# Copyright (C) W. David Ashley 2004-2008. All Rights Reserved.           
+# Copyright (c) 2009-2009 Rexx Language Association. All rights reserved. 
+#                                                                         
+# This program and the accompanying materials are made available under    
+# the terms of the Common Public License v1.0 which accompanies this      
+# distribution. A copy is also available at the following address:        
+# http://www.ibm.com/developerworks/oss/CPLv1.0.htm                       
+#                                                                         
+# Redistribution and use in source and binary forms, with or              
+# without modification, are permitted provided that the following         
+# conditions are met:                                                     
+#                                                                         
+# Redistributions of source code must retain the above copyright          
+# notice, this list of conditions and the following disclaimer.           
+# Redistributions in binary form must reproduce the above copyright       
+# notice, this list of conditions and the following disclaimer in         
+# the documentation and/or other materials provided with the distribution.
+#                                                                         
+# Neither the name of Rexx Language Association nor the names             
+# of its contributors may be used to endorse or promote products          
+# derived from this software without specific prior written permission.   
+#                                                                         
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS     
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT       
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS       
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,   
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+# TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,     
+# OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY  
+# OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS      
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.            
+#                                                                         
+# Author: W. David Ashley                                                 
+#                                                                         
+
+
+#-------------------------------------------------------------------------------
+#
+#  Start user modification section
+#
+#-------------------------------------------------------------------------------
+
+# If you are using a version of Apache that is provided by a Linux
+# Distributor like RedHat, Mandrake, etc you may need to include the following
+# compile options. If Mod_ooRexx crashes when processing a request then try
+# recompiling Mod_ooRexx with these compile options.
+#SPECPARM = -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
+
+# Set the base Rexx path (not used for ooRexx)
+RX_PATH     = /usr
+
+#-------------------------------------------------------------------------------
+#
+#  End user modification section
+#
+#-------------------------------------------------------------------------------
+
+# Stuff for Open Object Rexx
+LIBS        = -lrexx -lrexxapi
+INCLUDES    = -I/usr/include/httpd -I/usr/include/apr-1
+DEFINES     = 
+GLBDEP      = mod_oorexx.h
+OBJS        = mod_oorexx.o dirconfig.o rxfuncs.o handlers.o
+GCFLAGS     =  -DVMAJOR=$(VMAJOR) -DVMINOR=$(VMINOR) -DVREL=$(VREL)
+GLFLAGS     = -shared -Wl,-soname,$@ -o $@
+LD          = gcc 
+CC          = gcc
+
+all         : mod_oorexx.so
+
+mod_oorexx.so : $(OBJS)
+		$(LD) $(GLFLAGS) $(OBJS) $(LIBS) -lc
+
+mod_oorexx.o  : mod_oorexx.cpp $(GLBDEP)
+		$(CC) -c $(DEFINES) $(INCLUDES) $<
+
+dirconfig.o : dirconfig.cpp $(GLBDEP)
+		$(CC) -c $(DEFINES) $(INCLUDES) $<
+
+rxfuncs.o   : rxfuncs.cpp $(GLBDEP)
+		$(CC) -c $(DEFINES) $(INCLUDES) $<
+
+handlers.o  : handlers.cpp $(GLBDEP)
+		$(CC) -c $(DEFINES) $(INCLUDES) $<
+
+cleanall    :
+		rm *.o *.lo *.la *.slo
+
+maintainer-clean : cleanall
+		rm *.so

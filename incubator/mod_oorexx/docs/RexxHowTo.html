@@ -1,0 +1,299 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Mod_ooRexx HowTo</title>
+</head>
+<body>
+<center><h1>Mod_ooRexx HowTo</h1></center>
+
+<p>This document shows some examples of how to use Mod_ooRexx to perform actions
+during the phases of an HTTP request to the server.</p>
+
+<br />
+<h2>Table of Contents</h2>
+<p><a href="#Compiling">
+Compiling Mod_ooRexx</a>
+<br /><a href="#FooterHowTo">
+Adding a Canned Footer to Pages</a>
+<br /><a href="#AccessHowTo">
+Controlling Access To Document(s)</a>
+<br /><a href="#IndexHowTo">
+Using an index.rsp File to Control Directory Listings</a></p>
+
+<br /><br />
+<hr />
+<br />
+
+<h2><a name="Compiling">Compiling Mod_ooRexx</a></h2>
+
+<p>Here are the steps to compile Mod_ooRexx.</p>
+
+<ol>
+<li>If necessary, modify the User Modification Section of the operating
+system specific makefile so that the paths to your ooRexx interpreter and
+compiler libraries are correct.
+<p><b>Note:</b> It is not necessary to rename the makefile.</p></li>
+<li>Make sure the subdirectory tree from the Mod_ooRexx distribution is still
+intact.</li>
+<li>Run the following command from the main Mod_ooRexx subdirectory.
+<pre>
+rexx make_mod_oorexx.rex orexx     &lt;--- For Linux, Windows or AIX
+       or
+rexx make_mod_oorexx.rex regina    &lt;--- For Linux or Windows
+</pre>
+</li>
+</ol>
+<p>You should now have the Mod_ooRexx binary in the appropriate location
+in the bin subdirectory.</p>
+
+
+<br /><br />
+<hr />
+<br />
+
+<h2><a name="FooterHowTo">Adding a Canned Footer to Pages</a></h2>
+
+<p>To add a canned footer to a set of HTML pages in a document subdirectory you need to
+place the following in your Apache Configuration file (httpd.conf).</p>
+
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+&lt;Location /mytest&gt;
+    SetHandler rexx_handler
+    RexxHandler '/opt/IBMHTTPServer/rexx/footer.rex'
+&lt;/Location&gt;
+</pre>
+</td></tr>
+</table>
+</center>
+
+<p>The <a href="./RexxDirs.html#RexxHandler">RexxHandler directive</a>
+tells Apache to invoke the specified ooRexx script to process each HTML file
+contained within the /mytest document path.</p>
+
+<p>When a document is retrieved from the specified document path
+then the ooRexx script will be invoked to read in the HTML file and add the canned footer.</p>
+
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+http://www.myserver.com/mytest/testdoc.html
+</pre>
+</td></tr>
+</table>
+</center>
+
+<p>The following is an example ooRexx script (footer.rex) which
+reads the testdoc.html document and adds the footer.</p>
+
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+/* these are some typical Apache return codes */
+OK        = 0      /* Module has handled this stage. */
+NOT_FOUND = 404    /* Main document not found. */
+
+/* get the Apache request record ptr */
+r = arg(1)
+
+body = '&lt;/BODY&gt;'
+
+/* try to open the main document HTML file */
+retc = stream(wwwfilename, 'c', 'open read')
+if retc &lt;&gt; 'READY:' then do
+   return NOT_FOUND
+   end
+
+/* set content-type and send the HTTP header */
+call WWWSendHTTPHeader r, "text/html"
+
+/* read in the document and look for the &lt;/BODY&gt; tag */
+call on notready name seteof
+eof = 0
+line = linein(wwwfilename)
+x = pos(body, translate(line))
+do while x = 0 &amp; eof = 0
+   say line
+   line = linein(wwwfilename)
+   x = pos(body, translate(line))
+   end
+if eof = 1 then return OK
+
+/* we found a &lt;/BODY&gt; tag so send out the footer */
+say substr(line, 1, x - 1)
+call send_footer
+say substr(line, x)
+
+/* read in the rest of the document */
+line = linein(wwwfilename)
+do while eof = 0
+   say line
+   line = linein(wwwfilename)
+   end
+
+/* we are done */
+return OK
+
+
+/* function which indicates end-of-file */
+seteof:
+eof = 1
+return
+
+
+/* send the footer */
+send_footer:
+say '&lt;br /&gt;'
+say '&lt;hr /&gt;'
+say '&lt;br /&gt;'
+say '&amp;copy; 2001 &lt;a href="http://www.ibm.com/"&gt;IBM Corporation&lt;/a&gt;'
+say '&lt;br /&gt;'
+say '&lt;em&gt;Last Modified:' date()'&lt;/em&gt;'
+say '&lt;br /&gt;'
+return
+</pre>
+</td></tr>
+</table>
+</center>
+
+<p>Note that ooRexx program files (on Unix variants) do NOT need to be marked
+executable in order for Mod_ooRexx to execute them. If
+you do not mark them executable then they cannot be
+executed outside of the Mod_ooRexx environment by
+accident or maliciously through the standard Apache
+CGI interface.</p>
+
+<br /><br />
+<hr />
+<br />
+
+<h2><a name="AccessHowTo">Controlling Access To Document(s)</a></h2>
+
+<p>To control access to documents or pages from a set of ip addresses you need to
+place the following in your Apache Configuration file (httpd.conf).</p>
+
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+&lt;Location /mytest&gt;
+    RexxAccessHandler '/opt/IBMHTTPServer/rexx/access.rex'
+&lt;/Location&gt;
+</pre>
+</td></tr>
+</table>
+</center>
+
+<p>The <a href="./RexxDirs.html#RexxAccessHandler">RexxAccessHandler directive</a>
+tells Apache to invoke the specified ooRexx script to check that the request originates
+from a specified set of ip address ranges.</p>
+
+<p>When a document is retrieved from the specified document path
+then the ooRexx script will be invoked check the client's ip address.</p>
+
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+http://www.myserver.com/mytest/testdoc.html
+</pre>
+</td></tr>
+</table>
+</center>
+
+<p>The following is an example ooRexx script (access.rex) which ensures that the request
+originates from within the range 192.168.x.x.</p>
+
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+/* these are some typical Apache return codes */
+OK        = 0      /* Module has handled this stage. */
+FORBIDDEN = 403    /* Main document forbidden. */
+
+/* get the Apache request record ptr */
+r = arg(1)
+
+/* we add the ending period so ooRexx will see it as a string */
+iprange = '192.168.'
+if substr(wwwremote_addr, 1, length(iprange)) &lt;&gt; iprange then return FORBIDDEN
+
+/* we are done */
+return OK
+</pre>
+</td></tr>
+</table>
+</center>
+
+<p>Note that ooRexx program files (on Unix variants) do NOT need to be marked
+executable in order for Mod_ooRexx to execute them. If
+you do not mark them executable then they cannot be
+executed outside of the Mod_ooRexx environment by
+accident or maliciously through the standard Apache
+CGI interface.</p>
+
+<br /><br />
+<hr />
+<br />
+
+<h2><a name="IndexHowTo">Using an index.rsp File to Control Directory Listings</a></h2>
+
+<p>You might be tempted to put the following into your httpd.conf file.</p>
+
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+    DirectoryIndex index.html index.rsp
+</pre>
+</td></tr>
+</table>
+</center>
+
+<p>Adding the index.rsp to the <i>DirectoryIndex</i> statement will not produce
+the results you expect. In fact, it will probably cause the Apache server to
+crash. This is because Apache expects the files on the <i>DirectoryIndex</i>
+statement to be simple files with no special processing needs. Obviously an
+RSP file does not fall into this category.</p>
+
+<p>In order to get the results you probably want you will need to use the
+<i>RedirectMatch</i> statement instead. Here is an example.</p>
+
+<center>
+<table border="1" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="top" bgcolor="#e6e6e6">
+<pre>
+    RedirectMatch ^/mysubdir(.*)index.html /mysubdir$1index.rsp
+</pre>
+</td></tr>
+</table>
+</center>
+
+<p>This will cause a reference to index.html anywhere within the /mysubdir
+subdirectory tree to be replaced with a reference to index.rsp. Apache
+will deal with this by invoking the RSP mechanism to properly produce the
+index.</p>
+
+<br />
+<table border="0" cellpadding="4" cellspacing="0" width="90%">
+<tr><td valign="middle">
+  <a href="http://validator.w3.org/check/referer">
+  <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!"
+       height="31" width="88" />
+  </a>
+</td>
+<td valign="middle">
+<img src="./pb_apache_oorexx.gif" alt="Powered by Rexx" />
+<br />Copyright (C) W. David Ashley 2004-2008. All Rights Reserved.
+<br />Copyright (C) Rexx Language Association 2009-2009. All Rights Reserved.
+</td></tr>
+</table>
+
+</body>
+</html>
