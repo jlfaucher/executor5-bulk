@@ -38,7 +38,8 @@
 /**
  * This example is similar to the simplestRW and simpleRW examples.  It uses the
  * same .worker .fifo classes and the same basic program code. However, the
- * program code has been placed in a routine (::routine) rather than as the.
+ * program code has been placed in a routine, (::routine startWorkers) rather
+ * than as the executable code preceding the first directive in the file.
  *
  * This example starts the same basic reader / writer program as simplestRW does
  * by calling the routine containing the program code. In addition, it
@@ -54,22 +55,23 @@
  * .local environment.  The C++ code retrieves this buffer from .local for use
  * in the C++ worker.
  *
- * 2.) The nutshell_1b.rex code package places an 'interpreter' ID string in the
- * .local envrionment.  The C++ code changes the value of the ID string from
+ * 2.) The lessSimpleRW.rex code package places an 'interpreter' ID string in
+ * the .local envrionment.  The C++ code changes the value of the ID string from
  * [# 0] to [# 1] which is visible in the console output.
  *
  * Note that the error handling is very primitive in that the C++ code basically
  * just quits on any error.  In addition, there are a few places where a check
  * for NULLOBJECT is skipped.
  *
- * This example is designed to work correctly with nutshell_1b.rex as the
+ * This example is designed to work correctly with lessSimpleRW.rex as the
  * package code.  When this program is invoked with no arguments, it
- * automatically uses nutshell_1b.rex.  To allow the programmer to experiment a
- * little with changing the Rexx code, this program will accept as the first
- * argument the name of an alternative file to use as the package code.  There
- * is nothing fancy with the argument checking, the program simply uses it.
- * This means of course that this program will fail if you pass in an incorrect
- * argument.
+ * automatically uses lessSimpleRW.rex.
+ *
+ * To allow the programmer to experiment a little with changing the Rexx code,
+ * this program will accept as the first argument the name of an alternative
+ * file to use as the package code.  There is nothing fancy with the argument
+ * checking, the program simply uses it. This means, of course, that this
+ * program will fail if you pass in an incorrect argument.
  */
 
 #include "oorexxapi.h"
@@ -84,10 +86,11 @@ void printInterpreterVersion(RexxInstance *);
 
 int main (int argc, char **argv)
 {
-    char *packageName = "nutshell_1b.rex";    // Not correct package, just used to get error.
+    char *packageName = "lessSimpleRW.rex";
     if ( argc == 2 )
     {
-        // Nothing fancy here, if there is an argument, then use it.
+        // Nothing fancy here, if there is an argument, then use it as the
+        // package file.
         packageName = argv[1];
     }
 
@@ -122,9 +125,9 @@ int main (int argc, char **argv)
         exit(1);
     }
 
-    // We will locate our routine object in a directory.  The name needs to be
-    // upper-case or the routine will not be found.  Try it, lower case the name
-    // and see the results.
+    // We will locate our routine object in a directory, the package routines
+    // directory. The name needs to be upper-case or the routine will not be
+    // found. Try it, lower case the name and see the results.
     char *routineName = "STARTWORKERS";
 
     // Get the routine object we are going to call.
@@ -151,8 +154,8 @@ int main (int argc, char **argv)
     }
 
     // Create a worker object, and 2 of the 3 args we will pass to the write()
-    // method of the object. The third arg, the buffer is retrieved from the
-    // .local environment where it is placed by the startWorkers() routine.
+    // method of the worker object. The third arg, the buffer, is retrieved from
+    // the .local environment where it is placed by the startWorkers() routine.
     RexxObjectPtr worker = threadContext->SendMessage0(workerCls, "NEW");
     RexxStringObject msg = threadContext->String("from_C++");
     RexxObjectPtr repetions = threadContext->WholeNumber(7);
@@ -176,8 +179,9 @@ int main (int argc, char **argv)
         // I don't do any error checking here.  As long as no one changes the
         // nutshell package code, this should work without errors.
 
-        // Get the fifo buffer which is the third argument to the write() method
-        // that we need.  Then change the interpreter.info variable.
+        // Get the fifo buffer, which is the third argument to the write()
+        // method, that we need.  Then change the interpreter.info variable in
+        // the .local environment.
         RexxObjectPtr fifoBuffer = threadContext->DirectoryAt(dotLocal, "BUFFER");
         threadContext->DirectoryPut(dotLocal, instanceID, "INTERPRETER.INFO");
 

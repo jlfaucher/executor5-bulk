@@ -51,8 +51,8 @@
  * To allow the programmer to experiment a little with changing the Rexx code,
  * this program will accept as the first argument the name of an alternative
  * file to use as the program code.  There is nothing fancy with the argument
- * checking, the program simply uses it. This means of course that this program
- * will fail if you pass in an incorrect argument.
+ * checking, the program simply uses it. This means, of course, that this
+ * program will fail if you pass in an incorrect argument.
  */
 
 #include "oorexxapi.h"
