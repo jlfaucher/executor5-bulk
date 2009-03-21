@@ -279,6 +279,28 @@ options[0].option = "rxmath";
 options[1].optionName = NULL;
 </programlisting>
 </listitem></varlistentry>
+<varlistentry><term>REGISTER_LIBRARY</term>
+<listitem><para>Specifies a package that will be registerd with the Rexx environment
+without loading an external library.  The library is specified with a RexxLibraryPackage
+structure that gives the library name and a pointer to the associated
+<link linkend="buildinglibs">RexxPackageEntry</link>
+table that describes the package contents.
+The library name is an ASCII-Z string
+with the library name in the same format used for ::REQUIRED LIBRARY.  Multiple libraries
+can be registered by specifying this option multiple times.
+</para>
+<programlisting>
+RexxOption options[2];
+RexxLibraryPackage package;
+
+package.registerName = "mypackage";
+package.table = packageTable;
+
+options[0].optionName = REGISTER_LIBRARY;
+options[0].option = (void *)&package;
+options[1].optionName = NULL;
+</programlisting>
+</listitem></varlistentry>
 <varlistentry><term>DIRECT_EXITS</term>
 <listitem><para>Specifies a list of system exits that will be used with this interpreter
 instance.  The exits are a list of RexxContextExit structs.  Each enabled exit is
@@ -7247,6 +7269,56 @@ used to compile your code.
 <para>The interpreter language level number.</para>
 </section>
 
+<section id="mthLoadLibrary"><title>LoadLibrary</title>
+<indexterm><primary>LoadLibrary</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>LoadLibrary</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>LoadLibrary</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>LoadLibrary</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>LoadLibrary</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+CSTRING name;
+logical_t success;
+
+>>--logical_t = context->LoadLibrary(name);---------------------------------><
+]]>
+</programlisting>
+<para>Loads an external library with the given name and adds it to the global Rexx environment.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+    <row><entry><emphasis role="italic">name</emphasis></entry>
+    <entry><para>The ASCII-Z path/name of the library package, in format required
+    by the ::REQUIRES LIBRARY directive.</para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>True if the library was successfully loaded or the library had been previously loaded.
+False is returned for any errors in loading the package.
+</para>
+</section>
+
 <section id="mthLoadPackage"><title>LoadPackage</title>
 <indexterm><primary>LoadPackage</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
@@ -9090,6 +9162,61 @@ RexxObjectPtr obj1, obj2;
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Void.</para>
+</section>
+
+<section id="mthRegisterLibrary"><title>RegisterLibrary</title>
+<indexterm><primary>RegisterLibrary</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>RegisterLibrary</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>RegisterLibrary</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>RegisterLibrary</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>RegisterLibrary</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+CSTRING name;
+logical_t success;
+
+>>--logical_t = context->RegisterLibrary(name, table);---------------------------------><
+]]>
+</programlisting>
+<para>Registers an in-process library package with the global Rexx environment.  The package is
+processed as if it is loaded from an external library, but without requiring the library packaging.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+    <row><entry><emphasis role="italic">name</emphasis></entry>
+    <entry><para>The ASCII-Z path/name of the library package, in format required
+    by the ::REQUIRES LIBRARY directive.</para></entry>
+    </row>
+    <row><entry><emphasis role="italic">table</emphasis></entry>
+    <entry><para>A pointer to a
+<link linkend="buildinglibs">RexxPackageEntry</link> table defining the contents of the package.</para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>True if the library was successfully registered.
+False is returned if a package has already be loaded or registered with the given name.
+</para>
 </section>
 
 <section id="mthReleaseGlobalReference"><title>ReleaseGlobalReference</title>
