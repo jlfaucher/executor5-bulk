@@ -54,6 +54,11 @@
 
 #REXX_HOME = C:\work.ooRexx\wc\main\Win32Dbg   # For example
 
+# Define RELEASE on the command line, or here, to build a non-debug version.  By
+# default debug versions are built.  I.e. nMake RELEASE=1 /F Makefile.win
+#RELEASE = 1
+
+
 !IF DEFINED(REXX_HOME)
 INCLUDE = $(INCLUDE);$(REXX_HOME)\api
 LIB = $(LIB);$(REXX_HOME)\api
@@ -63,13 +68,23 @@ REXX_LIBS = rexx.lib rexxapi.lib
 
 WARNINGFLAGS = /W3 /Wp64 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
 
-OOREXX_CFLAGS =  /nologo /DWINDOWS /EHsc /Zi /Od /Gr /MTd $(WARNINGFLAGS) /c
+!IF DEFINED(RELEASE)
 
-EXE_LFLAGS = /NOLOGO /DEBUG -debugtype:cv /SUBSYSTEM:Console $(REXX_LIBS) user32.lib comdlg32.lib gdi32.lib kernel32.lib
-DLL_LFLAGS = /NOLOGO /DEBUG -debugtype:cv /SUBSYSTEM:Windows $(REXX_LIBS) /DLL
+OOREXX_CFLAGS = /nologo /EHsc /O2 /Gr /Gs /FAcs /MT $(WARNINGFLAGS) /c
+EXE_LFLAGS = /nologo /SUBSYSTEM:Console $(REXX_LIBS) user32.lib comdlg32.lib gdi32.lib kernel32.lib
+DLL_LFLAGS = /nologo /SUBSYSTEM:Windows $(REXX_LIBS) /DLL
+
+!ELSE
+
+OOREXX_CFLAGS =  /nologo /EHsc /Zi /Od /Gr /MTd $(WARNINGFLAGS) /c
+EXE_LFLAGS = /nologo /DEBUG -debugtype:cv /SUBSYSTEM:Console $(REXX_LIBS) user32.lib comdlg32.lib gdi32.lib kernel32.lib
+DLL_LFLAGS = /nologo /DEBUG -debugtype:cv /SUBSYSTEM:Windows $(REXX_LIBS) /DLL
+
+!ENDIF
 
 # What we want to build.
 all: simplestRW.exe simpleRW.exe lessSimpleRW.exe
+
 
 simplestRW.obj: simplestRW.cpp
   cl $(OOREXX_CFLAGS) simplestRW.cpp
@@ -90,5 +105,5 @@ lessSimpleRW.exe: lessSimpleRW.obj
     link $(EXE_LFLAGS) lessSimpleRW.obj -out:$(@B).exe
 
 clean:
-	del *.exe *.dll *.obj *.ilk *.pdb *.lib *.exp *.suo 1>nul 2>&1
+	del *.exe *.dll *.obj *.ilk *.pdb *.lib *.exp *.suo *.cod 1>nul 2>&1
 
