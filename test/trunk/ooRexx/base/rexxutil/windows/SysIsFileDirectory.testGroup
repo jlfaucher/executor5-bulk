@@ -69,8 +69,11 @@ return testResult
     self~assertFalse(SysIsFileDirectory('c:\thisDirectoryDoesNotExist\'))
 
 ::method 'testIsFileDirectory5'
-    self~expectSyntax(40.1)
+    self~expectSyntax(88.901)
     rv = SysIsFileDirectory()
 
+::method 'testIsFileDirectory6'
+    self~expectSyntax(88.922)
+    rv = SysIsFileDirectory("C:\", "C:\")
 
 
