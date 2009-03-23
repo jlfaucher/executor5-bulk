@@ -1,6 +1,6 @@
 /* ========================================================================= */
 /* csvStream ooRexx stream subclass for CSV file handling                    */
-/* Version 1.07                                                   April 2008 */
+/* Version 1.08                                                   March 2009 */
 /*                                                                           */
 /* Amendments                                                                */
 /* 1.01   Dec06 SN Headers inserted by close method / general tidy up        *//*{1.01}*/
@@ -11,6 +11,7 @@
 /* 1.05 07Dec07 SN performance enhancements                                  *//*{1.05}*/
 /* 1.06 21Dec07 SN As ooRexx 3.2 has lineend constant - remove discovery     *//*{1.06}*/
 /* 1.07 21Apr08 SN provide stripoption for CSVLineIn                         *//*{1.07}*/
+/* 1.08 23Mar09 SN Bugfix - gratitude to Bill Shipman                        *//*{1.08}*/
 /*                                                                           */
 /* ========================================================================= */
 
@@ -189,9 +190,9 @@ do until (inLiteral  = .false) ,
                then fieldText = fieldText || text~substr(i,1)                  /*{1.05}*/
 
                /* if field encased in '"'s then strip them */
-               if  fieldText~matchChar(1,qualifier)                ,           /*{1.05}*/
-               &   fieldText~matchChar(fieldText~length,qualifier) ,           /*{1.05}*/
-               &   (fieldText~length   > 1        )                            /*{1.05}*/
+               if  (fieldText~length   > 1        )                ,           /*{1.08}*/
+               ,   fieldText~matchChar(1,qualifier)                ,           /*{1.08}*/
+               ,   fieldText~matchChar(fieldText~length,qualifier) ,           /*{1.08}*/
                then do
                   fieldText = fieldText~substr(2, fieldText~length - 2)
                   literalFields~put(fieldNo)
