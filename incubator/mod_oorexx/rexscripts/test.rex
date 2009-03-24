@@ -50,9 +50,7 @@ OK        = 0     /* Module has handled this stage. */
 NOT_FOUND = 404   /* Main document not found. */
 
 /* get environment stuff */
-parse source env . path
-if env='OS/2' then envname='OS2ENVIRONMENT'
-else envname='ENVIRONMENT'
+envname='ENVIRONMENT'
 parse upper version v
 
 /* get the Apache request record ptr */
@@ -74,8 +72,6 @@ say '<p>The Version of this script is' script_version'.'
 say '<p>The Mod_Rexx version string is "'WWWGetVersion()'"'
 
 say "<p>The number of Rexx procedure arguments is" arg()
-
-say "<p>The value of arg(1) is" arg(1)
 
 say '<p>The current RFC 822 formatted time at the server is "'WWWHTTP_time(r)'"'
 

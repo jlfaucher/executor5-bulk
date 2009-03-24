@@ -148,18 +148,24 @@ int REXXENTRY ooRexx_IO_Exit(RexxExitContext *context, int ExitNumber, int Subfu
                              PEXIT ParmBlock)
 {
     RXSIOSAY_PARM *sparm;
+    int32_t type;
 
     /* Get the request_rec pointer */
     RexxDirectoryObject dir = (RexxDirectoryObject)context->GetLocalEnvironment();
     RexxPointerObject rxr = (RexxPointerObject)context->DirectoryAt(dir, REQUEST_REC_PTR);
     request_rec *r = (request_rec *)context->PointerValue(rxr);
+    RexxObjectPtr reqtype = context->DirectoryAt(dir, REQUEST_HANDLER_TYPE);
+    context->ObjectToInt32(reqtype, &type);
 
     /* Perform the exit function */
     switch (Subfunction) {
     case RXSIOSAY:
-        sparm = (RXSIOSAY_PARM *)ParmBlock;
-        ap_rputs(sparm->rxsio_string.strptr, r);
-        ap_rputs(lf, r);
+        if (type) {
+            sparm = (RXSIOSAY_PARM *)ParmBlock;
+            modoorexx_debug(r->server, sparm->rxsio_string.strptr);
+            ap_rputs(sparm->rxsio_string.strptr, r);
+            ap_rputs(lf, r);
+        }
         return RXEXIT_HANDLED;
     case RXSIOTRC:
         sparm = (RXSIOSAY_PARM *)ParmBlock;
@@ -172,46 +178,6 @@ int REXXENTRY ooRexx_IO_Exit(RexxExitContext *context, int ExitNumber, int Subfu
         return (RXEXIT_HANDLED);
     default:
         break;
-    }
-
-    return RXEXIT_RAISE_ERROR;
-}
-
-
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    ooRexx_IO_Exit_2                                              */
-/*                                                                            */
-/* Description: I/O exit for non-content Rexx handler procedures.             */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
-int REXXENTRY ooRexx_IO_Exit_2(RexxExitContext *context, int ExitNumber, int Subfunction,
-                               PEXIT ParmBlock)
-{
-    RXSIOSAY_PARM *sparm;
-
-    /* Get the request_rec pointer */
-    RexxDirectoryObject dir = (RexxDirectoryObject)context->GetLocalEnvironment();
-    RexxPointerObject rxr = (RexxPointerObject)context->DirectoryAt(dir, REQUEST_REC_PTR);
-    request_rec *r = (request_rec *)context->PointerValue(rxr);
-
-    /* Perform the exit function */
-    switch (Subfunction) {
-    case RXSIOSAY:
-        /* Do not allow any output */
-        return (RXEXIT_HANDLED);
-    case RXSIOTRC:
-        sparm = (RXSIOSAY_PARM *)ParmBlock;
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, 0, r,
-                  (const char *)sparm->rxsio_string.strptr);
-        return (RXEXIT_HANDLED);
-    case RXSIOTRD:
-    case RXSIODTR:
-        /* Do not allow any input or output */
-        return (RXEXIT_HANDLED);
-    default:
-       break;
     }
 
     return RXEXIT_RAISE_ERROR;
@@ -249,7 +215,7 @@ int REXXENTRY ooRexx_INI_Exit(RexxExitContext *context, int ExitNumber, int Subf
     /* Perform the exit function */
     switch (Subfunction) {
     case RXINIEXT:
-//      modrexx_debug(r->server, "Entering Rexx_INI_Exit routine.");
+//      modoorexx_debug(r->server, "Entering Rexx_INI_Exit routine.");
 
         /* Set our standard CGI Rexx variables */
         SetooRexxVar((char *)"WWWAUTH_TYPE", r->ap_auth_type);
@@ -312,7 +278,7 @@ int REXXENTRY ooRexx_INI_Exit(RexxExitContext *context, int ExitNumber, int Subf
         SetooRexxVar((char *)"WWWRSPCOMPILER", c->rspcompiler);
         SetooRexxVar((char *)"WWWFNAMETEMPLATE", c->fnametemplate);
 
-//      modrexx_debug(r->server, "Exiting Rexx_INI_Exit routine.");
+//      modoorexx_debug(r->server, "Exiting Rexx_INI_Exit routine.");
 
         return RXEXIT_HANDLED;
     default:

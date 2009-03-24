@@ -53,11 +53,16 @@
 static void oorexx_child_init(apr_pool_t *pchild, server_rec *s)
 {
     ooRexxSrvrConfig *cfg;
-    RexxOption options[2];
+    RexxOption options[3];
     RexxContextExit exits[6];
+    RexxLibraryPackage package;
 
     cfg = (ooRexxSrvrConfig *) apr_pcalloc(pchild, sizeof(ooRexxSrvrConfig));
     ap_set_module_config(s->module_config, &oorexx_module, cfg);
+
+    /* set up our package */
+    package.registeredName = "mod_oorexx";
+    package.table = &mod_oorexx_package_entry;
 
     /* set up our ooRexx content instance exits */
     exits[0].handler = ooRexx_INI_Exit;
@@ -75,23 +80,12 @@ static void oorexx_child_init(apr_pool_t *pchild, server_rec *s)
     /* set up our ooRexx instance options */
     options[0].optionName = DIRECT_EXITS;
     options[0].option = (void *)exits;
-    options[1].optionName = NULL;
+    options[1].optionName = REGISTER_LIBRARY;
+    options[1].option = (void *)&package;
+    options[2].optionName = NULL;
 
     /* set up our ooRexx content handler instance */
     RexxCreateInterpreter(&cfg->contentInst, &cfg->contentThrdInst, options);
-
-    /* set up our ooRexx noncontent instance exits */
-    exits[1].handler = ooRexx_IO_Exit_2;
-    exits[1].sysexit_code = RXSIOSAY;
-    exits[2].handler = ooRexx_IO_Exit_2;
-    exits[2].sysexit_code = RXSIOTRC;
-    exits[3].handler = ooRexx_IO_Exit_2;
-    exits[3].sysexit_code = RXSIOTRD;
-    exits[4].handler = ooRexx_IO_Exit_2;
-    exits[4].sysexit_code = RXSIODTR;
-
-    /* set up our ooRexx noncontent handler instance */
-    RexxCreateInterpreter(&cfg->noncontentInst, &cfg->noncontentThrdInst, options);
 
     return;
 }
@@ -119,7 +113,7 @@ static int oorexx_handler(request_rec *r)
         return DECLINED;
     }
 
-//  modrexx_debug(r->server, "Entering rexx_handler routine.");
+//  modoorexx_debug(r->server, "Entering rexx_handler routine.");
 
     /* If we're only supposed to send header information (HEAD request), */
     /* then don't bother Rexx with the request.                          */
@@ -127,7 +121,7 @@ static int oorexx_handler(request_rec *r)
         /* Set the content-type */
         r->content_type = "text/html";
         ap_send_http_header(r);
-//      modrexx_debug(r->server, "Exiting rexx_handler routine.");
+//      modoorexx_debug(r->server, "Exiting rexx_handler routine.");
         return OK;
     }
 
@@ -152,6 +146,8 @@ static int oorexx_handler(request_rec *r)
     RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
     cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->String("1"),
+                                       REQUEST_HANDLER_TYPE);
 
     // create an Array object to hold the program arguments
     RexxArrayObject args = cfg->contentThrdInst->NewArray(1);
@@ -166,13 +162,13 @@ static int oorexx_handler(request_rec *r)
         // retrieve the error information and get it into a decoded form
         RexxDirectoryObject cond = cfg->contentThrdInst->GetConditionInfo();
         cfg->contentThrdInst->DecodeConditionInfo(cond, &condition);
-//      modrexx_debug(r->server, "Exiting rexx_rsphandler routine.");
+//      modoorexx_debug(r->server, "Exiting rexx_rsphandler routine.");
         // display the errors
         oorexxstart_error_processor(r, rxprocpath, rc);
         rc = HTTP_INTERNAL_SERVER_ERROR;
     }
 
-//  modrexx_debug(r->server, "Exiting rexx_handler routine.");
+//  modoorexx_debug(r->server, "Exiting rexx_handler routine.");
 
     return rc;
 }
@@ -200,14 +196,14 @@ static int oorexx_rsphandler(request_rec *r)
         return DECLINED;
     }
 
-//  modrexx_debug(r->server, "Entering rexx_rsphandler routine.");
+//  modoorexx_debug(r->server, "Entering rexx_rsphandler routine.");
     /* If we're only supposed to send header information (HEAD request), */
     /* then don't bother Rexx with the request.                          */
     if (r->header_only) {
         /* Set the content-type */
         r->content_type = "text/html";
         ap_send_http_header(r);
-//      modrexx_debug(r->server, "Exiting rexx_rsphandler routine.");
+//      modoorexx_debug(r->server, "Exiting rexx_rsphandler routine.");
         return OK;
     }
 
@@ -225,28 +221,30 @@ static int oorexx_rsphandler(request_rec *r)
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
     /* Set the request_rec pointer for the ooRexx exits */
-    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->noncontentThrdInst->GetLocalEnvironment();
-    cfg->noncontentThrdInst->DirectoryPut(dir, cfg->noncontentThrdInst->NewPointer(r),
+    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->String("0"),
+                                       REQUEST_HANDLER_TYPE);
 
     /* Compile the rsp file */
 
     // create an Array object to hold the program arguments
-    RexxArrayObject args = cfg->noncontentThrdInst->NewArray(1);
+    RexxArrayObject args = cfg->contentThrdInst->NewArray(1);
     // add the argument to the array.
     rxarg = (char *)apr_pcalloc(r->pool, strlen(TempName) + strlen(r->filename) + 6);
     sprintf(rxarg, "\"%s\" \"%s\"", r->filename, TempName);
-    cfg->noncontentThrdInst->ArrayPut(args, cfg->contentThrdInst->String(rxarg), 1);
+    cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->String(rxarg), 1);
     // call our program, using the provided arguments.
-    RexxObjectPtr result = cfg->noncontentThrdInst->CallProgram(c->rspcompiler, args);
-    cfg->noncontentThrdInst->ObjectToInt32(result, &rc);
+    RexxObjectPtr result = cfg->contentThrdInst->CallProgram(c->rspcompiler, args);
+    cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // if an error occurred, get the decoded exception information
-    if (cfg->noncontentThrdInst->CheckCondition()) {
+    if (cfg->contentThrdInst->CheckCondition()) {
         RexxCondition condition;
         // retrieve the error information and get it into a decoded form
-        RexxDirectoryObject cond = cfg->noncontentThrdInst->GetConditionInfo();
-        cfg->noncontentThrdInst->DecodeConditionInfo(cond, &condition);
-//      modrexx_debug(r->server, "Exiting rexx_rsphandler routine.");
+        RexxDirectoryObject cond = cfg->contentThrdInst->GetConditionInfo();
+        cfg->contentThrdInst->DecodeConditionInfo(cond, &condition);
+//      modoorexx_debug(r->server, "Exiting rexx_rsphandler routine.");
         // display the errors
         oorexxstart_error_processor(r, c->rspcompiler, rc);
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -255,9 +253,8 @@ static int oorexx_rsphandler(request_rec *r)
     /* Execute the compiled rsp file */
 
     /* Set the request_rec pointer for the ooRexx exits */
-    dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
-    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
-                                       REQUEST_REC_PTR);
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->String("1"),
+                                       REQUEST_HANDLER_TYPE);
 
     // add the argument to the array.
     cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
@@ -272,13 +269,13 @@ static int oorexx_rsphandler(request_rec *r)
         // retrieve the error information and get it into a decoded form
         RexxDirectoryObject cond = cfg->contentThrdInst->GetConditionInfo();
         cfg->contentThrdInst->DecodeConditionInfo(cond, &condition);
-//      modrexx_debug(r->server, "Exiting rexx_rsphandler routine.");
+//      modoorexx_debug(r->server, "Exiting rexx_rsphandler routine.");
         // display the errors
         oorexxstart_error_processor(r, c->rspcompiler, rc);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-//  modrexx_debug(r->server, "Exiting rexx_rsphandler routine.");
+//  modoorexx_debug(r->server, "Exiting rexx_rsphandler routine.");
 
     return rc;
 }
@@ -314,32 +311,34 @@ int oorexx_translation_handler(request_rec *r)
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
     /* Set the request_rec pointer for the ooRexx exits */
-    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->noncontentThrdInst->GetLocalEnvironment();
-    cfg->noncontentThrdInst->DirectoryPut(dir, cfg->noncontentThrdInst->NewPointer(r),
+    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->String("0"),
+                                       REQUEST_HANDLER_TYPE);
 
-//  modrexx_debug(r->server, "Entering rexx_translation_handler routine.");
+//  modoorexx_debug(r->server, "Entering rexx_translation_handler routine.");
 
     // create an Array object to hold the program arguments
-    RexxArrayObject args = cfg->noncontentThrdInst->NewArray(1);
+    RexxArrayObject args = cfg->contentThrdInst->NewArray(1);
     // add the argument to the array. Note that ArrayPut() requires an
     // index that is origin-1, unlike C arrays which are origin-0.
-    cfg->noncontentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
+    cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
     // call our program, using the provided arguments.
-    RexxObjectPtr result = cfg->noncontentThrdInst->CallProgram(c->translate, args);
-    cfg->noncontentThrdInst->ObjectToInt32(result, &rc);
+    RexxObjectPtr result = cfg->contentThrdInst->CallProgram(c->translate, args);
+    cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // if an error occurred, get the decoded exception information
-    if (cfg->noncontentThrdInst->CheckCondition()) {
+    if (cfg->contentThrdInst->CheckCondition()) {
         RexxCondition condition;
         // retrieve the error information and get it into a decoded form
-        RexxDirectoryObject cond = cfg->noncontentThrdInst->GetConditionInfo();
-        cfg->noncontentThrdInst->DecodeConditionInfo(cond, &condition);
+        RexxDirectoryObject cond = cfg->contentThrdInst->GetConditionInfo();
+        cfg->contentThrdInst->DecodeConditionInfo(cond, &condition);
         // display the errors
         oorexxstart_error_processor(r, c->translate, rc);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-//  modrexx_debug(r->server, "Exiting rexx_translation_handler routine.");
+//  modoorexx_debug(r->server, "Exiting rexx_translation_handler routine.");
 
     return rc;
 }
@@ -375,32 +374,34 @@ int oorexx_authentication_handler(request_rec *r)
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
     /* Set the request_rec pointer for the ooRexx exits */
-    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->noncontentThrdInst->GetLocalEnvironment();
-    cfg->noncontentThrdInst->DirectoryPut(dir, cfg->noncontentThrdInst->NewPointer(r),
+    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->String("0"),
+                                       REQUEST_HANDLER_TYPE);
 
-//  modrexx_debug(r->server, "Entering rexx_authentication_handler routine.");
+//  modoorexx_debug(r->server, "Entering rexx_authentication_handler routine.");
 
     // create an Array object to hold the program arguments
-    RexxArrayObject args = cfg->noncontentThrdInst->NewArray(1);
+    RexxArrayObject args = cfg->contentThrdInst->NewArray(1);
     // add the argument to the array. Note that ArrayPut() requires an
     // index that is origin-1, unlike C arrays which are origin-0.
-    cfg->noncontentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
+    cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
     // call our program, using the provided arguments.
-    RexxObjectPtr result = cfg->noncontentThrdInst->CallProgram(c->authenticate, args);
-    cfg->noncontentThrdInst->ObjectToInt32(result, &rc);
+    RexxObjectPtr result = cfg->contentThrdInst->CallProgram(c->authenticate, args);
+    cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // if an error occurred, get the decoded exception information
-    if (cfg->noncontentThrdInst->CheckCondition()) {
+    if (cfg->contentThrdInst->CheckCondition()) {
         RexxCondition condition;
         // retrieve the error information and get it into a decoded form
-        RexxDirectoryObject cond = cfg->noncontentThrdInst->GetConditionInfo();
-        cfg->noncontentThrdInst->DecodeConditionInfo(cond, &condition);
+        RexxDirectoryObject cond = cfg->contentThrdInst->GetConditionInfo();
+        cfg->contentThrdInst->DecodeConditionInfo(cond, &condition);
         // display the errors
         oorexxstart_error_processor(r, c->authenticate, rc);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-//  modrexx_debug(r->server, "Exiting rexx_authentication_handler routine.");
+//  modoorexx_debug(r->server, "Exiting rexx_authentication_handler routine.");
 
     return rc;
 }
@@ -436,32 +437,34 @@ int oorexx_authorization_handler(request_rec *r)
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
     /* Set the request_rec pointer for the ooRexx exits */
-    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->noncontentThrdInst->GetLocalEnvironment();
-    cfg->noncontentThrdInst->DirectoryPut(dir, cfg->noncontentThrdInst->NewPointer(r),
+    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->String("0"),
+                                       REQUEST_HANDLER_TYPE);
 
-//  modrexx_debug(r->server, "Entering rexx_authorization_handler routine.");
+//  modoorexx_debug(r->server, "Entering rexx_authorization_handler routine.");
 
     // create an Array object to hold the program arguments
-    RexxArrayObject args = cfg->noncontentThrdInst->NewArray(1);
+    RexxArrayObject args = cfg->contentThrdInst->NewArray(1);
     // add the argument to the array. Note that ArrayPut() requires an
     // index that is origin-1, unlike C arrays which are origin-0.
-    cfg->noncontentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
+    cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
     // call our program, using the provided arguments.
-    RexxObjectPtr result = cfg->noncontentThrdInst->CallProgram(c->authorize, args);
-    cfg->noncontentThrdInst->ObjectToInt32(result, &rc);
+    RexxObjectPtr result = cfg->contentThrdInst->CallProgram(c->authorize, args);
+    cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // if an error occurred, get the decoded exception information
-    if (cfg->noncontentThrdInst->CheckCondition()) {
+    if (cfg->contentThrdInst->CheckCondition()) {
         RexxCondition condition;
         // retrieve the error information and get it into a decoded form
-        RexxDirectoryObject cond = cfg->noncontentThrdInst->GetConditionInfo();
-        cfg->noncontentThrdInst->DecodeConditionInfo(cond, &condition);
+        RexxDirectoryObject cond = cfg->contentThrdInst->GetConditionInfo();
+        cfg->contentThrdInst->DecodeConditionInfo(cond, &condition);
         // display the errors
         oorexxstart_error_processor(r, c->authorize, rc);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-//  modrexx_debug(r->server, "Exiting rexx_authorization_handler routine.");
+//  modoorexx_debug(r->server, "Exiting rexx_authorization_handler routine.");
 
     return rc;
 }
@@ -497,32 +500,34 @@ int oorexx_access_handler(request_rec *r)
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
     /* Set the request_rec pointer for the ooRexx exits */
-    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->noncontentThrdInst->GetLocalEnvironment();
-    cfg->noncontentThrdInst->DirectoryPut(dir, cfg->noncontentThrdInst->NewPointer(r),
+    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->String("0"),
+                                       REQUEST_HANDLER_TYPE);
 
-//  modrexx_debug(r->server, "Entering rexx_access_handler routine.");
+//  modoorexx_debug(r->server, "Entering rexx_access_handler routine.");
 
     // create an Array object to hold the program arguments
-    RexxArrayObject args = cfg->noncontentThrdInst->NewArray(1);
+    RexxArrayObject args = cfg->contentThrdInst->NewArray(1);
     // add the argument to the array. Note that ArrayPut() requires an
     // index that is origin-1, unlike C arrays which are origin-0.
-    cfg->noncontentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
+    cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
     // call our program, using the provided arguments.
-    RexxObjectPtr result = cfg->noncontentThrdInst->CallProgram(c->access, args);
-    cfg->noncontentThrdInst->ObjectToInt32(result, &rc);
+    RexxObjectPtr result = cfg->contentThrdInst->CallProgram(c->access, args);
+    cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // if an error occurred, get the decoded exception information
-    if (cfg->noncontentThrdInst->CheckCondition()) {
+    if (cfg->contentThrdInst->CheckCondition()) {
         RexxCondition condition;
         // retrieve the error information and get it into a decoded form
-        RexxDirectoryObject cond = cfg->noncontentThrdInst->GetConditionInfo();
-        cfg->noncontentThrdInst->DecodeConditionInfo(cond, &condition);
+        RexxDirectoryObject cond = cfg->contentThrdInst->GetConditionInfo();
+        cfg->contentThrdInst->DecodeConditionInfo(cond, &condition);
         // display the errors
         oorexxstart_error_processor(r, c->access, rc);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-//  modrexx_debug(r->server, "Exiting rexx_access_handler routine.");
+//  modoorexx_debug(r->server, "Exiting rexx_access_handler routine.");
 
     return rc;
 }
@@ -558,32 +563,34 @@ int oorexx_mime_type_handler(request_rec *r)
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
     /* Set the request_rec pointer for the ooRexx exits */
-    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->noncontentThrdInst->GetLocalEnvironment();
-    cfg->noncontentThrdInst->DirectoryPut(dir, cfg->noncontentThrdInst->NewPointer(r),
+    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->String("0"),
+                                       REQUEST_HANDLER_TYPE);
 
-//  modrexx_debug(r->server, "Entering rexx_mime_type_handler routine.");
+//  modoorexx_debug(r->server, "Entering rexx_mime_type_handler routine.");
 
     // create an Array object to hold the program arguments
-    RexxArrayObject args = cfg->noncontentThrdInst->NewArray(1);
+    RexxArrayObject args = cfg->contentThrdInst->NewArray(1);
     // add the argument to the array. Note that ArrayPut() requires an
     // index that is origin-1, unlike C arrays which are origin-0.
-    cfg->noncontentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
+    cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
     // call our program, using the provided arguments.
-    RexxObjectPtr result = cfg->noncontentThrdInst->CallProgram(c->mime_type, args);
-    cfg->noncontentThrdInst->ObjectToInt32(result, &rc);
+    RexxObjectPtr result = cfg->contentThrdInst->CallProgram(c->mime_type, args);
+    cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // if an error occurred, get the decoded exception information
-    if (cfg->noncontentThrdInst->CheckCondition()) {
+    if (cfg->contentThrdInst->CheckCondition()) {
         RexxCondition condition;
         // retrieve the error information and get it into a decoded form
-        RexxDirectoryObject cond = cfg->noncontentThrdInst->GetConditionInfo();
-        cfg->noncontentThrdInst->DecodeConditionInfo(cond, &condition);
+        RexxDirectoryObject cond = cfg->contentThrdInst->GetConditionInfo();
+        cfg->contentThrdInst->DecodeConditionInfo(cond, &condition);
         // display the errors
         oorexxstart_error_processor(r, c->mime_type, rc);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-//  modrexx_debug(r->server, "Exiting rexx_mime_type_handler routine.");
+//  modoorexx_debug(r->server, "Exiting rexx_mime_type_handler routine.");
 
     return rc;
 }
@@ -619,32 +626,34 @@ int oorexx_fixup_handler(request_rec *r)
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
     /* Set the request_rec pointer for the ooRexx exits */
-    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->noncontentThrdInst->GetLocalEnvironment();
-    cfg->noncontentThrdInst->DirectoryPut(dir, cfg->noncontentThrdInst->NewPointer(r),
+    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->String("0"),
+                                       REQUEST_HANDLER_TYPE);
 
-//  modrexx_debug(r->server, "Entering rexx_fixup_handler routine.");
+//  modoorexx_debug(r->server, "Entering rexx_fixup_handler routine.");
 
     // create an Array object to hold the program arguments
-    RexxArrayObject args = cfg->noncontentThrdInst->NewArray(1);
+    RexxArrayObject args = cfg->contentThrdInst->NewArray(1);
     // add the argument to the array. Note that ArrayPut() requires an
     // index that is origin-1, unlike C arrays which are origin-0.
-    cfg->noncontentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
+    cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
     // call our program, using the provided arguments.
-    RexxObjectPtr result = cfg->noncontentThrdInst->CallProgram(c->fixup, args);
-    cfg->noncontentThrdInst->ObjectToInt32(result, &rc);
+    RexxObjectPtr result = cfg->contentThrdInst->CallProgram(c->fixup, args);
+    cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // if an error occurred, get the decoded exception information
-    if (cfg->noncontentThrdInst->CheckCondition()) {
+    if (cfg->contentThrdInst->CheckCondition()) {
         RexxCondition condition;
         // retrieve the error information and get it into a decoded form
-        RexxDirectoryObject cond = cfg->noncontentThrdInst->GetConditionInfo();
-        cfg->noncontentThrdInst->DecodeConditionInfo(cond, &condition);
+        RexxDirectoryObject cond = cfg->contentThrdInst->GetConditionInfo();
+        cfg->contentThrdInst->DecodeConditionInfo(cond, &condition);
         // display the errors
         oorexxstart_error_processor(r, c->fixup, rc);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-//  modrexx_debug(r->server, "Exiting rexx_fixup_handler routine.");
+//  modoorexx_debug(r->server, "Exiting rexx_fixup_handler routine.");
 
     return rc;
 }
@@ -681,32 +690,34 @@ int oorexx_logging_handler(request_rec *r)
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
     /* Set the request_rec pointer for the ooRexx exits */
-    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->noncontentThrdInst->GetLocalEnvironment();
-    cfg->noncontentThrdInst->DirectoryPut(dir, cfg->noncontentThrdInst->NewPointer(r),
+    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->String("0"),
+                                       REQUEST_HANDLER_TYPE);
 
-//  modrexx_debug(r->server, "Entering rexx_logging_handler routine.");
+//  modoorexx_debug(r->server, "Entering rexx_logging_handler routine.");
 
     // create an Array object to hold the program arguments
-    RexxArrayObject args = cfg->noncontentThrdInst->NewArray(1);
+    RexxArrayObject args = cfg->contentThrdInst->NewArray(1);
     // add the argument to the array. Note that ArrayPut() requires an
     // index that is origin-1, unlike C arrays which are origin-0.
-    cfg->noncontentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
+    cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
     // call our program, using the provided arguments.
-    RexxObjectPtr result = cfg->noncontentThrdInst->CallProgram(c->logging, args);
-    cfg->noncontentThrdInst->ObjectToInt32(result, &rc);
+    RexxObjectPtr result = cfg->contentThrdInst->CallProgram(c->logging, args);
+    cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // if an error occurred, get the decoded exception information
-    if (cfg->noncontentThrdInst->CheckCondition()) {
+    if (cfg->contentThrdInst->CheckCondition()) {
         RexxCondition condition;
         // retrieve the error information and get it into a decoded form
-        RexxDirectoryObject cond = cfg->noncontentThrdInst->GetConditionInfo();
-        cfg->noncontentThrdInst->DecodeConditionInfo(cond, &condition);
+        RexxDirectoryObject cond = cfg->contentThrdInst->GetConditionInfo();
+        cfg->contentThrdInst->DecodeConditionInfo(cond, &condition);
         // display the errors
         oorexxstart_error_processor(r, c->logging, rc);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-//  modrexx_debug(r->server, "Exiting rexx_logging_handler routine.");
+//  modoorexx_debug(r->server, "Exiting rexx_logging_handler routine.");
 
     return rc;
 }
@@ -743,32 +754,34 @@ int oorexx_header_parser_handler(request_rec *r)
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
     /* Set the request_rec pointer for the ooRexx exits */
-    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->noncontentThrdInst->GetLocalEnvironment();
-    cfg->noncontentThrdInst->DirectoryPut(dir, cfg->noncontentThrdInst->NewPointer(r),
+    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->String("0"),
+                                       REQUEST_HANDLER_TYPE);
 
-//  modrexx_debug(r->server, "Entering rexx_header_parser_handler routine.");
+//  modoorexx_debug(r->server, "Entering rexx_header_parser_handler routine.");
 
     // create an Array object to hold the program arguments
-    RexxArrayObject args = cfg->noncontentThrdInst->NewArray(1);
+    RexxArrayObject args = cfg->contentThrdInst->NewArray(1);
     // add the argument to the array. Note that ArrayPut() requires an
     // index that is origin-1, unlike C arrays which are origin-0.
-    cfg->noncontentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
+    cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
     // call our program, using the provided arguments.
-    RexxObjectPtr result = cfg->noncontentThrdInst->CallProgram(c->header_parser, args);
-    cfg->noncontentThrdInst->ObjectToInt32(result, &rc);
+    RexxObjectPtr result = cfg->contentThrdInst->CallProgram(c->header_parser, args);
+    cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // if an error occurred, get the decoded exception information
-    if (cfg->noncontentThrdInst->CheckCondition()) {
+    if (cfg->contentThrdInst->CheckCondition()) {
         RexxCondition condition;
         // retrieve the error information and get it into a decoded form
-        RexxDirectoryObject cond = cfg->noncontentThrdInst->GetConditionInfo();
-        cfg->noncontentThrdInst->DecodeConditionInfo(cond, &condition);
+        RexxDirectoryObject cond = cfg->contentThrdInst->GetConditionInfo();
+        cfg->contentThrdInst->DecodeConditionInfo(cond, &condition);
         // display the errors
         oorexxstart_error_processor(r, c->header_parser, rc);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-//  modrexx_debug(r->server, "Exiting rexx_header_parser_handler routine.");
+//  modoorexx_debug(r->server, "Exiting rexx_header_parser_handler routine.");
 
     cfg->contentThrdInst->ObjectToInt32(result, &rc);
     return rc;
@@ -806,32 +819,34 @@ int oorexx_post_request_handler(request_rec *r)
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
     /* Set the request_rec pointer for the ooRexx exits */
-    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->noncontentThrdInst->GetLocalEnvironment();
-    cfg->noncontentThrdInst->DirectoryPut(dir, cfg->noncontentThrdInst->NewPointer(r),
+    RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
+    cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->String("0"),
+                                       REQUEST_HANDLER_TYPE);
 
-//  modrexx_debug(r->server, "Entering rexx_post_request_handler routine.");
+//  modoorexx_debug(r->server, "Entering rexx_post_request_handler routine.");
 
     // create an Array object to hold the program arguments
-    RexxArrayObject args = cfg->noncontentThrdInst->NewArray(1);
+    RexxArrayObject args = cfg->contentThrdInst->NewArray(1);
     // add the argument to the array. Note that ArrayPut() requires an
     // index that is origin-1, unlike C arrays which are origin-0.
-    cfg->noncontentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
+    cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
     // call our program, using the provided arguments.
-    RexxObjectPtr result = cfg->noncontentThrdInst->CallProgram(c->post_read, args);
-    cfg->noncontentThrdInst->ObjectToInt32(result, &rc);
+    RexxObjectPtr result = cfg->contentThrdInst->CallProgram(c->post_read, args);
+    cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // if an error occurred, get the decoded exception information
-    if (cfg->noncontentThrdInst->CheckCondition()) {
+    if (cfg->contentThrdInst->CheckCondition()) {
         RexxCondition condition;
         // retrieve the error information and get it into a decoded form
-        RexxDirectoryObject cond = cfg->noncontentThrdInst->GetConditionInfo();
-        cfg->noncontentThrdInst->DecodeConditionInfo(cond, &condition);
+        RexxDirectoryObject cond = cfg->contentThrdInst->GetConditionInfo();
+        cfg->contentThrdInst->DecodeConditionInfo(cond, &condition);
         // display the errors
         oorexxstart_error_processor(r, c->post_read, rc);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-//  modrexx_debug(r->server, "Exiting rexx_post_request_handler routine.");
+//  modoorexx_debug(r->server, "Exiting rexx_post_request_handler routine.");
 
     return rc;
 }

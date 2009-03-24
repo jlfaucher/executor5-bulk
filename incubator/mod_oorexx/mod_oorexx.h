@@ -95,22 +95,20 @@ extern "C" {
 #define modoorexx_error(srvr, msg) ap_log_error(APLOG_MARK, \
     APLOG_NOERRNO | APLOG_ERR, 0, srvr, msg)
 
-/* Rexx Address and Sysexit names */
-#define WWW_INI_EXIT  "WWW_INI_EXIT"
-#define WWW_IO_EXIT   "WWW_IO_EXIT"
-#define WWW_IO_EXIT_2 "WWW_IO_EXIT_2"
-#define RX_ADDR_ENV   "WWW"
-
 /* Name of the variable in the .local environment which holds the request_rec pointer */
 #define REQUEST_REC_PTR "request_rec"
+/* Name of the variable in the .local environment which holds the handler type */
+#define REQUEST_HANDLER_TYPE "request_handler_type"
 
 /* Struct for holding our Rexx instances for each server child */
 typedef struct _ooRexxSrvrConfig {
     RexxInstance      *contentInst;
     RexxThreadContext *contentThrdInst;
-    RexxInstance      *noncontentInst;
-    RexxThreadContext *noncontentThrdInst;
 } ooRexxSrvrConfig;
+
+/* Our ooRexx package entry */
+extern RexxPackageEntry mod_oorexx_package_entry;
+
 
 
 /*----------------------------------------------------------------------------*/
@@ -193,7 +191,6 @@ static int oorexx_rsphandler(request_rec *r);
 
 RexxExitHandler Rexx_INI_Exit;
 RexxExitHandler Rexx_IO_Exit;
-RexxExitHandler Rexx_IO_Exit_2;
 
 
 /*----------------------------------------------------------------------------*/
