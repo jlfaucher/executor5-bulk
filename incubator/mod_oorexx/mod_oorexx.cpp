@@ -215,7 +215,7 @@ int REXXENTRY ooRexx_INI_Exit(RexxExitContext *context, int ExitNumber, int Subf
     /* Perform the exit function */
     switch (Subfunction) {
     case RXINIEXT:
-//      modoorexx_debug(r->server, "Entering Rexx_INI_Exit routine.");
+        modoorexx_debug(r->server, "Entering Rexx_INI_Exit routine.");
 
         /* Set our standard CGI Rexx variables */
         SetooRexxVar((char *)"WWWAUTH_TYPE", r->ap_auth_type);

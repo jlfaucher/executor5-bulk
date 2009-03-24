@@ -54,7 +54,7 @@ static void oorexx_child_init(apr_pool_t *pchild, server_rec *s)
 {
     ooRexxSrvrConfig *cfg;
     RexxOption options[3];
-    RexxContextExit exits[6];
+    RexxContextExit exits[3];
     RexxLibraryPackage package;
 
     cfg = (ooRexxSrvrConfig *) apr_pcalloc(pchild, sizeof(ooRexxSrvrConfig));
@@ -66,16 +66,10 @@ static void oorexx_child_init(apr_pool_t *pchild, server_rec *s)
 
     /* set up our ooRexx content instance exits */
     exits[0].handler = ooRexx_INI_Exit;
-    exits[0].sysexit_code = RXINIEXT;
+    exits[0].sysexit_code = RXINI;
     exits[1].handler = ooRexx_IO_Exit;
-    exits[1].sysexit_code = RXSIOSAY;
-    exits[2].handler = ooRexx_IO_Exit;
-    exits[2].sysexit_code = RXSIOTRC;
-    exits[3].handler = ooRexx_IO_Exit;
-    exits[3].sysexit_code = RXSIOTRD;
-    exits[4].handler = ooRexx_IO_Exit;
-    exits[4].sysexit_code = RXSIODTR;
-    exits[5].sysexit_code = 0;
+    exits[1].sysexit_code = RXSIO;
+    exits[2].sysexit_code = 0;
 
     /* set up our ooRexx instance options */
     options[0].optionName = DIRECT_EXITS;
