@@ -57,8 +57,12 @@ static void oorexx_child_init(apr_pool_t *pchild, server_rec *s)
     RexxContextExit exits[3];
     RexxLibraryPackage package;
 
+    ap_add_version_component(pchild, MOD_OOREXX_VERSION);
+
     cfg = (ooRexxSrvrConfig *) apr_pcalloc(pchild, sizeof(ooRexxSrvrConfig));
     ap_set_module_config(s->module_config, &oorexx_module, cfg);
+
+//  modoorexx_debug(s, "Entering rexx_child_init routine.");
 
     /* set up our package */
     package.registeredName = "mod_oorexx";
@@ -80,6 +84,8 @@ static void oorexx_child_init(apr_pool_t *pchild, server_rec *s)
 
     /* set up our ooRexx content handler instance */
     RexxCreateInterpreter(&cfg->contentInst, &cfg->contentThrdInst, options);
+
+//  modoorexx_debug(s, "Exiting rexx_child_init routine.");
 
     return;
 }
@@ -107,7 +113,7 @@ static int oorexx_handler(request_rec *r)
         return DECLINED;
     }
 
-//  modoorexx_debug(r->server, "Entering rexx_handler routine.");
+    modoorexx_debug(r->server, "Entering rexx_handler routine.");
 
     /* If we're only supposed to send header information (HEAD request), */
     /* then don't bother Rexx with the request.                          */
@@ -115,7 +121,7 @@ static int oorexx_handler(request_rec *r)
         /* Set the content-type */
         r->content_type = "text/html";
         ap_send_http_header(r);
-//      modoorexx_debug(r->server, "Exiting rexx_handler routine.");
+        modoorexx_debug(r->server, "Exiting rexx_handler routine.");
         return OK;
     }
 
@@ -136,7 +142,7 @@ static int oorexx_handler(request_rec *r)
     /* Get the Rexx instance */
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
-    /* Set the request_rec pointer for the ooRexx exits */
+    /* Set the request_rec pointer and the type for the ooRexx exits */
     RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
     cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
@@ -148,6 +154,7 @@ static int oorexx_handler(request_rec *r)
     // add the argument to the array.
     cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
     // call our program, using the provided arguments.
+    modoorexx_debug(r->server, "Calling Rexx.");
     RexxObjectPtr result = cfg->contentThrdInst->CallProgram(rxprocpath, args);
     cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // if an error occurred, get the decoded exception information
@@ -156,13 +163,13 @@ static int oorexx_handler(request_rec *r)
         // retrieve the error information and get it into a decoded form
         RexxDirectoryObject cond = cfg->contentThrdInst->GetConditionInfo();
         cfg->contentThrdInst->DecodeConditionInfo(cond, &condition);
-//      modoorexx_debug(r->server, "Exiting rexx_rsphandler routine.");
+        modoorexx_debug(r->server, "Exiting rexx_rsphandler routine.");
         // display the errors
         oorexxstart_error_processor(r, rxprocpath, rc);
         rc = HTTP_INTERNAL_SERVER_ERROR;
     }
 
-//  modoorexx_debug(r->server, "Exiting rexx_handler routine.");
+    modoorexx_debug(r->server, "Exiting rexx_handler routine.");
 
     return rc;
 }
@@ -190,7 +197,7 @@ static int oorexx_rsphandler(request_rec *r)
         return DECLINED;
     }
 
-//  modoorexx_debug(r->server, "Entering rexx_rsphandler routine.");
+    modoorexx_debug(r->server, "Entering rexx_rsphandler routine.");
     /* If we're only supposed to send header information (HEAD request), */
     /* then don't bother Rexx with the request.                          */
     if (r->header_only) {
@@ -203,6 +210,7 @@ static int oorexx_rsphandler(request_rec *r)
 
     /* If the rsp file does not exist then return an error. */
     if(r->finfo.filetype == 0) {
+//      modoorexx_debug(r->server, "Exiting rexx_rsphandler routine.");
         return HTTP_NOT_FOUND;
     }
 
@@ -214,7 +222,7 @@ static int oorexx_rsphandler(request_rec *r)
     /* Get the Rexx instance */
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
-    /* Set the request_rec pointer for the ooRexx exits */
+    /* Set the request_rec pointer and the type for the ooRexx exits */
     RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
     cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
@@ -230,6 +238,7 @@ static int oorexx_rsphandler(request_rec *r)
     sprintf(rxarg, "\"%s\" \"%s\"", r->filename, TempName);
     cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->String(rxarg), 1);
     // call our program, using the provided arguments.
+    modoorexx_debug(r->server, "Compiling rsp file.");
     RexxObjectPtr result = cfg->contentThrdInst->CallProgram(c->rspcompiler, args);
     cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // if an error occurred, get the decoded exception information
@@ -246,13 +255,14 @@ static int oorexx_rsphandler(request_rec *r)
 
     /* Execute the compiled rsp file */
 
-    /* Set the request_rec pointer for the ooRexx exits */
+    /* Set the type for the ooRexx exits */
     cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->String("1"),
                                        REQUEST_HANDLER_TYPE);
 
     // add the argument to the array.
     cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
     // call our program, using the provided arguments.
+    modoorexx_debug(r->server, "Executing rsp file.");
     result = cfg->contentThrdInst->CallProgram(TempName, args);
     cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // clean up the temporary file
@@ -304,7 +314,7 @@ int oorexx_translation_handler(request_rec *r)
     /* Get the Rexx instance */
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
-    /* Set the request_rec pointer for the ooRexx exits */
+    /* Set the request_rec pointer and the type for the ooRexx exits */
     RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
     cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
@@ -367,7 +377,7 @@ int oorexx_authentication_handler(request_rec *r)
     /* Get the Rexx instance */
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
-    /* Set the request_rec pointer for the ooRexx exits */
+    /* Set the request_rec pointer and the type for the ooRexx exits */
     RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
     cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
@@ -430,7 +440,7 @@ int oorexx_authorization_handler(request_rec *r)
     /* Get the Rexx instance */
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
-    /* Set the request_rec pointer for the ooRexx exits */
+    /* Set the request_rec pointer and the type for the ooRexx exits */
     RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
     cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
@@ -493,7 +503,7 @@ int oorexx_access_handler(request_rec *r)
     /* Get the Rexx instance */
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
-    /* Set the request_rec pointer for the ooRexx exits */
+    /* Set the request_rec pointer and the type for the ooRexx exits */
     RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
     cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
@@ -556,7 +566,7 @@ int oorexx_mime_type_handler(request_rec *r)
     /* Get the Rexx instance */
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
-    /* Set the request_rec pointer for the ooRexx exits */
+    /* Set the request_rec pointer and the type for the ooRexx exits */
     RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
     cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
@@ -619,7 +629,7 @@ int oorexx_fixup_handler(request_rec *r)
     /* Get the Rexx instance */
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
-    /* Set the request_rec pointer for the ooRexx exits */
+    /* Set the request_rec pointer and the type for the ooRexx exits */
     RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
     cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
@@ -683,7 +693,7 @@ int oorexx_logging_handler(request_rec *r)
     /* Get the Rexx instance */
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
-    /* Set the request_rec pointer for the ooRexx exits */
+    /* Set the request_rec pointer and the type for the ooRexx exits */
     RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
     cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
@@ -747,7 +757,7 @@ int oorexx_header_parser_handler(request_rec *r)
     /* Get the Rexx instance */
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
-    /* Set the request_rec pointer for the ooRexx exits */
+    /* Set the request_rec pointer and the type for the ooRexx exits */
     RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
     cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);
@@ -812,7 +822,7 @@ int oorexx_post_request_handler(request_rec *r)
     /* Get the Rexx instance */
     cfg = (ooRexxSrvrConfig *)ap_get_module_config(r->server->module_config, &oorexx_module);
 
-    /* Set the request_rec pointer for the ooRexx exits */
+    /* Set the request_rec pointer and the type for the ooRexx exits */
     RexxDirectoryObject dir = (RexxDirectoryObject)cfg->contentThrdInst->GetLocalEnvironment();
     cfg->contentThrdInst->DirectoryPut(dir, cfg->contentThrdInst->NewPointer(r),
                                        REQUEST_REC_PTR);

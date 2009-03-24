@@ -357,7 +357,7 @@ static int read_post_vars(request_rec *r, const char **rbuf)
  *
  * @return        Void
  */
-static void parse_vars(request_rec *r, char *data)
+static void parse_vars(request_rec *r, RexxCallContext * context, char *data)
 {
     int num = 0;
     char *val;
@@ -374,17 +374,17 @@ static void parse_vars(request_rec *r, char *data)
             /* We now have a name=value pair so create a Rexx variable */
             num++;
             sprintf(varname, "WWWARGS.%d.!NAME", num);
-            SetooRexxVar(varname, name);
+            context->SetContextVariable(varname, context->String(name));
             sprintf(varname, "WWWARGS.%d.!VALUE", num);
-            SetooRexxVar(varname, val);
+            context->SetContextVariable(varname, context->String(val));
             sprintf(varname, "WWWARGS.%s", name);
-            SetooRexxVar(varname, val);
+            context->SetContextVariable(varname, context->String(val));
         }
     }
 
     /* Now set the correct number of arguments */
     sprintf(varname, "%d", num);
-    SetooRexxVar((char *)"WWWARGS.0", varname);
+    context->SetContextVariable("WWWARGS.0", context->String(varname));
 }
 
 
@@ -425,17 +425,17 @@ RexxRoutine1(int,                      // Return type
         }
 
         /* Set Rexx stem array */
-        parse_vars(r, data);
+        parse_vars(r, context, data);
 
         /* Set Rexx Post data variable */
-        SetooRexxVar((char *)"WWWPOST_STRING", data);
+        context->SetContextVariable("WWWPOST_STRING", context->String(data));
         break;
     case (M_GET):
         /* point to GET arguments */
         data = r->args;
 
         /* Set Rexx stem array */
-        parse_vars(r, data);
+        parse_vars(r, context, data);
         break;
     default:
         break;
@@ -469,7 +469,7 @@ RexxRoutine1(int,                      // Return type
     /* Initialize data */
     data = apr_table_get(r->headers_in, "Cookie");
     if (!data) {
-        SetooRexxVar((char *)"WWWCOOKIES.0", (char *)"0");
+        context->SetContextVariable("WWWCOOKIES.0", context->String("0"));
         return RXFUNC_OK;
     }
 
@@ -486,17 +486,17 @@ RexxRoutine1(int,                      // Return type
 
             /* We now have a name=value pair so create a Rexx variable */
             sprintf(varname, "WWWCOOKIES.%d.!NAME", ++num);
-            SetooRexxVar(varname, name);
+            context->SetContextVariable(varname, context->String(name));
             sprintf(varname, "WWWCOOKIES.%d.!VALUE", num);
-            SetooRexxVar(varname, val);
+            context->SetContextVariable(varname, context->String(val));
             sprintf(varname, "WWWCOOKIES.%s", name);
-            SetooRexxVar (varname, val);
+            context->SetContextVariable(varname, context->String(val));
         }
     }
 
     /* Now set the correct number of arguments */
     sprintf(varname, "%d", num);
-    SetooRexxVar((char *)"WWWCOOKIES.0", varname);
+    context->SetContextVariable("WWWCOOKIES.0", context->String(varname));
 
     return 0;
 }

@@ -102,42 +102,6 @@ char * CreateTempFile(request_rec *r, const char *fntemplate)
 
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Function:    SetooRexxVar                                                    */
-/*                                                                            */
-/* Description: Set a Rexx variable.                                          */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
-int SetooRexxVar(char *varname, char *value)
-{
-    SHVBLOCK   block;
-    int rc;
-
-    block.shvcode = RXSHV_SET;
-    block.shvret = (unsigned char) 0;
-    block.shvnext = NULL;
-
-    MAKERXSTRING(block.shvname, varname, strlen(varname));
-    block.shvnamelen = strlen(varname);
-
-    /* The possibility exists that we will be passed a NULL ptr for the value */
-    /* of the Rexx variable so take care of that possibility when setting up  */
-    /* the shvvalue and shvvaluelen variables.                                */
-    if (value == NULL) {
-        MAKERXSTRING(block.shvvalue, (char *)"\0", 0);
-    }
-    else {
-        MAKERXSTRING(block.shvvalue, value, strlen(value));
-    }
-    block.shvvaluelen = strlen(value);
-
-    rc = RexxVariablePool(&block);
-    return rc;
-}
-
-
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
 /* Function:    ooRexx_IO_Exit                                                */
 /*                                                                            */
 /* Description: I/O exit for the Rexx procedure.                              */
@@ -218,65 +182,66 @@ int REXXENTRY ooRexx_INI_Exit(RexxExitContext *context, int ExitNumber, int Subf
         modoorexx_debug(r->server, "Entering Rexx_INI_Exit routine.");
 
         /* Set our standard CGI Rexx variables */
-        SetooRexxVar((char *)"WWWAUTH_TYPE", r->ap_auth_type);
-        SetooRexxVar((char *)"WWWCONTENT_LENGTH",
-                     (char *)apr_table_get(r->headers_in, "Content-Length"));
-        SetooRexxVar((char *)"WWWCONTENT_TYPE",
-                     (char *)apr_table_get(r->headers_in, "Content-Type"));
-        SetooRexxVar((char *)"WWWGATEWAY_INTERFACE", (char *)version);
-        SetooRexxVar((char *)"WWWHTTP_USER_ACCEPT",
-                     (char *)apr_table_get(r->headers_in, "Accept"));
-        SetooRexxVar((char *)"WWWHTTP_USER_AGENT",
-                     (char *)apr_table_get(r->headers_in, "User-Agent"));
-        SetooRexxVar((char *)"WWWPATH_INFO",(char *)r->path_info);
+        context->SetContextVariable("WWWAUTH_TYPE", context->String(r->ap_auth_type));
+        modoorexx_debug(r->server, "Got here.");
+        context->SetContextVariable("WWWCONTENT_LENGTH",
+                     context->String(apr_table_get(r->headers_in, "Content-Length")));
+        context->SetContextVariable("WWWCONTENT_TYPE",
+                     context->String(apr_table_get(r->headers_in, "Content-Type")));
+        context->SetContextVariable("WWWGATEWAY_INTERFACE", context->String(version));
+        context->SetContextVariable("WWWHTTP_USER_ACCEPT",
+                     context->String(apr_table_get(r->headers_in, "Accept")));
+        context->SetContextVariable("WWWHTTP_USER_AGENT",
+                     context->String(apr_table_get(r->headers_in, "User-Agent")));
+        context->SetContextVariable("WWWPATH_INFO",context->String(r->path_info));
 
         subr = ap_sub_req_lookup_uri(r->path_info, r, NULL);
-        SetooRexxVar((char *)"WWWPATH_TRANSLATED", subr->filename);
+        context->SetContextVariable("WWWPATH_TRANSLATED", context->String(subr->filename));
         ap_destroy_sub_req(subr);
 
-        SetooRexxVar((char *)"WWWQUERY_STRING", (char *)r->args);
-        SetooRexxVar((char *)"WWWREMOTE_ADDR", r->connection->remote_ip);
-        SetooRexxVar((char *)"WWWREMOTE_HOST",
-                     (char *)ap_get_remote_host(r->connection,
+        context->SetContextVariable("WWWQUERY_STRING", context->String(r->args));
+        context->SetContextVariable("WWWREMOTE_ADDR", context->String(r->connection->remote_ip));
+        context->SetContextVariable("WWWREMOTE_HOST",
+                     context->String(ap_get_remote_host(r->connection,
                                                 r->per_dir_config,
-                                                REMOTE_HOST, NULL));
-        SetooRexxVar((char *)"WWWREMOTE_IDENT", (char *)ap_get_remote_logname(r));
-        SetooRexxVar((char *)"WWWREMOTE_USER", r->user);
-        SetooRexxVar((char *)"WWWREQUEST_METHOD", (char *)r->method);
-        SetooRexxVar((char *)"WWWSCRIPT_NAME", (char *)r->uri);
-        SetooRexxVar((char *)"WWWSERVER_NAME", (char *)ap_get_server_name(r));
+                                                REMOTE_HOST, NULL)));
+        context->SetContextVariable("WWWREMOTE_IDENT", context->String(ap_get_remote_logname(r)));
+        context->SetContextVariable("WWWREMOTE_USER", context->String(r->user));
+        context->SetContextVariable("WWWREQUEST_METHOD", context->String(r->method));
+        context->SetContextVariable("WWWSCRIPT_NAME", context->String(r->uri));
+        context->SetContextVariable("WWWSERVER_NAME", context->String(ap_get_server_name(r)));
 
         varname = apr_psprintf(r->pool, "%d", ap_get_server_port(r));
-        SetooRexxVar((char *)"WWWSERVER_PORT", varname);
+        context->SetContextVariable("WWWSERVER_PORT", context->String(varname));
 
-        SetooRexxVar((char *)"WWWSERVER_PROTOCOL", (char *)r->protocol);
-        SetooRexxVar((char *)"WWWSERVER_SOFTWARE", (char *)ap_get_server_version());
+        context->SetContextVariable("WWWSERVER_PROTOCOL", context->String(r->protocol));
+        context->SetContextVariable("WWWSERVER_SOFTWARE", context->String(ap_get_server_version()));
 
         /* Define some other useful variables to the Rexx program. */
-        SetooRexxVar((char *)"WWWDEFAULT_TYPE", (char *)ap_default_type(r));
+        context->SetContextVariable("WWWDEFAULT_TYPE", context->String(ap_default_type(r)));
         if (r->main == NULL) {
-            SetooRexxVar((char *)"WWWIS_MAIN_REQUEST", (char *)"1");
+            context->SetContextVariable("WWWIS_MAIN_REQUEST", context->String("1"));
         }
         else {
-            SetooRexxVar((char *)"WWWIS_MAIN_REQUEST", (char *)"0");
+            context->SetContextVariable("WWWIS_MAIN_REQUEST", context->String("0"));
         }
-        SetooRexxVar((char *)"WWWSERVER_ROOT",
-                   ap_server_root_relative (r->pool, ""));
-        SetooRexxVar((char *)"WWWUNPARSEDURI", (char *) r->unparsed_uri);
-        SetooRexxVar((char *)"WWWURI", r->uri);
-        SetooRexxVar((char *)"WWWFILENAME", r->filename);
-        SetooRexxVar((char *)"WWWPOST_STRING", NULL);
+        context->SetContextVariable("WWWSERVER_ROOT",
+                   context->String(ap_server_root_relative (r->pool, "")));
+        context->SetContextVariable("WWWUNPARSEDURI", context->String(r->unparsed_uri));
+        context->SetContextVariable("WWWURI", context->String(r->uri));
+        context->SetContextVariable("WWWFILENAME", context->String(r->filename));
+        context->SetContextVariable("WWWPOST_STRING", context->Nil());
 
         /* Define the Rexx variables defined in the Apache httpd.conf file.   */
         sr = c->rexxvars;
         while (sr != NULL) {
-            SetooRexxVar(sr->oorexx_var_name, sr->oorexx_var_value);
+            context->SetContextVariable(sr->oorexx_var_name, context->String(sr->oorexx_var_value));
             sr = sr->next;
         }
 
         /* Define the Rexx RSP compiler information variables. */
-        SetooRexxVar((char *)"WWWRSPCOMPILER", c->rspcompiler);
-        SetooRexxVar((char *)"WWWFNAMETEMPLATE", c->fnametemplate);
+        context->SetContextVariable("WWWRSPCOMPILER", context->String(c->rspcompiler));
+        context->SetContextVariable("WWWFNAMETEMPLATE", context->String(c->fnametemplate));
 
 //      modoorexx_debug(r->server, "Exiting Rexx_INI_Exit routine.");
 

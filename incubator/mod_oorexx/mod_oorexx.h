@@ -158,7 +158,6 @@ typedef struct _oorexx_config {
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-int SetooRexxVar(char *name, char *value);
 void *create_oorexx_dir_config(apr_pool_t *p, char *path);
 const char *get_oorexx_err_str(request_rec *r, int rxrc);
 void oorexxstart_error_processor(request_rec * r, char *rxprocpath, int rxrc);

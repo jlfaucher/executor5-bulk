@@ -51,9 +51,7 @@ OK        = 0     /* Module has handled this stage. */
 NOT_FOUND = 404   /* Main document not found. */
 
 /* get environment stuff */
-parse source env . path
-if env = 'OS/2' then envname = 'OS2ENVIRONMENT'
-else envname = 'ENVIRONMENT'
+envname = 'ENVIRONMENT'
 parse upper version v
 
 /* get the Apache request record ptr */

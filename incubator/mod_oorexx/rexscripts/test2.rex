@@ -77,8 +77,6 @@ say "<H1>Serialization Test for Mod_Rexx</H1>"
 
 say '<p>The Mod_Rexx version string is "'WWWGetVersion()'"'
 
-say "<p>The value of arg(1) is" arg(1)
-
 say '<p>The current RFC 822 formatted time at the server is "'WWWHTTP_time(r)'"'
 
 say '<p>Sleeping 10 seconds'
