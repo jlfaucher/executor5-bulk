@@ -813,14 +813,14 @@ RexxMethod1(logical_t,                 // Return type
 
 
 /**
- * Function:  WWWReqRecThe_Request
+ * Function:  WWWReqRecThe_request
  *
  * Give direct access to the the_Request field in the request.
  *
  * @return        Pointer
  */
 RexxMethod1(POINTER,                   // Return type
-            WWWReqRecThe_Request,      // Routine name
+            WWWReqRecThe_request,      // Routine name
             CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
@@ -1125,6 +1125,9 @@ RexxMethod3(RexxObjectPtr,             // Return type
         apr_table_set(r->subprocess_env, key, val);
         return context->String("");
     }
+    if (r->subprocess_env == NULL) {
+        return context->String("");
+    }
     return context->String((char *)apr_table_get(r->subprocess_env, key));
 }
 
@@ -1152,6 +1155,9 @@ RexxMethod3(RexxObjectPtr,             // Return type
         apr_table_set(r->notes, key, val);
         return context->String("");
     }
+    if (r->notes == NULL) {
+        return context->String("");
+    }
     return context->String((char *)apr_table_get(r->notes, key));
 }
 
@@ -1176,6 +1182,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
         r->content_type = apr_pstrdup(r->pool, type);
         return context->String("");
     }
+    if (r->content_type == NULL) {
+        return context->String("");
+    }
     return context->String(r->content_type);
 }
 
@@ -1198,6 +1207,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
 
     if (type != NULL) {
         r->content_encoding = apr_pstrdup(r->pool, type);
+        return context->String("");
+    }
+    if (r->content_encoding == NULL) {
         return context->String("");
     }
     return context->String(r->content_encoding);
@@ -1375,6 +1387,9 @@ RexxMethod1(RexxObjectPtr,             // Return type
 {
     request_rec *r = (request_rec *)self;
 
+    if (r->args == NULL) {
+        return context->String("");
+    }
     return context->String(r->args);
 }
 
@@ -1411,6 +1426,9 @@ RexxMethod1(RexxObjectPtr,             // Return type
 {
     request_rec *r = (request_rec *)self;
 
+    if (r->user == NULL) {
+        return context->String("");
+    }
     return context->String(r->user);
 }
 
@@ -1428,6 +1446,9 @@ RexxMethod1(RexxObjectPtr,             // Return type
 {
     request_rec *r = (request_rec *)self;
 
+    if (r->ap_auth_type == NULL) {
+        return context->String("");
+    }
     return context->String(r->ap_auth_type);
 }
 
@@ -1476,6 +1497,9 @@ RexxMethod1(RexxObjectPtr,             // Return type
 {
     server_rec *s = (server_rec *)self;
 
+    if (s->server_admin == NULL) {
+        return context->String("");
+    }
     return context->String(s->server_admin);
 }
 
@@ -1493,6 +1517,9 @@ RexxMethod1(RexxObjectPtr,             // Return type
 {
     server_rec *s = (server_rec *)self;
 
+    if (s->server_hostname == NULL) {
+        return context->String("");
+    }
     return context->String(s->server_hostname);
 }
 
@@ -1521,13 +1548,16 @@ RexxMethod1(int,                       // Return type
  *
  * @return        0 or 1
  */
-RexxMethod1(int,                       // Return type
+RexxMethod1(RexxObjectPtr,             // Return type
             WWWSrvRecIs_virtual,       // Routine name
             CSELF, self)               // self
 {
     server_rec *s = (server_rec *)self;
 
-    return s->is_virtual;
+    if (s->is_virtual) {
+        return context->True();
+    }
+    return context->False();
 }
 
 
@@ -1585,13 +1615,14 @@ RexxMethod1(int,                       // Return type
 
 // build the actual entry list
 RexxMethodEntry mod_oorexx_methods[] = {
+    REXX_METHOD(WWWNewReqrec, WWWNewReqRec),
     REXX_METHOD(WWWReqRecConnection, WWWReqRecConnection),
     REXX_METHOD(WWWReqRecServer, WWWReqRecServer),
     REXX_METHOD(WWWReqRecNext, WWWReqRecNext),
     REXX_METHOD(WWWReqRecPrev, WWWReqRecPrev),
     REXX_METHOD(WWWReqRecMain, WWWReqRecMain),
     REXX_METHOD(WWWReqRecIsMain, WWWReqRecIsMain),
-    REXX_METHOD(WWWReqRecThe_Request, WWWReqRecThe_Request),
+    REXX_METHOD(WWWReqRecThe_request, WWWReqRecThe_request),
     REXX_METHOD(WWWReqRecProxyreq, WWWReqRecProxyreq),
     REXX_METHOD(WWWReqRecHeader_only, WWWReqRecHeader_only),
     REXX_METHOD(WWWReqRecProtocol, WWWReqRecProtocol),
@@ -1603,6 +1634,7 @@ RexxMethodEntry mod_oorexx_methods[] = {
     REXX_METHOD(WWWReqRecBytes_sent, WWWReqRecBytes_sent),
     REXX_METHOD(WWWReqRecHeader_in, WWWReqRecHeader_in),
     REXX_METHOD(WWWReqRecHeader_out, WWWReqRecHeader_out),
+    REXX_METHOD(WWWReqRecErr_header_out, WWWReqRecErr_header_out),
     REXX_METHOD(WWWReqRecSubprocess_env, WWWReqRecSubprocess_env),
     REXX_METHOD(WWWReqRecNotes, WWWReqRecNotes),
     REXX_METHOD(WWWReqRecContent_type, WWWReqRecContent_type),
@@ -1617,10 +1649,12 @@ RexxMethodEntry mod_oorexx_methods[] = {
     REXX_METHOD(WWWReqRecFinfo_stmode, WWWReqRecFinfo_stmode),
     REXX_METHOD(WWWReqRecUser, WWWReqRecUser),
     REXX_METHOD(WWWReqRecAuth_type, WWWReqRecAuth_type),
+    REXX_METHOD(WWWNewSrvRec, WWWNewSrvRec),
     REXX_METHOD(WWWSrvRecServer_admin, WWWSrvRecServer_admin),
     REXX_METHOD(WWWSrvRecServer_hostname, WWWSrvRecServer_hostname),
     REXX_METHOD(WWWSrvRecPort, WWWSrvRecPort),
     REXX_METHOD(WWWSrvRecIs_virtual, WWWSrvRecIs_virtual),
+    REXX_METHOD(WWWNewCnxRec, WWWNewCnxRec),
     REXX_METHOD(WWWCnxRecAborted, WWWCnxRecAborted),
     REXX_LAST_METHOD()
 };

@@ -91,7 +91,7 @@
 ::METHOD server_admin EXTERNAL "LIBRARY mod_oorexx WWWSrvRecServer_admin"
 ::METHOD server_hostname EXTERNAL "LIBRARY mod_oorexx WWWSrvRecServer_hostname"
 ::METHOD port EXTERNAL "LIBRARY mod_oorexx WWWSrvRecPort"
-::METHOD is_virtul EXTERNAL "LIBRARY mod_oorexx WWWSrvRecIs_virtual"
+::METHOD is_virtual EXTERNAL "LIBRARY mod_oorexx WWWSrvRecIs_virtual"
 
 
 /*----------------------------------------------------------------------------*/

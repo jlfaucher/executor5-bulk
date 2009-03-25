@@ -55,14 +55,17 @@ const char *compTime = __TIME__;
 static const char *lf = "\n";
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    CreateTempFile                                                */
-/*                                                                            */
-/* Description: Create a temporary file.                                      */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  CreateTempFile
+ *
+ * Create a temporary file to hold the translated RSP output.
+ *
+ * @param r       The request record pointer.
+ *
+ * @param fntemplate The filename template.
+ *
+ * @return        Temporary file name
+ */
 char * CreateTempFile(request_rec *r, const char *fntemplate)
 {
     char * TempName;
@@ -100,7 +103,19 @@ char * CreateTempFile(request_rec *r, const char *fntemplate)
 }
 
 
-
+/**
+ * Function:  SetContextVariable
+ *
+ * Set a Rexx context variable.
+ *
+ * @param context The context.
+ *
+ * @param vname   The Rexx variable name.
+ *
+ * @param vvalue  The Rexx variable value
+ *
+ * @return        Void
+ */
 static void SetContextVariable(RexxExitContext *context, const char *vname, const char *vvalue)
 {
     if (vvalue != NULL) {
@@ -112,14 +127,21 @@ static void SetContextVariable(RexxExitContext *context, const char *vname, cons
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    ooRexx_IO_Exit                                                */
-/*                                                                            */
-/* Description: I/O exit for the Rexx procedure.                              */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  ooRexx_IO_Exit
+ *
+ * The ooRexx RXIO exit for all scripts.
+ *
+ * @param context The context.
+ *
+ * @param ExitNumber The exit number.
+ *
+ * @param Subfunction The exit subfunction number.
+ *
+ * @param ParmBlock The exit paramater block.
+ *
+ * @return        Status code
+ */
 int REXXENTRY ooRexx_IO_Exit(RexxExitContext *context, int ExitNumber, int Subfunction,
                              PEXIT ParmBlock)
 {
@@ -160,17 +182,21 @@ int REXXENTRY ooRexx_IO_Exit(RexxExitContext *context, int ExitNumber, int Subfu
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    ooRexx_INI_Exit                                               */
-/*                                                                            */
-/* Description: INI exit for the Rexx procedure.                              */
-/*                                                                            */
-/* Notes: Do NOT try to read the POST name/value pairs from the browser       */
-/*        client in this exit. Really bad things will happen.                 */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  ooRexx_INI_Exit
+ *
+ * The ooRexx RXINI exit for all scripts.
+ *
+ * @param context The context.
+ *
+ * @param ExitNumber The exit number.
+ *
+ * @param Subfunction The exit subfunction number.
+ *
+ * @param ParmBlock The exit paramater block.
+ *
+ * @return        Status code
+ */
 int REXXENTRY ooRexx_INI_Exit(RexxExitContext *context, int ExitNumber, int Subfunction,
                               PEXIT ParmBlock)
 {
@@ -191,7 +217,7 @@ int REXXENTRY ooRexx_INI_Exit(RexxExitContext *context, int ExitNumber, int Subf
     /* Perform the exit function */
     switch (Subfunction) {
     case RXINIEXT:
-        modoorexx_debug(r->server, "Entering Rexx_INI_Exit routine.");
+//      modoorexx_debug(r->server, "Entering Rexx_INI_Exit routine.");
 
         /* Set our standard CGI Rexx variables */
         SetContextVariable(context, "WWWAUTH_TYPE", r->ap_auth_type);
@@ -253,7 +279,7 @@ int REXXENTRY ooRexx_INI_Exit(RexxExitContext *context, int ExitNumber, int Subf
         SetContextVariable(context, "WWWRSPCOMPILER", c->rspcompiler);
         SetContextVariable(context, "WWWFNAMETEMPLATE", c->fnametemplate);
 
-        modoorexx_debug(r->server, "Exiting Rexx_INI_Exit routine.");
+//      modoorexx_debug(r->server, "Exiting Rexx_INI_Exit routine.");
 
         return RXEXIT_HANDLED;
     default:
@@ -264,14 +290,17 @@ int REXXENTRY ooRexx_INI_Exit(RexxExitContext *context, int ExitNumber, int Subf
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    get_oorexx_err_str                                            */
-/*                                                                            */
-/* Description: Return the Rexx error string.                                 */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  get_oorexx_err_status
+ *
+ * Return the ooRexx error message.
+ *
+ * @param r       The request record ptr.
+ *
+ * @param rxrc    The ooRexx return code.
+ *
+ * @return        The error message
+ */
 const char *get_oorexx_err_str(request_rec *r, int rxrc)
 {
     const char *errstr;
@@ -439,15 +468,19 @@ const char *get_oorexx_err_str(request_rec *r, int rxrc)
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexxstart_error_processor                                     */
-/*                                                                            */
-/* Description: Output a page to the browser showing the error code and       */
-/*              message from the Rexx Interpreter.                            */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexxstart_error_processor
+ *
+ * Send an HTML page to the user with the Rexx error information.
+ *
+ * @param r       The request record ptr.
+ *
+ * @param rxprocpath The location of the main Rexx script that failed.
+ *
+ * @param rxrc    The ooRexx return code.
+ *
+ * @return        The error message
+ */
 void oorexxstart_error_processor(request_rec *r, char *rxprocpath,
                                  int rxrc)
 {

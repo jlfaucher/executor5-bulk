@@ -42,14 +42,18 @@
 #include "mod_oorexx.h"
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    create_oorexx_dir_config                                      */
-/*                                                                            */
-/* Description: Creates the pool used by the directive processor functions.   */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  create_oorexx_dir_config
+ *
+ * Creates the variables used by the directive processor 
+ * functions.
+ *
+ * @param p       The pool.
+ *
+ * @param path    The path.
+ *
+ * @return        Void
+ */
 void *create_oorexx_dir_config(apr_pool_t *p, char *path)
 {
     rexx_config *c;
@@ -77,15 +81,22 @@ void *create_oorexx_dir_config(apr_pool_t *p, char *path)
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_set_var                                                */
-/*                                                                            */
-/* Description: Process a directive which sets the value of a Rexx variable   */
-/*              that can be used in any handler.                              */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_set_var
+ *
+ * Process a directive which sets the value of a Rexx variable
+ * that can be used in any handler.
+ *
+ * @param parms   The command parameters.
+ *
+ * @param mconfig The module config ptr.
+ *
+ * @param varname The Rexx variable name.
+ *
+ * @param value   The Rexx variable value.
+ *
+ * @return        Void
+ */
 static const char *oorexx_set_var(cmd_parms *parms, void *mconfig,
                                   const char *varname, const char *value)
 {
@@ -120,14 +131,19 @@ static const char *oorexx_set_var(cmd_parms *parms, void *mconfig,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_post_read                                              */
-/*                                                                            */
-/* Description: Process a directive which sets the Post Read Request Handler. */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_post_read
+ *
+ * Process a directive which sets the Post Request Handler.
+ *
+ * @param parms   The command parameters.
+ *
+ * @param mconfig The module config ptr.
+ *
+ * @param value   The handler filename.
+ *
+ * @return        Void
+ */
 static const char *oorexx_post_read(cmd_parms *parms, void *mconfig,
                                     const char *value)
 {
@@ -144,14 +160,19 @@ static const char *oorexx_post_read(cmd_parms *parms, void *mconfig,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_trans                                                  */
-/*                                                                            */
-/* Description: Process a directive which sets the Translation Handler.       */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_trans
+ *
+ * Process a directive which sets the Translation Handler.
+ *
+ * @param parms   The command parameters.
+ *
+ * @param mconfig The module config ptr.
+ *
+ * @param value   The handler filename.
+ *
+ * @return        Void
+ */
 static const char *oorexx_trans(cmd_parms *parms, void  *mconfig,
                                 const char *value)
 {
@@ -168,14 +189,19 @@ static const char *oorexx_trans(cmd_parms *parms, void  *mconfig,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_header_parser                                          */
-/*                                                                            */
-/* Description: Process a directive which sets the Header Parser Handler.     */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_header_parser
+ *
+ * Process a directive which sets the Header Parser Handler.
+ *
+ * @param parms   The command parameters.
+ *
+ * @param mconfig The module config ptr.
+ *
+ * @param value   The handler filename.
+ *
+ * @return        Void
+ */
 static const char *oorexx_header_parser(cmd_parms *parms, void *mconfig,
                                         const char *value)
 {
@@ -192,14 +218,19 @@ static const char *oorexx_header_parser(cmd_parms *parms, void *mconfig,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_access                                                 */
-/*                                                                            */
-/* Description: Process a directive which sets the Access Handler.            */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_access
+ *
+ * Process a directive which sets the Access Handler.
+ *
+ * @param parms   The command parameters.
+ *
+ * @param mconfig The module config ptr.
+ *
+ * @param value   The handler filename.
+ *
+ * @return        Void
+ */
 static const char *oorexx_access(cmd_parms *parms, void *mconfig,
                                  const char *value)
 {
@@ -216,14 +247,19 @@ static const char *oorexx_access(cmd_parms *parms, void *mconfig,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_authen                                                 */
-/*                                                                            */
-/* Description: Process a directive which sets the Authentication Handler.    */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_authen
+ *
+ * Process a directive which sets the Authentication Handler.
+ *
+ * @param parms   The command parameters.
+ *
+ * @param mconfig The module config ptr.
+ *
+ * @param value   The handler filename.
+ *
+ * @return        Void
+ */
 static const char *oorexx_authen(cmd_parms *parms, void *mconfig,
                                  const char *value)
 {
@@ -240,14 +276,19 @@ static const char *oorexx_authen(cmd_parms *parms, void *mconfig,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_authz                                                  */
-/*                                                                            */
-/* Description: Process a directive which sets the Authorization Handler.     */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_authz
+ *
+ * Process a directive which sets the Authorization Handler.
+ *
+ * @param parms   The command parameters.
+ *
+ * @param mconfig The module config ptr.
+ *
+ * @param value   The handler filename.
+ *
+ * @return        Void
+ */
 static const char *oorexx_authz(cmd_parms *parms, void *mconfig,
                                 const char *value)
 {
@@ -264,14 +305,19 @@ static const char *oorexx_authz(cmd_parms *parms, void *mconfig,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_type                                                   */
-/*                                                                            */
-/* Description: Process a directive which sets the Type Checking Handler.     */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_type
+ *
+ * Process a directive which sets the Type Checking Handler.
+ *
+ * @param parms   The command parameters.
+ *
+ * @param mconfig The module config ptr.
+ *
+ * @param value   The handler filename.
+ *
+ * @return        Void
+ */
 static const char *oorexx_type(cmd_parms *parms, void *mconfig,
                                const char *value)
 {
@@ -288,14 +334,19 @@ static const char *oorexx_type(cmd_parms *parms, void *mconfig,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_fixup                                                  */
-/*                                                                            */
-/* Description: Process a directive which sets the Fixup Handler.             */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_fixup
+ *
+ * Process a directive which sets the Fixup Handler.
+ *
+ * @param parms   The command parameters.
+ *
+ * @param mconfig The module config ptr.
+ *
+ * @param value   The handler filename.
+ *
+ * @return        Void
+ */
 static const char *oorexx_fixup(cmd_parms *parms, void *mconfig,
                                 const char *value)
 {
@@ -312,14 +363,19 @@ static const char *oorexx_fixup(cmd_parms *parms, void *mconfig,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_log                                                    */
-/*                                                                            */
-/* Description: Process a directive which sets the Logging Handler.           */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_log
+ *
+ * Process a directive which sets the Logging Handler.
+ *
+ * @param parms   The command parameters.
+ *
+ * @param mconfig The module config ptr.
+ *
+ * @param value   The handler filename.
+ *
+ * @return        Void
+ */
 static const char *oorexx_log(cmd_parms *parms, void *mconfig,
                               const char *value)
 {
@@ -336,14 +392,19 @@ static const char *oorexx_log(cmd_parms *parms, void *mconfig,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_content                                                */
-/*                                                                            */
-/* Description: Process a directive which sets the Content Handler.           */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_content
+ *
+ * Process a directive which sets the Content Handler.
+ *
+ * @param parms   The command parameters.
+ *
+ * @param mconfig The module config ptr.
+ *
+ * @param value   The handler filename.
+ *
+ * @return        Void
+ */
 static const char *oorexx_content(cmd_parms *parms, void *mconfig,
                                   const char *value)
 {
@@ -360,14 +421,19 @@ static const char *oorexx_content(cmd_parms *parms, void *mconfig,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_rsp_compiler                                           */
-/*                                                                            */
-/* Description: Process a directive which sets the RSP compier.               */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_rsp_compiler
+ *
+ * Process a directive which sets the RSP Compiler handler.
+ *
+ * @param parms   The command parameters.
+ *
+ * @param mconfig The module config ptr.
+ *
+ * @param value   The handler filename.
+ *
+ * @return        Void
+ */
 static const char *oorexx_rsp_compiler(cmd_parms *parms, void *mconfig,
                                        const char *value)
 {
@@ -384,14 +450,19 @@ static const char *oorexx_rsp_compiler(cmd_parms *parms, void *mconfig,
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_fnametemplate                                          */
-/*                                                                            */
-/* Description: Process a directive which sets the SysTemFileName template.   */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_fnametemplate
+ *
+ * Process a directive which sets the SysTempFileName template.
+ *
+ * @param parms   The command parameters.
+ *
+ * @param mconfig The module config ptr.
+ *
+ * @param value   The handler filename.
+ *
+ * @return        Void
+ */
 static const char *oorexx_fnametemplate(cmd_parms *parms, void *mconfig,
                                         const char *value)
 {

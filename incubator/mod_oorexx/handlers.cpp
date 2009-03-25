@@ -42,14 +42,17 @@
 #include "mod_oorexx.h"
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_child_init                                             */
-/*                                                                            */
-/* Description: This handler is invoked when a new server is created.         */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_child_init
+ *
+ * This handler is invoked when a new server is created.
+ *
+ * @param pchild  The child pool.
+ *
+ * @param s       The server record ptr.
+ *
+ * @return        Void
+ */
 static void oorexx_child_init(apr_pool_t *pchild, server_rec *s)
 {
     ooRexxSrvrConfig *cfg;
@@ -91,15 +94,15 @@ static void oorexx_child_init(apr_pool_t *pchild, server_rec *s)
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_handler                                                */
-/*                                                                            */
-/* Description: Main content handler. This function calls Rexx to handle the  */
-/*              HTTP request.                                                 */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_handler
+ *
+ * This handler is invoked when a Rexx script is executed.
+ *
+ * @param r       The request record ptr.
+ *
+ * @return        Interger status.
+ */
 static int oorexx_handler(request_rec *r)
 {
     char *rxprocpath;
@@ -113,7 +116,7 @@ static int oorexx_handler(request_rec *r)
         return DECLINED;
     }
 
-    modoorexx_debug(r->server, "Entering rexx_handler routine.");
+//  modoorexx_debug(r->server, "Entering rexx_handler routine.");
 
     /* If we're only supposed to send header information (HEAD request), */
     /* then don't bother Rexx with the request.                          */
@@ -121,7 +124,7 @@ static int oorexx_handler(request_rec *r)
         /* Set the content-type */
         r->content_type = "text/html";
         ap_send_http_header(r);
-        modoorexx_debug(r->server, "Exiting rexx_handler routine.");
+//      modoorexx_debug(r->server, "Exiting rexx_handler routine.");
         return OK;
     }
 
@@ -154,7 +157,7 @@ static int oorexx_handler(request_rec *r)
     // add the argument to the array.
     cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
     // call our program, using the provided arguments.
-    modoorexx_debug(r->server, "Calling Rexx.");
+//  modoorexx_debug(r->server, "Calling Rexx.");
     RexxObjectPtr result = cfg->contentThrdInst->CallProgram(rxprocpath, args);
     cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // if an error occurred, get the decoded exception information
@@ -163,27 +166,27 @@ static int oorexx_handler(request_rec *r)
         // retrieve the error information and get it into a decoded form
         RexxDirectoryObject cond = cfg->contentThrdInst->GetConditionInfo();
         cfg->contentThrdInst->DecodeConditionInfo(cond, &condition);
-        modoorexx_debug(r->server, "Exiting rexx_rsphandler routine.");
+//      modoorexx_debug(r->server, "Exiting rexx_rsphandler routine.");
         // display the errors
         oorexxstart_error_processor(r, rxprocpath, rc);
         rc = HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    modoorexx_debug(r->server, "Exiting rexx_handler routine.");
+//  modoorexx_debug(r->server, "Exiting rexx_handler routine.");
 
     return rc;
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_rsphandler                                             */
-/*                                                                            */
-/* Description: Handler for Rexx RSP files. This fuction calls Rexx to handle */
-/*              an RSP request.                                               */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_rsphandler
+ *
+ * This handler is invoked when an RSP script is executed.
+ *
+ * @param r       The request record ptr.
+ *
+ * @return        Interger status.
+ */
 static int oorexx_rsphandler(request_rec *r)
 {
     rexx_config *c;
@@ -197,7 +200,7 @@ static int oorexx_rsphandler(request_rec *r)
         return DECLINED;
     }
 
-    modoorexx_debug(r->server, "Entering rexx_rsphandler routine.");
+//  modoorexx_debug(r->server, "Entering rexx_rsphandler routine.");
     /* If we're only supposed to send header information (HEAD request), */
     /* then don't bother Rexx with the request.                          */
     if (r->header_only) {
@@ -238,9 +241,7 @@ static int oorexx_rsphandler(request_rec *r)
     sprintf(rxarg, "\"%s\" \"%s\"", r->filename, TempName);
     cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->String(rxarg), 1);
     // call our program, using the provided arguments.
-    modoorexx_debug(r->server, "Compiling rsp file.");
     RexxObjectPtr result = cfg->contentThrdInst->CallProgram(c->rspcompiler, args);
-    modoorexx_debug(r->server, "Finished compiling rsp file.");
     cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // if an error occurred, get the decoded exception information
     if (cfg->contentThrdInst->CheckCondition()) {
@@ -263,7 +264,6 @@ static int oorexx_rsphandler(request_rec *r)
     // add the argument to the array.
     cfg->contentThrdInst->ArrayPut(args, cfg->contentThrdInst->NewPointer(r), 1);
     // call our program, using the provided arguments.
-    modoorexx_debug(r->server, "Executing rsp file.");
     result = cfg->contentThrdInst->CallProgram(TempName, args);
     cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // clean up the temporary file
@@ -286,15 +286,15 @@ static int oorexx_rsphandler(request_rec *r)
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_translation_handler                                    */
-/*                                                                            */
-/* Description: This handler is invoked during a request. It can translate    */
-/*              the URI in the request.                                       */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_translation_handler
+ *
+ * This handler is invoked when translating the URI in a request.
+ *
+ * @param r       The request record ptr.
+ *
+ * @return        Interger status.
+ */
 int oorexx_translation_handler(request_rec *r)
 {
     rexx_config *c;
@@ -349,15 +349,15 @@ int oorexx_translation_handler(request_rec *r)
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_authentication_handler                                 */
-/*                                                                            */
-/* Description: This handler is invoked during a request. Authentication of   */
-/*              the request is done here.                                     */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_authentication_handler
+ *
+ * This handler is invoked when authenticating a request.
+ *
+ * @param r       The request record ptr.
+ *
+ * @return        Interger status.
+ */
 int oorexx_authentication_handler(request_rec *r)
 {
     rexx_config *c;
@@ -412,15 +412,15 @@ int oorexx_authentication_handler(request_rec *r)
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_authorization_handler                                  */
-/*                                                                            */
-/* Description: This handler is invoked during a request. Authorization  of   */
-/*              the request is done here.                                     */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_authorization_handler
+ *
+ * This handler is invoked when authorizing a request.
+ *
+ * @param r       The request record ptr.
+ *
+ * @return        Interger status.
+ */
 int oorexx_authorization_handler(request_rec *r)
 {
     rexx_config *c;
@@ -475,15 +475,15 @@ int oorexx_authorization_handler(request_rec *r)
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_access_handler                                         */
-/*                                                                            */
-/* Description: This handler is invoked during a request. Access control of   */
-/*              the request is done here.                                     */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_access_handler
+ *
+ * This handler is invoked when checking access control of a request.
+ *
+ * @param r       The request record ptr.
+ *
+ * @return        Interger status.
+ */
 int oorexx_access_handler(request_rec *r)
 {
     rexx_config *c;
@@ -538,15 +538,15 @@ int oorexx_access_handler(request_rec *r)
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_mime_type_handler                                      */
-/*                                                                            */
-/* Description: This handler is invoked during a request. Mime checking of    */
-/*              the request is done here.                                     */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_mime_type_handler
+ *
+ * This handler is invoked when checking the mime type of a request.
+ *
+ * @param r       The request record ptr.
+ *
+ * @return        Interger status.
+ */
 int oorexx_mime_type_handler(request_rec *r)
 {
     rexx_config *c;
@@ -601,15 +601,15 @@ int oorexx_mime_type_handler(request_rec *r)
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_fixup_handler                                          */
-/*                                                                            */
-/* Description: This handler is invoked during a request. Fix up of           */
-/*              the request is done here.                                     */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_fixup_handler
+ *
+ * This handler is invoked when fixup of a request is needed.
+ *
+ * @param r       The request record ptr.
+ *
+ * @return        Interger status.
+ */
 int oorexx_fixup_handler(request_rec *r)
 {
     rexx_config *c;
@@ -664,15 +664,15 @@ int oorexx_fixup_handler(request_rec *r)
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_logging_handler                                        */
-/*                                                                            */
-/* Description: This handler is invoked during a request. Logging of          */
-/*              the request is done here.                                     */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_logging_handler
+ *
+ * This handler is invoked for logging the request.
+ *
+ * @param r       The request record ptr.
+ *
+ * @return        Interger status.
+ */
 int oorexx_logging_handler(request_rec *r)
 {
     rexx_config *c;
@@ -728,15 +728,15 @@ int oorexx_logging_handler(request_rec *r)
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_header_parser_handler                                  */
-/*                                                                            */
-/* Description: This handler is invoked during a request. Header parsing of   */
-/*              the request is done here.                                     */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_header_parser_handler
+ *
+ * This handler is invoked for header parsing of the request.
+ *
+ * @param r       The request record ptr.
+ *
+ * @return        Interger status.
+ */
 int oorexx_header_parser_handler(request_rec *r)
 {
     rexx_config *c;
@@ -793,15 +793,15 @@ int oorexx_header_parser_handler(request_rec *r)
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Function:    oorexx_post_request_handler                                   */
-/*                                                                            */
-/* Description: This handler is invoked during a request. Post processing of  */
-/*              the request is done here.                                     */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_post_request_handler
+ *
+ * This handler is invoked after a request is processed.
+ *
+ * @param r       The request record ptr.
+ *
+ * @return        Interger status.
+ */
 int oorexx_post_request_handler(request_rec *r)
 {
     rexx_config *c;
@@ -865,7 +865,15 @@ int oorexx_post_request_handler(request_rec *r)
 /*              hooks.                                                        */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
+/**
+ * Function:  oorexx_register_hooks
+ *
+ * Register all our hooks.
+ *
+ * @param p       The pool.
+ *
+ * @return        Void
+ */
 static void oorexx_register_hooks(apr_pool_t *p)
 {
 
