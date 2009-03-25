@@ -1652,7 +1652,7 @@ RexxRoutineEntry mod_oorexx_routines[] = {
 RexxPackageEntry mod_oorexx_package_entry = {
     STANDARD_PACKAGE_HEADER
     REXX_INTERPRETER_4_0_0,              // anything after 4.0.0 will work
-    "Mod_ooRexx",                        // name of the package
+    "mod_oorexx",                        // name of the package
     "2.2.0",                             // package information
     NULL,                                // no load/unload functions
     NULL,

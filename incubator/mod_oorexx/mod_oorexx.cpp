@@ -195,7 +195,6 @@ int REXXENTRY ooRexx_INI_Exit(RexxExitContext *context, int ExitNumber, int Subf
 
         /* Set our standard CGI Rexx variables */
         SetContextVariable(context, "WWWAUTH_TYPE", r->ap_auth_type);
-        modoorexx_debug(r->server, "Got here.");
         SetContextVariable(context, "WWWCONTENT_LENGTH",
                      apr_table_get(r->headers_in, "Content-Length"));
         SetContextVariable(context, "WWWCONTENT_TYPE",
@@ -254,7 +253,7 @@ int REXXENTRY ooRexx_INI_Exit(RexxExitContext *context, int ExitNumber, int Subf
         SetContextVariable(context, "WWWRSPCOMPILER", c->rspcompiler);
         SetContextVariable(context, "WWWFNAMETEMPLATE", c->fnametemplate);
 
-//      modoorexx_debug(r->server, "Exiting Rexx_INI_Exit routine.");
+        modoorexx_debug(r->server, "Exiting Rexx_INI_Exit routine.");
 
         return RXEXIT_HANDLED;
     default:

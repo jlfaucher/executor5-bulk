@@ -240,6 +240,7 @@ static int oorexx_rsphandler(request_rec *r)
     // call our program, using the provided arguments.
     modoorexx_debug(r->server, "Compiling rsp file.");
     RexxObjectPtr result = cfg->contentThrdInst->CallProgram(c->rspcompiler, args);
+    modoorexx_debug(r->server, "Finished compiling rsp file.");
     cfg->contentThrdInst->ObjectToInt32(result, &rc);
     // if an error occurred, get the decoded exception information
     if (cfg->contentThrdInst->CheckCondition()) {

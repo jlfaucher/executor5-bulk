@@ -264,16 +264,16 @@ call lineout rexfilename, '   Operating System: ' os
 call lineout rexfilename, '   Rexx Version:     ' rexx_ver
 call lineout rexfilename, ''
 
-call lineout rexfilename, 'Source RSP File Information:'
-fsize = stream(rspfilename, 'c', 'query size')
-ftimestamp = stream(rspfilename, 'c', 'query timestamp')
-call lineout rexfilename, '   ' || ftimestamp || '  ' || format(fsize, 10) || ,
-                          '  ' || stream(rspfilename, 'c', 'query exists')
-call lineout rexfilename, ''
+--call lineout rexfilename, 'Source RSP File Information:'
+--fsize = stream(rspfilename, 'c', 'query size')
+--ftimestamp = stream(rspfilename, 'c', 'query timestamp')
+--call lineout rexfilename, '   ' || ftimestamp || '  ' || format(fsize, 10) || ,
+--                          '  ' || stream(rspfilename, 'c', 'query exists')
+--call lineout rexfilename, ''
 
-call lineout rexfilename, 'Output Rexx Program File Information:'
-call lineout rexfilename, '   Filename:' stream(rexfilename, 'c', 'query exists')
-call lineout rexfilename, ''
+--call lineout rexfilename, 'Output Rexx Program File Information:'
+--call lineout rexfilename, '   Filename:' stream(rexfilename, 'c', 'query exists')
+--call lineout rexfilename, ''
 
 call lineout rexfilename, '*/'
 
