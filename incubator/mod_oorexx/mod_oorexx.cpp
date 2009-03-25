@@ -100,6 +100,18 @@ char * CreateTempFile(request_rec *r, const char *fntemplate)
 }
 
 
+
+static void SetContextVariable(RexxExitContext *context, const char *vname, const char *vvalue)
+{
+    if (vvalue != NULL) {
+        context->SetContextVariable(vname, context->String(vvalue));
+    }
+    else {
+        context->SetContextVariable(vname, context->String(""));
+    }
+}
+
+
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Function:    ooRexx_IO_Exit                                                */
@@ -126,7 +138,7 @@ int REXXENTRY ooRexx_IO_Exit(RexxExitContext *context, int ExitNumber, int Subfu
     case RXSIOSAY:
         if (type) {
             sparm = (RXSIOSAY_PARM *)ParmBlock;
-            modoorexx_debug(r->server, sparm->rxsio_string.strptr);
+//          modoorexx_debug(r->server, sparm->rxsio_string.strptr);
             ap_rputs(sparm->rxsio_string.strptr, r);
             ap_rputs(lf, r);
         }
@@ -182,66 +194,65 @@ int REXXENTRY ooRexx_INI_Exit(RexxExitContext *context, int ExitNumber, int Subf
         modoorexx_debug(r->server, "Entering Rexx_INI_Exit routine.");
 
         /* Set our standard CGI Rexx variables */
-        context->SetContextVariable("WWWAUTH_TYPE", context->String(r->ap_auth_type));
+        SetContextVariable(context, "WWWAUTH_TYPE", r->ap_auth_type);
         modoorexx_debug(r->server, "Got here.");
-        context->SetContextVariable("WWWCONTENT_LENGTH",
-                     context->String(apr_table_get(r->headers_in, "Content-Length")));
-        context->SetContextVariable("WWWCONTENT_TYPE",
-                     context->String(apr_table_get(r->headers_in, "Content-Type")));
-        context->SetContextVariable("WWWGATEWAY_INTERFACE", context->String(version));
-        context->SetContextVariable("WWWHTTP_USER_ACCEPT",
-                     context->String(apr_table_get(r->headers_in, "Accept")));
-        context->SetContextVariable("WWWHTTP_USER_AGENT",
-                     context->String(apr_table_get(r->headers_in, "User-Agent")));
-        context->SetContextVariable("WWWPATH_INFO",context->String(r->path_info));
+        SetContextVariable(context, "WWWCONTENT_LENGTH",
+                     apr_table_get(r->headers_in, "Content-Length"));
+        SetContextVariable(context, "WWWCONTENT_TYPE",
+                     apr_table_get(r->headers_in, "Content-Type"));
+        SetContextVariable(context, "WWWGATEWAY_INTERFACE", version);
+        SetContextVariable(context, "WWWHTTP_USER_ACCEPT",
+                     apr_table_get(r->headers_in, "Accept"));
+        SetContextVariable(context, "WWWHTTP_USER_AGENT",
+                     apr_table_get(r->headers_in, "User-Agent"));
+        SetContextVariable(context, "WWWPATH_INFO",r->path_info);
 
         subr = ap_sub_req_lookup_uri(r->path_info, r, NULL);
-        context->SetContextVariable("WWWPATH_TRANSLATED", context->String(subr->filename));
+        SetContextVariable(context, "WWWPATH_TRANSLATED", subr->filename);
         ap_destroy_sub_req(subr);
 
-        context->SetContextVariable("WWWQUERY_STRING", context->String(r->args));
-        context->SetContextVariable("WWWREMOTE_ADDR", context->String(r->connection->remote_ip));
-        context->SetContextVariable("WWWREMOTE_HOST",
-                     context->String(ap_get_remote_host(r->connection,
-                                                r->per_dir_config,
-                                                REMOTE_HOST, NULL)));
-        context->SetContextVariable("WWWREMOTE_IDENT", context->String(ap_get_remote_logname(r)));
-        context->SetContextVariable("WWWREMOTE_USER", context->String(r->user));
-        context->SetContextVariable("WWWREQUEST_METHOD", context->String(r->method));
-        context->SetContextVariable("WWWSCRIPT_NAME", context->String(r->uri));
-        context->SetContextVariable("WWWSERVER_NAME", context->String(ap_get_server_name(r)));
+        SetContextVariable(context, "WWWQUERY_STRING", r->args);
+        SetContextVariable(context, "WWWREMOTE_ADDR", r->connection->remote_ip);
+        SetContextVariable(context, "WWWREMOTE_HOST",
+                     ap_get_remote_host(r->connection, r->per_dir_config,
+                                        REMOTE_HOST, NULL));
+        SetContextVariable(context, "WWWREMOTE_IDENT", ap_get_remote_logname(r));
+        SetContextVariable(context, "WWWREMOTE_USER", r->user);
+        SetContextVariable(context, "WWWREQUEST_METHOD", r->method);
+        SetContextVariable(context, "WWWSCRIPT_NAME", r->uri);
+        SetContextVariable(context, "WWWSERVER_NAME", ap_get_server_name(r));
 
         varname = apr_psprintf(r->pool, "%d", ap_get_server_port(r));
-        context->SetContextVariable("WWWSERVER_PORT", context->String(varname));
+        SetContextVariable(context, "WWWSERVER_PORT", varname);
 
-        context->SetContextVariable("WWWSERVER_PROTOCOL", context->String(r->protocol));
-        context->SetContextVariable("WWWSERVER_SOFTWARE", context->String(ap_get_server_version()));
+        SetContextVariable(context, "WWWSERVER_PROTOCOL", r->protocol);
+        SetContextVariable(context, "WWWSERVER_SOFTWARE", ap_get_server_version());
 
         /* Define some other useful variables to the Rexx program. */
-        context->SetContextVariable("WWWDEFAULT_TYPE", context->String(ap_default_type(r)));
+        SetContextVariable(context, "WWWDEFAULT_TYPE", ap_default_type(r));
         if (r->main == NULL) {
-            context->SetContextVariable("WWWIS_MAIN_REQUEST", context->String("1"));
+            SetContextVariable(context, "WWWIS_MAIN_REQUEST", "1");
         }
         else {
-            context->SetContextVariable("WWWIS_MAIN_REQUEST", context->String("0"));
+            SetContextVariable(context, "WWWIS_MAIN_REQUEST", "0");
         }
-        context->SetContextVariable("WWWSERVER_ROOT",
-                   context->String(ap_server_root_relative (r->pool, "")));
-        context->SetContextVariable("WWWUNPARSEDURI", context->String(r->unparsed_uri));
-        context->SetContextVariable("WWWURI", context->String(r->uri));
-        context->SetContextVariable("WWWFILENAME", context->String(r->filename));
-        context->SetContextVariable("WWWPOST_STRING", context->Nil());
+        SetContextVariable(context, "WWWSERVER_ROOT",
+                   ap_server_root_relative (r->pool, ""));
+        SetContextVariable(context, "WWWUNPARSEDURI", r->unparsed_uri);
+        SetContextVariable(context, "WWWURI", r->uri);
+        SetContextVariable(context, "WWWFILENAME", r->filename);
+        SetContextVariable(context, "WWWPOST_STRING", NULL);
 
         /* Define the Rexx variables defined in the Apache httpd.conf file.   */
         sr = c->rexxvars;
         while (sr != NULL) {
-            context->SetContextVariable(sr->oorexx_var_name, context->String(sr->oorexx_var_value));
+            SetContextVariable(context, sr->oorexx_var_name, sr->oorexx_var_value);
             sr = sr->next;
         }
 
         /* Define the Rexx RSP compiler information variables. */
-        context->SetContextVariable("WWWRSPCOMPILER", context->String(c->rspcompiler));
-        context->SetContextVariable("WWWFNAMETEMPLATE", context->String(c->fnametemplate));
+        SetContextVariable(context, "WWWRSPCOMPILER", c->rspcompiler);
+        SetContextVariable(context, "WWWFNAMETEMPLATE", c->fnametemplate);
 
 //      modoorexx_debug(r->server, "Exiting Rexx_INI_Exit routine.");
 
