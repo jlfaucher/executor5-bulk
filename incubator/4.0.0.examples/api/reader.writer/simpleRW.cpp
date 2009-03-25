@@ -75,7 +75,7 @@ inline wholenumber_t conditionSubCode(RexxCondition);
 void checkCondition(RexxThreadContext *, const char *);
 void printInterpreterVersion(RexxInstance *);
 
-int main (int argc, char **argv)
+int __cdecl main (int argc, char **argv)
 {
     char *programName = "simpleRW.rex";
     if ( argc == 2 )
