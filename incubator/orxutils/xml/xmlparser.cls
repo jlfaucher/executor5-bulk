@@ -94,7 +94,7 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::method parserver   attribute private -- the version of this parser
+::constant parserver '0.5'             -- the version of this parser
 ::method src         attribute private -- the array of xml lines to be parsed
 ::method lineidx     attribute private -- the index into the array of xml lines
 ::method charidx     attribute private -- the index into a xml line
@@ -108,10 +108,10 @@
 /*----------------------------------------------------------------------------*/
 
 ::method create_error private
-use arg msg, errline, errpos
+use strict arg msg, errline, errpos
 xmlerror = .xmlerror~new
 xmlerror~text = msg
-xmlerror~filename = self~filename
+xmlerror~filename = self~xmlfile
 xmlerror~line = errline
 xmlerror~charpos = errpos
 return xmlerror
@@ -123,7 +123,7 @@ return xmlerror
 /*----------------------------------------------------------------------------*/
 
 ::method xlatetext private
-use arg text
+use strict arg text
 text = text~changestr('&gt;', '>')
 text = text~changestr('&lt;', '<')
 text = text~changestr('&amp;', '&') -- always do this one last!
@@ -137,6 +137,7 @@ return text
 
 ::method currentchar private
 expose src lineidx charidx
+use strict arg
 if lineidx > src~items then return .nil
 return src[lineidx]~substr(charidx, 1)
 
@@ -148,6 +149,7 @@ return src[lineidx]~substr(charidx, 1)
 
 ::method getchar private
 expose src lineidx charidx eof
+use strict arg
 character = src[lineidx]~substr(charidx, 1)
 charidx = charidx + 1
 if charidx > src[lineidx]~length then do
@@ -168,6 +170,7 @@ return character
 
 ::method getchunk private
 expose src lineidx charidx errortxt eof
+use strict arg
 errlineidx = lineidx
 errcharidx = charidx
 chunk = .xmlchunk~new
@@ -302,20 +305,7 @@ return chunk
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::method filename attribute private -- the XML file name, if known
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: init                                                               */
-/* Description: instance initialization                                       */
-/*----------------------------------------------------------------------------*/
-
-::method init
-expose src
-if arg() > 0 then raise syntax 93.902 array (0)
-self~parserver = '0.4'
-self~filename = ''
-return
+::method xmlfile attribute private -- the XML file name, if known
 
 
 /*----------------------------------------------------------------------------*/
@@ -326,7 +316,7 @@ return
 
 ::method start_element
 /* this method is designed to be overridden by a subclass */
-use arg chunk
+use strict arg chunk
 return
 
 
@@ -338,7 +328,7 @@ return
 
 ::method end_element
 /* this method is designed to be overridden by a subclass */
-use arg chunk
+use strict arg chunk
 return
 
 
@@ -350,7 +340,7 @@ return
 
 ::method text
 /* this method is designed to be overridden by a subclass */
-use arg chunk
+use strict arg chunk
 return
 
 
@@ -363,7 +353,7 @@ return
 
 ::method passthrough
 /* this method is designed to be overridden by a subclass */
-use arg chunk
+use strict arg chunk
 return
 
 
@@ -375,7 +365,7 @@ return
 
 ::method error
 /* this method is designed to be overridden by a subclass */
-use arg xmlerror
+use strict arg xmlerror
 return
 
 
@@ -395,9 +385,7 @@ return self~parserver
 
 ::method parse_array
 expose src lineidx charidx errortxt eof
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg src
+use strict arg src
 eof = .false
 /* make sure this is an xml document */
 if src[1]~pos('<?xml') <> 1 then do
@@ -421,10 +409,8 @@ return errortxt
 /*----------------------------------------------------------------------------*/
 
 ::method parse_file
-expose errortxt filename
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg xmlfile
+expose errortxt xmlfile
+use strict arg xmlfile
 tfile = .stream~new(xmlfile)
 errortxt = tfile~open('read')
 if errortxt <> 'READY:' then do
@@ -472,6 +458,7 @@ return errortxt
 /*----------------------------------------------------------------------------*/
 
 ::method init
+use strict arg
 self~text = .nil  -- For the start_element and passthrough methods this contains
                   -- the entire text string enclosed within the '<' and '>'
                   -- brackets. For the text method it contains a single line
@@ -520,6 +507,7 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method init
+use strict arg
 self~text = ''
 self~filename = ''
 self~line = 0
