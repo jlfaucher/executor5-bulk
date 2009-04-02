@@ -84,5 +84,5 @@ $(JADETEXFMT): $(HYPERREFCFG)
 
 
 clean:
-	rm *.log *.aux *.out *.fmt *.pdf *.htm*
+	rm -f *.log *.aux *.out *.fmt *.pdf *.htm*
 
