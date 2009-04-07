@@ -220,32 +220,59 @@ the names of their corresponding mathematical functions.</para>
 </itemizedlist>
 <note><para>Precision is limited to 16 digits.</para></note>
 
-<section><title>Installation and Removal</title>
-<para>The Rexx Mathematical Functions package is contained in the file rxmath.dll. This
-dynamic link library (DLL) must be placed in a directory listed in your PATH. To
-get access to the functions in the Rexx Mathematical Functions package, execute
-the following Rexx code:</para>
+<section><title>Using the RxMath package</title>
+<para>
+  The Rexx Mathematical Functions package is contained in the library <emphasis
+  role="italic">rxmath</emphasis>, with the appropriate file name for the operating system.  This library
+  must be loadable by the operating system using the normal procedure for the system. For instance, on Windows
+  the file must be placed in a directory listed in your PATH. When installing ooRexx from any of the
+  installation packages, the details of where the file is placed are handled automatically.
+</para>
+<para>
+  Beginning with ooRexx 4.0.0, a more robust process is used to load external functions. To get access to
+  the functions in the Rexx Mathematical Functions package, use a ::requires directive. For example:
+</para>
 <programlisting>
-call RxFuncAdd "MathLoadFuncs","rxmath","MathLoadFuncs"
-call MathLoadFuncs
+say 'The square root of 3 is:' RxCalcSqrt(3)
+
+::requires 'rxmath' LIBRARY
 </programlisting>
-<para>To unload the DLL, call the MathDropFuncs function and then exit all CMD.EXE
-shells. After you have exited from all command shells, the DLL is dropped by
-Windows® and can be deleted or replaced.</para>
+<para>
+  Existing code that used the previous proces to load external functions:
+</para>
+<programlisting>
+call rxfuncadd "MathLoadFuncs", "rxmath", "MathLoadFuncs"
+</programlisting>
+<para>
+  does not need to be changed. However, both <computeroutput>MathLoadFuncs()</computeroutput> and
+  <computeroutput>MathDropFuncs()</computeroutput> are nops in ooRexx 4.0.0 and later.
+</para>
 </section>
-<section><title>Error Handling</title>
-<para>Error 40 (Incorrect call to routine) is raised if either the wrong number of
-arguments or incorrect data is passed to a function.</para>
-<para>If a mathematical function fails, the Rexx Mathematical Functions package returns
-ERROR.</para>
-<para>Where an error occurs, the variable MATHERRNO is set with additional
-information that further defines the source of the error.</para>
+
+<section><title>Error Handling and Function Returns</title>
+<para>
+  Error 40 (Incorrect call to routine) is raised if either the wrong number of arguments or incorrect
+  data is passed to a function.
+</para>
+<para>
+  If a mathematical function fails, the function will return <emphasis role="italic">nan</emphasis>,
+  <emphasis role="italic">+infinity</emphasis>, and <emphasis role="italic">-infinity</emphasis> as
+  appropriate. These returns are consistent on all operating systems.
+</para>
+<para>
+  Where an error occurs, the variable MATHERRNO is set with additional information that further defines
+  the source of the error.
+</para>
 </section>
 </chapter>
 
 <chapter><title>Functions</title>
-<para>Most function names in the Rexx Mathematical Functions package are similar to
-the names of their corresponding mathematical functions.</para>
+<para>
+  Most function names in the Rexx Mathematical Functions package are similar to the names of their
+  corresponding mathematical functions. Note that in ooRexx 4.0.0 and later, the
+  <computeroutput>MathLoadFuncs()</computeroutput> and <computeroutput>MathDropFuncs()</computeroutput>
+  are nops.
+</para>
 <itemizedlist>
 <listitem><para>MathLoadFuncs()</para></listitem>
 <listitem><para>MathDropFuncs()</para></listitem>
@@ -268,33 +295,35 @@ the names of their corresponding mathematical functions.</para>
 </itemizedlist>
 
 <section><title>MathLoadFuncs()</title>
-<indexterm><primary>MathLoadFuncs</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>MathLoadFuncs</secondary></indexterm>
-<indexterm><primary>load functions</primary></indexterm>
-<indexterm><primary>register functions</primary></indexterm>
+<indexterm><primary>MathLoadFuncs (nop)</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-MathLoadFuncs()---------------------------------------------><
 ]]>
 </programlisting>
-<para>Loads all functions in the Rexx Mathematical Functions package.</para>
-<para>If you supply any parameters, they will be used only to deliver copyright
-information.</para>
+<para>
+  Beginning with ooRexx 4.0.0 this function is basically a nop. Use:
+<programlisting>
+::requires 'rxmath' LIBRARY
+</programlisting>
+  to gain access to the functions in the package.
+</para>
+<para>
+  However, if this function is called with a single, string, parameter, the copyright information is
+  printed.
+</para>
 </section>
 
 <section><title>MathDropFuncs()</title>
-<indexterm><primary>MathDropFuncs</primary></indexterm>
-<indexterm><primary>functions</primary>
-<secondary>MathDropFuncs</secondary></indexterm>
-<indexterm><primary>unload functions</primary></indexterm>
-<indexterm><primary>deregister functions</primary></indexterm>
+<indexterm><primary>MathDropFuncs (nop)</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-MathDropFuncs()---------------------------------------------><
 ]]>
 </programlisting>
-<para>Drops all functions in the Rexx Mathematical Functions package.</para>
+<para>
+  This function is a nop in ooRexx 4.0.0 and later.  It does nothing.
+</para>
 </section>
 
 <section><title>RxCalcSqrt()</title>
