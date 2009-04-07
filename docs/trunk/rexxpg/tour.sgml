@@ -98,11 +98,11 @@ application.</para>
 <secondary>running</secondary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>program, running a</secondary></indexterm>
-<para>Rexx programs should have a
-file extension of .rex (the default searched for by the ooRexx interpreter).
-Here is a typical Rexx
-program named greeting.rex. It prompts the user to type in a name and then
-displays a personalized greeting: </para>
+<para>
+  Rexx programs should have a file extension of .rex (the default searched for by the ooRexx
+  interpreter). Here is a typical Rexx program named greeting.rex. It prompts the user to type in a name
+  and then displays a personalized greeting:
+</para>
 <programlisting>
 <![CDATA[
 /* greeting.rex - a Rexx program to display a greeting.  */
@@ -112,70 +112,152 @@ say "Hello" name                 /* Display greeting     */
 exit 0                   /* Exit with a return code of 0 */
 ]]>
 </programlisting>
-<para>The ooRexx interpreter is invoked by the command </para>
+<para>
+  SAY
+  <indexterm><primary>SAY instruction</primary></indexterm>
+  <indexterm><primary>Rexx</primary>
+  <secondary>SAY instruction</secondary></indexterm>
+  is a Rexx instruction that displays a message (like PRINT in Basic or printf in C).  The message to be
+  displayed follows the SAY keyword.  In this case, the message is the literal string "Please enter your
+  name.".  The data between the quotes is a constant and will appear exactly as typed.  You can use
+  either single (') or double quote (") delimiters for literal strings.
+</para>
+<para>
+  The
+  <indexterm><primary>PULL instruction</primary></indexterm>
+  <indexterm><primary>instructions</primary>
+  <secondary>PULL</secondary></indexterm>
+  <indexterm><primary>Rexx</primary>
+  <secondary>PULL instruction</secondary></indexterm>
+  PULL instruction reads a line of text from the standard input (the keyboard), and returns the text in
+  the variable specified with the instruction. In our example, the text is returned in the variable
+  name.
+</para>
+<para>
+  The next SAY instruction provides a
+  <indexterm><primary>instructions</primary>
+  <secondary>SAY</secondary></indexterm>
+  glimpse of what can be done with Rexx strings. It displays the word
+  <computeroutput>Hello</computeroutput> followed by the name of the user, which is stored in variable
+  name. Rexx substitutes the value of name and displays the resulting string. You do not need a separate
+  format
+  <indexterm><primary>strings</primary></indexterm>
+  string as you do with C or Basic.
+</para>
+<para>
+  The final instruction,
+  <indexterm><primary>EXIT instruction</primary></indexterm>
+  <indexterm><primary>instructions</primary>
+  <secondary>EXIT</secondary></indexterm>
+  <indexterm><primary>Rexx</primary>
+  <secondary>EXIT instruction</secondary></indexterm>
+  EXIT, ends the Rexx program. Control returns to the operation system command prompt. EXIT can also
+  return a value. In our example, 0 is returned. The EXIT instruction is optional.  Running off the end
+  of the program is equivalent to coding "EXIT 0".
+</para>
+<para>
+  You can terminate a running Rexx program by pressing the Ctrl+Break key combination. Rexx stops running
+  the program and control returns to the command prompt.
+</para>
+<para>
+  The ooRexx interpreter is invoked by the command
+</para>
 <programlisting>
 <![CDATA[
 rexx
 ]]>
 </programlisting>
-<para>To run the program greeting.rex, for example, use the command</para>
+<para>
+  To run the program <computeroutput>greeting.rex</computeroutput>, for example, use the command
+</para>
 <programlisting>
 <![CDATA[
 rexx greeting.rex
 ]]>
 </programlisting>
-<para>or</para>
+<para>
+  or
+</para>
 <programlisting>
 <![CDATA[
 rexx greeting
 ]]>
 </programlisting>
-<para>If not provided, an extension of ".rex" is assumed.</para>
-<para>If you want to run your Rexx program in silent mode without
-creating a console window on Windows, you can invoke RexxHIDE.EXE followed by the program
-name and the program arguments from a program item. If RexxHIDE is called
-from within a console window, no output is displayed in the console window.
-RexxHIDE is only available for the Windows platform.
+<para>
+  If not provided, an extension of ".rex" is assumed.
 </para>
-<para>SAY
-<indexterm><primary>SAY instruction</primary></indexterm>
-<indexterm><primary>Rexx</primary>
-<secondary>SAY instruction</secondary></indexterm>
-is a Rexx instruction that displays a message (like PRINT in Basic or printf
-in C).  The message to be displayed follows the SAY keyword.  In this case, the
-message is the literal string "Please enter your name.".  The data between the quotes
-is a constant and will appear exactly as typed.  You can use either single (') or double
-quote (") delimiters for literal strings.
+<para>
+  On <emphasis role="italic">Windows only</emphasis> there are these additional ways to run your Rexx
+  programs:
 </para>
-<para>The
-<indexterm><primary>PULL instruction</primary></indexterm>
-<indexterm><primary>instructions</primary>
-<secondary>PULL</secondary></indexterm>
-<indexterm><primary>Rexx</primary>
-<secondary>PULL instruction</secondary></indexterm>
-PULL instruction reads a line of text from the standard input (the keyboard),
-and returns the text in the variable specified with the instruction. In our
-example, the text is returned in the variable name.</para>
-<para>The next SAY instruction provides a
-<indexterm><primary>instructions</primary>
-<secondary>SAY</secondary></indexterm>
-glimpse of what can be done with Rexx strings. It displays the word
-<computeroutput>Hello</computeroutput> followed by the name of the user, which
-is stored in variable name. Rexx substitutes the value of name and displays the
-resulting string. You do not need a separate format
-<indexterm><primary>strings</primary></indexterm>
-string as you do with C or Basic.</para>
-<para>The final instruction,
-<indexterm><primary>EXIT instruction</primary></indexterm>
-<indexterm><primary>instructions</primary>
-<secondary>EXIT</secondary></indexterm>
-<indexterm><primary>Rexx</primary>
-<secondary>EXIT instruction</secondary></indexterm>
-EXIT, ends the Rexx program. Control returns to the operation system command prompt.
-EXIT can also return a value. In our example, 0 is returned. The EXIT instruction
-is optional.  Running off the end of the program is equivalent to coding "EXIT 0".</para>
-<para>You can terminate a running Rexx program by pressing the Ctrl+Break key combination.
-Rexx stops running the program and control returns to the command prompt.</para>
+<itemizedlist>
+  <listitem><para>
+    The installation program on Windows sets up a file association for the
+    <computeroutput>.rex</computeroutput> file extension.  This association allows the ooRexx programs to
+    be run from Windows Explorer by double-clicking on the icon of the program file. In addition, the
+    program can be run from a command prompt in a console window by simply typing the file name. The
+    <computeroutput>.rex</computeroutput> extension is not needed.  For example, simply type
+    <computeroutput>greeting</computeroutput> to execute the <emphasis
+    role="italic">greeting.rex</emphasis> program:
+<programlisting>
+<![CDATA[
+C:\>greeting
+Please enter your name.
+Mark
+Hello MARK
+
+C:\>
+]]>
+</programlisting>
+  </para></listitem>
+  <listitem><para>
+    A Rexx program can be run in <emphasis role="italic">silent mode</emphasis> by using
+    <computeroutput>rexxhide</computeroutput>. This executes the program without creating a console
+    window.  This is most useful when creating a program shortcut. For the shortcut target, enter
+    <emphasis role="italic">rexxhide.exe</emphasis> followed by the program name and the program
+    arguments. Double-clicking on the shortcut then runs the program without creating a console window.
+    <emphasis role="bold">Note</emphasis> that <emphasis role="italic">silent</emphasis> means there is
+    no output from the Rexx program. When your program is run by
+    <computeroutput>rexxhide</computeroutput>, either by double clicking on its icon, or from within a
+    console window, there is no output displayed. Therefore <computeroutput>rexxhide</computeroutput>
+    would not normally be used for programs like <emphasis role="italic">greeting.rex</emphasis>. This is
+    what the <emphasis role="italic">greeting.rex</emphasis> program would look like when executed
+    through <computeroutput>rexxhide</computeroutput>:
+<programlisting>
+<![CDATA[
+C:\>rexxhide greeting.rex
+
+C:\>
+]]>
+</programlisting>
+  </para></listitem>
+  <listitem><para>
+    As a compliment to <computeroutput>rexxhide</computeroutput> is the
+    <computeroutput>rexxpaws</computeroutput> program. When a Rexx program is executed through
+    <computeroutput>rexxpaws</computeroutput>, at completion of the Rexx program, there will be a pause
+    waiting for the user to hit the enter key. For example, using the <emphasis
+    role="italic">greeting.rex</emphasis> program, <computeroutput>rexxpaws</computeroutput> would
+    produce the following:
+<programlisting>
+<![CDATA[
+C:\>rexxpaws greeting.rex
+Please enter your name.
+Mark
+Hello MARK
+
+Press ENTER key to exit...
+
+C:\>
+]]>
+</programlisting>
+  <computeroutput>rexxpaws</computeroutput> is useful for running a Rexx program from a shortcut, where
+  the program <emphasis role="italic">does</emphasis> produce output. On Windows, when double-clicking on
+  the program file icon, a console window opens, the program is run, and then the console window
+  immediately closes. <computeroutput>rexxpaws</computeroutput> prevents the console window from closing
+  until the user hits the enter key. This allows the user to see what output the program produced.
+  </para></listitem>
+</itemizedlist>
+
 </section>
 
 <section id="element"><title>Elements of Rexx</title>
