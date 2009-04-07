@@ -201,6 +201,6 @@ svnrev.tmp:
 
 
 clean:
-	rm *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip \
+	rm -f *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip \
            HTML.index *.tmp
 
