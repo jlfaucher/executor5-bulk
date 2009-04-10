@@ -70,7 +70,7 @@
 # Define CPU=X64 on the nMake command line, or here, to build for 64-bit.  By
 # default the build is for 32-bit.  I.e.: nMake CPU=X64 RELEASE=1  We only need
 # to know the CPU in order to pick the right manifest file.
-CPU = X64
+# CPU = X64
 
 # What we are going to build
 all: rxStart.exe dbAccess.dll logon.dll
