@@ -597,20 +597,18 @@ settings for all Rexx code contained within a package.
 >>-::OPTIONS--+---------------+--+-----------+--+-----------+---->
               +-DIGITS-digits-+  +-FORM-form-+  +-FUZZ-fuzz-+
 
- >------------+--+----------+------------------------------------><
+ >------------+-------------+------------------------------------><
               +-TRACE-trace-+
 ]]>
 </programlisting>
 
-<para>A ::CONSTANT directive defines a method that returns a constant value.
-This is useful for creating named constants associated with a class.
-</para>
 <para>Any of the options may be specified on a single ::OPTIONS directive in any
 order.  If an option is specified more than once, the last specified value
-will the be one used.  If more than ::OPTIONS directive appears in a source file,
-the options are processed in the order they appear and the effect is accumulative.
-If a give option type is specified on more than directive, the last specified will be
-the value used.</para>
+will the be one used.  If more than one ::OPTIONS directive appears in a source
+file, the options are processed in the order they appear and the effect is
+accumulative. If a given option type is specified on more than directive, the
+last specified will be the value used.
+</para>
 <para>The specified options will override the normal default settings for all Rexx
 code contained in the source file.  For example, </para>
 <programlisting>
@@ -690,16 +688,13 @@ minus FUZZ digits during the comparison and are then compared with 0.
 <secondary>TRACE option</secondary></indexterm>
 </entry>
 <entry>
-<para>TRACE option controls the tracing action (that is, how much is displayed to the
-user) during the processing of all Rexx code contained in the package.
-Tracing describes some or all
-of the clauses in a program, producing descriptions of clauses as they are
-processed. TRACE is mainly used for debugging.
-The value <emphasis role="italic">trace</emphasis> must be one of the
-<link linkend="alphaco">Trace Alphabetic Character (Word) Options</link>
-valid for the <link linkend="keyTrace">Trace instruction</link>.
-The package value can be retrieved using the Package class
-<link linkend="mthPackageDigits">trace</link> method.
+<para>controls the tracing action (that is, how much is displayed to the user) during the processing of
+all Rexx code contained in the package. Tracing describes some or all of the clauses in a program,
+producing descriptions of clauses as they are processed. TRACE is mainly used for debugging. The value
+<emphasis role="italic">trace</emphasis> must be one of the <link linkend="alphaco">Trace Alphabetic
+Character (Word) Options</link> valid for the <link linkend="keyTrace">Trace instruction</link>. The
+package value can be retrieved using the Package class <link linkend="mthPackageDigits">trace</link>
+method.
 </para>
 </entry></row>
 </tbody>
