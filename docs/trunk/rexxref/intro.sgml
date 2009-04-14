@@ -41,7 +41,7 @@
     #
     #########################################################################
 -->
-<chapter id="intro"><title>Object Rexx General Concepts</title>
+<chapter id="intro"><title>Open Object Rexx General Concepts</title>
 <indexterm><primary>general concepts</primary></indexterm>
 <para>The Rexx language is particularly suitable for:
 <itemizedlist>
@@ -59,9 +59,8 @@ polymorphism, an object class hierarchy, class-based inheritance of methods,
 and concurrency.  It includes a number of useful base classes and allows you
 create new object classes of your own.</para>
 <para>
-Open Object Rexx is compatible with earlier,
-non-object based Rexx versions. It
-has the usual structured-programming instructions, for example IF, SELECT,
+Open Object Rexx is compatible with earlier Rexx versions, both non-object based Rexx and IBM's Object
+Rexx. It has the usual structured-programming instructions, for example IF, SELECT,
 DO WHILE, and LEAVE, and a number of useful built-in functions.</para>
 <para>The language imposes few restrictions
 <indexterm><primary>programming restrictions</primary></indexterm>
@@ -78,11 +77,19 @@ the types of data that variables can contain.</para>
 <secondary>by language processor</secondary></indexterm>
 <indexterm><primary>language</primary>
 <secondary>processor execution</secondary></indexterm>
-<para>A language processor (interpreter)
-runs Rexx programs. That is, the program runs line by line and word by word,
-without first being translated to another form (compiled). The advantage of
-this is that you can fix the error and rerun the program faster than with
-a compiler.</para>
+<para>
+  A language processor (interpreter) runs Rexx programs. That is, the program runs line by line and word
+  by word, without first being translated to machine language (compiled.) One of the advantages of this
+  is that you can fix the error and rerun the program faster than when using a compiler.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> Open Object Rexx also supplies the
+  <computeroutput>rexxc</computeroutput> program that can be used to <emphasis
+  role="italic">tokenize</emphasis> Rexx programs. Tokenizing a program is not the same as compiling a
+  program to machine language.  See <emphasis role="italic">Appendix A. Distributing Programs without
+  Source</emphasis> of the <emphasis role="italic">Open Object Rexx Programming
+  Guide</emphasis> for details on <computeroutput>rexxc</computeroutput> and tokenizing.
+</para>
 
 <section id="object"><title>What Is Object-Oriented Programming?</title>
 <indexterm><primary>object-oriented programming</primary></indexterm>

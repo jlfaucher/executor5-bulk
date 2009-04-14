@@ -640,6 +640,24 @@ special character (such as a parenthesis).
 <para>String or symbol expected as ::CONSTANT value</para>
 </listitem>
 </varlistentry>
+<varlistentry>
+<term>917</term>
+<listitem>
+<para>String or symbol expected as DIGITS value</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>918</term>
+<listitem>
+<para>String or symbol expected as FUZZ value</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>919</term>
+<listitem>
+<para>String or symbol expected as TRACE value</para>
+</listitem>
+</varlistentry>
 </variablelist>
 </section>
 <section id="ERR20">
@@ -1127,6 +1145,12 @@ special character (such as a parenthesis).
 <para>SELECT must be followed by the keyword LABEL; found "<emphasis role="italic">word</emphasis>"</para>
 </listitem>
 </varlistentry>
+<varlistentry>
+<term>924</term>
+<listitem>
+<para>Unknown keyword on ::OPTIONS directive; found "<emphasis role="italic">word</emphasis>"</para>
+</listitem>
+</varlistentry>
 </variablelist>
 </section>
 <section id="ERR26">
@@ -1177,13 +1201,13 @@ special character (such as a parenthesis).
 <varlistentry>
 <term>005</term>
 <listitem>
-<para>NUMERIC DIGITS value must be a positive whole number; found "<emphasis role="italic">value</emphasis>"</para>
+<para>DIGITS value must be a positive whole number; found "<emphasis role="italic">value</emphasis>"</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>006</term>
 <listitem>
-<para>NUMERIC FUZZ value must be zero or a positive whole number; found "<emphasis role="italic">value</emphasis>"</para>
+<para>FUZZ value must be zero or a positive whole number; found "<emphasis role="italic">value</emphasis>"</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -3827,7 +3851,8 @@ special character (such as a parenthesis).
 </section>
 <section id="rexxcup">
 <title>RexxC Utility Program</title>
-<para>RexxC issues the following errors:</para>
+<para>When RexxC encounters a syntax error in a Rexx program while tokenizing or syntax checking it, RexxC
+returns the negated ooRexx error code. In addition, RexxC issues the following errors:</para>
 <section id="ERR127">
 <title>Error 127 - The REXXC command parameters are incorrect.</title>
 <para>
