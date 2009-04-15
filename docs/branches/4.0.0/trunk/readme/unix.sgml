@@ -42,7 +42,7 @@
     #########################################################################
 -->
 
-<section><title>Unix/Linux Requirements, Installation and Configuration</title>
+<section><title>Unix-Like (AIX, Linux, etc.,) Requirements, Installation and Configuration</title>
 
 <section><title>Hardware Requirements</title>
 <itemizedlist>
@@ -67,15 +67,54 @@
 
 <section><title>Software Requirements</title>
 <itemizedlist>
-<listitem><para>
-  Linux ELF system (i386 or x86_64,) or Linux PPC system. Linux kernel version 2.4.1 or higher. The
-  kernel must support System V IPC.
+<listitem>
+<para>
+  <emphasis role="bold">Linux</emphasis>
+  <itemizedlist>
+  <listitem>
+    <para>
+      Linux ELF system (i386 or x86_64.) Linux kernel version 2.4.1 or higher, with support for System V
+      IPC.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      Linux PPC system. Linux kernel version 2.4.1 or higher, with support for System V IPC.
+    </para>
+  </listitem>
+  </itemizedlist>
 </para></listitem>
-<listitem><para>
-  AIX 5L 5.3 / AIX 6.1
+<listitem>
+<para>
+  <emphasis role="bold">AIX</emphasis>
+  <itemizedlist>
+  <listitem>
+    <para>
+      AIX 5L 5.2 TL10 and up.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      AIX 5L 5.3 TL7 and up.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+      AIX 6.1 TL1 and up.
+    </para>
+  </listitem>
+  </itemizedlist>
 </para></listitem>
-<listitem><para>
-  SUN Sparc system running Solaris V2.8 or higher.
+<listitem>
+<para>
+  <emphasis role="bold">Solaris</emphasis>
+  <itemizedlist>
+  <listitem>
+    <para>
+      Solaris V2.8 or higher.
+    </para>
+  </listitem>
+  </itemizedlist>
 </para></listitem>
 </itemizedlist>
 </section>
@@ -167,7 +206,74 @@
 </para>
 </section>
 
-<section><title>Installation/Removal of the BFF Package</title>
+<section><title>Detailed Installation/Removal Information for AIX</title>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Installation location</emphasis></term>
+  <listitem>
+    <para>
+      This build is installed in <computeroutput>/opt/ooRexx</computeroutput>.
+    </para>
+    <para>
+       The following links are created from <computeroutput>/opt/ooRexx/bin</computeroutput> to
+       <computeroutput>/usr/bin</computeroutput>:
+<programlisting>
+<![CDATA[
+/usr/bin/rexx
+/usr/bin/rexx.img
+/usr/bin/rxftp.cls
+/usr/bin/rxregexp.cls
+/usr/bin/socket.cls
+/usr/bin/rxapi
+/usr/bin/oorexx-config
+/usr/bin/rexxc
+/usr/bin/rxqueue
+/usr/bin/rxsubcom
+/usr/bin/rexximage
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Required xlC runtime level</emphasis></term>
+  <listitem>
+    <para>
+      <variablelist>
+        <varlistentry><term>xlC runtime 9.0.0.9 or higher</term>
+        <listitem>
+          <para>
+            This runtime is contained in the April 2009 XL C/C++ Enterprise Edition V8.0 for AIX PTF.
+            <ulink url="http://www-01.ibm.com/support/docview.wss?rs=2239&amp;context=SSJT9L&amp;dc=D400&amp;uid=swg24022586&amp;loc=en_US&amp;cs=utf-&amp;&amp;lang=en"><citetitle>IBM support</citetitle></ulink>
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>xlC runtime 10.1 or higher</term>
+        <listitem>
+          <para>
+            This runtime is contained in the Jannuary 2009 IBM C++ Runtime Environment Components for
+            AIX.
+            <ulink url="http://www-01.ibm.com/support/docview.wss&amp;rs=2239&amp;context=SSJT9L&amp;dc=D400&amp;uid=swg24022049&amp;loc=en_US&amp;cs=utf-&amp;&amp;lang=en"><citetitle>IBM support</citetitle></ulink>
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Installed services</emphasis></term>
+  <listitem>
+    <para>
+      The ooRexx 4.0.0.0 LPP will install the <computeroutput>rxapi</computeroutput> daemon. This daemon
+      is started automatically after the installation. The daemon will be started upon system boot via an
+      entry in <computeroutput>/etc/inittab</computeroutput>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Comments</emphasis></term>
+  <listitem>
+    <para>
+      If you have any comments or questions please do not hesitate to ask. See the <link
+      linkend="helpGettingHelp">Getting Help</link> sections for places to ask questions. The AIX
+      maintainer can be reached by posting questions to <link linkend="helpDevelList">The
+      Developer Mailing List</link>.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+
 <para>
   To install or remove the <computeroutput>bff</computeroutput> package, use smitty.
 </para>
