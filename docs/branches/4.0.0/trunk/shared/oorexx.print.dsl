@@ -1,0 +1,132 @@
+<!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
+<!ENTITY dbstyle SYSTEM "/usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl" CDATA DSSSL>
+]>
+
+<style-sheet>
+<style-specification use="docbook">
+<style-specification-body>
+
+;;###########################################################################
+;;#
+;;#  Customizations to the standard DocBook Print Stylesheet
+;;#  for the Open Object Rexx Documentation
+;;#
+;;#  by W. David Ashley
+;;#
+;;###########################################################################
+
+
+
+;;Enumerate sections (E.g, 1.1, 1.1.1, 1.2, etc.)
+(define %section-autolabel%
+ #t)
+
+;; If '%two-side%' is true, headers and footers are alternated
+(define %two-side%
+ #t)
+
+;;Contents for the recto titlepage (the main page)
+(define (set-titlepage-recto-elements)
+  (list (normalize "title")
+	(normalize "subtitle")
+	(normalize "edition")
+	(normalize "releaseinfo")
+	(normalize "pubdate")
+	(normalize "graphic")
+	(normalize "mediaobject")
+	(normalize "corpauthor")
+	(normalize "authorgroup")
+	(normalize "author")
+	(normalize "editor")))
+(define (book-titlepage-recto-elements)
+  (list (normalize "title")
+	(normalize "subtitle")
+	(normalize "edition")
+	(normalize "releaseinfo")
+	(normalize "pubdate")
+	(normalize "graphic")
+	(normalize "mediaobject")
+	(normalize "corpauthor")
+	(normalize "authorgroup")
+	(normalize "author")
+	(normalize "editor")))
+
+(define %mono-font-family%
+  ;; This change eliminates curly double-quotes from program listings but
+  ;; still leaves curly single-quotes intact. This means that all mono-space
+  ;; font sections (like programlisting) need to use the apos entity for
+  ;; single quotes. Otherwise the character used is not comapaable with Windows.
+  "Computer-Modern-Typewriter")
+
+(define (first-page-inner-footer gi)
+  (let* ((bookinf
+    (select-elements (children (sgml-root-element))
+      (normalize "bookinfo")))
+  (booktitle
+    (select-elements (children bookinf) (normalize "titleabbrev")))
+  (bookedition
+    (select-elements (children bookinf) (normalize "edition"))))
+  (with-mode hf-mode
+    (make sequence
+       font-posture: 'italic
+       font-family-name: "Helvetica"
+       font-size: 8pt
+       (process-node-list booktitle)
+       (literal "\no-break-space;")
+       (process-node-list bookedition)))))
+
+(define (page-inner-footer gi)
+  (let* ((bookinf
+    (select-elements (children (sgml-root-element))
+      (normalize "bookinfo")))
+  (booktitle
+    (select-elements (children bookinf) (normalize "titleabbrev")))
+  (bookedition
+    (select-elements (children bookinf) (normalize "edition"))))
+  (with-mode hf-mode
+    (make sequence
+       font-posture: 'italic
+       font-family-name: "Helvetica"
+       font-size: 8pt
+       (process-node-list booktitle)
+       (literal "\no-break-space;")
+       (process-node-list bookedition)))))
+
+(define (page-center-footer gi)
+  ($page-number-header-footer$))
+
+(define (first-page-center-footer gi)
+  ($page-number-header-footer$))
+
+(define (first-page-outer-footer gi)
+  (let* ((bookinf
+    (select-elements (children (sgml-root-element))
+      (normalize "bookinfo")))
+  (svnrev
+    (select-elements (children bookinf) (normalize "releaseinfo"))))
+  (with-mode hf-mode
+    (make sequence
+       font-posture: 'italic
+       font-family-name: "Helvetica"
+       font-size: 8pt
+       (process-node-list svnrev)))))
+
+(define (page-outer-footer gi)
+  (let* ((bookinf
+    (select-elements (children (sgml-root-element))
+      (normalize "bookinfo")))
+  (svnrev
+    (select-elements (children bookinf) (normalize "releaseinfo"))))
+  (with-mode hf-mode
+    (make sequence
+       font-posture: 'italic
+       font-family-name: "Helvetica"
+       font-size: 8pt
+       (process-node-list svnrev)))))
+
+
+</style-specification-body>
+</style-specification>
+
+<external-specification id="docbook" document="dbstyle">
+</style-sheet>

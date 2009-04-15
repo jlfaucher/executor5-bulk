@@ -1,0 +1,324 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Release Notes SGML File
+    #
+    # Copyright (c) 2008-2009, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+
+<section><title>New in this Release</title>
+<para>
+  This section describes the changes and enhancements introduced since Open Object Rexx 3.2.0.
+</para>
+<para>
+  You should refer to the CHANGES document accompanying the release for a complete list of the changes
+  and bug fixes.  In addition, there is a ReleaseNotes document that contains essentially the same
+  information as this section, but in a text format.  These documents are accessible from the <emphasis
+  role="italic">Notes</emphasis> icon on the SourceForge download page for each ooRexx release. They are
+  also included in the source code for ooRexx when SourceForge is not used.
+</para>
+
+<section><title>New Platforms</title>
+<para>
+  The code base for the intrepreter has been reworked so that the executables and libraries can be
+  compiled in 64-bit mode. The interprer and external function packages that ship with the interpreter
+  have been built and tested on the following operating systems:
+  <itemizedlist>
+    <listitem><para>Linux 64-bit  </para></listitem>
+    <listitem><para>AIX 64-bit    </para></listitem>
+    <listitem><para>Windows 64-bit</para></listitem>
+  </itemizedlist>
+</para>
+</section>
+
+<section><title>All Platforms</title>
+<para>
+  Although not directly visible to the ooRexx programer, much of the code in the interpreter core has
+  been rewritten.  This enhances the interpreter in several ways, not the least of which is the ability
+  to compile the interpreter in 64-bit addressing mode.  In addition, the rewritten interpreter is now
+  more maintainable and extensible.
+</para>
+<para>
+  For 64-bit mode systems strings larger than 999,999,999 bytes can be created and manipulated.
+</para>
+<para>
+  A new, improved, set of application programming interfaces (APIs) have been added.  The programmers
+  guide has been updated accordingly.  Although these utilize C++ they are extremely easy to use.  All of
+  the external function libraries have been upgraded to use these new APIs.
+</para>
+<para>
+  REXX_PATH (new in 4.0) is an additional path you can set that is used for Rexx program searches.
+</para>
+<para>
+  Several new utility classes have been added including a sockets class, Mime classes, and SMTP classes.
+  New samples are included in the distribution:
+  <itemizedlist>
+    <listitem><para><computeroutput>samples/scclient.rex</computeroutput></para></listitem>
+    <listitem><para><computeroutput>samples/scserver.rex</computeroutput></para></listitem>
+    <listitem><para><computeroutput>samples/sfclient.rex</computeroutput></para></listitem>
+    <listitem><para><computeroutput>samples/sfserver.rex</computeroutput></para></listitem>
+  </itemizedlist>
+</para>
+</section>
+
+<section><title>Unix Platform</title>
+<para>
+  Rxapi now runs as a system wide daemon.  The use of shared memory has been eliminated.  Rxapi now uses
+  a socket interface for communication.
+</para>
+</section>
+
+<section><title>Windows Platform</title>
+<para>
+  Improvements have been made both to ooDialog and OLEObject.
+</para>
+<para>
+  The documentation of the Windows specific classes has been moved out of rexxref to the new document:
+  winextensions.pdf.
+</para>
+<para>
+  The following new samples are included in the distribution:
+
+  <itemizedlist>
+    <listitem><para><computeroutput>samples\oodialog\examples\imageButton.rex</computeroutput></para></listitem>
+    <listitem><para><computeroutput>samples\winsystem\displayAnyMenu.rex     </computeroutput></para></listitem>
+    <listitem><para><computeroutput>samples\winsystem\displayWindowTree.rex  </computeroutput></para></listitem>
+    <listitem><para><computeroutput>samples\winsystem\getTheWindow.rex       </computeroutput></para></listitem>
+    <listitem><para><computeroutput>samples\winsystem\menuCalc.rex           </computeroutput></para></listitem>
+    <listitem><para><computeroutput>samples\winsystem\menuNotepad.rex        </computeroutput></para></listitem>
+    <listitem><para><computeroutput>samples\winsystem\quickCalc.rex          </computeroutput></para></listitem>
+    <listitem><para><computeroutput>samples\winsystem\quickShowAllMenus.rex  </computeroutput></para></listitem>
+    <listitem><para><computeroutput>samples\winsystem\windowsSystem.frm      </computeroutput></para></listitem>
+    <listitem><para><computeroutput>samples\winsystem\winSystemDlgs.h        </computeroutput></para></listitem>
+    <listitem><para><computeroutput>samples\winsystem\winSystemDlgs.rc       </computeroutput></para></listitem>
+    <listitem><para><computeroutput>samples\winsystem\writeWithNotepad.rex   </computeroutput></para></listitem>
+  </itemizedlist>
+</para>
+<para>
+  The Windows installation program has be enhanced so that it will only remove files installed by the
+  ooRexx package.  Files added to the installation directory by the user will no longer be deleted when
+  ooRexx is uninstalled.  This behavior will be in effect for the uninstallation of ooRexx 4.0.0 and
+  future versions of ooRexx, there is no change in the 3.2.0 uninstallation.  When a 3.2.0, or earlier,
+  version of ooRexx is uninstalled, all files in the installation directory are deleted.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis>The Windows Scripting Host support in ooRexx 4.0.0 has been
+  temporarily disabled in this release.  This was done after soliciting input from users.  Temporarily
+  disabling WSH allows the release of 4.0.0 to be months sooner than it would have been otherwise.  The
+  consensus of users was that they would prefer an early release without WSH, than a later release with
+  WSH. The intent is to deliver WSH as soon as possible in a follow-on minor release.
+</para>
+</section>
+
+<section><title>Some possible differences in program behavior</title>
+<para>
+  Files loaded by ::requires are loaded by a global package manager, and a given file will only be loaded
+  once in a process.  This means multiple programs referring to a ::requires file will be accessing a
+  single set of created classes and routines rather than each ending up with a unique set.
+</para>
+<para>
+  Due to a bug in prior releases of ooRexx and Object Rexx, a negative return code from a Rexx program
+  could be transformed to a positive return code to the operating system. This bug is now fixed.
+</para>
+<para>
+  Due to a bug in prior releases, methods created with ::METHOD ATTRIBUTE or ::ATTRIBUTE did not properly
+  recognize the GUARDED status of methods. All attribute methods behaved as though they were UNGUARDED.
+  This bug has been fixed. <emphasis role="bold">Note</emphasis>, if you have ooRexx programs that use
+  concurrency and attributes, that hang under 4.0.0, this is the first area to check. It may be that your
+  program is written incorrectly and previously only worked because of the bug. You may have an attribute
+  defined as GUARDED that should be UNGUARDED. Remember that GUARDED is the default if neither GUARDED
+  nor UNGUARDED is specified.
+</para>
+<para>
+  The RxFuncAdd now checks that a registered function can be resolved at registration time and will
+  return a failure if it cannot.  This is how many believed it worked originally.
+</para>
+<para>
+  Some returns from the rxMath package were not consistent.  As an example, on Windows, NaN (Not a
+  Number) was returned as the string "ERROR" while on Linux the string "nan" was returned.  This was
+  fixed so that the string "nan" is returned on all platforms.
+</para>
+<para>
+  On all platforms, +infinity and -infinity are now returned as strings "+infinity" and "-infinity".
+</para>
+</section>
+
+<section><title>Miscellaneous Enhancements</title>
+<para>
+  A method that is declared PRIVATE has been enhanced to allow its invocation from any of the following
+  situations:
+  <orderedlist>
+    <listitem><para>
+      From within a method owned by the same class as the target (i.e., the method is invoked using
+      SELF.)  This is the same as ooRexx-3.2 and before.
+    </para></listitem>
+    <listitem><para>
+     The caller is an instance of the same class that defined the target method (the method's scope).
+     This allows an instance of a class to invoke a private method of another instance of the same class.
+    </para></listitem>
+    <listitem><para>
+      The caller is a class object that is compatible with the scope of the method.  This allows class
+      objects to also access private methods of its own instances. This is useful for specialized class
+      methods that create instances(such as the "fromXxxxxx" methods on DateTime).
+    </para></listitem>
+  </orderedlist>
+</para>
+<para>
+  <computeroutput>EXTERNAL</computeroutput> is allowed on <computeroutput>::ATTRIBUTE</computeroutput>,
+  <computeroutput>::METHOD</computeroutput>, and <computeroutput>::ROUTINE</computeroutput> directives.
+</para>
+<para>
+  <computeroutput>LIBRARY</computeroutput> allowed on <computeroutput>::REQUIRES</computeroutput> to load external libraries
+</para>
+<para>
+  A new <computeroutput>::CONSTANT</computeroutput> directive.
+</para>
+<para>
+  The stream class supports files larger than 4Gb (on both 32-bit and 64-bit platforms).
+</para>
+<variablelist>
+  <varlistentry><term>Builtin functions</term>
+  <listitem>
+    <para>
+      <itemizedlist>
+        <listitem><para>FILESPEC has new options : Location, Extension.</para></listitem>
+        <listitem><para>LASTPOS has a new parameter : length.          </para></listitem>
+        <listitem><para>POS has a new parameter : length.              </para></listitem>
+        <listitem><para>QUALIFY is new builtin function.               </para></listitem>
+        <listitem><para>TIME has a new option : Offset.                </para></listitem>
+        <listitem><para>TRANSLATE has new parameters : pos, length.    </para></listitem>
+      </itemizedlist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>New classes</term>
+  <listitem>
+    <para>
+      <itemizedlist>
+        <listitem><para>Buffer       </para></listitem>
+        <listitem><para>IdentityTable</para></listitem>
+        <listitem><para>Orderable    </para></listitem>
+        <listitem><para>Package      </para></listitem>
+        <listitem><para>Pointer      </para></listitem>
+        <listitem><para>RexxContext  </para></listitem>
+        <listitem><para>Routine      </para></listitem>
+        <listitem><para>WeakReference</para></listitem>
+      </itemizedlist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>New methods for the Object class</term>
+  <listitem>
+    <para>
+      <itemizedlist>
+        <listitem><para>send     </para></listitem>
+        <listitem><para>sendWith </para></listitem>
+        <listitem><para>startWith</para></listitem>
+      </itemizedlist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>New methods for the DateTime class</term>
+  <listitem>
+    <para>
+      <itemizedlist>
+        <listitem><para>offset    </para></listitem>
+        <listitem><para>toTimeZone</para></listitem>
+        <listitem><para>utcDate   </para></listitem>
+        <listitem><para>utcIsoDate</para></listitem>
+      </itemizedlist>
+      DateTime also supports a timezone offset on class methods that create new DataTime instances.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>New method for the Method class</term>
+  <listitem>
+    <para>
+      <itemizedlist>
+        <listitem><para>package</para></listitem>
+      </itemizedlist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>New methods for the MutableBuffer class</term>
+  <listitem>
+    <para>
+      The MutableBuffer class has been enhanced so that it has most, if not all, of the methods of the
+      String class.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>New methods for the OLEObject class</term>
+  <listitem>
+    <para>
+      <itemizedlist>
+        <listitem><para>addEventMethod    </para></listitem>
+        <listitem><para>connectEvents     </para></listitem>
+        <listitem><para>disconnectEvents  </para></listitem>
+        <listitem><para>isConnectable     </para></listitem>
+        <listitem><para>isConnected       </para></listitem>
+        <listitem><para>removeEventHandler</para></listitem>
+        <listitem><para>removeEventMethod </para></listitem>
+      </itemizedlist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>New methods for the RexxQueue class</term>
+  <listitem>
+    <para>
+      <itemizedlist>
+        <listitem><para>empty    </para></listitem>
+        <listitem><para>makeArray</para></listitem>
+        <listitem><para>exists   </para></listitem>
+        <listitem><para>open     </para></listitem>
+      </itemizedlist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>New method for the Stem class</term>
+  <listitem>
+    <para>
+      <itemizedlist>
+        <listitem><para>toDirectory</para></listitem>
+      </itemizedlist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>New method for the String class</term>
+  <listitem>
+    <para>
+      <itemizedlist>
+        <listitem><para>replaceAt</para></listitem>
+      </itemizedlist>
+    </para>
+</variablelist>
+</section>
+
+</section>

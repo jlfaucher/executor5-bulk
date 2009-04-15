@@ -1,0 +1,2997 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2008, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="utilityclasses"><title>Utility Classes and Objects</title>
+<indexterm><primary>Utility Classes</primary></indexterm>
+<para>
+  The ooDialog framework provides a number of utility classes that are useful when writing more complex
+  programs.  These classes do not easily fit into the category of a type of dialog or a type of dialog
+  control and are therefore documented separately.  In addition ooDialog places some globally available
+  objects in the <computeroutput>.local</computeroutput> envirnoment.
+</para>
+<para>
+  The classes and objects in the following table are described in this chapter:
+<table id="tUtilityClasses" frame="all">
+<title>ooDialog Utilitiy Classes and Objects</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Utility Class or Object</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>.SystemErrorCode</entry>
+<entry><link linkend="dotSystemErrorCode">.SystemErrorCode</link></entry>
+</row>
+<row>
+<entry>DlgArea Class</entry>
+<entry><link linkend="clsDlgArea">DlgArea Class</link></entry>
+</row>
+<row>
+<entry>DlgAreaU Class</entry>
+<entry><link linkend="clsDlgAreaU">DlgAreaU Class</link></entry>
+</row>
+<row>
+<entry>DlgUtil Class</entry>
+<entry><link linkend="clsDlgUtil">DlgUtil Class</link></entry>
+</row>
+<row>
+<entry>Point Class</entry>
+<entry><link linkend="clsPoint">Point Class</link></entry>
+</row>
+<row>
+<entry>Rect Class</entry>
+<entry><link linkend="clsRect">Rect Class</link></entry>
+</row>
+<row>
+<entry>Size Class</entry>
+<entry><link linkend="clsSize">Size Class</link></entry>
+</row>
+<row>
+<entry>VirtualKeyCodes Class</entry>
+<entry><link linkend="clsVirtualKeyCodes">VirtualKeyCodes Class</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+
+<section id="dotSystemErrorCode"><title>.SystemErrorCode</title>
+<indexterm><primary>.SystemErrorCode</primary></indexterm>
+<para>
+  The .SystemErrorCode can be used, at times, to obtain additional information when the invocation of a
+  method generates an operating system error.
+</para>
+<para>
+  ooDialog provides an interface to the Windows operating system APIs.  To be specific, the Win32 APIs,
+  and mostly those dealing with dialogs and other graphical aspects of the user interface.  Some of the
+  Win32 APIs will set a system error code when something goes wrong.  (On the other hand, many of the
+  Win32 APIs do not set a system error code.)
+</para>
+<para>
+  When the ooDialog framework first intializes, it sets the value of .SystemErrorCode to 0.  <emphasis
+  role="italic">Some</emphasis>, of the methods of the ooDialog classes will set the .SystemErrorCode to
+  the value of the system error code when the method detects that a Win32 API has failed and has set the
+  error code.  Most methods do <emphasis role="bold">not</emphasis> change the value of .SystemErrorCode.
+  Only those methods that explicitly document they use .SystemErrorCode will ever change its value.
+</para>
+<para>
+  One consequence of the fact that most methods do not change .SystemErrorCode is that its value is only
+  meaningful immediately after the invocation of a method that is documented as using .SystemErrorCode.
+  Those methods will set the code to 0 and, if they detect a Win32 API has set the system error code to
+  non-zero, they will then set .SystemErrorCode to the value of the system error.  Checking
+  .SystemErrorCode after the invocation of a method that does not set .SystemErrorCode will tell the
+  programmer nothing. Neither that a system error happened, or that it did not happen.
+</para>
+<para>
+  The <link linkend="mthGetImageClsImage">getImage()</link> method of the <link
+  linkend="clsImage">.Image</link> class is one method that does change .SystemErrorCode.  This is an
+  example of a possible usage:
+</para>
+<programlisting>
+<![CDATA[
+image = .Image~getImage("resources\bogus.bmp")
+if image~isNull then do
+  say "Error getting the bogus.bmp image."
+  if .SystemErrorCode <> 0 then do
+    say 'System error code:' .SystemErrorCode
+    say '  system message:' SysGetErrorText(.SystemErrorCode)
+  end
+end
+
+/*
+  Output on the screen might be:
+
+Error getting the bogus.bmp image.
+System error code: 2
+  system message: The system cannot find the file specified.
+*/
+]]>
+</programlisting>
+</section>
+
+<section id="clsDlgUtil"><title>DlgUtil Class</title>
+<indexterm><primary>DlgUtil class</primary></indexterm>
+<para>
+  All the methods of the DlgUitl class are class methods. There are no instance methods, other than
+  inherited methods, for this class.  The class methods are a collection of common utilities, mostly
+  for converting different Windows values, getting version information, and the like.
+</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The DlgUtil class requires the class definition file
+<computeroutput>oodPlain.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "oodPlain.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem>
+<para>
+  The class methods of DlgUtil are listed in the following table:
+</para>
+<table id="tblDlgUtilMethods" frame="all">
+<title>Methods of the DlgUtil class</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>colorRef (Class Method)</entry>
+<entry><link linkend="mthColorRef">colorRef</link></entry>
+</row>
+<row>
+<entry>comCtl32Version (Class Method)</entry>
+<entry><link linkend="mthComCtl32Version">comCtl32Version</link></entry>
+</row>
+<row>
+<entry>getBValue (Class Method)</entry>
+<entry><link linkend="mthGetBValue">getBValue</link></entry>
+</row>
+<row>
+<entry>getGValue (Class Method)</entry>
+<entry><link linkend="mthGetGValue">getGValue</link></entry>
+</row>
+<row>
+<entry>getRValue (Class Method)</entry>
+<entry><link linkend="mthGetRValue">getRValue</link></entry>
+</row>
+<row>
+<entry>getSystemMetrics (Class Method)</entry>
+<entry><link linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics</link></entry>
+</row>
+<row>
+<entry>hiWord (Class Method)</entry>
+<entry><link linkend="mthHiWord">hiWord</link></entry>
+</row>
+<row>
+<entry>loWord (Class Method)</entry>
+<entry><link linkend="mthLoWord">loWord</link></entry>
+</row>
+<row>
+<entry>or (Class Method)</entry>
+<entry><link linkend="mthOrClsDlgUtil">or</link></entry>
+</row>
+<row>
+<entry>and (Class Method)</entry>
+<entry><link linkend="mthAndClsDlgUtil">and</link></entry>
+</row>
+<row>
+<entry>version (Class Method)</entry>
+<entry><link linkend="mthVersion">version</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+
+<section id="mthVersion"><title>version (Class Method)</title>
+<indexterm><primary>version</primary></indexterm>
+<programlisting>
+<![CDATA[
+                      +-Full----+
+>>-.DlgUtil~version(--------------)------------------------><
+                      +-Short---+
+]]>
+</programlisting>
+
+<para>Returns the ooDialog version string.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>There are no arguments for this method.
+<variablelist>
+<varlistentry><term>format</term>
+<listitem>
+<para>
+  A keyword indicating the format of the returned version string.  Only the first letter is
+  needed and case is not significant.  Any unrecognized keyword is ignored and the default
+  format is used.  The format for each keyword is as follows:
+</para>
+<variablelist>
+<varlistentry><term>Full</term>
+<listitem>
+<para>
+  A string specifying the version of ooDialog.  This is the default. The string has the format:
+  <computeroutput>ooDialog Version x.x.x.SS (an ooRexx Windows Extension) </computeroutput> where
+  x.x.x is the ooRexx interpreter version and SS is the Subversion revision number of the build.
+  The actual version string might look like: <computeroutput>ooDialog Version 4.0.0.3734 (an ooRexx
+  Windows Extension)</computeroutput>
+</para></listitem></varlistentry>
+<varlistentry><term>Short</term>
+<listitem><para>Only the x.x.x.SS part of the full version string is returned.
+</para></listitem></varlistentry>
+</variablelist>
+</listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+<para>
+  A string in one of the formats specified above.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>
+<programlisting>
+<![CDATA[
+v = .DlgUtil~version
+say v
+say
+
+if .DlgUtil~version("SHORT") < 4.1.0.0000 then do
+  say 'Too bad, you are still running ooRexx 4.0.0'
+end
+else do
+  say 'Great you have upgraded past ooRexx 4.1.0'
+end
+
+::requires 'oodPlain.cls'
+
+/* On the screen you might see:
+
+ooDialog Version 4.0.0.3768 (an ooRexx Windows Extension)
+
+Too bad, you are still running ooRexx 4.0.0
+
+*/
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthComCtl32Version"><title>comCtl32Version (Class Method)</title>
+<indexterm><primary>comCtl32Version</primary></indexterm>
+<programlisting>
+<![CDATA[
+                              +-Short---+
+>>-.DlgUtil~comCtl32Version(--------------)----------------><
+                              +-Number--+
+                              +-OS------+
+                              +-Full----+
+]]>
+</programlisting>
+
+<para>
+  Use this method to determine the version of the<link linkend="comctl32">
+  Common Controls Library</link> used by ooDialog on the current system.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The single argument is:
+<variablelist>
+<varlistentry><term>format</term>
+<listitem>
+<para>
+  A keyword indicating the format of the returned version string.  Only the first letter is
+  needed and case is not significant.  Any unrecognized keyword is ignored and the default
+  format is used.  The format for each keyword is as follows:
+</para>
+<variablelist>
+<varlistentry><term>Short</term>
+<listitem>
+<para>
+  The version number, for instance <computeroutput>4.72</computeroutput> or
+  <computeroutput>6.0</computeroutput>. This is the default.
+</para></listitem></varlistentry>
+<varlistentry><term>Number</term>
+<listitem><para>This is an alias for short.
+</para></listitem></varlistentry>
+<varlistentry><term>OS</term>
+<listitem>
+<para>
+  The minimum operating system that can be expected to be compatible with the libray.
+  Earlier versions of the common control library were also distributed with Internet
+  Explorer and so an OS part of say, <computeroutput>W98 / IE 4.01</computeroutput> would
+  indicate that the current common control library supports all the features available on
+  Windows 98 or with Internet Explorer 4.01.
+</para></listitem></varlistentry>
+<varlistentry><term>Full</term>
+<listitem>
+<para>
+  The full format string in the format <computeroutput>comctl32.dll version 6.0
+  (XP)</computeroutput>. Where the 6.0 is the number part and XP is the OS part.
+</para></listitem></varlistentry>
+</variablelist>
+</listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+<para>
+  This method returns a string in one of the formats described above.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem>
+<para>
+  In the following example, the programmer repositions the dialog controls under certain
+  conditions.  In Windows XP and later, this task is more accurate if the
+  <computeroutput>getIdealSize()</computeroutput> method of the ButtonControl class is used.
+  However, the programmer needs the application to also run on Windows 2000.  He uses the
+  <computeroutput>comCtl32Version()</computeroutput> method to determine if the <link
+  linkend="mthGetIdealSize">getIdealSize</link> method is available.  If it is not available
+  he uses an alternative, but less accurate method to reposition the controls.
+<programlisting>
+<![CDATA[
+::method repositionControls
+
+  if .DlgUtil~comCtl32Version < 6.0 then return self~doW2KReposition
+
+  size = self~getButtonControl(IDC_CHECK_TWO)~getIdealSize
+  if size == .nil then return .false
+
+  -- do the repositioning
+
+return .true
+]]>
+</programlisting>
+  An alternative way to achieve the same thing might be:
+<programlisting>
+<![CDATA[
+::method repositionControls
+
+  if .DlgUtil~comCtl32Version('O') == "XP" then return self~doXPReposition
+
+  -- Do the less accurate repositioning
+  ...
+
+return .true
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthLoWord"><title>loWord (Class Method)</title>
+<indexterm><primary>loWord</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-.DlgUtil~loWord(--param--)------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The Windows API often packs two values into a single number.  One value in the low-order word and
+  the other value in the high-order word.  In ooDialog this is most often seen in the arguments
+  passed to event notification methods.  This utility method is used to extract the low-order word
+  from a number.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>param</term>
+<listitem><para>The number whose low-order word is needed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return is the low-order word portion of the number.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem>
+<para>
+  A common place in the Windows API where two values are packed into a single number is where the
+  API deals with position.  This example shows how to extract the x and y position coordinates of a
+  dialog after it has been moved.  The example is complete, it can be cut and pasted into a file and
+  will execute as is.
+<programlisting id="exampleLoWordClsDlgUtil">
+<![CDATA[
+
+  dlg = .MovingDialog~new
+  dlg~createCenter(100, 60, "Move Me")
+  dlg~execute("SHOWTOP")
+
+::requires 'ooDialog.cls'
+
+::class 'MovingDialog' subclass UserDialog
+
+::method init
+  forward class (super) continue
+
+  self~connectMove(onMove)
+
+::method onMove
+  use arg unUsed, posInfo
+
+  -- Look at our message queue to see if the next message in the queue is also
+  -- onMove.  If so, just return.
+  msg = self~peekDialogMessage
+  if msg~left(6) = "ONMOVE" then return
+
+  -- Now, we should be done moving, print out where we are.
+  x = .DlgUtil~loWord(posInfo)
+  y = .DlgUtil~hiWord(posInfo)
+  say 'At coordinate (' x',' y' ) on the screen. (In pixels.)'
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthHiWord"><title>hiWord (Class Method)</title>
+<indexterm><primary>hiWord</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-.DlgUtil~hiWord(--param--)------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The Windows API often packs two values into a single number.  One value in the low-order word and
+  the other value in the high-order word.  In ooDialog this is most often seen in the arguments
+  passed to event notification methods.  This utility method is used to extract the high-order word
+  from a number.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>param</term>
+<listitem><para>The number whose high-order word is needed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return is the high-order word portion of the number.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem>
+<para>
+  See the <link linkend="exampleLoWordClsDlgUtil">loWord() example</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthOrClsDlgUtil"><title>or (Class Method)</title>
+<indexterm><primary>or</primary>
+<secondary>DlgUtil class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                  +-,-------+
+                  V         |
+>>--.DlgUtil~or(----number--+--)-----------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Combines any number of numerical values into a single number by <emphasis
+  role="italic">oring</emphasis> the individual numbers together.  This is the typical or operation used
+  by assembly and C programmer's.  The ooDialog programmer does not need to understand the concept to use
+  this method.  Some arguments to some methods in the ooDialog framework can take a value that is a
+  combination of some individual <emphasis role="italic">flags</emphasis>.  The or method is provided to
+  construct this combination.</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There is no restriction on the number of arguments to this method, other than each argument must
+      represent a whole number.
+    </para>
+    <para>
+      As a convenience, the whole numbers can also be specified as a string with the following format:
+      <computeroutput>0x</computeroutput> followed by a series of hexidecimal digits with no spaces. Such
+      as <computeroutput>"0xff12abc9"</computeroutput> or <computeroutput>"0x1"</computeroutput> or
+      <computeroutput>"0x00000080"</computeroutput>. This makes it easy to look up and use the value of a
+      flag directly. For instance looking up the value of <computeroutput>ILC_COLOR24</computeroutput>,
+      one would see it is <computeroutput>0x00000018</computeroutput>. This value could be used directly
+      in the <computeroutput>or()</computeroutput> method. Case is not significant in the string.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return value is a number that is the result of combining all the individual arguments together.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      One method that has an argument that can be the result of combining a number of flags is the <link
+      linkend="mthCreateClsImageList">create()</link> method of the <link
+      linkend="clsImage">.ImageList</link> class.  This is how the or method might be used
+<programlisting>
+<![CDATA[
+  flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+
+  -- Create an empty .ImageList object:
+  imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10);
+]]>
+</programlisting>
+    </para>
+    <para>
+      The following is equivalent to the above example:
+<programlisting>
+<![CDATA[
+  flags = .DlgUtil~or(0x00000018, 0x00000001)
+
+  -- Create an empty .ImageList object:
+  imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10);
+]]>
+</programlisting>
+    </para>
+    <para>
+      To round out the examples a little:
+<programlisting>
+<![CDATA[
+  flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+  say "Flags value:" flags
+
+  flags = .DlgUtil~or(0x00000018, 0x00000001)
+  say "Flags value:" flags
+
+::requires 'oodDialog.cls'
+
+/* Output would be:
+
+     Flags value: 25
+     Flags value: 25
+*/
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgUtil::or() [class method] -->
+
+<section id="mthAndClsDlgUtil"><title>and (Class Method)</title>
+<indexterm><primary>or</primary>
+<secondary>DlgUtil class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--.DlgUtil~and(--number1-,-number2--)----------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Combines two numbers into a single number by <emphasis role="italic">anding</emphasis> the individual
+  numbers together.  This is the typical <emphasis role="italic">and</emphasis> operation used by
+  assembly and C programmer's. The typical ooDialog programmer would have no need of the method. It is
+  provided as a convenience for use in sophisticated ooDialog programs.
+</para>
+<para>
+  The normal use of an <emphasis role="italic">and</emphasis> operation in ooDialog programs is to
+  extract the low or high words from an argument returned from the operating system. The addition of the
+  <link linkend="mthLoWord">loWord</link>() and <link linkend="mthHiWord">hiWord</link>() methods to the
+  ooDialog framework have eliminated the reason for this usage.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The required two arguments are the whole numbers to be <emphasis role="italic">anded</emphasis>
+      together.
+    </para>
+    <para>
+      As a convenience, the whole numbers can also be specified as a string with the following format:
+      <computeroutput>0x</computeroutput> followed by a series of hexidecimal digits with no spaces. Such
+      as <computeroutput>"0xff12abc9"</computeroutput> or <computeroutput>"0x1"</computeroutput> or
+      <computeroutput>"0x00000080"</computeroutput>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return value is the number that is the result of <emphasis role="italic">anding</emphasis> the
+      two arguments together.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example is part of a generic method in an application that returns the text of an
+      edit control. The application is a complex one and has many edit controls that are read only. The
+      text for read only controls is ignored. The method returns .nil for read only controls to
+      differentiate the difference between a read only control and a control that has the empty string.
+    </para>
+    <para>
+      The value of the ES_READONLY style is 0x0800.
+<programlisting>
+<![CDATA[
+
+::method getEditText private
+  use strict arg control
+
+  -- If the control is read only, we just return .nil
+  if .DlgUtil~and(control~getStyleRaw, 0x0800) <> 0 then return .nil
+
+  ...
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgUtil::and() [class method] -->
+
+<section id="mthGetSystemMetricsClsDlgUtil"><title>getSystemMetrics (Class Method)</title>
+<indexterm><primary>getSystemMetrics</primary>
+<secondary>DlgUtil class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--.DlgUtil~GetSystemMetrics(--index--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Obtains the system metric value for the given index.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The only argument is:
+    <variablelist>
+      <varlistentry><term>index</term>
+      <listitem>
+        <para>
+          The numeric index of the system metric.
+        </para>
+        <para>
+          Good documentation on the system metrics is found in the <link linkend="windowsdoc">MSDN
+          Library</link> under the GetSystemMetrics function.  This documentation contains both the
+          numeric value of the different indexes and information on what is returned for each index. The
+          documentation is easy to found using a Google search of &quot;GetSystemMetrics MSDN
+          library&quot;
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return value is dependent on the index queried.  Consult the MSDN library for information on
+      the returned values.
+      <note><title>Note</title><para>
+        The OS will return 0 if an invalid index is used.  Hoever, the return value for some indexes is
+        also 0.  The programmer will need to determine from the context if 0 is an error return or not.
+      </para></note>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following code snippet is from an application where the user can have 5, 6, or more,
+      independent dialogs open at one time.  One of the menu options is &quot;Tile Dialogs.&quot; When
+      the user selects this option all the open dialogs are &quot;tiled.&quot;
+    </para>
+    <para>
+      All the open dialog objects are stored in a queue.  In the <computeroutput>onTile</computeroutput>
+      method, which is invoked when the user selects the menu item, each dialog is fetched in turn from the
+      queue.  Then the  dialog is repositioned at an offset from the preceding dialog. It is shifted to the
+      right the width of 2 scroll bars and shifted down the the width of the title bar.  (This width is the
+      title bar width plus the thin border around the title bar.)  The height of the thin border, the
+      height of the title bar, and the width of a scroll bar are all determined by querying the system
+      metrics.
+      <programlisting> <![CDATA[
+
+      ::method onTile
+        expose offSetX offSetY dialogQueue
+
+        -- SM_CXVSCROLL = 20
+        -- SM_CYCAPTION = 4
+        -- SM_CYBORDER  = 6
+
+        if \ offSetX~datatype('W') then do
+          scrollBarX = .DlgUtil~getSystemMetrics(20)
+          titleBarY = .DlgUtil~getSystemMetrics(4)
+          windowBorderY = .DlgUtil~getSystemMetrics(6)
+
+          offSetX = 2 * scrollBarX
+          offSetY = (2 * windowBorderY) + titleBarY
+        end
+
+        parse value self~getWindowRect(self~dlgHandle) with x y .
+
+        do dlg over dialogQueue
+          x += offSetX
+          y += offSetY
+
+          self~setWindowRect(dlg~dlgHandle, x, y, 0, 0, "NOSIZE")
+        end
+      ]]>
+      </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgUtil::getSystemMetrics() [class method] -->
+
+</section> <!-- End DlgUtil Class -->
+
+
+<section id="clsRect"><title>Rect Class</title>
+<indexterm><primary>Rect class</primary></indexterm>
+<para>
+  The Rect object is most often used to represent a rectangle on a coordinate system, specifically
+  the coordinate system used by Windows where the upper left corner is considered (0,0).  However,
+  it is convenient to use the Rect object for other things, for instance the margin around a
+  rectangle.
+</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem>
+<para>
+  The Rect class requires the class definition file <computeroutput>oodPlain.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "oodPlain.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem>
+<para>
+  Instances of the Rect class implement the methods listed in the following table:
+</para>
+
+<table id="tblRectMethods" frame="all">
+<title>Rect Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>new (Class Method)</entry>
+<entry><link linkend="mthNewClsRect">new</link></entry>
+</row>
+<row>
+<entry>bottom</entry>
+<entry><link linkend="mthBottom">bottom</link></entry>
+</row>
+<row>
+<entry>bottom=</entry>
+<entry><link linkend="mthBottomEquals">bottom=</link></entry>
+</row>
+<row>
+<entry>left</entry>
+<entry><link linkend="mthLeft">left</link></entry>
+</row>
+<row>
+<entry>left=</entry>
+<entry><link linkend="mthLeftEquals">left=</link></entry>
+</row>
+<row>
+<entry>right</entry>
+<entry><link linkend="mthRight">right</link></entry>
+</row>
+<row>
+<entry>right=</entry>
+<entry><link linkend="mthRightEquals">right=</link></entry>
+</row>
+<row>
+<entry>top</entry>
+<entry><link linkend="mthTop">top</link></entry>
+</row>
+<row>
+<entry>top=</entry>
+<entry><link linkend="mthTopEquals">top=</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+
+<section id="mthNewClsRect"><title>new (Class Method)</title>
+<indexterm><primary>new</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+               +-0----+     +-left-+     +-left--+     +-left---+
+>>-aRect~new(--+------+--,--+------+--,--+-------+--,--+--------+--)------><
+               +-left-+     +-top--+     +-right-+     +-bottom-+
+
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new Rect object.  All the arguments are whole numbers.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>left</term>
+<listitem><para>The left postion. The default is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>top</term>
+<listitem><para>The top position. The default is the value of left.
+</para></listitem></varlistentry>
+<varlistentry><term>right</term>
+<listitem><para>The right position. The default is the value of left.
+</para></listitem></varlistentry>
+<varlistentry><term>bottom</term>
+<listitem><para>The bottom position. The default is the value of left.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The new Rect object is returned.
+</para></listitem></varlistentry>
+<varlistentry id="exampleNewClsRect"><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>
+<programlisting>
+<![CDATA[
+r = .Rect~new(3, 4, 13, 9)
+say 'Upper corner ('r~left','r~top') lower corner 'r~right','r~bottom')'
+say
+margin = .Rect~new(5)
+say 'Margins:'
+say '  Left: ' margin~left
+say '  Top   ' margin~top
+say '  Right ' margin~right
+say '  Bottom' margin~bottom
+say
+
+r~left = 55
+r~top = 75
+r~right = 110
+r~bottom = 125
+say 'New upper corner ('r~left','r~top') new lower corner 'r~right','r~bottom')'
+say
+
+/* Output would be:
+Upper corner (3,4) lower corner 13,9)
+
+Margins:
+  Left:  5
+  Top    5
+  Right  5
+  Bottom 5
+
+New upper corner (55,75) new lower corner 110,125)
+
+/*
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthLeft"><title>left</title>
+<indexterm><primary>left</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~left----------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Retrieves the left value of the rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value is the numeric value for the left of the rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthLeftEquals"><title>left=</title>
+<indexterm><primary>left=</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~left=value----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Sets the left value of the rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This has one argument:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The left value for the rectangle.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method does not return a value.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthTop"><title>top</title>
+<indexterm><primary>top</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~top-----------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Retrieves the top value of the rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value is the numeric value for the top of the rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthTopEquals"><title>top=</title>
+<indexterm><primary>top=</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~top=value-----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Sets the top value of the rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes one argument:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The top value for the rectangle.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method does not return any value.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthRight"><title>right</title>
+<indexterm><primary>right</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~right---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Retrieves the right value of the rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value is the numeric value for the right of the rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthRightEquals"><title>right=</title>
+<indexterm><primary>right=</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~right=value---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Sets the right value of the rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method has one argument:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The new right value for the rectangle.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>There is nor return value for this method.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthBottom"><title>bottom</title>
+<indexterm><primary>bottom</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~bottom--------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Retrieves the bottom value of the rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value is the numeric value for the bottom of the rectangle.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthBottomEquals"><title>bottom=</title>
+<indexterm><primary>bottom=</primary>
+<secondary>Rect class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aRect~bottom=value--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Sets the bottom value of the rectangle.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method has one argument:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The bottom value for the rectangle.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The method does not return a value.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+</section> <!-- End Rect Class -->
+
+
+<section id="clsPoint"><title>Point Class</title>
+<indexterm><primary>Point class</primary></indexterm>
+<para>
+  The Point class represents a point in a 2-D coordinate system.
+</para>
+<para>
+</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem>
+<para>
+  The Point class requires the class definition file <computeroutput>oodPlain.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "oodPlain.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem>
+<para>
+  Instances of the Point class implement the methods listed in the following table:
+</para>
+
+<table id="tblPointMethods" frame="all">
+<title>Point Class and Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>new (Class Method)</entry>
+<entry><link linkend="mthNewClsPoint">new</link></entry>
+</row>
+<row>
+<entry>x</entry>
+<entry><link linkend="mthX">x</link></entry>
+</row>
+<row>
+<entry>x=</entry>
+<entry><link linkend="mthXEquals">x=</link></entry>
+</row>
+<row>
+<entry>y</entry>
+<entry><link linkend="mthY">y</link></entry>
+</row>
+<row>
+<entry>y=</entry>
+<entry><link linkend="mthYEquals">y=</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+
+<section id="mthNewClsPoint"><title>new (Class Method)</title>
+<indexterm><primary>new</primary>
+<secondary>Point class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                +-0-+     +-x-+
+>>-.Point~new(--+---+--,--+---+--)-------------------------><
+                +-x-+     +-y-+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x</term>
+<listitem><para>The x coordinate of the point.  The default is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>y</term>
+<listitem><para>The y coordinate of the point.  The default is the x coordinate.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method returns a new Point object.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>
+<programlisting id="exampleNewClsPoint">
+<![CDATA[
+p = .Point~new(45, 90)
+say 'Point p is at ('p~x','p~y')'
+say
+q = .Point~new(55)
+say 'A new point q is at ('q~x','q~y')'
+say
+
+q~x = 150
+q~y = 300
+say 'Changed point q to be at ('q~x','q~y')'
+say
+
+::requires 'oodPlain.cls'
+
+/* Output would be:
+
+Point p is at (45,90)
+
+A new point q is at (55,55)
+
+Changed point q to be at (150,300)
+
+*/
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthX"><title>x</title>
+<indexterm><primary>x</primary>
+<secondary>Point class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aPoint~x------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Retrieves the x coordinate of the point.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value is the x coordinate.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsPoint">.Point~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthXEquals"><title>x=</title>
+<indexterm><primary>x=</primary>
+<secondary>Point class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aPoint~x=value------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Sets the x coordinate of the point</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method has one argument:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The new x coordinate for the point.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method does not return a value.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsPoint">.Point~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthY"><title>y</title>
+<indexterm><primary>y</primary>
+<secondary>Point class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aPoint~y------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Retrieves the y coordinate of the point.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value is the y coordinate of the point.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsPoint">.Point~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthYEquals"><title>y=</title>
+<indexterm><primary>y=</primary>
+<secondary>Point class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aPoint~y=value------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Sets the y coordinate of the point</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method has one argument:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The new y coordinate for the point.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method does not return a value.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsPoint">.Point~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+</section> <!-- End Point Class -->
+
+
+<section id="clsSize"><title>Size Class</title>
+<indexterm><primary>Size class</primary></indexterm>
+<para>
+  A Size object encapsulates a width and height dimension in a 2-D coordinate system.
+</para>
+<para>
+</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The Size class requires the class
+definition file <computeroutput>oodPlain.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "oodPlain.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem>
+<para>
+  Instances of the Size class implement the methods listed in the following table:
+</para>
+
+<table id="tblSizeMethods" frame="all">
+<title>Size Class and Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>new (Class Method)</entry>
+<entry><link linkend="mthNewClsSize">new</link></entry>
+</row>
+<row>
+<entry>width</entry>
+<entry><link linkend="mthWidth">width</link></entry>
+</row>
+<row>
+<entry>width=</entry>
+<entry><link linkend="mthWidthEquals">width=</link></entry>
+</row>
+<row>
+<entry>height</entry>
+<entry><link linkend="mthHeight">height</link></entry>
+</row>
+<row>
+<entry>height=</entry>
+<entry><link linkend="mthHeightEquals">height=</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+
+<section id="mthNewClsSize"><title>new (Class Method)</title>
+<indexterm><primary>new</primary>
+<secondary>Size class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+               +-0-----+     +-width---+
+>>-.Size~new(--+-------+--,--+---------+--)----------------><
+               +-width-+     +-height--+
+]]>
+</programlisting>
+<para>
+  Instantiates a new Size object with the dimensions specified.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>width</term>
+<listitem>
+<para>
+  The whole number value of the width of the new object.  The defualt is 0.
+</para>
+</listitem></varlistentry>
+<varlistentry><term>height</term>
+<listitem>
+<para>
+  The whole number value of the height for the new object.  The default is the width value.
+</para>
+</listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method returns the new Size object.
+</para></listitem></varlistentry>
+<varlistentry id="exampleNewClsSize"><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>
+<programlisting>
+<![CDATA[
+
+size = .Size~new(4, 8)
+say 'Width:' size~width 'Height:' size~height
+say
+size2 = .Size~new(16)
+say 'A new size object:'
+say '  Width: ' size2~width
+say '  Height:' size2~height
+say
+
+size2~width = 100
+size2~height = 300
+say 'New width:' size2~width 'new height:' size2~height
+say
+
+::requires 'oodPlain.cls'
+
+/* Output would be:
+
+Width: 4 Height: 8
+
+A new size object:
+  Width:  16
+  Height: 16
+
+New width: 100 new height: 300
+
+*/
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthWidth"><title>width</title>
+<indexterm><primary>width</primary>
+<secondary>Size class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSize~width---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Retrieves the width of the size object.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return value is the width of the object
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsSize">.Size~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthWidthEquals"><title>width=</title>
+<indexterm><primary>width=</primary>
+<secondary>Size class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSize~width=value---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Sets the width of the size object.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method has one argument:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The new width of the size object.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method does not return a value.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsSize">.Size~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthHeight"><title>height</title>
+<indexterm><primary>height</primary>
+<secondary>Size class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSize~height--------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Retrieves the height of the size object.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method takes no arguments
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>Returns the height of the size object.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsSize">.Size~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthHeightEquals"><title>height=</title>
+<indexterm><primary>height=</primary>
+<secondary>Size class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSize~height=value--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>Sets the height of the size object.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>This method has one argument:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The new height of the size object.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method does not return a value.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="exampleNewClsSize">.Size~new</link> example.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+</section> <!-- End Size Class -->
+
+
+<section id="clsDlgArea"><title>DlgArea Class</title>
+<indexterm><primary>DlgArea class</primary></indexterm>
+<para>
+  The DlgArea class provides assistance in laying out the dialog controls in a
+  dynamically defined dialog.  The class defines an area of a UserDialog and
+  provides coordinates of and within it. It is a helper for the DefineDialog
+  Method of an OODialog UserDialog Object and has no effect on any Windows
+  Object.
+</para>
+<para>To use objects of the DlgArea class include this line in your code:
+</para>
+<programlisting>
+::requires "OODIALOG.CLS"
+</programlisting>
+<para>The following figure shows the measuement attributes used to position a
+DlgArea on a UserDialog.</para>
+<figure id="dlgareafig"><title>DlgArea Measurements</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="dlgarea.jpg" scale="300">
+</imageobject>
+</mediaobject>
+</figure>
+
+<section id="dlgareainit"><title>Init</title>
+<indexterm><primary>Init</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>- aDlgArea~Init(--X--,--Y--,--Width--,--Height--+-------------+--)--><
+                                                  +--,--Margin--+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments you pass to the new method when creating a
+DlgArea Object are:
+<variablelist>
+<varlistentry><term>X</term>
+<listitem><para>The X coordinate in dialog units relative to the UserDialog
+of the top left corner of the area you wish to define
+</para></listitem></varlistentry>
+<varlistentry><term>Y</term>
+<listitem><para>The Y coordinate in dialog units relative to the UserDialog
+of the top left corner of the area you wish to define.
+</para></listitem></varlistentry>
+<varlistentry><term>Width</term>
+<listitem><para>The width in dialog units of the area of the UserDialog you
+wish to define
+</para></listitem></varlistentry>
+<varlistentry><term>Height</term>
+<listitem><para>The height in dialog units of the area of the UserDialog you
+wish to define</para>
+</listitem></varlistentry>
+<varlistentry><term>Margin</term>
+<listitem><para>An inner margin within the DlgArea in Dialog Units to be left
+blank. The default is 5
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>
+</para></listitem></varlistentry>
+</variablelist>
+
+<programlisting>
+<![CDATA[
+u = .dlgArea~new(0, 0, self~SizeX,Self~SizeY)          /* u is whole of UserDialog */
+b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R")) /* sub area for buttons */
+]]>
+</programlisting>
+</section>
+
+<section id="dlgareab"><title>B</title>
+<indexterm><primary>B</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Returns the y coordinate of the bottom margin in dialog units relative to
+UserDialog.
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~B--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+</section>
+
+<section id="dlgareabottom"><title>Bottom</title>
+<indexterm><primary>Bottom</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Returns the y coordinate of the bottom edge in dialog units relative to
+UserDialog.
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~Bottom---------------------------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+</section>
+
+<section id="dlgareacx"><title>CX</title>
+<indexterm><primary>CX</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Synonym for the W method.
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~cx(--+-------+--)----------------------------------------><
+                  +--n%---+
+                  +--"R"--+
+]]>
+</programlisting>
+
+<para></para>
+</section>
+
+<section id="dlgareacy"><title>CY</title>
+<indexterm><primary>CY</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Synonym for the H method.
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~cy(--+-------+--)----------------------------------------><
+                  +--n%---+
+                  +--"R"--+
+]]>
+</programlisting>
+
+<para></para>
+</section>
+
+<section id="dlgareah"><title>H</title>
+<indexterm><primary>H</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Returns a height in dialog units relative to the dialog area.
+</para>
+<para>If no argument is passed returns the inter-margin height.
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~h(--+-------+--)-----------------------------------------><
+                 +--n%---+
+                 +--"R"--+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments you pass to the H method are:
+<variablelist>
+<varlistentry><term>n%</term>
+<listitem><para>If <computeroutput>n</computeroutput> is a percentage returns
+<computeroutput>n%</computeroutput> of the inter-margin height.
+</para></listitem></varlistentry>
+<varlistentry><term>"R"</term>
+<listitem><para>If "R" is passed returns Remaining height between last ~y and
+bottom margin.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="dlgareahr"><title>HR</title>
+<indexterm><primary>HR</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Returns the remaining height between last ~Y and bottom margin in dialog
+units. This is equivalent to ~H("R").
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~hr-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+</section>
+
+<section id="dlgareal"><title>L</title>
+<indexterm><primary>L</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Returns the x coordinate of the left margin in dialog units relative to
+UserDialog.
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~L--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+</section>
+
+<section id="dlgarealeft"><title>Left</title>
+<indexterm><primary>Left</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Returns the x coordinate of the left edge in dialog units relative to
+UserDialog.
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~Left-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+</section>
+
+<section id="dlgareamargin"><title>Margin</title>
+<indexterm><primary>Margim</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Size in dialog units of DlgArea margin.
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~Margin---------------------------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+</section>
+
+<section id="dlgarear"><title>R</title>
+<indexterm><primary>R</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Returns the x coordinate of the right margin in dialog units relative to
+UserDialog.
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~R--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+</section>
+
+<section id="dlgarearight"><title>Right</title>
+<indexterm><primary>Right</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Returns the x coordinate of the right edge in dialog units relative to
+UserDialog.
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~Right----------------------------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+</section>
+
+<section id="dlgareat"><title>T</title>
+<indexterm><primary>T</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Returns the y coordinate of the top margin in dialog units relative to
+UserDialog.
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~T--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+</section>
+
+<section id="dlgareatop"><title>Top</title>
+<indexterm><primary>Top</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Returns the y coordinate of the top edge in dialog units relative to
+UserDialog.
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~Top------------------------------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+</section>
+
+<section id="dlgareaw"><title>W</title>
+<indexterm><primary>W</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Returns a width in dialog units relative to the dialog area.
+</para>
+<para>If no argument is passed returns the inter-margin width.
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~w(--+-------+--)-----------------------------------------><
+                 +--n%---+
+                 +--"R"--+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments you pass to the Y method are:
+<variablelist>
+<varlistentry><term>n%</term>
+<listitem><para>If <computeroutput>n</computeroutput> is a percentage returns
+<computeroutput>n%</computeroutput> of the inter-margin width.
+</para></listitem></varlistentry>
+<varlistentry><term>"R"</term>
+<listitem><para>If "R" is passed returns Remaining width between last ~x and
+right margin.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="dlgareawr"><title>WR</title>
+<indexterm><primary>WR</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Returns the remaining width between last ~X and right margin in dialog
+units. This is equivalent to ~W("R").
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~wr-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para></para>
+</section>
+
+<section id="dlgareax"><title>X</title>
+<indexterm><primary>X</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Returns an X Coordinate in dialog units relative to the dialog area.
+</para>
+<para>If no <computeroutput>n</computeroutput> is passed returns the x
+coordinate of the left margin.
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~x(--+------+--)------------------------------------------><
+                 +--n---+
+                 +--n%--+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments you pass to the X method are:
+<variablelist>
+<varlistentry><term>n</term>
+<listitem><para>If <computeroutput>n</computeroutput> is passed and is positive,
+then returns the x coordinate <computeroutput>n</computeroutput> dialog units
+to the right of the left margin.
+If <computeroutput>n</computeroutput> is passed and is negative, then returns
+the x coordinate <computeroutput>n</computeroutput> dialog units to the left of
+the right margin..
+</para></listitem></varlistentry>
+<varlistentry><term>n%</term>
+<listitem><para>If <computeroutput>n</computeroutput> is passed and is a
+percentage, then returns the x coordinate <computeroutput>n%</computeroutput>
+of the way between the left and right margins.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="dlgareay"><title>Y</title>
+<indexterm><primary>Y</primary>
+<secondary>DlgArea class</secondary></indexterm>
+<para>Returns an Y Coordinate in dialog units relative to the dialog area.
+</para>
+<para>If no <computeroutput>n</computeroutput> is passed returns the x
+coordinate of the top margin.
+</para>
+<programlisting>
+<![CDATA[
+>>--ADlgArea~y(--+------+--)------------------------------------------><
+                 +--n---+
+                 +--n%--+
+]]>
+</programlisting>
+
+<para></para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments you pass to the Y method are:
+<variablelist>
+<varlistentry><term>n</term>
+<listitem><para>If <computeroutput>n</computeroutput> is passed and is positive,
+then returns the y coordinate <computeroutput>n</computeroutput> dialog units
+below the topmargin.
+If <computeroutput>n</computeroutput> is passed and is negative, then returns
+the y coordinate <computeroutput>n</computeroutput> dialog units above
+the bottom margin..
+</para></listitem></varlistentry>
+<varlistentry><term>n%</term>
+<listitem><para>If <computeroutput>n</computeroutput> is passed and is a
+percentage, then returns the y coordinate <computeroutput>n%</computeroutput>
+of the way between the top and bottom margins.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="exampleDlgArea"><title>DlgArea Example</title>
+<para>On a UserDialog we want the top left to be an entry area, with an area
+for buttons on the right and a status area below.</para>
+<para>We decide to give 70% of the width and 90% of the height to the entry area.
+We leave the margin as the default.
+We want all the areas to resize themselves if we change the UserDialog size
+except the OK button should remain 15 units high.</para>
+<figure id="dlgareaplanfig"><title>DlgArea Plan</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="dlgareaplan.jpg" scale="300">
+</imageobject>
+</mediaobject>
+</figure>
+<para>Here is what our DefineDialog method might look like:</para>
+<programlisting>
+<![CDATA[
+/* ------------------------------------------------------------------------- */
+::method DefineDialog
+/* ------------------------------------------------------------------------- */
+/* define DlgArea named u as whole of user dialog                            */
+u=.dlgArea~new(  0       ,         0,self~SizeX,Self~SizeY)   /* whole dlg   */
+
+/* define DlgArea named e within DlgArea u for entry line                    */
+e=.dlgArea~new(u~x       ,u~y       ,u~w("70%"),u~h("90%"))
+
+/* define DlgArea named s within DlgArea u for Status Area in remaining height*/
+s=.dlgArea~new(u~x       ,u~y("90%"),u~w("70%"),u~hr      )
+
+/* define DlgArea named b within DlgArea u for Button area                   */
+b=.dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      )
+
+/* entry line coterminous with area e margins                                */
+self~addEntryLine(12,"text",e~x,e~y,e~w,e~h,"multiline")
+
+/* Status Area Coterminous with area s margins                               */
+self~addText(s~x,s~y,s~w,s~h,"Status info appears here", ,11)
+
+/* Seven buttons evenly spaced at 10% intervals, 9% high                     */
+do i = 0 to 6
+   self~addButton(12+i,b~x,b~y((i * 10)||"%"),b~w,b~h("9%"),"Button" i,"Button"||i)
+end /* DO */
+
+/* ok button 15 dialog units high at bottom of area b                        */
+self~addButton(1,b~x,b~y(-15),b~w,15,"OK","OK","Default")
+]]>
+</programlisting>
+<para>Here is the resultant dialog.</para>
+<figure id="dlgareasample"><title>Sample DlgArea</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="sample1.jpg" scale="300">
+</imageobject>
+</mediaobject>
+</figure>
+</section>
+</section>
+
+<section id="clsDlgAreaU"><title>DlgAreaU Class</title>
+<indexterm><primary>DlgAreaU class</primary></indexterm>
+<para>
+  The DlgAreaU class is a subclass of the DlgArea class that assists the
+  creation of dynamically resizable Dialogs. This class provides assistance in
+  resizing and / or positioning controls when a dialog is resized.  When the
+  DlgArea and DlgAreaU classes are used together, the they provide a convenient
+  way to create resizable dialogs.
+</para>
+<para>To use objects of the DlgAreaU class include this line in your code:
+</para>
+<programlisting>
+::requires "OODIALOG.CLS"
+</programlisting>
+
+<section id="dlgareauinit"><title>Init</title>
+<indexterm><primary>Init</primary>
+<secondary>DlgAreaU class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>- aDlgAreaU~Init(Dialog--+--------------------------+--------+-)--><
+                           +--,--Margin-+             |        |
+                           +--,---------+--,-NoResize-+        |
+                           +--,---------+--,----------+-NoMove-+
+]]>
+</programlisting>
+
+<para>
+The DlgAreaU object creates a dialog area coterminous with the calling dialog.
+It inherits all the methods and attributes of the DlgArea Class (listed above).
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments you pass to the new method when creating a
+DlgArea Object are:
+<variablelist>
+<varlistentry><term>Dialog</term>
+<listitem><para>An Object that is SubClassed from A UserDialog.
+</para></listitem></varlistentry>
+<varlistentry><term>Margin</term>
+<listitem><para>See DlgArea Margin.
+</para></listitem></varlistentry>
+<varlistentry><term>NoResize</term>
+<listitem><para>A set of Dialog Ids of widgets not to be resized during a resize.
+</para></listitem></varlistentry>
+<varlistentry><term>NoMove</term>
+<listitem><para>A set of Dialog Ids of widgets not to be moved during a resize.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthCorrectionFactor"><title>CorrectionFactor</title>
+<indexterm><primary>CorrectionFactor</primary>
+<secondary>DlgAreaU class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--ADlgAreaU~CorrectionFactor----------------------------------------><
+]]>
+</programlisting>
+
+<para>An attribute containing the value used to adjust the ratio of the top &
+left margins to the bottom &amp; right margins. (The default correction factor
+is set to 1.05.) See the <link linkend="dlgareaubug">Possible Problems</link>
+section for some additional detail.
+</para>
+</section>
+
+<section id="dlgareaulasterror"><title>LastError</title>
+<indexterm><primary>LastError</primary>
+<secondary>DlgAreaU class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--ADlgAreaU~LastError-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>An attribute holding the details if an error was encountered when parsing
+the calling dialog's DefineDialog method.  The value of the attribute is .nil if
+no error occurred.
+</para>
+</section>
+
+<section id="dlgareaunomove"><title>NoMove</title>
+<indexterm><primary>NoMove</primary>
+<secondary>DlgAreaU class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--ADlgAreaU~NoMove--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>An attribute holding the set of Dialog Ids of widgets not to be moved
+during a resize event.
+</para>
+</section>
+
+<section id="dlgareaunoresize"><title>NoResize</title>
+<indexterm><primary>NoResize</primary>
+<secondary>DlgAreaU class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--ADlgAreaU~NoResize------------------------------------------------><
+]]>
+</programlisting>
+
+<para>An attribute holding the set of Dialog Ids of widgets not to be resized
+during a resize event.
+</para>
+</section>
+
+<section id="dlgareaucreate"><title>Creating Resizeable Dialogs</title>
+<indexterm><primary>Dynamically Resizable dialogs</primary>
+<secondary>DlgAreaU class</secondary></indexterm>
+<para>You can use the DlgAreaU Object to facilitate in creating dynamically
+resizable Dialog objects, but to do so you must carefully satisfy all the
+requirements below.
+</para>
+<para>
+The Dialog must be created with the
+<computeroutput>ThickFrame</computeroutput> option.
+It may be created with the UserDialog Create method or CreateCenter method.
+</para>
+<para>
+Your Dialog init method must include the line:</para>
+<programlisting>
+<![CDATA[
+self~connectResize("OnResize")
+]]>
+</programlisting>
+<para>
+Your DefineDialog method must start with these lines:
+</para>
+<programlisting>
+<![CDATA[
+expose u
+u = .dlgAreaU~new(self)          /* whole dlg   */
+]]>
+</programlisting>
+<para>
+Your DefineDialog method must not reference variables within the Add Method
+parameters, although you can use references to DlgArea attributes, so
+</para>
+<programlisting>
+<![CDATA[
+Self~addButton(23,1,5,6,"MyButton","Pressed")
+self~addButton(14,b~x,b~y("10%"),b~w,b~h("9%"),"Button" 1,"Button"||1)
+]]>
+</programlisting>
+<para>
+Both are OK, whereas
+</para>
+<programlisting>
+<![CDATA[
+/* Seven buttons evenly spaced at 10% intervals, 9% high                     */
+do i = 0 to 6
+   self~addButton(12+i,b~x,b~y((i * 10)||"%"),b~w,b~h("9%"),"Button" i,"Button"||i)
+end /* DO */
+]]>
+</programlisting>
+<para>
+would now fail as the variable <computeroutput>i</computeroutput>
+is referenced within the parameters.
+</para>
+<para>
+To debug your DlgAreaU call/insert the following after the instantiation
+</para>
+<programlisting>
+<![CDATA[
+if u~lastError \= .nil then call errormessage u~lastError
+]]>
+</programlisting>
+<para>You must also include the following in your code.</para>
+<programlisting>
+<![CDATA[
+/* ------------------------------------------------------------------------- */
+::method OnResize
+/* ------------------------------------------------------------------------- */
+expose u
+if u~lastError \= .nil then call errormessage u~lastError
+use arg dummy,sizeinfo
+                                 /* wait for last size event msg then resize */
+if self~PeekDialogMessage~left(8) \= "OnResize" then u~resize(self,sizeinfo)
+]]>
+</programlisting>
+<para>
+The DlgAreaU method will then automatically resize &amp; place the following
+widgets in your dialog when the dialog frame is dragged or the minimize,
+maximise or restore buttons are pressed:
+</para>
+<table frame="all">
+<title>DlgAreaU Automatic Resize Elements</title>
+<tgroup cols="4" align="left" colsep="1" rowsep="1">
+<tbody>
+<row>
+   <entry>BLACKFRAME</entry>
+   <entry>BLACKRECT</entry>
+   <entry>BITMAPBUTTON</entry>
+   <entry>BUTTON</entry>
+</row>
+<row>
+   <entry>CHECKBOX</entry>
+   <entry>COMBOBOX</entry>
+   <entry>ENTRYLINE</entry>
+   <entry>GRAYFRAME</entry>
+</row>
+<row>
+   <entry>GRAYRECT</entry>
+   <entry>GROUPBOX</entry>
+   <entry>LISTBOX</entry>
+   <entry>LISTCONTROL</entry>
+</row>
+<row>
+   <entry>PASSWORDLINE</entry>
+   <entry>PROGRESSBAR</entry>
+   <entry>RADIOBUTTON</entry>
+   <entry>SCROLLBAR</entry>
+</row>
+<row>
+   <entry>SLIDERCONTROL</entry>
+   <entry>TABCONTROL</entry>
+   <entry>TEXT</entry>
+   <entry>TREECONTROL</entry>
+</row>
+<row>
+   <entry>WHITEFRAME</entry>
+   <entry>WHITERECT</entry>
+   <entry></entry>
+   <entry></entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>
+The following widgets can be defined in a UserDialog, but cannot be handled by
+the DlgAreaU resize method, so should not be used.
+</para>
+<table frame="all">
+<title>DlgAreaU Non-Automatic Resize Elements</title>
+<tgroup cols="4" align="left" colsep="1" rowsep="1">
+<tbody>
+<row>
+   <entry>BUTTONGROUP</entry>
+   <entry>CHECKBOXSTEM</entry>
+   <entry>CHECKGROUP</entry>
+   <entry>COMBOINPUT</entry>
+</row>
+<row>
+   <entry>FULLSEQ</entry>
+   <entry>INPUT</entry>
+   <entry>INPUTGROUP</entry>
+   <entry>INPUTSTEM</entry>
+</row>
+<row>
+   <entry>OKCANCEL...</entry>
+   <entry>RADIOGROUP</entry>
+   <entry>RADIOSTEM</entry>
+   <entry></entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>
+All of these widgets can be achieved using combinations of the permitted
+methods.
+</para>
+</section>
+
+<section id="dlgareaubug"><title>Possible Problems</title>
+<para>The DlgAreaU resize method can create slightly over-size margins on the
+left &amp; bottom of the Dialog.  To correct for this the DlgAreaU class has
+a <link linkend="mthCorrectionFactor">CorrectionFactor </link> attribute set by
+default to 1.05. In tests, this correction factor appears to neutralise the
+effect. If your dialogs have over (or under) sized margins, you may be able to
+correct this in your code by adjusting the Correction Factor. For example:
+</para>
+<programlisting>
+<![CDATA[
+U=.DlgAreaU~new(self)
+U~CorrectionFactor=1.07
+]]>
+</programlisting>
+<para>You will have to experiment to find the apropriate setting for this
+attribute.
+</para>
+</section>
+
+<section id="dlgareausample"><title>Sample Code</title>
+<programlisting>
+<![CDATA[
+/* DlgAreaDemo.Rex  --  Demonstrate DlgArea & DlgAreaU Classes  --  Feb 2006 */
+
+MyDlg=.MyDialog~new
+MyDlg~execute("ShowTop")
+MyDlg~DeInstall
+
+exit
+::requires "OODWIN32.CLS"
+/* ========================================================================= */
+::class MyDialog Subclass UserDialog
+/* ========================================================================= */
+::method Init
+/* ------------------------------------------------------------------------- */
+  self~Init:super
+  rc=self~CreateCenter(250,250,"MyDialog","ThickFrame", ,"MS Sans Serif",8)
+  self~InitCode=(rc=0)
+  self~connectResize("OnResize")
+
+/* ------------------------------------------------------------------------- */
+::method DefineDialog
+/* ------------------------------------------------------------------------- */
+expose u
+
+u=.dlgAreaU~new(self)                                         /* whole dlg   */
+if u~lastError \= .nil then call errormessage u~lastError
+e=.dlgArea~new(u~x       ,u~y       ,u~w("70%"),u~h("90%"))   /* edit   area */
+s=.dlgArea~new(u~x       ,u~y("90%"),u~w("70%"),u~hr      )   /* status area */
+b=.dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      )   /* button area */
+
+self~addEntryLine(12,"text",e~x,e~y,e~w,e~h,"multiline")
+self~addText(s~x,s~y,s~w,s~h,"Status info appears here", ,11)
+
+self~addButton(13,b~x,b~y("00%"),b~w,b~h("9%"),"Button" 0,"Button"||0)
+self~addButton(14,b~x,b~y("10%"),b~w,b~h("9%"),"Button" 1,"Button"||1)
+self~addButton(15,b~x,b~y("20%"),b~w,b~h("9%"),"Button" 2,"Button"||2)
+self~addButton(16,b~x,b~y("30%"),b~w,b~h("9%"),"Button" 3,"Button"||3)
+self~addButton(17,b~x,b~y("40%"),b~w,b~h("9%"),"Button" 4,"Button"||4)
+self~addButton(18,b~x,b~y("50%"),b~w,b~h("9%"),"Button" 5,"Button"||5)
+self~addButton(19,b~x,b~y("60%"),b~w,b~h("9%"),"Button" 6,"Button"||6)
+self~addButton( 1,b~x,b~y("90%"),b~w,b~h("9%"),"Ok","Ok","DEFAULT")
+
+/* ------------------------------------------------------------------------- */
+::method Unknown
+/* ------------------------------------------------------------------------- */
+use arg msgname, args
+StatusLine = Self~GetStaticControl(11)
+StatusLine~SetTitle("You Pressed" msgname)
+
+/* ------------------------------------------------------------------------- */
+::method OnResize
+/* ------------------------------------------------------------------------- */
+expose u
+use arg dummy,sizeinfo
+                                 /* wait for last size event msg then resize */
+if self~PeekDialogMessage~left(8) \= "OnResize" then u~resize(self,sizeinfo)
+
+]]>
+</programlisting>
+<para>This achieves the same dialog as the previous <link linkend="exampleDlgArea">
+DlgArea example</link>, but now it is resizable by dragging the frame.
+</para>
+</section>
+</section>
+
+<section id="clsVirtualKeyCodes"><title>VirtualKeyCodes Class</title>
+<indexterm><primary>VirtualKeyCodes class</primary></indexterm>
+<para>
+  The methods of the VirtualKeyCodes class can be used for all objects of the
+  WindowsProgramManager and WindowObject classes. These classes inherit from the
+  VirtualKeyCodes class. The VirtualKeyCodes class cannot be used as a
+  standalone class.
+</para>
+<para>The VirtualKeyCodes class requires the class definition
+file <computeroutput>WinSystm.cls</computeroutput>:</para>
+<programlisting>
+<![CDATA[
+::requires "WinSystm.cls"
+]]>
+</programlisting>
+
+<section id="virkeyccmeth"><title>Methods of the VirtualKeyCodes Class</title>
+<para>Instances of the VirtualKeyCodes class implement the methods described
+in the following sections.</para>
+
+<section id="vcode"><title>VCode</title>
+<indexterm><primary>VCode</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aVirtualKeyCodes~VCode(--keyname--)-------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The VCode method returns the decimal value of a
+symbolic key name.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>keyname</term>
+<listitem><para>The symbolic key name. See
+<link linkend="virtualkeys">Symbolic Names for Virtual Keys</link>
+for a list of key names.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The decimal value of the symbolic key name. If the symbolic
+name is not found, 255 is returned.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="keyname"><title>KeyName</title>
+<indexterm><primary>KeyName</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aVirtualKeyCodes~KeyName(--vcode--)-------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The KeyName method returns the symbolic key name
+of the specified hexadecimal code.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>vcode</term>
+<listitem><para>The hexadecimal code of the key.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The symbolic key name of the specified code.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example deletes or inserts an item in a tree
+view depending on the selected key:
+<programlisting>
+<![CDATA[
+::method OnKeyDown_IDC_TREE
+  use arg treeId, key
+  curTree = self~GetTreeControl(treeId)
+  /* if the Delete key is pressed, delete the selected item */
+  if self~KeyName(key) = "DELETE" then
+     curTree~Delete(curTree~Selected)
+  else
+  /* if the Insert key is pressed, simulate pressing the New button */
+  if self~KeyName(key) = "INSERT" then
+     self~IDC_PB_NEW
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+
+<section id="virtualkeys"><title>Symbolic Names for Virtual Keys</title>
+<indexterm><primary>symbolic names for virtual keys</primary></indexterm>
+<para><link linkend="t000018">Symbolic Names for Virtual Keys</link>
+shows the symbolic names and the keyboard equivalents
+for the virtual keys used by Object Rexx:</para>
+
+<table id="t000018" frame="all">
+<title>Symbolic Names for Virtual Keys</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Symbolic Name</entry>
+<entry>Mouse or Keyboard Equivalent</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>LBUTTON</entry>
+<entry>Left mouse button</entry>
+</row>
+<row>
+<entry>RBUTTON</entry>
+<entry>Right mouse button</entry>
+</row>
+<row>
+<entry>CANCEL</entry>
+<entry>Control-break processing</entry>
+</row>
+<row>
+<entry>MBUTTON</entry>
+<entry>Middle mouse button (three-button mouse)</entry>
+</row>
+<row>
+<entry>BACK</entry>
+<entry>BACKSPACE key</entry>
+</row>
+<row>
+<entry>TAB</entry>
+<entry>TAB key</entry>
+</row>
+<row>
+<entry>CLEAR</entry>
+<entry>CLEAR key</entry>
+</row>
+<row>
+<entry>RETURN</entry>
+<entry>ENTER key</entry>
+</row>
+<row>
+<entry>SHIFT</entry>
+<entry>SHIFT key</entry>
+</row>
+<row>
+<entry>CONTROL</entry>
+<entry>CRTL key</entry>
+</row>
+<row>
+<entry>MENU</entry>
+<entry>ALT key</entry>
+</row>
+<row>
+<entry>PAUSE</entry>
+<entry>PAUSE key</entry>
+</row>
+<row>
+<entry>CAPITAL</entry>
+<entry>CAPS LOCK key</entry>
+</row>
+<row>
+<entry>ESCAPE</entry>
+<entry>ESC key</entry>
+</row>
+<row>
+<entry>SPACE</entry>
+<entry>SPACEBAR</entry>
+</row>
+<row>
+<entry>PRIOR</entry>
+<entry>PAGE UP key</entry>
+</row>
+<row>
+<entry>NEXT</entry>
+<entry>PAGE DOWN key</entry>
+</row>
+<row>
+<entry>END</entry>
+<entry>END key</entry>
+</row>
+<row>
+<entry>HOME</entry>
+<entry>HOME key</entry>
+</row>
+<row>
+<entry>LEFT</entry>
+<entry>LEFT ARROW key</entry>
+</row>
+<row>
+<entry>UP</entry>
+<entry>UP ARROW key</entry>
+</row>
+<row>
+<entry>RIGHT</entry>
+<entry>RIGHT ARROW key</entry>
+</row>
+<row>
+<entry>DOWN</entry>
+<entry>DOWN ARROW key</entry>
+</row>
+<row>
+<entry>SELECT</entry>
+<entry>SELECT key</entry>
+</row>
+<row>
+<entry>EXECUTE</entry>
+<entry>EXECUTE key</entry>
+</row>
+<row>
+<entry>SNAPSHOT</entry>
+<entry>PRINT SCREEN key</entry>
+</row>
+<row>
+<entry>INSERT</entry>
+<entry>INS key</entry>
+</row>
+<row>
+<entry>DELETE</entry>
+<entry>DEL key</entry>
+</row>
+<row>
+<entry>HELP</entry>
+<entry>HELP key</entry>
+</row>
+<row>
+<entry>0</entry>
+<entry>0 key</entry>
+</row>
+<row>
+<entry>1</entry>
+<entry>1 key</entry>
+</row>
+<row>
+<entry>2</entry>
+<entry>2 key</entry>
+</row>
+<row>
+<entry>3</entry>
+<entry>3 key</entry>
+</row>
+<row>
+<entry>4</entry>
+<entry>4 key</entry>
+</row>
+<row>
+<entry>5</entry>
+<entry>5 key</entry>
+</row>
+<row>
+<entry>6</entry>
+<entry>6 key</entry>
+</row>
+<row>
+<entry>7</entry>
+<entry>7 key</entry>
+</row>
+<row>
+<entry>8</entry>
+<entry>8 key</entry>
+</row>
+<row>
+<entry>9</entry>
+<entry>9 key</entry>
+</row>
+<row>
+<entry>A</entry>
+<entry>A key</entry>
+</row>
+<row>
+<entry>B</entry>
+<entry>B key</entry>
+</row>
+<row>
+<entry>C</entry>
+<entry>C key</entry>
+</row>
+<row>
+<entry>D</entry>
+<entry>D key</entry>
+</row>
+<row>
+<entry>E</entry>
+<entry>E key</entry>
+</row>
+<row>
+<entry>F</entry>
+<entry>F key</entry>
+</row>
+<row>
+<entry>G</entry>
+<entry>G key</entry>
+</row>
+<row>
+<entry>H</entry>
+<entry>H key</entry>
+</row>
+<row>
+<entry>I</entry>
+<entry>I key</entry>
+</row>
+<row>
+<entry>J</entry>
+<entry>J key</entry>
+</row>
+<row>
+<entry>K</entry>
+<entry>K key</entry>
+</row>
+<row>
+<entry>L</entry>
+<entry>L key</entry>
+</row>
+<row>
+<entry>M</entry>
+<entry>M key</entry>
+</row>
+<row>
+<entry>N</entry>
+<entry>N key</entry>
+</row>
+<row>
+<entry>O</entry>
+<entry>O key</entry>
+</row>
+<row>
+<entry>Q</entry>
+<entry>Q key</entry>
+</row>
+<row>
+<entry>R</entry>
+<entry>R key</entry>
+</row>
+<row>
+<entry>S</entry>
+<entry>S key</entry>
+</row>
+<row>
+<entry>T</entry>
+<entry>T key</entry>
+</row>
+<row>
+<entry>U</entry>
+<entry>U key</entry>
+</row>
+<row>
+<entry>V</entry>
+<entry>V key</entry>
+</row>
+<row>
+<entry>W</entry>
+<entry>W key</entry>
+</row>
+<row>
+<entry>X</entry>
+<entry>X key</entry>
+</row>
+<row>
+<entry>Y</entry>
+<entry>Y key</entry>
+</row>
+<row>
+<entry>Z</entry>
+<entry>Z key</entry>
+</row>
+<row>
+<entry>NUMPAD0</entry>
+<entry>Numeric keypad 0 key</entry>
+</row>
+<row>
+<entry>NUMPAD1</entry>
+<entry>Numeric keypad 1 key</entry>
+</row>
+<row>
+<entry>NUMPAD2</entry>
+<entry>Numeric keypad 2 key</entry>
+</row>
+<row>
+<entry>NUMPAD3</entry>
+<entry>Numeric keypad 3 key</entry>
+</row>
+<row>
+<entry>NUMPAD4</entry>
+<entry>Numeric keypad 4 key</entry>
+</row>
+<row>
+<entry>NUMPAD5</entry>
+<entry>Numeric keypad 5 key</entry>
+</row>
+<row>
+<entry>NUMPAD6</entry>
+<entry>Numeric keypad 6 key</entry>
+</row>
+<row>
+<entry>NUMPAD7</entry>
+<entry>Numeric keypad 7 key</entry>
+</row>
+<row>
+<entry>NUMPAD8</entry>
+<entry>Numeric keypad 8 key</entry>
+</row>
+<row>
+<entry>NUMPAD9</entry>
+<entry>Numeric keypad 9 key</entry>
+</row>
+<row>
+<entry>MULTIPLY</entry>
+<entry>Multiply key</entry>
+</row>
+<row>
+<entry>ADD</entry>
+<entry>Add key</entry>
+</row>
+<row>
+<entry>SEPARATOR</entry>
+<entry>Separator key</entry>
+</row>
+<row>
+<entry>SUBTRACT</entry>
+<entry>Subtract key</entry>
+</row>
+<row>
+<entry>DECIMAL</entry>
+<entry>Decimal key</entry>
+</row>
+<row>
+<entry>DIVIDE</entry>
+<entry>Divide key</entry>
+</row>
+<row>
+<entry>F1</entry>
+<entry>F1 key</entry>
+</row>
+<row>
+<entry>F2</entry>
+<entry>F2 key</entry>
+</row>
+<row>
+<entry>F3</entry>
+<entry>F3 key</entry>
+</row>
+<row>
+<entry>F4</entry>
+<entry>F4 key</entry>
+</row>
+<row>
+<entry>F5</entry>
+<entry>F5 key</entry>
+</row>
+<row>
+<entry>F6</entry>
+<entry>F6 key</entry>
+</row>
+<row>
+<entry>F7</entry>
+<entry>F7 key</entry>
+</row>
+<row>
+<entry>F8</entry>
+<entry>F8 key</entry>
+</row>
+<row>
+<entry>F9</entry>
+<entry>F9 key</entry>
+</row>
+<row>
+<entry>F10</entry>
+<entry>F10 key</entry>
+</row>
+<row>
+<entry>F11</entry>
+<entry>F11 key</entry>
+</row>
+<row>
+<entry>F12</entry>
+<entry>F12 key</entry>
+</row>
+<row>
+<entry>F13</entry>
+<entry>F13 key</entry>
+</row>
+<row>
+<entry>F14</entry>
+<entry>F14 key</entry>
+</row>
+<row>
+<entry>F15</entry>
+<entry>F15 key</entry>
+</row>
+<row>
+<entry>F16</entry>
+<entry>F16 key</entry>
+</row>
+<row>
+<entry>F17</entry>
+<entry>F17 key</entry>
+</row>
+<row>
+<entry>F18</entry>
+<entry>F18 key</entry>
+</row>
+<row>
+<entry>F19</entry>
+<entry>F19 key</entry>
+</row>
+<row>
+<entry>F20</entry>
+<entry>F20 key</entry>
+</row>
+<row>
+<entry>F21</entry>
+<entry>F21 key</entry>
+</row>
+<row>
+<entry>F22</entry>
+<entry>F22 key</entry>
+</row>
+<row>
+<entry>F23</entry>
+<entry>F23 key</entry>
+</row>
+<row>
+<entry>F24</entry>
+<entry>F24 key</entry>
+</row>
+<row>
+<entry>NUMLOCK</entry>
+<entry>NUM LOCK key</entry>
+</row>
+<row>
+<entry>SCROLL</entry>
+<entry>SCROLL LOCK key</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+</section>
+
+</chapter>
