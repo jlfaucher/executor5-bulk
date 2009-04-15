@@ -1,0 +1,325 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2009-2009, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="clsDateTimePicker"><title>DateTimePicker Class</title>
+<indexterm><primary>DateTimePicker class</primary></indexterm>
+<para>
+  xx
+</para>
+<para>
+  xx
+</para>
+<para>
+  xx
+</para>
+<para>
+  The DateTimePicker class provides methods xxx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
+  <listitem>
+  <para>
+  The DateTimePicker class requires the class definition file <computeroutput>oodWin32.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "oodWin32.cls"
+]]>
+</programlisting>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
+  <listitem>
+    <para>
+      The date and time picker class is a subclass of the <link linkend="clsDialogControl">DialogControl</link> Class
+      and therefore inherits all methods of that class.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Mixin Class Inherits:</emphasis></term>
+  <listitem>
+    <para>
+      The date and time picker class inherits from the following mixin classes, (indirectly through the DialogControl
+      class.)
+    </para>
+    <para>
+      The <link linkend="clsWindowBase">WindowBase</link>
+    </para>
+    <para>
+      The <link linkend="clsWindowExtensions">WindowExtensions</link>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+    <para>
+      Use the <link linkend="mthGetDateTimePicker">getDateTimePicker</link>() method to retrieve an object of
+      the date and time picker class.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+    <para>
+      To dynamically define a date and time picker in a <link linkend="clsUserDialog">UserDialog</link> class,
+      use the <link linkend="mthAddDateTimePicker">addDateTimePicker</link> method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+    <para>
+      To recieve notification of date and time picker events use the <link
+      linkend="mthConnectDateTimePicker">connectDateTimePickerNotify</link>)() method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Important Methods:</emphasis></term>
+  <listitem>
+    <para>
+      The following table provides links to the documentation for the primary methods and attributes used
+      in working with $(cls_name) objects`. These include all the methods and attributes implemented by
+      the DateTimePicker class, and the methods to connect to event notifications from, get, and dynamically
+      add, DateTimePicker objects:
+    </para>
+    <table id="tblDateTimePickerMethods" frame="all">
+    <title>DateTimePicker Methods and Attributes</title>
+    <tgroup cols="2">
+    <thead>
+    <row>
+    <entry>Method...</entry>
+    <entry>...Documentation</entry>
+    </row>
+    </thead>
+    <tbody>
+    <row>
+    <entry>getDateTimePicker (Instantiate method)</entry>
+    <entry><link linkend="mmtthGetDateTimePicker">addDateTimePicker</link></entry>
+    </row>
+    <row>
+    <entry>addDateTimePicker (Dynamically Define method)</entry>
+    <entry><link linkend="mmtthAddDateTimePicker">addDateTimePicker</link></entry>
+    </row>
+    <row>
+    <entry>connectDateTimePickerNotify (Connect Events method)</entry>
+    <entry><link linkend="mmtthConnectDateTimePickerNotify">connectDateTimePickerNotify</link></entry>
+    </row>
+    <row>
+    <entry>new (Class method)</entry>
+    <entry><link linkend="mthNewClsDateTimePicker">new</link></entry>
+    </row>
+    <row>
+    <entry>attributeName (Attribute)</entry>
+    <entry><link linkend="atrAttributeNameClsDateTimePicker">attributeName</link></entry>
+    </row>
+    <row>
+    <entry>mehtodName</entry>
+    <entry><link linkend="mthMethodNameClsDateTimePicker">methodName</link></entry>
+    </row>
+    </tbody></tgroup>
+    </table>
+  </listitem></varlistentry>
+</variablelist>
+
+
+<section id="mmtthConnectDateTimePickerNotify"><title>connectDateTimePickerNotify (Connect Events
+Method)</title>
+<para>
+  To connect event notifications from a date and time picker object use the <link
+  linkend="mthConnectDateTimePickerNotify">connectDateTimePickerNotify</link>() method of the <link
+  linkend="clsMessageExtensions"></link> class. The basic syntax is:
+
+<programlisting> <![CDATA[
+>>-connectDateTimePickerNotify(--id--,--"event"--+----------------+--)------------><
+                                              +--,-methodName--+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::addDateTimePicker() [UserDialog method] -->
+
+
+<section id="mmtthGetDateTimePicker"><title>getDateTimePicker (Instantiate Method)</title>
+<para>
+  A date and time picker object is obtained by using the <link
+  linkend="mthGetDateTimePicker">getDateTimePicker</link>() method of the <link
+  linkend="clsAdvancedControls">.AdvancedControls</link> class. The syntax is:
+<programlisting>
+<![CDATA[
+>>-getDateTimePicker(--id--+-------------+--)---------------------><
+                        +-,--category-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End AdvancedControls::getDateTimePicker() [AdvancedControls method] -->
+
+
+<section id="mmtthAddDateTimePicker"><title>addDateTimePicker (Dynamically Define Method)</title>
+<para>
+  A date and time picker object can be added to a <link linkend="clsUserDialog">UserDialog</link> dialog
+  through the <link linkend="mthAddDateTimePicker"></link>.  See the documentation of that method for
+  complete details if needed.  The basic syntax is:
+<programlisting> <![CDATA[
+>>-addDateTimePicker(-PUT IN CORRECT SYSNTAX--)-------------------><
+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::addDateTimePicker() [UserDialog method] -->
+
+
+<section id="mthNewClsDateTimePicker"><title>new (Class method)</title>
+<indexterm><primary>new</primary>
+<secondary>DateTimePicker class</secondary></indexterm>
+<para>
+  The date and time picker class is not intended to be instantiated directly by the programmer using the new()
+  method.  Rather the programmer should obtain a new date and time picker object by using the <link
+  linkend="mthGetDateTimePicker">getDateTimePicker</link>() method of the <link
+  linkend="clsAdvancedControls">.AdvancedControls</link> class.
+</para>
+</section>  <!-- End DateTimePicker::new() [class method] -->
+
+
+<section id="atrAttributeNameClsDateTimePicker"><title>attributeName (Attribute)</title>
+<indexterm><primary>attributeName</primary>
+<secondary>DateTimePicker class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--attributName------------------------------------------------><
+
+>>--attributName-=-varName--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      xx
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">attributeName get:</emphasis></term>
+  <listitem>
+    <para>
+      details about get
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">attributeName set:</emphasis></term>
+  <listitem>
+    <para>
+      details about set
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::attributeName() [class method]  -->
+
+
+<section id="mthMethodNameClsDateTimePicker"><title>methodName</title>
+<indexterm><primary>methodName</primary>
+<secondary>DateTimePicker class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--mehtodName(--+--------+--)-------------------------------------------------><
+                 +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      xx
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      xx
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+        <para>
+          xx
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      xx
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::methodName() -->
+
+</chapter>  <!-- End DateTimePicker class -->
+
