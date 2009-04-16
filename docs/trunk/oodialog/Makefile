@@ -49,23 +49,24 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
 
 SGML_FILES = advcntlc.sgml \
 	     basedialog.sgml \
-	     windowBaseCommon.sgml \
-	     windowExtensionsCommon.sgml \
 	     buttoncontrols.sgml \
 	     categorydialog.sgml \
 	     comboboxc.sgml \
+	     datetimepicker.sgml \
 	     dialogcontrolc.sgml \
+	     dialogcontrolCommon.sgml \
 	     editcontrolc.sgml \
 	     listboxc.sgml \
 	     listcontrolc.sgml \
+	     menus.sgml \
 	     mesextcl.sgml \
-	     utilityclasses.sgml \
+	     monthcalendar.sgml \
 	     oodialog.sgml \
+	     overview.sgml \
 	     plainuserdialogc.sgml \
 	     preface.sgml \
 	     progressbarc.sgml \
 	     propertysheetc.sgml \
-	     overview.sgml \
 	     resdialog.sgml \
 	     scrollbarc.sgml \
 	     slidercontrolc.sgml \
@@ -75,12 +76,13 @@ SGML_FILES = advcntlc.sgml \
 	     tabcontrolc.sgml \
 	     treecontrolc.sgml \
 	     userdialog.sgml \
+	     utilityclasses.sgml \
+	     windowBaseCommon.sgml \
+	     windowExtensionsCommon.sgml \
 	     ../shared/notices.sgml \
 	     ../shared/legalstuff.sgml \
 	     ../shared/gethelp.sgml \
 	     ../shared/CPLv1.0.sgml
-#	     menus.sgml \                remove for 4.0.0 release
-#	     dialogcontrolCommon.sgml \  not complete yet
 # the following files are not used & are here only for historical reasons
 #	     conceptoverv.sgml \
 #	     graphui.sgml \

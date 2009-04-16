@@ -529,6 +529,178 @@ holding the button that started the drag operation.</para>
 </programlisting>
 </section>
 
+<section id="mthConnectMonthCalendarNotify"><title>connectMonthCalendarNotify</title>
+<indexterm><primary>connectMonthCalendarNotify</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectStaticNotify(--id--,--"event"--,-+---------------+--)--------><
+                                            +-,--methodName-+
+
+]]>
+</programlisting>
+
+<para>
+  PLEASE FIXE ME TODO
+  The connectStaticNotify connects a notification message from a static control to a method, defined by
+  the programmer, of the dialog.  Normally, static controls do not send notification messages.  A static
+  control will only send the messages when it has the SS_NOTIFY style.  The notification messages inform
+  the dialog that an event has occurred with regard to the static control.
+</para>
+<para>
+  For user defined dialogs use the NOTIFY style keyword in the <link
+  linkend="sectAddStaticControls">Add...</link> static control methods when the control is defined. For
+  dialogs created from a compiled resource or a resource script file use the SS_NOTIFY style when
+  defining the control in a resource editor.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+      <para>
+        The resource ID of the static control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>event</term>
+    <listitem>
+      <para>
+        A keyword specifying the event to be connected with a method:
+        <variablelist>
+          <varlistentry><term>CLICK</term>
+          <listitem>
+            <para>
+              The static control has been clicked with the mouse.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DBLCLK</term>
+          <listitem>
+            <para>
+              The static control has been double-clicked with the mouse.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLE</term>
+          <listitem>
+            <para>
+              The static control has been disabled.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ENABLE</term>
+          <listitem>
+            <para>
+              The static control has been enabled.
+            </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>methodName</term>
+    <listitem>
+      <para>
+        The method that is to be invoked whenever the specified notification is received from the static
+        control. The programmer defines this method. If this argument is omitted, a method name is
+        automatically generated that consists of the event keyword preceded by
+        <computeroutput>on</computeroutput>. For instance, <computeroutput>onClick</computeroutput>.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return codes are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          No error detected.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+        <para>
+          The resource ID could not be resolved or the event argument is incorrect.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>1</term>
+      <listitem>
+        <para>
+          The message was not connected correctly.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Additional Notes:</emphasis></term>
+  <listitem>
+    <orderedlist>
+    <listitem>
+      <para>
+        The invocation of connectStaticNotify() can be placed in the <link linkend="h000025">init</link>
+        or <link linkend="mthInitDialog">initDialog</link> method.  (Indeed the invocation can be done
+        anywhere. But, it makes most sense to have the connection made before the dialog starts
+        executing.) If the connection is made in the init() method, be sure that the super class init()
+        is invoked first.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        The defined event-handling methods will receive two arguments. The first arg contains information
+        about the specific control and its event. The second arg is the window handle of the static
+        control.
+      </para>
+      <para>
+        The low word of the first arg is the control ID and the high word is the event ID.
+      </para>
+    </listitem>
+    </orderedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example comes from an application that displays employee statistics.  A single click
+      on the employee number field advances the display to the next employee.  A double click on either
+      the employee name or employee job duties alllows those fields to be edited.
+    </para>
+<programlisting>
+<![CDATA[
+::method initDialog
+
+  self~connectStaticNotify(IDC_ST_EMPNO, "CLICK", empLookup)
+
+  self~connectStaticNotify(IDC_ST_EMPJOB, "DBLCLK", editStats)
+  self~connectStaticNotify(IDC_ST_EMPNAME, "DBLCLK", editStats)
+
+  first = self~initDatabase
+  self~setStats(first)
+]]>
+</programlisting>
+      <para>
+        In this example, (a continuation of the above example,) the control ID determines if the user has
+        double clicked on the employee job duties field, or the employee name field.  The event ID is not
+        used, or needed. Its purpose in the code snippet is simply an example. The same thing applies to
+        the window handle.
+      </para>
+<programlisting>
+<![CDATA[
+::method editStats
+  use arg ctrlInfo, ctrlHwnd
+
+  ctrlID = .DlgUtil~loWord(ctrlInfo)
+  eventID = .DlgUtil~hiWord(ctrlInfo)
+
+  rec = self~getCurrentRecord
+
+  if self~userUpdate(ctrlID, rec) then self~setStats(rec)
+]]>
+</programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="connectlistnotify"><title>ConnectListNotify</title>
 <indexterm><primary>ConnectListNotify</primary></indexterm>
 <programlisting>
@@ -1278,6 +1450,178 @@ incorrect.
 </programlisting>
 
 <para>
+  The connectStaticNotify connects a notification message from a static control to a method, defined by
+  the programmer, of the dialog.  Normally, static controls do not send notification messages.  A static
+  control will only send the messages when it has the SS_NOTIFY style.  The notification messages inform
+  the dialog that an event has occurred with regard to the static control.
+</para>
+<para>
+  For user defined dialogs use the NOTIFY style keyword in the <link
+  linkend="sectAddStaticControls">Add...</link> static control methods when the control is defined. For
+  dialogs created from a compiled resource or a resource script file use the SS_NOTIFY style when
+  defining the control in a resource editor.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+      <para>
+        The resource ID of the static control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>event</term>
+    <listitem>
+      <para>
+        A keyword specifying the event to be connected with a method:
+        <variablelist>
+          <varlistentry><term>CLICK</term>
+          <listitem>
+            <para>
+              The static control has been clicked with the mouse.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DBLCLK</term>
+          <listitem>
+            <para>
+              The static control has been double-clicked with the mouse.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLE</term>
+          <listitem>
+            <para>
+              The static control has been disabled.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ENABLE</term>
+          <listitem>
+            <para>
+              The static control has been enabled.
+            </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>methodName</term>
+    <listitem>
+      <para>
+        The method that is to be invoked whenever the specified notification is received from the static
+        control. The programmer defines this method. If this argument is omitted, a method name is
+        automatically generated that consists of the event keyword preceded by
+        <computeroutput>on</computeroutput>. For instance, <computeroutput>onClick</computeroutput>.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return codes are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          No error detected.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+        <para>
+          The resource ID could not be resolved or the event argument is incorrect.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>1</term>
+      <listitem>
+        <para>
+          The message was not connected correctly.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Additional Notes:</emphasis></term>
+  <listitem>
+    <orderedlist>
+    <listitem>
+      <para>
+        The invocation of connectStaticNotify() can be placed in the <link linkend="h000025">init</link>
+        or <link linkend="mthInitDialog">initDialog</link> method.  (Indeed the invocation can be done
+        anywhere. But, it makes most sense to have the connection made before the dialog starts
+        executing.) If the connection is made in the init() method, be sure that the super class init()
+        is invoked first.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        The defined event-handling methods will receive two arguments. The first arg contains information
+        about the specific control and its event. The second arg is the window handle of the static
+        control.
+      </para>
+      <para>
+        The low word of the first arg is the control ID and the high word is the event ID.
+      </para>
+    </listitem>
+    </orderedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example comes from an application that displays employee statistics.  A single click
+      on the employee number field advances the display to the next employee.  A double click on either
+      the employee name or employee job duties alllows those fields to be edited.
+    </para>
+<programlisting>
+<![CDATA[
+::method initDialog
+
+  self~connectStaticNotify(IDC_ST_EMPNO, "CLICK", empLookup)
+
+  self~connectStaticNotify(IDC_ST_EMPJOB, "DBLCLK", editStats)
+  self~connectStaticNotify(IDC_ST_EMPNAME, "DBLCLK", editStats)
+
+  first = self~initDatabase
+  self~setStats(first)
+]]>
+</programlisting>
+      <para>
+        In this example, (a continuation of the above example,) the control ID determines if the user has
+        double clicked on the employee job duties field, or the employee name field.  The event ID is not
+        used, or needed. Its purpose in the code snippet is simply an example. The same thing applies to
+        the window handle.
+      </para>
+<programlisting>
+<![CDATA[
+::method editStats
+  use arg ctrlInfo, ctrlHwnd
+
+  ctrlID = .DlgUtil~loWord(ctrlInfo)
+  eventID = .DlgUtil~hiWord(ctrlInfo)
+
+  rec = self~getCurrentRecord
+
+  if self~userUpdate(ctrlID, rec) then self~setStats(rec)
+]]>
+</programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthConnectDateTimePickerNotify"><title>connectDateTimePickerNotify</title>
+<indexterm><primary>connectDateTimePickerNotify</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectStaticNotify(--id--,--"event"--,-+---------------+--)--------><
+                                            +-,--methodName-+
+
+]]>
+</programlisting>
+
+<para>
+  PLEASE FIXE ME TODO
   The connectStaticNotify connects a notification message from a static control to a method, defined by
   the programmer, of the dialog.  Normally, static controls do not send notification messages.  A static
   control will only send the messages when it has the SS_NOTIFY style.  The notification messages inform
