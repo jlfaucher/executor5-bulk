@@ -115,7 +115,7 @@ REM
 set NODEBUG=%1
 set OPTIMIZE=%1
 set CPLUSPLUS=1
-set NOCRTDLL=1
+rem set NOCRTDLL=1
 set REXXDEBUG=0
 
 REM create output directory
