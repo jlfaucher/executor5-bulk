@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -70,6 +70,9 @@ bool IsNo(const char * s)
    return ( s && (*s == 'N' || *s == 'n') );
 }
 
+/**
+ * This classic Rexx external function was documented prior to 4.0.0.
+ */
 size_t RexxEntry InfoMessage(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND hW;
@@ -82,6 +85,9 @@ size_t RexxEntry InfoMessage(const char *funcname, size_t argc, CONSTRXSTRING *a
 }
 
 
+/**
+ * This classic Rexx external function was documented prior to 4.0.0.
+ */
 size_t RexxEntry ErrorMessage(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND hW;
@@ -93,6 +99,9 @@ size_t RexxEntry ErrorMessage(const char *funcname, size_t argc, CONSTRXSTRING *
    RETC(0)
 }
 
+/**
+ * This classic Rexx external function was documented prior to 4.0.0.
+ */
 size_t RexxEntry YesNoMessage(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND hW;
@@ -130,7 +139,10 @@ size_t RexxEntry YesNoMessage(const char *funcname, size_t argc, CONSTRXSTRING *
    return 0;
 }
 
-
+/**
+ * This classic Rexx external function was NOT documented prior to 4.0.0.  But,
+ * it was used in some of the sample code in the doc.
+ */
 size_t RexxEntry BinaryAnd(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    ULONG n, m;

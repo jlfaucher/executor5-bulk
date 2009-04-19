@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -71,10 +71,8 @@
    end
    return WndShow_Pos("S",self~hwnd, disptype)
 
-::method SetFont unguarded
-   use arg hFont, bRedraw     /* WM_SETFONT */
-   if Arg(2, 'o') = 1 then bRedraw = 1
-   return SendWinMsg("ANY",self~hwnd, "0x0030", hFont, bRedraw)
+::method setFont unguarded external "LIBRARY oodialog winex_setFont"
+::method getFont unguarded external "LIBRARY oodialog winex_getFont"
 
 ::method GetRect unguarded
    return WindowRect("GET", self~Hwnd)
@@ -172,13 +170,10 @@
 ::method Cursor_Wait unguarded
    return Wnd_Desktop("CURSOR", self~hwnd, "S", 32514)
 
-::method CreateFont unguarded
-   use arg fontName, fontSize, fontStyle, fontWidth
-   if Arg(1, "o") = 1 then fontName = "System"
-   if Arg(2, "o") = 1 then fontSize = 10
-   if Arg(3, "o") = 1 then fontStyle = ""
-   if Arg(4, "o") = 1 then fontWidth = fontSize
-   return HandleFont("CREATE", fontName, fontSize, fontStyle, fontWidth)
+-- CreateFont() has always been broken, maintained for program compatibility.
+-- CreateFontEx() is a correct implementation.
+::method CreateFont unguarded external "LIBRARY oodialog winex_createFont"
+::method createFontEx unguarded external "LIBRARY oodialog winex_createFontEx"
 
    /* Deletes a font */
 ::method DeleteFont unguarded
@@ -203,23 +198,6 @@
 ::method RemoveBitmap unguarded
    use arg hBitmap
    return LoadRemoveBitmap(0 /* NULL Adm */, hBitmap, "REMOVE")
-
-::method LoadSysIcon unguarded
-   use strict arg iconName
-   return WinAPI32Func('I', 'S', iconName~translate)
-
-::method LoadIconDirect unguarded
-   use strict arg iconID, cx = 0, cy = 0, src = 'U'
-   if \ iconID~isA(.string) then return -1
-   if \ iconID~datatype("W") then iconID = self~ResolveSymbolicId(iconID)
-   if iconID = -1 then return iconID
-   if src~left(1)~translate == 'D' then src = 'D'
-   else src = 'U'
-   return WinAPI32Func('I', 'N', self~adm, iconID, cx, cy, src)
-
-::method LoadIcon unguarded
-   use strict arg fileName, cx = 0, cy = 0
-   return WinAPI32Func('I', 'F', fileName, cx, cy)
 
 ::method CreateBrush unguarded
     use arg color, brushSpecifier
@@ -278,22 +256,10 @@
    if Arg(1,'o') = 1 then color = 1
    return DrawGetSet("COL", dc, color)
 
-
-   /* This method returns the text size from a device context */
-::method GetStdTextSize unguarded
-    use arg dc, text
-    if Arg(1,'o') = 1 then do
-      parse value GetStdTextSize(text) with width height
-      width = width * self~FactorX
-      height = height * self~FactorY
-      return width height
-    end
-    else return HandleFont( "SIZE", dc, text )
-
+::method getTextSizeScreen  external "LIBRARY oodialog winex_getTextSizeScreen"
 
    /* This method will create a pen in the given color and style */
    /* It returns a handle to a pen object */
-
 ::method CreatePen unguarded
    use arg width, style, color
    if Arg(1, "o") = 1 then width = 1
@@ -393,14 +359,6 @@
    ret.bottom = b/self~FactorY
    return ret.
 
-    /* create a COLORREF */
-::method RGB   /* currently only color indexes are supported by functions using colors */
-   use arg red, green, blue
-   if Arg(1,'o') = 1 then red = 0
-   if Arg(2,'o') = 1 then green = 0
-   if Arg(3,'o') = 1 then blue = 0
-   return (blue*256*256) + (green*256) + red
-
 /** class: BaseDialog
  * Implements methods that are common to all 3 types of dialogs, ResDialog,
  * RcDialog, and UserDialog.
@@ -420,3 +378,50 @@
    self~bkgBrushBmp = 0   -- no background bitmap
    self~menuBar = .nil
    return 0
+
+
+::class 'ResourceImage' public
+
+::method init external "LIBRARY oodialog ri_init"
+::method release external "LIBRARY oodialog ri_release"
+::method handle external "LIBRARY oodialog ri_handle"
+::method isNull external "LIBRARY oodialog ri_isNull"
+::method systemErrorCode external "LIBRARY oodialog ri_systemErrorCode"
+::method getImage external "LIBRARY oodialog ri_getImage"
+::method getImages external "LIBRARY oodialog ri_getImages"
+
+
+::class 'Image' public
+
+::method id class external "LIBRARY oodialog image_id_cls"
+::method getImage class external "LIBRARY oodialog image_getImage_cls"
+::method fromFiles class external "LIBRARY oodialog image_fromFiles_cls"
+::method fromIDs class external "LIBRARY oodialog image_fromIDs_cls"
+
+::method colorRef class external "LIBRARY oodialog image_colorRef_cls"
+::method getRValue class external "LIBRARY oodialog image_getRValue_cls"
+::method getGValue class external "LIBRARY oodialog image_getGValue_cls"
+::method getBValue class external "LIBRARY oodialog image_getBValue_cls"
+
+::method init external "LIBRARY oodialog image_init"
+::method release external "LIBRARY oodialog image_release"
+::method handle external "LIBRARY oodialog image_handle"
+::method isNull external "LIBRARY oodialog image_isNull"
+::method systemErrorCode external "LIBRARY oodialog image_systemErrorCode"
+
+::class 'ImageList' public
+::method create class external "LIBRARY oodialog il_create_cls"
+
+::method init external "LIBRARY oodialog il_init"
+::method release external "LIBRARY oodialog il_release"
+::method add external "LIBRARY oodialog il_add"
+::method addMasked external "LIBRARY oodialog il_addMasked"
+::method addIcon external "LIBRARY oodialog il_addIcon"
+::method addImages external "LIBRARY oodialog il_addImages"
+::method getCount external "LIBRARY oodialog il_getCount"
+::method getImageSize external "LIBRARY oodialog il_getImageSize"
+::method duplicate external "LIBRARY oodialog il_duplicate"
+::method remove external "LIBRARY oodialog il_remove"
+::method removeAll external "LIBRARY oodialog il_removeAll"
+::method handle external "LIBRARY oodialog il_handle"
+::method isNull external "LIBRARY oodialog il_isNull"

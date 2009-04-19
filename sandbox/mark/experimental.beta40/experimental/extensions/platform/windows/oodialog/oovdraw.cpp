@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -303,7 +303,7 @@ size_t RexxEntry HandleDC_Obj(const char *funcname, size_t argc, CONSTRXSTRING *
              hBmp = (HBITMAP) LoadDIB(argv[3].strptr);     /* we have a file name */
              lb.lbStyle = BS_DIBPATTERNPT;
              lb.lbColor = DIB_RGB_COLORS;
-             lb.lbHatch = (LONG)hBmp;
+             lb.lbHatch = (ULONG_PTR)hBmp;
              hB = CreateBrushIndirect(&lb);
              LocalFree((void *)hBmp);
           }

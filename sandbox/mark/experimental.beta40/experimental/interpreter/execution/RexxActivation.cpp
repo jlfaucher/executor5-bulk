@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -81,6 +81,48 @@
                                        /* whenever the settings definition  */
                                        /* changes                           */
 static ActivationSettings activationSettingsTemplate;
+// constants use for different activation settings
+
+const size_t RexxActivation::trace_off           = 0x00000000; /* trace nothing                     */
+const size_t RexxActivation::trace_debug         = 0x00000001; /* interactive trace mode flag       */
+const size_t RexxActivation::trace_all           = 0x00000002; /* trace all instructions            */
+const size_t RexxActivation::trace_results       = 0x00000004; /* trace all results                 */
+const size_t RexxActivation::trace_intermediates = 0x00000008; /* trace all instructions            */
+const size_t RexxActivation::trace_commands      = 0x00000010; /* trace all commands                */
+const size_t RexxActivation::trace_labels        = 0x00000020; /* trace all labels                  */
+const size_t RexxActivation::trace_errors        = 0x00000040; /* trace all command errors          */
+const size_t RexxActivation::trace_failures      = 0x00000080; /* trace all command failures        */
+const size_t RexxActivation::trace_suppress      = 0x00000100; /* tracing is suppressed during skips*/
+const size_t RexxActivation::trace_flags         = 0x000001fe; /* all tracing flags (EXCEPT debug)  */
+                                                 // the default trace setting
+const size_t RexxActivation::default_trace_flags = trace_failures;
+
+// now the flag sets for different settings
+const size_t RexxActivation::trace_all_flags = (trace_all | trace_labels | trace_commands);
+const size_t RexxActivation::trace_results_flags = (trace_all | trace_labels | trace_results | trace_commands);
+const size_t RexxActivation::trace_intermediates_flags = (trace_all | trace_labels | trace_results | trace_commands | trace_intermediates);
+
+const size_t RexxActivation::single_step         = 0x00000800; /* we are single stepping execution  */
+const size_t RexxActivation::single_step_nested  = 0x00001000; /* this is a nested stepping         */
+const size_t RexxActivation::debug_prompt_issued = 0x00002000; /* debug prompt already issued       */
+const size_t RexxActivation::debug_bypass        = 0x00004000; /* skip next debug pause             */
+const size_t RexxActivation::procedure_valid     = 0x00008000; /* procedure instruction is valid    */
+const size_t RexxActivation::clause_boundary     = 0x00010000; /* work required at clause boundary  */
+const size_t RexxActivation::halt_condition      = 0x00020000; /* a HALT condition occurred         */
+const size_t RexxActivation::trace_on            = 0x00040000; /* external trace condition occurred */
+const size_t RexxActivation::source_traced       = 0x00080000; /* source string has been traced     */
+const size_t RexxActivation::clause_exits        = 0x00100000; /* need to call clause boundary exits*/
+const size_t RexxActivation::external_yield      = 0x00200000; /* activity wants us to yield        */
+const size_t RexxActivation::forwarded           = 0x00400000; /* forward instruction active        */
+const size_t RexxActivation::reply_issued        = 0x00800000; /* reply has already been issued     */
+const size_t RexxActivation::set_trace_on        = 0x01000000; /* trace turned on externally        */
+const size_t RexxActivation::set_trace_off       = 0x02000000; /* trace turned off externally       */
+const size_t RexxActivation::traps_copied        = 0x04000000; /* copy of trap info has been made   */
+const size_t RexxActivation::return_status_set   = 0x08000000; /* had our first host command        */
+const size_t RexxActivation::transfer_failed     = 0x10000000; /* transfer of variable lock failure */
+
+const size_t RexxActivation::elapsed_reset       = 0x20000000; // The elapsed time stamp was reset via time('r')
+const size_t RexxActivation::guarded_method      = 0x40000000; // this is a guarded method
 
 void * RexxActivation::operator new(size_t size)
 /******************************************************************************/
@@ -116,6 +158,10 @@ RexxActivation::RexxActivation(RexxActivity* _activity, RexxMethod * _method, Re
     this->scope = _method->getScope();   // save the scope
     this->code = _code;                  /* get the REXX method object        */
     this->executable = _method;          // save this as the base executable
+                                         // save the source object reference also
+    this->sourceObject = _method->getSourceObject();
+                                         // save the source object reference also
+    this->sourceObject = _method->getSourceObject();
     this->settings.intermediate_trace = false;
     this->activation_context = METHODCALL;  // the context is a method call
     this->parent = OREF_NULL;            // we don't have a parent stack frame when invoked as a method
@@ -135,6 +181,11 @@ RexxActivation::RexxActivation(RexxActivity* _activity, RexxMethod * _method, Re
     // NOTE:  Anything that alters information in the settings must happen AFTER
     // this point.
     this->settings = activationSettingsTemplate;
+    // and override with the package-defined settings
+    this->settings.numericSettings.digits = sourceObject->getDigits();
+    this->settings.numericSettings.fuzz = sourceObject->getFuzz();
+    this->settings.numericSettings.form = sourceObject->getForm();
+    setTrace(sourceObject->getTraceSetting(), sourceObject->getTraceFlags());
 
     if (_method->isGuarded())            // make sure we set the appropriate guarded state
     {
@@ -221,6 +272,8 @@ RexxActivation::RexxActivation(RexxActivity *_activity, RexxActivation *_parent,
     settings.local_variables.setNested();
     // get the executable from the parent.
     this->executable = _parent->getExecutable();
+                                         // save the source object reference also
+    this->sourceObject = executable->getSourceObject();
 }
 
 
@@ -242,6 +295,8 @@ RexxActivation::RexxActivation(RexxActivity *_activity, RoutineClass *_routine, 
     this->activity = _activity;          /* save the activity pointer         */
     this->code = _code;                  /* get the REXX method object        */
     this->executable = _routine;         // save this as the base executable
+                                         // save the source object reference also
+    this->sourceObject = _routine->getSourceObject();
 
     this->activation_context = context;  /* save the context                  */
     this->settings.intermediate_trace = false;
@@ -259,6 +314,11 @@ RexxActivation::RexxActivation(RexxActivity *_activity, RoutineClass *_routine, 
     this->setHasReferences();
     /* get initial settings template     */
     this->settings = activationSettingsTemplate;
+    // and override with the package-defined settings
+    this->settings.numericSettings.digits = sourceObject->getDigits();
+    this->settings.numericSettings.fuzz = sourceObject->getFuzz();
+    this->settings.numericSettings.form = sourceObject->getForm();
+    setTrace(sourceObject->getTraceSetting(), sourceObject->getTraceFlags());
     /* save the source also              */
     this->settings.parent_code = this->code;
 
@@ -599,8 +659,22 @@ void RexxActivation::processTraps()
                 /* initialize the RC variable        */
                 this->setLocalVariable(OREF_RC, VARIABLE_RC, rc);
             }
-            /* call the condition handler        */
-            ((RexxInstructionCallBase *)trapHandler->get(1))->trap(this, conditionObj);
+            // it's possible that the condition can raise an error because of a
+            // missing label, so we need to catch any conditions that might be thrown
+            try
+            {
+                /* call the condition handler        */
+                ((RexxInstructionCallBase *)trapHandler->get(1))->trap(this, conditionObj);
+            }
+            catch (RexxActivation *t)
+            {
+                // if we're not the target of this throw, we've already been unwound
+                // keep throwing this until it reaches the target activation.
+                if (t != this )
+                {
+                    throw;
+                }
+            }
         }
     }
 }
@@ -639,24 +713,8 @@ RexxString * RexxActivation::traceSetting()
 /* Function:  Generate a string form of the current trace setting             */
 /******************************************************************************/
 {
-    char         setting[3];             /* returned trace setting            */
-    setting[0] = '\0';                   /* start with a null string          */
-                                         /* debug mode?                       */
-    if (this->settings.flags&trace_debug)
-    {
-        setting[0] = '?';                  /* add the question mark             */
-                                           /* add current trace option          */
-        setting[1] = (char)this->settings.traceoption;
-        /* create a string form              */
-        return new_string(setting, 2);
-    }
-    else                                 /* no debug prefix                   */
-    {
-        /* add current trace option          */
-        setting[0] = (char)this->settings.traceoption;
-        /* create a string form              */
-        return new_string(setting, 1);
-    }
+    // have the source file process this
+    return RexxSource::formatTraceSetting(settings.traceOption);
 }
 
 
@@ -668,142 +726,147 @@ RexxString * RexxActivation::traceSetting()
 void RexxActivation::setTrace(RexxString *setting)
 {
     size_t newsetting;                   /* new trace setting                 */
-    size_t debug;                        /* new debug setting                 */
+    size_t traceFlags;                   // the optimized trace flags
 
-    getSourceObject()->parseTraceSetting(setting, &newsetting, &debug);
+    char   traceOption = 0;              // a potential bad character
+
+    if (!RexxSource::parseTraceSetting(setting, newsetting, traceFlags, traceOption))
+    {
+        reportException(Error_Invalid_trace_trace, new_string(&traceOption, 1));
+    }
                                        /* now change the setting            */
-    setTrace(newsetting, debug);
+    setTrace(newsetting, traceFlags);
 }
 
 
-void RexxActivation::setTrace(
-    size_t traceoption,                 /* new trace setting                 */
-    size_t debugoption )                /* new interactive debug setting     */
-/******************************************************************************/
-/* Function:  Set a new trace setting for a REXX program                      */
-/******************************************************************************/
+/**
+ * Set a new trace setting for the context.
+ *
+ * @param traceOption
+ *               The new trace setting option.  This includes the
+ *               setting option and any debug flag options, ANDed together.
+ */
+void RexxActivation::setTrace(size_t traceOption, size_t traceFlags)
 {
     /* turn off the trace suppression    */
     this->settings.flags &= ~trace_suppress;
     this->settings.trace_skip = 0;       /* and allow debug pauses            */
 
-    switch (debugoption)
+    // we might need to transfer some information from the
+    // current settings
+    if ((traceOption&RexxSource::DEBUG_TOGGLE) != 0)
     {
-
-        case DEBUG_ON:                     /* turn on interactive debug         */
-            /* switch the setting on             */
-            this->settings.flags |= trace_debug;
-            break;
-
-        case DEBUG_OFF:                    /* turn off interactive debug        */
+        /* switch to the opposite setting    */
+        /* already on?                       */
+        if (this->settings.flags & trace_debug)
+        {
             /* switch the setting off            */
-            this->settings.flags &= ~trace_debug;
-            break;
-
-        case DEBUG_TOGGLE:                 /* toggole interactive debug setting */
-            /* switch to the opposite setting    */
-            /* already on?                       */
-            if (this->settings.flags & trace_debug)
-                /* switch the setting off            */
-                this->settings.flags &= ~trace_debug;
-            else
-                /* switch the setting on             */
-                this->settings.flags |= trace_debug;
-            break;
-
-        case DEBUG_IGNORE:                 /* no changes to debug setting       */
-            break;
+            traceFlags &= ~trace_debug;
+        }
+        else
+        {
+            // switch the setting on in both the flags and the setting
+            traceFlags |= trace_debug;
+            traceOption |= RexxSource::DEBUG_ON;
+        }
     }
-    switch (traceoption)
+
+    // save the option so it can be formatted back into a trace value
+    this->settings.traceOption = traceOption;
+    // clear the current trace options
+    clearTraceSettings();
+    // set the new flags
+    settings.flags |= traceFlags;
+    // if tracing intermediates, turn on the special fast check flag
+    if ((settings.flags&trace_intermediates) != 0)
     {
-
-        case TRACE_ALL:                    /* TRACE ALL;                        */
-
-            clearTraceSettings();            /* turn off existing flags           */
-                                             /* trace instructions, labels and    */
-                                             /* all commands                      */
-            this->settings.flags |= (trace_all | trace_labels | trace_commands);
-            /* save the trace option             */
-            this->settings.traceoption = traceoption;
-            break;
-
-        case TRACE_COMMANDS:               /* TRACE COMMANDS;                   */
-            clearTraceSettings();            /* turn off existing flags           */
-                                             /* just trace commands               */
-            this->settings.flags |= trace_commands;
-            /* save the trace option             */
-            this->settings.traceoption = traceoption;
-            break;
-
-        case TRACE_LABELS:                 /* TRACE LABELS                      */
-            clearTraceSettings();            /* turn off existing flags           */
-                                             /* just trace labels                 */
-            this->settings.flags |= trace_labels;
-            /* save the trace option             */
-            this->settings.traceoption = traceoption;
-            break;
-
-        case TRACE_NORMAL:                 /* TRACE NORMAL                      */
-        case TRACE_FAILURES:               /* TRACE FAILURES                    */
-            clearTraceSettings();            /* turn off existing flags           */
-                                             /* just trace command failures       */
-            this->settings.flags |= trace_failures;
-            /* save the trace option             */
-            this->settings.traceoption = traceoption;
-            break;
-
-        case TRACE_ERRORS:                 /* TRACE ERRORS                      */
-            clearTraceSettings();            /* turn off existing flags           */
-                                             /* trace command failures and error  */
-            this->settings.flags |= (trace_failures | trace_errors);
-            /* save the trace option             */
-            this->settings.traceoption = traceoption;
-            break;
-
-        case TRACE_RESULTS:                /* TRACE RESULTS                     */
-            clearTraceSettings();            /* turn off existing flags           */
-                                             /* trace instructions, labels,       */
-                                             /* commands, and results             */
-            this->settings.flags |= (trace_all | trace_labels | trace_results | trace_commands);
-            /* save the trace option             */
-            this->settings.traceoption = traceoption;
-            break;
-
-        case TRACE_INTERMEDIATES:          /* TRACE INTERMEDIATES               */
-            clearTraceSettings();            /* turn off existing flags           */
-                                             /* trace just about every things     */
-            this->settings.flags |= (trace_all | trace_labels | trace_results | trace_commands | trace_intermediates);
-            /* save the trace option             */
-            this->settings.traceoption = traceoption;
-            /* turn on the special fast-path test */
-            this->settings.intermediate_trace = true;
-            break;
-
-        case TRACE_OFF:                    /* TRACE OFF                         */
-            /* save the trace option             */
-            clearTraceSettings();            /* turn off existing flags           */
-                                             /* nothing traced at all             */
-            this->settings.flags &= ~trace_debug;
-            this->settings.traceoption = traceoption;
-            /* ALWAYS switch debug off with OFF  */
-            this->settings.flags &= ~trace_debug;
-            break;
-
-        case TRACE_IGNORE:                 /* don't change trace setting        */
-            break;
+        /* turn on the special fast-path test */
+        this->settings.intermediate_trace = true;
     }
-    /* now double check for debug on     */
-    /* while trace is off                */
-    if (this->settings.traceoption == TRACE_OFF)
-    {
-        /* ALWAYS switch debug off with OFF  */
-        this->settings.flags &= ~trace_debug;
-    }
+
     if (this->debug_pause)               /* issued from a debug prompt?       */
     {
         /* let debug prompt know of changes  */
         this->settings.flags |= debug_bypass;
     }
+}
+
+
+/**
+ * Process a trace setting and reduce it to the component
+ * flag settings that can be used to set defaults.
+ *
+ * @param traceSetting
+ *               The input trace setting.
+ *
+ * @return The set of flags that will be set in the debug flags
+ *         when trace setting change.
+ */
+size_t RexxActivation::processTraceSetting(size_t traceSetting)
+{
+    size_t flags = 0;
+    switch (traceSetting & TRACE_DEBUG_MASK)
+    {
+        case RexxSource::DEBUG_ON:                     /* turn on interactive debug         */
+            /* switch the setting on             */
+            flags |= trace_debug;
+            break;
+
+        case RexxSource::DEBUG_OFF:                    /* turn off interactive debug        */
+            /* switch the setting off            */
+            flags &= ~trace_debug;
+            break;
+        // These two have no meaning in a staticically defined situation, so
+        // they'll need to be handled at runtime.
+        case RexxSource::DEBUG_TOGGLE:                 /* toggle interactive debug setting  */
+        case RexxSource::DEBUG_IGNORE:                 /* no changes to debug setting       */
+            break;
+    }
+    // now optimize the trace setting flags
+    switch (traceSetting&RexxSource::TRACE_SETTING_MASK)
+    {
+        case RexxSource::TRACE_ALL:                    /* TRACE ALL;                        */
+                                             /* trace instructions, labels and    */
+                                             /* all commands                      */
+            flags |= (trace_all | trace_labels | trace_commands);
+            break;
+
+        case RexxSource::TRACE_COMMANDS:               /* TRACE COMMANDS;                   */
+            flags |= trace_commands;
+            break;
+
+        case RexxSource::TRACE_LABELS:                 /* TRACE LABELS                      */
+            flags |= trace_labels;
+            break;
+
+        case RexxSource::TRACE_NORMAL:                 /* TRACE NORMAL                      */
+        case RexxSource::TRACE_FAILURES:               /* TRACE FAILURES                    */
+                                             /* just trace command failures       */
+            flags |= trace_failures;
+            break;
+
+        case RexxSource::TRACE_ERRORS:                 /* TRACE ERRORS                      */
+                                             /* trace command failures and error  */
+            flags |= (trace_failures | trace_errors);
+            break;
+
+        case RexxSource::TRACE_RESULTS:                /* TRACE RESULTS                     */
+            flags |= (trace_all | trace_labels | trace_results | trace_commands);
+            break;
+
+        case RexxSource::TRACE_INTERMEDIATES:          /* TRACE INTERMEDIATES               */
+                                             /* trace just about every things     */
+            flags |= (trace_all | trace_labels | trace_results | trace_commands | trace_intermediates);
+            break;
+
+        case RexxSource::TRACE_OFF:                    /* TRACE OFF                         */
+            flags = trace_off;               // turn of all trace options, including debug flags
+            break;
+
+        case RexxSource::TRACE_IGNORE:                 /* don't change trace setting        */
+            break;
+    }
+    return flags;
 }
 
 void RexxActivation::live(size_t liveMark)
@@ -1546,6 +1609,101 @@ RexxVariableDictionary * RexxActivation::getObjectVariables()
     return this->settings.object_variables;
 }
 
+
+/**
+ * Resolve a stream name for a BIF call.
+ *
+ * @param name     The name of the stream.
+ * @param stack    The expression stack.
+ * @param input    The input/output flag.
+ * @param fullName The returned full name of the stream.
+ * @param added    A flag indicating we added this.
+ *
+ * @return The backing stream object for the name.
+ */
+RexxObject *RexxActivation::resolveStream(RexxString *name, RexxExpressionStack *stack, bool input, RexxString **fullName, bool *added)
+{
+    if (added != NULL)
+    {
+        *added = false;           /* when caller requires stream table entry then initialize */
+    }
+    RexxDirectory *streamTable = getStreams(); /* get the current stream set        */
+    if (fullName)                        /* fullName requested?               */
+    {
+        *fullName = name;                  /* initialize to name                */
+    }
+    /* if length of name is 0, then it's the same as omitted */
+    if (name == OREF_NULL || name->getLength() == 0)   /* no name?                 */
+    {
+        if (input)                         /* input operation?                  */
+        {
+            /* get the default output stream     */
+            return getLocalEnvironment(OREF_INPUT);
+        }
+        else
+        {
+            /* get the default output stream     */
+            return getLocalEnvironment(OREF_OUTPUT);
+        }
+    }
+    /* standard input stream?            */
+    else if (name->strCaselessCompare(CHAR_STDIN) || name->strCaselessCompare(CHAR_CSTDIN))
+    {
+        /* get the default output stream     */
+        return getLocalEnvironment(OREF_INPUT);
+    }
+    /* standard output stream?           */
+    else if (name->strCaselessCompare(CHAR_STDOUT) || name->strCaselessCompare(CHAR_CSTDOUT))
+    {
+        /* get the default output stream     */
+        return getLocalEnvironment(OREF_OUTPUT);
+    }
+    /* standard error stream?            */
+    else if (name->strCaselessCompare(CHAR_STDERR) || name->strCaselessCompare(CHAR_CSTDERR))
+    {
+        /* get the default output stream     */
+        return getLocalEnvironment(OREF_ERRORNAME);
+    }
+    else
+    {
+        /* go get the qualified name         */
+        RexxString *qualifiedName = SystemInterpreter::qualifyFileSystemName(name);
+        if (fullName)                      /* fullName requested?               */
+        {
+            *fullName = qualifiedName;       /* provide qualified name            */
+        }
+        stack->push(qualifiedName);        /* Protect from GC.                  */
+        /* Note: stream name is pushed to the stack to be protected from GC;    */
+        /* e.g. it is used by the caller to remove stream from stream table.    */
+        /* The stack will be reset after the function was executed and the      */
+        /* protection is released                                               */
+        /* see if we've already opened this  */
+        RexxObject *stream = streamTable->at(qualifiedName);
+        if (stream == OREF_NULL)           /* not open                          */
+        {
+            SecurityManager *manager = getEffectiveSecurityManager();
+            stream = manager->checkStreamAccess(qualifiedName);
+            if (stream != OREF_NULL)
+            {
+                streamTable->put(stream, qualifiedName);
+                return stream;               /* return the stream object          */
+            }
+            /* get the stream class              */
+            RexxObject *streamClass = TheEnvironment->at(OREF_STREAM);
+            /* create a new stream object        */
+            stream = streamClass->sendMessage(OREF_NEW, name);
+
+            if (added)                       /* open the stream?   begin          */
+            {
+                /* add to the streams table          */
+                streamTable->put(stream, qualifiedName);
+                *added = true;                 /* mark it as added to stream table  */
+            }
+        }
+        return stream;                       /* return the stream object          */
+    }
+}
+
 RexxDirectory *RexxActivation::getStreams()
 /******************************************************************************/
 /* Function:  Return the associated object variables stream table             */
@@ -1555,16 +1713,27 @@ RexxDirectory *RexxActivation::getStreams()
     if (this->settings.streams == OREF_NULL)
     {
         /* first entry into here?            */
-        if (this->isTopLevelCall())
+        if (this->isProgramOrMethod())
         {
             /* always use a new directory        */
             this->settings.streams = new_directory();
         }
         else
         {
-            /* alway's use caller's for internal */
-            /* call, external call or interpret  */
-            this->settings.streams = this->parent->getStreams();
+            // get the caller frame.  If it is not a Rexx one, then
+            // we use a fresh stream table
+            RexxActivationBase *callerFrame = getPreviousStackFrame();
+            if (callerFrame == OREF_NULL || !callerFrame->isRexxContext())
+            {
+                this->settings.streams = new_directory();
+            }
+            else
+            {
+
+                /* alway's use caller's for internal */
+                /* call, external call or interpret  */
+                this->settings.streams = ((RexxActivation *)callerFrame)->getStreams();
+            }
         }
     }
     return this->settings.streams;       /* return the stream table           */
@@ -1702,8 +1871,15 @@ bool RexxActivation::form()
     return this->settings.numericSettings.form;
 }
 
-void RexxActivation::setDigits(
-                              size_t digitsVal)                    /* new digits setting                */
+/**
+ * Set the digits setting to the package-defined default
+ */
+void RexxActivation::setDigits()
+{
+    setDigits(sourceObject->getDigits());
+}
+
+void RexxActivation::setDigits(size_t digitsVal)
 /******************************************************************************/
 /* Function:  Set a new digits setting                                        */
 /******************************************************************************/
@@ -1711,9 +1887,17 @@ void RexxActivation::setDigits(
     this->settings.numericSettings.digits = digitsVal;
 }
 
+/**
+ * Set the fuzz setting to the package-defined default
+ */
+void RexxActivation::setFuzz()
+{
+    setFuzz(sourceObject->getFuzz());
+}
 
-void RexxActivation::setFuzz(
-                            size_t fuzzVal)                      /* set a new FUZZ setting            */
+
+
+void RexxActivation::setFuzz(size_t fuzzVal)
 /******************************************************************************/
 /* Function:  Set a new FUZZ setting                                          */
 /******************************************************************************/
@@ -1721,9 +1905,17 @@ void RexxActivation::setFuzz(
     this->settings.numericSettings.fuzz = fuzzVal;
 }
 
+/**
+ * Set the form setting to the package-defined default
+ */
+void RexxActivation::setForm()
+{
+    setForm(sourceObject->getForm());
+}
 
-void RexxActivation::setForm(
-                            bool formVal)                        /* the new FORM setting              */
+
+
+void RexxActivation::setForm(bool formVal)
 /******************************************************************************/
 /* Function:  Set the new current NUMERIC FORM setting                        */
 /******************************************************************************/
@@ -2316,9 +2508,19 @@ RexxObject *RexxActivation::externalCall(RexxString *target, size_t _argcount, R
     /* get the arguments array           */
     RexxObject **_arguments = _stack->arguments(_argcount);
 
+    // Step 1:  Check the global functions directory
+    // this is actually considered part of the built-in functions, but these are
+    // written in ooRexx.
+    RoutineClass *routine = (RoutineClass *)TheFunctionsDirectory->get(target);
+    if (routine != OREF_NULL)        /* not found yet?                    */
+    {
+        // call and return the result
+        routine->call(this->activity, target, _arguments, _argcount, calltype, OREF_NULL, EXTERNALCALL, resultObj);
+        return(RexxObject *)resultObj;
+    }
 
-    // Step 1:  Check for a ::ROUTINE definition in the local context
-    RoutineClass *routine = this->settings.parent_code->findRoutine(target);
+    // Step 2:  Check for a ::ROUTINE definition in the local context
+    routine = this->settings.parent_code->findRoutine(target);
     if (routine != OREF_NULL)
     {
         // call and return the result
@@ -2337,22 +2539,13 @@ RexxObject *RexxActivation::externalCall(RexxString *target, size_t _argcount, R
         return(RexxObject *)resultObj;
     }
 
-    // Step 3:  Check the global functions directory
-    routine = (RoutineClass *)TheFunctionsDirectory->get(target);
-    if (routine != OREF_NULL)        /* not found yet?                    */
-    {
-        // call and return the result
-        routine->call(this->activity, target, _arguments, _argcount, calltype, OREF_NULL, EXTERNALCALL, resultObj);
-        return(RexxObject *)resultObj;
-    }
-
-    // Step 4:  Perform all platform-specific searches
+    // Step 3:  Perform all platform-specific searches
     if (SystemInterpreter::invokeExternalFunction(this, this->activity, target, _arguments, _argcount, calltype, resultObj))
     {
         return(RexxObject *)resultObj;
     }
 
-    // Step 5:  Check scripting exit, which is after most of the checks
+    // Step 4:  Check scripting exit, which is after most of the checks
     if (!activity->callScriptingExit(this, target, calltype, resultObj, _arguments, _argcount))
     {
         return(RexxObject *)resultObj;
@@ -2507,13 +2700,13 @@ RexxObject *RexxActivation::resolveDotVariable(RexxString *name)
  * @param instruction
  *               The directive instruction being processed.
  */
-PackageClass *RexxActivation::loadRequired(RexxString *target, RexxInstruction *instruction)
+PackageClass *RexxActivation::loadRequires(RexxString *target, RexxInstruction *instruction)
 {
     // this will cause the correct location to be used for error reporting
     this->current = instruction;
 
     // the loading/merging is done by the source object
-    return getSourceObject()->loadRequired(target);
+    return getSourceObject()->loadRequires(activity, target);
 }
 
 
@@ -2862,10 +3055,6 @@ void RexxActivation::traceValue(       /* trace an intermediate value       */
     }
                                            /* get the string version            */
     RexxString *stringvalue = value->stringValue();
-    if (this->settings.traceindent < 0)  /* indentation go negative somehow?  */
-    {
-        this->settings.traceindent = 0;    /* reset to zero                     */
-    }
                                            /* get a string large enough to      */
     size_t outlength = stringvalue->getLength() + TRACE_OVERHEAD + this->settings.traceindent * INDENT_SPACING;
     RexxString *buffer = raw_string(outlength);      /* get an output string              */
@@ -2907,12 +3096,6 @@ void RexxActivation::traceTaggedValue(int prefix, const char *tagPrefix, bool qu
 
     // get the string value from the traced object.
     RexxString *stringVal = value->stringValue();
-    // protect against negative indent values (belt and braces)
-    if (this->settings.traceindent < 0)
-    {
-
-        this->settings.traceindent = 0;
-    }
 
     // now calculate the length of the traced string
     stringsize_t outLength = tag->getLength() + stringVal->getLength();
@@ -3003,12 +3186,6 @@ void RexxActivation::traceOperatorValue(int prefix, const char *tag, RexxObject 
 
     // get the string value from the traced object.
     RexxString *stringVal = value->stringValue();
-    // protect against negative indent values (belt and braces)
-    if (this->settings.traceindent < 0)
-    {
-
-        this->settings.traceindent = 0;
-    }
 
     // now calculate the length of the traced string
     stringsize_t outLength = strlen(tag) + stringVal->getLength();
@@ -3101,13 +3278,6 @@ void RexxActivation::traceCompoundValue(int prefix, RexxString *stemName, RexxOb
 
     // get the string value from the traced object.
     RexxString *stringVal = value->stringValue();
-    // protect against negative indent values (belt and braces)
-    if (this->settings.traceindent < 0)
-    {
-
-        this->settings.traceindent = 0;
-    }
-
 
     // now calculate the length of the traced string
     stringsize_t outLength = stemName->getLength() + stringVal->getLength();
@@ -3208,10 +3378,6 @@ RexxString * RexxActivation::formatTrace(
     }
     // get the instruction location
     SourceLocation location = instruction->getLocation();
-    if (this->settings.traceindent < 0)  /* indentation go negative somehow?  */
-    {
-        this->settings.traceindent = 0;    /* reset to zero                     */
-    }
                                            /* extract the source string         */
                                            /* (formatted for tracing)           */
     if (this->settings.traceindent < MAX_TRACEBACK_INDENT)
@@ -3273,7 +3439,7 @@ void RexxActivation::processClauseBoundary()
         this->settings.flags &= ~set_trace_on;
         this->setExternalTraceOn();        /* and save the current state        */
                                            /* turn on tracing                   */
-        this->setTrace(TRACE_RESULTS, DEBUG_ON);
+        this->setTrace(TRACE_RESULTS | DEBUG_ON, trace_results_flags | trace_debug);
     }
     /* need to turn off tracing?         */
     if (this->settings.flags&set_trace_off)
@@ -3282,7 +3448,7 @@ void RexxActivation::processClauseBoundary()
         this->settings.flags &= ~set_trace_off;
         this->setExternalTraceOff();       /* and save the current state        */
                                            /* turn on tracing                   */
-        this->setTrace(TRACE_OFF, DEBUG_OFF);
+        this->setTrace(TRACE_OFF | DEBUG_OFF, trace_off);
     }
     /* no clause exits and all conditions*/
     /* have been processed?              */
@@ -3294,20 +3460,43 @@ void RexxActivation::processClauseBoundary()
 }
 
 
-void RexxActivation::halt(             /* turn on a HALT condition          */
-   RexxString * description )          /* HALT condition description        */
-/******************************************************************************/
-/* Function:  Flip on the HALT condition bit and store the HALT condition     */
-/*            descriptive string (which may be OREF_NULL)                     */
-/******************************************************************************/
+/**
+ * Turn on external trace at program startup (e.g, because
+ * RXTRACE is set)
+ */
+void RexxActivation::enableExternalTrace()
 {
-                                       /* store the description             */
-  this->settings.halt_description = description;
-                                       /* turn on the HALT flag             */
-  this->settings.flags |= halt_condition;
-                                       /* turn on clause boundary checking  */
-  this->settings.flags |= clause_boundary;
+    this->setTrace(TRACE_RESULTS | DEBUG_ON, trace_results_flags | trace_debug);
+}
 
+
+/**
+ * Halt the activation
+ *
+ * @param description
+ *               The description for the halt condition (if any).
+ *
+ * @return true if this halt was recognized, false if there is a
+ *         previous halt condition still to be processed.
+ */
+bool RexxActivation::halt(RexxString *description )
+{
+    // if there's no halt condition pending, set this
+    if ((settings.flags&halt_condition) == 0)
+    {
+                                             /* store the description             */
+        this->settings.halt_description = description;
+                                             /* turn on the HALT flag             */
+        this->settings.flags |= halt_condition;
+                                             /* turn on clause boundary checking  */
+        this->settings.flags |= clause_boundary;
+        return true;
+    }
+    else
+    {
+        // we're not in a good position to process this
+        return false;
+    }
 }
 
 void RexxActivation::yield()
@@ -3330,7 +3519,7 @@ void RexxActivation::externalTraceOn()
                                        /* turn on clause boundary checking  */
   this->settings.flags |= clause_boundary;
                                        /* turn on tracing                   */
-  this->setTrace(TRACE_RESULTS, DEBUG_ON);
+  this->setTrace(TRACE_RESULTS | DEBUG_ON, trace_results_flags | trace_debug);
 }
 
 void RexxActivation::externalTraceOff()
@@ -3789,22 +3978,6 @@ RexxObject  *RexxActivation::novalueHandler(
         return novalue_handler->sendMessage(OREF_NOVALUE, name);
     }
     return TheNilObject;                 /* return the handled result         */
-}
-
-
-/**
- * Get the source object for the current execution context.
- *
- * @return The source object associated with the current routine or method.
- */
-RexxSource *RexxActivation::getSourceObject()
-{
-    if (executable != OREF_NULL)
-    {
-        return executable->getSourceObject();
-    }
-    // this should NEVER happen!
-    return OREF_NULL;
 }
 
 /**

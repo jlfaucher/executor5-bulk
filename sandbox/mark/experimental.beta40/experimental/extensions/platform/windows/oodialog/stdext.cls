@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -62,16 +62,16 @@
    if self~InitCode = 0 then self~Popup
 
 ::method DefineDialog
-   self~AddText(10,10,self~dims["sx"]+2,self~dims["sy"], self~msg,, 100)
+   self~addText(10,10,self~dims["sx"]+2,self~dims["sy"], self~msg,, 100)
 
 ::method InitAutoDetection
    self~NoAutoDetection
 
 ::method CalcSize
-   parse value GetStdTextSize(self~msg) with sx sy
+   size = self~getTextSizeDlg(self~msg)
    parse value GetScreenSize() with scrx scry .
-   self~dims["sx"] = sx
-   self~dims["sy"] = sy
+   self~dims["sx"] = size~width
+   self~dims["sy"] = size~height
    if self~XExt = 0 then do
        self~dims["cx"] = self~dims["sx"]+20
        self~dims["cy"]= self~dims["sy"]*2.2+20
@@ -143,7 +143,7 @@
 
 ::method DefineDialog
    self~AddProgressBar(101,5,5, self~sizex-10,14)
-   self~AddText(10,25,self~dims["sx"]+2,self~dims["sy"], self~msg,, 100)
+   self~addText(10,25,self~dims["sx"]+2,self~dims["sy"], self~msg,, 100)
 
 
 ::method CalcSize

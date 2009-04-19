@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -172,7 +172,7 @@ typedef struct _CONSTRXSTRING {        /* const rxstr                */
 typedef RXSTRING      *PRXSTRING;      /* pointer to a RXSTRING      */
 typedef CONSTRXSTRING *PCONSTRXSTRING; /* pointer to a RXSTRING      */
 
-/***    Structure for system exit block (RXSYSEXIT) 32-bit */
+/***    Structure for system exit block (RXSYSEXIT) */
 
 typedef struct _RXSYSEXIT {            /* syse */
    const char *sysexit_name;           /* subcom enviro for sysexit  */
@@ -271,6 +271,16 @@ typedef RexxReturnCode (REXXENTRY *PFNREXXSTART)(size_t, PCONSTRXSTRING, const c
                                         const char *, int, PRXSYSEXIT, short *,
                                         PRXSTRING);
 #define REXXSTART RexxStart
+
+// the following APIs are deprecated, and are included only for binary compatibility.
+// These are nops if called.
+void REXXENTRY RexxWaitForTermination(void);
+typedef void (REXXENTRY *PFNREXXWAITFORTERMINATION)(void);
+#define REXXWAITFORTERMINATION RexxWaitForTermination
+
+RexxReturnCode REXXENTRY RexxDidRexxTerminate(void);
+typedef RexxReturnCode (REXXENTRY *PFNREXXDIDREXXTERMINATE)(void);
+#define REXXDIDREXXTERMINATE RexxDidRexxTerminate
 
 
 RexxReturnCode REXXENTRY RexxTranslateProgram(

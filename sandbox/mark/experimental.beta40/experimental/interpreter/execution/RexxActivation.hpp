@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -60,61 +60,6 @@ class ProtectedObject;
 class RexxSupplier;
 class PackageClass;
 
-#define trace_debug         0x00000001 /* interactive trace mode flag       */
-#define trace_all           0x00000002 /* trace all instructions            */
-#define trace_results       0x00000004 /* trace all results                 */
-#define trace_intermediates 0x00000008 /* trace all instructions            */
-#define trace_commands      0x00000010 /* trace all commands                */
-#define trace_labels        0x00000020 /* trace all labels                  */
-#define trace_errors        0x00000040 /* trace all command errors          */
-#define trace_failures      0x00000080 /* trace all command failures        */
-#define trace_suppress      0x00000100 /* tracing is suppressed during skips*/
-#define trace_flags         0x000001fe /* all tracing flags (EXCEPT debug)  */
-
-#define single_step         0x00000800 /* we are single stepping execution  */
-#define single_step_nested  0x00001000 /* this is a nested stepping         */
-#define debug_prompt_issued 0x00002000 /* debug prompt already issued       */
-#define debug_bypass        0x00004000 /* skip next debug pause             */
-#define procedure_valid     0x00008000 /* procedure instruction is valid    */
-#define clause_boundary     0x00010000 /* work required at clause boundary  */
-#define halt_condition      0x00020000 /* a HALT condition occurred         */
-#define trace_on            0x00040000 /* external trace condition occurred */
-#define source_traced       0x00080000 /* source string has been traced     */
-#define clause_exits        0x00100000 /* need to call clause boundary exits*/
-#define external_yield      0x00200000 /* activity wants us to yield        */
-#define forwarded           0x00400000 /* forward instruction active        */
-#define reply_issued        0x00800000 /* reply has already been issued     */
-#define set_trace_on        0x01000000 /* trace turned on externally        */
-#define set_trace_off       0x02000000 /* trace turned off externally       */
-#define traps_copied        0x04000000 /* copy of trap info has been made   */
-#define return_status_set   0x08000000 /* had our first host command        */
-#define transfer_failed     0x10000000 /* transfer of variable lock failure */
-
-#define elapsed_reset       0x20000000 // The elapsed time stamp was reset via time('r')
-#define guarded_method      0x40000000 // this is a guarded method
-
-/******************************************************************************/
-/* Constants used for setting trace                                           */
-/******************************************************************************/
-
-const char TRACE_ALL           = 'A';
-const char TRACE_COMMANDS      = 'C';
-const char TRACE_LABELS        = 'L';
-const char TRACE_NORMAL        = 'N';
-const char TRACE_FAILURES      = 'F';
-const char TRACE_ERRORS        = 'E';
-const char TRACE_RESULTS       = 'R';
-const char TRACE_INTERMEDIATES = 'I';
-const char TRACE_OFF           = 'O';
-const char TRACE_IGNORE        = '0';
-
-/******************************************************************************/
-/* Constants used for setting trace interactive debug                         */
-/******************************************************************************/
-const int DEBUG_IGNORE      =  0x00;
-const int DEBUG_ON          =  0x01;
-const int DEBUG_OFF         =  0x02;
-const int DEBUG_TOGGLE      =  0x04;
 
 /******************************************************************************/
 /* Random number generation constants                                         */
@@ -153,11 +98,7 @@ const size_t SIZE_BITS = sizeof(void *) * 8;
 class ActivationSettings
 {
     public:
-      inline ActivationSettings()
-      {
-          flags = trace_failures;
-          traceoption = TRACE_NORMAL;
-      }
+      inline ActivationSettings() {}
 
       RexxDirectory * traps;               /* enabled condition traps           */
       RexxDirectory * conditionObj;        /* current condition object          */
@@ -175,7 +116,7 @@ class ActivationSettings
       RexxString    * halt_description;    /* description from a HALT condition */
       SecurityManager * securityManager;   /* security manager object           */
       RexxObject    * scope;               // scope of the method call
-      size_t traceoption;                  /* current active trace option       */
+      size_t traceOption;                  /* current active trace option       */
       size_t flags;                        /* trace/numeric and other settings  */
       wholenumber_t trace_skip;            /* count of trace events to skip     */
       int  return_status;                  /* command return status             */
@@ -212,6 +153,7 @@ class ActivationSettings
 #define SCOPE_RELEASED  0
 
  class RexxActivation : public RexxActivationBase {
+  friend class RexxSource;
   public:
    void *operator new(size_t);
    inline void *operator new(size_t size, void *ptr) {return ptr;};
@@ -234,6 +176,9 @@ class ActivationSettings
    void              setDigits(size_t);
    void              setFuzz(size_t);
    void              setForm(bool);
+   void              setDigits();
+   void              setFuzz();
+   void              setForm();
    bool              trap(RexxString *, RexxDirectory *);
    void              setObjNotify(RexxMessage *);
    void              termination();
@@ -272,6 +217,7 @@ class ActivationSettings
    void              expose(RexxVariableBase **variables, size_t count);
    void              setTrace(size_t, size_t);
    void              setTrace(RexxString *);
+   static size_t     processTraceSetting(size_t traceSetting);
    void              raise(RexxString *, RexxObject *, RexxString *, RexxObject *, RexxObject *, RexxDirectory *);
    void              toggleAddress();
    void              guardOn();
@@ -341,14 +287,14 @@ class ActivationSettings
    void              debugInterpret(RexxString *);
    bool              debugPause(RexxInstruction * instr=OREF_NULL);
    void              processClauseBoundary();
-   void              halt(RexxString *);
+   bool              halt(RexxString *);
    void              externalTraceOn();
    void              externalTraceOff();
    void              yield();
    void              propagateExit(RexxObject *);
    void              setDefaultAddress(RexxString *);
    bool              internalMethod();
-   PackageClass    * loadRequired(RexxString *, RexxInstruction *);
+   PackageClass    * loadRequires(RexxString *, RexxInstruction *);
    void              loadLibrary(RexxString *target, RexxInstruction *instruction);
    RexxObject      * rexxVariable(RexxString *);
    void              pushEnvironment(RexxObject *);
@@ -364,12 +310,13 @@ class ActivationSettings
    void              pushControl(RexxObject *);
    void              closeStreams();
    void              checkTrapTable();
+   RexxObject       *resolveStream(RexxString *name, RexxExpressionStack *stack, bool input, RexxString **fullName, bool *added);
    RexxDirectory   * getStreams();
    RexxObject  *novalueHandler(RexxString *);
    RexxVariableBase *retriever(RexxString *);
    RexxVariableBase *directRetriever(RexxString *);
    RexxObject       *handleNovalueEvent(RexxString *name, RexxVariable *variable);
-   RexxSource       *getSourceObject();
+   RexxSource       *getSourceObject() { return sourceObject; }
    PackageClass     *getPackage();
    RexxObject       *getExecutableObject() { return executable; }
    RexxObject       *getLocalEnvironment(RexxString *name);
@@ -386,7 +333,7 @@ class ActivationSettings
    inline bool              hasActiveBlocks() { return blockNest != 0; }
    inline bool              inMethod()  {return this->activation_context == METHODCALL; }
    inline void              indent() {this->settings.traceindent++; };
-   inline void              unindent() {this->settings.traceindent--; };
+   inline void              unindent() {if (this->settings.traceindent > 0) this->settings.traceindent--; };
    inline void              setIndent(size_t v) {this->settings.traceindent=(v); };
    inline size_t            getIndent() {return this->settings.traceindent;};
    inline bool              tracingIntermediates() {return this->settings.intermediate_trace;};
@@ -457,6 +404,7 @@ class ActivationSettings
    inline bool              isExternalTraceOn() { return (this->settings.flags&trace_on) != 0; }
    inline void              setExternalTraceOn() { this->settings.flags |= trace_on; }
    inline void              setExternalTraceOff() { this->settings.flags &= ~trace_on; }
+          void              enableExternalTrace();
 
    inline bool              isElapsedTimerReset() { return (this->settings.flags&elapsed_reset) != 0; }
    inline void              setElapsedTimerInvalid() { this->settings.flags |= elapsed_reset; }
@@ -637,6 +585,7 @@ class ActivationSettings
    ActivationSettings   settings;      /* inherited REXX settings           */
    RexxExpressionStack  stack;         /* current evaluation stack          */
    RexxCode            *code;          /* rexx method object                */
+   RexxSource         *sourceObject;   // the source object associated with this instance
    RexxClass           *scope;         // scope of any active method call
    RexxObject          *receiver;      /* target of a message invocation    */
    RexxActivity        *activity;      /* current running activation        */
@@ -666,5 +615,46 @@ class ActivationSettings
    bool                 random_set;    /* random seed has been set          */
    size_t               blockNest;     /* block instruction nesting level   */
    size_t               lookaside_size;/* size of the lookaside table       */
+
+
+   // constants
+
+   static const size_t trace_off;           /* no tracing                        */
+   static const size_t trace_debug;         /* interactive trace mode flag       */
+   static const size_t trace_all;           /* trace all instructions            */
+   static const size_t trace_results;       /* trace all results                 */
+   static const size_t trace_intermediates; /* trace all instructions            */
+   static const size_t trace_commands;      /* trace all commands                */
+   static const size_t trace_labels;        /* trace all labels                  */
+   static const size_t trace_errors;        /* trace all command errors          */
+   static const size_t trace_failures;      /* trace all command failures        */
+   static const size_t trace_suppress;      /* tracing is suppressed during skips*/
+   static const size_t trace_flags;         /* all tracing flags (EXCEPT debug)  */
+   static const size_t default_trace_flags;
+   static const size_t trace_all_flags;     // flag set for trace all
+   static const size_t trace_results_flags; // flag set for trace results
+   static const size_t trace_intermediates_flags; // flag set for trace intermediates
+
+   static const size_t single_step;         /* we are single stepping execution  */
+   static const size_t single_step_nested;  /* this is a nested stepping         */
+   static const size_t debug_prompt_issued; /* debug prompt already issued       */
+   static const size_t debug_bypass;        /* skip next debug pause             */
+   static const size_t procedure_valid;     /* procedure instruction is valid    */
+   static const size_t clause_boundary;     /* work required at clause boundary  */
+   static const size_t halt_condition;      /* a HALT condition occurred         */
+   static const size_t trace_on;            /* external trace condition occurred */
+   static const size_t source_traced;       /* source string has been traced     */
+   static const size_t clause_exits;        /* need to call clause boundary exits*/
+   static const size_t external_yield;      /* activity wants us to yield        */
+   static const size_t forwarded;           /* forward instruction active        */
+   static const size_t reply_issued;        /* reply has already been issued     */
+   static const size_t set_trace_on;        /* trace turned on externally        */
+   static const size_t set_trace_off;       /* trace turned off externally       */
+   static const size_t traps_copied;        /* copy of trap info has been made   */
+   static const size_t return_status_set;   /* had our first host command        */
+   static const size_t transfer_failed;     /* transfer of variable lock failure */
+
+   static const size_t elapsed_reset;       // The elapsed time stamp was reset via time('r')
+   static const size_t guarded_method;      // this is a guarded method
  };
  #endif

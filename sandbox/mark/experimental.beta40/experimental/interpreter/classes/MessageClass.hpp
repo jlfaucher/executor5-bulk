@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -56,7 +56,7 @@
    void * operator new(size_t);
    inline void * operator new(size_t size, void *objectPtr) { return objectPtr; };
                                         /* So it doesn't need to do anythin*/
-   RexxMessage(RexxObject *, RexxObject *, RexxArray *);
+   RexxMessage(RexxObject *, RexxString *, RexxObject *, RexxArray *);
    inline RexxMessage(RESTORETYPE restoreType) { ; };
 
    void          live(size_t);
@@ -98,7 +98,7 @@
    RexxObject    *receiver;            /* Real receiver of message.         */
    RexxObject    *target;              /* Target object specified           */
    RexxString    *message;             /* Message to be sent                */
-   RexxClass     *startscope;          /* Starting scope for method lookup  */
+   RexxObject    *startscope;          /* Starting scope for method lookup  */
    RexxArray     *args;
    RexxObject    *resultObject;
    RexxList      *interestedParties;   /* message objects to be notified    */

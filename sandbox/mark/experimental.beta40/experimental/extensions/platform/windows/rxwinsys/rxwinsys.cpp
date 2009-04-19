@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -202,6 +202,9 @@ LONG HandleArgError(PRXSTRING r, BOOL ToMuch)
       case EVENTLOG_INFORMATION_TYPE: \
          index=2;                     \
          break;                       \
+      case EVENTLOG_SUCCESS:          \
+         index=2;                     \
+         break;                       \
       case EVENTLOG_AUDIT_SUCCESS:    \
          index=3;                     \
          break;                       \
@@ -209,7 +212,7 @@ LONG HandleArgError(PRXSTRING r, BOOL ToMuch)
          index=4;                     \
          break;                       \
       default:                        \
-        index=4;                      \
+        index=5;                      \
     }                                 \
 }
 
@@ -306,7 +309,10 @@ size_t RexxEntry WSRegistryKey(const char *funcname, size_t argc, CONSTRXSTRING 
             RET_HANDLE(hk);      // return the predefined handle
         }
 
-        if ((argc < 4) || strcmp(argv[3].strptr,"ALL"))
+        // Docs say, have always said, that the access arg can be more than one
+        // keyword. So, even if "ALL" makes the other keywords unnecessary, we
+        // can't rely on it being the only word in the string.
+        if ((argc < 4) || strstr(argv[3].strptr,"ALL") != 0)
         {
             access = KEY_ALL_ACCESS;
         }
@@ -568,8 +574,7 @@ size_t RexxEntry WSRegistryValue(const char *funcname, size_t argc, CONSTRXSTRIN
                 // return string buffer, we need to allocate a bigger buffer.
                 if ( cbData + sizeof("RESOURCEDESC, ") > STR_BUFFER )
                 {
-                    GlobalFree(retstr->strptr);
-                    retstr->strptr = (char *)GlobalAlloc(GMEM_FIXED, cbData + sizeof("RESOURCEDESC, "));
+                    retstr->strptr = (char *)RexxAllocateMemory(cbData + sizeof("RESOURCEDESC, "));
                     if ( retstr->strptr == NULL )
                     {
                         RETERR;
@@ -2795,7 +2800,7 @@ RexxMethod0(uint32_t, WSEventLog_minimumReadGet)
     return getMinimumReadBufferSize(context) / 1024;
 }
 
-/**  WindowsEventLog::read()
+/**  WindowsEventLog::readRecords()
  *
  * Reads records from an event log.  If no args are given then all records from
  * the default system (the local machine) and the default source (the
@@ -2854,7 +2859,7 @@ RexxMethod5(uint32_t, WSEventLog_readRecords, OPTIONAL_CSTRING, direction, OPTIO
     }
 
     // Array to convert the event type into its string representation.
-    char   evType[5][12]={"Error","Warning","Information","Success","Failure"};
+    char   evType[6][12]={"Error","Warning","Information","Success","Failure","Unknown"};
     int    evTypeIndex;
 
     PEVENTLOGRECORD pEvLogRecord;        // pointer to one event record
@@ -2871,7 +2876,7 @@ RexxMethod5(uint32_t, WSEventLog_readRecords, OPTIONAL_CSTRING, direction, OPTIO
     struct tm * DateTime;                // converted from elapsed seconds
     char * pchStrBuf = NULL;             // temp buffer for event string
     char * pchUser = NULL;               // user name for event
-    DWORD  countRecords = 0;             //number of event log records processed
+    DWORD  countRecords = 0;             // number of event log records processed
 
     // We'll try to allocate a buffer big enough to hold all the records, but
     // not bigger than our max.  Same idea for a minimum, we'll make sure the
@@ -2925,8 +2930,16 @@ RexxMethod5(uint32_t, WSEventLog_readRecords, OPTIONAL_CSTRING, direction, OPTIO
             // Get index to event type string
             GET_TYPE_INDEX(pEvLogRecord->EventType, evTypeIndex);
 
-            // Get time and date converted to local time.
+            // Get time and date converted to local time.  The TimeWritten field
+            // in the event log record struct is 32 bits but in VC++ 8.0, and
+            // on, time_t is inlined to be 64-bits, and on 64-bit Windows time_t
+            // is 64-bit to begin with.  So, _localtime32() needs to be used.
+            // However, VC++ 7.0 doesn't appear to have __time32_t.
+#if _MSC_VER < 1400
+            DateTime = localtime((const time_t *)&pEvLogRecord->TimeWritten);
+#else
             DateTime = _localtime32((const __time32_t *)&pEvLogRecord->TimeWritten);
+#endif
             strftime(date, MAX_TIME_DATE,"%x", DateTime);
             strftime(time, MAX_TIME_DATE,"%X", DateTime);
 
@@ -3871,6 +3884,16 @@ VOID Little2BigEndian(BYTE *pbInt, INT iSize)
     }
 }
 
+/**
+ * Prior to 4.0.0, this function was documented as a work around to use the
+ * WindowObject class when no WindowManager object had been instantiated.  So
+ * for now it needs to stay. Does nothing.
+ */
+size_t RexxEntry InstWinSysFuncs(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
+{
+   RETC(0)
+}
+
 
 // now build the actual entry lists
 RexxRoutineEntry rxwinsys_functions[] =
@@ -3883,6 +3906,7 @@ RexxRoutineEntry rxwinsys_functions[] =
     REXX_CLASSIC_ROUTINE(WSCtrlSend,       WSCtrlSend),
     REXX_CLASSIC_ROUTINE(WSCtrlMenu,       WSCtrlMenu),
     REXX_CLASSIC_ROUTINE(WSClipboard,      WSClipboard),
+    REXX_CLASSIC_ROUTINE(InstWinFuncs,     InstWinSysFuncs),
     REXX_LAST_ROUTINE()
 };
 

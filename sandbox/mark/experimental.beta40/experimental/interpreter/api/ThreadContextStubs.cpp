@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -287,12 +287,11 @@ RexxPackageObject RexxEntry LoadPackage(RexxThreadContext *c, CSTRING n)
     ApiContext context(c);
     try
     {
-        ProtectedObject package;
         RexxString *name = new_string(n);
         RexxString *resolvedName = context.activity->getInstance()->resolveProgramName(name, OREF_NULL, OREF_NULL);
 
         // convert the name to a string instance, and check the environments.
-        return (RexxPackageObject)context.ret(PackageManager::loadRequires(context.activity, name, resolvedName, package));
+        return (RexxPackageObject)context.ret(context.activity->getInstance()->loadRequires(context.activity, name, resolvedName));
     }
     catch (RexxNativeActivation *)
     {
@@ -306,8 +305,41 @@ RexxPackageObject RexxEntry LoadPackageFromData(RexxThreadContext *c, CSTRING n,
     ApiContext context(c);
     try
     {
-        ProtectedObject package;
-        return (RexxPackageObject)PackageManager::loadRequires(context.activity, new_string(n), d, l, package);
+        return (RexxPackageObject)context.activity->getInstance()->loadRequires(context.activity, new_string(n), d, l);
+    }
+    catch (RexxNativeActivation *)
+    {
+    }
+    return NULLOBJECT;
+}
+
+
+logical_t RexxEntry LoadLibraryPackage(RexxThreadContext *c, CSTRING n)
+{
+    ApiContext context(c);
+    try
+    {
+        RexxString *name = new_string(n);
+
+        // convert the name to a string instance, and check the environments.
+        return PackageManager::loadLibrary(name) != OREF_NULL;
+    }
+    catch (RexxNativeActivation *)
+    {
+    }
+    return NULLOBJECT;
+}
+
+
+logical_t RexxEntry RegisterLibrary(RexxThreadContext *c, CSTRING n, RexxPackageEntry *e)
+{
+    ApiContext context(c);
+    try
+    {
+        RexxString *name = new_string(n);
+
+        // convert the name to a string instance, and check the environments.
+        return PackageManager::registerPackage(name, e);
     }
     catch (RexxNativeActivation *)
     {
@@ -731,11 +763,11 @@ logical_t RexxEntry ObjectToInt32(RexxThreadContext *c, RexxObjectPtr o, int32_t
     ApiContext context(c);
     try
     {
-        wholenumber_t temp;
+        ssize_t temp;
         // this uses the entire value range
         // NB:  SSIZE_MIN appears to be defined as 0 for some bizarre reason on some platforms,
         // so we'll make things relative to SIZE_MAX.
-        if (Numerics::objectToWholeNumber((RexxObject *)o, temp, INT32_MAX, INT32_MIN))
+        if (Numerics::objectToSignedInteger((RexxObject *)o, temp, INT32_MAX, INT32_MIN))
         {
             *n = (int32_t)temp;
             return true;
@@ -754,9 +786,9 @@ logical_t RexxEntry ObjectToUnsignedInt32(RexxThreadContext * c, RexxObjectPtr o
     ApiContext context(c);
     try
     {
-        stringsize_t temp;
+        size_t temp;
         // this uses the entire value range
-        if (Numerics::objectToStringSize((RexxObject *)o, temp, UINT32_MAX))
+        if (Numerics::objectToUnsignedInteger((RexxObject *)o, temp, UINT32_MAX))
         {
             *n = (uint32_t)temp;
             return true;
@@ -1776,6 +1808,8 @@ RexxThreadInterface RexxActivity::threadContextFunctions =
     HasMethod,
     LoadPackage,
     LoadPackageFromData,
+    LoadLibraryPackage,
+    RegisterLibrary,
     FindClass,
     FindClassFromPackage,
     GetPackageRoutines,

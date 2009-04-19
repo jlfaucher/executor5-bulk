@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -2550,7 +2550,7 @@ size_t RexxEntry SysIni(const char *name, size_t numargs, CONSTRXSTRING args[], 
                 }
             }
 
-            while (Val[x] != '\0');
+            while (returnVal[x] != '\0');
         }
 
         else
@@ -3237,13 +3237,12 @@ ULONG  show_flags[] =                  /* show window styles        */
 
   BUILDRXSTRING(retstr, NO_UTIL_ERROR);/* pass back result           */
 
-
-  if (numargs < 1 ||
-      numargs > 2 ||                   /* should be 1 or two args    */
-      !RXVALIDSTRING(args[0]) ||
-      !RXVALIDSTRING(args[1]) ||
-      args[0].strlength > MAX_PATH)
-    return INVALID_ROUTINE;            /* Invalid call to routine    */
+  // Should be 1 or 2 args.
+  if ( numargs < 1 || numargs > 2 || !RXVALIDSTRING(args[0]) ||
+       (numargs == 2 && !RXVALIDSTRING(args[1])) ||args[0].strlength > MAX_PATH )
+  {
+        return INVALID_ROUTINE;            /* Invalid call to routine    */
+  }
 
   CmdShow=0;                           /* initialize show flags      */
                                        /* validate arguments         */
@@ -5348,7 +5347,7 @@ size_t RexxEntry SysStemDelete(const char *name, size_t numargs, CONSTRXSTRING a
           fOk = false;
 
         /* free memory allocated by REXX */
-        GlobalFree(shvb.shvvalue.strptr);
+        RexxFreeMemory(shvb.shvvalue.strptr);
       }
       else
         fOk = false;
@@ -5503,7 +5502,7 @@ size_t RexxEntry SysStemInsert(const char *name, size_t numargs, CONSTRXSTRING a
           fOk = false;
 
         /* free memory allocated by REXX */
-        GlobalFree(shvb.shvvalue.strptr);
+        RexxFreeMemory(shvb.shvvalue.strptr);
       }
       else
         fOk = false;
@@ -5743,7 +5742,7 @@ size_t RexxEntry SysStemCopy(const char *name, size_t numargs, CONSTRXSTRING arg
           fOk = false;
 
         /* free memory allocated by REXX */
-        GlobalFree(shvb.shvvalue.strptr);
+        RexxFreeMemory(shvb.shvvalue.strptr);
       }
       else
         fOk = false;
@@ -5805,7 +5804,7 @@ size_t RexxEntry SysStemCopy(const char *name, size_t numargs, CONSTRXSTRING arg
           fOk = false;
 
         /* free memory allocated by REXX */
-        GlobalFree(shvb.shvvalue.strptr);
+        RexxFreeMemory(shvb.shvvalue.strptr);
       }
       else
         fOk = false;
@@ -6340,9 +6339,12 @@ size_t RexxEntry SysToUniCode(const char *name, size_t numargs, CONSTRXSTRING ar
      RETVAL(GetLastError())    // return error from function call
   }
 
-  if (!SetRexxUIStem(stemName, "!TEXT", lpwstr, ulDataLen))
+  if (!SetRexxUIStem(stemName, "!TEXT", lpwstr, ulDataLen)) {
+    GlobalFree(lpwstr);        // free allocated string
     return INVALID_ROUTINE;
+  }
 
+  GlobalFree(lpwstr);        // free allocated string
   BUILDRXSTRING(retstr, NO_UTIL_ERROR);/* set default result         */
   return VALID_ROUTINE;                /* no error on call           */
 
@@ -6605,18 +6607,9 @@ size_t RexxEntry SysWinSetDefaultPrinter(const char *name, size_t numargs, CONST
 * Return:    Return code from CopyFile() function.                       *
 *************************************************************************/
 
-size_t RexxEntry SysFileCopy(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
+RexxRoutine2(int, SysFileCopy, CSTRING, fromFile, CSTRING, toFile)
 {
-
-                                       /* we need two valid arguments */
-  if ( numargs != 2 || !RXVALIDSTRING(args[0]))
-    return INVALID_ROUTINE;            /* raise an error             */
-
-                                       /* copy the file              */
-  if (!CopyFile(args[0].strptr, args[1].strptr, 0))
-      RETVAL(GetLastError())           /* pass back return code      */
-  else
-      RETVAL(0)
+    return CopyFile(fromFile, toFile, 0) ? 0 : GetLastError();
 }
 
 /*************************************************************************
@@ -6630,76 +6623,42 @@ size_t RexxEntry SysFileCopy(const char *name, size_t numargs, CONSTRXSTRING arg
 * Return:    Return code from MoveFile() function.                       *
 *************************************************************************/
 
-size_t RexxEntry SysFileMove(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
+RexxRoutine2(int, SysFileMove, CSTRING, fromFile, CSTRING, toFile)
 {
-                                       /* we need two valid arguments */
-  if ( numargs != 2 || !RXVALIDSTRING(args[0]))
-    return INVALID_ROUTINE;            /* raise an error             */
-
-                                       /* move the file              */
-  if (!MoveFile(args[0].strptr, args[1].strptr))
-      RETVAL(GetLastError())           /* pass back return code      */
-  else
-      RETVAL(0)
+    return MoveFile(fromFile, toFile) ? 0 : GetLastError();
 }
 
 /*************************************************************************
-* Function:  SysIsFile                                                *
+* Function:  SysFileExist                                                *
 *                                                                        *
-* Syntax:    call SysIsFile file                                      *
+* Syntax:    call SysFileExist file                                      *
 *                                                                        *
 * Params:    file - file to check existance of.                          *
 *                                                                        *
 * Return:    Logical.                                                    *
 *************************************************************************/
 
-size_t RexxEntry SysIsFile(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
+RexxRoutine1(logical_t, SysIsFile, CSTRING, file)
 {
-  DWORD dwAttrs;
-
-  if (numargs != 1)                    /* we need one argument       */
-    return INVALID_ROUTINE;            /* raise an error             */
-
-  dwAttrs = GetFileAttributes(args[0].strptr);
-// INVALID_FILE_ATTRIBUTES is not defined in Visual Studio 6 SP5
-//  if (dwAttrs==INVALID_FILE_ATTRIBUTES)
-  if (dwAttrs==0xffffffff)
-      RETVAL(0)                        /* Unable to check attributes */
-
-  if ((dwAttrs & FILE_ATTRIBUTE_DIRECTORY) ||
-      (dwAttrs & FILE_ATTRIBUTE_REPARSE_POINT))
-      RETVAL(0)                        /* False - Is something else  */
-  else
-      RETVAL(1)                        /* True - Is a File           */
+    DWORD dwAttrs = GetFileAttributes(file);
+    // not a file if either of these is one
+    return (dwAttrs != 0xffffffff) && ((dwAttrs & (FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_REPARSE_POINT)) == 0);
 }
 
 /*************************************************************************
-* Function:  SysIsFileDirectory                                                 *
+* Function:  SysDirExist                                                 *
 *                                                                        *
-* Syntax:    call SysIsFileDirectory dir                                        *
+* Syntax:    call SysDirExist dir                                        *
 *                                                                        *
 * Params:    dir - dir to check existance of.                            *
 *                                                                        *
 * Return:    Logical.                                                    *
 *************************************************************************/
 
-size_t RexxEntry SysIsFileDirectory(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
+RexxRoutine1(logical_t, SysIsFileDirectory, CSTRING, file)
 {
-  DWORD dwAttrs;
-
-  if (numargs != 1)                    /* we need one argument       */
-    return INVALID_ROUTINE;            /* raise an error             */
-
-  dwAttrs = GetFileAttributes(args[0].strptr);
-// INVALID_FILE_ATTRIBUTES is not defined in Visual Studio 6 SP5
-//  if (dwAttrs==INVALID_FILE_ATTRIBUTES)
-  if (dwAttrs==0xffffffff)
-      RETVAL(0)                        /* Unable to check attributes */
-
-  if (dwAttrs & FILE_ATTRIBUTE_DIRECTORY)
-      RETVAL(1)                        /* True - Is a Directory      */
-  else
-      RETVAL(0)                        /* False - Is a File          */
+    DWORD dwAttrs = GetFileAttributes(file);
+    return (dwAttrs != 0xffffffff) && (dwAttrs & FILE_ATTRIBUTE_DIRECTORY);
 }
 
 /*************************************************************************
@@ -6712,23 +6671,10 @@ size_t RexxEntry SysIsFileDirectory(const char *name, size_t numargs, CONSTRXSTR
 * Return:    Logical.                                                    *
 *************************************************************************/
 
-size_t RexxEntry SysIsFileLink(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
+RexxRoutine1(logical_t, SysIsFileLink, CSTRING, file)
 {
-  DWORD dwAttrs;
-
-  if (numargs != 1)                    /* we need one argument       */
-    return INVALID_ROUTINE;            /* raise an error             */
-
-  dwAttrs = GetFileAttributes(args[0].strptr);
-// INVALID_FILE_ATTRIBUTES is not defined in Visual Studio 6 SP5
-//  if (dwAttrs==INVALID_FILE_ATTRIBUTES)
-  if (dwAttrs==0xffffffff)
-      RETVAL(0)                        /* Unable to check attributes */
-
-  if (dwAttrs & FILE_ATTRIBUTE_REPARSE_POINT)
-      RETVAL(1)                        /* True - Is a link           */
-  else
-      RETVAL(0)                        /* False - Is not a link      */
+    DWORD dwAttrs = GetFileAttributes(file);
+    return (dwAttrs != 0xffffffff) && (dwAttrs & FILE_ATTRIBUTE_REPARSE_POINT);
 }
 
 /*************************************************************************
@@ -6741,23 +6687,10 @@ size_t RexxEntry SysIsFileLink(const char *name, size_t numargs, CONSTRXSTRING a
 * Return:    Logical.                                                    *
 *************************************************************************/
 
-size_t RexxEntry SysIsFileCompressed(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
+RexxRoutine1(logical_t, SysIsFileCompressed, CSTRING, file)
 {
-  DWORD dwAttrs;
-
-  if (numargs != 1)                    /* we need one argument       */
-    return INVALID_ROUTINE;            /* raise an error             */
-
-  dwAttrs = GetFileAttributes(args[0].strptr);
-// INVALID_FILE_ATTRIBUTES is not defined in Visual Studio 6 SP5
-//  if (dwAttrs==INVALID_FILE_ATTRIBUTES)
-  if (dwAttrs==0xffffffff)
-      RETVAL(0)                        /* Unable to check attributes */
-
-  if (dwAttrs & FILE_ATTRIBUTE_COMPRESSED)
-      RETVAL(1)                        /* True - Is a compressed     */
-  else
-      RETVAL(0)                        /* False - Is not a compressed*/
+    DWORD dwAttrs = GetFileAttributes(file);
+    return (dwAttrs != 0xffffffff) && (dwAttrs & FILE_ATTRIBUTE_COMPRESSED);
 }
 
 /*************************************************************************
@@ -6770,23 +6703,10 @@ size_t RexxEntry SysIsFileCompressed(const char *name, size_t numargs, CONSTRXST
 * Return:    Logical.                                                    *
 *************************************************************************/
 
-size_t RexxEntry SysIsFileEncrypted(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
+RexxRoutine1(logical_t, SysIsFileEncrypted, CSTRING, file)
 {
-  DWORD dwAttrs;
-
-  if (numargs != 1)                    /* we need one argument       */
-    return INVALID_ROUTINE;            /* raise an error             */
-
-  dwAttrs = GetFileAttributes(args[0].strptr);
-// INVALID_FILE_ATTRIBUTES is not defined in Visual Studio 6 SP5
-//  if (dwAttrs==INVALID_FILE_ATTRIBUTES)
-  if (dwAttrs==0xffffffff)
-      RETVAL(0)                        /* Unable to check attributes */
-
-  if (dwAttrs & FILE_ATTRIBUTE_ENCRYPTED)
-      RETVAL(1)                        /* True - Is a encrypted      */
-  else
-      RETVAL(0)                        /* False - Is not a encrypted */
+    DWORD dwAttrs = GetFileAttributes(file);
+    return (dwAttrs != 0xffffffff) && (dwAttrs & FILE_ATTRIBUTE_ENCRYPTED);
 }
 
 /*************************************************************************
@@ -6800,23 +6720,10 @@ size_t RexxEntry SysIsFileEncrypted(const char *name, size_t numargs, CONSTRXSTR
 * Return:    Logical.                                                    *
 *************************************************************************/
 
-size_t RexxEntry SysIsFileNotContentIndexed(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
+RexxRoutine1(logical_t, SysIsFileNotContentIndexed, CSTRING, file)
 {
-  DWORD dwAttrs;
-
-  if (numargs != 1)                    /* we need one argument       */
-    return INVALID_ROUTINE;            /* raise an error             */
-
-  dwAttrs = GetFileAttributes(args[0].strptr);
-// INVALID_FILE_ATTRIBUTES is not defined in Visual Studio 6 SP5
-//  if (dwAttrs==INVALID_FILE_ATTRIBUTES)
-  if (dwAttrs==0xffffffff)
-      RETVAL(0)                        /* Unable to check attributes */
-
-  if (dwAttrs & FILE_ATTRIBUTE_NOT_CONTENT_INDEXED)
-      RETVAL(1)                        /* True - Is not to be indexed*/
-  else
-      RETVAL(0)                        /* False - Is to be indexed   */
+    DWORD dwAttrs = GetFileAttributes(file);
+    return (dwAttrs != 0xffffffff) && (dwAttrs & FILE_ATTRIBUTE_NOT_CONTENT_INDEXED);
 }
 
 /*************************************************************************
@@ -6829,23 +6736,10 @@ size_t RexxEntry SysIsFileNotContentIndexed(const char *name, size_t numargs, CO
 * Return:    Logical.                                                    *
 *************************************************************************/
 
-size_t RexxEntry SysIsFileOffline(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
+RexxRoutine1(logical_t, SysIsFileOffline, CSTRING, file)
 {
-  DWORD dwAttrs;
-
-  if (numargs != 1)                    /* we need one argument       */
-    return INVALID_ROUTINE;            /* raise an error             */
-
-  dwAttrs = GetFileAttributes(args[0].strptr);
-// INVALID_FILE_ATTRIBUTES is not defined in Visual Studio 6 SP5
-//  if (dwAttrs==INVALID_FILE_ATTRIBUTES)
-  if (dwAttrs==0xffffffff)
-      RETVAL(0)                        /* Unable to check attributes */
-
-  if (dwAttrs & FILE_ATTRIBUTE_OFFLINE)
-      RETVAL(1)                        /* True - Is offline          */
-  else
-      RETVAL(0)                        /* False - Is a File          */
+    DWORD dwAttrs = GetFileAttributes(file);
+    return (dwAttrs != 0xffffffff) && (dwAttrs & FILE_ATTRIBUTE_OFFLINE);
 }
 
 /*************************************************************************
@@ -6858,23 +6752,10 @@ size_t RexxEntry SysIsFileOffline(const char *name, size_t numargs, CONSTRXSTRIN
 * Return:    Logical.                                                    *
 *************************************************************************/
 
-size_t RexxEntry SysIsFileSparse(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
+RexxRoutine1(logical_t, SysIsFileSparse, CSTRING, file)
 {
-  DWORD dwAttrs;
-
-  if (numargs != 1)                    /* we need one argument       */
-    return INVALID_ROUTINE;            /* raise an error             */
-
-  dwAttrs = GetFileAttributes(args[0].strptr);
-// INVALID_FILE_ATTRIBUTES is not defined in Visual Studio 6 SP5
-//  if (dwAttrs==INVALID_FILE_ATTRIBUTES)
-  if (dwAttrs==0xffffffff)
-      RETVAL(0)                        /* Unable to check attributes */
-
-  if (dwAttrs & FILE_ATTRIBUTE_SPARSE_FILE)
-      RETVAL(1)                        /* True - Is a sprase file    */
-  else
-      RETVAL(0)                        /* False - Is not sparse file */
+    DWORD dwAttrs = GetFileAttributes(file);
+    return (dwAttrs != 0xffffffff) && (dwAttrs & FILE_ATTRIBUTE_SPARSE_FILE);
 }
 
 
@@ -6888,23 +6769,27 @@ size_t RexxEntry SysIsFileSparse(const char *name, size_t numargs, CONSTRXSTRING
 * Return:    Logical.                                                    *
 *************************************************************************/
 
-size_t RexxEntry SysIsFileTemporary(const char *name, size_t numargs, CONSTRXSTRING args[], const char *queuename, PRXSTRING retstr)
+RexxRoutine1(logical_t, SysIsFileTemporary, CSTRING, file)
 {
-  DWORD dwAttrs;
+    DWORD dwAttrs = GetFileAttributes(file);
+    return (dwAttrs != 0xffffffff) && (dwAttrs & FILE_ATTRIBUTE_TEMPORARY);
+}
 
-  if (numargs != 1)                    /* we need one argument       */
-    return INVALID_ROUTINE;            /* raise an error             */
 
-  dwAttrs = GetFileAttributes(args[0].strptr);
-// INVALID_FILE_ATTRIBUTES is not defined in Visual Studio 6 SP5
-//  if (dwAttrs==INVALID_FILE_ATTRIBUTES)
-  if (dwAttrs==0xffffffff)
-      RETVAL(0)                        /* Unable to check attributes */
+/*************************************************************************
+* Function:  SysFileExists                                               *
+*                                                                        *
+* Syntax:    call SysFileExists  file                                    *
+*                                                                        *
+* Params:    file - file to check existence                              *
+*                                                                        *
+* Return:    Logical.                                                    *
+*************************************************************************/
 
-  if (dwAttrs & FILE_ATTRIBUTE_TEMPORARY)
-      RETVAL(1)                        /* True - Is temporary        */
-  else
-      RETVAL(0)                        /* False - Is not temporary   */
+RexxRoutine1(logical_t, SysFileExists, CSTRING, file)
+{
+    DWORD dwAttrs = GetFileAttributes(file);
+    return (dwAttrs != 0xffffffff);
 }
 
 
@@ -6993,17 +6878,18 @@ RexxRoutineEntry rexxutil_routines[] =
     REXX_CLASSIC_ROUTINE(SysWinGetPrinters,           SysWinGetPrinters),
     REXX_CLASSIC_ROUTINE(SysWinGetDefaultPrinter,     SysWinGetDefaultPrinter),
     REXX_CLASSIC_ROUTINE(SysWinSetDefaultPrinter,     SysWinSetDefaultPrinter),
-    REXX_CLASSIC_ROUTINE(SysFileCopy,                 SysFileCopy),
-    REXX_CLASSIC_ROUTINE(SysFileMove,                 SysFileMove),
-    REXX_CLASSIC_ROUTINE(SysIsFile,                   SysIsFile),
-    REXX_CLASSIC_ROUTINE(SysIsFileDirectory,          SysIsFileDirectory),
-    REXX_CLASSIC_ROUTINE(SysIsFileLink,               SysIsFileLink),
-    REXX_CLASSIC_ROUTINE(SysIsFileCompressed,         SysIsFileCompressed),
-    REXX_CLASSIC_ROUTINE(SysIsFileEncrypted,          SysIsFileEncrypted),
-    REXX_CLASSIC_ROUTINE(SysIsFileNotContentIndexed,  SysIsFileNotContentIndexed),
-    REXX_CLASSIC_ROUTINE(SysIsFileOffline,            SysIsFileOffline),
-    REXX_CLASSIC_ROUTINE(SysIsFileSparse,             SysIsFileSparse),
-    REXX_CLASSIC_ROUTINE(SysIsFileTemporary,          SysIsFileTemporary),
+    REXX_TYPED_ROUTINE(SysFileCopy,                   SysFileCopy),
+    REXX_TYPED_ROUTINE(SysFileMove,                   SysFileMove),
+    REXX_TYPED_ROUTINE(SysIsFile,                     SysIsFile),
+    REXX_TYPED_ROUTINE(SysIsFileDirectory,            SysIsFileDirectory),
+    REXX_TYPED_ROUTINE(SysIsFileLink,                 SysIsFileLink),
+    REXX_TYPED_ROUTINE(SysIsFileCompressed,           SysIsFileCompressed),
+    REXX_TYPED_ROUTINE(SysIsFileEncrypted,            SysIsFileEncrypted),
+    REXX_TYPED_ROUTINE(SysIsFileNotContentIndexed,    SysIsFileNotContentIndexed),
+    REXX_TYPED_ROUTINE(SysIsFileOffline,              SysIsFileOffline),
+    REXX_TYPED_ROUTINE(SysIsFileSparse,               SysIsFileSparse),
+    REXX_TYPED_ROUTINE(SysIsFileTemporary,            SysIsFileTemporary),
+    REXX_TYPED_ROUTINE(SysFileExists,                 SysFileExists),
     REXX_LAST_ROUTINE()
 };
 

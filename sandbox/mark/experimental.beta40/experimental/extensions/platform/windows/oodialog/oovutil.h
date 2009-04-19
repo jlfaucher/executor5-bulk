@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -66,7 +66,7 @@
 #define WM_USER_HOOK                WM_USER + 0x0608
 #define WM_USER_CONTEXT_MENU        WM_USER + 0x0609
 
-#define VISDLL "OODIALOG.DLL"
+#define OODDLL "oodialog.dll"
 #define DLLVER 2130
 
 #define MSG_TERMINATE "1DLGDELETED1"
@@ -77,18 +77,6 @@ extern LONG HandleError(PRXSTRING r, CHAR * text);
 #define ICON_FILE                 0x00000001
 #define ICON_OODIALOG             0x00000002
 #define ICON_DLL                  0x00000004
-#define ICON_SYSTEM               0x00000008
-
-/* The resource IDs of the System Icons.  The raw numeric numbers are used
- * so that they can be passed into functions that use MAKEINTRESOURCE() on the
- * supplied ID.
- */
-#define IDICON_APPLICATION     32512
-#define IDICON_HAND            32513
-#define IDICON_QUESTION        32514
-#define IDICON_EXCLAMATION     32515
-#define IDICON_ASTERISK        32516
-#define IDICON_WINLOGO         32517
 
 /* Defines for the different possible versions of comctl32.dll up to Windows
  * XP SP2. These DWORD "packed version" numbers are calculated using the
@@ -309,13 +297,61 @@ inline void safeDeleteObject(HANDLE h)
 }
 
 
+inline LONG_PTR setWindowPtr(HWND hwnd, int index, LONG_PTR newPtr)
+{
+#ifndef __REXX64__
+#pragma warning(disable:4244)
+#endif
+    return SetWindowLongPtr(hwnd, index, newPtr);
+#ifndef __REXX64__
+#pragma warning(default:4244)
+#endif
+}
+
+inline LONG_PTR getWindowPtr(HWND hwnd, int index)
+{
+    return GetWindowLongPtr(hwnd, index);
+}
+
+inline LONG_PTR setClassPtr(HWND hwnd, int index, LONG_PTR newPtr)
+{
+#ifndef __REXX64__
+#pragma warning(disable:4244)
+#endif
+    return SetClassLongPtr(hwnd, index, newPtr);
+#ifndef __REXX64__
+#pragma warning(default:4244)
+#endif
+}
+
+inline LONG_PTR getClassPtr(HWND hwnd, int index)
+{
+    return GetClassLongPtr(hwnd, index);
+}
+
+typedef enum {oodHex, oodHeX, oodNotHex} oodNumberStr_t;
+
+inline bool isHex(CSTRING c)
+{
+    return strlen(c) > 1 && *c == '0' && toupper(c[1]) == 'X';
+}
+
+inline oodNumberStr_t hexType(CSTRING c)
+{
+    if ( isHex(c) )
+    {
+        return (c[1] == 'x' ? oodHex : oodHeX);
+    }
+    return oodNotHex;
+}
+
 /* structures to manage the dialogs */
 typedef struct {
+   WPARAM wParam;
+   LPARAM lParam;
    ULONG msg;
    ULONG filterM;
-   ULONG wParam;
    ULONG filterP;
-   ULONG lParam;
    ULONG filterL;
    ULONG tag;
    PCHAR rexxProgram;

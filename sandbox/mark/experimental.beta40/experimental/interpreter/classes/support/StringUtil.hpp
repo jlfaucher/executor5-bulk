@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -89,6 +89,7 @@ public:
     static RexxInteger *wordPos(const char *data, size_t length, RexxString  *phrase, RexxInteger *pstart);
     static RexxInteger *caselessWordPos(const char *data, size_t length, RexxString  *phrase, RexxInteger *pstart);
     static RexxArray   *words(const char *data, size_t length);
+    static const char  *locateSeparator(const char *start, const char *end, const char *sepData, size_t sepLength);
 };
 
 #endif

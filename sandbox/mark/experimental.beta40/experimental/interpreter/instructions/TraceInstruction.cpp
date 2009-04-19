@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -48,20 +48,22 @@
 #include "SourceFile.hpp"
 
 
-RexxInstructionTrace::RexxInstructionTrace(
-    RexxObject *_expression,           /* TRACE VALUE expression            */
-    size_t       trace,                /* trace setting                     */
-    size_t      debug_flags,           /* new debug setting                 */
-    wholenumber_t debug_skip )         /* debug clauses to skip             */
-/******************************************************************************/
-/* Function:  Initialize a trace instruction                                  */
-/******************************************************************************/
+/**
+ * Initialize a Trace instruction.
+ *
+ * @param _expression
+ *                   A potential expression to evaluate.
+ * @param trace      The new trace setting (can be zero if numeric or dynamic form).
+ * @param flags      The translated trace flags for setting-based forms.
+ * @param debug_skip A potential debug_skip value.
+ */
+RexxInstructionTrace::RexxInstructionTrace(RexxObject *_expression, size_t trace, size_t flags, wholenumber_t debug_skip )
 {
                                        /* process the expression            */
    OrefSet(this, this->expression, _expression);
    this->debugskip = debug_skip;       /* copy the skip value               */
-   instructionFlags = (uint16_t)debug_flags;     /* save the debug flags              */
    traceSetting = trace;               /* and the trace setting             */
+   traceFlags = flags;
 }
 
 void RexxInstructionTrace::live(size_t liveMark)
@@ -107,10 +109,11 @@ void RexxInstructionTrace::execute(
     RexxString  *value;                  /* string version of expression      */
 
     context->traceInstruction(this);     /* trace if necessary                */
-    if (traceSetting == 0)               /* interactive debug mode request?   */
+    // is this a debug skip request (the setting value is zero in that case)
+    if ((traceSetting&TRACE_SETTING_MASK) == 0)
     {
                                          /* turn on the skip mode             */
-        context->debugSkip(this->debugskip, (instructionFlags&trace_notrace) != 0);
+        context->debugSkip(this->debugskip, (traceSetting&DEBUG_NOTRACE) != 0);
     }
     /* non-dynamic form?                 */
     else if (this->expression == OREF_NULL)
@@ -118,7 +121,7 @@ void RexxInstructionTrace::execute(
         if (!context->inDebug())           /* not in debug mode?                */
         {
                                            /* just change the setting           */
-            context->setTrace(traceSetting, instructionFlags & trace_debug_mask);
+            context->setTrace(traceSetting, traceFlags);
         }
         else
         {

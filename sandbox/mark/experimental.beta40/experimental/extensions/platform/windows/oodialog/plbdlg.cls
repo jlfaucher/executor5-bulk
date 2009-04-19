@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -47,16 +47,22 @@
 
 
 ::class 'DlgUtil' public
-::method init class external "LIBRARY oodialog dlgutil_init"
-::method version class external "LIBRARY oodialog dlgutil_version"
-::method comctl32Version class external "LIBRARY oodialog dlgutil_comctl32Version"
-::method hiWord class external "LIBRARY oodialog dlgutil_hiWord"
-::method loWord class external "LIBRARY oodialog dlgutil_loWord"
-::method colorRef class external "LIBRARY oodialog dlgutil_colorRef"
-::method getRValue class external "LIBRARY oodialog dlgutil_getRValue"
-::method getGValue class external "LIBRARY oodialog dlgutil_getGValue"
-::method getBValue class external "LIBRARY oodialog dlgutil_getBValue"
-::method handleToPointer class external "LIBRARY oodialog dlgutil_handleToPointer"
+::method init class external "LIBRARY oodialog dlgutil_init_cls"
+::method version class external "LIBRARY oodialog dlgutil_version_cls"
+::method comctl32Version class external "LIBRARY oodialog dlgutil_comctl32Version_cls"
+::method hiWord class external "LIBRARY oodialog dlgutil_hiWord_cls"
+::method loWord class external "LIBRARY oodialog dlgutil_loWord_cls"
+::method and class external "LIBRARY oodialog dlgutil_and_cls"
+::method or class external "LIBRARY oodialog dlgutil_or_cls"
+::method getSystemMetrics class external "LIBRARY oodialog dlgutil_getSystemMetrics_cls"
+::method handleToPointer class external "LIBRARY oodialog dlgutil_handleToPointer_cls"
+::method test class external "LIBRARY oodialog dlgutil_test_cls"
+
+-- Needed to maintain backward compatibilty with 3.2.0.  The external function GetSysMetrics()
+-- was foolishly documented.
+::routine GetSysMetrics public
+  use strict arg index
+  return .DlgUtil~getSystemMetrics(index)
 
 ::class 'Rect' public
 ::method init external "LIBRARY oodialog rect_init"
@@ -76,6 +82,12 @@
 ::method y external "LIBRARY oodialog point_y"
 ::method 'y=' external "LIBRARY oodialog point_setY"
 
+::class 'Size' public
+::method init external "LIBRARY oodialog size_init"
+::method width external "LIBRARY oodialog size_cx"
+::method 'width=' external "LIBRARY oodialog size_setCX"
+::method height external "LIBRARY oodialog point_y"
+::method 'height=' external "LIBRARY oodialog point_setY"
 
 /******************************************************************************/
 /* The class WindowBase implements methods that are common to all windows,    */
@@ -175,16 +187,13 @@
 ::method GetID unguarded
    return Wnd_Desktop("ID", self~hwnd)
 
-::method GetTextSize unguarded
-    use arg text, fontname, fontsize, hwnd
-    if Arg(2,'o') = 1 then fontname = ""
-    if Arg(3,'o') = 1 then fontsize = ""
-    if Arg(4,'o') = 1 then hwnd = self~hwnd
-    return GetStdTextSize(text, fontname, fontsize, hwnd)
+::method getStyleRaw unguarded external "LIBRARY oodialog wb_getStyleRaw"
+::method getExStyleRaw unguarded external "LIBRARY oodialog wb_getExStyleRaw"
 
-::method GetSystemMetrics unguarded
+-- DEPRECATED
+::method getSystemMetrics unguarded
    use strict arg index
-   return GetSysMetrics(index)
+   return .DlgUtil~getSystemMetrics(index)
 
 
 ::class 'ResourceUtils' public mixinclass object
@@ -290,6 +299,14 @@
   end
   return -1
 
+::method resolveIconID private
+  use strict arg icon
+
+  if \ icon~Datatype('W') then icon = self~ResolveSymbolicId(icon)
+  if icon = -1 then icon = 0
+  else if icon >= 1, icon <= 4 then icon += 10
+  return icon
+
 ::method resolveResourceID unguarded
   use strict arg id
   if id~datatype("W"), id > -1 then return id
@@ -324,6 +341,12 @@
 
 ::class 'PlainBaseDialog' public inherit WindowBase ResourceUtils
 
+::method init class external "LIBRARY oodialog pbdlg_init_cls"
+::method setDefaultFont class external "LIBRARY oodialog pbdlg_setDefaultFont_cls"
+::method getFontName class external "LIBRARY oodialog pbdlg_getFontName_cls"
+::method getFontSize class external "LIBRARY oodialog pbdlg_getFontSize_cls"
+
+
 ::method Adm attribute protected   /* external adminstration buffer */
 ::method AutoDetect attribute      /* Automatic data field detection on/off */
 ::method DataConnection attribute protected /* store connections between ids and class attributes */
@@ -335,6 +358,11 @@
 ::method Finished attribute
 ::method ParentDlg attribute protected
 
+::attribute fontName get
+::attribute fontName set private
+
+::attribute fontSize get
+::attribute fontSize set private
 
   /* A queue containing the methods that will be started concurrently before */
   /* execution of the dialog */
@@ -387,11 +415,14 @@
    self~ConstDir["IDC_STATIC"] = -1
 
    -- ooDialog supplied resources, defined in oodResources.h
-   self~ConstDir["IDI_DLG_OODIALOG"] = 1
-   self~ConstDir["IDI_DLG_APPICON"] = 2
-   self~ConstDir["IDI_DLG_APPICON2"] = 3
-   self~ConstDir["IDI_DLG_OOREXX"] = 4
-   self~ConstDir["IDI_DLG_DEFAULT"] = 2
+   self~ConstDir["IDI_DLG_OODIALOG"] = 11
+   self~ConstDir["IDI_DLG_APPICON"] = 12
+   self~ConstDir["IDI_DLG_APPICON2"] = 13
+   self~ConstDir["IDI_DLG_OOREXX"] = 14
+   self~ConstDir["IDI_DLG_DEFAULT"] = 12
+
+   self~fontName = .PlainBaseDialog~getFontName
+   self~fontSize = .PlainBaseDialog~getFontSize
 
    if arg(4, 'E') then
      self~ParseIncludeFile(includeFile)
@@ -427,9 +458,8 @@
 
 ::method Execute unguarded
    expose DlgData.
-   use arg sh, icon, sleeptime, nomodal
-   if \ icon~Datatype('N') then icon = self~ResolveSymbolicId(icon)
-   if icon = -1 then icon = 0
+   use arg sh, icon = 0, sleeptime, nomodal
+   icon = self~resolveIconId(icon)
    if sleeptime~Datatype('N') = 0 then sleeptime = 0   /* default is no sleep for execute */
    if Arg(4, 'o') = 1 then nomodal = 0
    if self~startit(icon, nomodal) \= 0 then
@@ -1260,6 +1290,12 @@
 ::method TabToPrevious unguarded
    return Wnd_Desktop("SETFOC", self~DlgHandle, 1, "P")
 
+::method getTextSize unguarded
+  forward message "getTextSizeDlg" continue
+  return result~width result~height
+
+::method getTextSizeDlg unguarded external "LIBRARY oodialog pbdlg_getTextSizeDlg"
+
 
  -- 2 methods to set / remove the WS_TABSTOP / WS_GROUP styles for any control.
 ::method SetTabStop unguarded
@@ -1275,13 +1311,6 @@
    if id == -1 then return -1
    if \ wantGroup~datatype('O')then return -3
    return HandleControlEx(self~DlgHandle, id, "X", "GROUP", wantGroup)
-
- -- Get the window style for any control (the GWL_STYLE long value)
-::method GetControlStyleRaw unguarded
-   use strict arg id
-   if \ id~datatype("W") then id = self~ResolveSymbolicId(id)
-   if id == -1 then return -1
-   return HandleControlEx(self~DlgHandle, id, "X", "GET")
 
 ::method Center unguarded
    use arg showOptions

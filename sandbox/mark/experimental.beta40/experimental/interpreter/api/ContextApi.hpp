@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -65,6 +65,7 @@ public:
     {
         activity = contextToActivity(c);
         context = activity->getApiContext();
+        context->enableConditionTraps();
         // go acquire the kernel lock and take care of nesting
         activity->enterCurrentThread();
     }
@@ -81,6 +82,7 @@ public:
     {
         activity = contextToActivity(c);
         context = activity->getApiContext();
+        context->enableConditionTraps();
         // this does not acquire the lock
     }
 
@@ -93,6 +95,7 @@ public:
     {
         activity = contextToActivity(c);
         context = contextToActivation(c);
+        context->enableConditionTraps();
         // go acquire the kernel lock and take care of nesting
         activity->enterCurrentThread();
     }
@@ -106,6 +109,7 @@ public:
     {
         activity = contextToActivity(c);
         context = contextToActivation(c);
+        context->enableConditionTraps();
         // go acquire the kernel lock and take care of nesting
         activity->enterCurrentThread();
     }
@@ -119,6 +123,7 @@ public:
     {
         activity = contextToActivity(c);
         context = contextToActivation(c);
+        context->enableConditionTraps();
         // go acquire the kernel lock and take care of nesting
         activity->enterCurrentThread();
     }
@@ -129,6 +134,7 @@ public:
      */
     inline ~ApiContext()
     {
+        context->disableConditionTraps();
         activity->exitCurrentThread();
     }
 

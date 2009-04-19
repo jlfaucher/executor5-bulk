@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -190,7 +190,7 @@ RexxObject *WeakReference::newRexx(RexxObject **init_args, size_t argCount)
                                        /* break up the arguments            */
   RexxClass::processNewArgs(init_args, argCount, &init_args, &argCount, 1, &refObj, NULL);
   // must have a value
-  required_arg(refObj, ONE);
+  requiredArgument(refObj, ARG_ONE);
   // create a new weakReference
   RexxObject *newObj = new WeakReference(refObj);
   // override the behaviour in case this is a subclass

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -72,7 +72,7 @@ SysFile::SysFile()
     bufferedInput = 0;
     append = true;
     filePointer = 0;
-    ungetchar = 0;
+    ungetchar = -1;
     writeBuffered = false;     // no pending write operations
 }
 
@@ -362,24 +362,28 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
     }
     else
     {
-        int blockRead = _read(fileHandle, buf, (unsigned int)len);
-        if (blockRead <= 0)
+        while (len > 0)
         {
-            // not get anything?
-            if (_eof(fileHandle))
+            int blockRead = _read(fileHandle, buf + bytesRead, (unsigned int)len);
+            if (blockRead <= 0)
             {
-                // could have had an ungetchar
-                return bytesRead > 0 ? true : false;
+                // not get anything?
+                if (_eof(fileHandle))
+                {
+                    // could have had an ungetchar
+                    return bytesRead > 0 ? true : false;
+                }
+                else
+                {
+                    // had an error, so raise it
+                    errInfo = errno;
+                    return false;
+                }
             }
-            else
-            {
-                // had an error, so raise it
-                errInfo = errno;
-                return false;
-            }
+            // update the length
+            len -= blockRead;
+            bytesRead += blockRead;
         }
-        // update the length
-        len += blockRead;
     }
     return true;
 }
@@ -510,7 +514,8 @@ bool SysFile::putChar(char ch)
 
 bool SysFile::ungetc(char ch)
 {
-    ungetchar = (unsigned char)ch;
+    // make sure there's no sign extension
+    ungetchar = ((int)ch) & 0xff;
     return true;
 }
 
@@ -1003,7 +1008,7 @@ bool SysFile::getTimeStamp(const char *name, char *&time)
     if (_stati64(name, &fileInfo) == 0)
     {
         // regular file?  return the defined size
-        if ((fileInfo.st_mode & _S_IFREG) != 0)
+        if ((fileInfo.st_mode & (_S_IFREG | _S_IFDIR)) != 0)
         {
             time = ctime(&fileInfo.st_mtime);
         }
@@ -1064,6 +1069,7 @@ void SysFile::setStdIn()
     ungetchar = -1;            // -1 indicates no char
     getStreamTypeInfo();
     setBuffering(false, 0);
+    readable = true;             // force this to readable
 }
 
 /**
@@ -1077,6 +1083,7 @@ void SysFile::setStdOut()
     ungetchar = -1;            // -1 indicates no char
     getStreamTypeInfo();
     setBuffering(false, 0);
+    writeable = true;             // force this to writeable
 }
 
 /**
@@ -1090,6 +1097,7 @@ void SysFile::setStdErr()
     ungetchar = -1;            // -1 indicates no char
     getStreamTypeInfo();
     setBuffering(false, 0);
+    writeable = true;             // force this to writeable
 }
 
 

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -355,4 +355,21 @@ RexxReturnCode RexxEntry RexxDeleteSessionQueue()
     // this shuts down the entire environment
     LocalAPIManager::deleteInstance();
     return RXQUEUE_OK;
+}
+
+
+/**
+ * Initialize the API subsystem at process startup.
+ *
+ * @return Always returns 0;
+ */
+RexxReturnCode RexxEntry RexxCreateSessionQueue()
+{
+    // this will initialize the API subsystem
+    ENTER_REXX_API(QueueManager)
+    {
+        return 0;
+    }
+    EXIT_REXX_API();
+
 }

@@ -2,12 +2,12 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.oorexx.org/license.html                                         */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -163,10 +163,10 @@ Error_Program_unreadable    "Failure during initialization"
    Error_Incomplete_do_then    "THEN on line &1 must be followed by an instruction"
    Error_Incomplete_do_else    "ELSE on line &1 must be followed by an instruction"
    Error_Incomplete_do_otherwise    "OTHERWISE on line &1 requires matching END"
-   Error_Invalid_hex_hexblank    "Incorrect location of blank in position &1 in hexadecimal string"
-   Error_Invalid_hex_binblank    "Incorrect location of blank in position &1 in binary string"
-   Error_Invalid_hex_invhex    "Only 0-9, a-f, A-F, and blank are valid in a hexadecimal string; found ""&1"""
-   Error_Invalid_hex_invbin    "Only 0, 1, and blank are valid in a binary string; found ""&1"""
+   Error_Invalid_hex_hexblank    "Incorrect location of whitespace character in position &1 in hexadecimal string"
+   Error_Invalid_hex_binblank    "Incorrect location of whitespace character in position &1 in binary string"
+   Error_Invalid_hex_invhex    "Only 0-9, a-f, A-F, and whitespace characters are valid in a hexadecimal string; found ""&1"""
+   Error_Invalid_hex_invbin    "Only 0, 1, and whitespace characters are valid in a binary string; found ""&1"""
    Error_Label_not_found_name    "Label ""&1"" not found"
    Error_Unexpected_procedure_call    "PROCEDURE is valid only when it is the first instruction executed after an internal CALL or function invocation"
    Error_Unexpected_procedure_interpret    "INTERPRET data must not contain PROCEDURE"
@@ -246,8 +246,8 @@ Error_Program_unreadable    "Failure during initialization"
    Error_Invalid_whole_number_repeat    "Value of repetition count expression in DO instruction must be zero or a positive whole number; found ""&1"""
    Error_Invalid_whole_number_for    "Value of FOR expression in DO instruction must be zero or a positive whole number; found ""&1"""
    Error_Invalid_whole_number_parse    "Positional pattern of PARSE template must be a whole number; found ""&1"""
-   Error_Invalid_whole_number_digits    "NUMERIC DIGITS value must be a positive whole number; found ""&1"""
-   Error_Invalid_whole_number_fuzz    "NUMERIC FUZZ value must be zero or a positive whole number; found ""&1"""
+   Error_Invalid_whole_number_digits    "DIGITS value must be a positive whole number; found ""&1"""
+   Error_Invalid_whole_number_fuzz    "FUZZ value must be zero or a positive whole number; found ""&1"""
    Error_Invalid_whole_number_trace    "Number used in TRACE setting must be a whole number; found ""&1"""
    Error_Invalid_whole_number_intdiv    "Result of % operation did not result in a whole number"
    Error_Invalid_whole_number_rem    "Result of // operation did not result in a whole number"
@@ -393,10 +393,10 @@ Error_Program_unreadable    "Failure during initialization"
    Error_Incorrect_method_d2xd2c    "Length must be specified to convert a negative value"
    Error_Incorrect_method_d2x    "D2X value must be a valid whole number; found ""&1"""
    Error_Incorrect_method_d2c    "D2C value must be a valid whole number; found ""&1"""
-   Error_Incorrect_method_hexblank    "Incorrect location of blank in position &1 in hexadecimal string"
-   Error_Incorrect_method_binblank    "Incorrect location of blank in position &1 in binary string"
-   Error_Incorrect_method_invhex    "Only 0-9, a-f, A-F, and blank are valid in a hexadecimal string; character found ""&1"""
-   Error_Incorrect_method_invbin    "Only 0, 1, and blank are valid in a binary string; character found ""&1"""
+   Error_Incorrect_method_hexblank    "Incorrect location of whitespace character in position &1 in hexadecimal string"
+   Error_Incorrect_method_binblank    "Incorrect location of whitespace character in position &1 in binary string"
+   Error_Incorrect_method_invhex    "Only 0-9, a-f, A-F, and whitespace characters are valid in a hexadecimal string; character found ""&1"""
+   Error_Incorrect_method_invbin    "Only 0, 1, and whitespace characters are valid in a binary string; character found ""&1"""
    Error_Incorrect_method_x2dbig    "X2D result is not a valid whole number with NUMERIC DIGITS &1"
    Error_Incorrect_method_c2dbig    "C2D result is not a valid whole number with NUMERIC DIGITS &1"
    Error_Incorrect_method_supplier    "No more supplier items available"
@@ -614,6 +614,10 @@ Error_Program_unreadable    "Failure during initialization"
    Error_Unsupported_copy_method    "COPY method is not supported for object &1"
    Error_Execution_context_not_active    "Target RexxContext is no longer active"
    Error_Execution_library_version    "Library ""&1"" is not compatible with current interpreter version."
+   Error_Invalid_subkeyword_options    "Unknown keyword on ::OPTIONS directive; found ""&1"""
+   Error_Symbol_or_string_digits_value    "String or symbol expected as DIGITS value"
+   Error_Symbol_or_string_fuzz_value    "String or symbol expected as FUZZ value"
+   Error_Symbol_or_string_trace_value    "String or symbol expected as TRACE value"
    
 END
 

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -82,22 +82,22 @@ public:
     static PREGISTEREDROUTINE resolveRegisteredRoutineEntry(RexxString *package, RexxString *name);
     static void        addPackageRoutine(RexxString *name, RoutineClass *func);
     static void        loadInternalPackage(RexxString *name, RexxPackageEntry *p);
+    static bool        registerPackage(RexxString *name, RexxPackageEntry *p);
     static RexxObject *addRegisteredRoutine(RexxString *name, RexxString *module, RexxString *proc);
     static RexxObject *dropRegisteredRoutine(RexxString *name);
     static RexxObject *queryRegisteredRoutine(RexxString *name);
     static bool        callNativeRoutine(RexxActivity *activity, RexxString *name,
         RexxObject **arguments, size_t argcount, ProtectedObject &result);
 
-    static PackageClass *loadRequires(RexxActivity *activity, RexxString *shortName, RexxString *resolvedName, ProtectedObject &result);
-    static PackageClass *getMacroSpaceRequires(RexxActivity *activity, RexxString *name, ProtectedObject &result, RexxObject *securityManager);
-    static PackageClass *getRequiresFile(RexxActivity *activity, RexxString *name, RexxObject *securityManager, ProtectedObject &result);
-    static void          runRequires(RexxActivity *activity, RexxString *name, RoutineClass *code);
-    static PackageClass *loadRequires(RexxActivity *activity, RexxString *name, const char *data, size_t length, ProtectedObject &result);
-    static PackageClass *loadRequires(RexxActivity *activity, RexxString *name, RexxArray *data, ProtectedObject &result);
+    static RoutineClass *loadRequires(RexxActivity *activity, RexxString *shortName, RexxString *resolvedName, ProtectedObject &result);
+    static RoutineClass *getMacroSpaceRequires(RexxActivity *activity, RexxString *name, ProtectedObject &result, RexxObject *securityManager);
+    static RoutineClass *getRequiresFile(RexxActivity *activity, RexxString *name, RexxObject *securityManager, ProtectedObject &result);
+    static RoutineClass *loadRequires(RexxActivity *activity, RexxString *name, const char *data, size_t length, ProtectedObject &result);
+    static RoutineClass *loadRequires(RexxActivity *activity, RexxString *name, RexxArray *data, ProtectedObject &result);
 
 protected:
 
-    static PackageClass *checkRequiresCache(RexxString *name, ProtectedObject &result);
+    static RoutineClass *checkRequiresCache(RexxString *name, ProtectedObject &result);
 
     enum
     {

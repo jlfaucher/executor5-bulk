@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -82,7 +82,7 @@ RexxMemory memoryObject;
 
 #define LiveStackSize  16370         /* live stack size                   */
 
-#define SaveStackSize 20             /* newly created objects to save */
+#define SaveStackSize 10             /* newly created objects to save */
 #define SaveStackAllocSize 500       /* pre-allocation for save stack  */
 
 #define MaxImageSize 1400000         /* maximum startup image size */
@@ -473,50 +473,15 @@ void RexxMemory::checkUninit()
  * attempt to ensure that all objects with uninit methods get
  * a chance to clean up prior to termination.
  */
-void RexxMemory::collectAndUninit()
+void RexxMemory::collectAndUninit(bool clearStack)
 {
+    // clear the save stack if we're working with a single instance
+    if (clearStack)
+    {
+        clearSaveStack();
+    }
     collect();
     runUninits();
-}
-
-
-void  RexxMemory::forceUninits()
-/******************************************************************************/
-/* FUNCTION: we will run the UNINIT method of all objects in the UNINIT       */
-/*  table for our process.  Even if the object is "dead", this is because the */
-/*  process is going away an its our last chance.  Instead of removing the    */
-/*  objects as we go, we run the entire table and then reset table.           */
-/*                                                                            */
-/******************************************************************************/
-{
-    /* if we're already processing this, don't try to do this */
-    /* recursively. */
-    if (processingUninits)
-    {
-        return;
-    }
-
-    /* turn on the recursion flag, and also zero out the count of */
-    /* pending uninits to run */
-    processingUninits = true;
-
-    RexxObject *zombieObj;
-
-                                       /* for all objects in the table    */
-    for (HashLink iterTable = uninitTable->first();
-         (zombieObj = uninitTable->index(iterTable)) != OREF_NULL;
-         iterTable = uninitTable->next(iterTable))
-    {
-        try
-        {
-            zombieObj->uninit();           /* run the UNINIT method           */
-        }
-        catch (RexxActivation *) { }
-        catch (ActivityException) { }
-    }                                  /* now go check next object in tabl*/
-
-    /* make sure we remove the recursion protection */
-    processingUninits = false;
 }
 
 
@@ -777,17 +742,14 @@ MemorySegment *RexxMemory::newLargeSegment(size_t requestedBytes, size_t minByte
 {
     MemorySegment *segment;
 
-#ifdef MEMPROFILE
-    printf("Allocating large new segment of %d bytes\n", requestedBytes);
-#endif
     /* first make sure we've got enough space for the control */
     /* information, and round this to a proper boundary */
-    requestedBytes = roundSegmentBoundary(requestedBytes + MemorySegmentOverhead);
+    size_t allocationBytes = roundSegmentBoundary(requestedBytes + MemorySegmentOverhead);
 #ifdef MEMPROFILE
-    printf("Allocating large boundary new segment of %d bytes\n", requestedBytes);
+    printf("Allocating large boundary new segment of %d bytes for request of %d\n", allocationBytes, requestedBytes);
 #endif
     /*Get a new segment                  */
-    segment = currentPool->newLargeSegment(requestedBytes);
+    segment = currentPool->newLargeSegment(allocationBytes);
     /* Did we get a segment              */
     if (segment == NULL)
     {

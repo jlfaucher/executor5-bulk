@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -45,6 +45,7 @@
 
 ::class 'AdvancedControls' Mixinclass Object public
 
+::method putControl private unguarded external "LIBRARY oodialog advCtrl_putControl_pvt"
 
 ::method GetControl unguarded private
    use arg id, category, type
@@ -66,7 +67,6 @@
        when type = "TAB" then class = .TabControl
        when type = "DT" then class = .DateTimePicker
        when type = "MC" then class = .MonthCalendar
-       when type = "HK" then class = .HotKey
        otherwise return .Nil
    end
    ctrlobj = .nil
@@ -81,24 +81,21 @@
      ctrlobj = class~new(self, id, category)
    end
 
-   if ctrlobj~hwnd = 0 then
+   if ctrlobj \== .nil, ctrlobj~hwnd = 0 then
      return .nil
    else
      return ctrlobj
 
-::method GetStaticControl unguarded
-   arr = Arg(1,"A")
-   arr[3] = "ST"
-   forward message "GetControl" Arguments (arr)
+
+::method getStaticControl unguarded external "LIBRARY oodialog advCtrl_getStaticControl"
+::method getButtonControl unguarded external "LIBRARY oodialog advCtrl_getButtonControl"
+::method getTreeControl unguarded external "LIBRARY oodialog advCtrl_getTreeControl"
+::method getListControl unguarded external "LIBRARY oodialog advCtrl_getListControl"
+::method getTabControl unguarded external "LIBRARY oodialog advCtrl_getTabControl"
 
 ::method GetEditControl unguarded
    arr = Arg(1,"A")
    arr[3] = "EL"
-   forward message "GetControl" Arguments (arr)
-
-::method GetButtonControl unguarded
-   arr = Arg(1,"A")
-   arr[3] = "BUT"
    forward message "GetControl" Arguments (arr)
 
 ::method GetRadioControl unguarded
@@ -131,19 +128,6 @@
    arr[3] = "SB"
    forward message "GetControl" Arguments (arr)
 
-::method GetTreeControl unguarded
-   arr = Arg(1,"A")
-   arr[3] = "TC"
-   forward message "GetControl" Arguments (arr)
-
-::method GetListControl unguarded
-   arr = Arg(1,"A")
-   arr[3] = "LC"
-   forward message "GetControl" Arguments (arr) continue
-   listControl = result
-   listControl~lastItem = listControl~items - 1
-   return listControl
-
 ::method GetProgressBar unguarded
    arr = Arg(1,"A")
    arr[3] = "PB"
@@ -152,11 +136,6 @@
 ::method GetSliderControl unguarded
    arr = Arg(1,"A")
    arr[3] = "SC"
-   forward message "GetControl" Arguments (arr)
-
-::method GetTabControl unguarded
-   arr = Arg(1,"A")
-   arr[3] = "TAB"
    forward message "GetControl" Arguments (arr)
 
 ::method GetMonthCalendar unguarded
@@ -169,10 +148,6 @@
    arr[3] = "DT"
    forward message "GetControl" Arguments (arr)
 
-::method GetHotKey unguarded
-   arr = Arg(1,"A")
-   arr[3] = "HK"
-   forward message "GetControl" Arguments (arr)
 
 ::method ConnectTreeControl unguarded
    use arg id, attributeName
@@ -210,12 +185,6 @@
    if result = -1 then return -1
    return DataTable(self~Adm,"ADD",result,11);     /* new id in result  11 == Month Calendar */
 
-::method ConnectHotKey unguarded
-   use arg id, attributeName
-   /* TODO this is not implemented, not sure if it should be
-   forward message "AddAttribute" continue
-   if result = -1 then return -1
-   return DataTable(self~Adm,"ADD",result,12);*/     /* new id in result  12 == Hot Key */
 
 ::method InternGetNewCtrlStyle
    use arg style, kind
@@ -303,9 +272,6 @@
         if style~wordpos("MCS_WEEKNUMBERS")  > 0 then ret = ret || " WEEKNUMBERS"
         if style~wordpos("WS_BORDER")  > 0 then ret = ret || " BORDER"
    end
-   else if kind = "HOTKEY" then do
-        if style~wordpos("WS_BORDER")  > 0 then ret = ret || " BORDER"
-   end
    if style~wordpos("WS_VSCROLL") > 0 then ret = ret || " VSCROLL"
    if style~wordpos("WS_HSCROLL") > 0 then ret = ret || " HSCROLL"
    if style~wordpos("WS_TABSTOP") = 0 then ret = ret || " NOTAB"
@@ -320,11 +286,11 @@
    if Arg(2,'o') = 1 then attname = "DATA"id
    opts = self~GetDefaultOpts(opts)
    if opts = "ALL" then opts = "LINES VSCROLL HSCROLL EDIT BUTTONS ATROOT SHOWSELALWAYS"
-   self~AktPtr = UsrAddNewCtrl("TREE", self~AktPtr, id, x, y, cx, cy, opts)
+   self~activePtr = UsrAddNewCtrl("TREE", self~activePtr, id, x, y, cx, cy, opts)
    if self~AutoDetect = 1 then do
-       self~ConnectTreeControl(symbid, attname)
+       return self~ConnectTreeControl(symbid, attname)
    end
-
+   return 0
 
 ::method AddListControl
    use arg id, attname, x, y, cx, cy, opts
@@ -333,10 +299,11 @@
    if id < 0 then return id
    if Arg(2,'o') = 1 then attname = "DATA"id
    opts = self~GetDefaultOpts(opts)
-   self~AktPtr = UsrAddNewCtrl("LIST", self~AktPtr, id, x, y, cx, cy, opts)
+   self~activePtr = UsrAddNewCtrl("LIST", self~activePtr, id, x, y, cx, cy, opts)
    if self~AutoDetect = 1 then do
-       self~ConnectListControl(symbid, attname)
+       return self~ConnectListControl(symbid, attname)
    end
+   return 0
 
 ::method AddProgressBar
    use arg id, x, y, cx, cy, opts
@@ -344,8 +311,8 @@
    id = self~ItemAdd(id)
    if id < 0 then return id
    opts = self~GetDefaultOpts(opts)
-   self~AktPtr = UsrAddNewCtrl("PROGRESS", self~AktPtr, id, x, y, cx, cy, opts)
-
+   self~activePtr = UsrAddNewCtrl("PROGRESS", self~activePtr, id, x, y, cx, cy, opts)
+   return 0
 
 ::method AddSliderControl
    use arg id, attname, x, y, cx, cy, opts
@@ -354,11 +321,11 @@
    if id < 0 then return id
    if Arg(2,'o') = 1 then attname = "DATA"id
    opts = self~GetDefaultOpts(opts)
-   self~AktPtr = UsrAddNewCtrl("SLIDER", self~AktPtr, id, x, y, cx, cy, opts)
+   self~activePtr = UsrAddNewCtrl("SLIDER", self~activePtr, id, x, y, cx, cy, opts)
    if self~AutoDetect = 1 then do
-       self~ConnectSliderControl(symbid, attname)
+       return self~ConnectSliderControl(symbid, attname)
    end
-
+   return 0
 
 ::method AddTabControl
    use arg id, attname, x, y, cx, cy, opts
@@ -367,11 +334,11 @@
    if id < 0 then return id
    if Arg(2,'o') = 1 then attname = "DATA"id
    opts = self~GetDefaultOpts(opts)
-   self~AktPtr = UsrAddNewCtrl("TAB", self~AktPtr, id, x, y, cx, cy, opts)
+   self~activePtr = UsrAddNewCtrl("TAB", self~activePtr, id, x, y, cx, cy, opts)
    if opts~wordpos("CAT") = 0 & self~AutoDetect = 1 then do
-       self~ConnectTabControl(symbid, attname)
+       return self~ConnectTabControl(symbid, attname)
    end
-
+   return 0
 
 ::method AddDateTimePicker
    use arg id, attname, x, y, cx, cy, opts
@@ -380,11 +347,11 @@
    if id < 0 then return id
    if Arg(2, 'O') then attname = "DATA"id
    opts = self~GetDefaultOpts(opts)
-   self~AktPtr = UsrAddNewCtrl("DTP", self~AktPtr, id, x, y, cx, cy, opts)
+   self~activePtr = UsrAddNewCtrl("DTP", self~activePtr, id, x, y, cx, cy, opts)
    if self~AutoDetect = 1 then do
-       self~ConnectDateTimePicker(symbid, attname)
+       return self~ConnectDateTimePicker(symbid, attname)
    end
-
+   return 0
 
 ::method AddMonthCalendar
    use arg id, attname, x, y, cx, cy, opts
@@ -393,22 +360,11 @@
    if id < 0 then return id
    if Arg(2, 'O') then attname = "DATA"id
    opts = self~GetDefaultOpts(opts)
-   self~AktPtr = UsrAddNewCtrl("MONTH", self~AktPtr, id, x, y, cx, cy, opts)
+   self~activePtr = UsrAddNewCtrl("MONTH", self~activePtr, id, x, y, cx, cy, opts)
    if self~AutoDetect = 1 then do
-       self~ConnectMonthCalendar(symbid, attname)
+       return self~ConnectMonthCalendar(symbid, attname)
    end
-
-::method AddHotKey
-   use arg id, attname, x, y, cx, cy, opts
-   symbid = id
-   id = self~ItemAdd(id)
-   if id < 0 then return id
-   if Arg(2, 'O') then attname = "DATA"id
-   opts = self~GetDefaultOpts(opts)
-   self~AktPtr = UsrAddNewCtrl("HOTKEY", self~AktPtr, id, x, y, cx, cy, opts)
-   if self~AutoDetect = 1 then do
-       self~ConnectHotKey(symbid, attname)
-   end
+   return 0
 
 
 /***************************************************************************************************************/
@@ -491,6 +447,13 @@
    use arg msg, wP, lP
    return SendWinMsg("PTR", Self~hDlg, Self~Id, msg, wP, lP)
 
+-- DEPRECATED
+::method getTextSize unguarded
+  forward message "getTextSizeDlg" continue
+  return result~width result~height
+
+::method getTextSizeDlg unguarded external "LIBRARY oodialog dlgctrl_getTextSizeDlg"
+
 ::method SetColor
    use arg colorbk, colorfg
    if Arg(2,'o') = 1 then
@@ -530,12 +493,6 @@
    use arg wantGroup = .true
    if \ wantGroup~datatype('O')then return -3
    return HandleControlEx(self~hDlg, self~id, "X", "GROUP", wantGroup)
-
-::method GetStyleRaw     -- Get the control's current GWL_STYLE style
-   return HandleControlEx(self~hDlg, self~id, "X", "GET")
-
-::method GetFont
-   return HandleControlEx(self~hDlg, self~id, "F", "GET")
 
 ::method Clear
    parse value WindowRect("GET", self~Hwnd) with r.1 r.2 r.3 r.4
@@ -822,15 +779,16 @@
    if arg(1, 'O') | hItem = 0 then return -1
    return HandleTreeCtrl("SORT", self~Hwnd, hitem, 0) /* recursive not yet supported */
 
-::method SetImages
-   use arg bmp, cx, cy
-   if arg(1, 'O') then return -1
-   if arg(2, 'O') then cx = 0
-   if arg(3, 'O') then cy = 0
-   return HandleTreeCtrl("SETIMG",self~Hwnd, bmp, cx, cy)
 
-::method RemoveImages
-   return HandleTreeCtrl("UNSETIMG", self~Hwnd)
+-- DEPRECATED
+::method setImages external "LIBRARY oodialog tv_setImageList"
+
+-- DEPRECATED
+::method removeImages
+   return self~setImageList(.nil, 0)
+
+::method setImageList external "LIBRARY oodialog tv_setImageList"
+::method getImageList external "LIBRARY oodialog tv_getImageList"
 
 ::method HitTest
    use arg x, y
@@ -960,36 +918,9 @@
    if width~datatype("N") = 1 then width = width * self~FactorX
    return HandleListCtrl("C","SETWIDTH", self~Hwnd, nr, width~translate)
 
-::method GetColumnCount
-  return HandleListCtrlEx(self~hwnd, "G", "COLCOUNT")
-
-::method GetColumnOrder
-
-   retStr = HandleListCtrlEx(self~hwnd, "M", "ORDER")
-   if retStr~datatype('W') then return retStr
-
-   retArray = .array~new
-   do i = 1 to retStr~words
-     retArray~append(retStr~word(i))
-   end
-   return retArray
-
-::method SetColumnOrder
-   use strict arg order
-   if \ order~isInstanceOf(.array) then return -3
-
-   count = order~items
-   if count < 2 then return 0
-
-   argStr = " "
-   do i = 1 to count
-     nr = order[i]
-     if \ nr~datatype('W') then return -3
-     if \ (nr >= 0 & nr < count) then return -3
-     argStr = argStr || nr || ' '
-   end
-
-   return HandleListCtrlEx(self~hwnd, "M", 'ORDER', argStr)
+::method getColumnCount external "LIBRARY oodialog lv_getColumnCount"
+::method getColumnOrder external "LIBRARY oodialog lv_getColumnOrder"
+::method setColumnOrder external "LIBRARY oodialog lv_setColumnOrder"
 
 ::method StringWidth
    use arg text
@@ -1208,25 +1139,25 @@
    if Arg(2,'o') = 1 then partial = 0
    return HandleListCtrl("M", "ENVIS", self~Hwnd, item, partial)
 
-::method SetSmallImages
-   use arg bmp, cx, cy
-   if Arg(1,'o') = 1 then return -1
-   if Arg(2,'o') = 1 then cx = 0
-   if Arg(3,'o') = 1 then cy = 0
-   return HandleListCtrl("I", "SETIMG",self~Hwnd, bmp, cx, cy, "SMALL")
+-- DEPRECATED
+::method setSmallImages
+   newArgs = arg(1, 'A')
+   newArgs[4] = 1
+   forward message 'setImageList' arguments (newArgs)
 
-::method SetImages
-   use arg bmp, cx, cy
-   if Arg(1,'o') = 1 then return -1
-   if Arg(2,'o') = 1 then cx = 0
-   if Arg(3,'o') = 1 then cy = 0
-   return HandleListCtrl("I", "SETIMG",self~Hwnd, bmp, cx, cy, "")
+-- DEPRECATED
+::method setImages external "LIBRARY oodialog lv_setImageList"
 
+-- DEPRECATED
 ::method RemoveSmallImages
-   return HandleListCtrl("I", "UNSETIMG", self~Hwnd, "SMALL")
+   return self~removeImageList(.nil, 1)
 
+-- DEPRECATED
 ::method RemoveImages
-   return HandleListCtrl("I", "UNSETIMG", self~Hwnd, "")
+   return self~removeImageList(.nil, 0)
+
+::method setImageList external "LIBRARY oodialog lv_setImageList"
+::method getImageList external "LIBRARY oodialog lv_getImageList"
 
 ::method Find
    use arg txt, startItem, wrap
@@ -1336,9 +1267,6 @@
 
 ::method barColor external "LIBRARY oodialog pbc_setBarColor"
 ::method backgroundColor external "LIBRARY oodialog pbc_setBkColor"
-
--- For internal testing only
-::method test external "LIBRARY oodialog pbc_test"
 
 
 /******************** Track Bar Class *********************************************************/
@@ -1530,15 +1458,15 @@
 ::method Focused
    return HandleOtherNewCtrls("TAB","FOCUS",self~Hwnd, "G")
 
-::method SetImages
-   use arg bmp, cx, cy
-   if Arg(1,'o') = 1 then return -1
-   if Arg(2,'o') = 1 then cx = 0
-   if Arg(3,'o') = 1 then cy = 0
-   return HandleOtherNewCtrls("TAB","SETIMG",self~Hwnd, bmp, cx, cy)
+-- DEPRECATED
+::method setImages external "LIBRARY oodialog tab_setImageList"
 
+-- DEPRECATED
 ::method RemoveImages
-   return HandleOtherNewCtrls("TAB","UNSETIMG",self~Hwnd)
+   return self~setImageList(.nil)
+
+::method setImageList external "LIBRARY oodialog tab_setImageList"
+::method getImageList external "LIBRARY oodialog tab_getImageList"
 
 ::method SetPadding
    parse arg cx, cy
@@ -1566,19 +1494,13 @@
 
 ::class 'StaticControl' subclass DialogControl public
 
-::method SetIcon
-   use strict arg hIcon
-   return SendWinMsg("ANY", self~hwnd, "0x0170", hIcon, 0) -- 0x0170 == STM_SETICON
+::method getIcon external "LIBRARY oodialog stc_getIcon"
+::method setIcon external "LIBRARY oodialog stc_setIcon"
+::method getImage external "LIBRARY oodialog stc_getImage"
+::method setImage external "LIBRARY oodialog stc_setImage"
+::method getText external "LIBRARY oodialog stc_getText"
+::method setText external "LIBRARY oodialog stc_setText"
 
-::method GetIcon
-   return SendWinMsg("ANY", self~hwnd, "0x0171", "0x0", 0) -- 0x0171 == STM_GETICON
-
-::method SetText
-    use strict arg text
-    return HandleControlEx(self~hDlg, self~id, "E", "TXT", text)
-
-::method GetText
-    return HandleControlEx(self~hDlg, self~id, "E", "TXT")
 
 /****************************************************** Edit Control Class *********************************************************/
 
@@ -1736,25 +1658,18 @@
 
 ::class 'ButtonControl' subclass DialogControl public
 
-::constant BUTTON_IMAGELIST_ALIGN_LEFT 0
-::constant BUTTON_IMAGELIST_ALIGN_RIGHT 1
-::constant BUTTON_IMAGELIST_ALIGN_TOP 2
-::constant BUTTON_IMAGELIST_ALIGN_BOTTOM 3
-::constant BUTTON_IMAGELIST_ALIGN_CENTER 4
-
 ::method state external "LIBRARY oodialog bc_getState"
 ::method "state=" external "LIBRARY oodialog bc_setState"
 ::method "style=" external "LIBRARY oodialog bc_setStyle"
+
+::method push external "LIBRARY oodialog bc_click"
+::method click external "LIBRARY oodialog bc_click"
 
 ::method getIdealSize external "LIBRARY oodialog bc_getIdealSize"
 ::method getTextMargin external "LIBRARY oodialog bc_getTextMargin"
 ::method setTextMargin external "LIBRARY oodialog bc_setTextMargin"
 ::method setImageList external "LIBRARY oodialog bc_setImageList"
 ::method getImageList external "LIBRARY oodialog bc_getImageList"
-
-::method push external "LIBRARY oodialog bc_click"
-::method click external "LIBRARY oodialog bc_click"
-
 ::method getImage external "LIBRARY oodialog bc_getImage"
 ::method setImage external "LIBRARY oodialog bc_setImage"
 
@@ -1772,7 +1687,7 @@
    use arg x, y
    return self~oDlg~DisplaceBitmap(self~ID, x, y)
 
-::method detBmpDisplacement unguarded
+::method getBmpDisplacement unguarded
    return self~oDlg~GetBmpDisplacement(self~ID)
 
 ::method scrollText unguarded
@@ -1787,7 +1702,7 @@
    use arg xPos, yPos, left, top, right, bottom
    return ScrollTheWindow(self~oDlg~Adm, self~hwnd, xPos, yPos, left, top, right, bottom, "yes")
 
-::method setBitmapSizeX unguarded
+::method getBitmapSizeX unguarded
    return self~oDlg~GetBitmapSizeX(self~ID)
 
 ::method getBitmapSizeY unguarded
@@ -1824,20 +1739,23 @@
 
 
 ::class 'RadioButton' subclass ButtonControl public
-::method checkInGroup class external "LIBRARY oodialog bc_cls_checkInGroup"
+::method checkInGroup class external "LIBRARY oodialog rb_checkInGroup_cls"
 
-::method checked external "LIBRARY oodialog bc_checked"
-::method isChecked external "LIBRARY oodialog bc_isChecked"
-::method check external "LIBRARY oodialog bc_check"
-::method uncheck external "LIBRARY oodialog bc_uncheck"
+::method checked external "LIBRARY oodialog rb_checked"
+::method check external "LIBRARY oodialog rb_check"
+::method uncheck external "LIBRARY oodialog rb_uncheck"
+::method getCheckState external "LIBRARY oodialog rb_getCheckState"
 
-/* This method is DEPRECATED radio buttons can not be set to indeterminate. */
-::method indeterminate external "LIBRARY oodialog bc_check"
+-- DEPRECATED
+::method isChecked external "LIBRARY oodialog rb_isChecked"
+
+-- DEPRECATED
+::method indeterminate external "LIBRARY oodialog rb_indeterminate"
 
 ::class 'CheckBox' subclass RadioButton public
 
-::method indeterminate external "LIBRARY oodialog bc_indeterminate"
-::method isIndeterminate external "LIBRARY oodialog bc_isIndeterminate"
+::method setIndeterminate external "LIBRARY oodialog ckbx_setIndeterminate"
+::method isIndeterminate external "LIBRARY oodialog ckbx_isIndeterminate"
 
 /**************** List Box Class **********************************************/
 
@@ -2141,73 +2059,3 @@
    self~SetPos(pos)
    return pos
 
-
-::class 'DateTimePicker' subclass DialogControl public
-
-
-::method getDateTime  -- Get the currently selected date and time
-  return HandleDateTimePicker(self~hwnd, 'G', 'SYS')
-
-::method setDateTime
-  use strict arg hr = (time('N')~left(2)), min = (time('N')~substr(4, 5)),         -
-                 sec = (time('N')~substr(7,8)), ms = 0, dy = (date('S')~right(2)), -
-                 mn = (date('S')~substr(5, 6)), yr = (date('S')~left(4))
-
-  return HandleDateTimePicker(self~hwnd, 'S', 'SYS', hr':'min':'sec'.'ms dy mn yr)
-
-::method clear
-  return HandleDateTimePicker(self~hwnd, 'S', 'SYS')
-
-::class 'MonthCalendar' subclass DialogControl public
-
-::method init
-  expose n2Day n2Month
-
-  forward class (super) continue
-
-  n2Day = .array~of('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',    -
-                    'Friday', 'Saturday')
-
-  n2Month = .array~of('January', 'February', 'March', 'April', 'May', 'June',  -
-                      'July', 'August', 'September', 'October', 'November',    -
-                      'December')
-
-::method getDate  -- Get the currently selected date
-  expose n2Day n2Month
-  use arg format = 'COMPLETE'
-
-  ans = HandleMonthCalendar(self~hwnd, 'G', 'CUR')
-
-  select
-    when ans == 1 then ans = -1
-    when format~caselessCompare('RAW') == 0 then nop
-
-    when format~caselessCompare('NORMAL') == 0 then do
-      ans = ans~word(1) n2Month[ans~word(2)]~left(3) ans~word(3)
-    end
-
-    when format~caselessCompare('COMPLETE') == 0 then do
-      ans = n2Day[ans~word(4) + 1] || ',' n2Month[ans~word(2)] ans~word(1) || ',' ans~word(3)
-    end
-
-    otherwise ans = -1
-  end
-  -- End select
-
-  return ans
-
-::method usesUnicode
-  return HandleMonthCalendar(self~hwnd, 'G', "UNI")
-
-
-::method setDate
-  use strict arg day, month, year = (date('S')~left(4))
-  return HandleMonthCalendar(self~hwnd, 'S', 'CUR', day month year)
-
-
-::class 'HotKey' subclass DialogControl public
-
-::method set external "LIBRARY oodialog hk_set"
-::method get external "LIBRARY oodialog hk_get"
-::method toText external "LIBRARY oodialog hk_toText"
-::method rules external "LIBRARY oodialog hk_setRules"

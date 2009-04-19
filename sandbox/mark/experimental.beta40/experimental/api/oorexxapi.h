@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -74,12 +74,15 @@
 #define REXX_VALUE_int16_t                21
 #define REXX_VALUE_int32_t                22
 #define REXX_VALUE_int64_t                23
+#define REXX_VALUE___int64_t               23
 #define REXX_VALUE_uint8_t                24
 #define REXX_VALUE_uint16_t               25
 #define REXX_VALUE_uint32_t               26
 #define REXX_VALUE_uint64_t               27
+#define REXX_VALUE___uint64_t              27
 #define REXX_VALUE_intptr_t               28
 #define REXX_VALUE_uintptr_t              29
+#define REXX_VALUE___uintptr_t              29
 #define REXX_VALUE_logical_t              30
 #define REXX_VALUE_RexxArrayObject        31
 #define REXX_VALUE_RexxStemObject         32
@@ -187,7 +190,7 @@ typedef struct _RexxRoutineEntry
 #define REXX_CLASSIC_ROUTINE(n, e) REXX_ROUTINE(ROUTINE_CLASSIC_STYLE, n, e)
 #define REXX_LAST_ROUTINE()        { 0, 0, NULL, (void *)NULL, 0, 0 }
 
-#define REXX_CLASSIC_ROUTINE_PROTOTYPE(name) size_t RexxEntry name(const char *, size_t, CONSTRXSTRING *, const char *, RXSTRING *);
+#define REXX_CLASSIC_ROUTINE_PROTOTYPE(name) size_t RexxEntry name(const char *, size_t, CONSTRXSTRING *, const char *, RXSTRING *)
 
 typedef struct _RexxMethodEntry
 {
@@ -223,12 +226,12 @@ typedef struct _RexxMethodEntry
     END_EXTERN_C()
 
 
-typedef RexxReturnCode (RexxEntry *RexxPackageLoader)(RexxThreadContext *);
-typedef RexxReturnCode (RexxEntry *RexxPackageUnloader)(RexxThreadContext *);
+typedef void (RexxEntry *RexxPackageLoader)(RexxThreadContext *);
+typedef void (RexxEntry *RexxPackageUnloader)(RexxThreadContext *);
 
 typedef struct _RexxPackageEntry
 {
-    int size;                      // size of the structure...help compatibility
+    int size;                      // size of the structure...helps compatibility
     int apiVersion;                // version this was compiled with
     int requiredVersion;           // minimum required interpreter version (0 means any)
     const char *packageName;       // package identifier
@@ -275,12 +278,15 @@ typedef struct
         int16_t               value_int16_t;
         int32_t               value_int32_t;
         int64_t               value_int64_t;
+        int64_t               value___int64_t;
         uint8_t               value_uint8_t;
         uint16_t              value_uint16_t;
         uint32_t              value_uint32_t;
         uint64_t              value_uint64_t;
+        uint64_t              value___uint64_t;
         intptr_t              value_intptr_t;
         uintptr_t             value_uintptr_t;
+        uintptr_t             value___uintptr_t;
         size_t                value_size_t;
         ssize_t               value_ssize_t;
         RexxArrayObject       value_RexxArrayObject;
@@ -368,23 +374,31 @@ typedef struct
 // The set of command environments to use.  These are direct call addresses using the
 // object-oriented calling convetion.
 #define DIRECT_ENVIRONMENTS         "DirectEnvironments"
+// register a library for an in-process package
+#define REGISTER_LIBRARY            "RegisterLibrary"
+
 
 /* This typedef simplifies coding of an Exit handler.                */
 typedef RexxObjectPtr REXXENTRY RexxContextCommandHandler(RexxExitContext *, RexxStringObject, RexxStringObject);
 
 
-typedef struct _RexxContextEnvironment
+typedef struct
 {
    RexxContextCommandHandler *handler;    // the environment handler
    const char *name;                      // the handler name
 }  RexxContextEnvironment;
 
-
-typedef struct _RexxRegisteredEnvironment
+typedef struct
 {
    const char *registeredName;            // the environment handler
    const char *name;                      // the handler name
 }  RexxRegisteredEnvironment;
+
+typedef struct
+{
+   const char *registeredName;            // the package name (case sensitive)
+   RexxPackageEntry *table;               // the package table associated with the package
+}  RexxLibraryPackage;
 
 typedef struct
 {
@@ -393,9 +407,9 @@ typedef struct
 } RexxOption;
 
 
-typedef struct _RexxCondition {
-  wholenumber_t code;                   // full condition code
-  wholenumber_t rc;                     // return code value
+typedef struct {
+  wholenumber_t code;                // full condition code
+  wholenumber_t rc;                  // return code value
   size_t           position;         // line number position
   RexxStringObject conditionName;    // name of the condition
   RexxStringObject message;          // fully filled in message
@@ -448,6 +462,8 @@ typedef struct
 
     RexxPackageObject (RexxEntry *LoadPackage)(RexxThreadContext *, CSTRING d);
     RexxPackageObject (RexxEntry *LoadPackageFromData)(RexxThreadContext *, CSTRING n, CSTRING d, size_t l);
+    logical_t         (RexxEntry *LoadLibrary)(RexxThreadContext *, CSTRING n);
+    logical_t         (RexxEntry *RegisterLibrary)(RexxThreadContext *, CSTRING n, RexxPackageEntry *);
     RexxClassObject  (RexxEntry *FindClass)(RexxThreadContext *, CSTRING);
     RexxClassObject  (RexxEntry *FindPackageClass)(RexxThreadContext *, RexxPackageObject, CSTRING);
     RexxDirectoryObject (RexxEntry *GetPackageRoutines)(RexxThreadContext *, RexxPackageObject);
@@ -811,6 +827,14 @@ struct RexxThreadContext_
     RexxPackageObject LoadPackageFromData(CSTRING n, CSTRING d, size_t l)
     {
         return functions->LoadPackageFromData(this, n, d, l);
+    }
+    logical_t LoadLibrary(CSTRING n)
+    {
+        return functions->LoadLibrary(this, n);
+    }
+    logical_t RegisterLibrary(CSTRING n, RexxPackageEntry *e)
+    {
+        return functions->RegisterLibrary(this, n, e);
     }
     POINTER ObjectToCSelf(RexxObjectPtr o)
     {
@@ -1444,6 +1468,14 @@ struct RexxMethodContext_
     RexxPackageObject LoadPackageFromData(CSTRING n, CSTRING d, size_t l)
     {
         return threadContext->LoadPackageFromData(n, d, l);
+    }
+    logical_t LoadLibrary(CSTRING n)
+    {
+        return threadContext->LoadLibrary(n);
+    }
+    logical_t RegisterLibrary(CSTRING n, RexxPackageEntry *e)
+    {
+        return threadContext->RegisterLibrary(n, e);
     }
 
     POINTER ObjectToCSelf(RexxObjectPtr o)
@@ -2139,6 +2171,14 @@ struct RexxCallContext_
     {
         return threadContext->LoadPackageFromData(n, d, l);
     }
+    logical_t LoadLibrary(CSTRING n)
+    {
+        return threadContext->LoadLibrary(n);
+    }
+    logical_t RegisterLibrary(CSTRING n, RexxPackageEntry *e)
+    {
+        return threadContext->RegisterLibrary(n, e);
+    }
     POINTER ObjectToCSelf(RexxObjectPtr o)
     {
         return threadContext->ObjectToCSelf(o);
@@ -2616,15 +2656,15 @@ struct RexxCallContext_
         threadContext->ClearCondition();
     }
 
-    RexxObjectPtr NilObject()
+    RexxObjectPtr Nil()
     {
         return threadContext->Nil();
     }
-    RexxObjectPtr TrueObject()
+    RexxObjectPtr True()
     {
         return threadContext->True();
     }
-    RexxObjectPtr FalseObject()
+    RexxObjectPtr False()
     {
         return threadContext->False();
     }
@@ -2837,6 +2877,14 @@ struct RexxExitContext_
     RexxPackageObject LoadPackageFromData(CSTRING n, CSTRING d, size_t l)
     {
         return threadContext->LoadPackageFromData(n, d, l);
+    }
+    logical_t LoadLibrary(CSTRING n)
+    {
+        return threadContext->LoadLibrary(n);
+    }
+    logical_t RegisterLibrary(CSTRING n, RexxPackageEntry *e)
+    {
+        return threadContext->RegisterLibrary(n, e);
     }
     POINTER ObjectToCSelf(RexxObjectPtr o)
     {
@@ -3379,14 +3427,17 @@ RexxReturnCode RexxEntry RexxCreateInterpreter(RexxInstance **, RexxThreadContex
 #define ARGUMENT_TYPE_int16_t               int16_t
 #define ARGUMENT_TYPE_int32_t               int32_t
 #define ARGUMENT_TYPE_int64_t               int64_t
+#define ARGUMENT_TYPE___int64_t              int64_t
 #define ARGUMENT_TYPE_uint8_t               uint8_t
 #define ARGUMENT_TYPE_uint16_t              uint16_t
 #define ARGUMENT_TYPE_uint32_t              uint32_t
 #define ARGUMENT_TYPE_uint64_t              uint64_t
+#define ARGUMENT_TYPE___uint64_t             uint64_t
 #define ARGUMENT_TYPE_size_t                size_t
 #define ARGUMENT_TYPE_ssize_t               ssize_t
 #define ARGUMENT_TYPE_intptr_t              intptr_t
 #define ARGUMENT_TYPE_uintptr_t             uintptr_t
+#define ARGUMENT_TYPE___uintptr_t             uintptr_t
 #define ARGUMENT_TYPE_logical_t             logical_t
 #define ARGUMENT_TYPE_RexxArrayObject       RexxArrayObject
 #define ARGUMENT_TYPE_RexxStemObject        RexxStemObject

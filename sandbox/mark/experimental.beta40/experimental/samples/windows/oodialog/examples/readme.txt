@@ -57,3 +57,9 @@
     The FileNameDialog public routine allows a programmer to present the user
     with the standard Windows Open or Save file dialog.  The fileNameDialog_demo
     program demonstrates how to use this routine.
+
+    - imageButton.rex
+
+    This example program demonstrates some of the new features introduced in
+    ooRexx 4.0.0, including the .Image, .Imagelist classes, and the
+    setImageList() method of the button class.

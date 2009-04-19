@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,6 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 #include <windows.h>
+#include <shlwapi.h>
 #include <rexx.h>
 #include <stdio.h>
 #include <dlgs.h>
@@ -52,17 +53,20 @@ HANDLE TimerEvent = NULL;
 ULONG TimerCount = 0;
 ULONG_PTR Timer = 0;
 
-#define GETWEIGHT(opts, weight) \
-      if (strstr(opts, "THIN")) weight = FW_THIN; else \
-      if (strstr(opts, "EXTRALIGHT")) weight = FW_EXTRALIGHT; else \
-      if (strstr(opts, "LIGHT")) weight = FW_LIGHT; else \
-      if (strstr(opts, "MEDIUM")) weight = FW_MEDIUM; else \
-      if (strstr(opts, "SEMIBOLD")) weight = FW_SEMIBOLD; else \
-      if (strstr(opts, "EXTRABOLD")) weight = FW_EXTRABOLD; else \
-      if (strstr(opts, "BOLD")) weight = FW_BOLD; else \
-      if (strstr(opts, "HEAVY")) weight = FW_HEAVY; else \
-      weight = FW_NORMAL;
+int getWeight(CSTRING opts)
+{
+    int weight = FW_NORMAL;
 
+    if (StrStrI(opts, "THIN")) weight = FW_THIN; else
+    if (StrStrI(opts, "EXTRALIGHT")) weight = FW_EXTRALIGHT; else
+    if (StrStrI(opts, "LIGHT")) weight = FW_LIGHT; else
+    if (StrStrI(opts, "MEDIUM")) weight = FW_MEDIUM; else
+    if (StrStrI(opts, "SEMIBOLD")) weight = FW_SEMIBOLD; else
+    if (StrStrI(opts, "EXTRABOLD")) weight = FW_EXTRABOLD; else
+    if (StrStrI(opts, "BOLD")) weight = FW_BOLD; else
+    if (StrStrI(opts, "HEAVY")) weight = FW_HEAVY;
+    return weight;
+}
 
 
 void DrawFontToDC(HDC hDC, INT x, INT y, const char * text, INT size, const char * opts, const char * fontn, INT fgColor, INT bkColor)
@@ -71,7 +75,7 @@ void DrawFontToDC(HDC hDC, INT x, INT y, const char * text, INT size, const char
    INT weight, oldMode=0;
    COLORREF oldFg, oldBk;
 
-   GETWEIGHT(opts, weight)
+   weight = getWeight(opts);
 
    hFont = CreateFont(size, size, 0, 0, weight, strstr(opts, "ITALIC") != 0, strstr(opts, "UNDERLINE") != 0,
                strstr(opts, "STRIKEOUT") != 0, DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, fontn);
@@ -186,7 +190,7 @@ size_t RexxEntry ScrollText(const char *funcname, size_t argc, CONSTRXSTRING *ar
     {
         GetWindowRect(w, &r);
 
-        GETWEIGHT(opts, weight)
+        weight = getWeight(opts);
 
         hFont = CreateFont(size, size, 0, 0, weight, strstr(opts, "ITALIC") != NULL, strstr(opts, "UNDERLINE") != NULL,
                            strstr(opts, "STRIKEOUT") != NULL, DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DRAFT_QUALITY, FF_DONTCARE, argv[3].strptr);
@@ -314,45 +318,3 @@ size_t RexxEntry ScrollText(const char *funcname, size_t argc, CONSTRXSTRING *ar
     RETC(1);
 }
 
-
-
-size_t RexxEntry HandleFont(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
-{
-   CHECKARGL(3);
-
-   if (!strcmp(argv[0].strptr, "CREATE"))
-   {
-       HFONT hFont;
-       INT weight;
-       CHECKARG(5);
-
-       GETWEIGHT(argv[3].strptr, weight)
-
-       hFont = CreateFont(atoi(argv[2].strptr), atoi(argv[4].strptr), 0, 0, weight, strstr(argv[3].strptr, "ITALIC") != NULL, strstr(argv[3].strptr, "UNDERLINE") != NULL,
-                   strstr(argv[3].strptr, "STRIKEOUT") != NULL, DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, argv[1].strptr);
-
-       if (hFont)
-       {
-           RETHANDLE(hFont);
-       }
-       RETC(0);
-   }
-   else if (!strcmp(argv[0].strptr, "SIZE"))
-   {
-       HDC hDC;
-       SIZE s;
-
-       hDC = (HDC)GET_HANDLE(argv[1]);
-       if (hDC)
-       {
-         if (GetTextExtentPoint32(hDC, argv[2].strptr, (int)argv[2].strlength, &s))
-         {
-             sprintf(retstr->strptr, "%ld %ld", s.cx, s.cy);
-             retstr->strlength = strlen(retstr->strptr);
-             return 0;
-         }
-       }
-       RETC(0);
-   }
-   RETC(1);
-}

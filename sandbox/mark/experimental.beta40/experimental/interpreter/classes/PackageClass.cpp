@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -363,12 +363,12 @@ PackageClass *PackageClass::loadPackage(RexxString *name, RexxArray *s)
     // if no source provided, this comes from a file
     if (s == OREF_NULL)
     {
-        return source->loadRequired(name);
+        return source->loadRequires(ActivityManager::currentActivity, name);
     }
     else
     {
         s = arrayArgument(s, "source");
-        return source->loadRequired(name, s);
+        return source->loadRequires(ActivityManager::currentActivity, name, s);
     }
 }
 
@@ -547,6 +547,8 @@ PackageClass *PackageClass::newRexx(
     RexxObject *pgmname;                 /* method name                       */
     RexxObject *_source;                  /* Array or string object            */
     size_t initCount = 0;                /* count of arguments we pass along  */
+    RexxActivity *activity = ActivityManager::currentActivity;
+    InterpreterInstance *instance = activity->getInstance();
 
                                          /* break up the arguments            */
 
@@ -554,19 +556,20 @@ PackageClass *PackageClass::newRexx(
 
     PackageClass *package = OREF_NULL;
 
-    ProtectedObject p;
-
     /* get the package name as a string   */
     RexxString *nameString = stringArgument(pgmname, "name");
     if (_source == OREF_NULL)
     {
-        RexxString *resolvedName = ActivityManager::currentActivity->getInstance()->resolveProgramName(nameString, OREF_NULL, OREF_NULL);
-        package = PackageManager::loadRequires(ActivityManager::currentActivity, nameString, resolvedName, p);
+        // if no directly provided source, resolve the name in the global context and have the instance
+        // load the file.
+        RexxString *resolvedName = instance->resolveProgramName(nameString, OREF_NULL, OREF_NULL);
+        package = instance->loadRequires(activity, nameString, resolvedName);
     }
     else
     {
+        // add this to the instance context
         RexxArray *sourceArray = arrayArgument(_source, "source");
-        package = PackageManager::loadRequires(ActivityManager::currentActivity, nameString, sourceArray, p);
+        package = instance->loadRequires(activity, nameString, sourceArray);
     }
 
     /* Give new object its behaviour     */
@@ -596,4 +599,48 @@ RexxObject *PackageClass::loadLibrary(RexxString *name)
     // may need to bootstrap it up first.
     LibraryPackage *package = PackageManager::loadLibrary(name);
     return package == NULL ? TheFalseObject : TheTrueObject;
+}
+
+
+/**
+ * Return the package-defined digits setting
+ *
+ * @return The digits setting defined for this package.
+ */
+RexxObject *PackageClass::digits()
+{
+    return new_integer(source->getDigits());
+}
+
+
+/**
+ * Return the package-defined default fuzz setting.
+ *
+ * @return The package defined fuzz setting.
+ */
+RexxObject *PackageClass::fuzz()
+{
+    return new_integer(source->getFuzz());
+}
+
+
+/**
+ * Return the package-defined default form setting.
+ *
+ * @return The default form setting.
+ */
+RexxObject *PackageClass::form()
+{
+    return source->getForm() == Numerics::FORM_SCIENTIFIC ? OREF_SCIENTIFIC : OREF_ENGINEERING;
+}
+
+
+/**
+ * Return the package-defined default trace setting.
+ *
+ * @return The string-formatted trace setting.
+ */
+RexxObject *PackageClass::trace()
+{
+    return source->getTrace();
 }

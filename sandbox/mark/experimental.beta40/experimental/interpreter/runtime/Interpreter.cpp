@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -102,6 +102,7 @@ void Interpreter::processStartup()
     createLocks();
     ActivityManager::createLocks();
     RexxMemory::createLocks();
+    // make sure we have a session queue created for this process
 }
 
 void Interpreter::processShutdown()
@@ -133,6 +134,7 @@ void Interpreter::startInterpreter(InterpreterStartupMode mode)
         // initialize the memory manager , and restore the
         // memory image
         memoryObject.initialize(mode == RUN_MODE);
+        RexxCreateSessionQueue();
         // create our instances list
         interpreterInstances = new_list();
         // if we have a local server created already, don't recurse.
@@ -208,6 +210,17 @@ bool Interpreter::terminateInterpreter()
         RexxDeleteSessionQueue();
     }
     return true;
+}
+
+
+/**
+ * Quick test if we're down to just a single interpreter instance.
+ *
+ * @return true if we're down to a single interpreter instance.
+ */
+bool Interpreter::lastInstance()
+{
+    return interpreterInstances->items() == 1;
 }
 
 
@@ -306,9 +319,10 @@ bool Interpreter::terminateInterpreterInstance(InterpreterInstance *instance)
 /**
  * Tell the interpreter to have all of the instances halt its activities.
  */
-void Interpreter::haltAllActivities()
+bool Interpreter::haltAllActivities()
 {
     ResourceSection lock;
+    bool result = true;
 
     for (size_t listIndex = interpreterInstances->firstIndex() ;
          listIndex != LIST_END;
@@ -318,8 +332,9 @@ void Interpreter::haltAllActivities()
                                          /*process                            */
         InterpreterInstance *instance = (InterpreterInstance *)interpreterInstances->getValue(listIndex);
         // halt every thing
-        instance->haltAllActivities();
+        result = result && instance->haltAllActivities();
     }
+    return result;
 }
 
 

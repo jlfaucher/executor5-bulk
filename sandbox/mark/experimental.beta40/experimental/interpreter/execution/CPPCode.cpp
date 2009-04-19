@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -41,6 +41,7 @@
 #include "ActivityManager.hpp"
 #include "ProtectedObject.hpp"
 #include "Interpreter.hpp"
+#include "RexxVariableDictionary.hpp"
 
 
 /**
@@ -238,7 +239,19 @@ void AttributeGetterCode::run(RexxActivity *activity, RexxMethod *method, RexxOb
     {
         reportException(Error_Incorrect_method_maxarg, (wholenumber_t)0);
     }
-    result = attribute->getValue(receiver->getObjectVariables(method->getScope()));
+    // this is simplier if the method is not guarded
+    if (!method->isGuarded())
+    {
+        result = attribute->getValue(receiver->getObjectVariables(method->getScope()));
+    }
+    else {
+        // get the variable pool and get the guard lock
+        RexxVariableDictionary *objectVariables = receiver->getObjectVariables(method->getScope());
+        objectVariables->reserve(activity);
+        result = attribute->getValue(objectVariables);
+        // and ensure we release this afterwards
+        objectVariables->release(activity);
+    }
 }
 
 
@@ -252,7 +265,7 @@ void AttributeGetterCode::run(RexxActivity *activity, RexxMethod *method, RexxOb
 void *AttributeSetterCode::operator new(size_t size)
 {
     // just allocate ane return
-    return new_object(size, T_AttributeGetterCode);
+    return new_object(size, T_AttributeSetterCode);
 }
 
 
@@ -281,8 +294,21 @@ void AttributeSetterCode::run(RexxActivity *activity, RexxMethod *method, RexxOb
     {
         missingArgument(1);
     }
-    // go set the attribue
-    attribute->set(receiver->getObjectVariables(method->getScope()), argPtr[0]);
+    // this is simplier if the method is not guarded
+    if (!method->isGuarded())
+    {
+        // go set the attribue
+        attribute->set(receiver->getObjectVariables(method->getScope()), argPtr[0]);
+    }
+    else {
+        // get the variable pool and get the guard lock
+        RexxVariableDictionary *objectVariables = receiver->getObjectVariables(method->getScope());
+        objectVariables->reserve(activity);
+        // go set the attribue
+        attribute->set(objectVariables, argPtr[0]);
+        // and ensure we release this afterwards
+        objectVariables->release(activity);
+    }
 }
 
 
@@ -431,6 +457,9 @@ CPPM(RexxObject::notEqual),
 CPPM(RexxObject::setMethod),
 CPPM(RexxObject::hasMethodRexx),
 CPPM(RexxObject::start),
+CPPM(RexxObject::startWith),
+CPPM(RexxObject::send),
+CPPM(RexxObject::sendWith),
 CPPM(RexxObject::unsetMethod),
 CPPM(RexxObject::requestRexx),
 CPPM(RexxObject::makeStringRexx),
@@ -650,6 +679,10 @@ CPPM(PackageClass::addClass),
 CPPM(PackageClass::addPublicClass),
 CPPM(PackageClass::getName),
 CPPM(PackageClass::loadLibrary),
+CPPM(PackageClass::digits),
+CPPM(PackageClass::form),
+CPPM(PackageClass::fuzz),
+CPPM(PackageClass::trace),
 
 CPPM(PackageClass::newRexx),
 

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -49,7 +49,7 @@
    /* dispatch of messages      */
 
 ::method ExecuteAsync unguarded
-   use arg sleeptime, sh, icon, nomodal
+   use arg sleeptime, sh, icon = 0, nomodal
    if sleeptime~Datatype('N') = 0 then sleeptime = 10
    if Arg(2,'o') = 1 then sh = "DEFAULT"
    if Arg(4,'o') = 1 then nomodal = 0
@@ -101,7 +101,7 @@
 
    /* Run a nonmodal dialog */
 ::method Popup
-   use arg sh, sleeptime, icon
+   use arg sh, sleeptime, icon = 0
    if Arg(1,'o') = 1 then sh = "DEFAULT"
    if sleeptime~Datatype('N') = 0 then sleeptime = 10
    /* start Execute and return to caller */
@@ -109,7 +109,7 @@
 
 
 ::method PopupAsChild
-   use arg parent, sh, sleeptime, icon
+   use arg parent, sh, sleeptime, icon = 0
 
    if Arg(1,'o') = 1 | parent = 0 then do
        call ErrorMessage "No parent dialog specified!"
@@ -243,7 +243,7 @@
    use arg id, posdata, single, page
    if Arg(3,"o") = 1 then single = 1
    if Arg(4,"o") = 1 then page = 10
-   code = BinaryAnd(posdata, 0x0000FFFF)
+   code = .DlgUtil~loWord(posdata)
    parse value self~GetSBRange(id) with rmin rmax
    pos = self~GetSBPos(id)
    select
@@ -256,9 +256,9 @@
       /* page down */
       when code = 3 then pos = min(rmax,pos + page)
       /* track position */
-      when code = 4 then pos = BinaryAnd(posdata, 0xFFFF0000) % X2D("10000")
+      when code = 4 then pos = .DlgUtil~hiWord(posdata)
       /* tracking */
-      when code = 5 then pos = BinaryAnd(posdata, 0xFFFF0000) % X2D("10000")
+      when code = 5 then pos = .DlgUtil~hiWord(posdata)
       /* top */
       when code = 6 then pos = rmin
       /* bottom */
@@ -391,7 +391,7 @@
 
 ::method AddBitmapButton
    use arg id, x, y, cx, cy, text, fnk, bmp, focus, sel, disabl, opts
-   if self~AktPtr = 0 then return -2
+   if self~activePtr = 0 then return -2
    id = self~CheckId(id)
    if  id = -1 then return
    if Arg(4, 'o') = 1 then cx = 0
@@ -405,7 +405,7 @@
    if focus = "" & sel = "" & opts~wordpos("FRAME") = 0 & opts~wordpos("TAB") = 0 then opts = opts || " NOTAB"
 
    self~DialogItemCount = self~DialogItemCount + 1
-   self~AktPtr = UsrAddControl("BUT", self~AktPtr, id, x, y, cx, cy, text, opts)
+   self~activePtr = UsrAddControl("BUT", self~activePtr, id, x, y, cx, cy, text, opts)
    self~ConnectBitmapButton(id, fnk~space(0), bmp, focus, sel, disabl, opts)
 
 
@@ -896,12 +896,9 @@
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  These menu bar methods are needed to provide backward compatibility for the
-  deprecated menu methods.  The ooDialog programmer is *strongly* discouraged
-  from using them.  If the deprecated methods are removed, these will be removed
-  with them.
+  The menu methods in this block are purposively not documented.  Do NOT use
+  them in your code. The WILL be removed from ooDialog in the future.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-
 ::attribute menuBar get
 ::attribute menuBar set private
 
@@ -918,11 +915,8 @@
   menu = self~menuBar
   self~menuBar = .nil
   return menu
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  The following menu bar methods are deprecated, instead, use the Menu classes
-  directly.
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
 ::method enableMenuItem unguarded
     use strict arg id
@@ -959,9 +953,6 @@
     if self~menuBar == .nil then return -2
     return self~menuBar~getState(id)
 
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  End deprecated menu bar methods.
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
 /******************************************************************************/
 /* New extensions */
@@ -1004,7 +995,6 @@
 ::method SetWindowRect unguarded
    use arg hnd, x, y, width, high, showOptions
    if Arg(6,"o") = 1 then showOptions = ""; else showOptions = showOptions~translate
-   if hnd = 0 | hnd~datatype("N") = 0 then return -1
    return WndShow_Pos("P",hnd, x, y, width, high, showOptions)
 
    /* Redraws the given rectangle */
@@ -1107,5 +1097,4 @@
         end
         NUMERIC DIGITS d
     end
-
 

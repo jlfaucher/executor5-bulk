@@ -1,12 +1,12 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.oorexx.org/license.html                                         */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -77,11 +77,14 @@
    self~catalog['page']['rightbtntext'] = "&Next Control"
 
 ::method Deinstall
-   expose font1 font2 threadstarted
-   /* delete fonts used to display color and slider position */
+   expose font1 font2 font3 imageList threadstarted
+   /* delete created fonts and release the image list */
    self~DeleteFont(font1)
    self~DeleteFont(font2)
-   if threadstarted > 0 then call sleepms 500    /* wait until progress bar threads are finished */
+   imageList~release
+
+   /* wait until progress bar threads are finished */
+   if threadstarted > 0 then call sleepms 500
    self~deinstall:super
 
 
@@ -118,7 +121,23 @@
    lc~InsertColumn(2,"Year high", 50)
    lc~InsertColumn(3,"Year low", 50)
    lc~InsertColumn(4,"Description", 120)
-   lc~SetSmallImages("bmp\psdemolv.bmp", 16, 16)   /* Set the images for the items */
+
+   -- Set the images for the items in the list-view.  The list-view control was
+   -- created without the SHAREIMAGES styles, so it take care of releasing the
+   -- image list when the program ends.
+   image = .Image~getImage("bmp\psdemolv.bmp")
+   imageList = .ImageList~create(.Size~new(16, 16), .Image~id(ILC_COLOR8), 4, 0)
+   if \image~isNull,  \imageList~isNull then do
+      imageList~add(image)
+      lc~setImageList(imageList, .Image~id(LVSIL_SMALL))
+
+      -- The image list makes a copy of the bitmap, so we can release it now to
+      -- free up some (small) amount of system resources.  This is not
+      -- necessary, the OS will release the resource automatically when the
+      -- program ends.
+      image~release
+   end
+
    /* fill the report with random data */
    do ch = "A"~c2d to "Z"~c2d
        q = Random(200)
@@ -135,13 +154,22 @@
    self~ConnectTreeNotify(100,"BeginDrag","DefTreeDragHandler")   /* support drag and drop (default behaviour) */
    tc = self~GetTreeControl(100)  /* category specifier is not required in InitXXX methods */
    if tc == .Nil then return
-   tc~SetImages("bmp\psdemotv.bmp",32,32)   /* set images for the items */
+
+   /* set images for the items */
+   image = .Image~getImage("bmp\psdemotv.bmp")
+   imageList = .ImageList~create(.Size~new(32, 32), .Image~id(ILC_COLOR8), 10, 0)
+   if \image~isNull,  \imageList~isNull then do
+      imageList~add(image)
+      tc~setImageList(imageList, .Image~id(TVSIL_NORMAL))
+      image~release
+   end
+
    /* add the tree */
    tc~Add("Toys",1)       /* this is a root (first argument specified) */
    tc~Add(,"Indoor")      /* this is a subitem (leading arguments omitted) */
-   tc~Add(,,"Boys")
-   tc~Add(,,,"Cowboys")
-   tc~Add(,,,"Cars",8)
+   tc~Add(,,"Boys")       -- the last numeric argument in some of the items is
+   tc~Add(,,,"Cowboys")   -- the index for the icon in the image list.  Those
+   tc~Add(,,,"Cars",8)    -- items without a number will not display an icon.
    tc~Add(,,,"Starwars",9)
    tc~Add(,,"Girls")
    tc~Add(,,,"Barby")
@@ -161,8 +189,8 @@
    tc~Add(,,,"Bucket")
    tc~Add(,,,"Sandbox")
    tc~Add(,,"Technical")
-   tc~Add(,,,"Trains")
-   tc~Add(,,,"Remote controlled")
+   tc~Add(,,,"Trains",7)
+   tc~Add(,,,"Remote controlled",8)
    tc~Add("Office Articles",2)
    tc~Add(,"Tools")
    tc~Add(,"Books")
@@ -248,13 +276,52 @@
 
 
 ::method InitTabControl
-   expose font2
+   expose font2 font3 imageList iconsRemoved needWrite
+
    self~ConnectDraw(200,"OnDrawTabRect")    /* sent when the owner-drawn button is to be redrawn */
    self~ConnectTabNotify(100, "SELCHANGE", "OnTabSelChange")    /* sent when another tab is selected */
    tc = self~GetTabControl(100,5)
    if tc == .Nil then return
-   tc~AddSequence("Red","Green","Moss","Blue","Purple","Cyan","Gray")  /* Add all tabs */
-   font2 = self~CreateFont("Arial", 48, "BOLD ITALIC")    /* font used to display the color name in the owner-drawn button */
+
+   /* font used to display the color name in the owner-drawn button */
+   font2 = self~CreateFont("Arial", 48, "BOLD ITALIC")
+   /* font used to display some informative text in the owner-drawn button */
+   font3 = self~CreateFont("Arial", 16, "BOLD")
+
+   -- Add all the tabs, including the index into the image list for an icon for
+   -- each tab.
+   tc~AddFullSeq("Red", 0, ,"Green", 1, , "Moss", 2, , "Blue", 3, , "Purple", 4, , "Cyan", 5, , "Gray", 6)
+
+   -- Create a COLORREF (pure white) and load our bitmap.  The bitmap is a
+   -- series of 16x16 images, each one a colored letter.
+   cRef = .Image~colorRef(255, 255, 255)
+   image = .Image~getImage("bmp\psdemoTab.bmp")
+
+   -- Create our image list, as a masked image list.
+   imageList = .ImageList~create(.Size~new(16, 16), .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK)), 10, 0)
+   if \image~isNull,  \imageList~isNull then do
+      -- The bitmap is added and the image list deduces the number of images
+      -- from the width of the bitmap.  For each image, the image list creates a
+      -- mask using the color ref.  In essence, the mask is used to turn each
+      -- white pixel in the image to transparent.  In this way, only the letter
+      -- part of the image shows and the rest of the image lets the under-lying
+      -- color show through.
+      imageList~addMasked(image, cRef)
+      tc~setImageList(imageList)
+
+      -- The image list makes a copy of each image added to it.  So, we can now
+      -- release the original image to free up some small amount of system
+      -- resoureces.
+      image~release
+
+      -- Set the iconsRemoved and needWrite to false.  These flags are used in
+      -- the OnDrawTabRect() method.
+      iconsRemoved = .false
+      needWrite = .false
+   end
+   else do
+      iconsRemoved = .true
+   end
 
 
    /* refresh labels that display slider position when associated slider was moved */
@@ -278,15 +345,33 @@
 
    /* fill the owner-drawn button with the selected color and display the color name */
 ::method OnDrawTabRect
-   expose font2
+   expose font2 font3 imageList iconsRemoved needWrite
    use arg id
+
    but = self~GetButtonControl(id,5)
    if but == .Nil then return
    tc = self~GetTabControl(100,5)
    if tc == .Nil then return
-   /* get button's device context, create pen ans brush and assign to device context */
+
+   -- Each time the 'Gray' tab is selected, we remove the tab icons.  Then, when
+   -- one of the other tabs is selected we set the  image list back.
+   currentTab = tc~selected
+   if currentTab == 'Gray' then do
+      tc~setImageList(.nil)
+      iconsRemoved = .true
+      needWrite = .true
+   end
+   else do
+      if iconsRemoved then do
+         tc~setImageList(imageList)
+         iconsRemoved = .false
+         needWrite = .true
+      end
+   end
+
+   /* get button's device context, create pen and brush and assign to device context */
    dc = but~GetDC
-   pen = but~CreatePen(size, "SOLID", 0)
+   pen = but~CreatePen(1, "SOLID", 0)
    oldpen = but~ObjectToDc(dc, pen)
    brush = but~CreateBrush(tc~SelectedIndex+1)
    oldbrush = but~ObjectToDc(dc, brush)
@@ -295,6 +380,15 @@
    /* draw rectangle and write text */
    but~Rectangle(dc, 5,5,but~SizeX * but~FactorX - 10, but~SizeY * but~FactorY - 10,"FILL")
    but~WriteDirect(dc,30,50,tc~Selected)
+
+   -- Add informative text if needed.
+   if needWrite then do
+      but~FontToDC(dc, font3)
+      if currentTab == 'Gray' then but~WriteDirect(dc, 30, 120, "(Tab icons are removed)")
+      else but~WriteDirect(dc, 30, 120, "(Tab icons are restored)")
+      needWrite = .false
+   end
+
    /* restore pen, brush, and font and release device context */
    but~FontToDC(dc, oldfont)
    but~OpaqueText(dc)

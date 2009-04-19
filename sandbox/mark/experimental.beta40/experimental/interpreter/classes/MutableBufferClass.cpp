@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                        MutableBufferClass.c    */
+/* REXX Kernel                                                                */
 /*                                                                            */
 /* Primitive MutableBuffer Class                                              */
 /*                                                                            */
@@ -372,7 +372,7 @@ RexxMutableBuffer *RexxMutableBuffer::overlay(RexxObject *str, RexxObject *pos, 
     }
 
     // now overlay the string data
-    data->copyData(begin, string->getStringData(), replaceLength);
+    data->copyData(begin, string->getStringData(), Numerics::minVal(replaceLength, string->getLength()));
     // do we need additional padding?
     if (replaceLength > string->getLength())
     {
@@ -1087,7 +1087,7 @@ RexxMutableBuffer *RexxMutableBuffer::translate(RexxString *tableo, RexxString *
         }
         else
         {
-            position = (size_t)ch;            /* position is the character value   */
+            position = ((size_t)ch) & 0xff;     /* position is the character value   */
         }
         if (position != (size_t)(-1))
         {     /* found in the table?               */

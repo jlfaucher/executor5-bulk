@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -130,7 +130,7 @@ public:
     inline bool error() { return errInfo != 0; }
     inline int  errorInfo() { return errInfo; }
     inline void clearErrors() { errInfo = 0; }
-    inline bool atEof() { return fileeof; }
+    inline bool atEof() { return !hasBufferedInput() && fileeof; }
     inline bool hasBufferedInput() { return buffered && (bufferedInput > bufferPosition); }
     inline int  getHandle() { return fileHandle; }
 
@@ -157,7 +157,7 @@ protected:
     bool   writeBuffered;   // false == read, true == write
     bool   append;          // opened in append mode
     int64_t filePointer;    // current file pointer location
-    char   ungetchar;       // a pushed back character value
+    int    ungetchar;       // a pushed back character value
     bool   fileeof;         // have we reached eof?
 };
 

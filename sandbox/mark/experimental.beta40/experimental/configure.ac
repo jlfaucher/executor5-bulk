@@ -55,6 +55,7 @@ AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
 AC_PROG_CPP
+AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
@@ -124,14 +125,14 @@ case "$target" in
 #     ORX_SHARED_LIBRARY_EXT=".a"
       case "$CXX" in
          g++)
-            CC_WARNINGS="-maix32 -mthreads $GCC_WARNINGS"
-            CXX_WARNINGS="-maix32 -mthreads $GCXX_WARNINGS"
+            CC_WARNINGS="-maix32 -pthread $GCC_WARNINGS"
+            CXX_WARNINGS="-maix32 -pthread $GCXX_WARNINGS"
             ;;
          xlC_r)
             CC_WARNINGS="$XLC_WARNINGS"
             CXX_WARNINGS="$XLCXX_WARNINGS"
-            LDFLAGS="-Wl,-brtl"
-            ORX_INIT_LDFLAGS="-Wl,-binitfini:_init:_fini -Wl,-bmaxdata:0x80000000"
+            ORX_LDFLAGS_PACKAGE=""
+            ORX_INIT_LDFLAGS="-Wl,-binitfini:_init:_fini"
             ;;
          *)
 dnl         AC_MSG_ERROR("Compiler $CXX is not supported on this platform")
@@ -432,14 +433,17 @@ AC_CONFIG_FILES([
         samples/windows/ole/methinfo/Makefile
         samples/windows/ole/oleinfo/Makefile
         samples/windows/ole/wmi/Makefile
+        samples/windows/ole/wmi/sysinfo/Makefile
         samples/windows/oodialog/Makefile
         samples/windows/oodialog/bmp/Makefile
         samples/windows/oodialog/examples/Makefile
+        samples/windows/oodialog/examples/resources/Makefile
         samples/windows/oodialog/rc/Makefile
         samples/windows/oodialog/res/Makefile
         samples/windows/oodialog/tutorial/Makefile
         samples/windows/oodialog/wav/Makefile
         samples/windows/rexutils/Makefile
+        samples/windows/winsystem/Makefile
         samples/windows/wsh/Makefile
         xsl.sh
         platform/unix/oorexx-config

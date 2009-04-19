@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -51,6 +51,14 @@
 
 #include "RexxCore.h"
 
+#if defined( HAVE_SIGNAL_H )
+# include <signal.h>
+#endif
+
+#if defined( HAVE_SYS_SIGNAL_H )
+# include <sys/signal.h>
+#endif
+
 
 class InterpreterInstance;
 class RexxActivation;
@@ -95,6 +103,10 @@ public:
     static void setupProgram(RexxActivation *activation);
     static void loadImage(char **imageBuffer, size_t *imageSize);
     static RexxBuffer *readProgram(const char *file_name);
+
+    static sigset_t oldmask;       // masks used for setting signal handlers
+    static sigset_t newmask;
+
 };
 
 #endif
