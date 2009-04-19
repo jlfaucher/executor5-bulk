@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -103,11 +103,26 @@
 
 ::routine systemMetrics public
    use strict arg index
-   return GetSysMetrics(index)
+   return .DlgUtil~getSystemMetrics(index)
 
+/** The following routines are needed to maintain backward compatibilty with
+ *  pre-4.0.0, because a classic Rexx external function with the same name was
+ *  documented.
+ */
+::routine GetSysMetrics public
+  use strict arg index
+  return .DlgUtil~getSystemMetrics(index)
 
-/*-------------------------------- shortcut routines ---------------------------------*/
+::routine InstMMFuncs public
+  return 1
 
+::routine BinaryAnd public
+  use strict arg n1, n2
+  return .DlgUtil~and(n1, n2)
+
+/* ----- End compatibility routines. -----------------------------------------*/
+
+/*-------------------------- shortcut routines -------------------------------*/
 
 ::routine TimedMessage public
    use arg msg, title, duration, earlyReply = .false

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,12 +35,10 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#include <windows.h>
-#include "oorexxapi.h"
+#include "oovutil.h"     // Must be first, includes windows.h and oorexxapi.h
 #include <stdio.h>
 #include <dlgs.h>
 #include <malloc.h>
-#include "oovutil.h"
 #include <limits.h>
 
 LPWORD lpwAlign(LPWORD lpIn);

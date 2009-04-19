@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -90,6 +90,7 @@ public:
     static void startInterpreter(InterpreterStartupMode mode);
     static inline bool isTerminated() { return !active; }
     static inline bool isActive() { return active; }
+    static bool lastInstance();
     static InterpreterInstance *createInterpreterInstance(RexxOption *options);
     static inline InterpreterInstance *createInterpreterInstance() { return createInterpreterInstance(NULL); }
     static bool terminateInterpreterInstance(InterpreterInstance *instance);
@@ -129,7 +130,7 @@ public:
     static wholenumber_t messageNumber(RexxString *);
     static inline void setTimeSliceElapsed() { timeSliceElapsed = true; }
     static inline void clearTimeSliceElapsed() { timeSliceElapsed = false; }
-    static void haltAllActivities();
+    static bool haltAllActivities();
     static void decodeConditionData(RexxDirectory *conditionObj, RexxCondition *condData);
     static RexxClass *findClass(RexxString *className);
     static RexxString *getCurrentQueue();

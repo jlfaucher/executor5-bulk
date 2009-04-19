@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -205,7 +205,7 @@ RexxInteger *RexxExpressionStack::requiredIntegerArg(
     }
     /* return the string form of argument*/
     wholenumber_t numberValue;           /* converted long value              */
-    if (!argument->requestNumber(numberValue, Numerics::DEFAULT_DIGITS))
+    if (!argument->requestNumber(numberValue, Numerics::ARGUMENT_DIGITS))
     {
         /* report an exception               */
         reportException(Error_Incorrect_call_whole, function, argcount - position, argument);
@@ -236,7 +236,7 @@ RexxInteger *RexxExpressionStack::optionalIntegerArg(
     }
     /* return the string form of argument*/
     wholenumber_t numberValue;           /* converted long value              */
-    if (!argument->requestNumber(numberValue, Numerics::DEFAULT_DIGITS))
+    if (!argument->requestNumber(numberValue, Numerics::ARGUMENT_DIGITS))
     {
         /* report an exception               */
         reportException(Error_Incorrect_call_whole, function, argcount - position, argument);

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -76,8 +76,8 @@ class RexxNativeActivation : public RexxActivationBase
   void run(CallbackDispatcher &dispatcher);
   RexxVariableDictionary *methodVariables();
   bool   isInteger(RexxObject *);
-  wholenumber_t wholeNumberValue(RexxObject *o, size_t position, wholenumber_t maxValue, wholenumber_t minValue);
-  stringsize_t unsignedNumberValue(RexxObject *o, size_t position, stringsize_t maxValue);
+  wholenumber_t signedIntegerValue(RexxObject *o, size_t position, wholenumber_t maxValue, wholenumber_t minValue);
+  stringsize_t unsignedIntegerValue(RexxObject *o, size_t position, stringsize_t maxValue);
   int64_t int64Value(RexxObject *o, size_t position);
   uint64_t unsignedInt64Value(RexxObject *o, size_t position);
   const char *cstring(RexxObject *);
@@ -175,6 +175,8 @@ class RexxNativeActivation : public RexxActivationBase
   inline void enableConditionTrap() { trapConditions = true; }
 
   void forwardMessage(RexxObject *to, RexxString *msg, RexxClass *super, RexxArray *args, ProtectedObject &result);
+  void enableConditionTraps() { trapErrors = true; }
+  void disableConditionTraps() { trapErrors = false; }
 
 protected:
 

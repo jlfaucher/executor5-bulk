@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -53,6 +53,7 @@
 #include "RexxActivation.hpp"
 #include "RexxNativeActivation.hpp"
 #include "MethodClass.hpp"
+#include "PackageClass.hpp"
 #include "SourceFile.hpp"
 #include "DirectoryClass.hpp"
 #include "ProtectedObject.hpp"
@@ -279,7 +280,7 @@ RexxObject *RoutineClass::callRexx(RexxObject **args, size_t count)
 RexxObject *RoutineClass::callWithRexx(RexxArray *args)
 {
     // this is required and must be an array
-    args = arrayArgument(args, 1);
+    args = arrayArgument(args, ARG_ONE);
 
     ProtectedObject result;
 
@@ -461,6 +462,7 @@ RoutineClass *RoutineClass::newRoutineObject(RexxString *pgmname, RexxObject *so
             }
         }
     }
+
     // create the routine
     RoutineClass *result = new RoutineClass(pgmname, newSourceArray);
     ProtectedObject p(result);
@@ -563,7 +565,7 @@ RoutineClass *RoutineClass::newRexx(
     RexxClass::processNewArgs(init_args, argCount, &init_args, &initCount, 2, (RexxObject **)&pgmname, (RexxObject **)&_source);
     /* get the method name as a string   */
     RexxString *nameString = stringArgument(pgmname, ARG_ONE);
-    required_arg(_source, TWO);          /* make sure we have the second too  */
+    requiredArgument(_source, ARG_TWO);          /* make sure we have the second too  */
 
     RexxSource *sourceContext = OREF_NULL;
     // retrieve extra parameter if exists
@@ -578,19 +580,13 @@ RoutineClass *RoutineClass::newRexx(
         {
             sourceContext = ((RoutineClass *)option)->getSourceObject();
         }
+        else if (isOfClass(Package, option))
+        {
+            sourceContext = ((PackageClass *)option)->getSourceObject();
+        }
         else
         {
-            // this must be a string (or convertable) and have a specific value
-            option = option->requestString();
-            if (option == TheNilObject)
-            {
-                reportException(Error_Incorrect_method_argType, IntegerThree, "Method/String object");
-            }
-            // default given? set option to NULL (see code below)
-            if (!((RexxString *)option)->strCaselessCompare("PROGRAMSCOPE"))
-            {
-                reportException(Error_Incorrect_call_list, "NEW", IntegerThree, "\"PROGRAMSCOPE\", Method object", option);
-            }
+            reportException(Error_Incorrect_method_argType, IntegerThree, "Method, Routine, or Package object");
         }
     }
 

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  stream.c      */
+/* REXX Kernel                                                                */
 /*                                                                            */
 /* Stream processing (stream oriented file systems)                           */
 /*                                                                            */
@@ -718,14 +718,16 @@ void StreamInfo::implicitOpen(int type)
     resolveStreamName();
 
     // first try for read/write and open file without create if specified
+    // If this is an implicit open, try to open for shared readwrite, otherwise
+    // we'll break the stream BIFs with nested calls.
     read_write = true;
     if (type == operation_nocreate)
     {
-        open(O_RDWR | RX_O_BINARY, IREAD_IWRITE, RX_SH_DENYRW);
+        open(O_RDWR | RX_O_BINARY, IREAD_IWRITE, RX_SH_DENYWR);
     }
     else
     {
-        open(RDWR_CREAT | RX_O_BINARY, IREAD_IWRITE, RX_SH_DENYRW);
+        open(RDWR_CREAT | RX_O_BINARY, IREAD_IWRITE, RX_SH_DENYWR);
     }
 
     // if there was an open error and we have the info to try again - doit
@@ -738,12 +740,12 @@ void StreamInfo::implicitOpen(int type)
         {
             // In Windows, all files are readable. Therefore S_IWRITE is
             // equivalent to S_IREAD | S_IWRITE.
-            open(O_WRONLY | RX_O_BINARY, IREAD_IWRITE, RX_SH_DENYRW);
+            open(O_WRONLY | RX_O_BINARY, IREAD_IWRITE, RX_SH_DENYWR);
             write_only = true;
         }
         else
         {
-            open(O_RDONLY | RX_O_BINARY, S_IREAD, RX_SH_DENYRW);
+            open(O_RDONLY | RX_O_BINARY, S_IREAD, RX_SH_DENYWR);
             read_only = true;
         }
 
@@ -1057,6 +1059,32 @@ void StreamInfo::setPosition(int64_t position, int64_t &newPosition)
 }
 
 /**
+ * Move the stream position, with error checking.
+ *
+ * @param position The target position.
+ * @param newPosition
+ *                 The updated final position of the move.
+ */
+void StreamInfo::setPosition(int64_t offset, int style, int64_t &newPosition)
+{
+    // if doing absolute positioning, then we need to fudge the offset
+    if (style == SEEK_SET)
+    {
+        offset--;
+    }
+    // Seek to the target position, if possible.  The request position
+    // is a 1-based character number.  We need to convert this into
+    // a zero-based one before moving.
+    if (!fileInfo.seek(offset, style, newPosition))
+    {
+        // Failed, raise a not ready condition.
+        checkEof();
+    }
+    // convert the target position back to 1-based.
+    newPosition++;
+}
+
+/**
  * Sets the current read position for the stream.  This
  * updates charReadPosition to point to the target location.
  *
@@ -1207,6 +1235,8 @@ RexxStringObject StreamInfo::readVariableLine()
         {
             checkEof();
         }
+        // update the size of the line now
+        currentLength += bytesRead;
 
         // Check for new line character first.  If we are at eof and the last
         // line ended in a new line, we don't want the \n in the returned
@@ -1215,20 +1245,19 @@ RexxStringObject StreamInfo::readVariableLine()
         // If we have a new line character in the last position, we have
         // a line.  The gets() function has translated crlf sequences into
         // single lf characters.
-        if (buffer[bytesRead - 1] == '\n')
+        if (buffer[currentLength - 1] == '\n')
         {
             lineReadIncrement();
-            return context->NewString(buffer, currentLength + bytesRead - 1);
+            return context->NewString(buffer, currentLength - 1);
         }
 
         // No new line but we hit end of file reading this?  This will be the
         // entire line then.
-        if (fileInfo.atEof() && !fileInfo.hasBufferedInput())
+        if (fileInfo.atEof())
         {
             lineReadIncrement();
-            return context->NewString(bufferAddress, currentLength + bytesRead);
+            return context->NewString(buffer, currentLength);
         }
-        currentLength += bytesRead;
         buffer = extendBuffer(bufferSize);
     }
 }
@@ -1274,7 +1303,7 @@ void StreamInfo::appendVariableLine(RexxArrayObject result)
 
         // No new line but we hit end of file reading this?  This will be the
         // entire line then.
-        if (fileInfo.atEof() && !fileInfo.hasBufferedInput())
+        if (fileInfo.atEof())
         {
             lineReadIncrement();
             context->ArrayAppendString(result, buffer, currentLength + bytesRead);
@@ -1433,14 +1462,18 @@ size_t StreamInfo::charout(RexxStringObject data, bool _setPosition, int64_t pos
     {
         setCharWritePosition(position);
     }
-    // now write everything out
-    size_t bytesWritten;
-    writeBuffer(stringData, length, bytesWritten);
-    // unable to write for some reason?
-    if (bytesWritten != length)
+    // only write if this is not a null string
+    if (length > 0)
     {
-        defaultResult = context->WholeNumberToObject(length - bytesWritten);
-        notreadyError();
+        // now write everything out
+        size_t bytesWritten;
+        writeBuffer(stringData, length, bytesWritten);
+        // unable to write for some reason?
+        if (bytesWritten != length)
+        {
+            defaultResult = context->WholeNumberToObject(length - bytesWritten);
+            notreadyError();
+        }
     }
     // reset any line positioning information.
     resetLinePositions();
@@ -2186,8 +2219,8 @@ const char *StreamInfo::streamOpen(const char *options)
     {
         // No options, set the defaults.
         read_write = true;
-        append = true;
-        oflag |= RDWR_CREAT | O_APPEND;
+        append = false;
+        oflag |= RDWR_CREAT;
         pmode |= IREAD_IWRITE;
 
         // TODO: note that the docs say the default shared mode is SHARED.  But,
@@ -2539,7 +2572,9 @@ int64_t StreamInfo::streamPosition(const char *options)
     {
         if (append)    /* opened append?                    */
         {
-            return 0;                       /* cause a notready condition        */
+
+            notreadyError(0);             // cause a notready condition
+            return 0;
         }
     }
                                           /* if moving the read position -     */
@@ -2569,7 +2604,7 @@ int64_t StreamInfo::streamPosition(const char *options)
         if (position_flags & operation_read)
         {
             // make sure the file pointer is positioned appropriately.
-            setPosition(charReadPosition, charReadPosition);
+            setPosition(offset, style, charReadPosition);
 
             // record the one-based position, and if moving both, update the
             // write position too.
@@ -2582,7 +2617,7 @@ int64_t StreamInfo::streamPosition(const char *options)
         else
         {
             // make sure the file pointer is positioned appropriately.
-            setPosition(charWritePosition, charWritePosition);
+            setPosition(offset, style, charWritePosition);
 
             // We don't need to handle the
             // read position here, since the case above catches both.
@@ -2879,6 +2914,7 @@ RexxObjectPtr StreamInfo::queryStreamPosition(const char *options)
     {
         return context->NullString();
     }
+
     // transient streams alwasy return 1
     if (transient)
     {
@@ -3280,7 +3316,7 @@ RexxMethod1(CSTRING, query_streamtype, CSELF, streamPtr)
  *
  * @return The int64_t size of the stream.  Devices return a 0 size.
  */
-int64_t StreamInfo::getStreamSize()
+RexxObjectPtr StreamInfo::getStreamSize()
 {
     // if we're open, return the current fstat() information,
     // otherwise, we do this without a handle
@@ -3288,14 +3324,18 @@ int64_t StreamInfo::getStreamSize()
     {
         int64_t streamsize;
         fileInfo.getSize(streamsize);
-        return streamsize;
+        return context->Int64ToObject(streamsize);
     }
     else
     {
         resolveStreamName();
         int64_t streamsize;
-        fileInfo.getSize(qualified_name, streamsize);
-        return streamsize;
+        if (fileInfo.getSize(qualified_name, streamsize))
+        {
+            return context->Int64ToObject(streamsize);
+        }
+        // return a null string if this doesn't exist
+        return context->NullString();
     }
 }
 
@@ -3328,7 +3368,7 @@ const char *StreamInfo::getTimeStamp()
 /********************************************************************************************/
 /* query_size                                                                               */
 /********************************************************************************************/
-RexxMethod1(int64_t, query_size, CSELF, streamPtr)
+RexxMethod1(RexxObjectPtr, query_size, CSELF, streamPtr)
 {
     StreamInfo *stream_info = (StreamInfo *)streamPtr;
     stream_info->setContext(context, context->NullString());

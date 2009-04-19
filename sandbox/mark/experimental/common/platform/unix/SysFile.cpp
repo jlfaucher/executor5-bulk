@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -87,7 +87,7 @@ SysFile::SysFile()
     bufferedInput = 0;
     append = true;
     filePointer = 0;
-    ungetchar = 0;
+    ungetchar = -1;
     writeBuffered = false;     // no pending write operations
 }
 
@@ -118,7 +118,7 @@ bool SysFile::open(const char *name, int openFlags, int openMode, int shareMode)
 
     // save a copy of the name
     filename = strdup(name);
-    ungetchar = 0xFF;            // 0xFF indicates no char
+    ungetchar = -1;              // 0xFF indicates no char
 
     // is this append mode?
     if ((flags & RX_O_APPEND) != 0)
@@ -151,7 +151,7 @@ bool SysFile::open(int handle)
     // we didn't open this.
     openedHandle = false;
     fileHandle = handle;
-    ungetchar = 0xFF;            // 0xFF indicates no char
+    ungetchar = -1;              // 0xFF indicates no char
     // set the default buffer size (and allocate the buffer)
     setBuffering(true, 0);
     getStreamTypeInfo();
@@ -302,7 +302,7 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
     }
 
     // if we have an ungetchar, we need to grab that first
-    if (ungetchar != 0xFF)
+    if (ungetchar != -1)
     {
         // add this to our count
         bytesRead = 1;
@@ -310,7 +310,7 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
         buf[0] = (char)ungetchar;
         buf++;
         len--;
-        ungetchar = 0xFF;
+        ungetchar = -1;
         // were we only looking for one character (very common in cases where
         // we've had a char pushed back)
         if (len == 0)
@@ -375,25 +375,29 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
     }
     else
     {
-        int blockRead = ::read(fileHandle, buf, (unsigned int)len);
-        if (blockRead <= 0)
+        while (len > 0)
         {
-            // not get anything?
-            if (blockRead == 0)
+            int blockRead = ::read(fileHandle, buf + bytesRead, (unsigned int)len);
+            if (blockRead <= 0)
             {
-                fileeof = true;
-                // could have had an ungetchar
-                return bytesRead > 0 ? true : false;
+                // not get anything?
+                if (blockRead == 0)
+                {
+                    fileeof = true;
+                    // could have had an ungetchar
+                    return bytesRead > 0 ? true : false;
+                }
+                else
+                {
+                    // had an error, so raise it
+                    errInfo = errno;
+                    return false;
+                }
             }
-            else
-            {
-                // had an error, so raise it
-                errInfo = errno;
-                return false;
-            }
+            // update the length
+            len -= blockRead;
+            bytesRead += blockRead;
         }
-        // update the length
-        len += blockRead;
     }
     return true;
 }
@@ -526,7 +530,7 @@ bool SysFile::putChar(char ch)
 
 bool SysFile::ungetc(char ch)
 {
-    ungetchar = (unsigned char)ch;
+    ungetchar = ((int)ch) & 0xff;
     return true;
 }
 
@@ -1019,7 +1023,7 @@ bool SysFile::getTimeStamp(const char *name, char *&time)
     if (stat(name, &fileInfo) == 0)
     {
         // regular file?  return the defined size
-        if ((fileInfo.st_mode & S_IFREG) != 0)
+        if ((fileInfo.st_mode & (S_IFREG | S_IFDIR)) != 0)
         {
             time = ctime(&fileInfo.st_mtime);
         }
@@ -1078,9 +1082,10 @@ void SysFile::setStdIn()
     fileHandle = stdinHandle;
     // we didn't open this.
     openedHandle = false;
-    ungetchar = 0xFF;            // -1 indicates no char
+    ungetchar = -1;              // -1 indicates no char
     getStreamTypeInfo();
     setBuffering(false, 0);
+    readable = true;             // force this to readable
 }
 
 /**
@@ -1092,9 +1097,10 @@ void SysFile::setStdOut()
     fileHandle = stdoutHandle;
     // we didn't open this.
     openedHandle = false;
-    ungetchar = 0xFF;            // -1 indicates no char
+    ungetchar = -1;              // -1 indicates no char
     getStreamTypeInfo();
     setBuffering(false, 0);
+    writeable = true;             // force this to writeable
 }
 
 /**
@@ -1106,9 +1112,10 @@ void SysFile::setStdErr()
     fileHandle = stderrHandle;
     // we didn't open this.
     openedHandle = false;
-    ungetchar = 0xFF;            // -1 indicates no char
+    ungetchar = -1;              // -1 indicates no char
     getStreamTypeInfo();
     setBuffering(false, 0);
+    writeable = true;             // force this to writeable
 }
 
 

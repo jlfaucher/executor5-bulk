@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -321,6 +321,9 @@ void RexxMemory::createImage()
   defineKernelMethod(CHAR_OBJECTNAMEEQUALS       ,TheObjectBehaviour, CPPM(RexxObject::objectNameEquals), 1);
   defineKernelMethod(CHAR_REQUEST                ,TheObjectBehaviour, CPPM(RexxObject::requestRexx), 1);
   defineKernelMethod(CHAR_START                  ,TheObjectBehaviour, CPPM(RexxObject::start), A_COUNT);
+  defineKernelMethod("STARTWITH"                 ,TheObjectBehaviour, CPPM(RexxObject::startWith), 2);
+  defineKernelMethod("SEND"                      ,TheObjectBehaviour, CPPM(RexxObject::send), A_COUNT);
+  defineKernelMethod("SENDWITH"                  ,TheObjectBehaviour, CPPM(RexxObject::sendWith), 2);
   defineKernelMethod(CHAR_STRING                 ,TheObjectBehaviour, CPPM(RexxObject::stringRexx), 0);
   defineKernelMethod(CHAR_ISINSTANCEOF           ,TheObjectBehaviour, CPPM(RexxObject::isInstanceOfRexx), 1);
   defineKernelMethod(CHAR_ISA                    ,TheObjectBehaviour, CPPM(RexxObject::isInstanceOfRexx), 1);
@@ -609,6 +612,10 @@ void RexxMemory::createImage()
   defineKernelMethod(CHAR_ADDPUBLICCLASS      ,ThePackageBehaviour, CPPM(PackageClass::addPublicClass), 2);
   defineKernelMethod(CHAR_NAME                ,ThePackageBehaviour, CPPM(PackageClass::getName), 0);
   defineKernelMethod("LOADLIBRARY"            ,ThePackageBehaviour, CPPM(PackageClass::loadLibrary), 1);
+  defineKernelMethod("DIGITS"                 ,ThePackageBehaviour, CPPM(PackageClass::digits), 0);
+  defineKernelMethod("FORM"                   ,ThePackageBehaviour, CPPM(PackageClass::form), 0);
+  defineKernelMethod("FUZZ"                   ,ThePackageBehaviour, CPPM(PackageClass::fuzz), 0);
+  defineKernelMethod("TRACE"                  ,ThePackageBehaviour, CPPM(PackageClass::trace), 0);
                                        /* set the scope of the methods to   */
                                        /* this classes oref                 */
   ThePackageBehaviour->setMethodDictionaryScope(ThePackageClass);
@@ -937,6 +944,7 @@ void RexxMemory::createImage()
   defineKernelMethod(CHAR_OVERLAY                      ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::overlay), 4);
   defineKernelMethod(CHAR_REPLACEAT                    ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::replaceAt), 4);
   defineKernelMethod(CHAR_DELETE                       ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::mydelete), 2);
+  defineKernelMethod(CHAR_DELSTR                       ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::mydelete), 2);
   defineKernelMethod(CHAR_SUBSTR                       ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::substr), 3);
   defineKernelMethod(CHAR_POS                          ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::posRexx), 3);
   defineKernelMethod(CHAR_LASTPOS                      ,TheMutableBufferBehaviour, CPPM(RexxMutableBuffer::lastPos), 3);

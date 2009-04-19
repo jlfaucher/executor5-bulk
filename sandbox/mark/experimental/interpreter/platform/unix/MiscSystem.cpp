@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -146,18 +146,16 @@ void SystemInterpreter::setupProgram(RexxActivation *activation)
 /* Function:  Do system specific program setup                                */
 /******************************************************************************/
 {
-#ifdef RXTRACE_SUPPORT
-    char     *RxTraceBuf = NULL;
-
     /* scan current environment,         */
-    RxTraceBuf = getenv("RXTRACE");
-    if (RxTraceBuf)
+    const char *rxTraceBuf = getenv("RXTRACE");
+    if (rxTraceBuf != NULL)
     {
-        if (!Utilities::strCaselessCompare(RxTraceBuf, "ON"))    /* request to turn on?               */
+        if (!Utilities::strCaselessCompare(rxTraceBuf, "ON"))    /* request to turn on?               */
+        {
                                            /* turn on tracing                   */
-            activation->setTrace(TRACE_RESULTS, DEBUG_ON);
+            activation->enableExternalTrace();
+        }
     }
-#endif
 }
 
 RexxString * SystemInterpreter::getSourceString(RexxString * callType, RexxString * programName )

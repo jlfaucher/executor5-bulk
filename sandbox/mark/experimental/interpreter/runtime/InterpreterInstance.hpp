@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -50,6 +50,7 @@
 
 class RexxDirectory;
 class CommandHandler;
+class PackageClass;
 
 class InterpreterInstance : public RexxInternalObject
 {
@@ -100,7 +101,7 @@ public:
     void setExitHandler(RXSYSEXIT &e) { getExitHandler(e.sysexit_code).resolve(e.sysexit_name); }
     void setExitHandler(RexxContextExit &e) { getExitHandler(e.sysexit_code).resolve(e.handler); }
     void removeInactiveActivities();
-    void haltAllActivities();
+    bool haltAllActivities();
     void traceAllActivities(bool on);
     inline RexxString *resolveProgramName(RexxString *name, RexxString *dir, RexxString *ext) { return sysInstance.resolveProgramName(name, dir, ext); }
     inline SecurityManager *getSecurityManager() { return securityManager; }
@@ -112,6 +113,12 @@ public:
     void addCommandHandler(const char *name, const char *registeredName);
     void addCommandHandler(const char *name, REXXPFN entryPoint);
     CommandHandler *resolveCommandHandler(RexxString *name);
+    PackageClass *getRequiresFile(RexxString *name);
+    PackageClass *loadRequires(RexxActivity *activity, RexxString *shortName, const char *data, size_t length);
+    PackageClass *loadRequires(RexxActivity *activity, RexxString *shortName, RexxArray *source);
+    PackageClass *loadRequires(RexxActivity *activity, RexxString *shortName, RexxString *fullName);
+    void          runRequires(RexxActivity *activity, RexxString *name, RoutineClass *code);
+    void          addRequiresFile(RexxString *shortName, RexxString *fullName, PackageClass *package);
 
 protected:
 
@@ -131,6 +138,7 @@ protected:
     void                *applicationData;    // application specific data
     RexxDirectory       *localEnvironment;   // the current local environment
     RexxDirectory       *commandHandlers;    // our list of command environment handlers
+    RexxDirectory       *requiresFiles;      // our list of requires files used by this instance
 
     bool terminating;                // shutdown indicator
     bool terminated;                 // last thread cleared indicator

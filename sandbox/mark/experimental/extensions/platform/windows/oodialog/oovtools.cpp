@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,13 +35,62 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#include <windows.h>
-#include <rexx.h>
+#include "oovutil.h"     // Must be first, includes windows.h and oorexxapi.h
+
 #include <stdio.h>
 #include <dlgs.h>
 #include <malloc.h>
-#include "oovutil.h"
 
+
+BOOL DialogInAdminTable(DIALOGADMIN * Dlg)
+{
+    register INT i;
+    for ( i = 0; i < StoredDialogs; i++ )
+    {
+        if ( DialogTab[i] == Dlg )
+        {
+           break;
+        }
+    }
+    return(i < StoredDialogs);
+}
+
+/**
+ * Validates and converts an ASCII-Z string from string form to a pointer value.
+ *
+ * @param string  String to convert.
+ */
+void *string2pointer(const char *string)
+{
+    void *pointer = 0;
+    sscanf(string, "0x%p", &pointer);
+    return pointer;
+}
+
+void pointer2string(char *result, void *pointer)
+{
+    if ( pointer == NULL )
+    {
+        sprintf(result, "0");
+    }
+    else
+    {
+        sprintf(result, "0x%p", pointer);
+    }
+}
+
+
+LONG HandleError(PRXSTRING r, CHAR * text)
+{
+      HWND hW = NULL;
+      if ((topDlg) && (topDlg->TheDlg)) hW = topDlg->TheDlg;
+      MessageBox(hW,text,"Error",MB_OK | MB_ICONHAND);
+      r->strlength = 2;
+      r->strptr[0] = '4';
+      r->strptr[1] = '0';
+      r->strptr[2] = '\0';
+      return 40;
+}
 
 void rxstrlcpy(CHAR * tar, CONSTRXSTRING &src)
 {
@@ -70,6 +119,9 @@ bool IsNo(const char * s)
    return ( s && (*s == 'N' || *s == 'n') );
 }
 
+/**
+ * This classic Rexx external function was documented prior to 4.0.0.
+ */
 size_t RexxEntry InfoMessage(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND hW;
@@ -82,6 +134,9 @@ size_t RexxEntry InfoMessage(const char *funcname, size_t argc, CONSTRXSTRING *a
 }
 
 
+/**
+ * This classic Rexx external function was documented prior to 4.0.0.
+ */
 size_t RexxEntry ErrorMessage(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND hW;
@@ -93,6 +148,9 @@ size_t RexxEntry ErrorMessage(const char *funcname, size_t argc, CONSTRXSTRING *
    RETC(0)
 }
 
+/**
+ * This classic Rexx external function was documented prior to 4.0.0.
+ */
 size_t RexxEntry YesNoMessage(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    HWND hW;
@@ -127,28 +185,6 @@ size_t RexxEntry YesNoMessage(const char *funcname, size_t argc, CONSTRXSTRING *
       retstr->strptr[0] = '1';
    else
       retstr->strptr[0] = '0';
-   return 0;
-}
-
-
-size_t RexxEntry BinaryAnd(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
-{
-   ULONG n, m;
-
-   CHECKARG(2);
-
-   if (ISHEX(argv[0].strptr))
-       n = strtoul(argv[0].strptr,'\0',16);
-   else
-       n = strtoul(argv[0].strptr,'\0',10);
-
-   if (ISHEX(argv[1].strptr))
-       m = strtoul(argv[1].strptr,'\0',16);
-   else
-       m = strtoul(argv[1].strptr,'\0',10);
-
-   sprintf(retstr->strptr, "%u", n & m);
-   retstr->strlength = strlen(retstr->strptr);
    return 0;
 }
 

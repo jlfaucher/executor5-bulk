@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -396,9 +396,9 @@ class RexxObject : public RexxInternalObject {
      RexxString  *requiredString(const char *);
      RexxString  *requiredString();
      RexxInteger *requiredInteger(size_t, size_t);
-     wholenumber_t requiredNumber(size_t position, size_t precision = Numerics::DEFAULT_DIGITS);
-     stringsize_t requiredPositive(size_t position, size_t precision = Numerics::DEFAULT_DIGITS);
-     stringsize_t requiredNonNegative(size_t position, size_t precision = Numerics::DEFAULT_DIGITS);
+     wholenumber_t requiredNumber(size_t position, size_t precision = Numerics::ARGUMENT_DIGITS);
+     stringsize_t requiredPositive(size_t position, size_t precision = Numerics::ARGUMENT_DIGITS);
+     stringsize_t requiredNonNegative(size_t position, size_t precision = Numerics::ARGUMENT_DIGITS);
 
      bool         isEqual(RexxObject *);
      bool         isInstanceOf(RexxClass *);
@@ -414,6 +414,11 @@ class RexxObject : public RexxInternalObject {
      RexxObject  *unsetMethod(RexxString *);
      RexxObject  *requestRexx(RexxString *);
      RexxMessage *start(RexxObject **, size_t);
+     RexxMessage *startWith(RexxObject *, RexxArray *);
+     RexxObject  *send(RexxObject **, size_t);
+     RexxObject  *sendWith(RexxObject *, RexxArray *);
+     RexxMessage *startCommon(RexxObject *message, RexxObject **arguments, size_t argCount);
+     static void decodeMessageName(RexxObject *target, RexxObject *message, RexxString *&messageName, RexxObject *&startScope);
      RexxString  *oref();
      RexxObject  *pmdict();
      RexxObject  *run(RexxObject **, size_t);

@@ -35,7 +35,8 @@
 #/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 #/*                                                                            */
 #/*----------------------------------------------------------------------------*/
-# NMAKE-compatible MAKE file for FNTEST*
+
+# NMAKE-compatible MAKE file for ooDialog
 all:  $(OR_OUTDIR)\oodialog.dll
 
 !include "$(OR_LIBSRC)\ORXWIN32.MAK"
@@ -46,10 +47,10 @@ OR_LIB=$(OR_OUTDIR)
 SOURCEF= $(OR_OUTDIR)\oovutil.obj $(OR_OUTDIR)\oovdata.obj $(OR_OUTDIR)\oovtext.obj $(OR_OUTDIR)\oovtools.obj \
          $(OR_OUTDIR)\oovmsg.obj $(OR_OUTDIR)\oovscrll.obj $(OR_OUTDIR)\oovdeskt.obj $(OR_OUTDIR)\oovdraw.obj \
          $(OR_OUTDIR)\oovuser.obj $(OR_OUTDIR)\oovbmp.obj $(OR_OUTDIR)\oovother.obj $(OR_OUTDIR)\menu.obj \
-         $(OR_OUTDIR)\oodialog.res
+         $(OR_OUTDIR)\oodPackageEntry.obj $(OR_OUTDIR)\oodialog.res
 
 .c{$(OR_OUTDIR)}.obj:
-    $(C) $(OPTIONS)  /DINCL_32  -c $(@B).c /DCREATEDLL /Fo$(OR_OUTDIR)\$(@B).obj
+    $(C) $(OPTIONS)  /DINCL_32  -c $(@B).c /Fo$(OR_OUTDIR)\$(@B).obj
 
 #
 # *** .cpp -> .obj rules
@@ -57,13 +58,13 @@ SOURCEF= $(OR_OUTDIR)\oovutil.obj $(OR_OUTDIR)\oovdata.obj $(OR_OUTDIR)\oovtext.
 {$(OR_OODIALOGSRC)}.cpp{$(OR_OUTDIR)}.obj:
     @ECHO .
     @ECHO Compiling $(@B).cpp
-    $(OR_CC) $(cflags_common) $(cflags_dll) /DCREATEDLL /Fo$(OR_OUTDIR)\$(@B).obj $(OR_ORYXINCL)  $(OR_OODIALOGSRC)\$(@B).cpp
+    $(OR_CC) $(cflags_common) $(cflags_dll) /Fo$(OR_OUTDIR)\$(@B).obj $(OR_ORYXINCL)  $(OR_OODIALOGSRC)\$(@B).cpp
 
 
 {$(OR_OODIALOGSRC)}.c{$(OR_OUTDIR)}.obj:
     @ECHO .
     @ECHO Compiling $(@B).c
-    $(OR_CC) $(cflags_common) $(cflags_dll) /DCREATEDLL /Fo$(OR_OUTDIR)\$(@B).obj $(OR_ORYXINCL)  $(OR_OODIALOGSRC)\$(@B).c
+    $(OR_CC) $(cflags_common) $(cflags_dll) /Fo$(OR_OUTDIR)\$(@B).obj $(OR_ORYXINCL)  $(OR_OODIALOGSRC)\$(@B).c
 
 
 $(OR_OUTDIR)\oodialog.dll:     $(SOURCEF)
@@ -75,6 +76,7 @@ $(OR_OUTDIR)\oodialog.dll:     $(SOURCEF)
     WINMM.LIB \
     COMDLG32.LIB \
     COMCTL32.LIB \
+    shlwapi.lib \
     -def:$(OR_OODIALOGSRC)\oovutil.def \
     -out:$(OR_OUTDIR)\$(@B).dll
 
@@ -83,4 +85,6 @@ $(OR_OUTDIR)\oodialog.dll:     $(SOURCEF)
 $(OR_OUTDIR)\oodialog.res: $(OR_OODIALOGSRC)\oodialog.rc
     @ECHO .
     @ECHO ResourceCompiling $(@B).res
-        $(rc) $(rcflags_common) -dMANIFEST_FILE=$(REXX_EXE_MANIFEST) /i $(OR_OODIALOGSRC) -r -fo$(OR_OUTDIR)\$(@B).res $(OR_OODIALOGSRC)\$(@B).rc
+    $(rc) $(rcflags_common) -dMANIFEST_FILE=$(REXX_EXE_MANIFEST) /i $(OR_OODIALOGSRC) /i $(OR_WINKERNELSRC) -r -fo$(OR_OUTDIR)\$(@B).res $(OR_OODIALOGSRC)\$(@B).rc
+
+$(SOURCEF) : oovutil.h

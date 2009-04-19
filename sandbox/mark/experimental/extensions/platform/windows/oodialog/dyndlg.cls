@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -47,12 +47,12 @@
 
     /* attributes for internal use */
 ::method BasePtr attribute protected
-::method AktPtr attribute protected
+::method activePtr attribute protected
 ::method DialogItemCount attribute protected
 
 
 ::method DynamicInit private
-   self~AktPtr = 0
+   self~activePtr = 0
    self~DialogItemCount = 0
    if Arg(1,'o') = 1 then self~UseStem = 0; else self~UseStem = 1
    return 0
@@ -72,24 +72,29 @@
          "THICKFRAME"  -  create a dialog with a thick frame */
 
 ::method Create
-   use arg x, y, cx, cy, title, options, dlgClass, fontName, fontSize, expected
+   use arg x, y, cx, cy, title, options = "", dlgClass, fontName, fontSize, expected = 200
 
-   /* need to check for uppercase name because of method forwarding */
-   if Arg(6,"o") = 1 then options = ""; else options = options~translate
-   if Arg(10,"o") = 1 | expected = 0 then expected = 200
-   if Arg(7,"o") = 1 | dlgClass = 0 then dlgClass = ""
-   if Arg(8,"o") = 1 then fontName = "System"
-   if Arg(9,"o") = 1 then fontSize = 8
+   -- options must be all upper case
+   options = options~translate
+
+   if arg(7,"O") | dlgClass = 0 then dlgClass = ""
+
+   if arg(8, "O") then fontName = self~fontName
+   else self~fontName = fontName
+
+   if arg(9, "O") then fontSize = self~fontSize
+   else self~fontSize = fontSize
+
    ret = UsrDefineDialog(x, y, cx, cy, dlgclass, title, fontName, fontSize,,
                                       options, expected)
    parse var ret base ptr
    self~BasePtr = base
-   self~AktPtr = ptr
+   self~activePtr = ptr
    if ptr = 0 then call HandleDlg("STOP")
    self~SizeX = cx
    self~SizeY = cy
    self~DefineDialog
-   return ptr  /* self~AktPtr could have been set to 0 for a CategoryDialog */
+   return ptr  /* self~activePtr could have been set to 0 for a CategoryDialog */
 
    /* This method will create the dialog and place it in a centered position */
    /* See 'Create' for possible 'options' */
@@ -251,7 +256,7 @@
    if id < 0 then return
    opts = self~InternGetRCStyle(style, "BTN")
    self~DialogItemCount = self~DialogItemCount + 1
-   self~AktPtr = UsrAddControl("BUT", self~AktPtr, id, x, y, w, h, name, opts)
+   self~activePtr = UsrAddControl("BUT", self~activePtr, id, x, y, w, h, name, opts)
    if lOpts~wordpos("CONNECTBUTTONS") > 0 then
       self~ConnectButton(id, name~space(0)~changestr('&','')~changestr(':',''))
    else self~ConnectButton(id)
@@ -375,7 +380,7 @@
 
 ::method LoadItems protected
    use arg resfile, dialogid, loadOptions
-   if self~AktPtr = 0 then return -2
+   if self~activePtr = 0 then return -2
 
    file = SysSearchPath("PATH",resfile)
    f = .stream~new(file)
@@ -441,43 +446,43 @@
                else self~InternAddRCButton(id, x, y, w, h, name, style, loadOptions)
             end
 
-            when class = '"STATIC"' then do
+            when class = '"STATIC"' | class = WC_STATIC then do
                opts = self~InternGetRCStyle(style, "ST")
                select
                   when style~wordpos("SS_LEFT") > 0 then
-                     self~AddText(x, y, w, h, name, opts, id)
+                     self~addText(x, y, w, h, name, opts, id)
                   when style~wordpos("SS_RIGHT") > 0 then
-                     self~AddText(x, y, w, h, name, opts || " RIGHT", id)
+                     self~addText(x, y, w, h, name, opts || " RIGHT", id)
                   when style~wordpos("SS_CENTER") > 0 then
-                     self~AddText(x, y, w, h, name, opts || " CENTER", id)
+                     self~addText(x, y, w, h, name, opts || " CENTER", id)
                   when style~wordpos("SS_SIMPLE") > 0 then
-                     self~AddText(x, y, w, h, name, opts || " SIMPLE", id)
+                     self~addText(x, y, w, h, name, opts || " SIMPLE", id)
                   when style~wordpos("SS_LEFTNOWORDWRAP") > 0 then
-                     self~AddText(x, y, w, h, name, opts || " LEFTNOWRAP", id)
+                     self~addText(x, y, w, h, name, opts || " LEFTNOWRAP", id)
                   when style~wordpos("SS_WHITERECT") > 0 then
-                     self~AddWhiteRect(x, y, w, h, opts, id)
+                     self~addWhiteRect(x, y, w, h, opts, id)
                   when style~wordpos("SS_GRAYRECT") > 0 then
-                     self~AddGrayRect(x, y, w, h, opts, id)
+                     self~addGrayRect(x, y, w, h, opts, id)
                   when style~wordpos("SS_BLACKRECT") > 0 then
-                     self~AddBlackRect(x, y, w, h, opts, id)
+                     self~addBlackRect(x, y, w, h, opts, id)
                   when style~wordpos("SS_WHITEFRAME") > 0 then
-                     self~AddWhiteFRAME(x, y, w, h, opts, id)
+                     self~addWhiteFrame(x, y, w, h, opts, id)
                   when style~wordpos("SS_GRAYFRAME") > 0 then
-                     self~AddGrayFRAME(x, y, w, h, opts, id)
+                     self~addGrayFrame(x, y, w, h, opts, id)
                   when style~wordpos("SS_BLACKFRAME") > 0 then
-                     self~AddBlackFRAME(x, y, w, h, opts, id)
+                     self~addBlackFrame(x, y, w, h, opts, id)
                   when style~wordpos("SS_ETCHEDFRAME") > 0 then
-                     self~AddEtchedFrame(x, y, w, h, opts, id)
+                     self~addEtchedFrame(x, y, w, h, opts, id)
                   when style~wordpos("SS_ETCHEDHORZ") > 0 then
-                     self~AddEtchedHorizonatlFrame(x, y, w, h, opts, id)
+                     self~addEtchedHorizontal(x, y, w, h, opts, id)
                   when style~wordpos("SS_ETCHEDVERT") > 0 then
-                     self~AddEtchedVerticalFrame(x, y, w, h, opts, id)
+                     self~addEtchedVertical(x, y, w, h, opts, id)
                   when style~wordpos("SS_BITMAP") > 0 then
-                     self~AddImage(id, x, y, w, h, "BITMAP " || opts)
+                     self~addImage(id, x, y, w, h, "BITMAP " || opts)
                   when style~wordpos("SS_ENHMETAFILE") > 0 then
-                     self~AddImage(id, x, y, w, h, "METAFILE " || opts)
+                     self~addImage(id, x, y, w, h, "METAFILE " || opts)
                   when style~wordpos("SS_ICON") > 0 then
-                     self~AddImage(id, x, y, w, h, "ICON " || opts)
+                     self~addImage(id, x, y, w, h, "ICON " || opts)
                   otherwise
                       ret = ErrorMessage("Static item ignored due to unknown static style option in:" || -
                                          '0d0a'x || f "("s")")
@@ -548,12 +553,12 @@
                if type = "CTEXT" then opts = opts || " CENTER";
                else if type = "RTEXT" then opts = opts || " RIGHT";
                else if style~wordpos("SS_LEFTNOWORDWRAP") > 0 then opts = opts || " LEFTNOWRAP";
-               self~AddText(x, y, w, h, name, opts, id)
+               self~addText(x, y, w, h, name, opts, id)
             end
 
             when type = "ICON" then do
                opts = self~InternGetRCStyle(style, "ST")
-               self~AddImage(id, x, y, w, h, "ICON " || opts)
+               self~addImage(id, x, y, w, h, "ICON " || opts)
             end
 
             when type = "GROUPBOX" then
@@ -593,7 +598,7 @@
 
 ::method ItemAdd
    use arg id, staticId
-   if self~AktPtr = 0 then return -2
+   if self~activePtr = 0 then return -2
    if Arg(2,'o') = 1 then do
        id = self~CheckId(id)
        if id = -1 then return -1
@@ -610,28 +615,29 @@
    /* a message that will be rised if the butten is pushed. */
    /* argument 'options' can be one of: */
 
-::method AddButton
-   use arg id, x, y, cx, cy, text, msgToRise, options
-   id = self~ItemAdd(id)
+::method addButton
+   use arg id, x, y, cx, cy, text = "", msgToRise, options
+   id = self~itemAdd(id)
    if id < 0 then return id
-   options = self~GetDefaultOpts(options)
-   self~AktPtr = UsrAddControl("BUT", self~AktPtr, id, x, y, cx, cy, text, options)
-   if Arg(7,"o") = 0 then
-      self~ConnectButton(id, msgToRise~space(0))
+   options = self~getDefaultOpts(options)
+   self~activePtr = UsrAddControl("BUT", self~activePtr, id, x, y, cx, cy, text, options)
+   if Arg(7,"o") = 0 then return self~connectButton(id, msgToRise~space(0))
+   else return 0
 
 
-::method AddGroupBox
-   use arg x, y, cx, cy, text, opts, id
-   id = self~ItemAdd(id, \(Arg(7,"o") | id = "ID"))
+::method addGroupBox
+   use arg x, y, cx, cy, text = "", opts, id
+   id = self~itemAdd(id, \(arg(7,"o") | id = "ID"))
    if id = -2 then return id
-   opts = self~GetDefaultOpts(opts)
-   self~AktPtr = UsrAddControl("GB",self~AktPtr, x, y, cx, cy, opts, text, id)
+   opts = self~getDefaultOpts(opts)
+   self~activePtr = UsrAddControl("GB",self~activePtr, x, y, cx, cy, opts, text, id)
+   return 0
 
 
-::method AddStatic
-   use strict arg id = (-1), x, y, cx = 0, cy = 0, opts = "", text = ""
+::method addStatic
+   use strict arg id = (-1), x, y, cx = 0, cy = 0, opts = "TEXT", text = ""
    argA = .array~new
-   opts = self~GetDefaultOpts(opts)
+   opts = self~getDefaultOpts(opts)
    argA[1] = x
    argA[2] = y
    argA[3] = cx
@@ -640,8 +646,10 @@
    argA[6] = id
 
    select
+     when opts~wordpos("TEXT") > 0 then return self~addText(x, y, cx, cy, text, opts, id)
+
      when opts~wordpos("BITMAP") > 0 | opts~wordpos("METAFILE") > 0 | opts~wordpos("ICON") > 0 then do
-        forward message "AddImage"
+        forward message "addImage"
      end
 
      when opts~wordpos("WHITERECT") > 0 then return self~InternAddStatic(argA, 0)
@@ -658,52 +666,53 @@
    end
    -- End select
 
-::method AddImage
+::method addImage
    use strict arg id, x, y, cx, cy, options = ""
    id = self~ItemAdd(id)
    if id < 0 then return id
    options = self~GetDefaultOpts(options)
-   self~AktPtr = UsrAddControl("IMG", self~AktPtr, id, x, y, cx, cy, options)
+   self~activePtr = UsrAddControl("IMG", self~activePtr, id, x, y, cx, cy, options)
+   return 0
 
-::method AddText
+::method addText
    use arg x, y, cx = 0, cy = 0, text = "", opts = "", id = (-1)
 
    if cx = 0 | cy = 0 then do
-      parse value GetStdTextSize(text) with icx icy
-      if cx = 0 then cx = icx+2
-      if cy = 0 then cy = icy
+      size = self~getTextSizeDlg(text)
+      if cx = 0 then cx = size~width + 2
+      if cy = 0 then cy = size~height
    end
    id = self~ItemAdd(id, 1)
    if id = -2 then return id
    opts = self~GetDefaultOpts(opts)
-   self~AktPtr = UsrAddControl("TXT", self~AktPtr, x, y, cx, cy, opts, text, id)
+   self~activePtr = UsrAddControl("TXT", self~activePtr, x, y, cx, cy, opts, text, id)
    return 0
 
-::method AddWhiteRect
+::method addWhiteRect
    return self~InternAddStatic(Arg(1,"A"), 0)
 
-::method AddGrayRect
+::method addGrayRect
    return self~InternAddStatic(Arg(1,"A"), 1)
 
-::method AddBlackRect
+::method addBlackRect
    return self~InternAddStatic(Arg(1,"A"), 2)
 
-::method AddWhiteFrame
+::method addWhiteFrame
    return self~InternAddStatic(Arg(1,"A"), 3)
 
-::method AddGrayFrame
+::method addGrayFrame
    return self~InternAddStatic(Arg(1,"A"), 4)
 
-::method AddBlackFrame
+::method addBlackFrame
    return self~InternAddStatic(Arg(1,"A"), 5)
 
-::method AddEtchedFrame
+::method addEtchedFrame
    return self~InternAddStatic(Arg(1,"A"), 6)
 
-::method AddEtchedHorizontalFrame
+::method addEtchedHorizontal
    return self~InternAddStatic(Arg(1,"A"), 7)
 
-::method AddEtchedVerticalFrame
+::method addEtchedVertical
    return self~InternAddStatic(Arg(1,"A"), 8)
 
 ::method InternAddStatic private
@@ -711,7 +720,7 @@
    if arga~hasindex(6) = 0 then id = self~ItemAdd(-1, 0); else id = self~ItemAdd(arga[6],1)
    if id = -2 then return id
    opts = self~GetDefaultOpts(arga[5])
-   self~AktPtr = UsrAddControl("FRM", self~AktPtr, arga[1], arga[2], arga[3], arga[4], type, opts, id)
+   self~activePtr = UsrAddControl("FRM", self~activePtr, arga[1], arga[2], arga[3], arga[4], type, opts, id)
    return 0
 
 ::method AddEntryLine
@@ -722,12 +731,13 @@
    if Arg(2,'o') = 1 then fname = "DATA"id
    if Arg(6,'o') = 1 then cy = 0
    if cy = 0 then do
-      parse value GetStdTextSize("Tg") with . cy
-      cy = cy +4
+      size = self~getTextSizeDlg("Tg")
+      cy = size~height + 4
    end
    opts = self~GetDefaultOpts(opts)
-   self~AktPtr = UsrAddControl("EL", self~AktPtr, id, x, y, cx, cy, opts)
-   if self~AutoDetect = 1 then self~ConnectEntryLine(symbid, fname)
+   self~activePtr = UsrAddControl("EL", self~activePtr, id, x, y, cx, cy, opts)
+   if self~AutoDetect = 1 then return self~ConnectEntryLine(symbid, fname)
+   else return 0
 
 
 ::method AddPasswordLine
@@ -744,11 +754,12 @@
    if id < 0 then return id
    if Arg(2,'o') = 1 then fname = "DATA"id
    opts = self~GetDefaultOpts(opts)
-   self~AktPtr = UsrAddControl("LB", self~AktPtr, id, x, y, cx, cy, opts)
+   self~activePtr = UsrAddControl("LB", self~activePtr, id, x, y, cx, cy, opts)
    if self~AutoDetect = 1 then do
-      if opts~wordpos("MULTI") > 0 then self~ConnectMultiListBox(symbid, fname)
-      else self~ConnectListBox(symbid, fname)
+      if opts~wordpos("MULTI") > 0 then ret = self~ConnectMultiListBox(symbid, fname)
+      else ret = self~ConnectListBox(symbid, fname)
    end
+   return ret
 
 
 ::method AddComboBox
@@ -758,8 +769,9 @@
    if id < 0 then return id
    if Arg(2,'o') = 1 then fname = "DATA"id
    opts = self~GetDefaultOpts(opts)
-   self~AktPtr = UsrAddControl("CB", self~AktPtr, id, x, y, cx, cy, opts)
-   if opts~wordpos("CAT") = 0 & self~AutoDetect = 1 then self~ConnectComboBox(symbid, fname, opts)
+   self~activePtr = UsrAddControl("CB", self~activePtr, id, x, y, cx, cy, opts)
+   if opts~wordpos("CAT") = 0 & self~AutoDetect = 1 then return self~ConnectComboBox(symbid, fname, opts)
+   else return 0
 
 
 ::method AddCheckBox
@@ -771,13 +783,14 @@
    if Arg(5, 'o') = 1 then cx = 0
    if Arg(6, 'o') = 1 then cy = 0
    if cx = 0 | cy = 0 then do
-      parse value GetStdTextSize(text) with icx icy
-      if cx = 0 then cx = icx + 12
-      if cy = 0 then cy = icy
+      size = self~getTextSizeDlg(text)
+      if cx = 0 then cx = size~width + 12
+      if cy = 0 then cy = size~height
    end
    opts = self~GetDefaultOpts(opts)
-   self~AktPtr = UsrAddControl("CH", self~AktPtr, id, x, y, cx, cy, text, opts)
-   if self~AutoDetect = 1 then self~ConnectCheckBox(symbid, fname)
+   self~activePtr = UsrAddControl("CH", self~activePtr, id, x, y, cx, cy, text, opts)
+   if self~AutoDetect = 1 then return self~ConnectCheckBox(symbid, fname)
+   else return 0
 
 
 ::method AddRadioButton
@@ -789,13 +802,14 @@
    if Arg(5, 'o') = 1 then cx = 0
    if Arg(6, 'o') = 1 then cy = 0
    if cx = 0 | cy = 0 then do
-      parse value GetStdTextSize(text) with icx icy
-      if cx=0 then cx=icx + 12
-      if cy=0 then cy=icy
+      size =self~getTextSizeDlg(text)
+      if cx=0 then cx=size~width + 12
+      if cy=0 then cy=size~height
    end
    opts = self~GetDefaultOpts(opts)
-   self~AktPtr = UsrAddControl("RB", self~AktPtr, id, x, y, cx, cy, text, opts)
-   if opts~wordpos("CAT") = 0 & self~AutoDetect = 1 then self~ConnectRadioButton(symbid, fname)
+   self~activePtr = UsrAddControl("RB", self~activePtr, id, x, y, cx, cy, text, opts)
+   if opts~wordpos("CAT") = 0 & self~AutoDetect = 1 then return self~ConnectRadioButton(symbid, fname)
+   else return 0
 
 
 ::method AddScrollBar
@@ -803,7 +817,8 @@
    id = self~ItemAdd(id)
    if id < 0 then return id
    opts = self~GetDefaultOpts(opts)
-   self~AktPtr = UsrAddControl("SB", self~AktPtr, id, x, y, cx, cy, opts)
+   self~activePtr = UsrAddControl("SB", self~activePtr, id, x, y, cx, cy, opts)
+   return 0
 
 
 ::method AddRadioGroup
@@ -819,11 +834,13 @@
 ::method InternAddRBCBGroup
    use arg startid, x, y, cx, inp, opts, idstat, kind
 
-   if self~AktPtr = 0 then return -2
+   if self~activePtr = 0 then return -2
    if self~CheckID(startid) = -1 then return
    if Arg(4, 'o') = 1 then cx = 0
    parse var inp rb inp
-   parse value GetStdTextSize(rb) with len stepy
+   size = self~getTextSizeDlg(rb)
+   len = size~width
+   stepy = size~height
    lastlen = len; oldy = stepy; stepy = trunc(stepy * 1.5)
    opts = self~GetDefaultOpts(opts)
    nob = opts~wordpos("NOBORDER")
@@ -837,41 +854,48 @@
       if kind = "R" then do
           if i = 0 then self~AddRadioButton(startid+i,, x+4, my, len+12, stepy, rb, newopts || " GROUP")
           else self~AddRadioButton(startid + i,, x+4, my, len+12, stepy, rb, newopts)
-      end; else self~AddCheckBox(startid + i,, x+4, my, len+12, stepy, rb, newopts)
+      end
+      else do
+          self~AddCheckBox(startid + i,, x+4, my, len+12, stepy, rb, newopts)
+      end
       my = my + stepy; i = i + 1
       parse var inp rb inp
       if cx = 0 then do
-         parse value GetStdTextSize(rb) with len .
+         s = self~getTextSizeDlg(rb)
+         len = s~width
          if len > lastlen then lastlen = len
       end
    end
    if cx \= 0 then LastLen = cx-20
-   if nob = 0 then self~AddGroupBox(x,y,lastlen+20,my-y+trunc(oldy / 2),"", newopts, idstat)
+   size = .Size~new(lastlen+20, my-y+trunc(oldy / 2))
+   if nob = 0 then self~AddGroupBox(x,y,size~width,size~height,"", newopts, idstat)
+   return size
 
 
 ::method AddInput
    use arg id, fname, x, y, cx1, cx2, cy, text, opts, idstat
-   if self~AktPtr = 0 then return -2
+   if self~activePtr = 0 then return -2
    if self~CheckID(id) = -1 then return
    if Arg(2,'o') = 1 then fname = text
    if Arg(5, 'o') = 1 then cx1 = 0
    if Arg(7, 'o') = 1 then cy = 0
    if cy = 0 | cx1 = 0 then do
-      parse value GetStdTextSize(text) with stepx icy
-      if cy = 0 then cy = icy + 4
-      if cx1 = 0 then cx1 = stepx + 4
+      size = self~getTextSizeDlg(text)
+      if cy = 0 then cy = size~height + 4
+      if cx1 = 0 then cx1 = size~width + 4
    end
    if Arg(10,'o') = 1 then idstat = self~GetStaticID(idstat)
    opts = self~GetDefaultOpts(opts)
-   self~AddText(x, y+2, cx1, cy, text, opts, idstat)
-   self~AddEntryLine(id, fname, x+cx1+1, y, cx2, cy, opts)
+   ret = self~addText(x, y+2, cx1, cy, text, opts, idstat)
+   if ret == 0 then ret = self~AddEntryLine(id, fname, x+cx1+1, y, cx2, cy, opts)
+   return ret
 
 
 ::method AddInputGroup
    use arg startid, x, y, cx1, cx2, inp, opts, idstat
    parse var inp rb inp
 
-   if self~AktPtr = 0 then return -2
+   if self~activePtr = 0 then return -2
    if self~CheckID(startid) = -1 then return
    if Arg(4, 'o') = 1 then cx1 = 0
    count = 0; ll = 0
@@ -879,8 +903,8 @@
       count = count + 1
       data.count = rb
       if cx1 = 0 then do
-         parse value GetStdTextSize(rb) with len .
-         if len > ll then ll = len
+         size = self~getTextSizeDlg(rb)
+         if size~width > ll then ll = size~width
       end
       parse var inp rb inp
    end
@@ -888,7 +912,8 @@
    if Arg(8,'o') = 1 then idstat = self~GetStaticID(idstat)
    is = idstat
 
-   parse value GetStdTextSize("Tg") with stepx stepy
+   s = self~getTextSizeDlg("Tg")
+   stepy = s~height
    opts = self~GetDefaultOpts(opts)
    nob = opts~wordpos("NOBORDER")
    if nob = 0 then my = y + trunc(stepy * 1.25); else my = y
@@ -898,46 +923,49 @@
       if is \= -1 then is = is + 1
       my = my + trunc(stepy * 2.25)
    end
-   if nob = 0 then self~AddGroupBox(x,y,cx1+cx2,my-y,"", newopts, is)
+   if nob = 0 then return self~AddGroupBox(x,y,cx1+cx2,my-y,"", newopts, is)
+   else return 0
 
 
 ::method AddComboInput
    use arg id, attname, x, y, cx1, cx2, clines, text, opts, idstat
 
-   if self~AktPtr = 0 then return -2
+   if self~activePtr = 0 then return -2
    if self~CheckID(id) = -1 then return
    if Arg(2, 'o') = 1 then attname = text
    if Arg(5, 'o') = 1 then cx1 = 0
    if Arg(7, 'o') = 1 then clines = 5
 
-   parse value GetStdTextSize(text) with stepx cy
-   cy = cy + 4
-   if cx1 = 0 then cx1 = stepx + 4
+   s = self~getTextSizeDlg(text)
+   cy = s~height + 4
+   if cx1 = 0 then cx1 = s~width + 4
    if Arg(10,'o') = 1 then idstat = self~GetStaticID(idstat)
    opts = self~GetDefaultOpts(opts)
-   self~AddText(x, y, cx1, cy, text, opts, idstat)
-   self~AddComboBox(id, attname, x+cx1+2, y, cx2, cy*clines, opts)
+   ret = self~addText(x, y, cx1, cy, text, opts, idstat)
+   if ret == 0 then return self~AddComboBox(id, attname, x+cx1+2, y, cx2, cy*clines, opts)
+   else return 0
 
 
 ::method AddInputStem
    use arg startid, x, y, cx1, cx2, inp., opts, idstat
 
-   if self~AktPtr = 0 then return -2
+   if self~activePtr = 0 then return -2
    if self~CheckID(startid)= -1 then return
    if Arg(4, 'o') = 1 then cx1 = 0
    count = 0; ll = 0
    do while var("inp."count+1) = 1
       count = count + 1
       if cx1 = 0 then do
-         parse value GetStdTextSize(inp.count) with len .
-         if len > ll then ll = len
+         s = self~getTextSizeDlg(inp.count)
+         if s~width > ll then ll = s~width
       end
    end
    if cx1 = 0 then cx1 = ll+4
 
    if idstat = "IDSTAT" then idstat = self~GetStaticID(idstat)
    is = idstat
-   parse value GetStdTextSize("Tg") with stepx stepy
+   s = self~getTextSizeDlg("Tg")
+   stepy = s~height
 
    opts = self~GetDefaultOpts(opts)
    nob = opts~wordpos("NOBORDER")
@@ -948,7 +976,8 @@
       if is \= -1 then is = is + 2
       my = my + trunc(stepy * 2.25)
    end
-   if nob = 0 then self~AddGroupBox(x,y,cx1+cx2,my-y,"", newopts, is)
+   if nob = 0 then return self~AddGroupBox(x,y,cx1+cx2,my-y,"", newopts, is)
+   else return 0
 
 
 ::method AddCheckBoxStem
@@ -963,24 +992,26 @@
 
 ::method InternAddRBCBStem private
    use arg startid, x, y, cxx, inp., max, opts, idstat, fn, fs, kind
-   if self~AktPtr = 0 then return -2
+   -- Note that font name and font size (fn, fs) are no longer used.  They are
+   -- here for backwards compatibility.
+
+   if self~activePtr = 0 then return -2
    if self~CheckID(startid) = -1 then return
    if Arg(4, 'o') = 1 then cxx = 0
    count = 0; ll = 0
    do while var("inp."count+1) = 1
       count = count + 1
       if cxx = 0 then do
-         if Arg(9,'o') = 1 then ret = GetStdTextSize(inp.count)
-         else ret = GetStdTextSize(inp.count, fn, fs)
-         parse var ret len .
-         if len > ll then ll = len
+         s = self~getTextSizeDlg(inp.count)
+         if s~width > ll then ll = s~width
       end
    end
    if var("max") = 0 | max = 0 then max = count
    if cxx = 0 & max \= 1 then cx = ll+20; else cx = cxx
    if Arg(8, 'o') = 1 then idstat = self~GetStaticID(idstat)
-   if Arg(9,'o') = 1 then ret = GetStdTextSize("Tg"); else ret = GetStdTextSize("Tg", fn, fs)
-   parse var ret stepx oldy
+   s = self~getTextSizeDlg("Tg")
+   stepx = s~width
+   oldy = s~height
    mx = 0; highy = 0
    opts = self~GetDefaultOpts(opts)
    nob = opts~wordpos("NOBORDER")
@@ -1001,10 +1032,8 @@
          mx = mx + cx
       end
       if max=1 & cxx=0 then do
-         if Arg(9,'o') = 1 then ret = GetStdTextSize(inp.i)
-         else ret = GetStdTextSize(inp.i, fn, fs)
-         parse var ret cx .
-         cx = cx + 24
+         s = self~getTextSizeDlg(inp.i)
+         cx = s~width + 24
       end
       if kind = "R" then
       do
@@ -1014,14 +1043,15 @@
       my = my + stepy
    end
    if highy = 0 then highy = my
-   if nob = 0 then self~AddGroupBox(x,y,mx+cx, highy-y+(stepy % 2),"", newopts, idstat)
+   if nob = 0 then return self~AddGroupBox(x,y,mx+cx, highy-y+(stepy % 2),"", newopts, idstat)
+   else return 0
 
 
 ::method AddButtonGroup
    use arg x, y, cx, cy, inp, bottom, opts
    parse var inp bt bid bfnk newinp
 
-   if self~AktPtr = 0 then return -2
+   if self~activePtr = 0 then return -2
    if Arg(6,"o") = 1 then bottom = 0
    if cx = 0 | Arg(3,"o") = 1 then cx = 40
    if cy = 0 | Arg(4,"o") = 1 then cy = 12
@@ -1038,27 +1068,29 @@
       inp = newinp
       parse var inp bt bid bfnk newinp
    end
-
+   return 0
 
 
 ::method AddOkCancelRightBottom
-   self~AddButtonGroup(self~SizeX-95, self~SizeY - 15,,, "&Ok 1 OK &Cancel 2 CANCEL", 1, "FIX DEFAULT")
+   return self~AddButtonGroup(self~SizeX-95, self~SizeY - 15,,, "&Ok 1 OK &Cancel 2 CANCEL", 1, "FIX DEFAULT")
 
 ::method AddOkCancelLeftBottom
-   self~AddButtonGroup(5, self~SizeY - 15,,, "&Ok 1 OK &Cancel 2 CANCEL", 1, "FIX DEFAULT")
+   return self~AddButtonGroup(5, self~SizeY - 15,,, "&Ok 1 OK &Cancel 2 CANCEL", 1, "FIX DEFAULT")
 
 ::method AddOkCancelRightTop
-   self~AddButtonGroup(self~SizeX-45, 5,,, "&Ok 1 OK &Cancel 2 CANCEL", 0, "FIX DEFAULT")
+   return self~AddButtonGroup(self~SizeX-45, 5,,, "&Ok 1 OK &Cancel 2 CANCEL", 0, "FIX DEFAULT")
 
 ::method AddOkCancelLeftTop
-   self~AddButtonGroup(5, 5,,, "&Ok 1 OK &Cancel 2 CANCEL", 0, "FIX DEFAULT")
+   return self~AddButtonGroup(5, 5,,, "&Ok 1 OK &Cancel 2 CANCEL", 0, "FIX DEFAULT")
 
 ::method AddIcon
    use arg id, fileName
 
    id = self~CheckId(id~strip~translate)
+   if id < 0 then return id
+
    fileName = fileName~strip~strip('B', '"')
-   if id <> -1 then ret = UsrAddResource(self~Adm, "ICO", id, fileName)
+   return UsrAddResource(self~Adm, "ICO", id, fileName)
 
 ::method GetDefaultOpts protected
    use arg opts
@@ -1074,15 +1106,13 @@
    use arg icon = 0, modal = 0
    if self~BasePtr = 0 then return 0
 
-   if \ icon~DataType("W") then icon = self~ResolveSymbolicId(icon)
-   if icon < 0 then icon = 0
-
+   icon = self~resolveIconID(icon)
    if modal <> 0 & modal <> 1 then do
      if modal~translate = "NOTMODAL" then modal = 1
      else modal = 0
    end
    self~DlgHandle = UsrCreateDialog(self~Adm, "PARENT", self~DialogItemCount, 0, self~BasePtr, 0 /* no autodetection */, 1, icon, modal)
-   self~AktPtr = 0
+   self~activePtr = 0
    if self~DlgHandle = 0 then return 0
    else self~InitDialog
    return self~DlgHandle

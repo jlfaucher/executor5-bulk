@@ -360,6 +360,7 @@ unixMiscFiles = $(interpreter_unix_dir)/*.cat \
                 $(build_os_platform_dir)/oorexx-config
 commonMiscFiles = $(top_srcdir)/CPLv1.0.txt \
                   $(top_srcdir)/CHANGES \
+                  $(top_srcdir)/ReleaseNotes \
                   $(top_srcdir)/CONTRIBUTORS \
                   $(top_srcdir)/NOTICE \
                   $(top_srcdir)/oorexx.ver \
@@ -691,10 +692,9 @@ librexx_la_CXXFLAGS  = $(COMMON_CPPFLAGS) \
                        -I$(build_messages_dir) \
                        -I$(build_streamlibrary_dir) \
                        -I$(build_interpreter_common_dir) \
-                       -I$(build_interpreter_platform_dir) \
-                       -I$(build_rexxapi_platform_dir)
+                       -I$(build_interpreter_platform_dir)
 
-librexx_la_LDFLAGS = $(VERSION_INFO) -nostartfiles
+librexx_la_LDFLAGS = $(VERSION_INFO) @ORX_LDFLAGS_PACKAGE@
 
 #################### rxapi ##########################
 # Sources for rxapi
@@ -799,8 +799,7 @@ rxqueue_CXXFLAGS  = $(COMMON_CPPFLAGS) \
                     -I$(build_api_dir) \
                     -I$(build_api_platform_dir) \
                     -I$(build_interpreter_platform_dir) \
-                    -I$(build_messages_dir) \
-                    -I$(build_rexxapi_platform_dir)
+                    -I$(build_messages_dir)
 #
 # Extra libraries for rxqueue
 #
@@ -819,8 +818,7 @@ rxsubcom_CXXFLAGS  = $(COMMON_CPPFLAGS) \
                     -I$(build_api_dir) \
                     -I$(build_api_platform_dir) \
                     -I$(build_interpreter_platform_dir) \
-                    -I$(build_messages_dir) \
-                    -I$(build_rexxapi_platform_dir)
+                    -I$(build_messages_dir)
 #
 # Extra libraries for rxsubcom
 #
@@ -1002,7 +1000,9 @@ install-exec-local:
 	$(install_sh_SCRIPT) $(build_extensions_rxregexp_dir)/rxregexp.cls $(DESTDIR)$(prefix)/bin/rxregexp.cls
 	$(install_sh_SCRIPT) $(build_extensions_rxftp_dir)/rxftp.cls $(DESTDIR)$(prefix)/bin/rxftp.cls
 	$(install_sh_SCRIPT) $(build_extensions_rxsock_dir)/socket.cls $(DESTDIR)$(prefix)/bin/socket.cls
-	$(install_sh_SCRIPT) $(rexxapi_server_unix_dir)/rxapid $(DESTDIR)$(prefix)/bin/rxapid
+	if test "$(ORX_SYS_STR)" != "AIX"; then \
+		$(install_sh_SCRIPT) $(rexxapi_server_unix_dir)/rxapid $(DESTDIR)$(prefix)/bin/rxapid; \
+	fi
 	for a in $(build_samples_dir)/*.rex; do \
 		bn=`basename $$a`; \
 		$(install_sh_SCRIPT) $$a $(DESTDIR)$(prefix)/share/ooRexx/$$bn; \
@@ -1038,7 +1038,7 @@ deb:
 	cp $(build_os_platform_dir)/debian/postinst  ${top_srcdir}/debian
 	cp $(build_os_platform_dir)/debian/postrm    ${top_srcdir}/debian
 	cp $(build_os_platform_dir)/debian/prerm     ${top_srcdir}/debian
-	cp $(tbuild_os_platform_dir)/debian/rules     ${top_srcdir}/debian
+	cp $(build_os_platform_dir)/debian/rules     ${top_srcdir}/debian
 # Make the binaries
 	make all
 # Install into the debian package directory

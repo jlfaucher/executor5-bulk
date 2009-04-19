@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,18 +35,14 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+#include "oovutil.h"     // Must be first, includes windows.h and oorexxapi.h
 
-
-#include <windows.h>
-#include <rexx.h>
 #include <stdio.h>
 #include <dlgs.h>
 #include <commctrl.h>
 #ifdef __CTL3D
 #include <ctl3d.h>
 #endif
-#define EXTERNALFUNCS
-#include "oovutil.h"
 
 
 /* I do most of the radio button handling myself now so I know it works */
@@ -474,8 +470,8 @@ size_t RexxEntry GetItemData(const char *funcname, size_t argc, CONSTRXSTRING *a
          if (!GetMonthCalendarData(hW, data, id)) data[0] = '\0';
          break;
 
-      default: if (GetItemDataExternal) (*GetItemDataExternal)(hW, id, k, data, DATA_BUFFER-1);
-               else data[0] = '\0';
+      default:
+         data[0] = '\0';
    }
 
    size_t len = strlen(data);
@@ -601,14 +597,7 @@ size_t RexxEntry SetItemData(const char *funcname, size_t argc, CONSTRXSTRING *a
             RETC(!SetMonthCalendarData(hW, data, id))
 
         default:
-            if (SetItemDataExternal)
-            {
-                return(*SetItemDataExternal)(dlgAdm, hW, id, k, data);
-            }
-            else
-            {
-                RETC(1);
-            }
+            RETC(1);
     }
 }
 
@@ -701,10 +690,6 @@ size_t RexxEntry SetStemData(const char *funcname, size_t argc, CONSTRXSTRING *a
             {
                SetTabCtrlData(hW, data, dlgAdm->DataTab[j].id);
             }
-            else if (SetStemDataExternal)
-            {
-                (*SetStemDataExternal)(dlgAdm, hW, dlgAdm->DataTab[j].id, dlgAdm->DataTab[j].typ, data);
-            }
           }
    }
    RETC(0);
@@ -778,8 +763,9 @@ size_t RexxEntry GetStemData(const char *funcname, size_t argc, CONSTRXSTRING *a
         {
             if (!GetTabCtrlData(hW, data, dlgAdm->DataTab[j].id)) data[0] = '\0';
         } else
-        if (GetStemDataExternal)
-            if (!(*GetStemDataExternal)(hW, dlgAdm->DataTab[j].id, dlgAdm->DataTab[j].typ, data, (DATA_BUFFER-1))) data[0] = '\0';
+        {
+            data[0] = '\0';
+        }
 
 
         sprintf(sname,"%s.%d",name,dlgAdm->DataTab[j].id);
@@ -894,7 +880,7 @@ BOOL DataAutodetection(DIALOGADMIN * aDlg)
     parent = aDlg->TheDlg;
     current = parent;
     next = GetTopWindow(current);
-    while ((next) && ((HWND)GetWindowLongPtr(next, GWLP_HWNDPARENT) == parent))
+    while ((next) && ((HWND)getWindowPtr(next, GWLP_HWNDPARENT) == parent))
     {
        current = next;
 

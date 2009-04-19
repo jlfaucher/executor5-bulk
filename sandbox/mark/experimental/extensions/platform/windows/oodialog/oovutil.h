@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -39,6 +39,15 @@
 /* Object REXX OODialog                                             oovutil.h */
 /*                                                                            */
 /******************************************************************************/
+#define NTDDI_VERSION   NTDDI_WINXPSP2
+#define _WIN32_WINNT    0x0501
+#define WINVER          0x0501
+
+#define STRICT
+#define OEMRESOURCE
+
+#include <windows.h>
+#include "oorexxapi.h"
 
 #define MAXREXXNAME 128
 #define MAXLENQUEUE 2056
@@ -66,29 +75,16 @@
 #define WM_USER_HOOK                WM_USER + 0x0608
 #define WM_USER_CONTEXT_MENU        WM_USER + 0x0609
 
-#define VISDLL "OODIALOG.DLL"
+#define OODDLL "oodialog.dll"
 #define DLLVER 2130
 
 #define MSG_TERMINATE "1DLGDELETED1"
 
-extern LONG HandleError(PRXSTRING r, CHAR * text);
 
 /* Flags for the get icon functions.  Indicates the source of the icon. */
 #define ICON_FILE                 0x00000001
 #define ICON_OODIALOG             0x00000002
 #define ICON_DLL                  0x00000004
-#define ICON_SYSTEM               0x00000008
-
-/* The resource IDs of the System Icons.  The raw numeric numbers are used
- * so that they can be passed into functions that use MAKEINTRESOURCE() on the
- * supplied ID.
- */
-#define IDICON_APPLICATION     32512
-#define IDICON_HAND            32513
-#define IDICON_QUESTION        32514
-#define IDICON_EXCLAMATION     32515
-#define IDICON_ASTERISK        32516
-#define IDICON_WINLOGO         32517
 
 /* Defines for the different possible versions of comctl32.dll up to Windows
  * XP SP2. These DWORD "packed version" numbers are calculated using the
@@ -229,10 +225,6 @@ extern DWORD ComCtl32Version;
    }
 
 
-#define ISHEX(value) \
-   ((value[0] == '0') && (toupper(value[1]) == 'X'))
-
-
 //
 // macros to access the fields in a BITMAPINFO struct
 // field_value = macro(pBitmapInfo)
@@ -268,11 +260,6 @@ extern DWORD ComCtl32Version;
        while ((i<StoredDialogs) && (DialogTab[i]->TheDlg != hDlg) && (DialogTab[i]->AktChild != hDlg)) i++; \
        if (i<StoredDialogs) addressedTo = DialogTab[i]; else addressedTo = NULL;   } \
 
-void *string2pointer(const char *string);
-inline void *string2pointer(CONSTRXSTRING *string) { return string2pointer(string->strptr); }
-inline void *string2pointer(CONSTRXSTRING &string) { return string2pointer(string.strptr); }
-void pointer2string(char *, void *pointer);
-inline void pointer2string(PRXSTRING result, void *pointer) { pointer2string(result->strptr, pointer); result->strlength = strlen(result->strptr); }
 
 #define DEF_ADM     DIALOGADMIN * dlgAdm = NULL
 #define GET_ADM     dlgAdm = (DIALOGADMIN *)string2pointer(&argv[0])
@@ -309,13 +296,61 @@ inline void safeDeleteObject(HANDLE h)
 }
 
 
+inline LONG_PTR setWindowPtr(HWND hwnd, int index, LONG_PTR newPtr)
+{
+#ifndef __REXX64__
+#pragma warning(disable:4244)
+#endif
+    return SetWindowLongPtr(hwnd, index, newPtr);
+#ifndef __REXX64__
+#pragma warning(default:4244)
+#endif
+}
+
+inline LONG_PTR getWindowPtr(HWND hwnd, int index)
+{
+    return GetWindowLongPtr(hwnd, index);
+}
+
+inline LONG_PTR setClassPtr(HWND hwnd, int index, LONG_PTR newPtr)
+{
+#ifndef __REXX64__
+#pragma warning(disable:4244)
+#endif
+    return SetClassLongPtr(hwnd, index, newPtr);
+#ifndef __REXX64__
+#pragma warning(default:4244)
+#endif
+}
+
+inline LONG_PTR getClassPtr(HWND hwnd, int index)
+{
+    return GetClassLongPtr(hwnd, index);
+}
+
+typedef enum {oodHex, oodHeX, oodNotHex} oodNumberStr_t;
+
+inline bool isHex(CSTRING c)
+{
+    return strlen(c) > 1 && *c == '0' && toupper(c[1]) == 'X';
+}
+
+inline oodNumberStr_t hexType(CSTRING c)
+{
+    if ( isHex(c) )
+    {
+        return (c[1] == 'x' ? oodHex : oodHeX);
+    }
+    return oodNotHex;
+}
+
 /* structures to manage the dialogs */
 typedef struct {
+   WPARAM wParam;
+   LPARAM lParam;
    ULONG msg;
    ULONG filterM;
-   ULONG wParam;
    ULONG filterP;
-   ULONG lParam;
    ULONG filterL;
    ULONG tag;
    PCHAR rexxProgram;
@@ -476,47 +511,25 @@ typedef struct
 } DIALOGADMIN;
 
 
+// These global variables are defined in oovutil.cpp
+extern HINSTANCE MyInstance;
+extern DIALOGADMIN * DialogTab[];
+extern DIALOGADMIN * topDlg;
+extern INT StoredDialogs;
+extern CRITICAL_SECTION crit_sec;
 
-#ifdef EXTERNALFUNCS
-typedef LONG REXXENTRY GETITEMDATAEXTERNALFN (HANDLE, ULONG, UINT, PCHAR, ULONG);
-typedef LONG REXXENTRY SETITEMDATAEXTERNALFN (DIALOGADMIN *, HANDLE, ULONG, UINT, const char *);
-typedef LONG REXXENTRY GETSTEMDATAEXTERNALFN (HANDLE, ULONG, ULONG, PCHAR, ULONG);
-typedef LONG REXXENTRY SETSTEMDATAEXTERNALFN (DIALOGADMIN *, HANDLE, ULONG, ULONG, const char *);
-#endif
 
-#ifdef CREATEDLL
-/* tools */
+// These utility functions are defined in oovtools.cpp
+extern BOOL DialogInAdminTable(DIALOGADMIN * Dlg);
 extern void rxstrlcpy(CHAR * tar, CONSTRXSTRING &src);
 extern void rxdatacpy(CHAR * tar, RXSTRING &src);
 extern bool IsYes(const char *s);
+extern void *string2pointer(const char *string);
+extern void pointer2string(char *, void *pointer);
+extern LONG HandleError(PRXSTRING r, CHAR * text);
 
-/* global variables */
-#ifndef NOGLOBALVARIABLES
-extern _declspec(dllexport) HINSTANCE MyInstance;
-extern _declspec(dllexport) DIALOGADMIN * DialogTab[MAXDIALOGS];
-extern _declspec(dllexport) DIALOGADMIN * topDlg;
-extern _declspec(dllexport) INT StoredDialogs;
-extern _declspec(dllexport) BOOL ReleaseMain;
-#ifdef EXTERNALFUNCS
-extern _declspec(dllexport) GETITEMDATAEXTERNALFN * GetItemDataExternal = NULL;
-extern _declspec(dllexport) SETITEMDATAEXTERNALFN * SetItemDataExternal = NULL;
-extern _declspec(dllexport) GETSTEMDATAEXTERNALFN * GetStemDataExternal = NULL;
-extern _declspec(dllexport) SETSTEMDATAEXTERNALFN * SetStemDataExternal = NULL;
-#endif
 
-#endif
+inline void *string2pointer(CONSTRXSTRING *string) { return string2pointer(string->strptr); }
+inline void *string2pointer(CONSTRXSTRING &string) { return string2pointer(string.strptr); }
+inline void pointer2string(PRXSTRING result, void *pointer) { pointer2string(result->strptr, pointer); result->strlength = strlen(result->strptr); }
 
-#else
-extern _declspec(dllimport) HINSTANCE MyInstance;
-extern _declspec(dllimport) DIALOGADMIN * DialogTab[MAXDIALOGS];
-extern _declspec(dllimport) DIALOGADMIN * topDlg;
-extern _declspec(dllimport) INT StoredDialogs;
-extern _declspec(dllimport) BOOL ReleaseMain;
-#ifdef EXTERNALFUNCS
-extern _declspec(dllimport) GETITEMDATAEXTERNALFN * GetItemDataExternal;
-extern _declspec(dllimport) SETITEMDATAEXTERNALFN * SetItemDataExternal;
-extern _declspec(dllimport) GETSTEMDATAEXTERNALFN * GetStemDataExternal;
-extern _declspec(dllimport) SETSTEMDATAEXTERNALFN * SetStemDataExternal;
-#endif
-
-#endif

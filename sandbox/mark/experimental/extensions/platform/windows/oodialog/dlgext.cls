@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -49,7 +49,7 @@
    /* dispatch of messages      */
 
 ::method ExecuteAsync unguarded
-   use arg sleeptime, sh, icon, nomodal
+   use arg sleeptime, sh, icon = 0, nomodal
    if sleeptime~Datatype('N') = 0 then sleeptime = 10
    if Arg(2,'o') = 1 then sh = "DEFAULT"
    if Arg(4,'o') = 1 then nomodal = 0
@@ -101,7 +101,7 @@
 
    /* Run a nonmodal dialog */
 ::method Popup
-   use arg sh, sleeptime, icon
+   use arg sh, sleeptime, icon = 0
    if Arg(1,'o') = 1 then sh = "DEFAULT"
    if sleeptime~Datatype('N') = 0 then sleeptime = 10
    /* start Execute and return to caller */
@@ -109,7 +109,7 @@
 
 
 ::method PopupAsChild
-   use arg parent, sh, sleeptime, icon
+   use arg parent, sh, sleeptime, icon = 0
 
    if Arg(1,'o') = 1 | parent = 0 then do
        call ErrorMessage "No parent dialog specified!"
@@ -168,41 +168,41 @@
    if ((Arg(5, 'o') = 0) & (min~Datatype('N') \= 0)) & ((Arg(6,'o') = 0) & (max~Datatype('N') \= 0)) then self~SetSBRange(id, min, max, 0)
    if (Arg(7,'o') = 0) & (pos~Datatype('N') \= 0) then self~SetSBPos(id, pos, 0)
 
-   hnd = self~GetItem(id)
+   hwnd = self~GetItem(id)
    wf = "0x0000FFFF"
    nf = "0xFFFFFFFF"
    /* Install hooks for WM_VSCROLL and WM_HSCROLL */
-   self~AddUserMsg(progdn, 0x00000114, wf, 0x00000001, wf, hnd, nf)
-   self~AddUserMsg(progup, 0x00000114, wf, 0x00000000, wf, hnd, nf)
-   self~AddUserMsg(progdn, 0x00000115, wf, 0x00000001, wf, hnd, nf)
-   self~AddUserMsg(progup, 0x00000115, wf, 0x00000000, wf, hnd, nf)
+   self~AddUserMsg(progdn, 0x00000114, wf, 0x00000001, wf, hwnd, nf)
+   self~AddUserMsg(progup, 0x00000114, wf, 0x00000000, wf, hwnd, nf)
+   self~AddUserMsg(progdn, 0x00000115, wf, 0x00000001, wf, hwnd, nf)
+   self~AddUserMsg(progup, 0x00000115, wf, 0x00000000, wf, hwnd, nf)
    if Arg(4,'o') = 0 then do
-      self~AddUserMsg(progpos, 0x00000114, wf, 0x00000004, wf, hnd, nf)
-      self~AddUserMsg(progpos, 0x00000115, wf, 0x00000004, wf, hnd, nf)
+      self~AddUserMsg(progpos, 0x00000114, wf, 0x00000004, wf, hwnd, nf)
+      self~AddUserMsg(progpos, 0x00000115, wf, 0x00000004, wf, hwnd, nf)
    end
    if Arg(8,'o') = 0 then do
-      self~AddUserMsg(progpgup, 0x00000114, wf, 0x00000002, wf, hnd, nf)
-      self~AddUserMsg(progpgup, 0x00000115, wf, 0x00000002, wf, hnd, nf)
+      self~AddUserMsg(progpgup, 0x00000114, wf, 0x00000002, wf, hwnd, nf)
+      self~AddUserMsg(progpgup, 0x00000115, wf, 0x00000002, wf, hwnd, nf)
    end
    if Arg(9,'o') = 0 then do
-      self~AddUserMsg(progpgdn, 0x00000114, wf, 0x00000003, wf, hnd, nf)
-      self~AddUserMsg(progpgdn, 0x00000115, wf, 0x00000003, wf, hnd, nf)
+      self~AddUserMsg(progpgdn, 0x00000114, wf, 0x00000003, wf, hwnd, nf)
+      self~AddUserMsg(progpgdn, 0x00000115, wf, 0x00000003, wf, hwnd, nf)
    end
    if Arg(10,'o') = 0 then do
-      self~AddUserMsg(progtop, 0x00000114, wf, 0x00000006, wf, hnd, nf)
-      self~AddUserMsg(progtop, 0x00000115, wf, 0x00000006, wf, hnd, nf)
+      self~AddUserMsg(progtop, 0x00000114, wf, 0x00000006, wf, hwnd, nf)
+      self~AddUserMsg(progtop, 0x00000115, wf, 0x00000006, wf, hwnd, nf)
    end
    if Arg(11,'o') = 0 then do
-      self~AddUserMsg(progbottom, 0x00000114, wf, 0x00000007, wf, hnd, nf)
-      self~AddUserMsg(progbottom, 0x00000115, wf, 0x00000007, wf, hnd, nf)
+      self~AddUserMsg(progbottom, 0x00000114, wf, 0x00000007, wf, hwnd, nf)
+      self~AddUserMsg(progbottom, 0x00000115, wf, 0x00000007, wf, hwnd, nf)
    end
    if Arg(12,'o') = 0 then do
-      self~AddUserMsg(progtrack, 0x00000114, wf, 0x00000005, wf, hnd, nf)
-      self~AddUserMsg(progtrack, 0x00000115, wf, 0x00000005, wf, hnd, nf)
+      self~AddUserMsg(progtrack, 0x00000114, wf, 0x00000005, wf, hwnd, nf)
+      self~AddUserMsg(progtrack, 0x00000115, wf, 0x00000005, wf, hwnd, nf)
    end
    if Arg(13,'o') = 0 then do
-      self~AddUserMsg(progendsc, 0x00000114, wf, 0x00000008, wf, hnd, nf)
-      self~AddUserMsg(progendsc, 0x00000115, wf, 0x00000008, wf, hnd, nf)
+      self~AddUserMsg(progendsc, 0x00000114, wf, 0x00000008, wf, hwnd, nf)
+      self~AddUserMsg(progendsc, 0x00000115, wf, 0x00000008, wf, hwnd, nf)
    end
    return 0
 
@@ -243,7 +243,7 @@
    use arg id, posdata, single, page
    if Arg(3,"o") = 1 then single = 1
    if Arg(4,"o") = 1 then page = 10
-   code = BinaryAnd(posdata, 0x0000FFFF)
+   code = .DlgUtil~loWord(posdata)
    parse value self~GetSBRange(id) with rmin rmax
    pos = self~GetSBPos(id)
    select
@@ -256,9 +256,9 @@
       /* page down */
       when code = 3 then pos = min(rmax,pos + page)
       /* track position */
-      when code = 4 then pos = BinaryAnd(posdata, 0xFFFF0000) % X2D("10000")
+      when code = 4 then pos = .DlgUtil~hiWord(posdata)
       /* tracking */
-      when code = 5 then pos = BinaryAnd(posdata, 0xFFFF0000) % X2D("10000")
+      when code = 5 then pos = .DlgUtil~hiWord(posdata)
       /* top */
       when code = 6 then pos = rmin
       /* bottom */
@@ -334,21 +334,21 @@
    /* This method will resize a dialog item */
 
 ::method ResizeItem unguarded
-   use arg id, width, high, showOptions
-   if Arg(4,"o") = 1 then showOptions = ""; else showOptions = showOptions~translate
-   hnd = self~GetItem(id)
-   if hnd = 0 then return -1
-   return WndShow_Pos("P",hnd, 0, 0, width * self~FactorX, high* self~FactorY,,
+   use arg id, width, high, showOptions = ""
+   showOptions = showOptions~translate
+   hwnd = self~GetItem(id)
+   if hwnd = 0 then return -1
+   return WndShow_Pos("P",hwnd, 0, 0, width * self~FactorX, high* self~FactorY,,
                            "NOMOVE "||showOptions)
 
    /* This method will move a dialog item to an other position */
 
 ::method MoveItem unguarded
-   use arg id, xPos, yPos, showOptions
-   if Arg(4,"o") = 1 then showOptions = ""; else showOptions = showOptions~translate
-   h = self~GetItem(id)
+   use arg id, xPos, yPos, showOptions = ""
+   showOptions = showOptions~translate
+   hwnd = self~GetItem(id)
    if h = 0 then return -1
-   return WndShow_Pos("P",h, xPos * self~FactorX, yPos * self~FactorY, 0, 0,,
+   return WndShow_Pos("P", hwnd, xPos * self~FactorX, yPos * self~FactorY, 0, 0,,
                            "NOSIZE "||showOptions)
 
    /* This method will add a method that will be started automatically */
@@ -376,8 +376,8 @@
    /* It returns a handle to the bitmap */
 
 ::method LoadBitmap
-   use arg bmpFilename, option
-   if Arg(2, 'o') = 1 then option = ""; else option = option~translate
+   use arg bmpFilename, option = ""
+   option = option~translate
    return LoadRemoveBitmap(self~Adm, bmpFilename, "LOAD" || option)
 
    /* This method will free a memory bitmap */
@@ -390,32 +390,21 @@
    /* The given bitmap will be shown instead of a push button */
 
 ::method AddBitmapButton
-   use arg id, x, y, cx, cy, text, fnk, bmp, focus, sel, disabl, opts
-   if self~AktPtr = 0 then return -2
+   use arg id, x, y, cx = 0, cy = 0, text = "", fnk = "", bmp, focus = "", sel = "", disabl = "", opts
+   if self~activePtr = 0 then return -2
    id = self~CheckId(id)
    if  id = -1 then return
-   if Arg(4, 'o') = 1 then cx = 0
-   if Arg(5, 'o') = 1 then cy = 0
-   if Arg(6, 'o') = 1 then text = ""
-   if Arg(7, 'o') = 1 then fnk = ""
-   if Arg(9, 'o') = 1 then focus = ""
-   if Arg(10, 'o') = 1 then sel = ""
-   if Arg(11, 'o') = 1 then disabl = ""
    opts = self~GetDefaultOpts(opts) || " OWNER"
    if focus = "" & sel = "" & opts~wordpos("FRAME") = 0 & opts~wordpos("TAB") = 0 then opts = opts || " NOTAB"
 
    self~DialogItemCount = self~DialogItemCount + 1
-   self~AktPtr = UsrAddControl("BUT", self~AktPtr, id, x, y, cx, cy, text, opts)
+   self~activePtr = UsrAddControl("BUT", self~activePtr, id, x, y, cx, cy, text, opts)
    self~ConnectBitmapButton(id, fnk~space(0), bmp, focus, sel, disabl, opts)
 
 
 ::method ConnectBitmapButton
-   use arg id, msgToRise, bmpNormal, bmpFocused, bmpSelected, bmpDisabled, styleOptions
-   if Arg(2,'o') = 1 then msgToRise = ""
-   if Arg(4,'o') = 1 then bmpFocused = ""
-   if Arg(5,'o') = 1 then bmpSelected = ""
-   if Arg(6,'o') = 1 then bmpDisabled = ""
-   if Arg(7,'o') = 1 then styleOptions = ""; else styleOptions = styleOptions~translate
+   use arg id, msgToRise = "", bmpNormal, bmpFocused = "", bmpSelected = "", bmpDisabled = "", styleOptions = ""
+   styleOptions = styleOptions~translate
    if id~DataType("N") = 0 then id = self~ResolveSymbolicId(id)
    if id = -1 then return -1
    return BmpButton(self~Adm, "A", msgToRise, id, bmpNormal, bmpFocused, bmpSelected, bmpDisabled, styleOptions);
@@ -425,13 +414,10 @@
    /* possible options are: (see ConnectBitmapButton) */
 
 ::method ChangeBitmapButton unguarded
-   use arg id, bmpNormal, bmpFocused, bmpSelected, bmpDisabled, styleOptions
-   if Arg(3,'o') = 1 then bmpFocused = ""
-   if Arg(4,'o') = 1 then bmpSelected = ""
-   if Arg(5,'o') = 1 then bmpDisabled = ""
-   if Arg(6,'o') = 1 then styleOptions = ""; else styleOptions = styleOptions~translate
+   use arg id, bmpNormal, bmpFocused = "", bmpSelected = "", bmpDisabled = "", styleOptions = ""
    if id~DataType("N") = 0 then id = self~ResolveSymbolicId(id)
    if id = -1 then return -1
+   styleOptions = styleOptions~translate
    return BmpButton(self~Adm, "C", id, bmpNormal, bmpFocused, bmpSelected, bmpDisabled, styleOptions);
 
    /* Sets the position of a bitmap within a button */
@@ -471,17 +457,16 @@
    /*    "USEPAL" : This will use the color palette of the bitmap */
 
 ::method BackgroundBitmap
-   use arg bmpFilename, option
-   if Arg(2, 'o') = 1 then option = ""; else option = option~translate
+   use arg bmpFilename, option = ""
+   option = option~translate
    self~BkgBitmap = self~LoadBitmap(bmpFilename, option)
    ret = SetBackground(self~Adm, "BMP", self~BkgBitmap)
 
 
 ::method CreateBrush unguarded
-    use arg color, brushSpecifier
+    use arg color = 1, brushSpecifier = ""
     if Arg() = 0 then return HandleDC_Obj("B")
-    if Arg(1, "o") = 1 then color = 1
-    if Arg(2, "o") = 1 then return HandleDC_Obj("B", color)
+    if brushSpecifier == "" then return HandleDC_Obj("B", color)
     brushSpecifier = brushSpecifier~translate
     if brushSpecifier = "UPDIAGONAL" | brushSpecifier = "DOWNDIAGONAL" | brushSpecifier = "CROSS" | brushSpecifier = "DIAGCROSS",
     | brushSpecifier = "HORIZONTAL" | brushSpecifier = "VERTICAL" then return HandleDC_Obj("B", color, brushSpecifier)
@@ -511,11 +496,11 @@
 
 ::method ScrollInButton unguarded
    use arg id, text, fontName, fontSize, fontStyle, displaceY, step, sleep, color
-   hnd = self~GetItem(id)
+   hwnd = self~GetItem(id)
    if Arg() = 1 then
-      return self~ScrollText(hnd)
+      return self~ScrollText(hwnd)
    else
-      return self~ScrollText(hnd, text, fontName, fontSize, fontStyle, displaceY, step, sleep, color)
+      return self~ScrollText(hwnd, text, fontName, fontSize, fontStyle, displaceY, step, sleep, color)
 
 
    /* This method will scroll text in a window with the given size, font, */
@@ -603,9 +588,9 @@
 
 ::method RedrawButton unguarded
    use arg id, erasebkg
-   hnd = self~GetItem(id)
+   hwnd = self~GetItem(id)
    if Arg(2, 'o') = 1 then erasebkg = 0
-   return WindowRect("RDW", hnd, erasebkg)
+   return WindowRect("RDW", hwnd, erasebkg)
 
    /* This method redraws the rectangle of the given window */
 
@@ -629,12 +614,8 @@
    /*    "HEAVY"                 */
 
 ::method WriteToWindow unguarded
-   use arg hwnd, xPos, yPos, text, fontName, fontSize, fontStyle, fgColor, bkColor
-   if Arg(5, "o") = 1 then fontName = "System"
-   if Arg(6, "o") = 1 then fontSize = 10
-   if Arg(7, "o") = 1 then fontStyle = ""; else fontStyle = fontStyle~translate
-   if Arg(8, "o") = 1 then fgColor = -1
-   if Arg(9, "o") = 1 then bkColor = -1
+   use arg hwnd, xPos, yPos, text, fontName = "System", fontSize = 10, fontStyle = "", fgColor = (-1), bkColor = (-1)
+   fontStyle = fontStyle~translate
    return WriteText(hwnd, xPos, yPos, text, fontName, fontSize, fontStyle, fgColor, bkColor)  /* more than 6 arguments means use font */
 
 
@@ -677,8 +658,8 @@
 
 ::method FreeButtonDC unguarded
    use arg id, dc
-   hnd = self~GetItem(id)
-   return self~FreeWindowDC(hnd, dc)
+   hwnd = self~GetItem(id)
+   return self~FreeWindowDC(hwnd, dc)
 
    /* This method will return the horizontal bitmap extension */
 
@@ -992,7 +973,7 @@
 
    return self~addUserMsg(msgToRaise, 0x00000111, 0xFFFFFFFF, id, 0x0000FFFF, 0, 0)
 
--- Connect WM_CONTEXTMENU messages to a method.
+-- Connect WM_CONTEXTMENU messages to a method.  TODO - this doesn't seem like the right place for this, what was I thinking?
 ::method connectContextMenu
    use strict arg msgToRaise, hwnd = .nil
    if hwnd \== .nil then return self~addUserMsg(msgToRaise, 0x0000007B, 0xFFFFFFFF, hwnd, 0xFFFFFFFF, 0, 0, 0x00000201)
@@ -1002,10 +983,9 @@
    return GetDlgMsg(self~Adm, "Peek")
 
 ::method SetWindowRect unguarded
-   use arg hnd, x, y, width, high, showOptions
-   if Arg(6,"o") = 1 then showOptions = ""; else showOptions = showOptions~translate
-   if hnd = 0 | hnd~datatype("N") = 0 then return -1
-   return WndShow_Pos("P",hnd, x, y, width, high, showOptions)
+   use arg hwnd, x, y, width, high, showOptions = ""
+   showOptions = showOptions~translate
+   return WndShow_Pos("P",hwnd, x, y, width, high, showOptions)
 
    /* Redraws the given rectangle */
 ::method RedrawRect unguarded
@@ -1015,8 +995,8 @@
    return WindowRect("RDW", hwnd,left,top,right,bottom, erasebkg)
 
 ::method RedrawWindow unguarded
-   use arg hnd
-   return WndShow_Pos("S", hnd, "REDRAW")
+   use arg hwnd
+   return WndShow_Pos("S", hwnd, "REDRAW")
 
 ::method GetFocus unguarded
    return Wnd_Desktop("GETFOC", self~DlgHandle)
@@ -1039,9 +1019,8 @@
    return Wnd_Desktop("CAP", self~DlgHandle, "R")
 
 ::method IsMouseButtonDown
-   use arg mb
-   if Arg(1,'o') = 1 then mb = "LEFT"
-   else mb = mb~translate~space(0)
+   use arg mb = "LEFT"
+   mb = mb~translate~space(0)
    if mb = "LEFT" then return Wnd_Desktop("KSTAT", self~DlgHandle,1) /* VK_LBUTTON */
    if mb = "MIDDLE" then return Wnd_Desktop("KSTAT", self~DlgHandle,4) /* VK_MBUTTON */
    if mb = "RIGHT" then return Wnd_Desktop("KSTAT", self~DlgHandle,2) /* VK_RBUTTON */
@@ -1107,5 +1086,4 @@
         end
         NUMERIC DIGITS d
     end
-
 

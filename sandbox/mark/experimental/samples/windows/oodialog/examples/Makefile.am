@@ -37,6 +37,9 @@
 
 .NOTPARALLEL:
 
+SUBDIRS			= resources
+DIST_SUBDIRS            = resources
+
 MAINTAINERCLEANFILES 	= Makefile.in *~
 
 EXTRA_DIST = *.rex *.txt

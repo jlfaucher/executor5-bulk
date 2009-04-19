@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  otpinstr.c    */
+/* REXX Kernel                                                                */
 /*                                                                            */
 /* Primitive Translator Object Constructors                                   */
 /*                                                                            */
@@ -1310,6 +1310,8 @@ RexxInstruction *RexxSource::numericNew()
             token = nextReal();              /* get the next token                */
             if (token->isEndOfClause()) /* just NUMERIC FORM?                */
             {
+                // reset to the default for this package
+                _flags |= numeric_form_default;
                 break;                         /* we're all finished                */
             }
                                                /* have the keyword form?            */
@@ -2245,11 +2247,10 @@ RexxInstruction *RexxSource::traceNew()
 /****************************************************************************/
 {
     size_t setting = TRACE_NORMAL;              /* set default trace mode            */
-    wholenumber_t debug_skip = 0;                      /* no skipping                       */
-    size_t debug_flags = 0;                     /* no debug flags                    */
-    RexxObject *_expression = OREF_NULL;              /* not expression form               */
-    RexxToken *token = nextReal();                  /* get the next token                */
-    size_t      debug;                   /* new debug setting                 */
+    wholenumber_t debug_skip = 0;               /* no skipping                       */
+    size_t trcFlags = 0;                        /* no translated flags               */
+    RexxObject *_expression = OREF_NULL;        /* not expression form               */
+    RexxToken *token = nextReal();              /* get the next token                */
 
     if (!token->isEndOfClause())
     {   /* more than just TRACE?             */
@@ -2280,9 +2281,12 @@ RexxInstruction *RexxSource::traceNew()
                 if (!value->requestNumber(debug_skip, number_digits()))
                 {
                     debug_skip = 0;              /* belt and braces                   */
+                    char badOption = 0;
                                                  /* process the setting               */
-                    this->parseTraceSetting(value, &setting, &debug);
-                    debug_flags |= debug;        /* for execution time                */
+                    if (!parseTraceSetting(value, setting, trcFlags, badOption))
+                    {
+                        syntaxError(Error_Invalid_trace_trace, new_string(&badOption, 1));
+                    }
                 }
                 else
                 {
@@ -2302,9 +2306,12 @@ RexxInstruction *RexxSource::traceNew()
             if (!value->requestNumber(debug_skip, number_digits()))
             {
                 debug_skip = 0;                /* belt and braces                   */
-                                               /* process the setting               */
-                this->parseTraceSetting(value, &setting, &debug);
-                debug_flags |= debug;          /* for execution time                */
+                char badOption = 0;
+                                             /* process the setting               */
+                if (!parseTraceSetting(value, setting, trcFlags, badOption))
+                {
+                    syntaxError(Error_Invalid_trace_trace, new_string(&badOption, 1));
+                }
             }
             else
             {
@@ -2317,7 +2324,7 @@ RexxInstruction *RexxSource::traceNew()
             /* minus form?                       */
             if (token->subclass == OPERATOR_SUBTRACT)
             {
-                debug_flags |= trace_notrace;  /* turn on the notrace flag          */
+                setting |= DEBUG_NOTRACE;      // turn on the no tracing flag
             }
             setting = 0;                     /* indicate a debug version          */
             token = nextReal();              /* get the next token                */
@@ -2350,7 +2357,7 @@ RexxInstruction *RexxSource::traceNew()
     /* create a new translator object    */
     RexxInstruction *newObject = new_instruction(TRACE, Trace);
     /* now complete this                 */
-    new ((void *)newObject) RexxInstructionTrace(_expression, setting, debug_flags, debug_skip);
+    new ((void *)newObject) RexxInstructionTrace(_expression, setting, trcFlags, debug_skip);
     return newObject; /* done, return this                 */
 }
 

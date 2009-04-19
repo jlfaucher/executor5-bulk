@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -442,7 +442,6 @@ RoutineClass *PackageManager::createRegisteredRoutine(RexxString *function)
 }
 
 
-
 /**
  * Load an internal package into our list.  This does not
  * load a library, but links package routines ones already
@@ -458,6 +457,29 @@ void PackageManager::loadInternalPackage(RexxString *name, RexxPackageEntry *p)
     // have we already loaded this package?
     packages->put((RexxObject *)package, name);
 }
+
+
+/**
+ * Register an in-process library package.
+ *
+ * @param name   The name to register under.
+ * @param p      The package table information.
+ *
+ * @return true if this was successfully registered, false if a package
+ *         is already registered under the name.
+ */
+bool PackageManager::registerPackage(RexxString *name, RexxPackageEntry *p)
+{
+    // don't replace any already loaded packages
+    if (packages->at(name) != OREF_NULL)
+    {
+        return false;
+    }
+    // handle like an internal package
+    loadInternalPackage(name, p);
+    return true;
+}
+
 
 
 /**
@@ -610,6 +632,9 @@ void PackageManager::unload()
 bool PackageManager::callNativeRoutine(RexxActivity *activity, RexxString *name,
     RexxObject **arguments, size_t argcount, ProtectedObject &result)
 {
+    // all of our tables use uppercase names...make this a case-insensitive lookup
+    name = name->upper();
+
     // package functions come first
     RoutineClass *function = (RoutineClass *)packageRoutines->at(name);
     if (function != OREF_NULL)
@@ -646,7 +671,7 @@ bool PackageManager::callNativeRoutine(RexxActivity *activity, RexxString *name,
  *
  * @return The package routine (also returned in the result protected object).
  */
-PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *shortName, RexxString *resolvedName, ProtectedObject &result)
+RoutineClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *shortName, RexxString *resolvedName, ProtectedObject &result)
 {
     result = OREF_NULL;
 
@@ -666,7 +691,7 @@ PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *s
     // macro space, it's possible this will be loaded under the simple name.  We'll need to check
     // table again using the fully resolved name afterward.
 
-    PackageClass *package = checkRequiresCache(shortName, result);
+    RoutineClass *package = checkRequiresCache(shortName, result);
     if (package != OREF_NULL)
     {
         return package;
@@ -728,24 +753,26 @@ PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *s
  *
  * @return The located ::REQUIRES file.
  */
-PackageClass *PackageManager::getMacroSpaceRequires(RexxActivity *activity, RexxString *name, ProtectedObject &result, RexxObject *securityManager)
+RoutineClass *PackageManager::getMacroSpaceRequires(RexxActivity *activity, RexxString *name, ProtectedObject &result, RexxObject *securityManager)
 {
     // make sure we're not stuck in a circular reference
     activity->checkRequires(name);
     // unflatten the method and protect it
     RoutineClass *code = RexxActivation::getMacroCode(name);
-    PackageClass *package = code->getPackage();
-    result = package;
+    result = code;
 
     if (securityManager == OREF_NULL)
     {
         code->setSecurityManager(securityManager);
     }
-    runRequires(activity, name, code);
-
-    WeakReference *ref = new WeakReference(package);
+    // we place the code in the package table so we have
+    // access to it to run the prologue code in other instances
+    // We also add this before running the prolog in case another
+    // thread tries to load the same thing.
+    WeakReference *ref = new WeakReference(code);
     loadedRequires->put(ref, name);
-    return package;
+
+    return code;
 }
 
 
@@ -758,7 +785,7 @@ PackageClass *PackageManager::getMacroSpaceRequires(RexxActivity *activity, Rexx
  *
  * @return The return Routine instance.
  */
-PackageClass *PackageManager::getRequiresFile(RexxActivity *activity, RexxString *name, RexxObject *securityManager, ProtectedObject &result)
+RoutineClass *PackageManager::getRequiresFile(RexxActivity *activity, RexxString *name, RexxObject *securityManager, ProtectedObject &result)
 {
     // make sure we're not stuck in a circular reference
     activity->checkRequires(name);
@@ -767,18 +794,11 @@ PackageClass *PackageManager::getRequiresFile(RexxActivity *activity, RexxString
     RoutineClass *code = RoutineClass::fromFile(name);
     result = code;   // we need to protect this until things are fully resolved.
 
-    PackageClass *package = code->getPackage();
-    result = package;
     if (securityManager == OREF_NULL)
     {
         code->setSecurityManager(securityManager);
     }
-
-    runRequires(activity, name, code);
-
-    WeakReference *ref = new WeakReference(package);
-    loadedRequires->put(ref, name);
-    return package;
+    return code;
 }
 
 
@@ -792,25 +812,25 @@ PackageClass *PackageManager::getRequiresFile(RexxActivity *activity, RexxString
  *
  * @return The return Routine instance.
  */
-PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *name, const char *data, size_t length, ProtectedObject &result)
+RoutineClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *name, const char *data, size_t length, ProtectedObject &result)
 {
     // first check this using the specified name.
-    PackageClass *resolved = checkRequiresCache(name, result);
+    RoutineClass *resolved = checkRequiresCache(name, result);
     if (resolved != OREF_NULL)
     {
         return resolved;
     }
 
     RoutineClass *code = new RoutineClass(name, data, length);
-    PackageClass *package = code->getPackage();
-    result = package;
+    result = code;
 
-    runRequires(activity, name, code);
-
-
-    WeakReference *ref = new WeakReference(package);
+    // we place the code in the package table so we have
+    // access to it to run the prologue code in other instances
+    // We also add this before running the prolog in case another
+    // thread tries to load the same thing.
+    WeakReference *ref = new WeakReference(code);
     loadedRequires->put(ref, name);
-    return package;
+    return code;
 }
 
 
@@ -824,22 +844,23 @@ PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *n
  *
  * @return The return Routine instance.
  */
-PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *name, RexxArray *data, ProtectedObject &result)
+RoutineClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *name, RexxArray *data, ProtectedObject &result)
 {
     // first check this using the specified name.
-    PackageClass *resolved = checkRequiresCache(name, result);
-    if (resolved == OREF_NULL)
+    RoutineClass *code = checkRequiresCache(name, result);
+    if (code == OREF_NULL)
     {
-        RoutineClass *code = new RoutineClass(name, data);
-        resolved = code->getPackage();
-        result = resolved;
+        code = new RoutineClass(name, data);
+        result = code;
 
-        runRequires(activity, name, code);
-
-        WeakReference *ref = new WeakReference(resolved);
+        // we place the code in the package table so we have
+        // access to it to run the prologue code in other instances
+        // We also add this before running the prolog in case another
+        // thread tries to load the same thing.
+        WeakReference *ref = new WeakReference(code);
         loadedRequires->put(ref, name);
     }
-    return resolved;
+    return code;
 }
 
 
@@ -850,7 +871,7 @@ PackageClass *PackageManager::loadRequires(RexxActivity *activity, RexxString *n
  *
  * @return The PackageClass instance, if any.
  */
-PackageClass *PackageManager::checkRequiresCache(RexxString *name, ProtectedObject &result)
+RoutineClass *PackageManager::checkRequiresCache(RexxString *name, ProtectedObject &result)
 {
     // first check this using the specified name.  Since we need to perform checks in the
     // macro space, it's possible this will be loaded under the simple name.  We'll need to check
@@ -858,7 +879,7 @@ PackageClass *PackageManager::checkRequiresCache(RexxString *name, ProtectedObje
     WeakReference *requiresRef = (WeakReference *)loadedRequires->get(name);
     if (requiresRef != OREF_NULL)
     {
-        PackageClass *resolved = (PackageClass *)requiresRef->get();
+        RoutineClass *resolved = (RoutineClass *)requiresRef->get();
         if (resolved != OREF_NULL)
         {
             result = resolved;
@@ -868,25 +889,6 @@ PackageClass *PackageManager::checkRequiresCache(RexxString *name, ProtectedObje
         loadedRequires->remove(name);
     }
     return OREF_NULL;
-}
-
-
-/**
- * Do the initial run of a ::REQUIRES file.
- *
- * @param activity The current activity.
- * @param name     The name of the requires file.
- * @param code     The routine instance to run.
- */
-void PackageManager::runRequires(RexxActivity *activity, RexxString *name, RoutineClass *code)
-{
-    ProtectedObject dummy;
-
-    // make sure we reference the circular reference stack
-    activity->addRunningRequires(name);
-    code->call(activity, name, NULL, 0, dummy);
-                                         /* No longer installing routine.     */
-    activity->removeRunningRequires(name);
 }
 
 

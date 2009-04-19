@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -2411,7 +2411,7 @@ wholenumber_t RexxNumberString::comp(
                                          /* subtracting the two numbers, the  */
                                          /* sign of the result obj will be our*/
                                          /* return value.                     */
-    required_arg(right, ONE);            /* make sure we have a real value    */
+    requiredArgument(right, ARG_ONE);            /* make sure we have a real value    */
                                          /* get a numberstring object from    */
                                          /*right                              */
     rightNumber = right->numberString();
@@ -2697,7 +2697,7 @@ RexxNumberString *RexxNumberString::multiply(RexxObject *right)
 /* Function:  Multiply two numbers                                  */
 /********************************************************************/
 {
-    required_arg(right, ONE);            /* must have an argument             */
+    requiredArgument(right, ARG_ONE);            /* must have an argument             */
                                          /* get a numberstring object from    */
                                          /*right                              */
     RexxNumberString *rightNumber = right->numberString();
@@ -2714,7 +2714,7 @@ RexxNumberString *RexxNumberString::divide(RexxObject *right)
 /* Function:  Divide two numbers                                    */
 /********************************************************************/
 {
-    required_arg(right, ONE);            /* must have an argument             */
+    requiredArgument(right, ARG_ONE);            /* must have an argument             */
 
                                          /* get a numberstring object from    */
                                          /*right                              */
@@ -2733,7 +2733,7 @@ RexxNumberString *RexxNumberString::integerDivide(RexxObject *right)
 /* Function:  Integer division between two numbers                  */
 /********************************************************************/
 {
-    required_arg(right, ONE);            /* must have an argument             */
+    requiredArgument(right, ARG_ONE);            /* must have an argument             */
                                          /* get a numberstring object from    */
                                          /*right                              */
     RexxNumberString *rightNumber = right->numberString();
@@ -2751,7 +2751,7 @@ RexxNumberString *RexxNumberString::remainder(RexxObject *right)
 /* Function:  Remainder division between two numbers                */
 /********************************************************************/
 {
-    required_arg(right, ONE);            /* must have an argument             */
+    requiredArgument(right, ARG_ONE);            /* must have an argument             */
 
                                          /* get a numberstring object from    */
                                          /*right                              */

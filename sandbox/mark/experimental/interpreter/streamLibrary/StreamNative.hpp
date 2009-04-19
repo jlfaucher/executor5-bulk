@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,7 +36,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                                  stream.h      */
+/* REXX Kernel                                                                */
 /*                                                                            */
 /* Stream declarations and includes                                           */
 /*                                                                            */
@@ -115,6 +115,7 @@ public:
     void completeLine(size_t writeLength);
     void writeFixedLine(const char *data, size_t length);
     void setPosition(int64_t position, int64_t &newPosition);
+    void setPosition(int64_t offset, int style, int64_t &newPosition);
     void setReadPosition(int64_t position);
     void setWritePosition(int64_t position);
     void setCharReadPosition(int64_t position);
@@ -151,7 +152,7 @@ public:
     const char *streamExists();
     int64_t queryHandle();
     const char *getStreamType();
-    int64_t getStreamSize();
+    RexxObjectPtr getStreamSize();
     const char *getTimeStamp();
     const char *getState();
     RexxStringObject getDescription();

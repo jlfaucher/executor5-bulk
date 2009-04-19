@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -396,7 +396,7 @@ RexxString *RexxString::copies(RexxInteger *_copies)
     size_t   Len;                        /* copy string length                */
     char    *Temp;                       /* copy location                     */
 
-    required_arg(_copies, ONE);           /* the count is required             */
+    requiredArgument(_copies, ARG_ONE);           /* the count is required             */
     /* get the copies count              */
     Count = _copies->requiredNonNegative(ARG_ONE);
     Len = this->getLength();                  /* get argument length               */
@@ -803,7 +803,7 @@ RexxString *RexxString::translate(
         }
         else
         {
-            Position = (size_t)ch;            /* position is the character value   */
+            Position = ((size_t)ch) & 0xFF;     /* position is the character value   */
         }
         if (Position != (size_t)(-1))
         {     /* found in the table?               */

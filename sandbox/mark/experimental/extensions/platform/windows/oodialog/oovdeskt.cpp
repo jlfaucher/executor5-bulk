@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,12 +35,11 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#include <windows.h>
-#include <rexx.h>
+#include "oovutil.h"     // Must be first, includes windows.h and oorexxapi.h
+
 #include <stdio.h>
 #include <dlgs.h>
 #include <malloc.h>
-#include "oovutil.h"
 
 
 size_t RexxEntry FindTheWindow(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
@@ -269,7 +268,7 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING *a
                HCURSOR oC, hC;
                res = atoi(argv[3].strptr);
                hC = LoadCursor(NULL, MAKEINTRESOURCE(res));
-               oC = (HCURSOR)SetClassLongPtr(hW, GCLP_HCURSOR, (LONG_PTR)hC);
+               oC = (HCURSOR)setClassPtr(hW, GCLP_HCURSOR, (LONG_PTR)hC);
                SetCursor(hC);
                RETHANDLE(oC)
            }
@@ -277,12 +276,12 @@ size_t RexxEntry Wnd_Desktop(const char *funcname, size_t argc, CONSTRXSTRING *a
            {
                HCURSOR hC = (HCURSOR)GET_HANDLE(argv[3]);
                if (hC) {
-                   SetClassLongPtr(hW, GCLP_HCURSOR, (LONG_PTR)hC);
+                   setClassPtr(hW, GCLP_HCURSOR, (LONG_PTR)hC);
                    RETHANDLE(SetCursor(hC))
                }
                else
                {
-                   SetClassLongPtr(hW, GCLP_HCURSOR, (LONG_PTR)LoadCursor(NULL, IDC_ARROW));
+                   setClassPtr(hW, GCLP_HCURSOR, (LONG_PTR)LoadCursor(NULL, IDC_ARROW));
                    RETHANDLE(SetCursor(LoadCursor(NULL, IDC_ARROW)))
                }
            }
@@ -356,7 +355,7 @@ size_t RexxEntry WndShow_Pos(const char *funcname, size_t argc, CONSTRXSTRING *a
 
        if (strstr(argv[2].strptr, "REDRAW"))
        {
-           if (RedrawWindow(w, NULL, NULL, RDW_ERASE | RDW_ALLCHILDREN))
+           if (RedrawWindow(w, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN))
                RETC(0) else RETC(1)
        }
        else
@@ -408,6 +407,13 @@ size_t RexxEntry WndShow_Pos(const char *funcname, size_t argc, CONSTRXSTRING *a
        w = GET_HWND(argv[1]);
        LONG ibuffer[5], opts;
        register int i;
+
+       // Docs for setWindowRect() have said: returns 0 if repositioning was
+       // successful, returns 1 if failed.
+       if ( w == NULL || ! IsWindow(w) )
+       {
+           RETC(1)
+       }
 
        CHECKARGL(6);
 

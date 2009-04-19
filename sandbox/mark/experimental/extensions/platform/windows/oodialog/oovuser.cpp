@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,19 +35,13 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+#include "oovutil.h"     // Must be first, includes windows.h and oorexxapi.h
 
-#define NTDDI_VERSION   NTDDI_WINXPSP2
-#define _WIN32_WINNT    0x0501
-#define WINVER          0x0501
-
-#include <windows.h>
-#include <rexx.h>
 #include <stdio.h>
 #include <dlgs.h>
 #ifdef __CTL3D
 #include <ctl3d.h>
 #endif
-#include "oovutil.h"
 #include "oodResources.h"
 #include <commctrl.h>
 
@@ -55,8 +49,6 @@ extern LRESULT CALLBACK RexxDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 extern BOOL InstallNecessaryStuff(DIALOGADMIN * dlgAdm, CONSTRXSTRING ar[], size_t argc);
 extern BOOL DataAutodetection(DIALOGADMIN * aDlg);
 extern INT DelDialog(DIALOGADMIN * aDlg);
-extern CRITICAL_SECTION crit_sec;
-extern BOOL DialogInAdminTable(DIALOGADMIN * Dlg);
 extern BOOL GetDialogIcons(DIALOGADMIN *, INT, UINT, PHANDLE, PHANDLE);
 
 //#define USE_DS_CONTROL
@@ -111,77 +103,11 @@ int nCopyAnsiToWideChar (LPWORD lpWCStr, const char *lpAnsiIn)
 }
 
 
-
-
-size_t RexxEntry GetStdTextSize(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
-{
-   HDC hDC;
-   SIZE s;
-   ULONG bux;
-   ULONG buy;
-   const char *fn;
-   INT fsb;
-   HFONT hFont=NULL, hSystemFont, oldF;
-   HWND hW = NULL;
-
-   CHECKARGL(1);
-
-   if ((argc == 1) && topDlg) hW = topDlg->TheDlg;
-   if (argc >1) fn = argv[1].strptr; else fn = "System";
-   if (argc >2) fsb = atoi(argv[2].strptr); else fsb = 8;
-   if (argc >3) hW = GET_HWND(argv[3]);
-
-   if (hW)
-      hDC = GetDC(hW);
-   else
-      hDC = CreateDC("Display", NULL, NULL, NULL);
-   if (hDC)
-   {
-      hSystemFont = (HFONT)GetStockObject(SYSTEM_FONT);
-
-      if (hW)
-         hFont = (HFONT)SendMessage(hW, WM_GETFONT, 0, 0);
-
-      if (hW && !hFont)
-         hFont = hSystemFont;
-      else
-      {
-         /* we have no dialog, this is the cas if standard dialogs are called  */
-         /* directly from a REXX script */
-         /* so if we have a system font, use it ! If not, use an estimated one */
-         if (hSystemFont)
-            hFont = hSystemFont;
-         else
-            hFont = CreateFont(fsb, fsb, 0, 0, FW_NORMAL,FALSE, FALSE, FALSE, ANSI_CHARSET,
-            OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, fn);
-      }
-
-      if (hFont && (hFont != hSystemFont)) oldF = (HFONT)SelectObject(hDC, hFont);
-
-      GetTextExtentPoint32(hDC, argv[0].strptr, (int)argv[0].strlength, &s);
-
-      buy = GetDialogBaseUnits();
-      bux = LOWORD(buy);
-      buy = HIWORD(buy);
-      sprintf(retstr->strptr, "%d %d", (s.cx * 4) / bux, (s.cy * 8) / buy);
-      retstr->strlength = strlen(retstr->strptr);
-
-      if (hFont && (hFont != hSystemFont))
-      {
-         SelectObject(hDC, oldF);
-         DeleteObject(hFont);
-      }
-
-      if (hW)
-         ReleaseDC(hW, hDC);
-      else
-         DeleteDC(hDC);
-      return 0;
-   }
-   RETC(0)
-}
-
-
+/**
+ * This classic Rexx external function was documented prior to 4.0.0.  The
+ * dialog unit part of it has always been broken.  It is only correct if the
+ * dialog uses the 8 pt System font, which most modern dialogs do not.
+ */
 size_t RexxEntry GetScreenSize(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
    ULONG sx, sy;
@@ -196,32 +122,6 @@ size_t RexxEntry GetScreenSize(const char *funcname, size_t argc, CONSTRXSTRING 
    sprintf(retstr->strptr, "%d %d %d %d", (sx * 4) / bux, (sy * 8) / buy, sx, sy);
    retstr->strlength = strlen(retstr->strptr);
    return 0;
-}
-
-
-size_t RexxEntry GetSysMetrics(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
-{
-    ULONG uVal;
-
-    /* The intent is to extend this function in the future to get multiple, and
-     * perhaps all, values at once.
-     */
-    if ( argc == 1 )
-    {
-        INT index = atoi(argv[0].strptr);
-        if ( index < 1 ) RETVAL(-1)
-
-        /* GetSystemMetrics returns 0 on error, however it also returns 0 as a
-         * valid value for some indexes.
-         */
-        uVal = GetSystemMetrics(index);
-
-        sprintf(retstr->strptr, "%d", uVal);
-        retstr->strlength = strlen(retstr->strptr);
-        return 0;
-    }
-
-    RETERR
 }
 
 
@@ -499,8 +399,8 @@ size_t RexxEntry UsrCreateDialog(const char *funcname, size_t argc, CONSTRXSTRIN
 
                  if ( GetDialogIcons(dlgAdm, atoi(argv[7].strptr), ICON_FILE, (PHANDLE)&hBig, (PHANDLE)&hSmall) )
                  {
-                    dlgAdm->SysMenuIcon = (HICON)SetClassLongPtr(dlgAdm->TheDlg, GCLP_HICON, (LONG_PTR)hBig);
-                    dlgAdm->TitleBarIcon = (HICON)SetClassLongPtr(dlgAdm->TheDlg, GCLP_HICONSM, (LONG_PTR)hSmall);
+                    dlgAdm->SysMenuIcon = (HICON)setClassPtr(dlgAdm->TheDlg, GCLP_HICON, (LONG_PTR)hBig);
+                    dlgAdm->TitleBarIcon = (HICON)setClassPtr(dlgAdm->TheDlg, GCLP_HICONSM, (LONG_PTR)hSmall);
                     dlgAdm->DidChangeIcon = TRUE;
 
                     SendMessage(dlgAdm->TheDlg, WM_SETICON, ICON_SMALL, (LPARAM)hSmall);
@@ -627,7 +527,7 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
    {
        CHECKARG(9);
 
-       /* UsrAddControl("BUT", self~AktPtr, id, x, y, w, h, name, opts) */
+       /* UsrAddControl("BUT", self~activePtr, id, x, y, w, h, name, opts) */
        for ( i = 0; i < 5; i++ )
        {
            buffer[i] = atoi(argv[i+2].strptr);
@@ -642,11 +542,8 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
        if (strstr(argv[8].strptr,"DEFAULT")) lStyle |= BS_DEFPUSHBUTTON; else lStyle |= BS_PUSHBUTTON;
 
        if (strstr(argv[8].strptr,"OWNER")) lStyle |= BS_OWNERDRAW;
-       if (strstr(argv[8].strptr,"LEFTTEXT")) lStyle |= BS_LEFTTEXT;
        if (strstr(argv[8].strptr,"BITMAP")) lStyle |= BS_BITMAP;
        if (strstr(argv[8].strptr,"ICON")) lStyle |= BS_ICON;
-       if (strstr(argv[8].strptr,"LEFT")) lStyle |= BS_LEFT;
-       if (strstr(argv[8].strptr,"RIGHT")) lStyle |= BS_RIGHT;
        if (strstr(argv[8].strptr,"HCENTER")) lStyle |= BS_CENTER;
        if (strstr(argv[8].strptr,"TOP")) lStyle |= BS_TOP;
        if (strstr(argv[8].strptr,"BOTTOM")) lStyle |= BS_BOTTOM;
@@ -655,6 +552,36 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
        if (strstr(argv[8].strptr,"MULTILINE")) lStyle |= BS_MULTILINE;
        if (strstr(argv[8].strptr,"NOTIFY")) lStyle |= BS_NOTIFY;
        if (strstr(argv[8].strptr,"FLAT")) lStyle |= BS_FLAT;
+
+       const char *pLonger = strstr(argv[8].strptr,"LEFTTEXT");
+       const char *pShorter = strstr(argv[8].strptr,"LEFT");
+       if ( pLonger )
+       {
+           lStyle |= BS_LEFTTEXT;
+           if ( pShorter != NULL && pShorter != pLonger )
+           {
+               lStyle |= BS_LEFT;
+           }
+       }
+       else if ( pShorter )
+       {
+           lStyle |= BS_LEFT;
+       }
+
+       pLonger = strstr(argv[8].strptr,"RIGHTBUTTON");
+       pShorter = strstr(argv[8].strptr,"RIGHT");
+       if ( pLonger )
+       {
+           lStyle |= BS_RIGHTBUTTON;
+           if ( pShorter != NULL && pShorter != pLonger )
+           {
+               lStyle |= BS_RIGHT;
+           }
+       }
+       else if ( pShorter )
+       {
+           lStyle |= BS_RIGHT;
+       }
 
        if (!strstr(argv[8].strptr,"HIDDEN")) lStyle |= WS_VISIBLE;
        if (strstr(argv[8].strptr,"GROUP")) lStyle |= WS_GROUP;
@@ -669,7 +596,7 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
    {
        CHECKARGL(8);
 
-       /* UsrAddControl("GB",self~AktPtr, x, y, cx, cy, opts, text, id) */
+       /* UsrAddControl("GB",self~activePtr, x, y, cx, cy, opts, text, id) */
        for ( i = 0; i < 4; i++ )
        {
            buffer[i] = atoi(argv[i+2].strptr);
@@ -699,7 +626,7 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
    {
        CHECKARG(8);
 
-       /* UsrAddControl("EL", self~AktPtr, id, x, y, cx, cy, opts) */
+       /* UsrAddControl("EL", self~activePtr, id, x, y, cx, cy, opts) */
        for ( i = 0; i < 5; i++ )
        {
            buffer[i] = atoi(argv[i+2].strptr);
@@ -802,7 +729,7 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
    {
        CHECKARGL(8);
 
-       /* UsrAddControl("TXT", self~AktPtr, x, y, cx, cy, opts, text, id) */
+       /* UsrAddControl("TXT", self~activePtr, x, y, cx, cy, opts, text, id) */
        for ( i = 0; i < 4; i++ )
        {
            buffer[i] = atoi(argv[i+2].strptr);
@@ -820,6 +747,9 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
        else if (strstr(argv[6].strptr,"SIMPLE")) lStyle |= SS_SIMPLE;
        else if (strstr(argv[6].strptr,"LEFTNOWRAP")) lStyle |= SS_LEFTNOWORDWRAP;
        else lStyle |= SS_LEFT;
+
+       // Used to center text vertically.
+       if (strstr(argv[6].strptr,"CENTERIMAGE")) lStyle |= SS_CENTERIMAGE;
 
        if (strstr(argv[6].strptr,"NOTIFY")) lStyle |= SS_NOTIFY;
        if (strstr(argv[6].strptr,"SUNKEN")) lStyle |= SS_SUNKEN;
@@ -842,7 +772,7 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
    {
        CHECKARGL(8);
 
-       for ( i = 0; i < 4; i++ )
+       for ( i = 0; i < 5; i++ )
        {
            buffer[i] = atoi(argv[i+2].strptr);
        }
@@ -855,14 +785,14 @@ size_t RexxEntry UsrAddControl(const char *funcname, size_t argc, CONSTRXSTRING 
 
        lStyle = WS_CHILD;
 
-       if (buffer[6] == 0) lStyle |= SS_WHITERECT; else
-       if (buffer[6] == 1) lStyle |= SS_GRAYRECT; else
-       if (buffer[6] == 2) lStyle |= SS_BLACKRECT; else
-       if (buffer[6] == 3) lStyle |= SS_WHITEFRAME; else
-       if (buffer[6] == 4) lStyle |= SS_GRAYFRAME; else
-       if (buffer[6] == 5) lStyle  |= SS_BLACKFRAME ; else
-       if (buffer[6] == 6) lStyle  |= SS_ETCHEDFRAME ; else
-       if (buffer[6] == 7) lStyle  |= SS_ETCHEDHORZ ; else
+       if (buffer[4] == 0) lStyle |= SS_WHITERECT; else
+       if (buffer[4] == 1) lStyle |= SS_GRAYRECT; else
+       if (buffer[4] == 2) lStyle |= SS_BLACKRECT; else
+       if (buffer[4] == 3) lStyle |= SS_WHITEFRAME; else
+       if (buffer[4] == 4) lStyle |= SS_GRAYFRAME; else
+       if (buffer[4] == 5) lStyle  |= SS_BLACKFRAME ; else
+       if (buffer[4] == 6) lStyle  |= SS_ETCHEDFRAME ; else
+       if (buffer[4] == 7) lStyle  |= SS_ETCHEDHORZ ; else
        lStyle |= SS_ETCHEDVERT;
 
        if (strstr(argv[7].strptr,"NOTIFY")) lStyle |= SS_NOTIFY;
@@ -1276,7 +1206,7 @@ BOOL IsNestedDialogMessage(
                return IsDialogMessage(dlgAdm->TheDlg, lpmsg);
 
             default:
-               hParent = (HWND) GetWindowLongPtr(lpmsg->hwnd, GWLP_HWNDPARENT);
+               hParent = (HWND)getWindowPtr(lpmsg->hwnd, GWLP_HWNDPARENT);
                if (!hParent) return FALSE;
                return IsDialogMessage(hParent, lpmsg);
            }
@@ -1286,7 +1216,7 @@ BOOL IsNestedDialogMessage(
          if (lpmsg->wParam == VK_SHIFT) SHIFTkey = FALSE;
          break;
    }
-   hParent = (HWND) GetWindowLongPtr(lpmsg->hwnd, GWLP_HWNDPARENT);
+   hParent = (HWND)getWindowPtr(lpmsg->hwnd, GWLP_HWNDPARENT);
    if (hParent)
       return IsDialogMessage(hParent, lpmsg);
    else return IsDialogMessage(dlgAdm->TheDlg, lpmsg);

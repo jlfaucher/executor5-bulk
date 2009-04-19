@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -122,6 +122,27 @@ bool sys_process_set(RexxExitContext *context, const char *command, const char *
 }
 
 
+/* Returns a copy of s without quotes */
+char *unquote(const char *s)
+{
+    char *unquoted = (char*)malloc(sizeof(char) * strlen(s) + 1);
+
+    if (unquoted != NULL)
+    {
+        char *p = unquoted;
+        while ( (*p = *s++) != 0 )
+        {
+            if (*p != '"')
+            {
+                p++;
+            }
+        }
+        *p = '\0';
+    }
+    return unquoted;
+}
+
+
 /* Handle "CD XXX" command in same process */
 bool sys_process_cd(RexxExitContext *context, const char *command, const char * cmd, RexxObjectPtr &res)
 {
@@ -145,7 +166,13 @@ bool sys_process_cd(RexxExitContext *context, const char *command, const char * 
     }
     else
     {
-        rc = _chdir(st);
+        char *unquoted = unquote(st);
+        if (unquoted == NULL)
+        {
+            return false;
+        }
+        rc = _chdir(unquoted);
+        free(unquoted);
     }
     if (rc != 0)
     {
@@ -272,7 +299,7 @@ bool sysCommandNT(RexxExitContext *context, const char *command, const char *cmd
 
     if (rc != 0)
     {
-        context->RaiseCondition("ERROR", context->String(command), NULLOBJECT, context->WholeNumberToObject(rc));
+        context->RaiseCondition("ERROR", context->String(command), NULLOBJECT, context->Int32ToObject(rc));
         result = NULLOBJECT;
         return true;
     }
@@ -323,7 +350,7 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
     {
         if (interncmd[i] == '"')
         {
-            inQuotes = inQuotes;
+            inQuotes = !inQuotes;
         }
         else
         {

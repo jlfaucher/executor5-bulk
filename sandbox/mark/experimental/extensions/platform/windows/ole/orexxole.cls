@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2007 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -56,6 +56,8 @@ Syntax:
 
 ::METHOD init EXTERNAL "LIBRARY OREXXOLE OLEObject_Init"
 ::METHOD uninit EXTERNAL "LIBRARY OREXXOLE OLEObject_Uninit"
+::METHOD addRef private EXTERNAL "LIBRARY OREXXOLE OLEObject_addRef_pvt"
+::METHOD hasOLEMethod private EXTERNAL "LIBRARY OREXXOLE OLEObject_hasOLEMethod_pvt"
 ::METHOD unknown EXTERNAL "LIBRARY OREXXOLE OLEObject_Unknown"
 ::METHOD request EXTERNAL "LIBRARY OREXXOLE OLEObject_Request"
 ::METHOD getConstant EXTERNAL "LIBRARY OREXXOLE OLEObject_GetConst"
@@ -69,6 +71,39 @@ Syntax:
 ::METHOD removeEventHandler EXTERNAL "LIBRARY OREXXOLE OLEObject_removeEventHandler"
 --::METHOD GETKNOWNMETHODS CLASS EXTERNAL "LIBRARY OREXXOLE OLEObject_GetKnownMethods_Class"
 ::METHOD GETOBJECT CLASS EXTERNAL "LIBRARY OREXXOLE OLEObject_GetObject_Class"
+
+::method send
+  if self~hasOLEMethod("SEND") then
+    forward message("UNKNOWN") ARRAY("SEND", arg(1, 'A'))
+  else
+    forward class (super)
+
+::method sendWith
+  if self~hasOLEMethod("SENDWITH") then
+    forward message("UNKNOWN") ARRAY("SENDWITH", arg(1, 'A'))
+  else
+    forward class (super)
+
+::method copy
+  if self~hasOLEMethod("COPY") then do
+    forward message("UNKNOWN") ARRAY("COPY", arg(1, 'A'))
+  end
+  else do
+    forward class (super) continue
+    oleObj = result
+    if oleObj~isInstanceOf(.oleObject) then do
+      -- We have a copy of an OLEObject, including a copy of its dispatch pointer.
+      -- The dispatch pointer needs to have its reference count increased by 1.
+      oleObj~addRef
+    end
+    return oleObj
+  end
+
+::method class
+  if self~hasOLEMethod("CLASS") then
+    forward message("UNKNOWN") ARRAY("CLASS", arg(1, 'A'))
+  else
+    forward class (super)
 
 ::METHOD "!OLEOBJECT" ATTRIBUTE
 
@@ -163,8 +198,8 @@ syntax:
   errDescription = "!VARIANTPOINTER_ must be set to a valid pointer value."
   if arg(1, 'O') then
     raise syntax 93.903 array(1) description (errDescription)
-  if \ pointer~isA(.string) then
-    raise syntax 93.948 array("pointer", ".string") description (errDescription)
+  if \ pointer~isA(.Pointer) then
+    raise syntax 93.948 array(1, ".Pointer") description (errDescription)
 
   !_VARIANT_PTR_ = pointer
   return

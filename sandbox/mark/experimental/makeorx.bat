@@ -96,10 +96,11 @@ SET MKASM=1
 SET BLDRELEASE=1
 GOTO STARTBUILD
 
-REM  If we are building BOTH, we need to reset the log name.  We just set it
-REM  unconditionally.
+REM  If we are building BOTH, we need to reset the log name and API output
+REM  directory.  We just set them unconditionally.
 :BLDDEBUG
 set OR_OUTDIR=%SRC_DRV%%SRC_DIR%\Win32Dbg
+set OR_OUTDIR_API=%SRC_DRV%%SRC_DIR%\Win32Dbg\api
 set OR_ERRLOG=%OR_OUTDIR%\Win32Dbg.log
 
 if %USELOGFILE% EQU 1 (
@@ -134,18 +135,24 @@ SET NODOTS=%MAJOR_NUM%%MINOR_NUM%%LVL_NUM%_%BLD_NUM%
 SET DOTVER=/DVERSION=%MAJOR_NUM%.%MINOR_NUM%.%LVL_NUM%.%BLD_NUM%
 SET NODOTVER=/DNODOTVER=%NODOTS%
 SET SRCDIR=/DSRCDIR=%SRC_DRV%%SRC_DIR%
+if %CPU% == X86 (
+  SET CPUNAME=x86_32
+) else (
+  SET CPUNAME=x86_64
+)
+SET CPUDEF=/DCPU=%CPUNAME%
 
 REM  If not making the debug version skip to packaging the release version
 IF %PACKAGE_DBG% == 0 GOTO PACKAGE_RELEASE
 
 SET BINDIR=/DBINDIR=%SRC_DRV%%SRC_DIR%\Win32Dbg
 cd platform\windows\install
-makensis %DOTVER% %NODOTVER% %SRCDIR% %BINDIR% oorexx.nsi
+makensis %DOTVER% %NODOTVER% %SRCDIR% %BINDIR% %CPUDEF% oorexx.nsi
 
 REM  Rename the deug package so it is not overwritten if the release package
 REM  is created.
-ren ooRexx%NODOTS%.exe ooRexx%NODOTS%-debug.exe
-move ooRexx%NODOTS%-debug.exe ..\..\..\
+ren ooRexx%NODOTS%-%CPUNAME%.exe ooRexx%NODOTS%-%CPUNAME%-debug.exe
+move ooRexx%NODOTS%-%CPUNAME%-debug.exe ..\..\..\
 cd ..\..\..\
 
 REM  If not making the release version skip to environment variables clean up.
@@ -154,8 +161,8 @@ IF %PACKAGE_REL% == 0 GOTO ENV_VARS_CLEANUP
 :PACKAGE_RELEASE
 SET BINDIR=/DBINDIR=%SRC_DRV%%SRC_DIR%\Win32Rel
 cd platform\windows\install
-makensis %DOTVER% %NODOTVER% %SRCDIR% %BINDIR% oorexx.nsi
-move ooRexx%NODOTS%.exe ..\..\..\
+makensis %DOTVER% %NODOTVER% %SRCDIR% %BINDIR% %CPUDEF% oorexx.nsi
+move ooRexx%NODOTS%-%CPUNAME%.exe ..\..\..\
 cd ..\..\..\
 
 :ENV_VARS_CLEANUP
@@ -171,9 +178,13 @@ SET DOTVER=
 SET NODOTVER=
 SET SRCDIR=
 SET BINDIR=
+SET CPUNAME=
+SET CPUDEF=
 SET MISSING_DOC=
 SET SVN_REV=
 SET USELOGFILE=
+SET OR_OUTDIR=
+SET OR_OUTDIR_API=
 
 GOTO END
 
@@ -211,13 +222,14 @@ REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if not exist doc\nul md doc
 
 SET MISSING_DOC=0
-if not exist doc\readme.pdf   SET MISSING_DOC=1
-if not exist doc\rexxpg.pdf   SET MISSING_DOC=1
-if not exist doc\rexxref.pdf  SET MISSING_DOC=1
-if not exist doc\rxmath.pdf   SET MISSING_DOC=1
-if not exist doc\rxsock.pdf   SET MISSING_DOC=1
-if not exist doc\rxftp.pdf    SET MISSING_DOC=1
-if not exist doc\oodialog.pdf SET MISSING_DOC=1
+if not exist doc\readme.pdf        SET MISSING_DOC=1
+if not exist doc\rexxpg.pdf        SET MISSING_DOC=1
+if not exist doc\rexxref.pdf       SET MISSING_DOC=1
+if not exist doc\rxmath.pdf        SET MISSING_DOC=1
+if not exist doc\rxsock.pdf        SET MISSING_DOC=1
+if not exist doc\rxftp.pdf         SET MISSING_DOC=1
+if not exist doc\oodialog.pdf      SET MISSING_DOC=1
+if not exist doc\winextensions.pdf SET MISSING_DOC=1
 
 if %MISSING_DOC% EQU 0 goto DOC_CHECK_DONE
 
@@ -292,6 +304,14 @@ if not exist doc\oodialog.pdf (
   )
 )
 copy %DOC_LOCATION%\oodialog.pdf doc 1>nul 2>&1
+
+if not exist doc\winextensions.pdf (
+  if not exist %DOC_LOCATION%\winextensions.pdf (
+    if %USELOGFILE% EQU 1 (echo winextensions.pdf is missing >>%OR_ERRLOG%) else (echo winextensions.pdf is missing)
+    goto NO_DOC_ERR
+  )
+)
+copy %DOC_LOCATION%\winextensions.pdf doc 1>nul 2>&1
 
 GOTO DOC_CHECK_DONE
 
@@ -458,8 +478,10 @@ set MKNODEBUG=1
 set MKDEBUG=0
 IF %DOPACKAGE% == 1 SET PACKAGE_REL=1
 set OR_OUTDIR=%SRC_DRV%%SRC_DIR%\Win32Rel
+set OR_OUTDIR_API=%OR_OUTDIR%\api
 set OR_ERRLOG=%OR_OUTDIR%\Win32Rel.log
 if not exist %OR_OUTDIR% md %OR_OUTDIR%
+if not exist %OR_OUTDIR_API% md %OR_OUTDIR_API%
 GOTO BUILD_CHECK_DONE
 
 
@@ -473,16 +495,19 @@ set MKNODEBUG=0
 set MKDEBUG=1
 IF %DOPACKAGE% == 1 SET PACKAGE_DBG=1
 set OR_OUTDIR=%SRC_DRV%%SRC_DIR%\Win32Dbg
+set OR_OUTDIR_API=%OR_OUTDIR%\api
 set OR_ERRLOG=%OR_OUTDIR%\Win32Dbg.log
 if not exist %OR_OUTDIR% md %OR_OUTDIR%
+if not exist %OR_OUTDIR_API% md %OR_OUTDIR_API%
 GOTO BUILD_CHECK_DONE
 
 
 REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 REM  :DOBOTH
 REM    Sets the variables to do both non-debug and debug builds.  We will create
-REM    both output directories if needed.  The log name will first be used in
-REM    the non-debug build.  Then be corrected in the debug build.
+REM    all output directories if needed.  The log name and API out directory
+REM    will first be used in the non-debug build.  Then corrected in the debug
+REM    build.
 REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 :DO_BOTH
 set MKNODEBUG=1
@@ -492,9 +517,12 @@ IF %DOPACKAGE% == 1 (
  set PACKAGE_DBG=1
 )
 set OR_OUTDIR=%SRC_DRV%%SRC_DIR%\Win32Rel
+set OR_OUTDIR_API=%OR_OUTDIR%\api
 set OR_ERRLOG=%SRC_DRV%%SRC_DIR%\Win32Rel\Win32Rel.log
 if not exist %OR_OUTDIR% md %OR_OUTDIR%
+if not exist %OR_OUTDIR_API% md %OR_OUTDIR_API%
 if not exist %SRC_DRV%%SRC_DIR%\Win32Dbg md %SRC_DRV%%SRC_DIR%\Win32Dbg
+if not exist %SRC_DRV%%SRC_DIR%\Win32Dbg\api md %SRC_DRV%%SRC_DIR%\Win32Dbg\api
 GOTO BUILD_CHECK_DONE
 
 

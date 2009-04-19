@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -40,6 +40,15 @@
 
 #if !defined(AIX) && !defined(LINUX)
 #define AIX                           /* Default definition for AIX          */
+#endif
+
+/* AIX, maybe others, don't define __INT64_C. */
+#ifndef __INT64_C
+#ifdef __REXX64__
+#define __INT64_C(c)  c##L
+#else
+#define __INT64_C(c)  c##LL
+#endif
 #endif
 
 #endif /* REXXPLATFORMDEFS_INCLUDED */

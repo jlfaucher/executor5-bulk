@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -47,6 +47,9 @@
 
 #include "SysSemaphore.hpp"
 #include "IdentityTableClass.hpp"
+
+// this can be enabled to switch on memory profiling info
+//#define MEMPROFILE
 
 #ifdef __REXX64__
 // The minimum allocation unit for an object.
@@ -266,8 +269,7 @@ class RexxMemory : public RexxInternalObject
   static void closeLocks();
   void        scavengeSegmentSets(MemorySegmentSet *requester, size_t allocationLength);
   void        setUpMemoryTables(RexxIdentityTable *old2newTable);
-  void        forceUninits();
-  void        collectAndUninit();
+  void        collectAndUninit(bool clearStack);
   inline RexxDirectory *getGlobalStrings() { return globalStrings; }
   void        addWeakReference(WeakReference *ref);
   void        checkWeakReferences();

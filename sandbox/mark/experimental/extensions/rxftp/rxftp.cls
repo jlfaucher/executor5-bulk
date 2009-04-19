@@ -20,7 +20,7 @@
 /*              the instance and a following FtpSetUser method can establish  */
 /*              a new connection to an FTP server.                            */
 /*                                                                            */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -58,13 +58,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-
-/* initialization */
-if rxfuncquery('SockDropFuncs') then do
-   call rxfuncadd 'SockLoadFuncs', 'rxsock', 'SockLoadFuncs'
-   call SockLoadFuncs 'bypasscopyright'
-   end
-
+::requires "rxsock" LIBRARY    -- need the rxsock library available to function
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -82,17 +76,18 @@ if rxfuncquery('SockDropFuncs') then do
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
+::method ascii attribute private unguarded -- .true = ASCII mode .false = BINARY
+::method data  attribute private unguarded -- unparsed received data
+::method dsock attribute private unguarded -- data socket
+::method rdone attribute private unguarded -- send/receive done flag
+
 ::method actv_port  attribute private -- local host data port
-::method ascii      attribute private -- .true = ASCII mode, .false = BINARY
 ::method csock      attribute private -- command socket
-::method data       attribute private -- unparsed received data
-::method dsock      attribute private -- data socket
 ::method lhost      attribute private -- local host ip address
 ::method mode       attribute private -- .true = active mode, .false = passive
 ::method password   attribute private -- remote FTP password
 ::method pasv_port  attribute private -- remote FTP host data port
 ::method rcport     attribute private -- remote FTP host command port
-::method rdone      attribute private -- send/receive done flag
 ::method resp       attribute private -- raw unparsed command response buffer
 ::method rhost      attribute private -- remote FTP host name/ip address
 ::method srvr_os    attribute private -- remote FTP host operating system
@@ -925,19 +920,19 @@ return self~recvresponse(exretc)
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::method cmdresponse attribute -- all parsed commands and responses
-::method cr_remove   attribute -- .true = remove CR bytes from ASCII downloads
-::method debug       attribute -- .false suppresses debug messages
-::method ftperrno    attribute -- last ftp response code
-::method response    attribute -- parsed command response from last command
-::attribute bufsize  get       -- bufsize for send/receive
-::attribute bufsize  set
+::attribute cr_remove unguarded     -- .true = remove CR from ASCII downloads
+::attribute debug     unguarded     -- .false suppresses debug messages
+::attribute bufsize   get unguarded -- bufsize for send/receive
+::attribute bufsize   set
    expose bufsize
    use arg value
    if datatype(value, "Whole") = .false | value < 0 then
    raise syntax 93.906 array ("bufsize", value)
    bufsize=value
 
+::method cmdresponse attribute -- all parsed commands and responses
+::method ftperrno    attribute -- last ftp response code
+::method response    attribute -- parsed command response from last command
 
 /*----------------------------------------------------------------------------*/
 /* Method: init                                                               */

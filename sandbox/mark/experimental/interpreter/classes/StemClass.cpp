@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -191,7 +191,7 @@ RexxObject *RexxStem::unknown(
 {
     /* validate the name                 */
     msgname = stringArgument(msgname, ARG_ONE);
-    required_arg(arguments, TWO);        /* need an argument array            */
+    requiredArgument(arguments, ARG_TWO);        /* need an argument array            */
                                          /* get this as an array              */
     arguments = (RexxArray  *)REQUEST_ARRAY(arguments);
     if (arguments == TheNilObject)       /* didn't convert?                   */

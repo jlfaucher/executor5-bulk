@@ -1,12 +1,12 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.oorexx.org/license.html                                         */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -35,40 +35,24 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#define _WIN32_WINNT    0x0501
-#define WINVER          0x0501
+#include "oovutil.h"     // Must be first, includes windows.h and oorexxapi.h
 
-#include <windows.h>
 #include <mmsystem.h>
 #include <commctrl.h>
-#include "oorexxapi.h"
 #include <stdio.h>
 #include <dlgs.h>
-/* set the noglob... so global variables wont be defined twice */
-#define NOGLOBALVARIABLES 1
-#include "oovutil.h"
-#undef NOGLOBALVARIABLES
 #include "oodResources.h"
 
-extern HINSTANCE MyInstance = NULL;
-
-extern DIALOGADMIN * DialogTab[MAXDIALOGS] = {NULL};
-extern DIALOGADMIN * topDlg = {NULL};
-extern INT StoredDialogs = 0;
-extern CRITICAL_SECTION crit_sec = {0};
-extern WPARAM InterruptScroll;
-
+extern INT DelDialog(DIALOGADMIN * aDlg);
 extern BOOL SearchMessageTable(ULONG message, WPARAM param, LPARAM lparam, DIALOGADMIN * addressedTo);
 extern BOOL DrawBitmapButton(DIALOGADMIN * addr, HWND hDlg, WPARAM wParam, LPARAM lParam, BOOL MsgEnabled);
 extern BOOL DrawBackgroundBmp(DIALOGADMIN * addr, HWND hDlg, WPARAM wParam, LPARAM lParam);
 extern BOOL DataAutodetection(DIALOGADMIN * aDlg);
 extern LRESULT PaletteMessage(DIALOGADMIN * addr, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 extern BOOL AddDialogMessage(CHAR * msg, CHAR * Qptr);
-extern BOOL IsNT = TRUE;
 extern LONG HandleError(PRXSTRING r, CHAR * text);
 extern LONG SetRexxStem(const char * name, INT id, const char * secname, const char * data);
 extern BOOL GetDialogIcons(DIALOGADMIN *, INT, UINT, PHANDLE, PHANDLE);
-extern HICON GetIconForID(DIALOGADMIN *, UINT, UINT, int, int);
 
 /* Shared functions for keyboard hooks and key press subclassing */
 extern LONG setKeyPressData(KEYPRESSDATA *, CONSTRXSTRING, CONSTRXSTRING, const char *);
@@ -78,11 +62,11 @@ extern UINT seekKeyPressMethod(KEYPRESSDATA *, const char *);
 extern void removeKeyPressMethod(KEYPRESSDATA *, UINT);
 
 /* Local functions */
-INT DelDialog(DIALOGADMIN * aDlg);
 static LONG installKBHook(DIALOGADMIN *, HWND, CONSTRXSTRING, CONSTRXSTRING, const char *);
 static LONG setKBHook(DIALOGADMIN *, HWND);
 static void removeKBHook(DIALOGADMIN *);
 static BOOL parseKeyToken(PCHAR, PUINT, PUINT);
+static HICON GetIconForID(DIALOGADMIN *, UINT, UINT, int, int);
 
 
 class LoopThreadArgs
@@ -94,60 +78,6 @@ public:
     BOOL *release;           // used for a return value
 };
 
-
-/********************************************************************
-* Function:  string2pointer(string)                                 *
-*                                                                   *
-* Purpose:   Validates and converts an ASCII-Z string from string   *
-*            form to a pointer value.  Returns false if the number  *
-*            is not valid, true if the number was successfully      *
-*            converted.                                             *
-*                                                                   *
-* RC:        true - Good number converted                           *
-*            false - Invalid number supplied.                       *
-*********************************************************************/
-
-void *string2pointer(const char *string)
-{
-    void *pointer = 0;
-    sscanf(string, "0x%p", &pointer);
-    return pointer;
-}
-
-
-void pointer2string(char *result, void *pointer)
-{
-    if ( pointer == NULL )
-    {
-        sprintf(result, "0");
-    }
-    else
-    {
-        sprintf(result, "0x%p", pointer);
-    }
-}
-
-
-LONG HandleError(PRXSTRING r, CHAR * text)
-{
-      HWND hW = NULL;
-      if ((topDlg) && (topDlg->TheDlg)) hW = topDlg->TheDlg;
-      MessageBox(hW,text,"Error",MB_OK | MB_ICONHAND);
-      r->strlength = 2;
-      r->strptr[0] = '4';
-      r->strptr[1] = '0';
-      r->strptr[2] = '\0';
-      return 40;
-}
-
-
-BOOL DialogInAdminTable(DIALOGADMIN * Dlg)
-{
-    register INT i;
-    for (i = 0; i < StoredDialogs; i++)
-        if (DialogTab[i] == Dlg) break;
-    return (i < StoredDialogs);
-}
 
 /* dialog procedure
    handles the search for user defined messages and bitmap buttons
@@ -481,10 +411,10 @@ INT DelDialog(DIALOGADMIN * aDlg)
      */
     if ( aDlg->DidChangeIcon )
     {
-        hIconBig = (HICON)SetClassLongPtr(aDlg->TheDlg, GCLP_HICON, (LONG_PTR)aDlg->SysMenuIcon);
+        hIconBig = (HICON)setClassPtr(aDlg->TheDlg, GCLP_HICON, (LONG_PTR)aDlg->SysMenuIcon);
         if ( aDlg->TitleBarIcon )
         {
-            hIconSmall = (HICON)SetClassLongPtr(aDlg->TheDlg, GCLP_HICONSM, (LONG_PTR)aDlg->TitleBarIcon);
+            hIconSmall = (HICON)setClassPtr(aDlg->TheDlg, GCLP_HICONSM, (LONG_PTR)aDlg->TitleBarIcon);
         }
 
         if ( ! aDlg->SharedIcon )
@@ -492,7 +422,7 @@ INT DelDialog(DIALOGADMIN * aDlg)
             DestroyIcon(hIconBig);
             if ( ! hIconSmall )
             {
-                hIconSmall = (HICON)GetClassLongPtr(aDlg->TheDlg, GCLP_HICONSM);
+                hIconSmall = (HICON)getClassPtr(aDlg->TheDlg, GCLP_HICONSM);
             }
         }
         else
@@ -753,8 +683,8 @@ size_t RexxEntry StartDialog(const char *funcname, size_t argc, CONSTRXSTRING *a
 
             if ( GetDialogIcons(dlgAdm, atoi(argv[5].strptr), ICON_DLL, (PHANDLE)&hBig, (PHANDLE)&hSmall) )
             {
-                dlgAdm->SysMenuIcon = (HICON)SetClassLongPtr(dlgAdm->TheDlg, GCLP_HICON, (LONG_PTR)hBig);
-                dlgAdm->TitleBarIcon = (HICON)SetClassLongPtr(dlgAdm->TheDlg, GCLP_HICONSM, (LONG_PTR)hSmall);
+                dlgAdm->SysMenuIcon = (HICON)setClassPtr(dlgAdm->TheDlg, GCLP_HICON, (LONG_PTR)hBig);
+                dlgAdm->TitleBarIcon = (HICON)setClassPtr(dlgAdm->TheDlg, GCLP_HICONSM, (LONG_PTR)hSmall);
                 dlgAdm->DidChangeIcon = TRUE;
 
                 SendMessage(dlgAdm->TheDlg, WM_SETICON, ICON_SMALL, (LPARAM)hSmall);
@@ -815,7 +745,7 @@ BOOL GetDialogIcons(DIALOGADMIN *dlgAdm, INT id, UINT iconSrc, PHANDLE phBig, PH
     }
 
     /* If one of the reserved IDs, iconSrc has to be ooDialog. */
-    if ( id <= IDI_DLG_MAX_ID )
+    if ( id >= IDI_DLG_MIN_ID && id <= IDI_DLG_MAX_ID )
     {
         iconSrc = ICON_OODIALOG;
     }
@@ -881,7 +811,7 @@ BOOL GetDialogIcons(DIALOGADMIN *dlgAdm, INT id, UINT iconSrc, PHANDLE phBig, PH
  *
  * @return The handle to the loaded icon on success, or null on failure.
  */
-HICON GetIconForID(DIALOGADMIN *dlgAdm, UINT id, UINT iconSrc, int cx, int cy)
+static HICON GetIconForID(DIALOGADMIN *dlgAdm, UINT id, UINT iconSrc, int cx, int cy)
 {
     HINSTANCE hInst = NULL;
     LPCTSTR   pName = NULL;
@@ -913,17 +843,10 @@ HICON GetIconForID(DIALOGADMIN *dlgAdm, UINT id, UINT iconSrc, int cx, int cy)
         pName = MAKEINTRESOURCE(id);
         loadFlags = LR_SHARED;
     }
-    else if ( iconSrc & ICON_DLL )
+    else
     {
         /* Load the icon from the user's resource DLL. */
         hInst = dlgAdm->TheInstance;
-        pName = MAKEINTRESOURCE(id);
-        loadFlags = LR_SHARED;
-    }
-    else
-    {
-        /* Load one of the System icons. */
-        hInst = NULL;
         pName = MAKEINTRESOURCE(id);
         loadFlags = LR_SHARED;
     }
@@ -1094,68 +1017,6 @@ size_t RexxEntry WinAPI32Func(const char *funcname, size_t argc, CONSTRXSTRING *
             }
             RETVAL(ret)
         }
-    }
-    else if ( argv[0].strptr[0] == 'I'  )   /* work with Icons */
-    {
-        HICON hIcon;
-        UINT  id;
-
-        CHECKARGL(3);
-
-        if ( argv[1].strptr[0] == 'S' )          /* System icon */
-        {
-            id = IDICON_WINLOGO;
-            if ( !strcmp(argv[2].strptr, "APPLICATION") ) id = IDICON_APPLICATION;
-            else if ( !strcmp(argv[2].strptr, "HAND") ) id = IDICON_HAND;
-            else if ( !strcmp(argv[2].strptr, "QUESTION") ) id = IDICON_QUESTION;
-            else if ( !strcmp(argv[2].strptr, "EXCLAMATION") ) id = IDICON_EXCLAMATION;
-            else if ( !strcmp(argv[2].strptr, "ASTERISK") ) id = IDICON_ASTERISK;
-            else if ( !strcmp(argv[2].strptr, "WINLOGO") ) id = IDICON_WINLOGO;
-
-            SetLastError(0);
-            hIcon = GetIconForID(NULL, id, ICON_SYSTEM, 0, 0);
-            if ( ! hIcon )
-                RETVAL(-(INT)GetLastError())
-        }
-        else if ( argv[1].strptr[0] == 'N' )     /* Numeric resource ID */
-        {
-            DIALOGADMIN *dlgAdm = NULL;
-            int cx, cy;
-            UINT flag = ICON_FILE;
-
-            CHECKARGL(7)
-
-            dlgAdm = (DIALOGADMIN *)GET_POINTER(argv[2]);
-            if ( !dlgAdm ) RETVAL(-2)
-
-            id = (UINT)atoi(argv[3].strptr);
-            if ( id < 1 ) RETVAL(-1)
-
-            cx = atoi(argv[4].strptr);
-            cy = atoi(argv[5].strptr);
-            if ( argv[6].strptr[0] == 'D' )
-                flag = ICON_DLL;
-
-            SetLastError(0);
-            hIcon = GetIconForID(dlgAdm, id, flag, cx, cy);
-            if ( ! hIcon )
-                RETVAL(-(INT)GetLastError())
-        }
-        else if ( argv[1].strptr[0] == 'F' )     /* load directly from File */
-        {
-            CHECKARGL(5)
-
-            hIcon = (HICON)LoadImage(NULL, argv[2].strptr, IMAGE_ICON, atoi(argv[3].strptr),
-                              atoi(argv[4].strptr), LR_LOADFROMFILE);
-            if ( ! hIcon )
-                RETVAL(-(INT)GetLastError())
-        }
-        else
-        {
-            RETERR
-        }
-
-        RETHANDLE(hIcon)
     }
 
     RETERR
@@ -1879,13 +1740,13 @@ size_t RexxEntry DumpAdmin(const char *funcname, size_t argc, CONSTRXSTRING *arg
        {
            itoa(dlgAdm->BmpTab[i].buttonID, data, (dlgAdm->BmpTab[i].Loaded ? 16: 10));
            if (!SetRexxStem(buffer, i+1, "ID", data))  { RETERR; }
-           itoa((LONG)dlgAdm->BmpTab[i].bitmapID, data, (dlgAdm->BmpTab[i].Loaded ? 16: 10));
+           pointer2string(data, (void *)dlgAdm->BmpTab[i].bitmapID);
            if (!SetRexxStem(buffer, i+1, "Normal", data))  { RETERR; }
-           itoa((LONG)dlgAdm->BmpTab[i].bmpFocusID, data, (dlgAdm->BmpTab[i].Loaded ? 16: 10));
+           pointer2string(data, (void *)dlgAdm->BmpTab[i].bmpFocusID);
            if (!SetRexxStem(buffer, i+1, "Focused", data))  { RETERR; }
-           itoa((LONG)dlgAdm->BmpTab[i].bmpSelectID, data, (dlgAdm->BmpTab[i].Loaded ? 16: 10));
+           pointer2string(data, (void *)dlgAdm->BmpTab[i].bmpSelectID);
            if (!SetRexxStem(buffer, i+1, "Selected", data))  { RETERR; }
-           itoa((LONG)dlgAdm->BmpTab[i].bmpDisableID, data, (dlgAdm->BmpTab[i].Loaded ? 16: 10));
+           pointer2string(data, (void *)dlgAdm->BmpTab[i].bmpDisableID);
            if (!SetRexxStem(buffer, i+1, "Disabled", data))  { RETERR; }
        }
        itoa(dlgAdm->MT_size, data, 10);
@@ -1893,7 +1754,7 @@ size_t RexxEntry DumpAdmin(const char *funcname, size_t argc, CONSTRXSTRING *arg
        sprintf(buffer, "%s.%s", argv[0].strptr, "MsgTab");
        for (i=0; i<dlgAdm->MT_size; i++)
        {
-           pointer2string(data, (void *)dlgAdm->MsgTab[i].msg);
+           ultoa(dlgAdm->MsgTab[i].msg, data, 16);
            if (!SetRexxStem(buffer, i+1, "msg", data))  { RETERR; }
            pointer2string(data, (void *)dlgAdm->MsgTab[i].wParam);
            if (!SetRexxStem(buffer, i+1, "param1", data))  { RETERR; }
@@ -1970,313 +1831,3 @@ size_t RexxEntry DumpAdmin(const char *funcname, size_t argc, CONSTRXSTRING *arg
    RETC(0);
 }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-BOOL REXXENTRY DllMain(
-    HINSTANCE  hinstDLL,    // handle of DLL module
-    DWORD  fdwReason,    // reason for calling function
-    LPVOID  lpvReserved     // reserved
-   )
-{
-   OSVERSIONINFO version_info={0}; /* for optimization so that GetVersionEx */
-
-   if (fdwReason == DLL_PROCESS_ATTACH) {
-      MyInstance = hinstDLL;
-      version_info.dwOSVersionInfoSize = sizeof(version_info);  // if not set --> violation error
-      GetVersionEx(&version_info);
-      if (version_info.dwPlatformId == VER_PLATFORM_WIN32_NT) IsNT = TRUE; else IsNT = FALSE;
-      InitializeCriticalSection(&crit_sec);
-   }  else if (fdwReason == DLL_PROCESS_DETACH)
-   {
-       MyInstance = NULL;
-       DeleteCriticalSection(&crit_sec);
-   }
-   return(TRUE);
-}
-
-#ifdef __cplusplus
-}
-#endif
-
-REXX_CLASSIC_ROUTINE_PROTOTYPE(GetDlgMsg);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(SendWinMsg);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleDlg);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(AddUserMessage);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(GetFileNameWindow);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(DataTable);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleDialogAdmin);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(SetItemData);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(SetStemData);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(GetItemData);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(GetStemData);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(Wnd_Desktop);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(WndShow_Pos);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(WinAPI32Func);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(InfoMessage);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(ErrorMessage);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(YesNoMessage);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(FindTheWindow);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(StartDialog);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(WindowRect);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(GetStdTextSize);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(SetLBTabStops);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(BinaryAnd);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(GetScreenSize);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(GetSysMetrics);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(GetDialogFactor);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(SleepMS);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(PlaySoundFile);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(PlaySoundFileInLoop);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(StopSoundFile);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleScrollBar);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(BmpButton);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(DCDraw);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(DrawGetSet);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(ScrollText);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(ScrollTheWindow);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleDC_Obj);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(SetBackground);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(LoadRemoveBitmap);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(WriteText);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleTreeCtrl);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleListCtrl);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleListCtrlEx);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleControlEx);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleOtherNewCtrls);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleMonthCalendar);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleDateTimePicker);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(WinTimer);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(HandleFont);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(DumpAdmin);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrAddControl);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrCreateDialog);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrDefineDialog);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrAddNewCtrl);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(UsrAddResource);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(WinMenu);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(InsertMII);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(SetMII);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(GetMII);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(SetMI);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(GetMI);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(TrackPopup);
-REXX_CLASSIC_ROUTINE_PROTOTYPE(MemMenu);
-
-
-// now build the actual entry list
-RexxRoutineEntry oodialog_functions[] =
-{
-    REXX_CLASSIC_ROUTINE(GetDlgMsg,            GetDlgMsg),
-    REXX_CLASSIC_ROUTINE(SendWinMsg,           SendWinMsg),
-    REXX_CLASSIC_ROUTINE(HandleDlg,            HandleDlg),
-    REXX_CLASSIC_ROUTINE(AddUserMessage,       AddUserMessage),
-    REXX_CLASSIC_ROUTINE(GetFileNameWindow,    GetFileNameWindow),
-    REXX_CLASSIC_ROUTINE(DataTable,            DataTable),
-    REXX_CLASSIC_ROUTINE(HandleDialogAdmin,    HandleDialogAdmin),
-    REXX_CLASSIC_ROUTINE(SetItemData,          SetItemData),
-    REXX_CLASSIC_ROUTINE(SetStemData,          SetStemData),
-    REXX_CLASSIC_ROUTINE(GetItemData,          GetItemData),
-    REXX_CLASSIC_ROUTINE(GetStemData,          GetStemData),
-    REXX_CLASSIC_ROUTINE(Wnd_Desktop,          Wnd_Desktop),
-    REXX_CLASSIC_ROUTINE(WndShow_Pos,          WndShow_Pos),
-    REXX_CLASSIC_ROUTINE(WinAPI32Func,         WinAPI32Func),
-    REXX_CLASSIC_ROUTINE(InfoMessage,          InfoMessage),
-    REXX_CLASSIC_ROUTINE(ErrorMessage,         ErrorMessage),
-    REXX_CLASSIC_ROUTINE(YesNoMessage,         YesNoMessage),
-    REXX_CLASSIC_ROUTINE(FindTheWindow,        FindTheWindow),
-    REXX_CLASSIC_ROUTINE(StartDialog,          StartDialog),
-    REXX_CLASSIC_ROUTINE(WindowRect,           WindowRect),
-    REXX_CLASSIC_ROUTINE(GetStdTextSize,       GetStdTextSize),
-    REXX_CLASSIC_ROUTINE(SetLBTabStops,        SetLBTabStops),
-    REXX_CLASSIC_ROUTINE(BinaryAnd,            BinaryAnd),
-    REXX_CLASSIC_ROUTINE(GetScreenSize,        GetScreenSize),
-    REXX_CLASSIC_ROUTINE(GetSysMetrics,        GetSysMetrics),
-    REXX_CLASSIC_ROUTINE(GetDialogFactor,      GetDialogFactor),
-    REXX_CLASSIC_ROUTINE(SleepMS,              SleepMS),
-    REXX_CLASSIC_ROUTINE(PlaySoundFile,        PlaySoundFile),
-    REXX_CLASSIC_ROUTINE(PlaySoundFileInLoop,  PlaySoundFileInLoop),
-    REXX_CLASSIC_ROUTINE(StopSoundFile,        StopSoundFile),
-    REXX_CLASSIC_ROUTINE(HandleScrollBar,      HandleScrollBar),
-    REXX_CLASSIC_ROUTINE(BmpButton,            BmpButton),
-    REXX_CLASSIC_ROUTINE(DCDraw,               DCDraw),
-    REXX_CLASSIC_ROUTINE(DrawGetSet,           DrawGetSet),
-    REXX_CLASSIC_ROUTINE(ScrollText,           ScrollText),
-    REXX_CLASSIC_ROUTINE(ScrollTheWindow,      ScrollTheWindow),
-    REXX_CLASSIC_ROUTINE(HandleDC_Obj,         HandleDC_Obj),
-    REXX_CLASSIC_ROUTINE(SetBackground,        SetBackground),
-    REXX_CLASSIC_ROUTINE(LoadRemoveBitmap,     LoadRemoveBitmap),
-    REXX_CLASSIC_ROUTINE(WriteText,            WriteText),
-    REXX_CLASSIC_ROUTINE(HandleTreeCtrl,       HandleTreeCtrl),
-    REXX_CLASSIC_ROUTINE(HandleListCtrl,       HandleListCtrl),
-    REXX_CLASSIC_ROUTINE(HandleListCtrlEx,     HandleListCtrlEx),
-    REXX_CLASSIC_ROUTINE(HandleControlEx,      HandleControlEx),
-    REXX_CLASSIC_ROUTINE(HandleOtherNewCtrls,  HandleOtherNewCtrls),
-    REXX_CLASSIC_ROUTINE(HandleMonthCalendar,  HandleMonthCalendar),
-    REXX_CLASSIC_ROUTINE(HandleDateTimePicker, HandleDateTimePicker),
-    REXX_CLASSIC_ROUTINE(WinTimer,             WinTimer),
-    REXX_CLASSIC_ROUTINE(HandleFont,           HandleFont),
-    REXX_CLASSIC_ROUTINE(DumpAdmin,            DumpAdmin),
-    REXX_CLASSIC_ROUTINE(UsrAddControl,        UsrAddControl),
-    REXX_CLASSIC_ROUTINE(UsrCreateDialog,      UsrCreateDialog),
-    REXX_CLASSIC_ROUTINE(UsrDefineDialog,      UsrDefineDialog),
-    REXX_CLASSIC_ROUTINE(UsrAddNewCtrl,        UsrAddNewCtrl),
-    REXX_CLASSIC_ROUTINE(UsrAddResource,       UsrAddResource),
-
-    REXX_CLASSIC_ROUTINE(WinMenu,              WinMenu),
-    REXX_CLASSIC_ROUTINE(InsertMII,            InsertMII),
-    REXX_CLASSIC_ROUTINE(SetMII,               SetMII),
-    REXX_CLASSIC_ROUTINE(GetMII,               GetMII),
-    REXX_CLASSIC_ROUTINE(SetMI,                SetMI),
-    REXX_CLASSIC_ROUTINE(GetMI,                GetMI),
-    REXX_CLASSIC_ROUTINE(TrackPopup,           TrackPopup),
-    REXX_CLASSIC_ROUTINE(MemMenu,              MemMenu),
-    REXX_LAST_ROUTINE()
-};
-
-REXX_METHOD_PROTOTYPE(dlgutil_init);
-REXX_METHOD_PROTOTYPE(dlgutil_comctl32Version);
-REXX_METHOD_PROTOTYPE(dlgutil_version);
-REXX_METHOD_PROTOTYPE(dlgutil_hiWord);
-REXX_METHOD_PROTOTYPE(dlgutil_loWord);
-REXX_METHOD_PROTOTYPE(dlgutil_colorRef);
-REXX_METHOD_PROTOTYPE(dlgutil_getRValue);
-REXX_METHOD_PROTOTYPE(dlgutil_getGValue);
-REXX_METHOD_PROTOTYPE(dlgutil_getBValue);
-REXX_METHOD_PROTOTYPE(dlgutil_handleToPointer);
-
-REXX_METHOD_PROTOTYPE(pbc_stepIt);
-REXX_METHOD_PROTOTYPE(pbc_getPos);
-REXX_METHOD_PROTOTYPE(pbc_setPos);
-REXX_METHOD_PROTOTYPE(pbc_getRange);
-REXX_METHOD_PROTOTYPE(pbc_setRange);
-REXX_METHOD_PROTOTYPE(pbc_setStep);
-REXX_METHOD_PROTOTYPE(pbc_setMarquee);
-REXX_METHOD_PROTOTYPE(pbc_setBkColor);
-REXX_METHOD_PROTOTYPE(pbc_setBarColor);
-REXX_METHOD_PROTOTYPE(pbc_test);
-
-REXX_METHOD_PROTOTYPE(hk_set);
-REXX_METHOD_PROTOTYPE(hk_get);
-REXX_METHOD_PROTOTYPE(hk_toText);
-REXX_METHOD_PROTOTYPE(hk_setRules);
-
-REXX_METHOD_PROTOTYPE(bc_cls_checkInGroup);
-REXX_METHOD_PROTOTYPE(gb_setStyle);
-REXX_METHOD_PROTOTYPE(bc_getState);
-REXX_METHOD_PROTOTYPE(bc_setState);
-REXX_METHOD_PROTOTYPE(bc_setStyle);
-REXX_METHOD_PROTOTYPE(bc_isChecked);
-REXX_METHOD_PROTOTYPE(bc_click);
-REXX_METHOD_PROTOTYPE(bc_getImage);
-REXX_METHOD_PROTOTYPE(bc_setImage);
-REXX_METHOD_PROTOTYPE(bc_checked);
-REXX_METHOD_PROTOTYPE(bc_isIndeterminate);
-REXX_METHOD_PROTOTYPE(bc_indeterminate);
-REXX_METHOD_PROTOTYPE(bc_check);
-REXX_METHOD_PROTOTYPE(bc_uncheck);
-REXX_METHOD_PROTOTYPE(bc_getIdealSize);
-REXX_METHOD_PROTOTYPE(bc_getTextMargin);
-REXX_METHOD_PROTOTYPE(bc_setTextMargin);
-REXX_METHOD_PROTOTYPE(bc_setImageList);
-REXX_METHOD_PROTOTYPE(bc_getImageList);
-REXX_METHOD_PROTOTYPE(bc_test);
-
-REXX_METHOD_PROTOTYPE(menu_test);
-REXX_METHOD_PROTOTYPE(menu_connectAllItems);
-
-REXX_METHOD_PROTOTYPE(rect_init);
-REXX_METHOD_PROTOTYPE(rect_left);
-REXX_METHOD_PROTOTYPE(rect_top);
-REXX_METHOD_PROTOTYPE(rect_right);
-REXX_METHOD_PROTOTYPE(rect_bottom);
-REXX_METHOD_PROTOTYPE(rect_setLeft);
-REXX_METHOD_PROTOTYPE(rect_setTop);
-REXX_METHOD_PROTOTYPE(rect_setRight);
-REXX_METHOD_PROTOTYPE(rect_setBottom);
-
-REXX_METHOD_PROTOTYPE(point_init);
-REXX_METHOD_PROTOTYPE(point_x);
-REXX_METHOD_PROTOTYPE(point_setX);
-REXX_METHOD_PROTOTYPE(point_y);
-REXX_METHOD_PROTOTYPE(point_setY);
-
-RexxMethodEntry oodialog_methods[] = {
-    REXX_METHOD(dlgutil_init,            dlgutil_init),
-    REXX_METHOD(dlgutil_comctl32Version, dlgutil_comctl32Version),
-    REXX_METHOD(dlgutil_version,         dlgutil_version),
-    REXX_METHOD(dlgutil_hiWord,          dlgutil_hiWord),
-    REXX_METHOD(dlgutil_loWord,          dlgutil_loWord),
-    REXX_METHOD(dlgutil_colorRef,        dlgutil_colorRef),
-    REXX_METHOD(dlgutil_getRValue,       dlgutil_getRValue),
-    REXX_METHOD(dlgutil_getGValue,       dlgutil_getGValue),
-    REXX_METHOD(dlgutil_getBValue,       dlgutil_getBValue),
-    REXX_METHOD(dlgutil_handleToPointer, dlgutil_handleToPointer),
-    REXX_METHOD(pbc_stepIt,              pbc_stepIt),
-    REXX_METHOD(pbc_getPos,              pbc_getPos),
-    REXX_METHOD(pbc_setPos,              pbc_setPos),
-    REXX_METHOD(pbc_getRange,            pbc_getRange),
-    REXX_METHOD(pbc_setRange,            pbc_setRange),
-    REXX_METHOD(pbc_setStep,             pbc_setStep),
-    REXX_METHOD(pbc_setMarquee,          pbc_setMarquee),
-    REXX_METHOD(pbc_setBkColor,          pbc_setBkColor),
-    REXX_METHOD(pbc_setBarColor,         pbc_setBarColor),
-    REXX_METHOD(pbc_test,                pbc_test),
-    REXX_METHOD(hk_set,                  hk_set),
-    REXX_METHOD(hk_get,                  hk_get),
-    REXX_METHOD(hk_toText,               hk_toText),
-    REXX_METHOD(hk_setRules,             hk_setRules),
-    REXX_METHOD(bc_cls_checkInGroup,     bc_cls_checkInGroup),
-    REXX_METHOD(bc_getState,             bc_getState),
-    REXX_METHOD(bc_setState,             bc_setState),
-    REXX_METHOD(gb_setStyle,             gb_setStyle),
-    REXX_METHOD(bc_setStyle,             bc_setStyle),
-    REXX_METHOD(bc_click,                bc_click),
-    REXX_METHOD(bc_getImage,             bc_getImage),
-    REXX_METHOD(bc_setImage,             bc_setImage),
-    REXX_METHOD(bc_isChecked,            bc_isChecked),
-    REXX_METHOD(bc_checked,              bc_checked),
-    REXX_METHOD(bc_isIndeterminate,      bc_isIndeterminate),
-    REXX_METHOD(bc_indeterminate,        bc_indeterminate),
-    REXX_METHOD(bc_check,                bc_check),
-    REXX_METHOD(bc_uncheck,              bc_uncheck),
-    REXX_METHOD(bc_getIdealSize,         bc_getIdealSize),
-    REXX_METHOD(bc_getTextMargin,        bc_getTextMargin),
-    REXX_METHOD(bc_setTextMargin,        bc_setTextMargin),
-    REXX_METHOD(bc_setImageList,         bc_setImageList),
-    REXX_METHOD(bc_getImageList,         bc_getImageList),
-    REXX_METHOD(bc_test,                 bc_test),
-    REXX_METHOD(menu_test,               menu_test),
-    REXX_METHOD(menu_connectAllItems,    menu_connectAllItems),
-    REXX_METHOD(rect_init,               rect_init),
-    REXX_METHOD(rect_left,               rect_left),
-    REXX_METHOD(rect_top,                rect_top),
-    REXX_METHOD(rect_right,              rect_right),
-    REXX_METHOD(rect_bottom,             rect_bottom),
-    REXX_METHOD(rect_setLeft,            rect_setLeft),
-    REXX_METHOD(rect_setTop,             rect_setTop),
-    REXX_METHOD(rect_setRight,           rect_setRight),
-    REXX_METHOD(rect_setBottom,          rect_setBottom),
-    REXX_METHOD(point_init,              point_init),
-    REXX_METHOD(point_x,                 point_x),
-    REXX_METHOD(point_setX,              point_setX),
-    REXX_METHOD(point_y,                 point_y),
-    REXX_METHOD(point_setY,              point_setY),
-    REXX_LAST_METHOD()
-};
-
-RexxPackageEntry oodialog_package_entry =
-{
-    STANDARD_PACKAGE_HEADER
-    REXX_INTERPRETER_4_0_0,              // anything after 4.0.0 will work
-    "OODIALOG",                          // name of the package
-    "4.0",                               // package information
-    NULL,                                // no load/unload functions
-    NULL,
-    oodialog_functions,                  // the exported functions
-    oodialog_methods                     // the exported methods
-};
-
-// package loading stub.
-OOREXX_GET_PACKAGE(oodialog);

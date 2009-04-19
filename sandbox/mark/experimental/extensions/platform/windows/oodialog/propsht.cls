@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -73,7 +73,7 @@
 
    self~catalog['category'] = 0
 
-   parse value GetStdTextSize("Hg") with . stdty
+   size = self~getTextSizeDlg("Hg")
 
    self~catalog['page']['x'] = self~catx
    self~catalog['page']['y'] = self~caty
@@ -86,17 +86,17 @@
    self~AddTabControl(9001,,p['x'], p['y'], p['w'], p['h'],self~CatStyle || " CAT CLIPSIBLINGS")
 
    self~DlgHandle = UsrCreateDialog(self~Adm, "PARENT", self~DialogItemCount, 0, self~BasePtr, self~AutoDetect, 1, 0, 0)
-   self~AktPtr = 0
+   self~activePtr = 0
    if self~DlgHandle = 0 then return 0
 
    do i = 1 to self~catalog['count']
       self~DialogItemCount = 0
       self~catalog['category'] = i
-      self~CreateCategoryDialog(p['x']+2, p['y']+(stdty*2), p['w']-10, p['h']-(stdty*3),p['font'], p['fsize'], p['style'] || " CHILD HIDDEN", p['expected'])
+      self~CreateCategoryDialog(p['x']+2, p['y']+(size~height*2), p['w']-10, p['h']-(size~height*3),p['font'], p['fsize'], p['style'] || " CHILD HIDDEN", p['expected'])
       msg = "self~" || self~catalog['names'][i]~space(0)
       interpret(msg)
       ret = UsrCreateDialog(self~Adm, "CHILD", self~DialogItemCount, self~catalog['base'][i], self~DlgHandle, i)
-      self~AktPtr = 0
+      self~activePtr = 0
       self~catalog['handles'][i] = ret
    end
 
@@ -146,7 +146,7 @@
 ::method PropSheetActivated
    use arg wP, lp
    if Arg() = 0 then code = 0
-   else code = BinaryAnd(wp, "0x0000FFFF")
+   else code = .DlgUtil~loWord(wp)
    if code \= 0 then do
        self~Update
        wnd = .DialogControl~new
