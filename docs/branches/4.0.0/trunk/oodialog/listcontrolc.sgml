@@ -577,16 +577,16 @@ of the different styles, refer to <link linkend="mthAddListControl">AddListContr
 
   list  = self~getListControl(IDC_LV_VIEWS)
 
-  flags = .Image~id(ILC_COLOR24)
+  flags = .Image~toID(ILC_COLOR24)
   imageList = .ImageList~create(.Size~new(16), flags, 7, 0)
 
   imageList~add(.Image~getImage("iconList_16.bmp"))
-  list~setImageList(imageList, .Image~id(LVSIL_SMALL))
+  list~setImageList(imageList, .Image~toID(LVSIL_SMALL))
 
   imageList = .ImageList~create(.Size~new(32), flags, 7, 0)
 
   imageList~add(.Image~getImage("iconList_32.bmp"))
-  list~setImageList(imageList, .Image~id(LVSIL_NORMAL))
+  list~setImageList(imageList, .Image~toID(LVSIL_NORMAL))
 
   self~populateList(list)
 
@@ -2816,9 +2816,9 @@ and on the system colors used for a selection.
 
   curList = self~getListControl(IDC_LIST_REP)
   if curList \= .nil then do
-    imageList = .ImageList~create(.Size~new(16), .Image~id(ILC_COLOR24), 9, 0)
+    imageList = .ImageList~create(.Size~new(16), .Image~toID(ILC_COLOR24), 9, 0)
     imageList~add(.Image~getImage("E:\oodlist\oodlist.BMP"))
-    list~setImageList(imageList, .Image~id(LVSIL_SMALL))
+    list~setImageList(imageList, .Image~toID(LVSIL_SMALL))
 
     curList~insertColumn(0,"First Name",50)
     curList~insertColumn(1,"Last Name",50)
@@ -3908,7 +3908,7 @@ This is the default.
         <para>
           <emphasis role="bold">type</emphasis>: When <emphasis role="italic">src</emphasis> is an
           <computeroutput>ImageList</computeroutput> object, this argument specifies which image list to
-          assign, (or remove.) You can use <link linkend="mthIdClsImage">.Image~id()</link> to get the
+          assign, (or remove.) You can use <link linkend="mthToIDClsImage">.Image~toID()</link> to get the
           correct numeric value for one of the following symbols:
           <simplelist type='horiz' columns='2'>
           <member>LVSIL_NORMAL</member>
@@ -3995,14 +3995,14 @@ This is the default.
   size = .Size~new(.DlgUtil~getSystemMetrics(SM_CXICON), .DlgUtil~getSystemMetrics(SM_CYICON))
 
   oodModule = .ResourceImage~new("oodialog.dll", self)
-  icons = oodModule~getImages(ids, .Image~id(IMAGE_ICON), size)
+  icons = oodModule~getImages(ids, .Image~toID(IMAGE_ICON), size)
 
-  flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+  flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
   imageList = .ImageList~create(size, flags, 4, 0)
   imageList~addImages(icons)
 
   list = self~getListControl(IDC_LV_IMAGES)
-  list~setImageList(imageList, .Image~id(LVSIL_NORMAL))
+  list~setImageList(imageList, .Image~toID(LVSIL_NORMAL))
 
   do i = 1 to ids~items
     list~add(names[i] '('ids[i]')', i - 1)
@@ -4044,7 +4044,7 @@ This is the default.
       <listitem>
         <para>
           Optional. Specifies which image list to retrieve. You can use <link
-          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>LVSIL_NORMAL</member>

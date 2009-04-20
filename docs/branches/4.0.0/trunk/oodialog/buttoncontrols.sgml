@@ -1016,11 +1016,11 @@ self~getButtonControl(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 ::method getAlignmentText private
   use strict arg align
   select
-    when align = .Image~id(BUTTON_IMAGELIST_ALIGN_CENTER) then return "center"
-    when align = .Image~id(BUTTON_IMAGELIST_ALIGN_LEFT) then return "left"
-    when align = .Image~id(BUTTON_IMAGELIST_ALIGN_RIGHT) then return "right"
-    when align = .Image~id(BUTTON_IMAGELIST_ALIGN_TOP) then return "top"
-    when align = .Image~id(BUTTON_IMAGELIST_ALIGN_BOTTOM) then return "bottom"
+    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_CENTER) then return "center"
+    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_LEFT) then return "left"
+    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_RIGHT) then return "right"
+    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_TOP) then return "top"
+    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_BOTTOM) then return "bottom"
     otherwise return "error"
   end
   -- End select
@@ -1126,7 +1126,7 @@ self~getButtonControl(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
       <listitem>
         <para>
           Optional, Specifies the alignment of the image on the button. You can use <link
-          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for one of the
           following symbols,
           <simplelist type='horiz' columns='2'>
           <member>BUTTON_IMAGELIST_ALIGN_LEFT   </member>
@@ -1196,14 +1196,14 @@ self~getButtonControl(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
   files[6] = "resources\Hot.bmp"          -- Stylus hot, tablet PC only
 
   -- Set the flags to create a 24 bit color, masked image list.
-  flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+  flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
   imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10)
 
   images = .Image~fromFiles(files)
   cRef = .Image~colorRef(255, 255, 255)
   imageList~addImages(images, cRef)
 
-  align = .Image~id(BUTTON_IMAGELIST_ALIGN_LEFT)
+  align = .Image~toID(BUTTON_IMAGELIST_ALIGN_LEFT)
   margin = .Rect~new(1)
 
   ret = pbView~setImageList(imageList, margin, align)

@@ -1789,7 +1789,7 @@ was not specified or is 0.
       <listitem>
         <para>
           Optional. Specifies which image list to assign, (or remove.) You can use <link
-          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>TVSIL_NORMAL</member>
@@ -1821,10 +1821,10 @@ was not specified or is 0.
 
   /* set images for the items */
   image = .Image~getImage("bmp\psdemotv.bmp")
-  imageList = .ImageList~create(.Size~new(32, 32), .Image~id(ILC_COLOR8), 10, 0)
+  imageList = .ImageList~create(.Size~new(32, 32), .Image~toID(ILC_COLOR8), 10, 0)
   if \image~isNull,  \imageList~isNull then do
      imageList~add(image)
-     tc~setImageList(imageList, .Image~id(TVSIL_NORMAL))
+     tc~setImageList(imageList, .Image~toID(TVSIL_NORMAL))
      image~release
   end
 
@@ -1865,7 +1865,7 @@ was not specified or is 0.
       <listitem>
         <para>
           Optional. Specifies which image list to retrieve. You can use <link
-          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>TVSIL_NORMAL</member>

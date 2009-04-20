@@ -190,8 +190,8 @@
 <entry><link linkend="mthGetRValue">getRValue</link></entry>
 </row>
 <row>
-<entry>id (Class method)</entry>
-<entry><link linkend="mthIdClsImage">id</link></entry>
+<entry>toID (Class method)</entry>
+<entry><link linkend="mthToIDClsImage">toID</link></entry>
 </row>
 <row>
 <entry>new (Class method)</entry>
@@ -240,31 +240,32 @@
 </para>
 </section>  <!-- End Image::new() [class method] -->
 
-<section id="mthIdClsImage"><title>id (Class method)</title>
+<section id="mthToIDClsImage"><title>toID (Class method)</title>
 <indexterm><primary>id</primary>
 <secondary>Image class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--id(--symbolicName--)---------------------------------------><
+>>--toID(--symbolicName--)-----------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  The id method is used to translate a symbolic name to its integer value.  In general the symbolic
-  name is related to images or color.  Many of the arguments to the methods of classes related to
-  images use the integer value of a symbolic ID in the Windows API.  This method allows the
-  programmer to use the symbolic ID without knowing what the actual integer value is.
+  The <emphasis role="italic">toID</emphasis> method is used to translate a symbolic name to its
+  integer value.  In general the symbolic name is related to images or color.  Many of the arguments to
+  the methods of classes related to images use the integer value of a symbolic ID in the Windows API.
+  This method allows the programmer to use the symbolic ID without knowing what the actual integer value
+  is.
 </para>
 <para>
   Take for example the task of retrieving the 'Question' icon resource from the system using the
   <link linkend="mthGetImageClsImage">getImage()</link> method.  The ooDialog programmer could
-  either use the numerical value of 32514 or use the id method as follows.  Note that the two invocations
-  of getImage() are equivalent:
+  either use the numerical value of 32514 or use the <emphasis role="italic">toID</emphasis> method as
+  follows.  Note that the two invocations of getImage() are equivalent:
 </para>
   <programlisting>
   <![CDATA[
-    qIcon = .Image~getImage(.Image~id(IDI_QUESTION))
+    qIcon = .Image~getImage(.Image~toID(IDI_QUESTION))
 
     qIcon = .Image~getImage(32514)
   ]]>
@@ -302,7 +303,7 @@
   <listitem>
     <programlisting>
     <![CDATA[
-    say 'The numeric value of the IDI_WINLOGO symbol is:' .Image~id(IDI_WINLOGO)
+    say 'The numeric value of the IDI_WINLOGO symbol is:' .Image~toID(IDI_WINLOGO)
     /*
       Output on the console would be:
 
@@ -355,7 +356,7 @@
       <para>
         If id is a number than it is taken to be the resource id of an image provided by the system.  The
         following are the symbolic names for all the system images. You can use <link
-        linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for any of the
+        linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for any of the
         following symbols:
         <simplelist type='vert' columns='4'>
         <member>IDI_APPLICATION</member> <member>IDI_HAND</member> <member>IDI_QUESTION</member>
@@ -388,7 +389,7 @@
     <listitem>
       <para>
         Specifies the type of the image: bitmap, icon, or cursor. You can use <link
-        linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+        linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for one of the
         following symbols:
         <simplelist type='horiz' columns='2'>
         <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -414,7 +415,7 @@
     <listitem>
       <para>
         The load resource flags for the LoadImage() API.  The flags are one or more of the following
-        symbols. You can use <link linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric
+        symbols. You can use <link linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric
         value for any of the following symbols.  The <link linkend="mthOrClsDlgUtil">or</link> method of
         the <link linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than one of the
         symbols if needed.
@@ -446,11 +447,11 @@
   <listitem>
     <programlisting>
     <![CDATA[
-    flags = .DlgUtil~or(.Image~id(LR_DEFAULTSIZE), .Image~id(LR_SHARED), -
-                        .Image~id(LR_LOADMAP3DCOLORS))
+    flags = .DlgUtil~or(.Image~toID(LR_DEFAULTSIZE), .Image~toID(LR_SHARED), -
+                        .Image~toID(LR_LOADMAP3DCOLORS))
 
-    questionIcon = .Image~getImage(.Image~id(IDI_QUESTION),              -
-                                   .Image~id(IMAGE_ICON),                -
+    questionIcon = .Image~getImage(.Image~toID(IDI_QUESTION),              -
+                                   .Image~toID(IMAGE_ICON),                -
                                    .Size~new(0, 0), flags)
     if questionIcon~isNull then do
       say 'Error getting the question icon.  Error code:' .SystemErrorCode
@@ -522,7 +523,7 @@
       <listitem>
         <para>
           Specifies the type of the image, bitmap, icon, or cursor. You can use <link
-          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -546,7 +547,7 @@
       <listitem>
         <para>
           The load resource flags for the LoadImage() API.  The flags are one or more of the following
-          symbols. You can use <link linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric
+          symbols. You can use <link linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric
           value for any of the following symbols.  The <link linkend="mthOrClsDlgUtil">or</link> method of
           the <link linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than one of the
           symbols if needed.
@@ -635,7 +636,7 @@
       <listitem>
         <para>
           Specifies the type of the image: bitmap, icon, or cursor. You can use <link
-          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -659,7 +660,7 @@
       <listitem>
         <para>
           The load resource flags for the LoadImage() API.  The flags are one or more of the following
-          symbols. You can use <link linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric
+          symbols. You can use <link linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric
           value for any of the following symbols.  The <link linkend="mthOrClsDlgUtil">or</link> method of
           the <link linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than one of the
           symbols if needed.
@@ -962,7 +963,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <programlisting>
     <![CDATA[
-    hIcon = .Image~getImage(.Image~id(IDI_QUESTION), .Image~id(IMAGE_ICON))
+    hIcon = .Image~getImage(.Image~toID(IDI_QUESTION), .Image~toID(IMAGE_ICON))
     say 'hIcon:  ' hIcon
     say ' handle:' hIcon~handle
 
@@ -1046,7 +1047,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 
         iconControl = self~getStaticControl(IDC_ICON_QUESTION)
         if iconControl <> .nil then do
-          hQuestion = .Image~getImage(.Image~id(IDI_QUESTION), .Image~id(IMAGE_ICON))
+          hQuestion = .Image~getImage(.Image~toID(IDI_QUESTION), .Image~toID(IMAGE_ICON))
           say 'Question icon:' hQuestion~handle
           if hQuestion~isNull then do
             say 'errror code:' .SystemErrorCode
@@ -1118,7 +1119,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       informative.
       <programlisting>
       <![CDATA[
-      hQuestion = .Image~getImage(.Image~id(IDI_QUESTION), .Image~id(IMAGE_BITMAP))
+      hQuestion = .Image~getImage(.Image~toID(IDI_QUESTION), .Image~toID(IMAGE_BITMAP))
       if hQuestion~isNull then do
         say 'System Errror code:' .SystemErrorCode
         say '  System message:  ' SysGetErrorText(.SystemErrorCode)
@@ -1206,7 +1207,7 @@ A fancy purple: 16734709 (0x00FF59F5)
        */
 
         if iconControl <> .nil then do
-          hIcon = .Image~getImage("shavedIce.ico", .Image~id(IMAGE_ICON))
+          hIcon = .Image~getImage("shavedIce.ico", .Image~toID(IMAGE_ICON))
           ...
       ]]>
       </programlisting>
@@ -1397,7 +1398,7 @@ A fancy purple: 16734709 (0x00FF59F5)
         <para>
           The flags that specify the type of image list to create. The flags are one or more of the following
           symbols, but can include only one ILC_COLOR value. You can use <link
-          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for any of the
+          linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for any of the
           following symbols.  The <link linkend="mthOrClsDlgUtil">or</link> method of the <link
           linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine the symbols.
           <simplelist type='horiz' columns='2'>
@@ -1429,7 +1430,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <programlisting>
   <![CDATA[
   -- We set the flags to create a 24 bit color, masked image list.
-  flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+  flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
 
   -- Create an empty .ImageList object:
   imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10);
@@ -1508,10 +1509,10 @@ A fancy purple: 16734709 (0x00FF59F5)
       <![CDATA[
       -- Set the images for the items in the list-view.
       image = .Image~getImage("bmp\psdemolv.bmp")
-      imageList = .ImageList~create(.Size~new(16, 16), .Image~id(ILC_COLOR8), 4, 0)
+      imageList = .ImageList~create(.Size~new(16, 16), .Image~toID(ILC_COLOR8), 4, 0)
       if \image~isNull,  \imageList~isNull then do
          imageList~add(image)
-         lc~setImageList(imageList, .Image~id(LVSIL_SMALL))
+         lc~setImageList(imageList, .Image~toID(LVSIL_SMALL))
 
          -- The image list makes a copy of the bitmap, so we can release it now.
          image~release
@@ -1601,8 +1602,8 @@ A fancy purple: 16734709 (0x00FF59F5)
 
       -- Create our image list, as a masked image list.
       imageList = .ImageList~create(.Size~new(16, 16),                   -
-                                    .DlgUtil~or(.Image~id(ILC_COLOR24),  -
-                                    .Image~id(ILC_MASK)),                -
+                                    .DlgUtil~or(.Image~toID(ILC_COLOR24),  -
+                                    .Image~toID(ILC_MASK)),                -
                                      10, 0)
 
       if \image~isNull,  \imageList~isNull then do
@@ -1682,21 +1683,21 @@ A fancy purple: 16734709 (0x00FF59F5)
       the list-view with the text for the icon being its numeric resource ID. Since the system icons are
       shared, the icon images are not released after they are added to the image list.
       <programlisting> <![CDATA[
-      ids = .array~new() ids[ 1] = .Image~id(IDI_APPLICATION)
-      ids[ 2] = .Image~id(IDI_HAND) ids[ 3] = .Image~id(IDI_QUESTION)
-      ids[ 4] = .Image~id(IDI_EXCLAMATION) ids[ 5] = .Image~id(IDI_ASTERISK)
-      ids[ 6] = .Image~id(IDI_WINLOGO)
+      ids = .array~new() ids[ 1] = .Image~toID(IDI_APPLICATION)
+      ids[ 2] = .Image~toID(IDI_HAND) ids[ 3] = .Image~toID(IDI_QUESTION)
+      ids[ 4] = .Image~toID(IDI_EXCLAMATION) ids[ 5] = .Image~toID(IDI_ASTERISK)
+      ids[ 6] = .Image~toID(IDI_WINLOGO)
 
-      flags = .DlgUtil~or(.Image~id(ILC_COLOR8), .Image~id(ILC_MASK))
+      flags = .DlgUtil~or(.Image~toID(ILC_COLOR8), .Image~toID(ILC_MASK))
 
       imageList = .ImageList~create(.Size~new(32, 32), flags, 20, 10)
 
       do i = 1 to ids~items
-        image = .Image~getImage(ids[i], .Image~id(IMAGE_ICON))
+        image = .Image~getImage(ids[i], .Image~toID(IMAGE_ICON))
         imageList~addIcon(image)
       end
 
-      list~setImageList(imageList, .Image~id(LVSIL_NORMAL))
+      list~setImageList(imageList, .Image~toID(LVSIL_NORMAL))
 
       do i = 1 to ids~items
         list~add(ids[i], i - 1)
@@ -1799,7 +1800,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 
       size = .Size~new(32, 32)
 
-      images = .Image~fromFiles(files1, .Image~id(IMAGE_ICON), size)
+      images = .Image~fromFiles(files1, .Image~toID(IMAGE_ICON), size)
       if images~items <> files1~items then do
         say 'Error loading images.'
         say '  System error:' .SystemErrorCode
@@ -1808,7 +1809,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       end
 
       count = images~items
-      flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+      flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
 
       imageList = .ImageList~create(size, flags, 20, 10);
 
@@ -1819,7 +1820,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       end
 
       -- Set the image list for the list-view's normal icons.
-      list~setImageList(imageList, .Image~id(LVSIL_NORMAL))
+      list~setImageList(imageList, .Image~toID(LVSIL_NORMAL))
 
       -- Add an item to the list-view for each image.  The
       -- text for each item will be the icon file name and
@@ -2077,13 +2078,13 @@ A fancy purple: 16734709 (0x00FF59F5)
 
         menu = self~getListControl(IDC_LV_MENU)
 
-        bigIcons = menu~getImageList(.Image~id(LVSIL_NORMAL))
+        bigIcons = menu~getImageList(.Image~toID(LVSIL_NORMAL))
         bigIcons~remove(index)
 
-        smallIcons = menu~getImageList(.Image~id(LVSIL_SMALL))
+        smallIcons = menu~getImageList(.Image~toID(LVSIL_SMALL))
         smallIcons~remove(index)
 
-        stateIcons = menu~getImageList(.Image~id(LVSIL_STATE))
+        stateIcons = menu~getImageList(.Image~toID(LVSIL_STATE))
         stateIcons~remove(index)
 
         menu~delete(index)
@@ -2147,13 +2148,13 @@ A fancy purple: 16734709 (0x00FF59F5)
 
         menu = self~getListControl(IDC_LV_MENU)
 
-        bigIcons = menu~getImageList(.Image~id(LVSIL_NORMAL))
+        bigIcons = menu~getImageList(.Image~toID(LVSIL_NORMAL))
         bigIcons~removeAll
 
-        smallIcons = menu~getImageList(.Image~id(LVSIL_SMALL))
+        smallIcons = menu~getImageList(.Image~toID(LVSIL_SMALL))
         smallIcons~removeAll
 
-        stateIcons = menu~getImageList(.Image~id(LVSIL_STATE))
+        stateIcons = menu~getImageList(.Image~toID(LVSIL_STATE))
         stateIcons~removeAll
 
         menu~deleteAll
@@ -2317,7 +2318,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <programlisting>
       <![CDATA[
       -- See if we can create an image list with no size.
-      imageList = .ImageList~create(.Size~new(0, 0), .Image~id(ILC_COLOR24),  20, 10)
+      imageList = .ImageList~create(.Size~new(0, 0), .Image~toID(ILC_COLOR24),  20, 10)
       if imageList~isNull then do
         say 'Can not create a 0 x 0 image list.'
         return .false
@@ -2530,13 +2531,13 @@ A fancy purple: 16734709 (0x00FF59F5)
         size = .Size~new(.DlgUtil~getSystemMetrics(SM_CXICON), .DlgUtil~getSystemMetrics(SM_CYICON))
 
         oodModule = .ResourceImage~new("oodialog.dll", self)
-        icons = oodModule~getImages(ids, .Image~id(IMAGE_ICON), size)
+        icons = oodModule~getImages(ids, .Image~toID(IMAGE_ICON), size)
 
-        flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+        flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
         imageList = .ImageList~create(size, flags, 4, 0)
         imageList~addImages(icons)
 
-        list~setImageList(imageList, .Image~id(LVSIL_NORMAL))
+        list~setImageList(imageList, .Image~toID(LVSIL_NORMAL))
 
         names = .array~new()
         names[1] = "IDI_DLG_OODIALOG"
@@ -2610,7 +2611,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           Specifies the type of the image: bitmap, icon, or cursor. You can use <link
-          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -2634,7 +2635,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           The load resource flags for the LoadImage() API.  The flags are one or more of the following
-          symbols. You can use <link linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric
+          symbols. You can use <link linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric
           value for any of the following symbols.  The <link linkend="mthOrClsDlgUtil">or</link> method of
           the <link linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than one of the
           symbols if needed.
@@ -2747,7 +2748,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           Specifies the type of the image: bitmap, icon, or cursor. You can use <link
-          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -2771,7 +2772,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           The load resource flags for the LoadImage() API.  The flags are one or more of the following
-          symbols. You can use <link linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric
+          symbols. You can use <link linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric
           value for any of the following symbols.  The <link linkend="mthOrClsDlgUtil">or</link> method of
           the <link linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than one of the
           symbols if needed.
