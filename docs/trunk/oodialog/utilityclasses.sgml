@@ -2268,7 +2268,7 @@ To debug your DlgAreaU call/insert the following after the instantiation
 </para>
 <programlisting>
 <![CDATA[
-if u~lastError \= .nil then call errormessage u~lastError
+if u~lastError \= .nil then call errorDialog u~lastError
 ]]>
 </programlisting>
 <para>You must also include the following in your code.</para>
@@ -2278,7 +2278,7 @@ if u~lastError \= .nil then call errormessage u~lastError
 ::method OnResize
 /* ------------------------------------------------------------------------- */
 expose u
-if u~lastError \= .nil then call errormessage u~lastError
+if u~lastError \= .nil then call errorDialog u~lastError
 use arg dummy,sizeinfo
                                  /* wait for last size event msg then resize */
 if self~PeekDialogMessage~left(8) \= "OnResize" then u~resize(self,sizeinfo)
@@ -2413,7 +2413,7 @@ exit
 expose u
 
 u=.dlgAreaU~new(self)                                         /* whole dlg   */
-if u~lastError \= .nil then call errormessage u~lastError
+if u~lastError \= .nil then call errorDialog u~lastError
 e=.dlgArea~new(u~x       ,u~y       ,u~w("70%"),u~h("90%"))   /* edit   area */
 s=.dlgArea~new(u~x       ,u~y("90%"),u~w("70%"),u~hr      )   /* status area */
 b=.dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      )   /* button area */

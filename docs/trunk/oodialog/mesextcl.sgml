@@ -508,7 +508,7 @@ holding the button that started the drag operation.</para>
           fvItem = tc~FirstVisible
           if (ybottom) & (tc~NextVisible(fvItem) \= 0) then do
               tc~MakeFirstVisible(tc~NextVisible(fvItem))
-              if y-bottom < 200 then call sleepms 200-(y-bottom)
+              if y-bottom < 200 then call msSleep 200-(y-bottom)
           end
       end
       lmb = self~IsMouseButtonDown("LEFT")
@@ -942,7 +942,7 @@ view control has the AUTOARRANGE style.</para>
              oldy = newy
              if sx \= 0 | sy \= 0 then do
                 lc~Scroll(sx, sy)
-                call sleepms 30
+                call msSleep 30
              end
         end
       end

@@ -2045,8 +2045,10 @@ if ret = 0 then do
    /* Object Rexx statements to run while the dialog is executing */
    ...
    MyDialog~EndAsyncExecution
-   end
-else call ErrorMessage "Could not start dialog"
+end
+else do
+   call errorDialog "Could not start dialog"
+end
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -2140,7 +2142,7 @@ is being processed:</para>
 MyDialog~Popup("SHOWTOP", 250)
 do i = 1 to 1000
    say "Iteration" i
-   call SleepMs 100
+   call msSleep 100
 end
 ]]>
 </programlisting>
@@ -2220,7 +2222,7 @@ MyParent~Popup("SHOWTOP")
 MyDialog~PopupAsChild(MyParent, "SHOWTOP", 250)
 do i = 1 to 1000
    say "Iteration" i
-   call SleepMs 100
+   call msSleep 100
    if i = 800 then MyParent~Finished = 1  /* close both dialogs when i = 800 */
 end
 ]]>
@@ -8381,7 +8383,7 @@ still minimized, then this method restores it to its normal position.
     viewDlg~popUpAsChild(self, "HIDE", , IDI_DLG_APPICON)
 
     -- The underlying Windows dialog has to be created before it can be maximized.
-    j = SleepMS(100)
+    j = msSleep(100)
 
     viewDlg~maximize
     self~minimize
