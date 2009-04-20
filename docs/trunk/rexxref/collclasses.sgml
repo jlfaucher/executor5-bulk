@@ -777,9 +777,10 @@ can specify a hint about how many elements you expect to put into the array
 or the array's dimensionality. However, you do not need to specify a size
 or dimensionality of an array when you are creating it. You can use any
 whole-number indexes to reference items in an array.</para>
-<para>For any array method that take an index, the index may be specified as
-either individual argumentss or as an array of indexes.  For example, the
-following are equivalent:</para>
+<para id="paraArrayIndex">
+  For any array method that takes an index, the index may be specified as either individual arguments or
+  as an array of indexes.  For example, the following are equivalent:
+</para>
 <programlisting>
     x = myarray[1,2,3]   -- retrieves an item from a multi-dimension array
     index = .array~of(1,2,3)  -- create an index list
@@ -881,6 +882,10 @@ does not include the indexes corresponding to those you omitted.</para>
 
 <para>Returns the same value as the <link linkend="mthArrayAt">at()</link>
 method.</para>
+<para>
+  Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+  indexes.
+</para>
 </section>
 
 <section id="mthArrayPutSet"><title>[]=</title>
@@ -899,6 +904,10 @@ method.</para>
 
 <para>This method is the same as the <link linkend="mthArrayPut">put()</link>
 method.</para>
+<para>
+  Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+  indexes.
+</para>
 </section>
 
 <section id="mthArrayAllIndexes"><title>allIndexes</title>
@@ -1010,6 +1019,10 @@ highest index).  The return value is the index of newly added item.
 with the specified <emphasis role="italic">index</emphasis> or
 <emphasis role="italic">index</emphasis>es, this method returns the
 Nil object.</para>
+<para>
+  Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+  indexes.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>at method</secondary></indexterm>
@@ -1119,6 +1132,10 @@ of index values.
 <para>Returns <computeroutput>1</computeroutput> (true) if the array contains
 an item associated with the specified index or indexes. Returns
 <computeroutput>0</computeroutput> (false) otherwise.</para>
+<para>
+  Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+  indexes.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>hasIndex method</secondary></indexterm>
@@ -1328,6 +1345,10 @@ For multi-dimention arrays, the same ordering used by the
 <link linkend="mthArrayAllItems">allItems</link> method is used to determine the
 next position and the index is returned as an array of index values.
 </para>
+<para>
+  Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+  indexes.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>next method</secondary></indexterm>
@@ -1356,6 +1377,10 @@ array.
 For multi-dimention arrays, the same ordering used by the
 <link linkend="mthArrayAllItems">allItems</link> method is used to determine the
 previous position and the index is returned as an array of index values.</para>
+<para>
+  Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+  indexes.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>previous method</secondary></indexterm>
@@ -1389,6 +1414,10 @@ existing item associated with the specified
 with the new item. If the <emphasis role="italic">index</emphasis> for a
 particular dimension is greater than the current size of
 that dimension, the array is expanded to the new dimension size.</para>
+<para>
+  Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+  indexes.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>put method</secondary></indexterm>
@@ -1430,6 +1459,10 @@ Mike
 item with the specified <emphasis role="italic">index</emphasis> or
 <emphasis role="italic">index</emphasis>es, the Nil object is returned and
 no item is removed.</para>
+<para>
+  Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+  indexes.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>remove method</secondary></indexterm>
@@ -1490,6 +1523,10 @@ If you do not specify <emphasis role="italic">items</emphasis>,
 the new array contains all subsequent items of the receiver array. The receiver
 array remains unchanged. The section() method is valid only for single-index
 arrays.</para>
+<para>
+  Note that the <emphasis role="italic">start</emphasis> argument, (the <link
+  linkend="paraArrayIndex">index</link> argument,) may also be specified as an array of indexes.
+</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>section method</secondary></indexterm>
