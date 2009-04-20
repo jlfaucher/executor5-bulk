@@ -351,7 +351,7 @@ text = static~getText
     <para>
 <programlisting>
 <![CDATA[
-icon = .Image~getImage(.Image~id(IDI_QUESTION), .Image~id(IMAGE_ICON))
+icon = .Image~getImage(.Image~toID(IDI_QUESTION), .Image~toID(IMAGE_ICON))
 if \ icon~isNull then do
   oldIcon = iconControl~setIcon(icon)
   ...
@@ -472,7 +472,7 @@ icon = staticControl~getIcon
     <para>
 <programlisting>
 <![CDATA[
-image = .Image~getImage("Camera.bmp", .Image~id(IMAGE_BITMAP))
+image = .Image~getImage("Camera.bmp", .Image~toID(IMAGE_BITMAP))
 if \ image~isNull then do
   oldImage = staticControl~setImage(image)
   if oldImage \== .nil then oldImage~release
@@ -524,7 +524,7 @@ end
       <listitem>
         <para>
           Specifies the type of the image: bitmap, icon, cursor, or enhanced metafile. You can use <link
-          linkend="mthIdClsImage">.Image~id()</link> to get the correct numeric value for one of the
+          linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -535,7 +535,7 @@ end
           The default is IMAGE_BITMAP.
         </para>
         <para>
-          The programmer does not have to use .Image~id() to get the numeric value for type. The correct
+          The programmer does not have to use .Image~toID() to get the numeric value for type. The correct
           number itself can be used. In general, symbolic IDs are used to make code more readable and
           less prone to error. However, since the value of IMAGE_CURSOR is 2, for example, the programmer
           could use 2 directly for the type argument.
@@ -560,7 +560,7 @@ end
 ::method onExit
   expose staticPicture
 
-  image = staticPicture~getImage(.Image~id(IMAGE_CURSOR))
+  image = staticPicture~getImage(.Image~toID(IMAGE_CURSOR))
   if \ image~isNull then image~release
 ]]>
 </programlisting>

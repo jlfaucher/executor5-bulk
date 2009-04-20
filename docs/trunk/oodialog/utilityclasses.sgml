@@ -570,7 +570,7 @@ return .true
       linkend="clsImage">.ImageList</link> class.  This is how the or method might be used
 <programlisting>
 <![CDATA[
-  flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+  flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
 
   -- Create an empty .ImageList object:
   imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10);
@@ -592,7 +592,7 @@ return .true
       To round out the examples a little:
 <programlisting>
 <![CDATA[
-  flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+  flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
   say "Flags value:" flags
 
   flags = .DlgUtil~or(0x00000018, 0x00000001)

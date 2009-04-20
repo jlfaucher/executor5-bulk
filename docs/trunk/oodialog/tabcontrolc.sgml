@@ -802,7 +802,7 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
   image = .Image~getImage("bmp\psdemoTab.bmp")
 
   -- Create our image list, as a masked image list.
-  flags = .DlgUtil~or(.Image~id(ILC_COLOR24), .Image~id(ILC_MASK))
+  flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
   imageList = .ImageList~create(.Size~new(16, 16), flags, 10, 0)
 
   if \image~isNull,  \imageList~isNull then do
