@@ -13,6 +13,9 @@ See documentation for version control
 
 11/29/07    Modified ~getText for occasions when lines should not be stripped.
             Place in the incubator
+
+04/19/09    Removed deprecated createFont() and replaced it with createFontEx().
+04/19/09    Enhanced the menu to use check marks for font name, size, and silent.
 */
 
     parse arg isDefault
@@ -40,6 +43,7 @@ exit
     rc = self~Create(.dx,.dy,.dwidth,.dheight,.title,'ThickFrame MinimizeBox MaximizeBox')
     self~InitCode = (rc=0)
     self~connectResize('OnResize')
+    self~fontMenuHelper
 
 ::method DefineDialog
     expose u
@@ -91,16 +95,16 @@ exit
 
     self~addPopUpMenu('&Edit')
        self~addPopupMenu('Font&Name')
-           self~addMenuItem('&Lucida Console',30,     ,'FONT_LC')
-           self~addMenuItem('&Courier New'   ,31,'END','FONT_CN')
+           self~addMenuItem('&Lucida Console',30,     ,'onFontMenuClick')
+           self~addMenuItem('&Courier New'   ,31,'END','onFontMenuClick')
       self~addMenuSeparator
       self~addPopUpMenu('Font&Size','END')
-           self~addMenuItem('&8' ,40,     ,'PS_8')
-           self~addMenuItem('1&0',41,     ,'PS_10')
-           self~addMenuItem('1&2',42,     ,'PS_12')
-           self~addMenuItem('1&4',43,     ,'PS_14')
-           self~addMenuItem('1&6',44,     ,'PS_16')
-           self~addMenuItem('1&8',45,'END','PS_18')
+           self~addMenuItem('&8' ,40,     ,'onFontMenuClick')
+           self~addMenuItem('1&0',41,     ,'onFontMenuClick')
+           self~addMenuItem('1&2',42,     ,'onFontMenuClick')
+           self~addMenuItem('1&4',43,     ,'onFontMenuClick')
+           self~addMenuItem('1&6',44,     ,'onFontMenuClick')
+           self~addMenuItem('1&8',45,'END','onFontMenuClick')
 
    self~AddPopUpMenu('&Tools')
        self~addPopupMenu('&Copy')
@@ -133,8 +137,17 @@ exit
     expose args_input code_input result_input say_input errors_input
     -- Use font data from .ini file or defaults if .ini not present yet
 
-    hfont = self~createFont(.fontname,.fontsize,'EXTRALIGHT',.fontsize)
+    -- FW_EXTRALIGHT == 200
+    d = .Directory~new
+    d~weight = 200
+    hfont = self~createFontEx(.fontname,.fontsize,d)
     self~setMenu
+
+    -- Set the font and silent menu item check marks.
+    self~setFontMenuChecks
+    if .silent then self~checkMenuItem(67)
+    else self~checkMenuItem(66)
+
     -- Get the controls for all dialog elements that will need to be adjusted
     args_input   = self~getEditControl(12)
     code_input   = self~getEditControl(13)
@@ -507,10 +520,16 @@ return self~ok:super
 ::method Silent
     use arg msg, args
     select
-        when msg = 66 then
+        when msg = 66 then do
             .local~silent = .false
-        when msg = 67 then
+            self~checkMenuItem(66)
+            self~unCheckMenuItem(67)
+        end
+        when msg = 67 then do
             .local~silent = .true
+            self~checkMenuItem(67)
+            self~unCheckMenuItem(66)
+        end
         otherwise
             nop
     end
@@ -574,7 +593,6 @@ return self~ok:super
         otherwise
             .local~fontsize = msg~substr(4)
     end
-   self~ReDraw
 
 ::method Help
     expose code_input u
@@ -619,7 +637,11 @@ return self~ok:super
 -- Redraw applicable areas of the dialog based on the font menu choice
 ::method ReDraw
     expose args_input code_input say_input result_input errors_input
-    hfont = self~createFont(.fontname,.fontsize,'EXTRALIGHT',.fontsize)
+
+    -- FW_EXTRALIGHT == 200
+    d = .Directory~new
+    d~weight = 200
+    hfont = self~createFontEx(.fontname,.fontsize,d)
     args_input  ~setFont(hfont)
     code_input  ~setFont(hfont)
     say_input   ~setFont(hfont)
@@ -648,6 +670,57 @@ return self~ok:super
     end
     .local~max_length = max_length + 1
 return iarray
+
+-- This method is invoked whenever the user clicks on one of the font menu items.
+-- The first arg to the method is the resource id of the menu id that was clicked.
+::method onFontMenuClick
+    expose fontMenuIDs
+    use arg id
+
+    -- Map the menu item id to a font setting.  Could be size of name.
+    item = fontMenuIDs~index(id)
+
+    -- If item is a number, then it is a font size menu item, otherwis a font name.
+    if item~datatype('W') then .local~fontSize = item
+    else .local~fontname = item
+
+    -- Reset the menu item check marks and redraw in the new font.
+    self~setFontMenuChecks
+    self~ReDraw
+
+-- This method sets the appropriate font menu item check state.  Checked for selected
+-- and unchecked for unselected.
+::method setFontMenuChecks private
+    expose fontMenuIDs
+
+    -- Iterate over all items in the table unchecking each menu item.  Brute force,
+    -- but easy, and there are not many items. The alternative is to keep track of
+    -- which items are checked and uncheck / check the correct ones.
+    do id over fontMenuIDs~allItems
+        self~uncheckMenuItem(id)
+    end
+
+    -- Now check the menu item that matches what font name and size is currently
+    -- in use.
+    self~checkMenuItem(fontMenuIDs[.fontname])
+    self~checkMenuItem(fontMenuIDs[.fontsize])
+
+-- A private help method that sets up things to make working with the font menu easier
+::method fontMenuHelper private
+    expose fontMenuIDs
+
+    -- Create a table that maps menu item IDs to the matching font setting.  Since
+    -- the Table class has the index() method, the mapping works both ways.
+    fontMenuIDs = .Table~new
+    fontMenuIDs["Lucida Console"] = 30
+    fontMenuIDs["Courier New"]    = 31
+
+    fontMenuIDs[ 8] = 40
+    fontMenuIDs[10] = 41
+    fontMenuIDs[12] = 42
+    fontMenuIDs[14] = 43
+    fontMenuIDs[16] = 44
+    fontMenuIDs[18] = 45
 
 -- Class that dynamically creates a method to take the arguments and execute the code
 ::class executor public
