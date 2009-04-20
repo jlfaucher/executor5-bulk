@@ -619,18 +619,6 @@ return self~ok:super
     use arg dummy,sizeinfo
     if self~PeekDialogMessage~left(8) \= 'OnResize' then u~resize(self,sizeinfo)
 
--- Corresponding method for each font menu choice
-::method Unknown
-    use arg msg, args
-    select
-        when msg = 'FONT_LC' then
-            .local~fontname = 'Lucida Console'
-        when msg = 'FONT_CN' then
-            .local~fontname = 'Courier New'
-        otherwise
-            .local~fontsize = msg~substr(4)
-    end
-
 ::method Help
     expose code_input u
     handle = self~getSelf
