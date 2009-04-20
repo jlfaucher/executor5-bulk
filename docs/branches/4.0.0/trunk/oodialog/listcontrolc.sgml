@@ -1974,14 +1974,19 @@ RetStem.!WIDTH variable will be set to 0.
 box when the column is clicked on:
 <programlisting>
 <![CDATA[
-::method OnColumnClick
+
+::method onColumnClick
   use arg id, column
-  curList = self~GetListControl(102)
-  info. = curList~ColumnInfo(column)
-  call InfoDialog("Column Title : " info.!Text"d"x,
-                  "Column Number: " info.!Column"d"x,
-                  "Column Width : " info.!Width"d"x,
-                  "Alignment    : " info.!Align)
+  listView = self~getListControl(100)
+  info. = listView~columnInfo(column)
+
+  msg = "Column Title : " info.!Text   || .endOfLine || -
+        "Column Number: " info.!Column || .endOfLine || -
+        "Column Width : " info.!Width  || .endOfLine || -
+        "Alignment    : " info.!Align
+
+  call infoDialog msg
+
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -2019,10 +2024,10 @@ or 0 in all other cases.
 when the column is clicked on:
 <programlisting>
 <![CDATA[
-::method OnColumnClick
+::method onColumnClick
   use arg id, column
-  curList = self~GetListControl(102)
-  call InfoDialog(curList~ColumnWidth(column))
+  listView = self~getListControl(102)
+  call infoDialog listView~columnWidth(column)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -3153,12 +3158,23 @@ and on the system colors used for a selection.
 state in a message box:
 <programlisting>
 <![CDATA[
-::method DisplayItemInfo
-  curList = self~GetListControl(104)
-  itemInfo. = curList~ItemInfo(curList~Selected)
-  call InfoDialog("Item Text   : " itemInfo.!Text"d"x,
-                  "Image Index : " itemInfo.!Image"d"x,
-                  "Item State  : " itemInfo.!State)
+
+::method displayItemInfo
+
+  listView = self~getListControl(100)
+  item = listView~selected
+  if item == -1 then do
+    msg = "No item selected."
+  end
+  else do
+    itemInfo. = listView~itemInfo(item)
+
+    msg = "Item Text   : " itemInfo.!Text   || .endOfLine || -
+          "Image Index : " itemInfo.!Image  || .endOfLine || -
+          "Item State  : " itemInfo.!State
+  end
+
+  call infoDialog msg
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
