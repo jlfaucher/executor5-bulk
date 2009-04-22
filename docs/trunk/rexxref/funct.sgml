@@ -4287,7 +4287,13 @@ stream(name,"c","seek &lt;"fromend read)
 <para>Used with these stream commands, the STREAM function returns specific
 information about a stream. Except for QUERY HANDLE and QUERY POSITION, the
 language processor returns the query information even if the stream is not
-open. The language processor returns the null string for nonexistent streams.
+open. The language processor returns UNKNOWN for QUERY STREAMTYPE and the null string for nonexistent
+streams.
+</para>
+<para>
+  Note that technically although a directory is persistent, it is not a stream. If the directory exists,
+  the date / time queries return the time stamp of the directory, QUERY SIZE returns 0, and QUERY
+  STREAMTYPE returns UNKNOWN. The other commands return the null string.
 </para>
 <variablelist>
 <varlistentry><term>QUERY DATETIME</term>
