@@ -134,7 +134,7 @@ public:
 protected:
     void   getStreamTypeInfo();
 
-    int    fileHandle;      // separate file handle
+    HANDLE fileHandle;      // separate file handle
     int    errInfo;         // last error info
     bool   openedHandle;    // true if we opened the handle.
     int    flags;           // open flag information
@@ -152,7 +152,6 @@ protected:
     int64_t bufferPosition; // current read/write position in buffer
     size_t bufferedInput;   // amount of data in the buffer
     bool   writeBuffered;   // false == read, true == write
-    bool   append;          // opened in append mode
     int64_t filePointer;    // current file pointer location
     int    ungetchar;       // a pushed back character value
 };

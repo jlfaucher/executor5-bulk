@@ -53,7 +53,7 @@
  */
 SysFile::SysFile()
 {
-    fileHandle = -1;
+    fileHandle = 0;
     errInfo = 0;
     openedHandle = false;
     flags = 0;
@@ -70,7 +70,6 @@ SysFile::SysFile()
     bufferSize = DEFAULT_BUFFER_SIZE;
     bufferPosition = 0;
     bufferedInput = 0;
-    append = true;
     filePointer = 0;
     ungetchar = -1;
     writeBuffered = false;     // no pending write operations
@@ -98,11 +97,75 @@ bool SysFile::open(const char *name, int openFlags, int openMode, int shareMode)
     mode = openMode;
     share = shareMode;
 
-    // we must open this with the NOINHERIT flag added
-    fileHandle = _sopen(name, openFlags|RX_O_NOINHERIT, shareMode, openMode);
-    if ( fileHandle == -1 )
+    DWORD desiredAccess = 0;
+    if ((openFlags & RX_O_RDONLY) != 0)
     {
-        errInfo = errno;
+        desiredAccess = GENERIC_READ;
+    }
+    if ((openFlags & RX_O_WRONLY) != 0)
+    {
+        desiredAccess = GENERIC_WRITE;
+    }
+    else if ((openFlags & RX_O_RDWR) != 0)
+    {
+        desiredAccess = GENERIC_WRITE | GENERIC_WRITE;
+    }
+
+    DWORD desiredShareMode = 0;
+    if (shareMode == RX_SH_DENYNO)
+    {
+        desiredShareMode = FILE_SHARE_READ | FILE_SHARE_WRITE;
+    }
+    else if (shareMode == RX_SH_DENYRD)
+    {
+        desiredShareMode = FILE_SHARE_WRITE;
+    }
+    else if (shareMode == RX_SH_DENYWR)
+    {
+        desiredShareMode = FILE_SHARE_READ;
+    }
+    else if (shareMode == RX_SH_DENYRW)
+    {
+        desiredShareMode = 0;
+    }
+
+    DWORD disposition = OPEN_ALWAYS;
+    // create and trunc specified means we always start empty
+    if ((openFlags&_O_CREAT != 0) && (openFlags&_O_TRUNC != 0))
+    {
+        disposition = CREATE_ALWAYS;
+    }
+    // open or create
+    else if (openFlags&_O_CREAT != 0)
+    {
+        disposition = OPEN_ALWAYS;
+    }
+    // we're looking to truncate an existing file
+    else if (openFlags &_O_TRUNC != 0)
+    {
+        disposition = TRUNCATE_EXISTING;
+    }
+    // only opening an existing file
+    else {
+        disposition = OPEN_EXISTING;
+    }
+    DWORD fileAttribute = FILE_ATTRIBUTE_NORMAL;
+
+    if (openMode == (_S_IWRITE|_S_IREAD))
+    {
+        fileAttribute = FILE_ATTRIBUTE_NORMAL;
+    }
+    else if (openMode == _S_IREAD)
+    {
+        fileAttribute = FILE_ATTRIBUTE_READONLY;
+    }
+
+
+    // we must open this with the NOINHERIT flag added
+    fileHandle = _CreateFile(name, desiredAccess, desiredShareMode, NULL, disposition, fileAttribute, NULL);
+    if ( fileHandle == INVALID_HANDLE_FILE)
+    {
+        errInfo = mapErrorToErrno(GetLastError());
         return false;
     }
 
@@ -116,9 +179,12 @@ bool SysFile::open(const char *name, int openFlags, int openMode, int shareMode)
     // is this append mode?
     if ((flags & RX_O_APPEND) != 0)
     {
+        LARGE_INTEGER offset;
+        LARGE_INTEGER current;
+        offset.QuadPart = 0;
+
         // mark this true, and position at the end
-        append = true;
-        _lseeki64(fileHandle, 0, SEEK_END);
+        SetFilePointerEx(fileHandle, offset, &current, FILE_END);
     }
 
     getStreamTypeInfo();
@@ -227,9 +293,9 @@ bool SysFile::close()
     // if we opened this handle, we need to close it too.
     if (openedHandle)
     {
-        if (::close(fileHandle) == EOF)
+        if (!CloseHandle(fileHandle))
         {
-            errInfo = errno;
+            errInfo = mapErrorToErrno(GetLastError());
             return false;
         }
     }
@@ -252,11 +318,11 @@ bool SysFile::flush()
         if (writeBuffered && bufferPosition > 0)
         {
             // write this out...but if it fails, we need to bail
-            int written = _write(fileHandle, buffer, (unsigned int)bufferPosition);
+            DWORD written = 0;
             // did we have an error?
-            if (written <= 0)
+            if (!WriteFile(fileHandle, buffer, (DWORD)bufferPosition, &written, NULL))
             {
-                errInfo = errno;
+                errInfo = mapErrorToErrno(GetLastError());
                 return false;
             }
             // update the real output position
@@ -326,18 +392,20 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
             if (bufferPosition >= bufferedInput)
             {
                 // read another chunk of data.
-                int blockRead = _read(fileHandle, buffer, (unsigned int)bufferSize);
-                if (blockRead <= 0)
+                DWORD blockRead;
+                if (!ReadFile(fileHandle, buffer, (DWORD)bufferSize, &blockRead, NULL))
                 {
+                    DWORD error = GetLastError();
+
                     // not get anything?
-                    if (_eof(fileHandle))
+                    if (if error == ERROR_HANDLE_EOF)
                     {
                         return bytesRead > 0 ? true : false;
                     }
                     else
                     {
                         // had an error, so raise it
-                        errInfo = errno;
+                        errInfo = mapErrorToErrno(error);
                         return false;
                     }
                 }
@@ -364,19 +432,21 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
     {
         while (len > 0)
         {
-            int blockRead = _read(fileHandle, buf + bytesRead, (unsigned int)len);
-            if (blockRead <= 0)
+            // read another chunk of data.
+            DWORD blockRead;
+            if (!ReadFile(fileHandle, buffer, (DWORD)bufferSize, &blockRead, NULL))
             {
+                DWORD error = GetLastError();
+
                 // not get anything?
-                if (_eof(fileHandle))
+                if (if error == ERROR_HANDLE_EOF)
                 {
-                    // could have had an ungetchar
                     return bytesRead > 0 ? true : false;
                 }
                 else
                 {
                     // had an error, so raise it
-                    errInfo = errno;
+                    errInfo = mapErrorToErrno(error);
                     return false;
                 }
             }
@@ -414,9 +484,11 @@ bool SysFile::write(const char *data, size_t len, size_t &bytesWritten)
         {
             // We need to position the file write pointer to the postion of our
             // last virtual read.
-            int64_t offset = filePointer - bufferedInput + bufferPosition;
+            LARGE_INTEGER offset;
+
+            offset.QuadPart = filePointer - bufferedInput + bufferPosition;
             // set the absolute position
-            _lseeki64(fileHandle, offset, SEEK_SET);
+            SetFilePointer(fileHandle, offset, NULL, FILE_BEGIN);
             bufferedInput = 0;
             bufferPosition = 0;
             // we're switching modes.
@@ -429,12 +501,12 @@ bool SysFile::write(const char *data, size_t len, size_t &bytesWritten)
             // flush an existing data from the buffer
             flush();
             // write this out directly
-            int written = _write(fileHandle, data, (unsigned int)len);
+            DWORD written
+            if (!WriteFile(fileHandle, data, (DWORD)len, &written, NULL))
             // oh, oh...got a problem
-            if (written <= 0)
             {
                 // save the error status and bail
-                errInfo = errno;
+                errInfo = mapErrorToErrno(GetLastError());
                 return false;
             }
             bytesWritten = written;
@@ -471,32 +543,36 @@ bool SysFile::write(const char *data, size_t len, size_t &bytesWritten)
             // opened in append mode?
             if ((flags & _O_APPEND) != 0)
             {
+                LARGE_INTEGER offset;
+
+                offset.QuadPart = 0;
                 // seek to the end of the file, return if there is an error
-                if (_lseeki64(fileHandle, 0, SEEK_END) < 0)
+                if (!SetFilePointer(fileHandle, offset, NULL, FILE_END);
                 {
-                    errInfo = errno;
+                    errInfo = mapErrorToErrno(GetLastError());
                     return false;
                 }
             }
             // write the data
-            int written = _write(fileHandle, data, (unsigned int)len);
-            if (written <= 0)
+            DWORD written
+            if (!WriteFile(fileHandle, data, (DWORD)len, &written, NULL))
+            // oh, oh...got a problem
             {
-                // return error status if there was a problem
-                errInfo = errno;
+                // save the error status and bail
+                errInfo = mapErrorToErrno(GetLastError());
                 return false;
             }
-
             bytesWritten = written;
         }
         else
         {
             // write the data
-            int written = _write(fileHandle, data, (unsigned int)len);
-            if (written <= 0)
+            DWORD written
+            if (!WriteFile(fileHandle, data, (DWORD)len, &written, NULL))
+            // oh, oh...got a problem
             {
-                // return error status if there was a problem
-                errInfo = errno;
+                // save the error status and bail
+                errInfo = mapErrorToErrno(GetLastError());
                 return false;
             }
 
@@ -808,12 +884,16 @@ bool SysFile::setPosition(int64_t location, int64_t &position)
     }
     else
     {
+        LARGE_INTEGER seekPosition;
+        LARGE_INTEGER newPosition;
+
+        seekPosition.QuadPart = location;
+
+
         // go to the absolute position
-        position = _lseeki64(fileHandle, location, SEEK_SET);
-        // this return the error indicator?
-        if (position == -1)
+        if (!SetFilePointerEx(fileHandle, seekPosition, &newPosition, FILE_BEGIN))
         {
-            errInfo = errno;
+            errInfo = mapErrorToErrno(GetLastError());
             return false;
         }
 
@@ -852,28 +932,32 @@ bool SysFile::seek(int64_t offset, int direction, int64_t &position)
     }
     else
     {
+        DWORD direction;
+
         switch (direction)
         {
             case SEEK_SET:
-                position = _lseeki64(fileHandle, offset, SEEK_SET);
+                direction = FILE_BEGIN;
                 break;
 
             case SEEK_CUR:
-                position = _lseeki64(fileHandle, offset, SEEK_CUR);
+                direction = FILE_CURRENT;
                 break;
 
             case SEEK_END:
-                position = _lseeki64(fileHandle, offset, SEEK_END);
+                direction = FILE_END;
                 break;
 
             default:
                 return false;
         }
 
-        // this return the error indicator?
-        if (position == -1)
+        LARGE_INTEGER newOffset;
+        newOffset.QuadPart = offset;
+
+        if (!SetFilePointerEx(fileHandle, offset, NULL, direction))
         {
-            errInfo = errno;
+            errInfo = mapErrorToErrno(GetLastError());
             return false;
         }
     }
@@ -890,12 +974,16 @@ bool SysFile::getPosition(int64_t &position)
     }
     else
     {
+        LARGE_INTEGER zeroOffset;
+        LARGE_INTEGER currentOffset;
+
+        zeroOffset.QuadPart = 0;
         // get the stream postion
-        position = _telli64(fileHandle);
-        if (position == -1)
+        if (!SetFilePointerEx(fileHandle, zeroOffset, &currentOffset, FILE_CURRENT))
         {
             return false;
         }
+        position = currentOffset.QuadPart;
     }
     return true;
 }
@@ -917,18 +1005,10 @@ bool SysFile::getSize(int64_t &size)
         // we might have pending output that might change the size
         flush();
         // have a handle, use fstat() to get the info
-        struct _stati64 fileInfo;
-        if (_fstati64(fileHandle, &fileInfo) == 0)
+        LARGE_INTEGER filesize;
+        if (GetFileSizeEx(fileHandle, &size))
         {
-            // regular file?  return the defined size
-            if ((fileInfo.st_mode & _S_IFREG) != 0)
-            {
-                size = fileInfo.st_size;
-            }
-            else
-            {
-                size = 0;
-            }
+            size = filesize.QuadPart;
             return true;
         }
     }
@@ -945,20 +1025,15 @@ bool SysFile::getSize(int64_t &size)
  */
 bool SysFile::getSize(const char *name, int64_t &size)
 {
-    // the handle is not active, use the name
-    struct _stati64 fileInfo;
-    if (_stati64(name, &fileInfo) == 0)
+    HANDLE handle = _CreateFile(name, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+    if (handle != INVALID_HANDLE_VALUE)
     {
-        // regular file?  return the defined size
-        if ((fileInfo.st_mode & _S_IFREG) != 0)
+        LARGE_INTEGER filesize;
+        if (GetFileSizeEx(fileHandle, &size))
         {
-            size = fileInfo.st_size;
+            size = filesize.QuadPart;
+            return true;
         }
-        else
-        {
-            size = 0;
-        }
-        return true;
     }
     return false;
 }
