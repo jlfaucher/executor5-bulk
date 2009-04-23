@@ -1032,8 +1032,10 @@ bool SysFile::getSize(const char *name, int64_t &size)
         if (GetFileSizeEx(fileHandle, &size))
         {
             size = filesize.QuadPart;
+            CloseHandle(handle);
             return true;
         }
+        CloseHandle(handle);
     }
     return false;
 }
@@ -1049,22 +1051,8 @@ bool SysFile::getSize(const char *name, int64_t &size)
  */
 bool SysFile::getTimeStamp(char *&time)
 {
-    time = "";     // default return value
-    // are we open?
-    if (fileHandle >= 0)
-    {
-        // have a handle, use fstat() to get the info
-        struct _stati64 fileInfo;
-        if (_fstati64(fileHandle, &fileInfo) == 0)
-        {
-            // regular file?  return the defined size
-            if ((fileInfo.st_mode & _S_IFREG) != 0)
-            {
-                time = ctime(&fileInfo.st_mtime);
-            }
-        }
-    }
-    return false;
+    // retrieve using the file handle.
+    return getTimeStamp(fileHandle, time);
 }
 
 /**
@@ -1078,18 +1066,50 @@ bool SysFile::getTimeStamp(char *&time)
 bool SysFile::getTimeStamp(const char *name, char *&time)
 {
     time = "";     // default return value
-    // the handle is not active, use the name
-    struct _stati64 fileInfo;
-    if (_stati64(name, &fileInfo) == 0)
+    HANDLE handle = _CreateFile(name, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+    if (handle == INVALID_HANDLE_VALUE)
     {
-        // regular file?  return the defined size
-        if ((fileInfo.st_mode & (_S_IFREG | _S_IFDIR)) != 0)
-        {
-            time = ctime(&fileInfo.st_mtime);
-        }
-        return true;
+        return false;
     }
-    return false;
+
+    bool result = getTimeStamp(handle, time);
+    CloseHandle(handle);
+    return result;
+}
+
+
+/**
+ * Retrieve the time stamp for a file by handle.
+ *
+ * @param handle The file handle,
+ * @param time   The returned timestamp.
+ *
+ * @return true if the time was successfully retrieved, false otherwise.
+ */
+bool SysFile::getTimeStamp(HANDLE handle, char *&time)
+{
+    time = "";
+    FILE_BASIC_INFO fileInfo;
+
+    if (!GetFileInformationByHandleEx(handle, FileBasicInfo, fileInfo, sizeof(FILE_BASIC_INFO)))
+    {
+        return false;
+    }
+
+    SYSTEMTIME systime;
+    FILETIME ftLocal;
+                                       /* Convert UTC to Local File  */
+                                       /* Time,  and then to system  */
+                                       /* format.                    */
+    FileTimeToLocalFileTime(fileInfo.LastWriteTime, &ftLocal);
+    FileTimeToSystemTime(&ftLocal, &systime);
+
+                                       /* format as such             */
+    sprintf(timeBuffer, "%4d-%02d-%02d %02d:%02d:%02d",  systime.wYear, systime.wMonth,
+        systime.wDay, systime.wHour, systime.wMinute, systime.wSecond);
+
+    time = timeBuffer;
+    return true;
 }
 
 

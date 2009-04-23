@@ -154,6 +154,7 @@ protected:
     bool   writeBuffered;   // false == read, true == write
     int64_t filePointer;    // current file pointer location
     int    ungetchar;       // a pushed back character value
+    char   timeBuffer;      // buffer for implementing ctime() equivalent
 };
 
 #endif
