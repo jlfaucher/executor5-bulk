@@ -183,11 +183,10 @@ bool SysFile::open(const char *name, int openFlags, int openMode, int shareMode)
     if ((flags & RX_O_APPEND) != 0)
     {
         LARGE_INTEGER offset;
-        LARGE_INTEGER current;
         offset.QuadPart = 0;
 
         // mark this true, and position at the end
-        SetFilePointerEx(fileHandle, offset, &current, FILE_END);
+        SetFilePointerEx(fileHandle, offset, NULL, FILE_END);
     }
 
     getStreamTypeInfo();
@@ -948,6 +947,8 @@ bool SysFile::setPosition(int64_t location, int64_t &position)
             errInfo = mapErrorToErrno(GetLastError());
             return false;
         }
+        // copy the new position back
+        position = newPosition.QuadPart;
 
         // reset all of the buffer information and the current file pointer.
         bufferPosition = 0;
