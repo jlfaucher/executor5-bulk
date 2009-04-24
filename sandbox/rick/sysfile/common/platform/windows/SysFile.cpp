@@ -100,11 +100,9 @@ bool SysFile::open(const char *name, int openFlags, int openMode, int shareMode)
     share = shareMode;
     hitEOF = false;              // not hit the EOF point yet
 
-    DWORD desiredAccess = 0;
-    if ((openFlags & RX_O_RDONLY) != 0)
-    {
-        desiredAccess = GENERIC_READ;
-    }
+    // the open for read value is actually a 0, so we can only
+    // explicitly test for the other flags.
+    DWORD desiredAccess = GENERIC_READ;
     if ((openFlags & RX_O_WRONLY) != 0)
     {
         desiredAccess = GENERIC_WRITE;
@@ -985,20 +983,20 @@ bool SysFile::seek(int64_t offset, int direction, int64_t &position)
     }
     else
     {
-        DWORD direction;
+        DWORD mode;
 
         switch (direction)
         {
             case SEEK_SET:
-                direction = FILE_BEGIN;
+                mode = FILE_BEGIN;
                 break;
 
             case SEEK_CUR:
-                direction = FILE_CURRENT;
+                mode = FILE_CURRENT;
                 break;
 
             case SEEK_END:
-                direction = FILE_END;
+                mode = FILE_END;
                 break;
 
             default:
@@ -1006,13 +1004,16 @@ bool SysFile::seek(int64_t offset, int direction, int64_t &position)
         }
 
         LARGE_INTEGER newOffset;
+        LARGE_INTEGER resultOffset;
         newOffset.QuadPart = offset;
 
-        if (!SetFilePointerEx(fileHandle, newOffset, NULL, direction))
+        if (!SetFilePointerEx(fileHandle, newOffset, &resultOffset, mode))
         {
             errInfo = mapErrorToErrno(GetLastError());
             return false;
         }
+        // return the new result position
+        position = resultOffset.QuadPart;
     }
     return true;
 }
