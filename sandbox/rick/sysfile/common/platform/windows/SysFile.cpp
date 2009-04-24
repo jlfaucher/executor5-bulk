@@ -1053,7 +1053,7 @@ bool SysFile::getPosition(int64_t &position)
 bool SysFile::getSize(int64_t &size)
 {
     // are we open?
-    if (fileHandle >= 0)
+    if (fileHandle != INVALID_HANDLE_VALUE)
     {
         // we might have pending output that might change the size
         flush();
@@ -1078,11 +1078,11 @@ bool SysFile::getSize(int64_t &size)
  */
 bool SysFile::getSize(const char *name, int64_t &size)
 {
-    HANDLE handle = CreateFile(name, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+    HANDLE handle = CreateFile(name, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (handle != INVALID_HANDLE_VALUE)
     {
         LARGE_INTEGER filesize;
-        if (GetFileSizeEx(fileHandle, &filesize))
+        if (GetFileSizeEx(handle, &filesize))
         {
             size = filesize.QuadPart;
             CloseHandle(handle);
@@ -1119,7 +1119,7 @@ bool SysFile::getTimeStamp(char *&time)
 bool SysFile::getTimeStamp(const char *name, char *&time)
 {
     time = "";     // default return value
-    HANDLE handle = CreateFile(name, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+    HANDLE handle = CreateFile(name, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (handle == INVALID_HANDLE_VALUE)
     {
         return false;
