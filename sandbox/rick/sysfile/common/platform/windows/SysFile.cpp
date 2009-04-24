@@ -428,6 +428,19 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
                 }
                 else
                 {
+                    // The Windows docs claim that an EOF condition results in the error
+                    // return above, but it doesn't really seem to be doing that.
+                    // Instead, we get a block read value of 0.  So a read value of
+                    // 0 also appears to be an EOF.
+                    if (blockRead == 0)
+                    {
+                        // we've hit the EOF on a transient stream, we're done.
+                        if (transient)
+                        {
+                            hitEOF = true;
+                        }
+                        return bytesRead > 0 ? true : false;
+                    }
                     // update the positions
                     filePointer += blockRead;
                     bufferedInput = blockRead;
@@ -466,6 +479,19 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
                     errInfo = mapErrorToErrno(error);
                     return false;
                 }
+            }
+            // The Windows docs claim that an EOF condition results in the error
+            // return above, but it doesn't really seem to be doing that.
+            // Instead, we get a block read value of 0.  So a read value of
+            // 0 also appears to be an EOF.
+            if (blockRead == 0)
+            {
+                // we've hit the EOF on a transient stream, we're done.
+                if (transient)
+                {
+                    hitEOF = true;
+                }
+                return bytesRead > 0 ? true : false;
             }
             // update the length
             len -= blockRead;
