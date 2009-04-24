@@ -122,19 +122,23 @@ public:
     inline bool isDevice() { return device; }
     inline bool isReadable() { return readable; }
     inline bool isWriteable() { return writeable; }
-    inline bool isOpen() { return fileHandle != -1; }
+    inline bool isOpen() { return fileHandle != INVALID_HANDLE_VALUE; }
 
     inline bool error() { return errInfo != 0; }
     inline int  errorInfo() { return errInfo; }
     inline void clearErrors() { errInfo = 0; }
-    inline bool atEof() { return !hasBufferedInput() && eof(fileHandle) == 1; }
+    inline bool atEof() { return !hasBufferedInput() && eof(); }
     inline bool hasBufferedInput() { return buffered && (bufferedInput > bufferPosition); }
-    inline int  getHandle() { return fileHandle; }
+    inline uintptr_t  getHandle() { return (uintptr_t)fileHandle; }
 
 protected:
     void   getStreamTypeInfo();
+    int    mapErrorToErrno(DWORD error);
+    bool   eof();
+    bool   getTimeStamp(HANDLE handle, char *&time);
 
     HANDLE fileHandle;      // separate file handle
+    bool   hitEOF;          // indicates we had an EOF on a read to a transient stream.
     int    errInfo;         // last error info
     bool   openedHandle;    // true if we opened the handle.
     int    flags;           // open flag information
@@ -154,7 +158,7 @@ protected:
     bool   writeBuffered;   // false == read, true == write
     int64_t filePointer;    // current file pointer location
     int    ungetchar;       // a pushed back character value
-    char   timeBuffer;      // buffer for implementing ctime() equivalent
+    char   timeBuffer[32];  // buffer for implementing ctime() equivalent
 };
 
 #endif

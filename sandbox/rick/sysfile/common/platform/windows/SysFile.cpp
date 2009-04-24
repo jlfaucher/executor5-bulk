@@ -47,13 +47,15 @@
 #include <time.h>
 #include <conio.h>
 #include <stdio.h>
+#include "Windows.h"
 
 /**
  * Default constructor for a SysFile object.
  */
 SysFile::SysFile()
 {
-    fileHandle = 0;
+    fileHandle = INVALID_HANDLE_VALUE;
+    hitEOF = false;
     errInfo = 0;
     openedHandle = false;
     flags = 0;
@@ -96,6 +98,7 @@ bool SysFile::open(const char *name, int openFlags, int openMode, int shareMode)
     flags = openFlags;           // save the initial flag values
     mode = openMode;
     share = shareMode;
+    hitEOF = false;              // not hit the EOF point yet
 
     DWORD desiredAccess = 0;
     if ((openFlags & RX_O_RDONLY) != 0)
@@ -131,17 +134,17 @@ bool SysFile::open(const char *name, int openFlags, int openMode, int shareMode)
 
     DWORD disposition = OPEN_ALWAYS;
     // create and trunc specified means we always start empty
-    if ((openFlags&_O_CREAT != 0) && (openFlags&_O_TRUNC != 0))
+    if (((openFlags&_O_CREAT) != 0) && ((openFlags&_O_TRUNC) != 0))
     {
         disposition = CREATE_ALWAYS;
     }
     // open or create
-    else if (openFlags&_O_CREAT != 0)
+    else if ((openFlags&_O_CREAT) != 0)
     {
         disposition = OPEN_ALWAYS;
     }
     // we're looking to truncate an existing file
-    else if (openFlags &_O_TRUNC != 0)
+    else if ((openFlags &_O_TRUNC) != 0)
     {
         disposition = TRUNCATE_EXISTING;
     }
@@ -162,8 +165,8 @@ bool SysFile::open(const char *name, int openFlags, int openMode, int shareMode)
 
 
     // we must open this with the NOINHERIT flag added
-    fileHandle = _CreateFile(name, desiredAccess, desiredShareMode, NULL, disposition, fileAttribute, NULL);
-    if ( fileHandle == INVALID_HANDLE_FILE)
+    fileHandle = CreateFile(name, desiredAccess, desiredShareMode, NULL, disposition, fileAttribute, NULL);
+    if ( fileHandle == INVALID_HANDLE_VALUE)
     {
         errInfo = mapErrorToErrno(GetLastError());
         return false;
@@ -206,7 +209,8 @@ bool SysFile::open(int handle)
 {
     // we didn't open this.
     openedHandle = false;
-    fileHandle = handle;
+    fileHandle = (HANDLE)(uintptr_t)handle;
+    hitEOF = false;
     ungetchar = -1;            // -1 indicates no char
     getStreamTypeInfo();
     // set the default buffer size (and allocate the buffer)
@@ -225,8 +229,10 @@ void SysFile::reset()
     {
         free(buffer);
         buffer = NULL;
+        bufferPosition = 0;
+        bufferedInput = 0;
     }
-    fileHandle = -1;
+    fileHandle = INVALID_HANDLE_VALUE;
 }
 
 /**
@@ -256,6 +262,8 @@ void SysFile::setBuffering(bool buffering, size_t length)
         {
             free(buffer);
             buffer = NULL;
+            bufferPosition = 0;
+            bufferedInput = 0;
         }
     }
 }
@@ -269,7 +277,7 @@ void SysFile::setBuffering(bool buffering, size_t length)
 bool SysFile::close()
 {
     // don't do anything if not opened
-    if (fileHandle == -1)
+    if (fileHandle == INVALID_HANDLE_VALUE)
     {
         return true;
     }
@@ -288,6 +296,8 @@ bool SysFile::close()
     {
         free(buffer);
         buffer = NULL;
+        bufferPosition = 0;
+        bufferedInput = 0;
     }
     errInfo = 0;
     // if we opened this handle, we need to close it too.
@@ -300,7 +310,7 @@ bool SysFile::close()
         }
     }
     // always clear this on a close
-    fileHandle = -1;
+    fileHandle = INVALID_HANDLE_VALUE;
 
     return true;
 }
@@ -398,8 +408,13 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
                     DWORD error = GetLastError();
 
                     // not get anything?
-                    if (if error == ERROR_HANDLE_EOF)
+                    if (error == ERROR_HANDLE_EOF)
                     {
+                        // we've hit the EOF on a transient stream, we're done.
+                        if (transient)
+                        {
+                            hitEOF = true;
+                        }
                         return bytesRead > 0 ? true : false;
                     }
                     else
@@ -439,7 +454,7 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
                 DWORD error = GetLastError();
 
                 // not get anything?
-                if (if error == ERROR_HANDLE_EOF)
+                if (error == ERROR_HANDLE_EOF)
                 {
                     return bytesRead > 0 ? true : false;
                 }
@@ -488,7 +503,7 @@ bool SysFile::write(const char *data, size_t len, size_t &bytesWritten)
 
             offset.QuadPart = filePointer - bufferedInput + bufferPosition;
             // set the absolute position
-            SetFilePointer(fileHandle, offset, NULL, FILE_BEGIN);
+            SetFilePointerEx(fileHandle, offset, NULL, FILE_BEGIN);
             bufferedInput = 0;
             bufferPosition = 0;
             // we're switching modes.
@@ -501,7 +516,7 @@ bool SysFile::write(const char *data, size_t len, size_t &bytesWritten)
             // flush an existing data from the buffer
             flush();
             // write this out directly
-            DWORD written
+            DWORD written;
             if (!WriteFile(fileHandle, data, (DWORD)len, &written, NULL))
             // oh, oh...got a problem
             {
@@ -547,14 +562,14 @@ bool SysFile::write(const char *data, size_t len, size_t &bytesWritten)
 
                 offset.QuadPart = 0;
                 // seek to the end of the file, return if there is an error
-                if (!SetFilePointer(fileHandle, offset, NULL, FILE_END);
+                if (!SetFilePointerEx(fileHandle, offset, NULL, FILE_END))
                 {
                     errInfo = mapErrorToErrno(GetLastError());
                     return false;
                 }
             }
             // write the data
-            DWORD written
+            DWORD written;
             if (!WriteFile(fileHandle, data, (DWORD)len, &written, NULL))
             // oh, oh...got a problem
             {
@@ -567,7 +582,7 @@ bool SysFile::write(const char *data, size_t len, size_t &bytesWritten)
         else
         {
             // write the data
-            DWORD written
+            DWORD written;
             if (!WriteFile(fileHandle, data, (DWORD)len, &written, NULL))
             // oh, oh...got a problem
             {
@@ -955,7 +970,7 @@ bool SysFile::seek(int64_t offset, int direction, int64_t &position)
         LARGE_INTEGER newOffset;
         newOffset.QuadPart = offset;
 
-        if (!SetFilePointerEx(fileHandle, offset, NULL, direction))
+        if (!SetFilePointerEx(fileHandle, newOffset, NULL, direction))
         {
             errInfo = mapErrorToErrno(GetLastError());
             return false;
@@ -1006,7 +1021,7 @@ bool SysFile::getSize(int64_t &size)
         flush();
         // have a handle, use fstat() to get the info
         LARGE_INTEGER filesize;
-        if (GetFileSizeEx(fileHandle, &size))
+        if (GetFileSizeEx(fileHandle, &filesize))
         {
             size = filesize.QuadPart;
             return true;
@@ -1025,11 +1040,11 @@ bool SysFile::getSize(int64_t &size)
  */
 bool SysFile::getSize(const char *name, int64_t &size)
 {
-    HANDLE handle = _CreateFile(name, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+    HANDLE handle = CreateFile(name, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
     if (handle != INVALID_HANDLE_VALUE)
     {
         LARGE_INTEGER filesize;
-        if (GetFileSizeEx(fileHandle, &size))
+        if (GetFileSizeEx(fileHandle, &filesize))
         {
             size = filesize.QuadPart;
             CloseHandle(handle);
@@ -1066,7 +1081,7 @@ bool SysFile::getTimeStamp(char *&time)
 bool SysFile::getTimeStamp(const char *name, char *&time)
 {
     time = "";     // default return value
-    HANDLE handle = _CreateFile(name, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+    HANDLE handle = CreateFile(name, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
     if (handle == INVALID_HANDLE_VALUE)
     {
         return false;
@@ -1218,12 +1233,46 @@ bool SysFile::hasData()
  */
 bool SysFile::eof()
 {
+    // EOF to a transient stream is largely determined by
+    // the point-in-time event, which we remember.
+    if (hitEOF)
+    {
+        return true;
+    }
+
     int64_t size;
     int64_t currentPosition;
 
     getSize(size);
-    getPosition(position);
+    getPosition(currentPosition);
 
-    return position >= size;
+    return currentPosition >= size;
 }
 
+
+int SysFile::mapErrorToErrno(DWORD error)
+{
+    switch (error)
+    {
+        case ERROR_ACCESS_DENIED:
+        case ERROR_SHARING_VIOLATION:
+            return EACCES;         // given path is a directory or readonly for write
+        case ERROR_ALREADY_EXISTS:
+            return EEXIST;         // asked to create, but file exists
+        case ERROR_INVALID_PARAMETER:
+            return EINVAL;         // invalid argument
+        return EMFILE;         // No more file descriptors available
+        case ERROR_FILE_NOT_FOUND:
+            return ENOENT;         // File or path not found
+        case ERROR_INVALID_HANDLE:
+            return EBADF;          // bad file descriptor
+        case ERROR_DISK_FULL:
+            return ENOSPC;         // disk full
+        case ERROR_INVALID_USER_BUFFER:
+        case ERROR_NOT_ENOUGH_MEMORY:
+            return ENOMEM;
+
+        default:
+            return EINVAL;         // generic error
+    }
+}
