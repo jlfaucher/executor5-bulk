@@ -111,7 +111,7 @@ bool SysFile::open(const char *name, int openFlags, int openMode, int shareMode)
     }
     else if ((openFlags & RX_O_RDWR) != 0)
     {
-        desiredAccess = GENERIC_WRITE | GENERIC_WRITE;
+        desiredAccess = GENERIC_READ | GENERIC_WRITE;
     }
 
     DWORD desiredShareMode = 0;
@@ -262,10 +262,12 @@ void SysFile::setBuffering(bool buffering, size_t length)
         {
             free(buffer);
             buffer = NULL;
-            bufferPosition = 0;
-            bufferedInput = 0;
         }
     }
+    // reset all of the buffering controls to the defaults
+    bufferPosition = 0;
+    bufferedInput = 0;
+    writeBuffered = false;
 }
 
 
@@ -306,11 +308,11 @@ bool SysFile::close()
         if (!CloseHandle(fileHandle))
         {
             errInfo = mapErrorToErrno(GetLastError());
+            // always clear this on a close
+            fileHandle = INVALID_HANDLE_VALUE;
             return false;
         }
     }
-    // always clear this on a close
-    fileHandle = INVALID_HANDLE_VALUE;
 
     return true;
 }
@@ -449,7 +451,7 @@ bool SysFile::read(char *buf, size_t len, size_t &bytesRead)
         {
             // read another chunk of data.
             DWORD blockRead;
-            if (!ReadFile(fileHandle, buffer, (DWORD)bufferSize, &blockRead, NULL))
+            if (!ReadFile(fileHandle, buf + bytesRead, (DWORD)len, &blockRead, NULL))
             {
                 DWORD error = GetLastError();
 
@@ -814,7 +816,6 @@ bool SysFile::seekForwardLines(int64_t startPosition, int64_t &lineCount, int64_
     char *buffer = (char *)malloc(LINE_POSITIONING_BUFFER);
     if (buffer == NULL)
     {
-        free(buffer);
         errInfo = ENOMEM;
         return false;
     }
@@ -823,17 +824,27 @@ bool SysFile::seekForwardLines(int64_t startPosition, int64_t &lineCount, int64_
     {
         int readLength = LINE_POSITIONING_BUFFER;
 
-        // got a failure
+        // This is likely due to hitting the end-of-file.  We'll just
+        // return our current count and indicate this worked.
         if (!setPosition(startPosition, startPosition))
         {
             free(buffer);
-            return false;
+            // set the return position and get outta here
+            endPosition = startPosition;
+            return true;
         }
 
         size_t bytesRead;
         if (!read(buffer, readLength, bytesRead))
         {
             free(buffer);
+            // if we've hit an eof condition, this is the end
+            if (atEof())
+            {
+                // set the return position and get outta here
+                endPosition = startPosition;
+                return true;
+            }
             // read error,
             return false;
         }
@@ -1104,9 +1115,9 @@ bool SysFile::getTimeStamp(const char *name, char *&time)
 bool SysFile::getTimeStamp(HANDLE handle, char *&time)
 {
     time = "";
-    FILE_BASIC_INFO fileInfo;
+    BY_HANDLE_FILE_INFORMATION fileInfo;
 
-    if (!GetFileInformationByHandleEx(handle, FileBasicInfo, fileInfo, sizeof(FILE_BASIC_INFO)))
+    if (!GetFileInformationByHandle(handle, &fileInfo))
     {
         return false;
     }
@@ -1116,7 +1127,7 @@ bool SysFile::getTimeStamp(HANDLE handle, char *&time)
                                        /* Convert UTC to Local File  */
                                        /* Time,  and then to system  */
                                        /* format.                    */
-    FileTimeToLocalFileTime(fileInfo.LastWriteTime, &ftLocal);
+    FileTimeToLocalFileTime(&fileInfo.ftLastWriteTime, &ftLocal);
     FileTimeToSystemTime(&ftLocal, &systime);
 
                                        /* format as such             */
@@ -1139,22 +1150,27 @@ void SysFile::getStreamTypeInfo()
     writeable = true;
     readable = true;
 
-    FILE_BASIC_INFO fileInfo;
-
-    GetFileInformationByHandleEx(fileHandle, FileBasicInfo, fileInfo, sizeof(FILE_BASIC_INFO));
 
     // _isTTY keys off of the device attribute, so consider this all tty info.
-    if ((fileInfo.FileAttributes & FILE_ATTRIBUTE_DEVICE) != 0)
+    if (GetFileType(fileHandle) == FILE_TYPE_CHAR)
     {
         transient = true;
         device = true;
         isTTY = true;
     }
-    // this only has attributes for READONLY, so for the std streams,
-    // we're just going to have to force the attribute
-    if ((fileInfo.FileAttributes & FILE_ATTRIBUTE_READONLY) != 0)
+    else
     {
-        readable = true;
+        // the file attributes are only returned for disk-based files,
+        // so we don't do this for device tiles
+        BY_HANDLE_FILE_INFORMATION fileInfo;
+
+        GetFileInformationByHandle(fileHandle, &fileInfo);
+        // this only has attributes for READONLY, so for the std streams,
+        // we're just going to have to force the attribute
+        if ((fileInfo.dwFileAttributes & FILE_ATTRIBUTE_READONLY) != 0)
+        {
+            readable = true;
+        }
     }
 }
 
@@ -1164,7 +1180,7 @@ void SysFile::getStreamTypeInfo()
 void SysFile::setStdIn()
 {
     // set the file handle using the standard handles, but force binary mode
-    fileHandle = _GetStdHandle(STD_INPUT_HANDLE);
+    fileHandle = GetStdHandle(STD_INPUT_HANDLE);
     ungetchar = -1;            // -1 indicates no char
     getStreamTypeInfo();
     setBuffering(false, 0);
@@ -1178,7 +1194,7 @@ void SysFile::setStdIn()
 void SysFile::setStdOut()
 {
     // set the file handle using the standard handles, but force binary mode
-    fileHandle = _GetStdHandle(STD_OUTPUT_HANDLE);
+    fileHandle = GetStdHandle(STD_OUTPUT_HANDLE);
     ungetchar = -1;            // -1 indicates no char
     getStreamTypeInfo();
     setBuffering(false, 0);
@@ -1192,7 +1208,7 @@ void SysFile::setStdOut()
 void SysFile::setStdErr()
 {
     // set the file handle using the standard handles, but force binary mode
-    fileHandle = _GetStdHandle(STD_ERROR_HANDLE);
+    fileHandle = GetStdHandle(STD_ERROR_HANDLE);
     ungetchar = -1;            // -1 indicates no char
     getStreamTypeInfo();
     setBuffering(false, 0);
@@ -1220,6 +1236,8 @@ bool SysFile::hasData()
         return (_kbhit() != 0) ? 1 : 0;
     }
 
+    // we might have something buffered, but also check the
+    // actual stream.
     return atEof();
 }
 
