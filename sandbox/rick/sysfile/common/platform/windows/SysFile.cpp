@@ -1121,35 +1121,25 @@ void SysFile::getStreamTypeInfo()
     transient = false;
     device = false;
     isTTY = false;
-    writeable = false;
-    readable = false;
+    writeable = true;
+    readable = true;
 
-    if (_isatty(fileHandle))
+    FILE_BASIC_INFO fileInfo;
+
+    GetFileInformationByHandleEx(fileHandle, FileBasicInfo, fileInfo, sizeof(FILE_BASIC_INFO));
+
+    // _isTTY keys off of the device attribute, so consider this all tty info.
+    if ((fileInfo.FileAttributes & FILE_ATTRIBUTE_DEVICE) != 0)
     {
         transient = true;
         device = true;
         isTTY = true;
     }
-    // have a handle, use fstat() to get the info
-    struct _stati64 fileInfo;
-    if (_fstati64(fileHandle, &fileInfo) == 0)
+    // this only has attributes for READONLY, so for the std streams,
+    // we're just going to have to force the attribute
+    if ((fileInfo.FileAttributes & FILE_ATTRIBUTE_READONLY) != 0)
     {
-        //  character device?  set those characteristics
-        if ((fileInfo.st_mode & _S_IFCHR) != 0)
-        {
-            device = true;
-            transient = true;
-        }
-
-        if ((fileInfo.st_mode & _S_IWRITE) != 0)
-        {
-            writeable = true;
-        }
-
-        if ((fileInfo.st_mode & _S_IREAD) != 0)
-        {
-            readable = true;
-        }
+        readable = true;
     }
 }
 
@@ -1159,12 +1149,12 @@ void SysFile::getStreamTypeInfo()
 void SysFile::setStdIn()
 {
     // set the file handle using the standard handles, but force binary mode
-    fileHandle = _fileno(stdin);
-    _setmode(fileHandle, _O_BINARY);
+    fileHandle = _GetStdHandle(STD_INPUT_HANDLE);
     ungetchar = -1;            // -1 indicates no char
     getStreamTypeInfo();
     setBuffering(false, 0);
     readable = true;             // force this to readable
+    writeable = false;
 }
 
 /**
@@ -1173,12 +1163,12 @@ void SysFile::setStdIn()
 void SysFile::setStdOut()
 {
     // set the file handle using the standard handles, but force binary mode
-    fileHandle = _fileno(stdout);
-    _setmode(fileHandle, _O_BINARY);
+    fileHandle = _GetStdHandle(STD_OUTPUT_HANDLE);
     ungetchar = -1;            // -1 indicates no char
     getStreamTypeInfo();
     setBuffering(false, 0);
-    writeable = true;             // force this to writeable
+    writeable = true;             // force this to write-only
+    readable = false;
 }
 
 /**
@@ -1187,12 +1177,12 @@ void SysFile::setStdOut()
 void SysFile::setStdErr()
 {
     // set the file handle using the standard handles, but force binary mode
-    fileHandle = _fileno(stderr);
-    _setmode(fileHandle, _O_BINARY);
+    fileHandle = _GetStdHandle(STD_ERROR_HANDLE);
     ungetchar = -1;            // -1 indicates no char
     getStreamTypeInfo();
     setBuffering(false, 0);
-    writeable = true;             // force this to writeable
+    writeable = true;             // force this to write-only
+    readable = false;
 }
 
 
@@ -1209,10 +1199,31 @@ bool SysFile::hasData()
         return false;
     }
     // tty devices require special handling
+    // (NB, we don't worry about buffering for the device streams);
     if (isTTY)
     {
         return (_kbhit() != 0) ? 1 : 0;
     }
 
-    return eof(fileHandle) == 0;
+    return atEof();
 }
+
+
+/**
+ * Replacement for the CRT eof() function to check whether
+ * we've really hit the end-of-file.
+ *
+ * @return True if we've read past the end of the file, false if
+ *         not hit the EOF.
+ */
+bool SysFile::eof()
+{
+    int64_t size;
+    int64_t currentPosition;
+
+    getSize(size);
+    getPosition(position);
+
+    return position >= size;
+}
+
