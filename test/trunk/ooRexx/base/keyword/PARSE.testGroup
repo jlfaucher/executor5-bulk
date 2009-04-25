@@ -336,11 +336,11 @@ do_test_linein: procedure             -- create external Rexx program for testin
       ------------------------------
      -- create rexx-file containing PARSE LINEIN, will set RC=17 if successful
    s=.stream~new(fileName)~~open("replace")   -- create empty file
-   s~~lineout("/*" date("S") time() ", ---rgf */")~~lineout
+   s~~lineout("/*" date("S") time() ", ---rgf */")~~lineout("")
 
    s~~lineout("parse linein 'a=' num1 'c=' num2     /* Assume: 8 and 9          */")
    s~~lineout("sum=num1+num2                        /* Enter: a=8 b=9 as input  */")
-   s~~lineout("exit sum   -- set RC to '17'") ~~lineout
+   s~~lineout("exit sum   -- set RC to '17'") ~~lineout("")
    s~close
 
       ------------------------------

@@ -460,6 +460,26 @@ RexxMethod3(RexxObjectPtr, callRexxStart,
     }
 }
 
+/**
+ * The package loader and unloader don't really have anything
+ * sensible that they can test at this point, but having these
+ * defined is useful for the purposes of being able to
+ * verify that they are called.
+ *
+ * @param context The ThreadContext that allows us to do "stuff".
+ *
+ * @return void
+ */
+void RexxEntry packageLoader(RexxThreadContext *context)
+{
+    return;
+}
+
+void RexxEntry packageUnloader(RexxThreadContext *context)
+{
+    return;
+}
+
 
 RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(init,                    init),
@@ -509,8 +529,8 @@ RexxPackageEntry UnitTest_package_entry = {
     REXX_INTERPRETER_4_0_0,              // anything after 4.0.0 will work
     "InvocationTest",                    // name of the package
     "1.0.0",                             // package information
-    NULL,                                // no load/unload functions
-    NULL,
+    packageLoader,                       // no load/unload functions
+    packageUnloader,
     NULL,                                // the exported routines
     orxtest_methods                      // the exported methods
 };
