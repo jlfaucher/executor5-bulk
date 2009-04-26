@@ -1006,7 +1006,7 @@ bool SysFile::getTimeStamp(char *&time)
                 sprintf(yearField, "%4d", systime->tm_year);
 
                                                    /* format as such             */
-                sprintf(timeBuffer, "%02d-%02d-%s %02d:%02d:%02d",  systime->tm_mon,
+                sprintf(timeBuffer, "%02d-%02d-%s %02d:%02d:%02d",  systime->tm_mon + 1,
                     systime->tm_mday, yearField + 2, systime->tm_hour, systime->tm_min, systime->tm_sec);
 
                 time = timeBuffer;
@@ -1034,17 +1034,12 @@ bool SysFile::getTimeStamp(const char *name, char *&time)
         // regular file?  return the defined size
         if ((fileInfo.st_mode & (S_IFREG | S_IFDIR)) != 0)
         {
-            printf("stat returned value\n"); 
             struct tm *systime = localtime(&fileInfo.st_mtime);
             char yearField[8];
-            printf("%p returned for localtime\n"); 
             // we're using 2-digit years
             sprintf(yearField, "%4d", systime->tm_year);
-
-            printf("%s formatted year is\n"); 
-
                                                /* format as such             */
-            sprintf(timeBuffer, "%02d-%02d-%s %02d:%02d:%02d",  systime->tm_mon,
+            sprintf(timeBuffer, "%02d-%02d-%s %02d:%02d:%02d",  systime->tm_mon + 1,
                 systime->tm_mday, yearField + 2, systime->tm_hour, systime->tm_min, systime->tm_sec);
 
             time = timeBuffer;
