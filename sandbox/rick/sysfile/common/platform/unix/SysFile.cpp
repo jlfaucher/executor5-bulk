@@ -989,7 +989,7 @@ bool SysFile::getSize(const char *name, int64_t &size)
  */
 bool SysFile::getTimeStamp(char *&time)
 {
-    *time = '\0';     // default return value
+    time = "";            // default return value
     // are we open?
     if (fileHandle >= 0)
     {
@@ -1003,11 +1003,11 @@ bool SysFile::getTimeStamp(char *&time)
                 struct tm *systime = localtime(&fileInfo.st_mtime);
                 char yearField[8];
                 // we're using 2-digit years
-                sprintf(yearField, "%4d", systime.tm_year);
+                sprintf(yearField, "%4d", systime->tm_year);
 
                                                    /* format as such             */
-                sprintf(timeBuffer, "%02d-%02d-%s %02d:%02d:%02d",  systime.tm_mon,
-                    systime.tm_day, yearField + 2, systime.tm_hour, systime.tm_min, systime.tm_sec);
+                sprintf(timeBuffer, "%02d-%02d-%s %02d:%02d:%02d",  systime->tm_mon,
+                    systime->tm_mday, yearField + 2, systime->tm_hour, systime->tm_min, systime->tm_sec);
 
                 time = timeBuffer;
             }
@@ -1026,7 +1026,7 @@ bool SysFile::getTimeStamp(char *&time)
  */
 bool SysFile::getTimeStamp(const char *name, char *&time)
 {
-    *time = '\0';     // default return value
+    time = "";     // default return value
     // the handle is not active, use the name
     struct stat fileInfo;
     if (stat(name, &fileInfo) == 0)
@@ -1034,14 +1034,18 @@ bool SysFile::getTimeStamp(const char *name, char *&time)
         // regular file?  return the defined size
         if ((fileInfo.st_mode & (S_IFREG | S_IFDIR)) != 0)
         {
+            printf("stat returned value\n"); 
             struct tm *systime = localtime(&fileInfo.st_mtime);
             char yearField[8];
+            printf("%p returned for localtime\n"); 
             // we're using 2-digit years
-            sprintf(yearField, "%4d", systime.tm_year);
+            sprintf(yearField, "%4d", systime->tm_year);
+
+            printf("%s formatted year is\n"); 
 
                                                /* format as such             */
-            sprintf(timeBuffer, "%02d-%02d-%s %02d:%02d:%02d",  systime.tm_mon,
-                systime.tm_day, yearField + 2, systime.tm_hour, systime.tm_min, systime.tm_sec);
+            sprintf(timeBuffer, "%02d-%02d-%s %02d:%02d:%02d",  systime->tm_mon,
+                systime->tm_mday, yearField + 2, systime->tm_hour, systime->tm_min, systime->tm_sec);
 
             time = timeBuffer;
         }
