@@ -60,16 +60,10 @@
 
 return testResult
 -------------------------------------------------------------------------------------------
+::requires 'rxmath' LIBRARY
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 -------------------------------------------------------------------------------------------
 ::class 'RxMathSuite' subclass ooTestSuite public
-
-::method setUp
-    call rxfuncadd "MathLoadFuncs", "rxmath", "MathLoadFuncs"
-    call MathLoadFuncs
-
-::method tearDown
-    call MathDropFuncs
 
 -------------------------------------------------------------------------------------------
 ::class "RxMath.testGroup" subclass ooTestCase public
