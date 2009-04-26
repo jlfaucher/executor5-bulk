@@ -304,16 +304,7 @@ notready:                              /* standard notready handler         */
                                        /* transient style stream?           */
       if self~!query_streamtype = 'TRANSIENT' then
         return ''                      /* this doesn't have a date          */
-      c_time = self~!query_time        /* query the time                    */
-      if c_time \= '' then do          /* have one?                         */
-                                       /* get the pieces                    */
-        parse var c_time . month day time year
-        year = year~left(4)            /* make the year 4 characters        */
-                                       /* convert for redisplay             */
-        parse value date('O', day+0 month year) with year '/' month '/' day
-        return month'-'day'-'year time /* return the final time stamp       */
-      end
-      return ''                        /* no time, just return a null string*/
+      return self~!query_time          /* query the time                    */
     end
                                        /* query the existence               */
     when subcommand = 'EXISTS' then

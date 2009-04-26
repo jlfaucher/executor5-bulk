@@ -1079,20 +1079,20 @@ bool SysFile::getSize(int64_t &size)
  */
 bool SysFile::getSize(const char *name, int64_t &size)
 {
-    HANDLE handle = CreateFile(name, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (handle != INVALID_HANDLE_VALUE)
+    WIN32_FILE_ATTRIBUTE_DATA data;
+    if (!GetFileAttributesEx(name, GetFileExInfoStandard, &data))
     {
-        LARGE_INTEGER filesize;
-        if (GetFileSizeEx(handle, &filesize))
-        {
-            size = filesize.QuadPart;
-            CloseHandle(handle);
-            return true;
-        }
-        CloseHandle(handle);
+        // probably doesn't exist
+        return false;
     }
-    return false;
+
+    LARGE_INTEGER filesize;
+    filesize.u.HighPart = data.nFileSizeHigh;
+    filesize.u.LowPart = data.nFileSizeLow;
+    size = filesize.QuadPart;
+    return true;
 }
+
 
 /**
  * Retrieve the size of the stream.  If the stream is open,
@@ -1119,16 +1119,31 @@ bool SysFile::getTimeStamp(char *&time)
  */
 bool SysFile::getTimeStamp(const char *name, char *&time)
 {
-    time = "";     // default return value
-    HANDLE handle = CreateFile(name, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (handle == INVALID_HANDLE_VALUE)
+    WIN32_FILE_ATTRIBUTE_DATA data;
+    if (!GetFileAttributesEx(name, GetFileExInfoStandard, &data))
     {
+        // probably doesn't exist
         return false;
     }
 
-    bool result = getTimeStamp(handle, time);
-    CloseHandle(handle);
-    return result;
+    SYSTEMTIME systime;
+    FILETIME ftLocal;
+                                       /* Convert UTC to Local File  */
+                                       /* Time,  and then to system  */
+                                       /* format.                    */
+    FileTimeToLocalFileTime(&data.ftLastWriteTime, &ftLocal);
+    FileTimeToSystemTime(&ftLocal, &systime);
+
+    char yearField[8];
+    // we're using 2-digit years
+    sprintf(yearField, "%4d", systime.wYear);
+
+                                       /* format as such             */
+    sprintf(timeBuffer, "%02d-%02d-%s %02d:%02d:%02d",  systime.wMonth,
+        systime.wDay, yearField + 2, systime.wHour, systime.wMinute, systime.wSecond);
+
+    time = timeBuffer;
+    return true;
 }
 
 
@@ -1158,9 +1173,13 @@ bool SysFile::getTimeStamp(HANDLE handle, char *&time)
     FileTimeToLocalFileTime(&fileInfo.ftLastWriteTime, &ftLocal);
     FileTimeToSystemTime(&ftLocal, &systime);
 
+    char yearField[8];
+    // we're using 2-digit years
+    sprintf(yearField, "%4d", systime.wYear);
+
                                        /* format as such             */
-    sprintf(timeBuffer, "%4d-%02d-%02d %02d:%02d:%02d",  systime.wYear, systime.wMonth,
-        systime.wDay, systime.wHour, systime.wMinute, systime.wSecond);
+    sprintf(timeBuffer, "%02d-%02d-%s %02d:%02d:%02d",  systime.wMonth,
+        systime.wDay, yearField + 2, systime.wHour, systime.wMinute, systime.wSecond);
 
     time = timeBuffer;
     return true;
