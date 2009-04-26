@@ -1000,7 +1000,16 @@ bool SysFile::getTimeStamp(char *&time)
             // regular file?  return the defined size
             if ((fileInfo.st_mode & S_IFREG) != 0)
             {
-                time = ctime(&fileInfo.st_mtime);
+                struct tm *systime = localtime(&fileInfo.st_mtime);
+                char yearField[8];
+                // we're using 2-digit years
+                sprintf(yearField, "%4d", systime.tm_year);
+
+                                                   /* format as such             */
+                sprintf(timeBuffer, "%02d-%02d-%s %02d:%02d:%02d",  systime.tm_mon,
+                    systime.tm_day, yearField + 2, systime.tm_hour, systime.tm_min, systime.tm_sec);
+
+                time = timeBuffer;
             }
         }
     }
@@ -1025,7 +1034,16 @@ bool SysFile::getTimeStamp(const char *name, char *&time)
         // regular file?  return the defined size
         if ((fileInfo.st_mode & (S_IFREG | S_IFDIR)) != 0)
         {
-            time = ctime(&fileInfo.st_mtime);
+            struct tm *systime = localtime(&fileInfo.st_mtime);
+            char yearField[8];
+            // we're using 2-digit years
+            sprintf(yearField, "%4d", systime.tm_year);
+
+                                               /* format as such             */
+            sprintf(timeBuffer, "%02d-%02d-%s %02d:%02d:%02d",  systime.tm_mon,
+                systime.tm_day, yearField + 2, systime.tm_hour, systime.tm_min, systime.tm_sec);
+
+            time = timeBuffer;
         }
         return true;
     }

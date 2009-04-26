@@ -159,6 +159,7 @@ protected:
     int64_t filePointer;    // current file pointer location
     int    ungetchar;       // a pushed back character value
     bool   fileeof;         // have we reached eof?
+    char   timeBuffer[32];  // buffer for implementing ctime() equivalent
 };
 
 #endif
