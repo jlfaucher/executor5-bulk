@@ -51,14 +51,18 @@ return testResult
 
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires 'FileUtils.cls'
 
 ::class "CHARIN.testGroup" subclass ooTestCase public
 
 ::method "test_1"
-   return
+
+  -- Non-existent file
+  r = charin("bogusZZZ___T")
+  self~assertSame("", r)
 
 
--- rexxref documentation tests
+
 
 
 
