@@ -55,14 +55,123 @@ return testResult
 
 ::class "CHARIN.testGroup" subclass ooTestCase public
 
-::method "test_1"
+-- Test some simple charins
+::method "test_charin_simple"
 
   -- Non-existent file
   r = charin("bogusZZZ___T")
   self~assertSame("", r)
 
+  -- Read the first line of this file, but you need to remember that the !# is
+  -- changed to -- by the interpreter.
+  parse source . . fName
+  line1 = sourceline(1)~overlay("#!")
+  r = charin(fName, , line1~length)
+  self~assertSame(line1, r)
+
+  -- Do it again, but need to specifiy from position 1
+  r = charin(fName, 1, line1~length)
+  self~assertSame(line1, r)
+
+  j = lineout(fName) -- Close the file
 
 
+-- Test reading a large number of bytes from a file, about 600K.
+::method test_charin_alot
+
+  stuff = '12345678901234567890'
+  src = .array~new(30)
+  count = 0
+  do i = 1 to 30
+    src[i] = stuff~copies(1024)
+    count += (1024 * 20) + .endOfLine~length
+  end
+
+  fileName = createFile(src, "delMe.test_charin_alot")
+  self~assertTrue(fileName \== "")
+
+  r = charin(fileName, , count)
+  self~assertSame(count, r~length)
+  self~assertSame(0, chars(fileName))
+
+  -- Close the file and delete it
+  ret = lineout(fileName)
+  self~assertSame(0, ret)
+  j = deleteFile(fileName)
 
 
+-- Tests setting a start position reading from a non-existent stream.
+::method test_charin_noerr_1
 
+  -- Non-existent file, seems like there should be an error, but there isn't.
+  -- This ensures the behavior doesn't change.
+  r = charin("bogusAAA___T", 1)
+  self~assertSame("", r)
+
+
+-- Tests setting a start position and a length reading from a non-existent
+-- stream.
+::method test_charin_noerr_2
+
+  -- Non-existent file, seems like there should be an error, but there isn't.
+  -- This ensures the behavior doesn't change.
+  r = charin("bogusAAA___T", 1, 25)
+  self~assertSame("", r)
+
+
+-- Test using a start position with a transient stream.
+::method test_charin_syntax_1
+
+  self~expectSyntax(93.958)
+  r = charin( , 1)
+
+
+-- Tests trying to read more characters that are in the file
+::method test_charin_too_much
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charin_too_much")
+  self~assertTrue(fileName \== "")
+
+  expected = 10 + .endOfLine~length
+
+  r = charin(fileName, , 20)
+  self~assertSame(expected, r~length)
+  self~assertSame('1234567890' || .endOfLine, r)
+  self~assertSame(0, chars(fileName))
+
+  -- Close the file and delete it
+  ret = lineout(fileName)
+  self~assertSame(0, ret)
+  j = deleteFile(fileName)
+
+
+-- Tests reading with a start position past the end of the file.
+::method test_charin_too_far
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charin_too_far")
+  self~assertTrue(fileName \== "")
+
+  len = 10 + .endOfLine~length
+  r = charin(fileName, 20, len)
+
+  self~assertSame("", r)
+
+  -- Close the file and delete it
+  ret = lineout(fileName)
+  self~assertSame(0, ret)
+  j = deleteFile(fileName)
+
+
+-- Tests using a negative number for start position.
+::method test_charin_negative_start
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charin_negative_start")
+  self~assertTrue(fileName \== "")
+
+  self~expectSyntax(93.907)
+  r = charin(fileName, -3, 6)
+
+  -- Close the file and delete it
+  ret = lineout(fileName)
+  self~assertSame(0, ret)
+  j = deleteFile(fileName)
