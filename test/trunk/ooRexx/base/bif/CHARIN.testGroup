@@ -55,6 +55,24 @@ return testResult
 
 ::class "CHARIN.testGroup" subclass ooTestCase public
 
+-- This test group uses a lot of temporary files.  To ensure the files get
+-- deleted, the test case sets the name of the temporary file in this attribute
+-- when it is created.  setup() sets the attribute to .nil before the start of
+-- every test case.  tearDown() checks the attribute at the end of every test
+-- case, if not .nil the file is closed and deleted.
+::attribute charInTestingFile
+
+::method setup
+  self~charInTestingFile = .nil
+
+::method tearDown
+  fileName = self~charInTestingFile
+  if fileName \== .nil then do
+    -- Close the file and delete it
+    ret = lineout(fileName)
+    j = deleteFile(fileName)
+  end
+
 -- Test some simple charins
 ::method "test_charin_simple"
 
@@ -89,15 +107,13 @@ return testResult
 
   fileName = createFile(src, "delMe.test_charin_alot")
   self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
 
   r = charin(fileName, , count)
   self~assertSame(count, r~length)
   self~assertSame(0, chars(fileName))
 
-  -- Close the file and delete it
-  ret = lineout(fileName)
-  self~assertSame(0, ret)
-  j = deleteFile(fileName)
+  -- Tear down deletes the file
 
 
 -- Tests setting a start position reading from a non-existent stream.
@@ -131,6 +147,7 @@ return testResult
 
   fileName = createFile(.array~of('1234567890'), "delMe.test_charin_too_much")
   self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
 
   expected = 10 + .endOfLine~length
 
@@ -139,27 +156,18 @@ return testResult
   self~assertSame('1234567890' || .endOfLine, r)
   self~assertSame(0, chars(fileName))
 
-  -- Close the file and delete it
-  ret = lineout(fileName)
-  self~assertSame(0, ret)
-  j = deleteFile(fileName)
-
 
 -- Tests reading with a start position past the end of the file.
 ::method test_charin_too_far
 
   fileName = createFile(.array~of('1234567890'), "delMe.test_charin_too_far")
   self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
 
   len = 10 + .endOfLine~length
   r = charin(fileName, 20, len)
 
   self~assertSame("", r)
-
-  -- Close the file and delete it
-  ret = lineout(fileName)
-  self~assertSame(0, ret)
-  j = deleteFile(fileName)
 
 
 -- Tests using a negative number for start position.
@@ -167,11 +175,92 @@ return testResult
 
   fileName = createFile(.array~of('1234567890'), "delMe.test_charin_negative_start")
   self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
 
   self~expectSyntax(93.907)
   r = charin(fileName, -3, 6)
 
-  -- Close the file and delete it
-  ret = lineout(fileName)
-  self~assertSame(0, ret)
-  j = deleteFile(fileName)
+
+-- Tests using a negative number for length, start position at 1.
+::method test_charin_negative_length
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charin_negative_length")
+  self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
+
+  self~expectSyntax(88.907)
+  r = charin(fileName, , -6)
+
+
+-- Tests using a negative number for length start position at the end of the file.
+::method test_charin_negative_length2
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charin_negative_length2")
+  self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
+
+  len = '1234567890'~length + .endOfLine~length
+  self~expectSyntax(88.907)
+  r = charin(fileName, len, -3)
+
+
+-- Tests using 0 for start position.
+::method test_charin_0_start
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charin_0_start")
+  self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
+
+  self~expectSyntax(93.907)
+  r = charin(fileName, 0, 6)
+
+-- Tests using 0 for length.
+::method test_charin_0_length
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charin_0_length")
+  self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
+
+  r = charin(fileName, , 0)
+  self~assertSame("", r)
+
+  len = '1234567890'~length + .endOfLine~length
+
+  -- Should still be at position 1 and should be able to read whole file
+  r = charin(fileName, , len)
+  self~assertTrue(r~length == len)
+  self~assertSame('1234567890' || .endOfLine, r)
+
+  -- Position to end of line character.
+  r = charin(fileName, '1234567890'~length + 1, 0)
+  self~assertSame("", r)
+
+  r = charin(fileName,  , .endOfLine~length)
+  self~assertTrue(r~length == .endOfLine~length)
+  self~assertSame(.endOfLine, r)
+  self~assertTrue(chars(fileName) == 0)
+
+
+-- Tests some defaults
+::method test_charin_defaults_01
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charin_defualts_01")
+  self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
+
+  -- default is to read 1 character from start of file when first opened.
+  r = charin(fileName)
+  self~assertTrue(r~length == 1)
+  self~assertTrue(r == 1)
+
+  -- default is to read 1 character when positioned.
+  r = charin(fileName, 9)
+  self~assertTrue(r~length == 1)
+  self~assertTrue(r == 9)
+
+  -- default is to read 1 character from current position.
+  r = charin(fileName)
+  self~assertTrue(r~length == 1)
+  self~assertTrue(r == 0)
+  self~assertTrue(chars(fileName) == 2)
+
