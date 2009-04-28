@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -51,14 +51,75 @@ return testResult
 
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires 'FileUtils.cls'
 
 ::class "CHAROUT.testGroup" subclass ooTestCase public
 
-::method "test_1"
-   return
+::attribute charOutTestingFile
 
+::method setup
+  self~charOutTestingFile = .nil
 
--- rexxref documentation tests
+::method tearDown
+  fileName = self~charOutTestingFile
+  if fileName \== .nil then do
+    -- Close the file and delete it
+    ret = stream(fileName, 'C', "close")
+    j = deleteFile(fileName)
+  end
+
+::method test_simple
+  fileName = 'delMe_charoutSimple'
+  self~charOutTestingFile = fileName
+
+  characters = .array~new
+  do i = 97 to 122
+    characters~append(i~d2c)
+  end
+
+  do c over characters
+    ret = charout(fileName, c)
+    self~assertSame(0, ret)
+  end
+
+  ret = stream(fileName, 'C', 'close')
+  self~assertSame("READY:", ret)
+
+  do i = 1 to 26
+    ch = charin(fileName)
+    self~assertSame(characters[i], ch)
+  end
+
+::method test_pos
+  fileName = 'delMe_charoutPos'
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open"  )
+  self~assertSame("READY:", ret)
+
+  pos = stream(fileName, 'C', "query position write char")
+  self~assertSame(1, pos)
+
+  -- charout of null string should not move the write position
+  do i = 1 to 5000
+    ret = charout(fileName, "")
+  end
+
+  ret = stream(fileName, 'C', "query position write char")
+  self~assertSame(pos, ret)
+
+  -- charout of a single char 5,000 times should move the write position to
+  -- 5,000 + 1
+  do i = 1 to 5000
+    ret = charout(fileName, "A")
+    pos += 1
+  end
+  ret = stream(fileName, 'C', "query position write char")
+  self~assertSame(pos, ret)
+
+  -- size should equal the number of chars written.
+  ret = stream(fileName, 'C', "query size")
+  self~assertSame(pos - 1, ret)
 
 
 

@@ -158,10 +158,77 @@ return testResult
   self~expectSyntax(40.904)
   retDiscrpt = stream(streamName, "FILESTATE")
 
+::method test_wrong_too_many_args_D
+  parse source junk notUsed streamName
+
+  self~expectSyntax(40.4)
+  retDiscrpt = stream(streamName, "DESCRIPTION", "QUERY SIZE")
+
+::method test_wrong_too_many_args_S
+  parse source junk notUsed streamName
+
+  self~expectSyntax(40.4)
+  retDiscrpt = stream(streamName, "STATE", "QUERY SIZE")
+
+::method test_wrong_too_few_args_C
+  parse source junk notUsed streamName
+
+  self~expectSyntax(40.3)
+  retDiscrpt = stream(streamName, "COMMAND")
+
+::method test_wrong_too_many_args_C
+  parse source junk notUsed streamName
+
+  self~expectSyntax(40.4)
+  retDiscrpt = stream(streamName, "COMMAND", "QUERY SIZE", "IN BYTES")
+
 ::method test_no_args
 
   self~expectSyntax(40.3)
   retDiscrpt = stream()
+
+::method test_abbrev_good_C
+  parse source junk notUsed streamName
+
+  ret = stream(streamName, "c", "QUERY EXISTS")
+  self~assertSame(streamName, ret)
+
+  ret = stream(streamName, "C", "QUERY EXISTS")
+  self~assertSame(streamName, ret)
+
+  ret = stream(streamName, "CDESCRIPTION", "QUERY EXISTS")
+  self~assertSame(streamName, ret)
+
+::method test_abbrev_good_D
+  parse source junk notUsed streamName
+
+  goodReturns = .set~of("ERROR", "NOTREADY", "READY", "UNKNOWN")
+  ret = stream(streamName, "d")
+  self~assertTrue(goodReturns~hasIndex(ret~left(ret~pos(':') - 1)))
+
+  ret = stream(streamName, "D")
+  self~assertTrue(goodReturns~hasIndex(ret~left(ret~pos(':') - 1)))
+
+  ret = stream(streamName, "DESCR")
+  self~assertTrue(goodReturns~hasIndex(ret~left(ret~pos(':') - 1)))
+
+::method test_abbrev_good_S
+  parse source junk notUsed streamName
+
+  goodReturns = .set~of("ERROR", "NOTREADY", "READY", "UNKNOWN")
+  ret = stream(streamName, "S")
+  self~assertTrue(goodReturns~hasIndex(ret))
+
+  ret = stream(streamName, "ssss")
+  self~assertTrue(goodReturns~hasIndex(ret))
+
+  ret = stream(streamName, "s")
+  self~assertTrue(goodReturns~hasIndex(ret))
+
+
+/*----------------------------------------------------------------------------*\
+  STREAM COMMAND 'QUERY' section
+\*----------------------------------------------------------------------------*/
 
 -- Tests the command 'query' option, with an existing file, not yet opened.
 ::method test_queryFile_exists_notOpen
@@ -200,10 +267,11 @@ return testResult
   ret = stream(fileName, 'c', 'query timestamp')
   self~assertSame(eTimeStamp, ret)
 
--- Tests the command 'query' option, with an existing file, after stream is opened.
-::method test_queryFile_exists_opened
+-- Tests the command 'query' option, with an existing file, after stream is
+-- opened.  Query position in separate method
+::method test_queryFile_exists_opened_01
 
-  fileName = createFile(.array~of('1234567890'), "delMe.test_queryFile_exists_opened")
+  fileName = createFile(.array~of('1234567890'), "delMe.test_queryFile_exists_opened01")
   self~assertTrue(fileName \== "")
   self~streamTestingFile = fileName
 
@@ -228,7 +296,30 @@ return testResult
   self~assertTrue(ret~datatype('W'))
   self~assertTrue(ret > 0)
 
-  -- We haven't moved yet, so read should be at position 1 for everything.
+  ret = stream(fileName, 'c', 'query size')
+  self~assertSame(eSize, ret)
+
+  ret = stream(fileName, 'c', 'query streamtype')
+  self~assertSame("PERSISTENT", ret)
+
+  ret = stream(fileName, 'c', 'query timestamp')
+  self~assertSame(eTimeStamp, ret)
+
+
+-- Tests the command 'query position read' option, with an existing file, after
+-- the stream is opened.
+::method test_queryFile_exists_opened_02
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_queryFile_exists_opened02")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  -- Open the file.
+  ret = linein(fileName, 1, 0)
+  self~assertSame("", ret)
+
+  -- We haven't moved, so read should be at position 1 for everything.  Read
+  -- is the default for files opened read / write.  (As we opened this file.)
   ret = stream(fileName, 'c', 'query position')
   self~assertSame(1, ret)
 
@@ -251,16 +342,30 @@ return testResult
   ret2 = stream(fileName, 'c', 'query seek read line')
   self~assertSame(ret, ret2)
 
-  -- Write should be positioned at the end of the file.
-  len = '1234567890'~length + .endOfLine~length
 
+-- Tests the command 'query position write' option, with an existing file, after
+-- the stream is opened.
+::method test_queryFile_exists_opened_03
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_queryFile_exists_opened03")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  -- Open the file.
+  ret = linein(fileName, 1, 0)
+  self~assertSame("", ret)
+
+  -- Calculate the number of characters in the file.
+  charSize = '1234567890'~length + .endOfLine~length
+
+  -- Write should be positioned at the end of the file.
   ret = stream(fileName, 'c', 'query position write')
-  self~assertSame(len + 1, ret)
+  self~assertSame(charSize + 1, ret)
   ret2 = stream(fileName, 'c', 'query seek write')
   self~assertSame(ret, ret2)
 
   ret = stream(fileName, 'c', 'query position write char')
-  self~assertSame(len + 1, ret)
+  self~assertSame(charSize + 1, ret)
   ret2 = stream(fileName, 'c', 'query seek write char')
   self~assertSame(ret, ret2)
 
@@ -269,14 +374,161 @@ return testResult
   ret2 = stream(fileName, 'c', 'query seek write line')
   self~assertSame(ret, ret2)
 
+-- Tests the command 'query position sys' option, with an existing file, after
+-- the stream is opened.
+::method test_queryFile_exists_opened_04
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_queryFile_exists_opened04")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  -- Open the file.
+  ret = linein(fileName, 1, 0)
+  self~assertSame("", ret)
+
+  -- Calculate the number of characters in the file.
+  charSize = '1234567890'~length + .endOfLine~length
+
+  -- The system position should 0, we haven't done anything. (IS this true for
+  -- ALL OSes?)
+  ret = stream(fileName, 'c', 'query position sys')
+  self~assertSame(0, ret)
+
+  do i = 1 to charSize
+    discard = charin(fileName)
+    self~assertNotSame("", discard)
+
+    rexxPos = stream(fileName, 'c', 'query position')
+    sysPos = stream(fileName, 'c', 'query position sys')
+    self~assertSame(i + 1, rexxPos, "iteration" i)
+    self~assertSame(i, sysPos, "iteration" i)
+  end
+
+  -- Close the file and delete it
+  j = lineout(fileName)
+  j = deleteFile(fileName)
+
+  -- Now create an empty file.
+  fileName = 'deleteMe.queryFile_sys'
+  r = stream(fileName, 'C', "open nobuffer")
+  r = stream(fileName, 'C', "close")
+  self~assertTrue(SysFileExists(fileName))
+  self~streamTestingFile = fileName
+
+  -- Stream's not open, return empty string
+  ret = stream(fileName, 'C', "query position sys")
+  self~assertTrue("" == ret)
+
+  -- Now try again after opening the file.
+  ret = stream(fileName, 'C', "open")
+  self~assertSame("READY:", ret)
+  ret = stream(fileName, 'C', "query position sys")
+  self~assertTrue(0 == ret)
+
+  -- tearDown() will delete the file
+
+
+-- Tests the command 'query' option, with a non-existent file.
+::method test_queryFile_not_exists
+
+  fileName = "zzaa___tt"
+  -- Make sure this doesn't exist for some bizarre reason.
+  self~assertFalse(SysFileExists(fileName))
+
+  ret = stream(fileName, 'c', 'query datetime')
+  self~assertSame("", ret)
+
+  ret = stream(fileName, 'c', 'query exists')
+  self~assertSame("", ret)
+
+  ret = stream(fileName, 'c', 'query handle')
+  self~assertSame("", ret)
+
+  ret = stream(fileName, 'c', 'query seek')
+  self~assertSame("", ret)
+
+  ret = stream(fileName, 'c', 'query position')
+  self~assertSame("", ret)
+
   ret = stream(fileName, 'c', 'query size')
-  self~assertSame(eSize, ret)
+  self~assertSame("", ret)
 
   ret = stream(fileName, 'c', 'query streamtype')
-  self~assertSame("PERSISTENT", ret)
+  self~assertSame("UNKNOWN", ret)
 
   ret = stream(fileName, 'c', 'query timestamp')
+  self~assertSame("", ret)
+
+
+-- Tests the command 'query' option, with an existing directory.
+::method test_queryDir_exists
+
+  dirName = 'TempTestingDir'
+  -- Make sure this doesn't exist for some bizarre reason.
+  self~assertFalse(SysFileExists(dirName))
+
+  self~assertSame(0, SysMkDir(dirName))
+  parse value .DateTime~new~isoDate with d 'T' t '.' .
+  eTimeStamp = d t
+  eDateTime = d~substr(6) || '-' || d~substr(3, 2) t
+
+  ret = stream(dirName, 'c', 'query datetime')
+  self~assertSame(eDateTime, ret)
+
+  ret = stream(dirName, 'c', 'query exists')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query handle')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query seek')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query position')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query size')
+  self~assertSame(0, ret)
+
+  ret = stream(dirName, 'c', 'query streamtype')
+  self~assertSame("UNKNOWN", ret)
+
+  ret = stream(dirName, 'c', 'query timestamp')
   self~assertSame(eTimeStamp, ret)
+
+  j = SysRmDir(dirName)
+
+
+-- Tests the command 'query' option, with a non-existent directory.
+::method test_queryDir_not_exists
+
+  dirName = 'Tssllll___Dir'
+  -- Make sure this doesn't exist for some bizarre reason.
+  self~assertFalse(SysFileExists(dirName))
+
+  ret = stream(dirName, 'c', 'query datetime')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query exists')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query handle')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query seek')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query position')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query size')
+  self~assertSame("", ret)
+
+  ret = stream(dirName, 'c', 'query streamtype')
+  self~assertSame("UNKNOWN", ret)
+
+  ret = stream(dirName, 'c', 'query timestamp')
+  self~assertSame("", ret)
 
 
 -- End of class: STREAM.testGroup
