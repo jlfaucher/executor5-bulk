@@ -169,3 +169,86 @@ return testResult
   ret = charout( , "     ")
   self~assertSame(0, ret)
 
+-- Tests incorrect use of start position with transient stream
+::method test_stdout_start
+  self~expectSyntax(93.958)
+  ret = charout( , "     ", 15)
+  self~assertSame(0, ret)
+
+::method test_positioning_1
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioning1")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  ret = charout(fileName, "X", 2)
+  self~assertSame(0, ret)
+
+  ret = charout(fileName, "X", 4)
+  self~assertSame(0, ret)
+
+  ret = charout(fileName, "X", 6)
+  self~assertSame(0, ret)
+
+  -- Close the file
+  ret = charout(fileName)
+  self~assertSame(0, ret)
+
+  ret = linein(fileName)
+  self~assertSame('1X3X5X7890', ret)
+
+  -- tearDown() deletes the file.
+
+-- Test writing at a position past the end of the file.
+::method test_positioning_pastEnd
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_charout_postioning2")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  nulStr = 0~d2c~copies(10)
+  len = str~length + .endOfLine~length + nulStr~length
+  pos = len + 1
+  ret = charout(fileName, "X", pos)
+  self~assertSame(0, ret)
+
+  -- We added an X, so len needs to increment (could also use pos)
+  len +=1
+
+  -- close file
+  ret = charout(fileName)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', 'query size')
+  self~assertSame(len, ret)
+
+  ret = charin(fileName, , len)
+  self~assertSame(str || .endOfLine || nulStr || "X", ret)
+
+-- Tests negative value for position
+::method test_positioning_negative
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioning3")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  self~expectSyntax(93.907)
+  ret = charout(fileName, "X", -2)
+  self~assertSame(0, ret)
+
+
+-- Tests trying to write when stream is read only
+::method test_positioning_readOnly
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioning4")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open read")
+  self~assertSame("READY:", ret)
+
+  -- Try to write 10 characters, should get a return of 10 because none will be
+  -- written.
+  ret = charout(fileName, "1234567890")
+  self~assertSame(10, ret)
