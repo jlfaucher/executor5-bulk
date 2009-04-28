@@ -68,6 +68,7 @@ return testResult
     j = deleteFile(fileName)
   end
 
+-- Basic does it work test
 ::method test_simple
   fileName = 'delMe_charoutSimple'
   self~charOutTestingFile = fileName
@@ -90,6 +91,7 @@ return testResult
     self~assertSame(characters[i], ch)
   end
 
+-- Tests reported position after charout null or charout chars
 ::method test_pos
   fileName = 'delMe_charoutPos'
   self~charOutTestingFile = fileName
@@ -122,4 +124,48 @@ return testResult
   self~assertSame(pos - 1, ret)
 
 
+-- Tests outputting a large amount of chars.
+::method test_many_chars
+  fileName = 'delMe_many_chars'
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open"  )
+  self~assertSame("READY:", ret)
+
+  str = '12345678901234567890'
+  size = 20 * 10 * 1024 * 1024
+  buf = .MutableBuffer~new(str~copies(10 * 1024 * 1024), size)
+  characters = buf~string
+
+  ret = charout(fileName, characters)
+  self~assertSame(0, ret)
+  ret = stream(fileName, 'C', 'query size')
+  self~assertSame(size, ret)
+
+-- Tests charout to stdout. However, a Rexx program is run in a separate process,
+-- (by execRexxPrg()) and the output of that program is redirected into a file.
+-- This test is really only valid to catch what is output, not the return code.
+-- The next test, test_stdout_ret2() is needed to check the return.
+::method test_stdout_ret
+
+  src = .array~new
+  src[1] = 'ret = charout( , "HELLO")'
+  --src[2] = 'say "ret:" ret'
+  src[2] = 'return ret'
+  fileName = createRexxPrgFile(src, "delMe.test_charin_stdout")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  output = .array~new
+  ret = execRexxPrg(fileName, output)
+
+  -- assert that exactly HELLO was output
+  self~assertSame(1, output~items)
+  self~assertSame("HELLO", output[1])
+  self~assertSame(0, ret)
+
+-- Tests the return from charout() to the console.
+::method test_stdout_ret2
+  ret = charout( , "     ")
+  self~assertSame(0, ret)
 
