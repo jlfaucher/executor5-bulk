@@ -163,6 +163,7 @@ return testResult
   self~expectSyntax(40.3)
   retDiscrpt = stream()
 
+-- Tests the command 'query' option, with an existing file, not yet opened.
 ::method test_queryFile_exists_notOpen
 
   fileName = createFile(.array~of('1234567890'), "delMe.test_stream_query")
@@ -195,6 +196,84 @@ return testResult
 
   ret = stream(fileName, 'c', 'query streamtype')
   self~assertSame("UNKNOWN", ret)
+
+  ret = stream(fileName, 'c', 'query timestamp')
+  self~assertSame(eTimeStamp, ret)
+
+-- Tests the command 'query' option, with an existing file, after stream is opened.
+::method test_queryFile_exists_opened
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_queryFile_exists_opened")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  -- Open the file.
+  ret = linein(fileName, 1, 0)
+  self~assertSame("", ret)
+
+  -- We just created the file, date and timestamp should be now.
+  parse value .DateTime~new~isoDate with d 'T' t '.' .
+  eTimeStamp = d t
+  eDateTime = d~substr(6) || '-' || d~substr(3, 2) t
+  eSize = '1234567890'~length + .endOfLine~length
+
+  ret = stream(fileName, 'c', 'query datetime')
+  self~assertSame(eDateTime, ret)
+
+  ret = stream(fileName, 'c', 'query exists')
+  self~assertSame(fileName, ret)
+
+  -- The handle is almost for sure 3, but probably can't rely on that 100%
+  ret = stream(fileName, 'c', 'query handle')
+  self~assertTrue(ret~datatype('W'))
+  self~assertTrue(ret > 0)
+
+  -- We haven't moved yet, so read should be at position 1 for everything.
+  ret = stream(fileName, 'c', 'query position')
+  self~assertSame(1, ret)
+
+  -- seek is a synonym for position, so we should always get the same return.
+  ret2 = stream(fileName, 'c', 'query seek')
+  self~assertSame(ret, ret2)
+
+  ret = stream(fileName, 'c', 'query position read')
+  self~assertSame(1, ret)
+  ret2 = stream(fileName, 'c', 'query seek read')
+  self~assertSame(ret, ret2)
+
+  ret = stream(fileName, 'c', 'query position read char')
+  self~assertSame(1, ret)
+  ret2 = stream(fileName, 'c', 'query seek read char')
+  self~assertSame(ret, ret2)
+
+  ret = stream(fileName, 'c', 'query position read line')
+  self~assertSame(1, ret)
+  ret2 = stream(fileName, 'c', 'query seek read line')
+  self~assertSame(ret, ret2)
+
+  -- Write should be positioned at the end of the file.
+  len = '1234567890'~length + .endOfLine~length
+
+  ret = stream(fileName, 'c', 'query position write')
+  self~assertSame(len + 1, ret)
+  ret2 = stream(fileName, 'c', 'query seek write')
+  self~assertSame(ret, ret2)
+
+  ret = stream(fileName, 'c', 'query position write char')
+  self~assertSame(len + 1, ret)
+  ret2 = stream(fileName, 'c', 'query seek write char')
+  self~assertSame(ret, ret2)
+
+  ret = stream(fileName, 'c', 'query position write line')
+  self~assertSame(2, ret)
+  ret2 = stream(fileName, 'c', 'query seek write line')
+  self~assertSame(ret, ret2)
+
+  ret = stream(fileName, 'c', 'query size')
+  self~assertSame(eSize, ret)
+
+  ret = stream(fileName, 'c', 'query streamtype')
+  self~assertSame("PERSISTENT", ret)
 
   ret = stream(fileName, 'c', 'query timestamp')
   self~assertSame(eTimeStamp, ret)
