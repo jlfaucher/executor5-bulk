@@ -182,6 +182,15 @@ return testResult
   self~expectSyntax(40.4)
   retDiscrpt = stream(streamName, "COMMAND", "QUERY SIZE", "IN BYTES")
 
+-- Tests opening non-existent file in binary with no record length
+::method test_simple_bin
+  fileName = 'delMe_charoutSyntaxBinary'
+  self~streamTestingFile = fileName
+
+  self~expectSyntax(93.0)
+  ret = stream(fileName, 'C', "open binary")
+  self~assertSame("READY:", ret)
+
 ::method test_no_args
 
   self~expectSyntax(40.3)
