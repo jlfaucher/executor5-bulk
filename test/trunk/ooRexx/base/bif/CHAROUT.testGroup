@@ -175,6 +175,7 @@ return testResult
   ret = charout( , "     ", 15)
   self~assertSame(0, ret)
 
+-- Tests simple positioning before writing.
 ::method test_positioning_1
 
   fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioning1")
@@ -237,6 +238,39 @@ return testResult
   ret = charout(fileName, "X", -2)
   self~assertSame(0, ret)
 
+-- Tests writing at 0
+::method test_positioning_zero
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioningA")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  self~expectSyntax(93.907)
+  ret = charout(fileName, "X", 0)
+  self~assertSame(0, ret)
+
+-- Tests writing at 1
+::method test_positioning_one
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charout_postioningB")
+  self~assertTrue(fileName \== "")
+  self~charOutTestingFile = fileName
+
+  -- File size shouldn't change because we are going to overwrite a character.
+  len = '1234567890'~length + .endOfLine~length
+
+  ret = charout(fileName, "X", 1)
+  self~assertSame(0, ret)
+
+  ret = charout(fileName)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', 'query size')
+  self~assertSame(len, ret)
+
+  ret = charin(fileName)
+  self~assertSame("X", ret)
+
 
 -- Tests trying to write when stream is read only
 ::method test_positioning_readOnly
@@ -252,3 +286,47 @@ return testResult
   -- written.
   ret = charout(fileName, "1234567890")
   self~assertSame(10, ret)
+
+
+-- Tests repeated writes using different character counts
+::method test_write_char_strings
+
+  fileName = "delMe.test_charout_writing"
+  self~charOutTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open")
+  self~assertSame("READY:", ret)
+
+  strA = 'a'~copies(511)
+  strB = 'b'~copies(514)
+  strC = 'c'~copies(512)
+  strD = 'd'~copies(513)
+  strE = 'e'~copies(509)
+  strF = 'f'~copies(1025)
+  strG = 'g'~copies(513)
+  strH = 'h'~copies(514)
+
+  writes = .array~of(strA, strB, strC, strD,strE, strF,strG, strH)
+  i = 0
+  do 2
+    do w over writes
+      i += 1
+      ret = charout(fileName, w)
+      self~assertSame(0, ret, 'iteration' i)
+    end
+  end
+
+  ret = charin(fileName, 1, 0)
+  self~assertSame("", ret)
+
+  i = 0
+  do 2
+    do w over writes
+      i += 1
+      len = w~length
+      strX = charin(fileName, , len)
+      self~assertSame(len, strX~length, 'iteration' i)
+      self~assertSame(w, strX, 'iteration' i)
+    end
+  end
+
