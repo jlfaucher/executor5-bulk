@@ -372,42 +372,35 @@ return testResult
   ret = charin(fileName, 1, 0)
   self~assertSame("", ret)
 
-  expected = strA~overlay("X", 508, 5, "X")
+  expected = strA~overlay("XXXXX", 508)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strB~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strB~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strC~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strC~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strD~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strD~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strE~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strE~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strF~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strF~overlay("XXXXX", 1)~overlay("XXXXXXXXXX", 508)~overlay("XXXXX", 1020)~left(1024)
   ret = charin(fileName, , 1024)
   self~assertSame(expected, ret)
 
-  expected = strG~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strG~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strH~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strH~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
@@ -459,42 +452,35 @@ return testResult
   ret = stream(fileName, 'C', "open")
   self~assertSame("READY:", ret)
 
-  expected = strA~overlay("X", 508, 5, "X")
+  expected = strA~overlay("XXXXX", 508)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strB~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strB~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strC~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strC~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strD~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strD~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strE~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strE~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strF~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strF~overlay("XXXXX", 1)~overlay("XXXXXXXXXX", 508)~overlay("XXXXX", 1020)~left(1024)
   ret = charin(fileName, , 1024)
   self~assertSame(expected, ret)
 
-  expected = strG~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strG~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strH~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strH~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
@@ -799,44 +785,38 @@ return testResult
   ret = charin(fileName, 1, 0)
   self~assertSame("", ret)
 
-  expected = strA~overlay("X", 508, 5, "X")
+  expected = strA~overlay("XXXXX", 508)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strB~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strB~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strC~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strC~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strD~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strD~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strE~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strE~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strF~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strF~overlay("XXXXX", 1)~overlay("XXXXXXXXXX", 508)~overlay("XXXXX", 1020)~left(1024)
   ret = charin(fileName, , 1024)
   self~assertSame(expected, ret)
 
-  expected = strG~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strG~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strH~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strH~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
+
 
 -- This is the same test as test_write_mixed_char_strings_nb above, but when the
 -- writes are finished, the file is closed then reopened.
@@ -884,45 +864,37 @@ return testResult
   ret = stream(fileName, 'C', "open nobuffer")
   self~assertSame("READY:", ret)
 
-  expected = strA~overlay("X", 508, 5, "X")
+  expected = strA~overlay("XXXXX", 508)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strB~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strB~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strC~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strC~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strD~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strD~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strE~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strE~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strF~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strF~overlay("XXXXX", 1)~overlay("XXXXXXXXXX", 508)~overlay("XXXXX", 1020)~left(1024)
   ret = charin(fileName, , 1024)
   self~assertSame(expected, ret)
 
-  expected = strG~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strG~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strH~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strH~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
-
 
 
 /*----------------------------------------------------------------------------*\
@@ -1037,8 +1009,11 @@ return testResult
   ret = stream(fileName, 'C', "open binary")
   self~assertSame("READY:", ret)
 
+  content = '1X3X5X7890' || .endOfLine
+  len = content~length
   ret = linein(fileName)
-  self~assertSame('1X3X5X7890', ret)
+  self~assertSame(len, ret~length)
+  self~assertSame(content, ret)
 
   -- tearDown() deletes the file.
 
@@ -1227,42 +1202,36 @@ return testResult
   ret = charin(fileName, 1, 0)
   self~assertSame("", ret)
 
-  expected = strA~overlay("X", 508, 5, "X")
+  expected = strA~overlay("XXXXX", 508)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strB~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strB~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strC~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strC~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strD~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strD~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strE~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strE~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strF~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strF~overlay("XXXXX", 1)~overlay("XXXXXXXXXX", 508)~overlay("XXXXX", 1020)~left(1024)
   ret = charin(fileName, , 1024)
   self~assertSame(expected, ret)
 
-  expected = strG~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strG~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
 
-  expected = strH~overlay("X", 1, 5)
-  expected = expected~overlay("X", 508, 5, "X")
+  expected = strH~overlay("XXXXX", 1)~overlay("XXXXX", 508)~left(512)
   ret = charin(fileName, , 512)
   self~assertSame(expected, ret)
+
 

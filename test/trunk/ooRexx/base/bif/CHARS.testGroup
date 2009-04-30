@@ -185,7 +185,7 @@ return testResult
   l2_len = (20 * 1024) + .endOfLine~length
 
   src = .array~of(l, l2)
-  fileName = createFile(src, "delMe.test_chars_manyChars")
+  fileName = createFile(src, "delMe.test_chars_manyCharsBin")
   self~assertTrue(fileName \== "")
   self~charsTestingFile = fileName
 
@@ -202,4 +202,47 @@ return testResult
     expected = total_len - read
     self~assertSame(expected, chars(fileName))
   end
+
+::method test_chars_multiple_moves
+
+  l = "12345678901234567890"           -- 20 chars
+  len = l~length + .endOfLine~length   -- end of line character count
+  src = .array~new(30)
+  do i = 1 to 30
+    src[i] = l
+  end
+
+  fileName = createFile(src, "delMe.test_chars_multipleMoves")
+  self~assertTrue(fileName \== "")
+  self~charsTestingFile = fileName
+
+  total_len = 30 * len
+  ret = stream(fileName, 'C', "open both")
+
+  ret = chars(fileName)
+  self~assertSame(total_len, ret)
+
+  ret = charin(fileName, total_len, 0)
+  self~assertSame("", ret)
+
+  ret = chars(fileName)
+  self~assertSame(1, ret)
+
+  discard = charin(fileName)
+  ret = chars(fileName)
+  self~assertSame(0, ret)
+
+  ret = charin(fileName, 40, 0)
+  self~assertSame("", ret)
+
+  ret = chars(fileName)
+  self~assertSame(total_len - 40 + 1, ret)
+
+  discard = linein(fileName)  -- Eats the last of line 2
+  do 2
+    discard = linein(fileName)
+  end
+
+  ret = chars(fileName)
+  self~assertSame(total_len - (4 * len), ret)
 
