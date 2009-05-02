@@ -93,13 +93,9 @@
   installed side-by-side.
 </para>
 <para>
-  If a previous version of ooRexx is installed, it should be uninstalled prior to installing 4.0.0.
-</para>
-<para>
-  On Windows, when the installation program is started, the installer will recognize that a previous
-  version is installed. It will then present an option to uninstall the previous version before
-  proceeding with the 4.0.0 install. Alternatively, you can unistall the previous version prior to
-  starting the 4.0.0 installation.
+  Note that an <emphasis role="underline">upgrade</emphasis> type installation is not supported on any platform.
+  If a previous version of ooRexx is installed, it should be completely uninstalled prior to installing 4.0.0.
+  Failure to completely uninstall the previous version will produce unpredictable results.
 </para>
 <para>
   On a Unix-like system use the appropriate package manager to uninstall the previous version. For
@@ -109,8 +105,21 @@
 rpm -iv ooRexx
 ]]>
 </programlisting>
-  to uninstall ooRexx.
-</para></note>
+  to uninstall ooRexx. On a Debian-based system you could use the <computeroutput>-r</computeroutput> or the
+  <computeroutput>-P</computeroutput> option of <computeroutput>dpkg</computeroutput> to uninstall ooRexx:
+<programlisting>
+<![CDATA[
+dpkg -P ooRexx
+]]>
+</programlisting>
+</para>
+<para>
+  On Windows, when the installation program is started, the installer will recognize that a previous
+  version is installed. It will then present an option to uninstall the previous version before
+  proceeding with the 4.0.0 install. Alternatively, you can completely uninstall the previous version
+  prior to starting the 4.0.0 installation.
+</para>
+</note>
 
 <!-- New in this Release -->
 &newinrelease;
