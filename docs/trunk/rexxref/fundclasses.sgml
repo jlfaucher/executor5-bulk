@@ -4711,13 +4711,13 @@ the string from the starting position to the end is used. </para>
 <secondary>translate method</secondary></indexterm>
 <programlisting>
 "abcdef"~translate                         ->    "ABCDEF"
-"abcdef"~translate(, , , 3, 2)             ->    "abcDEf"
+"abcdef"~translate(, , , 3, 2)             ->    "abCDef"
 "abcdef"~translate("12", "ec")             ->    "ab2d1f"
 "abcdef"~translate("12", "abcd", ".")      ->    "12..ef"
 "APQRV"~translate(, "PR")                  ->    "A Q V"
 "APQRV"~translate(XRANGE("00"X, "Q"))      ->    "APQ  "
-"4123"~translate("abcd", "1234", , 2, 2)   ->    "1ab4"
 "4123"~translate("abcd", "1234")           ->    "dabc"
+"4123"~translate("abcd", "1234", , 2, 2)   ->    "4ab1"
 </programlisting>
 
 <note><title>Note</title>
