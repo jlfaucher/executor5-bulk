@@ -878,6 +878,11 @@ return .ooTestResult~new(5)~~addException(err)
   tester~extensions = ".test1,.test2"
   self~assertEquals("TEST1 TEST2", tester~callInstanceProgram(self~resolveTestProgram('tests/callPath.rex')))
 
+::method TestLoadLibrary
+  tester = .ProcessTester~new
+  tester~loadLibrary = "rxmath"
+  self~assertEquals("2", tester~callInstanceProgram(self~resolveTestProgram('tests/callMath.rex')))
+
 
 ::method resolveTestProgram
   use arg name
