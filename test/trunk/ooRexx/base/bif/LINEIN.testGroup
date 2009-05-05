@@ -62,11 +62,26 @@ return testResult
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "LINEIN.testGroup" public subclass ooTestCase
 
+::attribute lineInTestingFile
+
+::method setup
+  self~lineInTestingFile = .nil
+
+::method tearDown
+  fileName = self~lineInTestingFile
+  if fileName \== .nil then do
+    -- Close the file and delete it
+    ret = lineout(fileName)
+    j = deleteFile(fileName)
+  end
+
+
 ::method test_linein
 
   src = .array~of("line 1", "line 2")
   fileName = createFile(src, "delMe.test_linein")
   self~assertTrue(fileName \== "")
+  self~lineInTestingFile = fileName
 
   l = linein(fileName)
   self~assertSame(src[1], l)
@@ -74,16 +89,12 @@ return testResult
   l = linein(fileName)
   self~assertSame(src[2], l)
 
-  -- Close the file and delete it
-  ret = lineout(fileName)
-  self~assertSame(0, ret)
-  j = deleteFile(fileName)
-
 ::method  test_lineinArgs
 
   src = .array~of("task 1", "task 2", "task 3")
   fileName = createFile(src, "delMe.test_linein")
   self~assertTrue(fileName \== "")
+  self~lineInTestingFile = fileName
 
   l = linein(fileName, 1)
   self~assertSame(src[1], l)
@@ -94,10 +105,27 @@ return testResult
   l = linein(fileName, 3)
   self~assertSame(src[3], l)
 
-  -- Close the file and delete it
-  ret = lineout(fileName)
-  self~assertSame(0, ret)
-  j = deleteFile(fileName)
+
+-- Regression test for bug  2778601
+--
+-- 2 factors contributed to this bug and shouldn't be changed here.  1.) file1
+-- and file2 have to have the same name.  2.) The line to file2 has to be
+-- shorter than the first line.
+::method test_open_theWalterBug
+
+  file1 = 'bug4_dir1.txt'
+  file2 = 'bug4_dir1.txt'
+  self~lineInTestingFile = file2
+
+  'echo hello hello>' file1
+  line1 = linein(file1)
+  self~assertSame('hello hello', line1)
+  call lineout file1
+
+  'echo hello hell>' file2
+  line2 = linein(file2)
+  self~assertSame('hello hell', line2)
+  call lineout file2
 
 
 -- End of class: LINEIN.testGroup
