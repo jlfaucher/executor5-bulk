@@ -236,6 +236,143 @@ return testResult
 
 
 /*----------------------------------------------------------------------------*\
+  STREAM COMMAND 'OPEN' section
+\*----------------------------------------------------------------------------*/
+
+::method test_openBoth_append
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_stream_open")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open both append")
+  self~assertSame("READY:", ret)
+
+  ret = lineout(fileName, str)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  expected = (2 * str~length) + (2 * .endOfLine~length)
+  size = stream(fileName, 'C', "query size")
+  self~assertSame(expected, size)
+
+  do 2
+    l = linein(fileName)
+    self~assertSame(str, l)
+  end
+  self~assertSame(0, chars(fileName))
+
+::method test_openBoth_replace
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_stream_open")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open both replace")
+  self~assertSame("READY:", ret)
+  self~assertSame(0, stream(fileName, 'C', "query size"))
+
+  ret = lineout(fileName, str)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  expected = str~length +.endOfLine~length
+  size = stream(fileName, 'C', "query size")
+  self~assertSame(expected, size)
+
+  do 1
+    l = linein(fileName)
+    self~assertSame(str, l)
+  end
+  self~assertSame(0, chars(fileName))
+
+::method test_openWrite_append
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_stream_open")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open write append")
+  self~assertSame("READY:", ret)
+
+  ret = lineout(fileName, str)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  expected = (2 * str~length) + (2 * .endOfLine~length)
+  size = stream(fileName, 'C', "query size")
+  self~assertSame(expected, size)
+
+  do 2
+    l = linein(fileName)
+    self~assertSame(str, l)
+  end
+  self~assertSame(0, chars(fileName))
+
+::method test_openWrite_replace
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_stream_open")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open write replace")
+  self~assertSame("READY:", ret)
+  self~assertSame(0, stream(fileName, 'C', "query size"))
+
+  ret = lineout(fileName, str)
+  self~assertSame(0, ret)
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  expected = str~length +.endOfLine~length
+  size = stream(fileName, 'C', "query size")
+  self~assertSame(expected, size)
+
+  do 1
+    l = linein(fileName)
+    self~assertSame(str, l)
+  end
+  self~assertSame(0, chars(fileName))
+
+::method test_openRead_append
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_stream_open")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  self~expectSyntax(40.0)
+  ret = stream(fileName, 'C', "open read append")
+  self~assertSame("READY:", ret)
+
+
+::method test_openRead_replace
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_stream_open")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+  currentSize = stream(fileName, 'C', "query size")
+
+  ret = stream(fileName, 'C', "open read replace")
+  self~assertSame("ERROR:22", ret)
+  self~assertSame(currentSize, stream(fileName, 'C', "query size"))
+
+
+
+
+/*----------------------------------------------------------------------------*\
   STREAM COMMAND 'QUERY' section
 \*----------------------------------------------------------------------------*/
 
