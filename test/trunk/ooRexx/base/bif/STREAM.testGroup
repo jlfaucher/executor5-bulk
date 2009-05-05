@@ -352,7 +352,7 @@ return testResult
   self~assertTrue(fileName \== "")
   self~streamTestingFile = fileName
 
-  self~expectSyntax(40.0)
+  self~expectSyntax(93.0)
   ret = stream(fileName, 'C', "open read append")
   self~assertSame("READY:", ret)
 
@@ -369,6 +369,27 @@ return testResult
   self~assertSame("ERROR:22", ret)
   self~assertSame(currentSize, stream(fileName, 'C', "query size"))
 
+
+/*----------------------------------------------------------------------------*\
+  STREAM COMMAND 'SEEK' section
+\*----------------------------------------------------------------------------*/
+
+-- Regression test for bug  2785896
+::method test_seek_closedFile_2785896
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_stream_seek")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  ret = stream(fileName, 'C', 'open both shareread nobuffer')
+  self~assertSame("READY:", ret)
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  ret = stream(fileName, 'C', 'Seek =1 line' )
+  self~assertSame(1, ret)
 
 
 
