@@ -62,9 +62,34 @@ return testResult
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "Stream.testGroup" public subclass ooTestCase
 
+::attribute streamTestingFile
+::attribute extraTestingFile
+
+::method setup
+  self~streamTestingFile = .nil
+  self~extraTestingFile = .nil
+
+::method tearDown
+  fileName = self~streamTestingFile
+  if fileName \== .nil then do
+    -- Close the file and delete it
+    ret = lineout(fileName)
+    j = deleteFile(fileName)
+  end
+
+  fileName = self~extraTestingFile
+  if fileName \== .nil then do
+    -- Close the file and delete it
+    ret = lineout(fileName)
+    j = deleteFile(fileName)
+  end
+
+
 ::method test_open
 
   f = 'streamClassTest.delMe'
+  self~streamTestingFile = f
+
   obj = .stream~new(f)
   self~assertTrue(obj~isA(.Stream))
 
@@ -77,11 +102,12 @@ return testResult
   ret = obj~close
   self~assertSame("READY:", ret)
 
-  j = deleteFile(f)
 
 ::method test_simple_lineout
 
   f = 'streamClassTest.delMe'
+  self~streamTestingFile = f
+
   obj = .stream~new(f)
   self~assertTrue(obj~isA(.Stream))
 
@@ -100,11 +126,12 @@ return testResult
   ret = obj~close
   self~assertSame("READY:", ret)
 
-  j = deleteFile(f)
 
 ::method test_close_twice
 
   f = "streamCloseTest.delMe"
+  self~streamTestingFile = f
+
   obj = .stream~new(f)
   self~assertTrue(obj~isA(.Stream))
 
@@ -126,12 +153,14 @@ return testResult
   self~assertSame("", ret)
   self~assertSame("UNKNOWN", state)
 
-  ret = deleteFile(f)
 
 ::method test_flush_on_close
 
   outFile = 'tmpOutDelMe.txt'
   rexxPrg = 'tmpPrg'
+  self~streamTestingFile = outFile
+  self~extraTestingFile = rexxPrg || '.rex'
+
   src = .array~new
   src[1] = 'file = .stream~new("'outFile'")'
   src[2] = "file~lineout('first line') "
@@ -152,10 +181,36 @@ return testResult
   self~assertSame('second line', text[2])
 
   fsObj~close
-  ret = deleteFile(outFile)
-  self~assertSame(0, ret)
 
-  ret = deleteFile(rexxPrg)
+
+-- Regression test for bug  2776442
+::method test_seek_usedAsCount_2776442
+
+  fileName = createFile(.array~of(1, 2, 3, 4, 5, 6, 7, 8), "delMe.test_stream_seek")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  -- The test case file for the original bug had a last line, without a new line
+  -- at the end of the file.  To keep this test case as close to that as
+  -- possible, we add a last line with no new line at the end of the file.
+  ret = charout(fileName, "9")
   self~assertSame(0, ret)
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  f = .stream~new(fileName)
+  ret = f~open("READ SHAREREAD")
+  self~assertSame("READY:", ret)
+
+  ret = f~seek(+99999 "READ LINE")
+  self~assertSame(9, ret)
+
+  count = f~seek(-1 "READ LINE") + 1
+  self~assertSame(9, count)
+
+  secondCount = f~lines("COUNT")
+  self~assertSame(2, secondCount)
+  f~close
+
 
 -- End of class: Stream.testGroup
