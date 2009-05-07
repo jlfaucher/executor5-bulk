@@ -213,4 +213,39 @@ return testResult
   f~close
 
 
+-- Regression test for bug  2772454
+::method test_open_canWrite_2772454
+
+  str = "1234567890"
+  fileName = createFile(.array~of(str), "delMe.test_open_bug_2772454")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  f = .stream~new(fileName)
+  ret = f~open
+  self~assertSame("READY:", ret)
+
+  ret = f~seek("1 read")
+  self~assertSame(1, ret)
+
+  bytes = f~charin( , f~chars)
+  self~assertSame(str || .endOfLine, bytes)
+
+  ret = f~seek("4 write")
+  self~assertSame(4, ret)
+
+  ret = f~charout("xyz")
+  self~assertSame(0, ret)
+
+  ret = f~seek("1 read")
+  self~assertSame(1, ret)
+
+  expected = str~overlay("xyz", 4) || .endOfLine
+
+  bytes =  f~charin( , f~chars)
+  self~assertSame(expected, bytes)
+
+  f~close
+
+
 -- End of class: Stream.testGroup

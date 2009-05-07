@@ -388,8 +388,78 @@ return testResult
   ret = stream(fileName, 'C', "close")
   self~assertSame("READY:", ret)
 
-  ret = stream(fileName, 'C', 'Seek =1 line' )
+  -- The bug was, doing a seek on a closed stream caused a crash
+  ret = stream(fileName, 'C', 'Seek =1 line')
   self~assertSame(1, ret)
+
+
+-- Regression test for bug  2769867
+::method test_seek_2769867
+
+  src = .array~new(5)
+  do i = 1 to 5
+    src[i] = i~copies(10)
+  end
+  bytes = (5 * 10) + (5 * .endOfLine~length)
+
+  fileName = createFile(src, "delMe.test_stream_seek_2769867")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  size = stream(fileName, 'C', 'Query Size')
+  self~assertSame(bytes, size)
+
+  ret = stream(fileName, 'C', 'Open Write')
+  self~assertSame("READY:", ret)
+
+  offSet = size - (10 + .endOfLine~length) + 1
+
+  ret = stream(fileName, 'C', 'Seek' offSet)
+  self~assertSame(offSet, ret)
+
+  -- write new last line
+  ret = lineout(fileName, 6~copies(10))
+  ret = stream(fileName, 'C', 'Close')
+  self~assertSame("READY:", ret)
+
+  -- Size should remain the same.
+  size = stream(fileName, 'C', 'Query Size')
+  self~assertSame(bytes, size)
+
+  ret = stream(fileName, 'C', 'Open Read')
+  self~assertSame("READY:", ret)
+
+  -- Lines except 5th line should be the same
+  do i = 1 to 4
+    l = linein(fileName)
+    self~assertSame(src[i], l)
+  end
+  l = linein(fileName)
+  self~assertSame(6~copies(10), l)
+
+
+-- Regression test for bug  2787994
+::method test_seek_closedFile_2787994
+
+  str = '1234567890'
+  fileName = createFile(.array~of(str), "delMe.test_stream_seek2787994 ")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  ret = stream(fileName, 'C', 'Seek =1 line')
+  self~assertSame(1, ret)
+
+  -- The above should have implicitly opened the stream, so we should be able to
+  -- close it.
+  ret = stream(fileName, 'C', 'close')
+  self~assertSame("READY:", ret)
+
+  -- To be sure the file got closed, we should be able to delete it.
+  j = deleteFile(fileName)
+  self~assertSame(.false, SysFileExists(fileName))
+
+  -- Since we deleted it, tell tearDown() to skip it.
+  self~streamTestingFile = .nil
 
 
 

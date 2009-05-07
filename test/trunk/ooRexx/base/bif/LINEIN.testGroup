@@ -128,4 +128,28 @@ return testResult
   call lineout file2
 
 
+-- Regression test for bug  2772244
+::method test_lineIn_long_2772244
+
+  src = .array~new(4)
+  src[1] = '<av0700_2 xmlns="urn:xxxx.no/ec">'
+  src[2] = '<Header><EcMessageID /><SourceRef>PO_enh_888888_2009-04-14</SourceRef><Version>1.0</Version><UserName /><SecurityToken /><SystemCode>pppp</SystemCode><TimestampPublish>2009-04-14 00:01:00</TimestampPublish><TimestampEcIn /><TimestampEcOut /><TimestampSubscribe /></Header><dagsoppgjor><organisasjonsnavn>yyyyy</organisasjonsnavn><divisjon>520</divisjon><kategori>PN pppp</kategori><bilagsid>pppp-2009-04-14</bilagsid><bilagsdato>2009-04-14</bilagsdato><bilagslinje><konto>29990</konto><kost_enhetsnr>888888</kost_enhetsnr><oppr_enhetsnr>888888</oppr_enhetsnr><belop>-652643</belop></bilagslinje>'
+  src[3] = '<bilagslinje><konto>15790</konto><kost_enhetsnr>888888</kost_enhetsnr><oppr_enhetsnr>888888</oppr_enhetsnr><belop>652643</belop></bilagslinje>'
+  src[4] = '</dagsoppgjor></av0700_2>'
+
+  fileName = createFile(src, "delMe.test_lineIn_long_2772244")
+  self~assertTrue(fileName \== "")
+  self~lineInTestingFile = fileName
+
+  count = 0
+  do i = 1 to 999
+    if lines(fileName) = 0 then leave
+    count += 1
+    l = linein(fileName)
+    self~assertSame(src[i], l)
+  end
+
+  self~assertSame(src~items, count)
+
+
 -- End of class: LINEIN.testGroup
