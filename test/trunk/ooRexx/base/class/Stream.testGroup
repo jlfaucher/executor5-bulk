@@ -70,11 +70,11 @@ return testResult
   self~extraTestingFile = .nil
 
 ::method tearDown
-  fileName = self~streamTestingFile
-  if fileName \== .nil then do
+  obj = self~streamTestingFile
+  if obj \== .nil then do
     -- Close the file and delete it
-    ret = lineout(fileName)
-    j = deleteFile(fileName)
+    obj~close
+    j = deleteFile(obj~qualify)
   end
 
   fileName = self~extraTestingFile
@@ -86,17 +86,15 @@ return testResult
 
 
 ::method test_open
-
   f = 'streamClassTest.delMe'
-  self~streamTestingFile = f
 
   obj = .stream~new(f)
+  self~streamTestingFile = obj
+
   self~assertTrue(obj~isA(.Stream))
 
   ret = obj~open
   self~assertSame("READY:", ret)
-
-  -- We need to close the stream so we can delete the file.
 
   -- Close should return READY: on success (from docs.)
   ret = obj~close
@@ -106,9 +104,8 @@ return testResult
 ::method test_simple_lineout
 
   f = 'streamClassTest.delMe'
-  self~streamTestingFile = f
-
   obj = .stream~new(f)
+  self~streamTestingFile = obj
   self~assertTrue(obj~isA(.Stream))
 
   -- Write a single line, close the file, read the file, and compare.
@@ -122,17 +119,12 @@ return testResult
   line = obj~linein
   self~assertSame("line 1", line)
 
-  -- Need to close again so we can delete the file.
-  ret = obj~close
-  self~assertSame("READY:", ret)
-
 
 ::method test_close_twice
 
   f = "streamCloseTest.delMe"
-  self~streamTestingFile = f
-
   obj = .stream~new(f)
+  self~streamTestingFile = obj
   self~assertTrue(obj~isA(.Stream))
 
   -- Lineout should open the file and write the line.
@@ -153,12 +145,385 @@ return testResult
   self~assertSame("", ret)
   self~assertSame("UNKNOWN", state)
 
+-- Tests simple arrayin() method
+::method test_arrayIn
+
+  src = .array~new(12)
+  do i = 1 to 12
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.arrayIn")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+  self~assertSame(12, a~items)
+
+  do i = 1 to 12
+    self~assertSame("line" i, a[i])
+  end
+
+
+-- Tests arrayin() with empty file, created
+::method test_arrayIn_1
+
+  fileName = "delMe.stream.arrayIn_1"
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  fsObj~open("write replace")
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+  self~assertSame(0, a~items)
+  self~assertSame(.nil, a[1])
+
+
+-- Tests arrayin() with empty file, existing
+::method test_arrayIn_2
+
+  fileName = "delMe.stream.arrayIn_2"
+
+  ret = charout(fileName, "")
+  self~assertSame(0, ret)
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+  self~assertSame(0, a~items)
+  self~assertSame(.nil, a[1])
+
+
+-- Tests arrayin() after some lines have been read
+::method test_arrayIn_3
+
+  src = .array~new(12)
+  do i = 1 to 12
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.arrayIn_4")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+  do 3
+    discard = fsObj~linein()
+  end
+
+  a = fsObj~arrayin
+  self~assertSame(9, a~items)
+
+  do i = 4 to 12
+    expected = "line" i
+    j = i - 3
+    self~assertSame(expected, a[j])
+  end
+
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+  ret = fsObj~seek("=6 read line")
+  self~assertSame(6, ret)
+
+  a = fsObj~arrayin
+  self~assertSame(7, a~items)
+
+  do i = 6 to 12
+    expected = "line" i
+    j = i - 5
+    self~assertSame(expected, a[j])
+  end
+
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+  do 2
+    fsObj~linein
+  end
+  ret = fsObj~charin( , 'lin'~length)
+  self~assertSame('lin', ret)
+
+  a = fsObj~arrayin
+  self~assertSame(10, a~items)
+
+  self~assertSame(src[3]~substr('lin'~length + 1), a[1])
+  do i = 4 to 12
+    expected = "line" i
+    j = i - 2
+    self~assertSame(expected, a[j])
+  end
+
+
+-- Tests simple arrayin() method, opened NOBUFFER
+::method test_arrayIn_noBuf
+
+  src = .array~new(12)
+  do i = 1 to 12
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.arrayIn_noBuf")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  fsObj~open("Both nobuffer")
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+  self~assertSame(12, a~items)
+
+  do i = 1 to 12
+    self~assertSame("line" i, a[i])
+  end
+
+
+-- Tests arrayin() with empty file, created, opened NOBUFFER
+::method test_arrayIn_1_noBuf
+
+  fileName = "delMe.stream.arrayIn_1"
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  fsObj~open("write replace nobuffer")
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+  self~assertSame(0, a~items)
+  self~assertSame(.nil, a[1])
+
+
+-- Tests arrayin() with empty file, existing, opened NOBUFFER
+::method test_arrayIn_2_noBuf
+
+  fileName = "delMe.stream.arrayIn_2"
+  ret = charout(fileName, "")
+  self~assertSame(0, ret)
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  fsObj~open("both shared nobuffer")
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+  self~assertSame(0, a~items)
+  self~assertSame(.nil, a[1])
+
+
+-- Tests arrayin() after some lines have been read, opened NOBUFFER
+::method test_arrayIn_3_noBuf
+
+  src = .array~new(12)
+  do i = 1 to 12
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.arrayIn_4")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  fsObj~open("read shared nobuffer")
+  do 3
+    discard = fsObj~linein()
+  end
+
+  a = fsObj~arrayin
+  self~assertSame(9, a~items)
+
+  do i = 4 to 12
+    expected = "line" i
+    j = i - 3
+    self~assertSame(expected, a[j])
+  end
+
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+  fsObj~open("both shared nobuffer")
+  ret = fsObj~seek("=6 read line")
+  self~assertSame(6, ret)
+
+  a = fsObj~arrayin
+  self~assertSame(7, a~items)
+
+  do i = 6 to 12
+    expected = "line" i
+    j = i - 5
+    self~assertSame(expected, a[j])
+  end
+
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+  fsObj~open("nobuffer")
+  do 2
+    fsObj~linein
+  end
+  ret = fsObj~charin( , 'lin'~length)
+  self~assertSame('lin', ret)
+
+  a = fsObj~arrayin
+  self~assertSame(10, a~items)
+
+  self~assertSame(src[3]~substr('lin'~length + 1), a[1])
+  do i = 4 to 12
+    expected = "line" i
+    j = i - 2
+    self~assertSame(expected, a[j])
+  end
+
+
+-- Tests simple arrayin() method, opened BINARY
+::method test_arrayIn_bin
+
+  src = .array~new(12)
+  do i = 1 to 12
+    tag = i~right(2, 0)
+    src[i] = 'line' tag
+  end
+  fileName = createFile(src, "delMe.stream.arrayIn_bin")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  recLength = src[1]~length + .endOfLine~length + 2
+  fsObj~open("Both BINARY RECLENGTH" recLength)
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+
+  totalLen = (src[1]~length + .endOfLine~length) * 12
+  expectedItems = (totalLen % recLength) + 1
+  remainder = totalLen // recLength
+
+  self~assertSame(expectedItems, a~items)
+
+  expected = src[1] || .endOfLine || "li"
+  self~assertSame(expected, a[1])
+
+  expected = src[2]~substr(3) || .endOfLine || 'line'
+  self~assertSame(expected, a[2])
+
+  expected = src[3]~substr(5) || .endOfLine || 'line 0'
+  self~assertSame(expected, a[3])
+
+  -- Figure if the first 3 items in the array are correct, and the last item is
+  -- correct - that is good enough.
+  expected = (src[12] || .endOfLine)~right(remainder)
+  self~assertSame(expected, a[expectedItems])
+
+
+-- Tests arrayin() with empty file, created, opened BINARY
+::method test_arrayIn_1_bin
+
+  fileName = "delMe.stream.arrayIn_1"
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  fsObj~open("write replace binary reclength 1")
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+  self~assertSame(0, a~items)
+  self~assertSame(.nil, a[1])
+
+
+-- Tests arrayin() with empty file, existing, opened BINARY
+::method test_arrayIn_2_bin
+
+  fileName = "delMe.stream.arrayIn_2"
+  ret = charout(fileName, "")
+  self~assertSame(0, ret)
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  fsObj~open("both shared binary reclength 1")
+  a = fsObj~arrayin
+  self~assertTrue(a~isA(.array))
+  self~assertSame(0, a~items)
+  self~assertSame(.nil, a[1])
+
+
+-- Tests arrayin() after some lines have been read, opened BINARY
+::method test_arrayIn_3_bin
+
+  src = .array~new(12)
+  do i = 1 to 12
+    src[i] = 'line' i~right(2, 0)
+  end
+  fileName = createFile(src, "delMe.stream.arrayIn_4")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  recLength = src[1]~length + .endOfLine~length
+  fsObj~open("read shared binary reclength" recLength)
+  do 3
+    discard = fsObj~linein()
+  end
+
+  a = fsObj~arrayin
+  self~assertSame(9, a~items)
+
+  do i = 4 to 12
+    expected = "line" i~right(2, 0) || .endOfLine
+    j = i - 3
+    self~assertSame(expected, a[j])
+  end
+
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+  fsObj~open("both shared binary reclength" recLength)
+  ret = fsObj~seek("=6 read line")
+  self~assertSame(6, ret)
+
+  a = fsObj~arrayin
+  self~assertSame(7, a~items)
+
+  do i = 6 to 12
+    expected = "line" i~right(2, 0) || .endOfLine
+    j = i - 5
+    self~assertSame(expected, a[j])
+  end
+
+  ret = fsObj~close
+  self~assertSame("READY:", ret)
+
+  fsObj~open("binary reclength" recLength)
+  do 2
+    fsObj~linein
+  end
+  ret = fsObj~charin( , 'lin'~length)
+  self~assertSame('lin', ret)
+
+  a = fsObj~arrayin
+  self~assertSame(10, a~items)
+
+  expected = src[3]~substr('lin'~length + 1) || .endOfLine
+  self~assertSame(expected, a[1])
+
+  do i = 4 to 12
+    expected = "line" i~right(2, 0) || .endOfLine
+    j = i - 2
+    self~assertSame(expected, a[j])
+  end
+
 
 ::method test_flush_on_close
 
   outFile = 'tmpOutDelMe.txt'
   rexxPrg = 'tmpPrg'
-  self~streamTestingFile = outFile
   self~extraTestingFile = rexxPrg || '.rex'
 
   src = .array~new
@@ -176,11 +541,11 @@ return testResult
   self~assertTrue(SysIsFile(outFile))
 
   fsObj = .stream~new(outFile)
+  self~streamTestingFile = fsObj
+
   text = fsObj~arrayin
   self~assertSame('first line', text[1])
   self~assertSame('second line', text[2])
-
-  fsObj~close
 
 
 -- Regression test for bug  2776442
@@ -188,7 +553,6 @@ return testResult
 
   fileName = createFile(.array~of(1, 2, 3, 4, 5, 6, 7, 8), "delMe.test_stream_seek")
   self~assertTrue(fileName \== "")
-  self~streamTestingFile = fileName
 
   -- The test case file for the original bug had a last line, without a new line
   -- at the end of the file.  To keep this test case as close to that as
@@ -199,6 +563,8 @@ return testResult
   self~assertSame("READY:", ret)
 
   f = .stream~new(fileName)
+  self~streamTestingFile = f
+
   ret = f~open("READ SHAREREAD")
   self~assertSame("READY:", ret)
 
@@ -219,9 +585,9 @@ return testResult
   str = "1234567890"
   fileName = createFile(.array~of(str), "delMe.test_open_bug_2772454")
   self~assertTrue(fileName \== "")
-  self~streamTestingFile = fileName
-
   f = .stream~new(fileName)
+  self~streamTestingFile = f
+
   ret = f~open
   self~assertSame("READY:", ret)
 
@@ -245,8 +611,6 @@ return testResult
   bytes =  f~charin( , f~chars)
   self~assertSame(expected, bytes)
 
-  f~close
-
 
 -- Regression test for bug  2721242
 ::method test_open_canWrite_2721242
@@ -258,9 +622,10 @@ return testResult
   end
   fileName = createFile(src, "delMe.test_streamObj_2721242")
   self~assertTrue(fileName \== "")
-  self~streamTestingFile = fileName
 
   f = .stream~new(fileName)
+  self~streamTestingFile = f
+
   ret = f~open("READ")
   self~assertSame("READY:", ret)
 
@@ -269,8 +634,6 @@ return testResult
 
   ret = f~Query("POSITION READ CHAR")
   self~assertSame(100, ret)
-
-  f~close
 
 
 -- End of class: Stream.testGroup
