@@ -91,6 +91,16 @@ return testResult
     self~assertSame(characters[i], ch)
   end
 
+
+-- Regression test for bug  2761373
+::method test_charOut_emptyString_2761373
+
+  fileName='tsmp.txt'
+  self~charOutTestingFile = fileName
+
+  call charout file, ''
+  self~assertSame(0, result)
+
 -- Tests reported position after charout null or charout chars
 ::method test_pos
   fileName = 'delMe_charoutPos'

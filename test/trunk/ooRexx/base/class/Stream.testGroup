@@ -248,4 +248,29 @@ return testResult
   f~close
 
 
+-- Regression test for bug  2721242
+::method test_open_canWrite_2721242
+
+  src = .array~new
+  src[1] = "1234567890"
+  do i = 2 to 12
+    src[i] = src[1]
+  end
+  fileName = createFile(src, "delMe.test_streamObj_2721242")
+  self~assertTrue(fileName \== "")
+  self~streamTestingFile = fileName
+
+  f = .stream~new(fileName)
+  ret = f~open("READ")
+  self~assertSame("READY:", ret)
+
+  ret = f~Position("=100 READ CHAR")
+  self~assertSame(100, ret)
+
+  ret = f~Query("POSITION READ CHAR")
+  self~assertSame(100, ret)
+
+  f~close
+
+
 -- End of class: Stream.testGroup

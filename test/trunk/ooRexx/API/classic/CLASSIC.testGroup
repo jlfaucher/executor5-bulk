@@ -74,6 +74,7 @@ return .ooTestResult~new(5)~~addException(err)
 
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires 'FileUtils.cls'
 
 -- class named exactly like file
 ::class "CLASSIC.testGroup" subclass ooTestCase public
@@ -937,6 +938,9 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals(0, retc)
   retc = t2~TestQueryMacro('myupper')
   self~assertEquals(0, retc)
+
+  -- Should be done with this, delete it.
+  j = deleteFile('macrosave.bin')
 
 ::method 'test_75_macrospace'
   expose t2
