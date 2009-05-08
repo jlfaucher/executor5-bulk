@@ -145,6 +145,38 @@ return testResult
   self~assertSame("", ret)
   self~assertSame("UNKNOWN", state)
 
+-- Test new() Note that new() used normally gets heavily tested through out this
+-- test group.  These tests are for abnormal use of new()
+::method test_new_1
+
+  fileName = directory()
+  fsObj = .stream~new(fileName)
+  self~assertTrue(fsObj~isA(.stream))
+
+  name = fsObj~qualify
+  self~assertSame(directory(), name)
+
+::method test_new_2
+
+  fileName = '00'x || '/' || '00'x
+  fsObj = .stream~new(fileName)
+  self~assertTrue(fsObj~isA(.stream))
+
+
+::method test_new_syntax_1
+
+  self~expectSyntax(93.901)
+  fsObj = .stream~new()
+  self~assertTrue(fsObj~isA(.stream))
+
+
+::method test_new_syntax_2
+
+  self~expectSyntax(93.902)
+  fsObj = .stream~new("tempFile.txt", "binary")
+  self~assertTrue(fsObj~isA(.stream))
+
+
 -- Tests simple arrayin() method
 ::method test_arrayIn
 
@@ -165,6 +197,167 @@ return testResult
   do i = 1 to 12
     self~assertSame("line" i, a[i])
   end
+
+
+-- Tests simple arrayin(chars) method
+::method test_arrayIn_chars
+
+  fileName = "delMe.stream.arrayIn.chars"
+  ret = stream(fileName, 'C', 'open write replace')
+  do i = 97 to 122
+    j = charout(fileName, i~d2c)
+  end
+  ret = stream(fileName, 'C', 'close')
+  self~assertSame("READY:", ret)
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  a = fsObj~arrayin("CHARS")
+  self~assertTrue(a~isA(.array))
+  self~assertSame(26, a~items)
+
+  expected = 'abcdefghijklmnopqrstuvwxyz'
+  do i = 1 to 26
+    self~assertSame(expected~substr(i, 1), a[i])
+  end
+
+-- Tests arrayin abbreviating CHARS or LINES
+::method test_arrayIn_abbrev
+
+  fileName = "delMe.stream.arrayIn.s"
+  ret = stream(fileName, 'C', 'open write replace')
+  do i = 97 to 122
+    j = charout(fileName, i~d2c)
+  end
+  ret = stream(fileName, 'C', 'close')
+  self~assertSame("READY:", ret)
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  a = fsObj~arrayin("C")
+  self~assertTrue(a~isA(.array))
+  self~assertSame(26, a~items)
+
+  expected = 'abcdefghijklmnopqrstuvwxyz'
+  do i = 1 to 26
+    self~assertSame(expected~substr(i, 1), a[i])
+  end
+
+  fsObj~close
+  fsObj~open
+
+  a = fsObj~arrayin("c")
+  self~assertTrue(a~isA(.array))
+  self~assertSame(26, a~items)
+
+  expected = 'abcdefghijklmnopqrstuvwxyz'
+  do i = 1 to 26
+    self~assertSame(expected~substr(i, 1), a[i])
+  end
+
+  fsObj~close
+  fsObj~open
+
+  a = fsObj~arrayin("L")
+  self~assertTrue(a~isA(.array))
+  self~assertSame(1, a~items)
+
+  expected = 'abcdefghijklmnopqrstuvwxyz'
+  self~assertSame(expected, a[1])
+
+  fsObj~close
+  fsObj~open
+
+  a = fsObj~arrayin("l")
+  self~assertTrue(a~isA(.array))
+  self~assertSame(1, a~items)
+
+  expected = 'abcdefghijklmnopqrstuvwxyz'
+  self~assertSame(expected, a[1])
+
+  fsObj~close
+  fsObj~open
+
+  a = fsObj~arrayin("lIN")
+  self~assertTrue(a~isA(.array))
+  self~assertSame(1, a~items)
+
+  expected = 'abcdefghijklmnopqrstuvwxyz'
+  self~assertSame(expected, a[1])
+
+
+-- Tests arrayin() syntax
+::method test_arrayIn_syntax01
+
+  src = .array~new(12)
+  do i = 1 to 12
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.syntax_01")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  self~expectSyntax(93.0)
+  a = fsObj~arrayin("words")
+
+
+::method test_arrayIn_syntax02
+
+  src = .array~new(12)
+  do i = 1 to 12
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.syntax_02")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  self~expectSyntax(93.902)
+  a = fsObj~arrayin("LINES", "CHARS")
+
+
+::method test_arrayIn_syntax03
+
+  src = .array~new(12)
+  do i = 1 to 12
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.syntax_03")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  -- Omitted arg should be okay, omitted defaults to LINES.
+  a = fsObj~arrayin( , )
+
+  self~assertTrue(a~isA(.array))
+  self~assertSame(12, a~items)
+
+  do i = 1 to 12
+    self~assertSame("line" i, a[i])
+  end
+
+
+::method test_arrayIn_syntax04
+
+  src = .array~new(12)
+  do i = 1 to 12
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.syntax_02")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  self~expectSyntax(93.902)
+  a = fsObj~arrayin( , "BYTES")
 
 
 -- Tests arrayin() with empty file, created
@@ -520,6 +713,7 @@ return testResult
   end
 
 
+-- Regression test for a bug seen one time.
 ::method test_flush_on_close
 
   outFile = 'tmpOutDelMe.txt'
