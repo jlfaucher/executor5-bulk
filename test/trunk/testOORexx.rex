@@ -86,7 +86,14 @@ arguments = arg(1)
 ::routine isInPath
   use arg path, dir, sl, sep
 
-  if path~caseLessPos(dir || sep) <> 0 then return .true
-  if path~caseLessPos(dir || sl || pathSep) <> 0 then return .true
-  if path~right(dir~length)~caselessCompare(dir) == 0 then return .true
+  if .ooRexxUnit.OSName == "WINDOWS" then do
+    if path~caseLessPos(dir || sep) <> 0 then return .true
+    if path~caseLessPos(dir || sl || pathSep) <> 0 then return .true
+    if path~right(dir~length)~caselessCompare(dir) == 0 then return .true
+  end
+  else do
+    if path~pos(dir || sep) <> 0 then return .true
+    if path~pos(dir || sl || pathSep) <> 0 then return .true
+    if path~right(dir~length)~compare(dir) == 0 then return .true
+  end
   return .false
