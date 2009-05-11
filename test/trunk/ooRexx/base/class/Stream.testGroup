@@ -830,4 +830,33 @@ return testResult
   self~assertSame(100, ret)
 
 
+-- Regression test for bug  2790126
+::method test_query_seek_long_2790126
+
+  fileName = "delMe.test_stream_2790126"
+
+  st = .stream~new(fileName)
+  self~assertTrue(st~isA(.stream))
+  self~streamTestingFile = st
+
+  ret = st~open("write replace")
+  self~assertSame("READY:", ret)
+
+  ret = st~query("seek write")
+  self~assertSame(1, ret)
+
+  ret = st~charout(1~copies(4096))
+  self~assertSame(0, ret)
+
+  ret = st~query("seek write")
+  self~assertSame(4097, ret)
+
+  ret = st~charout(1~copies(8192))
+  self~assertSame(0, ret)
+
+  ret = st~query("seek write")
+  say 'ret:' ret
+  self~assertSame(12289, ret)
+
+
 -- End of class: Stream.testGroup
