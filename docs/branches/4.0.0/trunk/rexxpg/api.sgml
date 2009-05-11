@@ -8932,7 +8932,7 @@ RexxStringObject sobj;
 RexxArrayObject arr;
 RexxObjectPtr obj;
 
->>--context->RaiseCondition(str, sobj, arr, obj);-------------------------><
+>>--context->RaiseCondition(str, sobj, add, obj);-------------------------><
 ]]>
 </programlisting>
 <para>Raise a condition.  The raised condition is held in a pending
@@ -8948,9 +8948,8 @@ Rexx code.
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
     <entry><para>The optional condition description as a String object.</para></entry>
     </row>
-    <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>A optional Array object containing additional condition information.</para></entry>
-    </row>
+    <row><entry><emphasis role="italic">add</emphasis></entry>
+    <entry><para>A optional object containing additional condition information.</para></entry> </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>A Object that will be returned as a routine or
     method result if the raised condition is not trapped by the caller.</para></entry>
