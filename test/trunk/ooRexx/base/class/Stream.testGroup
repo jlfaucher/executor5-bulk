@@ -713,8 +713,323 @@ return testResult
   end
 
 
--- Regression test for a bug seen one time.
-::method test_flush_on_close
+::method test_arrayOut_simple
+
+  fileName = "delMe.arrayOut_simple"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a)
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(5, lines(fileName, "COUNT"))
+  do i = 1 to 5
+    self~assertSame(i, linein(fileName))
+  end
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_bigArray
+
+  fileName = "delMe.arrayOut_bigArray"
+  a = .array~new
+  do i = 1 to 10000
+    a[i] = 'line' i
+  end
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a)
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(10000, lines(fileName, "COUNT"))
+  do i = 1 to 10000
+    self~assertSame('line' i, linein(fileName))
+  end
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_bigLines
+
+  fileName = "delMe.arrayOut_bigLines"
+  a = .array~new
+  do i = 1 to 100
+    a[i] = ('line' i)~copies(12289)
+  end
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a)
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(100, lines(fileName, "COUNT"))
+  do i = 1 to 100
+    self~assertSame(a[i], linein(fileName))
+  end
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_bigArray_chars
+
+  fileName = "delMe.arrayOut_bigArrayC"
+
+  expected = 0
+  a = .array~new
+  do i = 1 to 10000
+    a[i] = 'line' i
+    expected += a[i]~length
+  end
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a, "CHARS")
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(expected, stream(fileName, 'C', "query size"))
+
+  do i = 1 to 10000
+    expected = a[i]
+    actual = charin(fileName, , a[i]~length)
+    self~assertSame(expected, actual)
+  end
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_bigLines_chars
+
+  fileName = "delMe.arrayOut_bigLinesC"
+
+  expected = 0
+  a = .array~new
+  do i = 1 to 100
+    a[i] = ('line' i)~copies(12289)
+    expected += a[i]~length
+  end
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a, "CHARS")
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(expected, stream(fileName, 'C', "query size"))
+
+  do i = 1 to 100
+    self~assertSame(a[i], charin(fileName, , a[i]~length))
+  end
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_abbrev_1
+
+  fileName = "delMe.arrayOut_abbrev"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a, 'c')
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(5, stream(fileName, 'C', "query size"))
+  bytes = charin(fileName, , 5)
+  self~assertSame('12345', bytes)
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_abbrev_2
+
+  fileName = "delMe.arrayOut_abbrev"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a, 'CH')
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(5, stream(fileName, 'C', "query size"))
+  bytes = charin(fileName, , 5)
+  self~assertSame('12345', bytes)
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_abbrev_3
+
+  fileName = "delMe.arrayOut_abbrev"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a, 'cHaRSareTooGood')
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(5, stream(fileName, 'C', "query size"))
+  bytes = charin(fileName, , 5)
+  self~assertSame('12345', bytes)
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_abbrev_L1
+
+  fileName = "delMe.arrayOut_abbrev"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a, 'lineout')
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(5, lines(fileName, "COUNT"))
+  do i = 1 to 5
+    self~assertSame(i, linein(fileName))
+  end
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_abbrev_L2
+
+  fileName = "delMe.arrayOut_abbrev"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  ret = f~arrayout(a, 'l')
+  self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(5, lines(fileName, "COUNT"))
+  do i = 1 to 5
+    self~assertSame(i, linein(fileName))
+  end
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_arrayOut_syntax_1
+
+  fileName = "delMe.arrayOut_syntax"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~expectSyntax(93.0)
+  ret = f~arrayout(a, 'BYTES')
+  self~assertSame(0, ret)
+
+
+::method test_arrayOut_syntax_2
+
+  fileName = "delMe.arrayOut_syntax"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~expectSyntax(93.902)
+  ret = f~arrayout(a, 'LINES', 'CHARS')
+  self~assertSame(0, ret)
+
+
+::method test_arrayOut_syntax_3
+
+  fileName = "delMe.arrayOut_syntax"
+  a = .array~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~expectSyntax(93.903)
+  ret = f~arrayout( , 'LINES')
+  self~assertSame(0, ret)
+
+
+::method test_arrayOut_syntax_4
+
+  fileName = "delMe.arrayOut_syntax"
+  s = .set~of(1, 2, 3, 4, 5)
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  --self~expectSyntax(93.0)
+  ret = f~arrayout(s,)
+  self~assertSame(0, ret)
+
+
+-- Regression test for a bug seen at one time.  (Don't know the number.)
+::method test_flush_on_close_xxxxxx
 
   outFile = 'tmpOutDelMe.txt'
   rexxPrg = 'tmpPrg'
@@ -855,7 +1170,6 @@ return testResult
   self~assertSame(0, ret)
 
   ret = st~query("seek write")
-  say 'ret:' ret
   self~assertSame(12289, ret)
 
 
