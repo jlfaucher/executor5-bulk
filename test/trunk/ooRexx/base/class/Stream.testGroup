@@ -1017,15 +1017,257 @@ return testResult
 ::method test_arrayOut_syntax_4
 
   fileName = "delMe.arrayOut_syntax"
+  a = 'cat'
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~expectSyntax(98.913)
+  ret = f~arrayout(a , 'LINES')
+  self~assertSame(0, ret)
+
+
+::method test_arrayOut_misc_1
+
+  fileName = "delMe.arrayOut_misc"
   s = .set~of(1, 2, 3, 4, 5)
 
   f = .stream~new(fileName)
   self~assertTrue(f~isA(.stream))
   self~streamTestingFile = f
 
-  --self~expectSyntax(93.0)
   ret = f~arrayout(s,)
   self~assertSame(0, ret)
+
+  ret = f~close
+  self~assertSame("READY:", ret)
+
+  self~assertSame(5, lines(fileName, "COUNT"))
+
+  -- This works, but I'm not sure it should always work.
+  do i = 1 to 5
+    self~assertSame(i, linein(fileName))
+  end
+
+  ret = stream(fileName, 'C', "close")
+  self~assertSame("READY:", ret)
+
+
+::method test_stream_supplier_1
+
+  src = .array~new(13)
+  do i = 1 to 13
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.supplier")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  itr = fsObj~supplier
+  self~assertTrue(itr~isA(.supplier))
+  self~assertTrue(itr~available)
+
+  count = 0
+  do while itr~available
+    count += 1
+    i = itr~index
+    self~assertSame('line' i, itr~item)
+    itr~next
+  end
+
+  self~assertSame(13, count)
+
+
+::method test_stream_supplier_2
+
+  src = .array~new(18)
+  do i = 1 to 18
+    src[i] = 'cat and dog' i
+  end
+  fileName = createFile(src, "delMe.stream.supplier")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  count = 0
+  do 3
+    count +=1
+    l = fsObj~linein
+  end
+
+  itr = fsObj~supplier
+  self~assertTrue(itr~isA(.supplier))
+  self~assertTrue(itr~available)
+
+  do while itr~available
+    count += 1
+    i = itr~index
+    self~assertTrue(3 < i & i < 19)
+    self~assertSame('cat and dog' i, itr~item)
+    itr~next
+  end
+
+  self~assertSame(18, count)
+
+
+-- This test was designed around the fact that the order of items in a Supplier
+-- object is un-defined.  It appears as though the order is actually the same
+-- as the line order in the file however.  Still, seems valid to not count on
+-- the order of a Supplier object.
+::method test_stream_supplier_3
+
+  src = .array~new(18)
+  bagOfLines = .bag~new
+  do i = 1 to 18
+    src[i] = 'apples and oranges' i
+    bagOfLines~put(src[i])
+  end
+  fileName = createFile(src, "delMe.stream.supplier")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  itr = fsObj~supplier
+  self~assertTrue(itr~isA(.supplier))
+  self~assertTrue(itr~available)
+
+  do while itr~available
+    bagOfLines~remove(itr~item)
+    itr~next
+  end
+
+  self~assertSame(0, bagOfLines~items)
+
+
+-- Test that the supplier is unchanged by changes to the stream after the
+-- 'snapshot' is taken
+::method test_stream_supplier_5
+
+  src = .array~new(13)
+  do i = 1 to 13
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.supplier")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  itr = fsObj~supplier
+  self~assertTrue(itr~isA(.supplier))
+  self~assertTrue(itr~available)
+
+  count = 0
+  do while itr~available
+    count += 1
+    i = itr~index
+    self~assertSame('line' i, itr~item)
+    itr~next
+    discard = fsObj~linein
+  end
+
+  self~assertSame(13, count)
+
+
+-- Another test that the supplier is unchanged by changes to the stream after
+-- the 'snapshot' is taken
+::method test_stream_supplier_6
+
+  src = .array~new(13)
+  do i = 1 to 13
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.supplier")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  itr = fsObj~supplier
+  self~assertTrue(itr~isA(.supplier))
+  self~assertTrue(itr~available)
+
+  count = 0
+  do while itr~available
+    count += 1
+    i = itr~index
+    self~assertSame('line' i, itr~item)
+    itr~next
+    discard = fsObj~linein(12)
+  end
+
+  self~assertSame(13, count)
+
+
+-- Another test that the supplier is unchanged by changes to the stream after
+-- the 'snapshot' is taken
+::method test_stream_supplier_7
+
+  src = .array~new(13)
+  do i = 1 to 13
+    src[i] = 'line' i
+  end
+  fileName = createFile(src, "delMe.stream.supplier")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  itr = fsObj~supplier
+  self~assertTrue(itr~isA(.supplier))
+  self~assertTrue(itr~available)
+
+  count = 0
+  do while itr~available
+    count += 1
+    i = itr~index
+    self~assertSame('line' i, itr~item)
+    itr~next
+    discard = fsObj~charin(5)
+  end
+
+  self~assertSame(13, count)
+
+
+-- Another test that the supplier is unchanged by changes to the stream after
+-- the 'snapshot' is taken
+::method test_stream_supplier_8
+
+  src = .array~new(18)
+  do i = 1 to 18
+    src[i] = 'cat and dog' i
+  end
+  fileName = createFile(src, "delMe.stream.supplier")
+  self~assertTrue(fileName \== "")
+
+  fsObj = .stream~new(fileName)
+  self~streamTestingFile = fsObj
+
+  count = 0
+  do 3
+    count +=1
+    l = fsObj~linein
+  end
+
+  itr = fsObj~supplier
+  self~assertTrue(itr~isA(.supplier))
+  self~assertTrue(itr~available)
+
+  do while itr~available
+    count += 1
+    i = itr~index
+    self~assertTrue(3 < i & i < 19)
+    self~assertSame('cat and dog' i, itr~item)
+    itr~next
+    fsObj~close
+  end
+
+  self~assertSame(18, count)
 
 
 -- Regression test for a bug seen at one time.  (Don't know the number.)
