@@ -127,6 +127,7 @@
     <listitem><para><computeroutput>samples\winsystem\winSystemDlgs.h        </computeroutput></para></listitem>
     <listitem><para><computeroutput>samples\winsystem\winSystemDlgs.rc       </computeroutput></para></listitem>
     <listitem><para><computeroutput>samples\winsystem\writeWithNotepad.rex   </computeroutput></para></listitem>
+    <listitem><para><computeroutput>samples\misc\fileDrop.rex                </computeroutput></para></listitem>
   </itemizedlist>
 </para>
 <para>
@@ -135,6 +136,16 @@
   ooRexx is uninstalled.  This behavior will be in effect for the uninstallation of ooRexx 4.0.0 and
   future versions of ooRexx, there is no change in the 3.2.0 uninstallation.  When a 3.2.0, or earlier,
   version of ooRexx is uninstalled, all files in the installation directory are deleted.
+</para>
+<para>
+  The installation program now correctly sets up the .rex file associations when run with non-Admin
+  privileges.  Note however, it is still advised to always run the installation and un-installation
+  program using Admin privileges.
+</para>
+<para>
+  The installation program now sets up Rexx program files with the .rex extension as drop handlers.  When
+  a file is dropped on the icon for a Rexx program, the Windows Shell executes the program and passes the
+  complete file name path as the argument to the program.
 </para>
 <para>
   <emphasis role="bold">Note:</emphasis>The Windows Scripting Host support in ooRexx 4.0.0 has been
