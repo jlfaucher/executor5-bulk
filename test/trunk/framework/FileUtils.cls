@@ -590,11 +590,12 @@ return fileName
 ::routine deleteFile public
   use strict arg fileName
 
-  -- On AIX (ksh), Linux (bash) and Windows the delete can be forced.  Not sure on other
-  -- OSes
+  -- On AIX (ksh), Linux (bash) and Windows the delete can be forced.  Not sure
+  -- on other OSes.  Windows files need to be quoted, some test cases use file
+  -- names with spaces in them.  TODO, need to check behavior on other OSes.
   select
     when .ooRexxUnit.OSName == "WINDOWS" then do
-      'del /q /f' fileName '1>nul 2>&1'
+      'del /q /f'  .TestUtil~enQuote(fileName) '1>nul 2>&1'
       ret = RC
     end
     when .ooRexxUnit.OSName == "LINUX" then do

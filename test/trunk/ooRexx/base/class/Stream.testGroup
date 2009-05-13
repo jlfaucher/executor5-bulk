@@ -1054,6 +1054,177 @@ return testResult
   self~assertSame("READY:", ret)
 
 
+::method test_state_easy
+
+  fileName = "delMe.testingFile"
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~assertSame("UNKNOWN", f~state)
+
+
+::method test_state_exsitingFile
+
+  src = .array~new(9)
+  do i = 1 to 9
+    src[i] = 'My line' i
+  end
+  fileName = createFile(src, "delMe.testingFile")
+  self~assertTrue(fileName \== "")
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~assertSame("UNKNOWN", f~state)
+
+  ret = f~open
+  self~assertSame("READY:", ret)
+
+  self~assertSame("READY", f~state)
+
+  f~close
+  self~assertSame("UNKNOWN", f~state)
+
+
+-- Test state equals error.
+::method test_state_error
+
+  fileName = "delMe.testingFile"
+  discard = stream(fileName, 'C', "open shared")
+  do i = 1 to 9
+    discard = lineout(fileName, 'My line' i)
+  end
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  f~open("write replace")
+  self~assertSame("ERROR", f~state)
+
+
+::method test_state_ready
+
+  src = .array~new(9)
+  do i = 1 to 9
+    src[i] = 'My line' i
+  end
+  fileName = createFile(src, "delMe.testingFile")
+  self~assertTrue(fileName \== "")
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~assertSame("UNKNOWN", f~state)
+
+  ret = f~open
+  self~assertSame("READY:", ret)
+  self~assertSame("READY", f~state)
+
+  -- Reads 9 lines, state is still ready. Reads 10th line, state is now
+  -- notready, counter gets bumped to 10, do while check is now false.  Assert
+  -- that counter is exactly 10.
+
+  counter = 0
+  do while f~state == "READY"
+    discard = f~linein
+    counter += 1
+  end
+  self~assertSame(10, counter)
+
+
+::method test_state_notready_1
+
+  src = .array~new(9)
+  do i = 1 to 9
+    src[i] = 'My line' i
+  end
+  fileName = createFile(src, "delMe.testingFile")
+  self~assertTrue(fileName \== "")
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~assertSame("UNKNOWN", f~state)
+
+  ret = f~open
+  self~assertSame("READY:", ret)
+  self~assertSame("READY", f~state)
+
+  discard = f~linein(11)
+  self~assertSame("NOTREADY", f~state)
+
+
+::method test_state_notready_2
+
+  src = .array~new(9)
+  do i = 1 to 9
+    src[i] = 'My line' i
+  end
+  lastByte = 9 * ('My line' i || .endOfFile)~length
+
+  fileName = createFile(src, "delMe.testingFile")
+  self~assertTrue(fileName \== "")
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~assertSame("UNKNOWN", f~state)
+
+  ret = f~open
+  self~assertSame("READY:", ret)
+  self~assertSame("READY", f~state)
+
+  discard = f~charin(lastByte + 1)
+  self~assertSame("NOTREADY", f~state)
+
+
+-- Test string with no actual existing file.
+::method test_string_1
+
+  fileName = "delMe.arrayOut_string_noFile"
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~assertSame(fileName, f~string)
+
+
+-- Test string with an exsisting file.
+::method test_string_2
+
+  src = .array~of(1, 2, 3, 4, 5)
+  fileName = createFile(src, "delMe.TestFile")
+  self~assertTrue(fileName \== "")
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~assertSame(fileName, f~string)
+
+
+-- Test string with an exsisting file.
+::method test_string_3
+
+  src = .array~of(1, 2, 3, 4, 5)
+  fileName = createFile(src, "delMe.TestFile With Spaces")
+  self~assertTrue(fileName \== "")
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  self~assertSame(fileName, f~string)
+
+
 ::method test_stream_supplier_1
 
   src = .array~new(13)

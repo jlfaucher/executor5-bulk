@@ -157,17 +157,25 @@ return testResult
   self~assertSame(0, chars(fileName))
 
 
--- Tests reading with a start position past the end of the file.
+-- Tests reading with a start position past the end of the file. NOTREADY
+-- condition should be raised.
 ::method test_charin_too_far
 
   fileName = createFile(.array~of('1234567890'), "delMe.test_charin_too_far")
   self~assertTrue(fileName \== "")
   self~charInTestingFile = fileName
 
+  r = "dog"
+  signal on notready
+
   len = 10 + .endOfLine~length
   r = charin(fileName, 20, len)
 
-  self~assertSame("", r)
+  self~assertSame("cat", r, "Error notready not raised")
+  return
+
+notready:
+  self~assertSame("dog", r, "Test case passes notready raised")
 
 
 -- Tests using a negative number for start position.
