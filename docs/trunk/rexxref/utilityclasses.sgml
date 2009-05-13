@@ -5252,7 +5252,15 @@ supplier to be passed to methods that expect an object that implements a
 <indexterm><primary>class</primary>
 <secondary>StreamSupplier class</secondary></indexterm>
 
-<para>A supplier object that will provided stream lines using supplier semantics.</para>
+<para>
+  A subclass of the <link linkend="clsSupplier">Supplier</link> class that will provided stream lines
+  using supplier semantics. This allows the programmer to iterate over the remaining lines in a stream. A
+  <emphasis role="italic">StreamSupplier</emphasis> object provides a snapshot of the stream at the point
+  in time it is created, including the current line read position. In general, the iteration is not
+  effected by later changes to the read and write positioning of the stream. However, forces external to
+  the iteration may change the <emphasis role="italic">content</emphasis> of the remaining lines as the
+  itertion progresses.
+</para>
 <figure><title>The StreamSupplier class and methods</title>
 <mediaobject>
 <imageobject>
