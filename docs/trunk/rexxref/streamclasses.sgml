@@ -505,8 +505,11 @@ advances the read pointer by the number of characters read. If you omit
 <emphasis role="italic">length</emphasis>, it defaults to
 <computeroutput>1</computeroutput>. If you specify
 <emphasis role="italic">start</emphasis>, this positions the read pointer
-before reading. If the stream is not already open, the stream attempts to
-open for reading and writing. If that fails, the stream opens for input only.
+before reading. The <emphasis role="italic">start</emphasis> value must be a positve whole number within
+the bounds of the stream. If the value is not a positive whole number, a syntax condition is raised. When
+the value is past the end of the stream, the empty string is returned and the NOTREADY condition is
+raised. If the stream is not already open, the stream attempts to open for reading and writing. If that
+fails, the stream opens for input only.
 </para>
 </section>
 

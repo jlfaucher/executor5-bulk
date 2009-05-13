@@ -1265,11 +1265,13 @@ Any read from the stream starts at the current read position by default. When
 the language processor completes reading, the read position is increased by
 the number of characters read. You can give a
 <emphasis role="italic">start</emphasis> value to specify
-an explicit read position.  This read position must be positive and within
-the bounds of the stream, and must not be specified for a transient stream.
-A value of <computeroutput>1</computeroutput> for
-<emphasis role="italic">start</emphasis> refers to the first character in
-the stream.</para>
+an explicit read position.  This read position must be a positive whole number and within
+the bounds of the stream, and must not be specified for a transient stream. A value of
+<computeroutput>1</computeroutput> for <emphasis role="italic">start</emphasis> refers to the first
+character in the stream. If <emphasis role="italic">start</emphasis> is not a positive whole number the
+appropriate syntax condition is raised. When the read position is past the bounds of the stream, the
+empty string is returned and the NOTREADY condition is raised.
+</para>
 <para>If you specify a <emphasis role="italic">length</emphasis> of
 <computeroutput>0</computeroutput>, then the read position
 is set to the value of <emphasis role="italic">start</emphasis>, but no
