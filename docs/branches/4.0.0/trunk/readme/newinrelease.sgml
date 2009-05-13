@@ -111,6 +111,7 @@
   The documentation of the Windows specific classes has been moved out of rexxref to the new document:
   winextensions.pdf.
 </para>
+<section><title>New Samples</title>
 <para>
   The following new samples are included in the distribution:
 
@@ -130,6 +131,8 @@
     <listitem><para><computeroutput>samples\misc\fileDrop.rex                </computeroutput></para></listitem>
   </itemizedlist>
 </para>
+</section>
+<section><title>Installation Program</title>
 <para>
   The Windows installation program has be enhanced so that it will only remove files installed by the
   ooRexx package.  Files added to the installation directory by the user will no longer be deleted when
@@ -147,6 +150,79 @@
   a file is dropped on the icon for a Rexx program, the Windows Shell executes the program and passes the
   complete file name path as the argument to the program.
 </para>
+</section>
+<section><title>ooDialog</title>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Documentation</emphasis></term>
+  <listitem>
+    <para>
+      Restructuring of the ooDialog reference has started.  Some areas have been reviewed for accuracy
+      and corrected / clarified where needed.  Anyone using ooDialog is urged to at least read chapter 2,
+      section 4 (2.4) which attempts to provide some information on the future direction of ooDialog.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Classes</emphasis></term>
+  <listitem>
+    <para>
+      <itemizedlist>
+        <listitem><para>DlgUtil      </para></listitem>
+        <listitem><para>Point        </para></listitem>
+        <listitem><para>Rect         </para></listitem>
+        <listitem><para>Size         </para></listitem>
+        <listitem><para>Image        </para></listitem>
+        <listitem><para>ImageList    </para></listitem>
+        <listitem><para>ResourceImage</para></listitem>
+      </itemizedlist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Enhanced Classes</emphasis></term>
+  <listitem>
+    <para>
+      The following existing classes have been reviewed for correct behavior and enhanced to provide all
+      the functionality of the underlying Windows control, as of Windows XP.  In essence this entails
+      allowing the control to be created with all of the control styles, providing a way to send all of
+      the messages the control accepts, providing a way to receive all of the event notifications that
+      the control sends.
+    </para>
+    <para>
+      <itemizedlist>
+        <listitem><para>ButtonControl and subclasses</para></listitem>
+        <listitem><para>StaticControl               </para></listitem>
+        <listitem><para>ProgressBar                 </para></listitem>
+      </itemizedlist>
+    </para>
+    <para>
+      The above classes all have new methods and new control styles to use when dynamically creating the
+      control.  The button and static controls have new event notifications that can be connected to the
+      dialog. (ProgressBar controls do not send notifications.)
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Other New Methods</emphasis></term>
+  <listitem>
+    <para>
+      The following new methods have been added to various classes in the ooDialog framework. Check the
+      index in the ooDialog reference for which class the methods applies to.  The list is in no
+      particular order, although related methods are, somewhat, grouped together.
+    </para>
+    <para>
+      <itemizedlist>
+        <listitem><para>setItemSysColor(), setSysColor()                               </para></listitem>
+        <listitem><para>getExStyleRaw()                                                </para></listitem>
+        <listitem><para>getTextSizeScreen(), getTextSizeDlg()                          </para></listitem>
+        <listitem><para>getFont(), createFontEx()                                      </para></listitem>
+        <listitem><para>setDefaultFont(), getFontName(), getFontSize() (Class methods.)</para></listitem>
+        <listitem><para>fontName(), fontSize() (Attributes.)                           </para></listitem>
+        <listitem><para>addStatic(), addImage(), getGroupBox()                         </para></listitem>
+        <listitem><para>addEtchedFrame(), addEtchedHorizontal(), addEtchedVertical()   </para></listitem>
+        <listitem><para>connectStaticNotify()                                          </para></listitem>
+        <listitem><para>setImageList(), getImageList() (For several classes.)          </para></listitem>
+        <listitem><para>getColumnCount(), getColumnOrder(), setColumnOrder()           </para></listitem>
+      </itemizedlist>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+<section><title>Windows Scripting Host (WSH)</title>
 <para>
   <emphasis role="bold">Note:</emphasis>The Windows Scripting Host support in ooRexx 4.0.0 has been
   temporarily disabled in this release.  This was done after soliciting input from users.  Temporarily
@@ -154,6 +230,7 @@
   consensus of users was that they would prefer an early release without WSH, than a later release with
   WSH. The intent is to deliver WSH as soon as possible in a follow-on minor release.
 </para>
+</section>
 </section>
 
 <section><title>Some possible differences in program behavior</title>
