@@ -365,8 +365,9 @@ return testResult
   self~streamTestingFile = fileName
   currentSize = stream(fileName, 'C', "query size")
 
+  self~expectSyntax(93.0)
   ret = stream(fileName, 'C', "open read replace")
-  self~assertSame("ERROR:22", ret)
+
   self~assertSame(currentSize, stream(fileName, 'C', "query size"))
 
 
