@@ -599,11 +599,11 @@ return fileName
       ret = RC
     end
     when .ooRexxUnit.OSName == "LINUX" then do
-      'rm -f' fileName '>/dev/null 2>&1'
+      'rm -f' .TestUtil~enQuote(fileName) '>/dev/null 2>&1'
       ret = RC
     end
     when .ooRexxUnit.OSName == "AIX" then do
-      'rm -f' fileName '>/dev/null 2>&1'
+      'rm -f' .TestUtil~enQuote(fileName) '>/dev/null 2>&1'
       ret = RC
     end
     otherwise ret = SysFileDelete(fileName)
