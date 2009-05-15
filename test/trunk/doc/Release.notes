@@ -1,20 +1,25 @@
-                        ooRexxUnit  Snapshot 03
-                        =======================
+                            ooTest  Snapshot 04
+                            ===================
 
-ooRexxUnit is an ooRexx implementation of junit, originally designed and
-implemented by Prof. Rony G.  Flatscher, and released to the Rexx Language
-Association under the Common Public License v1.0 as part of the ooRexx
-project.
+ooTest is the framework used by the ooRexx project to test the interpreter
+and auxiliary's packaged in the ooRexx distribution.  ooTest sits on top of
+the ooRexxUnit framework, which is an ooRexx implementation of junit,
+originally designed and implemented by Prof. Rony G. Flatscher, and
+released to the Rexx Language Association under the Common Public License
+v1.0 as part of the ooRexx project.
 
 ooRexxUnit is a testing framework that can be used by anyone to test their
-ooRexx programs.  In addition, the ooRexxUnit framework is used by the
-ooRexx project team to test the ooRexx interpreter.
+ooRexx programs.  ooTest is designed specifically for use by ooRexx project
+team to test the ooRexx interpreter.
 
-Note that this release contains a quick start document in the root of the
-directory tree.  ooTestQuick.pdf This document contains some tips to help
-get started in writing test cases.
+NOTE: The ooTest suite now contains some native API tests that require
+external executables to run.
 
-ooRexxUnit Snapshot 03 is a group of related packages released by the ooRexx
+Note that this release contains a quick start document, ooTestQuick.pdf, in
+the doc subdirectory of the ooTest directory tree. This document contains
+some tips to help get started in writing test cases.
+
+ooTest Snapshot 04 is a group of related packages released by the ooRexx
 team that contains both the testing framework and the set of tests used in
 testing the ooRexx interpreter.
 
@@ -22,28 +27,31 @@ Each package comes in a zip, tar, and self-extracting zip (*.exe) file
 format.  The contained files themselves are completely platform independent.
 Pick the format most convenient.
 
-This snapshot contains both the 3.2.0 package and the 4.0.0 package.  As the
-name implies, it is a snapshot of ooRexxUnit at this point in time.  (August
-23 2008 around a svn revision level of 3060.) This snapshot contains all the
-currently available test groups written to test the 3.2.0 interpreter and
-those to test the 4.0.0 interpreter.  These test groups are an excellent
-source of techniques for using ooRexxUnit.
+This snapshot contains only the 4.0.0 package.  As the name implies, it is a
+snapshot of ooTest at this point in time.  (May 16 2009 around a svn
+revision level of 4685.) This snapshot contains all the currently available
+test groups written to test the 4.0.0 interpreter.  These test groups are
+also an excellent source of techniques for using ooRexxUnit.
 
-As the ooRexx interpreter evolves, the ooRexxUnit framework evolves to take
-advantage of new features introduced in the interpreter.  In addition, there
-are test cases for testing features that are only present in the 4.0.0
-interpreter.  For these reasons, the ooRexxUnit-3.2.0-snapshot03 package is
-specific to ooRexx version 3.2.0 and the ooRexxUnit-4.0.0-snapshot03 package
-is specific to ooRexx version 4.0.0.
+As the ooRexx interpreter evolves, the ooTest and ooRexxUnit frameworks
+evolve to take advantage of new features introduced in the interpreter.  In
+addition, there are test cases for testing features that are only present in
+the 4.0.0 interpreter.  For these reasons, the ooTest-4.0.0-snapshot04
+package is specific to ooRexx version 4.0.0.
 
-A ooRexxUnit 4.0.0 version of the framework is guaranteed to work with the
+With the eminent release of ooRexx 4.0.0, it does not make sense to release
+a 3.2.0 snapshot, the 3.2.0 branch has not changed (or has changed very
+little) since the last snapshot.
+
+An ooRexxUnit 4.0.0 version of the framework is guaranteed to work with the
 4.0.0 release of the interpreter.  It may not run on a prior version of
 ooRexx.  A similar thing applies to the 3.2.0 version of ooRexxUnit.  While
-it will probably run under a 4.0.0 interpreter, it will be missing the tests
-for 4.0.0 specific features.  People should pick the ooRexxUnit package
-designed for the interpreter version they are running / planning to test.
+it may run under a 4.0.0 interpreter, it may not.  People wishing only to
+get the ooRexxUnit framework for their own testing should pick the
+ooRexxUnit package designed for the interpreter version they are running /
+planning to test on.
 
-The primary purpose of releasing this snapshot version of ooRexxUnit is to
+The primary purpose of releasing this snapshot version of ooTest is to
 encourage individuals and organizations to contribute test cases to test
 ooRexx.
 

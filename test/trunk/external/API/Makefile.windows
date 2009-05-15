@@ -160,5 +160,8 @@ rexxinstance.exe: rexxinstance.obj
 
 
 clean:
-	del *.dll *.obj *.ilk *.pdb *.lib *.exp $(OOTEST_BIN_DIR)\*.dll 1>nul 2>&1
+	del *.dll *.exe *.obj *.ilk *.pdb *.suo *.lib *.exp $(OOTEST_BIN_DIR)\*.dll 1>nul 2>&1
+
+mostly-clean:
+	del *.dll *.exe *.obj *.ilk *.pdb *.suo *.lib *.exp 1>nul 2>&1
 

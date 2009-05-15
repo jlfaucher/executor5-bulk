@@ -215,7 +215,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 ::method showHelp
   expose errMsg
 
-  say "testOORexx version" self~version "ooTest Framwork version" .ooTest_Framework_version
+  say "testOORexx version" self~version "ooTest Framework version" .ooTest_Framework_version
   if self~doVersionOnly then return self~TEST_SUCCESS_RC
 
   say

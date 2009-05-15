@@ -150,5 +150,8 @@ rexxinstance.o: rexxinstance.cpp orxexits.hpp
 	gcc -c $(ORXCFLAGS) $(REXX_INCLUDES) rexxinstance.cpp
 
 clean:
-	rm -f *.so *.o $(OOTEST_BIN_DIR)/lib*.so
+	rm -f *.so *.o rexxinstance $(OOTEST_BIN_DIR)/lib*.so
+
+mostly-clean:
+	rm -f *.so *.o rexxinstance
 

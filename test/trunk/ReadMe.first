@@ -1,16 +1,14 @@
 
-                  ooRexxUnit 4.0.0 snapshot 01 Quick Start
+                  ooRexxUnit 4.0.0 snapshot 04 Quick Start
                   ========================================
 
 This is the read me file explaining how the ooTest framework is used by
 the ooRexx team to test ooRexx.
 
-NOTE: This is mostly a place-holder file, it is just barely started.  But,
-the quick start notes below should allow one to quickly run the current
-test suite.
-
-The snapshot package includes a quick start tutorial in PDF format.  This
-file: ooTestQuick.pdf provides additional useful infomation.
+The quick start notes below should allow one to quickly run the current test
+suite.  After installation, the doc subdirectory contains a quick start
+tutorial in PDF format.  This file: ooTestQuick.pdf provides additional
+useful information and is a brief tutorial on how to write a test case.
 
 NOTE: You need to match the ooRexxUnit version level with the version of
 the ooRexx interpreter you are running.  To use the ooRexxUnit 4.0.0 test
@@ -22,38 +20,56 @@ Quick Start to execute tests:
     1.)  Simple command line, running the entire test suite at one time.
     --------------------------------------------------------------------
 
+NOTE: Starting with ooRexx 4.0.0, the test suite contains tests that require
+external executables.  These are tests to exercise the ooRexx native API.
+Running these tests makes things slightly more complex.  There are 3 options
+here, simplest to hardest.
+
+1.) Skip the native API tests altogether.  The best option if you are just
+getting familiar with the test suite.
+
+2.) Download the pre-compiled external binaries for your system.  Details on
+picking and installing the proper set are in the Release.notes in the doc
+directory.
+
+3.) If you understand, somewhat, compiling C / C++ files you can compile
+your own binaries as part of running the automated test suite.  Details for
+this step have not been written, just post a question on the ooRexx
+developers list.
+
 Start in the root directory, the directory that contains this file.  The
 Rexx program that runs the tests is: testOORexx.rex
 
-That is the only file you need to use to begin with.  The program file with
-no arguments will run the entire ooRexx test suite.  Depending on the horse
-power in your system this could take 5 or 6 minutes, maybe longer on a real
-old system.
+That is the only file you need to use to begin with.  We will assume that
+you are using option 1 above, skipping the tests for the native API
+binaries.  The program file will run the ooRexx test suite.  Depending on
+the horse power in your system this could take 5 or 6 minutes, maybe longer
+on a real old system.
 
 Once you invoke testOORexx everything runs automatically and you will see
 the results printed on the screen when the test finishes.
+
+The argument: '-X native_api' in the following examples tells the framework
+to eXclude the native API tests.
 
 Windows
 -------
 If you have done a normal install of the interpreter so that file
 associations are set up (done automatically by the installer) you can
-simply use this command line:
+simply use the following command line.
 
-E:\ooRexxUnit.4.0.0>testOORexx
+E:\ooRexxUnit.4.0.0>testOORexx -X native_api
 
 of course you can always use the full invocation the interpreter like this:
 
-E:\ooRexxUnit.4.0.0>rexx testOORexx.rex
+E:\ooRexxUnit.4.0.0>rexx testOORexx.rex -X native_api
 
 Linux
 -----
 If you have a normal install of the interpreter with the executable in the
 path then use this command line:
 
-# ./testOORexx.rex
-
-Look at the file: Expected.Results in the same directory as this file to see
-the expected console output when executing the entire test suite.
+# ./testOORexx.rex -X native_API
 
 AIX
 ---
@@ -61,11 +77,7 @@ If you have a normal install of the interpreter with the executable in the
 path then use this command line:
 
 # ./setTestEnv.sh
-# ./testOORexx.rex
-
-For the tests to complete you need the IBM XL C/C++ V9 (with PTF for  IZ34314)
-compiler installed. The XL C/C++ V8 copiler does show the same problem.
-Unfortunatle there is no ARAR number available yet.
+# ./testOORexx.rex -X native_api
 
 After Test Completion on Your OS
 --------------------------------
@@ -86,7 +98,7 @@ Help
 This command will print out some help:
 
 E:\ooRexxUnit.4.0.0>testOORexx.rex /?
-testOORexx version 1.0.0 ooTest Framwork version 1.0.0_3.2.0
+testOORexx version 1.0.0 ooTest Framework version 1.0.0_3.2.0
 
 usage: testOORexx [OPTIONS]
 Try 'testOORexx --help' for more information.
@@ -128,25 +140,25 @@ and you will get output like this:
 
 E:\ooRexxUnit.4.0.0>testOORexx.rex -R ooRexx\base\expressions -f Addition
 Searching for test containers..
-Executing automated test suite..
+Executing automated test suite...
 
 ooTest Framework - Automated Test of the ooRexx Interpreter
 
 
-Interpreter: REXX-ooRexx_4.0.0(MT) 6.03 21 Aug 2008
-ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
+Interpreter:     REXX-ooRexx_4.0.0(MT) 6.03 13 May 2009
+Addressing Mode: 64
+ooRexxUnit:      2.0.0_3.2.0    ooTest: 1.0.0_4.0.0
 
-Tests ran:           200
-Assertions:          198
+Tests ran:           2839
+Assertions:          3576
 Failures:            0
 Errors:              0
 Skipped files:       0
 
-File search:        00:00:00.020000
-Suite construction: 00:00:00.020000
-Test execution:     00:00:00.080000
-Total time:         00:00:01.022000
-
+File search:        00:00:00.297000
+Suite construction: 00:00:00.266000
+Test execution:     00:00:01.015000
+Total time:         00:00:02.281000
 
 E:\ooRexxUnit.4.0.0>
 
@@ -163,7 +175,8 @@ E:\ooRexxUnit.4.0.0>copy misc\template.testGroup ooRexx\MyTests.testGroup
 Edit the file and start writing your test cases.
 
 PLEASE ask questions on one of the Rexx lists, as this Quick Start does not
-go much further.
+go much further.  In addition, the ooTestQuick.pdf doc will walk you through
+the process of creating test cases.
 
 You can learn a lot by examining some other test groups.
 
@@ -181,8 +194,9 @@ Executing automated test suite..
 ooTest Framework - Automated Test of the ooRexx Interpreter
 
 
-Interpreter: REXX-ooRexx_4.0.0(MT) 6.03 21 Aug 2008
-ooRexxUnit:  2.0.0_3.2.0        ooTest: 1.0.0_3.2.0
+Interpreter:     REXX-ooRexx_4.0.0(MT) 6.03 13 May 2009
+Addressing Mode: 64
+ooRexxUnit:      2.0.0_3.2.0    ooTest: 1.0.0_4.0.0
 
 Tests ran:           4
 Assertions:          2
@@ -190,10 +204,9 @@ Failures:            0
 Errors:              0
 Skipped files:       0
 
-File search:        00:00:00.130000
+File search:        00:00:00.406000
 Suite construction: 00:00:00.000000
 Test execution:     00:00:00.000000
-Total time:         00:00:01.012000
-
+Total time:         00:00:01.000000
 
 E:\ooRexxUnit.4.0.0>
