@@ -1089,30 +1089,33 @@ return testResult
   self~assertSame("UNKNOWN", f~state)
 
 
--- Test state equals error.  TODO On Windows the following will force the stream
--- into an error state.  So far no one has come up with a way to force an error
--- state on the other OSes.  If you can do it - please do.
+-- Test state equals ERROR.  On Linux / Unix this test case will fail if run
+-- by root.  So, we check for root and if so fail the test case.
 ::method test_state_error
 
-  if .ooRexxUnit.OSName == "WINDOWS" then do
-    fileName = "delMe.testingFile"
-    discard = stream(fileName, 'C', "open shared")
-    do i = 1 to 9
-      discard = lineout(fileName, 'My line' i)
-    end
-
-    f = .stream~new(fileName)
-    self~assertTrue(f~isA(.stream))
-    self~streamTestingFile = f
-
-    f~open("write replace")
-    self~assertSame("ERROR", f~state)
+  src = .array~new(9)
+  do i = 1 to 9
+    src[i] = 'My line' i
   end
-  else do
-    -- unix-like  TODO how to force error state?
-    nop
+  fileName = createFile(src, "delMe.testingFile")
+  self~assertTrue(fileName \== "")
+
+  f = .stream~new(fileName)
+  self~assertTrue(f~isA(.stream))
+  self~streamTestingFile = f
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+    cmd = 'id -u > /dev/null 2>&1'
+    output = .array~new
+    ret = issueCmd(cmd, output)
+    self~assertSame(0, ret, 'Check for root must succeed')
+    userID = output[1]
+    self~assertNotSame(0, userID, 'This test case must not be run as root')
+    'chmod -w' fileName
   end
 
+  f~open("write replace")
+  self~assertSame("ERROR", f~state)
 
 ::method test_state_ready
 
