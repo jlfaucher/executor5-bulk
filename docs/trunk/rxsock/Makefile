@@ -2,7 +2,7 @@
 #
 # Description: Makefile for the Object Rexx Sockets Library Documents.
 #
-# Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+# Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -52,14 +52,16 @@ SGML_FILES = rxsock.sgml \
      ../shared/legalstuff.sgml \
      ../shared/gethelp.sgml \
      ../shared/CPLv1.0.sgml \
-     socketclass.sgml
+     socketclass.sgml \
+     streamsocket.sgml
 
 IMAGE_FILES = oorexx.jpg \
  	      docbook-1.png \
 	      new_rexxla.jpg \
 	      HostInfo.png \
 	      InetAddress.png \
-	      SocketClass.png
+	      SocketClass.png \
+	      StreamSocketClass.png
 
 JADETEXFMT  = ./pdfjadetex.fmt
 HYPERREFCFG = ./hyperref.cfg
