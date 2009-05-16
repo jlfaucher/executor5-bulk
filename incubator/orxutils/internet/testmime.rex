@@ -3,7 +3,7 @@
 /*                                                                            */
 /* Description: Test the mime class.                                          */
 /*                                                                            */
-/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -41,33 +41,19 @@
 /*----------------------------------------------------------------------------*/
 
 
-crlf = '0D0A'x
 part1 = .mimepart~new()
 part1~description = 'just some text'
-part1~addContent('Part 1' || crlf)
-part1~addContent('This is line 2' || crlf)
-part1~addContent('This is line 3' || crlf)
-part1~addContent('This is line 4' || crlf)
+part1~addContent('Part 1')
+part1~addContent('This is line 2')
+part1~addContent('This is line 3')
+part1~addContent('This is line 4')
 part2 = .mimepart~new()
-part2~addContent('Part 2' || crlf)
+part2~addContent('Part 2')
 multip =.mimemultipart~new()
 multip~addPart(part1)
 multip~addPart(part2)
 say multip
 return
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ::requires 'mime.cls'

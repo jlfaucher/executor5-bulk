@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Description: MIME classes.                                                 */
 /*                                                                            */
-/* Copyright (c) 2006-2007 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2006-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -66,6 +66,7 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
+::constant  crlf '0D0A'x        -- carriage return/line feed
 ::attribute type                -- content-type header
 ::attribute encoding            -- content-transfer-encoding header
 ::attribute id                  -- content-id header
@@ -99,7 +100,8 @@ return
 ::method addContent
 expose content
 use strict arg c
-content = content || c
+if c == '.' then c = '..'  -- we need this for smtp messages
+content = content || c || self~crlf
 return
 
 
@@ -111,24 +113,23 @@ return
 ::method string
 expose mimever type encoding id description disposition content
 use strict arg
-crlf = '0D0A'x
-headers = 'MIME-Version:' mimever || crlf
+headers = 'MIME-Version:' mimever || self~crlf
 if type <> '' then do
-   headers = headers || 'Content-Type:' type || crlf
+   headers = headers || 'Content-Type:' type || self~crlf
    end
 if encoding <> '' then do
-   headers = headers || 'Content-Transfer-Encoding:' encoding || crlf
+   headers = headers || 'Content-Transfer-Encoding:' encoding || self~crlf
    end
 if id <> '' then do
-   headers = headers || 'Content-ID:' id || crlf
+   headers = headers || 'Content-ID:' id || self~crlf
    end
 if description <> '' then do
-   headers = headers || 'Content-Description:' description || crlf
+   headers = headers || 'Content-Description:' description || self~crlf
    end
 if disposition <> '' then do
-   headers = headers || 'Content-Disposition:' disposition || crlf
+   headers = headers || 'Content-Disposition:' disposition || self~crlf
    end
-mime = headers || crlf || self~content || crlf
+mime = headers || self~crlf || self~content || self~crlf
 return mime
 
 
@@ -159,6 +160,7 @@ return mime
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
+::constant  crlf '0D0A'x        -- carriage return/line feed
 ::attribute type                -- content-type header
 ::attribute encoding            -- content-transfer-encoding header
 ::attribute id                  -- content-id header
@@ -207,29 +209,28 @@ return
 ::method string
 expose mimever type encoding id description disposition content multiparts
 use strict arg
-crlf = '0D0A'x
-headers = 'MIME-Version:' mimever || crlf
+headers = 'MIME-Version:' mimever || self~crlf
 boundary = '===ooRexx=Mime=Part===' || c2x(date('b') || time('L')) || '=='
 type = 'multipart/mixed; boundary="' || boundary || '"'
-headers = headers || 'Content-Type:' type || crlf
+headers = headers || 'Content-Type:' type || self~crlf
 if encoding <> '' then do
-   headers = headers || 'Content-Transfer-Encoding:' encoding || crlf
+   headers = headers || 'Content-Transfer-Encoding:' encoding || self~crlf
    end
 if id <> '' then do
-   headers = headers || 'Content-ID:' id || crlf
+   headers = headers || 'Content-ID:' id || self~crlf
    end
 if description <> '' then do
-   headers = headers || 'Content-Description:' description || crlf
+   headers = headers || 'Content-Description:' description || self~crlf
    end
 if disposition <> '' then do
-   headers = headers || 'Content-Disposition:' disposition || crlf
+   headers = headers || 'Content-Disposition:' disposition || self~crlf
    end
-mime = headers || crlf
+mime = headers || self~crlf
 if multiparts~items > 0 then do
    do part over multiparts
-      mime = mime || '--' || boundary || crlf || part~string || crlf
+      mime = mime || '--' || boundary || self~crlf || part~string || self~crlf
       end
-   mime = mime || '--' || boundary || '--' || crlf
+   mime = mime || '--' || boundary || '--' || self~crlf
    end
 return mime
 

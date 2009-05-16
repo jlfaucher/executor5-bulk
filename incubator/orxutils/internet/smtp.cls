@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Description: Classes to support SMTP.                                      */
 /*                                                                            */
-/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -401,7 +401,7 @@ do i = 1 to msg~Recipients~items
 retc = self~strmsock~lineout('Subject:' msg~Subject)
 retc = self~strmsock~lineout('')
 retc = self~strmsock~lineout(msg~content)
-retc = self~strmsock~lineout('.')
+retc = self~strmsock~lineout('.') -- this is the message terminator for the smtp protocol
 /* get and check the response */
 cmdresponse[cmdresponse~items + 1] = strmsock~linein()
 startresp = cmdresponse~items

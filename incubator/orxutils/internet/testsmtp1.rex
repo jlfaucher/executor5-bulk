@@ -42,9 +42,9 @@
 
 -- build some simple mime parts
 mime1 = .mimepart~new
-mime1~addContent('This is a test.' || '0D0A'x)
+mime1~addContent('This is a test.')
 mime2 = .mimepart~new
-mime2~addContent('Another test.' || '0D0A'x)
+mime2~addContent('Another test.')
 
 -- build a multipart mime part
 mimemp = .mimemultipart~new
