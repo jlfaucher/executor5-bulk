@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Description: Simple classes to encalsulate stream sockets.                 */
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -110,6 +110,16 @@ return retc -- return the number of bytes written
 /*----------------------------------------------------------------------------*/
 
 ::method arrayIn
+raise syntax 93.963 array ()  -- not supported
+return
+
+/*----------------------------------------------------------------------------*/
+/* Method: arrayOut                                                           */
+/* Description: this is an invalid method for stream sockets                  */
+/* Arguments: none                                                            */
+/*----------------------------------------------------------------------------*/
+
+::method arrayOut
 raise syntax 93.963 array ()  -- not supported
 return
 
@@ -355,6 +365,16 @@ opened = .true
 state = 'READY'
 description = ''
 return self~description
+
+/*----------------------------------------------------------------------------*/
+/* Method: position                                                           */
+/* Description: this is an invalid method for stream sockets                  */
+/* Arguments: none                                                            */
+/*----------------------------------------------------------------------------*/
+
+::method position
+raise syntax 93.963 array ()  -- not supported
+return
 
 /*----------------------------------------------------------------------------*/
 /* Method: say                                                                */
