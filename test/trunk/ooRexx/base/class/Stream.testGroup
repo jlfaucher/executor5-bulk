@@ -1093,12 +1093,11 @@ return testResult
 -- by root.  So, we check for root and if so fail the test case.
 ::method test_state_error
 
-  src = .array~new(9)
+  fileName = "delMe.testingFile"
+  discard = stream(fileName, 'C', "open shared")
   do i = 1 to 9
-    src[i] = 'My line' i
+    discard = lineout(fileName, 'My line' i)
   end
-  fileName = createFile(src, "delMe.testingFile")
-  self~assertTrue(fileName \== "")
 
   f = .stream~new(fileName)
   self~assertTrue(f~isA(.stream))
