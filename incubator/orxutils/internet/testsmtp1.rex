@@ -54,18 +54,25 @@ mimemp~addPart(mime2)
 -- build an smtp message
 msg = .smtpmsg~new
 msg~From = 'dashley@holmes4.com'
-msg~addRecipient('dashley@us.ibm.com')
+msg~addRecipient('david.ashley.ibm@gmail.com')
 msg~Subject = 'Test SMTP Msg From ooRexx'
 msg~Content = mimemp
 
 -- send the mail message
 smtpconx = .smtp~new
-retc = smtpconx~connect('holmes4.com', 'dashley@holmes4.com', 'xxx')
-if retc = -1 then return
+retc = smtpconx~connect('127.0.0.1', 'dashley', 'xxx')
+if retc = -1 then do
+   do rsp over smtpconx~cmdresponse
+      say rsp
+      end
+   return
+   end
 retc = smtpconx~send(msg)
-if retc = -1 then return
-do rsp over smtpconx~cmdresponse
-   say rsp
+if retc = -1 then do
+   do rsp over smtpconx~cmdresponse
+      say rsp
+      end
+   return
    end
 retc = smtpconx~logoff
 return

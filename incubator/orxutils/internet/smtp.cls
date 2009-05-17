@@ -187,7 +187,7 @@ do while r1 <> ''
    end
 /* we found an unexpected return code */
 do i = startresp to cmdresponse~items
-   self~debugsay('StreamSock: unexpected response:' cmdresponse[i])
+   self~debugsay('Error: unexpected response:' cmdresponse[i])
    end
 return .true
 
@@ -207,12 +207,12 @@ if retc = .true then do
    end
 retc = self~strmtransact(authid~encodebase64, '3')
 if retc = .true then do
-   self~debugsay('Error: AUTH LOGIN command to' rhost 'failed.')
+   self~debugsay('Error: sending authid to' rhost 'failed.')
    return -1
    end
 retc = self~strmtransact(password~encodebase64, '2')
 if retc = .true then do
-   self~debugsay('Error: AUTH LOGIN command to' rhost 'failed.')
+   self~debugsay('Error: sending password to' rhost 'failed.')
    return -1
    end
 return 0
@@ -399,7 +399,7 @@ do i = 1 to msg~Recipients~items
    else retc = self~strmsock('   ' msg~Recipients[i] || suffix)
    end
 retc = self~strmsock~lineout('Subject:' msg~Subject)
-retc = self~strmsock~lineout('')
+-- retc = self~strmsock~lineout('')
 retc = self~strmsock~lineout(msg~content)
 retc = self~strmsock~lineout('.') -- this is the message terminator for the smtp protocol
 /* get and check the response */
