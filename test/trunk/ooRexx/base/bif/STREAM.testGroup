@@ -715,8 +715,13 @@ return testResult
 ::method test_queryDir_exists
 
   dirName = 'TempTestingDir'
+
   -- Make sure this doesn't exist for some bizarre reason.
-  self~assertFalse(SysFileExists(dirName))
+  if SysFileExists(dirName) then do
+    j = SysRmDir(dirName)
+  end
+
+  self~assertFalse(SysFileExists(dirName), "Directory:" dirName "must not exist at start of test")
 
   self~assertSame(0, SysMkDir(dirName))
   parse value .DateTime~new~isoDate with d 'T' t '.' .
