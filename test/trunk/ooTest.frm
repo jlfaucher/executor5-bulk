@@ -261,48 +261,34 @@ return 0
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'ooTestTypes' public mixinclass Object
 
-  ::method MIN_TEST_TYPE  class; return 1
-  ::method MIN_TEST_TYPE;        return 1
+  ::constant MIN_TEST_TYPE                1
 
-  ::method UNIT_TEST    class; return 1
-  ::method UNIT_TEST;          return 1
-  ::method DEFAULT_TEST class; return 1
-  ::method DEFAULT_TEST;       return 1
+  ::constant UNIT_TEST                    1
+  ::constant DEFAULT_TEST                 1
 
-  ::method UNIT_LONG_TEST   class; return 2
-  ::method UNIT_LONG_TEST;         return 2
-  ::method SAMPLE_TEST      class; return 3
-  ::method SAMPLE_TEST;            return 3
-  ::method GUI_TEST         class; return 4
-  ::method GUI_TEST;               return 4
-  ::method GUI_SAMPLE_TEST  class; return 5
-  ::method GUI_SAMPLE_TEST;        return 5
-  ::method OLE_TEST         class; return 6
-  ::method OLE_TEST;               return 6
-  ::method DOC_EXAMPLE_TEST class; return 7
-  ::method DOC_EXAMPLE_TEST;       return 7
+  ::constant UNIT_LONG_TEST               2
+  ::constant SAMPLE_TEST                  3
+  ::constant GUI_TEST                     4
+  ::constant GUI_SAMPLE_TEST              5
+  ::constant OLE_TEST                     6
+  ::constant DOC_EXAMPLE_TEST             7
 
   -- A test type that makes noise.  I frequently need to run the test suite in
   -- an environment where I need these types of test cases to be skipped.  This
   -- is a convenience for myself (Mark Miesfeld.)
-  ::method DOC_EXAMPLE_NOISE_TEST   class; return 8
-  ::method DOC_EXAMPLE_NOISE_TEST;         return 8
+  ::constant DOC_EXAMPLE_NOISE_TEST       8
 
   -- A test type for the ooTest framework examples.
-  ::method FRAMEWORK_EXAMPLE_TEST   class; return 9
-  ::method FRAMEWORK_EXAMPLE_TEST;         return 9
+  ::constant FRAMEWORK_EXAMPLE_TEST       9
 
   -- A test type for the ooRexx APIs.
-  ::method NATIVE_API_TEST   class; return 10
-  ::method NATIVE_API_TEST;         return 10
+  ::constant NATIVE_API_TEST             10
 
   -- A test type involving TCPIP, smtp, ftp, for example, where the test might
   -- need some special set up.  Like a ftp server, mail server, etc..
-  ::method TCPIP_TEST   class; return 11
-  ::method TCPIP_TEST;         return 11
+  ::constant TCPIP_TEST                  11
 
-  ::method MAX_TEST_TYPE  class; return 11
-  ::method MAX_TEST_TYPE;        return 11
+  ::constant MAX_TEST_TYPE               11
 
   /** defaultTestSet()
    * Returns the set of tests that are always run.  Any test type in this set
@@ -430,7 +416,7 @@ return 0
       name = itr~index
       if name~right(5) == "_TEST" then do
         name = name~left(name~length - 5)
-        number = itr~item~source[1]~word(2)
+        number = self~send(itr~index)
 
         n = name~lower(2)
         names~setEntry(name, number)
