@@ -74,7 +74,7 @@ arguments = arg(1)
 
    searchPhase  = .PhaseReport~new(file, .PhaseReport~FILE_SEARCH_PHASE)
    msg = "Searching for test containers"
-   if cl~noTicks then
+   if cl~suppressAllTicks then
      say msg
    else
      searchPhase~tickTock(msg)
@@ -92,7 +92,7 @@ arguments = arg(1)
 
    suite = .ooTestSuite~new
    suite~showProgress = cl~showProgress
-   suite~beVerbose = cl~verboseTestCase
+   suite~beVerbose = cl~showTestCases
 
    do container over containers
      if cl~testTypes == .nil then container~suite(suite)
@@ -164,21 +164,21 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 ::attribute errMsg private
 ::attribute doVersionOnly private
 
-::attribute verboseTestCase get             -- S
-::attribute verboseTestCase set private
-::attribute showProgress get                -- s
+::attribute showTestCases get                  -- S
+::attribute showTestCases set private
+::attribute showProgress get                   -- s
 ::attribute showProgress set private
-::attribute noTicks get                     -- U
-::attribute noTicks set private
-::attribute noTestCaseTicks get             -- u
-::attribute noTestCaseTicks set private
-::attribute buildFirst get                  -- b
+::attribute suppressAllTicks get               -- U
+::attribute suppressAllTicks set private
+::attribute suppressTestcaseTicks get          -- u
+::attribute suppressTestcaseTicks set private
+::attribute buildFirst get                     -- b
 ::attribute buildFirst set private
-::attribute forceBuild get                  -- B
+::attribute forceBuild get                     -- B
 ::attribute forceBuild set private
-::attribute noTests get                     -- n
+::attribute noTests get                        -- n
 ::attribute noTests set private
-::attribute waitAtCompletion get            -- w
+::attribute waitAtCompletion get               -- w
 ::attribute waitAtCompletion set private
 
 -- Don't need to look at patterns, multi-dirs, single file, etc..
@@ -188,14 +188,18 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 ::attribute testFile get
 ::attribute testFile set private
 
-
-::attribute optTable private
+::attribute testOpts private
 
 ::method init
-  expose cmdLine
+  expose cmdLine testOpts
   use arg cmdLine
 
+  testOpts = .directory~new
   self~setAllDefaults
+
+  self~readOptionsFile
+
+  .environment~testOpts = testOpts
 
   if cmdLine == "" then return
   if self~hasHelpArg then return
@@ -241,15 +245,15 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 
 /** doTestCaseTicks()  Convenience method. */
 ::method doTestCaseTicks
-  if \ self~noTicks,  \ self~noTestCaseTicks, \ self~showProgress, \ self~verboseTestCase then
+  if \ self~suppressAllTicks,  \ self~suppressTestcaseTicks, \ self~showProgress, \ self~showTestCases then
     return .true
   return .false
 
 ::method resolveTestTypes private
-  expose optTable
+  expose testOpts
 
-  includes = optTable['testTypeIncludes']
-  excludes = optTable['testTypesExcludes']
+  includes = testOpts~testTypeIncludes
+  excludes = testOpts~testTypesExcludes
   if includes \== .nil | excludes \== .nil then do
     select
       when includes \== .nil, excludes \== .nil then self~testTypes = includes~difference(excludes)
@@ -258,36 +262,37 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     end
     -- End select
   end
+  testOpts~testTypes = self~testTypes
 
 ::method resolveFiles private
-  expose optTable
+  expose testOpts
 
   -- Here we would resolve files and directories.  Only have the single file
   -- option implemented so far.
-  if optTable['file'] \== .nil then do
+  if testOpts~file \== .nil then do
     self~simpleTestSelection = .false
-    self~testFile = optTable['file']
+    self~testFile = testOpts~file
   end
 
 ::method resolveOptions private
-  expose optTable
+  expose testOpts
 
-  -- Here we would need to see if the command line options over-ride the
-  -- settings in the options file.  But, the options file is not implemented,
-  -- so we don't need to bother with that, yet.
-  if optTable['showProgress'] \== .nil then self~showProgress = .true
-  if optTable['showTestCases'] \== .nil then self~verboseTestCase = .true
-  if optTable['suppressTicks'] \== .nil then self~noTestCaseTicks = .true
-  if optTable['suppressAllTicks'] \== .nil then self~noTicks = .true
-  if optTable['noTests'] \== .nil then self~noTests = .true
-  if optTable['waitAtCompletion'] \== .nil then self~waitAtCompletion = .true
-  if optTable['buildFirst'] \== .nil then self~buildFirst = .true
-  if optTable['forceBuild'] \== .nil then do
-    self~forceBuild = .true
+  if testOpts~showProgress \== .nil then self~showProgress = testOpts~showProgress
+  if testOpts~showTestCases \== .nil then self~showTestCases = testOpts~showTestCases
+  if testOpts~suppressTestcaseTicks \== .nil then self~suppressTestcaseTicks = testOpts~suppressTestCaseTicks
+  if testOpts~suppressAllTicks \== .nil then self~suppressAllTicks = testOpts~suppressAllTicks
+  if testOpts~noTests \== .nil then self~noTests = testOpts~noTests
+  if testOpts~waitAtCompletion \== .nil then self~waitAtCompletion = testOpts~waitAtCompletion
+  if testOpts~buildFirst \== .nil then self~buildFirst = testOpts~buildFirst
+  if testOpts~forceBuild \== .nil then self~forceBuild = testOpts~forceBuild
+
+  if self~forceBuild then do
     self~buildFirst = .true
-    optTable['buildFirst'] = .true
+    testOpts~buildFirst = .true
   end
 
+::method readOptionsFile private
+  -- Not implemented yet.
 
 ::method parse private
   expose cmdLine tokenCount errMsg originalCommandLine
@@ -369,23 +374,23 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   return .true
 
 ::method parseShortOpt private
-  expose cmdLine tokenCount optTable
+  expose cmdLine tokenCount testOpts
   use arg word, i
 
   j = i
 
   select
     when word == '-a' then do
-      optTable['testTypeIncludes'] = .ooTestTypes~all
+      testOpts~testTypeIncludes = .ooTestTypes~all
     end
 
     when word == '-b' then do
-      optTable['buildFirst'] = .true
+      testOpts~buildFirst = .true
     end
 
     when word == '-B' then do
-      optTable['buildFirst'] = .true
-      optTable['forceBuild'] = .true
+      testOpts~buildFirst = .true
+      testOpts~forceBuild = .true
     end
 
     when word == '-f' then do
@@ -395,7 +400,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
       j += 1
       if \ self~checkFileSegment(j) then return -1
 
-      optTable['file'] = cmdLine~word(j)
+      testOpts~file = cmdLine~word(j)
     end
 
     when word == '-F' then do
@@ -403,7 +408,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     end
 
     when word == '-n' then do
-      optTable['noTests'] = .true
+      testOpts~noTests = .true
     end
 
     when word == '-p' then do
@@ -416,14 +421,15 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 
       j += 1
       self~root = cmdLine~word(j) || self~SL
+      testOpts~testCaseRoot = self~root
     end
 
     when word == '-s' then do
-      optTable['showProgress'] = .true
+      testOpts~showProgress = .true
     end
 
     when word == '-S' then do
-      optTable['showTestCases'] = .true
+      testOpts~showTestCases = .true
     end
 
     when word == '-I' then do
@@ -431,11 +437,11 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     end
 
     when word == '-u' then do
-      optTable['suppressTicks'] = .true
+      testOpts~suppressTestCaseTicks = .true
     end
 
     when word == '-U' then do
-      optTable['suppressAllTicks'] = .true
+      testOpts~suppressAllTicks = .true
     end
 
     when word == '-v' then do
@@ -456,10 +462,11 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
       end
 
       self~setVerbosity(level)
+      testOpts~verbosity = level
     end
 
     when word == '-w' then do
-      optTable['waitAtCompletion'] = .true
+      testOpts~waitAtCompletion = .true
     end
 
     when word == '-X' then do
@@ -494,7 +501,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   return -1
 
 ::method addTestTypes private
-  expose cmdLine tokenCount optTable
+  expose cmdLine tokenCount testOpts
   use strict arg i, opt
 
   if i == tokenCount | self~isOptionToken(i + 1) then do
@@ -533,11 +540,11 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     tmp~put(testType)
   end
 
-  if opt == '-I' then index = 'testTypeIncludes'
-  else index = 'testTypesExcludes'
+  if opt == '-I' then index = testTypeIncludes
+  else index = testTypesExcludes
 
-  if optTable[index] == .nil then optTable[index] = tmp
-  else optTable[index] = optTable[index]~union(tmp)
+  if testOpts[index] == .nil then testOpts[index] = tmp
+  else testOpts[index] = testOpts[index]~union(tmp)
 
   return j
 
@@ -565,7 +572,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
  * command line.
  */
 ::method checkFormat private
-  expose cmdLine tokenCount optTable
+  expose cmdLine tokenCount testOpts
 
   if cmdLine~left(1) == "-" then return .false
 
@@ -580,17 +587,17 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     self~needsHelp = .true
   end
   else do
-    optTable['file'] = cmdLine
+    testOpts~file = cmdLine
   end
 
   return .true
 
 ::method setAllDefaults private
-  expose cmdLine originalCommandLine
+  expose cmdLine originalCommandLine testOpts
 
   originalCommandLine = cmdLine~copy
 
-  self~version = "1.0.0"
+  self~version = "1.1.0"
   self~needsHelp = .false
   self~doLongHelp = .false
   self~errMsg = .nil
@@ -604,10 +611,10 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   -- The default format for the returned set is [C]onstant, i.e. the numeric test type values.
   self~testTypes = .ooTestTypes~defaultTestSet
 
-  self~verboseTestCase = .false
+  self~showTestCases = .false
   self~showProgress = .false
-  self~noTicks = .false
-  self~noTestCaseTicks = .false
+  self~suppressAllTicks = .false
+  self~suppressTestcaseTicks = .false
   self~simpleTestSelection = .true
   self~testFile = .nil
 
@@ -617,7 +624,19 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   self~forceBuild = .false
   self~noTests    = .false
 
-  self~optTable = .table~new
+  testOpts~version = self~version
+  testOpts~verbosity = self~DEFAULT_VERBOSITY
+  testOpts~testCaseRoot = self~root
+  testOpts~testFileExt = self~ext
+  testOpts~testTypes = self~testTypes
+  testOpts~showTestCases = self~showTestCases
+  testOpts~showProgress = self~showProgress
+  testOpts~suppressAllTicks = self~suppressAllTicks
+  testOpts~suppressTestcaseTicks = self~suppressTestcaseTicks
+  testOpts~waitAtCompletion = self~waitAtCompletion
+  testOpts~buildFirst = self~buildFirst
+  testOpts~forceBuild = self~forceBuild
+  testOpts~noTests = self~noTests
 
 ::method hasHelpArg private
   expose cmdLine
@@ -663,15 +682,15 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   say '  -X  --exclude-types=X1 X2 .. Exclude test types X1 X2 ...'
   say
   say ' Output control:'
-  say '  -h                           Show short help'
-  say '      --help                   Show long help (this help)'
-  say '  -s  --show-progress          Show test group progress'
-  say '  -S  --show-testcases         Show test case progress'
-  say '  -u  --suppress-ticks         Do not show ticks during test execution'
-  say '  -U  --suppress-all-ticks     Do not show any ticks'
-  say '  -v, --version                Show version and quit'
-  say '  -V, --verbose=NUM            Set vebosity to NUM'
-  say '  -w, --wait-at-completion     At test end, wait for user to hit enter'
+  say '  -h                             Show short help'
+  say '      --help                     Show long help (this help)'
+  say '  -s  --show-progress            Show test group progress'
+  say '  -S  --show-testcases           Show test case progress'
+  say '  -u  --suppress-testcase-ticks  Do not show ticks during test execution'
+  say '  -U  --suppress-all-ticks       Do not show any ticks'
+  say '  -v, --version                  Show version and quit'
+  say '  -V, --verbose=NUM              Set vebosity to NUM'
+  say '  -w, --wait-at-completion       At test end, wait for user to hit enter'
   say
 
   return self~TEST_HELP_RC
