@@ -257,7 +257,7 @@ return 0
 
 /* class: ooTestTypes- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
     A class containing the constants for the test types supported by the ooTest
-    framework.
+    framework and methods to work with those constants..
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'ooTestTypes' public mixinclass Object
 
@@ -296,9 +296,44 @@ return 0
   ::method NATIVE_API_TEST   class; return 10
   ::method NATIVE_API_TEST;         return 10
 
+  -- A test type involving TCPIP, smtp, ftp, for example, where the test might
+  -- need some special set up.  Like a ftp server, mail server, etc..
+  ::method TCPIP_TEST   class; return 11
+  ::method TCPIP_TEST;         return 11
 
-  ::method MAX_TEST_TYPE  class; return 10
-  ::method MAX_TEST_TYPE;        return 10
+  ::method MAX_TEST_TYPE  class; return 11
+  ::method MAX_TEST_TYPE;        return 11
+
+  /** defaultTestSet()
+   * Returns the set of tests that are always run.  Any test type in this set
+   * will execute unless the tester specifically eXcludes it.
+   *
+   * @param  format  Specifies the format of the returned set.  Can be either
+   *                 Constant or String, the default is Constant.  Constant
+   *                 returns a set containing the numeric constants of the
+   *                 default tests, String returns a set of the names of the
+   *                 default tests.  Only the first letter is needed and case
+   *                 is not significant.
+   *
+   * @return A set of the tests that are always executed when the test suite is
+   *         run.
+   */
+  ::method defaultTestSet class
+    use strict arg format = 'C'
+
+    tests = .set~of(self~DEFAULT_TEST, self~UNIT_LONG_TEST, self~SAMPLE_TEST, self~GUI_TEST, self~GUI_SAMPLE_TEST, -
+                    self~OLE_TEST, self~DOC_EXAMPLE_TEST, self~NATIVE_API_TEST)
+
+    select
+      when format~left(1)~upper == 'C' then return tests
+      when format~left(1)~upper == 'S' then return self~namesForTests(tests)
+      otherwise do
+        raise syntax 88.916 array ("1 'format'", "Constant or String", format)
+      end
+    end
+
+  ::method defaultTestSet
+    forward class (self~class)
 
   /** all()
    * Returns a set of all the test types possible.

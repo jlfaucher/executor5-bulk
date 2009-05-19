@@ -375,6 +375,10 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   j = i
 
   select
+    when word == '-a' then do
+      optTable['testTypeIncludes'] = .ooTestTypes~all
+    end
+
     when word == '-b' then do
       optTable['buildFirst'] = .true
     end
@@ -494,7 +498,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   use strict arg i, opt
 
   if i == tokenCount | self~isOptionToken(i + 1) then do
-    self~addErrorMsg("The" opt "option must be followed by at least 1 test type")
+    self~addErrorMsg("The" opt "option must be followed by at least 1 test type, or the word all.")
     return -1
   end
 
@@ -512,18 +516,28 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 
   tmp = .set~new
   do t over types
+    if t~caselessCompare('all') == 0 then do
+      tmp = .ooTestTypes~all
+      leave
+    end
+
     testType = .ooTestTypes~testForName(t)
     if testType == .nil then do
       self~addErrorMsg("The" opt "option must be followed by valid test types")
       self~addErrorMsg(" " t "is not a valid test type.")
       self~addErrorMsg("  Valid types are:" .ooTestTypes~allNames)
+      self~addErrorMsg("  In addition, the keyword 'all' can be used to indicate every test type.")
       return -1
     end
+
     tmp~put(testType)
   end
 
-  if opt == '-I' then optTable['testTypeIncludes'] = tmp
-  else optTable['testTypesExcludes'] = tmp
+  if opt == '-I' then index = 'testTypeIncludes'
+  else index = 'testTypesExcludes'
+
+  if optTable[index] == .nil then optTable[index] = tmp
+  else optTable[index] = optTable[index]~union(tmp)
 
   return j
 
@@ -584,8 +598,11 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 
   self~setVerbosity(self~DEFAULT_VERBOSITY)
   self~root      = self~TEST_ROOT || self~SL
-  self~testTypes = self~TEST_TYPES_DEFAULT
   self~ext       = self~TEST_CONTAINER_EXT
+
+  -- Get the default set of test types to always execute, defined in the .ooTestTypes class.
+  -- The default format for the returned set is [C]onstant, i.e. the numeric test type values.
+  self~testTypes = .ooTestTypes~defaultTestSet
 
   self~verboseTestCase = .false
   self~showProgress = .false
@@ -621,9 +638,8 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   say "       2.  testOORexx fileName"
   say "       3.  testOORexx [OPTIONS]"
   say
-  say '  1. With no options the entire automated test suite is executed.  No'
-  say '     tests are exclued and the default verbosity and formatter are'
-  say '     used.'
+  say '  1. With no options the automated test suite is executed using the default'
+  say '     set of test types, the default verbosity, and the default formatter.'
   say
   say '  2. The single test group specified by "fileName" is executed.'
   say
@@ -634,11 +650,13 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   say
   say 'Valid options:'
   say ' Test selection:'
+  say '  -a  --all-test-types         Include all test types'
   say '  -b  --build-first            Build external binaries before running tests'
   say '  -B  --force-build            Force building (implies -b)'
   say '  -f  --file=NAME              Excute the single NAME test group'
   say '  -F  --files=N1 N2 ...        Execute the N1 N2 ... test groups'
   say '  -I, --test-types=T1 T2 ..    Include test types T1 T2 ...'
+  say '                               keyword "all" indicates all test types'
   say '  -n  --no-tests               No tests to execute (deliberately)'
   say '  -p  --files-with-pattern=PA  Execute test groups matching PA'
   say '  -R, --root=DIR               DIR is root of search tree'
