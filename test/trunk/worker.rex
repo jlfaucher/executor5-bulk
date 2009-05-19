@@ -393,9 +393,13 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
       testOpts~forceBuild = .true
     end
 
+    when word~abbrev("-D")  then do
+      j = self~addDefine(i)
+    end
+
     when word == '-f' then do
       if self~lastToken(i, "The -f option must be followed by a file name segment") then return -1
-      if \ self~isSingleValueToken(i, "The -F option must be followed by a single file name segment") then return -1
+      if \ self~isSingleValueToken(i, "The -f option must be followed by a single file name segment") then return -1
 
       j += 1
       if \ self~checkFileSegment(j) then return -1
@@ -548,6 +552,36 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 
   return j
 
+::method addDefine private
+  expose cmdLine tokenCount testOpts
+  use strict arg i
+
+  token = cmdLine~subword(i, 1)
+  if token~pos("=") == 0 then do
+      self~addErrorMsg("The -D option must be in the following format:")
+      self~addErrorMsg("  -Dname=value")
+      self~addErrorMsg(" " token "is not valid.")
+      return -1
+  end
+
+  nextOpt = self~nextOptionIndex(i + 1)
+
+  if nextOpt == 0 then do
+    define = cmdLine~subWord(i)
+    i = tokenCount
+  end
+  else do
+    define = cmdLine~subWord(i, (nextOpt - i))
+    i = nextOpt - 1
+  end
+
+  define = define~substr(3)
+  parse var define name "=" value
+  testOpts[name~strip~upper] = value~strip
+
+  return i
+
+
 ::method isOptionToken private
   expose cmdLine tokenCount
   use strict arg i
@@ -691,6 +725,9 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   say '  -v, --version                  Show version and quit'
   say '  -V, --verbose=NUM              Set vebosity to NUM'
   say '  -w, --wait-at-completion       At test end, wait for user to hit enter'
+  say
+  say ' Generic options:'
+  say '  -D          Define option.  Format must be: -Dname=value'
   say
 
   return self~TEST_HELP_RC
