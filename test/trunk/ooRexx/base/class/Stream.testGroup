@@ -1596,4 +1596,34 @@ return testResult
   self~assertSame(12289, ret)
 
 
+-- Regression test for bug  2792702
+::method test_notready_eof_2792702
+
+  str = "1234567890"
+  fileName = createFile(.array~of(str), "delMe.test_noteready_eof_2792702")
+  self~assertTrue(fileName \== "")
+
+  f = .stream~new(fileName)
+  self~streamTestingFile = f
+
+  signal on notready
+
+  f~open
+  self~assertSame(10 + .endOfLine~length, f~chars)
+  self~assertSame("READY:", f~description)
+
+  ret = f~charin(9,6)
+
+  expected = "line" .line "to not execute"
+  actual =   "line" .line - 1 "did execute"
+  msg = "notready condition must be raised"
+  type = "failure"
+  self~fail(self~makeFailure(expected, actual, msg, type))
+
+  return
+
+notready:
+  self~assertSame("NOTREADY:EOF", f~description)
+
+
 -- End of class: Stream.testGroup
