@@ -1,0 +1,362 @@
+<chapter><title>SMTP Class Reference</title>
+<indexterm><primary>class, SMTP</primary></indexterm>
+<indexterm><primary>SMTP class</primary></indexterm>
+<para>The following sections describe the smtp class supplied with ooRexx.
+This class can send SMTP messages to an SMTP server. It utilizes the
+<link linkend="clsStreamSocket">StreamSocket class</link>
+to perform the communications with the server.
+</para>
+
+<section><title>Installation</title>
+<indexterm><primary>installation, streamsocket class</primary></indexterm>
+<indexterm><primary>streamsocket class installation</primary></indexterm>
+<para>The SMTP class package is contained in the file smtp.cls. This file
+must be placed in a directory listed in your PATH. To get access to the class
+and methods in the SMTP class, include the following statement in your Rexx
+program:
+<programlisting>
+::requires 'smtp.cls'
+</programlisting></para>
+</section>
+
+<section id="clsSMTP"><title>The SMTP Class</title>
+<indexterm><primary>SMTP class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>SMTP class</secondary></indexterm>
+
+<para>This class encapsulates all the communications necessary to send mail via an
+SMTP server.</para>
+<figure><title>The SMTP class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="SMTPClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The SMTP class also has available class methods that its
+metaclass, the Class class, defines.
+</para></note>
+
+<section id="mthSMTPNew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of SMTP class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of SMTP class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-new---------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Initializes the object.
+Returns the new smtp object.</para>
+</section>
+
+<section id="mthSMTPauthid"><title>authid</title>
+<indexterm><primary>authid method</primary>
+<secondary>of SMTP class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>authid method</secondary>
+<tertiary>of SMTP class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-authid()----------------------------------------------------><
+
+>>-authid(newauthid)-------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method either sets the authid or returns the current authid.
+The default value for the authid is a zero-length string.</para>
+</section>
+
+<section id="mthSMTPcmdresponse"><title>cmdrespomse</title>
+<indexterm><primary>cmdresponse method</primary>
+<secondary>of SMTP class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>cmdresponse method</secondary>
+<tertiary>of SMTP class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-cmdresponse-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method returns an array containing all the commands sent to the SMTP server
+and the responses from that server.</para>
+</section>
+
+<section id="mthSMTPconnect"><title>connect</title>
+<indexterm><primary>connect method</primary>
+<secondary>of SMTP class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>connect method</secondary>
+<tertiary>of SMTP class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-connect(smtphost--+------------------------------+--)-------><
+                     +--, authid-----+--------------+
+                                     +--, password--+
+]]>
+</programlisting>
+
+<para>This opens the connection to the SMTP host machine.</para>
+<variablelist>
+<varlistentry><term>smtphost</term>
+<listitem><para>The host name or TCP/IP address of the SMTP host.
+This string can contain a port designation.
+</para></listitem></varlistentry>
+<varlistentry><term>authid</term>
+<listitem><para>(Optional) The account authid to be used if needed.
+</para></listitem></varlistentry>
+<varlistentry><term>password</term>
+<listitem><para>(optional) The password for the specified authid.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSMTPdebug"><title>debug</title>
+<indexterm><primary>debug method</primary>
+<secondary>of SMTP class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>debug method</secondary>
+<tertiary>of SMTP class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-debug-------------------------------------------------------><
+
+>>-debug(flag)-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method either sets the debug flag or returns the current flag value.
+The default value for the flag is 0 (false) which suppresses debug messages.</para>
+</section>
+
+<section id="mthSMTPlocalhost"><title>localhost</title>
+<indexterm><primary>localhost method</primary>
+<secondary>of SMTP class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>localhost method</secondary>
+<tertiary>of SMTP class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-localhost---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method returns the local host name.</para>
+</section>
+
+<section id="mthSMTPlogoff"><title>logoff</title>
+<indexterm><primary>logoff method</primary>
+<secondary>of SMTP class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>logoff method</secondary>
+<tertiary>of SMTP class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-logoff------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method logs off the session to the SMTP host.</para>
+</section>
+
+<section id="mthSMTPpassword"><title>password</title>
+<indexterm><primary>password method</primary>
+<secondary>of SMTP class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>password method</secondary>
+<tertiary>of SMTP class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-password----------------------------------------------------><
+
+>>-password(newpassword)---------------------------------------><
+]]>
+</programlisting>
+
+<para>This method either sets the smtp server account passwordor returns the password value.
+The default value for the password is a zero-length string.</para>
+</section>
+
+<section id="mthSMTPresponse"><title>response</title>
+<indexterm><primary>response method</primary>
+<secondary>of SMTP class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>response method</secondary>
+<tertiary>of SMTP class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-response----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method returns the parsed response to the last command sent to the SMTP server.
+The initial value for the repsonse is a zero-length string.</para>
+</section>
+
+<section id="mthSMTPsend"><title>send</title>
+<indexterm><primary>send method</primary>
+<secondary>of SMTP class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>send method</secondary>
+<tertiary>of SMTP class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-send(msg)---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method sends an SMTP message to the SMTP server. The 
+<emphasis role="italic">msg</emphasis> must be an instance of the
+<link linkend="clsSMTPMsg">SMTPMsg class</link>.</para>
+</section>
+
+<section id="mthSMTPsmtperrno"><title>smtperrno</title>
+<indexterm><primary>smtperrno method</primary>
+<secondary>of SMTP class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>smtperrno method</secondary>
+<tertiary>of SMTP class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-smtperrno---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method returns the return code of the last command sent to the SMTP server.
+The initial value for the repsonse is a zero-length string.</para>
+</section>
+</section>
+
+<section id="clsSMTPMsg"><title>The SMTPMsg Class</title>
+<indexterm><primary>SMTPMsg class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>SMTPMsg class</secondary></indexterm>
+
+<para>This class encapsulates all information needed to communicate a complete message
+to the SMTP server.</para>
+<figure><title>The SMTPMsg class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="SMTPMsgClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The SMTPMsg class also has available class methods that its
+metaclass, the Class class, defines.
+</para></note>
+
+<section id="mthSMTPMsgNew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of SMTPMsg class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of SMTPMsg class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-new---------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Initializes the object.
+Returns the new smtpmsg object.</para>
+</section>
+
+<section id="mthSMTPMsgAddRecipient"><title>addRecipient</title>
+<indexterm><primary>addRecipient method</primary>
+<secondary>of SMTPMsg class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addRecipient method</secondary>
+<tertiary>of SMTPMsg class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-addRecipient(recp)------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method adds a new recipient of the message.
+</para>
+</section>
+
+<section id="mthSMTPMsgContent"><title>content</title>
+<indexterm><primary>content method</primary>
+<secondary>of SMTPMsg class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>content method</secondary>
+<tertiary>of SMTPMsg class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-content-----------------------------------------------------><
+
+>>-content(part)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method sets a piece of the SMTP message. The 
+<emphasis role="italic">part</emphasis> must be an instance of the
+<link linkend="clsMimePart">MimePart class</link>,
+<link linkend="clsMimeMultiPart">MimeMultiPart class</link> or
+a plain string.</para>
+</section>
+
+<section id="mthSMTPMsgFrom"><title>from</title>
+<indexterm><primary>from method</primary>
+<secondary>of SMTPMsg class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>from method</secondary>
+<tertiary>of SMTPMsg class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-from--------------------------------------------------------><
+
+>>-from(fromaddress)-------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method sets or fetches the "From" mail header field.
+</para>
+</section>
+
+<section id="mthSMTPMsgRecipients"><title>recipients</title>
+<indexterm><primary>recipients method</primary>
+<secondary>of SMTPMsg class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>recipients method</secondary>
+<tertiary>of SMTPMsg class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-recipients--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This returns an array of the mail header "Recipient" fields.
+</para>
+</section>
+
+<section id="mthSMTPMsgSubject"><title>subject</title>
+<indexterm><primary>subject method</primary>
+<secondary>of SMTPMsg class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>subject method</secondary>
+<tertiary>of SMTPMsg class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-subject-----------------------------------------------------><
+
+>>-subject(newsubject)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>This method sets or fetches the "Subject" mail header field.
+</para>
+</section>
+</section>
+</chapter>

@@ -1,0 +1,399 @@
+<chapter><title>Mime Classes Reference</title>
+<indexterm><primary>class, mime</primary></indexterm>
+<indexterm><primary>mime class</primary></indexterm>
+<para>The following sections describe the mime classes supplied with ooRexx.
+These classes encapsulates a mime object. This is most useful for sending complicated
+email messages vie the
+<link linkend="clsSMTP">SMTP class</link>.</para>
+
+<section><title>Installation</title>
+<indexterm><primary>installation, mime class</primary></indexterm>
+<indexterm><primary>mime class installation</primary></indexterm>
+<para>The Mime class package is contained in the file mime.cls. This file
+must be placed in a directory listed in your PATH. To get access to the class
+and methods in the Mime class, include the following statement in your Rexx
+program:
+<programlisting>
+::requires 'mime.cls'
+</programlisting></para>
+</section>
+
+<section id="clsMimePart"><title>The MimePart Class</title>
+
+<section id="mthMimePartNew"><title>New (class) method</title>
+<indexterm><primary>New class method</primary>
+<secondary>of MimePart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>New class method</secondary>
+<tertiary>of MimePart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+--------+--)----------------------------------------><
+          +--type--+
+]]>
+</programlisting>
+
+<para>This is a class method. It returns an instance of the
+<link linkend="clsMimePart">MimePart</link> class.
+</para>
+<variablelist>
+<varlistentry><term>type</term>
+<listitem><para>(Optional) The mime type string. The default if not given is
+"text/plain".
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthMimePartAddContent"><title>addContent method</title>
+<indexterm><primary>addContent method</primary>
+<secondary>of MimePart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addContent method</secondary>
+<tertiary>of MimePart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addContent(string)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>This method adds content to the mime-content field. This filed may only contain
+ASCII strings.
+</para>
+<variablelist>
+<varlistentry><term>string</term>
+<listitem><para>The ASCII string to be added to the content.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthMimePartContent"><title>content method</title>
+<indexterm><primary>content method</primary>
+<secondary>of MimePart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>content method</secondary>
+<tertiary>of MimePart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--content----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method returns the mime-content string.
+</para>
+</section>
+
+<section id="mthMimePartDescription"><title>description method</title>
+<indexterm><primary>description method</primary>
+<secondary>of MimePart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>description method</secondary>
+<tertiary>of MimePart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--description------------------------------------------------><
+
+>>--description(newdescription)--------------------------------><
+]]>
+</programlisting>
+
+<para>This method sets or returns the mime-description string.
+</para>
+<variablelist>
+<varlistentry><term>newdescription</term>
+<listitem><para>The mime-description string.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthMimePartDisposition"><title>disposition method</title>
+<indexterm><primary>disposition method</primary>
+<secondary>of MimePart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>disposition method</secondary>
+<tertiary>of MimePart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--disposition------------------------------------------------><
+
+>>--disposition(newdisposition)--------------------------------><
+]]>
+</programlisting>
+
+<para>This method sets or returns the mime-disposition string.
+</para>
+<variablelist>
+<varlistentry><term>newdisposition</term>
+<listitem><para>The mime-disposition string.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthMimePartEncoding"><title>encoding method</title>
+<indexterm><primary>encoding method</primary>
+<secondary>of MimePart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>encoding method</secondary>
+<tertiary>of MimePart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--encoding---------------------------------------------------><
+
+>>--encoding(newencoding)--------------------------------------><
+]]>
+</programlisting>
+
+<para>This method sets or returns the mime-encoding string.
+</para>
+<variablelist>
+<varlistentry><term>newencoding</term>
+<listitem><para>The mime-encoding string.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthMimePartId"><title>id method</title>
+<indexterm><primary>id method</primary>
+<secondary>of MimePart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>id method</secondary>
+<tertiary>of MimePart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--id---------------------------------------------------------><
+
+>>--id(newid)--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method sets or returns the mime-id string.
+</para>
+<variablelist>
+<varlistentry><term>newid</term>
+<listitem><para>The mime-id string.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthMimePartString"><title>string method</title>
+<indexterm><primary>string method</primary>
+<secondary>of MimePart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>string method</secondary>
+<tertiary>of MimePart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--string-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method returns the formatted mime part string.
+</para>
+</section>
+
+<section id="mthMimePartType"><title>type method</title>
+<indexterm><primary>type method</primary>
+<secondary>of MimePart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>type method</secondary>
+<tertiary>of MimePart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--type-------------------------------------------------------><
+
+>>--type(newtype)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method sets or returns the mime-type string.
+</para>
+<variablelist>
+<varlistentry><term>newtype</term>
+<listitem><para>The mime-type string.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+
+<section id="clsMimeMultiPart"><title>The MimeMultiPart Class</title>
+
+<section id="mthMimePartMultiNew"><title>New (class) method</title>
+<indexterm><primary>New class method</primary>
+<secondary>of MimeMultiPart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>New class method</secondary>
+<tertiary>of MimeMultiPart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+--------+--)----------------------------------------><
+          +--type--+
+]]>
+</programlisting>
+
+<para>This is a class method. It returns an instance of the
+<link linkend="clsMimeMultiPart">MimeMultiPart</link> class.
+</para>
+<variablelist>
+<varlistentry><term>type</term>
+<listitem><para>(Optional) The mime type string. The default if not given is
+"multipart/mixed".
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthMimeMultiPartAddPart"><title>addPart method</title>
+<indexterm><primary>addPart method</primary>
+<secondary>of MimeMultiPart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>addPart method</secondary>
+<tertiary>of MimeMultiPart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addPart(part)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method adds a new part to the mime object.
+<emphasis role="italic">part</emphasis> must be a
+</para>
+<variablelist>
+<varlistentry><term>part</term>
+<listitem><para>The part to be added. The 
+<emphasis role="italic">part</emphasis> must be an instance of the
+<link linkend="clsMimePart">MimePart class</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthMimeMultiPartDescription"><title>description method</title>
+<indexterm><primary>description method</primary>
+<secondary>of MimeMultiPart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>description method</secondary>
+<tertiary>of MimeMultiPart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--description------------------------------------------------><
+
+>>--description(newdescription)--------------------------------><
+]]>
+</programlisting>
+
+<para>This method sets or returns the mime-description string.
+</para>
+<variablelist>
+<varlistentry><term>newdescription</term>
+<listitem><para>The mime-description string.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthMimeMultiPartDisposition"><title>disposition method</title>
+<indexterm><primary>disposition method</primary>
+<secondary>of MimeMultiPart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>disposition method</secondary>
+<tertiary>of MimeMultiPart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--disposition------------------------------------------------><
+
+>>--disposition(newdisposition)--------------------------------><
+]]>
+</programlisting>
+
+<para>This method sets or returns the mime-disposition string.
+</para>
+<variablelist>
+<varlistentry><term>newdisposition</term>
+<listitem><para>The mime-disposition string.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthMimeMultiPartEncoding"><title>encoding method</title>
+<indexterm><primary>encoding method</primary>
+<secondary>of MimeMultiPart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>encoding method</secondary>
+<tertiary>of MimeMultiPart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--encoding---------------------------------------------------><
+
+>>--encoding(newencoding)--------------------------------------><
+]]>
+</programlisting>
+
+<para>This method sets or returns the mime-encoding string.
+</para>
+<variablelist>
+<varlistentry><term>newencoding</term>
+<listitem><para>The mime-encoding string.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthMimeMultiPartId"><title>id method</title>
+<indexterm><primary>id method</primary>
+<secondary>of MimeMultiPart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>id method</secondary>
+<tertiary>of MimeMultiPart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--id---------------------------------------------------------><
+
+>>--id(newid)--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method sets or returns the mime-id string.
+</para>
+<variablelist>
+<varlistentry><term>newid</term>
+<listitem><para>The mime-id string.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthMimeMultiPartString"><title>string method</title>
+<indexterm><primary>string method</primary>
+<secondary>of MimeMultiPart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>string method</secondary>
+<tertiary>of MimeMultiPart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--string-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method returns the formatted mime part string.
+</para>
+</section>
+
+<section id="mthMimeMultiPartType"><title>type method</title>
+<indexterm><primary>type method</primary>
+<secondary>of MimeMultiPart class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>type method</secondary>
+<tertiary>of MimeMultiPart class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--type-------------------------------------------------------><
+
+>>--type(newtype)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method sets or returns the mime-type string.
+</para>
+<variablelist>
+<varlistentry><term>newtype</term>
+<listitem><para>The mime-type string.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+</chapter>
+
