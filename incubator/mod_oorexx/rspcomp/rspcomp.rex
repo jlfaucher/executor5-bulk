@@ -86,69 +86,51 @@ parse upper version rexx_ver
 
 /* get the input filename arguments and options */
 cmdline = arg(1)
-if substr(cmdline, 1, 1) = '"' then ,
- parse var cmdline '"' rspfilename '"' cmdline
-else ,
- parse var cmdline rspfilename cmdline
-cmdline = strip(cmdline)
-if substr(cmdline, 1, 1) = '"' then ,
- parse var cmdline '"' rexfilename '"' option1 .
-else ,
- parse var cmdline rexfilename option1 .
+if cmdline~substr(1, 1) = '"' then parse var cmdline '"' rspfilename '"' cmdline
+else parse var cmdline rspfilename cmdline
+cmdline = cmdline~strip()
+if cmdline~substr(1, 1) = '"' then parse var cmdline '"' rexfilename '"' option1 .
+else parse var cmdline rexfilename option1 .
 if rexfilename = '' then do
    call console_msg 'Error: No output Rexx filename specified.'
    return 1
    end
-if translate(option1) = 'ERRMSG' then errmsg = 1
+if option1~translate() = 'ERRMSG' then errmsg = 1
 
 /* try to open the rsp file */
 if rspfilename = '' then do
    call console_msg 'Error: No input RSP File specified.'
    return 2
    end
-retc = stream(rspfilename, 'c', 'open read')
+rspstream = .stream(rspfilename)
+retc = rpsstream~open('read')
 if retc <> 'READY:' then do
    call console_msg 'Error: cannot open file' rspfilename
    return 3
    end
 
 /* open the rex file */
-if pos('OBJREXX', rexx_ver) > 0 then ,
- retc = stream(rexfilename, 'c', 'open write replace')
-else retc = stream(rexfilename, 'c', 'open write')
+rexstream = .stream(rexfilename)
+retc = rexstream~open('write replace')
 if retc <> 'READY:' then do
    call console_msg 'Error: cannot open file' rexfilename
    return 4
    end
 
-/* set up an end-of-file indicator on the input rsp file */
-eof = 0
-call on notready name seteof
+/* read in the rsp file */
+rsplines = rspstream~arrayin()
+rspstream~close()
 
 /* read in the rsp file and look for the the rsp tags */
 state = 0 /* initial state is to output HTML lines */
 call Rexx_pgm_header
-line = linein(rspfilename)
-do while eof = 0
-   call process_line line
-   line = linein(rspfilename)
+do rspline over esplines
+   call process_line rspline
    end
-
-/* close the files */
-call stream rspfilename, 'c', 'close'
-call stream rexfilename, 'c', 'close'
+rexstream~close()
 
 /* done */
 return 0
-
-
-/*----------------------------------------------------------------------------*/
-/* function which indicates end-of-file                                       */
-/*----------------------------------------------------------------------------*/
-
-seteof:
-eof = 1
-return
 
 
 /*----------------------------------------------------------------------------*/
@@ -156,18 +138,17 @@ return
 /*----------------------------------------------------------------------------*/
 
 process_line: procedure expose state rexfilename
-line = arg(1)
-uline = translate(strip(line))
+use strict arg line
+uline = line~strip()~upper()
 select
    when state = 0 then do
       if uline = '<?REXX' then do
          /* change state to output Rexx pgm line(s) */
          state = 1
          end
-      else if substr(uline, 1, 8) = '<SCRIPT ' then do
+      else if uline~substr(1, 8) = '<SCRIPT ' then do
          parse var uline '<SCRIPT' . 'TYPE=' lang . '>'
-         if lang = '' then ,
-          parse var uline '<SCRIPT' . 'LANGUAGE=' lang . '>'
+         if lang = '' then parse var uline '<SCRIPT' . 'LANGUAGE=' lang . '>'
          lang = strip(lang,, '"')
          lang = strip(lang,, "'")
          if lang = 'REXX' then do
@@ -180,7 +161,7 @@ select
          /* state has not changed, output the HTML line */
          call splitline line
          /* see if we are at the end of the HTML document */
-         if pos('</HTML>', uline) > 0 then do
+         if uline~pos('</HTML>') > 0 then do
             /* doing this separates the mainline code from any Rexx     */
             /* subroutines/functions added at the end of the RSP file,  */
             /* that way we do not just fall into them (a Rexx error).   */
@@ -195,7 +176,7 @@ select
          end
       else do
          /* output the Rexx pgm line */
-         call lineout rexfilename, line
+         rexstream~lineout(line)
          end
       end
    when state = 2 then do
@@ -205,7 +186,7 @@ select
          end
       else do
          /* output the Rexx pgm line */
-         call lineout rexfilename, line
+         rexstream~lineout(line)
          end
       end
    otherwise nop
@@ -219,17 +200,17 @@ return
 /*----------------------------------------------------------------------------*/
 
 splitline: procedure expose rexfilename
-line = arg(1)
-do while length(line) > 90
-   x = substr(line, 1, 80)
-   do i = 81 to length(line)
-      if substr(line, i, 1) <> ' ' then x = x || substr(line, i, 1)
+use strict arg line
+do while line~length() > 90
+   x = line~substr(1, 80)
+   do i = 81 to line~length()
+      if line~substr(i, 1) <> ' ' then x = x || line~substr(i, 1)
       else leave
       end
-   call lineout rexfilename, "say '" || add_quotes("'", x) || "'"
+   rexstream~lineout("say '" || add_quotes("'", x) || "'")
    line = substr(line, i)
    end
-call lineout rexfilename, "say '" || add_quotes("'", line) || "'"
+rexstream~lineout( "say '" || add_quotes("'", line) || "'")
 return
 
 
@@ -238,14 +219,8 @@ return
 /*----------------------------------------------------------------------------*/
 
 add_quotes: procedure
-quote = arg(1)
-line = arg(2)
-x = pos(quote, line)
-do while x > 0
-   line = substr(line, 1, x) || quote || substr(line, x + 1)
-   x = pos(quote, line, x + 2)
-   end
-return line
+use strict arg quote, line
+return line~changestr(quote, quote || quote)
 
 
 /*----------------------------------------------------------------------------*/
@@ -253,40 +228,41 @@ return line
 /*----------------------------------------------------------------------------*/
 
 Rexx_pgm_header:
-call lineout rexfilename, '/* Start of Rexx RSP header information */'
-call lineout rexfilename, '/*'
-call lineout rexfilename, ''
+use strict arg
+rexstream~lineout('/* Start of Rexx RSP header information */')
+rexstream~lineout('/*')
+rexstream~lineout('')
 
-call lineout rexfilename, 'RSP Compiler Information:'
-call lineout rexfilename, '   Compiler version: ' script_version
-call lineout rexfilename, '   Compile timestamp:' date() time()
-call lineout rexfilename, '   Operating System: ' os
-call lineout rexfilename, '   Rexx Version:     ' rexx_ver
-call lineout rexfilename, ''
+rexstream~lineout('RSP Compiler Information:')
+rexstream~lineout('   Compiler version: ' script_version)
+rexstream~lineout('   Compile timestamp:' date() time())
+rexstream~lineout('   Operating System: ' os)
+rexstream~lineout('   Rexx Version:     ' rexx_ver)
+rexstream~lineout('')
 
---call lineout rexfilename, 'Source RSP File Information:'
---fsize = stream(rspfilename, 'c', 'query size')
---ftimestamp = stream(rspfilename, 'c', 'query timestamp')
---call lineout rexfilename, '   ' || ftimestamp || '  ' || format(fsize, 10) || ,
---                          '  ' || stream(rspfilename, 'c', 'query exists')
---call lineout rexfilename, ''
+rexstream~lineout('Source RSP File Information:')
+fsize = rexstream~command('query size')
+ftimestamp = rexstream~command('query timestamp')
+rexstream~lineout('   ' || ftimestamp || '  ' || format(fsize, 10) || ,
+                  '  ' || stream(rspfilename, 'c', 'query exists'))
+rexstream~lineout('')
 
---call lineout rexfilename, 'Output Rexx Program File Information:'
---call lineout rexfilename, '   Filename:' stream(rexfilename, 'c', 'query exists')
---call lineout rexfilename, ''
+rexstream~lineout('Output Rexx Program File Information:')
+rexstream~lineout('   Filename:' stream(rexfilename, 'c', 'query exists'))
+-rexstream~lineout('')
 
-call lineout rexfilename, '*/'
+rexstream~lineout('*/')
 
-call lineout rexfilename, ''
-call lineout rexfilename, '/* note: the following call is NOT optional */'
-call lineout rexfilename, 'call WWWSendHTTPHeader arg(1), "text/html"'
-call lineout rexfilename, '/* note: these calls are optional but here anyway */'
-call lineout rexfilename, 'call WWWGetArgs arg(1)'
-call lineout rexfilename, 'call WWWGetCookies arg(1)'
-call lineout rexfilename, ''
-call lineout rexfilename, '/* End of Rexx RSP header information */'
+rexstream~lineout('')
+rexstream~lineout('/* note: the following call is NOT optional */')
+rexstream~lineout('call WWWSendHTTPHeader arg(1), "text/html"')
+rexstream~lineout('/* note: these calls are optional but here anyway */')
+rexstream~lineout('call WWWGetArgs arg(1)')
+rexstream~lineout('call WWWGetCookies arg(1)')
+rexstream~lineout('')
+rexstream~lineout('/* End of Rexx RSP header information */')
 
-call lineout rexfilename, ''
+rexstream~lineout('')
 return
 
 
@@ -295,9 +271,10 @@ return
 /*----------------------------------------------------------------------------*/
 
 Rexx_pgm_footer:
-call lineout rexfilename, '/* Start of Rexx RSP footer information */'
-call lineout rexfilename, 'return 0'
-call lineout rexfilename, '/* End of Rexx RSP footer information */'
+use strict arg
+rexstream~lineout('/* Start of Rexx RSP footer information */')
+rexstream~lineout('return 0')
+rexstream~lineout('/* End of Rexx RSP footer information */')
 return
 
 
@@ -306,6 +283,7 @@ return
 /*----------------------------------------------------------------------------*/
 
 console_msg:
-if errmsg = 1 then say arg(1)
+use strict arg consolemsg
+if errmsg = 1 then say consolemsg
 return
 

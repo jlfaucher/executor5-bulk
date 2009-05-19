@@ -53,7 +53,7 @@ r = arg(1)
 
 /* we add the ending period so Rexx will see it as a string */
 iprange = '192.168.'
-if substr(wwwremote_addr, 1, length(iprange)) <> iprange then return FORBIDDEN
+if wwwremote_addr~substr(1, iprange~length()) <> iprange then return FORBIDDEN
 
 /* we are done */
 return OK
