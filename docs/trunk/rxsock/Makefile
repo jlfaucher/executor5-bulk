@@ -53,7 +53,9 @@ SGML_FILES = rxsock.sgml \
      ../shared/gethelp.sgml \
      ../shared/CPLv1.0.sgml \
      socketclass.sgml \
-     streamsocket.sgml
+     streamsocket.sgml \
+     smtp.sgml \
+     mimeclass.sgml
 
 IMAGE_FILES = oorexx.jpg \
  	      docbook-1.png \
@@ -61,7 +63,11 @@ IMAGE_FILES = oorexx.jpg \
 	      HostInfo.png \
 	      InetAddress.png \
 	      SocketClass.png \
-	      StreamSocketClass.png
+	      StreamSocketClass.png \
+	      SMTPClass.png \
+	      SMTPMsgClass.png \
+	      MimePart.png \
+	      MimeMultiPart.png
 
 JADETEXFMT  = ./pdfjadetex.fmt
 HYPERREFCFG = ./hyperref.cfg
