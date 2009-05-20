@@ -110,7 +110,7 @@
 /*----------------------------------------------------------------------------*/
 
 ::method init
-if arg() > 0 then raise syntax 93.902 array (0)
+use strict arg
 self~ver = .directory~new
 self~ver['1.0'] = .directory~new
 return
@@ -122,9 +122,7 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method hasFeature
-if arg() < 2 then raise syntax 93.901 array (2)
-if arg() > 2 then raise syntax 93.902 array (2)
-use arg feature, version
+use strict arg feature, version = (.nil)
 if version = .nil then do featureset over self~ver
    if featureset[feature] <> .nil then return .true
       end
@@ -145,8 +143,10 @@ return .false
 ::class 'NodeList' public
 ::method init
   expose nodes
+  -- we're a read-only list...the owning node returns the list, we work off
+  -- of a snapshot copy
   use strict arg nodes
-
+  nodes = nodes~copy
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -163,7 +163,6 @@ return .false
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-
 /*----------------------------------------------------------------------------*/
 /* Method: item                                                               */
 /* Description: get a list item.                                              */
@@ -176,13 +175,11 @@ return .false
   -- maintain that.
   return nodes[index + 1]   -- returns .nil for out of bounds
 
-
 /*----------------------------------------------------------------------------*/
 /* Method: length                                                             */
 /* Description: get the number of items in the list.                          */
 /*----------------------------------------------------------------------------*/
-
-::method length
+::attribute length get
   expose nodes
   use strict arg
   return nodes~items
@@ -193,7 +190,7 @@ return .false
   return nodes~copy   -- make sure this is a copy
 
 ::method "[]"
-  return forward message("ITEM")
+  return message("ITEM")
 
 
 /*----------------------------------------------------------------------------*/
@@ -204,8 +201,9 @@ return .false
 
 ::class 'NamedNodeMap' public
 ::method init
-  expose attributes
-  use strict arg attributes
+  expose ownerNode attributes
+  use strict arg ownerNode
+  attributes = .nil
 
 
 /*----------------------------------------------------------------------------*/
@@ -214,6 +212,62 @@ return .false
 /*        Private methods                                                     */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
+
+::method findNamePoint private
+  expose attributes
+  use arg name
+
+  if attributes == .nil then do
+      return 0
+  end
+
+  do i = 1 to attributes~items
+      if attributes[i]~nodeName == name then do
+          return i
+      end
+  end
+
+  return 0
+
+
+::method findNamePointNS private
+  expose attributes
+  use arg name, namespace
+
+  if attributes == .nil then do
+      return 0
+  end
+
+  do i = 1 to attributes~items
+      attr = attributes[i]
+      if namespace == .nil then do
+          if attr~namespaceURI == .nil & name == attr~localName then do
+              return i
+          end
+
+          if attr~localName == .nil & name == attr~nodeName then do
+              return i
+          end
+      end
+      else do
+          if attr~namespaceURI == namespace & attr~localName == name then do
+              return i
+          end
+      end
+  end
+
+  return 0
+
+::method removeAt private
+  expose attributes
+  use arg position
+
+  do i = position to attributes~items - 1
+      attributes[i] = attributes[i + 1]
+  end
+
+  -- this removes the last item
+  attributes~remove[i]
 
 
 /*----------------------------------------------------------------------------*/
@@ -233,11 +287,17 @@ return .false
   expose attributes
   use strict arg name
 
-  do i = 1 to attributes~items
-      if attributes[i]~name == name then do
-          return attribuetes[i]
+  if attributes == .nil then do
+      return .nil
+  end
+
+  do attribute over attributes
+      if attribute~name == name then do
+          return attribute
       end
   end
+  return .nil
+
 
 /*----------------------------------------------------------------------------*/
 /* Method: getNamedItemNS                                                     */
@@ -248,12 +308,16 @@ return .false
   expose attributes
   use strict arg name, namespace
 
-  do i = 1 to attributes~items
-      attr = attributes[i]
-      if attr~name == name & attr~namespaceURI == namespace then do
-          return attr
+  if attributes == .nil then do
+      return .nil
+  end
+
+  do attribute over attributes
+      if attribute~name == name & attribute~namespaceURI == namespace then do
+          return attribute
       end
   end
+  return .nil
 
 
 /*----------------------------------------------------------------------------*/
@@ -262,7 +326,58 @@ return .false
 /*----------------------------------------------------------------------------*/
 
 ::method setNamedItem
-  raise syntax 93.963 -- not supported
+  expose attributes
+  use strict arg node
+
+  index = self~findNamePoint(node~nodeName)
+  previous = .nil
+
+  if i > 0 then do
+      previous = attributes[i]
+      attributes[i] = node
+  end
+  else do
+      if attributes == .nil then do
+          attributes = .array~new
+      end
+      attributes~append(node)
+  end
+
+  return previous
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: setNamedItemNS                                                     */
+/* Description: set a named item.                                             */
+/*----------------------------------------------------------------------------*/
+
+::method setNamedItemNS
+  expose attributes
+  use strict arg node
+
+  index = self~findNamePointNS(node~localName, node~namespaceURI)
+  previous = .nil
+
+  if i > 0 then do
+      previous = attributes[i]
+      attributes[i] = node
+  end
+  else do
+      -- we try again just based on the nodeName
+      index = self~findNamePoint(node~nodeName)
+      if index > 0 then do
+          previous = attributes[i]
+          attributes[i] = node
+      end
+      else do
+          if attributes == .nil then do
+              attributes = .array~new
+          end
+          attributes~append(node)
+      end
+  end
+
+  return previous
 
 
 /*----------------------------------------------------------------------------*/
@@ -271,7 +386,60 @@ return .false
 /*----------------------------------------------------------------------------*/
 
 ::method removeNamedItem
-  raise syntax 93.963 -- not supported
+  expose attributes
+  use strict arg name
+
+  index = self~findNamePoint(name)
+  previous = .nil
+
+  if i > 0 then do
+      previous = attributes[i]
+      self~removeAt(i)
+  end
+  return previous
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: removeNamedItemNS                                                  */
+/* Description: remove a named item.                                          */
+/*----------------------------------------------------------------------------*/
+
+::method removeNamedItem
+  expose attributes
+  use strict arg namespace, name
+
+  index = self~findNamePointNS(name, namespace)
+  previous = .nil
+
+  if i > 0 then do
+      previous = attributes[i]
+      self~removeAt(i)
+  end
+  return previous
+
+/*----------------------------------------------------------------------------*/
+/* Method: cloneMap                                                           */
+/* Description: perform a deep copy of this map object                        */
+/*----------------------------------------------------------------------------*/
+::method clone
+  expose attributes
+  use strict arg owner
+  newMap = .NamedNodeMap(owner)
+  newMap~cloneContent(attributes)
+
+/*----------------------------------------------------------------------------*/
+/* Method: cloneContent                                                       */
+/* Description: initialize the content from another map                       */
+/*----------------------------------------------------------------------------*/
+::method cloneContent
+  expose attributes
+  use arg source
+  if source \= .nil then do
+      attributes = source~copy
+      do i = 1 to attributes~items
+          attributes[i] = attributes[i]~cloneNode(.true)
+      end
+  end
 
 
 /*----------------------------------------------------------------------------*/
@@ -282,7 +450,12 @@ return .false
 ::method item
   expose attributes
   use strict arg position
-  return attributes[position + 1]
+  if attributes == .nil then do
+      return .nil
+  end
+  else do
+      return attributes[position + 1]
+  end
 
 
 /*----------------------------------------------------------------------------*/
@@ -293,7 +466,12 @@ return .false
 ::method length
   expose attributes
   use strict arg
-  return attributes~items
+  if attributes != .nil then do
+      return attributes~items
+  end
+  else do
+      return 0;
+  end
 
 ::method makearray
   expose attributes
@@ -301,7 +479,7 @@ return .false
   return attributes~copy   -- make sure this is a copy
 
 ::method "[]"
-  return forward message("ITEM")
+  forward message("ITEM")
 
 
 
@@ -313,97 +491,131 @@ return .false
 /*----------------------------------------------------------------------------*/
 
 ::CLASS 'Node' public
-::METHOD ELEMENT_NODE class
-  use strict arg
-  return 1
-::METHOD ATTRIBUTE_NODE class
-  use strict arg
-  return 2
-::METHOD TEXT_NODE class
-  use strict arg
-  return 3
-::METHOD CDATA_SECTION_NODE class
-  use strict arg
-  return 4
-::METHOD ENTITY_REFERENCE_NODE class
-  use strict arg
-  return 5
-::METHOD ENTITY_NODE class
-  use strict arg
-  return 6
-::METHOD PROCESSING_INSTRUCTION_NODE class
-  use strict arg
-  return 7
-::METHOD COMMENT_NODE class
-  use strict arg
-  return 8
-::METHOD DOCUMENT_NODE class
-  use strict arg
-  return 9
-::METHOD DOCUMENT_TYPE_NODE class
-  use strict arg
-  return 10
-::METHOD DOCUMENT_FRAGMENT_NODE class
-  use strict arg
-  return 11
-::METHOD NOTATION_NODE class
-  use strict arg
-  return 12
+::CONSTANT ELEMENT_NODE 1
+::CONSTANT ATTRIBUTE_NODE 2
+::CONSTANT TEXT_NODE 3
+::CONSTANT CDATA_SECTION_NODE 4
+::CONSTANT ENTITY_REFERENCE_NODE 5
+::CONSTANT ENTITY_NODE 6
+::CONSTANT PROCESSING_INSTRUCTION_NODE 7
+::CONSTANT COMMENT_NODE 8
+::CONSTANT DOCUMENT_NODE 9
+::CONSTANT DOCUMENT_TYPE_NODE 10
+::CONSTANT DOCUMENT_FRAGMENT_NODE 11
+::CONSTANT NOTATION_NODE 12
 
+::METHOD init class
+  expose ctr
+  ctr = 0
+
+::METHOD getId class private
+  expose ctr
+  ctr += 1
+  return ctr
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: init                                                               */
+/* Description: instance initialization.                                      */
+/*----------------------------------------------------------------------------*/
 
 ::METHOD init
-  expose prefix localname nodename namespaceuri nodeType
-  use strict arg prefix, localname, nodename, namespaceuri, nodetype
+  expose ownerNode childNodes nodeId
+  use strict arg ownerNode
+  nodeId = self~class~getId
+  childNodes = .NodeList~new
+  self~owned = .false   -- unowned until we are added as a child
+  self~readonly = .false -- newly created nodes can be altered
 
 ::ATTRIBUTE nodeName GET
-::ATTRIBUTE namespaceURI GET
-::ATTRIBUTE nodeType GET
-::ATTRIBUTE localName GET
-::ATTRIBUTE prefix GET
-
--- default implementations designed to be overridden
+-- superclasses overrid
 ::ATTRIBUTE nodeValue GET
-  use strict arg
   return .nil
+::ATTRIBUTE nodeValue SET
+  return -- default behavior is to do nothing...superclasses override this
+::ATTRIBUTE nodeType GET
+-- superclasses override
 ::ATTRIBUTE parentNode GET
-  use strict arg
   return .nil
 ::ATTRIBUTE childNodes GET
-  use strict arg
-  return .nil
+-- superclasses override
 ::ATTRIBUTE firstChild GET
-  use strict arg
   return .nil
+-- superclasses override
 ::ATTRIBUTE lastChild GET
-  use strict arg
   return .nil
+-- superclasses override
 ::ATTRIBUTE previousSibling GET
-  use strict arg
   return .nil
+-- superclasses override
 ::ATTRIBUTE nextSibling GET
-  use strict arg
   return .nil
+-- superclasses override
 ::ATTRIBUTE attributes GET
-  use strict arg
   return .nil
-::ATTRIBUTE ownerDocument GET
-  use strict arg
-  return .nil
-
-::METHOD hasChildNodes
-  use strict arg
-  return .false
-
-::METHOD clone
-  use strict arg deep = .false
-  return .nil
-
-::METHOD isSupported
-  use strict arg feature, version
-  return .false
 
 ::METHOD hasAttributes
   use strict arg
+  return .false
+
+::ATTRIBUTE ownerDocument GET
+  expose ownerDocument ownerNode
+
+  -- if we're a child node, then ask our owner for the information
+  if self~owned then do
+      return ownerNode~ownerDocument
+  end
+  else do
+      -- return the owner directly
+      return ownerNode
+  end
+
+::ATTRIBUTE ownerDocument SET PRIVATE
+  expose ownerNode
+
+  use strict arg doc
+  if \self~owned then do
+      ownerNode = doc
+  end
+
+::ATTRIBUTE namespaceURI GET
+  use strict arg
+  return .nil
+::ATTRIBUTE prefix GET
+  use strict arg
+  return .nil
+::ATTRIBUTE prefix SET
+  -- this is an error by default
+  .DomErrors~raiseError(.DomErrors~NAMESPACE_ERR)
+::ATTRIBUTE localName GET
+  use strict arg
+  return .nil
+::ATTRIBUTE baseURI GET
+  use strict arg
+  return .nil
+
+-- private attributes used for the implementation
+::ATTRIBUTE owned PRIVATE
+::ATTRIBUTE readonly PRIVATE
+
+-- default implementations designed to be overridden
+::METHOD hasChildNodes
+  use strict arg
+  return .false;
+
+-- base cloning method
+::METHOD cloneNode
+  use strict arg deep = .false
+  // make a copy of ourselves
+  newNode = self~copy
+  // neither owned or readonly
+  newNode~owned = .false
+  newNode~readOnly = .false
+
+  return newNode
+
+::METHOD isSupported
+  use strict arg feature, version
   return .false
 
 ::ATTRIBUTE nodeValue SET
@@ -416,35 +628,36 @@ return .false
 
 ::METHOD insertBefore
   use strict arg newChild, refChild
-  raise syntax 93.963 -- not supported
+  -- not implemented in the base node
+  .DomErrors~raiseError(.DomErrors~Hierarchy_request_err)
 
 ::METHOD replaceChild
   use strict arg newChild, oldChild
-  raise syntax 93.963 -- not supported
+  -- not implemented in the base node
+  .DomErrors~raiseError(.DomErrors~Hierarchy_request_err)
 
 ::METHOD removeChild
   use strict arg oldChild
-  raise syntax 93.963 -- not supported
+  -- not implemented in the base node
+  .DomErrors~raiseError(.DomErrors~Not_found_err)
 
 ::METHOD appendChild
   use strict arg newChild
-  raise syntax 93.963 -- not supported
+  return self~insertBefore(newChild, .nil)
 
 ::METHOD compareDocumentPosition
   use strict arg other
   raise syntax 93.963 -- not supported
 
 ::ATTRIBUTE textContent GET
-  use strict arg
-  raise syntax 93.963 -- not supported
+  forward message("NODEVALUE")
 
 ::ATTRIBUTE textContent SET
-  use strict arg value
-  raise syntax 93.963 -- not supported
+  forward message("NODEVALUE=")
 
 ::METHOD isSameNode
   use strict arg other
-  raise syntax 93.963 -- not supported
+  return self~identityHash = other~identityHash
 
 ::METHOD lookupPrefix
   use strict arg uri
@@ -460,7 +673,34 @@ return .false
 
 ::METHOD isEqualNode
   use strict arg other
-  raise syntax 93.963 -- not supported
+
+  if self == other then do
+      return .true
+  end
+
+  if self~nodetype != other~nodetype then do
+      return .false
+  end
+
+  if self~nodename != other~nodename then do
+      return .false
+  end
+
+  if self~localname != other~localname then do
+      return .false
+  end
+
+  if self~namespaceURI != other~namespaceURI then do
+      return .false
+  end
+
+  if self~prefix != other~prefix then do
+      return .false
+  end
+
+  if self~nodevalue != other~nodevalue then do
+      return .false
+  end
 
 ::METHOD getFeature
   use strict arg feature, version
@@ -474,6 +714,34 @@ return .false
   use strict arg key
   raise syntax 93.963 -- not supported
 
+-- The following are NodeList methods implemented by the node class.  Enables
+-- nicer Rexx-style access
+
+/*----------------------------------------------------------------------------*/
+/* Method: item                                                               */
+/* Description: get a list item.                                              */
+/*----------------------------------------------------------------------------*/
+
+::method item
+  expose childNodes
+  forward to(childNodes)
+
+/*----------------------------------------------------------------------------*/
+/* Method: length                                                             */
+/* Description: get the number of items in the list.                          */
+/*----------------------------------------------------------------------------*/
+::attribute length get
+  expose childNodes
+  forward to(childNodes)
+
+::method makearray
+  expose childNodes
+  forward to(childNodes)
+
+::method "[]"
+  expose childNodes
+  forward to(childNodes) message("ITEM")
+
 
 
 /*----------------------------------------------------------------------------*/
@@ -483,331 +751,8 @@ return .false
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::attribute ctr    class private
-::attribute id    private
-::attribute children private
-::attribute attr     private
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: nodeType=                                                          */
-/* Description: set type of node.                                             */
-/*----------------------------------------------------------------------------*/
-
-::method 'nodeType=' private
-expose nodeType
-use arg nodeType
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: nodeName=                                                          */
-/* Description: set node name.                                                */
-/*----------------------------------------------------------------------------*/
-
-::method 'nodeName=' private
-expose nodeName
-use arg nodeName
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: parentNode                                                         */
-/* Description: set the parent node of this node.                             */
-/*----------------------------------------------------------------------------*/
-
-::method 'parentNode=' private
-expose parentNode
-use arg parentNode
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: ownerDocument                                                      */
-/* Description: set the owner document node of this node.                     */
-/*----------------------------------------------------------------------------*/
-
-::method 'ownerDocument=' private
-expose ownerDocument
-use arg ownseDocument
-return
-
-
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-/* Class: Node                                                                */
-/*        Public methods                                                      */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-
-::method nodeValue
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: init                                                               */
-/* Description: instance initialization.                                      */
-/*----------------------------------------------------------------------------*/
-
-::method init
-if .node~ctr = 'CTR' then .node~ctr = 0
-.node~ctr = .node~ctr + 1
-self~id = .node~ctr
-self~nodeType = ''
-self~nodeName = ''
-self~nodeValue = .nil
-self~parentNode = .nil
-self~children = .NodeList~new
-self~attr = .nil
-self~ownerDcoument = .nil
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: =                                                                  */
-/* Description: test for equal.                                               */
-/*----------------------------------------------------------------------------*/
-
-::method '='
-use arg testnode
-if testnode~id = self~id then return .true
-return .false
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: nodeType                                                           */
-/* Description: get type of node.                                             */
-/*----------------------------------------------------------------------------*/
-
-::method nodeType
-expose nodeType
-if arg() > 0 then raise syntax 93.902 array (0)
-return nodeType
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: nodeName                                                           */
-/* Description: get node name.                                                */
-/*----------------------------------------------------------------------------*/
-
-::method nodeName
-expose nodeNaem
-if arg() > 0 then raise syntax 93.902 array (0)
-return nodeName
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: parentNode                                                         */
-/* Description: get parent node of this node.                                 */
-/*----------------------------------------------------------------------------*/
-
-::method parentNode
-expose parentNode
-if arg() > 0 then raise syntax 93.902 array (0)
-return parentNode
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: childNode                                                          */
-/* Description: get list od child nodes.                                      */
-/*----------------------------------------------------------------------------*/
-
-::method childNodes
-expose children
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~children
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: firstChild                                                         */
-/* Description: get the first child node.                                     */
-/*----------------------------------------------------------------------------*/
-
-::method firstChild
-expose children
-if arg() > 0 then raise syntax 93.902 array (0)
-if children~items = 0 then return .nil
-return children[1]
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: lastChild                                                          */
-/* Description: get the last child node.                                      */
-/*----------------------------------------------------------------------------*/
-
-::method lastChild
-expose children
-if arg() > 0 then raise syntax 93.902 array (0)
-if children~items = 0 then return .nil
-return children[children~items]
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: previousSibling                                                    */
-/* Description: get our previous sibling.                                     */
-/*----------------------------------------------------------------------------*/
-
-::method previousSibling
-if arg() > 0 then raise syntax 93.902 array (0)
-if self~parentNode = .nil then return .nil
-siblings = self~parentNode~childNodes
-do i = 1 to siblings~items
-   if siblings[1] = self then do
-      if i = 1 then return .nil
-      else return siblings[i - 1]
-      end
-   end
-end
-return .nil
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: nextSibling                                                        */
-/* Description: get our next sibling.                                         */
-/*----------------------------------------------------------------------------*/
-
-::method nextSibling
-if arg() > 0 then raise syntax 93.902 array (0)
-if self~parentNode = .nil then return .nil
-siblings = self~parentNode~childNodes
-do i = 1 to siblings~items
-   if siblings[1] = self then do
-      if i = siblings~items then return .nil
-      else return siblings[i + 1]
-      end
-   end
-end
-return .nil
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: attributes                                                         */
-/* Description: get our list of attributes.                                   */
-/*----------------------------------------------------------------------------*/
-
-::method attributes
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~attr
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: ownerDocument                                                      */
-/* Description: get the owner document node of this node.                     */
-/*----------------------------------------------------------------------------*/
-
-::method ownerDocument
-expose ownerDocument
-if arg() > 0 then raise syntax 93.902 array (0)
-return ownerDocument
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: insertBefore                                                       */
-/* Description: insert a node in the child list before the specified child.   */
-/*----------------------------------------------------------------------------*/
-
-::method insertBefore
-expose children
-if arg() < 2 then raise syntax 93.901 array (2)
-if arg() > 2 then raise syntax 93.902 array (2)
-use arg newChild, refChild
-if refChild = .nil then do
-   children[children~items + 1] = newChild
-   return newChild
-   end
--- find the reference node
-do i = 1 to children~items
-   if children[i] = refChild then leave
-   end
-xx = children~inseret(newChild, i - 1)
-newChild~parentNode = self
-return newChild
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: replaceChild                                                       */
-/* Description: replace a node in the child list.                             */
-/*----------------------------------------------------------------------------*/
-
-::method replaceChild
-expose children
-if arg() < 2 then raise syntax 93.901 array (2)
-if arg() > 2 then raise syntax 93.902 array (2)
-use arg newChild, oldChild
-if oldChild = .nil then return .nil
--- find the reference node
-do i = 1 to children~items
-   if children[i] = refChild then leave
-   end
-temp = children[i]
-children[i] = newChild
-newChild~parentNode = self
-temp~parentNode = .nil
-return temp
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: removeChild                                                        */
-/* Description: removes a node in the child list.                             */
-/*----------------------------------------------------------------------------*/
-
-::method removeChild
-expose children
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg oldChild
-if oldChild = .nil then return .nil
--- find the reference node
-do i = 1 to children~items
-   if children[i] = refChild then leave
-   end
-temp = children~remove(i)
-temp~parentNode = .nil
-return temp
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: appendChild                                                        */
-/* Description: appends a node in the child list.                             */
-/*----------------------------------------------------------------------------*/
-
-::method appendChild
-expose children
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg newChild
-if newChild = .nil then return .nil
-children[children~items + 1] = newChild
-newChild~parentNode = self
-return newChild
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: hasChildNodes                                                      */
-/* Description: returns .true if this nodes has child nodes.                  */
-/*----------------------------------------------------------------------------*/
-
-::method hasChildNodes
-expose children
-if arg() > 0 then raise syntax 93.902 array (0)
-if children~items > 0 then return .true
-return .false
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: cloneNode                                                          */
-/* Description: returns a copy of this node.                                  */
-/*----------------------------------------------------------------------------*/
-
-::method cloneNode
-if arg() > 1 then raise syntax 93.902 array (1)
-if arg() = 1 then use arg deep
-else deep = .false
-temp = self~copy
-temp~parentNode = .nil
-if deep = .true then do
-   -- TODO: got a lot of work to do here, see spec
-   end
-return temp
+::attribute ctr class private
+::attribute id       private
 
 
 /*----------------------------------------------------------------------------*/
@@ -1986,4 +1931,31 @@ if arg() < 1 then raise syntax 93.901 array (1)
 if arg() > 1 then raise syntax 93.902 array (1)
 use arg nodeValue
 return
+
+
+::class DOMErrors
+::constant HIERARCHY_REQUEST_ERR  "An attempt was made to insert a node where it is not permitted."
+::constant INDEX_SIZE_ERR         "The index or size is negative, or greater than the allowed value."
+::constant INUSE_ATTRIBUTE_ERR    "An attempt is made to add an attribute that is already in use elsewhere."
+::constant INVALID_ACCESS_ERR     "A parameter or an operation is not supported by the underlying object."
+::constant INVALID_CHARACTER_ERR  "An invalid or illegal XML character is specified."
+::constant INVALID_MODIFICATION_ERR "An attempt is made to modify the type of the underlying object."
+::constant INVALID_STATE_ERR        "An attempt is made to use an object that is not, or is no longer, usable."
+::constant NAMESPACE_ERR            "An attempt is made to create or change an object in a way which is incorrect with regard to namespaces."
+::constant NOT_FOUND_ERR            "An attempt is made to reference a node in a context where it does not exist."
+::constant NOT_SUPPORTED_ERR        "The implementation does not support the requested type of object or operation."
+::constant NO_DATA_ALLOWED_ERR      "Data is specified for a node which does not support data."
+::constant NO_MODIFICATION_ALLOWED_ERR "An attempt is made to modify an object where modifications are not allowed."
+::constant SYNTAX_ERR                  "An invalid or illegal string is specified."
+::constant VALIDATION_ERR              "A call to a method such as insertBefore or removeChild would make the Node invalid with respect to document grammar."
+::constant WRONG_DOCUMENT_ERR          "A node is used in a different document than the one that created it."
+::constant TYPE_MISMATCH_ERR           "The value type for this parameter name is incompatible with the expected value type."
+
+::constant BAD_BOUNDARYPOINTS_ERR      "The boundary-points of a Range do not meet specific requirements."
+::constant INVALID_NODE_TYPE_ERR       "The container of a boundary-point of a Range is being set to either a node of an invalid type or a node with an ancestor of an invalid type."
+
+::method raiseError class
+  use arg message
+
+  raise syntax 98.900 array(message)    -- just raise this as a user execution error
 
