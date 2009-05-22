@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<title>Open Object Rexx Project Status</title>
+</head>
+<body bgcolor="#FFFFFF">
+
+<center>
+<h1>Open Object Rexx Project Status<br />
+June/July - 2005</h1>
+</center>
+
+<h2>Web Site</h2>
+<p>The <a href="http://www.oorexx.org">ooRexx Web Site</a> is operational
+and the ooRexx domains
+oorexx.org, oorexx.net, oorexx.com and oorexx.info point there.</p>
+
+
+<h2>Interpreter Status</h2>
+
+<p>There have been over 20,000 downloads of the Version 3.0.x release since it
+was made available in March. This puts the ooRexx Project in the top 2% of all
+projects on the SourceForge site. Needless to say, the development team is
+very pleased with this and we expect that even better things will happen in the
+future.</p>
+
+<p>Rick is deep into the 64-bit cleanup of the code. In fact, the project has
+morphed into a complete rewite of the ooRexx kernel. Once Rick got started it
+was hard not to just clean up a lot of problem areas in the kernel.
+The process is far enough along that Rick can now hand out stand-alone
+jobs to other developers. David Ashley is working on the Linux/Unix code
+of the kernel as well as the rexxutil library. If you want to help just drop a
+line to the
+<a href="http://lists.sourceforge.net/lists/listinfo/oorexx-devel">oorexx-devel</a>
+mailing list.</p>
+
+<p>ooRexx is going to have some up-to-date programming interfaces when all this
+work is complete, plus a boat load of other goodies. Here are some of the things
+Rick and David have planned.</p>
+
+<ul>
+<li>A new C++ interface for external function libraries will be available. The
+amount of code to produce a library will be significantly reduced by the use
+of native C++ arguments to the functions and direct access to ooRexx data
+types including ooRexx objects.
+<li>Classic Rexx external function libraries will still be supported.</li>
+<li>Interfaces to all ooRexx objects will be provided via new C/C++ methods.
+The current external function libraries supplied with ooRexx will be converted
+to the new interface so that developers will have good examples to follow
+when creating new function libraries or updating classic libraries.</li>
+<li>If your external library uses the new interface then it will no longer
+be necessary to place quotes around stem names in function calls to your
+external functions in your ooRexx script.</li>
+<li>A new ::LIBRARY directive will be added to aid in the loading of external
+function packages. This directive will preload a function library so that the
+ooRexx program does not have to explicitly load it.</li>
+<li>A new keyword, EXTERNAL, will be added to the ::ROUTINE directive. This
+will raise an immediate error if an external routine cannot be loaded/found.</li>
+<li>The RxFuncAdd routine will be modified to return an error if the external
+routine cannot be loaded/found. It will also be modified so that if the routine
+is already loaded it will not return an error for the duplicate registration.</li>
+</ul>
+
+<p>A lot of under-the-covers stuff is also being touched. The stream library is
+being rewritten, a significant amount of code was eliminated by switching to
+C++ exceptions in the kernel, David will be creating a new build mechanism
+for the code that can be used on both Windows and Linux/Unix, Rick has eliminated
+a lot of code that was not being used, the external interfaces to ooRexx have
+all been updated, and much, much more.</p>
+
+<p>Rony is in the process of building the ooRexx test framework for ooRexx. It
+will be based on concepts found in the JUint framework. This will be a major
+project that will be enhanced over time.</p>
+
+<p>If you have been looking for a way to contribute to the ooRexx Project and
+you are not a C/C++ programmer, then the ooRexx test framework is your
+golden opportunity. We want the test framework to have complete coverage
+of the ooRexx interpreter and external function packages. So if
+you have an area of expertise in ooRexx, here is your chance to contribute
+unit tests to the test framework. Just drop a note to the
+<a href="http://lists.sourceforge.net/lists/listinfo/oorexx-devel">oorexx-devel</a>
+mailing list and we can get you started.</li>
+
+<p>Rony is also working to smooth out the rough edges for his ooRexx interface
+to Open Office. When finished, his package will allow ooRexx to be used as
+an Open Office macro language. He is not there yet but he has some promising
+demos that are really great.</p>
+
+
+<h2>Documentation</h2>
+
+<p>A new Version 3.0.0 Revision 2 of the documentation is available. This
+update adds indexes to all documents and cleans up a few more formating problems.
+</p>
+
+
+<h2>Project Administration</h2>
+
+<p>Not much has happened in this area. No changes are expected.</p>
+
+
+<h2>Other</h2>
+<p>As always you can subscribe to the
+<a href="http://lists.sourceforge.net/lists/listinfo/oorexx-announce">oorexx-announce</a>
+mailing list to receive development updates and news like this.</p>
+
+<p>Submitted by
+<br />The Open Object Rexx Project Team</p>
+
+</body>
+</html>

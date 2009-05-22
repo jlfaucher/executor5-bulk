@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtmll-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<title>Open Object Rexx Project Status</title>
+</head>
+<body bgcolor="#FFFFFF">
+
+<center>
+<h1>Open Object Rexx Project Status<br />
+December - 2004</h1>
+</center>
+
+<p>We finally have the finally have all the legal problems with IBM behind us.
+IBM has finally released the joint
+IBM/RexxLA announcement concerning Open Object Rexx. You can view the announcement
+at the <a href="http://www.rexxla.org/">RexxLA</a> web site as well as the
+Open Object Rexx home page.</p>
+
+<p>Here is the final status for items received from IBM</p>
+
+<ol>
+<li>Complete source code for the Object Rexx interpreter for Windows, Linux, AIX
+and Solaris. The code we were given does not contain all the materials necessary
+to build an OS/2 interpreter.</li>
+<li>Source code for the external function libraries rexxutil, rxsock, oodialog,
+rxmath and some smaller libraries.</li>
+<li>Documentation in PDF and HTML format.</li>
+</ol>
+
+<p>Here is the final status for items not received from IBM</p>
+
+<ol>
+<li>The Windows development environment (Workbench) was not turned over to RexxLA
+due to legal issues with the development libraries used to create this
+application.</li>
+<li>Rxftp external function library. There was a legal problem with this library
+because IBM used code that is under a non-disclosure agreement. An alpha
+replacement for RxFtp in the form of an ORexx class library which invokes the
+RxSock external function library to communicate with the target FTP server is
+available for review. Contact David Ashley at wdashley@sourceforge.net if you
+would like a copy for your review.
+</ol>
+
+<p>We have made some progress in transitioning the build process to the
+auto tools (autoconf, libtool, etc). We hit a snag with the latest GCC
+compiler because it uses strict C++ rules as opposed to the loose rules used
+by Visual C++ and older GCC versions. A lot of the code will have to be
+updated in order for it to compile correctly without warnings. This is going
+to take longer to finish than anticipated.</p>
+
+<p>We are finally getting ourselves organized. We should have most organizational
+issues resolved by the end of January including a project charter and a board
+of directors in place. We are working closely with the RexxLA board of directors
+to make everything official.</p>
+
+<p>The code for Open Object Rexx should appear on the SourceForge CVS
+repository soon. We need to tweak a few more items before we feel comforatable
+letting the public see our work but we promise it will be worth the wait.
+There will probably be multiple CVS modules involved but we will document them.
+</p>
+
+<p>As always you can subscribe to the
+<a href="http://lists.sourceforge.net/lists/listinfo/oorexx-announce">oorexx-announce</a>
+mailing list to receive development updates and news like this.</p>
+
+<p>Submitted by
+<br />W. David Ashley and the Open Object Rexx Project Team</p>
+
+</body>
+</html>
+

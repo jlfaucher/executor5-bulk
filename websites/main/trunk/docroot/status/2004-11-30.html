@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtmll-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<title>Open Object Rexx Project Status</title>
+</head>
+<body bgcolor="#FFFFFF">
+
+<center>
+<h1>Open Object Rexx Project Status<br />
+November - 2004</h1>
+</center>
+
+<p>We have run into a delay in getting the project established. The IBM lawyers
+want to take the source code through another round of internal review before
+releasing it to the Open Source community. This means a delay of at least
+another month (and probably more like two months) before we can really begin
+putting a release together. This is disappointing news but we do not believe
+that this process will impact IBM's decision to open source Object Rexx. As
+always, lawyers have the last say in any legal process of this nature.</p>
+
+<p>But there is good news. IBM has finally approved the language for the joint
+IBM/RexxLA announcement concerning Open Object Rexx. Look for the announcement
+on the <a href="http://www.rexxla.org/">RexxLA</a> web site as well as the
+Open Object Rexx home page.</p>
+
+<p>The proposed charter for the project is currently under review and we hope to
+adopt it by the end of December.</p>
+
+<p>Here is the latest status for items received from IBM</p>
+
+<ol>
+<li>Complete source code for the Object Rexx interpreter for Windows, Linux, AIX
+and Solaris. The code we were given does not contain all the materials necessary
+to build an OS/2 interpreter.</li>
+<li>Source code for the external function libraries rexxutil, rxsock, oodialog,
+rxmath and some smaller libraries.</li>
+<li>Documentation in PDF and HTML format.</li>
+</ol>
+
+<p>Here is the latest status for items not yet received from IBM</p>
+
+<ol>
+<li>The Windows development environment. We will probably never get this due to
+some legal issues with the development libraries used to create this
+application.</li>
+<li>Documentation source code. We may be able to obtain the SGML source from
+IBM after all, but it will be in a proprietary SGML format. But all is not lost
+as we have found a source who will be willing to extract the source in DocBook
+format from the supplied PDFs including the style sheet and index
+information.</li>
+<li>Rxftp external function library. There is a legal problem with this library
+because IBM used code that is under a non-disclosure agreement. Work has begun on
+a replacement for RxFtp in the form of an ORexx class library which invokes the
+RxSock external function library to communicate with the target FTP server.
+This will not be a direct functional replacement for the RxFtp external library
+but it will provide equivalent functionality in the form of a class library.</li>
+</ol>
+
+<p>We have also begun transitioning the build process to use the open source
+auto tools (autoconf, libtool, etc). We still have a lot of work to do to make
+this approach work but we are making progress. This work should make the build
+process portable across multiple platforms including the Windows CygWin
+environment.</p>
+
+<p>There are still a lot of legal issues to overcome before the code can be
+put in the SourceForge CVS repository. All theses issues will take some time to
+resolve so your patience will be appreciated. Again, please check back with 
+<a href="http://www.rexxla.org/">http://www.RexxLA.org/</a>
+or subscribe to the list
+<a href="http://lists.sourceforge.net/lists/listinfo/oorexx-announce">oorexx-announce</a>
+to receive development updates and news like this.</p>
+
+<p>Submitted by
+<br />W. David Ashley and the Open Object Rexx Project Team</p>
+
+</body>
+</html>
+
