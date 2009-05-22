@@ -40,13 +40,14 @@
 
 ::class texttemplate public
 
-::attribute tlines private
-::attribute tfilename
+::attribute tlines private        -- array of lines from the template source
+::attribute tfilename             -- template source file name
 
 ::method init
 expose tfilename tlines
 use strict arg tfilename
 tfile = .stream~new(tfilename)
+-- read in the lines from the source template file
 retc = tfile~open('read')
 if retc <> 'READY:' then do
    tline = .nil
@@ -59,6 +60,7 @@ return
 ::method transform
 expose tlines
 use strict arg dir, ofilename
+if \dir~isA(.directory) then raise syntax 93.948 array('DIRECTORY')
 ofile = .stream~new(ofilename)
 retc = ofile~open('write replace')
 if tlines <> .nil then do line over tlines
@@ -67,8 +69,10 @@ if tlines <> .nil then do line over tlines
    do while p > 0
       e = newline~pos(')', p)
       vname = newline~substr(p + 2, e - p - 2)
-      str = dir[vname]
-      if str = .nil then str = ''
+      str = dir[vname]                            -- try the name as is
+      if str = .nil then str = dir[vname~upper()] -- try the uppercase name
+      if str = .nil then str = dir[vname~lower()] -- try the lowercase name
+      if str = .nil then str = ''                 -- if not found then use a zero-length str
       newline = newline~changestr('$('vname')', str)
       p = newline~pos('$(')
       end
