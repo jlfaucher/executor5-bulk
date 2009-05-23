@@ -179,7 +179,7 @@ return .false
 /* Method: length                                                             */
 /* Description: get the number of items in the list.                          */
 /*----------------------------------------------------------------------------*/
-::attribute length get
+::method length
   expose nodes
   use strict arg
   return nodes~items
@@ -192,6 +192,169 @@ return .false
 ::method "[]"
   return message("ITEM")
 
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: NodeList                                                            */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+
+::class DeepNodeList subclass NodeList
+::method init
+  expose rootNode tagName changes nodes nsName
+
+  use strict arg rootNode, tagName, nsName = .nil
+  nodes = .Array~new
+  changes = 0
+
+-- lazy search for the matching nodes.  This only fills in the cache
+-- as far as the last valid requested position
+::method item
+  expose rootNode changes nodes
+  use strict arg index
+  -- if the tree has changed, we need to restart this
+  if rootNode~changes \= changes then do
+      nodes = .array~new
+      changes = rootNode~changes
+  end
+
+  currentSize = nodes~items
+  if index < currentSize then do
+      return nodes[index + 1]
+  end
+  else do
+      // we need to continue the traversal from the last node added
+      if currentSize == 0 then do
+          thisNode = rootNode
+      end
+      else do
+          thisNode = nodes[currentSize]
+      end
+      -- keep adding up to the one we're looking for
+
+      do while index > currentSize
+          thisNode = self~nexMatchingElementAfter(thisNode)
+          if thisNode \= .nil then do
+              nodes~append(thisNode)
+              currentSize += currentSize
+          end
+          else do
+              // no more nodes available
+              leave
+          end
+      end
+      -- this is either the one we want or .nil
+      return thisNode
+  end
+
+::attribute length GET
+  expose nodes
+  use strict arg
+  -- this forces everything to be initialized
+  item(999999999)
+  return nodes~items
+
+::attribute makearray
+  expose nodes
+  use strict arg
+  -- this forces everything to be initialized
+  item(999999999)
+  return nodes~copy
+
+::method nextMatchingElementAfter private
+  expose rootNode tagName nsName
+  use arg current
+
+  do while current \= nil
+      -- go down to the first child if it has one
+      if current~hasChildNodes then do
+          current = current~firstChild
+      end
+      -- no children and we're at the rootnode, so we
+      -- don't go up or to any siblings
+      else if current == rootNode do
+          return .nil
+      end
+      -- now try for a sibling of our current position
+      next = current~nextSibling
+      -- if we found one, then this is our next candidate
+      if next \= .nil  then do
+          current = next
+      end
+      else do
+          next = .nil
+          -- now we step "up and to the right" for as many attempts as needed
+          -- or utnil we pop back to the root node
+          do while current \= rootNode
+              current = current~parentNode
+              next = current~nextSibling
+              if next \= .nil then do
+                  leave
+              end
+          end
+          -- this is either a good node, or .nil
+          current = next
+      end
+     -- we have a candidate node, now make sure it matches what we're looking for
+     if current \= rootNode, current \= .nil, current~nodeType == .Node~ELEMENT_NODE then do
+         -- no namespace checking?  We'll take any element node if the name is
+         -- "*" or it matches directly
+         if nsName == .nil  then do
+             if tagName == "*" | current~tagName == tagName then do
+                 return current
+             end
+         end
+         -- namespace qualified (which might also be "*")
+         else do
+             -- wildcard match on the tagname, so just check the namespace name
+             if tagName == "*" then do
+                 -- wildcards on both, this is easy
+                 if nsName == "*" then do
+                     return current
+                 end
+                 else do
+                     -- null string is a non-specific namepace request, which
+                     -- matches only if the element does not have a namespace
+                     if nsName == "" & current~namespaceURI == .nil then do
+                         return current
+                     end
+                     -- requires an exact namespace match
+                     else if nsName == current~namespaceURI
+                         return current
+                     end
+                 end
+             end
+             -- non-wild card on the name
+             else do
+                 -- if we have a name match, then see if the namespace
+                 -- name also matches
+                 if current~localName == tagName then do
+                     -- ok, the local name matches, the ns rules are the
+                     -- same as above
+                     if nsName == "*" then do
+                         return current
+                     end
+                     else do
+                         -- null string is a non-specific namepace request, which
+                         -- matches only if the element does not have a namespace
+                         if nsName == "" & current~namespaceURI == .nil then do
+                             return current
+                         end
+                         -- requires an exact namespace match
+                         else if nsName == current~namespaceURI
+                             return current
+                         end
+                     end
+                 end
+             end
+         end
+     end
+     -- if we get here, we had a candidate, but it was not a match
+     -- just continue the tree walk
+  end
+  -- nothing found
+  return .nil
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -218,16 +381,18 @@ return .false
   use arg name
 
   if attributes == .nil then do
-      return 0
+      return .nil
   end
 
-  do i = 1 to attributes~items
-      if attributes[i]~nodeName == name then do
-          return i
+  s = attributes~supplier
+  do while s~available
+      attr = s~item
+      if attr~nodeName == name then do
+          return s~index
       end
   end
 
-  return 0
+  return .nil
 
 
 ::method findNamePointNS private
@@ -235,39 +400,29 @@ return .false
   use arg name, namespace
 
   if attributes == .nil then do
-      return 0
+      return .nil
   end
 
-  do i = 1 to attributes~items
-      attr = attributes[i]
+  s = attributes~supplier
+  do while s~available
+      attr = s~item
       if namespace == .nil then do
           if attr~namespaceURI == .nil & name == attr~localName then do
-              return i
+              return s~index
           end
 
           if attr~localName == .nil & name == attr~nodeName then do
-              return i
+              return s~index
           end
       end
       else do
           if attr~namespaceURI == namespace & attr~localName == name then do
-              return i
+              return s~index
           end
       end
   end
 
-  return 0
-
-::method removeAt private
-  expose attributes
-  use arg position
-
-  do i = position to attributes~items - 1
-      attributes[i] = attributes[i + 1]
-  end
-
-  -- this removes the last item
-  attributes~remove[i]
+  return .nil
 
 
 /*----------------------------------------------------------------------------*/
@@ -332,13 +487,13 @@ return .false
   index = self~findNamePoint(node~nodeName)
   previous = .nil
 
-  if i > 0 then do
-      previous = attributes[i]
-      attributes[i] = node
+  if index \= .nil then do
+      previous = attributes[index]
+      attributes[index] = node
   end
   else do
       if attributes == .nil then do
-          attributes = .array~new
+          attributes = .list~new
       end
       attributes~append(node)
   end
@@ -358,20 +513,20 @@ return .false
   index = self~findNamePointNS(node~localName, node~namespaceURI)
   previous = .nil
 
-  if i > 0 then do
-      previous = attributes[i]
-      attributes[i] = node
+  if index \= .nil then do
+      previous = attributes[index]
+      attributes[index] = node
   end
   else do
       -- we try again just based on the nodeName
       index = self~findNamePoint(node~nodeName)
-      if index > 0 then do
-          previous = attributes[i]
-          attributes[i] = node
+      if index > .nil then do
+          previous = attributes[index]
+          attributes[index] = node
       end
       else do
           if attributes == .nil then do
-              attributes = .array~new
+              attributes = .list~new
           end
           attributes~append(node)
       end
@@ -392,9 +547,9 @@ return .false
   index = self~findNamePoint(name)
   previous = .nil
 
-  if i > 0 then do
-      previous = attributes[i]
-      self~removeAt(i)
+  if index \= .nil then do
+      previous = attributes[index]
+      attributes~remove(index)
   end
   return previous
 
@@ -404,16 +559,16 @@ return .false
 /* Description: remove a named item.                                          */
 /*----------------------------------------------------------------------------*/
 
-::method removeNamedItem
+::method removeNamedItemNS
   expose attributes
   use strict arg namespace, name
 
   index = self~findNamePointNS(name, namespace)
   previous = .nil
 
-  if i > 0 then do
-      previous = attributes[i]
-      self~removeAt(i)
+  if index \= .nil then do
+      previous = attributes[index]
+      attributes~remove(index)
   end
   return previous
 
@@ -421,7 +576,7 @@ return .false
 /* Method: cloneMap                                                           */
 /* Description: perform a deep copy of this map object                        */
 /*----------------------------------------------------------------------------*/
-::method clone
+::method cloneMap
   expose attributes
   use strict arg owner
   newMap = .NamedNodeMap(owner)
@@ -435,9 +590,9 @@ return .false
   expose attributes
   use arg source
   if source \= .nil then do
-      attributes = source~copy
-      do i = 1 to attributes~items
-          attributes[i] = attributes[i]~cloneNode(.true)
+      attributes = .list~new
+      do attr over source
+          attributes~append(attr~cloneNode(.true)
       end
   end
 
@@ -454,7 +609,7 @@ return .false
       return .nil
   end
   else do
-      return attributes[position + 1]
+      return attributes~makearray[position + 1]
   end
 
 
@@ -466,7 +621,7 @@ return .false
 ::method length
   expose attributes
   use strict arg
-  if attributes != .nil then do
+  if attributes \== .nil then do
       return attributes~items
   end
   else do
@@ -476,11 +631,12 @@ return .false
 ::method makearray
   expose attributes
   use strict arg
-  return attributes~copy   -- make sure this is a copy
+  return attributes~makearray -- make sure this is a copy
 
 ::method "[]"
   forward message("ITEM")
 
+::attribute attributes PRIVATE
 
 
 
@@ -526,6 +682,7 @@ return .false
   childNodes = .NodeList~new
   self~owned = .false   -- unowned until we are added as a child
   self~readonly = .false -- newly created nodes can be altered
+  self~firstChild = .false -- not attached yet, so can't be first
 
 ::ATTRIBUTE nodeName GET
 -- superclasses overrid
@@ -538,6 +695,10 @@ return .false
 ::ATTRIBUTE parentNode GET
   return .nil
 ::ATTRIBUTE childNodes GET
+  use strict arg
+  -- the nodes implement the NodeList methods directly, so
+  -- all we need to do is return ourself
+  return self
 -- superclasses override
 ::ATTRIBUTE firstChild GET
   return .nil
@@ -597,6 +758,7 @@ return .false
 -- private attributes used for the implementation
 ::ATTRIBUTE owned PRIVATE
 ::ATTRIBUTE readonly PRIVATE
+::ATTRIBUTE isFirstChild PRIVATE
 
 -- default implementations designed to be overridden
 ::METHOD hasChildNodes
@@ -714,35 +876,6 @@ return .false
   use strict arg key
   raise syntax 93.963 -- not supported
 
--- The following are NodeList methods implemented by the node class.  Enables
--- nicer Rexx-style access
-
-/*----------------------------------------------------------------------------*/
-/* Method: item                                                               */
-/* Description: get a list item.                                              */
-/*----------------------------------------------------------------------------*/
-
-::method item
-  expose childNodes
-  forward to(childNodes)
-
-/*----------------------------------------------------------------------------*/
-/* Method: length                                                             */
-/* Description: get the number of items in the list.                          */
-/*----------------------------------------------------------------------------*/
-::attribute length get
-  expose childNodes
-  forward to(childNodes)
-
-::method makearray
-  expose childNodes
-  forward to(childNodes)
-
-::method "[]"
-  expose childNodes
-  forward to(childNodes) message("ITEM")
-
-
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -753,6 +886,1001 @@ return .false
 
 ::attribute ctr class private
 ::attribute id       private
+
+-- methods of NodeList that the node implements directly.  superclasses will
+-- implement this more full
+
+/*----------------------------------------------------------------------------*/
+/* Method: item                                                               */
+/* Description: get a list item.                                              */
+/*----------------------------------------------------------------------------*/
+
+::method item
+  use strict arg index
+  // always returns .nil
+  return .nil
+
+/*----------------------------------------------------------------------------*/
+/* Method: length                                                             */
+/* Description: get the number of items in the list.                          */
+/*----------------------------------------------------------------------------*/
+::method length
+  use strict arg
+  -- always returns 0
+
+::method makearray
+  use strict arg
+  // just an empty array
+  return .array~new(0)
+
+::method "[]"
+  return message("ITEM")
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: ChildNode base type for nodes that can be children of other nodes   */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "ChildNode" subclass Node
+::method init
+  expose previousSibling nextSibling
+  forward class(super) continue
+
+  previousSibling = .nil
+  nextSibling = .nil
+
+
+::method cloneNode
+  use strict arg deep = .false
+
+  newNode = self~init:super(deep)
+  // detach the new instance from the context
+  newNode~previousSibling = .nil
+  newNode~nextSibling = .nil
+  newNode~isFirstChild = .false
+
+  return newNode
+
+::attribute parentNode GET
+  if self~isOwned then do
+      return self~ownerNode
+  end
+  else do
+      return .nil
+  end
+
+::attribute nextSibling GET
+::attribute nextSibling SET PRIVATE
+
+::attribute previousSibling GET
+::attribute previousSibling SET PRIVATE
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: ParentNode base type for nodes that can be parents of other nodes   */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "ParentNode" extend ChildNode
+::method init
+  expose firstChild lastChild ownerDocument childNodes
+  forward class(super) continue
+
+  -- set this explicitly
+  use strict arg ownerDocument
+  self~clearChildNodes
+
+::method clearChildren private
+  expose firstChild lastChild childNodes
+  firstChild = .nil
+  lastChild = .nil
+  childNodes = 0
+
+::method cloneNode
+  expose firstChild
+  use strict arg deep = .false
+
+  newNode = self~cloneNode:super(deep)
+  newNode~clearChildNodes
+  -- if this is a deep copy, then we need to clone all of the children too
+  if deep then do
+      child = firstChild
+      do while child \= .nil
+          newNode~appendNode(child~cloneNode(.true))
+          child = child.nextSibling
+      end
+  end
+  return newNode
+
+::attribute ownerDocument GET
+::attribute ownerDocument SET private
+  expose ownerDocument firstChild
+  use strict arg doc
+  -- we need to set this at the higher levels too
+  self~"OWNERDOCUMENT":super(doc)
+  -- set this in each of the children too
+  child = firstChild
+  do while child \= .nil
+      child~ownerDocument = doc
+      child = child.nextSibling
+  end
+
+::method hasChildren
+  expose firstChild
+  use strict arg
+  return firstChild \= .nil
+
+::attribute firstChild GET
+::attribute lastChild GET
+
+::method insertBefore
+  expose firstChild lastChild ownerDocument childNodes
+  use arg newChild, refChild, replace = .false
+
+  -- this case is really a no-op, but we need to go through the steps
+  -- in case we need to signal events.
+  if newChild == refChild then do
+      refChild = refChild~nextSibling
+      self~removeChild(newChild)
+      self~insertBefore(newChild, refChild)
+      return newChild
+  end
+
+  -- inform the owner that this is happening
+  ownerDocment~insertingNode(this, replace)
+
+  -- make sure we've detached this node from any previous
+  -- parent node.
+  oldParent = newChild~parentNode
+  if oldParent \= .nil then do
+      oldParent~removeChild(newChild)
+  end
+
+  -- set the new owner
+  newChild~ownerNode = self
+  newChild~isOwned = .true
+
+  -- Now detach before and after
+
+  -- first added child is easy
+  if firstChild == .nil then do
+      firstChild = newChild
+      lastChild = newChild
+  end
+  -- .nil is an append
+  else if refChild == .nil then do
+      lastChild~nextSibling = newChild
+      newChild~previousSibling = lastChild
+      newChild~nextSibling = .nil
+      lastChild = newChild
+  end
+  -- normal insertion
+  else do
+      -- insertion at the beginning, need to adjust
+      if refChild == firstChild then do
+          newChild~firstSibling = firstChild
+          newChild~previousSibling = .nil
+          firstChild~previousSibling = newChild
+          firstChild = newChild
+      end
+      -- insertion in the middle
+      else do
+          previousNode = refNode~previousSibling
+          previousNode~nextSibling = newChild
+          newChild~previousSibling = previousNode
+          newChild~nextSibling = refNode
+          refNode~previousSibling = newChild
+      end
+  end
+  -- bump the count of nodes
+  childNodes += 1
+
+  -- broadcast a change event
+  self~changed
+  -- inform the document of this update
+  ownerDocument~insertedNode(self, newChild, replace)
+  return newChild
+
+::method removeChild
+  expose firstChild lastChild ownerDocument childNodes
+  use strict arg oldChild replace = .false
+
+  ownerDocument~removingNode(self, oldChild, replace)
+
+  -- removing the first child
+  if oldChild == firstChild then do
+      firstChild = firstChild~nextSibling
+      firstChild~previousSibling = .nil
+      -- if this was the only child, then clear out everything
+      if lastChild == oldChild then do
+          lastChild = .nil
+      end
+  end
+  else do
+      previous = oldChild~previousSibling
+      next = oldChild~nextSibling
+      previous~nextSibling = next
+      // this could be the last child, so we might have to update that
+      if next == .nil then do
+          lastChild = previous
+      end
+      else do
+          -- close up the chaing
+          next~previousSibling = previous
+      end
+  end
+
+  childNodes -= 1
+
+  oldChild~ownerNode = ownerDocument
+  oldChild~isOwned = .false
+  oldChild~nextSibling = .nil
+  oldChild~previousSibling = .nil
+
+  -- note the change update
+  self~changed
+
+  ownerDocument~removeNode(self, replace)
+  return oldChild
+
+::method replaceChild
+  expose ownerDocument
+  use strict arg newChild, oldChild
+
+  self~insertBefore(newChild, oldChild, .true)
+  if newChild !== oldChild then do
+      removeChild(oldChild, true)
+  end
+
+  ownerDocument.replacedNode(this)
+  return oldChild
+
+::method textContent
+  use strict arg
+
+  child = self~firstChild
+  if child \== .nil then do
+      next = child~nextSibling
+      if next == .nil then do
+          if self~hasTextContent(child) then do
+              return child~textContent
+          end
+          else do
+              return ""
+          end
+      end
+      else do
+          buffer = .mutablebuffer~new
+          buildTextContent(buffer)
+          return buffer~string
+      end
+  end
+  return ""
+
+::method buildTextContext private
+  use arg buffer
+  child = self~firstChild
+  do while child \= .nil
+      if self~hasTextContent(child) then do
+          child~buildTextContext(buffer)
+      end
+      child = child~nextSibling
+  end
+
+::method hasTextContext private
+  use arg child
+  type = child~nodeType
+  if type \= .Node~COMMENT_NODE && -
+      child \= .Node~PROCESSING_INSTRUCTION_NODE && -
+      child \= .Node~TEXT_NODE  -then do
+      return .false
+  end
+
+  return \child~isIgnorableWhilespace
+
+::attribute textContent SET
+  use strict arg text
+  child = self~firstChild
+  do while child \= .nil
+      self~removeChild(child)
+  end
+
+  -- create a text node and append
+  if text \= .nil, text \== "" then do
+      self~appendChild(self~ownerDocument~createTextNode(text)
+  end
+
+-- overrides for the NodeList methods
+::attribute length GET
+  expose childNodes
+  use strict arg
+  return childNodes
+
+::attribute item
+  expose firstNode childNodes
+  use strict arg index
+
+  if index < 0 || index >= childNodes then do
+      return .nil
+  end
+  child = firstChild
+  do while index > 0
+      child = child~nextSibling
+      index -= 1
+  end
+
+  return child
+
+::method makearray
+  expose firstNode childNodes
+  use strict arg
+
+  result = .array~new(childNodes)
+  child = firstChild
+  do while child \= .nil
+      result~append(child)
+      child = child~nextSibling
+  end
+
+  return result
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: AttributeMap -- an implementation of NamedNodeMap that can deal     */
+/* with member ownership issues                                               */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "AttributeMap" subclass NamedNodeMap
+::method init
+  expose hasDefaults
+  use strict arg ownerNode, defaults = . nil
+
+  self~init:super(ownerNode)
+  hasDefaults = .false
+  -- if we have a defaults set, clone it and if we really added
+  -- something, marks us as having defaults
+  if defaults \= .nil then do
+      self~cloneContent(defaults)
+      if self~attributes \= .nil  then do
+          hasDefaults = .true
+      end
+  end
+
+::method setNamedItem
+  use strict arg attribute
+  -- replaceing an attribute with itself does nothing
+  if attribute~isOwned then do
+      return attribute
+  end
+
+  attribute~ownerNode = self~ownerNode
+  attribute~isOwned = .true
+
+  index = self~findNamePoint(attribute~nodeName, 0)
+  attributes = self~attributes
+  previous = .nil
+  if index \= .nil then do
+      previous = attributes[i]
+      attributes[i] = attribute
+      previous~ownerNode = self~ownerNode~ownerDocument
+      previous~isOwned = .false
+      previous~isSpecified = .true
+  end
+  else do
+      if attributes = .nil then do
+          attributes = .list~new
+          self~attributes = attributes
+      end
+      attributes~append(attribute)
+  end
+
+  self~ownerNode~ownerDocument~setAttrNode(attribute, previous)
+  return previous
+
+::method setNamedItemNS
+  use strict arg attribute
+  -- replaceing an attribute with itself does nothing
+  if attribute~isOwned then do
+      return attribute
+  end
+
+  attribute~ownerNode = self~ownerNode
+  attribute~isOwned = .true
+
+  index = self~findNamePointNS(attribute~namespaceURI, attribute~nodeName)
+  attributes = self~attributes
+  previous = .nil
+  if index \= .nil then do
+      previous = attributes[i]
+      attributes[i] = attribute
+      previous~ownerNode = self~ownerNode~ownerDocument
+      previous~isOwned = .false
+      previous~isSpecified = .true
+  end
+  else do
+      if attributes = .nil then do
+          attributes = .list~new
+          self~attributes = attributes
+      end
+      attributes~append(attribute)
+  end
+
+  self~ownerNode~ownerDocument~setAttrNode(attribute, previous)
+  return previous
+
+::method removeNamedItem
+  use strict arg name
+
+  index = self~findNamePoint(name)
+  if index == .nil then do
+      return .nil
+  end
+
+  return self~remove(self~attributes[index], index, true)
+
+::method removeNamedItemNS
+  use strict arg namespaceURI, name
+
+  index = self~findNamePointNS(namspaceURI, name)
+  if index == .nil then do
+      return .nil
+  end
+
+  return self~remove(self~attributes[index], index, true)
+
+::method remove private
+  use strict arg attr, index, addDefault = .false
+
+  ownerDocument = self~ownerNode~ownderDocument
+  name = attr~nodeName
+  if attr~isIdAttribue then do
+      ownerDocument~removeIdentifier(attr~value)
+  end
+
+  attributes = self~attributes
+
+  setdefault = .false
+  -- do we have default attributes that we might need to revert to?
+  if self~hasDefaults & addDefault then do
+      defaults = ownerNode~defaultAttributes
+      if defaults \= .nil then do
+          defaultAttr = defaults~getNamedItem(name)
+          if defaultAttr \= .nil then do
+              newAttr = defaultAttr~cloneNode(.true)
+              -- the namespace uri comes from the deleted node,
+              -- not the default source value if the default
+              -- does not have a local name
+              if newAttr~localName \== .nil then do
+                  newAttr~namespaceURI = attr~namespaceURI
+              end
+              newAttr~ownerNode = ownerNode
+              newAttr~isOwned = true
+              -- mark this as a default value
+              newAttr~isSpecified = false
+              attributes[index] = newAttr
+              setdefault = .true
+              -- if this is the id attribute, make sure the document knows
+              -- about this mapping
+              if attr~isIdAttribute then do
+                  ownerDocument~putIdentifier(newAttr~nodeValue, ownerNode)
+              end
+          end
+      end
+  end
+  -- if we didn't end up setting a default, remove the node
+  if \setDefault then do
+      attributes~remove(index)
+  end
+  -- detach from usage
+  attr~ownerNode = .nil
+  attr~isOwned = .false
+  attr~isSpecified = .true
+  attr~isIdAttribute = false
+
+  -- notify the document
+  ownerDocument~removedAttrNode(attr, ownerNode, name)
+  return attr
+
+::method cloneContent
+  use strict arg source
+  srcnodes = source~attributes
+  if srcnodes \= .nil then do
+     self~attributes = .List~new
+     do node over srcnodes
+         newNode = node~cloneNode(true)
+         newNode~ownerNode = self~ownerNode
+         newNode~isOwned = .true
+         self~attributes~append(newNode)
+     end
+  end
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: Element                                                             */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "Element" subclass Node public
+::method init
+  expose nodeName attributes
+  use strict arg ownerDoc, nodeName
+  self~init:super(ownerDoc)
+  attributes = .nil
+
+::attribute nodeType GET
+  return .node~ELEMENT_NODE
+
+::attribute nodeName GET
+
+::attribute attributes GET
+  expose attributes
+  use strict arg
+
+  if attributes == .nil then do
+      attributes = .AttributeMap~new(this, .nil)
+  end
+
+  return attributes
+
+::attribute attributes SET private
+
+::method cloneNode
+  expose attributes
+  use strict arg deep = .false
+  newNode = self~cloneNode(deep)
+
+  -- the attributes are always copied regardless of the deep flag
+  if attributes \= .nil then do
+      newNode~attributes = attributes~cloneMap(newNode)
+  end
+
+  return newNode
+
+::attribute baseURI GET
+  use strict arg
+  return .nil
+
+::attribute ownerDocument SET private
+  expose attributes
+  use strict arg doc
+
+  forward class(super) continue
+  -- also set this for all of the attributes
+  if attributes \= .nil  then do
+      attributes~ownderDocument = doc
+  end
+
+
+::method getAttribute
+  expose attributes
+
+  use strict arg name
+  if attributes == .nil then do
+      return ""
+  end
+
+  attr = attributes~getNamedItem(name)
+  if attr == .nil then do
+      return ""
+  end
+  else do
+      return attr~value
+  end
+
+
+::method getAttributeNode
+  expose attributes
+
+  use strict arg name
+  if attributes == .nil then do
+      return .nil
+  end
+
+  return attributes~getNamedItem(name)
+
+::method getElementsByTagName
+  use strict arg tagname
+  // this version does a lazy search
+  return .DeepNodeList~new(this, tagname)
+
+::remove attributeNode
+  expose attributes
+
+  use strict arg attr
+
+  if attributes \= .nil then do
+      attributes~removeItem(attr)
+  end
+
+-- this is the same as the nodename for an element
+::attribute tagname GET
+  expose nodeName
+  return nodeName
+
+::method removeAttribute
+  expose attributes
+  ust strict arg name
+
+  if attrbutes \= .nil  then do
+      attributes~removeNamedItem(name)
+  end
+
+::method removeAttributeNode
+  expose attributes
+  ust strict arg oldAttr
+
+  if attrbutes \= .nil  then do
+      attributes~removItem(oldAttr, .true)
+  end
+
+::method setAttribute
+  expose attributes
+
+  use strict arg name, value
+
+  attr = self~getAttributeName(name)
+  if newAttr == .nil then do
+      newAttr = getOwnerDocument().createAttribute(name)
+
+      if attributes =- .nil  then do
+          attributes = .AttributeMap~new(this)
+      end
+
+      newAttr~nodeValue = value
+      attributes~setNamedItem(newAttr)
+  end
+  else do
+      newAttr~nodeValue = value
+  end
+
+::method setAttributeNode
+  expose attributes
+
+  use strict arg newAttr
+
+  if attributes == .nil then do
+      attributes = .AttributeMap~new(this)
+  end
+
+  return attributes~setNamedItem(newAttr)
+
+
+::method getAttributeNS
+  expose attributes
+  use strict arg namespaceURI, localName
+
+  if attributes == .nil then do
+      return ""
+  end
+
+  attr = attributes~getNamedItemNS(namespaceURI, localName)
+  if attr == .nil then do
+      return ""
+  end
+  else do
+      return attr~value
+  end
+
+
+::method setAttributeNS
+  espose attributes
+  use strict arg namespaceURI, qualifiedName, value
+
+  index = qualifiedName~pos(":")
+  if pos > 0 then do
+      parse var qualifiedName prefix ":" localName
+  end
+  else do
+      prefix = .nil
+      localName = qualifiedName
+  end
+
+  newAttr = getAttributeNodeNS(namespaceURI, localName)
+  if newAttr == .nil then do
+      newAttr = self~getOwnerDocument ~createAttributeNS(namespaceURI, qualifiedName)
+
+      if attributes == .nil then do
+          attributes = .AttributeMap~new(this)
+      end
+
+      newAttr~nodeValue = value
+      attributes~setNameItemNS(newAttr)
+  end
+  else do
+      newAttr~name = qualifiedName
+      newAttr~nodeValue = value
+  end
+
+::method removeAttributeNS
+  expose attributes
+  use strict arg namespaceURI, localName
+
+  if attributes == .nil then do
+      return
+  end
+
+  attributes~removeNamedItemNS(namespaceURI, localName)
+
+::method getAttributeNodeNS
+  expose attributes
+  use strict arg namespaceURI, localName
+
+  if attributes == .nil then do
+      return
+  end
+
+  return attributes~getNamedItemNS(namespaceURI, localName)
+
+::method setAttributeNodeNS
+  expose attributes
+  use strict arg newAttr
+
+  if attributes == .nil then do
+      return
+  end
+
+  return attributes~setNamedItemNS(newAttr)
+
+::method hasAttributes
+  expose attributes
+
+  if attributes == .nil then do
+      return .false
+  end
+
+  return attributes~length > 0
+
+::method hasAttribute
+  use strict arg name
+  return self~getAttributeNode(name) \= .nil
+
+::method hasAttributeNS
+  use strict arg namespaceURI, localName
+
+  return self~getAttributeNodeNS(namespaceURI, localName) \= .nil
+
+::method getElementsByTagNameNS
+  use strict arg namespaceURI, localName
+
+  return .DeepNodeList~new(this, localName, namespaceURI)
+
+::method setIdAttributeNode
+  use strict arg at, makeId
+
+  at~isIdAttribute = makeId
+  if makeId then do
+      self~ownerDocument~putIdentifier(at~value, this)
+  end
+  else do
+      self~ownerDocument~removeIdentifier(at~value)
+  end
+
+::method setIdAttribute
+  use strict arg name, makeId
+
+  at = self~getAttributeNode(name)
+  if at == .nil then do
+      return
+  end
+
+  at~isIdAttribute makeId
+  if makeId then do
+      self~ownerDocument~putIdentifier(at~value, this)
+  end
+  else do
+      self~ownerDocument~removeIdentifier(at~value)
+  end
+
+::method setIdAttributeNS
+  use strict arg namespaceURI, localname, makeId
+
+  at = self~getAttributeNodeNS(namspaceURI, localname)
+  if at == .nil then do
+      return
+  end
+
+  at~isIdAttribute makeId
+  if makeId then do
+      self~ownerDocument~putIdentifier(at~value, this)
+  end
+  else do
+      self~ownerDocument~removeIdentifier(at~value)
+  end
+
+::attribute typeName GET
+  use strict arg
+  return .nil
+
+::attribute typeNamespace GET
+  use strict arg
+  return .nil
+
+::method isDerivedFrom
+  use strict arg nampeNamespace, typeName, deivationMethod
+
+  return .false
+
+::attribute schemaTypeInfo GET
+  use strict arg
+  return self
+
+-- ElementTraversal methods
+
+::attribute childElementCount GET
+  use strict arg
+  count = 0
+  child = self~firstElementChild
+  do while child \= .nil
+      count += 1
+      child = child~nextElementSibling
+  end
+
+  return count
+
+::attribute firstElementChild GET
+  use strict arg
+  node = self~firstChild
+
+  do while node \= .nil
+      if node~nodeType == .Node~ELEMENT_NODE then do
+          return node
+      end
+      else if node~nodeType == .Node~ENTITY_REFERENCE_NODE then do
+          e = self~getFirstChildElement(node)
+          if e \= .nil  then do
+              return e
+          end
+      end
+      node = node~nextSibling
+  end
+  return .nil
+
+::attribute lastElementChild GET
+  use strict arg
+  node = self~lastChild
+
+  do while node \= .nil
+      if node~nodeType == .Node~ELEMENT_NODE then do
+          return node
+      end
+      else if node~nodeType == .Node~ENTITY_REFERENCE_NODE then do
+          e = self~getFirstChildElement(node)
+          if e \= .nil  then do
+              return e
+          end
+      end
+      node = node~previousSibling
+  end
+  return .nil
+
+
+::attribute nextElementSibling GET
+  use strict arg
+  node = self~nextLogicalSibling(self)
+
+  do while node \= .nil
+      if node~nodeType == .Node~ELEMENT_NODE then do
+          return node
+      end
+      else if node~nodeType == .Node~ENTITY_REFERENCE_NODE then do
+          e = self~getFirstChildElement(node)
+          if e \= .nil  then do
+              return e
+          end
+      end
+      node = node~nextLogicalSibling(node)
+  end
+
+
+::attribute previousElementSibling GET
+  use strict arg
+  node = self~previousLogicalSibling(self)
+
+  do while node \= .nil
+      if node~nodeType == .Node~ELEMENT_NODE then do
+          return node
+      end
+      else if node~nodeType == .Node~ENTITY_REFERENCE_NODE then do
+          e = self~getFirstChildElement(node)
+          if e \= .nil  then do
+              return e
+          end
+      end
+      node = node~previousLogicalSibling(node)
+  end
+
+::method getFirstElementChild private
+  use strict arg node
+
+  top = node
+
+  do while node \= .nil
+      if node~nodeType == .Node~ELEMENT_NODE then do
+          return node
+      end
+      next = node~firstChild
+      do while next \= .nil
+          if node == top then do
+              leave;
+          end
+          next = node~nextSibling
+          if next \= .nil then do
+              node = node~parentNode
+              if node == .nil | node == top then do
+                  return .nil
+              end
+          end
+      end
+      node = next
+  end
+  return .nil
+
+::method getLastElementChild private
+  use strict arg node
+
+  top = node
+
+  do while node \= .nil
+      if node~nodeType == .Node~ELEMENT_NODE then do
+          return node
+      end
+      next = node~lastChild
+      do while next \= .nil
+          if node == top then do
+              leave;
+          end
+          next = node~previousSibling
+          if next \= .nil then do
+              node = node~parentNode
+              if node == .nil | node == top then do
+                  return .nil
+              end
+          end
+      end
+      node = next
+  end
+  return .nil
+
+::method getNextLogicalSibling private
+  use arg node
+
+  next = node~nextSibling
+
+  if next == .nil then do
+      parent = node~parentNode
+      do while parent \= .nil, parent~nodeType == .Node~ENTITY_REFERENCE_NODE
+          next = parent~nextSibling
+          if next \= .nil then do
+              leave
+          end
+          parent = parent~parentNode
+      end
+  end
+
+  return next
+
+::method getPreviousLogicalSibling private
+  use arg node
+
+  previous = node~previousSibling
+
+  if previous == .nil then do
+      parent = node~parentNode
+      do while parent \= .nil, parent~nodeType == .Node~ENTITY_REFERENCE_NODE
+          previous = parent~previousSibling
+          if previous \= .nil then do
+              leave
+          end
+          parent = parent~parentNode
+      end
+  end
+
+  return previous
+
 
 
 /*----------------------------------------------------------------------------*/
