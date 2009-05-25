@@ -145,8 +145,15 @@ return .false
   expose nodes
   -- we're a read-only list...the owning node returns the list, we work off
   -- of a snapshot copy
-  use strict arg nodes
-  nodes = nodes~copy
+  use strict arg nodes = .nil
+  -- this is an empty node list if no list given
+  if nodes == .nil then do
+      nodes = .array~new(0)
+  end
+  else do
+      -- make a copy of this
+      nodes = nodes~copy
+  end
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -1159,7 +1166,7 @@ return .false
   end
   return ""
 
-::method buildTextContext private
+::method buildTextContent private
   use arg buffer
   child = self~firstChild
   do while child \= .nil
@@ -1404,7 +1411,7 @@ return .false
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "Element" subclass Node public
+::class "Element" subclass ParentNode public
 ::method init
   expose nodeName attributes
   use strict arg ownerDoc, nodeName
@@ -1880,6 +1887,819 @@ return .false
   end
 
   return previous
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: Attr                                                                */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "Attr" subclass Node
+::init
+  expose value name textNode typeName
+  use strict arg ownerDocument, name
+  value = .nil
+  typeName = .nil
+  textNode = .nil
+  self~isSpecified = .false
+  self~hasStringValue = .true
+
+::attribute ownerDocument SET private
+  expose value
+  use strict arg doc
+  forward class(super) continue
+  if \self~hasStringValue then do
+      child = value
+      do while child \= .nil
+          child~ownerDocument = doc
+          child = child~nextSibling
+      end
+  end
+
+::attribute idAttribute SET
+  use strict arg value
+  self~isIdAttribute = value
+
+::method isId
+  use strict arg
+  return self~isIdAttribute
+
+::method cloneNode
+  expose value
+  use strict arg deep = .false
+
+  newNode = self~cloneNode:super(deep)
+
+  if \self~hasStringValue then do
+      close~value = .nil
+      child = value
+      do while child \= .nil
+          newNode~appendChild(child~cloneNode(.true))
+          child = child~nextSibling
+      end
+  end
+
+  newNode~isSpecified = .true
+  return newNode
+
+::attribute nodeType GET
+  use strict arg
+  return .Node~ATTRIBUTE_NODE
+
+::attribute nodeName GET
+  expose name
+  use strict arg
+  return name
+
+::attribute nodeValue SET
+  forward message("VALUE=")
+::attribute nodeValue GET
+  forward message("VALUE")
+
+::attribute typeName GET
+::attribute typeNamespace GET
+  expose typeName
+  use strict arg
+  if typeName \= .nil then do
+      return "http://www.w3.org/TR/REC-xml"
+  end
+  else do
+      return .nil
+  end
+
+::attribute schemaTypeInfo
+  use strict arg
+  -- we provide all of our own type information directly
+  return this
+
+::attribute name GET
+
+::attribute value SET
+  expose value textNode
+  use strict arg newValue
+
+  self~ownerElement
+  oldvalue = ""
+
+  -- we might need to process an old value if it's a serious of text nodes
+  if value \= .nil then do
+      if self~ownerDocument~mutationEvents then do
+          if self~hasMutationEvents then do
+              -- if we have a string value and we need to
+              -- broadcast mutation events, then we need to
+              -- convert this into a text node for the event
+              if self~hasStringValue then do
+                  oldValue = value
+                  if textNode == .nil then do
+                      textNode = self~ownerDocument~createTextNode(value)
+                  end
+                  else do
+                      textNode~data = value
+                  end
+                  -- set the value to be a text node rather than a string
+                  value = textNode
+                  textNode~ownerNode = this
+                  textNode~isOwned = .true
+                  self~removeChild(textNode, true)
+              end
+              else do
+                  oldValue = self~value
+                  do while value \= .nil
+                      self~removeChild(value, .true)
+                  end
+              end
+          end
+      end
+      else do
+          if self~hasStringValue then do
+              oldValue = value
+          end
+          else do
+              -- discard any text children
+              oldValue = self~value
+              firstChild = value
+              firstChild ownerNode = self~ownerDocument
+          end
+          -- remove the existing value
+          value = .nil
+      end
+  end
+
+  self~isSpecified = .true
+  if self~ownerDocument~mutationEvents then do
+      self~insertBefore(self~ownerDocument~createTextNode(newValue), .nil, .true)
+      self~hasStringValue = .false
+      self~ownerDocument~modifiedAttrValue(this, oldvalue)
+  end
+  else do
+      value = newValue
+      self~changed()
+  end
+
+  if self~isIdAttribute & self~ownderElement \= .nil then do
+      self~ownerDocument~putIdentifier(newvalue, ownerElement)
+  end
+
+::attribute value GET
+  expose value
+  use strict arg
+  -- no set value is a null string
+  if value == .nil then do
+      return ""
+  end
+  -- if already a string, then set it directly
+  if value~isA(.String) then do
+      return value
+  end
+
+  -- this is a potential chain of child nodes
+  firstChild = value
+
+  if firstChild~nodeType == .Node~ENTITY_REFERENCE_NODE then do
+      data = firstChild~entryRefValue
+  end
+  else do
+      data = firstChild~nodeValue
+  end
+  -- no data at this point, return a null string
+  if data == .nil then do
+      return ""
+  end
+
+  node = firstChild~nextSibling
+  -- if the only child node, we're done
+  if node == .nil then do
+      return data
+  end
+
+  buffer = .mutableBuffer~new(data)
+
+  do while node \= .nil
+      if firstChild~nodeType == .Node~ENTITY_REFERENCE_NODE then do
+          data = firstChild~entryRefValue
+          if data \= .nil then do
+              buffer~append(data)
+          end
+      end
+      else do
+          buffer~append(firstChild~nodeValue)
+      end
+      node = node~nextSibling
+  end
+
+  return buffer~string
+
+::attribute element GET
+  use strict arg
+
+  if self~isOwned then do
+      return self~ownerNode
+  end
+  else do
+      return .nil
+  end
+
+::attribute ownerElement GET
+  forward message("ELEMENT")
+
+::attribute specified GET
+  forward name("ISSPECIFIED")
+::attribute specified SET
+  forward name("ISSPECIFIED=")
+
+::method hasChildNodes
+  expose value
+  use strict arg
+  return value \= .nil
+
+::method childNodes
+  -- we handle the node list methods directly
+  use strict arg
+  return self
+
+::method firstChild
+  expose value
+  use strict arg
+  self~makeChildNode
+  return value
+
+::method lastChild
+  expose value
+  use strict arg
+
+  self~makeChildNode
+
+  child = value
+  previous = .nil
+
+  do while child \= .nil
+      previous = child
+      child = child~nextSibling
+  end
+
+  return previous
+
+::method insertBefore
+  expose value
+  use strict arg newChild, refChild, replace = .false
+
+  -- if this is a fragment, transfer each of the
+  -- children from the fragment to ourselves
+  if newChild~nodeType == .Node~DOCUMENT_FRAGMENT_MODE then do
+      do while newChild~hasChildNodes
+          self~insertBefore(newChild~firstChild, refChild)
+      end
+      return newChild
+  end
+  -- already here?  This is a little silly, but the event model
+  -- requires us to remove it and the reinsert
+  if newChild == refChild then do
+      refChild = refChild~nextSibling
+      self~removeChild(newChild)
+      self~insertBefore(newChild, refChild)
+      return newChild
+  end
+  -- ensure if we just have a string value that it is converted into a text
+  -- node
+  self~makeChildNode
+
+  self~ownerDocument~insertingNode(this, replace)
+  -- detach from any existing parent node
+  oldParent = newChild~parentNode
+
+  if oldParent \= .nil then do
+      oldParent~removeChild(newNode)
+  end
+
+  newNode~ownerNode = this
+  newNode~isOwned = .true
+
+  firstChild = value
+  -- no existing value, this case is easy
+  if firstChild == .nil then do
+      value = newChild
+  end
+  else do
+      -- append operation?
+      if refNode == .nil then do
+          lastChild = self~lastChild
+          lastChild~nextSibling = newNode
+          newNode~previousSibling = lastChild
+      end
+      -- normal insertion
+      else do
+          if refChild == firstChild then do
+              newNode~nextSibling = firstChild
+              firstChild~previousSibling = newNode
+              newNode~previousSibling = .nil
+              value = newNode
+          end
+          else do
+              previous = refNode~previousSibling
+              newNode~nextSibling = refNode
+              previous~nextSibling = newNode
+              refNode~previousSibling = newNode
+              newNode~previousSibling = previous
+          end
+      end
+  end
+
+  -- record the change
+  self~changed
+
+  self~ownerDocument~insertedNode(this, newNode, replace)
+
+  return newChild
+
+::method removeChild
+  expose value
+  use strict arg oldChild, replace = .false
+
+  if value~isA(.string) then do
+      return .nil
+  end
+
+  self~ownerDocument~removingNode(this, oldNode, replace)
+
+  -- removing the first?
+  if oldNode == value then do
+      value = oldNode~nextSibling
+      if value \= .nil then do
+          value~previousSibling = .nil
+      end
+  end
+  else do
+      previous = oldNode~previousSibling
+      next = oldNode~nextSibling
+      previous~nextSibling = next
+      if next \= .nil then do
+          next~previousSibling = previous
+      end
+  end
+
+  oldNode~ownerNode = self~ownerDocument
+  oldNode~isOwned = .false
+  oldNode~nextSibling = .nil
+  oldNode~previousSibling = .nil
+
+  self~changed
+
+  ownerDocument~removedNode(this, replace)
+
+  return oldNode
+
+::method replaceChild
+  use strict arg newChild, oldChild
+
+  self~makeChildNode
+  self~ownerDocument~replacingNode(self)
+  self~insertBefore(newChild, oldChild, .true)
+  if newChild \= oldChild then do
+      self~removeChild(oldChild, true)
+  end
+
+  self~ownerDocument~repacingNode(self)
+  return oldChild
+
+-- NodeList methods
+::attribute length GET
+  expose value
+  use strict arg
+
+  if value~isA(.string) then do
+      return 1
+  end
+
+  child = value
+  length = 0
+  do while child \= .nil
+      length += 1
+      child = child~nextSibling
+  end
+
+  return length
+
+::method item
+  expose value
+  use strict arg index
+
+  if value~isA(.String) then do
+      if index \= 0 then do
+          return .nil
+      end
+      self~makeChildNode
+      return value
+  end
+  else do
+      if index < 0 then do
+          return .nil
+      end
+      node = value
+      do i = 0 to index while node \= .nil
+          node = node~nextSibling
+      end
+      return node
+  end
+
+::method isDerivedFrom
+  use strict arg typeNamespace, typeName, derivationMethod
+  return .false
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: CharacterData -- base class for all nodes that carry character data */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "CharacterData" subclass ChildNode
+::method init
+  expose data
+  use strict arg ownerDocument, data
+  self~init:super(ownerDocument)
+
+::attribute childNodes GET
+  use strict arg
+  -- always returns an empty node list
+  return .NodeList~new
+
+::attribute nodeValue GET
+  expose data
+  use strict arg
+  return data
+
+::attribute nodeValue SET
+  expose data
+  use strict arg value, replace = .false
+
+  oldValue = data
+  self~ownerDocument~modifyingCharacterData(self, replace)
+
+  data = value
+
+  self~ownerDocument~modifiedCharacterData(self, oldValue, value, replace)
+
+::attribute data GET
+::attribute length GET
+  expose data
+  use strict arg
+  return data~length
+
+::method appendData
+  expose data
+  use strict arg newData
+  if newData == .nil then do
+      return
+  end
+
+  self~setNodeValue(data||newData)
+
+::method deleteData
+  expose data
+  use strict arg offset, count, replace = .false
+
+  tailLength = max(data~length - count - offset, 0)
+  if offset >= data~length  then do
+      newData = data
+  end
+  else do
+      newData = data~delstr(offset + 1, count)
+  end
+  -- set the node value to the adjusted version
+  self~nodeValue = newData
+
+  self~ownerDocument~deletedText(self, offset, count)
+
+::method insertData
+  expose data
+  use strict arg offset, newData, replace = .false
+
+  if offset >= data~length then do
+      newValue = data
+  end
+  else do
+      newValue = date~insert(newData, offset +1)
+  end
+
+  self~ownerDocument~deletedText(self, offset, data~length)
+
+::method replaceData
+  expose data
+  use strict arg offset, count, newData
+
+  oldvalue = data
+
+  self~ownerDocument~replacingData(self)
+
+  -- this needs to be done as multiple operations to get all of the
+  -- events broadcast
+  self~deleteData(offset, count, .true)
+  self~insertData(offset, newData, .true)
+
+  self~ownerDocument~replacedCharacterData(self, oldvalue, data)
+
+::method setData
+  forward message("NODEVALUE=")
+
+::method substringData
+  expose data
+  use strict arg offset, count
+
+  return data~substring(offset + 1, count)
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: Text -- a DOM text node                                             */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "Text" subclass CharacterData
+
+::attribute nodeType GET
+  use strict arg
+  return .Node~TEXT_NODE
+
+::attribute nodeName GET
+  use strict arg
+  return "#text"
+
+::method getWholeText
+  use strict arg
+
+  buffer = .mutablebuffer~new
+  data = self~data
+  if data \= .nil then do
+      buffer~append(data)
+  end
+
+  self~getWholeTextBackward(self~previousSibling, buffer, self~parentNode)
+  self~getWholeTextForward(self~nextSibling, buffer, self~parentNode)
+
+  return buffer~string
+
+::method getWholeTextForward
+  use arg node, buffer, parent
+
+  processingEntity = .false
+  if parent \= .nil then do
+      processingEntity = parent~nodeType == .Node~ENTITY_REFERENCE_NODE
+  end
+
+  do while node \= .nil
+      type= node~nodeType
+      // unwind the entity references as a unit
+      if type == .Node~ENTITY_REFERENCE_NODE then do
+          if self~getWholeTextForward(node~firstChild, buffer, node) then do
+              return .true
+          end
+      end
+      -- a text node, just add the text content to the buffer
+      else if type == .Node~TEXT_NODE | type = .Node~CDATA_SECTION_NODE do
+          node~buildTextContent(buffer)
+      end
+      else do
+          -- we're finished if we found a non-text node
+          return .true
+      end
+      node = node~nextSibling
+  end
+
+  -- we've run through everything, but if we started with the child of an
+  -- entity reference, we need to check the siblings for additional logical
+  -- text nodes
+  if processingEntity then do
+      self~getWholeTextForward(parent~nextSibling, buffer, parent~parentNode)
+      return .true
+  end
+
+  return .false
+
+::method getWholeTextBackward
+  use strict arg node, buffer, parent
+
+  processingEntity = .false
+  if parent \= .nil then do
+      processingEntity = parent~nodeType == .Node~ENTITY_REFERENCE_NODE
+  end
+
+  do while node \= .nil
+      type= node~nodeType
+      // unwind the entity references as a unit
+      if type == .Node~ENTITY_REFERENCE_NODE then do
+          if self~getWholeTextBackward(node~lastChild, buffer, node) then do
+              return .true
+          end
+      end
+      -- a text node, just add the text content to the buffer
+      else if type == .Node~TEXT_NODE | type = .Node~CDATA_SECTION_NODE do
+          node~insertTextContent(buffer)
+      end
+      else do
+          -- we're finished if we found a non-text node
+          return .true
+      end
+      node = node~previousSibling
+  end
+
+  -- we've run through everything, but if we started with the child of an
+  -- entity reference, we need to check the siblings for additional logical
+  -- text nodes
+  if processingEntity then do
+      self~getWholeTextBackward(parent~previousSibling, buffer, parent~parentNode)
+      return .true
+  end
+
+  return .false
+
+::method insertTextContent private
+  use arg buffer
+  content = self~nodeValue
+  if content \= .nil then do
+      buffer~insert(1, content)
+  end
+
+::method replaceWholeText
+  use strict arg content
+
+  parent = self~parentNode
+  -- no content or a null string content, we just remove everything
+  if content == .nil | content == "" then do
+      -- just remove ourselves from the parent
+      if parent \= .nil then do
+          parent~removeChild(self)
+      end
+      return .nil
+  end
+
+  self~data = content
+  currentNode = self
+
+  previous = currentNode~previousSibling
+  do while previous \= .nil
+      -- remove any logically adjacent text or entity reference nodes
+      nodetype = previous~nodeType
+      if nodeType = .Node~TEXT_NODE | -
+          nodeType = .Node~CDATA_SECTION_NODE | -
+          nodeType = .Node~ENTITY_REFERENCE_NODE | -
+          then do
+          -- remove the node from the parent
+          parent~removeChild(previous)
+      end
+      else do
+          -- non-text node found, time to quit
+          leave
+      end
+      -- we keep pulling the previous sibling of the current
+      -- until we find a non-text node
+      previous = currentNode~previousSibling
+  end
+
+  -- now remove the trailing siblings
+  next = currentNode~nextSibling
+
+  do while next \= .nil
+      -- remove any logically adjacent text or entity reference nodes
+      nodetype = next~nodeType
+      if nodeType = .Node~TEXT_NODE | -
+          nodeType = .Node~CDATA_SECTION_NODE | -
+          nodeType = .Node~ENTITY_REFERENCE_NODE | -
+          then do
+          -- remove the node from the parent
+          parent~removeChild(next)
+      end
+      else do
+          -- non-text node found, time to quit
+          leave
+      end
+      -- we keep pulling the previous sibling of the current
+      -- until we find a non-text node
+      next = currentNode~nextSibling
+  end
+
+  -- this is now the only text node
+  return currentNode
+
+::method splitText
+  expose data
+  use strict arg offset
+
+  newText = self~ownerDocument~createTextNode(data~substr(offset + 1))
+  self~nodeValue = data~substr(1, offset)
+
+  -- now insert the new text node
+  parent = self~parentNode
+  if parentNode \= .nil then do
+      parentNode~insertBefore(newText, self~nextSibling)
+  end
+
+  return newText
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: Comment -- a comment node                                           */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "Comment" subclass CharacterData PUBLIC
+::attribute nodeType GET
+  use strict arg
+  return .Node~COMMENT_NODE
+
+::attribute nodeName get
+  use strict arg
+  return "#comment"
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: Entity -- an entity value                                           */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "Entity" subclass ParentNode PUBLIC
+::method init
+  expose name publicId systemId XmlEncoding inputEncoding XMLversion notationName baseURI
+  use strict arg ownerDoc, name
+  self~init:super(ownerDoc)
+  publicId = .nil
+  systemId = .nil
+  XmlEncoding = .nil
+  inputEncoding = .nil
+  XmlVersion = .nil
+  notationName = .nil
+  baseURI = ,nil
+
+::attribute nodeType GET
+  use strict arg
+  return .Node~ENTITY_NODE
+
+::attribute nodeName GET
+  expose name
+  use strict arg
+  return name
+
+::attribute publicId
+::attribute systemId
+::attribute XmlVersion
+::attribute XmlEncoding
+::attribute inputEncoding
+::attribute notationName
+::attribute baseURI
+
+::class "EntityReference" subclass ParentNode
+::method init
+  expose name baseURI
+  use strict arg ownerDoc, name
+  self~init:super(ownerDoc)
+  baseURI = .nil
+
+::attribute nodeType GET
+  use strict arg
+  return .Node~ENTITY_NODE
+
+::attribute nodeName GET
+  expose name
+  use strict arg
+  return name
+
+::attribute entityRefValue
+  use strict arg
+
+  value = ""
+  firstChild = self~firstChild
+  if firstChild == .nil then do
+      return .nil
+  end
+  if firstChild~nodeType == .Node~ENTITY_REFERENCE_NODE then do
+      value = firstChild~entityRefValue
+  end
+  else if firstChild~nodeType == .Node~TEXT_NODE do
+      value = firstChild~nodeValue
+  end
+  else do
+      return .nil
+  end
+
+  if firstChild~nextSibling == .nil then do
+      return value
+  end
+  else do
+      buffer = .mutablebuffer~new(value)
+      next = firstChild~nextSibling
+      do while next \= .nil
+          if next~nodeType == .Node~ENTITY_REFERENCE_NODE then do
+              value = next~entityRefValue
+          end
+          else if next~nodeType == .Node~TEXT_NODE do
+              value = next~nodeValue
+          end
+          else do
+              return .nil
+          end
+          buffer~append(value)
+          next = next~nextSibling
+      end
+      return buffer~string
+  end
 
 
 
