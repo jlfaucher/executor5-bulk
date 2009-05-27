@@ -49,33 +49,6 @@
 /*----------------------------------------------------------------------------*/
 
 
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-/* Class: DOMString                                                           */
-/*        This class is here as a placeholder only as we do not support       */
-/*        unicode string, only ASCII strings. We can modify this class in     */
-/*        the future if we ever support unicode strings.                      */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-
-::class DOMString subclass string public
-
-
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-/* Class: DOMString                                                           */
-/*        Private methods                                                     */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-
-
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-/* Class: DOMString                                                           */
-/*        Public methods                                                      */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -132,6 +105,51 @@ else do
    if self~featureset[feature] <> .nil then return .true
    end
 return .false
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: CoreDocument                                                        */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+::class "CoreDocument" subclass ParentNode
+::method init
+  expose docType docElement encoding actualEncoding version standalone documentURI -
+         userdata identifiers domNormalizer configuration xpathEvaluator changes   -
+         allowGrammerAccess errorChecking documentNumber nodeCounter nodeTable
+  use strict arg docType = .nil, grammarAccess = .false
+  self~init:super(.nil)
+  self~ownerDocument = self
+
+  docElement = .nil
+  encoding = .nil
+  actualEncoding = .nil
+  version = .nil
+  standalone = .false
+  documentURI = .false
+  userData = .nil
+  identifiers = .nil
+  domNormalizer = .nil
+  configuration = .nil
+  xpathEvaluator = .nil
+  changes = 0
+  errorChecking = .true
+  documentNumber = 0
+  nodeCounter = 0
+  nodeTable = .nil
+
+  -- if we have a document type, this gets appended as our first child
+  if docType \= .nil then do
+      docType~ownerDocument = self
+      appendChild(docType)
+  end
+
+::attribute ownerDocument GET
+  use strict arg
+  -- documents don't have an owner
+  return .nil
+
+
+
 
 
 /*----------------------------------------------------------------------------*/
@@ -2700,6 +2718,84 @@ return .false
       end
       return buffer~string
   end
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: CDATASection                                                        */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "CDATASection" subclass Text PUBLIC
+::attribute nodeType GET
+  use strict arg
+  return .Node~CDATA_SECTION_NODE
+
+::attribute nodeName GET
+  use strict arg
+  return "#cdata-section"
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: Notation                                                            */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+::class "Notation" subclass Node PUBLIC
+::method init
+  expose name publicId systemId baseURI
+  use strict arg ownerDoc, name
+  self~init:super(ownerDoc)
+
+  publicId = .nil
+  systemId = .nil
+  baseURI = .nil
+
+::attribute nodeType GET
+  use strict arg
+  return .Node~NOTATION_NODE
+
+::attribute nodeName GET
+  expose name
+  use strict arg
+  return name
+
+::attribute publicId
+::attribute systemId
+::attribute baseURI
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: ProcessingInstruction                                               */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+::class "ProcessingInstruction" subclass CharacterData PUBLIC
+::method init
+  expose target
+  use strict arg ownerDocument, target, data
+  self~init:super(ownerDocument, data)
+
+::attribute nodeType GET
+  use strict arg
+  return .Node~PROCESSING_INSTRUCTION_NODE
+
+::attribute nodeName GET
+  expose target
+  use strict arg
+  return target
+
+::attribute target
+::attribute data GET
+  forward message("NODEVALUE")
+::attribute data SET
+  forward message("NODEVALUE=")
+::attribute baseURI GET
+  use strict arg
+  return self~ownerNode~baseURI
+
+
+
 
 
 
