@@ -400,7 +400,7 @@ return testResult
     self~assertSame('0', 'ab'~verify('a',,,1))
     self~assertSame('0', 'ABCDEF'~verify('ABC',,,3.0))
     self~assertSame('4', 'ABCDEF'~verify('ABC',,2,3))
-    self~assertSame('4', 'ABCDEF'~verify('DEF',Match,,3))
+    self~assertSame('0', 'ABCDEF'~verify('DEF',Match,,3))
     self~assertSame('4', 'ABCDEF'~verify('ADEF',Match,2,3))
 
 ::method testRange02

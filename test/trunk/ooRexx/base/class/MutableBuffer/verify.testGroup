@@ -390,7 +390,7 @@ return testResult
     self~assertSame('0', .mutablebuffer~new('ab')~verify('a',,,1))
     self~assertSame('0', .mutablebuffer~new('ABCDEF')~verify('ABC',,,3.0))
     self~assertSame('4', .mutablebuffer~new('ABCDEF')~verify('ABC',,2,3))
-    self~assertSame('4', .mutablebuffer~new('ABCDEF')~verify('DEF',Match,,3))
+    self~assertSame('0', .mutablebuffer~new('ABCDEF')~verify('DEF',Match,,3))
     self~assertSame('4', .mutablebuffer~new('ABCDEF')~verify('ADEF',Match,2,3))
 
 ::method testRange02
