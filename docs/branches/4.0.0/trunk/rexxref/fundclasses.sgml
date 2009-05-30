@@ -4847,7 +4847,7 @@ are found.</para>
 at the first character of the receiving string. You can override this by
 specifying a different <emphasis role="italic">start</emphasis> point,
 which must be a positive whole number.</para>
-<para>The default for <emphasis role="italic">length</emphasis> the length of
+<para>The default for <emphasis role="italic">length</emphasis> is the length of
 the string from <emphasis role="italic">start</emphasis> to the end of the
 string. Thus, the search proceeds to the end of the receiving string.  You can
 override this by specifying a different
@@ -4877,6 +4877,8 @@ returns the <emphasis role="italic">start</emphasis> value.</para>
 "123"~verify("",N,2)                   ->    2
 "ABCDE"~verify("", ,3)                 ->    3
 "AB3CD5"~verify("1234567890","M",4)    ->    6
+"ABCDEF"~verify("ABC","N",2,3)         ->    4
+"ABCDEF"~verify("ADEF","M",2,3)        ->    4
 </programlisting>
 </section>
 

@@ -5377,9 +5377,10 @@ VAR("*")       -> 0  /* an invalid symbol */
 
 <programlisting>
 <![CDATA[
->>-VERIFY(string,reference--+---------------------------+--)---><
-                            +-,--+--------+--+--------+-+
-                                 +-option-+  +-,start-+
+>>-VERIFY(string,reference--+----------------------------------------------+--)---><
+                            +-,--+--------+--+---------------------------+-+
+                                 +-option-+  +-,--+-------+--+---------+-+
+                                                  +-start-+  +-,length-+
 ]]>
 </programlisting>
 
@@ -5407,6 +5408,13 @@ at the first character of <emphasis role="italic">string</emphasis>.
 You can override this by specifying a different
 <emphasis role="italic">start</emphasis> point, which must be a positive whole
 number.</para>
+<para>The default for <emphasis role="italic">length</emphasis> is the length of
+the string from <emphasis role="italic">start</emphasis> to the end of the
+string. Thus, the search proceeds to the end of the receiving string.  You can
+override this by specifying a different
+<emphasis role="italic">length</emphasis>, which must be a non-negative whole
+number.
+</para>
 <para>If <emphasis role="italic">string</emphasis> is null, the function
 returns <computeroutput>0</computeroutput>, regardless
 of the value of the third argument. Similarly, if
@@ -5432,6 +5440,8 @@ VERIFY("1P3Q4","1234567890", ,3)       ->    4
 VERIFY("123","",N,2)                   ->    2
 VERIFY("ABCDE","", ,3)                 ->    3
 VERIFY("AB3CD5","1234567890","M",4)    ->    6
+VERIFY("ABCDEF","ABC","N",2,3)         ->    4
+VERIFY("ABCDEF","ADEF","M",2,3)        ->    4
 </programlisting>
 </section>
 

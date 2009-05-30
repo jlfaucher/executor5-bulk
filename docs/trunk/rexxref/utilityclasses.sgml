@@ -4099,7 +4099,7 @@ at the first character of the receiving buffer. You can override this by
 specifying a different
 <emphasis role="italic">start</emphasis> point, which must be a positive whole
 number.</para>
-<para>The default for <emphasis role="italic">length</emphasis> the length of
+<para>The default for <emphasis role="italic">length</emphasis> is the length of
 the buffer from <emphasis role="italic">start</emphasis> to the end of the
 buffer. Thus, the search proceeds to the end of the receiving buffer. You can
 override this by specifying a different
@@ -4117,6 +4117,22 @@ returns
 <computeroutput>0</computeroutput> if
 you specify <computeroutput>Match</computeroutput>. Otherwise, the method
 returns the <emphasis role="italic">start</emphasis> value.</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>verify method</secondary></indexterm>
+<programlisting>
+.mutablebuffer~new('123')~verify('1234567890')             ->    0
+.mutablebuffer~new('1Z3')~verify('1234567890')             ->    2
+.mutablebuffer~new('AB4T')~verify('1234567890')            ->    1
+.mutablebuffer~new('AB4T')~verify('1234567890','M')        ->    3
+.mutablebuffer~new('AB4T')~verify('1234567890','N')        ->    1
+.mutablebuffer~new('1P3Q4')~verify('1234567890', ,3)       ->    4
+.mutablebuffer~new('123')~verify('',N,2)                   ->    2
+.mutablebuffer~new('ABCDE')~verify('', ,3)                 ->    3
+.mutablebuffer~new('AB3CD5')~verify('1234567890','M',4)    ->    6
+.mutablebuffer~new('ABCDEF')~verify('ABC',"N",2,3)         ->    4
+.mutablebuffer~new('ABCDEF')~verify('ADEF',"M",2,3)        ->    4
+</programlisting>
 </section>
 
 <section id="mthMutableBufferWord"><title>word</title>
