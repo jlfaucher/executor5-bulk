@@ -148,7 +148,215 @@ return .false
   -- documents don't have an owner
   return .nil
 
+::attribute nodeType GET
+  use strict arg
+  return .Node~DOCUMENT_NODE
 
+::attirbute nodeName GET
+  use strict arg
+  return "#document"
+
+::method cloneNode
+  use strict arg deep = .false
+  newDoc = .CoreDocument~new
+  self~cloneDocument(newDoc, deep)
+  return newDoc
+
+::method cloneDocument private
+  expose identifers, firstChild
+  use arg newDoc, deep
+
+  if deep then do
+      reversedIdentifers = .nil
+      if identifiers \= .nil then do
+          reversedIdentifiers = .table~new
+          -- create the table using the inverse look up logic
+          sup = identifiers~supplier
+          do while sup~available
+              reversedIdentifiers[sup~item] = sup~index
+          end
+      end
+
+      -- now copy each of the children into the new document
+      child = firstChild
+      do while child \= .nil
+          newDoc~appendChild(newDoc~importDocNode(child, .true, .true, reversedIdentifers))
+      end
+  end
+
+  newDoc~allowGrammarAccess = self~allowGrammarAccess
+  newDoc~errorChecking = self~errorChecking
+
+::method insertBefore
+  expose docElement docType
+  use strict arg newChild, refChild
+
+  type = newChild~nodeType
+  -- if this is a DocumentType node, then make ourselves the owner
+  if newChild~ownerDocument == .nil & newChild~isA(.DocumentType) then do
+      newChild~ownerDocument = self
+  end
+  -- do a normal insert
+  self~insertBefore:super(newChild, refChild)
+  -- we only have two types of children, so cache each of
+  -- type types
+  if type == .Node~ELEMENT_NODE then do
+      docElement = newChild
+  end
+  else if type == .Node~DOCUMENT_TYPE_NODE then do
+      docType = newChild
+  end
+  return newChild
+
+::method removeChild
+  expose docElement docType
+  use strict arg oldChild
+
+  self~removeChild:super(oldChild)
+
+  type = oldChild~ELEMENT_NODE
+
+  if type = .Node~ELEMENT_TYPE then do
+      docElement = .nil
+  end
+  else if type = .Node~DOCUMENT_TYPE_NODE do
+      docType = .nil
+  end
+  return oldChild
+
+::method replaceChild
+  expose docElement docType
+  use strict arg newChild, oldChild
+
+  -- if this is a DocumentType node, then make ourselves the owner
+  if newChild~ownerDocument == .nil & newChild~isA(.DocumentType) then do
+      newChild~ownerDocument = self
+  end
+
+  self~replaceChild:super(newChild, oldChild)
+
+  type = oldChild~ELEMENT_NODE
+
+  if type = .Node~ELEMENT_TYPE then do
+      docElement = .newChild
+  end
+  else if type = .Node~DOCUMENT_TYPE_NODE do
+      docType = .newChild
+  end
+  return oldChild
+
+::attribute textContent GET
+  use strict arg
+  return .nil
+
+::attribute textContent SET
+  use strict arg value
+  -- this is a NOP
+
+::method getFeature
+  expose xpathEvaluator
+  use strict arg feature, version = .nil
+
+  anyVersion = version == .nil | version == ""
+
+  if feature~caselessEquals("+XPath") & (anyVersion | version == "3.0") then do
+      if xpathEvaluator == .nil then do
+          xpathEvaluator = .XPathEvaluator~new(self)
+      end
+      return xpathEvaluator
+  end
+
+  return self~getFeature:super(feature, version)
+
+-- Document factory methods
+
+::method createAttribute
+  use strict arg name
+  return .Attr~new(self, name)
+
+::method createCDATASection
+  use strict arg data
+  return .CDATASection~new(self, data)
+
+::method createComment
+  use strict arg data
+  return .Comment~new(self, data)
+
+::method createDocumentFragment
+  use strict arg
+  return .DocumentFragment~new(self)
+
+::method createElement
+  use strict arg tagname
+  return .Element~new(self, tagname)
+
+::method createEntityReference
+  use strict arg name
+  return .EntityReference~new(self, name)
+
+::method createProcessingInstruction
+  use strict arg target, data
+  return .ProcessingInstruction~new(self, target, data)
+
+::method createTextNode
+  use strict arg data
+  return .Text~new(self, data)
+
+::attribute docType GET
+::attribute documentElement GET
+  expose docElement
+  use strict arg
+  return docElement
+
+::method getElementsByTagName
+  use strict arg tagName
+  return .DeepNodeList~new(self, tagname)
+
+::method getImplementation
+  use strict arg
+
+  return .DomImplementation~getDOMImplementation
+
+::attribute errorChecking
+::attribute strictErrorChecking
+
+::attribute inputEncoding
+::attribute xmlEncoding
+
+::attribute documentURI
+
+::method createDocumentType
+  use strict arg qualifiedName, publicID, systemID
+
+  return .DocumentType~new(self, qualifiedName, publicID, systemID)
+
+::method createEntity
+  use strict arg name
+  return .Entity~new(self, name)
+
+::method createNotation
+  use strict arg name
+  return .Notation~new(self, name)
+
+::method importNode
+  use strict arg source, deep = .false
+  return self~importDocNode(source, deep, .false, .nil)
+
+::method importDocNode private
+  use strict arg source, deep, cloningDoc, reversedIdentifers
+
+  newNode = .nil
+  type = source~nodeType
+  select
+      when type == .Node~ELEMENT_NODE then do
+          if source~localName == .nil then do
+              newElement = self~createElement(source~nodeName)
+          end
+          else do
+              newElement = self~create
+          end
+      end
+  end
 
 
 
@@ -1431,10 +1639,85 @@ return .false
 
 ::class "Element" subclass ParentNode public
 ::method init
-  expose nodeName attributes
-  use strict arg ownerDoc, nodeName
-  self~init:super(ownerDoc)
+  expose nodeName attributes namespaceURI localName type
   attributes = .nil
+  namespaceURI = .nil
+  localName = .nil
+  type = .nil
+
+  if arg() == 2 then do
+      use strict arg ownerDoc, nodeName
+      self~init:super(ownerDoc)
+  end
+  else if arg() == 3 then do
+      use strict arg ownerDoc, namespaceURI, nodeName
+      self~init:super(ownerDoc)
+      self~setName(nodeName)
+  end
+  else do
+      use strict arg ownerDoc, namespaceURI, nodeName, localName
+      self~init:super(ownerDoc)
+  end
+
+::method setName private
+  expose namespaceURI localName
+  use arg qname
+  -- null string is the same as not there
+  if namspaceURI == "" then do
+      namespaceURI = .nil
+  end
+
+  colon1 = qname~pos(":")
+  colon2 = qname~lastPos(":")
+  -- no prefix
+  if colon1 == 0 then do
+      -- local name and qualified name are the same
+      localName = qname
+  end
+  else do
+      parse var qname localName (colon1) (colon2 + 1) localName
+  end
+
+-- support for the Document renameNode method
+::method rename
+  expose nodeName namespaceURI
+  use strict arg uri, name = .nil
+  if name == .nil then do
+      nodeName = uri
+  end
+  else do
+      nodeName = name
+      namespaceURI = uri
+      self~setName(name)
+  end
+
+-- override for default method
+::attribute namespaceURI GET
+-- get the prefix from the node name
+::attribute prefix GET
+  expose nodeName
+  index = nodeName~pos(":")
+  if index > 0 then do
+      return nodeName~substr(1, index - 1)
+  end
+  else do
+      return .nil
+  end
+
+::attribute prefix SET
+  expose nodeName localName
+  use strict arg prefix
+
+  -- we're either adding or replacing the prefix
+  if prefix \= "" then do
+      nodeName = prefix":"localName
+  end
+  -- or removing it entirely
+  else do
+      nodeName = localName
+  end
+
+::attribute localName GET
 
 ::attribute nodeType GET
   return .node~ELEMENT_NODE
@@ -1717,17 +2000,37 @@ return .false
   end
 
 ::attribute typeName GET
+  expose type
   use strict arg
-  return .nil
+  if type \= .nil then do
+      return type~typeName
+  end
+  else do
+      return .nil
+  end
 
 ::attribute typeNamespace GET
+  expose type
   use strict arg
-  return .nil
+  if type \= .nil then do
+      return type~namespace
+  end
+  else do
+      return .nil
+  end
 
 ::method isDerivedFrom
-  use strict arg nampeNamespace, typeName, deivationMethod
+  expose type
+  use strict arg typeNamespace, typeName, derivationMethod
+  if type \= .nil then do
+      return type~isDOMDerivedFrom(typeNamespace, typeName, derivationMethod)
+  end
+  else do
+      return .false
+  end
 
-  return .false
+-- set/retrieve type directly
+::attribute type
 
 ::attribute schemaTypeInfo GET
   use strict arg
@@ -1914,13 +2217,88 @@ return .false
 
 ::class "Attr" subclass Node
 ::init
-  expose value name textNode typeName
-  use strict arg ownerDocument, name
+  expose value name textNode namespaceURI localName type
   value = .nil
-  typeName = .nil
+  type = .nil
   textNode = .nil
+  namespaceURI = .nil
+  localName = .nil
+  if arg() == 2 then do
+      use strict arg ownerDocument, name
+      self~init:super(ownerDoc)
+  end
+  else if arg() == 3 then do
+      use strict arg ownerDoc, namespaceURI, nodeName
+      self~init:super(ownerDoc)
+      self~setName(nodeName)
+  end
+  else do
+      use strict arg ownerDoc, namespaceURI, nodeName, localName
+      self~init:super(ownerDoc)
+  end
+  self~init:super(ownerDocument)
   self~isSpecified = .false
   self~hasStringValue = .true
+
+::method setName private
+  expose namespaceURI localName
+  use arg qname
+  -- null string is the same as not there
+  if namspaceURI == "" then do
+      namespaceURI = .nil
+  end
+
+  colon1 = qname~pos(":")
+  colon2 = qname~lastPos(":")
+  -- no prefix
+  if colon1 == 0 then do
+      -- local name and qualified name are the same
+      localName = qname
+  end
+  else do
+      parse var qname localName (colon1) (colon2 + 1) localName
+  end
+
+-- support for the Document renameNode method
+::method rename
+  expose nodeName namespaceURI
+  use strict arg uri, name = .nil
+  if name == .nil then do
+      nodeName = uri
+  end
+  else do
+      nodeName = name
+      namespaceURI = uri
+      self~setName(name)
+  end
+
+-- override for default method
+::attribute namespaceURI GET
+-- get the prefix from the node name
+::attribute prefix GET
+  expose nodeName
+  index = nodeName~pos(":")
+  if index > 0 then do
+      return nodeName~substr(1, index - 1)
+  end
+  else do
+      return .nil
+  end
+
+::attribute prefix SET
+  expose nodeName localName
+  use strict arg prefix
+
+  -- we're either adding or replacing the prefix
+  if prefix \= "" then do
+      nodeName = prefix":"localName
+  end
+  -- or removing it entirely
+  else do
+      nodeName = localName
+  end
+
+::attribute localName GET
 
 ::attribute ownerDocument SET private
   expose value
@@ -1974,7 +2352,45 @@ return .false
 ::attribute nodeValue GET
   forward message("VALUE")
 
+
 ::attribute typeName GET
+  expose type
+  use strict arg
+  if type \= .nil then do
+      if type~isA(.String) then do
+          return type
+      end
+      else do
+          return type~typeName
+      end
+  end
+  else do
+      return .nil
+  end
+
+::attribute typeNamespace GET
+  expose type
+  use strict arg
+  if type \= .nilthen do
+      if \type~isA(.String) then do
+          return type~namespace
+      end
+      else do
+          return "http://www.w3.org/TR/REC-xml";
+      end
+  end
+  return .nil
+
+::method isDerivedFrom
+  expose type
+  use strict arg typeNamespace, typeName, derivationMethod
+  if type \= .nil, \type~isA(.String) then do
+      return type~isDOMDerivedFrom(typeNamespace, typeName, derivationMethod)
+  end
+  return .false
+
+-- set/retrieve type directly
+::attribute type
 ::attribute typeNamespace GET
   expose typeName
   use strict arg
