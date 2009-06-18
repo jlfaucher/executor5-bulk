@@ -131,28 +131,28 @@ return testUnitList
    self~assertEquals(12, 13)
 
 ::method "test_fail_assertEquals_02"
-   self~assertEquals("A message in case of a failure.", 12, 13)
+   self~assertEquals(12, 13, "A message in case of a failure.")
 
 
 ::method "test_fail_assertFalse_01"
    self~assertFalse(.true)
 
 ::method "test_fail_assertFalse_02"
-   self~assertFalse("A message in case of a failure.", .true)
+   self~assertFalse(.true, "A message in case of a failure.")
 
 
 ::method "test_fail_assertNotEquals_01"
    self~assertNotEquals(12, 12)
 
 ::method "test_fail_assertNotEquals_02"
-   self~assertNotEquals("A message in case of a failure.", 12, 12)
+   self~assertNotEquals(12, 12, "A message in case of a failure.")
 
 
 ::method "test_fail_assertNotNull_01"
    self~assertNotNull(.nil)
 
 ::method "test_fail_assertNotNull_02"
-   self~assertNotNull("A message in case of a failure.", .nil)
+   self~assertNotNull( .nil, "A message in case of a failure.")
 
 
 ::method "test_fail_assertNotSame_01"
@@ -161,28 +161,28 @@ return testUnitList
 
 ::method "test_fail_assertNotSame_02"
    a=12
-   self~assertNotSame("A message in case of a failure.", a, a)
+   self~assertNotSame(a, a, "A message in case of a failure.")
 
 
 ::method "test_fail_assertNull_01"
    self~assertNull(12)
 
 ::method "test_fail_assertNull_02"
-   self~assertNull("A message in case of a failure.", 12)
+   self~assertNull(12, "A message in case of a failure.")
 
 
 ::method "test_fail_assertSame_01"
    self~assertSame(12, " 12")
 
 ::method "test_fail_assertSame_02"
-   self~assertSame("A message in case of a failure.", 12, "12 ")
+   self~assertSame(12, "12 ", "A message in case of a failure.")
 
 
 ::method "test_fail_assertTrue_01"
    self~assertTrue(.false)
 
 ::method "test_fail_assertTrue_02"
-   self~assertTrue("A message in case of a failure.", .false)
+   self~assertTrue(.false, "A message in case of a failure.")
 
 
 ::method "test_fail_expectSyntax"

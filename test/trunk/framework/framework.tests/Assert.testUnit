@@ -130,11 +130,11 @@ return testUnitList
 
    -- test "assertEquals"
 ::method "test_assertEquals_01"
-   self~assertEquals("subtest_01", 1, 1)
-   self~assertEquals("subtest_02", 2, 2)
-   self~assertEquals("subtest_03", .nil, .nil)
+   self~assertEquals(1   , 1,    "subtest_01")
+   self~assertEquals(2   , 2,    "subtest_02")
+   self~assertEquals(.nil, .nil, "subtest_03")
    o=.object~new
-   self~assertEquals("subtest_04", o, o)
+   self~assertEquals(o, o, "subtest_04")
 
 
    -- test "assertEquals"
@@ -142,9 +142,9 @@ return testUnitList
    bag=.bag~of("a", "a", "b", "c")
    set=.set~new~union(bag)
 
-   self~assertEquals("subtest_01", bag, bag)
-   self~assertEquals("subtest_02", set, set)
-   self~assertEquals("subtest_03", .bag~new~union(set), .bag~new~union(set))
+   self~assertEquals(bag, bag, "subtest_01")
+   self~assertEquals(set, set, "subtest_02")
+   self~assertEquals(.bag~new~union(set), .bag~new~union(set), "subtest_03")
 
    -- test "assertEquals"
 ::method "test_assertEquals_03"
@@ -153,7 +153,7 @@ return testUnitList
    r["a"]="a"
    r["a"]="a"
    r["b"]="b"
-   self~assertEquals("subtest_01", b, r)
+   self~assertEquals(b, r, "subtest_01")
 
 
    -- test "assertEquals"
@@ -163,7 +163,7 @@ return testUnitList
    t["a"]="a"
    t["a"]="a"
    t["b"]="b"
-   self~assertEquals("subtest_01", s, t)
+   self~assertEquals(s, t, "subtest_01")
 
 
    -- test "assertEquals"
@@ -173,7 +173,7 @@ return testUnitList
    d["a"]="a"
    d["a"]="a"
    d["b"]="b"
-   self~assertEquals("subtest_01", s, d)
+   self~assertEquals(s, d, "subtest_01")
 
 
    -- test "assertEquals"
@@ -183,25 +183,25 @@ return testUnitList
    q=.queue~new~~queue("a")~~queue("a")~~queue("b")
    c=.circularQueue~new(3)~~queue("a")~~queue("a")~~queue("b")
 
-   self~assertEquals("subtest_01", l, q)
-   self~assertEquals("subtest_02", a, l)
-   self~assertEquals("subtest_03", a, q)
-   self~assertEquals("subtest_04", a, c)
-   self~assertEquals("subtest_05", l, c)
-   self~assertEquals("subtest_06", q, c)
+   self~assertEquals(q, l, "subtest_01")
+   self~assertEquals(l, a, "subtest_02")
+   self~assertEquals(q, a, "subtest_03")
+   self~assertEquals(c, a, "subtest_04")
+   self~assertEquals(c, l, "subtest_05")
+   self~assertEquals(c, q, "subtest_06")
 
 
 
 ::method "test_assertEquals_07"
    s=.set~of("a", "a", "b")
    t=.table~new~union(s)
-   self~assertEquals("subtest_01", s, t)
+   self~assertEquals(s, t, "subtest_01")
 
 
 ::method "test_assertEquals_08"
    s=.set~of("a", "a", "b")
    r=.relation~new~union(s)
-   self~assertEquals("subtest_01", s, r)
+   self~assertEquals(s, r, "subtest_01")
 
 
 ::method "test_assertEquals_09"
@@ -209,7 +209,7 @@ return testUnitList
    t["a"]="a"
    t["b"]="b"
    r=.relation~new~union(t)
-   self~assertEquals("subtest_01", t, r)
+   self~assertEquals(t, r, "subtest_01")
 
 
 
@@ -219,11 +219,11 @@ return testUnitList
 
    -- test "assertNotEquals"
 ::method "test_assertNotEquals_01"
-   self~assertNotEquals("subtest_01", 1, 2)
-   self~assertNotEquals("subtest_02", 2, 1)
-   self~assertNotEquals("subtest_03", .nil, .object)
+   self~assertNotEquals(1, 2, "subtest_01")
+   self~assertNotEquals(2, 1, "subtest_02")
+   self~assertNotEquals(.nil, .object, "subtest_03")
    o=.object~new
-   self~assertNotEquals("subtest_04", .nil, o)
+   self~assertNotEquals(.nil, o, "subtest_04")
 
 
    -- test "assertNotEquals"
@@ -231,9 +231,9 @@ return testUnitList
    bag=.bag~of("a", "a", "b", "c")
    set=.set~new~union(bag)
 
-   self~assertNotEquals("subtest_01", bag, set)
-   self~assertNotEquals("subtest_02", set, bag)
-   self~assertNotEquals("subtest_03", .bag~new~union(set), .bag~new~union(set)~~put("c"))
+   self~assertNotEquals(bag, set, "subtest_01")
+   self~assertNotEquals(set, bag, "subtest_02")
+   self~assertNotEquals(.bag~new~union(set), .bag~new~union(set)~~put("c"), "subtest_03")
 
    -- test "assertNotEquals"
 ::method "test_assertNotEquals_03"
@@ -243,7 +243,7 @@ return testUnitList
    r["a"]="a"
    r["b"]="b"
    r["c"]="c"
-   self~assertNotEquals("subtest_01", b, r)
+   self~assertNotEquals(b, r, "subtest_01")
 
 
    -- test "assertNotEquals"
@@ -254,7 +254,7 @@ return testUnitList
    t["a"]="a"
    t["b"]="b"
    t["c"]="c"
-   self~assertNotEquals("subtest_01", s, t)
+   self~assertNotEquals(s, t, "subtest_01")
 
 
    -- test "assertNotEquals"
@@ -265,7 +265,7 @@ return testUnitList
    d["a"]="a"
    d["b"]="b"
    d["c"]="c"
-   self~assertNotEquals("subtest_01", s, d)
+   self~assertNotEquals(s, d, "subtest_01")
 
 
    -- test "assertNotEquals"
@@ -275,25 +275,25 @@ return testUnitList
    q=.queue~new~~queue("a")~~queue("a")~~queue("b")~~queue("b")~~queue("c")~~queue("c")
    c=.circularQueue~new(3)~~queue("a")~~queue("a")~~queue("b")~~queue("b")~~queue("c")~~queue("c")~~queue("d")
 
-   self~assertNotEquals("subtest_01", l, q)
-   self~assertNotEquals("subtest_02", a, l)
-   self~assertNotEquals("subtest_03", a, q)
-   self~assertNotEquals("subtest_04", a, c)
-   self~assertNotEquals("subtest_05", l, c)
-   self~assertNotEquals("subtest_06", q, c)
+   self~assertNotEquals(q, l, "subtest_01")
+   self~assertNotEquals(l, a, "subtest_02")
+   self~assertNotEquals(q, a, "subtest_03")
+   self~assertNotEquals(c, a, "subtest_04")
+   self~assertNotEquals(c, l, "subtest_05")
+   self~assertNotEquals(c, q, "subtest_06")
 
 
 
 ::method "test_assertNotEquals_07"
    s=.set~of("a", "a", "b")
    t=.table~new~union(s)~~put("c","c")
-   self~assertNotEquals("subtest_01", s, t)
+   self~assertNotEquals(s, t, "subtest_01")
 
 
 ::method "test_assertNotEquals_08"
    s=.set~of("a", "a", "b")
    r=.relation~new~union(s)~~put("c", "c")
-   self~assertNotEquals("subtest_01", s, r)
+   self~assertNotEquals(s, r, "subtest_01")
 
 
 ::method "test_assertNotEquals_09"
@@ -301,39 +301,39 @@ return testUnitList
    t["a"]="a"
    t["b"]="b"
    r=.relation~new~union(t)~~put("c", "c")
-   self~assertNotEquals("subtest_01", t, r)
+   self~assertNotEquals(t, r, "subtest_01")
 
 
 
 ::method "test_assertFalse"
    self~assertFalse(.false)         -- no failure message
-   self~assertFalse("should be .false", .false)
+   self~assertFalse(.false, "should be .false")
 
 
 
 ::method "test_assertNotNull"
    self~assertNotNull("2")          -- no failure message
-   self~assertNotNull("message in case of failure", "2")
+   self~assertNotNull("2", "message in case of failure")
 
 
 ::method "test_assertNotSame"
    self~assertNotSame(1, "2")       -- no failure message
-   self~assertNotSame("message in case of failure", 1, "2")
+   self~assertNotSame(1, "2", "message in case of failure")
 
 
 ::method "test_assertNull"
    self~assertNull(.nil)            -- no failure message
-   self~assertNull("message in case of failure", .nil)
+   self~assertNull(.nil, "message in case of failure")
 
 
 ::method "test_assertSame"
    self~assertSame(1, "1")          -- no failure message
-   self~assertSame("message in case of failure", 1, "1")
+   self~assertSame(1, "1", "message in case of failure")
 
 
 ::method "test_assertTrue"
    self~assertTrue(.true)           -- no failure message
-   self~assertTrue("should be .true", .true)
+   self~assertTrue(.true, "should be .true")
 
 
 ::method "test_expectSyntax"
@@ -354,21 +354,21 @@ return testUnitList
    self~assertEquals(12, 13)
 
 ::method "test_fail_assertEquals_02"
-   self~assertEquals("A message in case of a failure.", 12, 13)
+   self~assertEquals(12, 13, "A message in case of a failure.")
 
 
 ::method "test_fail_assertFalse_01"
    self~assertFalse(.true)
 
 ::method "test_fail_assertFalse_02"
-   self~assertFalse("A message in case of a failure.", .true)
+   self~assertFalse(.true, "A message in case of a failure.")
 
 
 ::method "test_fail_assertNotNull_01"
    self~assertNotNull(.nil)
 
 ::method "test_fail_assertNotNull_02"
-   self~assertNotNull("A message in case of a failure.", .nil)
+   self~assertNotNull(.nil, "A message in case of a failure.")
 
 
 ::method "test_fail_assertNotSame_01"
@@ -377,14 +377,14 @@ return testUnitList
 
 ::method "test_fail_assertNotSame_02"
    a=12
-   self~assertNotSame("A message in case of a failure.", a, a)
+   self~assertNotSame(a, a, "A message in case of a failure.")
 
 
 ::method "test_fail_assertNotEquals_01"
    self~assertNotEquals(12, 12)
 
 ::method "test_fail_assertNotEquals_02"
-   self~assertNotEquals("A message in case of a failure.", 12, 12)
+   self~assertNotEquals(12, 12, "A message in case of a failure.")
 
 
 
@@ -392,21 +392,21 @@ return testUnitList
    self~assertNull(12)
 
 ::method "test_fail_assertNull_02"
-   self~assertNull("A message in case of a failure.", 12)
+   self~assertNull(12, "A message in case of a failure.")
 
 
 ::method "test_fail_assertSame_01"
    self~assertSame(12, " 12")
 
 ::method "test_fail_assertSame_02"
-   self~assertSame("A message in case of a failure.", 12, "12 ")
+   self~assertSame(12, "12 ", "A message in case of a failure.")
 
 
 ::method "test_fail_assertTrue_01"
    self~assertTrue(.false)
 
 ::method "test_fail_assertTrue_02"
-   self~assertTrue("A message in case of a failure.", .false)
+   self~assertTrue(.false, "A message in case of a failure.")
 
 
 ::method "test_fail_expectSyntax"
