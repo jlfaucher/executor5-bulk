@@ -41,39 +41,39 @@ call simpleDumpTestResults aTR
 ::method "test.ABBREV"        -- a TestCase method
 
    word="Print"
-   self~assertEquals("subTest1", ABBREV(word, "Pri"),    .true)
+   self~assertEquals(.true , ABBREV(word, "Pri"),    "subTest1")
 
    word="PRINT"
-   self~assertEquals("subTest2", ABBREV(word, "Pri"),    .false)
-   self~assertEquals("subTest3", ABBREV(word, "PRI", 4), .false)
-   self~assertEquals("subTest4", ABBREV(word, "PRY"),    .false)
-   self~assertEquals("subTest5", ABBREV(word, ""),       .true)
-   self~assertEquals("subTest6", ABBREV(word, "", 1),    .false)
+   self~assertEquals(.false, ABBREV(word, "Pri"),    "subTest2")
+   self~assertEquals(.false, ABBREV(word, "PRI", 4), "subTest3")
+   self~assertEquals(.false, ABBREV(word, "PRY"),    "subTest4")
+   self~assertEquals(.true , ABBREV(word, ""),       "subTest5")
+   self~assertEquals(.false, ABBREV(word, "", 1),    "subTest6")
 
 
    /* a TestCase method:  test the ABBREV BIF, using examples from the documentation   */
 ::method "test.ABS"           -- a TestCase method
 
-   self~assertEquals("subTest1",  ABS('12.3'),    12.3)
-   self~assertEquals("subTest2",  ABS(' -0.307'), 0.307)
+   self~assertEquals(12.3 , ABS('12.3'),    "subTest1")
+   self~assertEquals(0.307, ABS(' -0.307'), "subTest2")
 
       -- new tests
-   self~assertEquals("subTest3",  ABS(' -0'),   0)
-   self~assertEquals("subTest4",  ABS(' +0'),   0)
-   self~assertEquals("subTest5",  ABS(' - 0 '), 0)
-   self~assertEquals("subTest6",  ABS(' + 0 '), 0)
-   self~assertEquals("subTest7",  ABS(' -1'),   1)
-   self~assertEquals("subTest8",  ABS(' +1'),   1)
-   self~assertEquals("subTest9",  ABS(' - 1 '), 1)
-   self~assertEquals("subTest10", ABS(' + 1 '), 1)
+   self~assertEquals(0, ABS(' -0'),      "subTest3" )
+   self~assertEquals(0, ABS(' +0'),      "subTest4" )
+   self~assertEquals(0, ABS(' - 0 '),    "subTest5" )
+   self~assertEquals(0, ABS(' + 0 '),    "subTest6" )
+   self~assertEquals(1, ABS(' -1'),      "subTest7" )
+   self~assertEquals(1, ABS(' +1'),      "subTest8" )
+   self~assertEquals(1, ABS(' - 1 '),    "subTest9" )
+   self~assertEquals(1, ABS(' + 1 '),    "subTest10")
 
 
    /* a TestCase method:  test for equality and identity (which should fail)           */
 ::method "someTestCaseMethod"
    a=" RexxLA   "
    b="RexxLA"
-   self~assertEquals("testing for equality using 'assertEquals()'...", a, b)
-   self~assertSame("testing for identity using 'assertSame()'...", a, b)
+   self~assertEquals(a, b, "testing for equality using 'assertEquals()'...")
+   self~assertSame(a, b,   "testing for identity using 'assertSame()'...")
 
 
 

@@ -872,7 +872,7 @@ return str
   use arg data
 
   str = data~when':' pp('error') data~testString '---> condition' -
-        pp(data~event) 'raised unexpectedly.'
+        pp(data~type) 'raised unexpectedly.'
 
   if data~conditionObject~message <> .nil then str = str || '09'x || data~conditionObject~message
 
