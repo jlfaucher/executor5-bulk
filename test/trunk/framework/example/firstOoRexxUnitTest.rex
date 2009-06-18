@@ -30,7 +30,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -92,25 +92,25 @@ ts2=.testSuite~new
 ts2~addTest( .rgfAssertionTests~new("testAssertTrue1") ) -- individual test case
 ts2~addTest( .rgfAssertionTests~new("testAssertTrue3") ) -- individual test case
 say "TestSuite 'ts2' consists of" pp(ts2~countTestCases) "testCase(s)."
-ts2~execute(.myTestResult~new) ~dumpResults
+ts2~execute(.myTestResult~new)~dumpResults
 
    /* use only two specific test methods  */
 ts3=.testSuite~new
 ts3~addTest( .rgfAssertionTests~new("testAssertTrue2") ) -- individual test case
 ts3~addTest( .rgfAssertionTests~new("testAssertTrue4") ) -- individual test case
 say "TestSuite 'ts3' consists of" pp(ts3~countTestCases) "testCase(s)."
-ts3~execute(.myTestResult~new) ~dumpResults
+ts3~execute(.myTestResult~new)~dumpResults
 
    /* use only two specific test methods  */
 ts4=.testSuite~new
 ts4~addTest( .rgfAssertionTests~new("testAssertTrue1") ) -- individual test case
 ts4~addTest( .rgfAssertionTests~new("testAssertTrue2") ) -- individual test case
 say "TestSuite 'ts4' consists of" pp(ts4~countTestCases) "testCase(s)."
-ts4~execute(.myTestResult~new) ~dumpResults
+ts4~execute(.myTestResult~new)~dumpResults
 
    /* just for the fun of it: use a single test from the test class,
       do not supply a TestResult object, hence a default one will be created and used */
-.testSuite~new ~~addTest(.rgfAssertionTests~new("testAssertTrue4")) ~execute
+.testSuite~new~~addTest(.rgfAssertionTests~new("testAssertTrue4"))~execute
 
 
    -- test executing a single testCase and via a test suite
@@ -120,7 +120,7 @@ tc=.rgfAssertionTests~new("testAssertTrue4") -- create a testcase
 tc~execute                                       -- run this individual testcase
 
 
-ts~addTest(.rgfAssertionTests~new("testAsertTrue2"))  -- create and add a testCase to suite
+ts~addTest(.rgfAssertionTests~new("testAssertTrue2"))  -- create and add a testCase to suite
 ts~addTest(tc)                               -- add the previously created testCase to suite
 myTr=.myTestResult~new                       -- create explicitly a myTestResult object
 ts~execute(myTr)                                 -- run the suite using "myTr" for the results
@@ -148,7 +148,7 @@ myTr~dumpTestCases      -- dump each testcase results individually (in chronolog
 ::method "testAssertTrue2"
   -- could be any code to test something
   say "testAssertionTrue2: begin"
-  self~assertTrue( "oopsla!", .true )
+  self~assertTrue( .true, "oopsla!" )
   say "testAssertionTrue2: end"
   say
 
@@ -162,7 +162,7 @@ myTr~dumpTestCases      -- dump each testcase results individually (in chronolog
 ::method testAssertTrue4
   -- could be any code to test something
   say "testAssertionTrue4: begin"
-  self~assertTrue( "should be .true, yet it is .false!", .false )
+  self~assertTrue( .false,  "should be .true, yet it is .false!" )
   say "testAssertionTrue4: end"
   say
 
@@ -179,12 +179,12 @@ myTr~dumpTestCases      -- dump each testcase results individually (in chronolog
  say
  say "# errors:  " self~errorCount
  do item over self~errors
-    say "    error:" item~OoRexxUnit.condition
+    say "    error:" item~testName 'class:' pp(dir~type) "raised unexpectedly."
  end
 
  say "# failures:" self~failureCount
  do item over self~failures
-    say " failures:" item~OoRexxUnit.condition
+    say "  failure:" item~testName 'expected:' item~expected 'actual:' item~actual
  end
  say
  say "tests were" iif(self~wasSuccessful, ":-) successful!", ":-((   NOT successful!")
@@ -196,7 +196,13 @@ myTr~dumpTestCases      -- dump each testcase results individually (in chronolog
   say copies("*--**",15)
   say center(" myTestResult - dumpLog ", 79, "-")
   do dir over self~logQueue
-     say "   " pp(dir~ooRexxUnit.condition)
+     select
+       when dir~isA(.Directory) then say     "   " pp(dir~ooRexxUnit.condition)
+       when dir~isA(.AssertFailure) then say "    Failed code:" dir~conditionObject~code 'at line' dir~line
+       when dir~isA(.ErrorReport) then say   "    Error test: " dir~testName pp(dir~type) "raised unexpectedly."
+       otherwise nop
+     end
+     -- End select
   end
 
 ::method dumpTestCases
