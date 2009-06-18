@@ -672,7 +672,7 @@ return mode
 
   dateTime=timeStamp()
   TestCaseTable[aTestCase]~queue(dateTime": endTest")
-  dir=.directory~new ~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("endTest") aTestCase~string)
+  dir=.directory~new~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("endTest") aTestCase~string)
 
   -- save class' 'testCaseInfo' with test case for later analysis
   dir~setentry("OOREXXUNIT.class_testCaseInfo", aTestCase~class~testCaseInfo)
@@ -1956,8 +1956,8 @@ syntax:
 
       tmpString=.MutableBuffer~new
 
-      tmpString~~append(TAB3) ~~append(index~left(indent1,".")) ~~append(pp(o))
-      if items<>"" then tmpString~~append(" containing ") ~~append(items) ~~append(" item(s)")
+      tmpString~~append(TAB3)~~append(index~left(indent1,"."))~~append(pp(o))
+      if items<>"" then tmpString~~append(" containing ")~~append(items)~~append(" item(s)")
 
       if res~length=0 then    -- first value to assign
       do
@@ -1965,7 +1965,7 @@ syntax:
       end
       else                    -- value already available
       do
-         res~~append(NL) ~~append(tmpString~string)
+         res~~append(NL)~~append(tmpString~string)
       end
 
       if items<>"" then       -- a collection object in hand?
@@ -1973,10 +1973,10 @@ syntax:
          nr=0
          do item over o       -- list items
             nr=nr+1
-            res~~append(NL) ~~append(TAB3) ~~append(blanks) ~~append(pp(item))
+            res~~append(NL)~~append(TAB3)~~append(blanks)~~append(pp(item))
          end
 
-         res ~~append(TAB3)
+         res~~append(TAB3)
       end
    end
    return res~string
