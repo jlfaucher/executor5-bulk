@@ -146,15 +146,15 @@ return testUnitList
 
    -- test the ABBREV BIF, using examples from the documentation
 ::method "test_1_o.k."
-   self~assertTrue("subtest01", .true)
+   self~assertTrue(.true, "subtest01")
 
 ::method "test_2_failure"
-   self~assertTrue("subtest01", .false)
+   self~assertTrue(.false, "subtest01")
 
 ::method "test_3_error"
    raise syntax 99.123456789
 
 ::method "test_4_o.k."
-   self~assertTrue("subtest01", .true)
+   self~assertTrue(.true, "subtest01")
 
 

@@ -133,31 +133,31 @@ return testUnitList
    -- test the ABBREV BIF, using examples from the documentation
 ::method "testABBREV"
 
-   self~assertEquals("subTest1", 'Print'~ABBREV("Pri"),    .true)
+   self~assertEquals(.true , 'Print'~ABBREV("Pri"),    "subTest1")
 
-   self~assertEquals("subTest2", "PRINT"~ABBREV("Pri"),    .false)
-   self~assertEquals("subTest3", "PRINT"~ABBREV("PRI", 4), .false)
-   self~assertEquals("subTest4", "PRINT"~ABBREV("PRY"),    .false)
-   self~assertEquals("subTest5", "PRINT"~ABBREV(""),       .true)
-   self~assertEquals("subTest6", "PRINT"~ABBREV("", 1),    .false)
+   self~assertEquals(.false, "PRINT"~ABBREV("Pri"),    "subTest2")
+   self~assertEquals(.false, "PRINT"~ABBREV("PRI", 4), "subTest3")
+   self~assertEquals(.false, "PRINT"~ABBREV("PRY"),    "subTest4")
+   self~assertEquals(.true , "PRINT"~ABBREV(""),       "subTest5")
+   self~assertEquals(.false, "PRINT"~ABBREV("", 1),    "subTest6")
 
 
    -- test the ABBREV BIF, using examples from the documentation
 ::method "testABS"
 
-   self~assertEquals("subTest1",  12.3~ABS,     12.3)
-   self~assertEquals("subTest1b",'12.3'~ABS,    12.3)
-   self~assertEquals("subTest2", ' -0.307'~ABS, 0.307)
+   self~assertEquals(12.3 ,  12.3~ABS,     "subTest1" )
+   self~assertEquals(12.3 , '12.3'~ABS,    "subTest1b")
+   self~assertEquals(0.307, ' -0.307'~ABS, "subTest2" )
 
       -- new tests
-   self~assertEquals("subTest3",  ' -0'~ABS,   0)
-   self~assertEquals("subTest4",  ' +0'~ABS,   0)
-   self~assertEquals("subTest5",  ' - 0 '~ABS, 0)
-   self~assertEquals("subTest6",  ' + 0 '~ABS, 0)
-   self~assertEquals("subTest7",  ' -1'~ABS,   1)
-   self~assertEquals("subTest8",  ' +1'~ABS,   1)
-   self~assertEquals("subTest9",  ' - 1 '~ABS, 1)
-   self~assertEquals("subTest10", ' + 1 '~ABS, 1)
+   self~assertEquals(0,  ' -0'~ABS,   "subTest3" )
+   self~assertEquals(0,  ' +0'~ABS,   "subTest4" )
+   self~assertEquals(0,  ' - 0 '~ABS, "subTest5" )
+   self~assertEquals(0,  ' + 0 '~ABS, "subTest6" )
+   self~assertEquals(1,  ' -1'~ABS,   "subTest7" )
+   self~assertEquals(1,  ' +1'~ABS,   "subTest8" )
+   self~assertEquals(1,  ' - 1 '~ABS, "subTest9" )
+   self~assertEquals(1, ' + 1 '~ABS,  "subTest10")
 
 
 
