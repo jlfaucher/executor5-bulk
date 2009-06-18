@@ -103,6 +103,14 @@ return .ooTestResult~new(5)~~addException(err)
   tester~initialAddress = "TESTING"
   self~assertEquals("TESTING", tester~callRexxStart(self~resolveTestProgram('tests/initialAddress.rex'), .array~new(0)))
 
+::method TestClassicSubcomHandler
+  tester = .InvocationTester~new
+  self~assertEquals("SUCCESS 0", tester~callRexxStart(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOMHANDLER", "GOOD")))
+  self~assertEquals("ERROR 1", tester~callRexxStart(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOMHANDLER", "ERROR")))
+  self~assertEquals("FAILURE -1", tester~callRexxStart(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOMHANDLER", "FAILURE")))
+  self~assertEquals("SUCCESS Hello World", tester~callRexxStart(self~resolveTestProgram('tests/commandHandlerSetvar.rex'), .array~of("TESTSUBCOMHANDLER")))
+  self~assertEquals("SUCCESS Hello World", tester~callRexxStart(self~resolveTestProgram('tests/commandHandlerGetvar.rex'), .array~of("TESTSUBCOMHANDLER")))
+
 ::method TestSyntaxError
   tester = .InvocationTester~new
   tester~callRexxStart(self~resolveTestProgram('tests/syntaxError.rex'), .array~new(0))

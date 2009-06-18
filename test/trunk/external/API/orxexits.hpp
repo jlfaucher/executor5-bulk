@@ -229,6 +229,7 @@ void REXXENTRY deregisterExits();
 void REXXENTRY registerExeExits(void *data);
 void REXXENTRY registerDllExits(void *data);
 void REXXENTRY registerSubcomHandler(void *data);
+void REXXENTRY deregisterSubcomHandler();
 bool REXXENTRY buildRegisteredExitList(InstanceInfo *instanceInfo, RXSYSEXIT *exitList);
 RexxReturnCode REXXENTRY createInstance(InstanceInfo *instanceInfo, RexxInstance *&instance, RexxThreadContext *&threadContext);
 bool REXXENTRY buildContextExitList(InstanceInfo *instanceInfo, RexxContextExit *exitList);

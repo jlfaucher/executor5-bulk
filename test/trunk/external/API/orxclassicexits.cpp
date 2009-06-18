@@ -585,7 +585,7 @@ RexxReturnCode RexxEntry TestSubcomHandler(CONSTRXSTRING *cmd, unsigned short *f
 }
 }
 
-void deregisterSubcomHandler()
+void REXXENTRY deregisterSubcomHandler()
 {
     RexxDeregisterSubcom("TestSubcomHandler", NULL);
 }
@@ -789,6 +789,8 @@ void REXXENTRY invokeRexxStart(InstanceInfo *instanceInfo)
         buildRegisteredExitList(instanceInfo, registeredExits);
         exits = registeredExits;
     }
+
+    registerSubcomHandler(instanceInfo);
     MAKERXSTRING(returnValue, NULL, 0);
 
     int rc = RexxStart(instanceInfo->argCount, args, instanceInfo->programName, NULL, instanceInfo->initialAddress, RXCOMMAND, exits, &callRC, &returnValue);
@@ -806,4 +808,5 @@ void REXXENTRY invokeRexxStart(InstanceInfo *instanceInfo)
         }
     }
     deregisterExits();
+    deregisterSubcomHandler();
 }

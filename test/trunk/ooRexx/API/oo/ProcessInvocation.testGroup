@@ -872,6 +872,14 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertEquals("SUCCESS Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerSetvar.rex'), .array~of("TESTSUBCOM")))
   self~assertEquals("SUCCESS Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGetvar.rex'), .array~of("TESTSUBCOM")))
 
+::method TestClassicSubcomHandler
+  tester = .ProcessTester~new
+  self~assertEquals("SUCCESS 0", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOMHANDLER", "GOOD")))
+  self~assertEquals("ERROR 1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOMHANDLER", "ERROR")))
+  self~assertEquals("FAILURE -1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOMHANDLER", "FAILURE")))
+  self~assertEquals("SUCCESS Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerSetvar.rex'), .array~of("TESTSUBCOMHANDLER")))
+  self~assertEquals("SUCCESS Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGetvar.rex'), .array~of("TESTSUBCOMHANDLER")))
+
 ::method TestPathHandler
   tester = .ProcessTester~new
   tester~searchPath = self~resolveTestProgram('path')
