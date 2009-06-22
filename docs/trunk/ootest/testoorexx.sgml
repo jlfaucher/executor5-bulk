@@ -42,8 +42,232 @@
 <indexterm><primary>overview</primary>
 <secondary>ooTest</secondary></indexterm>
 <para>
-  x
+  The primary purpose of ooTest is to throughly test the ooRexx interpreter and its distribution
+  pacakages.  In general, to throughly test software involves automating as much as possible of the
+  testing.  The ooTest framework provides the foundation for automatically executing tests.  It currently
+  contains little or no components that would aid in automating the writing of tests.
 </para>
+<note><title>Note</title><para>
+  This document is written using the 4.0.0 version of ooTest.  It makes no effort to cover the 3.2.0
+  verison of ooTest, or explain any differences between the 3.2.0 and 4.0.0 versions.  There are
+  differences.
+</para></note>
+<para>
+  ooTest also contains all the tests written to date to that the ooRexx team uses to test ooRexx.  This
+  makes ooTest itself more than just a framework.  It is the sum of the tests themselves, the framework
+  to write the tests, and any other components used in the over all process of testing the ooRexx
+  package.
+</para>
+<para>
+  This document serves as a reference to the different components of ooTest.  It explains how to execute
+  the tests, intepret the results, and gives some guidence in writing new tests.  The document does not
+  have much detail on how to obtain ooTest or set it up.  That is provided in numerous places.  And,
+  indeed there is very little set up involved in ooTest.  It is merely a matter of placing the ooTest
+  files on the system used to test.
+</para>
+
+<section id="ooTestFoundation"><title>History, Foundation</title>
+<indexterm><primary>foundation</primary>
+<secondary>ooTest</secondary></indexterm>
+<indexterm><primary>foundation</primary>
+<secondary>ooTest</secondary></indexterm>
+
+<para>
+  ooTest started out as ooRexxUnit.  ooRexxUnit is a <emphasis role="italic">generic</emphasis> testing
+  framework designed to serve as a unit testing framework for anyone to use to test their Rexx programs.
+  It is patterned after jUnit and originally strove to emulate jUnit as closely as possible.  As a
+  publicly released piece of software it was constrained by typical needs, such as providing backward
+  compatibility, limiting changes that require the user to make changes to their exisiting testing
+  efforts, etc..
+</para>
+<para>
+  Over time it became apparent that the constraints of ooRexxUnit were a hinderance to the ooRexx testing
+  effort.  Therefore, the ooTest framework was put in place.  ooTest sits on top of ooRexxUnit, but it is
+  not designed to be a generic testing framework, does not guarentee backward compatibility, and does not
+  strive to closely emulate jUnit.
+</para>
+<para>
+  However, because of its history, ooTest is conceptualy similar to jUnit.  If you understand jUnit
+  concepts, you will have little trouble understanding ooTest.  The main difference is that jUnit is
+  primarily a unit testing framework, while ooTest is primarily an automation framework, that heavily
+  supports unit testing.
+</para>
+</section>
+
+<section id="testConcepts"><title>Testing Concepts Used in ooTest</title>
+<indexterm><primary>concepts</primary>
+<secondary>test</secondary></indexterm>
+
+<para>
+  Description
+</para>
+</section>
+
+
+</chapter>
+
+<chapter id="chapTestOORexx"><title>testOORexx.rex the Automated Test Driver</title>
+<indexterm><primary>testOORexx.rex</primary></indexterm>
+<indexterm><primary>execution</primary>
+<secondary>test</secondary></indexterm>
+<para>
+  The execution of all the tests in the test suite is currently driven by one Rexx program,
+  <computeroutput>testOORexx.rex</computeroutput>.  This program has an extensive set of options that
+  allow the execution of all the tests, a single test, or subsets of the tests.  As is all of ooTest, the
+  program is platform independent and runs on all platforms where ooRexx is available.
+</para>
+<para>
+  When run, testOORexx sets up the environment, gathers up the tests to be executed, executes them, and
+  prints out the statistics for the test run.
+</para>
+<para>
+  There is nothing preventing the use of other driver programs with the tests for the interpreter.  It is
+  merely that no one has written one.  In particular, a GUI test driver would be nice and relatively easy
+  to produce.  One approach would be for the GUI driver to present the interface and then call testOORexx
+  under the covers to do the actual work.
+</para>
+
+<section id="useTestOORexx"><title>Using testOORexx.rex</title>
+<indexterm><primary>starting</primary>
+<secondary>testOORexx</secondary></indexterm>
+
+<para>
+  testOORexx.rex is a command line program. It is designed to, and should be, run from a console window.
+  Starting testOORexx.rex is the same as starting any Rexx program.  On Windows, with a default install
+  of ooRexx where <computeroutput>.rex</computeroutput> has a file association with the interpreter, you
+  can simply type testOORexx.  For example:
+<programlisting>
+<![CDATA[
+C:\ooTest>testOORexx
+]]>
+</programlisting>
+  On an unix-like system, testOORexx would typically be started like this:
+<programlisting>
+<![CDATA[
+[miesfeld@falcon]# ./testOORexx.rex
+]]>
+</programlisting>
+  Of course testOORexx can always be started this way:
+<programlisting>
+<![CDATA[
+C:\ooTest>rexx testOORexx.rex
+
+[miesfeld@falcon]# rexx testOORexx.rex
+]]>
+</programlisting>
+</para>
+<para>
+  Usually you would start testOORexx in the root directory of ooTest.  I.e., in the directory that
+  contains <computeroutput>testOORexx.rex</computeroutput>.  However, testOORexx.rex is designed to run
+  from any location on the local machine's file system.  The main purpose of this is to allow a developer
+  to execute the test suite from within their build directory.  However, as the following example
+  illustrates, testOORexx can be run from anywhere on the system:
+<programlisting>
+<![CDATA[
+D:\TravelDrive>c:\ooTest\testOORexx.rex -F SimpleTests
+Searching for test containers..
+Executing automated test suite..
+
+ooTest Framework - Automated Test of the ooRexx Interpreter
+
+
+Interpreter:     REXX-ooRexx_4.0.0(MT) 6.03 21 Jun 2009
+Addressing Mode: 64
+ooRexxUnit:      2.0.0_3.2.0    ooTest: 1.0.0_4.0.0
+
+Tests ran:           9
+Assertions:          9
+Failures:            0
+Errors:              0
+Skipped files:       0
+
+File search:        00:00:00.000000
+Suite construction: 00:00:00.000000
+Test execution:     00:00:00.000000
+Total time:         00:00:01.000000
+
+
+D:\TravelDrive>
+]]>
+</programlisting>
+
+</para>
+<para>
+  <indexterm><primary>setTestEnv.bat</primary></indexterm>
+  <indexterm><primary>setTestEnv.sh</primary></indexterm>
+  Although running testOORexx will correctly set up the PATH to executed the tests, some people may
+  prefer to change the path.  This will allow running testOORexx from anywhere without having to type in
+  the complete path name of testOORexx, such as <computeroutput>C:\ooTest\testOORexx</computeroutput>.
+  In addition, on Windows testOORexx is able to completely set up the environment for executing all the
+  tests, but on unix-like systems the library path can not be set.  On the unix-like systems, the library
+  path <emphasis role="bold">must be</emphasis> set prior to executing any test requiring one of the TODO
+  external binaries ADD LINK. Two small utility scripts, <computeroutput>setTestEnv.bat</computeroutput>
+  and <computeroutput>setTestEnv.sh</computeroutput> are provided to handle these chores.  On Windows:
+<programlisting> <![CDATA[
+C:\ooTest>setTestEnv ]]>
+</programlisting>
+  On a unix-like system be sure to source the utility script:
+<programlisting>
+<![CDATA[
+[miesfeld@falcon]# . ./setTestEnv.sh
+Setting env for Linux
+[miesfeld@falcon]#
+]]>
+</programlisting>
+</para>
+<para>
+  Another reason to use the utility scripts is that this allows a TODO test group ADD LINK to be run as a
+  stand alone Rexx program from its current directory.  This is sometimes useful when first developing a
+  set of test cases in a test group.  For example:
+<programlisting>
+<![CDATA[
+C:\ooTest\ooRexx\base\class>rexx Array.testGroup
+
+Interpreter:     REXX-ooRexx_4.0.0(MT) 6.03 21 Jun 2009
+Addressing Mode: 64
+ooRexxUnit:      2.0.0_3.2.0    ooTest: 1.0.0_4.0.0
+
+Tests ran:           101
+Assertions:          8007
+Failures:            0
+Errors:              0
+Skipped files:       0
+
+Test execution:     00:00:00.469000
+
+
+C:\ooTest\ooRexx\base\class>
+]]>
+</programlisting>
+  Executing a test group as a stand alone program is not possible unless the ooTest root directory is in
+  the path because the interpreter will not be able to find the
+  <computeroutput>ooTest.frm</computeroutput> file:
+<programlisting>
+<![CDATA[
+C:\ooTest\ooRexx\base\class>rexx Array.testGroup
+    54 *-* ::requires 'ooTest.frm' -- load the ooRexxUnit classes
+Error 43 running C:\ooTest\ooRexx\base\class\Array.testGroup line 54:  Routine not found
+Error 43.901:  Could not find routine "ooTest.frm" for ::REQUIRES
+
+C:\ooTest\ooRexx\base\class>
+]]>
+</programlisting>
+<note><title>Note</title><para>
+  As a reminder, on unix-like systems, sourcing <computeroutput>setTestEnv.sh</computeroutput> is a
+  requirement when tests using the TODO external binaries ADD LINK will be executed.  Unless of course
+  the library path is manually set by some other means.
+</para></note>
+</para>
+</section>
+
+<section id="modesTestOORexx"><title>Modes of Operation</title>
+<indexterm><primary>modes</primary>
+<secondary>testOORexx</secondary></indexterm>
+
+<para>
+  Description
+</para>
+</section>
 
 </chapter>
 
