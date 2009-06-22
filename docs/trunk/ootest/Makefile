@@ -2,7 +2,7 @@
 #
 # Description: Makefile for the ooTest Framework Documents.
 #
-# Copyright (c) 2008, Rexx Language Association. All rights reserved.
+# Copyright (c) 2008-2009, Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -45,6 +45,10 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
 
 
 OOTEST_SGML_FILES = ootest.sgml \
+     testoorexx.sgml \
+     oorexxunit.sgml \
+     ootestframework.sgml \
+     writetests.sgml \
      ../shared/notices.sgml \
      ../shared/legalstuff.sgml \
      ../shared/gethelp.sgml \
