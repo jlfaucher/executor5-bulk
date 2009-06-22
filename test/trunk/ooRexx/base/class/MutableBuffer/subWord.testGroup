@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007 - 2009 Rexx Language Association. All rights reserved.  */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -41,7 +41,7 @@
 /*----------------------------------------------------------------------------*/
   parse source . . s
   group = .TestGroup~new(s)
-  group~add(.String_subwordMethod.testGroup)
+  group~addWithSuite(.String_subwordMethod.testGroup, .mbSubwordSuite)
 
   if group~isAutomatedTest then return group
 
@@ -51,9 +51,10 @@ return testResult
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "String_subwordMethod.testGroup" subclass ooTestCase public
+-- Test suite class providing a 1-time set up and tear down.
+::class 'mbSubWordSuite' subclass ooTestSuite public
 
-::method 'test000'
+::method 'setUp'
     .local~vblank = ' '
     .local~zeros1 = copies('0',10000)||'1'
     .local~v26 = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'
@@ -64,6 +65,21 @@ return testResult
     .local~vwbwwbw = 'J'||copies(' ',5000)||copies('*',10000)||copies(' ',5000)||'R'
     .local~v19 = '19'
     .local~v14 = '14'
+
+::method 'tearDown'
+    .local~remove(vblank)
+    .local~remove(zeros1)
+    .local~remove(v26)
+    .local~remove(v125)
+    .local~remove(v8)
+    .local~remove(v10000)
+    .local~remove(vwbw)
+    .local~remove(vwbwwbw)
+    .local~remove(v19)
+    .local~remove(v14)
+
+
+::class "String_subwordMethod.testGroup" subclass ooTestCase public
 
 ::method 'test001'
     self~expectSyntax(93.924)
@@ -574,18 +590,6 @@ return testResult
 
 ::method 'test153'
     self~assertSame('BW OR', .mutablebuffer~new('SU BW OR D')~subword(2,2))
-
-::method 'test156'
-    .local~remove(vblank)
-    .local~remove(zeros1)
-    .local~remove(v26)
-    .local~remove(v125)
-    .local~remove(v8)
-    .local~remove(v10000)
-    .local~remove(vwbw)
-    .local~remove(vwbwwbw)
-    .local~remove(v19)
-    .local~remove(v14)
 
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
