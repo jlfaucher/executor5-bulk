@@ -1895,7 +1895,7 @@ return 0
         raise syntax 88.900 array('The file name "'name'" is improper')
     end
 
-    if correctName~right(extension~length) \== extenison then correctName = correctName || extension
+    if correctName~right(extension~length) \== extension then correctName = correctName || extension
 
     if correctName~countStr('.') > 1  then
       raise syntax 88.900 array('The file name "'name'" is improper')
