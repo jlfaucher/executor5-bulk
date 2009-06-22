@@ -139,7 +139,8 @@ arguments = arg(1)
      pull
    end
 
-   if .testOpts~debug == 1 then j = printDebug(containers, testResult, cl)
+   if .testOpts~debug then j = printDebug(containers, testResult, cl)
+   else if .testOpts~printOptions then j = printOptions(.true)
 
 return 0
 
@@ -1046,46 +1047,50 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 
   testOpts~allTestTypes = .false
   testOpts~buildFirst = .false
-  testOpts~forceBuild = .false
+  testOpts~debug = .false
   testOpts~defaultTestTypes = .ooTestTypes~defaultTestSet
-  testOpts~testContainerExt = self~TEST_CONTAINER_EXT
-  testOpts~singleFile = .nil
   testOpts~fileList = .nil
-  testOpts~testTypeIncludes = .nil
+  testOpts~filesWithPattern = .nil
+  testOpts~forceBuild = .false
+  testOpts~noOptionsFile = .false
   testOpts~noTests = .false
   testOpts~optionsFile = .nil
-  testOpts~noOptionsFile = .false
-  testOpts~filesWithPattern = .nil
-  testOpts~testCases = .nil
-  testOpts~testCaseRoot= self~TEST_ROOT || self~SL
-  testOpts~testTypeExcludes = .nil
+  testOpts~printOptions = .false
   testOpts~showProgress = .false
   testOpts~showTestcases = .false
-  testOpts~suppressTestcaseTicks = .false
+  testOpts~singleFile = .nil
   testOpts~suppressAllTicks = .false
+  testOpts~suppressTestcaseTicks = .false
+  testOpts~testCaseRoot= self~TEST_ROOT || self~SL
+  testOpts~testCases = .nil
+  testOpts~testContainerExt = self~TEST_CONTAINER_EXT
+  testOpts~testTypeExcludes = .nil
+  testOpts~testTypeIncludes = .nil
   testOpts~verbosity = self~DEFAULT_VERBOSITY
   testOpts~waitAtCompletion = .false
 
   optsTable = .table~new
   optsTable[allTestTypes         ] = "boolean"
   optsTable[buildFirst           ] = "boolean"
-  optsTable[forceBuild           ] = "boolean"
+  optsTable[debug                ] = "boolean"
   optsTable[defaultTestTypes     ] = "testypes"
-  optsTable[testContainerExt     ] = "string"
-  optsTable[singleFile           ] = "string"
   optsTable[fileList             ] = "filelist"
-  optsTable[testTypeIncludes     ] = "testtypes"
+  optsTable[filesWithPattern     ] = "fileswithpattern"
+  optsTable[forceBuild           ] = "boolean"
+  optsTable[noOptionsFile        ] = "invalid"
   optsTable[noTests              ] = "boolean"
   optsTable[optionsFile          ] = "invalid"
-  optsTable[noOptionsFile        ] = "invalid"
-  optsTable[filesWithPattern     ] = "fileswithpattern"
-  optsTable[testCases            ] = "testcases"
-  optsTable[testCaseRoot         ] = "string"
-  optsTable[testTypeExcludes     ] = "testtypes"
+  optsTable[printOptions         ] = "boolean"
   optsTable[showProgress         ] = "boolean"
   optsTable[showTestcases        ] = "boolean"
-  optsTable[suppressTestcaseTicks] = "boolean"
+  optsTable[singleFile           ] = "string"
   optsTable[suppressAllTicks     ] = "boolean"
+  optsTable[suppressTestcaseTicks] = "boolean"
+  optsTable[testCaseRoot         ] = "string"
+  optsTable[testCases            ] = "testcases"
+  optsTable[testContainerExt     ] = "string"
+  optsTable[testTypeIncludes     ] = "testtypes"
+  optsTable[testTypeExcludes     ] = "testtypes"
   optsTable[verbosity            ] = "verbosity"
   optsTable[waitAtCompletion     ] = "boolean"
 
@@ -1242,6 +1247,11 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   end
   say
 
+  return printOptions(.false)
+
+::routine printOptions
+  use strict arg doHeader
+
   width = getLongestOpt() + 2
   opts = .array~new
   itr = .testOpts~supplier
@@ -1250,6 +1260,12 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     itr~next
   end
   opts~sort
+
+  if doHeader then do
+    prefix = "====== Debug output"
+    say prefix '='~copies(80 - prefix~length)
+    say
+  end
 
   say "Test options (.testOpts) in effect:"
   do l over opts
