@@ -1886,6 +1886,8 @@ return 0
     expose extension sl
     use strict arg name
 
+    correctName = name
+
     p = name~lastPos(sl)
     if p <> 0 then do
       correctName = name~right(name~length - p)
@@ -1898,7 +1900,7 @@ return 0
     if correctName~countStr('.') > 1  then
       raise syntax 88.900 array('The file name "'name'" is improper')
 
-    return name
+    return correctName
   -- End getCorrectFileName()
 
   /** usePatterns()
@@ -1937,7 +1939,6 @@ return 0
       filePatterns~append(regularExpression)
     end
     else do pattern over patterns
-      say 'pattern:' pattern
       if \ pattern~isA(.string) then
         raise syntax 88.900 array("The file pattern must be a string object; found" pattern)
 
@@ -1987,7 +1988,7 @@ return 0
 
     end
     -- End select
-    say 're:' reg
+
     return .RegularExpression~new(reg)
 
 
