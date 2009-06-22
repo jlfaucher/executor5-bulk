@@ -60,7 +60,7 @@ arguments = arg(1)
    testResult~setVerbosity(cl~getVerbosity)
 
    if cl~buildFirst then do
-     -- Create a phase report here and send it along.
+     -- TODO: Create a phase report here and send it along.
      ret = buildExternalBins(testResult, file, cl~forceBuild)
    end
 
@@ -69,6 +69,12 @@ arguments = arg(1)
      testResult~addEvent(overallPhase)
 
      testResult~print("ooTest Framework - Automated Test of the ooRexx Interpreter")
+
+     if cl~waitAtCompletion then do
+       say
+       say "The automated test run is finished, hit enter to continue"
+       pull
+     end
      return 0
    end
 
@@ -80,9 +86,14 @@ arguments = arg(1)
      searchPhase~tickTock(msg)
 
    finder = .ooTestFinder~new(cl~root, cl~ext, cl~testTypes)
-   if \ cl~simpleTestSelection then do
-     finder~includeFiles(cl~testFile)
+   select
+     when .testOpts~singleFile \== .nil then finder~useFileName(.testOpts~singleFile)
+     when .testOpts~fileList \== .nil then finder~useFiles(.testOpts~fileList)
+     when .testOpts~filesWithPattern \== .nil then finder~usePatterns(.testOpts~filesWithPattern)
+     otherwise nop
    end
+   -- End select
+
    containers = finder~seek(testResult)
 
    -- Building the test suite takes very little time at this point.  No need to
@@ -95,8 +106,11 @@ arguments = arg(1)
    suite~beVerbose = cl~showTestCases
 
    do container over containers
-     if cl~testTypes == .nil then container~suite(suite)
-     else container~suiteForTestTypes(cl~testTypes, suite)
+     select
+       when .testOpts~testCases \== .nil then container~suiteForTestCases(.testOpts~testCases, cl~testTypes, suite)
+       when cl~testTypes == .nil then container~suite(suite)
+       otherwise container~suiteForTestTypes(cl~testTypes, suite)
+     end
    end
 
    testResult~addEvent(suiteBuildPhase~~done)
@@ -125,6 +139,8 @@ arguments = arg(1)
      pull
    end
 
+   if .testOpts~debug == 1 then j = printDebug(containers, testResult, cl)
+
 return 0
 
 ::requires "ooTest.frm"
@@ -151,8 +167,6 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 
 ::attribute version get
 ::attribute version set private
-::attribute needsHelp get
-::attribute needsHelp set private
 ::attribute root get
 ::attribute root set private
 ::attribute ext get
@@ -160,7 +174,10 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 ::attribute testTypes get
 ::attribute testTypes set private
 
+::attribute needsHelp get
+::attribute needsHelp set private
 ::attribute doLongHelp private
+::attribute doSubjectHelp private
 ::attribute errMsg private
 ::attribute doVersionOnly private
 
@@ -181,13 +198,6 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 ::attribute waitAtCompletion get               -- w
 ::attribute waitAtCompletion set private
 
--- Don't need to look at patterns, multi-dirs, single file, etc..
-::attribute simpleTestSelection get
-::attribute simpleTestSelection set private
-
-::attribute testFile get
-::attribute testFile set private
-
 ::attribute testOpts private
 
 ::method init
@@ -196,24 +206,19 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 
   testOpts = .directory~new
   self~setAllDefaults
-
-  self~readOptionsFile
+  if self~needsHelp then return
 
   .environment~testOpts = testOpts
 
-  if cmdLine == "" then return
-  if self~hasHelpArg then return
+  -- Command line options over-ride options in the options file, so the file, if
+  -- there is one, must be read before parsing the rest of the command line.
+  self~readOptionsFile
+  if self~needsHelp then return
 
   self~parse
-
-  if self~errMsg \== .nil then return
-  if self~doVersionOnly then do
-    self~needsHelp = .true
-    return
-  end
+  if self~needsHelp then return
 
   self~resolveTestTypes
-  self~resolveFiles
   self~resolveOptions
 
 ::method showHelp
@@ -223,9 +228,12 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   if self~doVersionOnly then return self~TEST_SUCCESS_RC
 
   say
+  if self~doSubjectHelp then return self~subjectHelp
   if self~doLongHelp then return self~longHelp
 
-  if errMsg == .nil then ret = self~TEST_HELP_RC
+  if errMsg~items == 0 then do
+    ret = self~TEST_HELP_RC
+  end
   else do
     ret = self~TEST_BADARGS_RC
     do line over errMsg
@@ -234,9 +242,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     say
   end
 
-  say "usage: testOORexx [OPTIONS]"
-  say "Try 'testOORexx --help' for more information."
-
+  self~doShortHelp
   return ret
 
 ::method getCommandLine
@@ -252,47 +258,142 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 ::method resolveTestTypes private
   expose testOpts
 
+  tmpSet = testOpts~defaultTestTypes~copy
   includes = testOpts~testTypeIncludes
-  excludes = testOpts~testTypesExcludes
-  if includes \== .nil | excludes \== .nil then do
-    select
-      when includes \== .nil, excludes \== .nil then self~testTypes = includes~difference(excludes)
-      when includes \== .nil then self~testTypes = includes
-      otherwise self~testTypes = .ooTestTypes~all~difference(excludes)
-    end
-    -- End select
-  end
-  testOpts~testTypes = self~testTypes
+  excludes = testOpts~testTypeExcludes
 
-::method resolveFiles private
-  expose testOpts
+  -- If there are includes, add them into the default set.
+  if includes \== .nil then tmpSet = tmpSet~union(includes)
 
-  -- Here we would resolve files and directories.  Only have the single file
-  -- option implemented so far.
-  if testOpts~file \== .nil then do
-    self~simpleTestSelection = .false
-    self~testFile = testOpts~file
+  -- Now, if there are excludes subtract them out.
+  if  excludes \== .nil then tmpSet = tmpSet~difference(excludes)
+
+  -- A value of .nil is used to signal that all test types are to be used.  This
+  -- reduces the processing in parts of the automated running of the test suite.
+  -- Determine here if the default set now represents all possible tests.
+  if .ooTestTypes~all~difference(tmpSet)~items == 0 then do
+    self~testTypes = .nil
+    testOpts~testTypes = .nil
   end
+  else do
+    self~testTypes = tmpSet
+    testOpts~testTypes = tmpSet
+  end
+
 
 ::method resolveOptions private
   expose testOpts
 
-  if testOpts~showProgress \== .nil then self~showProgress = testOpts~showProgress
-  if testOpts~showTestCases \== .nil then self~showTestCases = testOpts~showTestCases
-  if testOpts~suppressTestcaseTicks \== .nil then self~suppressTestcaseTicks = testOpts~suppressTestCaseTicks
-  if testOpts~suppressAllTicks \== .nil then self~suppressAllTicks = testOpts~suppressAllTicks
-  if testOpts~noTests \== .nil then self~noTests = testOpts~noTests
-  if testOpts~waitAtCompletion \== .nil then self~waitAtCompletion = testOpts~waitAtCompletion
-  if testOpts~buildFirst \== .nil then self~buildFirst = testOpts~buildFirst
-  if testOpts~forceBuild \== .nil then self~forceBuild = testOpts~forceBuild
+  self~setVerbosity(testOpts~verbosity)
+  self~root      = testOpts~testCaseRoot
+  self~ext       = testOpts~testContainerExt
+
+  self~showProgress = testOpts~showProgress
+  self~showTestCases = testOpts~showTestCases
+  self~suppressTestcaseTicks = testOpts~suppressTestCaseTicks
+  self~suppressAllTicks = testOpts~suppressAllTicks
+  self~noTests = testOpts~noTests
+  self~waitAtCompletion = testOpts~waitAtCompletion
+  self~buildFirst = testOpts~buildFirst
+  self~forceBuild = testOpts~forceBuild
 
   if self~forceBuild then do
     self~buildFirst = .true
     testOpts~buildFirst = .true
   end
+  /*
+  if testOpts~singleFile == .nil, testOpts~fileList \== .nil, testOpts~fileList~items == 1 then do
+    a = testOpts~fileList~makeArray
+    testOpts~singleFile = a[1]
+    testOpts~fileList = .nil
+  end */
 
 ::method readOptionsFile private
-  -- Not implemented yet.
+  expose cmdLine testOpts originalCommandLine
+
+  -- See if the user specified any options file related flags.
+  dashLittle = cmdLine~wordPos("-o")
+  dashBig = cmdLine~wordPos("-O")
+
+  -- Can not specifiy both.
+  if dashLittle <> 0, dashBig <> 0 then do
+    msgs = .list~of("Bad command line",                                                     -
+                    "  CommandLine:" originalCommandLine,                                   -
+                    "  Error at:   " cmdLine~word(dashLittle) 'and' cmdLine~word(dashBig)  -
+                    "The -o and -O flags can not be specified together" )
+    self~addErrorMsgAtTop(msg)
+    self~needsHelp = .true
+    return
+  end
+
+  if dashBig <> 0 then do
+    testOpts~noOptionsFile = .true
+    return
+  end
+
+  if dashLittle <> 0 then do
+    if \ self~validateAlternateOptionsFile(dashLittle) then return
+  end
+  else do
+    if SysFileExists(self~DEFAULT_OPTIONS_FILE) then testOpts~optionsFile = self~DEFAULT_OPTIONS_FILE
+  end
+
+  if testOpts~optionsFile \== .nil then do
+    p = .Properties~load(testOpts~optionsFile)
+    if p~items == 0 then do
+      -- No items found, setting needsHelp will abort the test run.  The user
+      -- will have to make sure they don't have an empty options file.
+      m = .list~of('Error reading the options file.', '  file:' testOpts~optionsFile, 'No options were found in the file.')
+      self~addErrorMsg(m)
+      self~needsHelp = .true
+      return
+    end
+
+    itr = p~supplier
+    do while itr~available
+      if \ self~validateAndSetOpt(itr~index~upper, itr~item) then do
+        m = .list~of('Error reading the options file.', '  file:' testOpts~optionsFile)
+        self~addErrorMsgAtTop(m)
+        self~needsHelp = .true
+        return
+      end
+
+      itr~next
+    end
+  end
+
+/** validateAlternateOptionsFile()
+ *
+ * Checks that the -o option is valid.  If it is not valid, an error message is
+ * added.
+ *
+ * @param pos  The word position of the -o token in the command line.
+ *
+ * @return  True if the -o option names an exsiting file, otherwise false.
+ */
+::method validateAlternateOptionsFile private
+  expose cmdLine testOpts
+  use strict arg pos
+
+  extra = ""
+  optFile = cmdLine~word(pos + 1)
+
+  if optFile == "" then do
+    extra = 'Command line:' cmdLine
+  end
+  else if \ SysFileExists(optFile) then do
+    extra = 'The file:' optFile 'does not exist'
+  end
+
+  if extra \== "" then do
+    m = .list~of('Error:', '  The -o option must be followed by a valid file name', extra)
+    self~addErrorMsg(m)
+    self~needsHelp = .true
+    return .false
+  end
+
+  testOpts~optionsFile = optFile
+  return .true
 
 ::method parse private
   expose cmdLine tokenCount errMsg originalCommandLine
@@ -300,35 +401,35 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   cmdLine = cmdLine~space(1)
   tokenCount = cmdLine~words
 
-  done = self~checkFormat
-  if done then return
+  if tokenCount > 0 then do
+    done = self~checkFormat
+    if done then return
+  end
 
   do i = 1 to tokenCount
     token = cmdLine~word(i)
-    select
-      when token~abbrev("--") then j = self~parseLongOpt(token, i)
 
-      when token~abbrev("-") then j = self~parseShortOpt(token, i)
-
-      otherwise do
-        -- The error message list is not started at this point.
-        self~errMsg = .list~of("Command line arguments must start with '-' or '--'")
-        self~errMsg~insert("  Error at:" cmdLine~word(i))
-        self~needsHelp = .true
-        return
-      end
+    if token~abbrev("-") then do
+      j = self~parseShortOpt(token, i)
     end
-    -- End select
+    else do
+      errMsg~insert("Command line arguments must start with '-'")
+      errMsg~insert("  Error at:" cmdLine~word(i))
+      self~needsHelp = .true
+      return
+    end
 
     if j < 0 then do
-      -- The error message list *may* already have some messages.  We want these
-      -- messaged to be first in the print out.
-      if errMsg == .nil then errMsg = .list~new
-
-      k = errMsg~insert("Bad command line", .nil)
-      errMsg~insert("  CommandLine:" originalCommandLine, k)
-      errMsg~insert("  Error at:   " cmdLine~word(i), k)
       self~needsHelp = .true
+
+      -- It's not an error to request the version only (-v option.)
+      if self~doVersionOnly then return
+
+      -- The error message list *may* already have some messages.  We want these
+      -- messages to be first in the print out so they are inserted at the front
+      -- of the list.
+      msgs = .list~of("Bad command line", "  CommandLine:" originalCommandLine, "  Error at:   " cmdLine~word(i))
+      self~addErrorMsgAtTop(msgs)
       return
     end
     i = j
@@ -355,20 +456,34 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   end
   return .true
 
-::method checkFileSegment private
-  expose cmdLine
-  use strict arg index
+::method checkPattern private
+  use strict arg pattern
 
   if .ooTestConstants~SL == '\' then wrongSlash = '/'; else wrongSlash = '\'
   invalid = '*|[]:"<>?{}()+ ' || "'" || wrongSlash
-  segment = cmdLine~word(index)
 
-  pos = verify(segment, invalid, 'M')
+  pos = verify(pattern, invalid, 'M')
   if pos <> 0 then do
-    char = segment~substr(pos, 1)
-    self~addErrorMsg("The file name segment:" segment "contains an invalid character ("char")")
-    self~addErrorMsg("  File name segments can not contain invalid file name characters")
+    char = pattern~substr(pos, 1)
+    self~addErrorMsg("The file pattern:" pattern "contains an invalid character ("char")")
+    self~addErrorMsg("  File patterns can not contain invalid file name characters")
     self~addErrorMsg("  or regular expression characters.")
+    return .false
+  end
+  return .true
+
+::method checkFileName private
+  use strict arg name
+
+  if .ooTestConstants~SL == '\' then wrongSlash = '/'; else wrongSlash = '\'
+  invalid = '*|:"<>?;= ' || "'" || wrongSlash
+
+  pos = verify(name, invalid, 'M')
+  if pos <> 0 then do
+    char = name~substr(pos, 1)
+    self~addErrorMsg("The file name:" name "contains an invalid character ("char")")
+    self~addErrorMsg("  File patterns can not contain invalid file name characters")
+    self~addErrorMsg("  or characters that require special quoting.")
     return .false
   end
   return .true
@@ -380,8 +495,15 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   j = i
 
   select
+    when word == '-v' then do
+      -- Return -1 to stop parsing the command line.
+      self~doVersionOnly = .true
+      j = -1
+    end
+
     when word == '-a' then do
-      testOpts~testTypeIncludes = .ooTestTypes~all
+      testOpts~allTestTypes = .true
+      testOpts~defaultTestTypes = .ooTestTypes~all
     end
 
     when word == '-b' then do
@@ -393,39 +515,47 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
       testOpts~forceBuild = .true
     end
 
+    when word == '-d' then do
+      j = self~addMultiWordOpt(i, '-d')
+    end
+
     when word~abbrev("-D")  then do
-      j = self~addDefine(i)
+      j = self~addOption(i)
     end
 
     when word == '-f' then do
-      if self~lastToken(i, "The -f option must be followed by a file name segment") then return -1
-      if \ self~isSingleValueToken(i, "The -f option must be followed by a single file name segment") then return -1
+      value = self~getValueSegment(i)
 
-      j += 1
-      if \ self~checkFileSegment(j) then return -1
-
-      testOpts~file = cmdLine~word(j)
+      if \ self~validateAndSetOpt(singleFile, value, "-f") then j = -1
+      else j+=1
     end
 
     when word == '-F' then do
-      return self~notImplemented("-F")
+      j = self~addMultiWordOpt(i, "-F")
+    end
+
+    when word == '-I' then do
+      j = self~addMultiWordOpt(i, '-I')
     end
 
     when word == '-n' then do
       testOpts~noTests = .true
     end
 
+    -- The -o and -O (options file related) are processed already, so they are
+    -- just ignored here.
+    when word == '-o' then j += 1
+    when word == '-O' then nop
+
     when word == '-p' then do
-      return self~notImplemented("-p")
+      j = self~addMultiWordOpt(i, "-p")
     end
 
     when word == '-R' then do
-      if self~lastToken(i, "The -R option must be followed by a directory name") then return -1
-      if \ self~isSingleValueToken(i, "The -R option must be followed by a single directory name") then return -1
+      value = self~getValueSegment(i)
 
-      j += 1
-      self~root = cmdLine~word(j) || self~SL
-      testOpts~testCaseRoot = self~root
+      if \ self~validateAndSetOpt(testCaseRoot, value, "-R") then j = -1
+      else j+=1
     end
 
     when word == '-s' then do
@@ -436,8 +566,8 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
       testOpts~showTestCases = .true
     end
 
-    when word == '-I' then do
-      j = self~addTestTypes(i, '-I')
+    when word == '-t' then do
+      j = self~addMultiWordOpt(i, "-t")
     end
 
     when word == '-u' then do
@@ -448,25 +578,11 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
       testOpts~suppressAllTicks = .true
     end
 
-    when word == '-v' then do
-      self~doVersionOnly = .true
-    end
-
     when word == '-V' then do
-      if self~lastToken(i, "The -V option must be followed by the verbosity level") then return -1
-      if \ self~isSingleValueToken(i, "The -V option must be followed by only 1 verbosity level") then return -1
+      value = self~getValueSegment(i)
 
-      j += 1
-      level = cmdLine~word(j)
-
-      if \ isWholeRange(level, self~MIN_VERBOSITY, self~MAX_VERBOSITY) then do
-        self~addErrorMsg("The -V option must be followed by a valid verbosity level; found" level)
-        self~addErrorMsg("  Valid levels are in the range of" self~MIN_VERBOSITY "to" self~MAX_VERBOSITY)
-        return -1
-      end
-
-      self~setVerbosity(level)
-      testOpts~verbosity = level
+      if \ self~validateAndSetOpt(verbosity, value, "-V") then j = -1
+      else j+=1
     end
 
     when word == '-w' then do
@@ -474,17 +590,34 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     end
 
     when word == '-X' then do
-      j = self~addTestTypes(i, '-X')
+      j = self~addMultiWordOpt(i, '-X')
     end
 
     otherwise do
       self~addErrorMsg( '"'cmdLine~word(i)'"' "is not a valid option")
-      return -1
+      j = -1
     end
   end
   -- End select
 
   return j
+
+::method getValueSegment private
+  expose cmdLine tokenCount
+  use strict arg switchPos
+
+  start = switchPos + 1
+  if start > tokenCount then return ""
+
+  nextSwitch = self~nextOptionIndex(start)
+  select
+    when nextSwitch == start then ret = ""
+    when nextSwitch == 0 then ret = cmdLine~subword(start)
+    otherwise ret = cmdLine~subword(start, (nextSwitch - start))
+  end
+  -- End select
+
+  return ret
 
 ::method nextOptionIndex private
   expose cmdLine tokenCount
@@ -500,59 +633,73 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   self~addErrorMsg("The" opt "argument option is not implemented yet.")
   return -1
 
-::method parseLongOpt private
-  self~addErrorMsg("Long argument options are not implemented yet.")
-  return -1
-
-::method addTestTypes private
+::method addFiles private
   expose cmdLine tokenCount testOpts
   use strict arg i, opt
 
+  displayName = opt
+
   if i == tokenCount | self~isOptionToken(i + 1) then do
-    self~addErrorMsg("The" opt "option must be followed by at least 1 test type, or the word all.")
-    return -1
-  end
-
-  j = i + 1
-  nextOpt = self~nextOptionIndex(j)
-
-  if nextOpt == 0 then do
-    types = makeSetOfWords(cmdLine~subWord(j))
-    j = tokenCount
+    files = ""
+    j = -1
   end
   else do
-    types = makeSetOfWords(cmdLine~subWord(j, (nextOpt - j)))
-    j = nextOpt - 1
+    j = i + 1
+    nextOpt = self~nextOptionIndex(j)
+
+    if nextOpt == 0 then do
+      files = cmdLine~subWord(j)
+      j = tokenCount
+    end
+    else do
+      files = cmdLine~subWord(j, (nextOpt - j))
+      j = nextOpt - 1
+    end
   end
 
-  tmp = .set~new
-  do t over types
-    if t~caselessCompare('all') == 0 then do
-      tmp = .ooTestTypes~all
-      leave
-    end
-
-    testType = .ooTestTypes~testForName(t)
-    if testType == .nil then do
-      self~addErrorMsg("The" opt "option must be followed by valid test types")
-      self~addErrorMsg(" " t "is not a valid test type.")
-      self~addErrorMsg("  Valid types are:" .ooTestTypes~allNames)
-      self~addErrorMsg("  In addition, the keyword 'all' can be used to indicate every test type.")
-      return -1
-    end
-
-    tmp~put(testType)
-  end
-
-  if opt == '-I' then index = testTypeIncludes
-  else index = testTypesExcludes
-
-  if testOpts[index] == .nil then testOpts[index] = tmp
-  else testOpts[index] = testOpts[index]~union(tmp)
+  if \ self~validateAndSetOpt(optName, types, displayName) then j = -1
 
   return j
 
-::method addDefine private
+
+::method addMultiWordOpt private
+  expose cmdLine tokenCount testOpts
+  use strict arg i, opt
+
+  displayName = opt
+  select
+    when opt == '-d' then optName = 'DEFAULTTESTTYPES'
+    when opt == '-F' then optName = 'FILELIST'
+    when opt == '-I' then optName = 'TESTTYPEINCLUDES'
+    when opt == '-p' then optName = 'FILESWITHPATTERN'
+    when opt == '-t' then optName = 'TESTCASES'
+    when opt == '-X' then optName = 'TESTTYPEEXCLUDES'
+  end
+  -- End select
+
+  if i == tokenCount | self~isOptionToken(i + 1) then do
+    optWords = ""
+    j = -1
+  end
+  else do
+    j = i + 1
+    nextOpt = self~nextOptionIndex(j)
+
+    if nextOpt == 0 then do
+      optWords = cmdLine~subWord(j)
+      j = tokenCount
+    end
+    else do
+      optWords = cmdLine~subWord(j, (nextOpt - j))
+      j = nextOpt - 1
+    end
+  end
+
+  if \ self~validateAndSetOpt(optName, optWords, displayName) then j = -1
+
+  return j
+
+::method addOption private
   expose cmdLine tokenCount testOpts
   use strict arg i
 
@@ -575,11 +722,214 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     i = nextOpt - 1
   end
 
-  define = define~substr(3)
-  parse var define name "=" value
-  testOpts[name~strip~upper] = value~strip
+  parse var define "-D" name "=" value
+  if \ self~validateAndSetOpt(name~upper, value) then return -1
 
   return i
+
+::method validateAndSetOpt private
+  expose testOpts optsTable
+  use strict arg name, value, displayName = (arg(1))
+
+  optType = optsTable[name]
+
+  -- First deal with specific option keywords that require special handling.
+  -- Then deal with option keywords that have a generic handling.  Everything
+  -- else is user defined options where the value could be whatever the user
+  -- wants.
+  select
+    when name == 'ALLTESTTYPES' then do
+      tmpVal = value
+      if value == 'true' then value = 1
+      else if value == 'false' then value = 0
+
+      if \ isBoolean(value) then do
+        self~addErrorMsg("The value for the" displayName "option must be true or false, found:" tmpVal)
+        return .false
+      end
+
+      testOpts~allTestTypes = value
+      if testOpts~allTestTypes then testOpts~defaultTestTypes = .ooTestTypes~all
+    end
+
+    -- If the file name ends in the test container extension, we treat it as an
+    -- absolute path name, otherwise it is treated as a file name.
+    when name == 'SINGLEFILE' then do
+      if value = "" then do
+        self~addErrorMsg("The" displayName "option must be followed by a file name.")
+        return .false
+      end
+
+      if value~words > 1 then do
+        self~addErrorMsg("The" displayName "option must be followed by a single file name.")
+        return .false
+      end
+
+      if value~right(self~TEST_CONTAINER_EXT~length) == self~TEST_CONTAINER_EXT then do
+        testOpts~singleFile = value
+        return .true
+      end
+
+      if \ self~checkFileName(value) then do
+        self~addErrorMsgAtTop("The" displayName "option must be followed by a valid file name.")
+        return .false
+      end
+
+      if testOpts~fileList == .nil then testOpts~fileList = .set~new
+      testOpts~fileList~put(value)
+      return .true
+    end
+
+    when name == 'FILELIST' then do
+      if value = "" then do
+        self~addErrorMsg("The" displayName "option must be followed by at least 1 file name.")
+        return .false
+      end
+
+      -- Don't uppercase words in set.
+      files = makeSetOfWords(value, .false)
+      if testOpts~fileList == .nil then testOpts~fileList = .set~new
+      do f over files
+        if \ self~checkFileName(f) then do
+          self~addErrorMsgAtTop("The" displayName "option only accepts valid file names that do not require quoting.")
+          return .false
+        end
+        testOpts~fileList~put(f)
+      end
+
+      return .true
+    end
+
+    when name == 'FILESWITHPATTERN' then do
+      if value = "" then do
+        self~addErrorMsg("The" displayName "option must be followed by at least 1 file pattern.")
+        return .false
+      end
+
+      patterns = makeSetOfWords(value)
+      if testOpts~filesWithPattern == .nil then testOpts~filesWithPattern = .set~new
+      do p over patterns
+        if \ self~checkPattern(p) then do
+          self~addErrorMsgAtTop("The" displayName "option only accepts valid patterns.")
+          return .false
+        end
+        testOpts~filesWithPattern~put(p)
+      end
+
+      return .true
+    end
+
+    when name == 'TESTCASES' then do
+      if value = "" then do
+        self~addErrorMsg("The" displayName "option must be followed by at least 1 test case name.")
+        return .false
+      end
+
+      tests = makeSetOfWords(value)
+
+      do t over tests
+        if \ t~abbrev("TEST") then do
+          self~addErrorMsg("The" displayName "option requires test case method names.")
+          self~addErrorMsg("  All test case method names start with 'test'; found" t)
+          return .false
+        end
+      end
+      testOpts~testCases = tests
+      return .true
+    end
+
+    when name == 'TESTCASEROOT' then do
+      if value = "" then do
+        self~addErrorMsg("The" displayName "option must be followed by a directory name.")
+        return .false
+      end
+
+      if value~words > 1 then do
+        self~addErrorMsg("The" displayName "option must be followed by a single directory name.")
+        return .false
+      end
+
+      if value~right(1) \== self~SL then value = value || self~SL
+      testOpts~testCaseRoot = value
+    end
+
+    when name == 'VERBOSITY' then do
+      if value == "" then do
+        self~addErrorMsg("The" displayName "option must be followed by the verbosity level.")
+        return .false
+      end
+
+      if value~words > 1 then do
+        self~addErrorMsg("The" displayName "option must be followed by only 1 verbosity level.")
+        return .false
+      end
+
+      if \ isWholeRange(value, self~MIN_VERBOSITY, self~MAX_VERBOSITY) then do
+        self~addErrorMsg("The" displayName "option must be followed by a valid verbosity level; found" value)
+        self~addErrorMsg("  Valid levels are in the range of" self~MIN_VERBOSITY "to" self~MAX_VERBOSITY)
+        return .false
+      end
+
+      testOpts~verbosity = value
+    end
+
+    when optType == 'testtypes' then do
+      if value = "" then do
+        self~addErrorMsg("The" displayName "option must be followed by at least 1 test type, or the word all.")
+        return .false
+      end
+
+      testTypes = makeSetOfWords(value)
+      tmpSet = .set~new
+
+      do t over testTypes
+        if t~caselessCompare('all') == 0 then do
+          tmpSet = .ooTestTypes~all
+          leave
+        end
+
+        testType = .ooTestTypes~testForName(t)
+        if testType == .nil then do
+          self~addErrorMsg("The" displayName "option must be followed by valid test types")
+          self~addErrorMsg(" " t "is not a valid test type.")
+          self~addErrorMsg("  Valid types are:" .ooTestTypes~allNames)
+          self~addErrorMsg("  In addition, the keyword 'all' can be used to indicate every test type.")
+          return .false
+        end
+
+        tmpSet~put(testType)
+      end
+      testOpts[name] = tmpSet
+    end
+
+    when optType == 'boolean' then do
+      if value == 'true' then value = 1
+      else if value == 'false' then value = 0
+
+      if \ isBoolean(value) then do
+        self~addErrorMsg("The value for the" displayName "option must be true or false, found:" value)
+        return .false
+      end
+      testOpts[name] = value
+    end
+
+    when optType == 'notimplemented' then do
+      self~notImplemented(displayName)
+      return .false
+    end
+
+    when optType == 'invalid' then do
+        self~addErrorMsg("The" displayName "option is not valid in an options file.")
+        return .false
+    end
+
+    otherwise do
+      testOpts[name] = value
+    end
+  end
+  -- End select
+
+  return .true
 
 
 ::method isOptionToken private
@@ -590,90 +940,169 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   else return cmdLine~word(i)~abbrev("-")
 
 
-/** addErrorMsg()  Adds msg to the end of the error messages list. */
+/** addErrorMsg()
+ *
+ * Adds message(s) to the end of the error messages list.
+ *
+ * @param msg  The message(s) to add.  This can be a single string or a list of
+ *             message strings
+ */
 ::method addErrorMsg private
   expose errMsg
   use strict arg msg
-  if errMsg == .nil then errMsg = .list~new
-  errMsg~insert(msg)
+  if msg~isA(.list) then do
+    do line over msg
+      errMsg~insert(line)
+    end
+  end
+  else do
+    errMsg~insert(msg)
+  end
+
+
+/** addErrorMsgAtTop()
+ *
+ * Adds message(s) to the top of the error messages list.
+ *
+ * @param msg  The message(s) to add.  This can be a single string or a list of
+ *             message strings
+ */
+::method addErrorMsgAtTop private
+  expose errMsg
+  use strict arg msg
+  if msg~isA(.list) then do
+    if msg~isEmpty then do
+      errMsg~insert("", .nil)
+      return
+    end
+
+    index = msg~first
+    k = errMsg~insert(msg~at(index), .nil)
+
+    index = msg~next(index)
+    do while index \== .nil
+      k = errMsg~insert(msg~at(index), k)
+      index = msg~next(index)
+    end
+  end
+  else do
+    errMsg~insert(msg, .nil)
+  end
+
 
 /** checkFormat()
  * Checks that the first command line token starts with "-", or if not, that it
- * is a simple command line with one file name on it.
+ * is a simple command line with only one token on it.
  *
  * Returns true if command line parsing is done, otherwise false.  Parsing would
- * be done if there is an error, or if there is only a single file name on the
+ * be done if there is an error, or if there is only a single token on the
  * command line.
+ *
+ * The single token is treated as a either a complete file specification,  or a
+ * file pattern.  If the token ends with the default container extension,  it is
+ * considered to be a complete file name, otherwise it is considered a pattern.
+ *
+ * So, if it is a pattern, for instance, 'char' would execute all test groups
+ * with 'char' in their name.  ooRexx\base would execute all test groups in the
+ * ooRexx\base directory, but not recurse.  Etc.. Look at the pattern matching
+ * doc to see how this works.
+ *
+ * To execute a single specific test group file, the -f option can also be used.
  */
 ::method checkFormat private
   expose cmdLine tokenCount testOpts
 
   if cmdLine~left(1) == "-" then return .false
 
-  -- Want to eventually support:
-  --  testFileName
-  -- or
-  --  directoryName testFile
-  --
-  -- For now just support testFileName
   if tokenCount > 1 then do
-    self~addErrorMsg("Command line arguments must start with '-' or '--'")
+    self~addErrorMsg("Command line arguments must start with '-'")
     self~needsHelp = .true
   end
   else do
-    testOpts~file = cmdLine
+    if cmdLine~right(self~TEST_CONTAINER_EXT~length) == self~TEST_CONTAINER_EXT then testOpts~singleFile = cmdLine
+    else testOpts~filesWithPattern = cmdLine
   end
 
   return .true
 
 ::method setAllDefaults private
-  expose cmdLine originalCommandLine testOpts
+  expose cmdLine originalCommandLine testOpts optsTable
 
   originalCommandLine = cmdLine~copy
 
-  self~version = "1.1.0"
+  self~version = self~TESTOOREXX_REX_VERSION
   self~needsHelp = .false
   self~doLongHelp = .false
-  self~errMsg = .nil
+  self~doSubjectHelp = .false
+  self~errMsg = .list~new
   self~doVersionOnly = .false
 
-  self~setVerbosity(self~DEFAULT_VERBOSITY)
-  self~root      = self~TEST_ROOT || self~SL
-  self~ext       = self~TEST_CONTAINER_EXT
+  if self~hasHelpArg then return
 
-  -- Get the default set of test types to always execute, defined in the .ooTestTypes class.
-  -- The default format for the returned set is [C]onstant, i.e. the numeric test type values.
-  self~testTypes = .ooTestTypes~defaultTestSet
-
-  self~showTestCases = .false
-  self~showProgress = .false
-  self~suppressAllTicks = .false
-  self~suppressTestcaseTicks = .false
-  self~simpleTestSelection = .true
-  self~testFile = .nil
-
-  self~waitAtCompletion = .false
-
-  self~buildFirst = .false
-  self~forceBuild = .false
-  self~noTests    = .false
-
+  -- Set all the known, defined, test options.  In the below, some indexes are
+  -- purposively set to .nil even though that is not necessary.  It is done so
+  -- that the list of valid option words is in one place.
   testOpts~version = self~version
+
+  testOpts~allTestTypes = .false
+  testOpts~buildFirst = .false
+  testOpts~forceBuild = .false
+  testOpts~defaultTestTypes = .ooTestTypes~defaultTestSet
+  testOpts~testContainerExt = self~TEST_CONTAINER_EXT
+  testOpts~singleFile = .nil
+  testOpts~fileList = .nil
+  testOpts~testTypeIncludes = .nil
+  testOpts~noTests = .false
+  testOpts~optionsFile = .nil
+  testOpts~noOptionsFile = .false
+  testOpts~filesWithPattern = .nil
+  testOpts~testCases = .nil
+  testOpts~testCaseRoot= self~TEST_ROOT || self~SL
+  testOpts~testTypeExcludes = .nil
+  testOpts~showProgress = .false
+  testOpts~showTestcases = .false
+  testOpts~suppressTestcaseTicks = .false
+  testOpts~suppressAllTicks = .false
   testOpts~verbosity = self~DEFAULT_VERBOSITY
-  testOpts~testCaseRoot = self~root
-  testOpts~testFileExt = self~ext
-  testOpts~testTypes = self~testTypes
-  testOpts~showTestCases = self~showTestCases
-  testOpts~showProgress = self~showProgress
-  testOpts~suppressAllTicks = self~suppressAllTicks
-  testOpts~suppressTestcaseTicks = self~suppressTestcaseTicks
-  testOpts~waitAtCompletion = self~waitAtCompletion
-  testOpts~buildFirst = self~buildFirst
-  testOpts~forceBuild = self~forceBuild
-  testOpts~noTests = self~noTests
+  testOpts~waitAtCompletion = .false
+
+  optsTable = .table~new
+  optsTable[allTestTypes         ] = "boolean"
+  optsTable[buildFirst           ] = "boolean"
+  optsTable[forceBuild           ] = "boolean"
+  optsTable[defaultTestTypes     ] = "testypes"
+  optsTable[testContainerExt     ] = "string"
+  optsTable[singleFile           ] = "string"
+  optsTable[fileList             ] = "filelist"
+  optsTable[testTypeIncludes     ] = "testtypes"
+  optsTable[noTests              ] = "boolean"
+  optsTable[optionsFile          ] = "invalid"
+  optsTable[noOptionsFile        ] = "invalid"
+  optsTable[filesWithPattern     ] = "fileswithpattern"
+  optsTable[testCases            ] = "testcases"
+  optsTable[testCaseRoot         ] = "string"
+  optsTable[testTypeExcludes     ] = "testtypes"
+  optsTable[showProgress         ] = "boolean"
+  optsTable[showTestcases        ] = "boolean"
+  optsTable[suppressTestcaseTicks] = "boolean"
+  optsTable[suppressAllTicks     ] = "boolean"
+  optsTable[verbosity            ] = "verbosity"
+  optsTable[waitAtCompletion     ] = "boolean"
+
+  optsTable[h   ] = "invalid"
+  optsTable[help] = "invalid"
+  optsTable[v   ] = "invalid"
+
 
 ::method hasHelpArg private
-  expose cmdLine
+  expose cmdLine helpSubject
+
+  if cmdLine~word(1) == 'help' then do
+    helpSubject = cmdLine~word(2)
+    self~doSubjectHelp = .true
+    self~needsHelp = .true
+    return .true
+  end
 
   tokens = makeSetOfWords(cmdLine)
   helpTokens = .set~of("-H", "/H", "--H", "--HELP", "/?", "?", "-?", "--?")
@@ -685,11 +1114,16 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   self~needsHelp = .true
   return .true
 
+::method doShortHelp private
+  say "usage: testOORexx [OPTIONS]"
+  say "Try 'testOORexx --help' for more information."
+
 ::method longHelp private
   say 'Test the ooRexx interpreter using the automated ooTest framework.'
   say "usage: 1.  testOORexx"
   say "       2.  testOORexx fileName"
   say "       3.  testOORexx [OPTIONS]"
+  say '       4.  testOORexx help [subject]'
   say
   say '  1. With no options the automated test suite is executed using the default'
   say '     set of test types, the default verbosity, and the default formatter.'
@@ -698,37 +1132,177 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   say
   say '  3. The automated test suite is executed using the specified options.'
   say
-  say '  Options must start with "-" or "--"  Spaces are not tolerated in'
-  say '  either file names or directory names.'
+  say '  4. Show detailed help on "subject"  Use "help topic" to list valid subjects'
+  say
+  say '  Options must start with "-", the only exception is the --help option.  Spaces'
+  say '  are not tolerated in either file names or directory names.'
+  say
+  say '  The long name options are specified using the -D (define option) format.  I.e.,'
+  say '  the "testContainerExt" option is specified as: -DtestContainerExt=ext.'
+  say
+  say '  All command line options, except the help and options file options, are valid'
+  say '  in the options file, but you must use the long name format.  I.e., the'
+  say '  -Dverbosity=NUM option could be: verbosity=5 in the options file.'
+  say
+  say '  Options below shown as: someOpt=bool are true / false, with the default as'
+  say '  false.  The value can be specified as either 1 / 0 or the words true / false.'
   say
   say 'Valid options:'
+  say ' Help related:'
+  say '  -h                   Show short help'
+  say '  --help               Show long help (this help)'
+  say '  -v                   Show version and quit'
+  say
+  say ' Generic option:'
+  say '  -D    Define option.  Format must be: -Dname=value'
+  say
   say ' Test selection:'
-  say '  -a  --all-test-types         Include all test types'
-  say '  -b  --build-first            Build external binaries before running tests'
-  say '  -B  --force-build            Force building (implies -b)'
-  say '  -f  --file=NAME              Excute the single NAME test group'
-  say '  -F  --files=N1 N2 ...        Execute the N1 N2 ... test groups'
-  say '  -I, --test-types=T1 T2 ..    Include test types T1 T2 ...'
-  say '                               keyword "all" indicates all test types'
-  say '  -n  --no-tests               No tests to execute (deliberately)'
-  say '  -p  --files-with-pattern=PA  Execute test groups matching PA'
-  say '  -R, --root=DIR               DIR is root of search tree'
-  say '  -X  --exclude-types=X1 X2 .. Exclude test types X1 X2 ...'
+  say '  -a  -DallTestTypes=bool           Include all test types'
+  say '  -b  -DbuildFirst=bool             Build external binaries before running tests'
+  say '  -B  -DforceBuild=bool             Force building (implies -b)'
+  say '  -d  -DdefaultTestTypes=D1 D2 ...  change default test type set to D1 D2 ...'
+  say '  -e  -DtestContainerExt=EXT        change default test container ext to EXT'
+  say '  -f  -DsingleFile=NAME             Excute the single NAME test group'
+  say '  -F  -DfileList=N1 N2 ...          Execute the N1 N2 ... test groups'
+  say '  -I, -DtestTypeIncludes=T1 T2 ...  Include test types T1 T2 ... keyword "all"'
+  say '                                    indicates all test types'
+  say '  -n  -DnoTests=bool                No tests to execute (deliberately)'
+  say '  -o  -DoptionsFile=FILE            Use FILE as options file, not default file'
+  say '  -O  -DnoOptonsFile=bool           Do not use any options file'
+  say '  -p  -DfilesWithPattern=PA         Execute test groups matching PA'
+  say '  -R, -DtestCaseRoot=DIR            DIR is root of search tree'
+  say '  -X  -DtestTypeExcludes=X1 X1 ...  Exclude test types X1 X2 ... keyword "all"'
+  say '                                    indicates all test types'
   say
   say ' Output control:'
-  say '  -h                             Show short help'
-  say '      --help                     Show long help (this help)'
-  say '  -s  --show-progress            Show test group progress'
-  say '  -S  --show-testcases           Show test case progress'
-  say '  -u  --suppress-testcase-ticks  Do not show ticks during test execution'
-  say '  -U  --suppress-all-ticks       Do not show any ticks'
-  say '  -v, --version                  Show version and quit'
-  say '  -V, --verbose=NUM              Set vebosity to NUM'
-  say '  -w, --wait-at-completion       At test end, wait for user to hit enter'
-  say
-  say ' Generic options:'
-  say '  -D          Define option.  Format must be: -Dname=value'
+  say '  -s  -DshowProgress=bool           Show test group progress'
+  say '  -S  -DshowTestcases=bool          Show test case progress'
+  say '  -u  -DsuppressTestcaseTicks=bool  Do not show ticks during test execution'
+  say '  -U  -DsuppressAllTicks=bool       Do not show any ticks'
+  say '  -V, -Dverbosity=NUM               Set vebosity to NUM'
+  say '  -w, -DwaitAtCompletion=bool       At test end, wait for user to hit enter'
   say
 
   return self~TEST_HELP_RC
 
+
+::method subjectHelp
+  expose helpSubject
+
+  if helpSubject == "" then do
+    say 'A "subject" keyword must follow the "help" command'
+    say 'Use "help topic" to list valid subjects'
+    say
+    self~doShortHelp
+    return self~TEST_BADARGS_RC
+  end
+
+  helpSubject = helpSubject~lower
+  ret = self~TEST_HELP_RC
+
+  select
+    when helpSubject == 'topic' then do
+      say 'Detailed help subjects (case insignificant) are:'
+      say '  testTypes'
+    end
+
+    when helpSubject == 'testtypes' then do
+      say 'All test types:'
+      say ' ' .ooTestTypes~allNames
+      say
+      say 'Default test type set:'
+      say ' ' .ooTestTypes~defaultTestSet('String')
+      say
+      say 'Default exclued test type set:'
+      xSet = .ooTestTypes~all~difference(.ooTestTypes~defaultTestSet)
+      say .ooTestTypes~namesForTests(xSet)
+    end
+
+    otherwise do
+      say helpSubject 'is not a recognized subject keyword.'
+      say 'Use "help topic" to list valid subjects'
+      say
+      self~doShortHelp
+      ret = self~TEST_BADARGS_RC
+    end
+  end
+  -- End select
+
+  return ret
+
+::routine printDebug
+  use strict arg containers, testResult, cl
+
+  prefix = "====== Debug output"
+  say prefix '='~copies(80 - prefix~length)
+  say
+  say 'Test groups collected:'
+  do c over containers
+    say c~pathName
+  end
+  say
+
+  width = getLongestOpt() + 2
+  opts = .array~new
+  itr = .testOpts~supplier
+  do while itr~available
+    opts~append(" " itr~index~left(width) || "=  " || maybeReturnBool(itr~item))
+    itr~next
+  end
+  opts~sort
+
+  say "Test options (.testOpts) in effect:"
+  do l over opts
+    say l
+    parse var l name '=' value
+    if value~strip == 'a Set' then j = printMultiWordOpt(name~strip)
+  end
+  say
+
+  return 0
+
+::routine printMultiWordOpt
+  use strict arg optName
+
+  s = .testOpts~entry(optName)
+  prefix = "    "
+
+  testTypeOpt = (optName == 'DEFAULTTESTTYPES' | optName == 'TESTTYPEEXCLUDES' | optName == 'TESTTYPEINCLUDES' | optName == 'TESTTYPES')
+
+  out = prefix
+  currentLen = out~length
+
+  do word over s
+    if testTypeOpt then token = ' ' || .ooTestTypes~nameForTest(word)
+    else token = ' ' word
+
+    if currentLen + token~length > 80 then do
+      out ||= .endOfLine || prefix
+      currentLen = prefix~length
+    end
+
+    out ||= token
+    currentLen += token~length
+  end
+  say out
+  say
+  return 0
+
+::routine getLongestOpt
+
+  itr = .testOpts~supplier
+  len = 0
+  do while itr~available
+    l = itr~index~length
+    if l > len then len = l
+    itr~next
+  end
+  return len
+
+::routine maybeReturnBool
+  use strict arg w
+  select
+    when w == 1 then return '.true'
+    when w == 0 then return '.false'
+    otherwise return w
+  end

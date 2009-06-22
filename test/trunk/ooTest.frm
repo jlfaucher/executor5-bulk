@@ -235,10 +235,9 @@ return 0
 
   ::constant TEST_ROOT            "ooRexx"
   ::constant TEST_CONTAINER_EXT   ".testGroup"
+  ::constant DEFAULT_OPTIONS_FILE "options.ooTest"
 
-  -- .nil signals no restriction on test types.
-  ::method TEST_TYPES_DEFAULT  class; return .nil
-  ::method TEST_TYPES_DEFAULT;        return .nil
+  ::constant TESTOOREXX_REX_VERSION        "1.1.0"
 
   ::constant SUCCESS_RC                         0
   ::constant TEST_SUCCESS_RC                    0
@@ -264,7 +263,6 @@ return 0
   ::constant MIN_TEST_TYPE                1
 
   ::constant UNIT_TEST                    1
-  ::constant DEFAULT_TEST                 1
 
   ::constant UNIT_LONG_TEST               2
   ::constant SAMPLE_TEST                  3
@@ -290,6 +288,10 @@ return 0
 
   ::constant MAX_TEST_TYPE               11
 
+  -- The default test type is the unit test (see above for value.)
+  ::constant DEFAULT_TEST_TYPE            1
+
+
   /** defaultTestSet()
    * Returns the set of tests that are always run.  Any test type in this set
    * will execute unless the tester specifically eXcludes it.
@@ -307,7 +309,7 @@ return 0
   ::method defaultTestSet class
     use strict arg format = 'C'
 
-    tests = .set~of(self~DEFAULT_TEST, self~UNIT_LONG_TEST, self~SAMPLE_TEST, self~GUI_TEST, self~GUI_SAMPLE_TEST, -
+    tests = .set~of(self~UNIT_TEST, self~UNIT_LONG_TEST, self~SAMPLE_TEST, self~GUI_TEST, self~GUI_SAMPLE_TEST, -
                     self~OLE_TEST, self~DOC_EXAMPLE_TEST, self~NATIVE_API_TEST)
 
     select
@@ -340,7 +342,7 @@ return 0
   ::method allNames class
     expose names
 
-    if names~default == .nil then self~populate
+    if names~UNIT == .nil then self~populate
     return self~namesString
 
   ::method allNames
@@ -354,7 +356,7 @@ return 0
     expose names
     use strict arg name
 
-    if names~DEFAULT == .nil then self~populate
+    if names~UNIT == .nil then self~populate
     return names~entry(name~upper)
 
   ::method testForName
@@ -369,7 +371,7 @@ return 0
     expose names
     use strict arg test
 
-    if names~DEFAULT == .nil then self~populate
+    if names~UNIT == .nil then self~populate
     return names~entry(test)
 
   /** namesForTests()
@@ -384,7 +386,7 @@ return 0
 
     if \ tests~isA(.Collection) then return .nil
 
-    if names~DEFAULT == .nil then self~populate
+    if names~UNIT == .nil then self~populate
 
     names__ = ""
     do t over tests
@@ -467,7 +469,7 @@ return 0
   self~defaultTestResultClass = .ooTestResult
 
   -- Set the type of test cases this class contains to the default.
-  self~ooTestType = .ooTestTypes~DEFAULT_TEST
+  self~ooTestType = .ooTestTypes~DEFAULT_TEST_TYPE
 
 -- End init( ) class
 
@@ -740,6 +742,7 @@ return 0
     say "Messages:"~left(20) stats~messages
     say "Logs:"~left(20) stats~logs
     say
+
 
   /* Over-ride the super-class printFailuerInfo(), even though almost exactly
    * the same, because the super-class is used to print TestCase objects and
@@ -1554,6 +1557,117 @@ return 0
     end
 
   return testSuite
+  -- End suiteForTestTypes()
+
+  /** suiteForTestCases
+   */
+  ::method suiteForTestCases
+    expose tests testsWithSuite testCollections
+    use strict arg testCases, testTypes, testSuite = (.ooTestSuite~new)
+
+    if \ isSubClassOf(testSuite~class, "ooTestSuite") then
+      raise syntax 88.917 array ("3 'testSuite'", "if used, must be a subclass of the ooTestSuite class. Found:" testSuite)
+
+    if \ self~hasTests then return testSuite
+
+    if \ testCases~isA(.set) then
+      raise syntax 88.914 array ("1 'testCases'", "Set")
+
+    if \ (testTypes~isA(.set) | testTypes == .nil) then
+      raise syntax 88.916 array ("2 'testTypes'", ".nil, or a .Set", testTypes)
+
+    if testTypes == .nil then do
+      do tClass over tests~allItems
+        suite = self~constructSuiteWithTestCases(tClass, testCases)
+        if suite == .nil then iterate
+
+        suite~definedInFile = self~pathName
+        testSuite~addTest(suite)
+      end
+
+      do obj over testsWithSuite~allItems
+        suite = obj~getSuiteForTestCases(testCases)
+        if suite == .nil then iterate
+
+        suite~definedInFile = self~pathName
+        testSuite~addTest(suite)
+      end
+
+      do obj over testCollections~allItems
+        suite = obj~getSuiteForTestCases(testCases)
+        if suite == .nil then iterate
+
+        suite~definedInFile = self~pathName
+        testSuite~addTest(suite)
+      end
+    end
+    else do
+      do t over testTypes
+        testClass = tests[t]
+        if testClass <> .nil then do
+          suite = self~constructSuiteWithTestCases(testClass, testCases)
+          if suite == .nil then iterate
+
+          suite~definedInFile = self~pathName
+          testSuite~addTest(suite)
+        end
+
+        obj = testsWithSuite[t]
+        if obj <> .nil then do
+          suite = obj~getSuiteForTestCases(testCases)
+          if suite == .nil then iterate
+
+          suite~definedInFile = self~pathName
+          testSuite~addTest(suite)
+        end
+
+        obj = testCollections[t]
+        if obj <> .nil then do
+          suite = obj~getSuiteForTestCases(testCases)
+          if suite == .nil then iterate
+
+          suite~definedInFile = self~pathName
+          testSuite~addTest(suite)
+        end
+      end
+    end
+
+  return testSuite
+  -- End suiteForTestCases()
+
+  /** constructSuiteWithTestCases()
+   *
+   * Determines if the test case class has any of the test cases specified.  If
+   * so, constructs a test suite object containing only those test cases
+   * specified.
+   *
+   * @param testCaseClass  The test case class to look at.
+   * @param testCases      A set of test case names.
+   *
+   * return  A test suite object containing all of the matched test cases.  If
+   *         there are no matches, .nil is returned.
+   */
+  ::method constructSuiteWithTestCases private
+    use strict arg testCaseClass, testCases
+
+    founds = .array~new
+
+    itr = testCaseClass~methods(testCaseClass)
+    do while itr~available
+      name = itr~index
+      if testCases~hasIndex(name) then founds~append(name)
+      itr~next
+    end
+
+    if founds~items <> 0 then do
+      suite = .ooTestSuite~new
+      do t over founds
+        suite~addTest(testCaseClass~new(t))
+      end
+      return suite
+    end
+
+    return .nil
 
   /** createMetaData()
    *
@@ -1600,7 +1714,31 @@ return 0
 
 ::method getSuite
   expose testClass suiteClass
-return suiteClass~new(testClass)
+  return suiteClass~new(testClass)
+
+::method getSuiteForTestCases
+  expose testClass suiteClass
+  use strict arg testCases
+
+  founds = .array~new
+
+  itr = testClass~methods(testClass)
+  do while itr~available
+    methodName = itr~index
+    if testCases~hasIndex(methodName) then founds~append(methodName)
+    itr~next
+  end
+
+  if founds~items <> 0 then do
+    suite = suiteClass~new
+    do t over founds
+      suite~addTest(testClass~new(t))
+    end
+    return suite
+  end
+
+  return .nil
+
 -- End of class: TestWithSuite
 
 
@@ -1622,13 +1760,35 @@ return suiteClass~new(testClass)
 ::method getSuite
   expose testClass names suiteClass
 
-  if suiteClass == .nil then suiteClass = .TestSuite
+  if suiteClass == .nil then suiteClass = .ooTestSuite
   suite = suiteClass~new
   do methodName over names
     suite~addTest(testClass~new(methodName))
   end
 
-return suite
+  return suite
+
+::method getSuiteForTestCases
+  expose testClass names suiteClass
+  use strict arg testCases
+
+  founds = .array~new
+  do methodName over names
+    if testCases~hasIndex(methodName) then founds~append(methodName)
+  end
+
+  if founds~items <> 0 then do
+    if suiteClass == .nil then suiteClass = .ooTestSuite
+    suite = suiteClass~new
+
+    do t over founds
+      suite~addTest(testClass~new(t))
+    end
+    return suite
+  end
+
+  return .nil
+
 -- End of class: TestWithSuiteAndNames
 
 
@@ -1640,14 +1800,20 @@ return suite
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'ooTestFinder' public
 
+  ::constant ALL         1
+  ::constant FILES       2
+  ::constant PATTERN     3
+  ::constant SINGLEFILE  4
+
   ::attribute testTypes private
   ::attribute root private
   ::attribute extension private
   ::attribute simpleFileSpec private
-  ::attribute isSimpleSearch private
+  ::attribute searchType private
 
-  ::attribute fileIncludes private
-  ::attribute fileExcludes private
+  ::attribute file private
+  ::attribute filePatterns private
+  ::attribute fileNames private
 
   ::attribute totalFound get
   ::attribute totalFound set private
@@ -1658,7 +1824,7 @@ return suite
    * @param  root         REQUIRED
    *   The root of the directory tree to search for test containers.
    * @param  extension  REQUIRED
-   *   The extension for test container files
+   *   The extension for test container files, such as .testGroup
    * @param  types      OPTIONAL
    *   The test types to search for.  A value of nil indicates all tests and is
    *   the default.
@@ -1675,100 +1841,155 @@ return suite
 
     self~testTypes = types
     self~totalFound = 0
-    self~fileIncludes = .nil
-    self~fileExcludes = .nil
-    self~isSimpleSearch = .true
+    self~filePatterns = .nil
+    self~fileNames = .nil
+    self~file = .nil
+    self~searchType = self~ALL
 
   -- End init()
 
-  /** includeFiles()
-   * Add the named file or files to the include files array.  The files are
-   * stored as regular expressions with the following conventions:
+  /** useFileName()
+   * Sets this test finder to locat a single file specified by fileName.
    *
-   * If the name ends in the extension specified in init(), and no directory
-   * slashes are in the name, then it will be considered the complete file name.
-   * The regular expression will be: any series of characters, the directory
-   * slash the specified name.
-   *
-   * If there are no slashes and the name does not end in the extension the the
-   * name will be considered a segment of a file name.  The regular expression
-   * will be any series of characters, the slash, any series of characters not a
-   * slash, the name, any series of characters not a slash, the extension.
-   *
-   * The name ends in the slash, it will be considered a directory specification
-   * and all files in the directory will be matched.  The regular expression
-   * will be any series of characters, the name, any series of characters not
-   * the slash, and the extension.
-   *
-   * Othewise, if it does contain a slash, the reqular expression will be any
-   * series of characters, and the name.
    */
-  ::method includeFiles
-    expose fileIncludes
-    use strict arg files
+  ::method useFileName
+    use strict arg fileName
+    self~file = fileName
+    self~searchType = self~SINGLEFILE
 
-    if \ files~isA(.string), \ files~isA(.collection) then
-      raise syntax 88.916 array ("1 'files'", "a string or a collection" files)
+  -- End useFileName()
 
-    if fileIncludes == .nil then fileIncludes = .array~new
-    if files~isA(.string) then do
-      regularExpression = self~buildRegEx(files)
-      fileIncludes~append(regularExpression)
+  ::method useFiles
+    expose fileNames
+    use strict arg names
+
+    if \ names~isA(.string), \ names~isA(.collection) then
+      raise syntax 88.916 array ("1 'names'", "a string or a collection" names)
+
+    if fileNames == .nil then fileNames = .array~new
+    if names~isA(.string) then do
+      name = self~getCorrectFileName(names)
+      fileNames~append(name)
     end
-    else do file over files
-      if \ file~isA(.string) then
-        raise syntax 88.900 array("Only file names (string objects) are accepted; found" file)
+    else do n over names
+      if \ n~isA(.string) then
+        raise syntax 88.900 array("The file name must be a string object; found" n)
 
-      regularExpression = self~buildRegEx(file)
-      fileIncludes~append(regularExpression)
+      name = self~getCorrectFileName(n)
+      fileNames~append(name)
     end
-    self~isSimpleSearch = .false
+    self~searchType = self~FILES
+
+  -- End useFiles()
+
+  ::method getCorrectFileName private
+    expose extension sl
+    use strict arg name
+
+    p = name~lastPos(sl)
+    if p <> 0 then do
+      correctName = name~right(name~length - p)
+      if correctName == "" then
+        raise syntax 88.900 array('The file name "'name'" is improper')
+    end
+
+    if correctName~right(extension~length) \== extenison then correctName = correctName || extension
+
+    if correctName~countStr('.') > 1  then
+      raise syntax 88.900 array('The file name "'name'" is improper')
+
+    return name
+  -- End getCorrectFileName()
+
+  /** usePatterns()
+   * Add the file pattern or patterns to the file patterns array.  The patterns
+   * are stored as regular expressions with the following conventions:
+   *
+   * If the pattern ends in the extension specified in init(), and no directory
+   * slashes are in the pattern, then it will be considered a complete file
+   * name.  The regular expression will be: any series of characters, the
+   * directory slash, the specified pattern.
+   *
+   * If there are no slashes and the pattern does not end in the extension the
+   * pattern will be considered a segment of a file name.  The regular
+   * expression  will be any series of characters, the slash, any series of
+   * characters not a slash, the pattern, any series of characters not a slash,
+   * the extension.
+   *
+   * If the pattern ends in the slash, it will be considered a directory speci-
+   * fication and all files in the directory will be matched.  The regular ex-
+   * pression will be any series of characters, the pattern, any series of
+   * characters not the slash, and the extension.
+   *
+   * If the pattern does contain a slash, but does not end in a slash, the reqular
+   * expression will be any series of characters, and the pattern.
+   */
+  ::method usePatterns
+    expose filePatterns
+    use strict arg patterns
+
+    if \ patterns~isA(.string), \ patterns~isA(.collection) then
+      raise syntax 88.916 array ("1 'patterns'", "a string or a collection" patterns)
+
+    if filePatterns == .nil then filePatterns = .array~new
+    if patterns~isA(.string) then do
+      regularExpression = self~buildRegEx(patterns)
+      filePatterns~append(regularExpression)
+    end
+    else do pattern over patterns
+      say 'pattern:' pattern
+      if \ pattern~isA(.string) then
+        raise syntax 88.900 array("The file pattern must be a string object; found" pattern)
+
+      regularExpression = self~buildRegEx(pattern)
+      filePatterns~append(regularExpression)
+    end
+    self~searchType = self~PATTERN
+  -- End usePatterns()
 
   ::method buildRegEx private
     expose extension sl
-    use strict arg fileName
+    use strict arg pattern
 
-    endsInSlash = (fileName~right(1) == sl)
-    hasExt = (fileName~right(extension~length)~upper == extension~upper)
-    hasSlash = (fileName~pos(sl) <> 0 )
+    endsInSlash = (pattern~right(1) == sl)
+    hasExt = (pattern~right(extension~length)~upper == extension~upper)
+    hasSlash = (pattern~pos(sl) <> 0 )
 
     notSlash = '[^' || sl || ']*'
     select
       when endsInSlash then do
-        reg = '?*' || fileName~upper || notSlash || '(' || extension~upper || ')'
+        reg = '?*' || pattern~upper || notSlash || '(' || extension~upper || ')'
         reg = self~maybeEscapeSlashes(reg)
-        return .RegularExpression~new(reg)
       end
 
       when hasExt, \ hasSlash then do
-        reg = '?*' || sl || fileName~upper
+        reg = '?*' || sl || pattern~upper
         reg = self~maybeEscapeSlashes(reg)
-        return .RegularExpression~new(reg)
       end
 
       when \ hasExt, \ hasSlash then do
-        reg = '?+' || sl || notSlash || '(' || fileName~upper || ')' || notSlash || '(' || extension~upper || ')'
+        reg = '?+' || sl || notSlash || '(' || pattern~upper || ')' || notSlash || '(' || extension~upper || ')'
         reg = self~maybeEscapeSlashes(reg)
-        return .RegularExpression~new(reg)
       end
 
       when hasExt, hasSlash then do
-        reg = '?*' || fileName~upper
+        reg = '?*' || pattern~upper
         reg = self~maybeEscapeSlashes(reg)
-        return .RegularExpression~new(reg)
       end
 
       otherwise do
         -- \ hasExt, hasSlash
-        p = fileName~lastPos(sl)
-        parse var fileName lead =(p + 1) segment
+        p = pattern~lastPos(sl)
+        parse var pattern lead =(p + 1) segment
         reg = '?*' || lead~upper || notSlash || '(' || segment~upper || ')' || notSlash || '(' || extension~upper || ')'
         reg = self~maybeEscapeSlashes(reg)
-        return .RegularExpression~new(reg)
       end
 
     end
     -- End select
+    say 're:' reg
+    return .RegularExpression~new(reg)
+
 
   ::method maybeEscapeSlashes private
     use strict arg exp
@@ -1872,30 +2093,51 @@ return suite
 
   /** findFiles()
    *
-   * An enhancement is to match includes and excludes.
    */
   ::method findFiles private
-    expose simpleFileSpec
+    expose simpleFileSpec searchType fileNames
 
     f = .array~new
-    j = SysFileTree(simpleFileSpec, files., "FOS")
-    self~totalFound = files.0
-    do i = 1 to files.0
-      if self~matchFile(files.i) then f~append(files.i)
+
+    if searchType == self~SINGLEFILE then do
+      j = SysFileTree(self~file, files., "FO")
+      if j = 0, files.0 == 1 then f[1] = files.1
     end
+    else do
+      j = SysFileTree(simpleFileSpec, files., "FOS")
+      select
+        when searchType == self~ALL then do i = 1 to files.0
+          f[i] = files.i
+        end
+
+        when searchType == self~PATTERN then do i = 1 to files.0
+          if self~matchFile(files.i) then f~append(files.i)
+        end
+
+        otherwise do i = 1 to files.0
+          n = filespec("NAME", files.i)
+          do fn over fileNames
+            if fn~caselessCompare(n) == 0 then f~append(files.i)
+          end
+        end
+      end
+      -- End select
+    end
+
+    self~totalFound = files.0
 
   return f
+  -- End findFiles()
 
   ::method matchFile
-    expose isSimpleSearch fileIncludes
+    expose filePatterns
     use arg file
 
-    if isSimpleSearch then return .true
-
-    do re over fileIncludes
+    do re over filePatterns
       if re~match(file~upper) then return .true
     end
-    return .false
+  return .false
+  -- End matchFiles()
 
 -- End of class: ooTestFinder
 
