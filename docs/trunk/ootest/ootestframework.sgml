@@ -44,6 +44,226 @@
   x
 </para>
 
+<section id="ootTestType"><title>Test Types</title>
+<indexterm><primary>test types</primary></indexterm>
+
+<para>
+  Unlike jUnit, which only does unit tests, ooTest is designed to automate all the testing for the ooRexx
+  distribution package.  There is of course more to software testing than unit tests.  There are stress
+  tests, performance tests, acceptance tests (does the distribution package install correctly, do all the
+  samples at least run,) GUI tests, etc..
+</para>
+<para>
+  The value of an automated unit testing framework comes from developers running the unit tests often.
+  It has been suggested that preferrably the unit tests should be run after every compile.  But, if
+  ooTest is going to be the framework used to run stress tests, acceptance tests, etc., the time to
+  execute the test suite starts growing exponentially.  In addition stress or performance tests typically
+  use large amounts of system resources.  If the developer's machine doesn't have the required horse
+  power for a stress test, what then?  If an ooRexx user wants to help by writing and executing test
+  cases, but doesn't have access to a smtp server needed to run the socket test cases, how does he
+  proceed?
+</para>
+<para>
+  Clearly, if ooTest is to serve as an all-purpose test framework, there needs to be some way of easily
+  running subsets of the tests that are applicable at the time.  The developer needs to be able to easily
+  run only the unit tests.  The user trying to contribute to the project, but is lacking a smtp server,
+  needs some way to run the test suite, but exclude the socket tests.
+</para>
+<para>
+  ooTest handles this by using the concept of <emphasis role="italic">test types</emphasis>.  In jUnit
+  there is only one type of test, the unit test.  In ooTest, each group of test cases in an <link
+  linkend="clsooTestCase">ooTestCase</link> subclass belongs to one of any number of defined test
+  types. The ooTestCase class has a class attribute that defines the test type the class contains.  By
+  default the test cases in an ooTestCase subclass are the unit test type.
+</para>
+<para>
+  When writing a ooTestCase subclass, the test type for the subclass can be over-ridden.  This is done
+  for example in the <emphasis role="italic">Native_api</emphasis> tests.  The class init() method is
+  over-ridden as in this example:
+<programlisting>
+<![CDATA[
+::class "CONVERSION.testGroup" subclass ooTestCase public
+
+::method init class
+  forward class (super) continue
+
+  -- Over-ride the default test type
+  self~ooTestType = .ooTestTypes~NATIVE_API_TEST
+
+]]>
+</programlisting>
+
+</para>
+</section>
+
+<!--
+  Could be chapter, or section
+-->
+<section id="clsooTestCase"><title>ooTestCase Class</title>
+<indexterm><primary>ooTestCase class</primary></indexterm>
+<para>
+  An <emphasis role="italic">ooTestCase</emphasis> class is a test case class where methods of the class
+  define individual test cases.
+</para>
+<para>
+  In order to make it easy to construct automated tests with large numbers of test cases, a convention is
+  followed:  Each method of an ooTestCase class that starts with <emphasis role="italic">test</emphasis>
+  is considered an individual test case.
+</para>
+<para>
+  Each ooTestCase has a class attribute defining the <link linkend="ootTestType">test type</link> of the
+  individual test cases the class contains.  All test cases in a specific ooTestCase class are the same
+  test type.  The class <emphasis role="italic">new()</emphasis> method is intended to be over-ridden by
+  test case writers to assign an appropriate test type when needed.
+</para>
+<para>
+  The following table summarizes the important information for an ooTestCase class, including all methods
+  and attributes relevant to writing test cases.  Most of these methods are inherited from <emphasis
+  role="italic">TestCase</emphasis>:
+</para>
+<table id="tblooTestCaseSummary" frame="all">
+<title>ooTestCase Summary</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Item</entry>
+<entry>...Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>Subclasses</entry>
+<entry><link linkend="clsTestCase">TestCase</link></entry>
+</row>
+<row>
+<entry>Inherits</entry>
+<entry><link linkend="clsooTestTypes">ooTestTypes</link></entry>
+</row>
+<row>
+<entry>Inherits (indirectly through TestCase)</entry>
+<entry><link linkend="clsAssert">Assert</link></entry>
+</row>
+<row>
+<entry><emphasis role="bold">Class Attributes</emphasis></entry>
+<entry></entry>
+</row>
+<row>
+<entry>ooTestType (Class Attribute)</entry>
+<entry><link linkend="attClsooTestType">ooTestType</link></entry>
+</row>
+<row>
+<entry><emphasis role="bold">Class Methods</emphasis></entry>
+<entry></entry>
+</row>
+<row>
+<entry>new (Class method)</entry>
+<entry><link linkend="mthNewClsooTestCase">new</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+
+<section id="attClsooTestType"><title>ooTestType (Class)</title>
+<indexterm><primary>ooTestType</primary></indexterm>
+<indexterm><primary>ooTestType</primary>
+<secondary>ooTestCase class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--ooTestType---------------------------------------------><
+
+>>--ooTestType=--------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+</section>
+
+<section id="mthNewClsooTestCase"><title>new (Class)</title>
+<indexterm><primary>new</primary>
+<secondary>ooTestCase class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+</section>
+
+</section>  <!-- End ooTestCase class -->
+
+
+<!--
+  Could be chapter, or section
+-->
+<section id="clsooTestTypes"><title>ooTestTypes Class</title>
+<indexterm><primary>ooTestTypes class</primary></indexterm>
+<para>
+  An <emphasis role="italic">ooTestTypes</emphasis> class
+</para>
+<para>
+  The following table summarizes the important information for an ooTestCase class, including all methods
+  and attributes relevant to writing test cases.  Most of these methods are inherited from <emphasis
+  role="italic">TestCase</emphasis>:
+</para>
+<table id="tblooTestTypesSummary" frame="all">
+<title>ooTestCase Summary</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Item</entry>
+<entry>...Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>Something</entry>
+<entry>some link</entry>
+</row>
+</tbody></tgroup>
+</table>
+
+<section id="xax"><title>ooTestType (Class)</title>
+<indexterm><primary>ooTestType</primary></indexterm>
+<indexterm><primary>ooTestType</primary>
+<secondary>ooTestCase class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--ooTestType---------------------------------------------><
+
+>>--ooTestType=--------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+</section>
+
+<section id="xcx"><title>new (Class)</title>
+<indexterm><primary>new</primary>
+<secondary>ooTestCase class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+</section>
+
+</section>  <!-- End ooTestTypes class -->
+
+
 </chapter>
 
 

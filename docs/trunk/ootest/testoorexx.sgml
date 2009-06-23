@@ -39,8 +39,8 @@
 -->
 
 <chapter id="chapOverview"><title>Overview of ooTest</title>
-<indexterm><primary>overview</primary>
-<secondary>ooTest</secondary></indexterm>
+<indexterm><primary>ooTest</primary>
+<secondary>overview</secondary></indexterm>
 <para>
   The primary purpose of ooTest is to throughly test the ooRexx interpreter and its distribution
   pacakages.  In general, to throughly test software involves automating as much as possible of the
@@ -48,8 +48,8 @@
   contains little or no components that would aid in automating the writing of tests.
 </para>
 <note><title>Note</title><para>
-  This document is written using the 4.0.0 version of ooTest.  It makes no effort to cover the 3.2.0
-  verison of ooTest, or explain any differences between the 3.2.0 and 4.0.0 versions.  There are
+  This document is written for the 4.0.0 and later versions of ooTest.  It makes no effort to cover the
+  3.2.0 verison of ooTest, or explain any differences between the 3.2.0 and 4.0.0 versions.  There are
   differences.
 </para></note>
 <para>
@@ -67,10 +67,10 @@
 </para>
 
 <section id="ooTestFoundation"><title>History, Foundation</title>
-<indexterm><primary>foundation</primary>
-<secondary>ooTest</secondary></indexterm>
-<indexterm><primary>foundation</primary>
-<secondary>ooTest</secondary></indexterm>
+<indexterm><primary>ooTest</primary>
+<secondary>history</secondary></indexterm>
+<indexterm><primary>ooTest</primary>
+<secondary>foundation</secondary></indexterm>
 
 <para>
   ooTest started out as ooRexxUnit.  ooRexxUnit is a <emphasis role="italic">generic</emphasis> testing
@@ -84,7 +84,8 @@
   Over time it became apparent that the constraints of ooRexxUnit were a hinderance to the ooRexx testing
   effort.  Therefore, the ooTest framework was put in place.  ooTest sits on top of ooRexxUnit, but it is
   not designed to be a generic testing framework, does not guarentee backward compatibility, and does not
-  strive to closely emulate jUnit.
+  strive to closely emulate jUnit.  The idea behind this was to leave ooRexxUnit as a generic testing
+  framework for any one to use, and focus the ooTest framework on specificaly testing ooRexx.
 </para>
 <para>
   However, because of its history, ooTest is conceptualy similar to jUnit.  If you understand jUnit
@@ -92,24 +93,51 @@
   primarily a unit testing framework, while ooTest is primarily an automation framework, that heavily
   supports unit testing.
 </para>
-</section>
-
-<section id="testConcepts"><title>Testing Concepts Used in ooTest</title>
-<indexterm><primary>concepts</primary>
-<secondary>test</secondary></indexterm>
-
 <para>
-  Description
+  From the perspective of writing test cases, ooTest is very jUnit-like.  The terminology of ooTest is
+  very similar to that of jUnit.  ooTest uses test cases, test case classes, test suites, test results,
+  test runners, and asserts, just as jUnit does.  ooTest uses the same design patterns that jUnit uses.
+  Hardly surprising as ooRexxUnit was modeled after jUnit.  jUnit has generated many tutorial and primer
+  types of documentation on the Internet.  Google 'jUnit tutorial' or 'jUnit primer' and browse some of
+  the simpler ones.  This will quickly give you a grasp of ooTest test cases.
 </para>
 </section>
 
+<section id="testConcepts"><title>Testing Concepts Used in ooTest</title>
+<indexterm><primary>Test</primary>
+<secondary>concepts</secondary></indexterm>
+
+<para>
+  ooTest is a way of writing defined repeatable tests, collecting and storing the tests, and executing
+  all or some of those tests, now and in the future.  With ooTest, all tests are to test the ooRexx
+  interpreter and its distribution package.  The purpose of a test is to demonstrate that some facet of
+  the interpreter works, both now and at the next point in time the test is executed.  To do this ooTest
+  uses objects and the following loosely discusses these objects and how they fit together.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Test Case</emphasis></term>
+  <listitem>
+    <para>
+      The test case is the basic concept of ooTest.  It is what the collection of defined repeatable
+      tests is built upon.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Assertion</emphasis></term>
+  <listitem>
+    <para>
+      x.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>
 
 </chapter>
 
 <chapter id="chapTestOORexx"><title>testOORexx.rex the Automated Test Driver</title>
 <indexterm><primary>testOORexx.rex</primary></indexterm>
-<indexterm><primary>execution</primary>
-<secondary>test</secondary></indexterm>
+<indexterm><primary>Test</primary>
+<secondary>execution</secondary></indexterm>
 <para>
   The execution of all the tests in the test suite is currently driven by one Rexx program,
   <computeroutput>testOORexx.rex</computeroutput>.  This program has an extensive set of options that
@@ -128,8 +156,8 @@
 </para>
 
 <section id="useTestOORexx"><title>Using testOORexx.rex</title>
-<indexterm><primary>starting</primary>
-<secondary>testOORexx</secondary></indexterm>
+<indexterm><primary>testOORexx</primary>
+<secondary>starting</secondary></indexterm>
 
 <para>
   testOORexx.rex is a command line program. It is designed to, and should be, run from a console window.
@@ -160,7 +188,7 @@ C:\ooTest>rexx testOORexx.rex
   Usually you would start testOORexx in the root directory of ooTest.  I.e., in the directory that
   contains <computeroutput>testOORexx.rex</computeroutput>.  However, testOORexx.rex is designed to run
   from any location on the local machine's file system.  The main purpose of this is to allow a developer
-  to execute the test suite from within their build directory.  However, as the following example
+  to execute the test suite from within their build directory.  But, as the following example
   illustrates, testOORexx can be run from anywhere on the system:
 <programlisting>
 <![CDATA[
@@ -261,8 +289,107 @@ C:\ooTest\ooRexx\base\class>
 </section>
 
 <section id="modesTestOORexx"><title>Modes of Operation</title>
-<indexterm><primary>modes</primary>
-<secondary>testOORexx</secondary></indexterm>
+<indexterm><primary>testOORexx</primary>
+<secondary>modes</secondary></indexterm>
+
+<para>
+
+</para>
+</section>
+
+<section id="outputTestOORexx"><title>Understanding the Output</title>
+<indexterm><primary>testOORexx</primary>
+<secondary>output</secondary></indexterm>
+
+<para>
+  Description
+</para>
+</section>
+
+<section id="staticOptionsTestOORexx"><title>Static Options</title>
+<indexterm><primary>testOORexx</primary>
+<secondary>static options</secondary></indexterm>
+
+<para>
+  The term <emphasis role="italic">static</emphasis> is used here for lack of a better one.  These are
+  the <emphasis role="italic">known</emphasis> or <emphasis role="italic">implemented</emphasis> options
+  as opposed to the <link linkend="dynamicOptionsTestOORexx">dynamic</link> options formed by using the
+  <computeroutput>-D</computeroutput> option.
+</para>
+<para>
+  Each of the known options has a short form and a long name form.  The long name for the option is used
+  when specifying the option in the <link linkend="optionsFileTestOORexx">options file</link>.  The long
+  name can also be used on the command line in combination with the <link linkend="dashBigD">-D</link>
+  option if it is easier to remember the long name.
+</para>
+<para>
+  The following sections discuss each of the known options individually.
+</para>
+
+<section id="dashLittleA"><title>The -a &quot;allTestTypes&quot; option</title>
+<indexterm><primary>testOORexx options</primary>
+<secondary>allTestTypes</secondary></indexterm>
+
+<para>
+  This option is a boolean option, specified by true or false.  The default is false.
+</para>
+</section>
+
+<section id="dashLittleB"><title>The -b &quot;buildFirst&quot; option</title>
+<indexterm><primary>testOORexx options</primary>
+<secondary>define</secondary></indexterm>
+
+<para>
+  Description
+</para>
+</section>
+
+<section id="dashBigB"><title>The -B &quot;forceBuild&quot; option</title>
+<indexterm><primary>testOORexx options</primary>
+<secondary>define</secondary></indexterm>
+
+<para>
+  Description
+</para>
+</section>
+
+<section id="dashBigD"><title>The -D &quot;define&quot; option</title>
+<indexterm><primary>testOORexx options</primary>
+<secondary>define</secondary></indexterm>
+
+<para>
+  Description
+</para>
+</section>
+
+</section>
+
+<section id="dynamicOptionsTestOORexx"><title>Dynamic Options</title>
+<indexterm><primary>testOORexx</primary>
+<secondary>dynamic options</secondary></indexterm>
+
+<para>
+  Options need not be known to the <computeroutput>testOORexx</computeroutput> program.  Options can be
+  specified dynamically by defining the name of the option and its value on the command line, or in the
+  <link linkend="optionsFileTestOORexx">options file</link>.  These options are handled generically by
+  testOORexx.
+</para>
+</section>
+
+<section id="optionsFileTestOORexx"><title>The Options File</title>
+<indexterm><primary>testOORexx</primary>
+<secondary>options file</secondary></indexterm>
+<indexterm><primary>options.ooTest</primary></indexterm>
+
+<para>
+  Description
+</para>
+</section>
+
+<section id="dotTestOptsTestOORexx"><title>The .testOpts Directory</title>
+<indexterm><primary>testOORexx</primary>
+<secondary>.testOpts directory</secondary></indexterm>
+<indexterm><primary>.testOpts</primary></indexterm>
 
 <para>
   Description
