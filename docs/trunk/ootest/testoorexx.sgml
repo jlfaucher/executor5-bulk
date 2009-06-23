@@ -60,11 +60,54 @@
 </para>
 <para>
   This document serves as a reference to the different components of ooTest.  It explains how to execute
-  the tests, intepret the results, and gives some guidence in writing new tests.  The document does not
-  have much detail on how to obtain ooTest or set it up.  That is provided in numerous places.  And,
-  indeed there is very little set up involved in ooTest.  It is merely a matter of placing the ooTest
-  files on the system used to test.
+  the tests, intepret the results, and gives some guidence on writing new tests.  There is very little
+  involved in obtaining and settin up ooTest. Indeed there is very little set up involved in ooTest. It
+  is merely a matter of placing the ooTest files on the system used to test.
 </para>
+
+<section id="getOOTest"><title>Install ooTest</title>
+<indexterm><primary>installing ooTest</primary></indexterm>
+<indexterm><primary>install</primary>
+<secondary>ooTest</secondary></indexterm>
+
+<para>
+  Getting and installing ooTest is extremely easy.  There is no set up involved, you merely place the
+  ooTest directory structure on somewhere convenient on your system.  The best method of obtaining the
+  ooTest directory structure is to use a Subversion client to check out the ooTest repository.
+  Subversion is widely avaliable, easy to install, and easy to use.  Directions for obtaining Subversion
+  have been posted numerous times to the lists related to ooRexx.  There is a wealth of information on
+  this subject on the Internet, simply use Google.
+</para>
+<para>
+  Once you have a Subversion client, the following command will check out ooTest and place its directory
+  structure in the subdirectory named <computeroutput>ooTest.4.0.0</computeroutput>. The subdirectory can
+  be named anything you wish.
+<programlisting>
+<![CDATA[
+C:\>svn co https://oorexx.svn.sourceforge.net/svnroot/oorexx/test/trunk ooTest.4.0.0
+]]>
+</programlisting>
+  The command is exactly the same on any operating system.
+</para>
+<para>
+  The other way to obtain ooTest is to download one of the ooTest snapshots from the ooRexx project on
+  SourceForge.  The drawback to this method is that the latest snapshot may not be current and you can
+  not use the Subversion tools to keep your copy of ooTest up-to-date.  To download a snapshot go to this
+  link on SourceForge:
+  <ulink url="https://sourceforge.net/project/showfiles.php?group_id=119701&package_id=251951">
+  <citetitle>SourceForge.net: Open Object Rexx Files</citetitle></ulink> and download the appropriate
+  file.  Then either untar or unzip the file whereever is convenient. For example:
+<programlisting>
+<![CDATA[
+C:\>unzip ooTest-4.0.0-snapshot04_windows.i386.zip
+]]>
+</programlisting>
+  Once the directory structure is placed on your system, you are ready to go. Use the driver program,
+  <link linkend="chapTestOORexx">testOORexx.rexx</link> to execute some tests. The tests should run and
+  print out some statistics. This will ensure ooTest is working. The rest of this book goes into detail
+  on all aspects of ooTest.
+</para>
+</section>
 
 <section id="ooTestFoundation"><title>History, Foundation</title>
 <indexterm><primary>ooTest</primary>
@@ -189,11 +232,10 @@ C:\ooTest>rexx testOORexx.rex
   contains <computeroutput>testOORexx.rex</computeroutput>.  However, testOORexx.rex is designed to run
   from any location on the local machine's file system.  The main purpose of this is to allow a developer
   to execute the test suite from within their build directory.  But, as the following example
-  illustrates, testOORexx can be run from anywhere on the system:
-<programlisting>
-<![CDATA[
-D:\TravelDrive>c:\ooTest\testOORexx.rex -F SimpleTests
-Searching for test containers..
+  illustrates, testOORexx does not need to be run from the ooTest directory or a build directory, it can
+  be run from anywhere on the system:
+<programlisting> <![CDATA[
+D:\TravelDrive>c:\ooTest\testOORexx.rex -F SimpleTests Searching for test containers..
 Executing automated test suite..
 
 ooTest Framework - Automated Test of the ooRexx Interpreter
@@ -223,15 +265,19 @@ D:\TravelDrive>
 <para>
   <indexterm><primary>setTestEnv.bat</primary></indexterm>
   <indexterm><primary>setTestEnv.sh</primary></indexterm>
-  Although running testOORexx will correctly set up the PATH to executed the tests, some people may
-  prefer to change the path.  This will allow running testOORexx from anywhere without having to type in
-  the complete path name of testOORexx, such as <computeroutput>C:\ooTest\testOORexx</computeroutput>.
-  In addition, on Windows testOORexx is able to completely set up the environment for executing all the
-  tests, but on unix-like systems the library path can not be set.  On the unix-like systems, the library
-  path <emphasis role="bold">must be</emphasis> set prior to executing any test requiring one of the TODO
-  external binaries ADD LINK. Two small utility scripts, <computeroutput>setTestEnv.bat</computeroutput>
-  and <computeroutput>setTestEnv.sh</computeroutput> are provided to handle these chores.  On Windows:
-<programlisting> <![CDATA[
+  Although running testOORexx will correctly set up the PATH to execute the tests, some people may prefer
+  to change the path in the environment.  This will allow running testOORexx from anywhere without having
+  to type in the complete path name of testOORexx, such as
+  <computeroutput>C:\ooTest\testOORexx</computeroutput>. In addition, on Windows testOORexx is able to
+  completely set up the environment for executing all the tests, but on unix-like systems the library
+  path can not be set.  On the unix-like systems, the library path <emphasis role="bold">must
+  be</emphasis> set prior to executing any test requiring one of the <link
+  linkend="externalBinariesTestOORexx">external binaries</link>. Two small utility scripts,
+  <computeroutput>setTestEnv.bat</computeroutput> and
+  <computeroutput>setTestEnv.sh</computeroutput> are provided to handle these chores.  On Windows:
+
+<programlisting>
+<![CDATA[
 C:\ooTest>setTestEnv ]]>
 </programlisting>
   On a unix-like system be sure to source the utility script:
@@ -302,7 +348,7 @@ C:\ooTest\ooRexx\base\class>
 <secondary>output</secondary></indexterm>
 
 <para>
-  Description
+  To Be Written
 </para>
 </section>
 
@@ -340,7 +386,7 @@ C:\ooTest\ooRexx\base\class>
 <secondary>define</secondary></indexterm>
 
 <para>
-  Description
+  To Be Written
 </para>
 </section>
 
@@ -349,7 +395,7 @@ C:\ooTest\ooRexx\base\class>
 <secondary>define</secondary></indexterm>
 
 <para>
-  Description
+  To Be Written
 </para>
 </section>
 
@@ -358,7 +404,7 @@ C:\ooTest\ooRexx\base\class>
 <secondary>define</secondary></indexterm>
 
 <para>
-  Description
+  To Be Written
 </para>
 </section>
 
@@ -382,7 +428,7 @@ C:\ooTest\ooRexx\base\class>
 <indexterm><primary>options.ooTest</primary></indexterm>
 
 <para>
-  Description
+  To Be Written
 </para>
 </section>
 
@@ -392,7 +438,17 @@ C:\ooTest\ooRexx\base\class>
 <indexterm><primary>.testOpts</primary></indexterm>
 
 <para>
-  Description
+  To Be Written
+</para>
+</section>
+
+<section id="externalBinariesTestOORexx"><title>External Binaries</title>
+<indexterm><primary>testOORexx</primary>
+<secondary>external binaries</secondary></indexterm>
+<indexterm><primary>external binaries</primary></indexterm>
+
+<para>
+  To Be Written
 </para>
 </section>
 

@@ -39,14 +39,58 @@
 -->
 
 <chapter id="chapOOTest"><title>The ooTest Framework</title>
-<indexterm><primary>ooTest</primary></indexterm>
+<indexterm><primary>ooTest framework</primary></indexterm>
+<indexterm><primary>ooTest</primary>
+<secondary>frameworks</secondary></indexterm>
 <para>
-  x
+  The ooTest framework requires the <link linkend="chapOORexxUnit">ooRexxUnit framework</link>, that is
+  it uses a ::requires directive for <computeroutput>OOREXXUNIT.CLS</computeroutput>. It extends the
+  functionality of ooRexxUnit in ways that are not neccessarily intended to be generic, but rather are
+  only intended to serve some specific need in testing ooRexx.  Most of the main classes in ooTest are
+  direct subclasses of a comparable class in ooRexxUnit, adding only minor functionality to the
+  ooRexxUnit class.
+</para>
+<para>
+   This section of the book serves as a reference to the public classes, routines, and features of the
+   ooTest framework. It starts with a general discussion of where and how the framework differs from a
+   generic unit testing framework and the objects in the framework that implement these differences.  The
+   rest of the material is the reference documentation for the classes and routines that the framework
+   provides.
+</para>
+<para id="ootInternalQualifier">
+  The reference material is intended to be most useful to people writing test cases for ooRexx. Please
+  <emphasis role="bold">note</emphasis> how this is structured. Many of the classes and methods of the
+  framework are used to relieve the test case writer of much, or most, of the burden of implementation.
+  The test case writer, for the most part, only needs the documentation for a few classes and usually
+  only for a few methods of those classes.  The rest of the classes and methods need only be understood
+  by the maintainers of the overall ooRexx testing project.
+</para>
+<para>
+  However, it makes little sense to document part of a class here, the part used by test case writers,
+  and the rest of the class in some other place, say a <emphasis role="italic">maintainers</emphasis>
+  manual.  So this strategy is used: the primary classes a test case writer would use are documented
+  first.  Within a class documentation, the methods and attributes most useful in writing test cases are
+  also documented first. The rest of the classes and methods will be marked with the keyword: <emphasis
+  role="italic">internal</emphasis>. This doesn't mean these classes or methods are only for internal
+  use. It is merely meant to indicate to the reader, who is mostly interested in writing test cases, that
+  she can probably ignore the classes and methods.
+</para>
+
+<section id="ooTestGeneralConcepts"><title>General Concepts</title>
+<indexterm><primary>concepts</primary>
+<secondary>ooTest framework</secondary></indexterm>
+
+<para>
+  Description
 </para>
 
 <section id="ootTestType"><title>Test Types</title>
 <indexterm><primary>test types</primary></indexterm>
 
+<para>
+  Test types are implemented through the <link linkend="clsooTestTypes">ooTestTypes</link> and <link
+  linkend="clsooTestCase">ooTestCase</link> classes.
+</para>
 <para>
   Unlike jUnit, which only does unit tests, ooTest is designed to automate all the testing for the ooRexx
   distribution package.  There is of course more to software testing than unit tests.  There are stress
@@ -94,6 +138,9 @@
 </programlisting>
 
 </para>
+</section>
+
+
 </section>
 
 <!--
@@ -176,7 +223,7 @@
 </programlisting>
 
 <para>
-  Description
+  To Be Written
 </para>
 </section>
 
@@ -191,7 +238,7 @@
 </programlisting>
 
 <para>
-  Description
+  To Be Written
 </para>
 </section>
 
@@ -242,7 +289,7 @@
 </programlisting>
 
 <para>
-  Description
+  To Be Written
 </para>
 </section>
 
@@ -257,7 +304,7 @@
 </programlisting>
 
 <para>
-  Description
+  To Be Written
 </para>
 </section>
 
