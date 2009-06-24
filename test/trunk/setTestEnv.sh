@@ -49,11 +49,13 @@ case "${UNAME_SYSTEM}" in
 
     Linux)
       echo "Setting env for Linux"
+      frameworkPath=`pwd`:`pwd`/framework:
+      export PATH=$frameworkPath$PATH
       export LD_LIBRARY_PATH=`pwd`/bin/LINUX:$LD_LIBRARY_PATH
       ;;
 
     *)
     echo "Unsupported OS"
-    exit;;
+    ;;
 
 esac

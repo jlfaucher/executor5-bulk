@@ -64,19 +64,7 @@ arguments = arg(1)
      ret = buildExternalBins(testResult, file, cl~forceBuild)
    end
 
-   if cl~noTests then do
-     overallPhase~done
-     testResult~addEvent(overallPhase)
-
-     testResult~print("ooTest Framework - Automated Test of the ooRexx Interpreter")
-
-     if cl~waitAtCompletion then do
-       say
-       say "The automated test run is finished, hit enter to continue"
-       pull
-     end
-     return 0
-   end
+   if cl~noTests then return finishTestRun(cl, testResult, overallPhase)
 
    searchPhase  = .PhaseReport~new(file, .PhaseReport~FILE_SEARCH_PHASE)
    msg = "Searching for test containers"
@@ -126,25 +114,30 @@ arguments = arg(1)
    suite~execute(testResult)
 
    executionPhase~done
-   overallPhase~done
-
    testResult~addEvent(executionPhase)
-   testResult~addEvent(overallPhase)
 
-   testResult~print("ooTest Framework - Automated Test of the ooRexx Interpreter")
-
-   if cl~waitAtCompletion then do
-     say
-     say "The automated test run is finished, hit enter to continue"
-     pull
-   end
-
-   if .testOpts~debug then j = printDebug(containers, testResult, cl)
-   else if .testOpts~printOptions then j = printOptions(.true)
-
-return 0
+return finishTestRun(cl, testResult, overAllPhase, containers)
 
 ::requires "ooTest.frm"
+
+::routine finishTestRun
+  use strict arg cl, testResult, overallPhase, containers = .nil
+
+  overallPhase~done
+  testResult~addEvent(overallPhase)
+
+  testResult~print("ooTest Framework - Automated Test of the ooRexx Interpreter")
+
+  if .testOpts~debug then j = printDebug(containers, testResult, cl)
+  else if .testOpts~printOptions then j = printOptions(.true)
+
+  if cl~waitAtCompletion then do
+    say
+    say "The automated test run is finished, hit enter to continue"
+    pull
+  end
+
+return 0
 
 ::routine buildExternalBins
   use arg testResult, file, force
@@ -1241,11 +1234,14 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   prefix = "====== Debug output"
   say prefix '='~copies(80 - prefix~length)
   say
-  say 'Test groups collected:'
-  do c over containers
-    say c~pathName
+
+  if containers \== .nil then do
+    say 'Test groups collected:'
+    do c over containers
+      say c~pathName
+    end
+    say
   end
-  say
 
   return printOptions(.false)
 
