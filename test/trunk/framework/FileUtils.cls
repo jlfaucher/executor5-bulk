@@ -148,7 +148,7 @@ return prgRet
       if tmp \== "" then dir = directory()
     end
 
-    when currentOS == 'LINUX' || currentOS = 'AIX' then do
+    when currentOS == 'LINUX' | currentOS = 'AIX' then do
       -- On AIX and Linux we could be in the root to begin with, or in .libs
       if .ooTest.originalWorkingDir~right(6) == "/.libs" then do
         tmp = directory("../")
