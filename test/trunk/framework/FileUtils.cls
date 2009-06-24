@@ -122,8 +122,8 @@ return prgRet
   -- Change directory to the directory the test suite was started from.  If we
   -- have an error, just return.  On error the current directory will not have
   -- been changed.
-  currentDir = directory(.ooTest.originalWorkingDir)
-  if currentDir == "" then return .nil
+  currentDir = directory()
+  if directory(.ooTest.originalWorkingDir) == "" then return .nil
 
   dir = .nil
   currentOS = .ooRexxUnit.OSName
