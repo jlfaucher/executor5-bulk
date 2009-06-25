@@ -97,6 +97,8 @@ return testResult
 
   self~assertSame(.nil, .local['TESTING'])
 
+  call deleteFile fileName
+
   src = .array~new()
   src[1] = "::routine test1 public"
   src[2] = "  return 1"
