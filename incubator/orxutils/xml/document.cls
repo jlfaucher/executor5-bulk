@@ -36,3 +36,17 @@
 
   iterators~append(iterator)
   return iterator
+
+::method createTreeWalker
+  use strict arg root, whatToShow, filter, entityReferenceExpansion = .true
+  return .TreeWalker~new(root, whatToShow, filter, entityReferenceExpansion)
+
+::method removeNodeIterator
+  expose iterators
+  use strict arg nodeIterator
+
+  if nodeIterator == .nil | iterators == .nil then do
+      return
+  end
+
+  iterators~remove(iterator)
