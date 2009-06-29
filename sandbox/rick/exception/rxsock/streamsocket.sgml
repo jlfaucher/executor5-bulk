@@ -1,0 +1,424 @@
+<chapter><title>StreamSocket Class Reference</title>
+<indexterm><primary>class, StreamSocket</primary></indexterm>
+<indexterm><primary>StreamSocket class</primary></indexterm>
+<para>The following sections describe the streamsocket class supplied with ooRexx.
+This class encapsulates the rxsock external functions into a class that
+treats the socket as a standard ooRexx input/output stream. It improves
+error checking and reduces the amount of code needed in an average rxsock
+program.</para>
+
+<section><title>Installation</title>
+<indexterm><primary>installation, streamsocket class</primary></indexterm>
+<indexterm><primary>streamsocket class installation</primary></indexterm>
+<para>The StreamSocket class package is contained in the file streamsocket.cls. This file
+must be placed in a directory listed in your PATH. To get access to the class
+and methods in the StreamSocket class, include the following statement in your Rexx
+program:
+<programlisting>
+::requires 'streamsocket.cls'
+</programlisting></para>
+</section>
+
+<section id="clsStreamSocket"><title>The StreamSocket Class</title>
+<indexterm><primary>StreamSocket class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>StreamSocket class</secondary></indexterm>
+
+<para>A streamsocket object allows external communication from
+Rexx to a socket.</para>
+<para>The StreamSocket class is a subclass of the
+InputOutputStream class.</para>
+<figure><title>The StreamSocket class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="StreamSocketClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The StreamSocket class also has available class methods that its
+metaclass, the Class class, defines. It also inherits methods from the
+InputOutputStream class.
+</para></note>
+
+<section><title>Inherited Methods</title>
+<para>Methods inherited from the
+InputStream class.</para>
+<note><para>This class is searched second for inherited methods.
+</para></note>
+<simplelist type="vert" columns="3">
+<member>arrayIn</member>
+<member>charIn</member>
+<member>charOut</member>
+<member>chars</member>
+<member>close</member>
+<member>lineIn</member>
+<member>lineOut</member>
+<member>lines</member>
+<member>open</member>
+<member>position</member>
+</simplelist>
+
+<para>Methods inherited from the
+OutputStream class.</para>
+<note><para>This class is searched first for inherited methods.
+</para></note>
+<simplelist type="vert" columns="3">
+<member>arrayOut</member>
+<member>charIn</member>
+<member>charOut</member>
+<member>chars</member>
+<member>close</member>
+<member>lineIn</member>
+<member>lineOut</member>
+<member>lines</member>
+<member>open</member>
+<member>position</member>
+</simplelist>
+
+</section>
+
+<section id="mthStreamSocketNew"><title>new (Inherited Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of StreamSocket class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of StreamSocket class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-new(host, port--+-------------+--)--------------------------><
+                   +--, bufsize--+
+]]>
+</programlisting>
+
+<para>Initializes a stream object for the
+<emphasis role="italic">host</emphasis> and
+<emphasis role="italic">port</emphasis>, but does not open the stream.
+Returns the new stream object.</para>
+<variablelist>
+<varlistentry><term>host</term>
+<listitem><para>The host name or TCP/IP address of an Internet host.
+</para></listitem></varlistentry>
+<varlistentry><term>port</term>
+<listitem><para>The port number of the host.
+</para></listitem></varlistentry>
+<varlistentry><term>bufsize</term>
+<listitem><para>(optional) The buffersize to use for read operations. The default size is 4096.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthStreamSocketArrayIn"><title>arrayIn</title>
+<indexterm><primary>arrayIn method</primary>
+<secondary>of StreamSocket class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>arrayIn method</secondary>
+<tertiary>of StreamSocket class</tertiary></indexterm>
+
+<para>This method is invalid for this class and will raise an error if invoked.</para>
+</section>
+
+<section id="mthStreamSocketArrayOut"><title>arrayOut</title>
+<indexterm><primary>arrayOut method</primary>
+<secondary>of StreamSocket class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>arrayOut method</secondary>
+<tertiary>of StreamSocket class</tertiary></indexterm>
+
+<para>This method is invalid for this class and will raise an error if invoked.</para>
+</section>
+
+<section id="mthStreamSocketCharIn"><title>charIn</title>
+<indexterm><primary>charIn method</primary>
+<secondary>of StreamSocket class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>charIn method</secondary>
+<tertiary>of StreamSocket class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-charIn-+----------------------------+-----------------------><
+          +-(-+-------+--+---------+-)-+
+              +-start-+  +-,length-+
+]]>
+</programlisting>
+
+<para>Returns a string of up to <emphasis role="italic">length</emphasis>
+characters from the input stream. If you omit
+<emphasis role="italic">length</emphasis>, it defaults to
+<computeroutput>1</computeroutput>. If you specify
+<emphasis role="italic">start</emphasis>, it will be ignored since sockets are considered
+not to be persistent streams.
+If the stream is not already open, the stream attempts to open for reading and writing. If that
+fails, the stream opens for input only.
+</para>
+</section>
+
+<section id="mthStreamSocketCharOut"><title>charOut</title>
+<indexterm><primary>charOut method</primary>
+<secondary>of StreamSocket class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>charOut method</secondary>
+<tertiary>of StreamSocket class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-charOut-+----------------------------+----------------------><
+           +-(-+--------+--+--------+-)-+
+               +-string-+  +-,start-+
+]]>
+</programlisting>
+
+<para>Returns the count of characters remaining after trying to write
+<emphasis role="italic">string</emphasis> to the output stream.</para>
+<para>The <emphasis role="italic">string</emphasis> can be the null string.
+In this case, <emphasis role="bold">charOut</emphasis> writes
+no characters to the stream and returns <computeroutput>0</computeroutput>.
+If you omit <emphasis role="italic">string</emphasis>,
+<emphasis role="bold">charOut</emphasis> writes no
+characters to the stream and returns <computeroutput>0</computeroutput>.</para>
+<para>If you specify <emphasis role="italic">start</emphasis> it will be ignored since
+socket streams are not considered persistent.
+</para>
+</section>
+
+<section id="mthStreamSocketChars"><title>chars</title>
+<indexterm><primary>chars method</primary>
+<secondary>of StreamSocket class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>chars method</secondary>
+<tertiary>of StreamSocket class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-chars-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> if the stream is open.
+Otherwise returns<computeroutput>0</computeroutput>.
+</para>
+</section>
+
+<section id="mthStreamSocketClose"><title>close</title>
+<indexterm><primary>close method</primary>
+<secondary>of StreamSocket class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>close method</secondary>
+<tertiary>of StreamSocket class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-close-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Closes the stream.
+<emphasis role="bold">close</emphasis> returns
+<computeroutput>READY:</computeroutput> if closing the stream is successful,
+or an appropriate error message.
+If you have tried to close an unopened socket, then the
+<emphasis role="bold">close</emphasis> method returns
+a null string (&quot;&quot;).</para>
+</section>
+
+<section id="mthStreamSocketDescription"><title>description</title>
+<indexterm><primary>description method</primary>
+<secondary>of StreamSocket class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>description method</secondary>
+<tertiary>of StreamSocket class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-description-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns any descriptive string associated with the
+current state of the stream or the Nil object if no descriptive string is
+available. The <emphasis role="bold">description</emphasis>
+method is identical with the STATE method except
+that the string that <emphasis role="bold">description</emphasis>
+returns is followed by a colon and, if
+available, additional information about ERROR or NOTREADY states. (The
+<link linkend="mthStreamSocketState">state</link> method describes these states.)</para>
+</section>
+
+<section id="mthStreamSocketLineIn"><title>lineIn</title>
+<indexterm><primary>lineIn method</primary>
+<secondary>of StreamSocket class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>lineIn method</secondary>
+<tertiary>of StreamSocket class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-lineIn-+-------------------------+--------------------------><
+          +-(-+------+-+--------+-)-+
+              +-line-+ +-,count-+
+]]>
+</programlisting>
+
+<para>Returns the next <emphasis role="italic">count</emphasis> lines. The
+count must be <computeroutput>0</computeroutput> or
+<computeroutput>1</computeroutput>.
+If you omit <emphasis role="italic">count</emphasis>, it defaults to
+<computeroutput>1</computeroutput>. A <emphasis role="italic">line</emphasis>
+number may be given but it will be ignored since sockets are not considered to be
+a persistent stream.
+If the stream is not already
+open, the it tries to open the stream for reading and writing.
+</para>
+</section>
+
+<section id="mthStreamSocketLineOut"><title>lineOut</title>
+<indexterm><primary>lineOut method</primary>
+<secondary>of StreamSocket class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>lineOut method</secondary>
+<tertiary>of StreamSocket class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-lineOut-+--------------------------+------------------------><
+           +-(-+--------+-+-------+-)-+
+               +-string-+ +-,line-+
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>0</computeroutput> if successful in writing
+<emphasis role="italic">string</emphasis> to the output stream
+or <computeroutput>1</computeroutput> if
+an error occurs while writing the line.
+If you specify
+<emphasis role="italic">line</emphasis> it will be ignored since a socket is not considered
+to be a persistent stream.
+</para>
+</section>
+
+<section id="mthStreamSocketLines"><title>lines</title>
+<indexterm><primary>lines method</primary>
+<secondary>of StreamSocket class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>lines method</secondary>
+<tertiary>of StreamSocket class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-lines-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>1</computeroutput> if the stream is open.
+Otherwise returns<computeroutput>0</computeroutput>.
+</para>
+</section>
+
+<section id="mthStreamSocketOpen"><title>open</title>
+<indexterm><primary>open method</primary>
+<secondary>of StreamSocket class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>open method</secondary>
+<tertiary>of StreamSocket class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-open--------------------------------------------------------->
+]]>
+</programlisting>
+
+<para>Opens the stream for input and output and returns
+<computeroutput>READY:</computeroutput>. If the method is unsuccessful, it
+returns an error message string in the same form that the
+<emphasis role="bold">description</emphasis> method uses.</para>
+<para>For most error conditions, the additional information is in the form of
+a numeric return code. This return code is the value of
+<computeroutput>ERRNO</computeroutput>,
+which is set whenever one of the file system primitives returns with a
+<computeroutput>-1</computeroutput>.</para>
+</section>
+
+<section id="mthStreamSocketPosition"><title>position</title>
+<indexterm><primary>position method</primary>
+<secondary>of StreamSocket class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>position method</secondary>
+<tertiary>of StreamSocket class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-position----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>This method is invalid for this class and will raise an error if invoked.</para>
+</section>
+
+<section id="mthStreamSocketSay"><title>say</title>
+<indexterm><primary>say method</primary>
+<secondary>of StreamSocket class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>say method</secondary>
+<tertiary>of StreamSocket class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-say--+----------------+-------------------------------------><
+        +-(-+--------+-)-+
+            +-string-+
+]]>
+</programlisting>
+
+<para>Returns <computeroutput>0</computeroutput> if successful in writing
+<emphasis role="italic">string</emphasis> to the output stream
+or <computeroutput>1</computeroutput> if
+an error occurs while writing the line.</para>
+</section>
+
+<section id="mthStreamSocketState"><title>state</title>
+<indexterm><primary>state method</primary>
+<secondary>of StreamSocket class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>state method</secondary>
+<tertiary>of StreamSocket class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-state-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a string indicating the current stream state.
+</para>
+<para>The returned strings are as follows: </para>
+<variablelist>
+<varlistentry><term>ERROR</term>
+<listitem><para>The stream has been subject to an erroneous operation
+(possibly during input or output.
+You might be able to obtain additional information about the error with the
+<emphasis role="bold">description</emphasis> method.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTREADY</term>
+<listitem><para>The stream is known to be in such a state that the usual input
+or output operations attempted upon would raise the NOTREADY condition.
+</para></listitem></varlistentry>
+<varlistentry><term>READY</term>
+<listitem><para>The stream is known to be in such a state that the usual input
+or output operations might be attempted. This is the usual state for a stream,
+although it does not guarantee that any particular operation will succeed.
+</para></listitem></varlistentry>
+<varlistentry><term>UNKNOWN</term>
+<listitem><para>The state of the stream is unknown. This generally means that
+the stream is closed or has not yet been opened.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthStreamSocketString"><title>string</title>
+<indexterm><primary>string method</primary>
+<secondary>of StreamSocket class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>string method</secondary>
+<tertiary>of StreamSocket class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-string------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a string that indicates the name of the object the stream
+represents i.e. the <computeroutput>hostname:port</computeroutput>.
+</para>
+</section>
+</section>
+</chapter>
