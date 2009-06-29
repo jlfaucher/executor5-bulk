@@ -44,10 +44,10 @@ libhostemu.so: hostemu.o cmdparse.o
 
 # Build objs
 hostemu.o: hostemu.cpp hostemu.h
-	gcc -c hostemu.cpp
+	gcc -c -fPIC hostemu.cpp
 
 cmdparse.o: cmdparse.cpp hostemu.h
-	gcc -c cmdparse.cpp
+	gcc -c -fPIC cmdparse.cpp
 
 cmdparse.cpp: cmdparse.y hostemu.h
 	yacc -o cmdparse.cpp cmdparse.y
