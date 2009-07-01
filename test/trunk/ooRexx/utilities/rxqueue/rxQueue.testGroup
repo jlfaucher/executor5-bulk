@@ -87,10 +87,16 @@ return testResult
 
   cmd "| rxqueue"
   count = queued()
+
+  self~assertSame(1, count)
+
+  -- Be sure we don't hang on the parse pull. If the assert fails the test ends
+  -- and we won't hit the parse pull line.
+  self~assertTrue(count > 0)
+
   parse pull line
   trueCurrentDir = directory()
 
-  self~assertSame(1, count)
   self~assertSame(trueCurrentDir, line)
 
 ::method  test_multi_lines
