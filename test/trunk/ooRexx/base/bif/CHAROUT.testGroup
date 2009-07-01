@@ -300,7 +300,7 @@ return testResult
 -- Tests repeated writes using different character counts
 ::method test_write_char_strings
 
-  fileName = "delMe.test_charout_writing"
+  fileName = "delMe.test_charout_writingA"
   self~charOutTestingFile = fileName
 
   ret = stream(fileName, 'C', "open")
@@ -342,7 +342,7 @@ return testResult
 -- Tests repeated writes mixed with position changes
 ::method test_write_mixed_char_strings
 
-  fileName = "delMe.test_charout_writing"
+  fileName = "delMe.test_charout_writingB"
   self~charOutTestingFile = fileName
 
   ret = stream(fileName, 'C', "open")
@@ -419,7 +419,7 @@ return testResult
 -- closed, then reopened to do the reads
 ::method test_write_mixed_char_strings2
 
-  fileName = "delMe.test_charout_writing"
+  fileName = "delMe.test_charout_writingC"
   self~charOutTestingFile = fileName
 
   ret = stream(fileName, 'C', "open")
@@ -501,7 +501,7 @@ return testResult
 
 -- Basic does it work test
 ::method test_simple_nb
-  fileName = 'delMe_charoutSimple'
+  fileName = 'delMe_charoutSimpleA'
   self~charOutTestingFile = fileName
 
   characters = .array~new
@@ -530,7 +530,7 @@ return testResult
 
 -- Tests reported position after charout null or charout chars
 ::method test_pos_nb
-  fileName = 'delMe_charoutPos'
+  fileName = 'delMe_charoutPosB'
   self~charOutTestingFile = fileName
 
   ret = stream(fileName, 'C', "open nobuffer")
@@ -563,7 +563,7 @@ return testResult
 
 -- Tests outputting a large amount of chars.
 ::method test_many_chars_nb
-  fileName = 'delMe_many_chars'
+  fileName = 'delMe_many_charsC'
   self~charOutTestingFile = fileName
 
   ret = stream(fileName, 'C', "open nobuffer")
@@ -712,7 +712,7 @@ return testResult
 -- Tests repeated writes using different character counts
 ::method test_write_char_strings_nb
 
-  fileName = "delMe.test_charout_writing"
+  fileName = "delMe.test_charout_writingD"
   self~charOutTestingFile = fileName
 
   ret = stream(fileName, 'C', "open nobuffer")
@@ -754,7 +754,7 @@ return testResult
 -- Tests repeated writes mixed with position changes, with a non-buffered stream
 ::method test_write_mixed_char_strings_nb
 
-  fileName = "delMe.test_charout_writing"
+  fileName = "delMe.test_charout_writingE"
   self~charOutTestingFile = fileName
 
   ret = stream(fileName, 'C', "open nobuffer")
@@ -830,7 +830,7 @@ return testResult
 -- writes are finished, the file is closed then reopened.
 ::method test_write_mixed_char_strings_nb2
 
-  fileName = "delMe.test_charout_writing"
+  fileName = "delMe.test_charout_writingF"
   self~charOutTestingFile = fileName
 
   ret = stream(fileName, 'C', "open nobuffer")
@@ -913,7 +913,7 @@ return testResult
 
 -- Basic does it work test
 ::method test_simple_bin
-  fileName = 'delMe_charoutSimple'
+  fileName = 'delMe_charoutSimpleG'
   self~charOutTestingFile = fileName
 
   characters = .array~new
@@ -942,7 +942,7 @@ return testResult
 
 -- Tests reported position after charout null or charout chars
 ::method test_pos_bin
-  fileName = 'delMe_charoutPos'
+  fileName = 'delMe_charoutPosH'
   self~charOutTestingFile = fileName
 
   ret = stream(fileName, 'C', "open binary reclength 23")
@@ -975,7 +975,7 @@ return testResult
 
 -- Tests outputting a large amount of chars.
 ::method test_many_chars_bin
-  fileName = 'delMe_many_chars'
+  fileName = 'delMe_many_charsI'
   self~charOutTestingFile = fileName
 
   ret = stream(fileName, 'C', "open binary reclength 3")
@@ -1127,7 +1127,7 @@ return testResult
 -- Tests repeated writes using different character counts
 ::method test_write_char_strings_bin
 
-  fileName = "delMe.test_charout_writing"
+  fileName = "delMe.test_charout_writingG"
   self~charOutTestingFile = fileName
 
   ret = stream(fileName, 'C', "open binary reclength 19")
@@ -1170,7 +1170,7 @@ return testResult
 -- Tests repeated writes mixed with position changes, with a binary stream
 ::method test_write_mixed_char_strings_bin
 
-  fileName = "delMe.test_charout_writing"
+  fileName = "delMe.test_charout_writingH"
   self~charOutTestingFile = fileName
 
   ret = stream(fileName, 'C', "open binary reclength 37")
