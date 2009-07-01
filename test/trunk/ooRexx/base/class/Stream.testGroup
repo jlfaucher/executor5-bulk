@@ -479,7 +479,7 @@ return testResult
 -- Tests arrayin() with empty file, created, opened NOBUFFER
 ::method test_arrayIn_1_noBuf
 
-  fileName = "delMe.stream.arrayIn_1"
+  fileName = "delMe.stream.arrayIn_11"
   fsObj = .stream~new(fileName)
   self~streamTestingFile = fsObj
 
@@ -493,7 +493,7 @@ return testResult
 -- Tests arrayin() with empty file, existing, opened NOBUFFER
 ::method test_arrayIn_2_noBuf
 
-  fileName = "delMe.stream.arrayIn_2"
+  fileName = "delMe.stream.arrayIn_22"
   ret = charout(fileName, "")
   self~assertSame(0, ret)
   ret = stream(fileName, 'C', "close")
@@ -516,7 +516,7 @@ return testResult
   do i = 1 to 12
     src[i] = 'line' i
   end
-  fileName = createFile(src, "delMe.stream.arrayIn_4")
+  fileName = createFile(src, "delMe.stream.arrayIn_44")
   self~assertTrue(fileName \== "")
 
   fsObj = .stream~new(fileName)
@@ -616,7 +616,7 @@ return testResult
 -- Tests arrayin() with empty file, created, opened BINARY
 ::method test_arrayIn_1_bin
 
-  fileName = "delMe.stream.arrayIn_1"
+  fileName = "delMe.stream.arrayIn_a1"
   fsObj = .stream~new(fileName)
   self~streamTestingFile = fsObj
 
@@ -630,7 +630,7 @@ return testResult
 -- Tests arrayin() with empty file, existing, opened BINARY
 ::method test_arrayIn_2_bin
 
-  fileName = "delMe.stream.arrayIn_2"
+  fileName = "delMe.stream.arrayIn_a2"
   ret = charout(fileName, "")
   self~assertSame(0, ret)
   ret = stream(fileName, 'C', "close")
@@ -653,7 +653,7 @@ return testResult
   do i = 1 to 12
     src[i] = 'line' i~right(2, 0)
   end
-  fileName = createFile(src, "delMe.stream.arrayIn_4")
+  fileName = createFile(src, "delMe.stream.arrayIn_a4")
   self~assertTrue(fileName \== "")
 
   fsObj = .stream~new(fileName)
@@ -857,7 +857,7 @@ return testResult
 
 ::method test_arrayOut_abbrev_1
 
-  fileName = "delMe.arrayOut_abbrev"
+  fileName = "delMe.arrayOut_abbrev1"
   a = .array~of(1, 2, 3, 4, 5)
 
   f = .stream~new(fileName)
@@ -880,7 +880,7 @@ return testResult
 
 ::method test_arrayOut_abbrev_2
 
-  fileName = "delMe.arrayOut_abbrev"
+  fileName = "delMe.arrayOut_abbrev2"
   a = .array~of(1, 2, 3, 4, 5)
 
   f = .stream~new(fileName)
@@ -903,7 +903,7 @@ return testResult
 
 ::method test_arrayOut_abbrev_3
 
-  fileName = "delMe.arrayOut_abbrev"
+  fileName = "delMe.arrayOut_abbrev3"
   a = .array~of(1, 2, 3, 4, 5)
 
   f = .stream~new(fileName)
@@ -926,7 +926,7 @@ return testResult
 
 ::method test_arrayOut_abbrev_L1
 
-  fileName = "delMe.arrayOut_abbrev"
+  fileName = "delMe.arrayOut_abbrev4"
   a = .array~of(1, 2, 3, 4, 5)
 
   f = .stream~new(fileName)
@@ -950,7 +950,7 @@ return testResult
 
 ::method test_arrayOut_abbrev_L2
 
-  fileName = "delMe.arrayOut_abbrev"
+  fileName = "delMe.arrayOut_abbrev5"
   a = .array~of(1, 2, 3, 4, 5)
 
   f = .stream~new(fileName)
@@ -974,7 +974,7 @@ return testResult
 
 ::method test_arrayOut_syntax_1
 
-  fileName = "delMe.arrayOut_syntax"
+  fileName = "delMe.arrayOut_syntaxaa"
   a = .array~of(1, 2, 3, 4, 5)
 
   f = .stream~new(fileName)
@@ -988,7 +988,7 @@ return testResult
 
 ::method test_arrayOut_syntax_2
 
-  fileName = "delMe.arrayOut_syntax"
+  fileName = "delMe.arrayOut_syntaxbb"
   a = .array~of(1, 2, 3, 4, 5)
 
   f = .stream~new(fileName)
@@ -1002,7 +1002,7 @@ return testResult
 
 ::method test_arrayOut_syntax_3
 
-  fileName = "delMe.arrayOut_syntax"
+  fileName = "delMe.arrayOut_syntaxcc"
   a = .array~of(1, 2, 3, 4, 5)
 
   f = .stream~new(fileName)
@@ -1016,7 +1016,7 @@ return testResult
 
 ::method test_arrayOut_syntax_4
 
-  fileName = "delMe.arrayOut_syntax"
+  fileName = "delMe.arrayOut_syntaxdd"
   a = 'cat'
 
   f = .stream~new(fileName)
@@ -1030,7 +1030,7 @@ return testResult
 
 ::method test_arrayOut_misc_1
 
-  fileName = "delMe.arrayOut_misc"
+  fileName = "delMe.arrayOut_miscaa"
   s = .set~of(1, 2, 3, 4, 5)
 
   f = .stream~new(fileName)
@@ -1056,7 +1056,7 @@ return testResult
 
 ::method test_state_easy
 
-  fileName = "delMe.testingFile"
+  fileName = "delMe.testingFilea"
 
   f = .stream~new(fileName)
   self~assertTrue(f~isA(.stream))
@@ -1071,7 +1071,7 @@ return testResult
   do i = 1 to 9
     src[i] = 'My line' i
   end
-  fileName = createFile(src, "delMe.testingFile")
+  fileName = createFile(src, "delMe.testingFileb")
   self~assertTrue(fileName \== "")
 
   f = .stream~new(fileName)
@@ -1093,7 +1093,7 @@ return testResult
 -- by root.  So, we check for root and if so fail the test case.
 ::method test_state_error
 
-  fileName = "delMe.testingFile"
+  fileName = "delMe.testingFilec"
   discard = stream(fileName, 'C', "open shared")
   do i = 1 to 9
     discard = lineout(fileName, 'My line' i)
@@ -1122,7 +1122,7 @@ return testResult
   do i = 1 to 9
     src[i] = 'My line' i
   end
-  fileName = createFile(src, "delMe.testingFile")
+  fileName = createFile(src, "delMe.testingFiled")
   self~assertTrue(fileName \== "")
 
   f = .stream~new(fileName)
@@ -1153,7 +1153,7 @@ return testResult
   do i = 1 to 9
     src[i] = 'My line' i
   end
-  fileName = createFile(src, "delMe.testingFile")
+  fileName = createFile(src, "delMe.testingFilee")
   self~assertTrue(fileName \== "")
 
   f = .stream~new(fileName)
@@ -1178,7 +1178,7 @@ return testResult
   end
   lastByte = 9 * ('My line' i || .endOfFile)~length
 
-  fileName = createFile(src, "delMe.testingFile")
+  fileName = createFile(src, "delMe.testingFilef")
   self~assertTrue(fileName \== "")
 
   f = .stream~new(fileName)
@@ -1198,7 +1198,7 @@ return testResult
 -- Test string with no actual existing file.
 ::method test_string_1
 
-  fileName = "delMe.arrayOut_string_noFile"
+  fileName = "delMe.arrayOut_string_noFilegg"
 
   f = .stream~new(fileName)
   self~assertTrue(f~isA(.stream))
@@ -1211,7 +1211,7 @@ return testResult
 ::method test_string_2
 
   src = .array~of(1, 2, 3, 4, 5)
-  fileName = createFile(src, "delMe.TestFile")
+  fileName = createFile(src, "delMe.TestFilehh")
   self~assertTrue(fileName \== "")
 
   f = .stream~new(fileName)
@@ -1241,7 +1241,7 @@ return testResult
   do i = 1 to 13
     src[i] = 'line' i
   end
-  fileName = createFile(src, "delMe.stream.supplier")
+  fileName = createFile(src, "delMe.stream.suppliera")
   self~assertTrue(fileName \== "")
 
   fsObj = .stream~new(fileName)
@@ -1268,7 +1268,7 @@ return testResult
   do i = 1 to 18
     src[i] = 'cat and dog' i
   end
-  fileName = createFile(src, "delMe.stream.supplier")
+  fileName = createFile(src, "delMe.stream.supplierb")
   self~assertTrue(fileName \== "")
 
   fsObj = .stream~new(fileName)
@@ -1307,7 +1307,7 @@ return testResult
     src[i] = 'apples and oranges' i
     bagOfLines~put(src[i])
   end
-  fileName = createFile(src, "delMe.stream.supplier")
+  fileName = createFile(src, "delMe.stream.supplierc")
   self~assertTrue(fileName \== "")
 
   fsObj = .stream~new(fileName)
@@ -1333,7 +1333,7 @@ return testResult
   do i = 1 to 13
     src[i] = 'line' i
   end
-  fileName = createFile(src, "delMe.stream.supplier")
+  fileName = createFile(src, "delMe.stream.supplierd")
   self~assertTrue(fileName \== "")
 
   fsObj = .stream~new(fileName)
@@ -1363,7 +1363,7 @@ return testResult
   do i = 1 to 13
     src[i] = 'line' i
   end
-  fileName = createFile(src, "delMe.stream.supplier")
+  fileName = createFile(src, "delMe.stream.suppliere")
   self~assertTrue(fileName \== "")
 
   fsObj = .stream~new(fileName)
@@ -1393,7 +1393,7 @@ return testResult
   do i = 1 to 13
     src[i] = 'line' i
   end
-  fileName = createFile(src, "delMe.stream.supplier")
+  fileName = createFile(src, "delMe.stream.supplierf")
   self~assertTrue(fileName \== "")
 
   fsObj = .stream~new(fileName)
@@ -1423,7 +1423,7 @@ return testResult
   do i = 1 to 18
     src[i] = 'cat and dog' i
   end
-  fileName = createFile(src, "delMe.stream.supplier")
+  fileName = createFile(src, "delMe.stream.supplierg")
   self~assertTrue(fileName \== "")
 
   fsObj = .stream~new(fileName)
