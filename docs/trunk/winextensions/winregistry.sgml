@@ -76,6 +76,7 @@
 <listitem><para>current_user</para></listitem>
 <listitem><para>current_user=</para></listitem>
 <listitem><para>delete</para></listitem>
+<listitem><para>deleteKey</para></listitem>
 <listitem><para>deleteValue</para></listitem>
 <listitem><para>flush</para></listitem>
 <listitem><para>getValue</para></listitem>
@@ -266,7 +267,7 @@ methods.</para>
 HKEY_CURRENT_USER. Do not modify this attribute.</para>
 </section>
 
-<section id="wrdele"><title>delete</title>
+<section id="mthWRDelete"><title>delete</title>
 <indexterm><primary>delete method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -274,14 +275,94 @@ HKEY_CURRENT_USER. Do not modify this attribute.</para>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-delete(-+------------+-,subkeyname)-------------------------><
-           +-key_handle-+
+>>-delete(-+------------+-,-subkeyName-)-----------------------><
+           +-keyHandle--+
 ]]>
 </programlisting>
 
-<para>Deletes a given named subkey of an open key specified by its handle and
-all its subkeys and values. If <emphasis role="italic">key_handle</emphasis>
-is omitted, CURRENT_KEY is used.</para>
+<para>
+  Deletes a subkey and all its descendants. The method will remove the key, all of the key's values, and
+  all of its subkeys from the registry. To delete a key only if the key does not have subkeys values, use
+  the <link linkend="mthWRDeleteKey">deleteKey</link>() method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguements</emphasis></term>
+  <listitem>
+    <para>The two arguments are:
+      <variablelist>
+        <varlistentry><term><emphasis role="bold">keyHandle</emphasis> [optional]</term>
+        <listitem>
+          <para>
+            A handle to an open registry key. The key must have been opened with the DELETE access right.
+            If this argument is omitted then the CURRENT_KEY attribute is used.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">subkeyName</emphasis> [required]</term>
+        <listitem>
+          <para>
+            The name of the subkey to be deleted.  The name is case insensitive.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return</emphasis></term>
+  <listitem>
+    <para>
+      O on success, otherwise the Windows system error code. A generic description of the error can be
+      obtained by using the Rexx Utility function, <computeroutput>SysGetErrorText()</computeroutput> .
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthWRDeleteKey"><title>deleteKey</title>
+<indexterm><primary>deleteKey method</primary>
+<secondary>of WindowsRegistry class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>deleteKey method</secondary>
+<tertiary>of WindowsRegistry class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-deleteKey(-+------------+-,-subkeyName-)-----------------------><
+              +-keyHandle--+
+]]>
+</programlisting>
+
+<para>
+  Deletes a subkey and its values from the registry. The subkey to be deleted must not have subkeys. To
+  delete a key and all its subkeys, you need to enumerate the subkeys and delete them individually. To
+  delete keys recursively, use the <link linkend="mthWRDelete">delete</link>() method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguements</emphasis></term>
+  <listitem>
+    <para>The two arguments are:
+      <variablelist>
+        <varlistentry><term><emphasis role="bold">keyHandle</emphasis> [optional]</term>
+        <listitem>
+          <para>
+            A handle to an open registry key. The key must have been opened with the DELETE access right.
+            If this argument is omitted then the CURRENT_KEY attribute is used.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">subkeyName</emphasis> [required]</term>
+        <listitem>
+          <para>
+            The name of the subkey to be deleted.  The name is case insensitive.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return</emphasis></term>
+  <listitem>
+    <para>
+      O on success, otherwise the Windows system error code. A generic description of the error can be
+      obtained by using the Rexx Utility function, <computeroutput>SysGetErrorText()</computeroutput> .
+    </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="wrdeva"><title>deleteValue</title>
