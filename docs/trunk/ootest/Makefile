@@ -110,5 +110,5 @@ svnrev.tmp:
 
 clean:
 	@rm -f *.log *.aux *.out *.fmt *.pdf ootest_index.sgml *.htm *.zip \
-           HTML.index *.tmp ootestQuick_index.sgml
+           HTML.index *.tmp ootestQuick_index.sgml *.tmp
 

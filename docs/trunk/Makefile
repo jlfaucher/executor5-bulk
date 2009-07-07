@@ -42,6 +42,7 @@
 
 
 SUBDIRS=oodialog readme rexxpg rexxref rxftp rxmath rxsock winextensions
+SUBDIRS_EX=$(SUBDIRS) ootest
 
 all:
 	for d in $(SUBDIRS); do (cd $$d && make all); done
@@ -54,5 +55,5 @@ html:
 
 
 clean:
-	for d in $(SUBDIRS); do (cd $$d && make clean); done
+	for d in $(SUBDIRS_EX); do (cd $$d && make clean); done
 
