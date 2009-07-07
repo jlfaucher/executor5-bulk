@@ -47,8 +47,49 @@
 <indexterm><primary>class</primary>
 <secondary>WindowsProgramManager class</secondary></indexterm>
 <para>
-  The <computeroutput>WindowsRegistry</computeroutput> class gives the programmer access to the registry.
-  The class can be use to query the registry and modify, add, and delete entries.
+  The <computeroutput>WindowsRegistry</computeroutput> class allows the programmer to interface with the
+  operating sytem APIs that are used to access the <emphasis role="italic">registry</emphasis>. The class
+  can be used to query the registry and modify, add, and delete entries.
+</para>
+<para>
+  In the Windows operating systems, the <emphasis role="italic">registry</emphasis> is a system-defined
+  database in which applications and system components store and retrieve configuration data. The data
+  stored in the registry varies according to the version of Microsoft Windows. Applications use the
+  registry APIs to retrieve, modify, or delete registry data.
+</para>
+<para>
+  You should not edit registry data that does not belong to your application unless it is absolutely
+  necessary. If there is an error in the registry, your system may not function properly. If this
+  happens, you can restore the registry to the state it was in when you last started the computer
+  successfully. For more information, see the help for your operating system.
+</para>
+<para>
+  The registry stores data in a tree format. Each node in the tree is called a key. Each key can contain
+  both subkeys and data entries called values. Sometimes, the presence of a key is all the data that an
+  application requires; other times, an application opens a key and uses the values associated with the
+  key. A key can have any number of values, and the values can be in any form.
+</para>
+<para>
+  Each key has a name consisting of one or more printable characters. Key names are not case sensitive.
+  Key names cannot include a backslash (\), but any other printable or unprintable character can be used.
+  The name of each subkey is unique with respect to the key that is immediately above it in the
+  hierarchy. Key names are not localized into other languages, although values may be.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> Windows provides a command line user tool named
+  <computeroutput>regedit</computeroutput> that displays the registry and its tree structure on the local
+  machine. The tool can be very helpful in picturing the layout of the registry.  To use it, merely type
+  <computeroutput>regedit</computeroutput> at the command prompt of a console window, or use the
+  <emphasis role="italic">run</emphasis> option of the <computeroutput>Start</computeroutput> menu.
+</para>
+<para id="wrParaParentKey">
+  Most of the operating system functions that manipulate the registry require the open handle of a parent
+  key. As a convenience to the programmer, the <computeroutput>WindowsRegistry</computeroutput> class
+  usually allows this handle to be omitted as an argument in its methods. The class keeps track of the
+  most recently opened handle and supplies this handle when the programmer omits the parent handle
+  argument in a method. This mechanism is implemented through the <link
+  linkend="wrAtrCurrentKey">current_key</link> attribute.  When a method has a parent handle argument and
+  the programmer omits the arguement, the current key handle is used.
 </para>
 <para>
   The WindowsRegistry class is not a built-in class; it is defined in the file winSystm.cls.
@@ -67,14 +108,12 @@
 </para>
 <itemizedlist>
 <listitem><para>new (Class method)</para></listitem>
-<listitem><para>classes_root</para></listitem>
-<listitem><para>classes_root=</para></listitem>
+<listitem><para>classes_root (Attribute [get])</para></listitem>
 <listitem><para>close</para></listitem>
 <listitem><para>create</para></listitem>
-<listitem><para>current_key</para></listitem>
-<listitem><para>current_key=</para></listitem>
-<listitem><para>current_user</para></listitem>
-<listitem><para>current_user=</para></listitem>
+<listitem><para>current_key (Attribute [get])</para></listitem>
+<listitem><para>current_key= (Attribute [set])</para></listitem>
+<listitem><para>current_user (Attribute [get])</para></listitem>
 <listitem><para>delete</para></listitem>
 <listitem><para>deleteKey</para></listitem>
 <listitem><para>deleteValue</para></listitem>
@@ -83,8 +122,7 @@
 <listitem><para>list</para></listitem>
 <listitem><para>listValues</para></listitem>
 <listitem><para>load</para></listitem>
-<listitem><para>local_machine</para></listitem>
-<listitem><para>local_machine=</para></listitem>
+<listitem><para>local_machine (Attribute [get])</para></listitem>
 <listitem><para>open</para></listitem>
 <listitem><para>query</para></listitem>
 <listitem><para>replace</para></listitem>
@@ -92,10 +130,10 @@
 <listitem><para>save</para></listitem>
 <listitem><para>setValue</para></listitem>
 <listitem><para>unload</para></listitem>
-<listitem><para>users</para></listitem>
-<listitem><para>users=</para></listitem></itemizedlist>
+<listitem><para>users (Attribute [get])</para></listitem>
+</itemizedlist>
 
-<section id="wrinit"><title>new (Class method)</title>
+<section id="wrMthNew"><title>new (Class method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -112,11 +150,11 @@
 </para>
 </section>
 
-<section id="wrclro"><title>classes_root</title>
-<indexterm><primary>classes_root method</primary>
+<section id="wrAtrClassesRoot"><title>classes_root (Attribute [get])</title>
+<indexterm><primary>classes_root attribute</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>classes_root method</secondary>
+<indexterm><primary>attribute</primary>
+<secondary>classes_root attribute</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
@@ -124,26 +162,13 @@
 ]]>
 </programlisting>
 
-<para>Returns the handle of the root key HKEY_CLASSES_ROOT.</para>
+<para>
+  Returns the handle of the root key HKEY_CLASSES_ROOT.  This handle is maintained by the operating
+  system, it can not be changed.
+</para>
 </section>
 
-<section id="wrclroe"><title>classes_root=</title>
-<indexterm><primary>classes_root= method</primary>
-<secondary>of WindowsRegistry class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>classes_root= method</secondary>
-<tertiary>of WindowsRegistry class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-classes_root=-----------------------------------------------><
-]]>
-</programlisting>
-
-<para>This method is used by INIT to set the attribute CLASSES_ROOT to
-HKEY_CLASSES_ROOT. Do not modify this attribute.</para>
-</section>
-
-<section id="wrclse"><title>close</title>
+<section id="wrMthClose"><title>close</title>
 <indexterm><primary>close method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -182,7 +207,7 @@ CURRENT_KEY is closed.</para>
 HKEY_LOCAL_MACHINE and HKEY_USERS.</para>
 </section>
 
-<section id="wrcrt"><title>create</title>
+<section id="wrMthCreate"><title>create</title>
 <indexterm><primary>create method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -195,20 +220,25 @@ HKEY_LOCAL_MACHINE and HKEY_USERS.</para>
 ]]>
 </programlisting>
 
-<para>Adds a new named subkey to the registry and returns its handle. The
-parent key handle <emphasis role="italic">parent</emphasis> can be a root key
-or a key retrieved using OPEN. If the <emphasis role="italic">parent</emphasis>
-key is omitted, CURRENT_KEY is used. Example:</para>
+<para>
+  Adds a new named subkey to the registry and returns its handle. The first argument is the <link
+  linkend="wrParaParentKey">parent key</link> handle. The second argument is the name of the new subkey.
+</para>
+<para>
+  Example:
 <programlisting>
-newkey = rg~create(rg~local_machine,"MyOwnKey")
+<![CDATA[
+newKey = rg~create(rg~local_machine, "myOwnKey")
+]]>
 </programlisting>
+</para>
 </section>
 
-<section id="wrcuky"><title>current_key</title>
-<indexterm><primary>current_key method</primary>
+<section id="wrAtrCurrentKey"><title>current_key (Attribute [get])</title>
+<indexterm><primary>current_key attribute</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>current_key method</secondary>
+<indexterm><primary>attribute</primary>
+<secondary>current_key attribute</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
@@ -216,16 +246,27 @@ newkey = rg~create(rg~local_machine,"MyOwnKey")
 ]]>
 </programlisting>
 
-<para>Returns the handle of the current key. The current key is set by INIT,
-CREATE, and OPEN. It is used as a default value if the key is omitted in other
-methods.</para>
+<para>
+  Returns the handle of the current key. The current key is set by the <link linkend="wrMthNew">new</link>()
+  method to <computeroutput>HKEY_LOCAL_MACHINE</computeroutput>. It's value is then updated by every call
+  to <link linkend="wrMthCreate">create</link>() and <link linkend="wrMthOpen">open</link>(). Therefore
+  its value is always that of the handle of the most recently opened key unless the programmer <link
+  linkend="wrAtrCurrentKeyEquals">sets</link> it to some other value.
+</para>
+<para>
+  Most registry operations require an open handle to the <link linkend="wrParaParentKey">parent
+  key</link> of the subkey being operated on. In the <computeroutput>WindowsRegistry</computeroutput>
+  class most methods that require the parent key allow the programmer to omit the parent key. When the
+  parent key is
+  omitted, the <computeroutput>current_key</computeroutput> handle is used.
+</para>
 </section>
 
-<section id="wrcukye"><title>current_key=</title>
-<indexterm><primary>current_key= method</primary>
+<section id="wrAtrCurrentKeyEquals"><title>current_key= (Attribute [set])</title>
+<indexterm><primary>current_key= attribute</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>current_key= method</secondary>
+<indexterm><primary>attribute</primary>
+<secondary>current_key= attribute</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
@@ -233,14 +274,18 @@ methods.</para>
 ]]>
 </programlisting>
 
-<para>Sets the handle of the current key.</para>
+<para>
+  Sets the handle of the current key. The <computeroutput>WindowsRegistry</computeroutput> class <link
+  linkend="wrAtrCurrentKey">maintains</link> this key, but the programmer can set it to any value at any
+  time.
+</para>
 </section>
 
-<section id="wrcuus"><title>current_user</title>
-<indexterm><primary>current_user method</primary>
+<section id="wrAtrCurrentUser"><title>current_user (Attribute [get])</title>
+<indexterm><primary>current_user attribute</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>current_user method</secondary>
+<indexterm><primary>attribute</primary>
+<secondary>current_user attribute</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
@@ -248,23 +293,10 @@ methods.</para>
 ]]>
 </programlisting>
 
-<para>Returns the handle of the root key HKEY_CURRENT_USER.</para>
-</section>
-
-<section id="wrcuuse"><title>current_user=</title>
-<indexterm><primary>current_user= method</primary>
-<secondary>of WindowsRegistry class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>current_user= method</secondary>
-<tertiary>of WindowsRegistry class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-current_user=-----------------------------------------------><
-]]>
-</programlisting>
-
-<para>This method is used by INIT to set the attribute CURRENT_USER to
-HKEY_CURRENT_USER. Do not modify this attribute.</para>
+<para>
+  Returns the handle of the root key HKEY_CURRENT_USER. This handle is maintained by the operating system
+  and can not be changed.
+</para>
 </section>
 
 <section id="mthWRDelete"><title>delete</title>
@@ -286,7 +318,7 @@ HKEY_CURRENT_USER. Do not modify this attribute.</para>
   the <link linkend="mthWRDeleteKey">deleteKey</link>() method.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Arguements</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Arguments</emphasis></term>
   <listitem>
     <para>The two arguments are:
       <variablelist>
@@ -518,11 +550,11 @@ is created under HKEY_LOCAL_MACHINE.</para>
 unlock the registry data file filename.</para>
 </section>
 
-<section id="wrloma"><title>local_machine</title>
-<indexterm><primary>local_machine method</primary>
+<section id="wrAtrLocalMachine"><title>local_machine (Attribute [get])</title>
+<indexterm><primary>local_machine attribute</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>local_machine method</secondary>
+<indexterm><primary>attribute</primary>
+<secondary>local_machine attribute</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
@@ -530,26 +562,13 @@ unlock the registry data file filename.</para>
 ]]>
 </programlisting>
 
-<para>Returns the handle of the root key HKEY_LOCAL_MACHINE.</para>
+<para>
+  Returns the handle of the root key HKEY_LOCAL_MACHINE. This handle is maintained by the operating
+  system, it can not be changed.
+</para>
 </section>
 
-<section id="wrlomae"><title>local_machine=</title>
-<indexterm><primary>local_machine= method</primary>
-<secondary>of WindowsRegistry class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>local_machine= method</secondary>
-<tertiary>of WindowsRegistry class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-local_machine=----------------------------------------------><
-]]>
-</programlisting>
-
-<para>This method is used by INIT to set the attribute LOCAL_MACHINE to
-HKEY_LOCAL_MACHINE. Do not modify this attribute.</para>
-</section>
-
-<section id="wropen"><title>open</title>
+<section id="wrMthOpen"><title>open</title>
 <indexterm><primary>open method</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -557,52 +576,124 @@ HKEY_LOCAL_MACHINE. Do not modify this attribute.</para>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-open(-+---------------+-,subkey-+--------------+-)----------><
-         +-parent_handle-+         +-,-| access |-+
+>>-open(-+--------------+--+----------+--+----------+-)---------------><
+         +-parentHandle-+  +-,-subkey-+  +-,-access-+
 
-access:
-
-   +-ALL-+
-|--+-----+------------------------------------------------------>
-
-   +--------------------------------------------------------------+
-   V                                                              |
->----+-------+-+------+-+-------+-+---------+-+--------+-+------+-+--|
-     +-WRITE-+ +-READ-+ +-QUERY-+ +-EXECUTE-+ +-NOTIFY-+ +-LINK-+
 ]]>
 </programlisting>
 
-<para>Opens a named subkey and return its handle. See
-<link linkend="wrcrt">CREATE</link> for
-more information about <emphasis role="italic">parent_handle</emphasis>.
-Possible values for <emphasis role="italic">access</emphasis> are:</para>
-<variablelist>
-<varlistentry><term>ALL</term>
-<listitem><para>Default
-</para></listitem></varlistentry>
-<varlistentry><term>WRITE</term>
-<listitem><para>Create subkeys, set values
-</para></listitem></varlistentry>
-<varlistentry><term>READ</term>
-<listitem><para>Query subkeys and values
-</para></listitem></varlistentry>
-<varlistentry><term>QUERY</term>
-<listitem><para>Values
-</para></listitem></varlistentry>
-<varlistentry><term>EXECUTE</term>
-<listitem><para>Key access, no subkey access
-</para></listitem></varlistentry>
-<varlistentry><term>NOTIFY</term>
-<listitem><para>Change notification
-</para></listitem></varlistentry>
-<varlistentry><term>LINK</term>
-<listitem><para>Create symbolic links
-</para></listitem></varlistentry>
-</variablelist><para> More than one value can be specified separated by blanks.
+<para>
+  Opens a named subkey with the specified access rights and returns its handle. When the programmer is
+  done with the handle it should be closed using the <link linkend="wrMthClose">close</link>() method.
 </para>
-<para>Notice that on Windows NT some keys require certain access
-rights and do not allow to open the key with all but only with certain access
-values.</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> The default for the <emphasis role="italic">access</emphasis>
+  argument is ALL access. As Microsoft has tightened up the security in it operating systems, it has made
+  access to the registry more restrictive than it was when the
+  <computeroutput>WindowsRegistry</computeroutput> class was first introduced. Opening a registry key
+  with more access rights than the user running the Rexx program has will result in failure. Best
+  practice is to open a key with the least rights needed for the operation being performed.
+</para>
+<para>
+  For instance, in a Rexx program where the function is to read the values of a single key, the key
+  should be opened with just the INQUIRE right. This is not only less likely to fail if the program user
+  is not an Administrator, but is more secure in every case.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments</emphasis></term>
+  <listitem>
+    <para>The two arguments are:
+      <variablelist>
+        <varlistentry><term><emphasis role="bold">parentHandle</emphasis> [optional]</term>
+        <listitem>
+          <para>
+            A handle to the open <link linkend="wrParaParentKey">parent key</link>. If this argument is
+            omitted then the <link linkend="wrAtrCurrentKey">current_key</link> attribute is used.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">subkey</emphasis> [optional]</term>
+        <listitem>
+          <para>
+            The name of the subkey to be opened. If this argument is omitted or the empty string, a new
+            handle to the key identified by <emphasis role="italic">parentHandle</emphasis> is opened.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term><emphasis role="bold">subkey</emphasis> [optional]</term>
+        <listitem>
+          <para>
+            A string consisting of one or more of the following key words. The keywords are not case
+            sensitive.  The default is the ALL keyword.
+          </para>
+          <variablelist>
+          <varlistentry><term>ALL</term>
+          <listitem><para>
+            Opens the key with all possible access. Although this is the default, as discused above some
+            forethought should be given to using this access.
+          </para></listitem></varlistentry>
+          <varlistentry><term>WRITE</term>
+          <listitem><para>
+            Combines the rights to create subkeys, set key values, and to read a key's access rights.
+          </para></listitem></varlistentry>
+          <varlistentry><term>READ</term>
+          <listitem><para>
+            Combines the rights to query key values, enumerate subkeys, read keys access rights, and the
+            notify right. Note that READ access and EXECUTE access are exactly the same.
+          </para></listitem></varlistentry>
+          <varlistentry><term>QUERY</term>
+          <listitem><para>
+            Combines the right to query values of a registry key (specified by the INQUIRE keyword here,)
+            with the right to enumerate subkeys.
+          </para></listitem></varlistentry>
+          <varlistentry><term>INQUIRE</term>
+          <listitem><para>
+            Required to query the values of a registry key.
+          </para></listitem></varlistentry>
+          <varlistentry><term>ENUMERATE</term>
+          <listitem><para>
+            Required to enumerate the subkeys of a registry key.
+          </para></listitem></varlistentry>
+          <varlistentry><term>SET</term>
+          <listitem><para>
+            Required to create, delete, or set a registry value.
+          </para></listitem></varlistentry>
+          <varlistentry><term>DELETE</term>
+          <listitem><para>
+            Exactly equivalent to SET access. The keyword is a convenience to make programs more
+            readable.
+          </para></listitem></varlistentry>
+          <varlistentry><term>CREATE</term>
+          <listitem><para>
+            Required to create a subkey of a registry key.
+          </para></listitem></varlistentry>
+          <varlistentry><term>NOTIFY</term>
+          <listitem><para>
+            Required to request change notifications for a registry key or for subkeys of a registry key.
+          </para></listitem></varlistentry>
+          <varlistentry><term>EXECUTE</term>
+          <listitem><para>
+            Exactly equivalent to READ access.
+          </para></listitem></varlistentry>
+          <varlistentry><term>LINK</term>
+          <listitem><para>
+            The Microsoft documentation states that this right is reserved for system use. The keyword is
+            listed here simply because it was documented in previous versions of ooRexx and Object Rexx.
+            The programmer is advised not to use it.
+          </para></listitem></varlistentry>
+          </variablelist>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return</emphasis></term>
+  <listitem>
+    <para>
+      A handle to the opened key on success, otherwise 0.  If the key was opened correctly, the value of
+      the <link linkend="wrAtrCurrentKey">current_key</link> attribute is set to this handle. If the
+      method fails, <computeroutput>current_key</computeroutput> is left unchanged.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="wrquer"><title>query</title>
@@ -748,11 +839,11 @@ is omitted, the subkey under CURRENT_KEY is unloaded. Unload also unlocks the
 registry information file.</para>
 </section>
 
-<section id="wruse"><title>users</title>
-<indexterm><primary>users method</primary>
+<section id="wrAtrUsers"><title>users (Attribute [get])</title>
+<indexterm><primary>users attribute</primary>
 <secondary>of WindowsRegistry class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>users method</secondary>
+<indexterm><primary>attribute</primary>
+<secondary>users attribute</secondary>
 <tertiary>of WindowsRegistry class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
@@ -760,23 +851,10 @@ registry information file.</para>
 ]]>
 </programlisting>
 
-<para>Returns the handle of the root key HKEY_USERS.</para>
-</section>
-
-<section id="wrusee"><title>users=</title>
-<indexterm><primary>users= method</primary>
-<secondary>of WindowsRegistry class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>users= method</secondary>
-<tertiary>of WindowsRegistry class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-users=------------------------------------------------------><
-]]>
-</programlisting>
-
-<para>This method is used by INIT to set the attribute USERS to HKEY_USERS. Do
-not modify this attribute.</para>
+<para>
+  Returns the handle of the root key HKEY_USERS. This handle is maintained by the operating system and
+  can not be changed.
+</para>
 </section>
 
 </chapter>
