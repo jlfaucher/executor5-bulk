@@ -181,8 +181,17 @@ if \sysisfile(newdir'/'buildrpt) then do
    'make rpm 2>&1 | tee -a' buildrpt
    -- copy the results to the host
    'mkdir' newdir
-   if qname~pos('i386') > 0 then 'cp ./rpm/RPMS/i386/ooRexx*.rpm' newdir
-   else 'cp ./rpm/RPMS/x86_64/ooRexx*.rpm' newdir
+   if SysIsFileDirectory('./rpm/RPMS/i386') then ,
+    'cp ./rpm/RPMS/i386/ooRexx*.rpm' newdir
+   else if SysIsFileDirectory('./rpm/RPMS/i486') then ,
+    'cp ./rpm/RPMS/i486/ooRexx*.rpm' newdir
+   else if SysIsFileDirectory('./rpm/RPMS/i586') then ,
+    'cp ./rpm/RPMS/i586/ooRexx*.rpm' newdir
+   else if SysIsFileDirectory('./rpm/RPMS/i686') then ,
+    'cp ./rpm/RPMS/i686/ooRexx*.rpm' newdir
+   else if SysIsFileDirectory('./rpm/RPMS/x86_64') then ,
+    'cp ./rpm/RPMS/x86_64/ooRexx*.rpm' newdir
+   else nop -- must not be a supported rpm
    'cp' buildrpt newdir
    end
 -- notify the user
