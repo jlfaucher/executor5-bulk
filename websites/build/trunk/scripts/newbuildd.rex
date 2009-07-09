@@ -61,9 +61,9 @@ parse var cmdline qname cmdline
 select
    when qname = 'win.i386' then nop
    when qname = 'win.x86_64' then nop
-   when qname = 'fedora10.i386' then nop
-   when qname = 'fedora10.x86_64' then nop
-   when qname = 'ubunto8.04.i386' then nop
+   when qname = 'fedora11.i386' then nop
+   when qname = 'fedora11.x86_64' then nop
+   when qname = 'ubuntu8.04.i386' then nop
    when qname = 'docs' then nop
    otherwise  do
       say 'Error: incorrect build queue name argument found.'
@@ -116,8 +116,8 @@ say '   buildd.rex qname'
 say 'where qname is one of the following:'
 say '   win.i386'
 say '   win.x86_64'
-say '   fedora10.i386'
-say '   fedora10.x86_64'
+say '   fedora11.i386'
+say '   fedora11.x86_64'
 say '   ubuntu8.04.i386'
 say '   docs'
 return
@@ -136,10 +136,10 @@ select
 --   when qname = 'win.x86_64' then do
 --      call build_exe email
 --      end
-   when qname = 'fedora10.i386' then do
+   when qname = 'fedora11.i386' then do
       call build_rpm qname, email
       end
-   when qname = 'fedora10.x86_64' then do
+   when qname = 'fedora11.x86_64' then do
       call build_rpm qname, email
       end
    when qname = 'ubunto8.04.i386' then do

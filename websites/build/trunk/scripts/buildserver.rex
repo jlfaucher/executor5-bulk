@@ -46,8 +46,8 @@ txnport = 15776
 
 simq = .simq~new()
 -- add some queues
-simq~add_queue('fedora10.i386')
-simq~add_queue('fedora10.x86_64')
+simq~add_queue('fedora11.i386')
+simq~add_queue('fedora11.x86_64')
 simq~add_queue('docs')
 -- simq~add_queue('win.i386')
 -- simq~add_queue('win.x86_64')
