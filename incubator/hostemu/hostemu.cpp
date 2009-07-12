@@ -435,6 +435,7 @@ static unsigned long ExecIO_Write_From_Stem (
    char *      Stem;             /* Stem variable name                */
    char *      Index;            /* Stem index value (string)         */
    RXSTRING rxVal;               /* Rexx stem variable value          */
+   int      elements;  
 
    /* process request */
    if (ExecIO_Options.lRcdCnt == 0)
@@ -447,21 +448,18 @@ static unsigned long ExecIO_Write_From_Stem (
    if (ExecIO_Options.lRcdCnt == -1)
       {
       /* process an "*" record count */
-      while (1)
+      // get the number of elements
+      sprintf(Index, "%u", 0);
+      FetchRexxVar(Stem, &rxVal);
+      elements = atoi(rxVal.strptr);
+      RexxFreeMemory(rxVal.strptr);
+      while (ExecIO_Options.lStartRcd <= elements)
          {
-         sprintf(Index, "%u", ExecIO_Options.lStartRcd);
+         sprintf(Index, "%d", ExecIO_Options.lStartRcd);
          FetchRexxVar(Stem, &rxVal);
-         if (rxVal.strlength > 0)
-            {
-            if (rxVal.strlength == strlen(Stem) &&
-             !memcmp(rxVal.strptr, Stem, rxVal.strlength))
-               break;
-            fputs(rxVal.strptr, pll -> pFile);
-            fputs("\n", pll -> pFile);
-            RexxFreeMemory(rxVal.strptr);
-            }
-         else
-            break;
+         fputs(rxVal.strptr, pll -> pFile);
+         fputs("\n", pll -> pFile);
+         RexxFreeMemory(rxVal.strptr);
          ExecIO_Options.lStartRcd++;
          }
       }
@@ -472,12 +470,9 @@ static unsigned long ExecIO_Write_From_Stem (
          {
          sprintf(Index, "%u", ExecIO_Options.lStartRcd);
          FetchRexxVar(Stem, &rxVal);
-         if (rxVal.strlength > 0)
-            {
-            fputs(rxVal.strptr, pll -> pFile);
-            fputs("\n", pll -> pFile);
-            RexxFreeMemory(rxVal.strptr);
-            }
+         fputs(rxVal.strptr, pll -> pFile);
+         fputs("\n", pll -> pFile);
+         RexxFreeMemory(rxVal.strptr);
          ExecIO_Options.lStartRcd++;
          }
       }
