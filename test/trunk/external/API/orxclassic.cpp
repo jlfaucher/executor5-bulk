@@ -116,7 +116,7 @@ RexxMethod1(int,                        // Return type
             CSTRING, qname)             // Queue name
 {
     RXSTRING data;
-    REXXDATETIME timestamp;
+    RexxQueueTime timestamp;
 
     RexxReturnCode rc = RexxPullFromQueue(qname, &data, &timestamp, 0);
     context->SetObjectVariable("RETC", context->Int32ToObject(rc));
