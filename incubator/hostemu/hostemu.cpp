@@ -57,7 +57,7 @@
 /*                                                                    */
 /*--------------------------------------------------------------------*/
 
-#define HOSTEMU_DEBUG
+// #define HOSTEMU_DEBUG
 
 PCONSTRXSTRING prxCmd = NULL;
 EXECIO_OPTIONS ExecIO_Options;
@@ -398,6 +398,8 @@ RexxReturnCode GrxHost(PCONSTRXSTRING command,
    if (ulNumSym != 0)
       for (i = 0; i < ulNumSym; i++)
          free(pszSymbol[i]);
+
+   pthread_mutex_unlock(&hmtxExecIO);
 
    sprintf(retc->strptr, "%u", rc);
    retc->strlength = strlen(retc->strptr);
