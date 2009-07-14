@@ -166,24 +166,20 @@ unsigned long FetchRexxVar (
    ulRetc = RexxVariablePool(&RxVarBlock);
 
    /* test return code */
-   if (ulRetc != RXSHV_OK && ulRetc != RXSHV_NEWV)
-      {
+   if (ulRetc != RXSHV_OK && ulRetc != RXSHV_NEWV) {
       prxVar -> strptr = NULL;
       prxVar -> strlength = 0;
       }
-   else
-      {
+   else {
       /* allocate a new buffer for the Rexx variable pool value */
       pszTemp = (char *) RexxAllocateMemory(RxVarBlock.shvvalue.strlength + 1);
-      if (pszTemp == NULL)
-         {
+      if (pszTemp == NULL) {
          /* no buffer available so return a NULL Rexx value */
          prxVar -> strptr = NULL;
          prxVar -> strlength = 0;
          ulRetc = RXSHV_MEMFL;
          }
-      else
-         {
+      else {
          /* copy to new buffer and zero-terminate */
          memmove(pszTemp, RxVarBlock.shvvalue.strptr,
                   RxVarBlock.shvvalue.strlength);
@@ -241,8 +237,9 @@ unsigned long SetRexxVar (
    ulRetc = RexxVariablePool(&RxVarBlock);
 
    /* test return code */
-   if (ulRetc == RXSHV_NEWV)
+   if (ulRetc == RXSHV_NEWV) {
       ulRetc = RXSHV_OK;
+      }
 
    return ulRetc;
    }
@@ -294,42 +291,35 @@ RexxReturnCode GrxHost(PCONSTRXSTRING command,
    *flags = RXSUBCOM_OK;
 
    /* parse the command */
-   if (!yyparse ())
-      {
+   if (!yyparse ()) {
       #ifdef HOSTEMU_DEBUG
       printf("HOSTEMU: Parse complete.\n");
       #endif
-      if (lStmtType == HI_STMT)
-         {
+      if (lStmtType == HI_STMT) {
          pid = getpid();
          tid = pthread_self();
          RexxSetHalt(pid, tid);
          }
-      else if (lStmtType == TE_STMT)
-         {
+      else if (lStmtType == TE_STMT) {
          pid = getpid();
          tid = pthread_self();
          RexxResetTrace(pid, tid);
          }
-      else if (lStmtType == TS_STMT)
-         {
+      else if (lStmtType == TS_STMT) {
          pid = getpid();
          tid = pthread_self();
          RexxSetTrace(pid, tid);
          }
-      else if (lStmtType == EXECIO_STMT)
-         {
+      else if (lStmtType == EXECIO_STMT) {
          #ifdef HOSTEMU_DEBUG
          printf("HOSTEMU: Executing execio statement.\n");
          #endif
          /* check to see if the file is already open */
          pll = Search_LL(ExecIO_Options.aFilename);
-         if (pll == NULL)
-            {
+         if (pll == NULL) {
             /* it is a new file, so open it and add to the list */
             pll = (PLL)malloc(sizeof (LL));
-            if (pll == NULL)
-               {
+            if (pll == NULL) {
                rc = 20;
                *flags = RXSUBCOM_FAILURE;
                goto return_point;
@@ -338,11 +328,11 @@ RexxReturnCode GrxHost(PCONSTRXSTRING command,
             strcpy(pll -> FileName, ExecIO_Options.aFilename);
             pll -> pFile = fopen(pll -> FileName, "r+");
             /* try to open an existing file */
-            if (pll -> pFile == NULL)
+            if (pll -> pFile == NULL) {
                /* no existing file, so open a new file */
                pll -> pFile = fopen(pll -> FileName, "w+");
-            if (pll -> pFile == NULL)
-               {
+               }
+            if (pll -> pFile == NULL) {
                /* nothing could be opened so return an error */
                free(pll);
                rc = 20;
@@ -352,42 +342,42 @@ RexxReturnCode GrxHost(PCONSTRXSTRING command,
             Insert_LL(pll);
             }
          /* is this a read or write operation? */
-         if (ExecIO_Options.fRW)
-            {
+         if (ExecIO_Options.fRW) {
             /* DISKW */
             /* is this a stem or queue operation? */
-            if (strlen (ExecIO_Options.aStem))
+            if (strlen (ExecIO_Options.aStem)) {
                rc = ExecIO_Write_From_Stem(pll);
-            else
+               }
+            else {
                rc = ExecIO_Write_From_Queue(pll);
+               }
             }
-         else
-            {
+         else {
             /* DISKR */
             /* is this a stem or queue operation? */
-            if (strlen(ExecIO_Options.aStem))
+            if (strlen(ExecIO_Options.aStem)) {
                rc = ExecIO_Read_To_Stem(pll);
-            else
+               }
+            else {
                rc = ExecIO_Read_To_Queue(pll);
+               }
             }
          /* process the FINIS option */
-         if (ExecIO_Options.fFinis)
-            {
+         if (ExecIO_Options.fFinis) {
             fclose(pll -> pFile);
             Delete_LL(pll);
             }
          /* if the return code is 20 then set the failure flag */
-         if (rc == 20)
+         if (rc == 20) {
             *flags = RXSUBCOM_FAILURE;
+            }
          }
-      else  /* bad statement type */
-         {
+      else { /* bad statement type */
          *flags = RXSUBCOM_ERROR;
          rc = 20;
          }
       }
-   else  /* parse failed */
-      {
+   else { /* parse failed */
       *flags = RXSUBCOM_ERROR;
       rc = 20;
       }
@@ -395,9 +385,11 @@ RexxReturnCode GrxHost(PCONSTRXSTRING command,
    return_point:
 
    /* release our symbol table memory */
-   if (ulNumSym != 0)
-      for (i = 0; i < ulNumSym; i++)
+   if (ulNumSym != 0) {
+      for (i = 0; i < ulNumSym; i++) {
          free(pszSymbol[i]);
+         }
+      }
 
    pthread_mutex_unlock(&hmtxExecIO);
 
@@ -441,20 +433,19 @@ static unsigned long ExecIO_Write_From_Stem (
    if (ExecIO_Options.lRcdCnt == 0)
       return 0;
    Stem = (char *)malloc(strlen(ExecIO_Options.aStem) + 33);
-   if (Stem == NULL)
+   if (Stem == NULL) {
       return 20;
+      }
    strcpy(Stem, ExecIO_Options.aStem);
    Index = Stem + strlen(Stem);
-   if (ExecIO_Options.lRcdCnt == -1)
-      {
+   if (ExecIO_Options.lRcdCnt == -1) {
       /* process an "*" record count */
       // get the number of elements
       sprintf(Index, "%u", 0);
       FetchRexxVar(Stem, &rxVal);
       elements = atoi(rxVal.strptr);
       RexxFreeMemory(rxVal.strptr);
-      while (ExecIO_Options.lStartRcd <= elements)
-         {
+      while (ExecIO_Options.lStartRcd <= elements) {
          sprintf(Index, "%d", ExecIO_Options.lStartRcd);
          FetchRexxVar(Stem, &rxVal);
          fputs(rxVal.strptr, pll -> pFile);
@@ -463,11 +454,9 @@ static unsigned long ExecIO_Write_From_Stem (
          ExecIO_Options.lStartRcd++;
          }
       }
-   else
-      {
+   else {
       /* process a specific record count */
-      while (ExecIO_Options.lStartRcd <= ExecIO_Options.lRcdCnt)
-         {
+      while (ExecIO_Options.lStartRcd <= ExecIO_Options.lRcdCnt) {
          sprintf(Index, "%u", ExecIO_Options.lStartRcd);
          FetchRexxVar(Stem, &rxVal);
          fputs(rxVal.strptr, pll -> pFile);
@@ -505,64 +494,50 @@ static unsigned long ExecIO_Write_From_Queue (
 
    /* Local function variables */
    char * Item;                  /* Item pulled from the queue        */
+   long items;
 
    /* process request */
-   if (ExecIO_Options.lRcdCnt == 0)
+   if (ExecIO_Options.lRcdCnt == 0) {
       return 0;
+      }
    /* start at the proper place in the queue */
-   while (ExecIO_Options.lStartRcd > 1 && queued() > 0)
-      {
+   while (ExecIO_Options.lStartRcd > 1 && queued() > 0) {
       Item = pull();
-      if (Item != NULL)
+      if (Item != NULL) {
          RexxFreeMemory(Item);
+         }
       ExecIO_Options.lStartRcd--;
       }
-   if (ExecIO_Options.lRcdCnt == -1)
-      {
+   if (ExecIO_Options.lRcdCnt == -1) {
       /* process an "*" record count */
-      while (queued() > 0)
-         {
+      items = queued();
+      while (items > 0) {
          Item = pull();
-         if (Item != NULL)
-            {
+         if (Item != NULL) {
             fputs(Item, pll -> pFile);
             fputs("\n", pll -> pFile);
             RexxFreeMemory(Item);
             }
-         else
+         else {
             goto return_point;
-         }
-      while (gets(szInline) != NULL)
-         {
-         if (strlen(szInline) == 0)
-            break;
-         fputs(szInline, pll -> pFile);
-         fputs("\n", pll -> pFile);
+            }
+         items--;
          }
       }
-   else
-      {
+   else {
       /* process a specific record count */
-      while (ExecIO_Options.lRcdCnt > 0)
-         {
+      while (ExecIO_Options.lRcdCnt > 0) {
          if (queued() == 0)
             break;
          Item = pull();
-         if (Item != NULL)
-            {
+         if (Item != NULL) {
             fputs(Item, pll -> pFile);
             fputs("\n", pll -> pFile);
             RexxFreeMemory(Item);
             }
-         else
+         else {
             goto return_point;
-         ExecIO_Options.lRcdCnt--;
-         }
-      while (ExecIO_Options.lRcdCnt > 0)
-         {
-         gets(szInline);
-         fputs(szInline, pll -> pFile);
-         fputs("\n", pll -> pFile);
+            }
          ExecIO_Options.lRcdCnt--;
          }
       }
@@ -602,18 +577,18 @@ static unsigned long ExecIO_Read_To_Stem (
    unsigned long ulRc = 0;       /* Return code                       */
 
    /* process request */
-   if (ExecIO_Options.lRcdCnt == 0)
+   if (ExecIO_Options.lRcdCnt == 0) {
       return 0;
+      }
    Stem = (char *)malloc(strlen(ExecIO_Options.aStem) + 33);
-   if (Stem == NULL)
+   if (Stem == NULL) {
       return 20;
+      }
    strcpy(Stem, ExecIO_Options.aStem);
    Index = Stem + strlen(Stem);
-   if (ExecIO_Options.lRcdCnt == -1)
-      {
+   if (ExecIO_Options.lRcdCnt == -1) {
       /* process an "*" record count */
-      while (fgets(szInline, sizeof (szInline), pll -> pFile))
-         {
+      while (fgets(szInline, sizeof (szInline), pll -> pFile)) {
          if (*(szInline + strlen(szInline) - 1) == '\n')
             *(szInline + strlen(szInline) - 1) = '\0';
          sprintf(Index, "%u", ExecIO_Options.lStartRcd);
@@ -621,21 +596,18 @@ static unsigned long ExecIO_Read_To_Stem (
          ExecIO_Options.lStartRcd++;
          }
       }
-   else
-      {
+   else {
       /* process a specific record count */
-      while (ExecIO_Options.lRcdCnt > 0)
-         {
-         if (fgets(szInline, sizeof(szInline), pll -> pFile))
-            {
-            if (*(szInline + strlen(szInline) - 1) == '\n')
+      while (ExecIO_Options.lRcdCnt > 0) {
+         if (fgets(szInline, sizeof(szInline), pll -> pFile)) {
+            if (*(szInline + strlen(szInline) - 1) == '\n') {
                *(szInline + strlen(szInline) - 1) = '\0';
+               }
             sprintf(Index, "%u", ExecIO_Options.lStartRcd);
             SetRexxVar(Stem, szInline, strlen(szInline));
             ExecIO_Options.lStartRcd++;
             }
-         else
-            {
+         else {
             ulRc = 2;
             break;
             }
@@ -676,33 +648,34 @@ static unsigned long ExecIO_Read_To_Queue (
    /* Local function variables */
 
    /* process request */
-   if (ExecIO_Options.lRcdCnt == 0)
+   if (ExecIO_Options.lRcdCnt == 0) {
       return 0;
-   if (ExecIO_Options.lRcdCnt == -1)
-      {
+      }
+   if (ExecIO_Options.lRcdCnt == -1) {
       /* process an "*" record count */
-      while (fgets (szInline, sizeof (szInline), pll -> pFile))
-         {
-         if (*(szInline + strlen (szInline) - 1) == '\n')
+      while (fgets (szInline, sizeof (szInline), pll -> pFile)) {
+         if (*(szInline + strlen (szInline) - 1) == '\n') {
             *(szInline + strlen (szInline) - 1) = '\0';
-         if (ExecIO_Options.lDirection != 2)
+            }
+         if (ExecIO_Options.lDirection != 2) {
             push (szInline, ExecIO_Options.lDirection);
+            }
          }
       }
-   else
-      {
+   else {
       /* process a specific record count */
-      while (ExecIO_Options.lRcdCnt > 0)
-         {
-         if (fgets (szInline, sizeof (szInline), pll -> pFile))
-            {
-            if (*(szInline + strlen (szInline) - 1) == '\n')
+      while (ExecIO_Options.lRcdCnt > 0) {
+         if (fgets (szInline, sizeof (szInline), pll -> pFile)) {
+            if (*(szInline + strlen (szInline) - 1) == '\n') {
                *(szInline + strlen (szInline) - 1) = '\0';
-            if (ExecIO_Options.lDirection != 2)
+               }
+            if (ExecIO_Options.lDirection != 2) {
                push (szInline, ExecIO_Options.lDirection);
+               }
             }
-         else
+         else {
             return 2;
+            }
          ExecIO_Options.lRcdCnt--;
          }
       }
@@ -735,10 +708,10 @@ static PLL Search_LL (
    /* Local function variables */
    PLL pll = pHead;
 
-   while (pll != NULL)
-      {
-      if (!strcmp (SFilename, pll -> FileName))
+   while (pll != NULL) {
+      if (!strcmp (SFilename, pll -> FileName)) {
          return pll;
+         }
       pll = pll -> next;
       }
    return pll;
@@ -765,10 +738,12 @@ static void Insert_LL (
    PLL pll)                      /* Pointer to the new item           */
    {
 
-   if (pHead == NULL)
+   if (pHead == NULL) {
       pHead = pll;
-   else
+      }
+   else {
       pTail -> next = pll;
+      }
    pll -> prev = pTail;
    pll -> next = NULL;
    pTail = pll;
@@ -796,14 +771,18 @@ static void Delete_LL (
    PLL pll)                      /* Pointer to the item to be deleted */
    {
 
-   if (pHead == pll)
+   if (pHead == pll) {
       pHead = pll -> next;
-   if (pTail == pll)
+      }
+   if (pTail == pll) {
       pTail = pll -> prev;
-   if (pll -> next != NULL)
+      }
+   if (pll -> next != NULL) {
       pll -> next -> prev = pll -> prev;
-   if (pll -> prev != NULL)
+      }
+   if (pll -> prev != NULL) {
       pll -> prev -> next = pll -> next;
+      }
    free(pll);
    return;
    }
@@ -831,13 +810,8 @@ static long queued (
 
    /* local function variables */
    size_t elements;   
-   RexxReturnCode rc;
 
-   rc = RexxQueryQueue("SESSION", &elements);
-   if (rc != RXQUEUE_OK)
-      {
-      return 0;
-      }
+   RexxQueryQueue("SESSION", &elements);
    return (long)elements;
    }
 
@@ -894,8 +868,9 @@ static char * pull (
 
    /* local function variables */
    RXSTRING       result = {0, NULL};
+   RexxReturnCode rc;
 
-   RexxPullFromQueue("SESSION", &result, NULL, RXQUEUE_WAIT);
+   rc = RexxPullFromQueue("SESSION", &result, NULL, RXQUEUE_WAIT);
    return result.strptr;
    }
 
@@ -908,7 +883,7 @@ static void hostemu_loader(RexxThreadContext *context) {
    printf("HOSTEMU: Library loaded.\n");
    printf("HOSTEMU: RexxRegisterSubcomExe retc = %d.\n", rc);
    #endif
-}
+   }
 
 
 static void hostemu_unloader(RexxThreadContext *context) {
@@ -916,12 +891,11 @@ static void hostemu_unloader(RexxThreadContext *context) {
 
    /* close all our open files */
    pll = pHead;
-   while (pll != NULL)
-      {
+   while (pll != NULL) {
       fclose (pll -> pFile);
       pll = pll -> next;
       }
-}
+   }
 
 
 RexxPackageEntry hostemu_package_entry = {
@@ -933,7 +907,7 @@ RexxPackageEntry hostemu_package_entry = {
     hostemu_unloader,                    // unload function
     NULL,                                // the exported routines
     NULL                                 // the exported methods
-};
+    };
 
 // package loading stub.
 OOREXX_GET_PACKAGE(hostemu);
