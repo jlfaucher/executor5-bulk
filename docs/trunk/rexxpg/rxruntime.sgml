@@ -77,22 +77,19 @@ it reports the error and stops processing without creating a new output file.
 If you omit the <emphasis role="italic">outputfile</emphasis>,
 the language processor performs a syntax
 check on the program without writing the executable version to a file.</para>
-<para>You can use the <emphasis role="italic">/s</emphasis> option to suppress
-the display of the information about the interpreter used.</para>
+<para>You can use the <emphasis role="italic">s</emphasis> option (<emphasis role="italic">/s</emphasis>
+on Windows and <emphasis role="italic">-s</emphasis> on unixes) to suppress the display of the
+information about the interpreter used.
+</para>
 
 <note>
 <para>You can use the in-storage capabilities of the RexxStart programming
 interface to process the file image of the output file.</para></note>
-<para>With version 2.1, the tokenized form has changed. All Open Object
-Rexx for Windows editions contain a utility called RxMigrate that
-can be used to change old tokenized forms to the new one. The recommended
-procedure is to create a new tokenized file from the original source with
-the new version of Open Object Rexx. However, if the source code is no longer available,
-RxMigrate can be used to convert the old tokenized file. The syntax of the
-RxMigrate utility is:</para>
-<programlisting>
-<![CDATA[
->>-RxMigrate--inputfile--outputfile----------------------------><
-]]>
-</programlisting>
+<para>
+  Due to changes in the 4.0 interpreter it is not possible for Rexx programs, tokenized with any previous
+  version of ooRexx, to run under ooRexx 4.0.0.  The programs will need to be re-tokenized with the 4.0.0
+  interpreter. The changes are such that the old tokenized form can not be changed to the new form.
+  Therefore, no utility such as the old <computeroutput>RxMigrate</computeroutput> can be provided. Part
+  of the purpose of the changes is to make this sitaution less likely to occur in the future.
+</para>
 </appendix>
