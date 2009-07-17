@@ -4,6 +4,7 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 ::class "AbstractXMLDocumentParser" subclass XMLParser
+
 ::method init
   expose inDtd documentSource dtdSource dtdContentModelSource
   use strict arg config

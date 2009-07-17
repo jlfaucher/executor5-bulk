@@ -30,5 +30,31 @@
   -- default implementation accepts everything
   return self~FILTER_ACCEPT
 
+::method isShowing
+  use strict arg whatToShow, test
 
+  if whatToShow == .NodeFilter~SHOW_ALL then do
+      flagValues = "11111111111"    -- we'll set all flags to true
+  end
+  else do
+      -- convert this to a binary string, then pad out to 11 digits for the
+      -- mapping
+      flagValues = whatToShow~d2x~x2b~right(11, 0)
+  end
+
+  whatToShowFlags = .directory~new
+  parse var flagValues whatToShowFlags[.Node~ELEMENT] +1 -
+                       whatToShowFlags[.Node~ATTRIBUTE] +1 -
+                       whatToShowFlags[.Node~TEXT] +1 -
+                       whatToShowFlags[.Node~CDATA_SECTION] +1 -
+                       whatToShowFlags[.Node~ENTITY_REFERENCE] +1 -
+                       whatToShowFlags[.Node~ENTITY] +1 -
+                       whatToShowFlags[.Node~PROCESSING_INSTRUCTION] +1 -
+                       whatToShowFlags[.Node~COMMENT] +1 -
+                       whatToShowFlags[.Node~DOCUMENT] +1 -
+                       whatToShowFlags[.Node~DOCUMENT_TYPE] +1 -
+                       whatToShowFlags[.Node~DOCUMENT_FRAGMENT] +1 -
+                       whatToShowFlags[.Node~NOTATION] +1
+
+ return whatToShowFlags[test]
 

@@ -7,6 +7,8 @@
 ::constant ENTITY_RESOLVER "http://apache.org/xml/properties/internal/entity-resolver"
 ::constant ERROR_HANDLER "http://apache.org/xml/properties/internal/error-handler"
 
+::attribute configuration private
+
 ::method init
   expose configuration
 
