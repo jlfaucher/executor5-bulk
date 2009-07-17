@@ -160,31 +160,80 @@ exit 0                   /* Exit with a return code of 0 */
   the program and control returns to the command prompt.
 </para>
 <para>
-  The ooRexx interpreter is invoked by the command
-</para>
+  Rexx programs are often run from the command line, although, on the Windows operating systems there are
+  several other options. These options are discussed several paragraphs later. The ooRexx interpreter is
+  invoked by the command, <computeroutput>rexx</computeroutput>. With no arguments, the command produces
+  a simple syntax reminder:
 <programlisting>
 <![CDATA[
-rexx
+C:\Rexx>rexx
+
+Syntax: REXX [-v] ProgramName [parameter_1....parameter_n]
+or    : REXX [-e] ProgramString [parameter_1....parameter_n]
+
+C:\Rexx>
 ]]>
 </programlisting>
+</para>
 <para>
   To run the program <computeroutput>greeting.rex</computeroutput>, for example, use the command
-</para>
 <programlisting>
 <![CDATA[
 rexx greeting.rex
 ]]>
 </programlisting>
-<para>
   or
-</para>
 <programlisting>
 <![CDATA[
 rexx greeting
 ]]>
 </programlisting>
-<para>
   If not provided, an extension of ".rex" is assumed.
+</para>
+<para>
+  The <computeroutput>-v</computeroutput> option produces the version and copyright infomation. For
+  example:
+<programlisting>
+<![CDATA[
+C:\Rexx>rexx -v
+Open Object Rexx Version 4.0.0
+Build date: Jul 16 2009
+Addressing Mode: 64
+
+Copyright (c) IBM Corporation 1995, 2004.
+Copyright (c) RexxLA 2005-2009.
+All Rights Reserved.
+This program and the accompanying materials
+are made available under the terms of the Common Public License v1.0
+which accompanies this distribution.
+http://www.oorexx.org/license.html
+C:\Rexx>
+]]>
+</programlisting>
+</para>
+<para>
+  The <computeroutput>-e</computeroutput> accepts a complete Rexx program in the form of a single string
+  and executes it immediately.  Enclose the string in double quotes and separate lines of the program
+  with semi-colons. Arguments can follow the string:
+<programlisting>
+<![CDATA[
+C:\Rexx>rexx -e "use arg name; say 'Hello to you' name" Mark
+Hello to you Mark
+
+C:\Rexx>
+
+C:\Rexx>rexx -e "parse arg a b; say a '*' b 'is' a*b" 12 3
+12 * 3 is 36
+
+C:\Rexx>rexx -e "parse arg a b; say a '*' b 'is' a*b" 22 -1
+22 * -1 is -22
+
+C:\Rexx>rexx -e "parse arg a b; say a '*' b 'is' a*b" 126 456
+126 * 456 is 57456
+
+C:\Rexx>
+]]>
+</programlisting>
 </para>
 <para>
   On <emphasis role="italic">Windows only</emphasis> there are these additional ways to run your Rexx
