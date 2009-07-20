@@ -43,6 +43,7 @@
 
   group = .TestGroup~new(s)
   group~add(.STREAM.testGroup)
+  group~add(.StreamQualifyExists)
 
   if group~isAutomatedTest then return group
 
@@ -788,3 +789,61 @@ return testResult
 
 
 -- End of class: STREAM.testGroup
+
+
+-- The StreamQualifyExists test cases are dependent on the known test suite
+-- directory structure.  If the structure and the test cases fail, then fix the
+-- test cases.
+
+::class "StreamQualifyExists" public subclass ooTestCase
+
+-- Set up and tear down are used to quarentee we know what directory we are in
+-- for each test, and that the original working directory is restored at the end
+-- of each test.
+::method setup
+  parse source . . file
+  newDir = directory(filespec('L', file))
+
+::method teardown
+
+  newDir = directory(.ooTest.originalWorkingDir)
+
+::method test_relative_file_exists
+  sl = .ooRexxUnit.directory.separator
+  expected = .ooTest.dir || sl'ooRexx'sl'base'sl'class'sl'Array.testGroup'
+
+  -- Something like: ../class/Array.testGroup
+  file = ".."sl"class"sl"Array.testGroup"
+
+  ret = stream(file, 'c', 'query exists')
+  self~assertSame(expected, ret)
+
+::method test_relative_file_exists2
+  sl = .ooRexxUnit.directory.separator
+  expected = .ooTest.dir || sl'ooRexx'sl'API'sl'oo'sl'CONVERSION.testGroup'
+
+  -- Something like: ../../../ooRexx/API/oo/CONVERSION.testGroup
+  file = ".."sl'..'sl'..'sl'ooRexx'sl'API'sl"oo"sl"CONVERSION.testGroup"
+
+  ret = stream(file, 'c', 'query exists')
+  self~assertSame(expected, ret)
+
+::method test_relative_file_not_exists
+  sl = .ooRexxUnit.directory.separator
+  expected = ""
+
+  -- Something like: ../class/noSuchThing.testGroup
+  file = ".."sl"class"sl"noSuchThing.testGroup"
+
+  ret = stream(file, 'c', 'query exists')
+  self~assertSame(expected, ret)
+
+::method test_relative_file_not_exists2
+  sl = .ooRexxUnit.directory.separator
+  expected = ""
+
+  -- Something like: ../../../ooRexx/API/oo/notA.real.file
+  file = ".."sl'..'sl'..'sl'ooRexx'sl'API'sl"oo"sl"notA.real.file"
+
+  ret = stream(file, 'c', 'query exists')
+  self~assertSame(expected, ret)
