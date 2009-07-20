@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -57,6 +57,7 @@ return testResult
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
 
 /* class: RexxQueue.testGroup  - - - - - - - - - - - - - - - - - - - - - - - -*\
 
@@ -263,6 +264,112 @@ return testResult
       q~delete
 
   -- End test_push( )
+
+::method test_exists
+
+  q = .RexxQueue~new("xxTempName")
+  self~assertTrue(q~isA(.RexxQueue))
+
+  self~assertTrue(.RexxQueue~exists("xxTempName"))
+  q~delete
+  self~assertFalse(.RexxQueue~exists("xxTempName"))
+
+::method test_exists2
+
+  q = .RexxQueue~new("xxTempName")
+  self~assertTrue(q~isA(.RexxQueue))
+
+  self~assertFalse(.RexxQueue~exists("xxTempName "))
+  q~delete
+  self~assertFalse(.RexxQueue~exists("xxTempName"))
+
+::method test_exists3
+
+  self~assertFalse(.RexxQueue~exists("slskekjerbv"))
+
+::method test_exists4
+
+  qName = 'xzywqUtempUQ'
+
+  src = .array~new
+  src[1] = "q = .RexxQueue~new(" qName ")"
+  src[2] = "return"
+
+  prgFile = createRexxPrgFile(src, 'tempRxPrgFile')
+  self~assertTrue(prgFile \== "")
+
+  'rexx' prgFile
+  j = deleteFile(prgFile)
+  j = SysSleep(.5)
+
+  self~assertTrue(.RexxQueue~exists(qName))
+
+  src[1] = ".RexxQueue~delete(" qName ")"
+
+  prgFile = createRexxPrgFile(src, 'tempRxPrgFile')
+  self~assertTrue(prgFile \== "")
+
+  'rexx' prgFile
+  j = deleteFile(prgFile)
+  j = SysSleep(.5)
+
+  self~assertFalse(.RexxQueue~exists(qName))
+
+::method test_exists_syntax
+
+  self~expectSyntax(88.922)
+  self~assertFalse(.RexxQueue~exists("slskekjerbv", 4))
+
+::method test_exists_syntax2
+
+  self~expectSyntax(88.901)
+  self~assertFalse(.RexxQueue~exists())
+
+::method test_open1
+
+  -- Test that open creates a new queue when the named queue does not exist
+  qName = 'uiwddewsl'
+  .RexxQueue~delete(qName)
+  self~assertFalse(.RexxQueue~exists(qName))
+
+  self~assertSame(0, .RexxQueue~open(qName))
+  q = .RexxQueue~new(qName)
+  self~assertTrue(q~isA(.RexxQueue))
+  self~assertSame(qName~upper, q~get)
+
+  .RexxQueue~delete(qName)
+
+::method test_open_syntax
+
+  qName = 'uSddeTEiwddewsl'
+  .RexxQueue~delete(qName)
+  self~assertFalse(.RexxQueue~exists(qName))
+
+  flag = 'not here'
+
+  signal on syntax
+  ret = .RexxQueue~open(qName, 4)
+
+  self~assertSame('here', flag)  -- This assert should never be invoked
+  .RexxQueue~delete(qName)
+  return
+
+  syntax:
+  self~assertFalse(.RexxQueue~exists(qName))
+
+::method test_open_syntax2
+
+  self~expectSyntax(88.901)
+  ret = .RexxQueue~open()
+
+::method test_open_syntax3
+
+  qName = 'uSddZZdseddewsl'
+  .RexxQueue~delete(qName)
+  self~assertFalse(.RexxQueue~exists(qName))
+
+  self~expectSyntax(88.922)
+  ret = .RexxQueue~open(qName, 5)
 
 
   /* test_get  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
