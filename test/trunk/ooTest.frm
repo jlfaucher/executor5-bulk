@@ -1229,9 +1229,9 @@ return 0
     if data == .nil then
       raise syntax 88.917 array ("1 'fileSpec'", "TestGroup metadata format invalid. File:" fileSpec)
 
-    self~tests = .table~new
-    self~testsWithSuite = .table~new
-    self~testCollections = .table~new
+    self~tests = .relation~new
+    self~testsWithSuite = .relation~new
+    self~testCollections = .relation~new
     self~hasTests = .false
     self~testCount = 0
     self~mustNotExecute = .false
@@ -1364,9 +1364,6 @@ return 0
     if \ isSubClassOf(test, "ooTestCase") then
       raise syntax 88.917 array ("1 'test'", "must be a subclass of the ooTestCase class. Found:" test)
 
-    if tests~hasIndex(test~ooTestType) then
-      raise syntax 88.917 array ("1 'test'", "is a test type ("test~ooTestType") already contained by this test group.")
-
     test~testCaseInfo = self~testInfo
     tests[test~ooTestType] = test
     self~currentTypes~put(test~ooTestType)
@@ -1398,9 +1395,6 @@ return 0
 
     if \ isSubClassOf(suite, "ooTestSuite") then
       raise syntax 88.917 array ("2 'suite'", "must be a subclass of the ooTestSuite class. Found:" suite)
-
-    if testsWithSuite~hasIndex(test~ooTestType) then
-      raise syntax 88.917 array ("1 'test'", "is a test type ("test~ooTestType") already contained by this test group.")
 
     test~testCaseInfo = self~testInfo
     testsWithSuite[test~ooTestType] = .TestWithSuite~new(test, suite)
@@ -1452,9 +1446,6 @@ return 0
 
     if \ isSubClassOf(suite, "ooTestSuite") then
       raise syntax 88.917 array ("3 'suite'", "if used, must be a subclass of the ooTestSuite class. Found:" suite)
-
-    if testCollections~hasIndex(test~ooTestType) then
-      raise syntax 88.917 array ("1 'test'", "is a test type ("test~ooTestType") already contained by this test group.")
 
     test~testCaseInfo = self~testInfo
     testCollections[test~ooTestType] = .TestWithSuiteAndNames~new(test, methods, suite)
@@ -1534,22 +1525,22 @@ return 0
     if testTypes~items == 0 then return testSuite
 
     do t over testTypes
-      testClass = tests[t]
-      if testClass <> .nil then do
+      testClasses = tests~allAt(t)
+      if testClasses <> .nil then do testClass over testClasses
         suite = .ooTestSuite~new(testClass)
         suite~definedInFile = self~pathName
         testSuite~addTest(suite)
       end
 
-      obj = testsWithSuite[t]
-      if obj <> .nil then do
+      objects = testsWithSuite~allAt(t)
+      if objects <> .nil then do obj over objects
         suite = obj~getSuite
         suite~definedInFile = self~pathName
         testSuite~addTest(suite)
       end
 
-      obj = testCollections[t]
-      if obj <> .nil then do
+      objects = testCollections~allAt(t)
+      if objects <> .nil then do obj over objects
         suite = obj~getSuite
         suite~definedInFile = self~pathName
         testSuite~addTest(suite)
@@ -1603,8 +1594,8 @@ return 0
     end
     else do
       do t over testTypes
-        testClass = tests[t]
-        if testClass <> .nil then do
+        testClasses = tests~allAt(t)
+        if testClasses <> .nil then do testClass over testClasses
           suite = self~constructSuiteWithTestCases(testClass, testCases)
           if suite == .nil then iterate
 
@@ -1612,8 +1603,8 @@ return 0
           testSuite~addTest(suite)
         end
 
-        obj = testsWithSuite[t]
-        if obj <> .nil then do
+        objects = testsWithSuite~allAt(t)
+        if objects <> .nil then do obj over objects
           suite = obj~getSuiteForTestCases(testCases)
           if suite == .nil then iterate
 
@@ -1621,8 +1612,8 @@ return 0
           testSuite~addTest(suite)
         end
 
-        obj = testCollections[t]
-        if obj <> .nil then do
+        objects = testCollections~allAt(t)
+        if objects <> .nil then do obj over objects
           suite = obj~getSuiteForTestCases(testCases)
           if suite == .nil then iterate
 
