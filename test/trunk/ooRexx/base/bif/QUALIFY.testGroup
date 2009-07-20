@@ -79,7 +79,6 @@ return testResult
   -- if the test case failed, the clean up is not done.  Needs to be done here
   -- before we change back the directory.
   if SysFileExists('testOne') then do
-    say "DOING IT"
     sl = .ooRexxUnit.directory.separator
     file = directory() || sl'testOne'sl'testTwo'sl'test.file'
     ret = deleteFile(file)
