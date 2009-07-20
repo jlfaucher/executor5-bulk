@@ -1066,7 +1066,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   optsTable[allTestTypes         ] = "boolean"
   optsTable[buildFirst           ] = "boolean"
   optsTable[debug                ] = "boolean"
-  optsTable[defaultTestTypes     ] = "testypes"
+  optsTable[defaultTestTypes     ] = "testtypes"
   optsTable[fileList             ] = "filelist"
   optsTable[filesWithPattern     ] = "fileswithpattern"
   optsTable[forceBuild           ] = "boolean"
