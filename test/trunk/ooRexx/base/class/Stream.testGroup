@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007 - 2009 Rexx Language Association. All rights reserved.  */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -43,6 +43,7 @@
 
   group = .TestGroup~new(s)
   group~add(.Stream.testGroup)
+  group~add(.StreamClassQualify_QueryExists)
 
   if group~isAutomatedTest then return group
 
@@ -1625,5 +1626,196 @@ return testResult
 notready:
   self~assertSame("NOTREADY:EOF", f~description)
 
-
 -- End of class: Stream.testGroup
+
+
+::class "StreamClassQualify_QueryExists" public subclass ooTestCase
+
+-- Set up and tear down are used to guarantee we know what directory we are in
+-- for each test, and that the original working directory is restored at the end
+-- of each test.
+::method setup
+  parse source . . file
+  newDir = directory(filespec('L', file))
+
+::method teardown
+  newDir = directory(.ooTest.originalWorkingDir)
+
+::method test_simple_qualify
+
+  parse source . . file
+  fsObj = .stream~new("Stream.testGroup")
+
+  self~assertSame(file, fsObj~qualify)
+
+::method test_simple2_qualify
+
+  parse source . . file
+  fsObj = .stream~new(file)
+
+  self~assertSame(file, fsObj~qualify)
+
+::method test_qualify_relative
+
+  sl = .ooRexxUnit.directory.separator
+  expected = .ooTest.dir || sl || 'ooTest.frm'
+
+  relativeName = '..'sl'..'sl'..'sl'ooTest.frm'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~qualify)
+
+::method test_simple_qualify2
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  relativeName = filespec('L', file) || '.'sl || '.'sl || 'Stream.testGroup'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(file, fsObj~qualify)
+
+::method test_simple_qualify3
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = filespec('L', file) || 'String'sl'right.testGroup'
+  relativeName = 'String'sl'right.testGroup'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~qualify)
+
+::method test_qualify3_nofile
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = .ooTest.dir || sl || 'ooRexx'sl'base'sl'bif'sl'notAFileToday'
+  relativeName = '..'sl'bif'sl'notAFileToday'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~qualify)
+
+::method test_qualify2_nofile
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = filespec('L', file) || '.MyFile'
+  relativeName = '.'sl'.MyFile'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~qualify)
+
+::method test_qualify1_nofile
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = filespec('L', file) || '.MyFile'
+  relativeName = '.MyFile'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~qualify)
+
+
+::method test_simple_qualify4
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = filespec('L', file) || 'String'sl'right.testGroup'
+  relativeName = '..'sl'class'sl'..'sl'bif'sl'..'sl'..'sl'base'sl'class'sl'String'sl'right.testGroup'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~qualify)
+
+
+::method test_relative_exists
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = filespec('L', file) || 'String'sl'right.testGroup'
+  relativeName = '..'sl'class'sl'..'sl'bif'sl'..'sl'..'sl'base'sl'class'sl'String'sl'right.testGroup'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~query("exists"))
+
+::method test_simple_exists
+
+  parse source . . file
+  fsObj = .stream~new(file)
+  self~assertSame(file, fsObj~query("exists"))
+
+::method test_relative_exists2
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = .ooTest.dir || sl'ooRexx'sl'base'sl'bif'sl'STREAM.testGroup'
+  relativeName = '..'sl'..'sl'base'sl'bif'sl'STREAM.testGroup'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~query("exists"))
+
+::method test_relative_notExists2
+
+  sl = .ooRexxUnit.directory.separator
+  parse source . . file
+
+  expected = ''
+  relativeName = '..'sl'..'sl'base'sl'bif'sl'STREAMY.testGroup'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~query("exists"))
+
+::method test_relative_exists3
+
+  sl = .ooRexxUnit.directory.separator
+
+  dirName = filespec('N', .ooTest.Dir)
+
+  expected = .ooTest.dir || sl'ooRexx'sl'base'sl'bif'sl'STREAM.testGroup'
+  relativeName = .ooTest.dir || sl'..'sl || dirName || sl'ooRexx'sl'base'sl'bif'sl'STREAM.testGroup'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~query("exists"))
+
+::method test_relative_exists4
+
+  sl = .ooRexxUnit.directory.separator
+  src = .array~of(" ", " ", " ")
+
+  fileName = .ooTest.dir || sl'ooRexx'sl'base'sl'.hidden'
+  f = createFile(src, fileName)
+  self~assertNotSame("", f)
+
+  expected = f
+  relativeName = '..'sl'.hidden'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~query("exists"))
+
+  j = deleteFile(f)
+  self~assertSame("", fsObj~query("exists"))
+
+::method test_relative_exists5
+
+  sl = .ooRexxUnit.directory.separator
+  src = .array~of(" ", " ", " ")
+
+  fileName = '.hidden'
+  f = createFile(src, fileName)
+  self~assertNotSame("", f)
+
+  expected = f
+  relativeName = '.hidden'
+  fsObj = .stream~new(relativeName)
+
+  self~assertSame(expected, fsObj~query("exists"))
+
+  j = deleteFile(f)
+  self~assertSame("", fsObj~query("exists"))
+
