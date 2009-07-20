@@ -43,7 +43,7 @@
 
   group = .TestGroup~new(s)
   group~add(.STREAM.testGroup)
-  group~add(.StreamQualifyExists)
+  group~add(.StreamQueryExists)
 
   if group~isAutomatedTest then return group
 
@@ -791,11 +791,11 @@ return testResult
 -- End of class: STREAM.testGroup
 
 
--- The StreamQualifyExists test cases are dependent on the known test suite
+-- The StreamQueryExists test cases are dependent on the known test suite
 -- directory structure.  If the structure and the test cases fail, then fix the
 -- test cases.
 
-::class "StreamQualifyExists" public subclass ooTestCase
+::class "StreamQueryExists" public subclass ooTestCase
 
 -- Set up and tear down are used to quarentee we know what directory we are in
 -- for each test, and that the original working directory is restored at the end
