@@ -69,13 +69,17 @@ all: pdf html
 
 pdf: readme.pdf
 
-html: readme.html
+html: readme-html.zip
 
 readme.pdf: $(STYLESHEET) $(JADETEXFMT) $(SGML_FILES)
 	docbook2pdf -d ../shared/oorexx.print.dsl readme.sgml
 
 readme.html: $(HTML_STYLESHEET) $(SGML_FILES)
 	docbook2html -d ../shared/oorexx.html.dsl $(HTML_OPTS) readme.sgml
+
+readme-html.zip: readme.html
+	zip rexxref-html *.html *.jpg
+
 
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
