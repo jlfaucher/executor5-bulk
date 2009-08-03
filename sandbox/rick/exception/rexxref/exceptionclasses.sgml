@@ -1,0 +1,1181 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference SGML file.
+    #
+    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<section id="exceptionclasses"><title>The Exception Classes</title>
+<para>This section describes the Rexx classes used for Rexx exception handling.
+</para>
+
+<section id="clsException"><title>The Exception Class</title>
+<indexterm><primary>Exception class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Exception class</secondary></indexterm>
+<para>This class is the base class used for an Rexx exception types.  All Rexx exception
+types are subclasses of the Exception class and all custom exception types must also subclass
+Exception.
+</para>
+<figure><title>The Exception class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxExceptionClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The Exception class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
+
+<section id="mthExceptionInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of Exception class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of Exception class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init(-+------+--+----------------------------+-)----------------><
+         +-type-+  +-,-+---------+--+--------+--+
+                       +-message-+  +-,cause-+
+]]>
+</programlisting>
+<para>Initializes an exception instance.  The <emphasis role="italics">type</emphasis>
+is the string name of the exeception type.  If omitted, the default is "EXCEPTION".
+The <emphasis role="italics">message</emphasis> argument is a string message that describes
+the exeception.  The default message is a null string ("").
+The <emphasis role="italics">cause</emphasis> argument is a optional Exception that
+represents a root cause for an exception.
+</para>
+</section>
+
+<section id="mthExceptionMessage"><title>message</title>
+<indexterm><primary>message method</primary>
+<secondary>of Exception class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>message method</secondary>
+<tertiary>of Exception class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-message-----------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns any message associated with the Exception.  If not provided, a default null
+string ("") is returned.</para>
+</section>
+
+<section id="mthExceptionPrintStackTrace"><title>printStackTrace</title>
+<indexterm><primary>printStackTrace method</primary>
+<secondary>of Exception class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>printStackTrace method</secondary>
+<tertiary>of Exception class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-printStackTrace---------------------------------------------><
+]]>
+</programlisting>
+<para>Dumps the stack trace information to .ERROR.
+</para>
+</section>
+
+<section id="mthExceptionType"><title>type</title>
+<indexterm><primary>type method</primary>
+<secondary>of Exception class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>type method</secondary>
+<tertiary>of Exception class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-type--------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the exception type.  Each subclass of the Exception class defines its own
+type identifier.  The type identifier is used to set the CONDITION property conditions trapped
+via SIGNAL ON or CALL ON.  For example, the SyntaxError class has a condition type of "SYNTAX".
+The NovalueCondition class has a condition type of "NOVALUE".  The default condition type is
+"EXCEPTION".
+<para>
+</section>
+
+<section id="mthExceptionCause"><title>cause</title>
+<indexterm><primary>cause method</primary>
+<secondary>of Exception class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>cause method</secondary>
+<tertiary>of Exception class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-cause-------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns an exception object that identifies an original triggering cause for a problem.
+If not specified for the exception, .nil is returned.
+<para>
+</section>
+
+<section id="mthExceptionCondition"><title>condition</title>
+<indexterm><primary>condition method</primary>
+<secondary>of Exception class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>condition method</secondary>
+<tertiary>of Exception class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-condition---------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns a directory with a representation of this Exception object in the form
+returned by the CONDITION('O') built-in function.
+<para>
+</section>
+
+<section id="mthExceptionTraceback"><title>traceback</title>
+<indexterm><primary>traceback method</primary>
+<secondary>of Exception class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>traceback method</secondary>
+<tertiary>of Exception class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-traceback---------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns a List of strings containing a single entry for each element in the exception call
+stack.  This is the same TRACEBACK list defined for condition objects.
+<para>
+</section>
+
+<section id="mthExceptionStackTrace"><title>stackTrace</title>
+<indexterm><primary>stackTrace method</primary>
+<secondary>of Exception class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>stackTrace method</secondary>
+<tertiary>of Exception class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-stackTrace--------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns a List of StackFrame objects representing each element of the call stack.
+<para>
+</section>
+
+<section id="mthExceptionFillInStackTrace"><title>fillInStackTrace</title>
+<indexterm><primary>fillInStackTrace method</primary>
+<secondary>of Exception class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>fillInStackTrace method</secondary>
+<tertiary>of Exception class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-fillInStackTrace--------------------------------------------><
+]]>
+</programlisting>
+<para>Replaces the stackTrace and traceBack information of the
+exception object with new traceback information relative to the
+current call context.
+<para>
+</section>
+
+<section id="mthExceptionString"><title>string</title>
+<indexterm><primary>string method</primary>
+<secondary>of Exception class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>strint method</secondary>
+<tertiary>of Exception class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-string------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns a string representation for the exeception object.
+<para>
+</section>
+</section>
+
+<section id="clsRexxSyntaxError"><title>The RexxSyntaxError Class</title>
+<indexterm><primary>RexxSyntaxError class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>RexxSyntaxError class</secondary></indexterm>
+<para>This is the base class for all Rexx syntax error subclasses.
+</para>
+<figure><title>The RexxSyntaxError class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxRexxSyntaxErrorClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The RexxSyntaxError class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+&exceptionclsmethods;
+
+</section>
+
+<section id="mthRexxSyntaxErrorInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of SyntaxError class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of SyntaxError class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init(error,message--+---------------------------------+-)---><
+                       +-,-+---------------+--+--------+-+
+                           +-substitutions-+  +-,cause-+
+]]>
+</programlisting>
+<para>Initializes a RexxSyntaxError instance.  The <emphasis role="italics">error</emphasis>
+is the error message number as defined for the RAISE instruction.  This is the
+Rexx error message number for the SyntaxError being raised.
+The <emphasis role="italics">message</emphasis> argument is the text of the secondary
+message for the syntax condition.  The message can has substitution markers that identify
+where message substitutionas are to take place.
+If <emphasis role="italics">substitutions</emphasis> is specified, it must be an
+array of values that are used as substitution parameters for the exception.
+The <emphasis role="italics">cause</emphasis> argument is a optional Exception that
+represents a root cause for an exception.
+</para>
+</section>
+
+<section id="mthRexxSyntaxErrorError"><title>error</title>
+<indexterm><primary>error method</primary>
+<secondary>of RexxSyntaxError class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>error method</secondary>
+<tertiary>of RexxSyntaxError class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-error-------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the error code associated with the exception in the form "nn.nnn".  If no
+minor code has been specified with the error, the error will be returned in the form
+"nn.000".
+</para>
+</section>
+
+<section id="mthRexxSyntaxErrorMajor"><title>major</title>
+<indexterm><primary>major method</primary>
+<secondary>of RexxSyntaxError class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>major method</secondary>
+<tertiary>of RexxSyntaxError class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-major-------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the major portion of the exeception error code.
+</para>
+</section>
+
+<section id="mthRexxSyntaxErrorMinor"><title>minor</title>
+<indexterm><primary>minor method</primary>
+<secondary>of RexxSyntaxError class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>minor method</secondary>
+<tertiary>of RexxSyntaxError class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-minor-------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the minor portion of the exeception error code.  If
+a minor code was not specified, "000" is returned.
+</para>
+</section>
+
+<section id="mthRexxSyntaxErrorErrorText"><title>errorText</title>
+<indexterm><primary>errorText method</primary>
+<secondary>of RexxSyntaxError class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>errorText method</secondary>
+<tertiary>of RexxSyntaxError class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-errorText---------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns error text for the associated with the major error code.
+The major error text does not have substitution parameters.
+</para>
+</section>
+</section>
+
+<section id="clsSyntaxError"><title>The SyntaxError Class</title>
+<indexterm><primary>SyntaxError class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>SyntaxError class</secondary></indexterm>
+<para>This class is used for Rexx syntax errors.
+</para>
+<figure><title>The SyntaxError class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxSyntaxErrorClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The SyntaxError class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+&exceptionclsmethods;
+&syntaxclsmethods;
+
+</section>
+
+<section id="mthSyntaxErrorInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of SyntaxError class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of SyntaxError class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init(error--+---------------------------------+-)---><
+               +-,-+---------------+--+--------+-+
+                   +-substitutions-+  +-,cause-+
+]]>
+</programlisting>
+<para>Initializes a SyntaxError instance.  The <emphasis role="italics">error</emphasis>
+is the error message number as defined for the RAISE instruction.  This is the
+Rexx error message number for the SyntaxError being raised.
+If <emphasis role="italics">substitutions</emphasis> is specified, it must be an
+array of values that are used as substitution parameters for the exception.
+The <emphasis role="italics">cause</emphasis> argument is a optional Exception that
+represents a root cause for an exception.
+</para>
+</section>
+</section>
+
+<section id="clsUserSyntaxError"><title>The UserSyntaxError Class</title>
+<indexterm><primary>UserSyntaxError class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>UserSyntaxError class</secondary></indexterm>
+<para>This class is used for Rexx user syntax error variants.  This class
+will manage message substitutions for substituted user message text.
+The <emphasis role="italics">message</emphasis> argument is the text of the secondary
+message for the syntax condition.  The message can has substitution markers that identify
+where message substitutionas are to take place.
+</para>
+<figure><title>The UserSyntaxError class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxUserSyntaxErrorClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The UserSyntaxError class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+&exceptionclsmethods;
+&syntaxclsmethods;
+
+</section>
+
+<section id="mthUserSyntaxErrorInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of UserSyntaxError class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of UserSyntaxError class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init(code,messsage-+---------------------------------+-)---><
+                      +-,-+---------------+--+--------+-+
+                          +-substitutions-+  +-,cause-+
+]]>
+</programlisting>
+<para>Initializes a UserSyntaxError instance.  The <emphasis role="italics">code</emphasis>
+is a major Rexx error number as defined for the RAISE instruction.  This identifies the
+major category of the user message type.
+The <emphasis role="italics">message</emphasis> argument is the text of the secondary
+message substituted into the user-defined error messaqge.
+The message can have substitution markers that identify
+where message substitutionas are to take place.
+If <emphasis role="italics">substitutions</emphasis> is specified, it must be an
+array of values that are used as substitution parameters for the exception.
+The <emphasis role="italics">cause</emphasis> argument is a optional Exception that
+represents a root cause for an exception.
+</para>
+</section>
+</section>
+
+<section id="clsRexxCondition"><title>The RexxCondition Class</title>
+<indexterm><primary>RexxCondition class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>RexxCondition class</secondary></indexterm>
+<para>This class is the base class for non-syntax condition types.
+</para>
+<figure><title>The RexxCondition class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxRexxConditionClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The RexxCondition class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+&exceptionclsmethods;
+</section>
+
+<section id="mthRexxConditionInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of RexxCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of RexxCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init(condition,-+------------------------------------+-)---><
+                   +-,-+-------------+--+-------------+-+
+                       +-description-+  +-,additional-+
+]]>
+</programlisting>
+<para>Initializes a RexxCondition instance.  The <emphasis role="italics">condition</emphasis>,
+<emphasis role="italics">description</emphasis>, and <emphasis role="italics">addirional</emphasis>
+arguments map directly to the equivalent subkeywords defined by the RAISE instruction.
+</para>
+</section>
+
+<section id="mthRexxCondition"><title>description</title>
+<indexterm><primary>description method</primary>
+<secondary>of RexxCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>description method</secondary>
+<tertiary>of RexxCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-description-------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the description information for the condition.  Returns .nil
+if no description was provided.
+</para>
+</section>
+
+<section id="mthRexxCondition"><title>additional</title>
+<indexterm><primary>additional method</primary>
+<secondary>of RexxCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>additional method</secondary>
+<tertiary>of RexxCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-additional--------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the additional information object for the condition.  Returns .nil
+if no object was provided.
+</para>
+</section>
+</section>
+
+<section id="clsNovalueCondition"><title>The NovalueCondition Class</title>
+<indexterm><primary>NovalueCondition class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>NovalueCondition class</secondary></indexterm>
+<para>This class is used for NOVALUE conditions.
+</para>
+<figure><title>The NovalueCondition class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxNovalueConditionClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The NovalueCondition class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+&exceptionclsmethods;
+&conditionclsmethods;
+</section>
+
+<section id="mthNovalueConditionInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of NovalueCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of NovalueCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para>Initializes a NovalueCondition instance.  The <emphasis role="italics">name</emphasis>
+argument is the string name of the variable that triggered the NOVALUE condition.
+</para>
+</section>
+
+<section id="mthNovalueCondition"><title>variable</title>
+<indexterm><primary>variable method</primary>
+<secondary>of NovalueCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>variable method</secondary>
+<tertiary>of NovalueCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-variable----------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the name of the variable that triggered the Novalue condition.
+</para>
+</section>
+</section>
+
+<section id="clsNomethodCondition"><title>The NomethodCondition Class</title>
+<indexterm><primary>NomethodCondition class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>NomethodCondition class</secondary></indexterm>
+<para>This class is used for NOMETHOD conditions.
+</para>
+<figure><title>The NoMethodCondition class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxNomethodConditionClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The NoMethodCondition class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+&exceptionclsmethods;
+&conditionclsmethods;
+</section>
+
+<section id="mthNomethodConditionInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of NomethodCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of NomethodCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init(target,method--+------------+-)-----------------------><
+                       +-,arguments-+
+]]>
+</programlisting>
+<para>Initializes a NomethodCondition instance.  The <emphasis role="italics">target</emphasis>
+argument is the target object of the method invocation.  The <emphasis role="italics">method</emphasis>
+argument is the name of the method that was not implemented by the target object.  The
+The <emphasis role="italics">arguments</emphasis> argument is an array of arguments that
+were used in the method invocation.
+</para>
+</section>
+
+<section id="mthNomethodCondition"><title>target</title>
+<indexterm><primary>target method</primary>
+<secondary>of NomethodCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>target method</secondary>
+<tertiary>of NomethodCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-target------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the target object for the message send that triggered the NOMETHOD condition.
+</para>
+</section>
+
+<section id="mthNomethodCondition"><title>method</title>
+<indexterm><primary>method method</primary>
+<secondary>of NomethodCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>method method</secondary>
+<tertiary>of NomethodCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-method------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the name of the method that triggered the NOMETHOD condition.
+</para>
+</section>
+
+<section id="mthNomethodCondition"><title>arguments</title>
+<indexterm><primary>arguments method</primary>
+<secondary>of NomethodCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>arguments method</secondary>
+<tertiary>of NomethodCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-arguments---------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns an array with the arguments used in the triggering message send.
+Returns an empty (zero-element) array if there were no arguments used on the
+method call.
+</para>
+</section>
+</section>
+
+<section id="clsNostringCondition"><title>The NostringCondition Class</title>
+<indexterm><primary>NostringCondition class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>NostringCondition class</secondary></indexterm>
+<para>This class is used for NOSTRING conditions.
+</para>
+<figure><title>The NostringCondition class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxNostringConditionClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The NostringCondition class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+&exceptionclsmethods;
+&conditionclsmethods;
+</section>
+
+<section id="mthNostringConditionInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of NostringCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of NostringCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init(object)-----------------------------------------------><
+]]>
+</programlisting>
+<para>Initializes a NostringCondition instance.  The <emphasis role="italics">object</emphasis>
+argument is the non-string object that required conversion to a string value.
+</para>
+</section>
+
+<section id="mthNostringCondition"><title>object</title>
+<indexterm><primary>object method</primary>
+<secondary>of NostringCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>object method</secondary>
+<tertiary>of NostringCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-object------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the object that triggered the NOSTRING condition.
+</para>
+</section>
+</section>
+
+<section id="clsLostdigitsCondition"><title>The LostdigitsCondition Class</title>
+<indexterm><primary>LostdigitsCondition class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>LostdigitsCondition class</secondary></indexterm>
+<para>This class is used for LOSTDIGITS conditions.
+</para>
+<figure><title>The LostdigitsCondition class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxNostringConditionClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The LostdigitsCondition class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+&exceptionclsmethods;
+&conditionclsmethods;
+</section>
+
+<section id="mthLostdigitsConditionInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of LostdigitsCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of LostdigitsCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init(value)------------------------------------------------><
+]]>
+</programlisting>
+<para>Initializes a LostdigitsCondition instance.  The <emphasis role="italics">value</emphasis>
+argument is the calculation result that resulted in lost digits of precision.
+</para>
+</section>
+
+<section id="mthLostdigitsCondition"><title>value</title>
+<indexterm><primary>value method</primary>
+<secondary>of LostdigitsCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>value method</secondary>
+<tertiary>of LostdigitsCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-value-------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the value that triggered the LOSTDIGITS condition.
+</para>
+</section>
+</section>
+
+<section id="clsNotreadyCondition"><title>The NotreadyCondition Class</title>
+<indexterm><primary>NotreadyCondition class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>NotreadyCondition class</secondary></indexterm>
+<para>This class is used for NOTREADY conditions.
+</para>
+<figure><title>The NOTREADY class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxNostringConditionClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The NotreadyCondition class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+&exceptionclsmethods;
+&conditionclsmethods;
+</section>
+
+<section id="mthNotreadyConditionInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of NotreadyCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of NotreadyCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init(stream)-----------------------------------------------><
+]]>
+</programlisting>
+<para>Initializes a NotreadyCondition instance.  The <emphasis role="italics">stream</emphasis>
+argument is the stream that raised the NOTREADY condition.
+</para>
+</section>
+
+<section id="mthNotreadyCondition"><title>stream</title>
+<indexterm><primary>stream method</primary>
+<secondary>of NotreadyCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>stream method</secondary>
+<tertiary>of NotreadyCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-stream------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the stream object that triggered the NOTREADY condition.
+</para>
+</section>
+</section>
+
+<section id="clsErrorCondition"><title>The ErrorCondition Class</title>
+<indexterm><primary>ErrorCondition class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>ErrorCondition class</secondary></indexterm>
+<para>This class is used for ERROR conditions.
+</para>
+<figure><title>The ErrorCondition class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxErrorConditionClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The ErrorCondition class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+&exceptionclsmethods;
+&conditionclsmethods;
+</section>
+
+<section id="mthErrorConditionInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of ErrorCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of ErrorCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init(address,command,rc)-----------------------------------><
+]]>
+</programlisting>
+<para>Initializes an ErrorCondition instance.
+The <emphasis role="italics">address</emphasis>
+argument is the address environment target for the command.
+The <emphasis role="italics">command</emphasis>
+argument is the command string sent to the environment.
+The <emphasis role="italics">rc</emphasis>
+argument is the return code value returned for the command.
+</para>
+</section>
+
+<section id="mthErrorCondition"><title>address</title>
+<indexterm><primary>address method</primary>
+<secondary>of ErrorCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>address method</secondary>
+<tertiary>of ErrorCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-address-----------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the address environment name for the condition.
+</para>
+</section>
+
+<section id="mthErrorCondition"><title>command</title>
+<indexterm><primary>command method</primary>
+<secondary>of ErrorCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>command method</secondary>
+<tertiary>of ErrorCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-command-----------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the command string for the condition.
+</para>
+</section>
+
+<section id="mthErrorCondition"><title>rc</title>
+<indexterm><primary>rc method</primary>
+<secondary>of ErrorCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>rc method</secondary>
+<tertiary>of ErrorCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-rc----------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the rc value for the condition.
+</para>
+</section>
+</section>
+
+<section id="clsFailureCondition"><title>The FailureCondition Class</title>
+<indexterm><primary>FailureCondition class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>FailureCondition class</secondary></indexterm>
+<para>This class is used for FAILURE conditions.
+</para>
+<figure><title>The FailureCondition class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxFailureConditionClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The FailureCondition class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+&exceptionclsmethods;
+&conditionclsmethods;
+</section>
+
+<section id="mthFailureConditionInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of FailureCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of FailureCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init(address,command,rc)-----------------------------------><
+]]>
+</programlisting>
+<para>Initializes a FailureCondition instance.
+The <emphasis role="italics">address</emphasis>
+argument is the address environment target for the command.
+The <emphasis role="italics">command</emphasis>
+argument is the command string sent to the environment.
+The <emphasis role="italics">rc</emphasis>
+argument is the return code value returned for the command.
+</para>
+</section>
+
+<section id="mthFailureCondition"><title>address</title>
+<indexterm><primary>address method</primary>
+<secondary>of FailureCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>address method</secondary>
+<tertiary>of FailureCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-address-----------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the address environment name for the condition.
+</para>
+</section>
+
+<section id="mthFailureCondition"><title>command</title>
+<indexterm><primary>command method</primary>
+<secondary>of FailureCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>command method</secondary>
+<tertiary>of FailureCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-command-----------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the command string for the condition.
+</para>
+</section>
+
+<section id="mthFailureCondition"><title>rc</title>
+<indexterm><primary>rc method</primary>
+<secondary>of FailureCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>rc method</secondary>
+<tertiary>of FailureCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-rc----------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the rc value for the condition.
+</para>
+</section>
+</section>
+
+<section id="clsHaltCondition"><title>The HaltCondition Class</title>
+<indexterm><primary>HaltCondition class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>HaltCondition class</secondary></indexterm>
+<para>This class is used for HALT conditions.
+</para>
+<figure><title>The HaltCondition class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxFailureConditionClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The HaltCondition class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+&exceptionclsmethods;
+&conditionclsmethods;
+</section>
+
+<section id="mthHaltConditionInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of HaltCondition class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of HaltCondition class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init(-+-------------+-)------------------------------------><
+         +-description-+
+]]>
+</programlisting>
+<para>Initializes a HaltCondition instance.
+The <emphasis role="italics">description</emphasis>
+argument is an optional description string for the condition.
+</para>
+</section>
+</section>
+
+<section id="clsStackFrame"><title>The StackFrame Class</title>
+<indexterm><primary>StackFrame class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>StackFrame class</secondary></indexterm>
+<para>The StackFrame class represents an element on the interpreter call stack.  A StackFrame
+instance describes the location and type of each caller stack frame, if available.
+</para>
+<figure><title>The Exception class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxStackFrameClass.png" align="left">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The StackFrame class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+</section>
+
+<section id="mthStackFrameType"><title>type</title>
+<indexterm><primary>type method</primary>
+<secondary>of StackFrame class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>type method</secondary>
+<tertiary>of StackFrame class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-type--------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns a string identifying type type of stack frame.  Stack frame types are
+"METHOD", "ROUTINE", "INTERNALROUTINE", "INTERPRET".
+</para>
+</section>
+
+<section id="mthStackFrameExecutable"><title>executable</title>
+<indexterm><primary>executable method</primary>
+<secondary>of StackFrame class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>executable method</secondary>
+<tertiary>of StackFrame class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-executable--------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the executable object associated with the StackFrame.  This will be either a
+Routine or Method instance.  If the StackFrame type is INTERPRET or INTERNALCALL, the executable
+will be original parent executable.
+</para>
+</section>
+
+<section id="mthStackFrameLine"><title>line</title>
+<indexterm><primary>line method</primary>
+<secondary>of StackFrame class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>line method</secondary>
+<tertiary>of StackFrame class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-line--------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the execution line number sociated with the StackFrame.
+If the StackFrame executable is not Rexx code, .nil is returned for
+the line number.
+</para>
+</section>
+
+<section id="mthStackFrameString"><title>string</title>
+<indexterm><primary>string method</primary>
+<secondary>of StackFrame class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>string method</secondary>
+<tertiary>of StackFrame class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-string------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns a string prepresentation for the StackFrame.
+</para>
+</section>
+</section>
+</section>
+
