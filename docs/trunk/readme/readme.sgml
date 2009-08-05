@@ -182,6 +182,8 @@ The RXAPI service was started successfully.
 C:\work.ooRexx>
 ]]>
 </programlisting>
+</para>
+<para>
   On Linux, the following can be used from the command line:
 <programlisting>
 <![CDATA[
@@ -195,6 +197,23 @@ Starting rxapi:                                            [  OK  ]
 </programlisting>
   It is likely that your installation of Linux also has a graphical means of starting or stopping
   services.
+</para>
+
+<para>
+  On AIX, the following can be used from the command line:
+<programlisting>
+<![CDATA[
+
+[root@myhost]# stopsrc -s rxapi
+0513-044 The rxapi Subsystem was requested to stop.
+[root@myhost]# startsrc -s rxapi
+0513-059 The rxapi Subsystem has been started. Subsystem PID is 1134614.
+[root@myhost]# lssrc -s rxapi
+Subsystem         Group            PID          Status
+ rxapi                             1134614      active
+[root@Falcon work.ooRexx]#
+]]>
+</programlisting>
 </para>
 <para>
   If <computeroutput>rxapi</computeroutput> is not installed as a service, it can be stopped by using an
