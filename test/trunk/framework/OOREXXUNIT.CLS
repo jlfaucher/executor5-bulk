@@ -1046,7 +1046,32 @@ return str
   expose lineNumber conditionObject
 
   if lineNumber \== .nil then return lineNumber
-  else return conditionObjLineNumber(conditionObject)
+  else return self~conditionObjLineNumber
+
+/** conditionObjLineNumber()
+ * Given an object, will return the line number of a syntax exception, if the
+ * object is a condition object for a syntax exception.  Othewise returns -1.
+ */
+::method conditionObjLineNumber
+  expose conditionObject testName
+
+  lineNumber = -1
+
+  if isConditionObj(conditionObject) then do
+    if conditionObject~stackFrames~isA(.list) then do
+      do frame over conditionObject~stackFrames
+          if frame~name~caselessEquals(testName) then do
+               return frame~line
+          end
+      end
+      return -1
+    end
+    else if conditionObject~condition == "SYNTAX" then do
+      lineNumber = conditionObject~position
+    end
+  end
+
+  return lineNumber
 
 
 /* class: AssertFailure- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
