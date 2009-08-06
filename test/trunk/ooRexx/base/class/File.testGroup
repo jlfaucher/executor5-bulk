@@ -117,7 +117,7 @@ return testResult
   self~assertFalse(f~isFile)   -- returns false because it doesn't exit)
   self~assertFalse(f~isHidden) -- returns false because it doesn't exit)
   self~assertFalse(f~canRead)  -- returns false because it doesn't exit)
-  self~assertTrue(f~canWrite)  -- returns true, because we can create it
+  self~assertFalse(f~canWrite,)  -- returns false, because it doesn't exist
   self~assertFalse(f~delete)   -- should fail because it doesn't exist
 
   self~assertSame(.nil, f~lastModified)  -- should fail because it doesn't exist
