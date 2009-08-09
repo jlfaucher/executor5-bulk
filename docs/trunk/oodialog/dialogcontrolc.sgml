@@ -133,10 +133,6 @@ listed in the following DialogControl Instance Methods table.
 <entry><link linkend="assignfocus">AssignFocus</link></entry>
 </row>
 <row>
-<entry>AssignWindow</entry>
-<entry><link linkend="assignwindow">AssignWindow</link></entry>
-</row>
-<row>
 <entry>CaptureMouse</entry>
 <entry><link linkend="capturemouse">CaptureMouse</link></entry>
 </row>
@@ -1884,61 +1880,6 @@ MyDialog~GetCheckControl("VERIFY")~Value=0
 <note><title>Note</title><para>
 See <link linkend="h000584">SetValue</link> for more information.
 </para></note>
-</section>
-
-<section id="assignwindow"><title>AssignWindow</title>
-<indexterm><primary>AssignWindow</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~AssignWindow(--hwnd--)-----------------------><
-
-
-]]>
-</programlisting>
-
-<para>The AssignWindow method connects a dialog or dialog
-control with an existing object of the PlainBaseDialog or DialogControl class.
-Note that the connected dialog or dialog control might not support all methods
-provided by the DialogControl class.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Note Well:</emphasis></term>
-<listitem><para>The <computeroutput>AssignWindow</computeroutput> method is used
-internally to connect Rexx objects (a <computeroutput>DialogControl
-</computeroutput> object) to the underlying Windows dialog control.  It is not
-recommended that the programmer use this method unless he throughly understands
-the ooDialog framework. Otherwise, using this method has the potential for
-causing unpredictable behavior.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The handle to the dialog or dialog control that you want to assign to
-the DialogControl object.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the dialog or dialog control that has been assigned, or
-0 if the connection failed.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example searches the desktop for a dialog with the title &quot;Monitoring
-Applications&quot;, connects it to the object <computeroutput>dlgc</computeroutput> of the DialogControl
-class, and then hides the dialog:
-<programlisting>
-<![CDATA[
-dlgc = .DialogControl~new
-...
-whnd = FindWindow("Monitoring Application")
-if whnd \= 0 then do
-   dlgc~AssignWindow(whnd)
-   dlgc~Display("HIDE")
-end
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
 </section>
 
 </section>
