@@ -234,8 +234,8 @@ to Init.
 <entry><link linkend="mthAddUserMsg">addUserMsg</link></entry>
 </row>
 <row>
-<entry>AssignWindow</entry>
-<entry><link linkend="assignwindow">AssignWindow</link></entry>
+<entry>assignWindow <emphasis role="bold">(deprecated)</emphasis></entry>
+<entry><link linkend="assignwindow">AssignWindow</link> <emphasis role="bold">(deprecated)</emphasis></entry>
 </row>
 <row>
 <entry>AsyncMessageHandling</entry>
@@ -8195,6 +8195,22 @@ to manually update the display.
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
+</section>
+
+<section id="assignwindow"><title>assignWindow <emphasis role="bold">(deprecated)</emphasis></title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>BaseDialog class</secondary>
+  <tertiary>assignWindow</tertiary>
+</indexterm>
+<note><title>Note</title><para>
+  This method is deprecated and will not be supported in future vesions of ooDialog.  The method will
+  always return 0, <emphasis role="italic">the connection failed</emphasis>. To work with a dialog or
+  dialog control object, construct the proper ooDialog object. To control a window not owned by your
+  program use the <emphasis role="italic">find</emphasis>() method of the <emphasis
+  role="italic">WindowsManger</emphasis>.  The <emphasis role="italic">WindowsManager</emphasis> class is
+  part of the <emphasis role="italic">WinSystm.cls</emphasis> package.
+</para></note>
 </section>
 
 <section id="h000246"><title>SetWindowTitle</title>
