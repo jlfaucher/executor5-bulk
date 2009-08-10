@@ -49,9 +49,6 @@
 # recompiling Mod_ooRexx with these compile options.
 #SPECPARM = -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
 
-# Set the base Rexx path (not used for ooRexx)
-RX_PATH     = /usr
-
 #-------------------------------------------------------------------------------
 #
 #  End user modification section
@@ -64,7 +61,7 @@ INCLUDES    = -I/usr/include/httpd -I/usr/include/apr-1
 DEFINES     = 
 GLBDEP      = mod_oorexx.h
 OBJS        = mod_oorexx.o dirconfig.o rxfuncs.o handlers.o
-GCFLAGS     =  -DVMAJOR=$(VMAJOR) -DVMINOR=$(VMINOR) -DVREL=$(VREL)
+GCFLAGS     = -DVMAJOR=$(VMAJOR) -DVMINOR=$(VMINOR) -DVREL=$(VREL)
 GLFLAGS     = -shared -Wl,-soname,$@ -o $@
 LD          = gcc 
 CC          = gcc

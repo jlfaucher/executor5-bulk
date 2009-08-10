@@ -124,7 +124,7 @@ rspstream~close()
 /* read in the rsp file and look for the the rsp tags */
 state = 0 /* initial state is to output HTML lines */
 call Rexx_pgm_header
-do rspline over esplines
+do rspline over rsplines
    call process_line rspline
    end
 rexstream~close()
