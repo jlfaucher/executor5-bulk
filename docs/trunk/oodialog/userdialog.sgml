@@ -461,7 +461,7 @@ self~NoAutoDetection
 <indexterm><primary>Create</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~Create(--x--,--y--,--cx--,--cy--,--title--,------>
+>>-aUserDialog~create(--x--,--y--,--cx--,--cy--,--title--,------>
 
 >--+---------------------------+--,--+----------+--------------->
    |    .-----------------.    |     +-dlgClass-+
@@ -481,11 +481,12 @@ self~NoAutoDetection
 ]]>
 </programlisting>
 
-<para>The Create method creates the Windows dialog
-you previously defined with Add... methods. You can
-set the size, title, and style of the dialog. If the return code of Create
-is 0 the dialog creation failed and you should not try to execute the dialog
-object.</para>
+<para>
+  The <emphasis role="italic">create</emphasis>() method creates the Windows dialog you previously
+  defined with Add... methods. You can set the size, title, and style of the dialog. If <emphasis
+  role="italic">create</emphasis> returns false the dialog creation failed and you should not try to
+  execute the dialog object.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -545,6 +546,12 @@ value; otherwise, the dialog fails.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns true on success and false on failure.
+    </para>
+  </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example creates a dialog with a size of 300 by 200 dialog
 units. The dialog has no system menu in its upper-left corner. It has a thick
@@ -553,9 +560,15 @@ has capabilities for up to 100 elements.
 
 <programlisting>
 <![CDATA[
-rc = MyDialog~Create(20, 20, 300, 200, "My first Dialog", ,
-  "THICKFRAME NOMENU", , "Courier", 12, 100)
-if rc <> 0 then MyDialog~Execute
+success = MyDialog~create(20, 20, 300, 200, "My first Dialog",       -
+                          "THICKFRAME NOMENU", , "Courier", 12, 100)
+
+if success then do
+    MyDialog~Execute
+end
+else do
+    -- do some error recovery
+end
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
