@@ -446,8 +446,8 @@ to Init.
 <entry><link linkend="cursorwait">Cursor_Wait</link></entry>
 </row>
 <row>
-<entry>DeInstall</entry>
-<entry><link linkend="h001468">DeInstall</link></entry>
+<entry>deInstall <emphasis role="bold">(deprecated)</emphasis></entry>
+<entry><link linkend="h001468">deInstall</link> <emphasis role="bold">(deprecated)</emphasis></entry>
 </row>
 <row>
 <entry>DeleteComboEntry</entry>
@@ -851,8 +851,8 @@ to Init.
 <entry><link linkend="ismousebuttondown">IsMouseButtonDown</link></entry>
 </row>
 <row>
-<entry>Leaving</entry>
-<entry><link linkend="leavi">Leaving</link></entry>
+<entry>leaving</entry>
+<entry><link linkend="mthLeaving">leaving</link></entry>
 </row>
 <row>
 <entry>InsertComboEntry</entry>
@@ -1080,7 +1080,7 @@ to Init.
 </row>
 <row>
 <entry>setFont</entry>
-<entry><link linkend="mthSetFont">SetFont</link></entry>
+<entry><link linkend="mthSetFont">setFont</link></entry>
 </row>
 <row>
 <entry>SetForegroundWindow</entry>
@@ -1546,8 +1546,6 @@ to Init.
           dlg~Execute("SHOWTOP", 14)
         end
 
-        dlg~Deinstall
-
       return 0
       -- End of entry point.
 
@@ -1754,17 +1752,17 @@ IDs defined in the header file.
 
 ]]>
 </programlisting></para>
-<para>At this point the dialog is shown, the entry line will contain
-"C:\sdk\include", the combo box will have the Calculator project selected, the
-release radio button will be checked, (the debug radio button will not be
-checked,) and the clean check box will not be checked.</para>
-<para>The user interacts with the dialog and selects ok to close it.  Now the state of
-the dialog when it was closed can be determined by checking the DlgData. stem
-values.
+<para>
+  At this point the dialog is shown, the entry line will contain "C:\sdk\include", the combo box will
+  have the Calculator project selected, the release radio button will be checked, (the debug radio button
+  will not be checked,) and the clean check box will not be checked.
+</para>
+<para>
+  The user interacts with the dialog and selects ok to close it.  Now the state of the dialog when it was
+  closed can be determined by checking the DlgData. stem values.
 <programlisting>
 <![CDATA[
   ...
-  dlg~deinstall
 
   if DlgData.CHECKBOX_CLEAN == 1 then doClean()
 
@@ -5189,34 +5187,40 @@ entry line 203 is empty. If it is empty, Validate returns
 </variablelist>
 </section>
 
-<section id="leavi"><title>Leaving</title>
-<indexterm><primary>Leaving</primary></indexterm>
+<section id="mthLeaving"><title>leaving</title>
+<indexterm><primary>leaving</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~Leaving-----------------------------------------><
+>>-aBaseDialog~leaving-----------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Leaving method is called when the dialog was
-closed.</para>
+<para>
+  The <emphasis role="italic">leaving</emphasis>leaving method is called when the underlying Windows
+  dialog is being closed.  It is intended to be over-ridden by the programmer, if desired.  The default
+  implementation does nothing. It gives the programmer a chance to do some final clean up.
+</para>
 </section>
 
-<section id="h001468"><title>DeInstall</title>
-<indexterm><primary>DeInstall</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~DeInstall---------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The DeInstall method removes the external functions
-from the Object Rexx API manager. It should be called at the end of each dialog.
-The installed functions are freed when all dialogs are finished.</para>
+<section id="h001468"><title>deInstall <emphasis role="bold">(deprecated)</emphasis></title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>BaseDialog class</secondary>
+  <tertiary>deInstall</tertiary>
+</indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  It does nothing and always returns 0. In older versions of Open Object
+  Rexx, the <emphasis role="italic">deInstall</emphasis>() method was used to deregister the external
+  functions with the API manager. This mechanism is no longer needed using the modern APIs introduced in
+  ooRexx 4.0.0.
+</para></note>
 </section>
+
+</section>
+
+
 </section>
 
 <section id="comboboxmeth"><title>Combo Box Methods</title>
@@ -6694,7 +6698,6 @@ one of the check boxes instead.
   if dlg~initCode = 0 then do
     dlg~create(30, 30, 150, 150, "The Simple Grocery List", "VISIBLE")
     dlg~Execute("SHOWTOP")
-    dlg~Deinstall
   end
 
 -- End of entry point.
@@ -8365,7 +8368,6 @@ still minimized, then this method restores it to its normal position.
   if dlg~initCode = 0 then do
     dlg~createCenter(170, 90, "The File Viewer Dialog", "VISIBLE MAXIMIZEBOX MINIMIZEBOX")
     dlg~Execute("SHOWTOP", IDI_DLG_OOREXX)
-    dlg~Deinstall
   end
 
 -- End of entry point.
@@ -9372,13 +9374,15 @@ a button. It is used to move bitmaps within buttons. </para>
 ]]>
 </programlisting>
 
-<para>The SetItemFont method changes the font for a particular
-dialog item.</para>
-<para>The best place to call this method is within <link linkend="mthInitDialog">InitDialog</link>.
-If the font is no longer needed, for instance, when the dialog is closed or
-another font has been assigned to the dialog item, you should free the font
-resource by calling <link linkend="mthDeleteFont">DeleteFont</link>. A good place to
-do this is the <link linkend="leavi">Leaving</link> method.</para>
+<para>
+  The SetItemFont method changes the font for a particular dialog item.
+</para>
+<para>
+  The best place to call this method is within <link linkend="mthInitDialog">InitDialog</link>. If the
+  font is no longer needed, for instance, when the dialog is closed or another font has been assigned to
+  the dialog item, you should free the font resource by calling <link
+  linkend="mthDeleteFont">DeleteFont</link>. A good place to do this is the <link
+  linkend="mthLeaving">leaving</link> method.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:

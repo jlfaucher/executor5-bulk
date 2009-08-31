@@ -2826,7 +2826,6 @@ MyDialog~Execute
   if dlg~initCode = 0 then do
     dlg~createCenter(150, 83, "Testing Radio Buttons", "VISIBLE", , "Ms Shell Dlg 2", 8)
     dlg~Execute("SHOWTOP")
-    dlg~Deinstall
   end
 
 ::requires "oodWin32.cls"
@@ -3630,7 +3629,6 @@ MyDialog~objectrexx = 1
   if dlg~initCode = 0 then do
     dlg~createCenter(215, 83, "Testing Check Boxes", "VISIBLE", , "Ms Shell Dlg 2", 8)
     dlg~Execute("SHOWTOP")
-    dlg~Deinstall
   end
 
 ::requires "oodWin32.cls"
@@ -4264,8 +4262,6 @@ MyDialog~objectrexx = 1
           dlg~createCenter(269, 183, "Frames and Rectangles", "", , "MS Shell Dlg 2", 8)
           dlg~Execute("SHOWTOP", IDI_DLG_OOREXX)
         end
-
-        dlg~Deinstall
 
       return 0
       -- End of entry point.
@@ -5663,7 +5659,6 @@ MyDialog~objectrexx = 1
       if dlg~initCode = 0 then do
         dlg~create(30, 30, 150, 100, "The Simple Dialog", "VISIBLE")
         dlg~execute("SHOWTOP", 105)
-        dlg~deinstall
       end
 
     ::requires "OODWin32.cls"
