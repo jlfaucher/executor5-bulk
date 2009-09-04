@@ -83,7 +83,7 @@ return testResult
     val = SysCurPos()
 
     if val~words == 2 then do
-      self~expectSyntax(40.1)
+      self~expectSyntax(88.907)
       rv = SysCurPos(-1,-1)
     end
     else do
@@ -94,7 +94,7 @@ return testResult
     val = SysCurPos()
 
     if val~words == 2 then do
-      self~expectSyntax(40.1)
+      self~expectSyntax(88.907)
       rv = SysCurPos("Ten","Ten")
     end
     else do
@@ -112,5 +112,5 @@ return testResult
 -- This test is always valid.
 ::method test_cur_wrong_arg_count_3
 
-    self~expectSyntax(40.1)
+    self~expectSyntax(88.922)
     rv = SysCurPos(10, 10, 'fast')
