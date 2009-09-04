@@ -93,15 +93,12 @@ return testResult
 
   self~assertSame("ooDialog", ret)
 
-/* SleepMS is a C function in ooDialog.dll.  We don't need any of the ooDxxx.cls
- * files to invoke it.  We just need to load the library package.
- */
 ::method  test_sleepMS_works
 
   src = .array~new
   src[1] = "ret = sleepMS(400)"
   src[2] = "return ret"
-  src[3] = "::requires 'ooDialog' LIBRARY"
+  src[3] = "::requires 'ooDialog.cls'"
   name = addToFile(src, self~functionFileName)
 
   ret = 'ooDialogTest'()
@@ -115,23 +112,19 @@ return testResult
   src[3] = "finish = .TimeSpan~new(time('F'))"
   src[4] = "elapsed = (finish - begin)"
   src[5] = "return elapsed~microSeconds"
-  src[6] = "::requires 'ooDialog' LIBRARY"
+  src[6] = "::requires 'ooDialog.cls'"
   name = addToFile(src, self~functionFileName)
 
   microSeconds = 'ooDialogTest'()
 
   self~assertTrue(microSeconds >= 500000)
 
-/* On the other hand MSSleep is an ooRexx public routine defined in one of the
- * class files.  So we do need to require one of the ooDxxx.cls files
- */
 ::method  test_0MSSleep_works
 
   src = .array~new
   src[1] = "ret = MSSleep(400)"
   src[2] = "return ret"
-  src[3] = "::requires 'ooDialog' LIBRARY"
-  src[4] = "::requires 'OODPLAIN.CLS'"
+  src[3] = "::requires 'OODPLAIN.CLS'"
   name = addToFile(src, self~functionFileName)
 
   ret = 'ooDialogTest'()
@@ -145,8 +138,7 @@ return testResult
   src[3] = "finish = .TimeSpan~new(time('F'))"
   src[4] = "elapsed = (finish - begin)"
   src[5] = "return elapsed~microSeconds"
-  src[6] = "::requires 'ooDialog' LIBRARY"
-  src[7] = "::requires 'OODPLAIN.CLS'"
+  src[6] = "::requires 'OODPLAIN.CLS'"
   name = addToFile(src, self~functionFileName)
 
   microSeconds = 'ooDialogTest'()
