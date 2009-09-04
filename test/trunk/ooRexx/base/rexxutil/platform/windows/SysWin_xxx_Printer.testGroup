@@ -111,22 +111,24 @@ return testResult
     self~assertNotSame("PRINTERS." || i, printers.i, "All stem indexes must be set")
   end
 
+/* Need to rethink this test
 ::method test_GetPrinters_syntx1
 
   -- Test not using a stem
   self~expectSyntax(40.1)
   ret = SysWinGetPrinters(printers)
+*/
 
 ::method test_GetPrinters_syntx2
 
   -- Test too few args
-  self~expectSyntax(40.1)
+  self~expectSyntax(88.901)
   ret = SysWinGetPrinters()
 
 ::method test_GetPrinters_syntx3
 
   -- Test too many args
-  self~expectSyntax(40.1)
+  self~expectSyntax(88.922)
   ret = SysWinGetPrinters(printers., 'D')
 
 ::method test_GetDefaultPrinter_ret
@@ -139,21 +141,21 @@ return testResult
 ::method test_GetDefaultPrinter_syntax1
 
   -- Should not allow a stem for an arg
-  self~expectSyntax(40.1)
+  self~expectSyntax(88.922)
   printer = SysWinGetDefaultPrinter(printer.)
 
 
 ::method test_GetDefaultPrinter_syntax2
 
   -- Should not allow any arg
-  self~expectSyntax(40.1)
+  self~expectSyntax(88.922)
   printer = SysWinGetDefaultPrinter("DEFAULT")
 
 
 ::method test_GetDefaultPrinter_syntax3
 
   -- What if it does not allow 1 arg, but does allow 3?
-  self~expectSyntax(40.1)
+  self~expectSyntax(88.922)
   printer = SysWinGetDefaultPrinter("NAME", "PORT", 4)
 
 
@@ -199,7 +201,7 @@ return testResult
 ::method test_SetDefaultPrinter_syntax1
 
   -- No args not allowed
-  self~expectSyntax(40.1)
+  self~expectSyntax(88.901)
   printer = SysWinSetDefaultPrinter()
 
 ::method test_SetDefaultPrinter_syntax2
@@ -210,7 +212,7 @@ return testResult
   self~assertSame(2, printer~countStr(","))
 
   -- More than 1 arg not allowed
-  self~expectSyntax(40.1)
+  self~expectSyntax(88.922)
   printer = SysWinSetDefaultPrinter(printer, "DEFAULT")
 
 ::method test_SetDefaultPrinter_syntax3
