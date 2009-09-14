@@ -44,7 +44,7 @@
 #-------------------------------------------------------------------------------
 
 # If you are using a version of Apache that is provided by a Linux
-# Distributor like RedHat, Mandrake, etc you may need to include the following
+# distribution like RedHat, Mandrake, etc you may need to include the following
 # compile options. If Mod_ooRexx crashes when processing a request then try
 # recompiling Mod_ooRexx with these compile options.
 #SPECPARM = -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
@@ -83,8 +83,6 @@ rxfuncs.o   : rxfuncs.cpp $(GLBDEP)
 handlers.o  : handlers.cpp $(GLBDEP)
 		$(CC) -c $(DEFINES) $(INCLUDES) $<
 
-cleanall    :
-		rm *.o
+clean       :
+		rm *.o *.so
 
-maintainer-clean : cleanall
-		rm *.so

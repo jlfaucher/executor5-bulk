@@ -102,15 +102,15 @@ if rspfilename = '' then do
    call console_msg 'Error: No input RSP File specified.'
    return 2
    end
-rspstream = .stream(rspfilename)
-retc = rpsstream~open('read')
+rspstream = .stream~new(rspfilename)
+retc = rspstream~open('read')
 if retc <> 'READY:' then do
    call console_msg 'Error: cannot open file' rspfilename
    return 3
    end
 
 /* open the rex file */
-rexstream = .stream(rexfilename)
+rexstream = .stream~new(rexfilename)
 retc = rexstream~open('write replace')
 if retc <> 'READY:' then do
    call console_msg 'Error: cannot open file' rexfilename
@@ -121,7 +121,7 @@ if retc <> 'READY:' then do
 rsplines = rspstream~arrayin()
 rspstream~close()
 
-/* read in the rsp file and look for the the rsp tags */
+/* read the rsp file and look for the the rsp tags */
 state = 0 /* initial state is to output HTML lines */
 call Rexx_pgm_header
 do rspline over rsplines
@@ -137,7 +137,7 @@ return 0
 /* process a line from the rsp file                                           */
 /*----------------------------------------------------------------------------*/
 
-process_line: procedure expose state rexfilename
+process_line: procedure expose state rexstream
 use strict arg line
 uline = line~strip()~upper()
 select
@@ -162,7 +162,7 @@ select
          call splitline line
          /* see if we are at the end of the HTML document */
          if uline~pos('</HTML>') > 0 then do
-            /* doing this separates the mainline code from any Rexx     */
+            /* doing this seperates the mainline code from any Rexx     */
             /* subroutines/functions added at the end of the RSP file,  */
             /* that way we do not just fall into them (a Rexx error).   */
             call Rexx_pgm_footer
@@ -199,7 +199,7 @@ return
 /* (so Rexx maximum program line length is not exceeded)                      */
 /*----------------------------------------------------------------------------*/
 
-splitline: procedure expose rexfilename
+splitline: procedure expose rexstream
 use strict arg line
 do while line~length() > 90
    x = line~substr(1, 80)
@@ -249,7 +249,7 @@ rexstream~lineout('')
 
 rexstream~lineout('Output Rexx Program File Information:')
 rexstream~lineout('   Filename:' stream(rexfilename, 'c', 'query exists'))
--rexstream~lineout('')
+rexstream~lineout('')
 
 rexstream~lineout('*/')
 

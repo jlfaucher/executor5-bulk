@@ -39,6 +39,10 @@ documentation before installing or using this version of Mod_ooRexx.
 You must have Open Object Rexx 4.0.0 or later installed. Mod_ooRexx does NOT
 work with any other Rexx interpreter.</p>
 
+<p style="color: red">If the version of Apache you are using is 64-bit then you must
+install the 64-bit version of ooRexx and Mod_ooRexx so that Apache can successfully
+link to the ooRexx and Mod_ooRexx libraries.</p>
+
 <p>This software is subject to the terms of the Common Public License. You must
 accept the terms of this license to use this software. Refer to
 <a href="./CPLv1.0.htm">CPLv1.0.htm</a> for more information.</p>
@@ -235,7 +239,7 @@ document will be passed to Mod_ooRexx and executed as a ooRexx program.</p>
 
 <br /><br /><br /><br /><br />
 <h2><a name="UnixInstall">
-Unix Package Installation</a></h2>
+Unix/Linux Package Installation</a></h2>
 <p>
 To install the package on Unix, unzip the contents to a temporary subdirectory. Move
 the following files to these locations:</p>
@@ -312,19 +316,17 @@ document will be passed to Mod_ooRexx and executed as a ooRexx program.</p>
 <br /><br /><br /><br /><br />
 <h2><a name="WinInfo">Windows Information</a></h2>
 <p>This package has not been tested yet on Windows.</p>
-<p>All the source files, except makefile.nt and the ooRexx sample scripts,
-are in Unix format (lines are delimited only by a line feed).</p>
 
 <br /><br /><br /><br /><br />
 <h2><a name="UnixInfo">Unix Information</a></h2>
 <p>For Linux, the package was compiled under Fedora 11 using the standard GCC
-compiler installed from Fedora 10. You will need to
+compiler. You will need to
 compile your own module for your version of GCC, Linux/AIX, or Apache.</p>
 <p>The package was tested using</p>
 <ul>
-<li>Apache2 for Linux Version 2.2.11-8.</li>
+<li>Apache2 for Linux Version 2.2.11-8</li>
 <li>Open Object Rexx for Linux version 4.0.0</li>
-<li>Fedora 11.</li>
+<li>Fedora 11</li>
 </ul>
 <p>For AIX, this package has not been tested yet.</p>
 <p>All the source files, except the ooRexx sample scripts,
@@ -368,7 +370,6 @@ browser as an unknown MIME-type when a ooRexx program/script crashes.</li>
 <li>You should not attempt to do I/O to stdin, stdout or stderr in ooRexx
 scripts running under Mod_ooRexx since they are not attached to traditional
 file system or console handles.</li>
-<li>OS/2 is not a supported Mod_ooRexx environment.</li>
 <li>If you are using Rexx/SQL in combination with Mod_ooRexx be sure you are using
 the latest version which is thread-safe. Otherwise you will have strange problems
 and crashes. Also, on Windows, be sure to define all databases used by Mod_ooRexx

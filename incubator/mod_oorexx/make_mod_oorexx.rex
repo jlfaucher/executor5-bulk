@@ -41,16 +41,13 @@
 
 
 /* find out the operating system */
+use arg cmdline
 parse source source_str
 parse var source_str os .
 if substr(os, 1, 7) = 'Windows' then os = 'WINDOWS'
-if os = 'WIN32' then os = 'WINDOWS' /* for Regina */
-if os = 'UNIX' then os = 'LINUX'    /* for Regina */
+if os = 'WIN32' | os = 'WIN64' then os = 'WINDOWS'
+if os = 'UNIX' then os = 'LINUX'
 select
-   when os = 'OS/2' then do
-      say 'Error: OS/2 is not supported by Mod_ooRexx.'
-      return 8
-      end
    when os = 'LINUX' then nop
    when os = 'AIX' then nop
    when os = 'WINDOWS' then nop
@@ -70,23 +67,16 @@ if arguments~upper() = 'HELP' then do
 /* now call the appropriate functions for making Mod_ooRexx */
 select
    when os = 'LINUX' then do
-      'cp ./makefile.linux ./makefile'
-      'make'
+      'make -f ./makefile.linux' cmdline
       'cp mod_oorexx.so ./bin'
-      'make cleanall'
-      'rm ./makefile'
       end
    when os = 'AIX' then do
-      'cp ./makefile.aix ./makefile'
-      'make'
+      'make -f ./makefile.aix' cmdline
       'cp mod_oorexx.so ./bin'
-      'make cleanall'
-      'rm ./makefile'
       end
    when os = 'WINDOWS' then do
-      'nmake /F makefile.nt'
+      'nmake /F makefile.nt' cmdline
       'copy mod_oorexx.dll .\bin'
-      'nmake /F makefile.nt cleanall'
       end
    otherwise nop
    end
