@@ -1068,7 +1068,13 @@ routines.
     The file name of an audio (.WAV) file. The file is searched for in the current directory and in the
     directories listed in the SOUNDPATH environment variable. If this argument is omitted, the currently
     playing sound file is stopped.
-</para></listitem></varlistentry>
+</para>
+<note><title>Note</title><para>
+  The system can only play one audio file at a time using the <emphasis role="italic">play</emphasis>()
+  routine. If an audio file is currently playing, calling the routine with arguments will disrupt the
+  audio file already playing.
+</para></note>
+</listitem></varlistentry>
 <varlistentry><term>option</term>
 <listitem>
   <para>
