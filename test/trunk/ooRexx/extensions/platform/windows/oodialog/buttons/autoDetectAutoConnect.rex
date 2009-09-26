@@ -40,7 +40,7 @@
  */
 
   dlg = .SimpleButtonsRc~new("resources\autoDetectAutoConnect.rc", IDD_DIALOG1, , -
-                             "resources\autoDetectAutoConnect.h",  -
+                             "resources\autoDetectAutoConnect.h",                 -
                              "CENTER CONNECTBUTTONS CONNECTRADIOS CONNECTCHECKS")
 
   say "Test one RcDialog:" dlg
@@ -126,18 +126,19 @@
 
 ::method defineDialog
 
-    self~addGroupBox(7, 7, 180, 81, "Push All Buttons", "", IDC_GB_BUTTONS)
-    self~addRadioButton(IDC_RB_ONE, ,    18,  20, ,   , "Radio One")
-    self~addRadioButton(150, ,           18,  35, 56, 10, "RadioTwo")
-    self~addRadioButton(IDC_RB_THREE, ,  18,  50, 60, 10, "")
-    self~addRadioButton(160, ,           18,  65, 58, 10, "")
-    self~addCheckBox(IDC_CHECK_ONE, ,   115,  17, 54, 10, "Check One")
-    self~addCheckBox(170, ,             115,  34, 54, 10, "Check Two")
-    self~addCheckBox(IDC_CHECK_THREE, , 115,  53, 54, 10, "")
-    self~addCheckBox(180, ,             115,  73, 54, 10, "")
-    self~addButton(IDC_PB_PUSH,          12, 117, 50, 14, "Push One", , "")
-    self~addButton(190,                  12,  94, 50, 14, "Push Two", ,   )
-    self~addButton(IDC_PB_PUSH_FOUR,    144,  94, 50, 14, "",         ,   )
-    self~addButton(200,                  77,  94, 50, 14, "",         ,   )
-    self~addButton(IDOK,                108, 114, 50, 14, "OK",       , "DEFAULT")
-    self~addButton(IDCANCEL,            163, 114, 50, 14, "Cancel",   ,   )
+    self~createGroupBox(IDC_GB_BUTTONS,    7,   7, 180, 81, "", "Push All Buttons")
+    self~createRadioButton(IDC_RB_ONE,    18,  20,    ,   ,   ,  "Radio One")
+    self~createRadioButton(150,           18,  35,  56, 10,   , "RadioTwo")
+    self~createRadioButton(IDC_RB_THREE,  18,  50,  60, 10,   , "")
+    self~createRadioButton(160,           18,  65,  58, 10,   , "")
+    self~createCheckBox(IDC_CHECK_ONE,   115,  17,  54, 10,   , "Check One")
+    self~createCheckBox(170,             115,  34,  54, 10,   , "Check Two")
+    self~createCheckBox(IDC_CHECK_THREE, 115,  53,  54, 10,   , "")
+    self~createCheckBox(180,             115,  73,  54, 10,   , "")
+
+    self~createPushButton(IDC_PB_PUSH,       12, 117,  50, 14,          , "Push One")
+    self~createPushButton(190,               12,  94,  50, 14,          , "Push Two", , )
+    self~createPushButton(IDC_PB_PUSH_FOUR, 144,  94,  50, 14,          , "",         , )
+    self~createPushButton(200,                77,  94, 50, 14,          , "",         , )
+    self~createPushButton(IDOK,              108, 114, 50, 14, "DEFAULT", "OK",       , )
+    self~createPushButton(IDCANCEL,          163, 114, 50, 14,          , "Cancel",   , )
