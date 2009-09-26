@@ -40,13 +40,24 @@
  */
 
   dlg = .SimpleButtonsRc~new("resources\autoDetectAutoConnect.rc", IDD_DIALOG1, , -
-                             "resources\autoDetectAutoConnect.h",  -
+                             "resources\autoDetectAutoConnect.h",                 -
                              "CENTER CONNECTBUTTONS CONNECTRADIOS CONNECTCHECKS")
 
   say "Test one RcDialog:" dlg
   say 'AutoDetect?' dlg~autoDetect
   say 'Blank push buttons *only* should not generate a "was clicked" message'
   if dlg~initCode = 0 then do
+
+    say 'All check boxes should be checked.  The 3rd radio button down should be checked.'
+    dlg~IDC_RB_ONE      = 0
+    dlg~RadioTwo        = 0
+    dlg~IDC_RB_THREE    = 1
+    dlg~DATA160         = 0
+    dlg~IDC_CHECK_ONE   = 1
+    dlg~CheckTwo        = 1
+    dlg~IDC_CHECK_THREE = 1
+    dlg~DATA180         = 1
+
     dlg~Execute("SHOWTOP")
     dlg~Deinstall
   end
@@ -72,6 +83,17 @@
   say 'AutoDetect?' dlg~autoDetect
   say 'No button click should generate a "was clicked" message'
   if dlg~initCode = 0 then do
+
+    say 'No check boxes should be checked.  The 2nd radio button down should be checked.'
+    dlg~RadioOne        = 0
+    dlg~RadioTwo        = 1
+    dlg~DATA1011        = 0
+    dlg~DATA160         = 0
+    dlg~CheckOne        = 0
+    dlg~CheckTwo        = 0
+    dlg~DATA1012        = 0
+    dlg~DATA180         = 0
+
     dlg~Execute("SHOWTOP")
     dlg~Deinstall
   end
@@ -89,6 +111,55 @@
   say 'dlg~CheckTwo:       ' (dlg~CheckTwo)
   say 'dlg~DATA1012:       ' (dlg~DATA1012)
   say 'dlg~DATA180:        ' (dlg~DATA180)
+
+  -- Test using a 'data' stem
+  dlgData.IDC_RB_ONE      = 0
+  dlgData.150             = 0
+  dlgData.IDC_RB_THREE    = 0
+  dlgData.160             = 1
+  dlgData.IDC_CHECK_ONE   = 1
+  dlgData.170             = 1
+  dlgData.IDC_CHECK_THREE = 1
+  dlgData.180             = 1
+
+  -- Group box and push buttons can not be set, so this should be ignored
+  dlgData.IDC_GB_BUTTONS  = 1
+
+  dlg = .SimpleButtonsUser~new(dlgData., "resources\autoDetectAutoConnect.h")
+
+  say; say
+  say "Test three UserDialog:" dlg
+  say 'AutoDetect?' dlg~autoDetect
+  say 'No button click should generate a "was clicked" message'
+  say 'ALL check boxes should be checked.  Radio button 4 should be set'
+  if dlg~initCode = 0 then do
+    dlg~Execute("SHOWTOP")
+    dlg~Deinstall
+  end
+  else do
+    say "Problem creating the user dialog.  Init code:" dlg~initCode
+    return 99
+  end
+
+  say 'The following attributes should all be set (if you clicked ok):'
+  say 'dlg~RadioOne:       ' (dlg~RadioOne)
+  say 'dlg~RadioTwo:       ' (dlg~RadioTwo)
+  say 'dlg~DATA1011:       ' (dlg~DATA1011)
+  say 'dlg~DATA160:        ' (dlg~DATA160)
+  say 'dlg~CheckOne:       ' (dlg~CheckOne)
+  say 'dlg~CheckTwo:       ' (dlg~CheckTwo)
+  say 'dlg~DATA1012:       ' (dlg~DATA1012)
+  say 'dlg~DATA180:        ' (dlg~DATA180)
+
+  say 'The following dlgData stem indexes should match the data attributes.'
+  say 'dlgData.IDC_RB_ONE     ' dlgData.IDC_RB_ONE
+  say 'dlgData.150            ' dlgData.150
+  say 'dlgData.IDC_RB_THREE   ' dlgData.IDC_RB_THREE
+  say 'dlgData.160            ' dlgData.160
+  say 'dlgData.IDC_CHECK_ONE  ' dlgData.IDC_CHECK_ONE
+  say 'dlgData.170            ' dlgData.170
+  say 'dlgData.IDC_CHECK_THREE' dlgData.IDC_CHECK_THREE
+  say 'dlgData.180            ' dlgData.180
 
   return 0
 -- End of entry point.
