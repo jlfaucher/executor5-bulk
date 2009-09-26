@@ -127,7 +127,7 @@
 ::method defineDialog
 
     self~addGroupBox(7, 7, 180, 81, "Push All Buttons", "", IDC_GB_BUTTONS)
-    self~addRadioButton(IDC_RB_ONE, ,    18,  20, 56, 10, "Radio One")
+    self~addRadioButton(IDC_RB_ONE, ,    18,  20, ,   , "Radio One")
     self~addRadioButton(150, ,           18,  35, 56, 10, "RadioTwo")
     self~addRadioButton(IDC_RB_THREE, ,  18,  50, 60, 10, "")
     self~addRadioButton(160, ,           18,  65, 58, 10, "")
