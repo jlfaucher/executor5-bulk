@@ -666,8 +666,8 @@ to Init.
 <entry><link linkend="h000269">GetData</link></entry>
 </row>
 <row>
-<entry>GetDataStem</entry>
-<entry><link linkend="h000298">GetDataStem</link></entry>
+<entry>getDataStem</entry>
+<entry><link linkend="mthGetDataStem">getDataStem</link></entry>
 </row>
 <row>
 <entry>GetDC</entry>
@@ -1063,8 +1063,8 @@ to Init.
 <entry><link linkend="h000264">SetData</link></entry>
 </row>
 <row>
-<entry>SetDataStem</entry>
-<entry><link linkend="h000289">SetDataStem</link></entry>
+<entry>setDataStem</entry>
+<entry><link linkend="mthSetDataStem">setDataStem</link></entry>
 </row>
 <row>
 <entry>SetEntryLine</entry>
@@ -4990,36 +4990,50 @@ MyBaseDialog~SetAttrib("DATA101")
 </variablelist>
 </section>
 
-<section id="h000289"><title>SetDataStem</title>
-<indexterm><primary>SetDataStem</primary></indexterm>
+<section id="mthSetDataStem"><title>setDataStem</title>
+<indexterm><primary>setDataStem</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~SetDataStem(--dataStem.--)----------------------><
+>>--setDataStem(--dataStem.--)-----------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The SetDataStem method sets all Windows dialog
-items to the values within the given stem; the suffixes of the stem variable
-are the dialog IDs. </para>
+<para>
+  Sets the <emphasis role="italic">data,</emphasis> (the state,) of a number of Windows dialog controls
+  to the values specified by the stem. Each index of <emphasis role="italic">dataStem.</emphasis> is the
+  resource ID of a dialog control.  The control with that ID, within the dialog, has its state set to
+  match the value of the stem variable at that index.  The resource ID can be specified using either
+  numeric resource IDs or symbolic resource IDs.
+</para>
+<para>
+  This method only works on controls that have been registered in the data table through one of the
+  <emphasis role="italic">connect control</emphasis> methods.  Every registered control has its state set
+  when this method is invoked.  If the data stem, <emphasis role="italic">data.</emphasis> has no
+  matching index for a registered control, that control's state is set to the empty string.  Any indexes
+  in the data stem that do not match the resource ID of a registered control are ignored.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected.
-</para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>dataStem.</term>
-<listitem><para>A stem variable containing initialization data. Remember the trailing
-period.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+<listitem>
+  <para>
+    The only argument is:
+    <variablelist>
+    <varlistentry><term>dataStem.</term>
+    <listitem><para>
+      A stem variable containing the values used to set a dialog control's state. Remember the trailing
+      period.
+    </para></listitem></varlistentry>
+    </variablelist>
+  </para>
+</listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example initializes the dialog items with ID 21, 22, and
-23:
-
+<listitem>
+  <para>
+    The following example initializes the dialog controls with IDs 21, 22, and 23, provided they have
+    been registered in the data table through one of the <emphasis role="italic">connect
+    control</emphasis> methods:
 <programlisting>
 <![CDATA[
      .
@@ -5028,40 +5042,56 @@ period.
 dlgStem.21="Windows 95"
 dlgStem.22="0"
 dlgStem.23="1 2 3"
-self~SetDataStem(dlgStem.)
+self~setDataStem(dlgStem.)
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+</listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="h000298"><title>GetDataStem</title>
-<indexterm><primary>GetDataStem</primary></indexterm>
+<section id="mthGetDataStem"><title>getDataStem</title>
+<indexterm><primary>getDataStem</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~GetDataStem(--dataStem.--)----------------------><
+>>--getDataStem(--dataStem.--)-----------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The GetDataStem method gets the values of all dialog
-items and copies them to the given stem. </para>
+<para>
+  The <emphasis role="italic">getDataStem</emphasis>() method is the reverse of the <link
+  linkend="mthSetDataStem">setDataStem</link>() method.  The method gets the <emphasis
+  role="italic">data,</emphasis> (the state,) of all the dialog controls that have been registered
+  through one of the <emphasis role="italic">connect control</emphasis> methods and copies the state of
+  that control to the given stem.
+</para>
+<para>
+  A stem index for each control registered in the data table will be set.  The stem index will be the
+  numeric ID for the control.  The value at that index is the state of the matching dialog control.  In
+  addition, if the <link linkend="constdir">constDir</link> directory has a symbolic ID for the numeric
+  ID of the control, a stem index of the symbolic ID is also set.  This of course only works reliably if
+  the Rexx programmer uses unique numeric IDs for all resouces.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected.
-</para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>dataStem.</term>
-<listitem><para>The name of a stem variable to which the data is returned.  Remember
-the trailing period.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+<listitem>
+  <para>
+    The only argument is:
+    <variablelist>
+    <varlistentry><term>dataStem.</term>
+    <listitem>
+      <para>
+        The name of a stem variable to which the data is returned.  Remember the trailing period.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+</listitem></varlistentry>
 </variablelist>
 </section>
+
 </section>
 
 <section id="man0032"><title>Standard Event Methods</title>
