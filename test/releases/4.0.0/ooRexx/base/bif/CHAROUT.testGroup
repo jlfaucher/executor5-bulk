@@ -62,9 +62,11 @@ return testResult
 
 ::method tearDown
   fileName = self~charOutTestingFile
+  say 'fileName:' fileName
   if fileName \== .nil then do
     -- Close the file and delete it
     ret = stream(fileName, 'C', "close")
+    say 'stream close ret:' ret
     j = deleteFile(fileName)
   end
 
@@ -98,7 +100,7 @@ return testResult
   fileName='tsmp.txt'
   self~charOutTestingFile = fileName
 
-  call charout file, ''
+  call charout fileName, ''
   self~assertSame(0, result)
 
 -- Tests reported position after charout null or charout chars
