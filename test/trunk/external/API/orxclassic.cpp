@@ -118,6 +118,8 @@ RexxMethod1(int,                        // Return type
     RXSTRING data;
     RexxQueueTime timestamp;
 
+    MAKERXSTRING(data, NULL, 0);
+
     RexxReturnCode rc = RexxPullFromQueue(qname, &data, &timestamp, 0);
     context->SetObjectVariable("RETC", context->Int32ToObject(rc));
     context->SetObjectVariable("FLAG", context->NewStringFromAsciiz(data.strptr));
