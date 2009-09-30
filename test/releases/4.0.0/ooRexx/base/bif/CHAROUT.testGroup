@@ -62,11 +62,9 @@ return testResult
 
 ::method tearDown
   fileName = self~charOutTestingFile
-  say 'fileName:' fileName
   if fileName \== .nil then do
     -- Close the file and delete it
     ret = stream(fileName, 'C', "close")
-    say 'stream close ret:' ret
     j = deleteFile(fileName)
   end
 
