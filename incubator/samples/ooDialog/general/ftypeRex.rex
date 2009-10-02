@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2007 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -78,10 +78,10 @@ parse arg Interface
   if Interface~LEFT(1)~TRANSLATE = "C" then Interface = "CONSOLE"
   else Interface = "OODIALOG"
 
-  /* Set up a new line sequence.  This is used to break long message strings
-   * into separate lines.
+  /* Set up an alias for the new line sequence.  This is used to break long
+   * message strings into separate lines.
    */
-  eol = '0d0a'x
+  eol = .endOfLine
 
   /* Create a new registry object. */
   r = .WindowsRegistry~new
@@ -253,9 +253,11 @@ parse arg Interface
     minimum = 200
 
     /* Create the dialog and show it.  The excute method returns the index of
-     * the selected radio button, or -1 if the user cancels.
+     * the selected radio button, or -1 if the user cancels.  We take advantage
+     * of the ability to set the font of the PickOneDlg and set the font to a
+     * rather big one.
      */
-    answer = .PickOneDlg~new(msg, title, rbLabels, existing, minimum)~execute
+    answer = .PickOneDlg~new(msg, title, rbLabels, existing, minimum, "Tahoma", 12)~execute
   end
   /* end of user interaction */
 

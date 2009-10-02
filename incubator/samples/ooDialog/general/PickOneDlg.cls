@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -37,10 +37,8 @@
 
 /* Improved SingleSelection dialog - the PickOneDlg class */
 
-  .local~put(.PickOneDlg, 'PICKONEDLG')
-
 -- End of entry point.
-::requires "OODWin32.cls"
+::requires "ooDialog.cls"
 
 /**
  * Class PickOneDlg
@@ -62,22 +60,22 @@
  *   answer = .PickOneDlg~new(msg, title, labels, check, minimum)~execute
  *
  * Options:
- *   msg      REQUIRED
+ *   msg       REQUIRED
  *     The message placed in the top panel of the dialog.
  *
- *   title    REQUIRED
+ *   title     REQUIRED
  *     The title for the dialog.
  *
- *   labels   REQUIRED
+ *   labels    REQUIRED
  *     An array containing the labels for the radio buttons.  A radio button
  *     will be created for each index in the array using the value of the index
  *     as the label for the radio button.
  *
- *   check    OPTIONAL
+ *   check     OPTIONAL
  *     The index of the radio button that should be initially checked.  If
  *     omitted or out of range, the first radio button will be checked.
  *
- *   minimum  OPTIONAL
+ *   minimum   OPTIONAL
  *     A minimum width for the dialog can optionally be specified by the
  *     programmer.  This class determines the size of the dialog based on
  *     several factors, including the number and widths of the radio buttons.
@@ -85,25 +83,35 @@
  *     want to specify a minimum width that is large enough to make the dialog
  *     more proportional.
  *
+ *   fontName  OPTIONAL
+ *     The name of the font to use for the dialog.  The default is "MS Shell Dlg
+ *     2" which is the correct default font for dialogs.
+ *
+ *   fontSize  OPTIONAL
+ *     The point size of the font.  The default is 8 point.
+ *
  * Returns:
  *  The one-based index of the selected radio button, or -1 if the user cancels
  *  the dialog.
+ *
+ * Notes:
+ *   The dialog enforces a restraint that there must be 20 or less radio
+ *   buttons.  A syntax exception is raised if more than 20 radio buttons are
+ *   specified.
+ *
+ *   The minimum width can only be used to make the dialog wider than cal-
+ *   culated.  It will never make the dialog narrower than the calculated width.
  */
-::class 'PickOneDlg' subclass UserDialog inherit AdvancedControls
+::class 'PickOneDlg' public subclass UserDialog inherit AdvancedControls
 
 ::method init
   expose msg title radioButtons selected
-  use arg msg, title, radioButtons, selected, minimumWidth
+  use strict arg msg, title, radioButtons, selected = 1, minimumWidth = 120, fontName = "MS Shell Dlg 2", fontSize = 8
 
   -- Have the superclass initialize.
   self~init:super
   if self~initCode <> 0 then
     raise syntax 98.900 array ("The superclass did not initialize correctly")
-
-  -- Check for proper args.
-  if arg(1, 'O') then raise syntax 93.903 array (1)
-  if arg(2, 'O') then raise syntax 93.903 array (2)
-  if arg(3, 'O') then raise syntax 93.903 array (3)
 
   if \ radioButtons~isInstanceOf(.array) then
     raise syntax 93.948 array (3, "Array")
@@ -116,8 +124,7 @@
 
   -- Set selected to the index of the radio button that should be checked when
   -- the dialog is first shown.
-  if arg(4, 'O') then selected = 1
-  else if \ selected~datatype('W') then selected = 1
+  if \ selected~datatype('W') then selected = 1
   else if selected < 1 | selected > radioButtons~items then selected = 1
 
   -- Set symbolic IDs for the dialog controls.
@@ -127,12 +134,8 @@
   self~constDir["IDC_RB_LAST"] = 110 + radioButtons~items - 1
 
   -- Set the minimum width of the dialog.
-  min = 120
-  if arg(5, 'E') then do
-    if minimumWidth~datatype('W') then do
-      if minimumWidth > min then min = minimumWidth
-    end
-  end
+  if \ minimumWidth~datatype('W') then min = 120
+  else min = minimumWidth
 
   -- Put the minimum width value into the Constant Directory, (the constDir
   -- attribute.)
@@ -143,6 +146,15 @@
   -- is structured to not use the data stem and is not really suitable for sub-
   -- classing, this usage of the constDir causes no problems.
   self~constDir["DLG_MIN_CX"] = min
+
+  if \ fontSize~datatype('W') then fontSize = 8
+
+  -- The correct value of a dialog unit is entirely dependent on the actual font
+  -- used for the dialog.  For any dialog where the size or positioning of the
+  -- controls or the dialog itself are dynamically calculated, it is important
+  -- to set the font before any calculations are done.  Of course this is not
+  -- necessary if the dialog is going to use the default font.
+  self~setDlgFont(fontName, fontSize)
 
 return 0
 
@@ -156,15 +168,18 @@ return 0
 ::method execute
   expose msg title radioButtons selected
 
+
   -- First determine the maximum width of a radio button label, the width of
   -- the message, and the (maximum) height of a line of text.
-  parse value GetStdTextSize(msg) with msgWidth textHeight .
+  size = self~getTextSizeDlg(msg)
+  msgWidth = size~width
+  textHeight = size~height
 
   rbCX = 0
   do l over radioButtons
-    parse value GetStdTextSize(l) with cx cy .
-    if cx > rbCX then rbCX = cx
-    if cy > textHeight then textHeigth = cy
+    size = self~getTextSizeDlg(l)
+    if size~width > rbCX then rbCX = size~width
+    if size~height > textHeight then textHeigth = size~height
   end
 
   -- Determine if we are going to use 2 columns and if so how many radio buttons
@@ -314,8 +329,8 @@ return 0
   self~constDir["PB_CX"]       = 35
   self~constDir["PB_CY"]       = 15
 
-  self~constDir["PB_OK_X"]     = self~constDir~GB_X + self~constDir~GB_CX - 35
-  self~constDir["PB_CANCEL_X"] = self~constDir~PB_OK_X - spacer - 35
+  self~constDir["PB_CANCEL_X"] = self~constDir~GB_X + self~constDir~GB_CX - 35
+  self~constDir["PB_OK_X"]     = self~constDir~PB_CANCEL_X - spacer - 35
 
   -- Calculate the over-all size for the dialog.
   dlgX = (2 * dlgMarginCXY) + self~constDir~GB_CX
@@ -328,8 +343,8 @@ return 0
   -- The dialog is now completely defined.  execute will create the underlying
   -- Windows dialog and run until the user closes the Windows dialog.  When the
   -- user closes the Windows dialog, either the ok or the cancel method of this
-  -- instance will be invoked and select will get set to the appropriate value.
-  -- We will then return the value of select.
+  -- instance will be invoked and selected will get set to the appropriate
+  -- value.  We will then return the value of selected.
   self~execute:super("SHOWTOP")
 
 return selected
@@ -350,14 +365,14 @@ return selected
   y  = self~constDir~ST_Y
   cx = self~constDir~ST_CX
   cy = self~constDir~ST_CY
-  self~addText(x, y, cx, cy, msg, "", IDC_ST_MSG);
+  self~createStaticText(IDC_ST_MSG, x, y, cx, cy, , msg);
 
   -- Group box:
   x  = self~constDir~GB_X
   y  = self~constDir~GB_Y
   cx = self~constDir~GB_CX
   cy = self~constDir~GB_CY
-  self~addGroupBox(x, y, cx, cy, "", "", IDC_GB_RADIOBUTTONS)
+  self~createGroupBox(IDC_GB_RADIOBUTTONS, x, y, cx, cy)
 
   -- Radio buttons:
   x      = self~constDir~RB_X
@@ -368,7 +383,7 @@ return selected
   do i = 1 to self~constDir~RB_COL1_COUNT
     y  = startY + ((i - 1) * offset)
     id = self~constDir~IDC_RB_BASE + i - 1
-    self~addRadioButton(id, , x, y, cx, cy, radioButtons[i])
+    self~createRadioButton(id, x, y, cx, cy, , radioButtons[i])
   end
 
   -- Do we have two columns?
@@ -379,20 +394,21 @@ return selected
     do i = i to radioButtons~items
       y  = startY + (j * offset)
       id = self~constDir~IDC_RB_BASE + i - 1
-      self~addRadioButton(id, , x, y, cx, cy, radioButtons[i])
+      self~createRadioButton(id, , x, y, cx, cy, , radioButtons[i])
       j = j + 1
     end
   end
 
   -- OK and Cancel buttons:
-  x  = self~constDir~PB_CANCEL_X
+  x = self~constDir~PB_OK_X
   y  = self~constDir~PB_Y
   cx = self~constDir~PB_CX
   cy = self~constDir~PB_CY
-  self~addButton(IDCANCEL, x, y, cx, cy, "Cancel", ,"GROUP")
+  self~createPushButton(IDOK, x, y, cx, cy, "GROUP", "OK")
 
-  x = self~constDir~PB_OK_X
-  self~addButton(IDOK, x, y, cx, cy, "OK", "GROUP")
+  x  = self~constDir~PB_CANCEL_X
+  self~createPushButton(IDCANCEL, x, y, cx, cy, "GROUP", "Cancel")
+
 
 /**
  * initDialog()
@@ -402,7 +418,7 @@ return selected
 ::method initDialog
   expose selected
   id = self~constDir~IDC_RB_BASE + selected - 1
-  self~getRadioControl(id)~check
+  self~newRadioButton(id)~check
   self~focusItem(id)
 
 /**
@@ -414,7 +430,7 @@ return selected
   expose selected
 
   do i = self~constDir~IDC_RB_BASE to self~constDir~IDC_RB_LAST
-    if self~getRadioControl(i)~isChecked == "CHECKED" then do
+    if self~newRadioButton(i)~checked then do
       selected = i - self~constDir~IDC_RB_BASE + 1
       leave
     end
