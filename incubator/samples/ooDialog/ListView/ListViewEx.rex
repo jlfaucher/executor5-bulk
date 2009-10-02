@@ -420,7 +420,7 @@ return 0
     rbCheck   = self~getRadioControl(IDC_RB_CHK_SET)
     rbUncheck = self~getRadioControl(IDC_RB_CHK_UN)
     rbGet     = self~getRadioControl(IDC_RB_CHK_GET)
-    rbIs      = self~getCheckControl(IDC_RB_CHK_IS)
+    rbIs      = self~newRadioButton(IDC_RB_CHK_IS)
     checkAll  = self~getCheckControl(IDC_CHECK_DOALL)
     editChk   = self~getEditControl(IDC_EDIT_CHKBOX)
   end

@@ -56,8 +56,7 @@
 --   Change the reference to TestEditControl.h in TestEditControl.rex to
 --   resource.h
 
-  dlg = .ExtendedEdit~new( TestEditControl.dll, IDD_DIALOG1, ,
-                           "TestEditControl.h" )
+  dlg = .ExtendedEdit~new( TestEditControl.dll, IDD_DIALOG1, , "TestEditControl.h" )
   if dlg~initCode \== 0 then do
     say "The dialog did not initialize properly.  Program Abort."
     return -99
