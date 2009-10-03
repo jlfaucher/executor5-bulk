@@ -34,14 +34,67 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-#ifndef IDC_STATIC
-#define IDC_STATIC (-1)
-#endif
 
-#define IDD_DIALOG                              100
-#define IDC_ST_VIEW                             1003
-#define IDC_RB_REPORT                           1005
-#define IDC_RB_LIST                             1007
-#define IDC_RB_ICON                             1009
-#define IDC_RB_SMALL_ICON                       1011
-#define IDC_LV_VIEWS                            1012
+/* Requires ooRexx 3.2.0 or later. */
+
+  dlg = .ListViews~new("iconList.rc", IDD_DIALOG, , "iconList.h")
+  if dlg~initCode == 0 then do
+    dlg~Execute("SHOWTOP", IDI_DLG_OOREXX)
+    dlg~Deinstall
+  end
+
+-- End of entry point.
+
+::requires "OODWIN32.CLS"
+
+::class 'ListViews' subclass RcDialog inherit AdvancedControls MessageExtensions
+
+::method initDialog
+  expose list
+
+  self~getRadioControl(IDC_RB_ICON)~check
+  self~connectButtonNotify(IDC_RB_REPORT, "CLICKED", onReport)
+  self~connectButtonNotify(IDC_RB_LIST, "CLICKED", onList)
+  self~connectButtonNotify(IDC_RB_ICON, "CLICKED", onIcon)
+  self~connectButtonNotify(IDC_RB_SMALL_ICON, "CLICKED", onSmallIcon)
+
+  list = self~getListControl(IDC_LV_VIEWS)
+  list~setSmallImages("iconList_16.bmp")
+  list~setImages("iconList_32.bmp")
+
+  self~populateList(list)
+
+::method onReport
+  expose list
+  list~replaceStyle("LIST ICON SMALLICON", "REPORT")
+
+::method onList
+  expose list
+  list~replaceStyle("REPORT ICON SMALLICON", "LIST")
+
+::method onIcon
+  expose list
+  list~replaceStyle("LIST REPORT SMALLICON", "ICON")
+
+::method onSmallIcon
+  expose list
+  list~replaceStyle("LIST ICON REPORT", "SMALLICON")
+
+::method populateList private
+  use strict arg list
+
+  list~insertColumn(0, "Title", 70)
+  list~insertColumn(1, "Name", 35)
+  list~insertColumn(2, "Last", 50)
+  list~insertColumn(3, "e-mail", 70)
+
+  list~addRow(0, 6, "Business Manager",   "Tom",    "Saywer",   "ts@google.com" )
+  list~addRow(1, 1, "Software Developer", "Sam",    "Frank",    "boo@gmail.com")
+  list~addRow(2, 7, "Accountant",         "Cienna", "Smith",    "cs@yahoo.com")
+  list~addRow(3, 5, "Lawyer",             "Mary",   "Tyler",    "fkan@qualcom.com")
+  list~addRow(4, 2, "Doctor",             "Sue",    "Acer",     "sa@sharp.org")
+  list~addRow(5, 3, "Clerk",              "Harry",  "Houdini",  "HH@magic.net")
+  list~addRow(6, 4, "Nurse",              "Mike",   "Thompson", "mike@microsoft.com")
+
+  list~addExtendedStyle("FULLROWSELECT UNDERLINEHOT ONECLICKACTIVATE")
+
