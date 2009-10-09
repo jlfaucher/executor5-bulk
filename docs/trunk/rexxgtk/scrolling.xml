@@ -1,0 +1,196 @@
+
+<chapter><title>Scrolling Classes</title>
+<indexterm><primary>Classes</primary>
+<secondary>Scrolling</secondary></indexterm>
+
+<!-- *************************************** -->
+<!-- ********** GTKScrolledWindow ********** -->
+<!-- *************************************** -->
+
+<section id="gtkscrolledwindow"><title>GTKScrolledWindow</title>
+<para>The GTKScrolledWindow class is a subclass of the
+<link linkend="gtkcontainer">GTKContainer class</link>.</para>
+
+<section id="gtkscrolledwindowinit">
+<title>Method: init</title>
+<indexterm><primary>init</primary></indexterm>
+<indexterm><primary>GTKScrolledWindow</primary>
+<secondary>init</secondary></indexterm>
+<para>Create a scrolled window.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--.GTKScrolledWindow~new(hadj, vadj)-----------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>hadj</term>
+      <listitem><para>The horizontal adjustment object.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>vadj</term>
+      <listitem><para>The vertical adjustment object.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero.</para>
+</section>
+
+<section id="gtkscrolledwindowgethadjustment">
+<title>Method: get_hadjustment</title>
+<indexterm><primary>get_hadjustment</primary></indexterm>
+<indexterm><primary>GTKScrolledWindow</primary>
+<secondary>get_hadjustment</secondary></indexterm>
+<para>Get the horizontal adjustment.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_hadjustment()----------------------------------------------------><
+
+>>--hadjustment()--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Horizontal adjustment object</para>
+</section>
+
+<section id="gtkscrolledwindowgetvadjustment">
+<title>Method: get_vadjustment</title>
+<indexterm><primary>get_vadjustment</primary></indexterm>
+<indexterm><primary>GTKScrolledWindow</primary>
+<secondary>get_vadjustment</secondary></indexterm>
+<para>Get the vertical adjustment.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--get_vadjustment()----------------------------------------------------><
+
+>>--vadjustment()--------------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Vertical adjustment object</para>
+</section>
+
+<section id="gtkscrolledwindowsetpolicy">
+<title>Method: set_policy</title>
+<indexterm><primary>set_policy</primary></indexterm>
+<indexterm><primary>GTKScrolledWindow</primary>
+<secondary>set_policy</secondary></indexterm>
+<para>Set the adjustment policy</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--set_policy(hpolicy, vpolicy)-----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>hpolicy</term>
+      <listitem><para>The horizontal policy.</para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term>vpolicy</term>
+      <listitem><para>The vertical policy.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkscrolledwindowaddwithviewport">
+<title>Method: add_with_viewport</title>
+<indexterm><primary>add_with_viewport</primary></indexterm>
+<indexterm><primary>GTKScrolledWindow</primary>
+<secondary>add_with_viewport</secondary></indexterm>
+<para>Add a child without native scrolling support.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--add_with_viewport(child)---------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>child</term>
+      <listitem><para>The child widget.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkscrolledwindowsignalconnect">
+<title>Method: signal_connect</title>
+<indexterm><primary>signal_connect</primary></indexterm>
+<indexterm><primary>GTKScrolledWindow</primary>
+<secondary>signal_connect</secondary></indexterm>
+<para>Connect a signal to an ooRexx method.</para>
+<para><emphasis role="bold">Syntax:</emphasis></para>
+<programlisting>
+<![CDATA[
+>>--signal_connect(name)-------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Arguments:</emphasis></para>
+<variablelist>
+   <varlistentry>
+      <term>name</term>
+      <listitem><para>The signal name.</para></listitem>
+   </varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>Zero</para>
+</section>
+
+<section id="gtkscrolledwindowsignals">
+<title>Signals and Methods</title>
+<indexterm><primary>signals</primary></indexterm>
+<indexterm><primary>GTKScrollWindow</primary>
+<secondary>signals</secondary></indexterm>
+<para>This class can receive signals and events. When a signal or event is received a
+method of the class is invoked. The name of this method corresponds to the name of the
+signal or event. By default all of the signals have a method predefined in the class
+to receive the signal. This method performs no actions by default.</para>
+<para>In order for the signals to be processed by the user's code you must subclass this
+class and override the signal method. You can supply any action you wish to process the
+signal.</para>
+<para>By default, none of the signals for this class are connected so even if you provide
+an override method the method will not be invoked unless the signal is connected first. To
+connect a signal you must invoke the <emphasis role="italic">signal_connect</emphasis>
+method and provide the name of the signal to be connected.</para>
+<para>This class has the following signals available.</para>
+
+<table frame="all"><title>GTKScrolled Signals and Methods</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+<row>
+   <entry>Signal Name</entry>
+   <entry>Method Name</entry>
+</row>
+</thead>
+<tbody>
+<row>
+   <entry>move_focus_out</entry>
+   <entry>signal_move_focus_out</entry>
+</row>
+<row>
+   <entry>scroll_child</entry>
+   <entry>signal_scroll_child</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+</section>
+
+</chapter>
+
