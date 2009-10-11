@@ -904,9 +904,7 @@ return .context~package~findClass(clsname)~new()
 ::METHOD set_sensitive EXTERNAL "LIBRARY rexxgtk GrxWidgetSetSensitive"
 ::METHOD modify_fg EXTERNAL "LIBRARY rexxgtk GrxWidgetModifyFG"
 ::METHOD modify_bg EXTERNAL "LIBRARY rexxgtk GrxWidgetModifyBG"
-::METHOD 'data=' EXTERNAL "LIBRARY rexxgtk GrxWidgetSetData"
 ::METHOD set_data EXTERNAL "LIBRARY rexxgtk GrxWidgetSetData"
-::METHOD data EXTERNAL "LIBRARY rexxgtk GrxWidgetGetData"
 ::METHOD get_data EXTERNAL "LIBRARY rexxgtk GrxWidgetGetData"
 ::METHOD activate EXTERNAL "LIBRARY rexxgtk GrxWidgetActivate"
 ::METHOD reparent EXTERNAL "LIBRARY rexxgtk GrxWidgetReparent"
@@ -1132,7 +1130,7 @@ use strict arg mywidget
 self~pack_end(myWidget, .true, .true, 0)
 return
 
-::METHOD pack_start EXTERNAL "LIBRARY rexxgtk GrxBoxPackEnd"
+::METHOD pack_start EXTERNAL "LIBRARY rexxgtk GrxBoxPackStart"
 
 ::method pack_start_defaults
 use strict arg mywidget
@@ -1770,6 +1768,8 @@ return
 ::class GtkAboutDialog public subclass GtkDialog
 
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxAboutDialogNew"
+::METHOD 'name=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetName"
+::METHOD set_name EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetName"
 ::METHOD 'version=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetVersion"
 ::METHOD set_version EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetVersion"
 ::METHOD 'copyright=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetCopyright"
@@ -2524,13 +2524,17 @@ return .GtkImageMenuItem~new(label, 1)
 ::METHOD set_tooltips EXTERNAL "LIBRARY rexxgtk GrxToolbarSetTooltips"
 ::METHOD set_icon_size EXTERNAL "LIBRARY rexxgtk GrxToolbarSetIconSize"
 ::METHOD 'icon_size=' EXTERNAL "LIBRARY rexxgtk GrxToolbarSetIconSize"
+::METHOD unset_icon_size EXTERNAL "LIBRARY rexxgtk GrxToolbarUnsetIconSize"
 ::METHOD get_show_arrow EXTERNAL "LIBRARY rexxgtk GrxToolbarGetShowArrow"
 ::METHOD show_arrow EXTERNAL "LIBRARY rexxgtk GrxToolbarGetShowArrow"
 ::METHOD get_orientation EXTERNAL "LIBRARY rexxgtk GrxToolbarGetOrientation"
 ::METHOD orientation EXTERNAL "LIBRARY rexxgtk GrxToolbarGetOrientation"
 ::METHOD get_style EXTERNAL "LIBRARY rexxgtk GrxToolbarGetStyle"
 ::METHOD style EXTERNAL "LIBRARY rexxgtk GrxToolbarGetStyle"
+::METHOD get_relief_style EXTERNAL "LIBRARY rexxgtk GrxToolbarGetReliefStyle"
+::METHOD relief_style EXTERNAL "LIBRARY rexxgtk GrxToolbarGetReliefStyle"
 ::METHOD get_icon_size EXTERNAL "LIBRARY rexxgtk GrxToolbarGetIconSize"
+::METHOD icon_size EXTERNAL "LIBRARY rexxgtk GrxToolbarGetIconSize"
 ::METHOD get_tooltips EXTERNAL "LIBRARY rexxgtk GrxToolbarGetTooltips"
 ::METHOD tooltips EXTERNAL "LIBRARY rexxgtk GrxToolbarGetTooltips"
 ::METHOD append_item EXTERNAL "LIBRARY rexxgtk GrxToolbarAppendItem"
@@ -2724,7 +2728,7 @@ return
 
 
 /*============================================================================*/
-/* Class: GtkSeparatorToolButton                                              */
+/* Class: GtkSeparatorToolItem                                                */
 /*============================================================================*/
 
 ::class GtkSeparatorToolItem public subclass GtkToolItem
