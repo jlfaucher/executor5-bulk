@@ -1122,6 +1122,7 @@ return str
 ::class "Assert" public mixinclass Object
 
 ::attribute fAssertions private
+::attribute definedInFile    -- allows to quickly get filename from which test case is taken
 
 ::method init
   self~fAssertions = 0
@@ -1489,7 +1490,6 @@ return str
 
   self~init:super    -- let superclass initialize
 
-::method definedInFile attribute    -- allows to quickly get filename from which test case is taken
 
 ::method TestCaseInfo attribute                 -- ooRexxUnit only
 
