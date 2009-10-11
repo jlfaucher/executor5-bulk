@@ -1,13 +1,12 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (C) W. David Ashley 2004-2008. All Rights Reserved.              */
-/* Copyright (c) 2009-2009 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/* http://www.oorexx.org/license.html                                         */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -35,60 +34,118 @@
 /* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
-/* Author: W. David Ashley                                                    */
+/* Authors;                                                                   */
+/*       W. David Ashley <dashley@us.ibm.com>                                 */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
 
-/* find out the operating system */
-use arg cmdline = ''
-parse source source_str
-parse var source_str os .
-if substr(os, 1, 7) = 'Windows' then os = 'WINDOWS'
-if os = 'WIN32' | os = 'WIN64' then os = 'WINDOWS'
-if os = 'UNIX' then os = 'LINUX'
-select
-   when os = 'LINUX' then nop
-   when os = 'AIX' then nop
-   when os = 'WINDOWS' then nop
-   otherwise do
-      say 'Error: Unknown operating system.'
-      return 12
-      end
+-- Derived from Listing 9-1
+-- Foundations of GTK+ Development
+-- by Andrew Krause
+
+call gtk_init
+window = .myMainWindow~new(.gtk~GTK_WINDOW_TOPLEVEL)
+window~set_title('Popup Menus')
+window~signal_connect('destroy')
+window~set_border_width(10)
+window~set_size_request(250, -1)
+
+menu = .GtkMenu~new()
+eventbox = .myEventBox~new()
+progress = .GtkProgressBar~new()
+progress~set_text('Nothing Yet Happened')
+call create_popup_menu menu, window, progress
+
+progress~set_pulse_step(0.05)
+eventbox~set_above_child(.false)
+
+eventbox~user_data = menu
+eventbox~signal_connect('button_press_event')
+
+eventbox~add(progress)
+window~add(eventbox)
+
+eventbox~set_events(.gtk~GDK_BUTTON_PRESS_MASK)
+eventbox~realize()
+
+window~show_all()
+call gtk_main
+return
+
+
+::requires 'rexxgtk.cls'
+
+::routine create_popup_menu
+use strict arg menu, window, progress
+
+group = .GtkAccelGroup~new()
+window~add_accel_group(group)
+menu~set_accel_group(group)
+
+pulse = .MyPulse~newWithLabel('Pulse Progress')
+fill = .MyFill~newWithLabel('Set as Complete')
+clear = .MyClear~newWithLabel('Clear Progress')
+separator = .GtkSeparatorMenuItem~new()
+
+pulse~add_accelerator('activate', group, '050'~x2d, .gtk~GDK_CONTROL_MASK,,
+                      .gtk~GTK_ACCEL_VISIBLE)
+fill~add_accelerator('activate', group, '046'~x2d, .gtk~GDK_CONTROL_MASK,,
+                     .gtk~GTK_ACCEL_VISIBLE)
+clear~add_accelerator('activate', group, '043'~x2d, .gtk~GDK_CONTROL_MASK,,
+                      .gtk~GTK_ACCEL_VISIBLE)
+
+-- set up the user data for the signals
+pulse~user_data = progress
+fill~user_data = progress
+clear~user_data = progress
+
+pulse~signal_connect('activate')
+fill~signal_connect('activate')
+clear~signal_connect('activate')
+
+menu~append(pulse)
+menu~append(separator)
+menu~append(fill)
+menu~append(clear)
+
+menu~attach_to_widget(progress)
+menu~show_all()
+return
+
+::class myMainWindow subclass GtkWindow
+
+::method signal_destroy
+call gtk_main_quit
+return
+      
+::class myEventBox subclass GtkEventBox
+
+::method signal_button_press_event
+use strict arg event
+if event~button = 3 then do
+   self~user_data~popup()
    end
+return .true
 
-/* get any command line arguments */
-parse arg arguments
-if arguments~upper() = 'HELP' then do
-   call helpmsg
-   return 0
-   end
+::class MyPulse subclass GtkMenuItem
 
-/* now call the appropriate functions for making Mod_ooRexx */
-select
-   when os = 'LINUX' then do
-      'make -f ./makefile.linux' cmdline
-      'cp mod_oorexx.so ./bin'
-      end
-   when os = 'AIX' then do
-      'make -f ./makefile.aix' cmdline
-      'cp mod_oorexx.so ./bin'
-      end
-   when os = 'WINDOWS' then do
-      'nmake /F makefile.nt' cmdline
-      'copy mod_oorexx.dll .\bin'
-      end
-   otherwise nop
-   end
+::method signal_activate
+self~user_data~pulse()
+self~user_data~set_text('Pulse!')
+return
 
-return 0
+::class MyFill subclass GtkMenuItem
 
+::method signal_activate
+self~user_data~set_fraction(1.0)
+self~user_data~set_text('One Hundred Percent')
+return
 
-helpmsg:
-say
-say 'Syntax: rexx make_mod_oorexx.rex [help]'
-say
-say 'The help argument will give you this message.'
-say
+::class MyClear subclass GtkMenuItem
+
+::method signal_activate
+self~user_data~set_fraction(0.0)
+self~user_data~set_text('Reset to Zero')
 return
 

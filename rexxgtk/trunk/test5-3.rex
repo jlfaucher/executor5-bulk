@@ -1,13 +1,12 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (C) W. David Ashley 2004-2008. All Rights Reserved.              */
-/* Copyright (c) 2009-2009 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/* http://www.oorexx.org/license.html                                         */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -35,60 +34,67 @@
 /* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
-/* Author: W. David Ashley                                                    */
+/* Authors;                                                                   */
+/*       W. David Ashley <dashley@us.ibm.com>                                 */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
 
-/* find out the operating system */
-use arg cmdline = ''
-parse source source_str
-parse var source_str os .
-if substr(os, 1, 7) = 'Windows' then os = 'WINDOWS'
-if os = 'WIN32' | os = 'WIN64' then os = 'WINDOWS'
-if os = 'UNIX' then os = 'LINUX'
-select
-   when os = 'LINUX' then nop
-   when os = 'AIX' then nop
-   when os = 'WINDOWS' then nop
-   otherwise do
-      say 'Error: Unknown operating system.'
-      return 12
-      end
+-- Derived from Listing 5-3
+-- Foundations of GTK+ Development
+-- by Andrew Krause
+
+call gtk_init
+dialog = .GtkDialog~new('Edit User Information', .nil,,
+                        .gtk~GTK_DIALOG_MODAL,,
+                        .gtk~GTK_STOCK_OK, .gtk~GTK_RESPONSE_OK)
+dialog~add_button(.gtk~GTK_STOCK_CANCEL, .gtk~GTK_RESPONSE_CANCEL)
+dialog~set_default_response(.gtk~GTK_RESPONSE_OK)
+
+lbl1 = .GtkLabel~new('User Name')
+lbl2 = .GtkLabel~new('Real Name')
+lbl3 = .GtkLabel~new('Home Dir')
+lbl4 = .GtkLabel~new('Host Name')
+
+user = .GtkEntry~new()
+real = .GtkEntry~new()
+home = .GtkEntry~new()
+host = .GtkEntry~new()
+
+user~set_text(g_get_user_name())
+real~set_text(g_get_real_name())
+home~set_text(g_get_home_dir())
+host~set_text(g_get_host_name())
+
+table = .GtkTable~new(4, 2, .false)
+table~attach_defaults(lbl1, 0, 1, 0, 1)
+table~attach_defaults(lbl2, 0, 1, 1, 2)
+table~attach_defaults(lbl3, 0, 1, 2, 3)
+table~attach_defaults(lbl4, 0, 1, 3, 4)
+
+table~attach_defaults(user, 1, 2, 0, 1)
+table~attach_defaults(real, 1, 2, 1, 2)
+table~attach_defaults(home, 1, 2, 2, 3)
+table~attach_defaults(host, 1, 2, 3, 4)
+
+table~set_row_spacings(5)
+table~set_col_spacings(5)
+table~set_border_width(5)
+
+dialog~vbox~pack_start_defaults(table)
+dialog~show_all()
+
+retc = dialog~dialog_run()
+if retc = .gtk~GTK_RESPONSE_OK then do
+   say 'User Name:' user~get_text()
+   say 'Real Name:' real~get_text()
+   say 'Home Folder:' home~get_text()
+   say 'Host Name:' host~get_text()
    end
 
-/* get any command line arguments */
-parse arg arguments
-if arguments~upper() = 'HELP' then do
-   call helpmsg
-   return 0
-   end
-
-/* now call the appropriate functions for making Mod_ooRexx */
-select
-   when os = 'LINUX' then do
-      'make -f ./makefile.linux' cmdline
-      'cp mod_oorexx.so ./bin'
-      end
-   when os = 'AIX' then do
-      'make -f ./makefile.aix' cmdline
-      'cp mod_oorexx.so ./bin'
-      end
-   when os = 'WINDOWS' then do
-      'nmake /F makefile.nt' cmdline
-      'copy mod_oorexx.dll .\bin'
-      end
-   otherwise nop
-   end
-
-return 0
-
-
-helpmsg:
-say
-say 'Syntax: rexx make_mod_oorexx.rex [help]'
-say
-say 'The help argument will give you this message.'
-say
+dialog~destroy()
 return
+
+
+::requires 'rexxgtk.cls'
 

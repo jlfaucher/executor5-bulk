@@ -1,13 +1,12 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (C) W. David Ashley 2004-2008. All Rights Reserved.              */
-/* Copyright (c) 2009-2009 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/* http://www.oorexx.org/license.html                                         */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -35,60 +34,53 @@
 /* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
-/* Author: W. David Ashley                                                    */
+/* Authors;                                                                   */
+/*       W. David Ashley <dashley@us.ibm.com>                                 */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
 
-/* find out the operating system */
-use arg cmdline = ''
-parse source source_str
-parse var source_str os .
-if substr(os, 1, 7) = 'Windows' then os = 'WINDOWS'
-if os = 'WIN32' | os = 'WIN64' then os = 'WINDOWS'
-if os = 'UNIX' then os = 'LINUX'
-select
-   when os = 'LINUX' then nop
-   when os = 'AIX' then nop
-   when os = 'WINDOWS' then nop
-   otherwise do
-      say 'Error: Unknown operating system.'
-      return 12
-      end
-   end
+-- Derived from Listing 5-4
+-- Foundations of GTK+ Development
+-- by Andrew Krause
 
-/* get any command line arguments */
-parse arg arguments
-if arguments~upper() = 'HELP' then do
-   call helpmsg
-   return 0
-   end
+call gtk_init
+window = .myMainWindow~new(.gtk~GTK_WINDOW_TOPLEVEL)
+window~set_title('Message Dialogs')
+window~signal_connect("destroy")
+window~set_border_width(10)
 
-/* now call the appropriate functions for making Mod_ooRexx */
-select
-   when os = 'LINUX' then do
-      'make -f ./makefile.linux' cmdline
-      'cp mod_oorexx.so ./bin'
-      end
-   when os = 'AIX' then do
-      'make -f ./makefile.aix' cmdline
-      'cp mod_oorexx.so ./bin'
-      end
-   when os = 'WINDOWS' then do
-      'nmake /F makefile.nt' cmdline
-      'copy mod_oorexx.dll .\bin'
-      end
-   otherwise nop
-   end
+button = .MyButton~newWithMnemonic('_Click Me')
 
-return 0
+-- save data for the callback
+button~user_data = window
+
+button~signal_connect('clicked')
+
+window~add(button)
+window~show_all()
+
+call gtk_main
+return
 
 
-helpmsg:
-say
-say 'Syntax: rexx make_mod_oorexx.rex [help]'
-say
-say 'The help argument will give you this message.'
-say
+::requires 'rexxgtk.cls'
+
+::class myMainWindow subclass GtkWindow
+
+::method signal_destroy
+call gtk_main_quit
+return
+
+::class MyButton subclass GtkButton
+
+::method signal_clicked
+dialog = .GtkMessageDialog~new(self~user_data, .gtk~GTK_DIALOG_MODAL,,
+                               .gtk~GTK_MESSAGE_INFO, .gtk~GTK_BUTTONS_OK,,
+                               'The button was clicked!')
+dialog~set_title('Information')
+
+dialog~dialog_run()
+dialog~destroy()
 return
 

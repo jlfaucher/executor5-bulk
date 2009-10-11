@@ -1,13 +1,12 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (C) W. David Ashley 2004-2008. All Rights Reserved.              */
-/* Copyright (c) 2009-2009 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.ibm.com/developerworks/oss/CPLv1.0.htm                          */
+/* http://www.oorexx.org/license.html                                         */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -35,60 +34,96 @@
 /* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
-/* Author: W. David Ashley                                                    */
+/* Authors;                                                                   */
+/*       W. David Ashley <dashley@us.ibm.com>                                 */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
 
-/* find out the operating system */
-use arg cmdline = ''
-parse source source_str
-parse var source_str os .
-if substr(os, 1, 7) = 'Windows' then os = 'WINDOWS'
-if os = 'WIN32' | os = 'WIN64' then os = 'WINDOWS'
-if os = 'UNIX' then os = 'LINUX'
-select
-   when os = 'LINUX' then nop
-   when os = 'AIX' then nop
-   when os = 'WINDOWS' then nop
-   otherwise do
-      say 'Error: Unknown operating system.'
-      return 12
-      end
-   end
+-- Derived from Listing 9-6
+-- Foundations of GTK+ Development
+-- by Andrew Krause
 
-/* get any command line arguments */
-parse arg arguments
-if arguments~upper() = 'HELP' then do
-   call helpmsg
-   return 0
-   end
+call gtk_init
+window = .myMainWindow~new(.gtk~GTK_WINDOW_TOPLEVEL)
+window~set_title('Toolbars')
+window~signal_connect('destroy')
+window~set_size_request(325, -1)
 
-/* now call the appropriate functions for making Mod_ooRexx */
-select
-   when os = 'LINUX' then do
-      'make -f ./makefile.linux' cmdline
-      'cp mod_oorexx.so ./bin'
-      end
-   when os = 'AIX' then do
-      'make -f ./makefile.aix' cmdline
-      'cp mod_oorexx.so ./bin'
-      end
-   when os = 'WINDOWS' then do
-      'nmake /F makefile.nt' cmdline
-      'copy mod_oorexx.dll .\bin'
-      end
-   otherwise nop
-   end
+entry = .GtkEntry~new()
+toolbar = .GtkToolbar~new()
+call create_toolbar toolbar, entry
 
-return 0
+vbox = .GtkVBox~new(.false, 5)
+vbox~pack_start_defaults(toolbar)
+vbox~pack_start_defaults(entry)
 
+window~add(vbox)
+window~show_all()
 
-helpmsg:
-say
-say 'Syntax: rexx make_mod_oorexx.rex [help]'
-say
-say 'The help argument will give you this message.'
-say
+call gtk_main
+return
+
+::requires 'rexxgtk.cls'
+
+::class myMainWindow subclass GtkWindow
+
+::method signal_destroy
+call gtk_main_quit
+return
+
+::class myCut subclass GtkToolButton
+
+::method signal_clicked
+self~user_data~cut_clipboard()
+return
+
+::class myCopy subclass GtkToolButton
+
+::method signal_clicked
+self~user_data~copy_clipboard()
+return
+
+::class myPaste subclass GtkToolButton
+
+::method signal_clicked
+self~user_data~paste_clipboard()
+return
+
+::class mySelectall subclass GtkToolButton
+
+::method signal_clicked
+self~user_data~select_region(self~user_data, 0, -1)
+return
+
+::routine create_toolbar
+use strict arg toolbar, entry
+
+cut = .myCut~newFromStock(.gtk~GTK_STOCK_CUT);
+copy = .myCopy~newFromStock(.gtk~GTK_STOCK_COPY);
+paste = .myPaste~newFromStock(.gtk~GTK_STOCK_PASTE);
+selectall = .mySelectall~newFromStock(.gtk~GTK_STOCK_SELECT_ALL);
+separator = .GtkSeparatorToolItem~new();
+
+toolbar~set_show_arrow(.true)
+toolbar~set_style(.gtk~GTK_TOOLBAR_BOTH)
+
+toolbar~insert(cut, 0)
+toolbar~insert(copy, 1)
+toolbar~insert(paste, 2)
+toolbar~insert(separator, 3)
+toolbar~insert(selectall, 4)
+
+-- save user data for the callbacks
+cut~user_data = entry
+copy~user_data = entry
+paste~user_data = entry
+selectall~user_data = entry
+
+cut~signal_connect('clicked')
+copy~signal_connect('clicked')
+paste~signal_connect('clicked')
+selectall~signal_connect('clicked')
+
 return
 

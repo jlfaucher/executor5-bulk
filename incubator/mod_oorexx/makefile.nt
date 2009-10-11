@@ -50,7 +50,7 @@ GLFLAGS       = /nologo /DLL /machine:IX86
 GLBDEP        = mod_oorexx.h makefile.nt
 OBJS          = mod_oorexx.obj dirconfig.obj rxfuncs.obj handlers.obj
 
-all           : mod_rexx.dll
+all           : mod_oorexx.dll
 
 mod_oorexx.dll  : $(OBJS)
                 link $(OBJS) $(GLFLAGS) $(LIBS) /OUT:$(@R).dll /implib:$(@R).lib /PDB:$(@R).pdb
@@ -68,5 +68,5 @@ handlers.obj  : $(@R).cpp $(GLBDEP)
                 cl $(GCFLAGS) $(@R).cpp
 
 cleanall      :
-                del *.obj *.pdb *.idb *.ilk *.exp vc6?.* mod_rexx.dll mod_rexx.lib
+                del *.obj *.pdb *.idb *.ilk *.exp vc6?.* mod_oorexx.dll mod_oorexx.lib
 
