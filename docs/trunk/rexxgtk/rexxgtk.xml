@@ -85,7 +85,7 @@
 <!--#######################################################################
     # The following need to be modified for each release!
     #######################################################################-->
-<edition>Version 0.5.0 (beta)</edition>
+<edition>Version 0.10.0 (beta)</edition>
 <pubdate>October 1, 2009</pubdate>
 <!--#######################################################################
     # The releaseinfo tag is used to show the release status of a document.
@@ -296,7 +296,7 @@ those specific to the system. For more information, refer to the
 available.</para>
 </chapter>
 
-<chapter><title>Installation</title>
+<section id="installation"><title>Installation</title>
 <indexterm><primary>RexxGTK installation</primary></indexterm>
 <indexterm><primary>installation, RexxGTK</primary></indexterm>
 <para>The RexxGTK package is contained in the file
@@ -311,10 +311,34 @@ uses the class:
      .
 ::requires "rexxgtk.cls"
 </programlisting></para>
+</section>
+
+<section><title>Classes and Methods</title>
+<para>The RexxGTK package is developed around the class structure of the GTK+ system. For
+each GTK+ class there is a cooresponding RexxGTK class. Most od the GTK_ functions has a
+one to one mapping to a cooresponding RexxGTK method with the arguments and return types
+also matching. However, there are exceptions to the mapping, especially in the more
+complicated classes where it was determined that a simplified method made more sense in
+some cases. Also, sometimes it was preferable to return ooRexx builtin objects as opposed
+to the structures returned by the GTK+ function.</para>
+
+<para>In order to make it easy for a novice to learn the RexxGTK classes and methods the
+book <citetitle>Foundations of GTK+ Development</citetitle> by Andrew Krause published by
+Apress&reg; has been used to create a large number of example programs. A user can obtain
+a copy of this book, which is oriented to C programmers, and examine all the example
+programs in that book. Each example program has a cooresponding test program contained
+in the RexxGTK package. Thus a developer can see how to accomplish the same programs in
+the book using the RexxGTK package. This should get a novice started very quickly.</para>
+
+<para>This document is also organized in much the same way that the
+<ulink url="http://library.gnome.org/devel/gtk/unstable/index.html">
+<citetitle>GNOME Documentation Library</citetitle></ulink> is organized so locating classes
+and methods should be similar.</para>
+
+</section>
 </chapter>
 
 &functions;
-
 &windows;
 &dispwidgets;
 &buttons;
