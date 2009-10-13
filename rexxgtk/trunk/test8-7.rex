@@ -85,12 +85,12 @@ do i = 1 to list~items
          j += 1
          if j > list~items then leave
          end
-      iter = store~append(.nil)
+      iter = store~append()
       store~set_value(iter, BUY_IT, list[i]~buy, QUANTITY, list[i]~quantity,,
                       PRODUCT, list[i]~product)
       end
    else do
-      child = store~append(iter)
+      child = store~append()
       store~set_value(child, BUY_IT, list[i]~buy, QUANTITY, list[i]~quantity,,
                       PRODUCT, list[i]~product)
       end

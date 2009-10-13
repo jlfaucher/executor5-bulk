@@ -112,7 +112,7 @@ RexxMethod2(int,                       // Return type
 RexxMethod2(POINTER,                   // Return type
             GrxTreeStoreAppend,        // Object_method name
             CSELF, self,               // GTK self
-            POINTER, parent)           // Parent object
+            OPTIONAL_POINTER, parent)  // Parent object
 {
     GtkTreeIter *piter = NULL;
     GtkTreeIter iter;
