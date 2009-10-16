@@ -1513,6 +1513,12 @@ return
 
 ::class GtkFontButton public subclass GtkButton
 
+::METHOD newWithFont class
+use strict arg font
+button = self~new()
+button~modify_font(font)
+return button
+
 ::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFontButtonNew"
 ::METHOD 'title=' EXTERNAL "LIBRARY rexxgtk GrxFontButtonSetTitle"
 ::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxFontButtonSetTitle"
