@@ -295,15 +295,40 @@ those specific to the system. For more information, refer to the
 <para>The RexxGTK package requires that the operating system have the GTK+ libraries
 available.</para>
 
-<section id="installation"><title>Installation</title>
-<indexterm><primary>RexxGTK installation</primary></indexterm>
-<indexterm><primary>installation, RexxGTK</primary></indexterm>
+<section id="linuxinstallation"><title>Linux Installation</title>
+<indexterm><primary>Linux installation</primary></indexterm>
+<indexterm><primary>installation</primary>
+<secondary>Linux</secondary></indexterm>
 <para>The RexxGTK package is contained in the file
-<emphasis role="italic">rexxgtk.cls</emphasis>. This file must be placed in
-a directory listed in your LIBPATH. To get access to the class and methods in the RexxGTK
+<emphasis role="italic">rexxgtk.so</emphasis>. This file must be placed in
+a directory listed in your LIBPATH.
+RexxGTK also requires an ooRexx class file (<emphasis role="italic">rexxgtk.cls</emphasis>).
+This file must be placed in a directory listed in your PATH.
+To get access to the class and methods in the RexxGTK
 package you must include a ::REQUIRES directive in any Object Rexx script that
 uses the class:
-<indexterm><primary>::REQUIRES directive, RexxGTK</primary></indexterm>
+<indexterm><primary>::REQUIRES directive</primary></indexterm>
+<programlisting>
+     .
+     .
+     .
+::requires "rexxgtk.cls"
+</programlisting></para>
+</section>
+
+<section id="windowsinstallation"><title>Windows Installation</title>
+<indexterm><primary>Windows installation</primary></indexterm>
+<indexterm><primary>installation</primary>
+<secondary>Windows Linux</secondary></indexterm>
+<para>The RexxGTK package is contained in the file
+<emphasis role="italic">rexxgtk.dll</emphasis>. This file must be placed in
+a directory listed in your PATH.
+RexxGTK also requires an ooRexx class file (<emphasis role="italic">rexxgtk.cls</emphasis>).
+This file must be placed in a directory listed in your PATH.
+To get access to the class and methods in the RexxGTK
+package you must include a ::REQUIRES directive in any Object Rexx script that
+uses the class:
+<indexterm><primary>::REQUIRES directive</primary></indexterm>
 <programlisting>
      .
      .
@@ -333,7 +358,14 @@ the book using the RexxGTK package. This should get a novice started very quickl
 <ulink url="http://library.gnome.org/devel/gtk/unstable/index.html">
 <citetitle>GNOME Documentation Library</citetitle></ulink> is organized so locating classes
 and methods should be similar.</para>
+</section>
 
+<section><title>Other Notes</title>
+<para>Currently the RexxGTK package is not a complete replication of all GTK+ classes and
+functions (methods). There are many missing widgets and even more missing functions
+(methods). It is the intent of the RexxGTK developers to include as many widgets as 
+feasible in the package over time. The same is true for GTK+ functions, but in this case
+the it may take a much longer period of time and it may never be complete.</para>
 </section>
 </chapter>
 
