@@ -90,7 +90,7 @@ do i = 1 to list~items
                       PRODUCT, list[i]~product)
       end
    else do
-      child = store~append()
+      child = store~append(iter)
       store~set_value(child, BUY_IT, list[i]~buy, QUANTITY, list[i]~quantity,,
                       PRODUCT, list[i]~product)
       end
