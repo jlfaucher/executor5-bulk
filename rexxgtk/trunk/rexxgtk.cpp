@@ -256,11 +256,11 @@ RexxRoutine1(int,                      // Return type
  *
  * @return        User name
  **/
-RexxRoutine0(CSTRING,                  // Return type
+RexxRoutine0(RexxObjectPtr,            // Return type
              GrxGetUserName)           // Routine name
 {
 
-    return g_get_user_name();
+    return (RexxObjectPtr)context->NewStringFromAsciiz(g_get_user_name());
 }
 
 /**
@@ -270,11 +270,11 @@ RexxRoutine0(CSTRING,                  // Return type
  *
  * @return        Real name
  **/
-RexxRoutine0(CSTRING,                  // Return type
+RexxRoutine0(RexxObjectPtr,            // Return type
              GrxGetRealName)           // Routine name
 {
 
-    return g_get_real_name();
+    return (RexxObjectPtr)context->NewStringFromAsciiz(g_get_real_name());
 }
 
 /**
@@ -284,11 +284,11 @@ RexxRoutine0(CSTRING,                  // Return type
  *
  * @return        Home directory
  **/
-RexxRoutine0(CSTRING,                  // Return type
+RexxRoutine0(RexxObjectPtr,            // Return type
              GrxGetHomeDir)            // Routine name
 {
 
-    return g_get_home_dir();
+    return (RexxObjectPtr)context->NewStringFromAsciiz(g_get_home_dir());
 }
 
 /**
@@ -298,11 +298,11 @@ RexxRoutine0(CSTRING,                  // Return type
  *
  * @return        Host name
  **/
-RexxRoutine0(CSTRING,                  // Return type
+RexxRoutine0(RexxObjectPtr,            // Return type
              GrxGetHostName)           // Routine name
 {
 
-    return g_get_host_name();
+    return (RexxObjectPtr)context->NewStringFromAsciiz(g_get_host_name());
 }
 
 

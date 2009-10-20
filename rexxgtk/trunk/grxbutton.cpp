@@ -501,13 +501,15 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Font string
  **/
-RexxMethod1(CSTRING,                   // Return type
+RexxMethod1(RexxObjectPtr,             // Return type
             GrxFontButtonGetFontName,  // Object_method name
             CSELF, self)               // GTK self
 {
-    const gchar * font;
-
-    return gtk_font_button_get_font_name(GTK_FONT_BUTTON(self));
+    const gchar * font = gtk_font_button_get_font_name(GTK_FONT_BUTTON(self));
+    if (font == NULL) {
+        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+    }
+    return (RexxObjectPtr)context->NewStringFromAsciiz(font);
 }
 
 

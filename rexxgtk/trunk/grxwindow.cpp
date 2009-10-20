@@ -120,11 +120,15 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Title string
  **/
-RexxMethod1(CSTRING,                   // Return type
+RexxMethod1(RexxObjectPtr,             // Return type
             GrxWindowGetTitle,         // Object_method name
             CSELF, self)               // GTK self
 {
-    return gtk_window_get_title(GTK_WINDOW(self));
+    const char * retc = gtk_window_get_title(GTK_WINDOW(self));
+    if (retc ==NULL) {
+        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+    }
+    return (RexxObjectPtr)context->NewStringFromAsciiz(retc);
 }
 
 /**
