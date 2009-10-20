@@ -184,45 +184,37 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  set_accel_group
+ * Method:  set/get_accel_group
  *
- * Set the accelerator group.
+ * Set/get the accelerator group.
  *
  * @param accel   The accelerator group
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
-            GrxMenuSetAccelGroup,      // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxMenuGetSetAccelGroup,   // Object_method name
             CSELF, self,               // GTK self
-            RexxObjectPtr, accel)      // The accel widget
+            OPTIONAL_RexxObjectPtr, accel) // The accel widget
 {
-    if (!context->IsOfType(accel, "GtkAccelGroup")) {
-        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
-                                 context->WholeNumberToObject(1),
-                                 context->NewStringFromAsciiz("GtkAccelGroup"));
-        return 0;
+    RexxObjectPtr retc = (RexxObjectPtr)context->Nil();
+
+    if (argumentExists(2)) {
+        if (!context->IsOfType(accel, "GtkAccelGroup")) {
+            context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                     context->WholeNumberToObject(1),
+                                     context->NewStringFromAsciiz("GtkAccelGroup"));
+            return retc;
+        }
+        GtkAccelGroup *accelWidget = (GtkAccelGroup *)context->ObjectToCSelf(accel);
+        gtk_menu_set_accel_group(GTK_MENU(self), accelWidget);
     }
-    GtkAccelGroup *accelWidget = (GtkAccelGroup *)context->ObjectToCSelf(accel);
+    else {
+        GtkAccelGroup *accel = gtk_menu_get_accel_group(GTK_MENU(self));
+        retc = (RexxObjectPtr)g_object_get_data(G_OBJECT(accel), "OORXOBJECT");
+    }
 
-    gtk_menu_set_accel_group(GTK_MENU(self), accelWidget);
-
-    return 0;
-}
-
-/**
- * Method:  get_accel_group
- *
- * Get the accelerator group.
- *
- * @return        Accel group
- **/
-RexxMethod1(RexxObjectPtr,             // Return type
-            GrxMenuGetAccelGroup,      // Object_method name
-            CSELF, self)               // GTK self
-{
-    GtkAccelGroup *accel = gtk_menu_get_accel_group(GTK_MENU(self));
-    return (RexxObjectPtr)g_object_get_data(G_OBJECT(accel), "OORXOBJECT");
+    return retc;
 }
 
 /**
@@ -245,36 +237,30 @@ RexxMethod2(int,                       // Return type
 }
 
 /**
- * Method:  set_title
+ * Method:  set/get_title
  *
- * Set the title.
+ * Set/get the title.
  *
  * @param title   The title
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
-            GrxMenuSetTitle,           // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxMenuGetSetTitle,        // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, title)            // The accel path
+            OPTIONAL_CSTRING, title)   // The accel path
 {
-    gtk_menu_set_title(GTK_MENU(self), title);
+    RexxObjectPtr retc;
 
-    return 0;
-}
+    if (argumentExists(2)) {
+        gtk_menu_set_title(GTK_MENU(self), title);
+        retc = (RexxObjectPtr)context->Nil();
+    }
+    else {
+        retc = (RexxObjectPtr)context->NewStringFromAsciiz(gtk_menu_get_title(GTK_MENU(self)));
+    }
 
-/**
- * Method:  get_title
- *
- * Get the title.
- *
- * @return        Zero
- **/
-RexxMethod1(CSTRING,                   // Return type
-            GrxMenuGetTitle,           // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_menu_get_title(GTK_MENU(self));
+    return retc;
 }
 
 /**
@@ -343,37 +329,30 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  get_active
+ * Method:  set/get_active
  *
- * Get the active menu item.
- *
- * @return        Menu item
- **/
-RexxMethod1(RexxObjectPtr,             // Return type
-            GrxMenuGetActive,          // Object_method name
-            CSELF, self)               // GTK self
-{
-    GtkWidget *act = gtk_menu_get_active(GTK_MENU(self));
-    return (RexxObjectPtr)g_object_get_data(G_OBJECT(act), "OORXOBJECT");
-}
-
-/**
- * Method:  set_active
- *
- * Set a menu item active.
+ * Set/get a menu item active.
  *
  * @param item    The item index
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
-            GrxMenuSetActive,          // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxMenuGetSetActive,       // Object_method name
             CSELF, self,               // GTK self
-            int, item)                 // The item index
+            OPTIONAL_int, item)        // The item index
 {
-    gtk_menu_set_active(GTK_MENU(self), item);
+    RexxObjectPtr retc = (RexxObjectPtr)context->Nil();
 
-    return 0;
+    if (argumentExists(2)) {
+        gtk_menu_set_active(GTK_MENU(self), item);
+    }
+    else {
+        GtkWidget *act = gtk_menu_get_active(GTK_MENU(self));
+        return (RexxObjectPtr)g_object_get_data(G_OBJECT(act), "OORXOBJECT");
+    }
+
+    return retc;
 }
 
 /**

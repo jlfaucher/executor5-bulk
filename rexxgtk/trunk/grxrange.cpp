@@ -123,69 +123,51 @@ static void signal_func_2(GtkWidget *window,
 /*============================================================================*/
 
 /**
- * Method:  set_digits
+ * Method:  set/get_digits
  *
- * Set the scale digits.
+ * Set/get the scale digits.
  *
  * @param digits  The number of digits
  *
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxScaleSetDigits,         // Object_method name
+            GrxScaleGetSetDigits,      // Object_method name
             CSELF, self,               // GTK self
-            int, digits)               // Digits
+            OPTIONAL_int, digits)      // Digits
 {
-    gtk_scale_set_digits(GTK_SCALE(self), digits);
+    if (argumentExists(2)) {
+        gtk_scale_set_digits(GTK_SCALE(self), digits);
+    }
+    else {
+        return gtk_scale_get_digits(GTK_SCALE(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_digits
+ * Method:  set/get_value_pos
  *
- * Get the scale digits.
- *
- * @return        Digits
- **/
-RexxMethod1(int,                       // Return type
-            GrxScaleGetDigits,         // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_scale_get_digits(GTK_SCALE(self));
-}
-
-/**
- * Method:  set_value_pos
- *
- * Set the scale value position type.
+ * Set/get the scale value position type.
  *
  * @param values  The value
  *
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxScaleSetValuePos,       // Object_method name
+            GrxScaleGetSetValuePos,    // Object_method name
             CSELF, self,               // GTK self
-            int, type)                 // Position type
+            OPTIONAL_int, type)        // Position type
 {
-    gtk_scale_set_value_pos(GTK_SCALE(self), (GtkPositionType)type);
+    if (argumentExists(2)) {
+        gtk_scale_set_value_pos(GTK_SCALE(self), (GtkPositionType)type);
+    }
+    else {
+        return gtk_scale_get_value_pos(GTK_SCALE(self));
+    }
 
     return 0;
-}
-
-/**
- * Method:  get_value_pos
- *
- * Get the scale value position type.
- *
- * @return        Zero.
- **/
-RexxMethod1(int,                       // Return type
-            GrxScaleGetValuePos,       // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_scale_get_value_pos(GTK_SCALE(self));
 }
 
 /**

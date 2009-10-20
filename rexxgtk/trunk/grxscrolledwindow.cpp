@@ -114,7 +114,7 @@ RexxMethod3(int,                       // Return type
 {
     GtkAdjustment *hadj = NULL, *vadj = NULL;
 
-    if (rxhadj != NULL) {
+    if (argumentExists(2)) {
         if (rxhadj != context->Nil()) {
             if (!context->IsOfType(rxhadj, "GtkAdjustment")) {
                 context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -125,7 +125,7 @@ RexxMethod3(int,                       // Return type
             hadj = (GtkAdjustment *)context->ObjectToCSelf(rxhadj);
         }
     }
-    if (rxvadj != NULL) {
+    if (argumentExists(3)) {
         if (rxvadj != context->Nil()) {
             if (!context->IsOfType(rxvadj, "GtkAdjustment")) {
                 context->RaiseException2(Rexx_Error_Incorrect_method_noclass,

@@ -303,44 +303,32 @@ RexxMethod3(int,                       // Return type
 }
 
 /**
- * Method:  set_model
+ * Method:  set/get_model
  *
- * Set the model for the tree.
+ * Set/get the model for the tree.
  *
  * @param model   The model object
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxTreeViewSetModel,       // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, model)      // Column object
-{
-    // Do not test model for its class as it can be of multiple classes
-    GtkTreeModel *modelWidget = (GtkTreeModel *)context->ObjectToCSelf(model);
-
-    gtk_tree_view_set_model(GTK_TREE_VIEW(self), modelWidget);
-
-    return 0;
-}
-
-/**
- * Method:  get_model
- *
- * Get the model for the tree.
- *
- * @return        Treemodel object
- **/
-RexxMethod2(RexxObjectPtr,             // Return type
-            GrxTreeViewGetModel,       // Object_method name
+RexxMethod3(RexxObjectPtr,             // Return type
+            GrxTreeViewGetSetModel,    // Object_method name
             CSELF, cself,              // GTK self
-            OSELF, oself)              // GTK self
+            OSELF, oself,              // GTK self
+            OPTIONAL_RexxObjectPtr, model) // Column object
 {
-    GtkTreeModel *model = (GtkTreeModel *)gtk_tree_view_get_model(GTK_TREE_VIEW(cself));
-
-    // Create the Rexx object
-    return context->SendMessage1(oself, "create_tree_model",
-                                 context->NewPointer((RexxPointerObject)model));
+    if (argumentExists(3)) {
+        // Do not test model for its class as it can be of multiple classes
+        GtkTreeModel *modelWidget = (GtkTreeModel *)context->ObjectToCSelf(model);
+        gtk_tree_view_set_model(GTK_TREE_VIEW(cself), modelWidget);
+    }
+    else {
+        GtkTreeModel *model = (GtkTreeModel *)gtk_tree_view_get_model(GTK_TREE_VIEW(cself));
+        // Create the Rexx object
+        return context->SendMessage1(oself, "create_tree_model",
+                                     context->NewPointer((RexxPointerObject)model));
+    }
+    return (RexxObjectPtr)context->Nil();
 }
 
 /**

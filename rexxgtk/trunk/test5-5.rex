@@ -52,7 +52,7 @@ logo = './oorexx.jpg'
 dialog~set_logo(logo)
 
 dialog~set_version(GrxVersion())
-dialog~set_copyright('(c) 2008 Rexx Language Association. All rights reserved.')
+dialog~set_copyright('(c) 2008-2009 Rexx Language Association. All rights reserved.')
 dialog~set_comments('All About GtkAboutDialog')
 
 dialog~set_license('License: CPL v1.0')

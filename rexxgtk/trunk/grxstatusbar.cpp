@@ -178,36 +178,27 @@ RexxMethod3(int,                       // Return type
 }
 
 /**
- * Method:  set_has_resize_grip
+ * Method:  set/get_has_resize_grip
  *
- * Add a resize grip to the status bar.
+ * Set/get a resize grip to the status bar.
  *
  * @param flag    The boolean flag
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
-            GrxStatusbarSetHasResizeGrip, // Object_method name
+RexxMethod2(logical_t,                 // Return type
+            GrxStatusbarGetSetHasResizeGrip, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, flag)           // Boolean flag
+            OPTIONAL_logical_t, flag)  // Boolean flag
 {
-    gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR(self), flag);
+    if (argumentExists(2)) {
+        gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR(self), flag);
+    }
+    else {
+        return gtk_statusbar_get_has_resize_grip(GTK_STATUSBAR(self));
+    }
 
     return 0;
-}
-
-/**
- * Method:  get_has_resize_grip
- *
- * Return the bollean flag for the resize grip.
- *
- * @return        Zero
- **/
-RexxMethod1(logical_t,                 // Return type
-            GrxStatusbarGetHasResizeGrip, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_statusbar_get_has_resize_grip(GTK_STATUSBAR(self));
 }
 
 /**

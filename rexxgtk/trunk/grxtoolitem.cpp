@@ -136,69 +136,51 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  set_homogeneous
+ * Method:  set/get_homogeneous
  *
- * Set the item homogeneous.
+ * Set/get the item homogeneous.
  *
  * @param homo    The homogeneous boolean
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
-            GrxToolItemSetHomogeneous, // Object_method name
+RexxMethod2(logical_t,                 // Return type
+            GrxToolItemGetSetHomogeneous, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, homo)           // Homogeneous boolean
+            OPTIONAL_logical_t, homo)  // Homogeneous boolean
 {
-    gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(self), homo);
+    if (argumentExists(2)) {
+        gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(self), homo);
+    }
+    else {
+        return gtk_tool_item_get_homogeneous(GTK_TOOL_ITEM(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_homogeneous
+ * Method:  set/get_expand
  *
- * Get the item homogeneous.
- *
- * @return        Homogeneous boolean
- **/
-RexxMethod1(logical_t,                 // Return type
-            GrxToolItemGetHomogeneous, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_tool_item_get_homogeneous(GTK_TOOL_ITEM(self));
-}
-
-/**
- * Method:  set_expand
- *
- * Set the item expand flag.
+ * Set/get the item expand flag.
  *
  * @param expand  The expand boolean
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
-            GrxToolItemSetExpand,      // Object_method name
+RexxMethod2(logical_t,                 // Return type
+            GrxToolItemGetSetExpand,   // Object_method name
             CSELF, self,               // GTK self
-            logical_t, expand)         // Expand boolean
+            OPTIONAL_logical_t, expand)// Expand boolean
 {
-    gtk_tool_item_set_expand(GTK_TOOL_ITEM(self), expand);
+    if (argumentExists(2)) {
+        gtk_tool_item_set_expand(GTK_TOOL_ITEM(self), expand);
+    }
+    else {
+        return gtk_tool_item_get_expand(GTK_TOOL_ITEM(self));
+    }
 
     return 0;
-}
-
-/**
- * Method:  get_expand
- *
- * Get the item expand.
- *
- * @return        Expand boolean
- **/
-RexxMethod1(logical_t,                 // Return type
-            GrxToolItemGetExpand,      // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_tool_item_get_expand(GTK_TOOL_ITEM(self));
 }
 
 /**
@@ -235,135 +217,99 @@ RexxMethod4(int,                       // Return type
 }
 
 /**
- * Method:  set_use_drag_window
+ * Method:  set/get_use_drag_window
  *
- * Set the item use drag window flag.
+ * Set/get the item use drag window flag.
  *
  * @param drag    The drag boolean
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
-            GrxToolItemSetUseDragWindow, // Object_method name
+RexxMethod2(logical_t,                 // Return type
+            GrxToolItemGetSetUseDragWindow, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, drag)           // Drag boolean
+            OPTIONAL_logical_t, drag)  // Drag boolean
 {
-    gtk_tool_item_set_use_drag_window(GTK_TOOL_ITEM(self), drag);
+    if (argumentExists(2)) {
+        gtk_tool_item_set_use_drag_window(GTK_TOOL_ITEM(self), drag);
+    }
+    else {
+        return gtk_tool_item_get_use_drag_window(GTK_TOOL_ITEM(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_use_drag_window
+ * Method:  set/get_visible_horizontal
  *
- * Get the item use drag window flag.
- *
- * @return        Flag
- **/
-RexxMethod1(logical_t,                 // Return type
-            GrxToolItemGetUseDragWindow, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_tool_item_get_use_drag_window(GTK_TOOL_ITEM(self));
-}
-
-/**
- * Method:  set_visible_horizontal
- *
- * Set the item visible horizontal flag.
+ * Set/get the item visible horizontal flag.
  *
  * @param visible The visible boolean
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
-            GrxToolItemSetVisibleHorizontal, // Object_method name
+RexxMethod2(logical_t,                  // Return type
+            GrxToolItemGetSetVisibleHorizontal, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, visible)        // Visible boolean
+            OPTIONAL_logical_t, visible) // Visible boolean
 {
-    gtk_tool_item_set_visible_horizontal(GTK_TOOL_ITEM(self), visible);
+    if (argumentExists(2)) {
+        gtk_tool_item_set_visible_horizontal(GTK_TOOL_ITEM(self), visible);
+    }
+    else {
+        return gtk_tool_item_get_visible_horizontal(GTK_TOOL_ITEM(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_visible_horizontal
+ * Method:  set/get_visible_vertical
  *
- * Get the item visible horizontal flag.
- *
- * @return        Zero
- **/
-RexxMethod1(logical_t,                 // Return type
-            GrxToolItemGetVisibleHorizontal, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_tool_item_get_visible_horizontal(GTK_TOOL_ITEM(self));
-}
-
-/**
- * Method:  set_visible_vertical
- *
- * Set the item visible vertical flag.
+ * Set/get the item visible vertical flag.
  *
  * @param visible The visible boolean
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
-            GrxToolItemSetVisibleVertical, // Object_method name
+RexxMethod2(logical_t,                 // Return type
+            GrxToolItemGetSetVisibleVertical, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, visible)        // Visible boolean
+            OPTIONAL_logical_t, visible) // Visible boolean
 {
-    gtk_tool_item_set_visible_vertical(GTK_TOOL_ITEM(self), visible);
+    if (argumentExists(2)) {
+        gtk_tool_item_set_visible_vertical(GTK_TOOL_ITEM(self), visible);
+    }
+    else {
+        return gtk_tool_item_get_visible_vertical(GTK_TOOL_ITEM(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_visible_vertical
+ * Method:  set/get_is_important
  *
- * Get the item visible vertical flag.
- *
- * @return        Zero
- **/
-RexxMethod1(logical_t,                 // Return type
-            GrxToolItemGetVisibleVertical, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_tool_item_get_visible_vertical(GTK_TOOL_ITEM(self));
-}
-
-/**
- * Method:  set_is_important
- *
- * Set the item is important flag.
+ * Set/get the item is important flag.
  *
  * @param import  The import boolean
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
-            GrxToolItemSetIsImportant, // Object_method name
+RexxMethod2(logical_t,                 // Return type
+            GrxToolItemGetSetIsImportant, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, import)         // Important boolean
+            OPTIONAL_logical_t, import)// Important boolean
 {
-    gtk_tool_item_set_is_important(GTK_TOOL_ITEM(self), import);
+    if (argumentExists(2)) {
+        gtk_tool_item_set_is_important(GTK_TOOL_ITEM(self), import);
+    }
+    else {
+        return gtk_tool_item_get_is_important(GTK_TOOL_ITEM(self));
+    }
 
     return 0;
-}
-
-/**
- * Method:  get_is_important
- *
- * Get the item is important flag.
- *
- * @return        Flag
- **/
-RexxMethod1(logical_t,                 // Return type
-            GrxToolItemGetIsImportant, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_tool_item_get_is_important(GTK_TOOL_ITEM(self));
 }
 
 /**

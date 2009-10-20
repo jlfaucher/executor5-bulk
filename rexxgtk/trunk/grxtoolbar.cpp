@@ -294,39 +294,49 @@ RexxMethod3(int,                       // Return type
 }
 
 /**
- * Method:  set_show_arrow
+ * Method:  set/get_show_arrow
  *
- * Set to show an overflow menu.
+ * Set/get to show an overflow menu.
  *
  * @param flag    Boolean flag
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
-            GrxToolbarSetShowArrow,    // Object_method name
+RexxMethod2(logical_t,                 // Return type
+            GrxToolbarGetSetShowArrow, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, flag)           // Show boolean
+            OPTIONAL_logical_t, flag)  // Show boolean
 {
-    gtk_toolbar_set_show_arrow(GTK_TOOLBAR(self), flag);
+    if (argumentExists(2)) {
+        gtk_toolbar_set_show_arrow(GTK_TOOLBAR(self), flag);
+    }
+    else {
+        return gtk_toolbar_get_show_arrow(GTK_TOOLBAR(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  set_orientation
+ * Method:  set/get_orientation
  *
- * Set the orientation.
+ * Set/get the orientation.
  *
  * @param orient  Orientationg
  *
  * @return        Zero
  **/
 RexxMethod2(int,                       // Return type
-            GrxToolbarSetOrientation,  // Object_method name
+            GrxToolbarGetSetOrientation, // Object_method name
             CSELF, self,               // GTK self
-            int, orient)               // Orientation
+            OPTIONAL_int, orient)      // Orientation
 {
-    gtk_toolbar_set_orientation(GTK_TOOLBAR(self), (GtkOrientation)orient);
+    if (argumentExists(2)) {
+        gtk_toolbar_set_orientation(GTK_TOOLBAR(self), (GtkOrientation)orient);
+    }
+    else {
+        return (int)gtk_toolbar_get_orientation(GTK_TOOLBAR(self));
+    }
 
     return 0;
 }
@@ -367,59 +377,51 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  get_show_arrow
+ * Method:  set/get_style
  *
- * Get to show an overflow menu.
+ * Set/get the toolbar style.
  *
- * @return        Flag
+ * @param style   Toolbar style
+ *
+ * @return        Zero
  **/
-RexxMethod1(logical_t,                 // Return type
-            GrxToolbarGetShowArrow,    // Object_method name
-            CSELF, self)               // GTK self
+RexxMethod2(int,                       // Return type
+            GrxToolbarGetSetStyle,     // Object_method name
+            CSELF, self,               // GTK self
+            OPTIONAL_int, style)       // Toolbar style
 {
-    return gtk_toolbar_get_show_arrow(GTK_TOOLBAR(self));
+    if (argumentExists(2)) {
+        gtk_toolbar_set_style(GTK_TOOLBAR(self), (GtkToolbarStyle)style);
+    }
+    else {
+        return (int)gtk_toolbar_get_style(GTK_TOOLBAR(self));
+    }
+
+    return 0;
 }
 
 /**
- * Method:  get_orientation
+ * Method:  set/get_icon_size
  *
- * Get the orientation.
+ * Set/get the toolbar icon size.
  *
- * @return        Orientation
+ * @param size    Toolbar icon size
+ *
+ * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
-            GrxToolbarGetOrientation,  // Object_method name
-            CSELF, self)               // GTK self
+RexxMethod2(int,                       // Return type
+            GrxToolbarGetSetIconSize,  // Object_method name
+            CSELF, self,               // GTK self
+            OPTIONAL_int, size)        // Toolbar style
 {
-    return (int)gtk_toolbar_get_orientation(GTK_TOOLBAR(self));
-}
+    if (argumentExists(2)) {
+        gtk_toolbar_set_icon_size(GTK_TOOLBAR(self), (GtkIconSize)size);
+    }
+    else {
+        return (int)gtk_toolbar_get_icon_size(GTK_TOOLBAR(self));
+    }
 
-/**
- * Method:  get_style
- *
- * Get the style.
- *
- * @return        Style
- **/
-RexxMethod1(int,                       // Return type
-            GrxToolbarGetStyle,        // Object_method name
-            CSELF, self)               // GTK self
-{
-    return (int)gtk_toolbar_get_style(GTK_TOOLBAR(self));
-}
-
-/**
- * Method:  get_icon_size
- *
- * Get the icon size.
- *
- * @return        Size
- **/
-RexxMethod1(int,                       // Return type
-            GrxToolbarGetIconSize,     // Object_method name
-            CSELF, self)               // GTK self
-{
-    return (int)gtk_toolbar_get_icon_size(GTK_TOOLBAR(self));
+    return 0;
 }
 
 /**
@@ -964,25 +966,6 @@ RexxMethod9(RexxObjectPtr,             // Return type
 }
 
 /**
- * Method:  set_style
- *
- * Set the toolbar style.
- *
- * @param style   Toolbar style
- *
- * @return        Zero
- **/
-RexxMethod2(int,                       // Return type
-            GrxToolbarSetStyle,        // Object_method name
-            CSELF, self,               // GTK self
-            int, style)                // Toolbar style
-{
-    gtk_toolbar_set_style(GTK_TOOLBAR(self), (GtkToolbarStyle)style);
-
-    return 0;
-}
-
-/**
  * Method:  insert_stock
  *
  * Insert a stock item.
@@ -1015,25 +998,6 @@ RexxMethod6(RexxObjectPtr,             // Return type
     cblock->signal_name = method;
     gtk_toolbar_insert_stock(GTK_TOOLBAR(self), id, ttext, tptext,
                              GTK_SIGNAL_FUNC(signal_func_0), cblock, pos);
-
-    return 0;
-}
-
-/**
- * Method:  set_icon_size
- *
- * Set the toolbar icon size.
- *
- * @param size    Toolbar icon size
- *
- * @return        Zero
- **/
-RexxMethod2(int,                       // Return type
-            GrxToolbarSetIconSize,     // Object_method name
-            CSELF, self,               // GTK self
-            int, size)                 // Toolbar style
-{
-    gtk_toolbar_set_icon_size(GTK_TOOLBAR(self), (GtkIconSize)size);
 
     return 0;
 }

@@ -181,71 +181,54 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  set_max_length
+ * Method:  set/get_max_length
  *
- * Set the maximum length of text in the entry box.
+ * Set/get the maximum length of text in the entry box.
  *
  * @param maxlen  The max length.
  *
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxEntrySetMaxLength,      // Object_method name
+            GrxEntryGetSetMaxLength,   // Object_method name
             CSELF, self,               // GTK self
-            int, maxlen)               // Max text length
+            OPTIONAL_int, maxlen)      // Max text length
 {
-    gtk_entry_set_max_length(GTK_ENTRY(self), maxlen);
+    if (argumentExists(2)) {
+        gtk_entry_set_max_length(GTK_ENTRY(self), maxlen);
+    }
+    else {
+        return gtk_entry_get_max_length(GTK_ENTRY(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_max_length
+ * Method:  set/get_text
  *
- * Get the maximum length of text in the entry box.
- *
- * @return        Max length
- **/
-RexxMethod1(int,                       // Return type
-            GrxEntryGetMaxLength,      // Object_method name
-            CSELF, self)               // GTK self
-{
-    gint maxlen = 0;
-
-    return gtk_entry_get_max_length(GTK_ENTRY(self));
-}
-
-/**
- * Method:  set_text
- *
- * Set the text in the entry box.
+ * Set/get the text in the entry box.
  *
  * @param text    The text
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxEntrySetText,           // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxEntryGetSetText,        // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, text)             // The text to set
+            OPTIONAL_CSTRING, text)    // The text to set
 {
-    gtk_entry_set_text(GTK_ENTRY(self), text);
+    RexxObjectPtr retc;
 
-    return 0;
-}
+    if (argumentExists(2)) {
+        gtk_entry_set_text(GTK_ENTRY(self), text);
+        retc = (RexxObjectPtr) context->Nil();
+    }
+    else{
+        retc = (RexxObjectPtr)context->NewStringFromAsciiz(gtk_entry_get_text(GTK_ENTRY(self)));
+    }
 
-/**
- * Method:  get_text
- *
- * Get the text in the entry box.
- *
- * @return        Text
- **/
-RexxMethod1(CSTRING,                   // Return type
-            GrxEntryGetText,           // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_entry_get_text(GTK_ENTRY(self));
+    return retc;
 }
 
 /**
@@ -268,72 +251,57 @@ RexxMethod2(int,                       // Return type
 }
 
 /**
- * Method:  get_visibility
+ * Method:  set/get_visibility
  *
- * Get the text visibility flag.
- *
- * @return        Flag
- **/
-RexxMethod1(logical_t,                 // Return type
-            GrxEntryGetVisibility,     // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_entry_get_visibility(GTK_ENTRY(self));
-}
-
-/**
- * Method:  set_visibility
- *
- * Set the visibility of the text in the entry box.
+ * Set/get the visibility of the text in the entry box.
  *
  * @param flag    The visibility boolean
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxEntrySetVisibility,     // Object_method name
+RexxMethod2(logical_t,                 // Return type
+            GrxEntryGetSetVisibility,  // Object_method name
             CSELF, self,               // GTK self
-            logical_t, flag)           // The flag
+            OPTIONAL_logical_t, flag)  // The flag
 {
-    gtk_entry_set_visibility(GTK_ENTRY(self), flag);
+    if (argumentExists(2)) {
+        gtk_entry_set_visibility(GTK_ENTRY(self), flag);
+    }
+    else {
+        return gtk_entry_get_visibility(GTK_ENTRY(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_invisible_char
+ * Method:  set/get_invisibile_char
  *
- * Get the text invisible char.
- *
- * @return        Flag
- **/
-RexxMethod1(RexxObjectPtr,             // Return type
-            GrxEntryGetInvisibleChar,  // Object_method name
-            CSELF, self)               // GTK self
-{
-    char retc[2] = {' ', '\0'};
-
-    retc[0] = gtk_entry_get_invisible_char(GTK_ENTRY(self));
-    return context->NewStringFromAsciiz(retc);
-}
-
-/**
- * Method:  set_invisibile_char
- *
- * Set the invisible character.
+ * Set/get the invisible character.
  *
  * @param ichar   The invisible character
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxEntrySetInvisibleChar,  // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxEntryGetSetInvisibleChar, // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, ichar)            // The character
+            OPTIONAL_CSTRING, ichar)   // The character
 {
-    gtk_entry_set_invisible_char(GTK_ENTRY(self), *ichar);
+    RexxObjectPtr retc;
 
-    return 0;
+    if (argumentExists(2)) {
+        gtk_entry_set_invisible_char(GTK_ENTRY(self), *ichar);
+        retc = (RexxObjectPtr)context->Nil();
+    }
+    else {
+        char ichar2[2] = {' ', '\0'};
+
+        ichar2[0] = gtk_entry_get_invisible_char(GTK_ENTRY(self));
+        retc = (RexxObjectPtr)context->NewStringFromAsciiz(ichar2);
+    }
+
+    return retc;
 }
 
 /**

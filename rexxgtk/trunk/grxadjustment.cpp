@@ -140,20 +140,6 @@ RexxMethod2(int,                       // Return type
 }
 
 /**
- * Method:  get_value
- *
- * Get the current value.
- *
- * @return        Value
- **/
-RexxMethod1(double,                    // Return type
-            GrxAdjustmentGetValue,     // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_adjustment_get_value(GTK_ADJUSTMENT(self));
-}
-
-/**
  * Method:  set_value
  *
  * Set the current value.
@@ -162,14 +148,19 @@ RexxMethod1(double,                    // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
-            GrxAdjustmentSetValue,     // Object_method name
+RexxMethod2(double,                    // Return type
+            GrxAdjustmentGetSetValue,  // Object_method name
             CSELF, self,               // GTK self
-            double, value)             // New value
+            OPTIONAL_double, value)    // New value
 {
-    gtk_adjustment_set_value(GTK_ADJUSTMENT(self), value);
+    if (argumentExists(2)) {
+        gtk_adjustment_set_value(GTK_ADJUSTMENT(self), value);
+    }
+    else {
+        return gtk_adjustment_get_value(GTK_ADJUSTMENT(self));
+    }
 
-    return 0;
+    return 0.0;
 }
 
 /**

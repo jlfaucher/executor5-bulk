@@ -129,7 +129,7 @@ RexxMethod2(int,                       // Return type
 {
     GtkWidget *myWidget;
 
-	if(text != NULL)
+	if(argumentExists(2))
        myWidget = gtk_label_new(text);
     else
        myWidget = gtk_label_new("\0");
@@ -142,82 +142,67 @@ RexxMethod2(int,                       // Return type
 }
 
 /**
- * Method:  get_label
+ * Method:  set/get_label
  *
- * Get the text of the label.
- *
- * @return        label text
- **/
-RexxMethod1(CSTRING,                   // Return type
-            GrxLabelGetLabel,          // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_label_get_label(GTK_LABEL(self));
-}
-
-/**
- * Method:  set_label
- *
- * Set the text of the label.
+ * Set/get the text of the label.
  *
  * @param text    The text of the label.
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxLabelSetLabel,          // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxLabelGetSetLabel,       // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, text)             // Label text
+            OPTIONAL_CSTRING, text)    // Label text
 {
-    gtk_label_set_label(GTK_LABEL(self), text);
+    RexxObjectPtr retc;
 
-    return 0;
+    if (argumentExists(2)) {
+        gtk_label_set_label(GTK_LABEL(self), text);
+        retc = (RexxObjectPtr)context->Nil();
+    }
+    else {
+        retc = (RexxObjectPtr)context->NewStringFromAsciiz(gtk_label_get_label(GTK_LABEL(self)));
+    }
+
+    return retc;
 }
 
 /**
- * Method:  set_justify
+ * Method:  set/get_justify
  *
- * Set the label justification
+ * Set/get the label justification
  *
  * @param jtype   The justification type
  *
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxLabelSetJustify,        // Object_method name
+            GrxLabelGetSetJustify,     // Object_method name
             CSELF, self,               // GTK self
-            int, jtype)                // Justification type
+            OPTIONAL_int, jtype)       // Justification type
 {
-    gtk_label_set_justify(GTK_LABEL(self), (GtkJustification)jtype);
-    switch (jtype) {
-    case GTK_JUSTIFY_LEFT:
-        gtk_misc_set_alignment(GTK_MISC(self), 0, 0);
-        break;
-    case GTK_JUSTIFY_RIGHT:
-        gtk_misc_set_alignment(GTK_MISC(self), 1, 0);
-        break;
-    case GTK_JUSTIFY_CENTER:
-        gtk_misc_set_alignment(GTK_MISC(self), 0.5, 0.5);
-        break;
-    default:
-        break;
+    if (argumentExists(2)) {
+        gtk_label_set_justify(GTK_LABEL(self), (GtkJustification)jtype);
+        switch (jtype) {
+        case GTK_JUSTIFY_LEFT:
+            gtk_misc_set_alignment(GTK_MISC(self), 0, 0);
+            break;
+        case GTK_JUSTIFY_RIGHT:
+            gtk_misc_set_alignment(GTK_MISC(self), 1, 0);
+            break;
+        case GTK_JUSTIFY_CENTER:
+            gtk_misc_set_alignment(GTK_MISC(self), 0.5, 0.5);
+            break;
+        default:
+            break;
+        }
+    }
+    else {
+        return (int)gtk_label_get_justify(GTK_LABEL(self));
     }
 
     return 0;
-}
-
-/**
- * Method:  get_justify
- *
- * get the label justification
- *
- * @return        Justification type
- **/
-RexxMethod1(int,                       // Return type
-            GrxLabelGetJustify,        // Object_method name
-            CSELF, self)               // GTK self
-{
-    return (int)gtk_label_get_justify(GTK_LABEL(self));
 }
 
 /**

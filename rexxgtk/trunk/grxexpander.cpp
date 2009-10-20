@@ -118,36 +118,30 @@ RexxMethod2(int,                       // Return type
 }
 
 /**
- * Method:  set_label
+ * Method:  set/get_label
  *
- * Set the expander label.
+ * Set/get the expander label.
  *
  * @param label   The expander label
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxExpanderSetLabel,       // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxExpanderGetSetLabel,    // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, label)            // Expander label
+            OPTIONAL_CSTRING, label)   // Expander label
 {
-    gtk_expander_set_label(GTK_EXPANDER(self), label);
+    RexxObjectPtr retc;
 
-    return 0;
-}
+    if (argumentExists(2)) {
+        gtk_expander_set_label(GTK_EXPANDER(self), label);
+        retc = (RexxObjectPtr)context->Nil();
+    }
+    else {
+        retc = (RexxObjectPtr)context->NewStringFromAsciiz(gtk_expander_get_label(GTK_EXPANDER(self)));
+    }
 
-/**
- * Method:  get_label
- *
- * Get the expander label.
- *
- * @return        Label
- **/
-RexxMethod1(CSTRING,                   // Return type
-            GrxExpanderGetLabel,       // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_expander_get_label(GTK_EXPANDER(self));
+    return retc;
 }
 
 /**

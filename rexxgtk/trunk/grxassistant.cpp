@@ -113,36 +113,27 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  set_current_page
+ * Method:  set/get_current_page
  *
- * Set the assistant current page number.
+ * Set/get the assistant current page number.
  *
  * @param pagenum The page number
  *
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxAssistantSetCurrentPage, // Object_method name
+            GrxAssistantGetSetCurrentPage, // Object_method name
             CSELF, self,               // GTK self
-            int, pagenum)              // Page number
+            OPTIONAL_int, pagenum)     // Page number
 {
-    gtk_assistant_set_current_page(GTK_ASSISTANT(self), pagenum - 1);
+    if (argumentExists(2)) {
+        gtk_assistant_set_current_page(GTK_ASSISTANT(self), pagenum - 1);
+    }
+    else {
+        return gtk_assistant_get_current_page(GTK_ASSISTANT(self)) + 1;
+    }
 
     return 0;
-}
-
-/**
- * Method:  get_current_page
- *
- * Get the assistant current page number.
- *
- * @return        Page number
- **/
-RexxMethod1(int,                       // Return type
-            GrxAssistantGetCurrentPage, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_assistant_get_current_page(GTK_ASSISTANT(self)) + 1;
 }
 
 /**

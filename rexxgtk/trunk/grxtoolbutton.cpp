@@ -132,36 +132,30 @@ RexxMethod2(int,                       // Return type
 }
 
 /**
- * Method:  set_label
+ * Method:  set/get_label
  *
- * Sets the button label.
+ * Sets/gets the button label.
  *
  * @param label   The button label
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxToolButtonSetLabel,     // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxToolButtonGetSetLabel,  // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, label)            // Button label text
+            OPTIONAL_CSTRING, label)   // Button label text
 {
-    gtk_tool_button_set_label(GTK_TOOL_BUTTON(self), label);
+    RexxObjectPtr retc;
 
-    return 0;
-}
+    if (argumentExists(2)) {
+        gtk_tool_button_set_label(GTK_TOOL_BUTTON(self), label);
+        retc = (RexxObjectPtr)context->Nil();
+    }
+    else {
+        retc = (RexxObjectPtr)context->NewStringFromAsciiz(gtk_tool_button_get_label(GTK_TOOL_BUTTON(self)));
+    }
 
-/**
- * Method:  get_label
- *
- * Gets the button label.
- *
- * @return        Label
- **/
-RexxMethod1(CSTRING,                   // Return type
-            GrxToolButtonGetLabel,     // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_tool_button_get_label(GTK_TOOL_BUTTON(self));
+    return retc;
 }
 
 /**
@@ -198,153 +192,125 @@ RexxMethod1(logical_t,                 // Return type
 }
 
 /**
- * Method:  set_stock_id
+ * Method:  set/get_stock_id
  *
- * Sets the stock id.
+ * Sets/gets the stock id.
  *
  * @param id      The stock id
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxToolButtonSetStockId, // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxToolButtonGetSetStockId, // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, id)               // The stock id
+            OPTIONAL_CSTRING, id)      // The stock id
 {
-    gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(self), id);
+    RexxObjectPtr retc;
+
+    if (argumentExists(2)) {
+        gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(self), id);
+        retc = (RexxObjectPtr)context->Nil();
+    }
+    else {
+        retc = (RexxObjectPtr)context->NewStringFromAsciiz(gtk_tool_button_get_stock_id(GTK_TOOL_BUTTON(self)));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_stock_id
+ * Method:  set/get_icon_name
  *
- * Gets the stock_id
- *
- * @return        StockID string
- **/
-RexxMethod1(CSTRING,                   // Return type
-            GrxToolButtonGetStockId,   // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_tool_button_get_stock_id(GTK_TOOL_BUTTON(self));
-}
-
-/**
- * Method:  set_icon_name
- *
- * Sets the icon name.
+ * Sets/gets the icon name.
  *
  * @param name    The icon name
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxToolButtonSetIconName, // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxToolButtonGetSetIconName, // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, name)             // The icon name
+            OPTIONAL_CSTRING, name)    // The icon name
 {
-    gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(self), name);
+    RexxObjectPtr retc;
 
-    return 0;
+    if (argumentExists(2)) {
+        gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(self), name);
+        retc = (RexxObjectPtr)context->Nil();
+    }
+    else {
+        retc = (RexxObjectPtr)context->NewStringFromAsciiz(gtk_tool_button_get_icon_name(GTK_TOOL_BUTTON(self)));
+    }
+
+    return retc;
 }
 
 /**
- * Method:  get_icon_name
+ * Method:  set/get_icon_widget
  *
- * Gets the icon name.
- *
- * @return        Icon name
- **/
-RexxMethod1(CSTRING,                   // Return type
-            GrxToolButtonGetIconName,  // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_tool_button_get_icon_name(GTK_TOOL_BUTTON(self));
-}
-
-/**
- * Method:  set_icon_widget
- *
- * Sets the icon widget.
+ * Sets/gets the icon widget.
  *
  * @param name    The icon widget.
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxToolButtonSetIconWidget, // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxToolButtonGetSetIconWidget, // Object_method name
             CSELF, self,               // GTK self
-            RexxObjectPtr, icon)       // The icon widget
+            OPTIONAL_RexxObjectPtr, icon) // The icon widget
 {
-    if (!context->IsOfType(icon, "GtkWidget")) {
-        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
-                                 context->WholeNumberToObject(1),
-                                 context->NewStringFromAsciiz("GtkWidget"));
-        return 0;
+    RexxObjectPtr retc = (RexxObjectPtr)context->Nil();
+
+    if (argumentExists(2)) {
+        if (!context->IsOfType(icon, "GtkWidget")) {
+            context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                     context->WholeNumberToObject(1),
+                                     context->NewStringFromAsciiz("GtkWidget"));
+            return retc;
+        }
+        GtkWidget *iconWidget = (GtkWidget *)context->ObjectToCSelf(icon);
+        gtk_tool_button_set_icon_widget(GTK_TOOL_BUTTON(self), iconWidget);
     }
-    GtkWidget *iconWidget = (GtkWidget *)context->ObjectToCSelf(icon);
+    else {
+        GtkWidget *iconWidget = gtk_tool_button_get_icon_widget(GTK_TOOL_BUTTON(self));
+        retc = (RexxObjectPtr)g_object_get_data(G_OBJECT(iconWidget), "OORXOBJECT");
+    }
 
-    gtk_tool_button_set_icon_widget(GTK_TOOL_BUTTON(self), iconWidget);
-
-    return 0;
+    return retc;
 }
 
 /**
- * Method:  get_icon_widget
+ * Method:  set/set_label_widget
  *
- * Gets the icon widget.
- *
- * @return        Icon widget
- **/
-RexxMethod1(RexxObjectPtr,             // Return type
-            GrxToolButtonGetIconWidget, // Object_method name
-            CSELF, self)               // GTK self
-{
-    GtkWidget *iconWidget = gtk_tool_button_get_icon_widget(GTK_TOOL_BUTTON(self));
-    return (RexxObjectPtr)g_object_get_data(G_OBJECT(iconWidget), "OORXOBJECT");
-}
-
-/**
- * Method:  set_label_widget
- *
- * Sets the label widget.
+ * Sets/gets the label widget.
  *
  * @param name    The label widget.
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxToolButtonSetLabelWidget, // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxToolButtonGetSetLabelWidget, // Object_method name
             CSELF, self,               // GTK self
-            RexxObjectPtr, label)      // The label
+            OPTIONAL_RexxObjectPtr, label) // The label
 {
-    if (!context->IsOfType(label, "GtkWidget")) {
-        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
-                                 context->WholeNumberToObject(1),
-                                 context->NewStringFromAsciiz("GtkWidget"));
-        return 0;
+    RexxObjectPtr retc = (RexxObjectPtr)context->Nil();
+
+    if (argumentExists(2)) {
+        if (!context->IsOfType(label, "GtkWidget")) {
+            context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                     context->WholeNumberToObject(1),
+                                     context->NewStringFromAsciiz("GtkWidget"));
+            return retc;
+        }
+        GtkWidget *labelWidget = (GtkWidget *)context->ObjectToCSelf(label);
+        gtk_tool_button_set_label_widget(GTK_TOOL_BUTTON(self), labelWidget);
     }
-    GtkWidget *labelWidget = (GtkWidget *)context->ObjectToCSelf(label);
+    else {
+        GtkWidget *labelWidget = gtk_tool_button_get_label_widget(GTK_TOOL_BUTTON(self));
+        retc = (RexxObjectPtr)g_object_get_data(G_OBJECT(labelWidget), "OORXOBJECT");
+    }
 
-    gtk_tool_button_set_label_widget(GTK_TOOL_BUTTON(self), labelWidget);
-
-    return 0;
-}
-
-/**
- * Method:  get_label_widget
- *
- * Gets the label widget.
- *
- * @return        Label widget
- **/
-RexxMethod1(RexxObjectPtr,             // Return type
-            GrxToolButtonGetLabelWidget, // Object_method name
-            CSELF, self)               // GTK self
-{
-    GtkWidget *labelWidget = gtk_tool_button_get_label_widget(GTK_TOOL_BUTTON(self));
-    return (RexxObjectPtr)g_object_get_data(G_OBJECT(labelWidget), "OORXOBJECT");
+    return retc;
 }
 
 /**
@@ -396,35 +362,26 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  set_draw
+ * Method:  set/get_draw
  *
- * Sets the draw flag.
+ * Sets/gets the draw flag.
  *
  * @param flag    The draw boolean
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxSeparatorToolItemSetDraw, // Object_method name
+RexxMethod2(logical_t,                 // Return type
+            GrxSeparatorToolItemGetSetDraw, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, flag)           // The draw boolean
+            OPTIONAL_logical_t, flag)  // The draw boolean
 {
-    gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(self), flag);
+    if (argumentExists(2)) {
+        gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(self), flag);
+    }
+    else {
+        return gtk_separator_tool_item_get_draw(GTK_SEPARATOR_TOOL_ITEM(self));
+    }
 
     return 0;
-}
-
-/**
- * Method:  get_draw
- *
- * Gets the draw flag.
- *
- * @return        Draw boolean
- **/
-RexxMethod1(logical_t,                 // Return type
-            GrxSeparatorToolItemGetDraw, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_separator_tool_item_get_draw(GTK_SEPARATOR_TOOL_ITEM(self));
 }
 

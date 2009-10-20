@@ -259,76 +259,59 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  font=
+ * Method:  get/set font
  *
- * Set the font of the widget.
+ * Set/set the font of the widget.
  *
  * @param font    The new font for the widget.
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxWidgetSetFont,          // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxWidgetGetSetFont,       // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, fontname)         // Font name
+            OPTIONAL_CSTRING, fontname)// Font name
 {
     GtkStyle *style;
+    RexxObjectPtr retc;
 
-    style = gtk_style_copy(gtk_widget_get_style(GTK_WIDGET(self)));
-    style->font_desc = pango_font_description_from_string(fontname);
-    gtk_widget_set_style(GTK_WIDGET(self), style);
+    if (argumentExists(2)) {
+        style = gtk_style_copy(gtk_widget_get_style(GTK_WIDGET(self)));
+        style->font_desc = pango_font_description_from_string(fontname);
+        gtk_widget_set_style(GTK_WIDGET(self), style);
+        retc = (RexxObjectPtr)context->Nil();
+    }
+    else {
+        style = gtk_widget_get_style(GTK_WIDGET(self));
+        retc = (RexxObjectPtr)context->NewStringFromAsciiz(pango_font_description_to_string(style->font_desc));
+    }
 
-    return 0;
+    return retc;
 }
 
 /**
- * Method:  font
+ * Method:  get/set name
  *
- * Get the font of the widget.
- *
- * @return        A string with the font name.
- **/
-RexxMethod1(CSTRING,                   // Return type
-            GrxWidgetGetFont,          // Object_method name
-            CSELF, self)               // GTK self
-{
-    GtkStyle *style = NULL;
-
-    style = gtk_widget_get_style(GTK_WIDGET(self));
-    return pango_font_description_to_string(style->font_desc);
-}
-
-/**
- * Method:  name
- *
- * Get the name of the widget.
+ * Get/set the name of the widget.
  *
  * @return        A string with the name.
  **/
-RexxMethod1(CSTRING,                   // Return type
-            GrxWidgetGetName,          // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_widget_get_name(GTK_WIDGET(self));
-}
-
-/**
- * Method:  name=
- *
- * Set the name of the widget.
- *
- * @param name    The new name for the widget.
- *
- * @return        Zero.
- **/
-RexxMethod2(int,                       // Return type
-            GrxWidgetSetName,          // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxWidgetGetSetName,       // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, name)             // New name
+            OPTIONAL_CSTRING, name)    // New name
 {
-    gtk_widget_set_name(GTK_WIDGET(self), name);
+    RexxObjectPtr retc;
 
-    return 0;
+    if (argumentExists(2)) {
+        gtk_widget_set_name(GTK_WIDGET(self), name);
+        retc = (RexxObjectPtr)context->Nil();
+    }
+    else {
+        retc = (RexxObjectPtr)context->NewStringFromAsciiz(gtk_widget_get_name(GTK_WIDGET(self)));
+    }
+
+    return retc;
 }
 
 /**
@@ -520,54 +503,40 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  set_parent_window
+ * Method:  set/get_parent_window
  *
- * Set the parent window.
+ * Set/get the parent window.
  *
  * @param parent  The new parent widget.
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxWidgetSetParentWindow,  // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxWidgetGetSetParentWindow, // Object_method name
             CSELF, self,               // GTK self
-            RexxObjectPtr, parent)     // New parent widget
+            OPTIONAL_RexxObjectPtr, parent) // New parent widget
 {
-    if (!context->IsOfType(parent, "GtkWindow")) {
-        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
-                                 context->WholeNumberToObject(1),
-                                 context->NewStringFromAsciiz("GtkWindow"));
-        return 0;
+    RexxObjectPtr retc = (RexxObjectPtr) context->Nil();
+
+    if (argumentExists(2)) {
+        if (!context->IsOfType(parent, "GtkWindow")) {
+            context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                     context->WholeNumberToObject(1),
+                                     context->NewStringFromAsciiz("GtkWindow"));
+            return retc;
+        }
+        GdkWindow *parentWidget = (GdkWindow *)context->ObjectToCSelf(parent);
+        gtk_widget_set_parent_window(GTK_WIDGET(self), parentWidget);
     }
-    GdkWindow *parentWidget = (GdkWindow *)context->ObjectToCSelf(parent);
-
-    gtk_widget_set_parent_window(GTK_WIDGET(self), parentWidget);
-
-    return 0;
-}
-
-/**
- * Method:  get_parent_window
- *
- * Get the parent window.
- *
- * @return        The parent window object.
- **/
-RexxMethod1(RexxObjectPtr,             // Return type
-            GrxWidgetGetParentWindow,  // Object_method name
-            CSELF, self)               // GTK self
-{
-    GtkWidget *parent = (GtkWidget *)gtk_widget_get_parent_window(GTK_WIDGET(self));
-    if (parent == NULL) {
-        return context->Nil();
-    }
-    RexxObjectPtr parentptr = (RexxObjectPtr)g_object_get_data(G_OBJECT(parent),
-                                                               "OORXOBJECT");
-    if (parentptr == context->Nil()) {
-        return context->Nil();
+    else {
+        GtkWidget *parent = (GtkWidget *)gtk_widget_get_parent_window(GTK_WIDGET(self));
+        if (parent == NULL) {
+            return retc;
+        }
+        retc = (RexxObjectPtr)g_object_get_data(G_OBJECT(parent), "OORXOBJECT");
     }
 
-    return parentptr;
+    return retc;
 }
 
 /**
@@ -647,36 +616,26 @@ RexxMethod2(RexxObjectPtr,             // Return type
 }
 
 /**
- * Method:  set_direction
+ * Method:  set/get_direction
  *
- * Set the reading direction for the text of the widget.
+ * Set/get the reading direction for the text of the widget.
  *
  * @param dir     The reading direction.
  *
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxWidgetSetDirection,     // Object_method name
+            GrxWidgetGetSetDirection,  // Object_method name
             CSELF, self,               // GTK self
-            int, dir)                  // Direction
+            OPTIONAL_int, dir)         // Direction
 {
-    gtk_widget_set_direction(GTK_WIDGET(self), (GtkTextDirection)dir);
-
+    if (argumentExists(2)) {
+        gtk_widget_set_direction(GTK_WIDGET(self), (GtkTextDirection)dir);
+    }
+    else {
+        return gtk_widget_get_direction(GTK_WIDGET(self));
+    }
     return 0;
-}
-
-/**
- * Method:  get_direction
- *
- * Get the reading direction for the text of the widget.
- *
- * @return        A number representing the reading direction.
- **/
-RexxMethod1(int,                       // Return type
-            GrxWidgetGetDirection,     // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_widget_get_direction(GTK_WIDGET(self));
 }
 
 /**

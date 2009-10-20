@@ -117,7 +117,7 @@ RexxMethod2(POINTER,                   // Return type
     GtkTreeIter *piter = NULL;
     GtkTreeIter iter;
 
-    if (parent != NULL) {
+    if (argumentExists(2)) {
         piter = (GtkTreeIter *)parent;
     }
     gtk_tree_store_append(GTK_TREE_STORE(self), &iter, piter);

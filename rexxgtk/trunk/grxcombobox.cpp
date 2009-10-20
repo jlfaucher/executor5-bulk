@@ -169,36 +169,27 @@ RexxMethod1(RexxObjectPtr,             // Return type
 }
 
 /**
- * Method:  set_active
+ * Method:  set/get_active
  *
- * Set the active entry.
+ * Set/get the active entry.
  *
  * @param active  The entry to set active.
  *
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxComboBoxSetActive,      // Object_method name
+            GrxComboBoxGetSetActive,      // Object_method name
             CSELF, self,               // GTK self
-            int, active)               // Entry number
+            OPTIONAL_int, active)               // Entry number
 {
-    gtk_combo_box_set_active(GTK_COMBO_BOX(self), active);
+    if (argumentExists(2)) {
+        gtk_combo_box_set_active(GTK_COMBO_BOX(self), active);
+    }
+    else {
+        return gtk_combo_box_get_active(GTK_COMBO_BOX(self));
+    }
 
     return 0;
-}
-
-/**
- * Method:  get_active
- *
- * Get the active entry.
- *
- * @return        Entry number
- **/
-RexxMethod1(int,                       // Return type
-            GrxComboBoxGetActive,      // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_combo_box_get_active(GTK_COMBO_BOX(self));
 }
 
 /**

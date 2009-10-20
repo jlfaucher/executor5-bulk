@@ -96,36 +96,30 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  set_title
+ * Method:  set/get_title
  *
- * Set the title of a tree view column.
+ * Set/get the title of a tree view column.
  *
  * @param title   The title
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxTreeViewColumnSetTitle, // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxTreeViewColumnGetSetTitle, // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, title)            // Title
+            OPTIONAL_CSTRING, title)   // Title
 {
-    gtk_tree_view_column_set_title(GTK_TREE_VIEW_COLUMN(self), title);
+    RexxObjectPtr retc;
 
-    return 0;
-}
+    if (argumentExists(2)) {
+        gtk_tree_view_column_set_title(GTK_TREE_VIEW_COLUMN(self), title);
+        retc = (RexxObjectPtr)context->Nil();
+    }
+    else {
+        retc = (RexxObjectPtr)context->NewStringFromAsciiz(gtk_tree_view_column_get_title(GTK_TREE_VIEW_COLUMN(self)));
+    }
 
-/**
- * Method:  get_title
- *
- * Get the title of a tree view column.
- *
- * @return        Zero.
- **/
-RexxMethod1(CSTRING,                   // Return type
-            GrxTreeViewColumnGetTitle, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_tree_view_column_get_title(GTK_TREE_VIEW_COLUMN(self));
+    return retc;
 }
 
 /**

@@ -83,68 +83,50 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  set_above_child 
+ * Method:  set/get_above_child 
  * 
- * Set the z-order position with respect to a child.
+ * Set/get the z-order position with respect to a child.
  * 
  * @param flag   Z-order flag.
  *
  * @return        Zero.
  */
 RexxMethod2(int,                       // Return type
-            GrxEventBoxSetAboveChild,  // Object_method name
+            GrxEventBoxGetSetAboveChild, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, flag)           // Flag
+            OPTIONAL_logical_t, flag)  // Flag
 {
-    gtk_event_box_set_above_child(GTK_EVENT_BOX(self), flag);
+    if (argumentExists(2)) {
+        gtk_event_box_set_above_child(GTK_EVENT_BOX(self), flag);
+    }
+    else {
+        return gtk_event_box_get_above_child(GTK_EVENT_BOX(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_above_child 
+ * Method:  set/get_visible_window
  * 
- * Get the z-order position with respect to a child. 
- * 
- * @return        Above boolean
- */
-RexxMethod1(int,                       // Return type
-            GrxEventBoxGetAboveChild,  // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_event_box_get_above_child(GTK_EVENT_BOX(self));
-}
-
-/**
- * Method:  set_visible_window
- * 
- * Set the visibility of the window.
+ * Set/get the visibility of the window.
  * 
  * @param flag   Visibility flag.
  *
  * @return        Zero.
  */
-RexxMethod2(int,                       // Return type
-            GrxEventBoxSetVisibleWindow, // Object_method name
+RexxMethod2(logical_t,                 // Return type
+            GrxEventBoxGetSetVisibleWindow, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, flag)           // Flag
+            OPTIONAL_logical_t, flag)  // Flag
 {
-    gtk_event_box_set_visible_window(GTK_EVENT_BOX(self), flag);
+    if (argumentExists(2)) {
+        gtk_event_box_set_visible_window(GTK_EVENT_BOX(self), flag);
+    }
+    else {
+        return gtk_event_box_get_visible_window(GTK_EVENT_BOX(self));
+    }
 
     return 0;
-}
-
-/**
- * Method:  get_visible_window
- * 
- * Get the visibility of the window.
- *
- * @return        Visibility boolean
- */
-RexxMethod1(logical_t,                 // Return type
-            GrxEventBoxGetVisibleWindow, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_event_box_get_visible_window(GTK_EVENT_BOX(self));
 }
 

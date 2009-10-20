@@ -396,37 +396,31 @@ RexxMethod2(int,                       // Return type
 }
 
 /**
- * Method:  set_font_name
+ * Method:  set/get_font_name
  *
- * Set the font in the dialog.
+ * Setget the font in the dialog.
  *
  * @param name    The font name
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxFontSelectionDialogSetFontName, // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxFontSelectionDialogGetSetFontName, // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, name)             // Font name
+            OPTIONAL_CSTRING, name)    // Font name
 {
-    gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(self),
-                                            name);
+    RexxObjectPtr retc;
 
-    return 0;
-}
+    if (argumentExists(2)) {
+        gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(self),
+                                                name);
+        retc = (RexxObjectPtr)context->Nil();
+    }
+    else {
+        retc = (RexxObjectPtr)context->NewStringFromAsciiz(gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(self)));
+    }
 
-/**
- * Method:  get_font_name
- *
- * Get the selected font name in the dialog.
- *
- * @return        Font name
- **/
-RexxMethod1(CSTRING,                   // Return type
-            GrxFontSelectionDialogGetFontName, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(self));
+    return retc;
 }
 
 /**

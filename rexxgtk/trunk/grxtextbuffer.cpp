@@ -104,22 +104,33 @@ RexxMethod2(int,                       // Return type
 }
 
 /**
- * Method:  set_text
+ * Method:  set/get_text
  *
- * Set the textbuffer text.
+ * Set/get the textbuffer text.
  *
  * @param text    The text
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxTextBufferSetText,      // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxTextBufferGetSetText,   // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, text)             // Tagtable object
+            OPTIONAL_CSTRING, text)    // Tagtable object
 {
-    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(self), text, -1);
+    RexxObjectPtr retc;
 
-    return 0;
+    if (argumentExists(2)) {
+        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(self), text, -1);
+        retc = (RexxObjectPtr)context->Nil();
+    }
+    else {
+        GtkTextIter         start, end;
+
+        gtk_text_buffer_get_selection_bounds(GTK_TEXT_BUFFER(self), &start, &end);
+        retc = (RexxObjectPtr)context->NewStringFromAsciiz(gtk_text_buffer_get_text(GTK_TEXT_BUFFER(self), &start, &end, FALSE));
+    }
+
+    return retc;
 }
 
 /**
@@ -144,23 +155,6 @@ RexxMethod2(int,                       // Return type
     gtk_text_buffer_insert(GTK_TEXT_BUFFER(self), &iter, text, -1);
 
     return 0;
-}
-
-/**
- * Method:  get_text
- *
- * Get the text in the textbuffer.
- *
- * @return        The text
- **/
-RexxMethod1(CSTRING,                   // Return type
-            GrxTextBufferGetText,      // Object_method name
-            CSELF, self)               // GTK self
-{
-    GtkTextIter         start, end;
-
-    gtk_text_buffer_get_selection_bounds(GTK_TEXT_BUFFER(self), &start, &end);
-    return gtk_text_buffer_get_text(GTK_TEXT_BUFFER(self), &start, &end, FALSE);
 }
 
 /**

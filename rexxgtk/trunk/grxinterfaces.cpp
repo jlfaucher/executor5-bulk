@@ -147,11 +147,17 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Filename
  **/
-RexxMethod1(CSTRING,                   // Return type
+RexxMethod1(RexxObjectPtr,             // Return type
             GrxFileChooserGetFilename, // Object_method name
             CSELF, self)               // GTK self
 {
-    return gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(self));
+    char * filename;
+
+    filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(self));
+    if (filename == NULL) {
+        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+    }
+    return (RexxObjectPtr)context->NewStringFromAsciiz(filename);
 }
 
 /**

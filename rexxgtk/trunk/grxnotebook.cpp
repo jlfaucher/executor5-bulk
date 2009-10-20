@@ -596,34 +596,25 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  get_current_page
+ * Method:  set/get_current_page
  *
- * Disable popups.
- *
- * @return        Page number
- **/
-RexxMethod1(int,                       // Return type
-            GrxNotebookGetCurrentPage, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_notebook_get_current_page(GTK_NOTEBOOK(self));
-}
-
-/**
- * Method:  set_current_page
- *
- * Set the current page.
+ * Set/get the current page.
  *
  * @param page    The page number
  *
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxNotebookSetCurrentPage, // Object_method name
+            GrxNotebookGetSetCurrentPage, // Object_method name
             CSELF, self,               // GTK self
-            int, page)                 // The page number
+            OPTIONAL_int, page)        // The page number
 {
-    gtk_notebook_set_current_page(GTK_NOTEBOOK(self), page);
+    if (argumentExists(2)) {
+        gtk_notebook_set_current_page(GTK_NOTEBOOK(self), page);
+    }
+    else {
+        return gtk_notebook_get_current_page(GTK_NOTEBOOK(self));
+    }
 
     return 0;
 }

@@ -125,36 +125,27 @@ RexxMethod3(int,                       // Return type
 }
 
 /**
- * Method:  set_right_justified
+ * Method:  set/get_right_justified
  *
- * Set the right justification flag.
+ * Set/get the right justification flag.
  *
  * @param state   The right justification state
  *
  * @return        Zero
  **/
-RexxMethod2(int,                       // Return type
-            GrxMenuItemSetRightJustified, // Object_method name
+RexxMethod2(logical_t,                 // Return type
+            GrxMenuItemGetSetRightJustified, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, state)          // The state boolean
+            OPTIONAL_logical_t, state) // The state boolean
 {
-    gtk_menu_item_set_right_justified(GTK_MENU_ITEM(self), state);
+    if (argumentExists(2)) {
+        gtk_menu_item_set_right_justified(GTK_MENU_ITEM(self), state);
+    }
+    else {
+        return gtk_menu_item_get_right_justified(GTK_MENU_ITEM(self));
+    }
 
     return 0;
-}
-
-/**
- * Method:  get_right_justified
- *
- * Get the right justification flag.
- *
- * @return        Zero
- **/
-RexxMethod1(logical_t,                 // Return type
-            GrxMenuItemGetRightJustified, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_menu_item_get_right_justified(GTK_MENU_ITEM(self));
 }
 
 /**

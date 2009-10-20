@@ -113,37 +113,30 @@ RexxMethod2(int,                       // Return type
 }
 
 /**
- * Method:  set_label
+ * Method:  set/get_label
  *
- * Set the button label.
+ * Set/get the button label.
  *
  * @param type    The label text.
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxButtonSetLabel,         // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxButtonGetSetLabel,      // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, text)             // Button type
+            OPTIONAL_CSTRING, text)    // Button type
 {
+    RexxObjectPtr retc;
 
-    gtk_button_set_label(GTK_BUTTON(self), text);
+    if (argumentExists(2)) {
+        gtk_button_set_label(GTK_BUTTON(self), text);
+        retc = (RexxObjectPtr)context->Nil();
+    }
+    else {
+        retc = (RexxObjectPtr) context->NewStringFromAsciiz(gtk_button_get_label(GTK_BUTTON(self)));
+    }
 
-    return 0;
-}
-
-/**
- * Method:  get_label
- *
- * Get the button label.
- *
- * @return        Label text.
- **/
-RexxMethod1(RexxObjectPtr,             // Return type
-            GrxButtonGetLabel,         // Object_method name
-            CSELF, self)               // GTK self
-{
-    return context->NewStringFromAsciiz(gtk_button_get_label(GTK_BUTTON(self)));
+    return retc;
 }
 
 /**
@@ -205,101 +198,70 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  get_mode
+ * Method:  get/set_mode
  *
- * Get the display mode of the button.
+ * Get/set the display mode of the button.
  *
  * @return        Mode.
  **/
-RexxMethod1(logical_t,                 // Return type
-            GrxToggleButtonGetMode,    // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_toggle_button_get_mode(GTK_TOGGLE_BUTTON(self));
-}
-
-/**
- * Method:  set_mode
- *
- * Set the display mode of the button.
- *
- * @param mode    The button mode.
- *
- * @return        Zero.
- **/
-RexxMethod2(int,                       // Return type
-            GrxToggleButtonSetMode,    // Object_method name
+RexxMethod2(logical_t,                 // Return type
+            GrxToggleButtonGetSetMode, // Object_method name
             CSELF, self,               // GTK self
             logical_t, mode)           // Button mode flag
 {
-    gtk_toggle_button_set_mode(GTK_TOGGLE_BUTTON(self), mode);
-
+    if (argumentExists(2)) {
+        gtk_toggle_button_set_mode(GTK_TOGGLE_BUTTON(self), mode);
+    }
+    else {
+        return gtk_toggle_button_get_mode(GTK_TOGGLE_BUTTON(self));
+    }
     return 0;
 }
 
 /**
- * Method:  get_active
+ * Method:  set/get_active
  *
- * Get the active state.
- *
- * @return        Boolean.
- **/
-RexxMethod1(logical_t,                 // Return type
-            GrxToggleButtonGetActive,  // Object_method name
-            CSELF, self)               // GTK self
-{
-
-    return gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self));
-}
-
-/**
- * Method:  set_active
- *
- * Set the active state of the button.
+ * Set/get the active state of the button.
  *
  * @param mode    The button state.
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxToggleButtonSetActive,  // Object_method name
+RexxMethod2(logical_t,                 // Return type
+            GrxToggleButtonGetSetActive, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, state)          // Button state flag
+            OPTIONAL_logical_t, state) // Button state flag
 {
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(self), state);
+    if (argumentExists(2)) {
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(self), state);
+    }
+    else {
+        return gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_inconsistent
+ * Method:  set/get_inconsistent
  *
- * Get the inconsistent state.
- *
- * @return        Boolean.
- **/
-RexxMethod1(logical_t,                 // Return type
-            GrxToggleButtonGetInconsistent, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_toggle_button_get_inconsistent(GTK_TOGGLE_BUTTON(self));
-}
-
-/**
- * Method:  set_inconsistent
- *
- * Set the inconsistent state of the button.
+ * Set/get the inconsistent state of the button.
  *
  * @param mode    The button state.
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxToggleButtonSetInconsistent, // Object_method name
+RexxMethod2(logical_t,                 // Return type
+            GrxToggleButtonGetSetInconsistent, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, state)         // Button state flag
+            OPTIONAL_logical_t, state) // Button state flag
 {
-    gtk_toggle_button_set_inconsistent(GTK_TOGGLE_BUTTON(self), state);
+    if (argumentExists(2)) {
+        gtk_toggle_button_set_inconsistent(GTK_TOGGLE_BUTTON(self), state);
+    }
+    else {
+        return gtk_toggle_button_get_inconsistent(GTK_TOGGLE_BUTTON(self));
+    }
 
     return 0;
 }
@@ -320,7 +282,7 @@ RexxMethod2(int,                       // Return type
 {
     GtkWidget *myWidget;
 
-    if (text != NULL) {
+    if (argumentExists(2)) {
        myWidget = gtk_check_button_new_with_label(text);
     }
     else {
@@ -372,7 +334,7 @@ RexxMethod3(int,                       // Return type
             myWidget = gtk_radio_button_new_from_widget(GTK_RADIO_BUTTON(cpWidget));
         }
     }
-    if (text != NULL) {
+    if (argumentExists(3)) {
         gtk_button_set_label(GTK_BUTTON(myWidget), text);
     }
 
@@ -435,48 +397,36 @@ RexxMethod2(int,                       // Return type
 }
 
 /**
- * Method:  get_color
+ * Method:  Set/get_color
  *
- * Get the color button color.
- *
- * @param title   Color string
- *
- * @return        Color string
- **/
-RexxMethod1(RexxObjectPtr,             // Return type
-            GrxColorButtonGetColor,    // Object_method name
-            CSELF, self)               // GTK self
-{
-    GdkColor color;
-    char colorstr[64];
-
-    gtk_color_button_get_color(GTK_COLOR_BUTTON(self), &color);
-
-    /* Set up the REXX return code */
-    g_snprintf(colorstr, sizeof(colorstr), "#%04X%04X%04X", color.red, color.green, color.blue);
-    return context->NewStringFromAsciiz(colorstr);
-}
-
-/**
- * Method:  Set_color
- *
- * Set the color button color.
+ * Set/get the color button color.
  *
  * @param title   Color string
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxColorButtonSetColor,    // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxColorButtonGetSetColor, // Object_method name
             CSELF, self,               // GTK self
-            CSTRING, colorstr)         // Color string
+            OPTIONAL_CSTRING, colorstr)// Color string
 {
+    RexxObjectPtr retc;
     GdkColor color;
 
-    gdk_color_parse(colorstr, &color);
-    gtk_color_button_set_color(GTK_COLOR_BUTTON(self), &color);
+    if (argumentExists(2)) {
+        gdk_color_parse(colorstr, &color);
+        gtk_color_button_set_color(GTK_COLOR_BUTTON(self), &color);
+        retc = (RexxObjectPtr)context->Nil();
+    }
+    else {
+        char colorstr[64];
 
-    return 0;
+        gtk_color_button_get_color(GTK_COLOR_BUTTON(self), &color);
+        g_snprintf(colorstr, sizeof(colorstr), "#%04X%04X%04X", color.red, color.green, color.blue);
+        retc = (RexxObjectPtr)context->NewStringFromAsciiz(colorstr);
+    }
+
+    return retc;
 }
 
 /**

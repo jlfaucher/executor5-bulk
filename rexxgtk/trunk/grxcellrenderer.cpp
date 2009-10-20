@@ -316,69 +316,51 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
- * Method:  set_radio
+ * Method:  set/get_radio
  *
- * Make the toggle a radio button.
+ * Set/get the toggle a radio button.
  *
  * @param flag    The radio boolean
  *
  * @return        Zero
  **/
 RexxMethod2(int,                       // Return type
-            GrxCellRendererToggleSetRadio, // Object_method name
+            GrxCellRendererToggleGetSetRadio, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, flag)           // Radio boolean
+            OPTIONAL_logical_t, flag)  // Radio boolean
 {
-    gtk_cell_renderer_toggle_set_radio(GTK_CELL_RENDERER_TOGGLE(self), flag);
+    if (argumentExists(2)) {
+        gtk_cell_renderer_toggle_set_radio(GTK_CELL_RENDERER_TOGGLE(self), flag);
+    }
+    else {
+        return gtk_cell_renderer_toggle_get_radio(GTK_CELL_RENDERER_TOGGLE(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_radio
+ * Method:  set/get_active
  *
- * Get the toggle a radio button.
- *
- * @return        Boolean flag
- **/
-RexxMethod1(int,                       // Return type
-            GrxCellRendererToggleGetRadio, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_cell_renderer_toggle_get_radio(GTK_CELL_RENDERER_TOGGLE(self));
-}
-
-/**
- * Method:  set_active
- *
- * Make the toggle active.
+ * Set/get the toggle active.
  *
  * @param flag    The active boolean
  *
  * @return        Zero
  **/
 RexxMethod2(int,                       // Return type
-            GrxCellRendererToggleSetActive, // Object_method name
+            GrxCellRendererToggleGetSetActive, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, flag)           // Radio boolean
+            OPTIONAL_logical_t, flag)  // Radio boolean
 {
-    gtk_cell_renderer_toggle_set_active(GTK_CELL_RENDERER_TOGGLE(self), flag);
+    if (argumentExists(2)) {
+        gtk_cell_renderer_toggle_set_active(GTK_CELL_RENDERER_TOGGLE(self), flag);
+    }
+    else {
+        return gtk_cell_renderer_toggle_get_active(GTK_CELL_RENDERER_TOGGLE(self));
+    }
 
     return 0;
-}
-
-/**
- * Method:  get_active
- *
- * Get the toggle active boolean.
- *
- * @return        Boolean flag
- **/
-RexxMethod1(int,                       // Return type
-            GrxCellRendererToggleGetActive, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_cell_renderer_toggle_get_active(GTK_CELL_RENDERER_TOGGLE(self));
 }
 
 /**

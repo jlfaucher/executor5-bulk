@@ -167,71 +167,49 @@ RexxMethod3(int,                       // Return type
 }
 
 /**
- * Method:  set_pack_direction
+ * Method:  set/get_pack_direction
  *
- * Set the packing direction.
- *
- * @param dir     The direction
- *
- * @return        Zero
- **/
-RexxMethod2(int,                       // Return type
-            GrxMenuBarSetPackDirection, // Object_method name
-            CSELF, self,               // GTK self
-            int, dir)                  // Position
-{
-    gtk_menu_bar_set_pack_direction(GTK_MENU_BAR(self), (GtkPackDirection)dir);
-
-    return 0;
-}
-
-/**
- * Method:  get_pack_direction
- *
- * Get the packing direction.
- *
- * @return        Direction
- **/
-RexxMethod1(int,                       // Return type
-            GrxMenuBarGetPackDirection, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_menu_bar_get_pack_direction(GTK_MENU_BAR(self));
-
-    return 0;
-}
-
-/**
- * Method:  set_child_pack_direction
- *
- * Set the child packing direction.
+ * Set/get the packing direction.
  *
  * @param dir     The direction
  *
  * @return        Zero
  **/
 RexxMethod2(int,                       // Return type
-            GrxMenuBarSetChildPackDirection, // Object_method name
+            GrxMenuBarGetSetPackDirection, // Object_method name
             CSELF, self,               // GTK self
-            int, dir)                  // Position
+            OPTIONAL_int, dir)         // Position
 {
-    gtk_menu_bar_set_child_pack_direction(GTK_MENU_BAR(self), (GtkPackDirection)dir);
+    if (argumentExists(2)) {
+        gtk_menu_bar_set_pack_direction(GTK_MENU_BAR(self), (GtkPackDirection)dir);
+    }
+    else {
+        return gtk_menu_bar_get_pack_direction(GTK_MENU_BAR(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_child_pack_direction
+ * Method:  set/get_child_pack_direction
  *
- * Get the child packing direction.
+ * Set/get the child packing direction.
  *
- * @return        Direction
+ * @param dir     The direction
+ *
+ * @return        Zero
  **/
-RexxMethod1(int,                       // Return type
-            GrxMenuBarGetChildPackDirection, // Object_method name
-            CSELF, self)               // GTK self
+RexxMethod2(int,                       // Return type
+            GrxMenuBarGetSetChildPackDirection, // Object_method name
+            CSELF, self,               // GTK self
+            OPTIONAL_int, dir)         // Position
 {
-    return gtk_menu_bar_get_child_pack_direction(GTK_MENU_BAR(self));
+    if (argumentExists(2)) {
+        gtk_menu_bar_set_child_pack_direction(GTK_MENU_BAR(self), (GtkPackDirection)dir);
+    }
+    else {
+        return gtk_menu_bar_get_child_pack_direction(GTK_MENU_BAR(self));
+    }
 
     return 0;
 }

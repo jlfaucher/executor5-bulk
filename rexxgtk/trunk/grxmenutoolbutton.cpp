@@ -108,45 +108,37 @@ RexxMethod3(int,                       // Return type
 }
 
 /**
- * Method:  set_menu
+ * Method:  set/set_menu
  *
- * Sets the menu.
+ * Sets/gets the menu.
  *
  * @param menu    The menu
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxMenuToolButtonSetMenu,  // Object_method name
+RexxMethod2(RexxObjectPtr,             // Return type
+            GrxMenuToolButtonGetSetMenu,  // Object_method name
             CSELF, self,               // GTK self
-            RexxObjectPtr, rxobj)      // The icon widget
+            OPTIONAL_RexxObjectPtr, rxobj) // The icon widget
 {
-    if (!context->IsOfType(rxobj, "GtkWidget")) {
-        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
-                                 context->WholeNumberToObject(1),
-                                 context->NewStringFromAsciiz("GtkWidget"));
-        return 0;
+    RexxObjectPtr retc = (RexxObjectPtr)context->Nil();
+
+    if (argumentExists(2)) {
+        if (!context->IsOfType(rxobj, "GtkWidget")) {
+            context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                     context->WholeNumberToObject(1),
+                                     context->NewStringFromAsciiz("GtkWidget"));
+            return retc;
+        }
+        GtkWidget *menuWidget = (GtkWidget *)context->ObjectToCSelf(rxobj);
+        gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(self), menuWidget);
     }
-    GtkWidget *menuWidget = (GtkWidget *)context->ObjectToCSelf(rxobj);
+    else {
+        GtkWidget *menuWidget = gtk_menu_tool_button_get_menu(GTK_MENU_TOOL_BUTTON(self));
+        retc = (RexxObjectPtr)g_object_get_data(G_OBJECT(menuWidget), "OORXOBJECT");
+    }
 
-    gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(self), menuWidget);
-
-    return 0;
-}
-
-/**
- * Method:  get_menu
- *
- * Gets the menu.
- *
- * @return        Icon widget
- **/
-RexxMethod1(RexxObjectPtr,             // Return type
-            GrxMenuToolButtonGetMenu,  // Object_method name
-            CSELF, self)               // GTK self
-{
-    GtkWidget *menuWidget = gtk_menu_tool_button_get_menu(GTK_MENU_TOOL_BUTTON(self));
-    return (RexxObjectPtr)g_object_get_data(G_OBJECT(menuWidget), "OORXOBJECT");
+    return retc;
 }
 
 /**

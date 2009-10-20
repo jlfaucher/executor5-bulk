@@ -220,300 +220,219 @@ RexxMethod2(RexxObjectPtr,             // Return type
 }
 
 /**
- * Method:  set_wrap_mode
+ * Method:  set/get_wrap_mode
  *
- * Set the wrap mode.
+ * Set/get the wrap mode.
  *
  * @param mode    The wrap mode
  *
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxTextViewSetWrapMode,    // Object_method name
+            GrxTextViewGetSetWrapMode, // Object_method name
             CSELF, self,               // GTK self
-            int, mode)                 // Wrap mode
+            OPTIONAL_int, mode)        // Wrap mode
 {
-    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(self), (GtkWrapMode)mode);
+    if (argumentExists(2)) {
+        gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(self), (GtkWrapMode)mode);
+    }
+    else {
+        return (int)gtk_text_view_get_wrap_mode(GTK_TEXT_VIEW(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_wrap_mode
+ * Method:  set/get_justification
  *
- * Get the wrap mode.
- *
- * @return        Wrap mode
- **/
-RexxMethod1(int,                       // Return type
-            GrxTextViewGetWrapMode,    // Object_method name
-            CSELF, self)               // GTK self
-{
-    return (int)gtk_text_view_get_wrap_mode(GTK_TEXT_VIEW(self));
-}
-
-/**
- * Method:  set_justification
- *
- * Set the justification.
+ * Set/get the justification.
  *
  * @param just    The justification
  *
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxTextViewSetJustification, // Object_method name
+            GrxTextViewGetSetJustification, // Object_method name
             CSELF, self,               // GTK self
-            int, just)                 // Justification
+            OPTIONAL_int, just)        // Justification
 {
-    gtk_text_view_set_justification(GTK_TEXT_VIEW(self), (GtkJustification)just);
+    if (argumentExists(2)) {
+        gtk_text_view_set_justification(GTK_TEXT_VIEW(self), (GtkJustification)just);
+    }
+    else {
+        return (int)gtk_text_view_get_justification(GTK_TEXT_VIEW(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_justification.
+ * Method:  set/get_editable
  *
- * Get the justification.
- *
- * @return        Wrap mode
- **/
-RexxMethod1(int,                       // Return type
-            GrxTextViewGetJustification, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return (int)gtk_text_view_get_justification(GTK_TEXT_VIEW(self));
-}
-
-/**
- * Method:  set_editable
- *
- * Set editable.
+ * Set/get editable flag.
  *
  * @param flag    The editable boolean
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxTextViewSetEditable,    // Object_method name
+RexxMethod2(logical_t,                 // Return type
+            GrxTextViewGetSetEditable, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, flag)           // Editable boolean
+            OPTIONAL_logical_t, flag)  // Editable boolean
 {
-    gtk_text_view_set_editable(GTK_TEXT_VIEW(self), flag);
+    if (argumentExists(2)) {
+        gtk_text_view_set_editable(GTK_TEXT_VIEW(self), flag);
+    }
+    else {
+        return gtk_text_view_get_editable(GTK_TEXT_VIEW(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_editable
+ * Method:  set/get_cursor_visible
  *
- * Get the editable boolean.
- *
- * @return        Editable boolean
- **/
-RexxMethod1(logical_t,                 // Return type
-            GrxTextViewGetEditable,    // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_text_view_get_editable(GTK_TEXT_VIEW(self));
-}
-
-/**
- * Method:  set_cursor_visible
- *
- * Set the visibility of the cursor.
+ * Set/get the visibility of the cursor.
  *
  * @param flag    The cursor visible boolean
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
-            GrxTextViewSetCursorVisible, // Object_method name
+RexxMethod2(logical_t,                       // Return type
+            GrxTextViewGetSetCursorVisible, // Object_method name
             CSELF, self,               // GTK self
-            logical_t, flag)           // Cursor visible boolean
+            OPTIONAL_logical_t, flag)  // Cursor visible boolean
 {
-    gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(self), flag);
+    if (argumentExists(2)) {
+        gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(self), flag);
+    }
+    else {
+        return gtk_text_view_get_cursor_visible(GTK_TEXT_VIEW(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_cursor_visible
+ * Method:  set/get_pixels_above_lines
  *
- * Get the cursor visibility boolean.
- *
- * @return        Visible boolean
- **/
-RexxMethod1(logical_t,                 // Return type
-            GrxTextViewGetCursorVisible, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_text_view_get_cursor_visible(GTK_TEXT_VIEW(self));
-}
-
-/**
- * Method:  set_pixels_above_lines
- *
- * Set the number of pixels above lines.
+ * Set/get the number of pixels above lines.
  *
  * @param pixels  The number of pixels
  *
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxTextViewSetPixelsAboveLines, // Object_method name
+            GrxTextViewGetSetPixelsAboveLines, // Object_method name
             CSELF, self,               // GTK self
-            int, pixels)               // Number of pixels
+            OPTIONAL_int, pixels)      // Number of pixels
 {
-    gtk_text_view_set_pixels_above_lines(GTK_TEXT_VIEW(self), pixels);
+    if (argumentExists(2)) {
+        gtk_text_view_set_pixels_above_lines(GTK_TEXT_VIEW(self), pixels);
+    }
+    else {
+        return gtk_text_view_get_pixels_above_lines(GTK_TEXT_VIEW(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_pixels_above_lines
+ * Method:  set/get_pixels_below_lines
  *
- * Get the number of pixels above lines.
- *
- * @return        Number of pixels
- **/
-RexxMethod1(int,                       // Return type
-            GrxTextViewGetPixelsAboveLines, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_text_view_get_pixels_above_lines(GTK_TEXT_VIEW(self));
-}
-
-/**
- * Method:  set_pixels_below_lines
- *
- * Set the number of pixels below lines.
+ * Set/get the number of pixels below lines.
  *
  * @param pixels  The number of pixels
  *
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxTextViewSetPixelsBelowLines, // Object_method name
+            GrxTextViewGetSetPixelsBelowLines, // Object_method name
             CSELF, self,               // GTK self
-            int, pixels)               // Number of pixels
+            OPTIONAL_int, pixels)      // Number of pixels
 {
-    gtk_text_view_set_pixels_below_lines(GTK_TEXT_VIEW(self), pixels);
+    if (argumentExists(2)) {
+        gtk_text_view_set_pixels_below_lines(GTK_TEXT_VIEW(self), pixels);
+    }
+    else {
+        return gtk_text_view_get_pixels_below_lines(GTK_TEXT_VIEW(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_pixels_below_lines
+ * Method:  set/get_pixels_inside_wrap
  *
- * Get the number of pixels below lines.
- *
- * @return        Number of pixels
- **/
-RexxMethod1(int,                       // Return type
-            GrxTextViewGetPixelsBelowLines, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_text_view_get_pixels_below_lines(GTK_TEXT_VIEW(self));
-}
-
-/**
- * Method:  set_pixels_inside_wrap
- *
- * Set the number of pixels inside wrap.
+ * Set/get the number of pixels inside wrap.
  *
  * @param pixels  The number of pixels
  *
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxTextViewSetPixelsInsideWrap, // Object_method name
+            GrxTextViewGetSetPixelsInsideWrap, // Object_method name
             CSELF, self,               // GTK self
-            int, pixels)               // Number of pixels
+            OPTIONAL_int, pixels)      // Number of pixels
 {
-    gtk_text_view_set_pixels_inside_wrap(GTK_TEXT_VIEW(self), pixels);
+    if (argumentExists(2)) {
+        gtk_text_view_set_pixels_inside_wrap(GTK_TEXT_VIEW(self), pixels);
+    }
+    else {
+        return gtk_text_view_get_pixels_inside_wrap(GTK_TEXT_VIEW(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_pixels_inside_wrap
+ * Method:  set/get_left_margin
  *
- * Get the number of pixels inside wrap.
- *
- * @return        Number of pixels
- **/
-RexxMethod1(int,                       // Return type
-            GrxTextViewGetPixelsInsideWrap, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_text_view_get_pixels_inside_wrap(GTK_TEXT_VIEW(self));
-}
-
-/**
- * Method:  set_left_margin
- *
- * Set the number of pixels for the left margin.
+ * Set/get the number of pixels for the left margin.
  *
  * @param pixels  The number of pixels
  *
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxTextViewSetLeftMargin,  // Object_method name
+            GrxTextViewGetSetLeftMargin, // Object_method name
             CSELF, self,               // GTK self
-            int, pixels)               // Number of pixels
+            OPTIONAL_int, pixels)      // Number of pixels
 {
-    gtk_text_view_set_left_margin(GTK_TEXT_VIEW(self), pixels);
+    if (argumentExists(2)) {
+        gtk_text_view_set_left_margin(GTK_TEXT_VIEW(self), pixels);
+    }
+    else {
+        return gtk_text_view_get_left_margin(GTK_TEXT_VIEW(self));
+    }
 
     return 0;
 }
 
 /**
- * Method:  get_left_margin
+ * Method:  set/get_right_margin
  *
- * Get the number of pixels for the left margin.
- *
- * @return        Left margin
- **/
-RexxMethod1(int,                       // Return type
-            GrxTextViewGetLeftMargin,  // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_text_view_get_left_margin(GTK_TEXT_VIEW(self));
-}
-
-/**
- * Method:  set_right_margin
- *
- * Set the number of pixels for the right margin.
+ * Set/get the number of pixels for the right margin.
  *
  * @param pixels  The number of pixels
  *
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxTextViewSetRightMargin, // Object_method name
+            GrxTextViewGetSetRightMargin, // Object_method name
             CSELF, self,               // GTK self
-            int, pixels)               // Number of pixels
+            OPTIONAL_int, pixels)      // Number of pixels
 {
-    gtk_text_view_set_right_margin(GTK_TEXT_VIEW(self), pixels);
+    if (argumentExists(2)) {
+        gtk_text_view_set_right_margin(GTK_TEXT_VIEW(self), pixels);
+    }
+    else {
+        return gtk_text_view_get_right_margin(GTK_TEXT_VIEW(self));
+    }
 
     return 0;
-}
-
-/**
- * Method:  get_right_margin
- *
- * Get the number of pixels for the right margin.
- *
- * @return        Right margin
- **/
-RexxMethod1(int,                       // Return type
-            GrxTextViewGetRightMargin, // Object_method name
-            CSELF, self)               // GTK self
-{
-    return gtk_text_view_get_right_margin(GTK_TEXT_VIEW(self));
 }
 
 /**
