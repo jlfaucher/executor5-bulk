@@ -3,6 +3,12 @@
 <indexterm><primary>Classes</primary>
 <secondary>Layout Container</secondary></indexterm>
 
+<para>These classes provide a method of grouping and presenting displayable widgets that is
+independent of the underlying graphical subsystem. It allows windows which contain layout
+containers to be resized without adverse problems to the widgets the widow contains. All
+the widgets will retain their relative positions no matter what the size of the window.
+</para>
+
 <!-- ********************************** -->
 <!-- ********** GTKAlignment ********** -->
 <!-- ********************************** -->
@@ -10,6 +16,9 @@
 <section id="gtkalignment"><title>GTKAlignment</title>
 <para>The GTKAlignment class is a subclass of the
 <link linkend="gtkcontainer">GTKContainer class</link>.</para>
+
+<para>This class controls the alignment of its child widget. A GTKAlignment widget should
+only have one child widget assigned to it.</para>
 
 <section id="gtkalignmentinit">
 <title>Method: init</title>
@@ -55,6 +64,9 @@
 <para>The GTKHBox class is a subclass of the
 <link linkend="gtkbox">GTKBox class</link>.</para>
 
+<para>This widget allows multiple child widgets to be assigned to it, including other
+layout containers. All of the child widgets will be aligned horizontally.</para>
+
 <section id="gtkhboxinit">
 <title>Method: init</title>
 <indexterm><primary>init</primary></indexterm>
@@ -91,6 +103,9 @@
 <para>The GTKVBox class is a subclass of the
 <link linkend="gtkbox">GTKBox class</link>.</para>
 
+<para>This widget allows multiple child widgets to be assigned to it, including other
+layout containers. All of the child widgets will be aligned vertically.</para>
+
 <section id="gtlvboxinit">
 <title>Method: init</title>
 <indexterm><primary>init</primary></indexterm>
@@ -126,6 +141,10 @@
 <section id="gtkfixed"><title>GTKFixed</title>
 <para>The GTKFixed class is a subclass of the
 <link linkend="gtkcontainer">GTKContainer class</link>.</para>
+
+<para>This widget allows multiple child widgets to be assigned to it, including other
+layout containers. All of the child widgets are assigned a fixed position within the
+GTKFixed container.</para>
 
 <section id="gtkfixedinit">
 <title>Method: init</title>
@@ -216,6 +235,8 @@
 <para>The GTKHPaned class is a subclass of the
 <link linkend="gtkpaned">GTKPaned class</link>.</para>
 
+<para>This widget contains two panes which are arrainged horizontally.</para>
+
 <section id="gtkhpanedinit">
 <title>Method: init</title>
 <indexterm><primary>init</primary></indexterm>
@@ -243,6 +264,8 @@
 <para>The GTKVPaned class is a subclass of the
 <link linkend="gtkpaned">GTKPaned class</link>.</para>
 
+<para>This widget contains two panes which are arrainged vertically.</para>
+
 <section id="gtkvpanedinit">
 <title>Method: init</title>
 <indexterm><primary>init</primary></indexterm>
@@ -269,6 +292,10 @@
 <section id="gtknotebook"><title>GTKNotebook</title>
 <para>The GTKNotebook class is a subclass of the
 <link linkend="gtkcontainer">GTKContainer class</link>.</para>
+
+<para>This widget contains multiple pages, each with its own content. The user can page
+through the notebook and interact with each page individually. Tabs can also be added
+to the notebook to help the user locate pages or group pages together.</para>
 
 <section id="gtknotebookinit">
 <title>Method: init</title>
@@ -814,6 +841,10 @@ method and provide the name of the signal to be connected.</para>
 <para>The GTKTable class is a subclass of the
 <link linkend="gtkcontainer">GTKContainer class</link>.</para>
 
+<para>This widget provides a user specified number of horizontal and vertical cells. Each
+cell can contain one child widget. When the table is resized all the cells are proportionately
+resized as well but all cells retain the original relative position.</para>
+
 <section id="gtktableinit">
 <title>Method: init</title>
 <indexterm><primary>init</primary></indexterm>
@@ -993,6 +1024,9 @@ method and provide the name of the signal to be connected.</para>
 <section id="gtkexpander"><title>GTKExpander</title>
 <para>The GTKExpander class is a subclass of the
 <link linkend="gtkcontainer">GTKContainer class</link>.</para>
+
+<para>This wdget can hide or show its child widget by clicking on the expabder triangle.
+The child widget appears below the expander widget.</para>
 
 <section id="gtkexpandernewwithmnemonic">
 <title>Method: newwithmnemonic (class method)</title>

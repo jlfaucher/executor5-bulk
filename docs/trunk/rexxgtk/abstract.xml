@@ -3,6 +3,13 @@
 <indexterm><primary>Classes</primary>
 <secondary>Abstract Base</secondary></indexterm>
 
+<para>Abstract classes are base classes that other classes use for a common set of methods.
+For instance, the GTKBox abstract class is used by the GTKHBox and GTKVBox classes. The
+GTKBox class provides a common set of methods used by both of those subclasses.</para>
+
+<para>Abstract classes should NEVER be instantiated on their own. You should always
+use one of the (non abstract) subclasses that use the abstract class instead.</para>
+
 <!-- **************************** -->
 <!-- ********** GTKBox ********** -->
 <!-- **************************** -->
@@ -10,6 +17,10 @@
 <section id="gtkbox"><title>GTKBox</title>
 <para>The GTKBox class is a subclass of the
 <link linkend="gtkcontainer">GTKContainer class</link>.</para>
+
+<para>This class provides a common set of methods used by other non abstract classes
+like the <link linkend="gtkhbox">GTKHBox</link> and the
+<link linkend="gtkvbox">GTKVBox</link> classes.</para>
 
 <section id="gtkboxpackstart">
 <title>Method: pack_start</title>
@@ -135,6 +146,8 @@
 <section id="gtkcontainer"><title>GTKContainer</title>
 <para>The GTKContainer class is a subclass of the
 <link linkend="gtkwidget">GTKWidget class</link>.</para>
+
+<para>This class provides a common set of methods used by other non abstract classes.</para>
 
 <section id="gtkcontaineradd">
 <title>Method: add</title>
@@ -284,6 +297,8 @@ method and provide the name of the signal to be connected.</para>
 <section id="gtkmenushell"><title>GTKMenuShell</title>
 <para>The GTKMenuShell class is a subclass of the
 <link linkend="gtkcontainer">GTKContainer class</link>.</para>
+
+<para>This class provides a common set of methods used by other non abstract classes.</para>
 
 <section id="gtkmenushellappend">
 <title>Method: append</title>
@@ -618,6 +633,10 @@ method and provide the name of the signal to be connected.</para>
 <para>The GTKPaned class is a subclass of the
 <link linkend="gtkcontainer">GTKContainer class</link>.</para>
 
+<para>This class provides a common set of methods used by other non abstract classes like
+the <link linkend="gtkhpaned">GTKHPaned</link> and the
+<link linkend="gtkvpaned">GTKVPaned</link> classes.</para>
+
 <section id="gtkpanedadd1">
 <title>Method: add1</title>
 <indexterm><primary>add1</primary></indexterm>
@@ -719,6 +738,8 @@ method and provide the name of the signal to be connected.</para>
 <para>The GTKRange class is a subclass of the
 <link linkend="gtkwidget">GTKWidget class</link>.</para>
 
+<para>This class provides a common set of methods used by other non abstract classes.</para>
+
 <section id="gtkrangesignalconnect">
 <title>Method: signal_connect</title>
 <indexterm><primary>signal_connect</primary></indexterm>
@@ -794,6 +815,8 @@ method and provide the name of the signal to be connected.</para>
 <section id="gtkscale"><title>GTKScale</title>
 <para>The GTKScale class is a subclass of the
 <link linkend="gtkrange">GTKRange class</link>.</para>
+
+<para>This class provides a common set of methods used by other non abstract classes.</para>
 
 <section id="gtkscalesetdigits">
 <title>Method: set_digits</title>
@@ -888,6 +911,8 @@ method and provide the name of the signal to be connected.</para>
 
 <section id="gtkwidget"><title>GTKWidget</title>
 <para>The GTKWidget class is a base class. It is not an abstract class</para>
+
+<para>This class provides a common set of methods used by almost every GTK+ class.</para>
 
 <section id="gtkwidgetinit">
 <title>Method: init</title>
