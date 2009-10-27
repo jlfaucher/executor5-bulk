@@ -394,6 +394,7 @@ will contain the text of the selected item in the list box.</para>
   dlg = .SimpleLB~new("listBox.rc", IDD_DIALOG1, dlgData., "resource.h")
   if dlg~initCode = 0 then do
     dlg~Execute("SHOWTOP")
+    dlg~Deinstall
   end
   else do
     say "Problem creating the dialog.  Init code:" dlg~initCode

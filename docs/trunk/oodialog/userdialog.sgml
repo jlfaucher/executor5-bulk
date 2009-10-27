@@ -461,7 +461,7 @@ self~NoAutoDetection
 <indexterm><primary>Create</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~create(--x--,--y--,--cx--,--cy--,--title--,------>
+>>-aUserDialog~Create(--x--,--y--,--cx--,--cy--,--title--,------>
 
 >--+---------------------------+--,--+----------+--------------->
    |    .-----------------.    |     +-dlgClass-+
@@ -481,12 +481,11 @@ self~NoAutoDetection
 ]]>
 </programlisting>
 
-<para>
-  The <emphasis role="italic">create</emphasis>() method creates the Windows dialog you previously
-  defined with Add... methods. You can set the size, title, and style of the dialog. If <emphasis
-  role="italic">create</emphasis> returns false the dialog creation failed and you should not try to
-  execute the dialog object.
-</para>
+<para>The Create method creates the Windows dialog
+you previously defined with Add... methods. You can
+set the size, title, and style of the dialog. If the return code of Create
+is 0 the dialog creation failed and you should not try to execute the dialog
+object.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -546,12 +545,6 @@ value; otherwise, the dialog fails.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      This method returns true on success and false on failure.
-    </para>
-  </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example creates a dialog with a size of 300 by 200 dialog
 units. The dialog has no system menu in its upper-left corner. It has a thick
@@ -560,15 +553,9 @@ has capabilities for up to 100 elements.
 
 <programlisting>
 <![CDATA[
-success = MyDialog~create(20, 20, 300, 200, "My first Dialog",       -
-                          "THICKFRAME NOMENU", , "Courier", 12, 100)
-
-if success then do
-    MyDialog~Execute
-end
-else do
-    -- do some error recovery
-end
+rc = MyDialog~Create(20, 20, 300, 200, "My first Dialog", ,
+  "THICKFRAME NOMENU", , "Courier", 12, 100)
+if rc <> 0 then MyDialog~Execute
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -2826,6 +2813,7 @@ MyDialog~Execute
   if dlg~initCode = 0 then do
     dlg~createCenter(150, 83, "Testing Radio Buttons", "VISIBLE", , "Ms Shell Dlg 2", 8)
     dlg~Execute("SHOWTOP")
+    dlg~Deinstall
   end
 
 ::requires "oodWin32.cls"
@@ -3629,6 +3617,7 @@ MyDialog~objectrexx = 1
   if dlg~initCode = 0 then do
     dlg~createCenter(215, 83, "Testing Check Boxes", "VISIBLE", , "Ms Shell Dlg 2", 8)
     dlg~Execute("SHOWTOP")
+    dlg~Deinstall
   end
 
 ::requires "oodWin32.cls"
@@ -3894,8 +3883,9 @@ MyDialog~objectrexx = 1
             <varlistentry><term>ENDELLIPSIS</term>
             <listitem>
               <para>
-                If the text does not fit in the rectangle, it is truncated and an ellipsis is added.
-                Compare this to PATHELLIPSIS.
+                If the end of the text does not fit in the rectangle, it is truncated and ellipses are
+                added. If a word that is not at the end of the text goes beyond the limits of the
+                rectangle, it is truncated without ellipses.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>NOPREFIX</term>
@@ -3909,8 +3899,8 @@ MyDialog~objectrexx = 1
             <varlistentry><term>PATHELLIPSIS</term>
             <listitem>
               <para>
-                If the text is too big for the specified rectangle, characters in the middle of the text
-                are replaced with an ellipsis so that the result fits in the rectangle. If the text
+                If the text is to0 big for the specified rectangle, characters in the middle of the text
+                are replaced with ellipses so that the result fits in the rectangle. If the text
                 contains backslash (\) characters, this style preserves as much as possible of the text
                 after the last backslash.
               </para>
@@ -4158,8 +4148,9 @@ MyDialog~objectrexx = 1
             <varlistentry><term>ENDELLIPSIS</term>
             <listitem>
               <para>
-                If the text does not fit in the rectangle, it is truncated and an ellipsis is added.
-                Compare this to PATHELLIPSIS.
+                If the end of the text does not fit in the rectangle, it is truncated and ellipses are
+                added. If a word that is not at the end of the text goes beyond the limits of the
+                rectangle, it is truncated without ellipses.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>NOPREFIX</term>
@@ -4174,7 +4165,7 @@ MyDialog~objectrexx = 1
             <listitem>
               <para>
                 If the text is too big for the specified rectangle, characters in the middle of the text
-                are replaced with an ellipsis so that the result fits in the rectangle. If the text
+                are replaced with ellipses so that the result fits in the rectangle. If the text
                 contains backslash (\) characters, this style preserves as much as possible of the text
                 after the last backslash.
               </para>
@@ -4260,6 +4251,8 @@ MyDialog~objectrexx = 1
           dlg~createCenter(269, 183, "Frames and Rectangles", "", , "MS Shell Dlg 2", 8)
           dlg~Execute("SHOWTOP", IDI_DLG_OOREXX)
         end
+
+        dlg~Deinstall
 
       return 0
       -- End of entry point.
@@ -5657,6 +5650,7 @@ MyDialog~objectrexx = 1
       if dlg~initCode = 0 then do
         dlg~create(30, 30, 150, 100, "The Simple Dialog", "VISIBLE")
         dlg~execute("SHOWTOP", 105)
+        dlg~deinstall
       end
 
     ::requires "OODWin32.cls"

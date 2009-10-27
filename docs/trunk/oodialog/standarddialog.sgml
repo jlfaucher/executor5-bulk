@@ -1050,47 +1050,33 @@ routines.
 ]]>
 </programlisting>
 
-<para>
-  The Play routine can be used to play an audio file using the Windows multimedia capabilities.  When the
-  arguments are omitted, the currently playing sound file is stopped.
+<para>The Play routine can be used to play an audio file using the Windows
+multimedia capabilities. See also the <link
+linkend="fncPlaySoundFile">PlaySoundFile</link> external function.
 </para>
-<para>
-  The named file is searched for in the current directory and in the directories of the SOUNDPATH
-  environment variable.
+<para>The named file is searched for in the current directory and in the
+directories of the SOUNDPATH environment variable.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>fileName</term>
-<listitem>
-  <para>
-    The file name of an audio (.WAV) file. The file is searched for in the current directory and in the
-    directories listed in the SOUNDPATH environment variable. If this argument is omitted, the currently
-    playing sound file is stopped.
-</para>
-<note><title>Note</title><para>
-  The system can only play one audio file at a time using the <emphasis role="italic">play</emphasis>()
-  routine. If an audio file is currently playing, calling the routine with arguments will disrupt the
-  audio file already playing.
-</para></note>
-</listitem></varlistentry>
+<listitem><para>The file name of an audio (.WAV) file. The file is searched for
+in the current directory and in the directories listed in the SOUNDPATH
+environment variable. If this argument is omitted, the currently playing sound
+file is stopped.
+</para></listitem></varlistentry>
 <varlistentry><term>option</term>
-<listitem>
-  <para>
-    When this argument is omitted, the audio file is played synchronously. Otherwise, use one of the
-    following keywords:
+<listitem><para>You can set the last argument to:
 <variablelist>
 <varlistentry><term>YES</term>
-<listitem><para>The audio file is played asynchronously.
+<listitem><para>This plays the audio file asynchronously.
 </para></listitem></varlistentry>
 <varlistentry><term>LOOP</term>
-<listitem>
-  <para>
-    The audio file is played asynchronously in a loop. The loop is stopped by calling Play again with no
-    arguments.
-  </para>
-</listitem></varlistentry>
+<listitem><para>Plays the audio file asynchronously and repeats it in a loop. You can
+stop the loop by calling Play again omitting all arguments.
+</para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
