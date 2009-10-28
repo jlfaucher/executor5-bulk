@@ -2813,7 +2813,6 @@ MyDialog~Execute
   if dlg~initCode = 0 then do
     dlg~createCenter(150, 83, "Testing Radio Buttons", "VISIBLE", , "Ms Shell Dlg 2", 8)
     dlg~Execute("SHOWTOP")
-    dlg~Deinstall
   end
 
 ::requires "oodWin32.cls"
@@ -3617,7 +3616,6 @@ MyDialog~objectrexx = 1
   if dlg~initCode = 0 then do
     dlg~createCenter(215, 83, "Testing Check Boxes", "VISIBLE", , "Ms Shell Dlg 2", 8)
     dlg~Execute("SHOWTOP")
-    dlg~Deinstall
   end
 
 ::requires "oodWin32.cls"
@@ -3883,9 +3881,8 @@ MyDialog~objectrexx = 1
             <varlistentry><term>ENDELLIPSIS</term>
             <listitem>
               <para>
-                If the end of the text does not fit in the rectangle, it is truncated and ellipses are
-                added. If a word that is not at the end of the text goes beyond the limits of the
-                rectangle, it is truncated without ellipses.
+                If the text does not fit in the rectangle, it is truncated and an ellipsis is added.
+                Compare this to PATHELLIPSIS.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>NOPREFIX</term>
@@ -3899,8 +3896,8 @@ MyDialog~objectrexx = 1
             <varlistentry><term>PATHELLIPSIS</term>
             <listitem>
               <para>
-                If the text is to0 big for the specified rectangle, characters in the middle of the text
-                are replaced with ellipses so that the result fits in the rectangle. If the text
+                If the text is too big for the specified rectangle, characters in the middle of the text
+                are replaced with an ellipsis so that the result fits in the rectangle. If the text
                 contains backslash (\) characters, this style preserves as much as possible of the text
                 after the last backslash.
               </para>
@@ -4148,9 +4145,8 @@ MyDialog~objectrexx = 1
             <varlistentry><term>ENDELLIPSIS</term>
             <listitem>
               <para>
-                If the end of the text does not fit in the rectangle, it is truncated and ellipses are
-                added. If a word that is not at the end of the text goes beyond the limits of the
-                rectangle, it is truncated without ellipses.
+                If the text does not fit in the rectangle, it is truncated and an ellipsis is added.
+                Compare this to PATHELLIPSIS.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>NOPREFIX</term>
@@ -4165,7 +4161,7 @@ MyDialog~objectrexx = 1
             <listitem>
               <para>
                 If the text is too big for the specified rectangle, characters in the middle of the text
-                are replaced with ellipses so that the result fits in the rectangle. If the text
+                are replaced with an ellipsis so that the result fits in the rectangle. If the text
                 contains backslash (\) characters, this style preserves as much as possible of the text
                 after the last backslash.
               </para>
@@ -4251,8 +4247,6 @@ MyDialog~objectrexx = 1
           dlg~createCenter(269, 183, "Frames and Rectangles", "", , "MS Shell Dlg 2", 8)
           dlg~Execute("SHOWTOP", IDI_DLG_OOREXX)
         end
-
-        dlg~Deinstall
 
       return 0
       -- End of entry point.
@@ -5650,7 +5644,6 @@ MyDialog~objectrexx = 1
       if dlg~initCode = 0 then do
         dlg~create(30, 30, 150, 100, "The Simple Dialog", "VISIBLE")
         dlg~execute("SHOWTOP", 105)
-        dlg~deinstall
       end
 
     ::requires "OODWin32.cls"
