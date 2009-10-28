@@ -43,70 +43,61 @@
 -->
 <chapter id="clsUserDialog"><title>UserDialog Class</title>
 <indexterm><primary>UserDialog class</primary></indexterm>
-<para>The UserDialog class extends the BaseDialog class. It provides methods to create a dialog with these control
-elements: </para>
-<itemizedlist>
-<listitem><para>Entry lines</para></listitem>
-<listitem><para>Push buttons</para></listitem>
-<listitem><para>Check boxes</para></listitem>
-<listitem><para>Radio buttons</para></listitem>
-<listitem><para>List boxes</para></listitem>
-<listitem><para>Combo boxes</para></listitem>
-<listitem><para>Frames and rectangles</para></listitem></itemizedlist>
+<para>
+  The UserDialog class extends the BaseDialog class. This class allows the programmer to dynamically
+  define the dialog template in memory.  The class provides methods to begin the dialog template,
+  specifying the size, position, and other basic attributes of the dialog.  In addition, methods are
+  provided to create the dialog controls within the dialog.  These methods allow the programmer to create
+  any of the dialog controls supported by ooDialog.
+</para>
 
 <note><title>Note</title><para>
-The class also inherits the methods of its parent class: the
-<link linkend="clsBaseDialog">BaseDialog class</link>.
+  The class also inherits the methods of its parent class: the <link linkend="clsBaseDialog">BaseDialog
+  class</link>.
 </para></note>
-<para>Subclasses of the UserDialog can inherit the mixin
-<link linkend="clsAdvancedControls">AdvancedControls</link> class.  This class provides
-methods to dynamically create a dialog with these additional elements:
+<para>
+  There are three basic ways of creating a dialog using the UserDialog class:
 </para>
 <itemizedlist>
-<listitem><para>List controls (List-view controls)</para></listitem>
-<listitem><para>Tree controls</para></listitem>
-<listitem><para>Tab controls</para></listitem>
-<listitem><para>Slider controls</para></listitem>
-<listitem><para>Progress Bar controls</para></listitem></itemizedlist>
-<para>There are three basic ways of creating a dialog using the UserDialog
-class:
-</para>
-<itemizedlist>
-<listitem><para>Load the dialog from a resource script using the
-<link linkend="h001613">Load</link> method.  This will create the dialog and its
-controls from the definitions in the resource script.  An alternative to calling
-the <computeroutput>Load</computeroutput> method is to use the
-<link linkend="clsRcDialog">RcDialog</link> class.  This class is a subclass of
-the <computeroutput>UserDialog</computeroutput> class and provides a convenient
-way to create a dialog from a resource script.  It handles the details of
-loading the resource script transparently and leaves the programmer free to
-concentrate on the details of the behavior of the dialog.
+<listitem><para>
+  Read the dialog template from a resource script using the <link linkend="h001613">load</link> method.
+  This will create the dialog template in memory, including all its controls, using the definitions in the resource
+  script.  An alternative to calling the <computeroutput>load</computeroutput> method is to use the <link
+  linkend="clsRcDialog">RcDialog</link> class.  This class is a subclass of the
+  <computeroutput>UserDialog</computeroutput> class and provides a convenient way to create a dialog from a
+  resource script.  It handles the details of loading the resource script transparently and leaves the programmer
+  free to concentrate on the details of the behavior of the dialog.
 </para></listitem>
-<listitem><para>Invoke Add... methods on an instance of this class
-or a subclass and create the dialog step by step, one method for one dialog
-item. The best place to invoke these Add... methods is to override the
-<link linkend="h001506">DefineDialog</link> method. The DefineDialog method is
-called automatically when an instance of the UserDialog is created.
+<listitem><para>
+  Invoke the <link linkend="mthCreate">create</link>() or <link linkend="mthCreateCenter">createCenter</link>()
+  methods to start the dialog template.  Then, in the <link linkend="h001506">defineDialog</link>() method, create
+  each dialog control using one of the <link linkend="sectCreateMethods">create ...</link> methods. The <emphasis
+  role="italic">defineDialog</emphasis> method is invoked automatically by the <emphasis
+  role="italic">create</emphasis> or <emphasis role="italic">createCenter</emphasis> methods and is meant to be
+  over-ridden by the programmer for the purpose of creating dialog controls.
 </para>
-<para>In addition to creating dialog items one at a time, there are also methods
-that enable you to define a group of the same dialog elements together. The
-names of these methods begin with Add... and end with Group or Stem.
+<para>
+  In addition to creating dialog controls one at a time, there are also methods that enable you to define a group
+  of the same dialog controls together. The names of these methods begin with <emphasis
+  role="italic">create</emphasis> and usually end with <emphasis role="italic">Group</emphasis>, <emphasis
+  role="italic">Input</emphasis>, or <emphasis role="italic">Stem</emphasis>. Although, there are also some methods
+  for creating the Ok and Cancel buttons as a group. These methods begin with <emphasis
+  role="italic">cerateOkCancel</emphasis>.
 </para></listitem>
-<listitem><para>Combine loading a dialog from a resource script and adding
-elements dynamically.  This would define the dialog and some of the dialog
-controls using the resource script.  The programmer could then define additional
-dialog controls using the Add... methods in the DefineDialog method.  For
-instance, this could be useful in an application that had several dialogs with
-similar features.  The similar aspects of each dialog could be placed in a
-resource script and then the individual dialogs could be customized using the
-Add... methods.
+<listitem><para>
+  Combine reading a dialog from a resource script and creating controls dynamically.  This would create the dialog
+  template and some of the dialog controls using the resource script.  The programmer could then create additional
+  dialog controls using the <emphasis role="italic">create ...</emphasis> methods in the <emphasis role="italic">
+  defineDialog</emphasis> method. For instance, this could be useful in an application that had several dialogs
+  with similar features.  The similar aspects of each dialog could be placed in a resource script and then the
+  individual dialogs could be customized using the <emphasis role="italic">create ...</emphasis> methods.
 </para></listitem></itemizedlist>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>UserDlg.cls</computeroutput> is the source file of this class.
+<listitem><para>
 <programlisting>
 <![CDATA[
-::requires "oodialog.cls"
+::requires "ooDialog.cls"
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -457,66 +448,75 @@ self~NoAutoDetection
 </variablelist>
 </section>
 
-<section id="mthCreate"><title>Create</title>
-<indexterm><primary>Create</primary></indexterm>
+<section id="mthCreate"><title>create</title>
+<indexterm><primary>create</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~Create(--x--,--y--,--cx--,--cy--,--title--,------>
+>>-create(--x--,--y--,--cx--,--cy--,--title-+-----------+--+------------+-->
+                                            +-,-options-+- +-,-dlgClass-+
 
->--+---------------------------+--,--+----------+--------------->
-   |    .-----------------.    |     +-dlgClass-+
-   |    V                 |    |
-   +-"----+-NOMENU------+-+--"-+
-          +-VISIBLE-----+
-          +-NOTMODAL----+
-          +-SYSTEMMODAL-+
-          +-THICKFRAME--+
-          +-MINIMIZEBOX-+
-          +-MAXIMIZEBOX-+
-
->--,--+----------+--,--+----------+--,--+----------+--)--------><
-      +-fontName-+     +-fontSize-+     +-expected-+
+>----+------------+--+------------+--+------------+--)---------------------><
+     +-,-fontName-+  +-,-fontSize-+  +-,-expected-+
 
 
 ]]>
 </programlisting>
 
-<para>The Create method creates the Windows dialog
-you previously defined with Add... methods. You can
-set the size, title, and style of the dialog. If the return code of Create
-is 0 the dialog creation failed and you should not try to execute the dialog
-object.</para>
+<para>
+  The <emphasis role="italic">create</emphasis> method begins the creation of the in-memory Windows
+  dialog template. You can set the size, title, font, and style of the dialog. If the <emphasis
+  role="italic">create</emphasis> method fails, the in-memory dialog template was not initialized
+  correctly and you should not try to execute the dialog object.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>x, y</term>
-<listitem><para>The position of the upper-left edge of the dialog in dialog units
+<listitem><para>
+  The position of the upper-left corner of the dialog in dialog units.
 </para></listitem></varlistentry>
 <varlistentry><term>cx, cy</term>
-<listitem><para>The extent (width and height) of the dialog in dialog units
+<listitem><para>
+  The width and height of the dialog in dialog units.
 </para></listitem></varlistentry>
 <varlistentry><term>title</term>
-<listitem><para>The dialog's title that is displayed in the title bar
+<listitem><para>The title for the dialog.
 </para></listitem></varlistentry>
 <varlistentry><term>options</term>
-<listitem><para>One or more of the keywords listed in the syntax diagram, separated
-by blanks:
+<listitem><para>
+  Zero or more of the keywords listed below, separated by blanks:
 <variablelist>
 <varlistentry><term>NOMENU</term>
-<listitem><para>Creates a dialog without a system menu
+<listitem><para>
+  Creates a dialog without a system menu.  When this keyword is omitted, a system menu is autmatically added.
 </para></listitem></varlistentry>
 <varlistentry><term>VISIBLE</term>
-<listitem><para>Creates a visible dialog
+<listitem><para>
+  Creates the dialog in a visible state. This option is only of use in modeless dialogs. If a modal dialog is used,
+  the operating system always displays the dialog, whether the visible style is set or not. For a modeless dialog,
+  the operating system will not show the dialog if the visble style is not set.  The programmer then sets the
+  dialog to visible when desired.
+</para></listitem></varlistentry>
+<varlistentry><term>CENTER</term>
+<listitem><para>
+  Creates a dialog that is centered in the user's screen.  When this keyword is used, the operating system ignores
+  the x, y position arguments. The <link linkend="mthCreateCenter">createCenter</link> convenience method can also
+  be used to create a centered dialog.
 </para></listitem></varlistentry>
 <varlistentry><term>NOTMODAL</term>
-<listitem><para>Creates a dialog with a normal window frame
+<listitem><para>
+  Creates a dialog with a normal dialog frame.
 </para></listitem></varlistentry>
 <varlistentry><term>SYSTEMMODAL</term>
-<listitem><para>Creates a dialog that blocks all other windows
+<listitem><para>
+  This option is obsolete. It adds a dialog style that was used in Windows 3.1. In Windows 3.1, the style would
+  create a dialog that blocked access to all other windows.  In modern versions of Windows this is no longer the
+  case, with this style the user can still access other windows.
 </para></listitem></varlistentry>
 <varlistentry><term>THICKFRAME</term>
-<listitem><para>Creates a dialog with a thick frame
+<listitem><para>
+  Creates a dialog with a thick frame. This makes the dialog resizable by the user.
 </para></listitem></varlistentry>
 <varlistentry><term>MINIMIZEBOX</term>
 <listitem><para>Creates a dialog with a minimize button.
@@ -527,96 +527,102 @@ by blanks:
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term>dlgClass</term>
-<listitem><para>Name of the window class used for the dialog. This argument must be
-omitted or an empty string.
+<listitem><para>
+  Name of the window class used for the dialog. This argument must be omitted or an empty string.
 </para></listitem></varlistentry>
 <varlistentry><term>fontName</term>
-<listitem><para>The name of a font used by the dialog for all text. The default font
-is System.
+<listitem><para>
+  The name of the font to be used by the dialog for all text. If this argument is omitted, the default dialog font
+  is used.  The programmer can change this default by using the<link linkend="mthClsSetDefaultfont">
+  setDefaultFont</link>() class method. If the default font has not been changed, ooDialog uses a symbolic font
+  name provided by Microsoft. This symbolic name signals the operating system to use the appropriate dialog font
+  for the specific version of Windows in use. I.e., the dialog font under Windows 2000 might be different then the
+  font under Windows XP.
 </para></listitem></varlistentry>
 <varlistentry><term>fontSize</term>
-<listitem><para>The size of the font used by the dialog. The default value is 8.
+<listitem><para>
+  The point size of the font used by the dialog.  When this arugment is omitted, the default dialog font size is
+  used, in the same manner as the font name.
 </para></listitem></varlistentry>
 <varlistentry><term>expected</term>
-<listitem><para>This argument determines the maximum number of dialog elements (static
-text, entry lines, list boxes, and the like) the dialog can handle. The default
-value is 200. If your dialog has more than 200 elements, you must set this
-value; otherwise, the dialog fails.
+<listitem><para>
+  This argument specifies the maximum number of dialog controls the dialog template is expected to contain. Since
+  the dialog template is constructed in memory, ooDialog needs to have some idea of the size of the system
+  resources to reserve for the template. The default value is 200. If your dialog has more than 200 controls, you
+  must set the expected value larger, otherwise, the dialog creation will fail.
 </para></listitem></varlistentry>
 </variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+  This method returns true on success and false on failure.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example creates a dialog with a size of 300 by 200 dialog
-units. The dialog has no system menu in its upper-left corner. It has a thick
-frame (therefore the dialog will get resizable) and a 12-point font. The dialog
-has capabilities for up to 100 elements.
+<listitem><para>
+  The following example creates a dialog with a size of 300 by 200 dialog units. The dialog has no system menu in
+  its upper-left corner. Neither does it have a minimize or maximize box. The dialog will use a 12-point Courier
+  font and is expected to contain fewer than 100 dialog controls.
 
 <programlisting>
 <![CDATA[
-rc = MyDialog~Create(20, 20, 300, 200, "My first Dialog", ,
-  "THICKFRAME NOMENU", , "Courier", 12, 100)
-if rc <> 0 then MyDialog~Execute
+success = MyDialog~create(20, 20, 300, 200, "My first Dialog", "NOMENU", , "Courier", 12, 100)
+if success then MyDialog~execute
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthCreateCenter"><title>CreateCenter</title>
-<indexterm><primary>CreateCenter</primary></indexterm>
+<section id="mthCreateCenter"><title>createCenter</title>
+<indexterm><primary>createCenter</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~CreateCenter(--cx--,--cy--,--title--,------------>
+>>-createCenter(--cx--,--cy--,--title-+-----------+--+------------+-->
+                                      +-,-options-+- +-,-dlgClass-+
 
->--+---------------------------+--,--+----------+--------------->
-   |    .-----------------.    |     +-dlgClass-+
-   |    V                 |    |
-   +-"----+-NOMENU------+-+--"-+
-          +-VISIBLE-----+
-          +-NOTMODAL----+
-          +-SYSTEMMODAL-+
-          +-THICKFRAME--+
-          +-MINIMIZEBOX-+
-          +-MAXIMIZEBOX-+
-
->--+-----------------------------------------------+--)--------><
-   +-,--fontName--+------------------------------+-+
-                  +-,--fontSize--+-------------+-+
-                                 +-,--expected-+
+>----+------------+--+------------+--+------------+--)---------------><
+     +-,-fontName-+  +-,-fontSize-+  +-,-expected-+
 
 
 ]]>
 </programlisting>
 
-<para>The CreateCenter method creates a dialog and centers
-its position. See <link linkend="mthCreate">Create</link> for a description of all arguments
-and an example.</para>
+<para>
+  The <emphasis role="italic">createCenter</emphasis> method begins the creation of an in-memory dialog template
+  for a dialog that will be centered in the user's screen. It is a convenience method that merely invokes the
+  <link linkend="mthCreate">create</link> method with the CENTER keyword added to the options argument.
+</para>
 </section>
 
-<section id="h001506"><title>DefineDialog</title>
-<indexterm><primary>DefineDialog</primary>
+<section id="h001506"><title>defineDialog</title>
+<indexterm><primary>defineDialog</primary>
 <secondary>UserDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~DefineDialog------------------------------------><
+>>-defineDialog------------------------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The DefineDialog method is called by Create. It is designed to be
-overwritten in a subclass of UserDialog.  You should do all the definition of
-dynamically added dialog controls within this method, using the <link
-linkend="addmeth">Add... Methods</link>.
+<para>
+  The <emphasis role="italic">defineDialog</emphasis> method is invoked automatically by the<link
+  linkend="mthCreate"> create</link> or <link linkend="mthCreateCenter">createCenter</link> methods. It is
+  designed to be over-ridden in a subclass of UserDialog. The programmer usses this method to dynamically create
+  the dialog controls for the dialog by using the appropriate
+  <link linkend="sectCreateMethods">create ...</link> methods. For all practical purposes, all dialog controls of a
+  UserDialog should be created in this method.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected. There is no need to call this method from
-anywhere else than Create.
+<varlistentry><term><emphasis role="bold">Private;</emphasis></term>
+<listitem><para>
+  This is a private method. There is no need for the programmer to invoke this method explicitly as the ooDialog
+  framework invokes the method at the correct moment in the life cycle of the dialog.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>When the dialog is created, a push button and an entry line are added
-to its client area:
+<listitem><para>
+  This example demonsrates how to create a <link linkend="mthAddButton">push button</link> and an <link
+  linkend="mthAddEntryLine">edit</link> control in a dilaog:
 
 <programlisting>
 <![CDATA[
@@ -624,9 +630,9 @@ to its client area:
      .
      .
      .
-::method DefineDialog
-self~addButton(401, 20, 235, 40, 15, "&More...")
-self~addEntryLine(402, INPUT_1, 20, 170, 150, 10)
+::method defineDialog
+self~createPushButton(401, 20, 235, 40, 15, "NOTAB", "&More...")
+self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
      .
      .
      .
@@ -828,7 +834,7 @@ of dialog 200 or dialog 300, depending on the argument:
 </variablelist>
 </section>
 
-<section id="addmeth"><title>Add... Methods</title>
+<section id="sectCreateMethods"><title>Add... Methods</title>
 <indexterm><primary>Add... methods</primary></indexterm>
 <para>The methods listed below (all starting with Add) can be used to create a
 dialog dynamically without any resource script (.RC file). The methods are used
@@ -7847,7 +7853,7 @@ they are for internal use only.</para>
 a real Windows object based on a dialog template.  For a
 <computeroutput>RcDialog</computeroutput> the template is supplied by a resource
 script file.  For a <computeroutput>UserDialog</computeroutput> the template is
-created by using the <link linkend="addmeth">Add... methods</link>.  The method
+created by using the <link linkend="sectCreateMethods">Add... methods</link>.  The method
 is called by the <link linkend="h000048">Execute</link> or
 <link linkend="h000057">ExecuteAsync</link> methods.</para>
 <variablelist>
