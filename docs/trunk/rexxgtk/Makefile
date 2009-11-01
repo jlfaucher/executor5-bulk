@@ -49,6 +49,15 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
 
 XML_FILES = rexxgtk.xml \
      functions.xml \
+     layout.xml \
+     menucombo.xml \
+     misc.xml \
+     multiline.xml \
+     scrolling.xml \
+     selectors.xml \
+     textentry.xml \
+     treelist.xml \
+     windows.xml \
      ../shared/notices.sgml \
      ../shared/legalstuff.sgml \
      ../shared/gethelp.sgml \

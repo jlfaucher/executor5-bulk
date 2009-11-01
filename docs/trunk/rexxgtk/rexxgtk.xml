@@ -86,7 +86,7 @@
     # The following need to be modified for each release!
     #######################################################################-->
 <edition>Version 0.10.0 (beta)</edition>
-<pubdate>October 1, 2009</pubdate>
+<pubdate>November 1, 2009</pubdate>
 <!--#######################################################################
     # The releaseinfo tag is used to show the release status of a document.
     #
@@ -293,7 +293,8 @@ those specific to the system. For more information, refer to the
 <indexterm><primary>requirements, RexxGTK</primary></indexterm>
 <indexterm><primary>RexxGTK requirements</primary></indexterm>
 <para>The RexxGTK package requires that the operating system have the GTK+ libraries
-available.</para>
+available. The minimum version for the Rexx interpreter is ooRexx 4.0.
+RexxGTK does not work with any other Rexx interpreter/compiler.</para>
 
 <section id="linuxinstallation"><title>Linux Installation</title>
 <indexterm><primary>Linux installation</primary></indexterm>
@@ -301,7 +302,7 @@ available.</para>
 <secondary>Linux</secondary></indexterm>
 <para>The RexxGTK package is contained in the file
 <emphasis role="italic">rexxgtk.so</emphasis>. This file must be placed in
-a directory listed in your LIBPATH.
+a directory listed in your LD_LIBRARY_PATH or in the system library path.
 RexxGTK also requires an ooRexx class file (<emphasis role="italic">rexxgtk.cls</emphasis>).
 This file must be placed in a directory listed in your PATH.
 To get access to the class and methods in the RexxGTK
@@ -339,7 +340,7 @@ uses the class:
 
 <section><title>Classes and Methods</title>
 <para>The RexxGTK package is developed around the class structure of the GTK+ system. For
-each GTK+ class there is a cooresponding RexxGTK class. Most od the GTK_ functions has a
+each GTK+ class there is a cooresponding RexxGTK class. Most of the GTK_ functions have a
 one to one mapping to a cooresponding RexxGTK method with the arguments and return types
 also matching. However, there are exceptions to the mapping, especially in the more
 complicated classes where it was determined that a simplified method made more sense in
@@ -357,7 +358,7 @@ the book using the RexxGTK package. This should get a novice started very quickl
 <para>This document is also organized in much the same way that the
 <ulink url="http://library.gnome.org/devel/gtk/unstable/index.html">
 <citetitle>GNOME Documentation Library</citetitle></ulink> is organized so locating classes
-and methods should be similar.</para>
+and methods reference manual should be similar.</para>
 </section>
 
 <section><title>Other Notes</title>
@@ -365,7 +366,7 @@ and methods should be similar.</para>
 functions (methods). There are many missing widgets and even more missing functions
 (methods). It is the intent of the RexxGTK developers to include as many widgets as 
 feasible in the package over time. The same is true for GTK+ functions, but in this case
-the it may take a much longer period of time and it may never be complete.</para>
+it may take a much longer period of time and it may never be complete.</para>
 </section>
 </chapter>
 
