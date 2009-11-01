@@ -115,8 +115,8 @@ methods listed in the
 <entry><link linkend="deleteallcb">DeleteAll</link></entry>
 </row>
 <row>
-<entry>EditSelection</entry>
-<entry><link linkend="editselection">EditSelection</link></entry>
+<entry>editSelection</entry>
+<entry><link linkend="mthEditSelection">editSelection</link></entry>
 </row>
 <row>
 <entry>Find</entry>
@@ -643,29 +643,34 @@ list box of the associated combo box is open, that is, visible.</para>
 </variablelist>
 </section>
 
-<section id="editselection"><title>EditSelection</title>
-<indexterm><primary>EditSelection</primary></indexterm>
+<section id="mthEditSelection"><title>editSelection</title>
+<indexterm><primary>editSelection</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~EditSelection(--startNdx--,--endNdx--)------------><
+>>-editSelection(--startIndex--,--endIndex--)-----------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The EditSelection method selects the specified
-text range in the edit control of the associated combo box.</para>
+<para>
+  The <emphasis role="italic">editSelection</emphasis> method selects the specified text range in the
+  edit control of the associated combo box.  This method is not applicable for drop-down list combo boxes, it is
+  only for simple and drop-down combo boxes.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
-<varlistentry><term>startNdx</term>
-<listitem><para>The one-based index of the first character in the edit control to be
-selected. If you omit this argument or specify 0, the selection is removed.
+<varlistentry><term>startIndex</term>
+<listitem><para>
+  The one-based index of the first character in the edit control to be selected. If you omit this argument or
+  specify 0, the selection, if any, is removed.
 </para></listitem></varlistentry>
-<varlistentry><term>endNdx</term>
-<listitem><para>The one-based index of the last character in the edit control to be
-selected. If you omit this argument or specify 0, the selection is removed.
+<varlistentry><term>endIndex</term>
+<listitem><para>
+  The one-based index of the last character in the edit control to be selected. If you omit this argument or
+  specify 0, the selection is extended from the start character to the end of the text.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -673,10 +678,13 @@ selected. If you omit this argument or specify 0, the selection is removed.
 <listitem><para>
 <variablelist>
 <varlistentry><term>0</term>
-<listitem><para>The selection was successful.
+<listitem><para>
+  This method always returns 0, unless the combo box is a drop-down list.
 </para></listitem></varlistentry>
 <varlistentry><term>1</term>
-<listitem><para>An error occurred.
+<listitem><para>
+  The combo box is a drop-down list combo box.  This method has no effect on a drop-down list combo box because it
+  does not have an edit control.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
