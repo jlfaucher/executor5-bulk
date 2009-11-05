@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2009 Rexx Language Association. All rights reserved.         */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -34,39 +34,59 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-::class BufferOutputStream public subclass OutputStream
-::init
-  expose buffer size position linend
-  use strict arg size = 4096
-  buffer = .mutablebuffer~new(size)
-  position = 1
+::class "BufferStream" mixinclass Object
+::method init
+    expose buffer
+    use strict arg size = 4096, buffer = .nil
+    if .nil = buffer then
+        buffer = .MutableBuffer~new(size)
 
-  parse source platform .
+::method buffer
+    expose buffer
+    return buffer
+
+::method stringValue
+    expose buffer
+    return buffer~string
+
+::class BufferOutputStream public subclass OutputStream inherit BufferStream
+::method init
+  expose position linend
+  position = 1
+  forward class BufferStream
+
+  -- ???
+  --parse source platform .
 
 ::method charout
-  expose buffer position
+  expose position
 
   use strict arg string, start = position
 
-  buffer~overlay(string, start)
+  self~buffer~overlay(string, start)
   position = start + string~length
 
   return 0
 
 ::method lineout
-  use string arg line
+  use strict arg line
 
   self~charout(line)
   self~charout(.lineend)
   return 0
 
-::method buffer
-  expose buffer
-  return buffer
+::method arrayOut
+    use strict arg lines, div = .LineEnd
 
-::method stringValue
-  expose buffer
-  return buffer~string
+    do line over lines
+        self~charout(line)
+        self~charout(div)
+    end
+
+::class BufferInputStream public subclass InputStream inherit BufferStream
+::method init
+    use strict arg buffer = .nil
+    forward class BufferStream array (, buffer)
 
 
 ::class ArrayOutputStream public subclass OutputStream
@@ -122,7 +142,9 @@
   -- convert to a non-sparse form
   source = array~makearray
   size = source~items    -- get metrics for determining the read positions
+  -- the current line pointer
   current = 1
+  -- the read position in the current line
   position = 1
 
 ::method linein
@@ -154,8 +176,8 @@
 
   use strict arg start = .nil, length = 1
 
-  if \self~charPosition(start) then
-      raise notready ....  return ""
+  if .nil \= start, \self~charPosition(start) then
+      raise notready DESCRIPTION "No data available"  return ""
 
   currentLine = source[current]
 
@@ -186,7 +208,7 @@
       end
 
       if \self~linePosition(current + 1) then do
-          raise notready .....
+          raise notready DESCRIPTION "At end of input" return buffer~string
       end
 
       currentLine = source[current]
@@ -196,6 +218,11 @@
   raise notready
 
 
+/** Advance the line pointer to the passed line number.
+  * @param current The new current line number
+  * @returns If the line pointer is after this input stream's length the method
+  *          returns .False. If it is a valid line position, it returns .True.
+  */
 ::method linePosition private
   expose current position
   use arg current
@@ -207,18 +234,28 @@
   position = 1
   return .true
 
+/**
+  * Move the currenr position to a specific character position. The mehod
+  * converts the character position into a current/position pair by iterating
+  * over all lines.
+  *
+  * @param target The target position to position the read pointer.
+  * @returns .True if the position is not beyond the data stored.
+  */
 ::method charPosition private
   expose source current position size endofline
-  expose target
+  use strict arg target
 
+  eoll = endofline~length
   do i = 1 to size
       line = source[i]
-      if target <= line~length + endofline~length then do
+      ll = line~length + eol
+      if target <= ll then do
          current = i
          position = target
          return .true
       end
-      target = target - (line~length + endofline~length)
+      target = target - ll
   end
 
   return .false    -- out of bounds for the stream
