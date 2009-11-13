@@ -86,7 +86,7 @@ RexxMethod2(int,                       // Return type
     }
     if (members) {
         for (int i = 1; i <= members; i++) {
-            context->ObjectToInt32(context->ArrayAt(args, i), (wholenumber_t *)&types[i - 1]);
+            context->ObjectToInt32(context->ArrayAt(args, i), (int32_t *)&types[i - 1]);
         }
         lstore = (GtkListStore *)gtk_list_store_newv(members, types);
     }
@@ -142,7 +142,7 @@ RexxMethod3(int,                       // Return type
     gint *types = (gint *)context->PointerValue(rxptr);
     size_t members = context->ArraySize(args);
     int i, col, ival;
-    unsigned int uival;
+    size_t uival;
     int64_t ival64;
     uint64_t uival64;
     float fval;
