@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2008-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -39,33 +39,18 @@
  * Demonstration of the ShellFileOp class.  Shows the copy operation.
  */
 
+  -- For this example, make sure that 'other.dir' does not already exist.
+  'rd /q /s other.dir 1>nul 2>&1'
 
-  --flags = "FOF_NOCONFIRMMKDIR"
-  --flags = "FOF_SILENT | FOF_NOCONFIRMATION | FOF_ALLOWUNDO | FOF_NOCONFIRMMKDIR"
+  -- For this copy operation, since we are copying multiple files, (*.rex) to a
+  -- single destination, the shell assumes other.dir must be a directory.  Then,
+  -- since the directory does not exist, the shell will attempt to create the
+  -- directory.
+
   flags = "FOF_NOCONFIRMATION | FOF_ALLOWUNDO | FOF_NOCONFIRMMKDIR"
   fo =  .ShellFileOp~new("*.rex", "other.dir", flags)
-  --fo =  .ShellFileOp~new("*.rex", "other.dir")
-  --fo =  .ShellFileOp~new("my.test\*.*", "other.dir", .true)
 
-  --return
-  say 'from list:' fo~fromList
-  if fo~fromList \== .nil then do
-    say 'length:   ' fo~fromList~length
-    say 'last char:' fo~fromList~right(1)~c2x
-    say '2nd last: ' fo~fromList~right(2)~left(1)~c2x
-  end
-  say 'to list:' fo~toList
-    say 'length:   ' fo~toList~length
-    say 'last char:' fo~toList~right(1)~c2x
-    say '2nd last: ' fo~toList~right(2)~left(1)~c2x
-
-  say 'flags:  ' fo~FOflags
-
-  ret = fo~copy
-  if ret then success = "true"
-  else success = "false"
-  say 'success:' success
-
---C:\work.ooRexx\other\help\active.windows\myTestDelete\*.*
+  if fo~copy then say "Copy operation succeeded.  Check the 'other.dir' directory"
+  else say "The copy operation failed."
 
 ::requires 'WinShell.cls'

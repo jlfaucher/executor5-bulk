@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,7 +35,10 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/* Simple example of the WinShell~queryDiskSpace() method */
+/**
+ * Simple example of the WinShell~queryDiskSpace() method.  You can also pass
+ * in disk drives to check on the command line, i.e.:  diskSpace E: F: G:
+ */
 use arg cmdLine
 
   shell = .WinShell~new

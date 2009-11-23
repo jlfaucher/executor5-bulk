@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2009 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,6 +35,10 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+/**
+ * Example of using a customized Microsoft "About" dialog.  There is not a lot
+ * of explanation for this example.
+ */
 
   shell = .WinShell~new
 
@@ -75,7 +79,11 @@
 
       shell~about(title, app, other, , icons[1])
 
-      -- Now again with the small icon.
+      -- Now again with the small icon.  (Note that in vIcons.dll, the small and
+      -- big icons are actually the same.  However, if you brows to
+      -- C:/WINDOWS/system32/shell32.dll in the Change Icon dialog, you can get
+      -- some examples of a big and small icon.)
+
       msg = "Showing the About dialog again, adding" || '0d0a'x || "a custom icon (the small icon.)"
       j = RxMessageBox(msg, msgTitle)
 

@@ -39,8 +39,8 @@
 # The icons are used to create an ImageList used by some of the sample programs.
 
 
-..\vIcons.dll: vIcons.dll
-	copy vIcons.dll ..\vIcons.dll
+..\..\examples\vIcons.dll: vIcons.dll
+	copy vIcons.dll ..\..\examples\vIcons.dll
 
 vIcons.dll: vIcons.res
 	link vIcons.res /NOENTRY /DLL /MACHINE:X86 /OUT:vIcons.dll
