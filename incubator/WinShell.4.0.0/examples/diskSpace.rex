@@ -106,7 +106,7 @@ use arg cmdLine
   say 'Disk space for' path
   if numbers~error <> 0 then do
     say 'Using' path 'for the path name results in error.'
-    say '  Windows system error number:' numbers~error
+    say '  Windows system error number:' numbers~error "-" SysGetErrortext(numbers~error)
   end
   else do
     say '  Disk size: ' numbers~total
