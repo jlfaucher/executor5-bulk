@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- * Demonstration of the ShellFileOp class.
+ * Demonstration of the ShellFileOp class.  Shows the copy operation.
  */
 
 

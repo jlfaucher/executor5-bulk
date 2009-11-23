@@ -66,8 +66,8 @@ REXX_INCLUDES = /I$(SRC_API) /I$(SRC_API)\platform\windows
 
 !ELSE IF DEFINED(REXX_HOME)
 REXX_HOME = "$(REXX_HOME)"
-REXX_LIBS = $(REXX_HOME)\rexx.lib $(REXX_HOME)\rexxapi.lib
-REXX_INCLUDES = /I$(REXX_HOME)
+REXX_LIBS = $(REXX_HOME)\api\rexx.lib $(REXX_HOME)\api\rexxapi.lib
+REXX_INCLUDES = /I$(REXX_HOME)\api
 !ELSE
 !ERROR REXX_HOME or OOREXX_SRC_DRIVE needs to be set, either in environment or in this make file
 !ENDIF

@@ -292,19 +292,9 @@ bool initCommonControls(RexxMethodContext *context, DWORD classes, CSTRING packa
     return true;
 }
 
-inline bool rxArgOmitted(RexxMethodContext * context, size_t index)
-{
-    return context->ArrayHasIndex(context->GetArguments(), index) == 0 ? true : false;
-}
-
-inline bool rxArgExists(RexxMethodContext * context, size_t index)
-{
-    return context->ArrayHasIndex(context->GetArguments(), index) == 1 ? true : false;
-}
-
 inline void systemServiceException(RexxMethodContext *context, char *msg)
 {
-    context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz(msg));
+    context->RaiseException1(Rexx_Error_System_service_user_defined, context->String(msg));
 }
 
 void systemServiceException(RexxMethodContext *context, char *msg, const char *sub)
@@ -348,20 +338,16 @@ void systemServiceExceptionComCode(RexxMethodContext *context, const char *msg, 
  */
 void wrongArgValueException(RexxMethodContext *c, int pos, const char *list, RexxObjectPtr actual)
 {
-    RexxArrayObject a = c->NewArray(3);
-    c->ArrayPut(a, c->NewInteger(pos), 1);
-    c->ArrayPut(a, c->NewStringFromAsciiz(list), 2);
-    c->ArrayPut(a, actual, 3);
-
-    c->RaiseExceptionArray(Rexx_Error_Incorrect_method_list, a);
+    RexxArrayObject a = c->ArrayOfThree(c->WholeNumber(pos), c->String(list), actual);
+    c->RaiseException(Rexx_Error_Incorrect_method_list, a);
 }
 void wrongArgValueException(RexxMethodContext *c, int pos, const char *list, const char *actual)
 {
-    wrongArgValueException(c, pos, list, c->NewStringFromAsciiz(actual));
+    wrongArgValueException(c, pos, list, c->String(actual));
 }
 inline void *wrongClassException(RexxMethodContext *c, int pos, const char *n)
 {
-    c->RaiseException2(Rexx_Error_Incorrect_method_noclass, c->NewInteger(pos), c->NewStringFromAsciiz(n));
+    c->RaiseException2(Rexx_Error_Incorrect_method_noclass, c->WholeNumber(pos), c->String(n));
     return NULL;
 }
 
@@ -437,7 +423,7 @@ void invalidConstantException(RexxMethodContext *c, int argNumber, char *msg,
 }
 void invalidConstantException(RexxMethodContext *c, int argNumber, char *msg, const char *sub, const char *actual)
 {
-    invalidConstantException(c, argNumber, msg, sub, c->NewStringFromAsciiz(actual));
+    invalidConstantException(c, argNumber, msg, sub, c->String(actual));
 }
 
 bool checkOptionalWindow(RexxMethodContext *context, HWND hwnd, int argNumber)
@@ -470,8 +456,8 @@ RexxMethod2(RexxObjectPtr, size_init, OPTIONAL_int32_t,  cx, OPTIONAL_int32_t, c
 
     SIZE *s = (SIZE *)context->BufferData(obj);
 
-    s->cx = rxArgExists(context, 1) ? cx : 0;
-    s->cy = rxArgExists(context, 2) ? cy : s->cx;
+    s->cx = argumentExists(1) ? cx : 0;
+    s->cy = argumentExists(2) ? cy : s->cx;
 
     return NULLOBJECT;
 }
@@ -496,7 +482,7 @@ RexxObjectPtr rxNewSize(RexxMethodContext *context, long cx, long cy)
     RexxClassObject SizeClass = context->FindContextClass("SIZE");
     if ( SizeClass != NULL )
     {
-        size = context->SendMessage2(SizeClass, "NEW", context->NewInteger(cx), context->NewInteger(cy));
+        size = context->SendMessage2(SizeClass, "NEW", context->WholeNumber(cx), context->WholeNumber(cy));
     }
     return size;
 }
@@ -623,7 +609,7 @@ RexxMethod0(logical_t, Sh_init_class)
     if ( local != NULLOBJECT )
     {
         context->DirectoryPut(local, context->NewPointer(NULL), "NULLPOINTER");
-        context->DirectoryPut(local, context->NewInteger(0), "SYSTEMERRORCODE");
+        context->DirectoryPut(local, context->WholeNumber(0), "SYSTEMERRORCODE");
     }
 
     return true;
@@ -637,7 +623,7 @@ RexxMethod0(RexxObjectPtr, Sh_version_class)
 {
     char buf[64];
     _snprintf(buf, sizeof(buf), "WinShell Version %u.%u.%u.%u (an ooRexx Windows Extension)", ORX_VER, ORX_REL, ORX_MOD, OOREXX_BLD);
-    return context->NewStringFromAsciiz(buf);
+    return context->String(buf);
 }
 
 /** Sh::comCtl32Version()
@@ -646,7 +632,7 @@ RexxMethod0(RexxObjectPtr, Sh_version_class)
  */
 RexxMethod0(RexxStringObject, Sh_comctl32Version_class)
 {
-    return context->NewStringFromAsciiz(comctl32VersionName(ComCtl32Version));
+    return context->String(comctl32VersionName(ComCtl32Version));
 }
 
 /** Sh::is64Bit()
@@ -893,7 +879,7 @@ RexxMethod2(RexxObjectPtr, WinShell_pathFromCSIDL, CSTRING, csidlConstant, OPTIO
         return rxResult;
     }
 
-    if ( rxArgExists(context, 2) && create == TRUE )
+    if ( argumentExists(2) && create == TRUE )
     {
         csidl |= CSIDL_FLAG_CREATE;
     }
@@ -903,7 +889,7 @@ RexxMethod2(RexxObjectPtr, WinShell_pathFromCSIDL, CSTRING, csidlConstant, OPTIO
         TCHAR path[MAX_PATH];
         if ( SHGetPathFromIDList(pidl, path) )
         {
-            rxResult = context->NewStringFromAsciiz(path);
+            rxResult = context->String(path);
         }
         CoTaskMemFree(pidl);
     }
@@ -927,7 +913,7 @@ RexxMethod1(RexxObjectPtr, WinShell_pathFromItemID, POINTER, idlPtr)
     TCHAR path[MAX_PATH];
     if ( SHGetPathFromIDList(pidl, path) )
     {
-        return context->NewStringFromAsciiz(path);
+        return context->String(path);
     }
     return context->Nil();
 }
@@ -1067,7 +1053,7 @@ RexxMethod2(RexxObjectPtr, WinShell_openFindFiles, RexxObjectPtr, start, OPTIONA
     }
     else
     {
-        rxResult = context->NewInteger(-(long)GetLastError());
+        rxResult = context->WholeNumber(-(long)GetLastError());
     }
 
     if ( ! folderWasPtr )
@@ -1088,7 +1074,7 @@ RexxMethod2(RexxObjectPtr, WinShell_openFindFiles, RexxObjectPtr, start, OPTIONA
  */
 RexxMethod1(RexxObjectPtr, WinShell_openFolder, RexxObjectPtr, rxFolder)
 {
-    context->RaiseException(Rexx_Error_Unsupported_method);
+    context->RaiseException0(Rexx_Error_Unsupported_method);
     return NULLOBJECT;
 }
 
@@ -1201,15 +1187,15 @@ RexxMethod2(logical_t, WinShell_queryDiskSpace, CSTRING, rxPath, RexxObjectPtr, 
         context->DirectoryPut(directory, context->UnsignedInt64ToObject(total.QuadPart), "TOTAL");
         context->DirectoryPut(directory, context->UnsignedInt64ToObject(totalFree.QuadPart), "FREE");
         context->DirectoryPut(directory, context->UnsignedInt64ToObject(userFree.QuadPart), "USERFREE");
-        context->DirectoryPut(directory, context->NewInteger(0), "ERROR");
+        context->DirectoryPut(directory, context->WholeNumber(0), "ERROR");
         return true;
     }
     else
     {
-        context->DirectoryPut(directory, context->NewInteger(0), "TOTAL");
-        context->DirectoryPut(directory, context->NewInteger(0), "FREE");
-        context->DirectoryPut(directory, context->NewInteger(0), "USERFREE");
-        context->DirectoryPut(directory, context->NewInteger(GetLastError()), "ERROR");
+        context->DirectoryPut(directory, context->WholeNumber(0), "TOTAL");
+        context->DirectoryPut(directory, context->WholeNumber(0), "FREE");
+        context->DirectoryPut(directory, context->WholeNumber(0), "USERFREE");
+        context->DirectoryPut(directory, context->WholeNumber(GetLastError()), "ERROR");
         return false;
     }
 }
@@ -1220,12 +1206,9 @@ RexxMethod2(logical_t, WinShell_queryDiskSpace, CSTRING, rxPath, RexxObjectPtr, 
  *  Determines the size (in bytes) and number of items in the Recycle Bin.  This
  *  can be either for all Recycle Bins, or the Recycle Bin a specific drive.
  *
- *  If path is omitted, queries info for all recycle bins.  When used, path is
- *  restricted to a fully qualified path and then the query is for just the
- *  recycle bin on that drive.
- *
- * @param rxPath   A path name that indicates which disk the query is for.  The
- *                 path must be fully qualified
+ *  If the root argument is omitted, or the empty string, then the query is for
+ *  for all recycle bins.  Otherwise the query is for the drive identified by
+ *  root.
  *
  * @param obj      A .Directory object that is used to return the number of
  *                 bytes and the items in the recycle bin(s).  Along with an
@@ -1235,12 +1218,18 @@ RexxMethod2(logical_t, WinShell_queryDiskSpace, CSTRING, rxPath, RexxObjectPtr, 
  *                 obj~objects
  *                 obj~error
  *
+ * @param root     [OPTIONAL]  A path name that indicates which disk the query
+ *                 is for. The path name must contain the drive identifier.  For
+ *                 instance, E: or E:\work is valid.  But \work is not valid,
+ *                 even if the current directory is on the E: drive
+ *
  * @return  True on success, false on failure.  The error index is 0 on success
  *          and will be a COM error code (in hexadecimal format) on failure.
+ *          However, it appears to be very hard to generate an error.
  */
-RexxMethod2(logical_t, WinShell_queryRecycleBin, CSTRING, root, RexxObjectPtr, obj)
+RexxMethod2(logical_t, WinShell_queryRecycleBin, RexxObjectPtr, obj, OPTIONAL_CSTRING, root)
 {
-    RexxDirectoryObject directory = getDirectory(context, obj, 2);
+    RexxDirectoryObject directory = getDirectory(context, obj, 1);
     if ( directory == NULLOBJECT )
     {
         return false;
@@ -1254,16 +1243,16 @@ RexxMethod2(logical_t, WinShell_queryRecycleBin, CSTRING, root, RexxObjectPtr, o
     {
         context->DirectoryPut(directory, context->Int64ToObject(bytes), "BYTES");
         context->DirectoryPut(directory, context->Int64ToObject(items), "OBJECTS");
-        context->DirectoryPut(directory, context->NewInteger(0), "ERROR");
+        context->DirectoryPut(directory, context->WholeNumber(0), "ERROR");
         return true;
     }
     else
     {
         TCHAR     buffer[64];
         _snprintf(buffer, 64, "0x%08x", hr);
-        context->DirectoryPut(directory, context->NewInteger(0), "BYTES");
-        context->DirectoryPut(directory, context->NewInteger(0), "OBJECTS");
-        context->DirectoryPut(directory, context->NewStringFromAsciiz(buffer), "ERROR");
+        context->DirectoryPut(directory, context->WholeNumber(0), "BYTES");
+        context->DirectoryPut(directory, context->WholeNumber(0), "OBJECTS");
+        context->DirectoryPut(directory, context->String(buffer), "ERROR");
         return false;
     }
 }
@@ -1280,7 +1269,7 @@ RexxMethod3(RexxObjectPtr, WinShell_emptyRecycleBin, OPTIONAL_CSTRING, root, OPT
     // The flags for no confirmation, which is the defualt.
     DWORD       flags = SHERB_NOCONFIRMATION | SHERB_NOPROGRESSUI | SHERB_NOSOUND;
     HRESULT     hr;
-    RexxObjectPtr  rxResult = context->NewInteger(0);
+    RexxObjectPtr  rxResult = context->WholeNumber(0);
 
     if ( root == NULL )
     {
@@ -1295,7 +1284,7 @@ RexxMethod3(RexxObjectPtr, WinShell_emptyRecycleBin, OPTIONAL_CSTRING, root, OPT
         }
     }
 
-    if ( rxArgExists(context, 2) && confirm == FALSE )
+    if ( argumentExists(2) && confirm == FALSE )
     {
         flags = 0;
     }
@@ -1375,10 +1364,10 @@ RexxMethod2(RexxObjectPtr, WinShell_extractDefaultIcons, CSTRING, path, OPTIONAL
     RexxObjectPtr rxResult;
 
     /**
-     * If rxIndex is omitted, then an array of all the icons in the specified
+     * If index is omitted, then an array of all the icons in the specified
      * file are returned.
      */
-    if ( rxArgOmitted(context, index) )
+    if ( argumentOmitted(2) )
     {
         return extractAllDefIcons(context, path);
     }
@@ -1472,7 +1461,7 @@ RexxMethod2(RexxObjectPtr, WinShell_selectIcon, CSTRING, path, OPTIONAL_POINTER,
             return rxResult;
         }
 
-        rxResult = context->ArrayOfTwo(context->NewInteger(iconIndex), context->NewStringFromAsciiz(pathBuffer));
+        rxResult = context->ArrayOfTwo(context->WholeNumber(iconIndex), context->String(pathBuffer));
     }
 
     return rxResult;
@@ -1491,13 +1480,13 @@ RexxMethod2(RexxObjectPtr, WinShell_selectIcon, CSTRING, path, OPTIONAL_POINTER,
 RexxMethod1(RexxObjectPtr, WinShell_releaseIcon, POINTER, iconPtr)
 {
     HICON hIcon = (HICON)iconPtr;
-    RexxObjectPtr rxResult = context->NewInteger(0);
+    RexxObjectPtr rxResult = context->WholeNumber(0);
 
     if ( hIcon != 0 )
     {
         if ( DestroyIcon(hIcon) == 0 )
         {
-            rxResult = context->NewInteger(GetLastError());
+            rxResult = context->WholeNumber(GetLastError());
         }
     }
     else
@@ -1661,11 +1650,11 @@ RexxMethod5(RexxObjectPtr, ImageList_init, CSTRING, type, RexxObjectPtr, rxImage
     }
     else if ( _stricmp("ICON", type) == 0 )
     {
-        context->SetObjectVariable(IL_IMAGETYPE_ATTR, context->NewInteger(IL_IMAGETYPE_ICON));
+        context->SetObjectVariable(IL_IMAGETYPE_ATTR, context->WholeNumber(IL_IMAGETYPE_ICON));
     }
     else if ( _stricmp("BITMAP", type) == 0 )
     {
-        context->SetObjectVariable(IL_IMAGETYPE_ATTR, context->NewInteger(IL_IMAGETYPE_BITMAP));
+        context->SetObjectVariable(IL_IMAGETYPE_ATTR, context->WholeNumber(IL_IMAGETYPE_BITMAP));
         isBitmap = true;
     }
     else
@@ -1681,7 +1670,7 @@ RexxMethod5(RexxObjectPtr, ImageList_init, CSTRING, type, RexxObjectPtr, rxImage
     /** If we are here, rxImages is required. */
     if ( rxImages == NULLOBJECT )
     {
-        context->RaiseException1(Rexx_Error_Invalid_argument_noarg, context->NewInteger(2));
+        context->RaiseException1(Rexx_Error_Invalid_argument_noarg, context->WholeNumber(2));
         return NULLOBJECT;
     }
 
@@ -1689,7 +1678,7 @@ RexxMethod5(RexxObjectPtr, ImageList_init, CSTRING, type, RexxObjectPtr, rxImage
     int cx = IL_DEFAULT_CX;
     int cy = IL_DEFAULT_CY;
 
-    if ( rxArgExists(context, 3) )
+    if ( argumentExists(3) )
     {
         SIZE *size = rxGetSize(context, sizePtr, 3);
         if ( size == NULL )
@@ -1700,7 +1689,7 @@ RexxMethod5(RexxObjectPtr, ImageList_init, CSTRING, type, RexxObjectPtr, rxImage
         cy = size->cy;
     }
 
-    if ( rxArgOmitted(context, 5) )
+    if ( argumentOmitted(5) )
     {
         grow = IL_DEFAULT_GROW;
     }
@@ -1718,20 +1707,19 @@ RexxMethod5(RexxObjectPtr, ImageList_init, CSTRING, type, RexxObjectPtr, rxImage
      *  create, or it can be an array of image handles.  (Icons or bitmaps.)
      *  Anything else, at this time, is wrong.
      */
-    int count;
-    if ( context->IsInteger(rxImages) )
+    size_t count;
+    if ( ! context->ObjectToStringSize(rxImages, &count) )
     {
-        count = (int)context->IntegerValue((RexxIntegerObject)rxImages);
-    }
-    else if ( context->IsArray(rxImages) )
-    {
-        count = (int)context->ArraySize((RexxArrayObject)rxImages);
-        createEmptyImageList = false;
-    }
-    else
-    {
-        wrongArgValueException(context, 2, "an array of image handles or a count of images", rxImages);
-        return NULLOBJECT;
+        if ( context->IsArray(rxImages) )
+        {
+            count = context->ArraySize((RexxArrayObject)rxImages);
+            createEmptyImageList = false;
+        }
+        else
+        {
+            wrongArgValueException(context, 2, "an array of image handles or a count of images", rxImages);
+            return NULLOBJECT;
+        }
     }
 
     // It seems as though some APIs do not clear last error.
@@ -1748,7 +1736,7 @@ RexxMethod5(RexxObjectPtr, ImageList_init, CSTRING, type, RexxObjectPtr, rxImage
     {
         VOID *image;
         int index;
-        for ( int i = 1; i <= count; i++ )
+        for ( size_t i = 1; i <= count; i++ )
         {
             image = context->ArrayAt((RexxArrayObject)rxImages, i);
 
@@ -1854,7 +1842,7 @@ RexxMethod1(RexxObjectPtr, ImageList_getBkColor, OPTIONAL_logical_t, useRGB)
 
     COLORREF ref = ImageList_GetBkColor(himl);
 
-    if ( rxArgExists(context, 1) && useRGB == TRUE )
+    if ( argumentExists(1) && useRGB == TRUE )
     {
         _snprintf(buffer, sizeof(buffer), "%d %d %d %08x",
                   GetRValue(ref), GetGValue(ref), GetBValue(ref), ref);
@@ -1863,7 +1851,7 @@ RexxMethod1(RexxObjectPtr, ImageList_getBkColor, OPTIONAL_logical_t, useRGB)
     {
         _snprintf(buffer, sizeof(buffer), "%08x", ref);
     }
-    return context->NewStringFromAsciiz(buffer);
+    return context->String(buffer);
 }
 
 
@@ -1885,7 +1873,7 @@ RexxMethod1(RexxObjectPtr, ImageList_setBkColor, OPTIONAL_logical_t, doRGB)
 
     // TODO this function was never implemented correctly.
 
-    if ( rxArgExists(context, 1) && doRGB == TRUE )
+    if ( argumentExists(1) && doRGB == TRUE )
     {
         _snprintf(buffer, sizeof(buffer), "%d %d %d %08x",
                   GetRValue(lastRef), GetGValue(lastRef), GetBValue(lastRef), lastRef);
@@ -1894,7 +1882,7 @@ RexxMethod1(RexxObjectPtr, ImageList_setBkColor, OPTIONAL_logical_t, doRGB)
     {
         _snprintf(buffer, sizeof(buffer), "%08x", lastRef);
     }
-    return context->NewStringFromAsciiz(buffer);
+    return context->String(buffer);
 }
 
 
@@ -1936,7 +1924,7 @@ RexxMethod0(RexxObjectPtr, ImageList_getImageSize)
     {
         TCHAR buffer[32];
         _snprintf(buffer, sizeof(buffer), "%d %d", cx, cy);
-        rxResult = context->NewStringFromAsciiz(buffer);
+        rxResult = context->String(buffer);
     }
     return rxResult;
 }
@@ -1991,7 +1979,7 @@ inline HIMAGELIST _getSelf(RexxMethodContext *c)
     HIMAGELIST himl = (HIMAGELIST)c->PointerValue((RexxPointerObject)c->GetObjectVariable(IL_HANDLE_ATTR));
     if ( himl == NULL )
     {
-        c->RaiseException1(Rexx_Error_Execution_user_defined, c->NewStringFromAsciiz(IMAGELIST_RELEASED_MSG));
+        c->RaiseException1(Rexx_Error_Execution_user_defined, c->String(IMAGELIST_RELEASED_MSG));
     }
     return himl;
 }
@@ -2094,7 +2082,7 @@ static logical_t setSystemImageList(RexxMethodContext * context, bool setLarge)
     context->SetObjectVariable(IL_HANDLE_ATTR,
                                setLarge ? context->NewPointer(hLarge) : context->NewPointer(hSmall));
 
-    context->SetObjectVariable(IL_IMAGETYPE_ATTR, context->NewInteger(IL_IMAGETYPE_ICON));
+    context->SetObjectVariable(IL_IMAGETYPE_ATTR, context->WholeNumber(IL_IMAGETYPE_ICON));
 
     return TRUE;
 }
@@ -2153,6 +2141,10 @@ inline CSTRING       getTitle(RexxMethodContext *, HWND, FILEOP_FLAGS);
 /** ShellFileOp::init()
  *
  * Basic init for a ShellFileOp object.
+ *
+ * TODO The from and to arguments should allow the user to specify a single file
+ * name, or an array of file names.  This should then be propagated to the
+ * various move(), copy(), etc., methods.
  */
 RexxMethod5(RexxObjectPtr, ShellFileOp_init, OPTIONAL_CSTRING, from, OPTIONAL_CSTRING, to, OPTIONAL_RexxObjectPtr, rxFlags,
             OPTIONAL_RexxObjectPtr, rxHwndOwner, OPTIONAL_RexxObjectPtr, rxTitle)
@@ -2430,7 +2422,7 @@ static logical_t doTheOp(RexxMethodContext *context, UINT op, CSTRING from, CSTR
     if ( list == context->Nil() )
     {
         context->RaiseException1(Rexx_Error_Incorrect_method,
-                                 context->NewStringFromAsciiz("No source files have been specified for this shell file operation"));
+                                 context->String("No source files have been specified for this shell file operation"));
         return FALSE;
     }
     sfos.pFrom  = context->StringData((RexxStringObject)list);
@@ -2441,7 +2433,7 @@ static logical_t doTheOp(RexxMethodContext *context, UINT op, CSTRING from, CSTR
         if ( list == context->Nil() )
         {
             context->RaiseException1(Rexx_Error_Incorrect_method,
-                                     context->NewStringFromAsciiz("No destination files have been specified for this shell file operation"));
+                                     context->String("No destination files have been specified for this shell file operation"));
             return FALSE;
         }
         sfos.pTo = context->StringData((RexxStringObject)list);
@@ -2456,8 +2448,6 @@ static logical_t doTheOp(RexxMethodContext *context, UINT op, CSTRING from, CSTR
     }
 
     sfos.lpszProgressTitle = getTitle(context, sfos.hwnd, sfos.fFlags);
-
-    printf("FO flags: %x\n", sfos.fFlags);
 
     // Finally, do the shell file operation.
     logical_t success = (SHFileOperation(&sfos) == 0) ? TRUE : FALSE;
@@ -2495,22 +2485,17 @@ static bool addToFileList(RexxMethodContext *context, SFO_DIRECTION direction, C
         return true;
     }
 
-    char inBuffer[MAX_PATH + 1];
     char outBuffer[MAX_PATH + 2];
 
-    /* TODO why did I make a copy of file?  Is that needed? */
-    pathdup(inBuffer, file);
-
-    if ( PathSearchAndQualify(inBuffer, outBuffer, MAX_PATH) )
+    if ( PathSearchAndQualify(file, outBuffer, MAX_PATH) )
     {
-        /* TODO Function was reworked for new APIs, need to retest this. */
-
         // Add the second terminating null and save the length which is needed
         // for the ooRexx string creation.
         size_t l = strlen(outBuffer) + 1;
         outBuffer[l++] = '\0';
 
-        // Point newBuffer at the existing file name first.
+        // Point newBuffer at the file name to be added.  If the list is
+        // currently empty, this will be the first element.
         char *newBuffer = outBuffer;
 
         RexxObjectPtr list;
@@ -2532,9 +2517,11 @@ static bool addToFileList(RexxMethodContext *context, SFO_DIRECTION direction, C
                 context->SetObjectVariable(SFO_MULTIDESTINATION, context->True());
             }
 
-            // The old list has an extra trailing null at the end.  We need to
-            // get the true length of the existing ooRexx string.
-            size_t oldL = context->StringLength((RexxStringObject)list);
+            // The old list has two trailing nulls at the end, and possibly
+            // embedded nulls.  We get the current length, maintained by the
+            // interpreter, and subtract 1 to strip the last null of of the
+            // string.
+            size_t oldL = context->StringLength((RexxStringObject)list) - 1;
 
             // Now we need a buffer big enough to hold the old list and the new
             // file (with the extra trailing null.)
@@ -2545,9 +2532,8 @@ static bool addToFileList(RexxMethodContext *context, SFO_DIRECTION direction, C
                 return false;
             }
 
-            // Now have ooRexx copy the old list into the new buffer. I think
-            // this copy removes the extra null.  TODO need to test.
-            size_t copyL = context->StringGet((RexxStringObject)list, 0, newBuffer, oldL);
+            // Now have ooRexx copy the old list into the new buffer.
+            size_t copyL = context->StringGet((RexxStringObject)list, 1, newBuffer, oldL);
 
             // Now append the new file.
             memcpy((newBuffer + oldL), outBuffer, l);
@@ -2603,7 +2589,7 @@ static bool setFOFlags(RexxMethodContext *context, RexxObjectPtr rxFlags, int ar
 
     if ( context->IsString(rxFlags) )
     {
-        char *flags = strdupupr(context->StringData((RexxStringObject)rxFlags));
+        char *flags = strdupupr(context->ObjectToStringValue(rxFlags));
         int   foFlag, foFlags = 0;
 
         // The user can separate tokens with either spaces, commas, or  the '|'
@@ -2622,7 +2608,7 @@ static bool setFOFlags(RexxMethodContext *context, RexxObjectPtr rxFlags, int ar
         }
         free(flags);
 
-        context->SetObjectVariable(SFO_FOFLAGS_ATTR, context->NewInteger(foFlags));
+        context->SetObjectVariable(SFO_FOFLAGS_ATTR, context->WholeNumber(foFlags));
     }
     else if ( rxFlags == context->Nil())
     {
@@ -2703,7 +2689,10 @@ static FILEOP_FLAGS getFOFlags(RexxMethodContext *context)
     }
     else
     {
-        flags = (FILEOP_FLAGS)context->IntegerValue((RexxIntegerObject)rxFlags);
+        // TODO redo this logic.
+        uint32_t _flags = 0;
+        context->UnsignedInt32(rxFlags, &_flags);
+        flags = (FILEOP_FLAGS)_flags;
     }
 
     if ( context->GetObjectVariable(SFO_MULTIDESTINATION) == context->True() )
@@ -3056,7 +3045,7 @@ void setSFBAttribute(RexxMethodContext *context, char *name, CSTRING userVal, ch
 {
     if ( userVal == NULL )
     {
-        context->SetObjectVariable(name, context->NewStringFromAsciiz(defaultVal));
+        context->SetObjectVariable(name, context->String(defaultVal));
     }
     else if ( strlen(userVal) == 0 )
     {
@@ -3064,7 +3053,7 @@ void setSFBAttribute(RexxMethodContext *context, char *name, CSTRING userVal, ch
     }
     else
     {
-        context->SetObjectVariable(name, context->NewStringFromAsciiz(userVal));
+        context->SetObjectVariable(name, context->String(userVal));
     }
 }
 
@@ -3105,7 +3094,7 @@ RexxMethod1(RexxStringObject, Path_makePretty, CSTRING, path)
     pathdup(inBuffer, path);
 
     PathMakePretty(inBuffer);
-    return context->NewStringFromAsciiz(inBuffer);
+    return context->String(inBuffer);
 }
 
 /** Path::canonicalize()
@@ -3121,11 +3110,11 @@ RexxMethod1(RexxStringObject, Path_canonicalize, CSTRING, path)
 
     if ( PathCanonicalize(outBuffer, inBuffer) )
     {
-        return context->NewStringFromAsciiz(outBuffer);
+        return context->String(outBuffer);
     }
     else
     {
-        return context->NewStringFromAsciiz(inBuffer);
+        return context->String(inBuffer);
     }
 }
 
@@ -3142,11 +3131,11 @@ RexxMethod2(RexxStringObject, Path_compact, CSTRING, path, uint32_t, count)
 
     if ( PathCompactPathEx(outBuffer, inBuffer, count, 0) )
     {
-        return context->NewStringFromAsciiz(outBuffer);
+        return context->String(outBuffer);
     }
     else
     {
-        return context->NewStringFromAsciiz(inBuffer);
+        return context->String(inBuffer);
     }
 }
 
@@ -3167,11 +3156,11 @@ RexxMethod1(RexxStringObject, Path_searchAndQualify, CSTRING, path)
     // it return false.
     if ( PathSearchAndQualify(inBuffer, outBuffer, MAX_PATH) )
     {
-        return context->NewStringFromAsciiz(outBuffer);
+        return context->String(outBuffer);
     }
     else
     {
-        return context->NewStringFromAsciiz(inBuffer);
+        return context->String(inBuffer);
     }
 }
 
@@ -3185,7 +3174,7 @@ RexxMethod1(RexxStringObject, Path_quoteSpaces, CSTRING, path)
     pathdup(inBuffer, path);
 
     PathQuoteSpaces(inBuffer);
-    return context->NewStringFromAsciiz(inBuffer);
+    return context->String(inBuffer);
 }
 
 /** Path::unquoteSpaces()
@@ -3198,7 +3187,7 @@ RexxMethod1(RexxStringObject, Path_unquoteSpaces, CSTRING, path)
     pathdup(inBuffer, path);
 
     PathUnquoteSpaces(inBuffer);
-    return context->NewStringFromAsciiz(inBuffer);
+    return context->String(inBuffer);
 }
 
 /** Path::removeBackslash()
@@ -3211,7 +3200,7 @@ RexxMethod1(RexxStringObject, Path_removeBackslash, CSTRING, path)
     pathdup(inBuffer, path);
 
     PathRemoveBackslash(inBuffer);
-    return context->NewStringFromAsciiz(inBuffer);
+    return context->String(inBuffer);
 }
 
 /** Path::addBackslash()
@@ -3224,7 +3213,7 @@ RexxMethod1(RexxStringObject, Path_addBackslash, CSTRING, path)
     pathdup(inBuffer, path);
 
     PathAddBackslash(inBuffer);
-    return context->NewStringFromAsciiz(inBuffer);
+    return context->String(inBuffer);
 }
 
 /** Path::removeFileSpec()
@@ -3238,7 +3227,7 @@ RexxMethod1(RexxStringObject, Path_removeFileSpec, CSTRING, path)
     pathdup(inBuffer, path);
 
     PathRemoveFileSpec(inBuffer);
-    return context->NewStringFromAsciiz(inBuffer);
+    return context->String(inBuffer);
 }
 
 /** Path::exists  (PathFileExists)
@@ -3370,7 +3359,7 @@ RexxMethod1(RexxStringObject, Path_getShortPath, CSTRING, path)
         return NULL;
     }
 
-    return context->NewStringFromAsciiz(pathBuffer);
+    return context->String(pathBuffer);
 }
 
 /** Path::getLongPath
@@ -3382,7 +3371,7 @@ RexxMethod1(RexxStringObject, Path_getLongPath, CSTRING, path)
     char buffer[MAX_PATH];
 
     GetLongPathName(path, buffer, MAX_PATH);
-    return context->NewStringFromAsciiz(buffer);
+    return context->String(buffer);
 }
 
 
@@ -3422,7 +3411,7 @@ static RexxObjectPtr folderBrowse(RexxMethodContext *context, PBROWSEINFO pBI, b
         {
             if ( SHGetPathFromIDList(pidl, path) )
             {
-                rxResult = context->NewStringFromAsciiz(path);
+                rxResult = context->String(path);
             }
             else
             {

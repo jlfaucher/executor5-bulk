@@ -165,18 +165,14 @@ inline BOOL _isAtLeastVista(void)
  * @param max
  * @param actual
  */
-inline void stringTooLongException(RexxMethodContext *context, int argNumber, int max, size_t actual)
+inline void stringTooLongException(RexxMethodContext *c, int argNumber, int max, size_t actual)
 {
     TCHAR buffer[32];
-    RexxArrayObject array = context->NewArray(3);
 
     _snprintf(buffer, sizeof(buffer), "%d characters in length", max);
 
-    context->ArrayPut(array, context->NewInteger(argNumber), 1);
-    context->ArrayPut(array, context->NewStringFromAsciiz(buffer), 2);
-    context->ArrayPut(array, context->NewInteger(actual), 3);
-
-    context->RaiseExceptionArray(Rexx_Error_Invalid_argument_toobig, array);
+    c->RaiseException(Rexx_Error_Invalid_argument_toobig,
+                      c->Array(c->WholeNumber(argNumber), c->String(buffer), c->WholeNumber(actual)));
 }
 
 /**
@@ -189,8 +185,8 @@ inline void stringTooLongException(RexxMethodContext *context, int argNumber, in
 inline void badArgException(RexxMethodContext *context, int argNumber, char * msg)
 {
     context->RaiseException2(Rexx_Error_Invalid_argument_argType,
-                             context->NewInteger(argNumber),
-                             context->NewStringFromAsciiz(msg));
+                             context->WholeNumber(argNumber),
+                             context->String(msg));
 }
 
 /**
@@ -202,11 +198,11 @@ inline void badArgException(RexxMethodContext *context, int argNumber, char * ms
  */
 inline void wrongFormatException(RexxMethodContext *c, int argNumber, RexxObjectPtr rxActual)
 {
-    c->RaiseException2(Rexx_Error_Invalid_argument_format, c->NewInteger(argNumber), rxActual);
+    c->RaiseException2(Rexx_Error_Invalid_argument_format, c->WholeNumber(argNumber), rxActual);
 }
 inline void wrongFormatException(RexxMethodContext *c, int argNumber, CSTRING actual)
 {
-    wrongFormatException(c, argNumber, c->NewStringFromAsciiz(actual));
+    wrongFormatException(c, argNumber, c->String(actual));
 }
 
 inline RexxObjectPtr hrToRx(RexxMethodContext *c, HRESULT hr)
@@ -214,7 +210,7 @@ inline RexxObjectPtr hrToRx(RexxMethodContext *c, HRESULT hr)
     TCHAR buffer[32];
 
     _snprintf(buffer, 32, "0x%08x", hr);
-    return c->NewStringFromAsciiz(buffer);
+    return c->String(buffer);
 }
 
 inline void *shellAlloc(size_t size)

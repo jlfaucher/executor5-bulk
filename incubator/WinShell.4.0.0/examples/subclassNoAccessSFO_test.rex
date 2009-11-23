@@ -7,6 +7,8 @@
  * There is no way to do:  obj~fromList = <someValue>, even by subclassing.
  */
 
+-- TODO other.dir may not exist anymore.
+
   flags = "FOF_SILENT FOF_NOCONFIRMATION FOF_ALLOWUNDO FOF_NOCONFIRMMKDIR FOF_NOERRORUI"
   fo =  .MarkFileOp~new("my.test", "other.dir", flags)
 

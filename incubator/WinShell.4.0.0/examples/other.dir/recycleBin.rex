@@ -53,12 +53,13 @@
   localDisks = getDisks()
 
   haveD = .false
+  numbers = .directory~new
+
   do disk over localDisks
     if disk~caselessCompare("D:\") == 0 then haveD = .true
 
-    numbers = shell~queryRecycleBin(disk)
     say "Recycle bin on" disk
-    if numbers~error == 0 then do
+    if shell~queryRecycleBin(numbers, disk) then do
       say "  items:" numbers~objects
       say "  bytes:" numbers~bytes
     end
@@ -68,9 +69,8 @@
   say
   end
 
-  numbers = shell~queryRecycleBin
   say "All Recycle bins:"
-  if numbers~error == 0 then do
+  if shell~queryRecycleBin(numbers) then do
     say "  items:" numbers~objects
     say "  bytes:" numbers~bytes
   end
@@ -98,9 +98,8 @@
     say
   end
 
-  numbers = shell~queryRecycleBin
   say "Size of all recycle bins now:"
-  if numbers~error == 0 then do
+  if shell~queryRecycleBin(numbers) then do
     say "  items:" numbers~objects
     say "  bytes:" numbers~bytes
   end
