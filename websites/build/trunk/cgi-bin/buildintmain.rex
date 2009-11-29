@@ -166,7 +166,7 @@ if vm = 'winxp-build' | vm = 'ubuntu704-build' then do
    cmd = ('interpreter-main' target addressee)~strip()
    strm~lineOut(cmd)
    retc = strm~close()
-   chown dashley:users cmdfile
+   'chown dashley:users cmdfile'
    end
 else do
    msg = 'queue' vm addressee
