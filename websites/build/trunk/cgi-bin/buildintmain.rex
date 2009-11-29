@@ -71,6 +71,9 @@ say '          </div>   '
 say
 say '            <h2>Welcome</h2>'
 retc = start_build(vm, target, addressee)
+
+say '<p>'vm target addresse'</p>'
+
 if retc = 0 then do
    say '   <p>The interpreter will be built by a background process.'
    say '      It should be ready within 15 minutes. The output of the build'
