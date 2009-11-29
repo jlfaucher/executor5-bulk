@@ -158,7 +158,7 @@ return
 start_build: procedure
 use arg vm, target, addressee
 if vm = 'winxpprof-build' | vm = 'ubuntu704-build' then do
-   cmdfile = '/home/buildorx/website/cmds/'vm
+   cmdfile = '/home/dashley/website/trunk/scripts/cmds/'vm
    if SysIsFile(cmdfile) then return 1
    strm = .stream~new(cmdfile)
    retc = strm~open('write')
