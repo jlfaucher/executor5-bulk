@@ -71,9 +71,6 @@ say '          </div>   '
 say
 say '            <h2>Welcome</h2>'
 retc = start_build(vm, target, addressee)
-
-say '<p>'vm target addressee'</p>'
-
 if retc = 0 then do
    say '   <p>The interpreter will be built by a background process.'
    say '      It should be ready within 15 minutes. The output of the build'
@@ -169,6 +166,7 @@ if vm = 'winxp-build' | vm = 'ubuntu704-build' then do
    cmd = ('interpreter-main' target addressee)~strip()
    strm~lineOut(cmd)
    retc = strm~close()
+   chown dashley:users cmdfile
    end
 else do
    msg = 'queue' vm addressee
