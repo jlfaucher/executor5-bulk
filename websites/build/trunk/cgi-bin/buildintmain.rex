@@ -72,7 +72,7 @@ say
 say '            <h2>Welcome</h2>'
 retc = start_build(vm, target, addressee)
 
-say '<p>'vm target addresse'</p>'
+say '<p>'vm target addressee'</p>'
 
 if retc = 0 then do
    say '   <p>The interpreter will be built by a background process.'
