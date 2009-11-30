@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Description: This is the build daemon for the Fedora KVM huest.            */
+/* Description: This is the build daemon for the docs KVM huest.              */
 /*                                                                            */
 /* Copyright (c) 2007-2010 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
@@ -134,7 +134,7 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::routine docs_notify
-use arg addressee svnver buildrpt
+use arg addressee, svnver, buildrpt
 if addressee = '' then return
 filename = './notify.txt'
 strm = .stream~new(filename)

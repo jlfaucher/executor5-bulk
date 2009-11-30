@@ -44,14 +44,9 @@
 
 
 -- initialize our global variables
-mode = getprocessor()
-select
-   when mode = 32 then qname = 'fedora11.i386'
-   when mode = 64 then qname = 'fedora11.x86_64'
-   otherwise qname = 'fedora11.i386'
-   end
 txnserver = '192.168.0.104'
 txnport = 15776
+qname = getqname()
 
 -- see if there is anything to do
 do forever
@@ -92,9 +87,8 @@ do forever
 /*----------------------------------------------------------------------------*/
 
 ::routine build_rpm
-use strict arg qname email
-if qname~pos('i386') > 0 then buildrpt = 'rpm.i386-buildrpt.txt'
-else buildrpt = 'rpm.x86_64-buildrpt.txt'
+use strict arg qname, email
+buildrpt = 'rpm.'qname'.buildrpt.txt'
 targetdir = '/mnt/buildorx/builds/interpreter-main'
 savedir = directory()
 -- create temp dir and checkout the source
@@ -139,7 +133,7 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::routine interpretermain_notify
-use arg addressee svnver buildrpt
+use arg addressee, svnver, buildrpt
 if addressee = '' then return
 filename = './notify.txt'
 strm = .stream~new(filename)
@@ -219,21 +213,23 @@ return line
 
 
 /*----------------------------------------------------------------------------*/
-/* getprocessor                                                               */
+/* getqname                                                                   */
 /*----------------------------------------------------------------------------*/
 
-::routine getprocessor
-file = 'rexxversion.txt'
-mode = 32
-'rexx -v >' file
+::routine getqname
+-- this works for RH/Fedora, not sure about others
+file = 'osversion.txt'
+'uname -r >' file
 strm = .stream~new(file)
 strm~open('read')
-arr = strm~arrayin()
+osstr = strm~linein()
 strm~close()
-do i = 1 to arr~items()
-   parse var arr[i] word1 word2 mode .
-   if word1 = 'Addressing' & word2 = 'Mode:' then leave
-   end
+p = osstr~lastpos('.')
+m = osstr~substr(p + 1)
+osstr = osstr~substr(1, p - 1)
+p = osstr~lastpos('.')
+os = osstr~substr(p + 1)
+qname = os'.'m
 'rm' file
-return mode
+return qname
 
