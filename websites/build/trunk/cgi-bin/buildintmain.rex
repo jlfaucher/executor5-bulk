@@ -166,7 +166,6 @@ if vm = 'winxp-build' | vm = 'ubuntu704-build' then do
    cmd = ('interpreter-main' target addressee)~strip()
    strm~lineOut(cmd)
    retc = strm~close()
-   'chown dashley:users cmdfile'
    end
 else do
    msg = 'queue' vm addressee
@@ -199,5 +198,5 @@ return ''
 
 
 ::requires '/home/dashley/website/trunk/cgi-bin/buildhtmlparts.cls'
--- ::requires 'streamsocket.cls'
+::requires '/home/dashley/website/trunk/cgi-bin/streamsocket.cls'
 

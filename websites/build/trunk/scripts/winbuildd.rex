@@ -50,7 +50,7 @@
 cmdfilename = 'winxp-build'
 hostbuilds = 'r:'
 cmdfile = 's:\cmds\'cmdfilename
-cmdlocal = '.\cmd.txt'
+cmdlocal = 'c:\cmd.txt'
 host = '192.168.0.104'
 hostacct = 'dashley'
 builddir = 'c:\buildtemp'
@@ -76,6 +76,7 @@ do forever
          -- create temp dir and checkout the source
          'md' builddir
          call directory builddir
+         say 'Performing SVN checkout'
          'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/'
          call directory 'trunk'
          -- build the exe
@@ -83,8 +84,10 @@ do forever
          call value 'SRC_DIR', '\buildtemp\trunk', 'ENVIRONMENT'
          call setlatestdocs
          svnver = getsvnrevision()
+         say 'Building ooRexx'
          'makeorx.bat BOTH PACKAGE'
          -- copy the results to the host
+         say 'Copying build output files to the server'
          newdir = hostbuilds'\interpreter-main\'svnver
          'md' newdir
          newdir = newdir'\'cmdfilename
@@ -93,8 +96,10 @@ do forever
          'copy Win32Rel\Win32Rel.log' newdir'\Win32RelLog.txt'
          'copy Win32Dbg\Win32Dbg.log' newdir'\Win32DbgLog.txt'
          -- notify the user
+         'Sending email'
          call interpretermain_notify addressee, svnver, cmdfilename
          -- remove everything
+         say 'Cleanup'
          call directory 'c:\'
          'rmdir /S /Q' builddir
          -- be sure to remove the command file on the host
@@ -154,7 +159,7 @@ interpretermain_notify: procedure expose windows
 use arg addressee, svnver, cmdfilename
 if addressee = '' then return
 if cmdfile = '' then return
-filename = './notify.txt'
+filename = 'c:\notify.txt'
 strm = .stream~new(filename)
 retc = strm~open('write')
 if retc <> 'READY:' then return ''
@@ -173,12 +178,13 @@ strm~lineOut('The ooRexx Project Team')
 strm~lineOut('')
 retc = strm~close()
 'c:\bin\blat notify.txt -to' addressee '-f noreply@build.oorexx.org -server holmes4.com -u dashley -pw wda123aa'
+'del c:\notify.txt'
 return
 
 error_notify: procedure expose windows
 use arg addressee
 if addressee = '' then return
-filename = './notify.txt'
+filename = 'c:\notify.txt'
 strm = .stream~new(filename)
 retc = strm~open('write')
 if retc <> 'READY:' then return ''
@@ -193,5 +199,6 @@ strm~lineOut('The ooRexx Project Team')
 strm~lineOut('')
 retc = strm~close()
 'c:\bin\blat notify.txt -to' addressee '-f noreply@build.oorexx.org -server holmes4.com -u dashley -pw wda123aa'
+'del c:\notify.txt'
 return
 
