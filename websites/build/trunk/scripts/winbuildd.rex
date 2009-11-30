@@ -96,7 +96,7 @@ do forever
          'copy Win32Rel\Win32Rel.log' newdir'\Win32RelLog.txt'
          'copy Win32Dbg\Win32Dbg.log' newdir'\Win32DbgLog.txt'
          -- notify the user
-         'Sending email'
+         say 'Sending email'
          call interpretermain_notify addressee, svnver, cmdfilename
          -- remove everything
          say 'Cleanup'
