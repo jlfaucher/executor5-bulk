@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Description: This is the build daemon for the Red Hat/Fedora VMware huest. */
+/* Description: This is manager for all the build server work queues.         */
 /*                                                                            */
 /* Copyright (c) 2007-2010 Rexx Language Association. All rights reserved.    */
 /* This program and the accompanying materials are made available under       */
@@ -43,21 +43,20 @@
 -- initialize our global variables
 txnserver = '192.168.0.104'
 txnport = 15776
+queues = .array~of('docs',,
+                   'fc11.i686',,   -- this is the same as the uname info
+                   'fc11.x86_64')  -- this is the same as the uname info
 
+-- create the queue manager and add the queues
 simq = .simq~new()
--- add some queues
-simq~add_queue('fedora11.i386')
-simq~add_queue('fedora11.x86_64')
-simq~add_queue('docs')
--- simq~add_queue('win.i386')
--- simq~add_queue('win.x86_64')
--- simq~add_queue('ubuntu804.i386')
+do qname over queues
+   simq~add_queue(qname)
+   end
 
--- now start the server
+-- now start the queue manager server
 simq~start_server(txnserver, txnport)
 return
 
 
 ::requires 'simq.cls'
-
 

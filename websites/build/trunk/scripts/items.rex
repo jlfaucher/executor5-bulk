@@ -40,7 +40,16 @@
 /*----------------------------------------------------------------------------*/
 
 
-msg = 'items fedora10.i386'
+use arg cmdline
+cmdline = cmdline~strip()
+if cmdline~length() = 0 then do
+   say 'Error: the qname must be passed as a command line option.'
+   say '   items.rex qname'
+   say 'Where qname might be fc12.i386 for example.'
+   return
+   end
+qname = cmdline
+msg = 'items' qname
 -- get a new stream
 s = .streamsocket~new('192.168.0.104', 15776)
 -- open the stream

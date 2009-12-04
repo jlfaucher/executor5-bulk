@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Description: This is the build daemon for the Fedora KVM huest.            */
+/* Description: This is the build daemon for any rpm-based KVM guest OS.      */
 /*                                                                            */
 /* Copyright (c) 2007-2010 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
@@ -41,8 +41,6 @@
 /*----------------------------------------------------------------------------*/
 
 
-
-
 -- initialize our global variables
 txnserver = '192.168.0.104'
 txnport = 15776
@@ -69,6 +67,7 @@ do forever
          end
       retc = s~lineout('pull' qname)
       request = s~linein()
+      parse var request vm email .
       call build_rpm qname, email
       s~close()
       end
@@ -89,7 +88,7 @@ do forever
 ::routine build_rpm
 use strict arg qname, email
 buildrpt = 'rpm.'qname'.buildrpt.txt'
-targetdir = '/mnt/buildorx/builds/interpreter-main'
+targetdir = '/imports/builds/interpreter-main'
 savedir = directory()
 -- create temp dir and checkout the source
 tempdir = './buildorx'
@@ -224,12 +223,8 @@ strm = .stream~new(file)
 strm~open('read')
 osstr = strm~linein()
 strm~close()
-p = osstr~lastpos('.')
-m = osstr~substr(p + 1)
-osstr = osstr~substr(1, p - 1)
-p = osstr~lastpos('.')
-os = osstr~substr(p + 1)
-qname = os'.'m
+if osstr~pos('.PAE') > 0 then osstr = osstr~substr(1, osstr~pos('.PAE') - 1)
+qname = osstr~substr(osstr~substr(1, osstr~lastpos('.') - 1)~lastpos('.') + 1)
 'rm' file
 return qname
 

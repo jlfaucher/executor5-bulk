@@ -156,6 +156,7 @@ strm~lineOut('')
 retc = strm~close()
 say 'Mailing notification.'
 'mail -s "Your ooRexx Build Is Complete" -r noreply@build.oorexx.org' addressee '<' filename
+'rm' filename
 return
 
 
@@ -181,9 +182,8 @@ strm~lineOut('The ooRexx Project Team')
 strm~lineOut('')
 retc = strm~close()
 say 'Mailing notification.'
-if windows() then 'p:\windows\common\blat262\full\blat notify.txt -to' ,
- addressee '-f buildorx@build.oorexx.org -server holmes4.com -u dashley -pw ashley'
-else 'mail -s "Your ooRexx Build Is Complete" -r noreply@build.oorexx.org' addressee '<' filename
+'mail -s "Your ooRexx Build Is Complete" -r noreply@build.oorexx.org' addressee '<' filename
+'rm' filename
 return
 
 

@@ -1,4 +1,4 @@
-#!/usr/bin/rexx
+#!/usr/bin/rexx                      
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Description: This is the build daemon for the Windows KVM guest OS.        */
@@ -39,9 +39,9 @@
 /* Author: W. David Ashley                                                    */
 /*                                                                            */
 /* Notes:                                                                     */
-/*    1. When this runs on Windows we need to avoid any RexxUtil functions    */
-/*       because they reside in RXAPI and that gets stopped and restarted     */
-/*       multiple times during the build process.                             */
+/*    1. On Windows we need to avoid any RexxUtil functions because they      */
+/*       reside in RXAPI and that gets stopped and restarted multiple times   */
+/*       during the build process.                                            */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
@@ -56,7 +56,7 @@ hostacct = 'dashley'
 builddir = 'c:\buildtemp'
 
 -- make sure our temp dir is empty
-'rmdir /S /Q c:\buildtemp'
+'rmdir /S /Q' builddir
 
 do forever
    -- see if we have anything to do
@@ -75,10 +75,9 @@ do forever
          -- Note: Do not use RexxUtil functions because rxapi will be killed!
          -- create temp dir and checkout the source
          'md' builddir
-         call directory builddir
          say 'Performing SVN checkout'
-         'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/'
-         call directory 'trunk'
+         'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/' builddir
+         call directory builddir'/trunk'
          -- build the exe
          call value 'SRC_DRV', 'c:', 'ENVIRONMENT'
          call value 'SRC_DIR', '\buildtemp\trunk', 'ENVIRONMENT'
@@ -137,7 +136,7 @@ return svnver
 
 setlatestdocs:
 -- Do not use SysFileTree here! RXAPI may not be running!
-'dir /aD /oN r:\docs > dirlist.txt'
+'dir /aD /oN' hostbuilds'\docs > dirlist.txt'
 strm = .stream~new('dirlist.txt')
 retc = strm~open('read')
 if retc <> 'READY:' then return 'unknown'
@@ -146,16 +145,16 @@ retc = strm~close()
 dirline = lines[lines~items() - 2]
 parse var dirline . . . . docdir .  -- this only works for WinXP
 if docdir = '' then do
-   parse var dirline . . . docdir .  -- this works for Win2k
+   parse var dirline . . . docdir . -- this works for Win2k
    end
 if docdir <> '' then do
-   call value 'DOC_LOCATION', 'r:\docs\'docdir, 'ENVIRONMENT'
+   call value 'DOC_LOCATION', hostbuilds'\docs\'docdir, 'ENVIRONMENT'
    end
 'del dirlist.txt'
-say 'The doc_location is r:\docs\'docdir
+say 'The doc_location is' hostbuilds'\docs\'docdir
 return
 
-interpretermain_notify: procedure expose windows
+interpretermain_notify: procedure
 use arg addressee, svnver, cmdfilename
 if addressee = '' then return
 if cmdfile = '' then return
@@ -172,27 +171,6 @@ strm~lineOut('')
 strm~lineOut('The build may or may not have completed successfully. The file')
 strm~lineOut('buildrpt.txt or Win32*.log contains the output of the build')
 strm~lineOut('process so you can look for error messages in it.')
-strm~lineOut('')
-strm~lineOut('Thank you for using the ooRexx Build Machine!')
-strm~lineOut('The ooRexx Project Team')
-strm~lineOut('')
-retc = strm~close()
-'c:\bin\blat notify.txt -to' addressee '-f noreply@build.oorexx.org -server holmes4.com -u dashley -pw wda123aa'
-'del c:\notify.txt'
-return
-
-error_notify: procedure expose windows
-use arg addressee
-if addressee = '' then return
-filename = 'c:\notify.txt'
-strm = .stream~new(filename)
-retc = strm~open('write')
-if retc <> 'READY:' then return ''
-strm~lineOut('')
-strm~lineOut('Do not reply to this email!')
-strm~lineOut('')
-strm~lineOut('The ooRexx build type specified on your request was invalid. Please')
-strm~lineOut('resubmit your request with the correct build type.')
 strm~lineOut('')
 strm~lineOut('Thank you for using the ooRexx Build Machine!')
 strm~lineOut('The ooRexx Project Team')

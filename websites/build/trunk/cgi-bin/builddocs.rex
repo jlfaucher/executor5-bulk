@@ -179,6 +179,6 @@ do i = 1 to wwwargs.0
 return ''
 
 
-::requires '/home/buildorx/website/cgi-bin/buildhtmlparts.cls'
-::requires 'streamsocket.cls'
+::requires '/home/dashley/website/trunk/cgi-bin/buildhtmlparts.cls'
+::requires '/home/dashley/website/trunk/cgi-bin/streamsocket.cls'
 

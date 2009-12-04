@@ -40,7 +40,7 @@
 /*----------------------------------------------------------------------------*/
 
 
-msg = 'queue win.i386 dashley@us.ibm.com'
+msg = 'queue fc11.i386 david.ashley.ibm@gmail.com'
 -- get a new stream
 s = .streamsocket~new('192.168.0.104', 15776)
 -- open the stream

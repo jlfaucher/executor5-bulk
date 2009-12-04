@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Description: Simple Internet Message Queue class.                          */
+/* Description: Simple Internet Message Queue class for the Build Server.     */
 /*                                                                            */
 /* Copyright (c) 2009-2010 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
@@ -62,27 +62,27 @@ expose queues
 use strict arg quename
 quename = quename~upper()
 -- if the queue already exists do NOT replace it!
-if queues~hasindex(quename) = 1 then return .true
+if queues~hasindex(quename) = 1 then return
 queues[quename] = .directory~new()
-return .false
+return
 
 ::method queue_msg private
 expose queues
 use strict arg quename, msg
 quename = quename~upper()
-if queues~hasindex(quename) = 0 then return .true
+if queues~hasindex(quename) = 0 then return 'Error: no such queue'
 -- create the iso timestamp in the form of yyyy-mm-ddThh:mm:ss.uuuuuu
 ts = date('S', date(), 'N', '-') || 'T' || time('L')
 q = queues[quename]
 q[ts] = msg
-return .false
+return 'Ok'
 
 ::method pull_msg private
 expose queues
 use strict arg quename
 quename = quename~upper()
-if queues~hasindex(quename) = 0 then return ''
-if queues[quename]~items() = 0 then return ''
+if queues~hasindex(quename) = 0 then return 'Error: no such queue'
+if queues[quename]~items() = 0 then return 'Error: no message available'
 arr = queues[quename]~allindexes()
 arr~sort()
 return queues[quename]~remove(arr[1]) -- get the message
@@ -91,8 +91,8 @@ return queues[quename]~remove(arr[1]) -- get the message
 expose queues
 use strict arg quename
 quename = quename~upper()
-if queues~hasindex(quename) = 0 then return ''
-if queues[quename]~items() = 0 then return ''
+if queues~hasindex(quename) = 0 then return 'Error: no such queue'
+if queues[quename]~items() = 0 then return 'Error: no message available'
 arr = queues[quename]~allindexes()
 arr~sort()
 que = queues[quename]
@@ -102,7 +102,7 @@ return que[arr[1]] -- get the message
 expose queues
 use strict arg quename
 quename = quename~upper()
-if queues~hasindex(quename) = 0 then return ''
+if queues~hasindex(quename) = 0 then return 'Error: no such queue'
 return queues[quename]~items()
 
 ::method start_server
