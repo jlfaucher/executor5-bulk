@@ -57,7 +57,7 @@ SGML_FILES = rxsock.sgml \
      smtp.sgml \
      mimeclass.sgml
 
-IMAGE_FILES = oorexx.jpg \
+HTML_IMAGE_FILES = oorexx.jpg \
  	      docbook-1.png \
 	      new_rexxla.jpg \
 	      HostInfo.png \
@@ -68,6 +68,18 @@ IMAGE_FILES = oorexx.jpg \
 	      SMTPMsgClass.png \
 	      MimePart.png \
 	      MimeMultiPart.png
+
+PDF_IMAGE_FILES = oorexx.jpg \
+ 	      docbook-1.png \
+	      new_rexxla.jpg \
+	      HostInfo.pdf \
+	      InetAddress.pdf \
+	      SocketClass.pdf \
+	      StreamSocketClass.pdf \
+	      SMTPClass.pdf \
+	      SMTPMsgClass.pdf \
+	      MimePart.pdf \
+	      MimeMultiPart.pdf
 
 JADETEXFMT  = ./pdfjadetex.fmt
 HYPERREFCFG = ./hyperref.cfg
@@ -82,10 +94,10 @@ pdf: rxsock.pdf
 
 html: rxsock-html.zip
 
-rxsock.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
+rxsock.pdf: $(PDF_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
 	docbook2pdf -d ../shared/oorexx.print.dsl rxsock.sgml
 
-book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
+book1.htm: $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
 	docbook2html -d ../shared/oorexx.html.dsl rxsock.sgml
 
 rxsock-html.zip: book1.htm
@@ -107,6 +119,6 @@ svnrev.tmp:
 
 
 clean:
-	rm -f *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip \
+	rm -f *.log *.aux *.out *.fmt rxsock.pdf genindex.sgml *.htm *.zip \
            HTML.index *.tmp
 

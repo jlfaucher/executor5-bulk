@@ -43,7 +43,11 @@
 	(normalize "author")
 	(normalize "editor")))
 
+(define %graphic-default-extension% 
+  ;; Default extension for graphic FILEREFs
+  "png")
 
+  
 </style-specification-body>
 </style-specification>
 

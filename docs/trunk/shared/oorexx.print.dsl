@@ -124,6 +124,13 @@
        font-size: 8pt
        (process-node-list svnrev)))))
 
+(define %graphic-default-extension% 
+  ;; Default extension for graphic FILEREFs
+  "pdf")
+  
+(define preferred-mediaobject-extensions
+  (list "pdf" "eps" "ps" "jpg" "jpeg" "png"))
+
 
 </style-specification-body>
 </style-specification>
