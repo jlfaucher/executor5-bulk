@@ -89,7 +89,7 @@ book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
 	docbook2html -d ../shared/oorexx.html.dsl rxsock.sgml
 
 rxsock-html.zip: book1.htm
-	zip rxsock-html *.htm *.jpg
+	zip rxsock-html *.htm *.jpg *.png
 
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini

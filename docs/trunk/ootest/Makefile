@@ -87,7 +87,7 @@ book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) ootest_index.sgml svnrev.tmp
 	docbook2html -d ../shared/oorexx.html.dsl ootest.sgml
 
 ootest-html.zip: book1.htm
-	zip ootest-html *.htm *.jpg
+	zip ootest-html *.htm *.jpg *.png
 
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini

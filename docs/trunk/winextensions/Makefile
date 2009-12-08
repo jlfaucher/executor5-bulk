@@ -83,7 +83,7 @@ book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
 	docbook2html -d ../shared/oorexx.html.dsl winextensions.sgml
 
 winextensions-html.zip: book1.htm
-	zip winextensions-html *.htm *.jpg
+	zip winextensions-html *.htm *.jpg *.png
 
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini

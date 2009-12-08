@@ -77,7 +77,7 @@ book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
 	docbook2html -d ../shared/oorexx.html.dsl rxmath.sgml
 
 rxmath-html.zip: book1.htm
-	zip rxmath-html *.htm *.jpg
+	zip rxmath-html *.htm *.jpg *.png
 
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
