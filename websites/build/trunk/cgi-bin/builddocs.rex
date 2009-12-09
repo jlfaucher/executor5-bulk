@@ -53,9 +53,8 @@ else if request_method = 'POST' then do
       end
    end
 else nop
-vm = get_postvar('vm')
-target = get_postvar('target')
-addressee = get_postvar('addressee')
+qname = get_postvar('qname')
+addressee = get_postvar('email')
 
 -- set up the defaults
 title = 'Build ooRexx Documentation'
@@ -70,7 +69,7 @@ say '             <b>'title'</b>'
 say '          </div>   '
 say
 say '            <h2>Welcome</h2>'
-retc = start_build(vm, target, addressee)
+retc = start_build(qname,addressee)
 if retc = 0 then do
    say '   <p>The documentation will be built by a background process.'
    say '      It should be ready within 15 minutes. The output of the build'
@@ -150,8 +149,8 @@ return
 
 
 start_build: procedure
-use arg vm, target, addressee
-msg = 'queue' vm addressee -- note that the target is ignored (always build everything)
+use arg qname, addressee
+msg = 'queue' qname date('S')':'time('N') addressee
 -- get a new stream
 s = .streamsocket~new('192.168.0.104', 15776)
 -- open the stream

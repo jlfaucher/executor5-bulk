@@ -53,9 +53,8 @@ else if request_method = 'POST' then do
       end
    end
 else nop
-vm = get_postvar('vm')
-target = get_postvar('target')
-addressee = get_postvar('addressee')
+qname = get_postvar('qname')
+addressee = get_postvar('email')
 
 -- set up the defaults
 title = 'Build ooRexx Interpreter Main'
@@ -156,8 +155,8 @@ return
 
 
 start_build: procedure
-use arg vm, target, addressee
-if vm = 'winxp-build' | vm = 'ubuntu704-build' then do
+use arg qname, addressee
+if qname = 'winxp-build' | vm = 'ubuntu704-build' then do
    cmdfile = '/home/dashley/website/trunk/scripts/cmds/'vm
    if SysIsFile(cmdfile) then return 1
    strm = .stream~new(cmdfile)
@@ -168,7 +167,7 @@ if vm = 'winxp-build' | vm = 'ubuntu704-build' then do
    retc = strm~close()
    end
 else do
-   msg = 'queue' vm addressee
+   msg = 'queue' qname date('S')':'time('N') addressee
    -- get a new stream
    s = .streamsocket~new('192.168.0.104', 15776)
    -- open the stream

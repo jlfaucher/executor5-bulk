@@ -74,8 +74,9 @@ do forever
       when cmd = 'interpreter-main' then do
          -- Note: Do not use RexxUtil functions because rxapi will be killed!
          -- create temp dir and checkout the source
-         'md' builddir
+         call log 'Starting build.'
          say 'Performing SVN checkout'
+         'md' builddir
          'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/' builddir
          call directory builddir'/trunk'
          -- build the exe
@@ -104,6 +105,7 @@ do forever
          -- be sure to remove the command file on the host
          'killer rxapi' -- this ensures we can remove everything in \buildtemp
          'del' cmdfile
+         call log 'Finished build.'
          end
       otherwise nop
       end
@@ -176,7 +178,24 @@ strm~lineOut('Thank you for using the ooRexx Build Machine!')
 strm~lineOut('The ooRexx Project Team')
 strm~lineOut('')
 retc = strm~close()
-'c:\bin\blat notify.txt -to' addressee '-f noreply@build.oorexx.org -server holmes4.com -u dashley -pw wda123aa'
+call log 'Mailing notification.'
+'c:\bin\blat notify.txt -to' addressee '-f noreply@build.oorexx.org -server 192.168.0.101 -u dashley -pw wda123aa'
 'del c:\notify.txt'
+return
+
+
+/*----------------------------------------------------------------------------*/
+/* log                                                                        */
+/*----------------------------------------------------------------------------*/
+
+::routine log
+-- log messages
+use strict arg msg
+strm = .stream~new('c:\BuildWinEXEi386.log')
+strm~open('write append')
+msg = date('S') time('N') msg
+say msg
+strm~lineout(msg)
+strm~close()
 return
 

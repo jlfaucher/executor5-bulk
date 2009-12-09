@@ -45,13 +45,18 @@
 txnserver = '192.168.0.104'
 txnport = 15776
 qname = getqname()
+lockfile = '/tmp/ooRexxRPMBuildLockFile'
 
 -- see if there is anything to do
 do forever
+
+-- if SysIsFile(lockfile) = 1 then return
+-- else call touch lockfile
+
    s = .streamsocket~new(txnserver, txnport)
    retc = s~open()
    if retc <> 'READY:'then do
-      say 'Error' retc 'connecting to' txnserver 'server stream.'
+      call log 'Error' retc 'connecting to' txnserver 'server stream.'
       return
       end
    retc = s~lineout('items' qname)
@@ -62,12 +67,12 @@ do forever
       s = .streamsocket~new(txnserver, txnport)
       retc = s~open()
       if retc <> 'READY:'then do
-         say 'Error' retc 'connecting to' txnserver 'server stream.'
+         call log 'Error' retc 'opening queue at' txnserver 'server.'
          return
          end
       retc = s~lineout('pull' qname)
       request = s~linein()
-      parse var request vm email .
+      parse var request timestamp email .
       call build_rpm qname, email
       s~close()
       end
@@ -76,6 +81,9 @@ do forever
       call syssleep 30
       end
    end
+
+-- call SysFileDelete lockfile
+return
 
 
 ::requires 'streamsocket.cls'
@@ -87,6 +95,7 @@ do forever
 
 ::routine build_rpm
 use strict arg qname, email
+call log 'Satrting build.'
 buildrpt = 'rpm.'qname'.buildrpt.txt'
 targetdir = '/imports/builds/interpreter-main'
 savedir = directory()
@@ -119,11 +128,13 @@ if \sysisfile(newdir'/'buildrpt) then do
    else nop -- must not be a supported rpm
    'cp' buildrpt newdir
    end
+else call log 'This was a duplicate build request.'
 -- notify the user
 call interpretermain_notify email, svnver, buildrpt
 -- remove everything
 call directory savedir
 'rm -rf' tempdir
+call log 'Finished build.'
 return
 
 
@@ -152,34 +163,7 @@ strm~lineOut('Thank you for using the ooRexx Build Machine!')
 strm~lineOut('The ooRexx Project Team')
 strm~lineOut('')
 retc = strm~close()
-say 'Mailing notification.'
-'mail -s "Your ooRexx Build Is Complete" -r noreply@build.oorexx.org' addressee '<' filename
-'rm' filename
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* error_notify                                                               */
-/*----------------------------------------------------------------------------*/
-
-::routine error_notify
-use arg addressee
-if addressee = '' then return
-filename = './notify.txt'
-strm = .stream~new(filename)
-retc = strm~open('write')
-if retc <> 'READY:' then return ''
-strm~lineOut('')
-strm~lineOut('Do not reply to this email!')
-strm~lineOut('')
-strm~lineOut('The ooRexx build type specified on your request was invalid. Please')
-strm~lineOut('resubmit your request with the correct build type.')
-strm~lineOut('')
-strm~lineOut('Thank you for using the ooRexx Build Machine!')
-strm~lineOut('The ooRexx Project Team')
-strm~lineOut('')
-retc = strm~close()
-say 'Mailing notification.'
+call log 'Mailing notification.'
 'mail -s "Your ooRexx Build Is Complete" -r noreply@build.oorexx.org' addressee '<' filename
 'rm' filename
 return
@@ -227,4 +211,32 @@ if osstr~pos('.PAE') > 0 then osstr = osstr~substr(1, osstr~pos('.PAE') - 1)
 qname = osstr~substr(osstr~substr(1, osstr~lastpos('.') - 1)~lastpos('.') + 1)
 'rm' file
 return qname
+
+
+/*----------------------------------------------------------------------------*/
+/* touch                                                                      */
+/*----------------------------------------------------------------------------*/
+
+::routine touch
+use strict arg fname
+strm = .stream~new(fname)
+strm~open('write replace')
+strm~close()
+return
+
+
+/*----------------------------------------------------------------------------*/
+/* log                                                                        */
+/*----------------------------------------------------------------------------*/
+
+::routine log
+-- log messages
+use strict arg msg
+strm = .stream~new('/home/dashley/BuildRPM.log')
+strm~open('write append')
+msg = date('S') time('N') msg
+say msg
+strm~lineout(msg)
+strm~close()
+return
 
