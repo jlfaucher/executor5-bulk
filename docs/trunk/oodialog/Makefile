@@ -92,8 +92,18 @@ SGML_FILES = advcntlc.sgml \
 
 
 
-IMAGE_FILES = rxou0s12.jpg \
+HTML_IMAGE_FILES = rxou0s12.jpg \
               rxou0s17.jpg \
+	      rxou0s18.jpg \
+	      rxou0s19.jpg \
+	      rxou0s20.jpg \
+	      rxou0s24.jpg \
+	      rxou0s25.jpg \
+ 	      docbook-1.png \
+	      oorexx.jpg
+
+PDF_IMAGE_FILES = rxou0s12.jpg \
+          rxou0s17.jpg \
 	      rxou0s18.jpg \
 	      rxou0s19.jpg \
 	      rxou0s20.jpg \
@@ -115,10 +125,10 @@ pdf: oodialog.pdf
 
 html: oodialog-html.zip
 
-oodialog.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
+oodialog.pdf: $(PDF_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
 	docbook2pdf -d ../shared/oorexx.print.dsl oodialog.sgml
 
-book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
+book1.htm: $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
 	docbook2html -d ../shared/oorexx.html.dsl oodialog.sgml
 
 oodialog-html.zip: book1.htm
@@ -138,5 +148,5 @@ svnrev.tmp:
 
 
 clean:
-	rm -f *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip HTML.index *.tmp
+	rm -f *.log *.aux *.out *.fmt oodialog.pdf genindex.sgml *.htm *.zip HTML.index *.tmp
 
