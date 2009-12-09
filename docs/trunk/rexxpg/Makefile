@@ -65,7 +65,7 @@ SGML_FILES = classes.sgml \
 	     ../shared/gethelp.sgml \
 	     ../shared/CPLv1.0.sgml
 
-IMAGE_FILES = ReportObject.png \
+HTML_IMAGE_FILES = ReportObject.png \
 	      BallObject.png \
 	      BallObjectData.png \
 	      EncapsulatedObject.png \
@@ -95,6 +95,36 @@ IMAGE_FILES = ReportObject.png \
  	      docbook-1.png \
 	      new_rexxla.jpg
 
+PDF_IMAGE_FILES = ReportObject.pdf \
+	      BallObject.pdf \
+	      BallObjectData.pdf \
+	      EncapsulatedObject.pdf \
+	      SimpleClass.pdf \
+	      IconClass.pdf \
+	      IconClassInstances.pdf \
+	      Subclasses.pdf \
+	      ScreenObject.pdf \
+	      MultipleInheritance.pdf \
+	      Modules.pdf \
+	      BillingApplication.pdf \
+	      SubclassInheritance.pdf \
+	      InstanceMethods.pdf \
+	      PartClass.pdf \
+	      rxoq0s05.pdf \
+	      rxoq0s06.jpg \
+	      rxoq0s07.jpg \
+	      rxoq0s09.jpg \
+	      ooRexxClasses1.png \
+	      ooRexxClasses2.png \
+	      ooRexxClasses3.png \
+	      ooRexxClasses4.png \
+	      ooRexxClasses5.png \
+	      ooRexxClasses6.png \
+	      ooRexxClasses7.png \
+ 	      oorexx.jpg \
+ 	      docbook-1.png \
+	      new_rexxla.jpg
+
 JADETEXFMT  = ./pdfjadetex.fmt
 HYPERREFCFG = ./hyperref.cfg
 TEXMF       = /usr/share/texmf
@@ -108,10 +138,10 @@ pdf: rexxpg.pdf
 
 html: rexxpg-html.zip
 
-rexxpg.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
+rexxpg.pdf: $(PDF_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
 	docbook2pdf -d ../shared/oorexx.print.dsl rexxpg.sgml
 
-book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
+book1.htm: $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
 	docbook2html -d ../shared/oorexx.html.dsl rexxpg.sgml
 
 rexxpg-html.zip: book1.htm
@@ -133,6 +163,6 @@ svnrev.tmp:
 
 
 clean:
-	rm -f *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip \
+	rm -f *.log *.aux *.out *.fmt rexxpg.pdf genindex.sgml *.htm *.zip \
            HTML.index *.tmp
 
