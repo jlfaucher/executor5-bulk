@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Description: Simple Internet Message Queue server.                         */
+/* Description: Send a test message to the simq server.                       */
 /*                                                                            */
 /* Copyright (c) 2009-2010 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
@@ -40,7 +40,7 @@
 /*----------------------------------------------------------------------------*/
 
 
-msg = 'queue fc11.i386 david.ashley.ibm@gmail.com'
+msg = 'queue fc12.i686 20091212:00:10:00 david.ashley.ibm@gmail.com'
 -- get a new stream
 s = .streamsocket~new('192.168.0.104', 15776)
 -- open the stream

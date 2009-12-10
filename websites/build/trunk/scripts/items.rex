@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Description: Simple Internet Message Queue server.                         */
+/* Description: Query items in a simq queue.                                  */
 /*                                                                            */
 /* Copyright (c) 2009-2010 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
@@ -45,7 +45,7 @@ cmdline = cmdline~strip()
 if cmdline~length() = 0 then do
    say 'Error: the qname must be passed as a command line option.'
    say '   items.rex qname'
-   say 'Where qname might be fc12.i386 for example.'
+   say 'Where qname might be fc12.i686 for example.'
    return
    end
 qname = cmdline

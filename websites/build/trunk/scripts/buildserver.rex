@@ -45,7 +45,8 @@ txnserver = '192.168.0.104'
 txnport = 15776
 queues = .array~of('docs',,
                    'fc11.i686',,   -- this is the same as the uname info
-                   'fc11.x86_64')  -- this is the same as the uname info
+                   'fc12.i686',,   -- this is the same as the uname info
+                   'fc12.x86_64')  -- this is the same as the uname info
 
 -- create the queue manager and add the queues
 simq = .simq~new()
