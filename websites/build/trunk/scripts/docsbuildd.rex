@@ -46,43 +46,38 @@ txnserver = '192.168.0.104'
 txnport = 15776
 qname = 'docs'
 lockfile = '/tmp/ooRexxDocsBuildLockFile'
+home = '/home/dashley'
 
--- see if there is anything to do
-do forever
+call directory home
 
--- if SysIsFile(lockfile) = 1 then return
--- else call touch lockfile
+if SysIsFile(lockfile) = 1 then return
+else call touch lockfile
 
+s = .streamsocket~new(txnserver, txnport)
+retc = s~open()
+if retc <> 'READY:'then do
+   call log 'Error' retc 'connecting to' txnserver 'server stream.'
+   return
+   end
+retc = s~lineout('items' qname)
+items = s~linein()
+s~close()
+if items > 0 then do
+   -- we found a request
    s = .streamsocket~new(txnserver, txnport)
    retc = s~open()
    if retc <> 'READY:'then do
-      call log 'Error' retc 'connecting to' txnserver 'server stream.'
+      call log 'Error' retc 'opening queue at' txnserver 'server.'
       return
       end
-   retc = s~lineout('items' qname)
-   items = s~linein()
+   retc = s~lineout('pull' qname)
+   request = s~linein()
+   parse var request timestamp email .
+   call build_docs email
    s~close()
-   if items > 0 then do
-      -- we found a request
-      s = .streamsocket~new(txnserver, txnport)
-      retc = s~open()
-      if retc <> 'READY:'then do
-         call log 'Error' retc 'opening queue at' txnserver 'server.'
-         return
-         end
-      retc = s~lineout('pull' qname)
-      request = s~linein()
-      parse var request timestamp email .
-      call build_docs email
-      s~close()
-      end
-   else do
-      say date() time() 'Nothing to do, sleeping for 30 seconds.'
-      call syssleep 30
-      end
    end
 
--- call SysFileDelete lockfile
+call SysFileDelete lockfile
 return
 
 
@@ -224,7 +219,4 @@ say msg
 strm~lineout(msg)
 strm~close()
 return
-
-
-::requires 'streamsocket.cls'
 
