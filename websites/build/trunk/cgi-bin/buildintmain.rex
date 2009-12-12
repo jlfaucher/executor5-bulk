@@ -156,7 +156,7 @@ return
 
 start_build: procedure
 use arg qname, addressee
-if qname = 'winxp-build' | vm = 'ubuntu704-build' then do
+if qname = 'winxp-build' then do
    cmdfile = '/home/dashley/website/trunk/scripts/cmds/'vm
    if SysIsFile(cmdfile) then return 1
    strm = .stream~new(cmdfile)
