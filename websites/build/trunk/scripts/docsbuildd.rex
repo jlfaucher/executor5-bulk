@@ -225,3 +225,6 @@ strm~lineout(msg)
 strm~close()
 return
 
+
+::requires 'streamsocket.cls'
+

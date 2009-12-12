@@ -40,7 +40,7 @@
 /*----------------------------------------------------------------------------*/
 
 
-msg = 'queue fc12.i686 20091212:00:10:00 david.ashley.ibm@gmail.com'
+msg = 'queue fc12.x86_64 20091212:00:10:00 david.ashley.ibm@gmail.com'
 -- get a new stream
 s = .streamsocket~new('192.168.0.104', 15776)
 -- open the stream
