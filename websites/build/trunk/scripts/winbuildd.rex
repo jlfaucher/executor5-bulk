@@ -170,7 +170,7 @@ strm~lineOut('The ooRexx Project Team')
 strm~lineOut('')
 retc = strm~close()
 call log 'Mailing notification.'
-'c:\bin\blat notify.txt -to' addressee '-f noreply@build.oorexx.org -server 192.168.0.101 -u dashley -pw wda123aa'
+'c:\bin\blat' filename '-to' addressee '-f noreply@build.oorexx.org -server 192.168.0.101 -u dashley -pw wda123aa'
 'del c:\notify.txt'
 return
 
