@@ -60,8 +60,8 @@ do forever
    -- Note: Do not use RexxUtil functions because rxapi will be killed!
    -- see if we have anything to do
    if stream(cmdfile, 'C', 'QUERY EXISTS') = '' then do
-      say date('S') time('N') 'Nothing to do, sleeping for 30 seconds.'
-      'ping -n 31 127.0.0.1 > NUL'
+      say date('S') time('N') 'Nothing to do, sleeping for 60 seconds.'
+      'ping -n 61 127.0.0.1 > NUL'
       iterate
       end
    cmdline = getline(cmdfile)
@@ -75,7 +75,7 @@ do forever
    call directory builddir'/trunk'
    -- build the exe
    call value 'SRC_DRV', 'c:', 'ENVIRONMENT'
-   call value 'SRC_DIR', '\buildtemp\trunk', 'ENVIRONMENT'
+   call value 'SRC_DIR', '\buildtemp', 'ENVIRONMENT'
    call setlatestdocs
    svnver = getsvnrevision()
    say 'Building ooRexx'
@@ -100,7 +100,7 @@ do forever
    'killer rxapi' -- this ensures we can remove everything in \buildtemp
    'del' cmdfile
    call log 'Finished build.'
-   'ping -n 31 127.0.0.1 > NUL'
+   'ping -n 61 127.0.0.1 > NUL'
    end
 return
 
