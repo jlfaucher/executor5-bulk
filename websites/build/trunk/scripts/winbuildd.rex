@@ -49,7 +49,6 @@
 cmdfilename = 'winxp.i386'
 hostbuilds = 'r:'
 cmdfile = 's:\cmds\'cmdfilename
-cmdlocal = 'c:\cmd.txt'
 host = '192.168.0.104'
 hostacct = 'dashley'
 builddir = 'c:\buildtemp'
@@ -58,21 +57,19 @@ builddir = 'c:\buildtemp'
 'rmdir /S /Q' builddir
 
 do forever
+   -- Note: Do not use RexxUtil functions because rxapi will be killed!
    -- see if we have anything to do
-   'copy' cmdfile cmdlocal
-   if stream(cmdlocal, 'C', 'QUERY EXISTS') = '' then do
-      say date() time('N') 'Nothing to do, sleeping for 30 seconds.'
+   if stream(cmdfile, 'C', 'QUERY EXISTS') = '' then do
+      say date('S') time('N') 'Nothing to do, sleeping for 30 seconds.'
       'ping -n 31 127.0.0.1 > NUL'
       iterate
       end
-   cmdline = getline(cmdlocal)
+   cmdline = getline(cmdfile)
    parse var cmdline cgidate addressee .
-   'del' cmdlocal
    -- perform the command
-   -- Note: Do not use RexxUtil functions because rxapi will be killed!
-   -- create temp dir and checkout the source
    call log 'Starting build.'
    say 'Performing SVN checkout'
+   -- create temp dir and checkout the source
    'md' builddir
    'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/' builddir
    call directory builddir'/trunk'
