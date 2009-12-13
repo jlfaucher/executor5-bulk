@@ -46,7 +46,7 @@
 
 
 -- initialization
-cmdfilename = 'winxp-build'
+cmdfilename = 'winxp.i386'
 hostbuilds = 'r:'
 cmdfile = 's:\cmds\'cmdfilename
 cmdlocal = 'c:\cmd.txt'
@@ -66,7 +66,7 @@ do forever
       iterate
       end
    cmdline = getline(cmdlocal)
-   parse var cmdline cmd target addressee .
+   parse var cmdline cgidate addressee .
    'del' cmdlocal
    -- perform the command
    select

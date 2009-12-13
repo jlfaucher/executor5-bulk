@@ -165,13 +165,13 @@ return
 
 start_build: procedure
 use arg qname, addressee
-if qname = 'winxp-build' then do
-   cmdfile = '/home/dashley/website/trunk/scripts/cmds/'vm
+if qname = 'winxp.i386' then do
+   cmdfile = '/home/dashley/website/trunk/scripts/cmds/'qname
    if SysIsFile(cmdfile) then return 1
    strm = .stream~new(cmdfile)
    retc = strm~open('write')
    if retc <> 'READY:' then return 2
-   cmd = ('interpreter-main' target addressee)~strip()
+   cmd = (date('S')'-'time('N') addressee)~strip()
    strm~lineOut(cmd)
    retc = strm~close()
    end
