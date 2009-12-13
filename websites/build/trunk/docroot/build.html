@@ -102,9 +102,9 @@
                   <td align="left">
                      Select the system for the build:<br />
                      <select name="qname">
-                        <option value="fc11.i686" selected="1">Fedora 11 i586 RPM</option>
+                        <option value="fc11.i686" selected="1">Fedora 11 i386 RPM</option>
+                        <option value="fc12.i686">Fedora 12 i386 RPM</option>
                         <option value="fc12.x86_64">Fedora 12 x86_64 RPM</option>
-                        <option value="fc12.i686">Fedora 12 i586 RPM</option>
 <!--                        <option value="ubuntu704-build">Ubuntu 7.04 i386 DEB</option>
                        <option value="winxp-build">Windows XP i386 EXE</option>
 -->                     </select>
@@ -169,8 +169,11 @@
                     complete may be tagged by your email system as spam. This because the
                     system that sends the email is not the one specified in the email's return
                     address.</li>
+                <li>All builds are performed from the SourceForge Subversion repository.
+                    The interpreter is built from the repository /svnroot/oorexx/main/trunk path.
+                    The docs are built from the repository /svnroot/oorexx/docs/trunk path.</li>
                 <li>All builds are performed by multiple Linux KVMs. Each virtual machine checks
-                    every one minute to see if there is a build to perform.
+                    every one minute to see if there is a build to perform.</li>
             </ol>
             <br />
             <br />

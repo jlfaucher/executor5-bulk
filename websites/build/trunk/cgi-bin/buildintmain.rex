@@ -41,6 +41,9 @@
 /*----------------------------------------------------------------------------*/
 
 
+-- globals
+debug = 0
+
 -- get the CGI variables
 request_method = value('REQUEST_METHOD', , 'ENVIRONMENT')
 content_length = value('CONTENT_LENGTH', , 'ENVIRONMENT')
@@ -69,7 +72,7 @@ say '             <b>'title'</b>'
 say '          </div>   '
 say
 say '            <h2>Welcome</h2>'
-retc = start_build(vm, target, addressee)
+retc = start_build(qname, addressee)
 if retc = 0 then do
    say '   <p>The interpreter will be built by a background process.'
    say '      It should be ready within 15 minutes. The output of the build'
@@ -95,6 +98,12 @@ else do
    end
 say '   <p>The current time at the server is' date() time('N') '.</p>'
 say '            <br />'
+if debug then do
+   say '<hr>'
+   say '<h2>Debug Information</h2'
+   say '<p>qname =' qname
+   say '<br />addressee =' addressee
+   end
 say '            <br />'
 say '            <br />'
 say '            <br />'

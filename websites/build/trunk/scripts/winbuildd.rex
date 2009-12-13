@@ -1,4 +1,3 @@
-#!/usr/bin/rexx                      
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Description: This is the build daemon for the Windows KVM guest OS.        */

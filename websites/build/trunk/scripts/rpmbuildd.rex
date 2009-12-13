@@ -50,7 +50,10 @@ home = '/home/dashley'
 
 call directory home
 
-if SysIsFile(lockfile) = 1 then return
+if SysIsFile(lockfile) = 1 then do
+   say 'Build already running.'
+   return
+   end
 else call touch lockfile
 
 s = .streamsocket~new(txnserver, txnport)
@@ -64,6 +67,7 @@ items = s~linein()
 s~close()
 if items > 0 then do
    -- we found a request
+   say 'Found a request.'
    s = .streamsocket~new(txnserver, txnport)
    retc = s~open()
    if retc <> 'READY:'then do
@@ -72,9 +76,9 @@ if items > 0 then do
       end
    retc = s~lineout('pull' qname)
    request = s~linein()
+   s~close()
    parse var request timestamp email .
    call build_rpm qname, email
-   s~close()
    end
 
 call SysFileDelete lockfile
@@ -91,6 +95,7 @@ return
 ::routine build_rpm
 use strict arg qname, email
 call log 'Starting build.'
+qname = qname~changestr('i686', 'i586')
 buildrpt = 'rpm.'qname'.buildrpt.txt'
 targetdir = '/imports/builds/interpreter-main'
 savedir = directory()

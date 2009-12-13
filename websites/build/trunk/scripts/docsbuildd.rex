@@ -72,9 +72,9 @@ if items > 0 then do
       end
    retc = s~lineout('pull' qname)
    request = s~linein()
+   s~close()
    parse var request timestamp email .
    call build_docs email
-   s~close()
    end
 
 call SysFileDelete lockfile

@@ -81,16 +81,10 @@ if retc = 0 then do
       say '      the build.</p'
       end
    end
-else if retc = 1 then do
+else do
    say '   <p>The background process is currently busy performing a build.</p>'
    end
-else do
-   say '   <p>The build is either finished or an unknown error has occured.</p>'
-   say '   <p>If the build is finished then the output of the build'
-   say '      will be available in a subdirectory off of'
-   say '      <a href="/builds/docs">this location</a>.'
-   end
-say '   <p>The current time at the server is' date() time('N') '.</p>'
+say '   <p>The current time at the server is' date('S') time('N') '.</p>'
 say '<br />'
 say '<br />'
 say '<br />'
