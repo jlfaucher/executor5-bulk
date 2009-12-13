@@ -72,7 +72,7 @@ do forever
    -- create temp dir and checkout the source
    'md' builddir
    'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/' builddir
-   call directory builddir'/trunk'
+   call directory builddir
    -- build the exe
    call value 'SRC_DRV', 'c:', 'ENVIRONMENT'
    call value 'SRC_DIR', '\buildtemp', 'ENVIRONMENT'
