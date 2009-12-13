@@ -69,45 +69,40 @@ do forever
    parse var cmdline cgidate addressee .
    'del' cmdlocal
    -- perform the command
-   select
-      when cmd = 'interpreter-main' then do
-         -- Note: Do not use RexxUtil functions because rxapi will be killed!
-         -- create temp dir and checkout the source
-         call log 'Starting build.'
-         say 'Performing SVN checkout'
-         'md' builddir
-         'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/' builddir
-         call directory builddir'/trunk'
-         -- build the exe
-         call value 'SRC_DRV', 'c:', 'ENVIRONMENT'
-         call value 'SRC_DIR', '\buildtemp\trunk', 'ENVIRONMENT'
-         call setlatestdocs
-         svnver = getsvnrevision()
-         say 'Building ooRexx'
-         'makeorx.bat BOTH PACKAGE'
-         -- copy the results to the host
-         say 'Copying build output files to the server'
-         newdir = hostbuilds'\interpreter-main\'svnver
-         'md' newdir
-         newdir = newdir'\'cmdfilename
-         'md' newdir
-         'copy ooRexx*.exe' newdir
-         'copy Win32Rel\Win32Rel.log' newdir'\Win32RelLog.txt'
-         'copy Win32Dbg\Win32Dbg.log' newdir'\Win32DbgLog.txt'
-         -- notify the user
-         say 'Sending email'
-         call interpretermain_notify addressee, svnver, cmdfilename
-         -- remove everything
-         say 'Cleanup'
-         call directory 'c:\'
-         'rmdir /S /Q' builddir
-         -- be sure to remove the command file on the host
-         'killer rxapi' -- this ensures we can remove everything in \buildtemp
-         'del' cmdfile
-         call log 'Finished build.'
-         end
-      otherwise nop
-      end
+   -- Note: Do not use RexxUtil functions because rxapi will be killed!
+   -- create temp dir and checkout the source
+   call log 'Starting build.'
+   say 'Performing SVN checkout'
+   'md' builddir
+   'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/' builddir
+   call directory builddir'/trunk'
+   -- build the exe
+   call value 'SRC_DRV', 'c:', 'ENVIRONMENT'
+   call value 'SRC_DIR', '\buildtemp\trunk', 'ENVIRONMENT'
+   call setlatestdocs
+   svnver = getsvnrevision()
+   say 'Building ooRexx'
+   'makeorx.bat BOTH PACKAGE'
+   -- copy the results to the host
+   say 'Copying build output files to the server'
+   newdir = hostbuilds'\interpreter-main\'svnver
+   'md' newdir
+   newdir = newdir'\'cmdfilename
+   'md' newdir
+   'copy ooRexx*.exe' newdir
+   'copy Win32Rel\Win32Rel.log' newdir'\Win32RelLog.txt'
+   'copy Win32Dbg\Win32Dbg.log' newdir'\Win32DbgLog.txt'
+   -- notify the user
+   say 'Sending email'
+   call interpretermain_notify addressee, svnver, cmdfilename
+   -- remove everything
+   say 'Cleanup'
+   call directory 'c:\'
+   'rmdir /S /Q' builddir
+   -- be sure to remove the command file on the host
+   'killer rxapi' -- this ensures we can remove everything in \buildtemp
+   'del' cmdfile
+   call log 'Finished build.'
    'ping -n 31 127.0.0.1 > NUL'
    end
 return
