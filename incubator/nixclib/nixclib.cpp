@@ -927,8 +927,9 @@ RexxRoutine1(RexxObjectPtr,
 
     w = p.we_wordv;
     for (int i = 0; i < p.we_wordc; i++) {
-       context->ArrayAppendString(arr, *w, strlen(*w));
+       context->ArrayAppendString(arr, w[i], strlen(w[i]));
     }
+    wordfree(&p);
     return (RexxObjectPtr)arr;
 }
 

@@ -134,6 +134,12 @@ else say 'We do not have write permission.'
 if SysAccess(file, 4) = 0 then say 'We have read permission.'
 else say 'We do not have read permission.'
 
+say 'Calling SysWordexp (~/*)'
+arr = SysWordexp('~/*')
+do ent over arr
+   say ent
+   end
+
 return
 
 ::requires 'nixclib' library
