@@ -59,6 +59,8 @@
 #include <pwd.h>
 #include <grp.h>
 #include <time.h>
+#include <netdb.h>
+#include <wordexp.h>
 #include <oorexxapi.h>
 
 

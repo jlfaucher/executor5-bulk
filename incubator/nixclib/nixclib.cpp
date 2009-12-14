@@ -822,6 +822,116 @@ RexxRoutine2(int,
     return euidaccess(file, option);
 }
 
+/**
+ * Method:        SysGetservbyname
+ *
+ * Return service information from the services file.
+ *
+ * @param name    The service name.
+ *
+ * @param proto   The service protocol.
+ *
+ * @param option  The option string.
+ *
+ * @return        Option information
+ */
+RexxRoutine3(RexxObjectPtr,
+             SysGetservbyname,
+             CSTRING, name,
+             CSTRING, proto,
+             CSTRING, ichar)
+{
+    struct servent *se = getservbyname(name, proto);
+    if (ichar == NULL) {
+        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+    }
+    else if (*ichar == 'N' || *ichar == 'n') {
+        return (RexxObjectPtr)context->NewStringFromAsciiz(se->s_name);
+    }
+    else if (*ichar == 'P' || *ichar == 'p') {
+        return (RexxObjectPtr)context->WholeNumberToObject((wholenumber_t)se->s_port);
+    }
+    else if (*ichar == 'A' || *ichar == 'a') {
+        RexxArrayObject arr = context->NewArray(1);
+        char **members = se->s_aliases;
+        while (*members != NULL) {
+           context->ArrayAppendString(arr, *members, strlen(*members));
+           members++;
+        }
+        return (RexxObjectPtr)arr;
+    }
+    context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysGetservbyname"));
+    return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+}
+
+/**
+ * Method:        SysGetservbyport
+ *
+ * Return service information from the services file.
+ *
+ * @param port    The service port.
+ *
+ * @param proto   The service protocol.
+ *
+ * @param option  The option string.
+ *
+ * @return        Option information
+ */
+RexxRoutine3(RexxObjectPtr,
+             SysGetservbyport,
+             int, port,
+             CSTRING, proto,
+             CSTRING, ichar)
+{
+    struct servent *se = getservbyport(port, proto);
+    if (ichar == NULL) {
+        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+    }
+    else if (*ichar == 'N' || *ichar == 'n') {
+        return (RexxObjectPtr)context->NewStringFromAsciiz(se->s_name);
+    }
+    else if (*ichar == 'P' || *ichar == 'p') {
+        return (RexxObjectPtr)context->WholeNumberToObject((wholenumber_t)se->s_port);
+    }
+    else if (*ichar == 'A' || *ichar == 'a') {
+        RexxArrayObject arr = context->NewArray(1);
+        char **members = se->s_aliases;
+        while (*members != NULL) {
+           context->ArrayAppendString(arr, *members, strlen(*members));
+           members++;
+        }
+        return (RexxObjectPtr)arr;
+    }
+    context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysGetservbyname"));
+    return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+}
+
+/**
+ * Method:        SysWordexp
+ *
+ * Return an array of files matching the input expression.
+ *
+ * @param inexp   The input expression.
+ *
+ * @return        Array of file names.
+ */
+RexxRoutine1(RexxObjectPtr,
+             SysWordexp,
+             CSTRING, inexp)
+{
+    wordexp_t p;
+    char **w;
+    RexxArrayObject arr = context->NewArray(1);
+
+    wordexp(inexp, &p, 0);
+
+    w = p.we_wordv;
+    for (int i = 0; i < p.we_wordc; i++) {
+       context->ArrayAppendString(arr, *w, strlen(*w));
+    }
+    return (RexxObjectPtr)arr;
+}
+
 
 // initialize the libvirt library
 static void orxnixclib_loader(RexxThreadContext *context) {
@@ -858,6 +968,9 @@ RexxRoutineEntry orxnixclib_routines[] = {
     REXX_TYPED_ROUTINE(SysStat, SysStat),
     REXX_TYPED_ROUTINE(SysAccess, SysAccess),
     REXX_TYPED_ROUTINE(SysEuidaccess, SysEuidaccess),
+    REXX_TYPED_ROUTINE(SysGetservbyname, SysGetservbyname),
+    REXX_TYPED_ROUTINE(SysGetservbyport, SysGetservbyport),
+    REXX_TYPED_ROUTINE(SysWordexp, SysWordexp),
     REXX_LAST_ROUTINE()
 };
 
