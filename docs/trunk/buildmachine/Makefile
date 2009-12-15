@@ -84,5 +84,5 @@ genindex.sgml: $(HTML_STYLESHEET) $(SGML_FILES)
 
 
 clean:
-	rm *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip HTML.index
+	rm -f *.log *.aux *.out *.fmt ooRexxBuild.pdf genindex.sgml *.htm *.zip HTML.index
 
