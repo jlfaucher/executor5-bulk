@@ -82,7 +82,7 @@ SGML_FILES = collclasses.sgml \
 	     ../shared/gethelp.sgml \
 	     ../shared/CPLv1.0.sgml
 
-IMAGE_FILES = ooRexxObjectClass.png \
+HTML_IMAGE_FILES = ooRexxObjectClass.png \
               ooRexxClassClass.png \
               ooRexxMethodClass.png \
               ooRexxMessageClass.png \
@@ -163,6 +163,87 @@ IMAGE_FILES = ooRexxObjectClass.png \
  	      docbook-1.png \
 	      new_rexxla.jpg
 
+PDF_IMAGE_FILES = ooRexxObjectClass.pdf \
+              ooRexxClassClass.pdf \
+              ooRexxMethodClass.pdf \
+              ooRexxMessageClass.pdf \
+              ooRexxStringClass.pdf \
+              ooRexxArrayClass.pdf \
+              ooRexxCollectionsClass.pdf \
+              ooRexxOrderedCollectionClass.pdf \
+              ooRexxCircularQueueClass.pdf \
+              ooRexxListClass.pdf \
+              ooRexxQueueClass.pdf \
+              ooRexxDirectoryClass.pdf \
+              ooRexxPropertiesClass.pdf \
+              ooRexxStemClass.pdf \
+              ooRexxMapCollectionClass.pdf \
+              ooRexxRelationClass.pdf \
+              ooRexxTableClass.pdf \
+              ooRexxSetCollectionClass.pdf \
+              ooRexxSetClass.pdf \
+              ooRexxBagClass.pdf \
+              ooRexxStreamClass.pdf \
+              ooRexxInputStreamClass.pdf \
+              ooRexxInputOutputStreamClass.pdf \
+              ooRexxOutputStreamClass.pdf \
+              ooRexxComparableClass.pdf \
+              ooRexxAlarmClass.pdf \
+              ooRexxMonitorClass.pdf \
+              ooRexxMutableBufferClass.pdf \
+              ooRexxRegularExpressionClass.pdf \
+              ooRexxSupplierClass.pdf \
+              ooRexxComparatorClass.pdf \
+              ooRexxCaselessColumnComparatorClass.pdf \
+              ooRexxColumnComparatorClass.pdf \
+              ooRexxCaselessComparatorClass.pdf \
+              ooRexxCaselessDescendingComparatorClass.pdf \
+              ooRexxDescendingComparatorClass.pdf \
+              ooRexxInvertingComparatorClass.pdf \
+              ooRexxIteratorClass.pdf \
+              ooRexxCircularIteratorClass.pdf \
+              ooRexxStreamSupplierClass.pdf \
+              ooRexxRexxQueueClass.pdf \
+              ooRexxDateTimeClass.pdf \
+              ooRexxTimeSpanClass.pdf \
+              ooRexxClasses1.pdf \
+              ooRexxClasses2.pdf \
+              ooRexxClasses3.pdf \
+              ooRexxClasses4.pdf \
+              ooRexxClasses5.pdf \
+              ooRexxClasses6.pdf \
+              ooRexxClasses7.pdf \
+              doloopconcept.pdf \
+              doloopcollection.pdf \
+              parseconcepts1.pdf \
+              parseconcepts2.pdf \
+              parseconcepts3.pdf \
+              filerecord.pdf \
+              templates1.pdf \
+              templates2.pdf \
+              templates3.pdf \
+              ReportObject.pdf \
+	      BallObject.pdf \
+	      BallObjectData.pdf \
+	      EncapsulatedObject.pdf \
+	      SimpleClass.pdf \
+	      IconClass.pdf \
+	      IconClassInstances.pdf \
+	      Subclasses.pdf \
+	      ScreenObject.pdf \
+	      MultipleInheritance.pdf \
+	      Modules.pdf \
+	      MultipleRequires.pdf \
+	      EarlyReply.pdf \
+	      BeforeReply.pdf \
+	      AfterReply.pdf \
+	      IndirectRecursion.pdf \
+              externalFunction.pdf \
+              externalFileSearch.pdf \
+ 	      oorexx.jpg \
+ 	      docbook-1.png \
+	      new_rexxla.jpg
+
 JADETEXFMT  = ./pdfjadetex.fmt
 HYPERREFCFG = ./hyperref.cfg
 TEXMF       = /usr/share/texmf
@@ -176,10 +257,10 @@ pdf: rexxref.pdf
 
 html: rexxref-html.zip
 
-rexxref.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
+rexxref.pdf: $(PDF_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
 	docbook2pdf -d ../shared/oorexx.print.dsl rexxref.sgml
 
-book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
+book1.htm: $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
 	docbook2html -d ../shared/oorexx.html.dsl rexxref.sgml
 
 rexxref-html.zip: book1.htm
@@ -201,6 +282,6 @@ svnrev.tmp:
 
 
 clean:
-	rm -f *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip \
+	rm -f *.log *.aux *.out *.fmt rexxref.pdf genindex.sgml *.htm *.zip \
            HTML.index *.tmp
 
