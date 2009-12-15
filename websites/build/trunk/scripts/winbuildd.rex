@@ -84,8 +84,6 @@ do forever
    say 'Copying build output files to the server'
    newdir = hostbuilds'\interpreter-main\'svnver
    'md' newdir
-   newdir = newdir'\'cmdfilename
-   'md' newdir
    'copy ooRexx*.exe' newdir
    'copy Win32Rel\Win32Rel.log' newdir'\Win32RelLog.txt'
    'copy Win32Dbg\Win32Dbg.log' newdir'\Win32DbgLog.txt'
