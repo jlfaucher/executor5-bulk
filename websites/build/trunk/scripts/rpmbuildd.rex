@@ -107,14 +107,14 @@ tempdir = './buildorx'
 call directory tempdir
 -- see if we have already built this revision
 svnver = getsvnrevision()
-newdir = targetdir'/'svnver
+newdir = targetdir'/'svnver'/'qname
 if \sysisfile(newdir'/'buildrpt) then do
    -- build the rpm
    './bootstrap 2>&1 | tee -a' buildrpt
    './configure 2>&1 | tee -a' buildrpt
    'make rpm 2>&1 | tee -a' buildrpt
    -- copy the results to the host
-   'mkdir' newdir
+   'mkdir -p' newdir
    if SysIsFileDirectory('./rpm/RPMS/i386') then ,
     'cp ./rpm/RPMS/i386/ooRexx*.rpm' newdir
    else if SysIsFileDirectory('./rpm/RPMS/i486') then ,
