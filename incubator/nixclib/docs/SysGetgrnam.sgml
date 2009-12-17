@@ -1,0 +1,54 @@
+
+<section id="utlSysGetgrnam"><title>SysGetgrnam (Unix only)</title>
+<indexterm><primary>SysGetgrnam</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysGetgrnam</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysGetgrnam(grpname, option)--------------------------------><
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns information about a group.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">grpname</emphasis></term>
+<listitem><para>The group name.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">option</emphasis></term>
+<listitem><para>An option specifying the information to return.
+The values are all case insensitive and only the first letter of the option value is checked.
+Allowed values are:
+<variablelist>
+<varlistentry><term>"NAME"</term>
+<listitem><para>The group name.
+</para></listitem></varlistentry>
+<varlistentry><term>"GROUP"</term>
+<listitem><para>The numerical group id.
+</para></listitem></varlistentry>
+<varlistentry><term>"MEMBERS"</term>
+<listitem><para>The members of the group are returned in an array.
+</para></listitem></varlistentry>
+<varlistentry><term>"PASSWORD"</term>
+<listitem><para>Always returns a zero-length string.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns information specified by the <emphasis>option</emphasis>.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+
+/* the following examples came from a Linux laptop running Fedora 12 */
+
+SysGetpwgrp("users", "n")      -->  users
+SysGetpwgrp("users", "g")      -->  100
+SysGetpwgrp("users", "m")      -->  an array with the members "dashley" and "games"
+SysGetpwgrp("users", "p")      -->  ""
+
+]]>
+</programlisting>
+</section>
+

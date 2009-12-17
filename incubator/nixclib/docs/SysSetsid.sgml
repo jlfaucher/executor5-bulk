@@ -1,0 +1,32 @@
+
+<section id="utlSysSetsid"><title>SysSetsid (Unix only)</title>
+<indexterm><primary>SysSetsid</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysSetsid</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysSetsid(sid)----------------------------------------------><
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Set the session id.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">sid</emphasis></term>
+<listitem><para>Thenew numeric session id.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns the new sid or -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+
+/* set the session id to zero */
+
+call SysSetsid 0
+
+]]>
+</programlisting>
+</section>
+

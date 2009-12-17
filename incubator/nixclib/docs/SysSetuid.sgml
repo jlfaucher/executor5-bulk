@@ -1,0 +1,32 @@
+
+<section id="utlSysSetuid"><title>SysSetuid (Unix only)</title>
+<indexterm><primary>SysSetuid</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysSetuid</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysSetuid(uid)----------------------------------------------><
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Set the numerical user id.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">uid</emphasis></term>
+<listitem><para>The new numerical user id.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns zero on success or -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+
+/* set the user id to 520 */
+
+call SysSetuid 520
+
+]]>
+</programlisting>
+</section>
+

@@ -189,6 +189,23 @@ RexxRoutine0(RexxObjectPtr,
 }
 
 /**
+ * Method:        SysSeteuid
+ *
+ * Set the effective userid.
+ *
+ * @param uid     The userid.
+ *
+ * @return        0 or -1
+ */
+RexxRoutine1(RexxObjectPtr,          
+             SysSeteuid,
+             int, uid)
+{
+
+    return context->WholeNumberToObject((wholenumber_t)seteuid((uid_t)uid));
+}
+
+/**
  * Method:        SysGeteuid
  *
  * Get the effective userid.
@@ -234,6 +251,23 @@ RexxRoutine0(RexxObjectPtr,
 }
 
 /**
+ * Method:        SysSetegid
+ *
+ * Set the effective groupid.
+ *
+ * @param gid     The groupid.
+ *
+ * @return        0 or -1
+ */
+RexxRoutine1(RexxObjectPtr,          
+             SysSetegid,
+             int, gid)
+{
+
+    return context->WholeNumberToObject((wholenumber_t)setegid((gid_t)gid));
+}
+
+/**
  * Method:        SysGetegid
  *
  * Get the effective groupid.
@@ -262,6 +296,20 @@ RexxRoutine0(RexxObjectPtr,
 }
 
 /**
+ * Method:        SysGetpgrp
+ *
+ * Get the pgrp.
+ *
+ * @return        0 or -1
+ */
+RexxRoutine0(RexxObjectPtr,          
+             SysGetpgrp)
+{
+
+    return context->WholeNumberToObject((wholenumber_t)getpgrp());
+}
+
+/**
  * Method:        SysSetpgid
  *
  * Set the pgid.
@@ -279,6 +327,23 @@ RexxRoutine2(RexxObjectPtr,
 {
 
     return context->WholeNumberToObject((wholenumber_t)setpgid((pid_t)pid1, (pid_t)pid2));
+}
+
+/**
+ * Method:        SysGetpgid
+ *
+ * Get the pgid.
+ *
+ * @param pid1    The pid to query.
+ *
+ * @return        The pid.
+ */
+RexxRoutine1(RexxObjectPtr,          
+             SysGetpgid,
+             int, pid)
+{
+
+    return context->WholeNumberToObject((wholenumber_t)getpgid((pid_t)pid));
 }
 
 /**
@@ -538,10 +603,7 @@ RexxRoutine2(RexxObjectPtr,
              CSTRING, ichar)
 {
     struct group *gr = getgrnam(grpname);
-    if (ichar == NULL) {
-        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
-    }
-    else if (*ichar == 'N' || *ichar == 'n') {
+    if (*ichar == 'N' || *ichar == 'n') {
         return (RexxObjectPtr)context->NewStringFromAsciiz(gr->gr_name);
     }
     else if (*ichar == 'P' || *ichar == 'p') {
@@ -580,10 +642,7 @@ RexxRoutine2(RexxObjectPtr,
              CSTRING, ichar)
 {
     struct group *gr = getgrgid(gid);
-    if (ichar == NULL) {
-        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
-    }
-    else if (*ichar == 'N' || *ichar == 'n') {
+    if (*ichar == 'N' || *ichar == 'n') {
         return (RexxObjectPtr)context->NewStringFromAsciiz(gr->gr_name);
     }
     else if (*ichar == 'P' || *ichar == 'p') {
@@ -842,10 +901,7 @@ RexxRoutine3(RexxObjectPtr,
              CSTRING, ichar)
 {
     struct servent *se = getservbyname(name, proto);
-    if (ichar == NULL) {
-        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
-    }
-    else if (*ichar == 'N' || *ichar == 'n') {
+    if (*ichar == 'N' || *ichar == 'n') {
         return (RexxObjectPtr)context->NewStringFromAsciiz(se->s_name);
     }
     else if (*ichar == 'P' || *ichar == 'p') {
@@ -947,12 +1003,16 @@ RexxRoutineEntry orxnixclib_routines[] = {
     REXX_TYPED_ROUTINE(SysGetsid, SysGetsid),
     REXX_TYPED_ROUTINE(SysSetuid, SysSetuid),
     REXX_TYPED_ROUTINE(SysGetuid, SysGetuid),
+    REXX_TYPED_ROUTINE(SysSeteuid, SysSeteuid),
     REXX_TYPED_ROUTINE(SysGeteuid, SysGeteuid),
     REXX_TYPED_ROUTINE(SysSetgid, SysSetgid),
     REXX_TYPED_ROUTINE(SysGetgid, SysGetgid),
+    REXX_TYPED_ROUTINE(SysSetegid, SysSetegid),
     REXX_TYPED_ROUTINE(SysGetegid, SysGetegid),
     REXX_TYPED_ROUTINE(SysSetpgrp, SysSetpgrp),
+    REXX_TYPED_ROUTINE(SysGetpgrp, SysGetpgrp),
     REXX_TYPED_ROUTINE(SysSetpgid, SysSetpgid),
+    REXX_TYPED_ROUTINE(SysGetpgid, SysGetpgid),
     REXX_TYPED_ROUTINE(SysGetpid, SysGetpid),
     REXX_TYPED_ROUTINE(SysGetppid, SysGetppid),
     REXX_TYPED_ROUTINE(SysGettid, SysGettid),

@@ -1,0 +1,35 @@
+
+<section id="utlSysSymlink"><title>SysSymlink (Unix only)</title>
+<indexterm><primary>SysSymlink</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysSymlink</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysSymlink(srcpath, targetpath)-----------------------------><
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Create a symbolic (soft) link.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">srcpath</emphasis></term>
+<listitem><para>The path/filename of the source file.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">targetpath</emphasis></term>
+<listitem><para>The new path/filname that will become the soft link.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns zero on success and -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+
+/* create a new symlink */
+
+call SysSymlink "/pub", "/home/username/myownpublink"
+
+]]>
+</programlisting>
+</section>
+

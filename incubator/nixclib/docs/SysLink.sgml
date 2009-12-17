@@ -1,0 +1,35 @@
+
+<section id="utlSysLink"><title>SysLink (Unix only)</title>
+<indexterm><primary>SysLink</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysLink</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysLink(srcpath, targetpath)--------------------------------><
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Create a symbolic (hard) link.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">srcpath</emphasis></term>
+<listitem><para>The path/filename of the source file.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">targetpath</emphasis></term>
+<listitem><para>The new path/filname that will become the hard link.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns zero on success and -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+
+/* create a new link */
+
+call SysLink "/pub", "/home/username/myownpublink"
+
+]]>
+</programlisting>
+</section>
+
