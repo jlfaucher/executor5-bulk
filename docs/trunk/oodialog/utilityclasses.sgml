@@ -2118,10 +2118,9 @@ self~addButton(1,b~x,b~y(-15),b~w,15,"OK","OK","Default")
 <secondary>DlgAreaU class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>- aDlgAreaU~Init(Dialog--+--------------------------+--------+-)--><
-                           +--,--Margin-+             |        |
-                           +--,---------+--,-NoResize-+        |
-                           +--,---------+--,----------+-NoMove-+
+>>-init(-dlg--+----------+--+------------+--+--------+-)--------------><
+              +-,-margin-+  +-,-noResize-+  +-noMove-+
+
 ]]>
 </programlisting>
 
@@ -2134,17 +2133,17 @@ It inherits all the methods and attributes of the DlgArea Class (listed above).
 <listitem><para>The arguments you pass to the new method when creating a
 DlgArea Object are:
 <variablelist>
-<varlistentry><term>Dialog</term>
+<varlistentry><term>dlg</term>
 <listitem><para>An Object that is SubClassed from A UserDialog.
 </para></listitem></varlistentry>
-<varlistentry><term>Margin</term>
+<varlistentry><term>margin</term>
 <listitem><para>See DlgArea Margin.
 </para></listitem></varlistentry>
-<varlistentry><term>NoResize</term>
+<varlistentry><term>noResize</term>
 <listitem><para>A set of Dialog Ids of widgets not to be resized during a resize.
 </para></listitem></varlistentry>
-<varlistentry><term>NoMove</term>
-<listitem><para>A set of Dialog Ids of widgets not to be moved during a resize.
+<varlistentry><term>noMove</term>
+<listitem><para>A set of resource Ids of widgets not to be moved during a resize.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
