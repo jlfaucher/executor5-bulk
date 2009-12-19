@@ -80,10 +80,10 @@ HTML_IMAGE_FILES = ReportObject.png \
 	      SubclassInheritance.png \
 	      InstanceMethods.png \
 	      PartClass.png \
-	      rxoq0s05.jpg \
-	      rxoq0s06.jpg \
-	      rxoq0s07.jpg \
-	      rxoq0s09.jpg \
+	      rxoq0s05.png \
+	      rxoq0s06.png \
+	      rxoq0s07.png \
+	      rxoq0s09.png \
 	      ooRexxClasses1.png \
 	      ooRexxClasses2.png \
 	      ooRexxClasses3.png \
@@ -111,9 +111,9 @@ PDF_IMAGE_FILES = ReportObject.pdf \
 	      InstanceMethods.pdf \
 	      PartClass.pdf \
 	      rxoq0s05.pdf \
-	      rxoq0s06.jpg \
-	      rxoq0s07.jpg \
-	      rxoq0s09.jpg \
+	      rxoq0s06.pdf \
+	      rxoq0s07.pdf \
+	      rxoq0s09.pdf \
 	      ooRexxClasses1.png \
 	      ooRexxClasses2.png \
 	      ooRexxClasses3.png \
