@@ -453,7 +453,7 @@ self~NoAutoDetection
 <programlisting>
 <![CDATA[
 >>-create(--x--,--y--,--cx--,--cy--,--title-+-----------+--+------------+-->
-                                            +-,-options-+- +-,-dlgClass-+
+                                            +-,-options-+  +-,-dlgClass-+
 
 >----+------------+--+------------+--+------------+--)---------------------><
      +-,-fontName-+  +-,-fontSize-+  +-,-expected-+
@@ -578,7 +578,7 @@ if success then MyDialog~execute
 <programlisting>
 <![CDATA[
 >>-createCenter(--cx--,--cy--,--title-+-----------+--+------------+-->
-                                      +-,-options-+- +-,-dlgClass-+
+                                      +-,-options-+  +-,-dlgClass-+
 
 >----+------------+--+------------+--+------------+--)---------------><
      +-,-fontName-+  +-,-fontSize-+  +-,-expected-+
@@ -1059,8 +1059,8 @@ associated Object Rexx attribute. Add... methods cannot be used after
 <indexterm><primary>addGroupBox</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-dlg~addGroupBox(--x-,-y-,-cx-,-cy--+---------+-----------+--------+--)-----><
-                                      +-,-text--+-,--style--+-,--id--+
+>>-dlg~addGroupBox(--x-,-y-,-cx-,-cy--+---------+-+-----------+-+--------+--)-----><
+                                      +-,-text--+ +-,--style--+ +-,--id--+
 ]]>
 </programlisting>
 
@@ -2340,8 +2340,8 @@ end
 <![CDATA[
                                         +------+
                                         V      |
->>--addRadioGroup(id1,-x-,-y-+------+-,---text-+--+---------+----------+-)---><
-                             +-,-cx-+             +-,-style-+-,-idStat-+
+>>--addRadioGroup(id1,-x-,-y-+------+-,---text-+--+---------+-+----------+-)---><
+                             +-,-cx-+             +-,-style-+ +-,-idStat-+
 ]]>
 </programlisting>
 
@@ -2579,8 +2579,8 @@ MyDialog~Execute
 <indexterm><primary>addRadioStem</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addRadioStem(id1,-x-,-y-+------+-,-text.-,-max--+---------+----------+-)---><
-                            +-,-cx-+                +-,-style-+-,-idStat-+
+>>--addRadioStem(id1,-x-,-y-+------+-,-text.-,-max--+---------+-+----------+-)---><
+                            +-,-cx-+                +-,-style-+ +-,-idStat-+
 ]]>
 </programlisting>
 
@@ -3119,8 +3119,8 @@ MyDialog~Execute
 <![CDATA[
                                         +------+
                                         V      |
->>--addCheckGroup(id1,-x-,-y-+------+-,---text-+--+---------+----------+-)---><
-                             +-,-cx-+             +-,-style-+-,-idStat-+
+>>--addCheckGroup(id1,-x-,-y-+------+-,---text-+--+---------+-+----------+-)---><
+                             +-,-cx-+             +-,-style-+ +-,-idStat-+
 
 ]]>
 </programlisting>
@@ -3370,8 +3370,8 @@ MyDialog~objectrexx = 1
 <indexterm><primary>addCheckBoxStem</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addCheckBoxStem(id1,-x-,-y-+------+-,-text.-,-max--+---------+----------+-)---><
-                               +-,-cx-+                +-,-style-+-,-idStat-+
+>>--addCheckBoxStem(id1,-x-,-y-+------+-,-text.-,-max--+---------+-+----------+-)---><
+                               +-,-cx-+                +-,-style-+ +-,-idStat-+
 ]]>
 </programlisting>
 
@@ -3696,7 +3696,7 @@ MyDialog~objectrexx = 1
 <programlisting>
 <![CDATA[
 >>-dlg~addStatic(--+----+--,-x-,-y-,-cx-,-cy--+----------+--+---------+--)----><
-                   +-id-+                     +-,-style--+--+-,-text--+
+                   +-id-+                     +-,-style--+  +-,-text--+
 
 ]]>
 </programlisting>
@@ -4540,8 +4540,8 @@ MyDialog~objectrexx = 1
 <indexterm><primary>addWhiteRect</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addWhiteRect(--x-,-y-,-cx-,-cy--+-----------+--------+--)------------------><
-                                    +-,--style--+-,--id--+
+>>--addWhiteRect(--x-,-y-,-cx-,-cy--+-----------+-+--------+--)------------------><
+                                    +-,--style--+ +-,--id--+
 ]]>
 </programlisting>
 
@@ -4656,8 +4656,8 @@ MyDialog~objectrexx = 1
 <indexterm><primary>addWhiteFrame</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addWhiteFrame(--x-,-y-,-cx-,-cy--+-----------+--------+--)-----------------><
-                                     +-,--style--+-,--id--+
+>>--addWhiteFrame(--x-,-y-,-cx-,-cy--+-----------+-+--------+--)-----------------><
+                                     +-,--style--+ +-,--id--+
 ]]>
 </programlisting>
 
@@ -4772,8 +4772,8 @@ MyDialog~objectrexx = 1
 <indexterm><primary>addGrayRect</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addGrayRect(--x-,-y-,-cx-,-cy--+-----------+--------+--)-------------------><
-                                   +-,--style--+-,--id--+
+>>--addGrayRect(--x-,-y-,-cx-,-cy--+-----------+-+--------+--)-------------------><
+                                   +-,--style--+ +-,--id--+
 ]]>
 </programlisting>
 
@@ -4888,8 +4888,8 @@ MyDialog~objectrexx = 1
 <indexterm><primary>addGrayFrame</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addGrayFrame(--x-,-y-,-cx-,-cy--+-----------+--------+--)------------------><
-                                    +-,--style--+-,--id--+
+>>--addGrayFrame(--x-,-y-,-cx-,-cy--+-----------+-+--------+--)------------------><
+                                    +-,--style--+ +-,--id--+
 ]]>
 </programlisting>
 
@@ -5004,8 +5004,8 @@ MyDialog~objectrexx = 1
 <indexterm><primary>addBlackRect</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addBlackRect(--x-,-y-,-cx-,-cy--+-----------+--------+--)------------------><
-                                    +-,--style--+-,--id--+
+>>--addBlackRect(--x-,-y-,-cx-,-cy--+-----------+-+--------+--)------------------><
+                                    +-,--style--+ +-,--id--+
 ]]>
 </programlisting>
 
@@ -5120,8 +5120,8 @@ MyDialog~objectrexx = 1
 <indexterm><primary>addBlackFrame</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addBlackFrame(--x-,-y-,-cx-,-cy--+-----------+--------+--)-----------------><
-                                     +-,--style--+-,--id--+
+>>--addBlackFrame(--x-,-y-,-cx-,-cy--+-----------+-+--------+--)-----------------><
+                                     +-,--style--+ +-,--id--+
 ]]>
 </programlisting>
 
@@ -5236,8 +5236,8 @@ MyDialog~objectrexx = 1
 <indexterm><primary>addEtchedFrame</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addEtchedFramed(--x-,-y-,-cx-,-cy--+-----------+--------+--)---------------><
-                                       +-,--style--+-,--id--+
+>>--addEtchedFramed(--x-,-y-,-cx-,-cy--+-----------+-+--------+--)---------------><
+                                       +-,--style--+ +-,--id--+
 ]]>
 </programlisting>
 
@@ -5351,8 +5351,8 @@ MyDialog~objectrexx = 1
 <indexterm><primary>addEtchedHorizontal</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addEtchedHorizontal(--x-,-y-,-cx-,-cy--+-----------+--------+--)-----------><
-                                           +-,--style--+-,--id--+
+>>--addEtchedHorizontal(--x-,-y-,-cx-,-cy--+-----------+-+--------+--)-----------><
+                                           +-,--style--+ +-,--id--+
 ]]>
 </programlisting>
 
@@ -5466,8 +5466,8 @@ MyDialog~objectrexx = 1
 <indexterm><primary>addEtchedVertical</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addEtchedVertical(--x-,-y-,-cx-,-cy--+-----------+--------+--)-------------><
-                                         +-,--style--+-,--id--+
+>>--addEtchedVertical(--x-,-y-,-cx-,-cy--+-----------+-+--------+--)-------------><
+                                         +-,--style--+ +-,--id--+
 ]]>
 </programlisting>
 
@@ -6589,7 +6589,7 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
 >>--addInput(-id-+--------+-,-x-,-y-+-------+-,-cx2-,-+------+-,-text---->
                  +-,-name-+         +-,-cx1-+         +-,-cy-+
 
->--+------------+------------+-)-----------------------------------------><
+>--+---------+--+------------+-)-----------------------------------------><
    +-,-style-+  +-,-idstatic-+
 
 ]]>
@@ -6892,7 +6892,7 @@ MyUserDialog~addInput(402, , 20, 30, , 150, , "Your eMail address")
 <![CDATA[
                                                 +-----+
                                                 V     |
->>--addInputGroup(-id-,-x-,-y-+-------+-,-cx2-,--text-+-+-----------+----------+-)--><
+>>--addInputGroup(-id-,-x-,-y-+-------+-,-cx2-,--text-+-+---------+-+----------+-)--><
                               +-,-cx1-+                 +-,-style-+ +-,-idstat-+
 
 ]]>
@@ -7387,7 +7387,7 @@ MyDialog~addInputGroup(301, 20, 20, ,130, "Name FirstName Street City")
 <programlisting>
 <![CDATA[
 
->>--addInputGroup(-id-,-x-,-y-+-------+-,-cx2-,-text.--+-----------+----------+-)--><
+>>--addInputGroup(-id-,-x-,-y-+-------+-,-cx2-,-text.--+---------+-+----------+-)--><
                               +-,-cx1-+                +-,-style-+ +-,-idstat-+
 ]]>
 </programlisting>
