@@ -9646,243 +9646,214 @@ end
 <section id="nnn"><title>Menu Methods</title>
 <indexterm><primary>menu methods</primary>
 <secondary>BaseDialog class</secondary></indexterm>
-<para>The methods listed below manipulate a menu connected to the dialog.</para>
+<para>
+  Prior to ooDialog version 4.1.0, menus were really only minimally supported, through a few methods of
+  the dialog class.  In ooDialog 4.1.0 true <link linkend="menuclasses">menu</link> objects were
+  introduced.  Therefore the menu methods of the dialog class, other than <link
+  linkend="mthGetMenuBar">getMenuBar</link>() and <link linkend="mthHasMenuBar">hasMenuBar</link>(), are
+  deprecated.  Use the methods of the menu classes directly to work with menus.
+</para>
 
-<section id="cmim"><title>ConnectMenuItem</title>
-<indexterm><primary>ConnectMenuItem</primary></indexterm>
+<section id="mthGetMenuBar"><title>getMenuBar</title>
+<indexterm><primary>getMenuBar</primary>
+<secondary>BaseDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~ConnectMenuItem(--id--,--msgToRaise--)---------><
-
+>>--getMenuBar----------------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>The ConnectMenuItem method is called to connect
-a menu item selection with a method. </para>
+<para>
+  The <emphasis role="italic">getMenuBar</emphasis> method returns the <link
+  linkend="menuclasses">menu</link> object attached to the dialog, or <emphasis
+  role="bold">.nil</emphasis> if there is no menu attached.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the menu item.
+<listitem><para>
+  There are no arguments.
 </para></listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The name of the method that is to be called.
-</para></listitem></varlistentry>
-</variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+  If a menu is attached to the dialog, the Rexx menu object is returned.  If no menu is attached, then
+  <emphasis role="bold">.nil</emphasis> is returned.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="mthConnectButton">ConnectButton</link>.
-</para></listitem></varlistentry>
-</variablelist>
-<para>Do not use one of the menu item methods below, prior to the SetMenu method. If you call one of these methods before SetMenu has been
-called, the intended action will not be processed and the return code is unpredictable.</para>
-</section>
-
-<section id="emim"><title>EnableMenuItem</title>
-<indexterm><primary>EnableMenuItem</primary></indexterm>
+<listitem><para>
+  This snippet of code comes from a program where the user can customize the interface to use a menu or
+  to not use a menu.  When writes should be disabled, the method checks for a menu and if present
+  disables the appropriate menu items.
 <programlisting>
 <![CDATA[
->>-aBaseDialog~EnableMenuItem(--id--)-------------------------><
-
-
+::method onDisableWrites
+    if self~hasMenuBar then do
+        menu = self~getMenuBar
+        menu~disable(IDM_WRITE_TO_FILE)
+        menu~disable(IDM_WRITE_TO_MEMORY)
+        menu~disable(IDM_WRITE_TO_SOCKET)
+    end
+    return 0
 ]]>
 </programlisting>
-
-<para>The EnableMenuItem method is called to enable a
-menu item. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the menu item to be enabled.
-</para></listitem></varlistentry>
-</variablelist>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="dmim"><title>DisableMenuItem</title>
-<indexterm><primary>DisableMenuItem</primary></indexterm>
+<section id="mthHasMenuBar"><title>hasMenuBar</title>
+<indexterm><primary>hasMenuBar</primary>
+<secondary>BaseDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~DisableMenuItem(--id--)------------------------><
-
+>>--hasMenuBar----------------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>The DisableMenuItem method is called to disable
-a menu item. </para>
+<para>
+  Tests if the dialog has a menu bar attached.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the menu item to be disabled.
+<listitem><para>
+  There are no arguments.
 </para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="chmim"><title>CheckMenuItem</title>
-<indexterm><primary>CheckMenuItem</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~CheckMenuItem(--id--)--------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The CheckMenuItem method is called to set the check
-mark for a menu item. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the menu item to be checked.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="uchmim"><title>UncheckMenuItem</title>
-<indexterm><primary>UncheckMenuItem</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~UncheckMenuItem(--id--)------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The UncheckMenuItem method is called to remove
-the check mark from a menu item. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the menu item to be unchecked.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="gmim"><title>GrayMenuItem</title>
-<indexterm><primary>GrayMenuItem</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~GrayMenuItem(--id--)---------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GrayMenuItem method is called to disable a
-menu item. The menu item is grayed.</para>
-<para><link linkend="emim">EnableMenuItem</link> is used to reset the grayed state. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the menu item to be grayed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="smirm"><title>SetMenuItemRadio</title>
-<indexterm><primary>SetMenuItemRadio</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~SetMenuItemRadio(--idstart--,--idend--,--idset--)><
-
-
-]]>
-</programlisting>
-
-<para>The SetMenuItemRadio method is used to change the
-selection for a radio button menu group. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>idstart</term>
-<listitem><para>The ID of the first menu item in the group.
-</para></listitem></varlistentry>
-<varlistentry><term>idend</term>
-<listitem><para>The ID of the last menu item in the group.
-</para></listitem></varlistentry>
-<varlistentry><term>idset</term>
-<listitem><para>The ID of the menu item that is to be selected.
-</para></listitem></varlistentry>
-</variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+  True if a menu is attached to the dialog, otherwise false.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example shows how to change the selection within a radio
-button group. Menu item 102 gets the radio button.
-<programlisting>
-<![CDATA[
-self~SetMenuItemRadio(101, 105, 102)
-]]>
-</programlisting>
+<listitem><para>
+  See the example for the <link linkend="mthGetMenuBar">getMenuBar</link>() method.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="gmism"><title>GetMenuItemState</title>
-<indexterm><primary>GetMenuItemState</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~GetMenuItemState(--id--)-----------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetMenuItemState method returns the state of
-a given menu item </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the menu item whose state is of interest.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term>Return values:</term>
-<listitem><para>CHECKED DISABLED GRAYED HIGHLIGHTED
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+<section id="cmim"><title>connectMenuItem <emphasis role="bold">(deprecated)</emphasis></title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>BaseDialog class</secondary>
+  <tertiary>connectMenuItem</tertiary>
+</indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  Use the the <link linkend="menuclasses">menu</link> object methods
+  directly.  Do not use this method in new code. Try to migrate existing code to use menu objects
+  directly. This method may not exist in future versions of ooDialog.
+</para></note>
 </section>
 
-<section id="debuggingmeth"><title>Debugging Method</title>
+<section id="emim"><title>enableMenuItem <emphasis role="bold">(deprecated)</emphasis></title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>BaseDialog class</secondary>
+  <tertiary>enableMenuItem</tertiary>
+</indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  Use the the <link linkend="menuclasses">menu</link> object methods
+  directly.  Do not use this method in new code. Try to migrate existing code to use menu objects
+  directly. This method may not exist in future versions of ooDialog.
+</para></note>
+</section>
+
+<section id="dmim"><title>disableMenuItem <emphasis role="bold">(deprecated)</emphasis></title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>BaseDialog class</secondary>
+  <tertiary>disableMenuItem</tertiary>
+</indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  Use the the <link linkend="menuclasses">menu</link> object methods
+  directly.  Do not use this method in new code. Try to migrate existing code to use menu objects
+  directly. This method may not exist in future versions of ooDialog.
+</para></note>
+</section>
+
+<section id="chmim"><title>checkMenuItem <emphasis role="bold">(deprecated)</emphasis></title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>BaseDialog class</secondary>
+  <tertiary>checkMenuItem</tertiary>
+</indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  Use the the <link linkend="menuclasses">menu</link> object methods
+  directly.  Do not use this method in new code. Try to migrate existing code to use menu objects
+  directly. This method may not exist in future versions of ooDialog.
+</para></note>
+</section>
+
+<section id="uchmim"><title>uncheckMenuItem <emphasis role="bold">(deprecated)</emphasis></title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>BaseDialog class</secondary>
+  <tertiary>uncheckMenuItem</tertiary>
+</indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  Use the the <link linkend="menuclasses">menu</link> object methods
+  directly.  Do not use this method in new code. Try to migrate existing code to use menu objects
+  directly. This method may not exist in future versions of ooDialog.
+</para></note>
+</section>
+
+<section id="gmim"><title>grayMenuItem <emphasis role="bold">(deprecated)</emphasis></title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>BaseDialog class</secondary>
+  <tertiary>grayMenuItem</tertiary> </indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  Use the the <link linkend="menuclasses">menu</link> object methods
+  directly.  Do not use this method in new code. Try to migrate existing code to use menu objects
+  directly. This method may not exist in future versions of ooDialog.
+</para></note>
+</section>
+
+<section id="smirm"><title>setMenuItemRadio <emphasis role="bold">(deprecated)</emphasis></title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>BaseDialog class</secondary>
+  <tertiary>setMenuItemRadio</tertiary> </indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  Use the the <link linkend="menuclasses">menu</link> object methods
+  directly.  Do not use this method in new code. Try to migrate existing code to use menu objects
+  directly. This method may not exist in future versions of ooDialog.
+</para></note>
+</section>
+
+<section id="gmism"><title>getMenuItemState <emphasis role="bold">(deprecated)</emphasis></title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>BaseDialog class</secondary>
+  <tertiary>getMenuItemState</tertiary> </indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  Use the the <link linkend="menuclasses">menu</link> object methods
+  directly.  Do not use this method in new code. Try to migrate existing code to use menu objects
+  directly. This method may not exist in future versions of ooDialog.
+</para></note>
+</section>
+
+<section id="debuggingmeth"><title>Debugging Methods</title>
 <indexterm><primary>debugging methods</primary></indexterm>
-<para>The following method displays the internal setting of the dialog administration
-table.</para>
+<para>
+  The following method(s) can be used to help debug ooDialog programs.  At this time there are very few
+  methods.
+</para>
 
-<section id="dumpdialog"><title>Dump</title>
-<indexterm><primary>Dump</primary></indexterm>
-<para>The Dump method displays the internal settings
-of the dialog administration table. This method can be helpful for debugging
-OODialog programs.</para>
+<section id="dumpdialog"><title>dump</title>
+<indexterm><primary>dump</primary></indexterm>
+<para>
+  The <emphasis role="italic">dump</emphasis>() method displays the internal settings of the dialog
+  administration table.
+</para>
+<para>
+  <emphasis role="bold">Note</emphasis> that this method is of limited use unless one understands the
+  private internal implementation of ooDialog.  In addition, the internal implementation of ooDialog,
+  that is not documented, is subject to change. And in fact some of the implementation is changing.  In
+  particular the dialog administration table is going away.  Once it has been removed completely, this
+  method will producd no output.
+</para>
 <programlisting>
 <![CDATA[
->>-Dump(--+-------------+--)----------------------------------><
-          +-dialogadmin-+
-
+>>--dump(--+-------------+--)---------------------------------><
+           +-dialogadmin-+
 
 ]]>
 </programlisting>
@@ -9893,10 +9864,10 @@ OODialog programs.</para>
 <listitem><para>The only argument is:
 <variablelist>
 <varlistentry><term>dialogadmin</term>
-<listitem><para>A pointer to a particular dialog administration record. If you specify
-this argument, you get detailed information on this record. If you omit this
-argument, all administration records (one for each dialog of the active process)
-are listed.
+<listitem><para>
+  A pointer to a particular dialog administration record. If you specify this argument, you get detailed
+  information on this record. If you omit this argument, all administration records (one for each dialog
+  of the active process) are listed.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>

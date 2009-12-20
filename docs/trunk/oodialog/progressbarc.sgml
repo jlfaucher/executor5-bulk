@@ -66,10 +66,10 @@
   <listitem>
     <para>
       The ProgressBar class requires the class definition file
-      <computeroutput>oodWin32.cls</computeroutput>:
+      <computeroutput>ooDialog.cls</computeroutput>:
 <programlisting>
 <![CDATA[
-::requires "oodWin32.cls"
+::requires "ooDialog.cls"
 ]]>
 </programlisting>
     </para>
@@ -138,46 +138,54 @@
 <tbody>
 <row>
 <entry>backgroundColor</entry>
-<entry><link linkend="mthBackgroundColor">backgroundColor</link></entry>
+<entry><link linkend="mthBackgroundColorPBC">backgroundColor</link></entry>
 </row>
 <row>
 <entry>barColor</entry>
-<entry><link linkend="mthBarColor">barColor</link></entry>
+<entry><link linkend="mthBarColorPBC">barColor</link></entry>
 </row>
 <row>
 <entry>getPos</entry>
-<entry><link linkend="mthGetPosClsProgressBar">getPos</link></entry>
+<entry><link linkend="mthGetPosPBC">getPos</link></entry>
 </row>
 <row>
-<entry>getRange</entry>
-<entry><link linkend="mthGetRangeClsProgressBar">getRange</link></entry>
+<entry>getFullRange</entry>
+<entry><link linkend="mthGetFullRangePBC">getFullRange</link></entry>
 </row>
 <row>
 <entry>setMarquee</entry>
-<entry><link linkend="mthSetMarquee">setMarquee</link></entry>
+<entry><link linkend="mthSetMarqueePBC">setMarquee</link></entry>
 </row>
 <row>
 <entry>setPos</entry>
-<entry><link linkend="mthSetPosClsProgressBar">setPos</link></entry>
+<entry><link linkend="mthSetPosPBC">setPos</link></entry>
 </row>
 <row>
-<entry>setRange</entry>
-<entry><link linkend="mthSetRangeClsProgressBar">setRange</link></entry>
+<entry>setFullRange</entry>
+<entry><link linkend="mthSetFullRangePBC">setFullRange</link></entry>
 </row>
 <row>
 <entry>setStep</entry>
-<entry><link linkend="mthSetStepClsProgressBar">setStep</link></entry>
+<entry><link linkend="mthSetStepPBC">setStep</link></entry>
 </row>
 <row>
 <entry>step</entry>
-<entry><link linkend="mthStep">step</link></entry>
+<entry><link linkend="mthStepPBC">step</link></entry>
+</row>
+<row>
+<entry>getRange <emphasis role="bold">(deprecated)</emphasis></entry>
+<entry><link linkend="mthGetRangePBC">getRange</link></entry>
+</row>
+<row>
+<entry>setRange <emphasis role="bold">(deprecated)</emphasis></entry>
+<entry><link linkend="mthSetRangePBC">setRange</link></entry>
 </row>
 </tbody></tgroup>
 </table>
   </listitem></varlistentry>
 </variablelist>
 
-<section id="mthStep"><title>step</title>
+<section id="mthStepPBC"><title>step</title>
 <indexterm><primary>step</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -192,7 +200,7 @@
   The step method advances the current position of the progress bar. If <emphasis
   role="italic">increment</emphasis> is specified, the current position is incremented by that amount. If
   not specified, the current position is incremented by the amount set with the <link
-  linkend="mthSetStepClsProgressBar">setStep</link>() method. The progress bar is redrawn to reflect the
+  linkend="mthSetStepPBC">setStep</link>() method. The progress bar is redrawn to reflect the
   new position.
 </para>
 <para>
@@ -228,7 +236,7 @@
 </variablelist>
 </section>
 
-<section id="mthSetPosClsProgressBar"><title>setPos</title>
+<section id="mthSetPosPBC"><title>setPos</title>
 <indexterm><primary>setPos</primary>
 <secondary>ProgressBar class</secondary></indexterm>
 <programlisting>
@@ -265,7 +273,7 @@
 </section>
 
 
-<section id="mthGetPosClsProgressBar"><title>getPos</title>
+<section id="mthGetPosPBC"><title>getPos</title>
 <indexterm><primary>getPos</primary>
 <secondary>ProgressBar class</secondary></indexterm>
 <programlisting>
@@ -305,9 +313,9 @@
       example:
 <programlisting>
 <![CDATA[
-  pb = self~getProgressBar("IDC_PB_COUNTDOWN")
-  if pb \= .Nil then do
-     pb~setRange(-200,200)
+  pb = self~newProgressBar("IDC_PB_COUNTDOWN")
+  if pb \= .nil then do
+     pb~setFullRange(-200,200)
      pb~setStep(10)
      pb~setPos(-200)
   end
@@ -335,7 +343,7 @@ Now at position -160
 </variablelist>
 </section>  <!-- End ProgressBar::getPos() -->
 
-<section id="mthSetStepClsProgressBar"><title>setStep</title>
+<section id="mthSetStepPBC"><title>setStep</title>
 <indexterm><primary>setStep</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -347,7 +355,7 @@ Now at position -160
 
 <para>
   This method specifies the step increment for the progress bar. The step increment is the amount by
-  which the progress bar advances its current position when the <link linkend="mthStep">step</link>()
+  which the progress bar advances its current position when the <link linkend="mthStepPBC">step</link>()
   method is called without an increment value.
 </para>
 <para>
@@ -376,11 +384,18 @@ Now at position -160
 </variablelist>
 </section>
 
-<section id="mthSetRangeClsProgressBar"><title>setRange</title>
-<indexterm><primary>setRange</primary>
+<section id="mthSetFullRangePBC"><title>setFullRange</title>
+<indexterm><primary>setFullRange</primary>
 <secondary>ProgressBar class</secondary></indexterm>
 <programlisting>
 <![CDATA[
+Form 1:
+
+>>--setRange(--+------------------+--)----------><
+               +-aDirectoryObject-+
+
+Form 2:
+
 >>--setRange(--+-----+--,--+-----+--)-----------><
                +-min-+     +-max-+
 
@@ -389,9 +404,10 @@ Now at position -160
 </programlisting>
 
 <para>
-  The setRange method sets the minimum and maximum values for the progress bar. The minimum and maximum
-  values are signed numbers. To use the entire range possible the programmer would use -2147483648
-  through 2147483647 for the minimum and maximum.
+  The <emphasis role="italic">setFullRange</emphasis>() method sets the minimum and maximum values
+  for the progress bar using the full allowable range and returns the previous range. The minimum and
+  maximum values are signed numbers. To use the entire range possible the programmer would use
+  -2147483648 through 2147483647 for the minimum and maximum.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -401,7 +417,28 @@ Now at position -160
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem><para>The arguments are:
+  <listitem>
+  <itemizedlist>
+  <listitem><para>Form 1:
+    <variablelist>
+    <varlistentry><term>aDirecotryObject</term>
+    <listitem>
+      <para>
+        Optional. If omitted, the minimum range value is set to 0 and the maximum to 100. Otherwise the
+        following indexes of the directory are used to set the range:
+        <orderedlist>
+          <listitem><para>
+            MIN the minimum range value.  0 is the default if the index is not present.
+          </para></listitem>
+          <listitem><para>
+            MAX the maximum range value.  100 is the default if the index is not present.
+          </para></listitem>
+        </orderedlist>
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para></listitem>
+  <listitem><para>Form 2:
     <variablelist>
     <varlistentry><term>min</term>
     <listitem>
@@ -416,29 +453,26 @@ Now at position -160
       </para>
     </listitem></varlistentry>
     </variablelist>
-  </para></listitem></varlistentry>
+  </para></listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      A string containing the minimum and maximum value of the previous range, separated by a blank. The
-      first word in the string is the old minimum and the second word is th old maximum.
-    </para>
-    <para>
-      Note that the underlying progress bar does not return the full 32-bit value of the range. It
-      returns the range within the old limit of 0 through 65535. If the programmer is using a range
-      outside those values, the returned previous value here will not be correct. To retrieve the correct
-      32-bit values, use the <link linkend="mthGetRangeClsProgressBar">getRange</link>() method
+      A directory object containing the previous range for the progress bar.  The index MIN contains the
+      previous minimum range value and the index MAX contains the previous maximum.  The returned values
+      use the full allowable range of the progress bar and are not restricted to 0 though 65535
     </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthGetRangeClsProgressBar"><title>getRange</title>
-<indexterm><primary>getRange</primary>
+<section id="mthGetFullRangePBC"><title>getFullRange</title>
+<indexterm><primary>getFullRange</primary>
 <secondary>ProgressBar class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getRange------------------------------------><
+>>--getFullRange--------------------------------><
 
 ]]>
 </programlisting>
@@ -464,31 +498,28 @@ Now at position -160
     <para>
       The range is returned in a <computeroutput>.Directory</computeroutput> object with the following
       indexes:
-      <variablelist>
-        <varlistentry><term>min</term>
-        <listitem>
-          <para>
-            The current minimum limit, as a signed number, for the progress bar.
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>max</term>
-        <listitem>
-          <para>
-            The current maximum limit, as a signed number, for the progress bar.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      <orderedlist>
+        <listitem><para>
+          MIN - The current minimum limit, as a signed number, for the progress bar.
+        </para></listitem>
+        <listitem><para>
+          MAX - The current maximum limit, as a signed number, for the progress bar.
+        </para></listitem>
+      </orderedlist>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example demonstrates how the range is returned:
+      This example demonstrates how the range is returned. In the resetRange() method a directory object
+      is passed in. For this example, assume range~min is -200 and range~max is 200.
 <programlisting>
 <![CDATA[
-  pb = self~getProgressBar("IDC_PB_COUNTDOWN")
-  if pb \= .Nil then do
-     pb~setRange(-200,200)
+::method resetRange
+  use strict arg range
+  pb = self~newProgressBar("IDC_PB_COUNTDOWN")
+  if pb \= .nil then do
+     pb~setRange(range~min, range~max)
      pb~setStep(10)
      pb~setPos(-200)
   end
@@ -516,7 +547,7 @@ Current minimum: -200 current maximum: 200
 </variablelist>
 </section>  <!-- End ProgressBar::getRange() -->
 
-<section id="mthSetMarquee"><title>setMarquee</title>
+<section id="mthSetMarqueePBC"><title>setMarquee</title>
 <indexterm><primary>setMarquee</primary>
 <secondary>ProgressBar class</secondary></indexterm>
 <programlisting>
@@ -587,7 +618,7 @@ Current minimum: -200 current maximum: 200
       This example turns marquee mode on and sets the time between updates at one half of a second:
 <programlisting>
 <![CDATA[
-  pb = self~getProgressBar("IDC_PB_SEARCHING")
+  pb = self~newProgressBar("IDC_PB_SEARCHING")
   if pb \== .nil then pb~setMarquee(.true, 500)
 ]]>
 </programlisting>
@@ -596,7 +627,7 @@ Current minimum: -200 current maximum: 200
 </variablelist>
 </section>  <!-- End ProgressBar::setMarquee() -->
 
-<section id="mthBarColor"><title>barColor</title>
+<section id="mthBarColorPBC"><title>barColor</title>
 <indexterm><primary>barColor</primary>
 <secondary>ProgressBar class</secondary></indexterm>
 <programlisting>
@@ -652,7 +683,7 @@ Current minimum: -200 current maximum: 200
 <![CDATA[
   numeric digits 11
 
-  progressBar = self~getProgressBar("IDC_PB_CONNECTING")
+  progressBar = self~newProgressBar("IDC_PB_CONNECTING")
 
   say 'Going to set the bar color for the progress bar'
   ret = progressBar~barColor(.Image~colorRef(180, 255, 110))
@@ -672,7 +703,7 @@ Old bar color was:        4278190080 (0xFF000000)
 </section>  <!-- End ProgressBar::barColor() -->
 
 
-<section id="mthBackgroundColor"><title>backgroundColor</title>
+<section id="mthBackgroundColorPBC"><title>backgroundColor</title>
 <indexterm><primary>backgroundColor</primary>
 <secondary>ProgressBar class</secondary></indexterm>
 <programlisting>
@@ -728,7 +759,7 @@ Old bar color was:        4278190080 (0xFF000000)
 <![CDATA[
   numeric digits 11
 
-  progressBar = self~getProgressBar("IDC_PB_CONNECTING")
+  progressBar = self~newProgressBar("IDC_PB_CONNECTING")
 
   say 'Going to set the background color for the progress bar'
   ret = progressBar~backgroundColor(.Image~colorRef(55, 111, 18))
@@ -745,5 +776,27 @@ Old background color was: 4278190080 (0xFF000000)
     </para></listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ProgressBar::backgroundColor() -->
+
+<section id="mthSetRangePBC"><title>setRange  <emphasis role="bold">(deprecated)</emphasis></title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>ProgressBar class</secondary>
+  <tertiary>setRange</tertiary>
+</indexterm>
+<para>
+  This method is deprecated.  Use <link linkend="mthSetFullRangePBC">setFullRange</link>().
+</para>
+</section>
+
+<section id="mthGetRangePBC"><title>getRange  <emphasis role="bold">(deprecated)</title>
+<indexterm>
+  <primary>deprecated</primary>
+  <secondary>ProgressBar class</secondary>
+  <tertiary>getRange</tertiary>
+</indexterm>
+<para>
+  This method is deprecated.  Use <link linkend="mthGetFullRangePBC">getFullRange</link>().
+</para>
+</section>
 
 </chapter>
