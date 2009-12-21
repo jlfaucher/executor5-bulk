@@ -142,13 +142,15 @@ RexxMethod3(int,                       // Return type
     gint *types = (gint *)context->PointerValue(rxptr);
     size_t members = context->ArraySize(args);
     int i, col, ival;
-    size_t uival;
+    uint32_t uival;
     int64_t ival64;
     uint64_t uival64;
-    float fval;
     double dval;
     char *val;
     GValue coldata;
+
+    // The following works for 32/64 bit systems (Windows and Linux). It may need to be
+    // adjusted if we ever go to 128 bit word sizes.
 
     for (i = 2; i <= members; i += 2) {
         context->ObjectToInt32(context->ArrayAt(args, i), &col);
@@ -161,19 +163,35 @@ RexxMethod3(int,                       // Return type
             coldata.data[0].v_pointer = val;
             break;
         case G_TYPE_INT:
-        case G_TYPE_BOOLEAN:
-        case G_TYPE_LONG:
-        case G_TYPE_ENUM:
-        case G_TYPE_FLAGS:
         case G_TYPE_CHAR:
-        case G_TYPE_UCHAR:
             context->ObjectToInt32(context->ArrayAt(args, i + 1), &ival);
             coldata.data[0].v_int = ival;
             break;
         case G_TYPE_UINT:
-        case G_TYPE_ULONG:
-            context->ObjectToStringSize(context->ArrayAt(args, i + 1), &uival);
+        case G_TYPE_UCHAR:
+        case G_TYPE_BOOLEAN:
+        case G_TYPE_ENUM:
+        case G_TYPE_FLAGS:
+            context->ObjectToUnsignedInt32(context->ArrayAt(args, i + 1), &uival);
             coldata.data[0].v_uint = uival;
+            break;
+        case G_TYPE_LONG:
+#if __WORDSIZE == 64
+            context->ObjectToInt64(context->ArrayAt(args, i + 1), &ival64);
+            coldata.data[0].v_int = ival64;
+#else
+            context->ObjectToInt32(context->ArrayAt(args, i + 1), &ival);
+            coldata.data[0].v_int = ival;
+#endif
+            break;
+        case G_TYPE_ULONG:
+#if __WORDSIZE == 64
+            context->ObjectToUnsignedInt64(context->ArrayAt(args, i + 1), &uival64);
+            coldata.data[0].v_int = uival64;
+#else
+            context->ObjectToUnsignedInt32(context->ArrayAt(args, i + 1), &uival);
+            coldata.data[0].v_int = uival;
+#endif
             break;
         case G_TYPE_INT64:
             context->ObjectToInt64(context->ArrayAt(args, i + 1), &ival64);
