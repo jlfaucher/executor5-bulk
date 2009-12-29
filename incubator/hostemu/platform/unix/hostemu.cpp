@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2009-2009 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2009-2010 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -48,7 +48,7 @@
 #include <rexx.h>
 #include <oorexxapi.h>
 
-#include "hostemu.h"
+#include "../../hostemu.h"
 
 
 /*--------------------------------------------------------------------*/
@@ -215,7 +215,7 @@ unsigned long FetchRexxVar (
 unsigned long SetRexxVar (
    char *        pszVar,         /* Variable name to be set           */
    char *        pValue,         /* Ptr to new value                  */
-   unsigned long ulLen)          /* Value length                      */
+   size_t        ulLen)          /* Value length                      */
    {
 
    /* local function data */
@@ -271,8 +271,6 @@ RexxReturnCode GrxHost(PCONSTRXSTRING command,
    /* Local function variables */
    unsigned long i, rc = 0;
    PLL pll;
-   pid_t pid;
-   pthread_t tid;
 
    #ifdef HOSTEMU_DEBUG
    printf("HOSTEMU: Subcom called.\n");
@@ -296,19 +294,13 @@ RexxReturnCode GrxHost(PCONSTRXSTRING command,
       printf("HOSTEMU: Parse complete.\n");
       #endif
       if (lStmtType == HI_STMT) {
-         pid = getpid();
-         tid = pthread_self();
-         RexxSetHalt(pid, tid);
+         RexxSetHalt(getpid(), pthread_self());
          }
       else if (lStmtType == TE_STMT) {
-         pid = getpid();
-         tid = pthread_self();
-         RexxResetTrace(pid, tid);
+         RexxResetTrace(getpid(), pthread_self());
          }
       else if (lStmtType == TS_STMT) {
-         pid = getpid();
-         tid = pthread_self();
-         RexxSetTrace(pid, tid);
+         RexxSetTrace(getpid(), pthread_self());
          }
       else if (lStmtType == EXECIO_STMT) {
          #ifdef HOSTEMU_DEBUG

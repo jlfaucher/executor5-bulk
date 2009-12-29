@@ -12,9 +12,6 @@ EXECIO - an I/O mechanism
 
 Other commands may be added later.
 
-Currently the HostEmu subcommand environment is only available for Linux but Windows and
-other *nix systems will probably be added in the future.
-
 To include and use the HostEmu subcommand environment you must place a ooRexx directive
 in your script. The following shows how to accomplish this.
 
@@ -31,8 +28,8 @@ Note that the file name MUST be placed within a set of quotation marks.
 The example above should look very familiar to a mainframe Rexx programmer. The big 
 difference is that a real file name is used instead of a DDNAME and the HostEmu
 environment is not the default address environment, thus the requirement that you either
-include the 'HostEmu' environment name in the address statement or you cause the 'HostEmu'
-environment to be made the default environment.
+include the 'HostEmu' environment name in the address statement or you make the 'HostEmu'
+environment the default environment.
 
 The HostEmu HI, TS, TE commands have no arguments that are acceptable in the HostEmu
 environment. Thus their syntax is very simple. The EXECIO subcommand is more complicated
@@ -75,7 +72,7 @@ SKIP
 Note that the LIFO, FIFO and SKIP options are not valid for DISKW operations.
 
 These options should provide almost all of the EXECIO operations you will need in the
-Linux environment.
+non-mainframe operating system environment.
 
 I hope you will find this a useful tool.
 
