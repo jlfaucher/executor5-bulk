@@ -271,9 +271,9 @@ RexxReturnCode GrxHost(PCONSTRXSTRING command,
    unsigned long i, rc = 0;
    PLL pll;
 
-//   #ifdef HOSTEMU_DEBUG
+   #ifdef HOSTEMU_DEBUG
    printf("HOSTEMU: Subcom called.\n");
-//   #endif
+   #endif
 
    /* request the semaphore so we can get exclusive access to         */
    /* our variables                                                   */
@@ -868,7 +868,6 @@ static char * pull (
 
 static void hostemu_loader(RexxThreadContext *context) {
    RexxReturnCode rc;
-//   SECURITY_ATTRIBUTES sa = {sizeof(SECURITY_ATTRIBUTES), NULL, true};
 
    rc = RexxRegisterSubcomExe("HostEmu", (REXXPFN)GrxHost, NULL);
    htmxExecIO = CreateMutex(NULL, false, NULL);

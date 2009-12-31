@@ -62,6 +62,9 @@ RexxReturnCode GrxHost(PCONSTRXSTRING command,
 /*                                                                    */
 /*--------------------------------------------------------------------*/
 
+// Use the following to get debug messages to stdout
+// #define HOSTEMU_DEBUG
+
 #define SYMTABLESIZE 15
 #define EXECIO_STMT  0
 #define HI_STMT      1
