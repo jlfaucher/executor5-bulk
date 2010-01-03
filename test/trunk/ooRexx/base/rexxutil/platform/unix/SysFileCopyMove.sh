@@ -13,8 +13,8 @@ ENOENT=2
 EACCESS=13
 EEXIST=17
 EXDEV=18
+EISDIR=21
 
-# Make clean directories for tests
 echo
 echo "Test SysFileCopy and SysFileMove."
 echo "The following directories will be removed :"
@@ -22,13 +22,6 @@ echo "$d1"
 echo "$d2"
 echo
 read -p "Press <Return> to continue or <Ctrl-C> to abort."
-
-chmod -R a+rwx "$d1" > /dev/null 2>&1
-chmod -R a+rwx "$d2" > /dev/null 2>&1
-rm -fr "$d1"
-rm -fr "$d2"
-mkdir -p "$d1" || (echo "Can't create $d1" ; exit 1)
-mkdir -p "$d2" || (echo "Can't create $d2" ; exit 1)
 
 create_files()
 {
@@ -132,9 +125,9 @@ run_rexx()
         then
             # No error has been returned, we can verify that the files contents are identical.
             # But we can do that only if both files are readable...
-            if [ -r $source -a -r $target ]
+            if [ -r "$source" -a -r "$target" ]
             then
-                diff $source $target > /dev/null 2>&1
+                diff "$source" "$target" > /dev/null 2>&1
                 if [ $? -ne 0 ]
                 then
                     echo "KO : files contents are different"
@@ -142,13 +135,32 @@ run_rexx()
                 else
                     echo "OK"
                 fi
+            elif [ ! -e "$source" ]
+            then
+                echo "KO : no error returned, but the source has been removed"
+                errorCount=$(($errorCount+1))
+            elif [ ! -e "$target" ]
+            then
+                echo "KO : no error returned, but the target has been removed"
+                errorCount=$(($errorCount+1))
             else
                 echo "OK (but contents not compared, at least one of the files is not readable)"
             fi
         else
-            # No error has been returned, but we can't verify that the file contents is ok
-            # because the source file is no longer available after the move.
-            echo "OK (but contents not verified)"
+            # No error has been returned, we can't verify that the file contents is ok because 
+            # the source file is no longer available after the move. But we can verify that the
+            # source is not longer here, and that the target exists.
+            if [ -e "$source" ]
+            then
+                echo "KO : the source file is still here"
+                errorCount=$(($errorCount+1))
+            elif [ ! -e "$target" ]
+            then
+                echo "KO : the target file is not here"
+                errorCount=$(($errorCount+1))
+            else
+                echo "OK (but contents not verified)"
+            fi
         fi
     else
         # An error has been returned, and this is the expected behavior
@@ -158,7 +170,7 @@ run_rexx()
         # So if the target existed before the move, then ensure that it is still here after the move...
         if [ $command = "SysFileMove" -a $target_exists -eq 0 -a ! -e "$target" ] # remember : true == 0
         then
-            echo "KO : the target has been removed"
+            echo "KO : the move has failed (that was expected) but the target has been removed (that's not good)"
             errorCount=$(($errorCount+1))
         else
             echo "OK"
@@ -166,6 +178,30 @@ run_rexx()
     fi
 }
 
+
+# Make clean directories for tests
+chmod -R a+rwx "$d1" > /dev/null 2>&1
+chmod -R a+rwx "$d2" > /dev/null 2>&1
+rm -fr "$d1"  || { echo "aborting" ; exit 1 ; }
+rm -fr "$d2" || { echo "aborting" ; exit 1 ; }
+mkdir -p "$d1" || { echo "aborting" ; exit 1 ; }
+mkdir -p "$d2" || { echo "aborting" ; exit 1 ; }
+
+# Ensure that you have normal rights (if you are root, for example, then plenty of asserts would be wrong)
+dir1="$d1/copy00rwx"
+create_files "$dir1" "a-rwx,u+rwx"
+cp "$dir1/f0rw" "$dir1/f2r" > /dev/null 2>&1 && { echo "You have special rights (you can write in a read-only file), aborting" ; exit 1 ; }
+cp "$dir1/f3w" "$dir1/f1rw" > /dev/null 2>&1 && { echo "You have special rights (you can read in a write-only file), aborting" ; exit 1 ; }
+dir1="$d1/copy00rx"
+create_files "$dir1" "a-rwx,u+rx"
+rm -f "$dir1/f0rw" > /dev/null 2>&1 && { echo "You have special rights (you can remove a file in a read-only directory), aborting" ; exit 1 ; }
+dir2="$d2/copy00rwx"
+create_files "$dir2" "a-rwx,u+rwx"
+cp "$dir2/f0rw" "$dir2/f2r" > /dev/null 2>&1 && { echo "You have special rights (you can write in a read-only file), aborting" ; exit 1 ; }
+cp "$dir2/f3w" "$dir2/f1rw" > /dev/null 2>&1 && { echo "You have special rights (you can read in a write-only file), aborting" ; exit 1 ; }
+dir2="$d2/copy00rx"
+create_files "$dir2" "a-rwx,u+rx"
+rm -f "$dir2/f0rw" > /dev/null 2>&1 && { echo "You have special rights (you can remove a file in a read-only directory), aborting" ; exit 1 ; }
 
 testCount=0
 errorCount=0
@@ -188,6 +224,14 @@ run_rexx SysFileCopy "$dir1/f1rw" "$dir1/f1rw" $EEXIST
 run_rexx SysFileCopy "$dir1/f2r" "$dir1/f2r" $EEXIST
 run_rexx SysFileCopy "$dir1/f3w" "$dir1/f3w" $EEXIST
 run_rexx SysFileCopy "$dir1/f4" "$dir1/f4" $EEXIST
+
+echo
+echo "Copy on a directory is not allowed, must always specify a target filename"
+mkdir "$dir1/directory"
+run_rexx SysFileCopy "$dir1/f1rw" "$dir1/directory" $EISDIR
+run_rexx SysFileCopy "$dir1/f2r" "$dir1/directory" $EISDIR
+run_rexx SysFileCopy "$dir1/f3w" "$dir1/directory" $EACCESS # source not readable
+run_rexx SysFileCopy "$dir1/f4" "$dir1/directory" $EACCESS # source not readable
 
 ##################################
 #                                #
@@ -512,6 +556,14 @@ run_rexx SysFileMove "$dir1/f2r" "$dir1/f2r" $EEXIST
 run_rexx SysFileMove "$dir1/f3w" "$dir1/f3w" $EEXIST
 run_rexx SysFileMove "$dir1/f4" "$dir1/f4" $EEXIST
 
+echo
+echo "Move on a directory is not allowed, must always specify a target filename"
+mkdir "$dir1/directory"
+run_rexx SysFileMove "$dir1/f1rw" "$dir1/directory" $EISDIR
+run_rexx SysFileMove "$dir1/f2r" "$dir1/directory" $EISDIR
+run_rexx SysFileMove "$dir1/f3w" "$dir1/directory" $EISDIR
+run_rexx SysFileMove "$dir1/f4" "$dir1/directory" $EISDIR
+
 ##################################
 #                                #
 # Move on same mount, in RWX dir #
@@ -699,7 +751,7 @@ run_rexx SysFileMove "$dir1/f4" "$dir2/f4" $EACCESS # source not readable, targe
 echo
 echo "Move from symbolic link across different mounts, from RWX dir to RWX dir"
 echo "The symbolic links are not dereferenced"
-echo "NOTE : always fails when target exists because force mode NOT used (should we use it ?)"
+echo "NOTE : always fails when target exists (like the Windows version of SysFileMove)"
 dir1="$d1/move16rwx"
 create_files "$dir1" "a-rwx,u+rwx"
 dir2="$d2/move16rwx"
@@ -712,7 +764,7 @@ run_rexx SysFileMove "$dir1/f4l" "$dir2/f4" $EEXIST
 echo
 echo "Move to symbolic link across different mounts, from RWX dir to RWX dir"
 echo "The symbolic links are not dereferenced"
-echo "NOTE : always fails when target exists because force mode NOT used (should we use it ?)"
+echo "NOTE : always fails when target exists (like the Windows version of SysFileMove)"
 dir1="$d1/move17rwx"
 create_files "$dir1" "a-rwx,u+rwx"
 dir2="$d2/move17rwx"
@@ -805,7 +857,7 @@ run_rexx SysFileMove "$dir1/f4" "$dir2/f4" $EACCESS # target not writable, move 
 echo
 echo "Move from symbolic link across different mounts, from WX dir to RX dir"
 echo "The symbolic links are not dereferenced"
-echo "NOTE : always fails when target exists because force mode NOT used (should we use it ?)"
+echo "NOTE : always fails when target exists (like the Windows version of SysFileMove)"
 dir1="$d1/move24wx"
 create_files "$dir1" "a-rwx,u+wx"
 dir2="$d2/move24rx"
@@ -818,7 +870,7 @@ run_rexx SysFileMove "$dir1/f4l" "$dir2/f4" $EEXIST
 echo
 echo "Move to symbolic link across different mounts, from WX dir to RX dir"
 echo "The symbolic links are not dereferenced"
-echo "NOTE : always fails when target exists because force mode NOT used (should we use it ?)"
+echo "NOTE : always fails when target exists (like the Windows version of SysFileMove)"
 dir1="$d1/move25wx"
 create_files "$dir1" "a-rwx,u+wx"
 dir2="$d2/move25rx"
