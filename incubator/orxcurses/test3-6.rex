@@ -40,12 +40,17 @@
 /*----------------------------------------------------------------------------*/
 
 
-text1 = 'Oh give me a clone!' || '0A'x
-text2 = 'Yes a clone of my own!'
+numeric digits 12
+lf = '0A'x
+
 scr = .window~new()
-scr~addstr(text1)
-scr~addstr(text2)
-char = scr~getch()
+
+scr~start_color
+scr~init_pair(1, scr~COLOR_WHITE, scr~COLOR_BLUE)
+scr~bkgd(scr~color_pair(1))
+scr~refresh()
+ch = scr~getch()
+
 scr~endwin()
 return
 

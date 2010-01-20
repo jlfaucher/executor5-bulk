@@ -40,12 +40,28 @@
 /*----------------------------------------------------------------------------*/
 
 
-text1 = 'Oh give me a clone!' || '0A'x
-text2 = 'Yes a clone of my own!'
+numeric digits 12
+lf = '0A'x
+
+new_color = 1
+red = 1000
+green = 750
+blue = 750
+
 scr = .window~new()
-scr~addstr(text1)
-scr~addstr(text2)
-char = scr~getch()
+scr~start_color
+if \scr~can_change_color() then do
+   scr~addstr('This probably won''t work, but anyway:' || lf)
+   end
+
+scr~init_color(new_color, red, green, blue)
+
+scr~init_pair(1, new_color, scr~COLOR_BLACK)
+scr~attrset(scr~COLOR_PAIR(1))
+scr~addstr('This is the new color' new_color'.' || lf)
+scr~refresh()
+ch = scr~getch()
+
 scr~endwin()
 return
 

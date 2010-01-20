@@ -40,12 +40,29 @@
 /*----------------------------------------------------------------------------*/
 
 
-text1 = 'Oh give me a clone!' || '0A'x
-text2 = 'Yes a clone of my own!'
+numeric digits 12
+lf = '0A'x
+
 scr = .window~new()
-scr~addstr(text1)
-scr~addstr(text2)
-char = scr~getch()
+scr~start_color
+
+scr~init_pair(1, scr~COLOR_BLACK, scr~COLOR_RED)
+scr~init_pair(2, scr~COLOR_BLUE, scr~COLOR_BLACK)
+scr~attrset(scr~COLOR_PAIR(1))
+scr~addstr('My name is Mr. Black!' || lf)
+scr~attrset(scr~COLOR_PAIR(2))
+scr~addstr('My name is Mr. Blue!' || lf)
+scr~attrset(scr~COLOR_PAIR(1))
+scr~addstr('How do you do?' || lf)
+scr~attrset(scr~COLOR_PAIR(2))
+scr~addstr('How do I do ')
+scr~attron(scr~A_BOLD)
+scr~addstr('what')
+scr~attroff(scr~A_BOLD)
+scr~addstr('?')
+scr~refresh()
+ch = scr~getch()
+
 scr~endwin()
 return
 

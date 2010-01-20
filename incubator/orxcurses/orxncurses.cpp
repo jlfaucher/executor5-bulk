@@ -975,6 +975,21 @@ RexxMethod0(int,                       // Return type
 }
 
 /**
+ * Method:  OrxCurColor_pair
+ *
+ * Returns the number of possible COLOR_PAIR attribute.
+ *
+ * @return        Zero.
+ **/
+RexxMethod1(int,                       // Return type
+            OrxCurColor_pair,          // Object_method name
+            int, num)
+{
+
+    return (int) COLOR_PAIR(num);
+}
+
+/**
  * Method:  OrxCurColor_pairs
  *
  * Returns the number of possible COLOR_PAIRS.
@@ -1965,7 +1980,7 @@ RexxMethod3(int,                       // Return type
             int, b)
 {
 
-    return init_pair((short)SUBTRACTONE(c), (short)f, (short)b);
+    return init_pair((short)c, (short)f, (short)b);
 }
 
 /**
@@ -4027,6 +4042,7 @@ RexxMethodEntry orxcur_methods[] = {
     REXX_METHOD(OrxCurClrtoeol, OrxCurClrtoeol),
     REXX_METHOD(OrxCurColor_set, OrxCurColor_set),
     REXX_METHOD(OrxCurColors, OrxCurColors),
+    REXX_METHOD(OrxCurColor_pair, OrxCurColor_pair),
     REXX_METHOD(OrxCurColor_pairs, OrxCurColor_pairs),
     REXX_METHOD(OrxCurCols, OrxCurCols),
     REXX_METHOD(OrxCurCopywin, OrxCurCopywin),

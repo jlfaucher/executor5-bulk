@@ -322,6 +322,7 @@ return
 ::METHOD clrtoeol EXTERNAL "LIBRARY orxncurses OrxCurClrtoeol"
 ::METHOD color_set EXTERNAL "LIBRARY orxncurses OrxCurColor_set"
 ::METHOD colors EXTERNAL "LIBRARY orxncurses OrxCurColors"
+::METHOD color_pair EXTERNAL "LIBRARY orxncurses OrxCurColor_pair"
 ::METHOD color_pairs EXTERNAL "LIBRARY orxncurses OrxCurColor_pairs"
 ::METHOD cols EXTERNAL "LIBRARY orxncurses OrxCurCols"
 ::METHOD copywin EXTERNAL "LIBRARY orxncurses OrxCurCopywin"
