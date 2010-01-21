@@ -1433,7 +1433,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
         return 0;
     }
     getmaxyx((WINDOW *)cself, y, x);
-    sprintf(buf, "%d %d", ADDONE(y), ADDONE(x));
+    sprintf(buf, "%d %d", y, x);
     return (RexxObjectPtr)context->NewStringFromAsciiz(buf);
 }
 
