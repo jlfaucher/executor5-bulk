@@ -1995,7 +1995,7 @@ RexxMethod3(int,                       // Return type
 RexxMethod2(int,                       // Return type
             OrxCurInsch,               // Object_method name
             CSELF, cself,              // Self
-            CSTRING, ch)
+            int, ch)
 {
 
     if (cself == NULL) {
@@ -2004,7 +2004,7 @@ RexxMethod2(int,                       // Return type
                                  context->NewStringFromAsciiz("Window"));
         return 0;
     }
-    return (int)winsch((WINDOW *)cself, (chtype)*ch);
+    return (int)winsch((WINDOW *)cself, (chtype)ch);
 }
 
 /**
@@ -2026,7 +2026,7 @@ RexxMethod4(int,                       // Return type
             CSELF, cself,              // Self
             int, y,
             int, x,
-            CSTRING, ch)
+            int, ch)
 {
 
     if (cself == NULL) {
@@ -2035,7 +2035,7 @@ RexxMethod4(int,                       // Return type
                                  context->NewStringFromAsciiz("Window"));
         return 0;
     }
-    return mvwinsch((WINDOW *)cself, SUBTRACTONE(y), SUBTRACTONE(x), (chtype)*ch);
+    return mvwinsch((WINDOW *)cself, SUBTRACTONE(y), SUBTRACTONE(x), (chtype)ch);
 }
 
 /**
@@ -2894,7 +2894,7 @@ RexxMethod1(int,                  // Return type
 RexxMethod2(int,                       // Return type
             OrxCurPechochar,           // Object_method name
             CSELF, cself,              // Self
-            CSTRING, ch)
+            int, ch)
 {
 
     if (cself == NULL) {
@@ -2903,7 +2903,7 @@ RexxMethod2(int,                       // Return type
                                  context->NewStringFromAsciiz("Window"));
         return 0;
     }
-    return pechochar((WINDOW *)cself, (chtype)*ch);
+    return pechochar((WINDOW *)cself, (chtype)ch);
 }
 
 /**
