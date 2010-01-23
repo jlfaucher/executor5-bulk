@@ -70,7 +70,7 @@ do c = 1 to 10
 
 scr~move(2, 25)
 do c = ob~length() to 1 by -1
-   scr~insch(ob~substr(c, 1)~c2d())
+   scr~insch(ob~substr(c, 1))
    scr~refresh()
    scr~napms(100)
    end

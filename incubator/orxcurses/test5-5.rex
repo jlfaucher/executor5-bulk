@@ -52,7 +52,7 @@ scr~refresh()
 
 do i = len to 1 by -1
    scr~move(6, 6)
-   scr~insch(text~substr(i, 1)~c2d())
+   scr~insch(text~substr(i, 1))
    scr~refresh()
    scr~napms(100)
    end
