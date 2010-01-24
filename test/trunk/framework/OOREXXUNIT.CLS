@@ -1475,7 +1475,7 @@ return str
 
 
 ::method init        -- constructor
-  expose fName fCountTestCases definedInFile    -- name of Testcase (method) to carry out
+  expose fName fCountTestCases    -- name of Testcase (method) to carry out
   parse arg fName
 
   fCountTestCases=1  -- default: individual test
@@ -1484,9 +1484,9 @@ return str
   clzTCI=self~class~testCaseInfo    -- get access to clz' 'testCaseInfo' dir
   s=clzTCI~entry("test_Case-source")
   if .nil<>s then                   -- if source available, memorize fully qualified file name
-     definedInFile=s
+     self~definedInFile=s
   else
-    definedInFile="n/a_"self~identityHash -- indicate that no file name available
+    self~definedInFile="n/a_"self~identityHash -- indicate that no file name available
 
   self~init:super    -- let superclass initialize
 
