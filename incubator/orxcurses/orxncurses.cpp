@@ -1376,6 +1376,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
             CSELF, cself)              // Self
 {
     char buf[2] = {'\0', '\0'};
+    int retc;
 
     if (cself == NULL) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -1383,7 +1384,11 @@ RexxMethod1(RexxObjectPtr,             // Return type
                                  context->NewStringFromAsciiz("Window"));
         return 0;
     }
-    buf[0] = (char) wgetch((WINDOW *)cself);
+    retc = wgetch((WINDOW *)cself);
+    if (retc < 0 || retc > 255) {  // return ERR and key codes as strings
+        return (RexxObjectPtr)context->Int32ToObject(retc);
+    }
+    buf[0] = (char)retc;
     return (RexxObjectPtr)context->NewStringFromAsciiz(buf);
 }
 
@@ -1513,7 +1518,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
                                  context->NewStringFromAsciiz("Window"));
         return 0;
     }
-    wgetnstr((WINDOW *)cself, buf, 1024);
+    wgetnstr((WINDOW *)cself, buf, sizeof(buf) - 1);
     return context->NewStringFromAsciiz(buf);
 }
 
