@@ -50,7 +50,7 @@ Ham4 = "Or to take arms against a sea of troubles," || lf
 Ham5 = "And by opposing end them?" || lf
 ob = "obnoxious"
 
-call setbase 0
+.window~setbase(0)
 scr = .window~new()
 
 scr~addstr(Ham1)

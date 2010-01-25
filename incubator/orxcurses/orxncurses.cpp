@@ -73,45 +73,45 @@ bool onebased = true;
 /* Private Methods                                                            */
 /*============================================================================*/
 
+
+/*============================================================================*/
+/* Public Methods                                                             */
+/*============================================================================*/
+
 /**
- * Function:  OrxCurSetBase
+ * Method:  OrxCurVersion
+ *
+ * Return the OrxnCurses version string.
+ *
+ * @return        Zero.
+ **/
+RexxMethod0(RexxObjectPtr,             // Return type
+            OrxCurVersion)             // Object_method name
+{
+    
+    return (RexxObjectPtr)context->NewStringFromAsciiz(VERSTRING(VMAJOR, VMINOR, VREL));
+}
+
+/**
+ * Method:  OrxCurSetBase
  *
  * Set whether or not the library uses one-based indexes or 
  * zero-based indexes. The default is one-based.
  *
  * @param base    1 = one-based, 0 = zero-based
  *
- * @return        Zero.
+ * @return        base.
  **/
-RexxRoutine1(logical_t,                // Return type
-             OrxCurSetBase,            // Object_method name
-             OPTIONAL_logical_t, base)
+RexxMethod1(logical_t,                 // Return type
+            OrxCurSetBase,             // Object_method name
+            OPTIONAL_logical_t, base)
 {
-    
-    if (argumentExists(1)) {
-        onebased = base;
-    }
-    return onebased;
+
+   if (argumentExists(1)) {
+       onebased = base;
+   }
+   return onebased;
 }
-
-/**
- * Function:  OrxCurVersion
- *
- * Return the OrxnCurses version string.
- *
- * @return        Zero.
- **/
-RexxRoutine0(RexxObjectPtr,            // Return type
-             OrxCurVersion)            // Object_method name
-{
-    
-    return (RexxObjectPtr)context->NewStringFromAsciiz(VERSTRING(VMAJOR, VMINOR, VREL));
-}
-
-
-/*============================================================================*/
-/* Public Methods                                                             */
-/*============================================================================*/
 
 /**
  * Method:  OrxCurInitscr
@@ -3997,14 +3997,14 @@ RexxMethod4(int,                       // Return type
 
 // build the actual function entry list
 RexxRoutineEntry orxcur_routines[] = {
-    REXX_TYPED_ROUTINE(OrxCurSetBase, OrxCurSetBase),
-    REXX_TYPED_ROUTINE(OrxCurVersion, OrxCurVersion),
     REXX_LAST_ROUTINE()
 };
 
 
 // build the actual method entry list
 RexxMethodEntry orxcur_methods[] = {
+    REXX_METHOD(OrxCurVersion, OrxCurVersion),
+    REXX_METHOD(OrxCurSetBase, OrxCurSetBase),
     REXX_METHOD(OrxCurInitscr, OrxCurInitscr),
     REXX_METHOD(OrxCurNewwin, OrxCurNewwin),
     REXX_METHOD(OrxCurNewwinfromptr, OrxCurNewwinfromptr),

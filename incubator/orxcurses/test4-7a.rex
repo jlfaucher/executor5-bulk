@@ -43,7 +43,7 @@
 numeric digits 12
 lf = '0A'x
 
-call setbase 0
+.window~setbase(0)
 scr = .window~new()
 
 scr~addstr('Type some text; ''~'' to end:' || lf)

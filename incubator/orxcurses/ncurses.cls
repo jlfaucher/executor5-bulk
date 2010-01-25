@@ -40,8 +40,6 @@
 
 
 
-::ROUTINE setbase public EXTERNAL "LIBRARY orxncurses OrxCurSetBase"
-::ROUTINE orxncurses_version public EXTERNAL "LIBRARY orxncurses OrxCurVersion"
 
 
 /*============================================================================*/
@@ -268,6 +266,8 @@ return self~acs_map('}') /* UK pound sign */
 ::CONSTANT COLOR_CYAN      6
 ::CONSTANT COLOR_WHITE     7
                            
+::METHOD setbase public class EXTERNAL "LIBRARY orxncurses OrxCurSetBase"
+::METHOD orxncurses_version public class EXTERNAL "LIBRARY orxncurses OrxCurVersion"
 
 ::METHOD init
 if \.window~stdscr~isa(.Pointer) then do
@@ -584,5 +584,5 @@ return
 expose attr colorpair char
 use strict arg attr, colorpair, char
 numeric digits 12
-return x2d(attr~d2x(4) || (colorpair - 1)~d2x(2) || char~c2x())
+return (attr + colorpair + char~c2d())
 

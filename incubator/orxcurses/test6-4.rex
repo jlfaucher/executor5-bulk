@@ -40,31 +40,22 @@
 /*----------------------------------------------------------------------------*/
 
 
--- Note: the output in the book is incorrect.
-
 numeric digits 12
 lf = '0A'x
 
-col1 = 5
-col2 = 38
-
-.window~setbase(0)
 scr = .window~new()
 
 yx = scr~getmaxyx()
-parse var yx rows cols .
+parse var yx y x .
+cmax = ((x * y) / 5)
+do c = 1 to cmax
+   scr~addstr("blah ")
+   end
+scr~refresh()
+ch = scr~getch()
 
-scr~mvaddstr(5, col1, 'Your name:'~right(30))
-scr~mvaddstr(5, col2, 'Art Grockmeister'~left(30))
-
-scr~mvaddstr(7, col1, 'Your company:'~right(30))
-scr~mvaddstr(7, col2, 'Sterling/Worbletyme'~left(30))
-
-scr~mvaddstr(9, col1, 'Position:'~right(30))
-scr~mvaddstr(9, col2, 'Grand Duke of Finance'~left(30))
-
-scr~mvaddstr(11, col1, 'Date hired:'~right(30))
-scr~mvaddstr(11, col2, 'October 19, 1993'~left(30))
+scr~move(6, 21)
+scr~clrtobot()
 scr~refresh()
 ch = scr~getch()
 

@@ -46,7 +46,7 @@ lf = '0A'x
 text = "Stock Market Swells! DOW tops 15,000!"
 len = text~length()
 
-call setbase 0
+.window~setbase(0)
 scr = .window~new()
 call fill
 scr~refresh()

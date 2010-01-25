@@ -49,7 +49,7 @@ Ham3 = "The slings and arrows of outrageous fortune," || lf
 Ham4 = "Or to take arms against a sea of troubles," || lf
 Ham5 = "And by opposing end them?" || lf
 
-call setbase 0
+.window~setbase(0)
 scr = .window~new()
 
 scr~addstr(Ham1)

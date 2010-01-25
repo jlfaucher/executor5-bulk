@@ -40,7 +40,7 @@
 /*----------------------------------------------------------------------------*/
 
 
-call setbase 0
+.window~setbase(0)
 
 text1 = 'Oh give me a clone!' || '0A'x
 text2 = 'Yes a clone of my own!'
