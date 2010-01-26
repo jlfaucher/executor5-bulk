@@ -53,9 +53,9 @@ halfy = (maxy / 2)~format(, 0)
 
 /* create four windows to fill the screen */
 a = .window~new(halfy, halfx, 1, 1)
-b = .window~new(halfy, halfx, 1, halfx)
-c = .window~new(halfy, halfx, halfy, 1)
-d = .window~new(halfy, halfx, halfy, halfx)
+b = .window~new(halfy, halfx, 1, halfx + 1)
+c = .window~new(halfy, halfx, halfy + 1, 1)
+d = .window~new(halfy, halfx, halfy + 1, halfx + 1)
 
 /* write to each window */
 a~mvaddstr(1, 1, "This is window A" || lf)
