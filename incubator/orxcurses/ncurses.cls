@@ -270,17 +270,17 @@ return self~acs_map('}') /* UK pound sign */
 ::METHOD orxncurses_version public class EXTERNAL "LIBRARY orxncurses OrxCurVersion"
 
 ::METHOD init
-if \.window~stdscr~isa(.Pointer) then do
+if arg() = 0 & .window~stdscr() = 'STDSCR'then do
    use strict arg
    .window~stdscr = self~first_init()
    end
-else if arg() = 4 then do
-   use strict arg nlines, ncols, begin_y, begin_x
-   self~next_init(nlines, ncols, begin_y, begin_x)
-   end
-else do
+else if arg() = 1 then do
    use strict arg ptr
    self~newwinfromptr(ptr)
+   end
+else do
+   use strict arg nlines, ncols, begin_y, begin_x
+   self~next_init(nlines, ncols, begin_y, begin_x)
    end
 return
 

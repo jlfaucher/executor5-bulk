@@ -197,11 +197,18 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod0(int,                       // Return type
-            OrxCurRefresh)             // Object_method name
+RexxMethod1(int,                       // Return type
+            OrxCurRefresh,             // Object_method name
+            CSELF, cself)              // Self
 {
     
-    return refresh();
+    if (cself == NULL) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("Window"));
+        return 0;
+    }
+    return wrefresh((WINDOW *)cself);
 }
 
 /**
