@@ -1173,6 +1173,34 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
+ * Method:  OrxCurDerwinprivate
+ *
+ * Create a  derrived window.
+ *
+ * @param nlines  Number of lines.
+ *
+ * @param ncols   Number of cols.
+ *
+ * @param begy    Beginning Y line.
+ *
+ * @param begx    Beginning X column.
+ *
+ * @return        Zero.
+ **/
+RexxMethod5(RexxObjectPtr,             // Return type
+            OrxCurDerwinprivate,       // Object_method name
+            CSELF, cself,              // Self
+            int, nlines,
+            int, ncols,
+            int, begy,
+            int, begx)
+{
+
+    WINDOW *ptr = derwin((WINDOW *)cself, nlines, ncols, SUBTRACTONE(begy), SUBTRACTONE(begx));
+    return (RexxObjectPtr)context->NewPointer(ptr);
+}
+
+/**
  * Method:  OrxCurDupwinprivate
  *
  * Duplicate a window.
@@ -1392,7 +1420,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
         return 0;
     }
     retc = wgetch((WINDOW *)cself);
-    if (retc < 0 || retc > 255) {  // return ERR and key codes as strings
+    if (retc < 0 || retc > 255) {  // return ERR and key codes as numeric strings
         return (RexxObjectPtr)context->Int32ToObject(retc);
     }
     buf[0] = (char)retc;
@@ -1413,6 +1441,7 @@ RexxMethod3(RexxObjectPtr,             // Return type
             int, x)
 {
     char buf[2] = {'\0', '\0'};
+    int retc;
 
     if (cself == NULL) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -1420,7 +1449,11 @@ RexxMethod3(RexxObjectPtr,             // Return type
                                  context->NewStringFromAsciiz("Window"));
         return 0;
     }
-    buf[0] = (char) mvwgetch((WINDOW *)cself, SUBTRACTONE(y), SUBTRACTONE(x));
+    retc = mvwgetch((WINDOW *)cself, SUBTRACTONE(y), SUBTRACTONE(x));
+    if (retc < 0 || retc > 255) {  // return ERR and key codes as numeric strings
+        return (RexxObjectPtr)context->Int32ToObject(retc);
+    }
+    buf[0] = (char)retc;
     return (RexxObjectPtr)context->NewStringFromAsciiz(buf);
 }
 
@@ -4063,6 +4096,7 @@ RexxMethodEntry orxcur_methods[] = {
     REXX_METHOD(OrxCurDelch, OrxCurDelch),
     REXX_METHOD(OrxCurDeleteln, OrxCurDeleteln),
     REXX_METHOD(OrxCurDelwin, OrxCurDelwin),
+    REXX_METHOD(OrxCurDerwinprivate, OrxCurDerwinprivate),
     REXX_METHOD(OrxCurDupwinprivate, OrxCurDupwinprivate),
     REXX_METHOD(OrxCurEcho, OrxCurEcho),
     REXX_METHOD(OrxCurNoecho, OrxCurNoecho),

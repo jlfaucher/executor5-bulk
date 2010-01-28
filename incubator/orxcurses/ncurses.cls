@@ -333,14 +333,14 @@ return
 ::METHOD delwin EXTERNAL "LIBRARY orxncurses OrxCurDelwin"
 ::METHOD derwin
 use strict arg nlines, ncols, begy, begx
-yx = self~getbegyx()
-parse var yx y x .
-return .window~new(nlines, ncols, begy + y, gebx + x)
-::METHOD dupwinprivate private EXTERNAL "LIBRARY orxncurses OrxCurDupwinprivate"
+ptr = self~derwinprivate(nlines, ncols, begy, begx)
+return .window~new(ptr)
+::METHOD derwinprivate private EXTERNAL "LIBRARY orxncurses OrxCurDerwinprivate"
 ::METHOD dupwin
 use strict arg
 ptr = self~dupwinprivate()
 return .window~new(ptr)
+::METHOD dupwinprivate private EXTERNAL "LIBRARY orxncurses OrxCurDupwinprivate"
 ::METHOD echo EXTERNAL "LIBRARY orxncurses OrxCurEcho"
 ::METHOD noecho EXTERNAL "LIBRARY orxncurses OrxCurNoecho"
 ::METHOD echochar EXTERNAL "LIBRARY orxncurses OrxCurEchochar"

@@ -43,7 +43,7 @@ Provided Test Programs
 
 There are a number of test programs provided. They are all derrived from the book
 "Programmer's Guide to nCurses" by Dab Gookin, Wiley Publishing, Inc., ISBN 978-0-470-10759-1.
-All programs use 1-based indexes except the programs with an "a: suffix e.g. test2-4a.rex.
+All programs use 1-based indexes except the programs with an "a" suffix e.g. test2-4a.rex.
 
 
 

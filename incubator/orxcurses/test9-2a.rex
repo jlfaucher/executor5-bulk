@@ -1,3 +1,4 @@
+#!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
@@ -39,36 +40,33 @@
 /*----------------------------------------------------------------------------*/
 
 
-#ifndef ORXNCURSES_H
-#define ORXNCURSES_H
+numeric digits 12
+lf = '0A'x
+
+.window~setbase(0)
+scr = .window~new()
+scr~start_color()
+scr~init_pair(1, scr~COLOR_WHITE, scr~COLOR_BLUE)
+scr~init_pair(2, scr~COLOR_RED, scr~COLOR_YELLOW)
+scr~init_pair(3, scr~COLOR_CYAN, scr~COLOR_WHITE)
+
+/* create subwindow */
+sonny = scr~subwin(5, 20, 10, 30)
+babygirl = scr~derwin(5, 20, 1, 50)
+
+/* color window and splash some text */
+scr~bkgd(scr~COLOR_PAIR(1))
+scr~addstr("Hello, son.")
+sonny~bkgd(sonny~COLOR_PAIR(2))
+sonny~addstr("Hello, dad.")
+babygirl~bkgd(sonny~COLOR_PAIR(3))
+babygirl~addstr("Hello, Papa.")
+scr~refresh()
+ch = scr~getch()
+
+scr~endwin()
+return
 
 
-/*----------------------------------------------------------------------------*/
-/* Definitions                                                                */
-/*----------------------------------------------------------------------------*/
+::requires 'ncurses.cls'
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <oorexxapi.h>
-#include <ncurses.h>
-
-
-/*----------------------------------------------------------------------------*/
-/* Global variables                                                           */
-/*----------------------------------------------------------------------------*/
-
-
-
-/*----------------------------------------------------------------------------*/
-/* Function Prototypes                                                        */
-/*----------------------------------------------------------------------------*/
-
-
-/*----------------------------------------------------------------------------*/
-/* Method Prototypes                                                          */
-/*----------------------------------------------------------------------------*/
- 
- 
- #endif /* ORXNCURSES_H */
- 
