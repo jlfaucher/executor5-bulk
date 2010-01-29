@@ -2696,6 +2696,33 @@ RexxMethod3(int,                       // Return type
 }
 
 /**
+ * Method:  OrxCurMvwin
+ *
+ * Move a window.
+ *
+ * @param y       Parent Y position.
+ *
+ * @param x       Parent X position.
+ *
+ * @return        Zero.
+ **/
+RexxMethod3(int,                       // Return type
+            OrxCurMvwin,               // Object_method name
+            CSELF, cself,              // Self
+            int, y,
+            int, x)
+{
+
+    if (cself == NULL) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("Window"));
+        return 0;
+    }
+    return mvwin((WINDOW *)cself, SUBTRACTONE(y), SUBTRACTONE(x));
+}
+
+/**
  * Method:  OrxCurNapms
  *
  * Pause the program for number of microseconds.
@@ -4163,6 +4190,7 @@ RexxMethodEntry orxcur_methods[] = {
     REXX_METHOD(OrxCurMousemask, OrxCurMousemask),
     REXX_METHOD(OrxCurMove, OrxCurMove),
     REXX_METHOD(OrxCurMvderwin, OrxCurMvderwin),
+    REXX_METHOD(OrxCurMvwin, OrxCurMvwin),
     REXX_METHOD(OrxCurNapms, OrxCurNapms),
     REXX_METHOD(OrxCurNcurses_mouse_version, OrxCurNcurses_mouse_version),
     REXX_METHOD(OrxCurNcurses_version, OrxCurNcurses_version),

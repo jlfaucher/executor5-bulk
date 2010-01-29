@@ -415,6 +415,7 @@ return .Window~new(ptr)
 ::METHOD mousemask EXTERNAL "LIBRARY orxncurses OrxCurMousemask"
 ::METHOD move EXTERNAL "LIBRARY orxncurses OrxCurMove"
 ::METHOD mvderwin EXTERNAL "LIBRARY orxncurses OrxCurMvderwin"
+::METHOD mvwin EXTERNAL "LIBRARY orxncurses OrxCurMvwin"
 ::METHOD napms EXTERNAL "LIBRARY orxncurses OrxCurNapms"
 ::METHOD ncurses_mouse_version EXTERNAL "LIBRARY orxncurses OrxCurNcurses_mouse_version"
 ::METHOD ncurses_version EXTERNAL "LIBRARY orxncurses OrxCurNcurses_version"
