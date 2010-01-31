@@ -48,7 +48,7 @@
 
 ::class Window public
 
-::ATTRIBUTE stdscr class private
+::ATTRIBUTE stdscr class
 
 -- chtype constants
 ::CONSTANT A_NORMAL	    0
@@ -272,7 +272,8 @@ return self~acs_map('}') /* UK pound sign */
 ::METHOD init
 if arg() = 0 & .window~stdscr() = 'STDSCR'then do
    use strict arg
-   .window~stdscr = self~first_init()
+   self~first_init()
+   .window~stdscr = self
    end
 else if arg() = 1 then do
    use strict arg ptr
@@ -542,11 +543,25 @@ return .window~new(ptr)
 
 ::METHOD init EXTERNAL "LIBRARY orxncurses OrxCurNewpad"
 
-::METHOD echochar EXTERNAL "LIBRARY orxncurses OrxCurPechochar"
-::METHOD pechochar EXTERNAL "LIBRARY orxncurses OrxCurPechochar"
+::METHOD echochar
+return self~ERR
 ::METHOD mvwin
 return self~ERR
+::METHOD pechochar EXTERNAL "LIBRARY orxncurses OrxCurPechochar"
+::METHOD pnoutrefresh EXTERNAL "LIBRARY orxncurses OrxCurPnoutrefresh"
+--::METHOD prefresh EXTERNAL "LIBRARY orxncurses OrxCurPrefresh"
+::METHOD prefresh
+use strict arg minrow, mincol, sminrow, smincol, smaxrow, smaxcol
+.window~stdscr()~copywin(self, minrow, mincol, sminrow, smincol, smaxrow, smaxcol, .false)
+.window~stdscr()~refresh()
+return self~OK
+::METHOD redrawwin
+return self~ERR
+::METHOD refresh
+return self~ERR
 ::METHOD scroll
+return self~ERR
+::METHOD scrollok
 return self~ERR
 ::METHOD scrl
 return self~ERR
@@ -556,12 +571,6 @@ ptr = self~subpadprivate(nlines, ncols, begy, begx)
 return .window~new(ptr)
 ::METHOD subwin
 return self~ERR
-::METHOD pnoutrefresh EXTERNAL "LIBRARY orxncurses OrxCurPnoutrefresh"
-::METHOD prefresh EXTERNAL "LIBRARY orxncurses OrxCurPrefresh"
-::METHOD redrawwin
-return self~ERR
-::METHOD refresh EXTERNAL "LIBRARY orxncurses OrxCurPrefresh"
--- ::METHOD subpad EXTERNAL "LIBRARY orxncurses OrxCurSubpad"
 ::METHOD wnoutrefresh
 return self~ERR
 

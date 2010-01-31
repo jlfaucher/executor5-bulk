@@ -1574,7 +1574,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
             CSELF, cself,              // Self
             int, n)
 {
-    char buf[n + 1];
+    char *buf = (char *)malloc(n + 1);
+    RexxObjectPtr tmp;
 
     if (cself == NULL) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -1583,7 +1584,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
         return 0;
     }
     wgetnstr((WINDOW *)cself, buf, n);
-    return context->NewStringFromAsciiz(buf);
+    tmp = context->NewStringFromAsciiz(buf);
+    free(tmp);
+    return tmp;
 }
 
 /**
@@ -1625,7 +1628,8 @@ RexxMethod4(RexxObjectPtr,             // Return type
             int, x,
             int, n)
 {
-    char buf[n + 1];
+    char *buf = (char *)malloc(n + 1);
+    RexxObjectPtr tmp;
 
     if (cself == NULL) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -1634,7 +1638,9 @@ RexxMethod4(RexxObjectPtr,             // Return type
         return 0;
     }
     mvwgetnstr((WINDOW *)cself, SUBTRACTONE(y), SUBTRACTONE(x), buf, n);
-    return context->NewStringFromAsciiz(buf);
+    tmp = context->NewStringFromAsciiz(buf);
+    free(tmp);
+    return tmp;
 }
 
 /**
@@ -2279,7 +2285,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
             CSELF, cself,              // Self
             int, n)
 {
-    char buf[n + 1];
+    char *buf = (char *)malloc(n + 1);
+    RexxObjectPtr tmp;
 
     if (cself == NULL) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -2288,12 +2295,14 @@ RexxMethod2(RexxObjectPtr,             // Return type
         return 0;
     }
     winnstr((WINDOW *)cself, buf, n);
-    return context->NewStringFromAsciiz(buf);
+    tmp = context->NewStringFromAsciiz(buf);
+    free(tmp);
+    return tmp;
 }
 
 /**
- * Method:  OrxCurMvinstr
- *  
+ * Method:  OrxCurMvinstr 
+
  * Read a string from the terminal after moving the cursor.
  *
  * @param y       New y position for the cursor.
@@ -2340,7 +2349,8 @@ RexxMethod4(RexxObjectPtr,             // Return type
             int, x,
             int, n)
 {
-    char buf[n + 1];
+    char *buf = (char *)malloc(n + 1);
+    RexxObjectPtr tmp;
 
     if (cself == NULL) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -2349,7 +2359,9 @@ RexxMethod4(RexxObjectPtr,             // Return type
         return 0;
     }
     mvwinnstr((WINDOW *)cself, SUBTRACTONE(y), SUBTRACTONE(x), buf, n);
-    return context->NewStringFromAsciiz(buf);
+    tmp = context->NewStringFromAsciiz(buf);
+    free(tmp);
+    return tmp;
 }
 
 /**
@@ -2972,7 +2984,7 @@ RexxMethod2(int,                       // Return type
     if (cself == NULL) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
-                                 context->NewStringFromAsciiz("Window"));
+                                 context->NewStringFromAsciiz("Pad"));
         return 0;
     }
     return pechochar((WINDOW *)cself, (chtype)ch);
@@ -3011,7 +3023,7 @@ RexxMethod7(int,                       // Return type
     if (cself == NULL) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
-                                 context->NewStringFromAsciiz("Window"));
+                                 context->NewStringFromAsciiz("Pad"));
         return 0;
     }
     return pnoutrefresh((WINDOW *)cself, SUBTRACTONE(minrow), SUBTRACTONE(mincol),
@@ -3022,7 +3034,7 @@ RexxMethod7(int,                       // Return type
 /**
  * Method:  OrxCurPrefresh
  *
- * Refresh the pad and turn nCurses formatting on.
+ * Refresh the pad to the stdscr.
  *
  * @param minrow  Minimum row number.
  *
@@ -3040,7 +3052,7 @@ RexxMethod7(int,                       // Return type
  **/
 RexxMethod7(int,                       // Return type
             OrxCurPrefresh,            // Object_method name
-            CSELF, cself,              // Self
+            CSELF, cself,              // Pad
             int, minrow,
             int, mincol,
             int, sminrow,
@@ -3052,7 +3064,7 @@ RexxMethod7(int,                       // Return type
     if (cself == NULL) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                  context->WholeNumberToObject(1),
-                                 context->NewStringFromAsciiz("Window"));
+                                 context->NewStringFromAsciiz("Pad"));
         return 0;
     }
     return prefresh((WINDOW *)cself, SUBTRACTONE(minrow), SUBTRACTONE(mincol),

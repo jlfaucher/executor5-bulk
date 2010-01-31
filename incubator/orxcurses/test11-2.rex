@@ -1,3 +1,4 @@
+#!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
@@ -39,45 +40,43 @@
 /*----------------------------------------------------------------------------*/
 
 
-#ifndef ORXNCURSES_H
-#define ORXNCURSES_H
+numeric digits 12
+lf = '0A'x
+filename = 'Readme.txt'
+tall = 24
+wide = 19
+spacer = 5
+
+scr = .window~new()
+
+p = .pad~new(200, wide)
+
+strm = .stream~new(filename)
+strm~open('read')
+eof = .false
+call on notready name eof
+
+ch = strm~charin()
+do while \eof
+   p~addch(ch)
+   ch = strm~charin()
+   end
+strm~close()
+
+p~prefresh(1, 1, 1, 1, tall, wide)
+p~prefresh(tall, 1, 1, wide + spacer, tall, (wide * 2) + spacer - 1)
+p~prefresh(tall * 2, 1, 1, (wide * 2) + (spacer * 2), tall, (wide *3) + (spacer * 2) - 1)
+
+scr~getch()
+
+scr~endwin()
+return
 
 
-/*----------------------------------------------------------------------------*/
-/* Definitions                                                                */
-/*----------------------------------------------------------------------------*/
-
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <oorexxapi.h>
-#ifdef WIN32
-#define NCURSES_MOUSE_VERSION 1
-#include <curses.h>
-#define NCURSES_VERSION curses_version()
-#define NCURSES_CAST(type,value) (type)(value)
-#define NCURSES_ACS(c)    (acs_map[NCURSES_CAST(unsigned char,c)])
-// returns the attribute used for the soft keys.
-inline int slk_attr() { return 0; } // To investigate !
-#else
-#include <ncurses.h>
-#endif
+eof:
+eof = .true
+return
 
 
-/*----------------------------------------------------------------------------*/
-/* Global variables                                                           */
-/*----------------------------------------------------------------------------*/
+::requires 'ncurses.cls'
 
-
-/*----------------------------------------------------------------------------*/
-/* Function Prototypes                                                        */
-/*----------------------------------------------------------------------------*/
-
-
-/*----------------------------------------------------------------------------*/
-/* Method Prototypes                                                          */
-/*----------------------------------------------------------------------------*/
- 
- 
- #endif /* ORXNCURSES_H */
- 
