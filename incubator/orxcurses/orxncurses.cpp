@@ -1574,8 +1574,6 @@ RexxMethod2(RexxObjectPtr,             // Return type
             CSELF, cself,              // Self
             int, n)
 {
-    char *buf = (char *)malloc(n + 1);
-    RexxObjectPtr tmp;
 
     if (cself == NULL) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -1583,8 +1581,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
                                  context->NewStringFromAsciiz("Window"));
         return 0;
     }
+    char *buf = (char *)malloc(n + 1);
     wgetnstr((WINDOW *)cself, buf, n);
-    tmp = context->NewStringFromAsciiz(buf);
+    RexxObjectPtr tmp = context->NewStringFromAsciiz(buf);
     free(tmp);
     return tmp;
 }
@@ -1628,8 +1627,6 @@ RexxMethod4(RexxObjectPtr,             // Return type
             int, x,
             int, n)
 {
-    char *buf = (char *)malloc(n + 1);
-    RexxObjectPtr tmp;
 
     if (cself == NULL) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -1637,8 +1634,9 @@ RexxMethod4(RexxObjectPtr,             // Return type
                                  context->NewStringFromAsciiz("Window"));
         return 0;
     }
+    char *buf = (char *)malloc(n + 1);
     mvwgetnstr((WINDOW *)cself, SUBTRACTONE(y), SUBTRACTONE(x), buf, n);
-    tmp = context->NewStringFromAsciiz(buf);
+    RexxObjectPtr tmp = context->NewStringFromAsciiz(buf);
     free(tmp);
     return tmp;
 }
@@ -2285,8 +2283,6 @@ RexxMethod2(RexxObjectPtr,             // Return type
             CSELF, cself,              // Self
             int, n)
 {
-    char *buf = (char *)malloc(n + 1);
-    RexxObjectPtr tmp;
 
     if (cself == NULL) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -2294,8 +2290,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
                                  context->NewStringFromAsciiz("Window"));
         return 0;
     }
+    char *buf = (char *)malloc(n + 1);
     winnstr((WINDOW *)cself, buf, n);
-    tmp = context->NewStringFromAsciiz(buf);
+    RexxObjectPtr tmp = context->NewStringFromAsciiz(buf);
     free(tmp);
     return tmp;
 }
@@ -2349,8 +2346,6 @@ RexxMethod4(RexxObjectPtr,             // Return type
             int, x,
             int, n)
 {
-    char *buf = (char *)malloc(n + 1);
-    RexxObjectPtr tmp;
 
     if (cself == NULL) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -2358,8 +2353,9 @@ RexxMethod4(RexxObjectPtr,             // Return type
                                  context->NewStringFromAsciiz("Window"));
         return 0;
     }
+    char *buf = (char *)malloc(n + 1);
     mvwinnstr((WINDOW *)cself, SUBTRACTONE(y), SUBTRACTONE(x), buf, n);
-    tmp = context->NewStringFromAsciiz(buf);
+    RexxObjectPtr tmp = context->NewStringFromAsciiz(buf);
     free(tmp);
     return tmp;
 }
