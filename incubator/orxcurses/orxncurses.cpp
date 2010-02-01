@@ -1223,6 +1223,20 @@ RexxMethod1(RexxObjectPtr,             // Return type
 }
 
 /**
+ * Method:  OrxCurDoupdate
+ *
+ * Update the terminal.
+ *
+ * @return        Zero.
+ **/
+RexxMethod0(int,                       // Return type
+            OrxCurDoupdate)            // Object_method name
+{
+
+    return doupdate();
+}
+
+/**
  * Method:  OrxCurEcho
  *
  * Turn on echo.
@@ -3583,17 +3597,20 @@ RexxMethod0(int,                       // Return type
  *
  * @return        Zero.
  **/
-RexxMethod5(RexxObjectPtr,             // Return type
+RexxMethod6(int,                       // Return type
             OrxCurSubpadprivate,       // Object_method name
             CSELF, cself,              // Self
+            RexxObjectPtr, pad,
             int, nlines,
             int, ncols,
             int, begy,
             int, begx)
 {
 
-    WINDOW *ptr = subpad((WINDOW *)cself, nlines, ncols, SUBTRACTONE(begy), SUBTRACTONE(begx));
-    return (RexxObjectPtr)context->NewPointer(ptr);
+    WINDOW *padptr = (WINDOW *) context->ObjectToCSelf(pad);
+    WINDOW *ptr = subpad((WINDOW *)padptr, nlines, ncols, SUBTRACTONE(begy), SUBTRACTONE(begx));
+    context->SetObjectVariable("CSELF", context->NewPointer(ptr));
+    return 0;
 }
 
 /**
@@ -4133,6 +4150,7 @@ RexxMethodEntry orxcur_methods[] = {
     REXX_METHOD(OrxCurDelwin, OrxCurDelwin),
     REXX_METHOD(OrxCurDerwinprivate, OrxCurDerwinprivate),
     REXX_METHOD(OrxCurDupwinprivate, OrxCurDupwinprivate),
+    REXX_METHOD(OrxCurDoupdate, OrxCurDoupdate),
     REXX_METHOD(OrxCurEcho, OrxCurEcho),
     REXX_METHOD(OrxCurNoecho, OrxCurNoecho),
     REXX_METHOD(OrxCurErase, OrxCurErase),

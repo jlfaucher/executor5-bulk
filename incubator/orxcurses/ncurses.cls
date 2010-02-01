@@ -341,6 +341,7 @@ return .window~new(ptr)
 use strict arg
 ptr = self~dupwinprivate()
 return .window~new(ptr)
+::METHOD doupdate EXTERNAL "LIBRARY orxncurses OrxCurDoupdate"
 ::METHOD dupwinprivate private EXTERNAL "LIBRARY orxncurses OrxCurDupwinprivate"
 ::METHOD echo EXTERNAL "LIBRARY orxncurses OrxCurEcho"
 ::METHOD noecho EXTERNAL "LIBRARY orxncurses OrxCurNoecho"
@@ -541,14 +542,29 @@ return .window~new(ptr)
 
 ::class Pad public subclass Window
 
-::METHOD init EXTERNAL "LIBRARY orxncurses OrxCurNewpad"
+::METHOD newpadprivate private EXTERNAL "LIBRARY orxncurses OrxCurNewpad"
+::METHOD newsubpadprivate private EXTERNAL "LIBRARY orxncurses OrxCurSubpadprivate"
+::METHOD init 
+if arg() = 2 then do
+   use strict arg nlines, ncols
+   self~newpadprivate(nlines, ncols)
+   end
+else do
+   use strict arg pad, nlines, ncols, begy, begx
+   self~newsubpadprivate(pad, nlines, ncols, begy, begx)
+   end
+return
 
 ::METHOD echochar
 return self~ERR
 ::METHOD mvwin
 return self~ERR
-::METHOD pechochar EXTERNAL "LIBRARY orxncurses OrxCurPechochar"
-::METHOD pnoutrefresh EXTERNAL "LIBRARY orxncurses OrxCurPnoutrefresh"
+--::METHOD pechochar EXTERNAL "LIBRARY orxncurses OrxCurPechochar"
+--::METHOD pnoutrefresh EXTERNAL "LIBRARY orxncurses OrxCurPnoutrefresh"
+::METHOD pnoutrefresh 
+use strict arg minrow, mincol, sminrow, smincol, smaxrow, smaxcol
+.window~stdscr()~copywin(self, minrow, mincol, sminrow, smincol, smaxrow, smaxcol, .false)
+return self~OK
 --::METHOD prefresh EXTERNAL "LIBRARY orxncurses OrxCurPrefresh"
 ::METHOD prefresh
 use strict arg minrow, mincol, sminrow, smincol, smaxrow, smaxcol
@@ -567,8 +583,7 @@ return self~ERR
 return self~ERR
 ::METHOD subpad
 use strict arg nlines, ncols, begy, begx
-ptr = self~subpadprivate(nlines, ncols, begy, begx)
-return .window~new(ptr)
+return .pad~new(self, nlines, ncols, begy, begx)
 ::METHOD subwin
 return self~ERR
 ::METHOD wnoutrefresh
