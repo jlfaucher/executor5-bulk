@@ -2989,7 +2989,7 @@ RexxMethod1(int,                  // Return type
 RexxMethod2(int,                       // Return type
             OrxCurPechochar,           // Object_method name
             CSELF, cself,              // Self
-            int, ch)
+            CSTRING, ch)
 {
 
     if (cself == NULL) {
@@ -2998,7 +2998,7 @@ RexxMethod2(int,                       // Return type
                                  context->NewStringFromAsciiz("Pad"));
         return 0;
     }
-    return pechochar((WINDOW *)cself, (chtype)ch);
+    return pechochar((WINDOW *)cself, (chtype)*ch);
 }
 
 /**

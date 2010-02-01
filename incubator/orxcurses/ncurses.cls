@@ -559,7 +559,7 @@ return
 return self~ERR
 ::METHOD mvwin
 return self~ERR
---::METHOD pechochar EXTERNAL "LIBRARY orxncurses OrxCurPechochar"
+::METHOD pechochar EXTERNAL "LIBRARY orxncurses OrxCurPechochar"
 --::METHOD pnoutrefresh EXTERNAL "LIBRARY orxncurses OrxCurPnoutrefresh"
 ::METHOD pnoutrefresh 
 use strict arg minrow, mincol, sminrow, smincol, smaxrow, smaxcol
