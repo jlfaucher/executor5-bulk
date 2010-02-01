@@ -171,7 +171,7 @@ return self~acs_map('}') /* UK pound sign */
 ::CONSTANT KEY_F9		273		/* Function key */
 ::CONSTANT KEY_F10		274		/* Function key */
 ::CONSTANT KEY_F11		275		/* Function key */
-::CONSTANT KEY_12		276		/* Function key */
+::CONSTANT KEY_F12		276		/* Function key */
 ::CONSTANT KEY_DL		328		/* delete-line key */
 ::CONSTANT KEY_IL		329		/* insert-line key */
 ::CONSTANT KEY_DC		330		/* delete-character key */
@@ -268,6 +268,7 @@ return self~acs_map('}') /* UK pound sign */
                            
 ::METHOD setbase public class EXTERNAL "LIBRARY orxncurses OrxCurSetBase"
 ::METHOD orxncurses_version public class EXTERNAL "LIBRARY orxncurses OrxCurVersion"
+::METHOD slk_init public class EXTERNAL "LIBRARY orxncurses OrxCurSlk_init"
 
 ::METHOD init
 if arg() = 0 & .window~stdscr() = 'STDSCR'then do
@@ -454,11 +455,11 @@ return .Window~new(ptr)
 ::METHOD slk_attrset EXTERNAL "LIBRARY orxncurses OrxCurSlk_attrset"
 ::METHOD slk_clear EXTERNAL "LIBRARY orxncurses OrxCurSlk_clear"
 ::METHOD slk_color EXTERNAL "LIBRARY orxncurses OrxCurSlk_color"
-::METHOD slk_init EXTERNAL "LIBRARY orxncurses OrxCurSlk_init"
 ::METHOD slk_label EXTERNAL "LIBRARY orxncurses OrxCurSlk_label"
 ::METHOD slk_noutrefresh EXTERNAL "LIBRARY orxncurses OrxCurSlk_noutrefresh"
 ::METHOD slk_refresh EXTERNAL "LIBRARY orxncurses OrxCurSlk_refresh"
 ::METHOD slk_restore EXTERNAL "LIBRARY orxncurses OrxCurSlk_restore"
+::METHOD slk_set EXTERNAL "LIBRARY orxncurses OrxCurSlk_set"
 ::METHOD slk_touch EXTERNAL "LIBRARY orxncurses OrxCurSlk_touch"
 ::METHOD standend EXTERNAL "LIBRARY orxncurses OrxCurStandend"
 ::METHOD standout EXTERNAL "LIBRARY orxncurses OrxCurStandout"

@@ -3413,7 +3413,7 @@ RexxMethod1(int,                       // Return type
             int, color)
 {
     
-    return slk_color((short)SUBTRACTONE(color));
+    return slk_color((short)color);
 }
 
 /**
@@ -3447,7 +3447,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
             int, num)
 {
     
-    return (RexxObjectPtr)context->NewStringFromAsciiz(slk_label(SUBTRACTONE(num)));
+    return (RexxObjectPtr)context->NewStringFromAsciiz(slk_label(num));
 }
 
 /**
@@ -3510,7 +3510,7 @@ RexxMethod3(int,                       // Return type
             int, fmt)
 {
     
-    return slk_set(SUBTRACTONE(num), text, SUBTRACTONE(fmt));
+    return slk_set(num, text, fmt);
 }
 
 /**
@@ -4256,6 +4256,7 @@ RexxMethodEntry orxcur_methods[] = {
     REXX_METHOD(OrxCurSlk_noutrefresh, OrxCurSlk_noutrefresh),
     REXX_METHOD(OrxCurSlk_refresh, OrxCurSlk_refresh),
     REXX_METHOD(OrxCurSlk_restore, OrxCurSlk_restore),
+    REXX_METHOD(OrxCurSlk_set, OrxCurSlk_set),
     REXX_METHOD(OrxCurSlk_touch, OrxCurSlk_touch),
     REXX_METHOD(OrxCurStandend, OrxCurStandend),
     REXX_METHOD(OrxCurStandout, OrxCurStandout),
