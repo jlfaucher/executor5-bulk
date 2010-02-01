@@ -3002,7 +3002,7 @@ RexxMethod2(int,                       // Return type
 }
 
 /**
- * Method:  OrxCnoutrefresh
+ * Method:  OrxCurPnoutrefresh
  *
  * Refresh a pad.
  *

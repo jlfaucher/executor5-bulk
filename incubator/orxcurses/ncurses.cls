@@ -71,6 +71,37 @@
 ::CONSTANT A_TOP		536870912
 ::CONSTANT A_VERTICAL	1073741824
 
+-- mouse constants
+::CONSTANT BUTTON1_RELEASED            1
+::CONSTANT BUTTON1_PRESSED             2
+::CONSTANT BUTTON1_CLICKED             4
+::CONSTANT BUTTON1_DOUBLE_CLICKED      8
+::CONSTANT BUTTON1_TRIPLE_CLICKED      16
+::CONSTANT BUTTON1_RESERVED_EVENT      32
+::CONSTANT BUTTON2_RELEASED            64
+::CONSTANT BUTTON2_PRESSED             128
+::CONSTANT BUTTON2_CLICKED             256
+::CONSTANT BUTTON2_DOUBLE_CLICKED      512
+::CONSTANT BUTTON2_TRIPLE_CLICKED      1024
+::CONSTANT BUTTON2_RESERVED_EVENT      2048
+::CONSTANT BUTTON3_RELEASED            4096
+::CONSTANT BUTTON3_PRESSED             8192
+::CONSTANT BUTTON3_CLICKED             16384
+::CONSTANT BUTTON3_DOUBLE_CLICKED      32768
+::CONSTANT BUTTON3_TRIPLE_CLICKED      65536
+::CONSTANT BUTTON3_RESERVED_EVENT      131072
+::CONSTANT BUTTON4_RELEASED            262144
+::CONSTANT BUTTON4_PRESSED             524288
+::CONSTANT BUTTON4_CLICKED             1048576
+::CONSTANT BUTTON4_DOUBLE_CLICKED      2097152
+::CONSTANT BUTTON4_TRIPLE_CLICKED      4194304
+::CONSTANT BUTTON4_RESERVED_EVENT      8388600
+::CONSTANT BUTTON_CTRL                 16777216
+::CONSTANT BUTTON_SHIFT                33554432
+::CONSTANT BUTTON_ALT                  61708864
+::CONSTANT ALL_MOUSE_EVENTS            134217727
+::CONSTANT REPORT_MOUSE_POSITION       134217728
+
 -- nCurses constants
 ::CONSTANT ERR    -1
 ::CONSTANT OK     0
@@ -172,6 +203,18 @@ return self~acs_map('}') /* UK pound sign */
 ::CONSTANT KEY_F10		274		/* Function key */
 ::CONSTANT KEY_F11		275		/* Function key */
 ::CONSTANT KEY_F12		276		/* Function key */
+::CONSTANT KEY_F13		277		/* Function key */
+::CONSTANT KEY_F14		278		/* Function key */
+::CONSTANT KEY_F15		279		/* Function key */
+::CONSTANT KEY_F16		280		/* Function key */
+::CONSTANT KEY_F17		281		/* Function key */
+::CONSTANT KEY_F18		282		/* Function key */
+::CONSTANT KEY_F19		283		/* Function key */
+::CONSTANT KEY_F20		284		/* Function key */
+::CONSTANT KEY_F21		285		/* Function key */
+::CONSTANT KEY_F22		286		/* Function key */
+::CONSTANT KEY_F23		287		/* Function key */
+::CONSTANT KEY_F24		288		/* Function key */
 ::CONSTANT KEY_DL		328		/* delete-line key */
 ::CONSTANT KEY_IL		329		/* insert-line key */
 ::CONSTANT KEY_DC		330		/* delete-character key */
@@ -271,7 +314,7 @@ return self~acs_map('}') /* UK pound sign */
 ::METHOD slk_init public class EXTERNAL "LIBRARY orxncurses OrxCurSlk_init"
 
 ::METHOD init
-if arg() = 0 & .window~stdscr() = 'STDSCR'then do
+if .window~stdscr() = 'STDSCR' then do
    use strict arg
    self~first_init()
    .window~stdscr = self
@@ -338,11 +381,11 @@ use strict arg nlines, ncols, begy, begx
 ptr = self~derwinprivate(nlines, ncols, begy, begx)
 return .window~new(ptr)
 ::METHOD derwinprivate private EXTERNAL "LIBRARY orxncurses OrxCurDerwinprivate"
+::METHOD doupdate EXTERNAL "LIBRARY orxncurses OrxCurDoupdate"
 ::METHOD dupwin
 use strict arg
 ptr = self~dupwinprivate()
 return .window~new(ptr)
-::METHOD doupdate EXTERNAL "LIBRARY orxncurses OrxCurDoupdate"
 ::METHOD dupwinprivate private EXTERNAL "LIBRARY orxncurses OrxCurDupwinprivate"
 ::METHOD echo EXTERNAL "LIBRARY orxncurses OrxCurEcho"
 ::METHOD noecho EXTERNAL "LIBRARY orxncurses OrxCurNoecho"
@@ -359,7 +402,7 @@ return .window~new(ptr)
 ::METHOD mvgetch EXTERNAL "LIBRARY orxncurses OrxCurMvgetch"
 ::METHOD getmaxyx EXTERNAL "LIBRARY orxncurses OrxCurGetmaxyx"
 ::METHOD getparyx EXTERNAL "LIBRARY orxncurses OrxCurGetparyx"
-::METHOD getmouseprivate EXTERNAL "LIBRARY orxncurses OrxCurGetmouseprivate"
+::METHOD getmouseprivate private EXTERNAL "LIBRARY orxncurses OrxCurGetmouseprivate"
 ::METHOD getmouse
 ev = .Mevent~new()
 self~getmouseprivate(ev)
@@ -543,8 +586,6 @@ return .window~new(ptr)
 
 ::class Pad public subclass Window
 
-::METHOD newpadprivate private EXTERNAL "LIBRARY orxncurses OrxCurNewpad"
-::METHOD newsubpadprivate private EXTERNAL "LIBRARY orxncurses OrxCurSubpadprivate"
 ::METHOD init 
 if arg() = 2 then do
    use strict arg nlines, ncols
@@ -556,16 +597,21 @@ else do
    end
 return
 
+::METHOD newpadprivate private EXTERNAL "LIBRARY orxncurses OrxCurNewpad"
+::METHOD newsubpadprivate private EXTERNAL "LIBRARY orxncurses OrxCurSubpadprivate"
+
 ::METHOD echochar
 return self~ERR
 ::METHOD mvwin
 return self~ERR
 ::METHOD pechochar EXTERNAL "LIBRARY orxncurses OrxCurPechochar"
+-- TODO: Need to figure out why pnoutrefresh does not work
 --::METHOD pnoutrefresh EXTERNAL "LIBRARY orxncurses OrxCurPnoutrefresh"
 ::METHOD pnoutrefresh 
 use strict arg minrow, mincol, sminrow, smincol, smaxrow, smaxcol
 .window~stdscr()~copywin(self, minrow, mincol, sminrow, smincol, smaxrow, smaxcol, .false)
 return self~OK
+-- TODO: Need to figure out why prefresh does not work
 --::METHOD prefresh EXTERNAL "LIBRARY orxncurses OrxCurPrefresh"
 ::METHOD prefresh
 use strict arg minrow, mincol, sminrow, smincol, smaxrow, smaxcol

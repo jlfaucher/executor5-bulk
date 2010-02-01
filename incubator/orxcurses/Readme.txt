@@ -21,7 +21,7 @@ IMPORTANT NOTE!!!!
 ------------------
 
 The OrxnCurses class library provides a mechanism to control whether or not indexes to rows,
-columns, etc. are 0- or 1-based. By default all indexes are 1-based. I you wish to change
+columns, etc. are 0- or 1-based. By default all indexes are 1-based. If you wish to change
 that you can invoke the SetBase class method as follows.
 
       .window~SetBase(0)             -- changes all indexes to 0-based
@@ -33,9 +33,10 @@ not recommend that you change it in the middle of program code. It is best to se
 top of your code and leave it unchanged after that.
 
 Exceptions: these are values, not indexes (always 0-based):
-   color numbers
-   soft label format numbers
    attributes
+   color numbers
+   soft label numbers
+   soft label format numbers
 
 
 Provided Test Programs
