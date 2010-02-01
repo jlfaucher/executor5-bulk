@@ -964,7 +964,8 @@ RexxMethod1(int,                       // Return type
             int, num)  
 {
 
-    return color_set((short)SUBTRACTONE(num), NULL);
+    // don't use the SUBTRACTONE macro on num!
+    return color_set((short)num, NULL);
 }
 
 /**
