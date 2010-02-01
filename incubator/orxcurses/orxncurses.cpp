@@ -1584,7 +1584,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     char *buf = (char *)malloc(n + 1);
     wgetnstr((WINDOW *)cself, buf, n);
     RexxObjectPtr tmp = context->NewStringFromAsciiz(buf);
-    free(tmp);
+    free(buf);
     return tmp;
 }
 
@@ -1637,7 +1637,7 @@ RexxMethod4(RexxObjectPtr,             // Return type
     char *buf = (char *)malloc(n + 1);
     mvwgetnstr((WINDOW *)cself, SUBTRACTONE(y), SUBTRACTONE(x), buf, n);
     RexxObjectPtr tmp = context->NewStringFromAsciiz(buf);
-    free(tmp);
+    free(buf);
     return tmp;
 }
 
@@ -2293,7 +2293,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     char *buf = (char *)malloc(n + 1);
     winnstr((WINDOW *)cself, buf, n);
     RexxObjectPtr tmp = context->NewStringFromAsciiz(buf);
-    free(tmp);
+    free(buf);
     return tmp;
 }
 
@@ -2356,7 +2356,7 @@ RexxMethod4(RexxObjectPtr,             // Return type
     char *buf = (char *)malloc(n + 1);
     mvwinnstr((WINDOW *)cself, SUBTRACTONE(y), SUBTRACTONE(x), buf, n);
     RexxObjectPtr tmp = context->NewStringFromAsciiz(buf);
-    free(tmp);
+    free(buf);
     return tmp;
 }
 
