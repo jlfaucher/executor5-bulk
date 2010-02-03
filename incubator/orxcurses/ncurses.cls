@@ -423,6 +423,7 @@ return .Window~new(ptr)
 ::METHOD has_ic EXTERNAL "LIBRARY orxncurses OrxCurHas_ic"
 ::METHOD has_il EXTERNAL "LIBRARY orxncurses OrxCurHas_il"
 ::METHOD hline EXTERNAL "LIBRARY orxncurses OrxCurHline"
+::METHOD mvhline EXTERNAL "LIBRARY orxncurses OrxCurMvhline"
 ::METHOD idcok EXTERNAL "LIBRARY orxncurses OrxCurIdcok"
 ::METHOD idlok EXTERNAL "LIBRARY orxncurses OrxCurIdlok"
 ::METHOD immedok EXTERNAL "LIBRARY orxncurses OrxCurImmedok"

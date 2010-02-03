@@ -690,14 +690,14 @@ RexxMethod2(int,                       // Return type
 RexxMethod9(int,                       // Return type
             OrxCurBorder,              // Object_method name
             CSELF, cself,              // Self
-            CSTRING, ls,
-            CSTRING, rs,
-            CSTRING, ts,
-            CSTRING, bs,
-            CSTRING, tl,
-            CSTRING, tr,
-            CSTRING, bl,
-            CSTRING, br)
+            int, ls,
+            int, rs,
+            int, ts,
+            int, bs,
+            int, tl,
+            int, tr,
+            int, bl,
+            int, br)
 {
     
     if (cself == NULL) {
@@ -706,8 +706,8 @@ RexxMethod9(int,                       // Return type
                                  context->NewStringFromAsciiz("Window"));
         return 0;
     }
-    return wborder((WINDOW *)cself, (chtype)*ls, (chtype)*rs, (chtype)*ts, (chtype)*bs,
-                   (chtype)*tl, (chtype)*tr, (chtype)*bl, (chtype)*br);
+    return wborder((WINDOW *)cself, (chtype)ls, (chtype)rs, (chtype)ts, (chtype)bs,
+                   (chtype)tl, (chtype)tr, (chtype)bl, (chtype)br);
 }
 
 /**
@@ -1084,10 +1084,10 @@ RexxMethod9(int,                       // Return type
  **/
 RexxMethod1(int,                       // Return type
             OrxCurCurs_set,            // Object_method name
-            logical_t, vis)
+            int, vis)
 {
 
-    return curs_set((int)vis);
+    return curs_set(vis);
 }
 
 /**
@@ -1778,6 +1778,32 @@ RexxMethod2(int,                       // Return type
 {
 
     return hline((chtype)ch, n);
+}
+
+/**
+ * Method:  OrxCurMvhline
+ *
+ * Draw a horizontal line.
+ *
+ * @param y       New Y cursor position
+ *
+ * @param x       New C cursor position
+ *
+ * @param ch      Character type (chtype)
+ *
+ * @param n       Number of characters to draw.
+ *
+ * @return        Zero.
+ **/
+RexxMethod4(int,                       // Return type
+            OrxCurMvhline,             // Object_method name
+            int, y,
+            int, x,
+            int, ch,
+            int, n)
+{
+
+    return mvhline(SUBTRACTONE(y), SUBTRACTONE(x), (chtype)ch, n);
 }
 
 /**
@@ -4178,6 +4204,7 @@ RexxMethodEntry orxcur_methods[] = {
     REXX_METHOD(OrxCurHas_ic, OrxCurHas_ic),
     REXX_METHOD(OrxCurHas_il, OrxCurHas_il),
     REXX_METHOD(OrxCurHline, OrxCurHline),
+    REXX_METHOD(OrxCurMvhline, OrxCurMvhline),
     REXX_METHOD(OrxCurIdcok, OrxCurIdcok),
     REXX_METHOD(OrxCurIdlok, OrxCurIdlok),
     REXX_METHOD(OrxCurImmedok, OrxCurImmedok),
