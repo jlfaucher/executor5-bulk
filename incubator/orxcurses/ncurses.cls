@@ -39,11 +39,8 @@
 /*----------------------------------------------------------------------------*/
 
 
-
-
-
 /*============================================================================*/
-/* Class: Window                                                              */
+/* Class: Window - main class for the stdscr and other windows                */
 /*============================================================================*/
 
 ::class Window public
@@ -475,6 +472,12 @@ return .Window~new(ptr)
 ::METHOD overwrite EXTERNAL "LIBRARY orxncurses OrxCurOverwrite"
 ::METHOD pair_content EXTERNAL "LIBRARY orxncurses OrxCurPair_content"
 ::METHOD pair_number EXTERNAL "LIBRARY orxncurses OrxCurPair_number"
+::METHOD pechochar
+return self~ERR
+::METHOD pnoutrefresh 
+return self~ERR
+::METHOD prefresh 
+return self~ERR
 -- ::METHOD printw EXTERNAL "LIBRARY orxncurses OrxCurPrintw"
 ::METHOD putwin EXTERNAL "LIBRARY orxncurses OrxCurPutwin"
 ::METHOD qiflush EXTERNAL "LIBRARY orxncurses OrxCurQiflush"
@@ -538,7 +541,7 @@ return .window~new(ptr)
 
 
 /*============================================================================*/
-/* Class: Mevent                                                              */
+/* Class: Mevent - mouse events                                               */
 /*============================================================================*/
 
 ::class Mevent public
@@ -582,7 +585,7 @@ return .window~new(ptr)
 
 
 /*============================================================================*/
-/* Class: Pad                                                                 */
+/* Class: Pad - window pads                                                   */
 /*============================================================================*/
 
 ::class Pad public subclass Window
@@ -639,7 +642,7 @@ return self~ERR
 
 
 /*============================================================================*/
-/* Class: Chtype                                                              */
+/* Class: Chtype - support class for a full chtype                            */
 /*============================================================================*/
 
 ::class Chtype public

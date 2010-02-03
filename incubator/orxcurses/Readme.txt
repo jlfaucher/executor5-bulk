@@ -46,8 +46,11 @@ There are a number of test programs provided. They are all derrived from the boo
 "Programmer's Guide to nCurses" by Dab Gookin, Wiley Publishing, Inc., ISBN 978-0-470-10759-1.
 All programs use 1-based indexes except the programs with an "a" suffix e.g. test2-4a.rex.
 
+There are still a few minor problems with a few of the test scripts. I am still working
+through them to resolve the issues.
 
 
 Happy Programming!
 W. David Ashley
+February, 2010
 

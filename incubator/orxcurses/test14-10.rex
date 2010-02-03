@@ -44,6 +44,8 @@ numeric digits 12
 lf = '0A'x
 
 scr = .window~new()
+scr~start_color()
+scr~init_pair(1, scr~COLOR_WHITE, scr~COLOR_BLUE)
 
 scr~addstr('Press Enter to restore the window' || lf)
 scr~refresh()
