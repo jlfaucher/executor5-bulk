@@ -2,7 +2,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (C) W. David Ashley 2004-2008. All Rights Reserved.              */
-/* Copyright (c) 2009-2009 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2009-2010 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */

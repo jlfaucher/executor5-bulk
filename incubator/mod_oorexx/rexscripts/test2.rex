@@ -40,14 +40,9 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-call rxfuncadd 'SysLoadFuncs', 'rexxutil', 'SysLoadFuncs'
-call SysLoadFuncs
 
 /* version of this script */
 script_version = 'v2.2.0'
-
-call rxfuncadd 'SysLoadFuncs', 'rexxutil', 'SysLoadFuncs'
-call SysLoadFuncs
 
 /* these are some typical Apache return codes */
 DECLINED  = -1    /* Module declines to handle */
@@ -57,8 +52,7 @@ NOT_FOUND = 404   /* Main document not found. */
 
 /* get environment stuff */
 parse source env . path
-if env='OS/2' then envname='OS2ENVIRONMENT'
-else envname='ENVIRONMENT'
+envname='ENVIRONMENT'
 parse upper version v
 
 /* get the Apache request record ptr */
