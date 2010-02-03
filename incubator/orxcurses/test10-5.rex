@@ -43,7 +43,7 @@
 -- this program lists itself, not the Gettyburg.txt file
 
 numeric digits 12
-lf = '0A'x
+lf = .window~ASCII_LF~d2c()
 
 scr = .window~new()
 

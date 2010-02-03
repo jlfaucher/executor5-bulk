@@ -41,7 +41,7 @@
 
 
 numeric digits 12
-lf = '0A'x
+lf = .window~ASCII_LF~d2c()
 
 Ham1 = "To be, or not to be: that is the question:" || lf
 Ham2 = "Whether 'tis nobler in the mind to suffer" || lf

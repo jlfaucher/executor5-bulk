@@ -41,7 +41,7 @@
 
 
 numeric digits 12
-lf = '0A'x
+lf = .window~ASCII_LF~d2c()
 
 new_color = 1
 red = 1000

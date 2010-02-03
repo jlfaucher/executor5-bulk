@@ -41,7 +41,7 @@
 
 
 numeric digits 12
-lf = '0A'x
+lf = .window~ASCII_LF~d2c()
 left = 0
 center = 1
 right = 2

@@ -41,7 +41,7 @@
 
 
 numeric digits 12
-lf = '0A'x
+lf = .window~ASCII_LF~d2c()
 
 mainmenu = "Main Menu"
 menu = .array~of("Answer E-mail", "Off to the Web", "Word processing",,

@@ -44,8 +44,8 @@
 -- That's fine; the program is more about I/O than actually editing text.
 
 scr = .window~new()
-scr~addstr('Type a few lines of text' || '0A'x)
-scr~addstr('Press ~ to quit' || '0A'x)
+scr~addstr('Type a few lines of text' || .window~ASCII_LF~d2c())
+scr~addstr('Press ~ to quit' || .window~ASCII_LF~d2c())
 scr~refresh()
 
 ch = scr~getch()

@@ -40,7 +40,7 @@
 /*----------------------------------------------------------------------------*/
 
 
-text1 = 'Oh give me a clone!' || '0A'x
+text1 = 'Oh give me a clone!' || .window~ASCII_LF~d2c()
 text2 = 'Yes a clone of my own!'
 scr = .window~new()
 scr~addstr(text1)

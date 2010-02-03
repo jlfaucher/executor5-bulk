@@ -45,7 +45,7 @@
 --       F1, F10 & F11 are usually intercepted.
 
 numeric digits 12
-lf = '0A'x
+lf = .window~ASCII_LF~d2c()
 center = 1
 label_text = .array~of('I', 'AM', 'SAM', 'DO', 'NOT', 'LIKE', 'THAT', 'SAY',,
                        'WOULD', 'COULD', 'YOU', 'GREEN', 'EGGS', 'AND', 'HAM')

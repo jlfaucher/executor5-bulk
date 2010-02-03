@@ -41,7 +41,7 @@
 
 
 numeric digits 12
-lf = '0A'x
+lf = .window~ASCII_LF~d2c()
 
 text = "Stock Market Swells! DOW tops 15,000!"
 len = text~length()

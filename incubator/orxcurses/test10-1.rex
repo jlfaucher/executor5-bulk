@@ -41,7 +41,7 @@
 
 
 numeric digits 12
-lf = '0A'x
+lf = .window~ASCII_LF~d2c()
 
 text1 = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam " ||,
         "nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat " ||,

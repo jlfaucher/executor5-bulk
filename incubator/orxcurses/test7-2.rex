@@ -41,7 +41,7 @@
 
 
 numeric digits 12
-lf = '0A'x
+lf = .window~ASCII_LF~d2c()
 value = 0
 
 scr = .window~new()
@@ -51,12 +51,12 @@ scr~refresh()
 ch = scr~getch()
 
 scr~nodelay(.TRUE);		/* turn off getch() wait */
-scr~addstr("Press any key to stop the insane loop!" || lf);
+scr~addstr("Press Enter key to stop the insane loop!" || lf);
 do while(.true)
-   scr~addstr(value || '0D'x)
+   scr~addstr(value || .window~ASCII_CR~d2c())
    value += 1
    scr~refresh()
-   if scr~getch() = ' ' then leave
+   if scr~getch() = .window~ASCII_LF~d2c() then leave
    end
 
 scr~endwin()

@@ -41,8 +41,8 @@
 
 
 numeric digits 12
-lf = '0A'x
-bs = '09'x
+lf = .window~ASCII_LF~d2c()
+bs = .window~ASCII_BS~d2c()
 
 text = .array~of('Do', 'you', 'find', 'this', 'silly?')
 

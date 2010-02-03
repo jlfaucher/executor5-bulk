@@ -41,7 +41,7 @@
 
 
 numeric digits 12
-lf = '0A'x
+lf = .window~ASCII_LF~d2c()
 
 text = "Stock Market Swells! DOW tops 15,000!"
 len = text~length()
@@ -67,7 +67,7 @@ fill:procedure expose scr
 yx = scr~getmaxyx()
 parse var yx y x .
 do a = 0 to y - 1
-   scr~addstr('A B C D E F G H I J K L M N O P Q R S T U V W X Y Z' || '0a'X)
+   scr~addstr('A B C D E F G H I J K L M N O P Q R S T U V W X Y Z' || .window~ASCII_LF~d2c())
    end
 return
 

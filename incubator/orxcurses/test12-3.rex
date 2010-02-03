@@ -41,7 +41,7 @@
 
 
 numeric digits 12
-lf = '0A'x
+lf = .window~ASCII_LF~d2c()
 center = 1
 label_text = .array~of('S', 'O', 'F', 'T', 'K', 'E', 'Y', 'S')
 

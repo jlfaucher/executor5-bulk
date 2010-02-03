@@ -43,7 +43,7 @@
 -- This probably does not work because og my workaround for prefresh
 
 numeric digits 12
-lf = '0A'x
+lf = .window~ASCII_LF~d2c()
 text = 'This is interesting'
 
 scr = .window~new()

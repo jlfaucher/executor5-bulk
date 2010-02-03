@@ -43,7 +43,7 @@
 -- Note: the output in the book is incorrect.
 
 numeric digits 12
-lf = '0A'x
+lf = .window~ASCII_LF~d2c()
 
 col1 = 6
 col2 = 39

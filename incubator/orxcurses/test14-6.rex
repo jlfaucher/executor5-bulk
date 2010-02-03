@@ -41,7 +41,7 @@
 
 
 numeric digits 12
-lf = '0A'x
+lf = .window~ASCII_LF~d2c()
 y = .array~of( 1,  1,  6,  1,  6,  6, 11, 11, 11, 11, 16,  6)
 x = .array~of(11, 11,  2, 21, 21, 31,  2, 11, 21, 21, 11,  1)
 
