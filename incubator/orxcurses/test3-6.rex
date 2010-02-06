@@ -41,7 +41,7 @@
 
 
 numeric digits 12
-lf = '.window~ASCII_LF~d2c()
+lf = .window~ASCII_LF~d2c()
 
 scr = .window~new()
 

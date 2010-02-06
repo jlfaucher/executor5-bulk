@@ -55,8 +55,8 @@ scr = .window~new()
 
 maxyx = scr~getmaxyx()
 parse var maxyx maxy maxx .
-halfy = maxy / 2
-halfx = maxx / 2
+halfy = (maxy / 2)~format(, 0)
+halfx = (maxx / 2)~format(, 0)
 
 top = .window~new(halfy, halfx, 1, 1)
 bottom = .window~new(halfy, halfx, halfy + 1, halfx + 1)
