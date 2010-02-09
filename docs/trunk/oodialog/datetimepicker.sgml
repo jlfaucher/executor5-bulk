@@ -43,158 +43,147 @@
 <chapter id="clsDateTimePicker"><title>DateTimePicker Class</title>
 <indexterm><primary>DateTimePicker class</primary></indexterm>
 <para>
+   A date and time picker (DTP) control provides a simple interface with which to exchange date and time information
+   with a user. For example, with a DTP control you can ask the user to enter a date and then easily retrieve the
+   selection.
+</para>
+<note><title>Note</title><para>
+  Windows does not support dates prior to 1601. Trying to set a date prior to 1601, programmatically, will raise a
+  syntax condition.
+</para>
+<para>
+  The control is based on the Gregorian calendar, which was introduced in 1753. The date and time picker control will
+  not calculate dates that are consistent with the Julian calendar.
+</para></note>
+<para>
+  The client area of a date and time picker (DTP) control displays date or time information, or both, and acts as the
+  interface through which users modify the information. The date can be selected from a calendar, or by using an up-down
+  control. The time can be changed by typing in fields that are defined by the control's <link
+  linkend="paraDTPFormatStrings">Format Strings</link>. The control can optionally display a check box. When it is
+  checked, the value in the control is condisdered valid and can be retrieved.  When not checked, the control's date and
+  time is not valid.
+</para>
+<para id="paraDTPFormatStrings">
   xx
 </para>
 <para>
-  xx
-</para>
-<para>
-  xx
-</para>
-<para>
-  The DateTimePicker class provides methods xxx
+  The DateTimePicker class provides methods to get and set the date and time in the DTP control, along with methods to
+  manipulate the control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
   <listitem>
   <para>
-  The DateTimePicker class requires the class definition file <computeroutput>oodWin32.cls</computeroutput>:
+  The DateTimePicker class requires the class definition file <computeroutput>ooDialog.cls</computeroutput>:
 <programlisting>
 <![CDATA[
-::requires "oodWin32.cls"
+::requires "ooDialog.cls"
 ]]>
 </programlisting>
   </para></listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
   <listitem>
-    <para>
-      The date and time picker class is a subclass of the <link linkend="clsDialogControl">DialogControl</link> Class
-      and therefore inherits all methods of that class.
-    </para>
+  <para>
+    The date and time picker class is a subclass of the <link linkend="clsDialogControl">DialogControl</link> class
+    and therefore inherits all methods of that class.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Mixin Class Inherits:</emphasis></term>
   <listitem>
-    <para>
-      The date and time picker class inherits from the following mixin classes, (indirectly through the DialogControl
-      class.)
-    </para>
-    <para>
-      The <link linkend="clsWindowBase">WindowBase</link>
-    </para>
-    <para>
-      The <link linkend="clsWindowExtensions">WindowExtensions</link>
-    </para>
+  <para>
+    The date and time picker class inherits from the following mixin classes, (indirectly through the DialogControl
+    class.)
+  </para>
+  <para>
+    The <link linkend="clsWindowBase">WindowBase</link>
+  </para>
+  <para>
+    The <link linkend="clsWindowExtensions">WindowExtensions</link>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
-    <para>
-      Use the <link linkend="mthGetDateTimePicker">getDateTimePicker</link>() method to retrieve an object of
-      the date and time picker class.
-    </para>
+  <para>
+    Use the <link linkend="mthNewDateTimePicker">newDateTimePicker</link>() method of the <link
+    linkend="clsPlainBaseDialog"></link> class to retrieve a date and time picker object.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
-    <para>
-      To dynamically define a date and time picker in a <link linkend="clsUserDialog">UserDialog</link> class,
-      use the <link linkend="mthAddDateTimePicker">addDateTimePicker</link> method.
-    </para>
+  <para>
+    To dynamically add a date and time picker to a <link linkend="clsUserDialog">UserDialog</link>, use the
+    <link linkend="mthCreateDateTimePicker">createDateTimePicker</link>() method.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
-    <para>
-      To recieve notification of date and time picker events use the <link
-      linkend="mthConnectDateTimePickerNotify">connectDateTimePickerNotify</link>)() method.
-    </para>
+  <para>
+    To recieve notification of date and time picker events use the <link
+    linkend="mthConnectDateTimePickerEvent">connectDateTimePickerEvent</link>)() method.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Important Methods:</emphasis></term>
   <listitem>
-    <para>
-      The following table provides links to the documentation for the primary methods and attributes used
-      in working with $(cls_name) objects`. These include all the methods and attributes implemented by
-      the DateTimePicker class, and the methods to connect to event notifications from, get, and dynamically
-      add, DateTimePicker objects:
-    </para>
-    <table id="tblDateTimePickerMethods" frame="all">
-    <title>DateTimePicker Methods and Attributes</title>
-    <tgroup cols="2">
-    <thead>
-    <row>
-    <entry>Method...</entry>
-    <entry>...Documentation</entry>
-    </row>
-    </thead>
-    <tbody>
-    <row>
-    <entry>getDateTimePicker (Instantiate method)</entry>
-    <entry><link linkend="mmtthGetDateTimePicker">addDateTimePicker</link></entry>
-    </row>
-    <row>
-    <entry>addDateTimePicker (Dynamically Define method)</entry>
-    <entry><link linkend="mmtthAddDateTimePicker">addDateTimePicker</link></entry>
-    </row>
-    <row>
-    <entry>connectDateTimePickerNotify (Connect Events method)</entry>
-    <entry><link linkend="mmtthConnectDateTimePickerNotify">connectDateTimePickerNotify</link></entry>
-    </row>
-    <row>
-    <entry>new (Class method)</entry>
-    <entry><link linkend="mthNewClsDateTimePicker">new</link></entry>
-    </row>
-    <row>
-    <entry>attributeName (Attribute)</entry>
-    <entry><link linkend="atrAttributeNameClsDateTimePicker">attributeName</link></entry>
-    </row>
-    <row>
-    <entry>mehtodName</entry>
-    <entry><link linkend="mthMethodNameClsDateTimePicker">methodName</link></entry>
-    </row>
-    </tbody></tgroup>
-    </table>
+  <para>
+    The following table provides links to the documentation for the primary methods and attributes used in working with
+    date and time picker objects. These include all the methods and attributes implemented by the DateTimePicker class,
+    and the methods to connect to event notifications from the DTP, get a date and time picker object, and dynamically
+    create a date and time picke control in a dialog:
+  </para>
+  <table id="tblDateTimePickerMethods" frame="all">
+  <title>DateTimePicker Methods and Attributes</title>
+  <tgroup cols="2">
+  <thead>
+  <row>
+  <entry>Method...</entry>
+  <entry>...Documentation</entry>
+  </row>
+  </thead>
+  <tbody>
+  <row>
+    <entry><link linkend="tmthNewDateTimePicker">newDateTimePicker</link></entry>
+    <entry>Gets a DateTimePicker object that represents a control in a dialog</entry> </row>
+  <row>
+    <entry><link linkend="tmthCreateDateTimePicker">createDateTimePicker</link></entry>
+    <entry>Creates a DateTimePicker control in an <link linkend="clsUserDialog">UserDialog</link></entry>
+  </row>
+  <row>
+    <entry><link linkend="tmthConnectDateTimePickerEvent">connectDateTimePickerEvent</link></entry>
+    <entry>Connectes DateTimePicker events to a dialog method</entry>
+  </row>
+  <row>
+    <entry><link linkend="mthCloseMonthCal">closeMonthCal</link></entry>
+    <entry>Close the drop down month calendar if it is dropped down</entry>
+  </row>
+  </tbody></tgroup> </table>
   </listitem></varlistentry>
 </variablelist>
 
 
-<section id="mmtthConnectDateTimePickerNotify"><title>connectDateTimePickerNotify (Connect Events
-Method)</title>
+<section id="tmthNewDateTimePicker"><title>newDateTimePicker [PlainBaseDialog method]</title>
 <para>
-  To connect event notifications from a date and time picker object use the <link
-  linkend="mthConnectDateTimePickerNotify">connectDateTimePickerNotify</link>() method of the <link
-  linkend="clsMessageExtensions"></link> class. The basic syntax is:
-
-<programlisting> <![CDATA[
->>-connectDateTimePickerNotify(--id--,--"event"--+----------------+--)------------><
-                                                 +--,-methodName--+
-
-]]>
-</programlisting>
-</para>
-</section>  <!-- End UserDialog::addDateTimePicker() [UserDialog method] -->
-
-
-<section id="mmtthGetDateTimePicker"><title>getDateTimePicker (Instantiate Method)</title>
-<para>
-  A date and time picker object is obtained by using the <link
-  linkend="mthGetDateTimePicker">getDateTimePicker</link>() method of the <link
-  linkend="clsAdvancedControls">.AdvancedControls</link> class. The syntax is:
+  DateTimePicker objects can not be instantiated by the programmer from Rexx code using a <emphasis
+  role="italic">new</emphasis>() method. Rather, a date and time picker object is obtained by using the <link
+  linkend="mthNewDateTimePicker">newDateTimePicker</link>() method of the <link
+  linkend="clsPlainBaseDialog">PlainBaseDialog</link> class. The syntax is:
 <programlisting>
 <![CDATA[
->>-getDateTimePicker(--id--+-------------+--)---------------------><
+>>-newDateTimePicker(--id--+-------------+--)---------------------><
                            +-,--category-+
 
 ]]>
 </programlisting>
 </para>
-</section>  <!-- End AdvancedControls::getDateTimePicker() [AdvancedControls method] -->
+</section>  <!-- End PlainBaseDialog::newDateTimePicker() [PlainBaseDialog method] -->
 
 
-<section id="mmtthAddDateTimePicker"><title>addDateTimePicker (Dynamically Define Method)</title>
+<section id="tmthCreateDateTimePicker"><title>createDateTimePicker [DyanmicDialog method]</title>
 <para>
-  A date and time picker object can be added to a <link linkend="clsUserDialog">UserDialog</link> dialog
-  through the <link linkend="mthAddDateTimePicker"></link>.  See the documentation of that method for
-  complete details if needed.  The basic syntax is:
+  A date and time picker control can be added to a <link linkend="clsUserDialog">UserDialog</link> dialog
+  through the <link linkend="mthCreateDateTimePicker">createDateTimePicker</link>() method. The basic syntax is:
 <programlisting> <![CDATA[
->>-addDateTimePicker(-PUT IN CORRECT SYSNTAX--)-------------------><
-
+>>-createDateTimePicker(-id-,--x-,--y-,--cx-,--cy-+----------+-+-------------+--><
+                                                  +-,--style-+ +-,--attrName-+
 
 ]]>
 </programlisting>
@@ -202,80 +191,34 @@ Method)</title>
 </section>  <!-- End UserDialog::addDateTimePicker() [UserDialog method] -->
 
 
-<section id="mthNewClsDateTimePicker"><title>new (Class method)</title>
-<indexterm><primary>new</primary>
-<secondary>DateTimePicker class</secondary></indexterm>
+<section id="tmthConnectDateTimePickerEvent"><title>connectDateTimePickerEvent [EventNotification method]</title>
 <para>
-  The date and time picker class is not intended to be instantiated directly by the programmer using the new()
-  method.  Rather the programmer should obtain a new date and time picker object by using the <link
-  linkend="mthGetDateTimePicker">getDateTimePicker</link>() method of the <link
-  linkend="clsAdvancedControls">.AdvancedControls</link> class.
+  To connect event notifications from a DTP control use the <link
+  linkend="mthConnectDateTimePickerEvent">connectDateTimePickerEvent</link>() method of the <link
+  linkend="clsEventNotification"></link> class. The basic syntax is:
+
+<programlisting> <![CDATA[
+>>-connectDateTimePickerEvent(--id--,--event--+----------------+--)------------><
+                                              +--,-methodName--+
+
+]]>
+</programlisting>
 </para>
-</section>  <!-- End DateTimePicker::new() [class method] -->
+</section>  <!-- End EventNotification::connectDateTimePickerEvent() [EventNotification method] -->
 
 
-<section id="atrAttributeNameClsDateTimePicker"><title>attributeName (Attribute)</title>
-<indexterm><primary>attributeName</primary>
+<section id="mthCloseMonthCal"><title>closeMonthCal</title>
+<indexterm><primary>closeMonthCal</primary>
 <secondary>DateTimePicker class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--attributName------------------------------------------------><
-
->>--attributName-=-varName--------------------------------------><
+>>--closeMonthCal----------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-    <para>
-      xx
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">attributeName get:</emphasis></term>
-  <listitem>
-    <para>
-      details about get
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">attributeName set:</emphasis></term>
-  <listitem>
-    <para>
-      details about set
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-      This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End DateTimePicker::attributeName() [class method]  -->
-
-
-<section id="mthMethodNameClsDateTimePicker"><title>methodName</title>
-<indexterm><primary>methodName</primary>
-<secondary>DateTimePicker class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--mehtodName(--+--------+--)-------------------------------------------------><
-                 +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
+  Closes the drop down month calendar control of the date time picker.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>

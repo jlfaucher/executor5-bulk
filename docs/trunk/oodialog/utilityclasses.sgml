@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: OODialog Reference SGML file.
     #
-    # Copyright (c) 2005-2008, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -62,36 +62,40 @@
 </thead>
 <tbody>
 <row>
-<entry>.SystemErrorCode</entry>
 <entry><link linkend="dotSystemErrorCode">.SystemErrorCode</link></entry>
+<entry>Reflects the <link linkend="systemerrorcode">system error code</link> if set</entry>
 </row>
 <row>
-<entry>DlgArea Class</entry>
 <entry><link linkend="clsDlgArea">DlgArea Class</link></entry>
+<entry>Assists in laying out the dialog controls in a dynamically defined dialog.</entry>
 </row>
 <row>
-<entry>DlgAreaU Class</entry>
 <entry><link linkend="clsDlgAreaU">DlgAreaU Class</link></entry>
+<entry>Assists in the creation of dynamically resizable dialogs</entry>
 </row>
 <row>
-<entry>DlgUtil Class</entry>
 <entry><link linkend="clsDlgUtil">DlgUtil Class</link></entry>
+<entry>Provides some common, useful, utilities for working with dialogs</entry>
 </row>
 <row>
-<entry>Point Class</entry>
+<entry><link linkend="clsPoint">OS Class</link></entry>
+<entry>Provides methods for accessing information about the operarting system</entry>
+</row>
+<row>
 <entry><link linkend="clsPoint">Point Class</link></entry>
+<entry>An object that represents a point in a 2-D coordinate system</entry>
 </row>
 <row>
-<entry>Rect Class</entry>
 <entry><link linkend="clsRect">Rect Class</link></entry>
+<entry>An object used to represent a rectangle</entry>
 </row>
 <row>
-<entry>Size Class</entry>
 <entry><link linkend="clsSize">Size Class</link></entry>
+<entry>An object encapsulating a width and height dimension in a 2-D coordinate system.</entry>
 </row>
 <row>
-<entry>VirtualKeyCodes Class</entry>
 <entry><link linkend="clsVirtualKeyCodes">VirtualKeyCodes Class</link></entry>
+<entry>VirtualKeyCodes Class</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -782,6 +786,400 @@ return .true
 </section>  <!-- End DlgUtil::getSystemMetrics() [class method] -->
 
 </section> <!-- End DlgUtil Class -->
+
+
+<section id="clsOs"><title>OS Class</title>
+<indexterm><primary>OS class</primary></indexterm>
+<para>
+  The <emphasis role="italic">OS</emphasis> provides methods for extracting information about the operating system a
+  program is currently executing on. All the methods of the OS class are class methods.  In general these methods are
+  easy to use, returning true or false about a specific piece of information. See the <link
+  linkend="mthIsAtLeastVista">isAtLeastVista</link>() method for an example of usage.
+</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem>
+<para>
+  The <emphasis role="italic">OS</emphasis> class requires the class definition file
+  <computeroutput>ooDialog.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "ooDialog.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem>
+<para>
+  The class methods of <link linkend="clsOS"></link> class are listed in the following table:
+</para>
+<table id="tblOSMethods" frame="all">
+<title>Methods of the OS class</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><link linkend="mthIs64bit"></link>is64bit (Class Method)</entry>
+<entry>Tests if running under ooRexx 64-bit</entry>
+</row>
+<row>
+<entry><link linkend="mthIs32on64bit"></link>is32on64bit (Class Method)</entry>
+<entry>Tests if running under ooRexx 32-bit on a 64 bit system</entry>
+</row>
+<row>
+<entry><link linkend="mthIsWow64"></link>isWow64 (Class Method)</entry>
+<entry>Alias for the <emphasis role="italic">is32on64bit</emphasis>() method</entry>
+</row>
+<row>
+<entry><link linkend="mthIsW2K"></link>isW2K (Class Method)</entry>
+<entry>Tests if operating system is Windows 2000</entry>
+</row>
+<row>
+<entry><link linkend="mthIsXP"></link>isXP (Class Method)</entry>
+<entry>Tests if operating system is Windows XP</entry>
+</row>
+<row>
+<entry><link linkend="mthIsXP32"></link>isXP32 (Class Method)</entry>
+<entry>Tests if operating system is 32-bit Windows XP</entry>
+</row>
+<row>
+<entry><link linkend="mthIsXP64"></link>isXP64 (Class Method)</entry>
+<entry>Tests if operating system is 64-bit Windows XP</entry>
+</row>
+<row>
+<entry><link linkend="mthIsW2K3"></link>isW2K3 (Class Method)</entry>
+<entry>Tests if operating system is Windows 2003</entry>
+</row>
+<row>
+<entry><link linkend="mthIsVista"></link>isVista (Class Method)</entry>
+<entry>Tests if operating system is Windows Vista</entry>
+</row>
+<row>
+<entry><link linkend="mthIsServer2008"></link>isServer2008 (Class Method)</entry>
+<entry>Tests if operating system is Windows Server 2008</entry>
+</row>
+<row>
+<entry><link linkend="mthIsWindows7"></link>isWindows7 (Class Method)</entry>
+<entry>Tests if operating system is Windows 7</entry>
+</row>
+<row>
+<entry><link linkend="mthIsServer2008R2"></link>isServer2008R2 (Class Method)</entry>
+<entry>Tests if operating system is Windows Server 2008 Release 2</entry>
+</row>
+<row>
+<entry><link linkend="mthIsAtLeastW2K"></link>isAtLeastW2K (Class Method)</entry>
+<entry>Tests if operating system is Windows 2000 or later</entry>
+</row>
+<row>
+<entry><link linkend="mthIsAtLeastXP"></link>isAtLeastXP (Class Method)</entry>
+<entry>Tests if operating system is Windows XP or later</entry>
+</row>
+<row>
+<entry><link linkend="mthIsAtLeastW2K3"></link>isAtLeastW2K3 (Class Method)</entry>
+<entry>Tests if operating system is Windows 2003 or later</entry>
+</row>
+<row>
+<entry><link linkend="mthIsAtLeastVista"></link>isAtLeastVista (Class Method)</entry>
+<entry>Tests if operating system is Windows Vista or later</entry>
+</row>
+<row>
+<entry><link linkend="mthIsAtLeastWindows7"></link>isAtLeastWindows7 (Class Method)</entry>
+<entry>Tests if operating system is Windows 7 or later</entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+
+<section id="mthIs64bit"><title>is64bit (Class Method)</title>
+<indexterm><primary>is64bit</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>is64bit</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.OS~is64bit---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns true if the currently executing program is running under the 64-bit ooRexx interpreter on a 64-bit version of
+  Windows, otherwise false.
+</para>
+</section>  <!-- End OS::is64bit() [class method] -->
+
+<section id="mthIs32on64bit"><title>is32on64bit (Class Method)</title>
+<indexterm><primary>is32on64bit</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>is32on64bit</secondary></indexterm>
+<programlisting> <![CDATA[
+
+>>-.OS~is32on64bit-----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns true if the currently executing program is running under the 32-bit ooRexx interpreter on a 64-bit version of
+  Windows, otherwise false.
+</para>
+</section>  <!-- End OS::is32on64bit() [class method] -->
+
+<section id="mthIsWow64"><title>isWow64 (Class Method)</title>
+<indexterm><primary>isWow64</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>isWow64</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.OS~isWow64---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  This is an alias for the <emphasis role="italic">is32on64bit</emphasis>() method.  WoW is Microsoft's term for running
+  Windows on Windows.  In this case running 32-bit Windows on a 64-bit version of Windows.  The method returns true if
+  the currently executing program is running under the 32-bit ooRexx interpreter on a 64-bit version of Windows,
+  otherwise false.
+</para>
+</section>  <!-- End OS::isWow64() [class method] -->
+
+<section id="mthIsW2K"><title>isW2K (Class Method)</title>
+<indexterm><primary>isW2K</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>isW2K</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.OS~is64bit---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns true if the currently executing program is running on Windows 2000, otherwise false.
+</para>
+</section>  <!-- End OS::isW2K() [class method] -->
+
+<section id="mthIsXP"><title>isXP (Class Method)</title>
+<indexterm><primary>isXP</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>isXP</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.OS~isXP------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns true if the currently executing program is running on Windows XP, otherwise false.
+</para>
+</section>  <!-- End OS::isXP() [class method] -->
+
+<section id="mthIsXP32"><title>isXP32 (Class Method)</title>
+<indexterm><primary>isXP32</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>isXP32</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.OS~is64bit---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns true if the currently executing program is running on 32-bit Windows XP, otherwise false.
+</para>
+</section>  <!-- End OS::isXP32() [class method] -->
+
+<section id="mthIsXP64"><title>isXP64 (Class Method)</title>
+<indexterm><primary>isXP64</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>isXP64</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.OS~isXP64----------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns true if the currently executing program is running on 64-bit Windows XP, otherwise false.
+</para>
+</section>  <!-- End OS::isXP64() [class method] -->
+
+<section id="mthIsW2K3"><title>isW2K3 (Class Method)</title>
+<indexterm><primary>isW2K3</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>isW2K3</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.OS~isW2K3----------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns true if the currently executing program is running on Windows 2003, otherwise false.
+</para>
+</section>  <!-- End OS::isW2K3() [class method] -->
+
+<section id="mthIsVista"><title>isVista (Class Method)</title>
+<indexterm><primary>isVista</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>isVista</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.OS~isVista---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns true if the currently executing program is running on Windows Vista, otherwise false.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem><para>
+<programlisting>
+<![CDATA[
+  NEED an EXAMPLE HERE.
+]]>
+</programlisting>
+  </para></listitem></varlistentry>
+</variablelist>
+</section>  <!-- End OS::isVista() [class method] -->
+
+<section id="mthIsServer2008"><title>isServer2008 (Class Method)</title>
+<indexterm><primary>isServer2008</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>isServer2008</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.OS~isServer2008----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns true if the currently executing program is running on Windows Server 2008, otherwise false.
+</para>
+</section>  <!-- End OS::isServer2008() [class method] -->
+
+<section id="mthIsWindows7"><title>isWindows7 (Class Method)</title>
+<indexterm><primary>isWindows7</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>isWindows7</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.OS~isWindows7------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns true if the currently executing program is running on Windows 7, otherwise false.
+</para>
+</section>  <!-- End OS::isWindows7() [class method] -->
+
+<section id="mthIsServer2008R2"><title>isServer2008R2 (Class Method)</title>
+<indexterm><primary>isServer2008R2</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>isServer2008R2</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.OS~isServer2008R2--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns true if the currently executing program is running on Windows Server 2008 Release 2, otherwise false.
+</para>
+</section>  <!-- End OS::isServer2008R2() [class method] -->
+
+<section id="mthIsAtLeastW2K"><title>isAtLeastW2K (Class Method)</title>
+<indexterm><primary>isAtLeastW2K</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>isAtLeastW2K</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.OS~isAtLeastW2K----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns true if the currently executing program is running on Windows 2000, or later. Otherwise it returns false.
+</para> </section>  <!-- End OS::isAtLeastW2K() [class method] -->
+
+<section id="mthIsAtLeastXP"><title>isAtLeastXP (Class Method)</title>
+<indexterm><primary>isAtLeastXP</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>isAtLeastXP</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.OS~isAtLeastXP-----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns true if the currently executing program is running on Windows XP, or later. Otherwise it returns false.
+</para> </section>  <!-- End OS::isAtLeastXP() [class method] -->
+
+<section id="mthIsAtLeastW2K3"><title>isAtLeastW2K3 (Class Method)</title>
+<indexterm><primary>isAtLeastW2K3</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>isAtLeastW2K3</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.OS~isAtLeastW2K3---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns true if the currently executing program is running on Windows 2003, or later. Otherwise it returns false.
+</para> </section>  <!-- End OS::isAtLeastW2K3() [class method] -->
+
+<section id="mthIsAtLeastVista"><title>isAtLeastVista (Class Method)</title>
+<indexterm><primary>isAtLeastVista</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>isAtLeastVista</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.OS~isAtLeastVista--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns true if the currently executing program is running on Windows Vista, or later. Otherwise it returns false.
+</para> </section>  <!-- End OS::isAtLeastVista() [class method] -->
+
+<section id="mthIsAtLeastWindows7"><title>isAtLeastWindows7 (Class Method)</title>
+<indexterm><primary>isAtLeastWindows7</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>isAtLeastWindows7</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.OS~isAtLeastWindows7-----------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns true if the currently executing program is running on Windows 7, or later. Otherwise it returns false.
+</para> </section>  <!-- End OS::isAtLeastWindows7() [class method] -->
+
+
+</section> <!-- End OS Class -->
 
 
 <section id="clsRect"><title>Rect Class</title>

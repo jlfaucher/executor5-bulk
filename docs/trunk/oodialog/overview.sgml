@@ -52,157 +52,82 @@
 
 <section id="sectGettingStarted"><title>Gettting Started</title>
 <para>
-    Unfortunately, there is little documentation for the newcomer on how to get started using ooDialog.
-    Until that type of documentation can be written, the sample ooDialog programs that accompany the
-    ooRexx distribution are probably the best source of help in getting started.  However, there are also
-    numerous snippets of example code in this book.
+    Unfortunately, there is little documentation for the newcomer on how to get started using ooDialog. Until that type
+    of documentation can be written, the sample ooDialog programs that accompany the ooRexx distribution are probably
+    the best source of help in getting started.  However, there are also numerous snippets of example code in this
+    book.  In addition the <link linkend="helpGettingHelp">getting help </link> section of this rerfence lists a number
+    of resources for the programmer with questions about ooDialog.
 </para>
 </section>
 
-<section id="reference"><title>OODialog Class Reference</title>
-<para>The classes provided by OODialog form a hierarchy as shown in
-<link linkend="fig52">The Hierarchy of OODialog Classes</link>.</para>
 
-<figure id="fig52"><title>The Hierarchy of OODialog Classes</title>
-<mediaobject>
-<imageobject>
-<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-<imagedata fileref="rxou0s12.jpg" scale="40">
-</imageobject>
-</mediaobject>
-<mediaobject>
-<imageobject>
-<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-<imagedata fileref="rxou0s24.jpg" scale="40">
-</imageobject>
-</mediaobject>
-</figure>
+<section id="sectGeneralOODialog"><title>Throughout ooDialog</title>
+<para>
+  Some behaviors in ooDialog and statements about ooDialog are general in nature. This section gathers up this
+  information in one place.  Rather than repeating this information in every method or class description to which it
+  applies, the author will assume that the reader understands that the information is always applicable unless
+  specifically stated otherwise.
+</para>
 
-<para>The classes are: </para>
 <variablelist>
-<varlistentry><term>PlainBaseDialog, BaseDialog</term>
-<listitem><para>Base methods regardless of whether the dialog is implemented as a binary
-resource, a script, or dynamically. PlainBaseDialog provides limited functionality.
-</para></listitem></varlistentry>
-<varlistentry><term>PlainUserDialog</term>
-<listitem><para>Subclass of PlainBaseDialog used to create a dialog with all its control
-elements or to execute a dialog stored in a resource script (.RC). This class
-has limited functionality.
-</para></listitem></varlistentry>
-<varlistentry><term>DynamicDialog, DialogExtensions, WindowBase, WindowExtensions</term>
-<listitem><para>Internal mixin classes used to extend PlainBaseDialog, PlainUserDialog,
-BaseDialog, UserDialog, and DialogControl. The methods provided by these classes
-are not listed separately but are listed in BaseDialog or UserDialog.
-</para></listitem></varlistentry>
-<varlistentry><term>UserDialog</term>
-<listitem><para>Subclass of BaseDialog used to create a dialog with all its control
-elements, such as push buttons, check boxes, radio buttons, entry lines, and
-list boxes.
-</para></listitem></varlistentry>
-<varlistentry><term>ResDialog</term>
-<listitem><para>Subclass of BaseDialog for dialogs within a binary (compiled) resource
-file (.DLL).
-</para></listitem></varlistentry>
-<varlistentry><term>CategoryDialog</term>
-<listitem><para>Subclass of UserDialog used to create a dialog with several pages that
-overlay each other.
-</para></listitem></varlistentry>
-<varlistentry><term>TimedMessage</term>
-<listitem><para>Class to show a message window for a defined duration.
-</para></listitem></varlistentry>
-<varlistentry><term>InputBox</term>
-<listitem><para>Class to dynamically define a dialog with a message, one entry line,
-and two push buttons (OK, Cancel).
-</para></listitem></varlistentry>
-<varlistentry><term>PasswordBox</term>
-<listitem><para>Similar to InputBox, but keystrokes in the entry line are shown as asterisks
-(*).
-</para></listitem></varlistentry>
-<varlistentry><term>IntegerBox</term>
-<listitem><para>Similar to InputBox, but only numeric data can be entered in the entry
-line.
-</para></listitem></varlistentry>
-<varlistentry><term>MultiInputBox</term>
-<listitem><para>Similar to InputBox, but with multiple entry lines.
-</para></listitem></varlistentry>
-<varlistentry><term>ListChoice</term>
-<listitem><para>Class to dynamically define a dialog with a list box, where one line
-can be selected and returned to the caller.
-</para></listitem></varlistentry>
-<varlistentry><term>MultiListChoice</term>
-<listitem><para>Similar to ListChoice, but more than one line can be selected and returned
-to the caller.
-</para></listitem></varlistentry>
-<varlistentry><term>CheckList</term>
-<listitem><para>Class to dynamically define a dialog with a group of check boxes, which
-can be selected and returned to the caller.
-</para></listitem></varlistentry>
-<varlistentry><term>SingleSelection</term>
-<listitem><para>Class to dynamically define a dialog with a group of radio buttons,
-where one can be selected and returned.
-</para></listitem></varlistentry>
-<varlistentry><term>Dialog</term>
-<listitem><para>Subclass of UserDialog for simple dialogs. You can change the default
-dialog style from UserDialog to ResDialog.
-</para></listitem></varlistentry>
-<varlistentry><term>AnimatedButton</term>
-<listitem><para>Class to implement an animated button within a dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>DialogControl</term>
-<listitem><para>Class to implement methods that are common to all dialogs and dialog
-controls.
-</para></listitem></varlistentry>
-<varlistentry><term>TreeControl</term>
-<listitem><para>Class to implement a tree to display the list of items in a dialog in
-a hierarchy.
-</para></listitem></varlistentry>
-<varlistentry><term>ListControl</term>
-<listitem><para>Class to implement a list view to display the items in a dialog as a
-collection.
-</para></listitem></varlistentry>
-<varlistentry><term>ProgressBar</term>
-<listitem><para>Class to implement a progress indicator within a dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>SliderControl</term>
-<listitem><para>Class to implement a slider or trackbar within a dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>TabControl</term>
-<listitem><para>Class to implement tabs, which can be compared to dividers in a notebook
-or labels in a file cabinet.
-</para></listitem></varlistentry>
-<varlistentry><term>StaticControl</term>
-<listitem><para>Class to query and modify static controls, such as static text, group
-boxes, and frames.
-</para></listitem></varlistentry>
-<varlistentry><term>EditControl</term>
-<listitem><para>Class to query and modify edit controls, which are also called entry
-lines.
-</para></listitem></varlistentry>
-<varlistentry><term>ButtonControl</term>
-<listitem><para>Class to implement push buttons within a dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>RadioButtonControl</term>
-<listitem><para>Class to implement radio buttons within a dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>CheckBoxControl</term>
-<listitem><para>Class to implement check boxes within a dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>ListBoxControl</term>
-<listitem><para>Class to implement list boxes within a dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>ComboBoxControl</term>
-<listitem><para>Class to implement a combo box, which combines a list box with an edit
-control.
-</para></listitem></varlistentry>
-<varlistentry><term>ScrollBarControl</term>
-<listitem><para>Class to implement a scroll bar within a dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>PropertySheetControl</term>
-<listitem><para>Class to implement a property sheet, which is similar to a category
-dialog that spreads its dialog items over several pages (categories), where
-the individual pages are controlled by a tab control instead of radio buttons
-or combo box lists.
-</para></listitem></varlistentry>
+  <varlistentry><term id="comctl32"><emphasis role="bold">Required Common Control Library (ComCtl32) Version</emphasis></term>
+  <listitem>
+  <para>
+    The dialog control windows used in dialogs, List-Views, Edit, Tree-Views, etc., are supplied by Microsoft in the
+    common controls library. This is a DLL with the name comctl32.dll.  Every version of Windows is supplied with a common
+    controls library.  However, Microsoft has updated the library a number of times to provide enhanced functionality and
+    improved features
+  </para>
+  <para>
+    Each new version of the library is backwards compatible with previous versions, but will contain features not
+    available in older versions.  For instance, some of the List-View <link linkend="listControlExtendedStyles">
+    extended styles</link> are only available with a 6.0, or later, version of the common controls library.  ooDialog can
+    only provide the features available in the version of the common controls libray on the system ooDialog is running
+    on.
+  </para>
+  <para>
+    Therefore, an ooDialog program running on a Windows 2000 machine will not have available some of the features that are
+    available when ooDialog is running on a XP service pack two system.  The DlgUtil class provides a method, <link
+    linkend="mthComCtl32Version">comCtl32Version</link> that allows the programmer to determine the exact version of the
+    common controls library that ooDialog is using.  In the documentation for the ooDialog dialog control classes,
+    features that are not available in all versions of the common control library are noted.  The minimum version of the
+    library that is needed is listed.  In general, at this time, all features of ooDialog are avaialable on Windows XP
+    or later.  This may change in the future as Vista has common control features not available on XP.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Numbers:</emphasis></term>
+  <listitem>
+  <para>
+    Numbers in ooDialog are <emphasis role="bold">always</emphasis> whole numbers, unless specifically stated otherwise.
+    To some this may be obvious, to others perhaps not.  Except in very rare cases, the Windows API that ooDialog
+    provides access to, only deals with whole numbers.  Pixels, positions, sizes of fonts, co-ordinates on the screen,
+    etc., are all expressed as whole numbers only. Numerical arguments to methods in ooDialog must always be whole
+    numbers, unless the documentation specifically notes that the method accepts fractional numbers for the argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Required Windows Version</emphasis></term>
+  <listitem>
+  <para>
+    The required Windows version is similar to the <link linkend="comctl32">required ComCtl32</link> library version.
+    Later versions of the Windows operating system have dialog and dialog control features not available in earlier
+    versions of the operating system.
+  </para>
+  <para>
+    For instance, the <link linkend="clsMonthCalendar">MonthCalendar</link> class has a number of methods that are only
+    available on Vista or later. ooDialog can only use the features available on the system on which it is executing. If
+    a method is invoked that is not available on the current operating system, a syntax conditions is raised. Any
+    method not available on all the Windows versions which ooRexx supports, have the minimum required Windows version
+    noted in their documentation.
+  </para>
+  <para>
+     The <link linkend="clsOS">OS</link> class supplies methods that allow the programmer to determine exactly which
+     operating system version the program is currently executing on. For programs that need to run on all versions of
+     Windows, the programmer must either avoid using methods not available on all versions, or test for the current
+     version and provide an alternative code path dependent on that version.  The <link
+     linkend="mthIsAtLeastVista">isAtLeastVista</link>() method of the <emphasis role="italic">OS</emphasis> class
+     provides an example of this.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -405,44 +330,11 @@ can be retrieved from the system when needed.
 </table>
 </listitem></varlistentry>
 <varlistentry><term>device context</term>
-<listitem><para>Stores information about the graphic objects that are displayed, such
-as bitmaps, lines, and pixels, and the tools used to display them, such as
-pens, brushes, and fonts. A device context can be acquired for a dialog or
-a button; it must be explicitly freed when the text or graphic operations
-are completed.
+<listitem><para>
+  Stores information about the graphic objects that are displayed, such as bitmaps, lines, and pixels, and the tools
+  used to display them, such as pens, brushes, and fonts. A device context can be acquired for a dialog or a dialog
+  control. It must be explicitly freed when the text or graphic operations are completed.
 </para></listitem></varlistentry>
-<varlistentry><term id="comctl32">Common Controls Library (ComCtl32)</term>
-<listitem>
-<para> The dialog control windows used in dialogs, List-Views, Edit,
-  Tree-Views, etc., are supplied by Microsoft in the common controls library.
-  This is a DLL with the name comctl32.dll.  Every version of Windows is
-  supplied with a common controls library.  However, Microsoft has updated the
-  library a number of times to provide enhanced functionality and improved
-  features
-</para>
-<para>
-  Each new version of the library is backwards compatible with previous
-  versions, but will contain features not available in older versions.  For
-  instance, some of the List-View <link linkend="listControlExtendedStyles">
-  extended styles</link> are only available with a 6.0, or later, version of the
-  common controls library.  ooDialog can only provide the features available in
-  the version of the common controls libray on the system ooDialog is running
-  on.
-</para>
-<para>
-  Therefore, an ooDialog program running on a Windows 2000 machine will not have
-  available some of the features that are available when ooDialog is running on
-  a XP service pack two system.  The DlgUtil class provides a method, <link
-  linkend="mthComCtl32Version">comCtl32Version</link> that allows the programmer
-  to determine the exact version of the common controls library that ooDialog is
-  using.  In the documentation for the ooDialog dialog control classes, features
-  that are not available in all versions of the common control library are
-  noted.  The minimum version of the library that is needed is listed.  In
-  general, at this time, all features of ooDialog are avaialable on Windows XP
-  or later.  This may change in the future as Vista has common control features
-  not available on XP.
-</para>
-</listitem></varlistentry>
 <varlistentry><term>pixel</term>
 <listitem><para>Individual addressable point within a window. VGA screens support 640
 by 480 pixels, SVGA screens support higher resolutions, such as 800 by 600,
@@ -578,6 +470,155 @@ direction as to how to go about using it.
 </listitem></varlistentry>
 </variablelist>
 </section>
+
+
+<section id="reference"><title>OODialog Class Reference</title>
+<para>The classes provided by OODialog form a hierarchy as shown in
+<link linkend="fig52">The Hierarchy of OODialog Classes</link>.</para>
+
+<figure id="fig52"><title>The Hierarchy of OODialog Classes</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="rxou0s12.jpg" scale="40">
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="rxou0s24.jpg" scale="40">
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>The classes are: </para>
+<variablelist>
+<varlistentry><term>PlainBaseDialog, BaseDialog</term>
+<listitem><para>Base methods regardless of whether the dialog is implemented as a binary
+resource, a script, or dynamically. PlainBaseDialog provides limited functionality.
+</para></listitem></varlistentry>
+<varlistentry><term>PlainUserDialog</term>
+<listitem><para>Subclass of PlainBaseDialog used to create a dialog with all its control
+elements or to execute a dialog stored in a resource script (.RC). This class
+has limited functionality.
+</para></listitem></varlistentry>
+<varlistentry><term>DynamicDialog, DialogExtensions, WindowBase, WindowExtensions</term>
+<listitem><para>Internal mixin classes used to extend PlainBaseDialog, PlainUserDialog,
+BaseDialog, UserDialog, and DialogControl. The methods provided by these classes
+are not listed separately but are listed in BaseDialog or UserDialog.
+</para></listitem></varlistentry>
+<varlistentry><term>UserDialog</term>
+<listitem><para>Subclass of BaseDialog used to create a dialog with all its control
+elements, such as push buttons, check boxes, radio buttons, entry lines, and
+list boxes.
+</para></listitem></varlistentry>
+<varlistentry><term>ResDialog</term>
+<listitem><para>Subclass of BaseDialog for dialogs within a binary (compiled) resource
+file (.DLL).
+</para></listitem></varlistentry>
+<varlistentry><term>CategoryDialog</term>
+<listitem><para>Subclass of UserDialog used to create a dialog with several pages that
+overlay each other.
+</para></listitem></varlistentry>
+<varlistentry><term>TimedMessage</term>
+<listitem><para>Class to show a message window for a defined duration.
+</para></listitem></varlistentry>
+<varlistentry><term>InputBox</term>
+<listitem><para>Class to dynamically define a dialog with a message, one entry line,
+and two push buttons (OK, Cancel).
+</para></listitem></varlistentry>
+<varlistentry><term>PasswordBox</term>
+<listitem><para>Similar to InputBox, but keystrokes in the entry line are shown as asterisks
+(*).
+</para></listitem></varlistentry>
+<varlistentry><term>IntegerBox</term>
+<listitem><para>Similar to InputBox, but only numeric data can be entered in the entry
+line.
+</para></listitem></varlistentry>
+<varlistentry><term>MultiInputBox</term>
+<listitem><para>Similar to InputBox, but with multiple entry lines.
+</para></listitem></varlistentry>
+<varlistentry><term>ListChoice</term>
+<listitem><para>Class to dynamically define a dialog with a list box, where one line
+can be selected and returned to the caller.
+</para></listitem></varlistentry>
+<varlistentry><term>MultiListChoice</term>
+<listitem><para>Similar to ListChoice, but more than one line can be selected and returned
+to the caller.
+</para></listitem></varlistentry>
+<varlistentry><term>CheckList</term>
+<listitem><para>Class to dynamically define a dialog with a group of check boxes, which
+can be selected and returned to the caller.
+</para></listitem></varlistentry>
+<varlistentry><term>SingleSelection</term>
+<listitem><para>Class to dynamically define a dialog with a group of radio buttons,
+where one can be selected and returned.
+</para></listitem></varlistentry>
+<varlistentry><term>Dialog</term>
+<listitem><para>Subclass of UserDialog for simple dialogs. You can change the default
+dialog style from UserDialog to ResDialog.
+</para></listitem></varlistentry>
+<varlistentry><term>AnimatedButton</term>
+<listitem><para>Class to implement an animated button within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>DialogControl</term>
+<listitem><para>Class to implement methods that are common to all dialogs and dialog
+controls.
+</para></listitem></varlistentry>
+<varlistentry><term>TreeControl</term>
+<listitem><para>Class to implement a tree to display the list of items in a dialog in
+a hierarchy.
+</para></listitem></varlistentry>
+<varlistentry><term>ListControl</term>
+<listitem><para>Class to implement a list view to display the items in a dialog as a
+collection.
+</para></listitem></varlistentry>
+<varlistentry><term>ProgressBar</term>
+<listitem><para>Class to implement a progress indicator within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>SliderControl</term>
+<listitem><para>Class to implement a slider or trackbar within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>TabControl</term>
+<listitem><para>Class to implement tabs, which can be compared to dividers in a notebook
+or labels in a file cabinet.
+</para></listitem></varlistentry>
+<varlistentry><term>StaticControl</term>
+<listitem><para>Class to query and modify static controls, such as static text, group
+boxes, and frames.
+</para></listitem></varlistentry>
+<varlistentry><term>EditControl</term>
+<listitem><para>Class to query and modify edit controls, which are also called entry
+lines.
+</para></listitem></varlistentry>
+<varlistentry><term>ButtonControl</term>
+<listitem><para>Class to implement push buttons within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>RadioButtonControl</term>
+<listitem><para>Class to implement radio buttons within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>CheckBoxControl</term>
+<listitem><para>Class to implement check boxes within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>ListBoxControl</term>
+<listitem><para>Class to implement list boxes within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>ComboBoxControl</term>
+<listitem><para>Class to implement a combo box, which combines a list box with an edit
+control.
+</para></listitem></varlistentry>
+<varlistentry><term>ScrollBarControl</term>
+<listitem><para>Class to implement a scroll bar within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>PropertySheetControl</term>
+<listitem><para>Class to implement a property sheet, which is similar to a category
+dialog that spreads its dialog items over several pages (categories), where
+the individual pages are controlled by a tab control instead of radio buttons
+or combo box lists.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 
 <section id="sectooDialogFuture"><title>ooDialog 4.0.0 and the future</title>
 <indexterm><primary>future directions</primary></indexterm>
