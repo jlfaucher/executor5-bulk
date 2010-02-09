@@ -184,6 +184,10 @@ in the following EditControl Instance Methods table.
 <entry><link linkend="setreadonly">SetReadOnly</link></entry>
 </row>
 <row>
+<entry>setTabStops</entry>
+<entry><link linkend="mthSetTabStops">setTabStops</link></entry>
+</row>
+<row>
 <entry>SetText</entry>
 <entry><link linkend="mthSetText">SetText</link></entry>
 </row>
@@ -191,10 +195,11 @@ in the following EditControl Instance Methods table.
 <entry>ShowBalloon</entry>
 <entry><link linkend="mthShowBalloon">ShowBalloon</link></entry>
 </row>
-</tbody></tgroup>
-</table>
-</para></listitem></varlistentry>
-</variablelist>
+<row>
+<entry>tabStops=</entry>
+<entry><link linkend="mthTabStopsEquals">tabStops=</link></entry>
+</row>
+</tbody></tgroup> </table> </para></listitem></varlistentry> </variablelist>
 
 <section id="selected"><title>Selected</title>
 <indexterm><primary>Selected</primary>
@@ -1069,10 +1074,10 @@ margins of the associated edit control.</para>
 ]]>
 </programlisting>
 
-<para>This method sets the "cue" text for an edit control.  Cue text provides a
-visual hint to the user as to the purpose of the edit control.  When the dialog
-is first shown to the user the cue text will be displayed, (provided there is no
-text in the edit control's buffer.)
+<para>
+  This method sets the "cue" text for an edit control.  Cue text provides a visual hint to the user as to
+  the purpose of the edit control.  When the dialog is first shown to the user the cue text will be
+  displayed, (provided there is no text in the edit control's buffer.)
 </para>
 <para>The cue text is colored a light grey to distinguish it from regular text.
 When the edit control gains the focus, Windows dismisses the cue text
@@ -1140,6 +1145,99 @@ ShowBalloon</link> example.
 </variablelist>
 
 </section>
+
+
+<section id="mthSetTabStops"><title>setTabStops</title>
+<indexterm><primary>setTabStops</primary>
+<secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary>
+<secondary>setTabStops</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-setTabStops(--tabStops--)-----------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the tab stops for text copied into a multi-line edit control.
+</para>
+<para>
+  When text is copied to the control, any tab character in the text causes space to be generated up to
+ the next tab stop.  This method is ignored if the edit control is a single-line edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The single argument is:
+  <variablelist>
+  <varlistentry><term>tabStops</term>
+  <listitem>
+  <para>
+    An array containing the tab stops.  Each tab stop is a positive number expressed in dialog template
+    units.  If the array contains no elements, default tab stops are set at every 32 dialog template
+    units.
+  </para>
+  <para>
+    If the array contains only 1 element at index 1, tab stops are set at every n dialog template units,
+    where n is the distance at index 1.
+  </para>
+  <para>
+    Otherwise, tab stops are set to the numbers contained in the array.
+  </para></listitem></varlistentry>
+  </variablelist>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True if all tab stops were set, otherwise false.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The array must contain all positive numbers (or be an empty array to set the default tab stops.)
+ 	  Also, the array must not be sparse, i.e., it must not skip any array indexes.
+  </para>
+  <para>
+    The operating system will not do negative tab stops.  I.e. you can not do 15 35 20.  Also, note that
+    when specifying an array of more than 1 tap stop, each tab stop is the absolute position of the tab
+    stop, not the distance between the tab stops.
+  </para>
+  <para>
+    Under normal circumstances there is no way for a user to enter a tab character by typing in a
+    multi-line edit control.  The edit control would need to be sub-classed and this is not provided by
+    ooDialog. However, the user could use copy and paste to paste in text with tabs.  And, text placed in
+    the edit control by the programmer, (for example by using the <link linkend="mthSetText"></link>()
+    method,) can also contain tabs.
+  </para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthTabStopsEquals"><title>tabStops=</title>
+<indexterm><primary>tabStops=</primary>
+<secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary>
+<secondary>tabStops=</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-tabStops-=-tabStops-----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">tabStops =</emphasis> method is an alias for the <link
+  linkend="mthSetTabStops">setTabStops</link>() method.  It behaves exactly the same except there is no
+  return value.
+</para>
+</section>
+
 
 <section id="mthShowBalloon"><title>ShowBalloon</title>
 <indexterm><primary>ShowBalloon</primary></indexterm>
