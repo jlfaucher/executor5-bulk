@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: OODialog Reference SGML file.
     #
-    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -176,7 +176,7 @@
     <para>
       The programmer can use these methods to recieve notifications of button control events: the <link
       linkend="mthConnectButton">connectButton</link>() method, or the <link
-      linkend="mthConnectButtonNotify">connectButtonNotify</link>() method.
+      linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
     </para>
   </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Methods</emphasis>:</term>
@@ -677,10 +677,10 @@ except that the operating system maintains the check state for the programmer.
 </para></listitem></varlistentry>
 <varlistentry><term>NOTIFY</term>
 <listitem><para>Enables a button to send the kill focus and set focus messages.
-  See the <link linkend="mthConnectButtonNotify">connectButtonNotify</link> method
-  of the <link linkend="clsMessageExtensions">MessageExtensions Class</link>.  If the button
+  See the <link linkend="mthConnectButtonEvent">connectButtonEvent</link> method
+  of the <link linkend="clsEventNotification">EventNotification Class</link>.  If the button
   does not have this style, kill and set focus events will not be received, if
-  the programmer does <computeroutput>connectButtonNotify()</computeroutput> to
+  the programmer does <computeroutput>connectButtonEvent()</computeroutput> to
   connect those events.
 </para></listitem></varlistentry>
 <varlistentry><term>FLAT</term>
@@ -758,7 +758,7 @@ button~style="DEFPUSHBUTTON"
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
     <para>
-      This method requires <link linkend="comctl32">Common Control Library</link> version 6.0 or later.
+      This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
       If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
       determine the current version of the library.
     </para>
@@ -825,7 +825,7 @@ button~style="DEFPUSHBUTTON"
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
     <para>
-      This method requires <link linkend="comctl32">Common Control Library</link> version 6.0 or later.
+      This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
       If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
       determine the current version of the library.
     </para>
@@ -886,7 +886,7 @@ say '  Bottom:' margins~bottom
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
     <para>
-      This method requires <link linkend="comctl32">Common Control Library</link> version 6.0 or later.
+      This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
       If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
       determine the current version of the library.
     </para>
@@ -945,7 +945,7 @@ self~getButtonControl(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
     <para>
-      This method requires <link linkend="comctl32">Common Control Library</link> version 6.0 or later.
+      This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
       If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
       determine the current version of the library.
     </para>
@@ -1092,7 +1092,7 @@ self~getButtonControl(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
     <para>
-      This method requires <link linkend="comctl32">Common Control Library</link> version 6.0 or later.
+      This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
       If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
       determine the current version of the library.
     </para>
@@ -1835,7 +1835,7 @@ within the associated bitmap button from one position to another.</para>
     <para>
       A radio button, is a button, and the programmer uses the same methods to recieve notifications of
       of events as with a ButtonControl: the <link linkend="mthConnectButton">connectButton</link>()
-      method, or the <link linkend="mthConnectButtonNotify">connectButtonNotify</link>() method.
+      method, or the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term>Methods:</term>
@@ -2213,7 +2213,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
     <para>
       A check box, is a button, and the programmer uses the same methods to recieve notifications of
       events as with the ButtonControl: the <link linkend="mthConnectButton">connectButton</link>()
-      method, or the <link linkend="mthConnectButtonNotify">connectButtonNotify</link>() method.
+      method, or the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term>Methods:</term>

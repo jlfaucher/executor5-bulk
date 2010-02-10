@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: OODialog Reference SGML file.
     #
-    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -41,32 +41,40 @@
     #
     #########################################################################
 -->
-<chapter id="clsMessageExtensions"><title>MessageExtensions Class</title>
-<indexterm><primary>MessageExtensions class</primary></indexterm>
-<para>To use the methods defined by the mixin class MessageExtensions you must inherit from this class by specifying the INHERIT option for
-the ::CLASS directive in the class declaration. For example:</para>
-<programlisting>
-<![CDATA[
-::class MyExtendedDialog SUBCLASS UserDialog INHERIT MessageExtensions
-]]>
-</programlisting>
+
+<chapter id="clsEventNotification"><title>EventNotification Class (Mixin Class)</title>
+<indexterm><primary>EventNotification class</primary></indexterm>
+<para>
+  The event notification class contains methods that connect a <link linkend="ovvEvents">window event</link> with a
+  method in the Rexx dialog object. Except as noted below, the Rexx programmer adds the method to her dialog subclass.
+  Once the event is connected, each time the event occurs in the dialog, the connected method is invoked.  The
+  programmer codes the method to take the appropiate action for the event.
+</para>
+<para>
+  Whenever a dialog object is instantiated, three event connections are automatically made. They connect the <emphasis
+  role="italic">ok</emphasis>, <emphasis role="italic">cancel</emphasis>, and <emphasis role="italic">help</emphasis>
+  events to the <link linkend="mthOk">ok</link>(), <link linkend="mthCancel">cancel</link>(), and <link
+  linkend="mthHelp">help</link>() methods of the dialog object. The <emphasis role="italic">ok</emphasis>() and
+  <emphasis role="italic">cancel</emphasis>() methods are already coded to take the appropriate default action. The
+  default action for the <emphasis role="italic">help</emphasis>() method is to do nothing.  All three methods are
+  intended to be over-ridden by the programmer if the default action is not sufficient.
+</para>
+<para>
+  For all other events the Rexx programmer needs to specifically connect the event to his dialog, through one of the
+  event notification methods, to be able to respond to the event.  Indeed, except for trivial dialogs, most of the
+  programming is deciding which events to be notified of and takin action upon receiving the notification.
+</para>
+<para>
+  The EventNotification class is inherited by
+</para>
 <variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para>The MessageExtensions class requires the class
-definition file <computeroutput>oodwin32.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires oodwin32.cls
-]]>
-</programlisting>
-</para></listitem></varlistentry>
 <varlistentry><term>Methods:</term>
-<listitem><para>Instances of the MessageExtensions class implement
+<listitem><para>Instances of the EventNotification class implement
 the methods listed in
-<link linkend="t000020">MessageExtensions Instance Methods</link> table.
+<link linkend="t000020">EventNotification Instance Methods</link> table.
 
 <table id="t000020" frame="all">
-<title>MessageExtensions Instance Methods</title>
+<title>EventNotification Instance Methods</title>
 <tgroup cols="2">
 <thead>
 <row>
@@ -76,16 +84,16 @@ the methods listed in
 </thead>
 <tbody>
 <row>
-<entry>connectButtonNotify</entry>
-<entry><link linkend="mthConnectButtonNotify">connectButtonNotify</link></entry>
+<entry>connectButtonEvent</entry>
+<entry><link linkend="mthConnectButtonEvent">connectButtonEvent</link></entry>
 </row>
 <row>
-<entry>ConnectComboBoxNotify</entry>
-<entry><link linkend="connectcomboboxnotify">ConnectComboBoxNotify</link></entry>
+<entry>connectComboBoxEvent</entry>
+<entry><link linkend="mthConnectComboBoxEvent">connectComboBoxEvent</link></entry>
 </row>
 <row>
-<entry>ConnectCommonNotify</entry>
-<entry><link linkend="connectcommonnotify">ConnectCommonNotify</link></entry>
+<entry>connectNotifyEvent</entry>
+<entry><link linkend="mthConnectNotifyEvent">connectNotifyEvent</link></entry>
 </row>
 <row>
 <entry>ConnectEditNotify</entry>
@@ -136,11 +144,11 @@ the methods listed in
 </para></listitem></varlistentry>
 </variablelist>
 
-<section id="connectcommonnotify"><title>ConnectCommonNotify</title>
-<indexterm><primary>ConnectCommonNotify</primary></indexterm>
+<section id="mthConnectNotifyEvent"><title>connectNotifyEvent</title>
+<indexterm><primary>connectNotifyEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectCommonNotify(--id--,--"--+-OUTOFMEMORY-+-->
+>>-aMessageExtensions~connectNotifyEvent(--id--,--"--+-OUTOFMEMORY-+-->
                                                       +-CLICK-------+
                                                       +-DBLCLK------+
                                                       +-ENTER-------+
@@ -156,12 +164,12 @@ the methods listed in
 ]]>
 </programlisting>
 
-<para>The ConnectCommonNotify method connects a particular
+<para>The connectNotifyEvent method connects a particular
 WM_NOTIFY message for a dialog control with a method. The WM_NOTIFY
 message informs the dialog that an event has occurred with regard to a dialog
 control.</para>
 <para>If a specific Connect...Notify method exists for the dialog control, use
-this method instead of the ConnectCommonNotify method because the system might
+this method instead of the connectNotifyEvent method because the system might
 send a specific notification instead of a common one.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -227,11 +235,11 @@ incorrect.
 on dialog control DLGITEM1 with method OnDblClk:
 <programlisting>
 <![CDATA[
-::class MyDlgClass subclass UserDialog inherit MessageExtensions
+::class MyDlgClass subclass UserDialog
 
 ::method Init
   self~init:super(...)
-  self~ConnectCommonNotify(DLGITEM1, "DBLCLK")
+  self~connectNotifyEvent(DLGITEM1, "DBLCLK")
 
 ::method OnDblClk
   use arg id
@@ -363,7 +371,7 @@ view FileTree with method NewTreeSelection and displays the text of the new
 selection:
 <programlisting>
 <![CDATA[
-::class MyDlgClass subclass UserDialog inherit MessageExtensions
+::class MyDlgClass subclass UserDialog
 
 ::method Init
   self~init:super(...)
@@ -821,7 +829,7 @@ view EMPLOYEES with method ColumnAction and changes the style of the list
 view from REPORT to SMALLICON:</para>
 <programlisting>
 <![CDATA[
-::class MyDlgClass subclass UserDialog inherit MessageExtensions
+::class MyDlgClass subclass UserDialog
 
 ::method Init
   self~init:super(...)
@@ -997,11 +1005,11 @@ notifications inform the dialog that an event has occurred in the list view.
 <para>The <computeroutput>ConnectListViewNotify</computeroutput> method is
 designed to provide more information to the invoked method
 than the <computeroutput>ConnectListNotify</computeroutput> or
-<computeroutput>ConnectCommonNotify</computeroutput> methods.  Connecting an
+<computeroutput>connectNotifyEvent</computeroutput> methods.  Connecting an
 event through the <computeroutput>ConnectListViewNotify</computeroutput> method
 is used as a replacement for connecting the same event through the
 <computeroutput>ConnectListNotify</computeroutput> method or the
-<computeroutput>ConnectCommonNotify</computeroutput> method.
+<computeroutput>connectNotifyEvent</computeroutput> method.
 </para>
 <note><title>Note</title><para>
 If the same event, for the same control, is connected using two different
@@ -1009,7 +1017,7 @@ ConnectXXX methods, only one connection will be in effect.  This will be the
 connection whose ConnectXXX method is invoked first.  For example, take a dialog
 that has a list view control with resource ID of 109.  If the mouse click event
 is connected for that control using the
-<computeroutput>ConnectCommonNotify</computeroutput> method and then the mouse
+<computeroutput>connectNotifyEvent</computeroutput> method and then the mouse
 click event is also connected using the
 <computeroutput>ConnectListViewNotify</computeroutput> method, only one
 connection will be active.  Which one is active is dependent on the order of
@@ -1041,7 +1049,7 @@ event.
 <varlistentry><term>CLICK</term>
 <listitem><para>An item was clicked with the left mouse button.  Connecting the
 CLICK event is a replacement for the
-<computeroutput>ConnectCommonNotify</computeroutput> method's CLICK event.
+<computeroutput>connectNotifyEvent</computeroutput> method's CLICK event.
 </para></listitem></varlistentry>
 <varlistentry><term>CHECKBOXCHANGED</term>
 <listitem><para>The check box state of an item changed.  (The check box was
@@ -1241,7 +1249,7 @@ entry is removed from the mail merge.
 </para>
 <programlisting>
 <![CDATA[
-::class MailingListDlg subclass UserDialog inherit AdvancedControls MessageExtensions
+::class MailingListDlg subclass UserDialog
 
 ::method initDialog
   expose mailList
@@ -1270,18 +1278,18 @@ entry is removed from the mail merge.
 </variablelist>
 </section>
 
-<section id="mthConnectButtonNotify"><title>connectButtonNotify</title>
-<indexterm><primary>connectButtonNotify</primary></indexterm>
+<section id="mthConnectButtonEvent"><title>connectButtonEvent</title>
+<indexterm><primary>connectButtonEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectButtonNotify(--id--,--"--event---"--+---------------+--)---------><
-                                               +-,--msgToRaise-+
+>>--connectButtonEvent(--id--,--event--+---------------+--)---------><
+                                       +-,--msgToRaise-+
 
 ]]>
 </programlisting>
 
 <para>
-  The connectButtonNotify method connects a particular WM_NOTIFY message for a button control (push
+  The connectButtonEvent method connects a particular WM_NOTIFY message for a button control (push
   button, radio button, or check box) with a method. The WM_NOTIFY message informs the dialog that an
   event has occurred with regard to the button.
 </para>
@@ -1369,7 +1377,7 @@ incorrect.
     <orderedlist>
     <listitem>
       <para>
-        The invocation of connectButtonNotify() can be placed in the <link linkend="h000025">init</link>
+        The invocation of connectButtonEvent() can be placed in the <link linkend="h000025">init</link>
         or <link linkend="mthInitDialog">initDialog</link> method.  (Indeed the invocation can be done
         anywhere. But, it makes most sense to have the connection made before the dialog starts
         executing.) If the connection is made in the init() method, be sure that the super class init()
@@ -1424,11 +1432,11 @@ incorrect.
 <listitem><para>The following example displays a message whenever the OK button is selected:</para>
 <programlisting>
 <![CDATA[
-::class MyDlgClass subclass UserDialog inherit MessageExtensions
+::class MyDlgClass subclass UserDialog
 
 ::method Init
   self~init:super(...)
-  self~connectButtonNotify("OK", "HILITE")
+  self~connectButtonEvent("OK", "HILITE")
 
 ::method OnHilite
   say "The OK button has been selected"
@@ -1610,12 +1618,12 @@ incorrect.
 </variablelist>
 </section>
 
-<section id="mthConnectDateTimePickerNotify"><title>connectDateTimePickerNotify</title>
-<indexterm><primary>connectDateTimePickerNotify</primary></indexterm>
+<section id="mthConnectDateTimePickerEvent"><title>connectDateTimePickerEvent</title>
+<indexterm><primary>connectDateTimePickerEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectStaticNotify(--id--,--"event"--,-+---------------+--)--------><
-                                            +-,--methodName-+
+>>--connectDateTimePickerEvent(--id--,--event--+---------------+--)------------><
+                                               +-,--methodName-+
 
 ]]>
 </programlisting>
@@ -1880,7 +1888,7 @@ incorrect.
 it to 0 when a nonnumeric value was entered:
 <programlisting>
 <![CDATA[
-::class MyDlgClass subclass UserDialog inherit MessageExtensions
+::class MyDlgClass subclass UserDialog
 
 ::method Init
   self~init:super(...)
@@ -1995,7 +2003,7 @@ incorrect.
 <listitem><para>The following example displays the text of the selected list box entry:
 <programlisting>
 <![CDATA[
-::class MyDlgClass subclass UserDialog inherit MessageExtensions
+::class MyDlgClass subclass UserDialog
 
 ::method Init
   self~init:super(...)
@@ -2028,11 +2036,11 @@ before init:super has been called.</para></listitem>
 </para></note>
 </section>
 
-<section id="connectcomboboxnotify"><title>ConnectComboBoxNotify</title>
-<indexterm><primary>ConnectComboBoxNotify</primary></indexterm>
+<section id="mthConnectComboBoxEvent"><title>connectComboBoxEvent</title>
+<indexterm><primary>connectComboBoxEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectComboBoxNotify(--id--,--"--+-CHANGE-------+--"-->
+>>-aMessageExtensions~connectComboBoxEvent(--id--,--"--+-CHANGE-------+--"-->
                                                         +-UPDATE-------+
                                                         +-CLOSEUP------+
                                                         +-DROPDOWN-----+
@@ -2051,7 +2059,7 @@ before init:super has been called.</para></listitem>
 ]]>
 </programlisting>
 
-<para>The ConnectComboBoxNotify method connects a particular
+<para>The connectComboBoxEvent method connects a particular
 WM_NOTIFY message for a combo box with a method. The WM_NOTIFY message
 informs the dialog that an event has occurred in the combo box.</para>
 <variablelist>
@@ -2133,11 +2141,11 @@ ID</link> that has been added to the <link linkend="constdir">ConstDir</link>
 directory of the MyDlgClass in another part of the program:
 <programlisting>
 <![CDATA[
-::class MyDlgClass subclass UserDialog inherit MessageExtensions
+::class MyDlgClass subclass UserDialog
 
 ::method InitDialog
   self~init:super(...)
-  self~ConnectComboBoxNotify("PROFESSIONS", "DROPDOWN", "PlaySong")
+  self~connectComboBoxEvent("PROFESSIONS", "DROPDOWN", "PlaySong")
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -2262,7 +2270,7 @@ it for the scroll bar. It also displays the new position and the event type
 for POSITION, which is to be 4:
 <programlisting>
 <![CDATA[
-::class MyDlgClass subclass UserDialog inherit MessageExtensions
+::class MyDlgClass subclass UserDialog
 
 ::method InitDialog
   self~InitDialog:super(...)
@@ -2372,7 +2380,7 @@ incorrect.
 is selected in the tab control PAGE:
 <programlisting>
 <![CDATA[
-::class MyDlgClass subclass UserDialog inherit MessageExtensions
+::class MyDlgClass subclass UserDialog
 
 ::method Init
   self~init:super(...)
@@ -2507,7 +2515,7 @@ from the notification arguments and displays it together with the event type
 for POSITION, which should be 4:
 <programlisting>
 <![CDATA[
-::class MyDlgClass subclass UserDialog inherit MessageExtensions
+::class MyDlgClass subclass UserDialog
 
 ::method InitDialog
   self~InitDialog:super(...)

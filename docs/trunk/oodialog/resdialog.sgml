@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: OODialog Reference SGML file.
     #
-    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -73,22 +73,24 @@
   that has the compiled resource attached to it, could not be used.
 </para>
 <variablelist>
+<varlistentry><term><emphasis role="bold">Note:</emphasis></term>
+<listitem>
+<para>
+  The <emphasis role="italic">ResDialog</emphasis> class extends the <link linkend="chpDialogObject">base dialog</link>
+  object and therefore has all of the dialog methods. Only those methods specific to the <emphasis
+  role="italic">ResDialog</emphasis> class are documented here.
+</para>
+</listitem></varlistentry>
 <varlistentry><term>Requires:</term>
 <listitem>
 <para>
-  <computeroutput>ResDlg.cls</computeroutput> is the source file of this class.
-  <programlisting>
-  <![CDATA[
-  ::requires "oodialog.cls"
-  ]]>
-  </programlisting>
-</para>
-</listitem></varlistentry>
-<varlistentry><term>Subclass:</term>
-<listitem>
-<para>
-  The ResDialog class is a subclass of <link linkend="clsBaseDialog">BaseDialog</link> and therefore
-  inherits all the methods of that class.
+  The <computeroutput>ResDlg.cls</computeroutput> requires the ooDialog framework file, as do all objects in the
+  framework.
+<programlisting>
+<![CDATA[
+::requires "ooDialog.cls"
+]]>
+</programlisting>
 </para>
 </listitem></varlistentry>
 </variablelist>

@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: OODialog Reference SGML file.
     #
-    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -41,18 +41,21 @@
     #
     #########################################################################
 -->
-<chapter id="clsBaseDialog"><title>BaseDialog Class</title>
-<indexterm><primary>BaseDialog class</primary></indexterm>
-<para>The BaseDialog class implements base methods for
-all dialogs regardless of whether the dialog is implemented as a binary resource,
-a resource script, or created dynamically. Binary (compiled) resources are
-stored in a DLL. A dialog is created dynamically by using Add... methods.
-Dialogs that are implemented using a resource script (.RC) are generated semi-dynamically.</para>
-<para>BaseDialog is an abstract class. You cannot use it to execute a Windows dialog
-but have to use one of its subclasses.</para>
-<para>See the subclasses <link linkend="clsUserDialog">UserDialog Class</link>,
-<link linkend="clsResDialog">ResDialog Class</link>, and
-<link linkend="clsRcDialog">RcDialog Class</link> for additional information.
+<chapter id="chpDialogObject"><title>The Dialog Object</title>
+<indexterm><primary>The Dialog Object</primary></indexterm>
+<para>
+  All instantiated Rexx dialog objects have a broad base of methods in common. These methods are the same for all
+  dialogs regardless of whether the dialog is implemented as a binary resource, a resource script, or created
+  dynamically. Binary (compiled) resources are stored in a DLL. A dialog is created dynamically by using Add... methods.
+  Dialogs that are implemented using a resource script (.RC) are generated semi-dynamically.
+</para>
+<para>
+  The dialog object here is an abstract concept, used to make it simple to understand the basic concepts. To instantiate
+  a dialog object you create a subclass of one of the concrete dialog classes provided by the ooDialog framework, such
+  as the <link linkend="clsUserDialog">UserDialog Class</link>, <link linkend="clsResDialog">ResDialog Class</link>, or
+  <link linkend="clsRcDialog">RcDialog Class</link>. This chapter provides the reference for the constants, attributes,
+  and methods that are common to all dialog objects.  See the specific dialog class for methods that are unique to the
+  class.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
@@ -255,7 +258,7 @@ to Init.
 </row>
 <row>
 <entry>Cancel</entry>
-<entry><link linkend="h001450">Cancel</link></entry>
+<entry><link linkend="mthCancel">Cancel</link></entry>
 </row>
 <row>
 <entry>CaptureMouse</entry>
@@ -808,7 +811,7 @@ to Init.
 </row>
 <row>
 <entry>Help</entry>
-<entry><link linkend="h001456">Help</link></entry>
+<entry><link linkend="mthHelp">Help</link></entry>
 </row>
 <row>
 <entry>Hide</entry>
@@ -928,7 +931,7 @@ to Init.
 </row>
 <row>
 <entry>OK</entry>
-<entry><link linkend="h001444">OK</link></entry>
+<entry><link linkend="mthOk">OK</link></entry>
 </row>
 <row>
 <entry>OpaqueText</entry>
@@ -1264,17 +1267,15 @@ to Init.
 </variablelist>
 
 
-<section id="clsMthsBaseDialog"><title>Class Methods</title>
+<section id="sectDialogClassMethods"><title>Class Methods</title>
 <indexterm><primary>class methods</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<secondary>dialog</secondary></indexterm>
 <para>
-  The class methods listed here are class methods of the <link
-  linkend="paraPlainBaseDialog">PlainBaseDialog</link> class.
+  Dialogs have a few class methods, primarily dealing with the dialog font.
 </para>
 
 <section id="mthClsSetDefaultFont"><title>setDefaultFont (Class method)</title>
-<indexterm><primary>setDefaultFont</primary>
-<secondary>PlainBaseDialog class</secondary></indexterm>
+<indexterm><primary>setDefaultFont</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>--setDefaultFont(--fontName--,--fontSize--)----------------------------------><
@@ -1283,12 +1284,11 @@ to Init.
 </programlisting>
 
 <para>
-  This method changes the default dialog font used for all dialogs. The default dialog font is used
-  whenever a dialog template, used in a dynamically defined dialog, does not specify a font.  Since it is
-  very unusual for a resource script to not specify a font, this mostly effects the <link
-  linkend="clsPlainUserDialog">PlainUserDialog</link> and <link linkend="clsUserDialog">UserDialog</link>
-  classes. Binary compiled dialog templates (<link linkend="clsResDialog">ResDialog</link>) can not be
-  changed, so the default dialog font has no meaning for a ResDialog.
+  This method changes the default dialog font used for all dialogs. The default dialog font is used whenever a
+  dynamically defined dialog template does not specify a font. Since it is very unusual for a resource script to not
+  specify a font, this mostly effects the <link linkend="clsUserDialog">UserDialog</link> classes. Binary compiled
+  dialog templates (<link linkend="clsResDialog">ResDialog</link>) can not be changed, so the default dialog font has no
+  meaning for a ResDialog.
 </para>
 <para>
   Currently the default font is <computeroutput>MS Shell Dlg</computeroutput> with a size of
@@ -1551,7 +1551,7 @@ to Init.
 
       ::requires "oodWin32.cls"
 
-      ::class 'MessageBox' subclass UserDialog inherit AdvancedControls MessageExtensions
+      ::class 'MessageBox' subclass UserDialog
 
       ::method init
         expose cx cy message title fontName fontSize
@@ -5099,7 +5099,7 @@ self~setDataStem(dlgStem.)
 <para>The following methods are abstract methods that are called each time a
 push button with ID 1, 2, or 9 is pressed.</para>
 
-<section id="h001444"><title>OK</title>
+<section id="mthOk"><title>OK</title>
 <indexterm><primary>OK</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5137,7 +5137,7 @@ return self~finished
 </variablelist>
 </section>
 
-<section id="h001450"><title>Cancel</title>
+<section id="mthCancel"><title>Cancel</title>
 <indexterm><primary>Cancel</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5162,7 +5162,7 @@ value 0.
 </variablelist>
 </section>
 
-<section id="h001456"><title>Help</title>
+<section id="mthHelp"><title>Help</title>
 <indexterm><primary>Help</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -6730,7 +6730,7 @@ one of the check boxes instead.
 -- End of entry point.
 ::requires "oodWin32.cls"
 
-::class SimpleDialog subclass UserDialog inherit AdvancedControls MessageExtensions
+::class SimpleDialog subclass UserDialog
 
 ::method check
 

@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: OODialog Reference SGML file.
     #
-    # Copyright (c) 2009-2009, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2009-2010, Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -105,7 +105,7 @@
   <listitem>
   <para>
     Use the <link linkend="mthNewDateTimePicker">newDateTimePicker</link>() method of the <link
-    linkend="clsBaseDialog">dialog</link> to retrieve a date and time picker object.
+    linkend="chpDialogObject">dialog</link> to retrieve a date and time picker object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
@@ -160,12 +160,12 @@
 </variablelist>
 
 
-<section id="tmthNewDateTimePicker"><title>newDateTimePicker [PlainBaseDialog method]</title>
+<section id="tmthNewDateTimePicker"><title>newDateTimePicker [Dialog method]</title>
 <para>
   DateTimePicker objects can not be instantiated by the programmer from Rexx code using a <emphasis
   role="italic">new</emphasis>() method. Rather, a date and time picker object is obtained by using the <link
   linkend="mthNewDateTimePicker">newDateTimePicker</link>() method of the <link
-  linkend="clsBaseDialog">dialog</link>.  The syntax is:
+  linkend="chpDialogObject">dialog</link>.  The syntax is:
 <programlisting>
 <![CDATA[
 >>-newDateTimePicker(--id--+-------------+--)---------------------><
@@ -174,10 +174,10 @@
 ]]>
 </programlisting>
 </para>
-</section>  <!-- End PlainBaseDialog::newDateTimePicker() [PlainBaseDialog method] -->
+</section>  <!-- End Dialog::newDateTimePicker() [Dialog method] -->
 
 
-<section id="tmthCreateDateTimePicker"><title>createDateTimePicker [DyanmicDialog method]</title>
+<section id="tmthCreateDateTimePicker"><title>createDateTimePicker [UserDialog method]</title>
 <para>
   A date and time picker control can be added to a <link linkend="clsUserDialog">UserDialog</link> dialog
   through the <link linkend="mthCreateDateTimePicker">createDateTimePicker</link>() method. The basic syntax is:
@@ -224,45 +224,30 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
     <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-    <para>
-      xx
+      Requires <link linkend="ovvRequiredWindows">Windows Vista</link> or later. Raises syntax errors when incorrect
+      arguments are detected.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>
-      xx
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-        <para>
-          xx
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+      The method takes no arguments.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      xx
+      The method always returns 0.
     </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
-    <para>
-      This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
+  <para>
+    This method causes the date time picker to destroy the month calendar control and to send a DTN_CLOSEUP notification
+    (the CLOSEUP event notification) that the control is closing.
+  </para></listitem></varlistentry>
 </variablelist>
-</section>  <!-- End DateTimePicker::methodName() -->
+</section>  <!-- End DateTimePicker::closeMonthCal() -->
 
 </chapter>  <!-- End DateTimePicker class -->
 

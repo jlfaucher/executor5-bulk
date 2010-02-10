@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: OODialog Reference SGML file.
     #
-    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -44,16 +44,16 @@
 <chapter id="clsUserDialog"><title>UserDialog Class</title>
 <indexterm><primary>UserDialog class</primary></indexterm>
 <para>
-  The UserDialog class extends the BaseDialog class. This class allows the programmer to dynamically
-  define the dialog template in memory.  The class provides methods to begin the dialog template,
-  specifying the size, position, and other basic attributes of the dialog.  In addition, methods are
-  provided to create the dialog controls within the dialog.  These methods allow the programmer to create
-  any of the dialog controls supported by ooDialog.
+  The <emphasis role="italic">UserDialog</emphasis> class extends the <link linkend="chpDialogObject">base dialog</link>
+  object. This class allows the programmer to dynamically define the dialog template in memory.  The class provides
+  methods to begin the dialog template, specifying the size, position, and other basic attributes of the dialog.  In
+  addition, methods are provided to create the dialog controls within the dialog.  These methods allow the programmer to
+  create any of the dialog controls supported by ooDialog.
 </para>
 
 <note><title>Note</title><para>
-  The class also inherits the methods of its parent class: the <link linkend="clsBaseDialog">BaseDialog
-  class</link>.
+  The class has all the methods of the <link linkend="chpDialogObject">base dialog</link> object. Only the methods
+  specific to the <emphasis role="italic">UserDialog</emphasis> are documented here.
 </para></note>
 <para>
   There are three basic ways of creating a dialog using the UserDialog class:
@@ -1319,7 +1319,7 @@ associated Object Rexx attribute. Add... methods cannot be used after
             <para>
               Enables the button to send notifications for the gained focus,lost focus, and double click
               events.  This is only necessary when the <link
-              linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and only for
+              linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
               the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method.
             </para>
           </listitem></varlistentry>
@@ -1807,7 +1807,7 @@ MyDialog~addBitmapButton(601, 20, 317, 80, 30, , "BmpPushed", ,
                 <para>
                   Enables the button to send notifications for the gained focus,lost focus, and double click
                   events.  This is only necessary when the <link
-                  linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and only for
+                  linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
                   the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
                   buttons and owner-drawn buttons will recieve the DBLCLK event.
                 </para>
@@ -2225,7 +2225,7 @@ MyDialog~addButtonGroup(20, 235, , ,               -
                 <para>
                   Enables the button to send notifications for the gained focus,lost focus, and double click
                   events.  This is only necessary when the <link
-                  linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and only for
+                  linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
                   the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
                   buttons and owner-drawn buttons will recieve the DBLCLICK event.
                 </para>
@@ -2481,7 +2481,7 @@ end
                 <para>
                   Enables the button to send notifications for the gained focus,lost focus, and double click
                   events.  This is only necessary when the <link
-                  linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and only for
+                  linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
                   the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
                   buttons and owner-drawn buttons will recieve the DBLCLICK event.
                 </para>
@@ -2736,7 +2736,7 @@ MyDialog~Execute
                 <para>
                   Enables the button to send notifications for the gained focus,lost focus, and double click
                   events.  This is only necessary when the <link
-                  linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and only for
+                  linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
                   the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
                   buttons and owner-drawn buttons will recieve the DBLCLICK event.
                 </para>
@@ -3012,7 +3012,7 @@ MyDialog~Execute
                 <para>
                   Enables the button to send notifications for the gained focus,lost focus, and double click
                   events.  This is only necessary when the <link
-                  linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and only for
+                  linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
                   the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
                   buttons and owner-drawn buttons will recieve the DBLCLICK event.
                 </para>
@@ -3272,7 +3272,7 @@ MyDialog~Execute
                 <para>
                   Enables the button to send notifications for the gained focus,lost focus, and double click
                   events.  This is only necessary when the <link
-                  linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and only for
+                  linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
                   the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
                   buttons and owner-drawn buttons will recieve the DBLCLICK event.
                 </para>
@@ -3538,7 +3538,7 @@ MyDialog~objectrexx = 1
                 <para>
                   Enables the button to send notifications for the gained focus,lost focus, and double click
                   events.  This is only necessary when the <link
-                  linkend="mthConnectButtonNotify">connectButtonNotify</link> method is used, and only for
+                  linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
                   the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
                   buttons and owner-drawn buttons will recieve the DBLCLICK event.
                 </para>
@@ -3867,7 +3867,7 @@ MyDialog~objectrexx = 1
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
                 linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -4125,7 +4125,7 @@ MyDialog~objectrexx = 1
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
                 linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>CENTERIMAGE</term>
@@ -4257,7 +4257,7 @@ MyDialog~objectrexx = 1
       return 0
       -- End of entry point.
 
-      ::class SimpleDialog subclass UserDialog inherit AdvancedControls MessageExtensions
+      ::class SimpleDialog subclass UserDialog
 
       ::method defineDialog
 
@@ -4404,7 +4404,7 @@ MyDialog~objectrexx = 1
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
                 linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -4573,7 +4573,7 @@ MyDialog~objectrexx = 1
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
                 linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -4689,7 +4689,7 @@ MyDialog~objectrexx = 1
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
                 linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -4805,7 +4805,7 @@ MyDialog~objectrexx = 1
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
                 linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -4921,7 +4921,7 @@ MyDialog~objectrexx = 1
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
                 linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -5037,7 +5037,7 @@ MyDialog~objectrexx = 1
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
                 linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -5153,7 +5153,7 @@ MyDialog~objectrexx = 1
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
                 linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -5268,7 +5268,7 @@ MyDialog~objectrexx = 1
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
                 linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -5383,7 +5383,7 @@ MyDialog~objectrexx = 1
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
                 linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -5498,7 +5498,7 @@ MyDialog~objectrexx = 1
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
                 linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsMessageExtensions">.MessageExtensions</link> class for further information.
+                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -6580,6 +6580,158 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
   </listitem></varlistentry>
 </variablelist>
 
+</section>
+
+<section id="mthCreateDateTimePicker"><title>createDateTimePicker</title>
+<indexterm><primary>createDateTimePicker</primary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>--createDateTimePicker(-id--+--------+--x-,--y-,--cx-,--cy-+---------+-)-><
+                           +-,-name-+                     +-,-style-+
+]]>
+</programlisting>
+
+<para>
+  The
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The arguments are:
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+      <para>
+        The resource <link linkend="idArgument">ID</link> for the button.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>name</term>
+    <listitem>
+      <para>
+        The name of the data attribute associated with the dialog item. Using this argument performs the
+        same function as the FIX THIS PLEASE <link
+        linkend="mthConnectEntryLine">connectEntryLine</link>() method. The documentation
+        connectEntryLine() has a good description of the concept of the data attribute.
+      </para>
+      <para>
+        If you omitt this argument then the data attribute is constructed automatically and named by
+        concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA || id</computeroutput>.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>x, y, cx, cy</term>
+    <listitem>
+      <para>
+        The  control <link linkend="listCommonArguments">coordinates</link>
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style</term>
+    <listitem>
+      <para>
+        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+        separated by spaces:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>DEFAULT  </member>
+          <member>OWNER    </member>
+          <member>BITMAP   </member>
+          <member>HIDDEN   </member>
+          <member>DISABLED </member>
+          <member>BORDER   </member>
+          <member>GROUP    </member>
+          <member>NOTAB    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>DEFAULT</term>
+          <listitem>
+            <para>
+              The button becomes the default button in the dialog.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>OWNER</term>
+          <listitem>
+            <para>
+              The programmer is completely responsible for drawing the button when the dialog receives
+              the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
+              implement in ooDialog.  A simpler approach for an owner drawn button is to use an image
+              list with the button.  See the <link
+              linkend="mthSetImageList">setImageList</link>() method.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BITMAP</term>
+          <listitem>
+            <para>
+              The button displays a bitmap image.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+            <para>
+              The <link linkend="wsvisible">not visible</link> window style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+            <para>
+              The <link linkend="wsdisabled">not enabled</link> window style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BORDER</term>
+          <listitem>
+            <para>
+              The <link linkend="wsborder">border</link> window style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+            <para>
+              The <link linkend="wsgroup">group</link> control style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+            <para>
+              The no <link linkend="wstabstop">tabstop</link> control style.
+            </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="mthAddInput"><title>addInput</title>

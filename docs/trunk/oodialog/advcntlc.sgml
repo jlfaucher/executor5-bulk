@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: OODialog Reference SGML file.
     #
-    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -526,60 +526,51 @@ control does not exist.
 </para></note>
 </section>
 
-<section id="mthGetDateTimePicker"><title>getDateTimePicker</title>
-<indexterm><primary>getDateTimePicker</primary></indexterm>
+<section id="mthNewDateTimePicker"><title>newDateTimePicker</title>
+<indexterm><primary>newDateTimePicker</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anAdvancedControl~getGroupBox(--id--+-------------+--)------><
-                                       +-,--category-+
+>>-newDateTimePicker(--id--+-------------+--)------------------><
+                           +-,--category-+
 
 
 ]]>
 </programlisting>
 
 <para>
-  TODO PLEASE FIX ME
-  The getGroupBox method returns an object of the GroupBox class that represents the group box with the
-  specified resource ID. See the <link linkend="clsGroupBox">GroupBox Class</link> for more detail on
-  group boxes.
+  The <emphasis role="italic">newDateTimePicker</emphasis> method returns a date and time picker object that represents
+  the date and time picker control with the specified resource ID in the dialog. See the <link
+  linkend="clsDateTimePicker">DateTimePicker</link> class for details about date and time picker controls.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The resource ID of the group box.
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The number of the category dialog page containing the requested
-group box. This argument must only be specified for category dialogs.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The arguments are:
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The <link linkend="resourceid">resource ID</link> of the date and time picker. This may be <link
+      linkend="symbolicid">symbolic</link> or numeric.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>category</term>
+    <listitem>
+    <para>
+      The number of the page containing the control in a <link linkend="clsCategoryDialog">category dialog</link>, if
+      appropriate. Specifying this argument in a dialog that is not a category dialog will likely cause the method to
+      fail.
+    </para>
+    </listitem></varlistentry>
+  </variablelist> </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A date and time picker object on success, or .nil if the method fails. The underlying Windows dialog must exist for
+    this method to succeed.
+  </para>
+</listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>A GroupBox object or .Nil if the underlying Windows group box
-control does not exist.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example shows how the text (label) of a group box
-  could be changed during program execution:
-<programlisting>
-<![CDATA[
 
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title>
-<para>
-  getGroupBox connects the ooDialog object with a Windows control.  If the
-  control does not exist, this connection can not be made. Therefore, this
-  method should only be used after the Windows dialog has been created. In
-  <link linkend="mthInitDialog">initDialog()</link> or at some point in the life
-  cycle of the dialog after initDialog().
-</para></note>
 </section>
 
 <section id="getlistbox"><title>GetListBox</title>
@@ -685,7 +676,7 @@ been used for the controls.  The valid zip codes are passed into the method as
 an array.
 <programlisting>
 <![CDATA[
-::class "BillingDlg" subclass RcDialog inherit AdvancedControls MessageExtensions
+::class "BillingDlg" subclass RcDialog inherit
 
 ...
 
@@ -1408,158 +1399,6 @@ MyDialog~AddTreeControl(555, "Branch", 100, 80, 40, 120, ,
 </variablelist>
 </section>
 
-<section id="mthAddDateTimePicker"><title>addDateTimePicker</title>
-<indexterm><primary>addDateTimePicker</primary></indexterm>
-<programlisting>
-<![CDATA[
-
->>--addDateTimePicker(-id--+--------+--x-,--y-,--cx-,--cy-+---------+-)-><
-                           +-,-name-+                     +-,-style-+
-]]>
-</programlisting>
-
-<para>
-  The
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem><para>The arguments are:
-  <variablelist>
-    <varlistentry><term>id</term>
-    <listitem>
-      <para>
-        The resource <link linkend="idArgument">ID</link> for the button.
-      </para>
-    </listitem></varlistentry>
-    <varlistentry><term>name</term>
-    <listitem>
-      <para>
-        The name of the data attribute associated with the dialog item. Using this argument performs the
-        same function as the FIX THIS PLEASE <link
-        linkend="mthConnectEntryLine">connectEntryLine</link>() method. The documentation
-        connectEntryLine() has a good description of the concept of the data attribute.
-      </para>
-      <para>
-        If you omitt this argument then the data attribute is constructed automatically and named by
-        concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA || id</computeroutput>.
-      </para>
-    </listitem></varlistentry>
-    <varlistentry><term>x, y, cx, cy</term>
-    <listitem>
-      <para>
-        The  control <link linkend="listCommonArguments">coordinates</link>
-      </para>
-    </listitem></varlistentry>
-    <varlistentry><term>style</term>
-    <listitem>
-      <para>
-        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-        separated by spaces:
-      </para>
-      <para>
-        <simplelist type='vert' columns='3'>
-          <member>DEFAULT  </member>
-          <member>OWNER    </member>
-          <member>BITMAP   </member>
-          <member>HIDDEN   </member>
-          <member>DISABLED </member>
-          <member>BORDER   </member>
-          <member>GROUP    </member>
-          <member>NOTAB    </member>
-        </simplelist>
-        <variablelist>
-          <varlistentry><term>DEFAULT</term>
-          <listitem>
-            <para>
-              The button becomes the default button in the dialog.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>OWNER</term>
-          <listitem>
-            <para>
-              The programmer is completely responsible for drawing the button when the dialog receives
-              the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
-              implement in ooDialog.  A simpler approach for an owner drawn button is to use an image
-              list with the button.  See the <link
-              linkend="mthSetImageList">setImageList</link>() method.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>BITMAP</term>
-          <listitem>
-            <para>
-              The button displays a bitmap image.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDDEN</term>
-          <listitem>
-            <para>
-              The <link linkend="wsvisible">not visible</link> window style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DISABLED</term>
-          <listitem>
-            <para>
-              The <link linkend="wsdisabled">not enabled</link> window style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>BORDER</term>
-          <listitem>
-            <para>
-              The <link linkend="wsborder">border</link> window style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>GROUP</term>
-          <listitem>
-            <para>
-              The <link linkend="wsgroup">group</link> control style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOTAB</term>
-          <listitem>
-            <para>
-              The no <link linkend="wstabstop">tabstop</link> control style.
-            </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para></listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      The possible return values are:
-      <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-        <para>
-          Success.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>less than 0</term>
-      <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
-      </listitem></varlistentry>
-      </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-      The following example
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="mthAddListControl"><title>AddListControl</title>
 <indexterm><primary>AddListControl</primary></indexterm>
 <programlisting>
@@ -1982,7 +1821,7 @@ MyDialog~AddListControl(555, "EMPLOYEES", 100, 80, 40, 120, ,
             <listitem>
               <para>
                 The progress bar moves like a marquee. This method requires <link
-                linkend="comctl32">Common Control Library</link> version 6.0 or later.
+                linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>HIDDEN</term>
