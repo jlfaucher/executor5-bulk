@@ -2306,7 +2306,7 @@ is set to handle the event.</para>
 <para>The AsyncMessageHandling method starts the asynchronous
 handling of dialog messages. It is invoked automatically by <link linkend="h000057">ExecuteAsync</link> with the Start method of the Object class. A message in this
 context is the name of an object method that is processed whenever the corresponding
-event occurs.  You can set the messages that should be sent by using Connect... methods (see page <link linkend="man0001">Connect Methods</link>). </para>
+event occurs.  You can set the messages that should be sent by using Connect... methods (see page <link linkend="sectConnectingEvents">Connect Methods</link>). </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
 <listitem><para>This method is protected and for internal use only.
@@ -2400,41 +2400,49 @@ MyDialog~SendMessageToItem(9001, "0x000000F1", 1, 0)
 </section>
 </section>
 
-<section id="man0001"><title>Connect Event Methods</title>
+<section id="sectConnectingEvents"><title>Connecting Events</title>
 <indexterm><primary>connect event methods</primary>
 <secondary>BaseDialog class</secondary></indexterm>
-<para>The following methods create a connection between an event of the Windows
-dialog, or a dialog control, and a method of the Rexx dialog object. In the
-Windows user interface, as the user interacts with the system, events are
-generated that specify what the action of the user was. Mouse clicks, keyboard
-presses, moving or sizing windows, all generate events. In the ooDialog
-framework, when a specific event is connected to a method, that method will be
-invoked each time the event occurs.
+<para>
+  The <link linkend="clsEventNotification">EventNotification</link> class implements all methods that create a
+  connection between a <link linkend="ovvEvent">window event</link> and a method of the Rexx dialog object. In the
+  Windows user interface, as the user interacts with the system, events are generated that specify what the action of
+  the user was. Mouse clicks, keyboard presses, moving or sizing windows, all generate events. In the ooDialogframework,
+  when a specific event is connected to a method in a dialog object, that method will be invoked each time the event
+  occurs.
 </para>
 <itemizedlist>
-<listitem><para>For push buttons you connect a method to the button. The connected method
-is called each time the button is pressed (clicked.)</para></listitem>
-<listitem><para>List boxes, multiple list boxes, and combo boxes can also be connected
-to a method that is called each time a line in the box is selected.</para></listitem>
-<listitem><para>For a scroll bar you can specify different methods that are called depending
-on the user action. The user can click on the arrow buttons, drag the thumb,
-or use direction keys.</para></listitem></itemizedlist>
-<para>In a <computeroutput>UserDialog</computeroutput> the Connect... event
-methods for buttons are called automatically from the Add... methods.  However,
-for most events like the resize or move events, the connection needs to be made
-explicitly.  In general, events should be connected before the dialog is shown on
-the screen. So, the Connect... event methods can be used in the <link
-linkend="mthInitDialog">InitDialog</link> method.  In a UserDialog, the <link
-linkend="h001506">DefineDialog</link> method is a good place for the Connect...
-event methods.  If the programmer is overriding the <link
-linkend="h000025">Init</link> method, the Connect... event methods can be placed
-there.  But, be sure the methods are not used until after the superclass has
-been initialized.
+<listitem>
+<para>
+  For push buttons you connect a method to the button. The connected method is called each time the button is pressed
+  (clicked.)
+</para>
+</listitem>
+<listitem>
+<para>
+  List boxes, multiple list boxes, and combo boxes can also be connected to a method that is called each time a line in
+  the box is selected.
+</para>
+</listitem>
+<listitem>
+<para>
+  For a scroll bar you can specify different methods that are called depending on the user action. The user can
+  click on the arrow buttons, drag the thumb, or use direction keys.
+</para>
+</listitem></itemizedlist>
+<para>
+  In a <computeroutput>UserDialog</computeroutput> some of the methods that create dialog controls have an option that
+  automatically connects an event to a dialog method. However, for most events, say the resize or move events, the
+  connection needs to be made explicitly.  In general, events should be connected before the dialog is shown on the
+  screen. So, the connect event methods can be used in the <link linkend="mthInitDialog">initDialog</link>() method.  In
+  a UserDialog, the <link linkend="h001506">defineDialog</link>() method is a good place for the connect event methods.
+  If the programmer is overriding the <link linkend="h000025">init</link>() method, the connect event methods can be
+  placed there.  But, in this case, do not invoke the connect evetn methods until after the superclass has been
+  initialized.
 </para>
 
 <note><title>Note</title><para>
-The method name that is to be invoked when the specified event occurs must be
-less than 256 characters.
+  The method name that is to be invoked when the specified event occurs must be less than 256 characters.
 </para></note>
 
 <section id="mthConnectResize"><title>ConnectResize</title>
