@@ -2856,7 +2856,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 
         picture = self~getStaticControl(IDC_BMP_PICTURE)
         description = self~getStaticControl(IDC_ST_DESCRIPTION)
-        self~connectButton(IDC_PB_NEXT, onNext)
+        self~connectButtonEvent(IDC_PB_NEXT, "CLICKED", onNext)
 
         nextImage = 1
         module = .ResourceImage~new("images.dll")

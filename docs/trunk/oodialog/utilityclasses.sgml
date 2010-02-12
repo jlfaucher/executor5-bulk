@@ -63,7 +63,7 @@
 <tbody>
 <row>
 <entry><link linkend="dotSystemErrorCode">.SystemErrorCode</link></entry>
-<entry>Reflects the <link linkend="systemerrorcode">system error code</link> if set</entry>
+<entry>Reflects the <link linkend="systemerrorcode">system error code</link> if set.</entry>
 </row>
 <row>
 <entry><link linkend="clsDlgArea">DlgArea Class</link></entry>
@@ -71,23 +71,23 @@
 </row>
 <row>
 <entry><link linkend="clsDlgAreaU">DlgAreaU Class</link></entry>
-<entry>Assists in the creation of dynamically resizable dialogs</entry>
+<entry>Assists in the creation of dynamically resizable dialogs.</entry>
 </row>
 <row>
 <entry><link linkend="clsDlgUtil">DlgUtil Class</link></entry>
-<entry>Provides some common, useful, utilities for working with dialogs</entry>
+<entry>Provides some common, useful, utilities for working with dialogs.</entry>
 </row>
 <row>
 <entry><link linkend="clsPoint">OS Class</link></entry>
-<entry>Provides methods for accessing information about the operarting system</entry>
+<entry>Provides methods for accessing information about the operating system.</entry>
 </row>
 <row>
 <entry><link linkend="clsPoint">Point Class</link></entry>
-<entry>An object that represents a point in a 2-D coordinate system</entry>
+<entry>An object that represents a point in a 2-D coordinate system.</entry>
 </row>
 <row>
 <entry><link linkend="clsRect">Rect Class</link></entry>
-<entry>An object used to represent a rectangle</entry>
+<entry>An object used to represent a rectangle in a 2-D coordinate system.</entry>
 </row>
 <row>
 <entry><link linkend="clsSize">Size Class</link></entry>
@@ -95,7 +95,11 @@
 </row>
 <row>
 <entry><link linkend="clsVirtualKeyCodes">VirtualKeyCodes Class</link></entry>
-<entry>VirtualKeyCodes Class</entry>
+<entry>Translates back and forth between key codes to symbolic names.</entry>
+</row>
+<row>
+<entry><link linkend="clsWindow">Window Class</link></entry>
+<entry>A utility object with methods common to all windows.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -1779,6 +1783,67 @@ Changed point q to be at (150,300)
 
 </section> <!-- End Point Class -->
 
+
+<section id="clsWindow"><title>Window Class</title>
+<indexterm><primary>Window class</primary></indexterm>
+<para>
+  A <emphasis role="italic">Window</emphasis> object allows the invocation of methods common to every window.  It does
+  this by inheriting the <emphasis role="italic">WindowBase</emphasis> class. Other than the <link
+  linkend="mthNewClsWindow">new</link>() method, the <emphasis role="italic">Window</emphasis> class provides no other
+  methods of its own. Consult the <link linkend="clsWindowBase">WindowBase</link> documentation to see what other
+  methods are available for the <emphasis role="italic">Window</emphasis> object.
+</para>
+
+<section id="mthNewClsWindow"><title>new (Class Method)</title>
+<indexterm><primary>new</primary>
+<secondary>Window class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.Window~new(--hwnd--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Given a window handle, instantiates a new <emphasis role="italic">Window</emphasis> object.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The required argument is:
+<variablelist>
+<varlistentry><term>hwnd</term>
+<listitem><para>The window
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method returns a new Window object.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem>
+<para>
+  Given an array of dialog control resource IDs this method enables all the controls without having to know what the
+  type of the individual control is:
+<programlisting>
+<![CDATA[
+::method enableControls
+  use strict arg IDs
+  hDlg = self~hwnd
+  do id over IDs
+    hwnd = self~getControlHandle(id, hDlg)
+    if hwnd = 0 then return .false
+    .Window~new(hwnd)~enable
+  end
+  return .true
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+</section> <!-- End Window Class -->
 
 <section id="clsSize"><title>Size Class</title>
 <indexterm><primary>Size class</primary></indexterm>

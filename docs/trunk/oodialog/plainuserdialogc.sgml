@@ -46,7 +46,7 @@
 <indexterm><primary>Base Mixin classes</primary></indexterm>
 <para>
    ooDialog programs primarily deal with dialog and dialog control objects. The top-level objects in the programs, say
-   an <link linkend="clsUserDialog">user dialog</link> or a <link linkend="clsButtonControl">button control</link> are
+   a <link linkend="clsUserDialog">user dialog</link> or a <link linkend="clsButtonControl">button control</link> are
    actually composed of a number of base objects and / or mixin classes. Since all dialog objects contain the methods of
    their component classes, this documentation treats the dialog object as a whole in <link
    linkend="chpDialogObject">The Dialog Object</link> chapter to make it easier to grasp the concepts.
@@ -55,13 +55,6 @@
   The PlainBaseDialog inherits from the WindowBase mixin class.  The WindowBase mixin class implements methods that are
   common to all windows.  Since both dialogs and dialog controls are windows, the <link
   linkend="clsDialogControl">DialogControl</link> class also inherits from WindowBase.
-</para>
-
-<para> The PlainUserDialog class subclasses from PlainBaseDialog class and provides all the methods that
-  normally are required to execute a dialog that is either created dynamically or loaded from a resource script (.RC).
-  Its purpose is to provide a simpler class that can be used for ordinary user interfaces, like the <link
-  linkend="sectStandardDialogs">standard dialogs</link>. The ooDialog programmer can subclass from the PlainUserDialog
-  to produce straighforward, uncomplicated user interfaces.
 </para>
 <para>
   The more advanced dialog classes, <link linkend="clsResDialog">ResDialog</link>, <link

@@ -3957,7 +3957,6 @@ This is the default.
     dlg~constDir[IDC_LV_IMAGES] = 100
     dlg~create(30, 30, 320, 155, "ooDialog Icon Resources", , , "Tahoma")
     dlg~Execute("SHOWTOP", IDI_DLG_OOREXX)
-    dlg~Deinstall
   end
 
 ::requires "OODWIN32.CLS"
@@ -4100,7 +4099,7 @@ This is the default.
 
 <section id="setsmallimages"><title>setSmallImages <emphasis role="bold">(deprecated)</emphasis></title>
 <indexterm>
-  <primary>deprecated</primary>
+  <primary>Deprecated</primary>
   <secondary>ListControl class</secondary>
   <tertiary>setSmallImages</tertiary>
 </indexterm>
@@ -4114,7 +4113,7 @@ This is the default.
 
 <section id="setimages"><title>setImages <emphasis role="bold">(deprecated)</emphasis></title>
 <indexterm>
-  <primary>deprecated</primary>
+  <primary>Deprecated</primary>
   <secondary>ListControl class</secondary>
   <tertiary>setImages</tertiary>
 </indexterm>
@@ -4128,7 +4127,7 @@ This is the default.
 
 <section id="removesmallimages"><title>removeSmallImages <emphasis role="bold">(deprecated)</emphasis></title>
 <indexterm>
-  <primary>deprecated</primary>
+  <primary>Deprecated</primary>
   <secondary>ListControl class</secondary>
   <tertiary>removeSmallImages</tertiary>
 </indexterm>
@@ -4142,7 +4141,7 @@ This is the default.
 
 <section id="removeimages"><title>removeImages <emphasis role="bold">(deprecated)</emphasis></title>
 <indexterm>
-  <primary>deprecated</primary>
+  <primary>Deprecated</primary>
   <secondary>ListControl class</secondary>
   <tertiary>removeImages</tertiary>
 </indexterm>
@@ -4804,11 +4803,8 @@ with the corresponding message:</para>
   self~ConnectListNotify("IDC_LIST","DefaultEdit")
   self~ConnectListNotify("IDC_LIST","Delete","OnDelete_IDC_LIST")
   self~ConnectListNotify("IDC_LIST","KeyDown","OnKeyDown_IDC_LIST")
-  self~ConnectButton("IDC_PB_NEW","IDC_PB_NEW")
-  self~ConnectButton("IDC_PB_DELETE","IDC_PB_DELETE")
-  self~ConnectButton(2,"Cancel")
-  self~ConnectButton(9,"Help")
-  self~ConnectButton(1,"OK")
+  self~connectButtonEvent("IDC_PB_NEW", "CLICKED","IDC_PB_NEW")
+  self~connectButtonEvent("IDC_PB_DELETE", "CLICKED","IDC_PB_DELETE")
   return InitRet
 ]]>
 </programlisting>

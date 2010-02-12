@@ -237,10 +237,6 @@ to Init.
 <entry><link linkend="mthAddUserMsg">addUserMsg</link></entry>
 </row>
 <row>
-<entry>assignWindow <emphasis role="bold">(deprecated)</emphasis></entry>
-<entry><link linkend="assignwindow">assignWindow</link> <emphasis role="bold">(deprecated)</emphasis></entry>
-</row>
-<row>
 <entry>AsyncMessageHandling</entry>
 <entry><link linkend="h000746">AsyncMessageHandling</link></entry>
 </row>
@@ -279,10 +275,6 @@ to Init.
 <row>
 <entry>ChangeListEntry</entry>
 <entry><link linkend="h000425">ChangeListEntry</link></entry>
-</row>
-<row>
-<entry>CheckMenuItem</entry>
-<entry><link linkend="chmim">CheckMenuItem</link></entry>
 </row>
 <row>
 <entry>Clear</entry>
@@ -329,12 +321,12 @@ to Init.
 <entry><link linkend="h001393">ConnectAnimatedButton</link></entry>
 </row>
 <row>
-<entry>ConnectBitmapButton</entry>
-<entry><link linkend="mthConnectBitmapButton">ConnectBitmapButton</link></entry>
+<entry>installBitmapButton</entry>
+<entry><link linkend="mthInstallBitmapButton">installBitmapButton</link></entry>
 </row>
 <row>
-<entry>ConnectButton</entry>
-<entry><link linkend="mthConnectButton">ConnectButton</link></entry>
+<entry>connectButtonEvent</entry>
+<entry><link linkend="mthConnectButtonEvent">connectButtonEvent</link></entry>
 </row>
 <row>
 <entry>ConnectCheckBox</entry>
@@ -345,8 +337,8 @@ to Init.
 <entry><link linkend="mthConnectComboBox">connectComboBox</link></entry>
 </row>
 <row>
-<entry>ConnectControl</entry>
-<entry><link linkend="h000123">ConnectControl</link></entry>
+<entry><link linkend="mthConnectCommandEvents">connectCommandEvents</link></entry>
+<entry>connect a command event of a dialog control to a method</entry>
 </row>
 <row>
 <entry>ConnectDraw</entry>
@@ -379,10 +371,6 @@ to Init.
 <row>
 <entry>ConnectListLeftDoubleClick</entry>
 <entry><link linkend="clldcm">ConnectListLeftDoubleClick</link></entry>
-</row>
-<row>
-<entry>ConnectMenuItem</entry>
-<entry><link linkend="cmim">ConnectMenuItem</link></entry>
 </row>
 <row>
 <entry>ConnectMouseCapture</entry>
@@ -449,10 +437,6 @@ to Init.
 <entry><link linkend="cursorwait">Cursor_Wait</link></entry>
 </row>
 <row>
-<entry>deInstall <emphasis role="bold">(deprecated)</emphasis></entry>
-<entry><link linkend="h001468">deInstall</link> <emphasis role="bold">(deprecated)</emphasis></entry>
-</row>
-<row>
 <entry>DeleteComboEntry</entry>
 <entry><link linkend="h000326">DeleteComboEntry</link></entry>
 </row>
@@ -479,10 +463,6 @@ to Init.
 <row>
 <entry>DisableItem</entry>
 <entry><link linkend="h001229">DisableItem</link></entry>
-</row>
-<row>
-<entry>DisableMenuItem</entry>
-<entry><link linkend="dmim">DisableMenuItem</link></entry>
 </row>
 <row>
 <entry>DisconnectKeyPress</entry>
@@ -535,10 +515,6 @@ to Init.
 <row>
 <entry>Enable</entry>
 <entry><link linkend="enable">Enable</link></entry>
-</row>
-<row>
-<entry>EnableMenuItem</entry>
-<entry><link linkend="emim">EnableMenuItem</link></entry>
 </row>
 <row>
 <entry>EnableItem</entry>
@@ -721,10 +697,6 @@ to Init.
 <entry><link linkend="getlistwidth">GetListWidth</link></entry>
 </row>
 <row>
-<entry>GetMenuItemState</entry>
-<entry><link linkend="gmism">GetMenuItemState</link></entry>
-</row>
-<row>
 <entry>GetMouseCapture</entry>
 <entry><link linkend="getmousecapture">GetMouseCapture</link></entry>
 </row>
@@ -792,10 +764,6 @@ to Init.
 <row>
 <entry>GetWindowRect</entry>
 <entry><link linkend="h000712">GetWindowRect</link></entry>
-</row>
-<row>
-<entry>GrayMenuItem</entry>
-<entry><link linkend="gmim">GrayMenuItem</link></entry>
 </row>
 <row>
 <entry>HandleMessages</entry>
@@ -1126,10 +1094,6 @@ to Init.
 <entry><link linkend="h000435">SetListTabulators</link></entry>
 </row>
 <row>
-<entry>SetMenuItemRadio</entry>
-<entry><link linkend="smirm">SetMenuItemRadio</link></entry>
-</row>
-<row>
 <entry>SetMultiList</entry>
 <entry><link linkend="h000575">SetMultiList</link></entry>
 </row>
@@ -1228,10 +1192,6 @@ to Init.
 <row>
 <entry>ToTheTop</entry>
 <entry><link linkend="h000109">ToTheTop</link></entry>
-</row>
-<row>
-<entry>UncheckMenuItem</entry>
-<entry><link linkend="uchmim">UncheckMenuItem</link></entry>
 </row>
 <row>
 <entry>Update</entry>
@@ -2400,1614 +2360,9 @@ MyDialog~SendMessageToItem(9001, "0x000000F1", 1, 0)
 </section>
 </section>
 
-<section id="sectConnectingEvents"><title>Connecting Events</title>
-<indexterm><primary>connect event methods</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<para>
-  The <link linkend="clsEventNotification">EventNotification</link> class implements all methods that create a
-  connection between a <link linkend="ovvEvent">window event</link> and a method of the Rexx dialog object. In the
-  Windows user interface, as the user interacts with the system, events are generated that specify what the action of
-  the user was. Mouse clicks, keyboard presses, moving or sizing windows, all generate events. In the ooDialogframework,
-  when a specific event is connected to a method in a dialog object, that method will be invoked each time the event
-  occurs.
-</para>
-<itemizedlist>
-<listitem>
-<para>
-  For push buttons you connect a method to the button. The connected method is called each time the button is pressed
-  (clicked.)
-</para>
-</listitem>
-<listitem>
-<para>
-  List boxes, multiple list boxes, and combo boxes can also be connected to a method that is called each time a line in
-  the box is selected.
-</para>
-</listitem>
-<listitem>
-<para>
-  For a scroll bar you can specify different methods that are called depending on the user action. The user can
-  click on the arrow buttons, drag the thumb, or use direction keys.
-</para>
-</listitem></itemizedlist>
-<para>
-  In a <computeroutput>UserDialog</computeroutput> some of the methods that create dialog controls have an option that
-  automatically connects an event to a dialog method. However, for most events, say the resize or move events, the
-  connection needs to be made explicitly.  In general, events should be connected before the dialog is shown on the
-  screen. So, the connect event methods can be used in the <link linkend="mthInitDialog">initDialog</link>() method.  In
-  a UserDialog, the <link linkend="h001506">defineDialog</link>() method is a good place for the connect event methods.
-  If the programmer is overriding the <link linkend="h000025">init</link>() method, the connect event methods can be
-  placed there.  But, in this case, do not invoke the connect evetn methods until after the superclass has been
-  initialized.
-</para>
 
-<note><title>Note</title><para>
-  The method name that is to be invoked when the specified event occurs must be less than 256 characters.
-</para></note>
+&connectingEvents;
 
-<section id="mthConnectResize"><title>ConnectResize</title>
-<indexterm><primary>ConnectResize</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectResize(--msgToRaise--)-------------------><
-
-
-]]>
-</programlisting>
-
-<para>The ConnectResize method connects a dialog resize
-event with a method. It is called each time the size of the dialog is changed.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent each time the dialog is resized. Provide
-a method with a matching name.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method does not return a value.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example 1:</emphasis></term>
-<listitem><para>
-
-<programlisting>
-<![CDATA[
-  dlg = .ResizingDialog~new
-  dlg~createCenter(100, 60, "Resize Me", "THICKFRAME")
-  dlg~execute("SHOWTOP")
-
-::requires 'ooDialog.cls'
-
-::class 'ResizingDialog' subclass UserDialog
-
-::method init
-  forward class (super) continue
-
-  self~connectResize("onSize")
-
-::method onSize
-  use arg sizeEvent, sizeInfo
-
-  -- Wait until the last size event message, in a series of messages, arrives.
-  msg = self~peekDialogMessage
-  if msg~left(6) = "ONSIZE" then return
-
-  -- sizeInfo contains information about the new width and height in pixels.
-  w = .DlgUtil~loWord(sizeinfo) / self~factorX
-  h = .DlgUtil~hiWord(sizeinfo) / self~factorY
-  say "New width=" w ", new height=" h
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example 2:</emphasis></term>
-<listitem><para>This example is pulled from the <link
-linkend="exampleFileViewer">File Viewer</link> example at the end of the
-&quot;Appearance and Behavior Methods&quot; section. A complete working example
-is presented there that uses a number of the base dialog methods.
-
-<programlisting>
-<![CDATA[
-
-::method defineDialog
-  expose wasMinimized
-
-  wasMinimized = .false
-  style = "VSCROLL HSCROLL MULTILINE READONLY"
-  self~addEntryLine(IDC_MULTILINE, "cEntry", 0, 0, 170, 180, style)
-  self~connectResize("onSize")
-  ...
-
-/* The first arg, sizeEvent, is a flag that the OS sends specifying the type of
- * size event.  We are only interested in these 3 flags:
- *
- * SIZE_RESTORED   = 0
- * SIZE_MINIMIZED  = 1
- * SIZE_MAXIMIZED  = 2
- */
-::method onSize
-  expose wasMinimized
-  use arg sizeEvent sizeInfo
-
-  if sizeEvent = 1 then wasMinimized = .true
-
-  if sizeEvent = 0 |  sizeEvent = 2 then do
-    if \ wasMinimized then self~resizeEditControl
-    wasMinimized = .false
-  end
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-Connections are usually placed in the <link linkend="h000025">Init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods
-are defined, use Init as the place for this connection - but not before init:super has been called.
-</para></note>
-</section>
-
-<section id="connectmove"><title>ConnectMove</title>
-<indexterm><primary>ConnectMove</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectMove(--msgToRaise--)---------------------><
-
-
-]]>
-</programlisting>
-
-<para>The ConnectMove method connects a dialog move event
-with a method. It is called each time the position of the dialog is changed.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent each time the dialog is moved. Provide
-a method with a matching name.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method does not return a value.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog
-
-::method init
-  forward class (super) continue
-
-  self~connectMove(onMove)
-
-::method onMove
-  use arg unUsed, posInfo
-
-  -- Look at our message queue to see if the next message in the queue is also
-  -- onMove.  If so, just return.
-  msg = self~peekDialogMessage
-  if msg~left(6) = "ONMOVE" then return
-
-  -- Now, we should be done moving, print out where we are.
-  x = .DlgUtil~loWord(posInfo)
-  y = .DlgUtil~hiWord(posInfo)
-  say 'At coordinate (' x',' y' ) on the screen. (In pixels.)'
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-Connections are usually placed in the <link linkend="h000025">Init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods
-are defined, use Init as the place for this connection - but not before init:super has been called.
-</para></note>
-</section>
-
-<section id="connectposchanged"><title>ConnectPosChanged</title>
-<indexterm><primary>ConnectPosChanged</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectPosChanged(--msgToRaise--)---------------><
-
-
-]]>
-</programlisting>
-
-<para>The ConnectPosChanged method connects a change
-regarding the dialog coordinates with a method. It is called each time the
-size, position, or place in the Z order of the dialog is changed.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent each time the coordinates of the dialog
-are changed. Provide a method with a matching name.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method does not return a value.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog
-
-::method Init
-  self~init:super(...)
-  self~ConnectPosChanged("OnNewPos")
-
-::method OnNewPos
-  say "The new rectangle is" self~GetWindowRect(self~DlgHandle)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-Connections are usually placed in the <link linkend="h000025">Init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods
-are defined, use Init as the place for this connection - but not before init:super has been called.
-</para></note>
-</section>
-
-<section id="connectmousecapture"><title>ConnectMouseCapture</title>
-<indexterm><primary>ConnectMouseCapture</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectMouseCapture(--msgToRaise--)-------------><
-
-
-]]>
-</programlisting>
-
-<para>The ConnectMouseCapture method connects a method
-with the lose-mouse-capture event. It is called each time the dialog loses
-the mouse capture. This can happen, for example, when you move a dialog with
-the mouse and release the left mouse button.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent each time the mouse capture is lost in
-the dialog. Provide a method with a matching name.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method does not return a value.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthConnectHelp"><title>ConnectHelp</title>
-<indexterm><primary>ConnectHelp</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectHelp(--msgToRaise--)-----------------------><
-
-
-]]>
-</programlisting>
-
-<para>The <computeroutput>ConnectHelp</computeroutput> method connects the
-Windows Help event with a method in the dialog class. The Windows Help event
-occurs when the user presses the F1 key.  (Only the Help events generated when
-the dialog is the active window are connected.)
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The name of the method that is to be invoked.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>An (internal) error prevented the message from being connected
-to a method.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Event Method Arguments
-</emphasis></term>
-<listitem><para>The ooDialog method connected to the Help event will receive the
-following four arguments in the order listed:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The resource ID of the dialog, dialog control, or menu item that
-had the focus when the F1 key was pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>type</term>
-<listitem><para>Specifies if the ID in argument 1 was from a window (a dialog or
-dialog control) or from a menu item.  This argument will either be
-<computeroutput>WINDOW</computeroutput> or <computeroutput>MENU
-</computeroutput>.
-</para></listitem></varlistentry>
-<varlistentry><term>mouseX</term>
-<listitem><para>The x coordinate of the mouse at the time the F1 key was
-pressed.  This value is an absolute screen coordinate (pixel) and note that the
-mouse will not necessarily be over the dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>mouseY</term>
-<listitem><para>The y coordinate of the mouse at the time the F1 key was
-pressed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-
-<programlisting>
-<![CDATA[
-
-::method Init
-    self~init:super
-    ...
-    self~connectResize(onResize)
-    self~connectHelp(onHelp)
-    ...
-
-::method onHelp
-    use arg id, type, mouseX, mouseY
-    if type == "MENU" then w = 'Menu id' id; else w = 'Dialog id' id
-    say "Help request:"
-    say " " w
-    say "  Mouse position x:" mouseX "y:" mouseY
-
-/* As the user presses the F1 key at various times when the dialog has the focus
- * the output might be as follows:
- */
-
-Help request:
-  Dialog id 12
-  Mouse position x: 420 y: 106
-Help request:
-  Menu id 60
-  Mouse position x: 204 y: 93
-Help request:
-  Menu id 65
-  Mouse position x: 203 y: 166
-Help request:
-  Dialog id 14
-  Mouse position x: 218 y: 410
-Help request:
-  Dialog id 80
-  Mouse position x: 387 y: 462
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthConnectKeyPressBaseDialog"><title>ConnectKeyPress</title>
-<indexterm><primary>ConnectKeyPress</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectKeyPress(--msgToRaise--,--keys-+------------+--)----><
-                                                     +-,--filter--+
-
-]]>
-</programlisting>
-
-<para>The <computeroutput>ConnectKeyPress</computeroutput> method connects a key
-press event with a method in the dialog class. A single key or multiple keys can
-be connected to the same method.  Multiple methods can be connected for key
-press events, but only 1 method can be connected to any single key.
-</para>
-<para>The underlying Windows dialog must exist before this method can be used.
-That means it can be used in <link linkend="mthInitDialog">InitDialog</link> or any
-time thereafter.  There is a maximum limit of 63 methods, per dialog, that can
-be connected to key press events.  Connections can be removed (see the <link
-linkend="mthDisconnectKeyPressBaseDialog">DisconnectKeyPress</link> method) if
-there is no longer a need for a notification of a key press.
-</para>
-<para>A similar <link linkend="mthConnectKeyPressDialogcontrol">method</link>
-is a member of the <computeroutput>DialogControl</computeroutput> class.  It is
-important to note this distinction between the two methods.  The method of the
-<computeroutput>BaseDialog</computeroutput> (this method) will capture any key
-press event when the dialog is the active window.  The method of the
-<computeroutput>DialogControl</computeroutput> class will only capture a key
-press when the control has the keyboard focus.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The name of the method that is to be invoked when the key press
-event happens.
-</para></listitem></varlistentry>
-<varlistentry><term>keys</term>
-<listitem><para>The key (or keys) for which the key press event is to be
-connected. A single key or multiple keys can be specified. A range of keys can
-be used.  Each single key or range of keys is separated by a comma.  A range of
-keyes is denoted by using the dash character &quot;-&quot;.  White space within
-the <computeroutput>keys</computeroutput> argument is ignored.
-</para>
-<para>The keys are specified by the numeric value defined by Microsoft for its
-virtual key set.  These numeric values are 0 through 255, although both 0 and
-255 are not used.  The <link linkend="clsVirtualKeyCodes">VirtualKeyCodes</link>
-class can be used to make a program more readable.
-</para>
-<note><title>Note</title>
-<para>The programmer can use the <link linkend="windowsdoc">Windows
-documentation</link> and <link linkend="platformsdk">Platform SDK</link> to
-obtain the full list of the virtual key numbers.
-</para></note>
-<para>In addition there are a few keywords that can be used to specify some
-common key ranges. These keywords are:
-<variablelist>
-<varlistentry><term>ALL</term>
-<listitem><para>All keys.
-</para></listitem></varlistentry>
-<varlistentry><term>FKEYS</term>
-<listitem><para>All Function keys, other than F1.  (In Windows the F1 key is the
-help key and the <link linkend="mthConnectHelp">ConnectHelp</link> method should
-be used for F1.)
-</para></listitem></varlistentry>
-<varlistentry><term>ALPHA</term>
-<listitem><para>The keys A though Z.
-</para></listitem></varlistentry>
-<varlistentry><term>NUMERIC</term>
-<listitem><para>The keys 0 through 9.  Note that these are the normal number
-keys, not the keypad numbers on an enhanced keyboard.
-</para></listitem></varlistentry>
-<varlistentry><term>ALPHANUMERIC</term>
-<listitem><para>The keys A through Z and 0 through 9.
-</para></listitem></varlistentry>
-</variablelist></para>
-<note><title>Note</title><para>Case is insignificant for these keywords as is the
-order of the keywords. A keyword not in the list will result in a return of -1.
-However, if the argument contains other valid key tokens, those keys will be
-connected to the method.  If there are no other valid key tokens, then no
-connection is made.
-</para></note></listitem></varlistentry>
-<varlistentry><term>filter</term>
-<listitem><para>A (simplistic) filter that is applied to the key press event for
-the key(s) specified.  The filter is a string of keywords separated by blanks.
-(Case is not significant, neither is the order of the words.  Any words other
-than the specified keywords are ignored.) The possible keywords are:
-<computeroutput>SHIFT, CONTROL, ALT, AND, NONE.</computeroutput>
-</para>
-<para>Shift, control, and alt specify that the corresponding key must be down at
-the time of the key press event. These keywords are combined in a boolean
-expression.  The default is an OR expression. If the AND keyword is present then
-the boolean expression is an AND expression. If the NONE keyword is used, it
-means that none of the shift, control, or alt keys can be down at the time of
-the key press event.  (When NONE is used, all other words in the string are
-ignored.)
-</para>
-<para> Some examples may make this more clear:
-<programlisting>
-<![CDATA[
-
-::method initDialog
-
-  -- Using the below, the onAltCD method would be invoked when the user types
-  -- Alt-Shift-C or Alt-Shift-D.  But the method would not be invoked for Alt-C
-  -- or Shift-D (or any other key press event.)
-
-  keys = self~vCode('C') "," self~vCode('D')
-  self~connectKeyPress(onAltCD, keys, "ALT AND SHIFT")
-
-  -- The below would invoke the onAltCD method any time a C or a D was typed
-  -- with either the Alt or the Control key down.  This would include Alt-C,
-  -- Alt-Shift-C, Ctrl-Alt-Shift-C, etc..
-
-  self~connectKeyPress(onAltCD, keys, "ALT CONTROL")
-
-  -- The below would invoke the onAltCD method only when Alt-C or Alt-D was
-  -- typed.
-
-  self~connectKeyPress(onAltCD, keys, "ALT AND")
-
-  -- The below would invoke the onF4 method only when the F4 key was pressed by
-  -- itself. Alt-F4, Ctrl-F4, etc., would not invoke the method.
-
-  self~connectKeyPress(onF4, self~vCode('F4'), "NONE")
-]]>
-</programlisting>
-
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para> The return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>A problem with one of the arguments, such as skipping a required
-argument, using an incorrect format for the <computeroutput>keys
-</computeroutput> or the <computeroutput>filter</computeroutput> arguments,
-etc..  Note that it is possible to get a return of -1 but still have some keys
-connected.  For instance in the following example the C and D keys would be
-connected and the filter applied.  The &quot;"dog&quot;" token would result in
--1 being returned:
-<programlisting>
-<![CDATA[
-
-  keys = self~vCode('C') ", dog," self~vCode('D')
-  ret = self~connectKeyPress('onAltCD', keys, "ALT AND SHIFT")
-  say 'Got a return of:' ret
-  say "Have connection to onAltCD?" self~hasKeyPressConnection('onAltCD')
-
-  -- The output would be:
-  Got a return of: -1
-  Have connection to onAltCD? 1
-
-]]>
-</programlisting>
-
-</para></listitem></varlistentry>
-<varlistentry><term>-2</term>
-<listitem><para>The underlying mechanism in the Windows API that is used to
-capture key events failed.
-</para></listitem></varlistentry>
-<varlistentry><term>-4</term>
-<listitem><para>An (internal) problem with the dialog window.
-</para></listitem></varlistentry>
-<varlistentry><term>-5</term>
-<listitem><para>Memory allocation error in the underlying Windows API.
-</para></listitem></varlistentry>
-<varlistentry><term>-6</term>
-<listitem><para>The maximum number of connections has been reached.
-</para></listitem></varlistentry>
-<varlistentry><term>-7</term>
-<listitem><para>The <computeroutput>msgToRaise</computeroutput> method is
-already connected to a key down event for this dialog.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Event Method Arguments
-</emphasis></term>
-<listitem><para>The ooDialog method connected to the key press event will
-receive the following five arguments in the order listed:
-<variablelist>
-<varlistentry><term>keyCode</term>
-<listitem><para>The numeric code of the key pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>shift</term>
-<listitem><para>A boolean (true or false) that denotes whether a shift key
-was down or up at the time of the key press.  It will be true if a shift key
-was down and false if the shift key was not down.
-</para></listitem></varlistentry>
-<varlistentry><term>control</term>
-<listitem><para>True if a control key was down at the time of the key press,
-false if it was not.
-</para></listitem></varlistentry>
-<varlistentry><term>alt</term>
-<listitem><para>True if an alt key was down at the time of the key press, false
-if it was not.
-</para></listitem></varlistentry>
-<varlistentry><term>extraInfo</term>
-<listitem><para>This argument is a string containing keywords.  It supplies
-extra information about the keyboard state at the time of a key press event.
-The string will contain some combination of these keywords
-<variablelist>
-<varlistentry><term>numOn</term>
-<listitem><para>Num Lock was on at the time of the key press event.
-</para></listitem></varlistentry>
-<varlistentry><term>numOff</term>
-<listitem><para>Num Lock was off.
-</para></listitem></varlistentry>
-<varlistentry><term>capsOn</term>
-<listitem><para>Caps Lock was on at the time of the key press event.
-</para></listitem></varlistentry>
-<varlistentry><term>capsOff</term>
-<listitem><para>Caps Lock was off.
-</para></listitem></varlistentry>
-<varlistentry><term>scrollOn</term>
-<listitem><para>Scroll Lock was on at the time of the key press event.
-</para></listitem></varlistentry>
-<varlistentry><term>scrollOff</term>
-<listitem><para>Scroll Lock was off.
-</para></listitem></varlistentry>
-<varlistentry><term>lShift</term>
-<listitem><para>The left shift key was down at the time of the key press event.
-</para></listitem></varlistentry>
-<varlistentry><term>rShift</term>
-<listitem><para>The right shift key was down.
-</para></listitem></varlistentry>
-<varlistentry><term>lControl</term>
-<listitem><para>The left control key was down at the time of the key press
-event.
-</para></listitem></varlistentry>
-<varlistentry><term>rControl</term>
-<listitem><para>The right control key was down.
-</para></listitem></varlistentry>
-<varlistentry><term>lAlt</term>
-<listitem><para>The left alt key was down at the time of the key press event.
-</para></listitem></varlistentry>
-<varlistentry><term>rAlt</term>
-<listitem><para>The right alt key was down.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry id="connectKeyPressExample"><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example is from a fictitious customer order
-system.  As the user is filling out a customer order using the customer order
-dialog, he has the F2 through F5 short cut keys available.  F2 brings up a
-customer look up dialog.  F3 looks up info on the product number entered in an
-edit control.  F4 resets the form by clearing all the fields.  F5 is used to
-print out the finished invoice.
-<programlisting>
-<![CDATA[
-::method initDialog
-
-  ...
-
-  -- Capture F2 key presses, but not Ctrl-F2 or Alt-F2, etc..
-  self~connectKeyPress(onF2, self~vCode('F2'), "NONE")
-
-  -- Same idea for F3, F4, and F5.  This uses the actual numeric value for the
-  -- keys without bothering to use the VirtualKeyCodes class to translate.
-  self~connectKeyPress(onF3, 114, "NONE")
-  self~connectKeyPress(onF4, 115, "NONE")
-  self~connectKeyPress(onF5, 116, "NONE")
-
-  ...
-
-::method onF2
-  self~showCustomerLookupDialog
-
-::method onF3
-
-  prodNum = self~getEditControl(IDC_EDIT_PRODUCT)~getText
-  if prodNum \== "" then self~showProductInfo(prodNum)
-
-::method onF4
-  self~resetAllFields
-
-::method onF5
-  self~printInvoice
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-</section>
-
-<section id="mthConnectFKeyPressBaseDialog"><title>ConnectFKeyPress</title>
-<indexterm><primary>ConnectFKeyPress</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~ConnectFKeyPress(--msgToRaise--)-------------><
-
-
-]]>
-</programlisting>
-
-<para>The <computeroutput>ConnectFKeyPress</computeroutput> method connects a
-function key press to a method in the dialog instance.  This works for function
-keys F2 through F24, without the shift, control, or alt keys also being pressed.
-The underlying Windows dialog must exist before this method can be invoked.
-This is a convenience method and is exactly equivalent to:
-<programlisting>
-<![CDATA[
-::method initDialog
-  ...
-  keys = self~vCode('F2') "-" self~vCode('F24')
-  self~connectKeyPress(msgToRaise, keys, "NONE")
-]]>
-</programlisting>
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The required argument is:
-<variablelist>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The method to be invoked for the F key press event.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para> The return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success.
-</para></listitem></varlistentry>
-<varlistentry><term>-2</term>
-<listitem><para>The underlying mechanism in the Windows API that is used to
-capture key events failed.
-</para></listitem></varlistentry>
-<varlistentry><term>-4</term>
-<listitem><para>An (internal) problem with the dialog window.
-</para></listitem></varlistentry>
-<varlistentry><term>-5</term>
-<listitem><para>Memory allocation error in the underlying Windows API.
-</para></listitem></varlistentry>
-<varlistentry><term>-6</term>
-<listitem><para>The maximum number of connections has been reached.
-</para></listitem></varlistentry>
-<varlistentry><term>-7</term>
-<listitem><para>The <computeroutput>msgToRaise</computeroutput> method is
-already connected to a key down event for this dialog.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example is a variation on the <link
-linkend="connectKeyPressExample">example</link> shown for the <link
-linkend="mthConnectKeyPressBaseDialog">ConnectKeyPress</link> method. It
-connects all the function keys to the same method and then determines what
-action to take by examining which key was pressed.
-<programlisting>
-<![CDATA[
-::method initDialog
-
-  ...
-
-  -- Capture all function key presses.
-  self~connectFKeyPress(onFKey)
-
-  ...
-
-::method onFKey
-  use arg keyPressed
-
-  select
-    when self~keyName(keyPressed) == 'F2' then self~showCustomerLookupDialog
-
-    when keyPressed = 114 then do
-      prodNum = self~getEditControl(IDC_EDIT_PRODUCT)~getText
-      if prodNum \== "" then self~showProductInfo(prodNum)
-    end
-
-    when keyPressed = 115 then self~resetAllFields
-    when keyPressed = 116 then self~printInvoice
-
-    otherwise do
-      -- Not interested in any other function keys
-      nop
-    end
-  end
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthDisconnectKeyPressBaseDialog"><title>DisconnectKeyPress</title>
-<indexterm><primary>DisconnectKeyPress</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~DisconnectKeyPress(--+--------------+--)--------><
-                                    +--methodName--+
-
-]]>
-</programlisting>
-
-<para>The <computeroutput>DisconnectKeyPress</computeroutput> method disconnects
-a key press event from a method that was previously connected using <link
-linkend="mthConnectKeyPressBaseDialog">ConnectKeyPress</link>.  If no
-method name is specified than all key press event connections are removed.
-Otherwise, only the key press events connected to the specific method are
-removed.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The single optional argument is:
-<variablelist>
-<varlistentry><term>methodName</term>
-<listitem><para>If <computeroutput>methodName</computeroutput> is specified,
-only the key press events connected to that method are disconnected.  If the
-argument is omitted, then all key press events for the dialog will be
-disconnected.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>The specified <computeroutput>methodName</computeroutput> is not
-connected to any key press events for this dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>-2</term>
-<listitem><para>This return code can only occur when removing the connection for
-a single <computeroutput>methodName</computeroutput>.  It indicates that after
-removing the connection, the underlying mechanism in the Windows API that
-captures the key press events could not be re-initialized.  (It is doubtful this
-error would ever occur.)
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example is a variation on the <link
-linkend="connectKeyPressExample">example</link> shown for the <link
-linkend="mthConnectKeyPressBaseDialog">ConnectKeyPress</link> method. It builds
-on the fictitious customer order system.  The F7 key saves the completed invoice
-into the system and enters a different phase of the companies business process.
-At this point (for whatever fictitious business reason) the fields can no longer
-be cleared and the user is not allowed to look up customer or product
-information.  But, the user may still need to print the invoice.  To prevent the
-accidental press of the hot keys causing the wrong action, those key presses are
-disconnected.
-</para>
-<para>To demonstrate how key press connections can be added and removed through
-out the live time of the dialog, this example adds the F9 hot key.  F9 starts a
-new order entry cycle and re-connects the hot keys used during the creation of
-a customer invoice.  When the user then saves the next completed invoice, key
-press connections are removed, when she starts a new invoice key press
-connections are restored.  This cycle could continue though out the day without
-the user ever closing the main dialog.
-<programlisting>
-<![CDATA[
-
-::method initDialog
-
-  ...
-
-  -- Capture F2 key presses, but not Ctrl-F2 or Alt-F2, etc..
-  self~connectKeyPress(onF2, self~vCode('F2'), "NONE")
-
-  -- Same idea for F3, F4, F5, and F7.  This uses the actual numeric value for
-  -- the keys without bothering to use the VirtualKeyCodes class to translate.
-  self~connectKeyPress(onF3, 114, "NONE")
-  self~connectKeyPress(onF4, 115, "NONE")
-  self~connectKeyPress(onF5, 116, "NONE")
-  self~connectKeyPress(onF7, 118, "NONE")
-  self~connectKeyPress(onF9, 120, "NONE")
-
-  ...
-
-::method onF2
-  self~showCustomerLookupDialog
-
-::method onF3
-
-  prodNum = self~getEditControl(IDC_EDIT_PRODUCT)~getText
-  if prodNum \== "" then self~showProductInfo(prodNum)
-
-::method onF4
-  self~resetAllFields
-
-::method onF5
-  self~printInvoice
-
-::method onF7
-
-  self~saveToDataBase
-  self~disconnectKeyPress(onF2)
-  self~disconnectKeyPress(onF3)
-  self~disconnectKeyPress(onF4)
-
-::method onF9
-
-  self~resetAllFields
-  self~connectKeyPress(onF2, 112, "NONE")
-  self~connectKeyPress(onF3, 114, "NONE")
-  self~connectKeyPress(onF4, 115, "NONE")
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-</section>
-
-<section id="mthHasKeyPressConnectionBaseDialog"><title>HasKeyPressConnection</title>
-<indexterm><primary>HasKeyPressConnection</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~HasKeyPressConnection(--+--------------+--)--------><
-                                       +--methodName--+
-
-]]>
-</programlisting>
-
-<para>This method is used to query if a connection to a key press event already
-exists.  It returns true or false so it can always be used in a boolean
-expression.  If no argument is specified the method returns true if any key
-press events have been connected for the dialog and false otherwise.  When the
-<computeroutput>methodName</computeroutput> argument is used, the query is only
-if there are key press events connected to the specified method.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The single optional argument is:
-<variablelist>
-<varlistentry><term>methodName</term>
-<listitem><para>Query if any key press events are connected to this method.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The returned value is always <computeroutput>true
-</computeroutput> or <computeroutput>false</computeroutput>.
-<variablelist>
-<varlistentry><term>true</term>
-<listitem><para>A connection exists.
-</para></listitem></varlistentry>
-<varlistentry><term>false</term>
-<listitem><para>No connection exists.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example could come from a dialog where the user
-has the option to use hot keys or not.  When the reset button is pushed the
-state of the dialog fields are reset.  The hot keys enabled check box is
-set to reflect whether hot keys are currently enabled or not.
-<programlisting>
-<![CDATA[
-
-::method defineDialog
-
-  ...
-  self~addCheckBox(IDC_CHECK_FKEYSENABlED, , 30, 60, , , "Hot Keys Enabled")
-  ...
-  self~addButton(IDC_PB_RESET, 60, 135, 45, 15, "Reset", onReset)
-  ...
-
-::method onReset
-
-  ...
-  if self~hasKeyPressConnection then
-    self~getCheckControl(IDC_CHECK_FKEYSENABlED)~check
-  else
-    self~getCheckControl(IDC_CHECK_FKEYSENABlED)~uncheck
-  ...
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-
-</section>
-
-<section id="mthConnectButton"><title>ConnectButton</title>
-<indexterm><primary>ConnectButton</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectButton(--id--,--msgToRaise--)------------><
-
-
-]]>
-</programlisting>
-
-<para>The ConnectButton method connects a push button
-with a method. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the dialog element.
-</para></listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is sent each time the button is clicked. You must
-provide a method with a matching name.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The specified symbolic ID could not be resolved.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog
-
-::method Init
-  self~init:super(...)
-  self~ConnectButton(203, "SayHello")
-
-::method SayHello
-  say "Hello"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-Connections are usually placed in the <link linkend="h000025">Init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods
-are defined, use Init as the place for this connection - but not before init:super has been called.
-</para></note>
-</section>
-
-<section id="mthConnectBitmapButton"><title>ConnectBitmapButton</title>
-<indexterm><primary>ConnectBitmapButton</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectBitmapButton(--id--,--+------------+--,--bmpNormal-->
-                                            +-msgToRaise-+
-
->--+----------------------------------------------------------------------------+--)-><
-   +-,--bmpFocused--+---------------------------------------------------------+-+
-                    +-,--bmpSelected--+-------------------------------------+-+
-                                      +-,--bmpDisabled--+-----------------+-+
-                                                        +-,--styleOptions-+
-
-
-]]>
-</programlisting>
-
-<para>The ConnectBitmapButton method connects a bitmap
-and a method with a push button. The given bitmaps are displayed instead of
-a Windows push button.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the button.
-</para></listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent to this object when the button is clicked.
-</para></listitem></varlistentry>
-<varlistentry><term>bmpNormal</term>
-<listitem><para>The name (alphanumeric), resource ID (numeric), or handle (<emphasis role="italic">INMEMORY</emphasis> option) of a bitmap file. This bitmap is displayed when the button is
-not selected, not focused, and not disabled. It is used for the other button
-states in case the other arguments are omitted.
-</para></listitem></varlistentry>
-<varlistentry><term>bmpFocused</term>
-<listitem><para>This bitmap is displayed when the button is focused. The focused button
-is activated when the Enter key is pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>bmpSelected</term>
-<listitem><para>This bitmap is displayed while the button is clicked and held.
-</para></listitem></varlistentry>
-<varlistentry><term>bmpDisabled</term>
-<listitem><para>This bitmap is displayed when the button is disabled.
-</para></listitem></varlistentry>
-<varlistentry><term>styleOptions</term>
-<listitem><para>One of the following keywords:
-<variablelist>
-<varlistentry><term>FRAME</term>
-<listitem><para>Draws a frame around the button.  When using this option, the bitmap
-button behaves like a normal Windows button, except that a bitmap is
-shown instead of a text.
-</para></listitem></varlistentry>
-<varlistentry><term>USEPAL</term>
-<listitem><para>Stores the colors of the bitmap file as the system color palette.  This
-option is needed when the bitmap was created with a palette other than the
-default Windows color palette. Use it for one button only,
-because only one color palette can be active at any time. <emphasis role="italic">USEPAL</emphasis> is
-invalid for a bitmap loaded from a DLL.
-</para></listitem></varlistentry>
-<varlistentry><term>INMEMORY</term>
-<listitem><para>This option must be used if the named bitmaps are already loaded into
-memory by using the <link linkend="h000667">LoadBitmap</link> method. In this case, bmpNormal, bmpFocused, bmpSelected, and bmpDisabled specify a bitmap handle instead of a file.
-</para></listitem></varlistentry>
-<varlistentry><term>STRETCH</term>
-<listitem><para>If this option is specified and the extent of the bitmap is smaller
-than the extent of the button rectangle, the bitmap is adapted to match the
-extent of the button. STRETCH has no effect for bitmaps
-loaded through a DLL.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The specified symbolic ID could not be resolved.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example connects a button with four bitmaps and a method:
-
-<programlisting>
-<![CDATA[
-      .
-      .
-      .
-::method InitDialog
-  self~ConnectBitmapButton(204, "BmpButtonClicked", ,
-                           "AddBut_n.bmp", "AddBut_f.bmp", ,
-                           "AddBut_s.bmp", "AddBut_d.bmp", "FRAME")
-::method BmpButtonClicked
-      .
-      .
-      .
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-<para>See also method <link linkend="h000170">ChangeBitmapButton</link>.</para>
-</section>
-
-<section id="h000123"><title>ConnectControl</title>
-<indexterm><primary>ConnectControl</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectControl(--id--+---------------+--)-------><
-                                    +-,--msgToRaise-+
-
-
-]]>
-</programlisting>
-
-<para>The ConnectControl method connects a dialog control
-with a method. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the dialog element.
-</para></listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent each time the button is clicked. Provide
-a method with the matching name.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The specified symbolic ID could not be resolved.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h111111"><title>ConnectDraw</title>
-<indexterm><primary>ConnectDraw</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectDraw--(--id--+---------------+--)--------><
-                                   +-,--msgToRaise-+
-
-
-]]>
-</programlisting>
-
-<para>The ConnectDraw method connects the WM_DRAWITEM
-event with a method. A WM_DRAWITEM message is sent for owner-drawn buttons
-each time they are to be redrawn. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the dialog control. If the ID is omitted, all drawing events
-of all owner-drawn buttons are routed to the method.
-</para></listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent each time the WM_DRAWITEM event occurs.
-Provide a method with the matching name. You can use <computeroutput>USE ARG ID</computeroutput> to
-retrieve the ID of the item that is to be redrawn.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The specified symbolic ID could not be resolved.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000132"><title>ConnectList</title>
-<indexterm><primary>ConnectList</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectList(--id--+---------------+--)----------><
-                                 +-,--msgToRaise-+
-
-
-]]>
-</programlisting>
-
-<para>The ConnectList method connects a list box, multiple
-list box, or combo box with a method. The method is called each time the user
-selects a new item from the list. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the dialog element.
-</para></listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent each time the button is pressed. Provide
-a method with the matching name.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The specified symbolic ID could not be resolved.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="clldcm"><title>ConnectListLeftDoubleClick</title>
-<indexterm><primary>ConnectListLeftDoubleClick</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectListLeftDoubleClick(--id--,--msgToRaise--)-><
-
-
-]]>
-</programlisting>
-
-<para>The ConnectListLeftDoubleClick method combines
-a left double-click within the list box with a method. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the list box.
-</para></listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The name of the method that is to be called.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The specified symbolic ID could not be resolved.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000802"><title>ConnectScrollBar</title>
-<indexterm><primary>ConnectScrollBar</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectScrollBar(--id--,--msgWhenUp--,--msgWhenDown-->
-
->--+--------------------------------------------------------------------+-->
-   +-,--+-------------+--+--------------------------------------------+-+
-        +-msgWhenDrag-+  +-,--+-----+--+----------------------------+-+
-                              +-min-+  +-,--+-----+--+------------+-+
-                                            +-max-+  +-,--+-----+-+
-                                                          +-pos-+
-
->--+----------------------------------------------------------+-->
-   +-,--+----------+--+-------------------------------------+-+
-        +-progpgup-+  +-,--+----------+--+----------------+-+
-                           +-progpgdn-+  +-,--+---------+-+
-                                              +-progtop-+
-
->--+-------------------+--+------------------------------------+-->
-   +-,--+------------+-+  +-,--+-----------+--+--------------+-+
-        +-progbuttom-+         +-progtrack-+  +-,--progendsc-+
-
-
->--)-----------------------------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The ConnectScrollBar method initializes and connects
-a scroll bar to an Object Rexx object. Use this method in the <link linkend="mthInitDialog">InitDialog</link> method. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the scroll bar.
-</para></listitem></varlistentry>
-<varlistentry><term>msgWhenUp</term>
-<listitem><para>The method that is called each time the scroll bar is incremented.
-</para></listitem></varlistentry>
-<varlistentry><term>msgWhenDown</term>
-<listitem><para>The method that is called each time the scroll bar is decremented.
-</para></listitem></varlistentry>
-<varlistentry><term>msgWhenDrag</term>
-<listitem><para> The method that is called each time the scroll bar is dragged with
-the mouse.
-</para></listitem></varlistentry>
-<varlistentry><term>min, max</term>
-<listitem><para> The minimum and maximum values for the scroll bar.
-</para></listitem></varlistentry>
-<varlistentry><term>pos</term>
-<listitem><para>The current or preselected value.
-</para></listitem></varlistentry>
-<varlistentry><term>progpgup</term>
-<listitem><para>The method that is called each time the scroll bar is focused and the
-PgUp key is pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>progpgdn</term>
-<listitem><para>The method that is called each time the scroll bar is focused and the
-PgDn key is pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>progtop</term>
-<listitem><para>The method that is called each time the scroll bar is focused and the
-Home key is pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>progbottom</term>
-<listitem><para>The method that is called each time the scroll bar is focused and the
-End key is pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>progtrack</term>
-<listitem><para>The method that is called each time the scroll box is dragged.
-</para></listitem></varlistentry>
-<varlistentry><term>progendsc</term>
-<listitem><para>The method that is called each time the scroll box is released after
-the dragging.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The specified symbolic ID could not be resolved.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>In the following example, scroll bar 255 is connected to three methods
-and initialized with 1 as the minimum, 20 as the maximum, and 6 as the current
-value:
-
-<programlisting>
-<![CDATA[
-::class MyDialog subclass UserDialog
-     .
-     .
-     .
-::method DefineDialog
-self~ConnectScrollBar(255,"Increase","Decrease","Drag",1,20,6)
-     .
-     .
-     .
-::method Increase
-     .
-     .
-     .
-::method Decrease
-     .
-     .
-     .
-::method Drag
-     .
-     .
-     .
-/* see CombineElWithSB below for continuation */
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="allsbe"><title>ConnectAllSBEvents</title>
-<indexterm><primary>ConnectAllSBEvents</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectAllSBEvents(--id--,--Prog----------------->
-
->--+----------------------------------------+--)---------------><
-   +-,--+-----+--+------------------------+-+
-        +-min-+  +-,--+-----+--+--------+-+
-                      +-max-+  +-,--pos-+
-
-
-]]>
-</programlisting>
-
-<para>Connects all scroll bar events to one method. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:</para>
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the scroll bar
-</para></listitem></varlistentry>
-<varlistentry><term>Prog</term>
-<listitem><para>The method that is called for all events sent by the scroll bar.
-</para></listitem></varlistentry>
-<varlistentry><term>min, max</term>
-<listitem><para> The minimum and maximum values for the scroll bar.
-</para></listitem></varlistentry>
-<varlistentry><term>pos</term>
-<listitem><para>The current or preselected value.
-</para></listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The specified symbolic ID could not be resolved.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthAddUserMsg"><title>addUserMsg</title>
-<indexterm><primary>addUserMsg</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~addUserMsg(--msgToRaise--,--msgWindows----------->
-
->--+--------------------------------------------------------------------+-->
-   +-,--filt1--+------------------------------------------------------+-+
-               +-,--wParam--+---------------------------------------+-+
-                            +-,--filt2--+-------------------------+-+
-                                        +-,--lParam--+----------+-+
-                                                     +-,--filt3-+
-
->--)-----------------------------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The addUserMsg method connects a Windows message with an Object Rexx
-method. This method is designed to be used by ooDialog programmers who are
-familiar with the Windows API.
-</para>
-<para>You have to pass the Windows message ID and the two message parameters
-(wParam and lParam) to specify the exact event you want to catch. In addition,
-you can specify filters for each parameter. Filters are useful for catching more
-than one message or one parameter with one method.
-</para>
-<para>Details for all Windows messages and their parameters are available in the
-<link linkend="windowsdoc">Windows documentation</link>.  The numeric value of
-the message IDs (and possibly the message parameters) can be looked up in the
-<link linkend="platformsdk">Windows platform SDK</link>.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected. You can use it only within the scope of the
-BaseDialog class or its subclasses.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent to the Object Rexx dialog object each time
-the specified Windows message is caught. Provide a method with the
-same name. The maximum size for a message is limited to 256 characters.
-</para></listitem></varlistentry>
-<varlistentry><term>msgWindows</term>
-<listitem><para>The message in the Windows environment that is to be caught.
-</para></listitem></varlistentry>
-<varlistentry><term>filt1</term>
-<listitem><para>This filter is used to binary AND the incoming Windows message.
-</para></listitem></varlistentry>
-<varlistentry><term>wParam</term>
-<listitem><para>This is the first parameter that must be passed with the Windows message.
-</para></listitem></varlistentry>
-<varlistentry><term>filt2</term>
-<listitem><para>This filter is used to binary AND the <emphasis role="italic">wParam</emphasis> argument.
-</para></listitem></varlistentry>
-<varlistentry><term>lParam</term>
-<listitem><para>This is the second message parameter.
-</para></listitem></varlistentry>
-<varlistentry><term>filt3</term>
-<listitem><para>This is the filter for <emphasis role="italic">lParam</emphasis>.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example shows an implementation of the
-ConnectList method:</para>
-
-<programlisting>
-<![CDATA[
-::class BaseDialog
-      .
-      .
-      .
-::method ConnectList
-  use arg msgToRaise, id
-  self~addUserMsg(msgToRaise, "0x00000111", "0xFFFFFFFF", ,
-                 "0x0001"||id~d2x(4), "0xFFFFFFFF", 0, 0)
-]]>
-</programlisting>
-<para>Assume that this method is called with ID=254 and msgToRaise=&quot;ListChanged&quot;.
-After the <link linkend="h000132">ConnectList</link> is executed, the ListChanged
-message is sent to the Object Rexx dialog object if the following conditions are
-true: </para>
-<itemizedlist>
-<listitem><para>Message &quot;0x00000111&quot; (WM_COMMAND) is generated by Windows in
-answer to an event (for example, a button is clicked or a list has changed).
-The filter &quot;0xFFFFFFFF&quot; ensures that only that message is caught;
-if the filter were &quot;0xFFFFEFFF&quot;, the message &quot;0x00001111&quot;
-would be caught as well.</para></listitem>
-<listitem><para>The first message parameter is &quot;0x000100FF&quot;. The first part, &quot;0x0001&quot;,
-specifies the event, and the second part, &quot;0x00FE&quot; (equals decimal
-254), specifies the dialog control where the event occurred. By using another
-filter it is possible to make more than one event a trigger for the ListChanged method; for example, filter &quot;0xFFFFFFFE&quot; would ignore
-the last bit of the ID, and this the same event for dialog item 255 would
-call ListChanged as well.</para></listitem>
-<listitem><para>The second message parameter and its filter are ignored.</para></listitem></itemizedlist>
-<para>The following example invokes a user-defined method <computeroutput>DoubleClick</computeroutput> each time the left mouse button is double-clicked: </para>
-<programlisting>
-<![CDATA[
-self~addUserMsg("DoubleCick","0x00000203","0xFFFFFFFF",0,0,0,0)
-]]>
-</programlisting>
-</listitem></varlistentry>
-</variablelist>
-</section>
-</section>
 
 <section id="man0002"><title>Connect Attribute Methods</title>
 <indexterm><primary>connect attribute methods</primary>
@@ -5240,20 +3595,6 @@ entry line 203 is empty. If it is empty, Validate returns
   dialog is being closed.  It is intended to be over-ridden by the programmer, if desired.  The default
   implementation does nothing. It gives the programmer a chance to do some final clean up.
 </para>
-</section>
-
-<section id="h001468"><title>deInstall <emphasis role="bold">(deprecated)</emphasis></title>
-<indexterm>
-  <primary>deprecated</primary>
-  <secondary>BaseDialog class</secondary>
-  <tertiary>deInstall</tertiary>
-</indexterm>
-<note><title>Note</title><para>
-  This method is deprecated.  It does nothing and always returns 0. In older versions of Open Object
-  Rexx, the <emphasis role="italic">deInstall</emphasis>() method was used to deregister the external
-  functions with the API manager. This mechanism is no longer needed using the modern APIs introduced in
-  ooRexx 4.0.0.
-</para></note>
 </section>
 
 </section>
@@ -6882,21 +5223,6 @@ used.
 </variablelist>
 </section>
 
-<section id="mthGetSystemMetricsClsBaseDialog"><title>getSystemMetrics <emphasis role="bold">(deprecated)</emphasis></title>
-<indexterm>
-  <primary>deprecated</primary>
-  <secondary>BaseDialog class</secondary>
-  <tertiary>getSystemMetrics</tertiary>
-</indexterm>
-<note><title>Note</title><para>
-  This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the .DlgUtil class.  Do not
-  use this method in new code. Try to migrate existing code to to the
-  <computeroutput>.DlgUtil~getSystemMetrics()</computeroutput> method.  This method may not exist in
-  future versions of ooDialog.
-</para></note>
-</section>
-
 </section>
 
 <section id="man0027"><title>Appearance and Behavior Methods</title>
@@ -8241,22 +6567,6 @@ to manually update the display.
 </variablelist>
 </section>
 
-<section id="assignwindow"><title>assignWindow <emphasis role="bold">(deprecated)</emphasis></title>
-<indexterm>
-  <primary>deprecated</primary>
-  <secondary>BaseDialog class</secondary>
-  <tertiary>assignWindow</tertiary>
-</indexterm>
-<note><title>Note</title><para>
-  This method is deprecated and always returns 0, <emphasis role="italic">the connection
-  failed</emphasis>. To work with a dialog or dialog control object, construct the proper ooDialog
-  object. To control a window not owned by your program use the <emphasis role="italic">find</emphasis>()
-  method of the <emphasis role="italic">WindowsManger</emphasis>. The <emphasis
-  role="italic">WindowsManager</emphasis> class is part of the <emphasis
-  role="italic">WinSystm.cls</emphasis> package.
-</para></note>
-</section>
-
 <section id="h000246"><title>SetWindowTitle</title>
 <indexterm><primary>SetWindowTitle</primary></indexterm>
 <programlisting>
@@ -8771,6 +7081,114 @@ MyDialog~ClearWindowRect(hwnd)
 <indexterm><primary>bitmap methods</primary></indexterm>
 <para>The methods listed below deal with bitmaps.</para>
 
+<section id="mthInstallBitmapButton"><title>installBitmapButton</title>
+<indexterm><primary>installBitmapButton</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~installBitmapButton(--id--,--+------------+--,--bmpNormal-->
+                                            +-msgToRaise-+
+
+>--+----------------------------------------------------------------------------+--)-><
+   +-,--bmpFocused--+---------------------------------------------------------+-+
+                    +-,--bmpSelected--+-------------------------------------+-+
+                                      +-,--bmpDisabled--+-----------------+-+
+                                                        +-,--styleOptions-+
+
+
+]]>
+</programlisting>
+
+<para>The installBitmapButton method connects a bitmap
+and a method with a push button. The given bitmaps are displayed instead of
+a Windows push button.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the button.
+</para></listitem></varlistentry>
+<varlistentry><term>msgToRaise</term>
+<listitem><para>The message that is to be sent to this object when the button is clicked.
+</para></listitem></varlistentry>
+<varlistentry><term>bmpNormal</term>
+<listitem><para>The name (alphanumeric), resource ID (numeric), or handle (<emphasis role="italic">INMEMORY</emphasis> option) of a bitmap file. This bitmap is displayed when the button is
+not selected, not focused, and not disabled. It is used for the other button
+states in case the other arguments are omitted.
+</para></listitem></varlistentry>
+<varlistentry><term>bmpFocused</term>
+<listitem><para>This bitmap is displayed when the button is focused. The focused button
+is activated when the Enter key is pressed.
+</para></listitem></varlistentry>
+<varlistentry><term>bmpSelected</term>
+<listitem><para>This bitmap is displayed while the button is clicked and held.
+</para></listitem></varlistentry>
+<varlistentry><term>bmpDisabled</term>
+<listitem><para>This bitmap is displayed when the button is disabled.
+</para></listitem></varlistentry>
+<varlistentry><term>styleOptions</term>
+<listitem><para>One of the following keywords:
+<variablelist>
+<varlistentry><term>FRAME</term>
+<listitem><para>Draws a frame around the button.  When using this option, the bitmap
+button behaves like a normal Windows button, except that a bitmap is
+shown instead of a text.
+</para></listitem></varlistentry>
+<varlistentry><term>USEPAL</term>
+<listitem><para>Stores the colors of the bitmap file as the system color palette.  This
+option is needed when the bitmap was created with a palette other than the
+default Windows color palette. Use it for one button only,
+because only one color palette can be active at any time. <emphasis role="italic">USEPAL</emphasis> is
+invalid for a bitmap loaded from a DLL.
+</para></listitem></varlistentry>
+<varlistentry><term>INMEMORY</term>
+<listitem><para>This option must be used if the named bitmaps are already loaded into
+memory by using the <link linkend="h000667">LoadBitmap</link> method. In this case, bmpNormal, bmpFocused, bmpSelected, and bmpDisabled specify a bitmap handle instead of a file.
+</para></listitem></varlistentry>
+<varlistentry><term>STRETCH</term>
+<listitem><para>If this option is specified and the extent of the bitmap is smaller
+than the extent of the button rectangle, the bitmap is adapted to match the
+extent of the button. STRETCH has no effect for bitmaps
+loaded through a DLL.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The specified symbolic ID could not be resolved.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>No error.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example connects a button with four bitmaps and a method:
+
+<programlisting>
+<![CDATA[
+      .
+      .
+      .
+::method InitDialog
+  self~installBitmapButton(204, "BmpButtonClicked", ,
+                           "AddBut_n.bmp", "AddBut_f.bmp", ,
+                           "AddBut_s.bmp", "AddBut_d.bmp", "FRAME")
+::method BmpButtonClicked
+      .
+      .
+      .
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+<para>See also method <link linkend="h000170">ChangeBitmapButton</link>.</para>
+</section>
+
 <section id="h000170"><title>ChangeBitmapButton</title>
 <indexterm><primary>ChangeBitmapButton</primary></indexterm>
 <programlisting>
@@ -8793,7 +7211,7 @@ MyDialog~ClearWindowRect(hwnd)
 of a bitmap button. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are the same as for <link linkend="mthConnectBitmapButton">ConnectBitmapButton</link>,
+<listitem><para>The arguments are the same as for <link linkend="mthInstallBitmapButton">installBitmapButton</link>,
 except for the first argument (msgToRaise), which is skipped in this method.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -9001,7 +7419,7 @@ dialog's background picture. </para>
 </para></listitem></varlistentry>
 <varlistentry><term>option</term>
 <listitem><para>Set the last argument to USEPAL if you want
-to use the color palette of the bitmap. See <link linkend="mthConnectBitmapButton">ConnectBitmapButton</link> for more
+to use the color palette of the bitmap. See <link linkend="mthInstallBitmapButton">installBitmapButton</link> for more
 information.
 </para></listitem></varlistentry>
 </variablelist>
@@ -9466,7 +7884,7 @@ a button. It is used to move bitmaps within buttons. </para>
 
 <section id="mthGetTextSize"><title>GetTextSize <emphasis role="bold">(deprecated)</emphasis></title>
 <indexterm>
-  <primary>deprecated</primary>
+  <primary>Deprecated</primary>
   <secondary>PlainBaseDialog class</secondary>
   <tertiary>getTextSize</tertiary>
 </indexterm>
@@ -9655,11 +8073,12 @@ end
 <indexterm><primary>menu methods</primary>
 <secondary>BaseDialog class</secondary></indexterm>
 <para>
-  Prior to ooDialog version 4.1.0, menus were really only minimally supported, through a few methods of
-  the dialog class.  In ooDialog 4.1.0 true <link linkend="menuclasses">menu</link> objects were
-  introduced.  Therefore the menu methods of the dialog class, other than <link
-  linkend="mthGetMenuBar">getMenuBar</link>() and <link linkend="mthHasMenuBar">hasMenuBar</link>(), are
-  deprecated.  Use the methods of the menu classes directly to work with menus.
+  Prior to ooDialog version 4.1.0, menus were really only minimally supported, through a few methods of the dialog
+  class.  In ooDialog 4.1.0 true <link linkend="menuclasses">menu</link> objects were introduced.  Therefore the menu
+  methods of the dialog, other than <link linkend="mthGetMenuBar">getMenuBar</link>() and <link
+  linkend="mthHasMenuBar">hasMenuBar</link>(), are deprecated.  Use the methods of the menu classes directly to work
+  with menus. The listing of the <link linkend="deprecatedDialogMethods">deprecated dialog methods</link> documents all
+  the method to use to replace each deprecated method.
 </para>
 
 <section id="mthGetMenuBar"><title>getMenuBar</title>
@@ -9737,106 +8156,6 @@ end
 </variablelist>
 </section>
 
-<section id="cmim"><title>connectMenuItem <emphasis role="bold">(deprecated)</emphasis></title>
-<indexterm>
-  <primary>deprecated</primary>
-  <secondary>BaseDialog class</secondary>
-  <tertiary>connectMenuItem</tertiary>
-</indexterm>
-<note><title>Note</title><para>
-  This method is deprecated.  Use the the <link linkend="menuclasses">menu</link> object methods
-  directly.  Do not use this method in new code. Try to migrate existing code to use menu objects
-  directly. This method may not exist in future versions of ooDialog.
-</para></note>
-</section>
-
-<section id="emim"><title>enableMenuItem <emphasis role="bold">(deprecated)</emphasis></title>
-<indexterm>
-  <primary>deprecated</primary>
-  <secondary>BaseDialog class</secondary>
-  <tertiary>enableMenuItem</tertiary>
-</indexterm>
-<note><title>Note</title><para>
-  This method is deprecated.  Use the the <link linkend="menuclasses">menu</link> object methods
-  directly.  Do not use this method in new code. Try to migrate existing code to use menu objects
-  directly. This method may not exist in future versions of ooDialog.
-</para></note>
-</section>
-
-<section id="dmim"><title>disableMenuItem <emphasis role="bold">(deprecated)</emphasis></title>
-<indexterm>
-  <primary>deprecated</primary>
-  <secondary>BaseDialog class</secondary>
-  <tertiary>disableMenuItem</tertiary>
-</indexterm>
-<note><title>Note</title><para>
-  This method is deprecated.  Use the the <link linkend="menuclasses">menu</link> object methods
-  directly.  Do not use this method in new code. Try to migrate existing code to use menu objects
-  directly. This method may not exist in future versions of ooDialog.
-</para></note>
-</section>
-
-<section id="chmim"><title>checkMenuItem <emphasis role="bold">(deprecated)</emphasis></title>
-<indexterm>
-  <primary>deprecated</primary>
-  <secondary>BaseDialog class</secondary>
-  <tertiary>checkMenuItem</tertiary>
-</indexterm>
-<note><title>Note</title><para>
-  This method is deprecated.  Use the the <link linkend="menuclasses">menu</link> object methods
-  directly.  Do not use this method in new code. Try to migrate existing code to use menu objects
-  directly. This method may not exist in future versions of ooDialog.
-</para></note>
-</section>
-
-<section id="uchmim"><title>uncheckMenuItem <emphasis role="bold">(deprecated)</emphasis></title>
-<indexterm>
-  <primary>deprecated</primary>
-  <secondary>BaseDialog class</secondary>
-  <tertiary>uncheckMenuItem</tertiary>
-</indexterm>
-<note><title>Note</title><para>
-  This method is deprecated.  Use the the <link linkend="menuclasses">menu</link> object methods
-  directly.  Do not use this method in new code. Try to migrate existing code to use menu objects
-  directly. This method may not exist in future versions of ooDialog.
-</para></note>
-</section>
-
-<section id="gmim"><title>grayMenuItem <emphasis role="bold">(deprecated)</emphasis></title>
-<indexterm>
-  <primary>deprecated</primary>
-  <secondary>BaseDialog class</secondary>
-  <tertiary>grayMenuItem</tertiary> </indexterm>
-<note><title>Note</title><para>
-  This method is deprecated.  Use the the <link linkend="menuclasses">menu</link> object methods
-  directly.  Do not use this method in new code. Try to migrate existing code to use menu objects
-  directly. This method may not exist in future versions of ooDialog.
-</para></note>
-</section>
-
-<section id="smirm"><title>setMenuItemRadio <emphasis role="bold">(deprecated)</emphasis></title>
-<indexterm>
-  <primary>deprecated</primary>
-  <secondary>BaseDialog class</secondary>
-  <tertiary>setMenuItemRadio</tertiary> </indexterm>
-<note><title>Note</title><para>
-  This method is deprecated.  Use the the <link linkend="menuclasses">menu</link> object methods
-  directly.  Do not use this method in new code. Try to migrate existing code to use menu objects
-  directly. This method may not exist in future versions of ooDialog.
-</para></note>
-</section>
-
-<section id="gmism"><title>getMenuItemState <emphasis role="bold">(deprecated)</emphasis></title>
-<indexterm>
-  <primary>deprecated</primary>
-  <secondary>BaseDialog class</secondary>
-  <tertiary>getMenuItemState</tertiary> </indexterm>
-<note><title>Note</title><para>
-  This method is deprecated.  Use the the <link linkend="menuclasses">menu</link> object methods
-  directly.  Do not use this method in new code. Try to migrate existing code to use menu objects
-  directly. This method may not exist in future versions of ooDialog.
-</para></note>
-</section>
 </section>
 
 <section id="debuggingmeth"><title>Debugging Methods</title>
@@ -9886,4 +8205,202 @@ end
 </variablelist>
 </section>
 </section>
+
+<section id="deprecatedDialogMethods"><title>Deprecated Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>dialog methods</secondary></indexterm>
+<para>
+  <link linkend="ovvDeprecated">Deprecated</link> dialog methods and their replacement methods are listed in this
+  section.
+</para>
+
+<section><title>assignWindow</title>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>dialog</secondary>
+  <tertiary>assignWindow</tertiary>
+</indexterm>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>assignWindow</secondary>
+  <tertiary>dialog</tertiary>
+</indexterm>
+<para>
+  This method is deprecated and always returns 0, <emphasis role="italic">the assignment failed</emphasis>. To work with
+  a dialog or dialog control object, construct the proper ooDialog object. This ensures that the object has the correct
+  methods. To control a window not owned by your program use the <emphasis role="italic">find</emphasis>() method of the
+  <emphasis role="italic">WindowsManger</emphasis> class. The <emphasis role="italic">WindowsManager</emphasis>is part
+  of the <emphasis role="italic">WinSystm.cls</emphasis> package. In certain cases it may be desirable to invoke a
+  method common to all windows when only the window <link linkend="termHandle">handle</link> is known.  For these cases
+  use a <link linkend="clsWindow">Window</link> object.
+</para>
+</section>
+
+<section><title>checkMenuItem</title>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>dialog</secondary>
+  <tertiary>checkMenuItem</tertiary>
+</indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="menuclasses">menu</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>connectBitmapButton</title>
+<indexterm><primary>Deprecated</primary><secondary>connectBitmapButton</secondary></indexterm>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>dialog</secondary>
+  <tertiary>connectBitmapButton</tertiary>
+</indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthInstallBitmapButton">installBitmapButton</link>() method.
+</para>
+</section>
+
+<section><title>connectButton</title>
+<indexterm><primary>Deprecated</primary><secondary>connectButton</secondary></indexterm>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>dialog</secondary>
+  <tertiary>connectButton</tertiary>
+</indexterm>
+<para>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectButtonEvent">connectButtonEvent</link>(id, "CLICKED", methodName) method.
+</para>
+</section>
+
+<section><title>connectControl</title>
+<indexterm><primary>Deprecated</primary><secondary>connectContol</secondary></indexterm>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>dialog</secondary>
+  <tertiary>connectControl</tertiary>
+</indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectCommandEvents">connectCommandEvents</link>() method.
+</para>
+</section>
+
+<section><title>connectMenuItem</title>
+<indexterm><primary>Deprecated</primary><secondary>connectMenuItem</secondary></indexterm>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>dialog</secondary>
+  <tertiary>connectMenuItem</tertiary>
+</indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="menuclasses">menu</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>deInstall</title>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>dialog</secondary>
+  <tertiary>deInstall</tertiary>
+</indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  It does nothing and always returns 0. In older
+  versions of ooDialog, the <emphasis role="italic">deInstall</emphasis>() method was used to deregister the
+  external functions with the API manager. This mechanism is no longer needed using the modern APIs introduced in
+  ooRexx 4.0.0.
+</para>
+</section>
+
+<section><title>disableMenuItem</title>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>dialog</secondary>
+  <tertiary>disableMenuItem</tertiary>
+</indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="menuclasses">menu</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>enableMenuItem</title>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>dialog</secondary>
+  <tertiary>enableMenuItem</tertiary>
+</indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="menuclasses">menu</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>getMenuItemState</title>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>dialog</secondary>
+  <tertiary>getMenuItemState</tertiary>
+</indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="menuclasses">menu</link>
+  object methods directly.
+</para>
+</section>
+
+<section id="mthGetSystemMetricsClsBaseDialog"><title>getSystemMetrics <emphasis role="bold">(deprecated)</emphasis></title>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>BaseDialog class</secondary>
+  <tertiary>getSystemMetrics</tertiary>
+</indexterm>
+<note><title>Note</title><para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the .DlgUtil class.  Do not
+  use this method in new code. Try to migrate existing code to to the
+  <computeroutput>.DlgUtil~getSystemMetrics()</computeroutput> method.  This method may not exist in
+  future versions of ooDialog.
+</para></note>
+</section>
+
+<section><title>grayMenuItem</title>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>dialog</secondary>
+  <tertiary>grayMenuItem</tertiary>
+</indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="menuclasses">menu</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>setMenuItemRadio</title>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>dialog</secondary>
+  <tertiary>setMenuItemRadio</tertiary>
+</indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="menuclasses">menu</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>uncheckMenuItem</title>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>dialog</secondary>
+  <tertiary>uncheckMenuItem</tertiary>
+</indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="menuclasses">menu</link>
+  object methods directly.
+</para>
+</section>
+
+</section>
+
 </chapter>

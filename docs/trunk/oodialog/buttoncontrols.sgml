@@ -174,9 +174,8 @@
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
     <para>
-      The programmer can use these methods to recieve notifications of button control events: the <link
-      linkend="mthConnectButton">connectButton</link>() method, or the <link
-      linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
+      Use the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method to recieve notifications of
+      button events.
     </para>
   </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Methods</emphasis>:</term>
@@ -1325,7 +1324,7 @@ return 0
   module = .ResourceImage~new("imageButton.dll", self)
   image = module~getImage(101)
   self~getButtonControl(IDC_PB_PUSHME)~setImage(image)
-  self~connectButton(IDC_PB_PUSHME, onPushMe)
+  self~connectButtonEvent(IDC_PB_PUSHME, "CLICKED", onPushMe)
 ]]>
 </programlisting>
     </para>
@@ -1423,7 +1422,7 @@ button~ChangeBitmap("AddBut_n.bmp", "AddBut_f.bmp", "AddBut_s.bmp", ,
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
-<para>See also <link linkend="mthConnectBitmapButton">ConnectBitmapButton</link>.</para>
+<para>See also <link linkend="mthInstallBitmapButton">installBitmapButton</link>.</para>
 </section>
 
 <section id="displacebitmap"><title>DisplaceBitmap</title>
@@ -1833,9 +1832,8 @@ within the associated bitmap button from one position to another.</para>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
     <para>
-      A radio button, is a button, and the programmer uses the same methods to recieve notifications of
-      of events as with a ButtonControl: the <link linkend="mthConnectButton">connectButton</link>()
-      method, or the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
+      A radio button, is a button, and the programmer uses the same method to recieve notifications of
+      of events as with a ButtonControl: <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term>Methods:</term>
@@ -2096,7 +2094,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 
 <section id="mthIsChecked"><title>isChecked <emphasis role="bold">(deprecated)</emphasis></title>
 <indexterm>
-  <primary>deprecated</primary>
+  <primary>Deprecated</primary>
   <secondary>RadioButton class</secondary>
   <tertiary>isChecked</tertiary>
 </indexterm>
@@ -2114,7 +2112,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 
 <section id="deprecatedIndeterminate"><title>indeterminate <emphasis role="bold">(deprecated)</emphasis></title>
 <indexterm>
-  <primary>deprecated</primary>
+  <primary>Deprecated</primary>
   <secondary>RadioButton class</secondary>
   <tertiary>indeterminate</tertiary>
 </indexterm>
@@ -2211,9 +2209,8 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
     <para>
-      A check box, is a button, and the programmer uses the same methods to recieve notifications of
-      events as with the ButtonControl: the <link linkend="mthConnectButton">connectButton</link>()
-      method, or the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
+      A check box, is a button, and the programmer uses the same method to recieve notifications of events as with the
+      ButtonControl: the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term>Methods:</term>

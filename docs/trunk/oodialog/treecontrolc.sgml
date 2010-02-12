@@ -1919,7 +1919,7 @@ was not specified or is 0.
 
 <section id="setimagestrc"><title>setImages <emphasis role="bold">(deprecated)</emphasis></title>
 <indexterm>
-  <primary>deprecated</primary>
+  <primary>Deprecated</primary>
   <secondary>TreeControl class</secondary>
   <tertiary>setImages</tertiary>
 </indexterm>
@@ -1933,7 +1933,7 @@ was not specified or is 0.
 
 <section id="removeimagestrc"><title>removeImages <emphasis role="bold">(deprecated)</emphasis></title>
 <indexterm>
-  <primary>deprecated</primary>
+  <primary>Deprecated</primary>
   <secondary>TreeControl class</secondary>
   <tertiary>removeImages</tertiary>
 </indexterm>
@@ -2125,11 +2125,8 @@ with the corresponding message:</para>
   self~ConnectTreeNotify("IDC_TREE","DefaultEdit")
   self~ConnectTreeNotify("IDC_TREE","Delete","OnDelete_IDC_TREE")
   self~ConnectTreeNotify("IDC_TREE","KeyDown","OnKeyDown_IDC_TREE")
-  self~ConnectButton("IDC_PB_NEW","IDC_PB_NEW")
-  self~ConnectButton("IDC_PB_DELETE","IDC_PB_DELETE")
-  self~ConnectButton(2,"Cancel")
-  self~ConnectButton(9,"Help")
-  self~ConnectButton(1,"OK")
+  self~connectButtonEvent("IDC_PB_NEW", "CLICKED", "IDC_PB_NEW")
+  self~connectButtonEvent("IDC_PB_DELETE", "CLICKED", "IDC_PB_DELETE")
   return InitRet
 ]]>
 </programlisting>

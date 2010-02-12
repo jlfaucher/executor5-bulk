@@ -691,7 +691,7 @@ by blanks:
 </para></listitem></varlistentry>
 <varlistentry><term>CONNECTBUTTONS</term>
 <listitem><para>For each button a connection to an object method is established automatically.
-See <link linkend="h000123">ConnectControl</link> for a description of connecting buttons
+See <link linkend="mthConnectCommandEvents">connectCommandEvents</link> for a description of connecting buttons
 to a method.
 </para></listitem></varlistentry>
 <varlistentry><term>CONNECTRADIOS</term>
@@ -1205,7 +1205,7 @@ associated Object Rexx attribute. Add... methods cannot be used after
       <para>
         Optional. The name of a method of the dialog class that is to be invoked each time the button is
         clicked.  This serves the same purpose as the <link
-        linkend="mthConnectButton">connectButton</link>() method.
+        linkend="mthConnectButtonEvent">connectButtonEvent</link>() method for the CLICKED event.
       </para>
     </listitem></varlistentry>
     <varlistentry><term>style</term>
@@ -1423,7 +1423,7 @@ MyDialog~addButton(555, 100, 80, 40, 15, "&Get new Info", ,
   On Windows XP and later, using an <link linkend="mthSetImageList">image list</link> with the button
   will produce a better overall appearance in the dialog. Using an image list gives the button the same
   look and feel as other buttons on the system. The buttons produced using this method and the <link
-  linkend="mthConnectBitmapButton">connectBitmapButton</link>() have the look and feel of Windows 98
+  linkend="mthInstallBitmapButton">installBitmapButton</link>() have the look and feel of Windows 98
   buttons.  When an image list is used with a button, the other button styles, such as the NOTIFY style
   can still be used. Whereas with the bitmap button the other button styles can not be used.  The image
   list button supports all the features of the bitmap button, and more.
@@ -8136,7 +8136,7 @@ with the dialog. </para>
 <listitem><para>GRAYED DISABLED END CHECKED
 </para></listitem></varlistentry>
 <varlistentry><term>msgToRaise</term>
-<listitem><para>Method to be called when the menu item is selected. See <link linkend="cmim">ConnectMenuItem</link>.
+<listitem><para>Method to be called when the menu item is selected.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>

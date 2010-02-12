@@ -41,7 +41,7 @@
     #
     #########################################################################
 -->
-<chapter id="clsDialogControl"><title>DialogControl Class</title>
+<chapter id="clsDialogControl"><title>The DialogControl Object</title>
 <indexterm><primary>DialogControl class</primary></indexterm>
 <para>
   The DialogControl class provides methods that are common to all dialog controls. It is a generic
@@ -3317,7 +3317,7 @@ hBmp = MyDialog~LoadBitmap("bmp\Walker.bmp", "USEPAL")
 <note><title>Note</title><para>
 Do not forget to call the <link linkend="h000676">RemoveBitmap</link> method
 to free memory when the bitmap is no longer in use. You have to specify the
-INMEMORY option when using the <link linkend="mthConnectBitmapButton">ConnectBitmapButton</link> or <link linkend="h000170">ChangeBitmapButton</link> method.
+INMEMORY option when using the <link linkend="mthInstallBitmapButton">installBitmapButton</link> or <link linkend="h000170">ChangeBitmapButton</link> method.
 </para></note>
 </section>
 
@@ -5372,6 +5372,39 @@ is the x-axis).
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+</section>
+
+<section id="deprecatedDialogControl"><title>Deprecated Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>DialogControl methods</secondary></indexterm>
+<para>
+  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  role="italic">DialogControl</emphasis> class and how to replace those methods in ooDialog programs.
+</para>
+
+<section><title>assignWindow</title>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>dialog control</secondary>
+  <tertiary>assignWindow</tertiary>
+</indexterm>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>assignWindow</secondary>
+  <tertiary>dialog control</tertiary>
+</indexterm>
+<para>
+  This method is deprecated and always returns 0, <emphasis role="italic">the assignment failed</emphasis>. To work with
+  a dialog or dialog control object, construct the proper ooDialog object. This ensures that the object has the correct
+  methods. To control a window not owned by your program use the <emphasis role="italic">find</emphasis>() method of the
+  <emphasis role="italic">WindowsManger</emphasis> class. The <emphasis role="italic">WindowsManager</emphasis>is part
+  of the <emphasis role="italic">WinSystm.cls</emphasis> package. In certain cases it may be desirable to invoke a
+  method common to all windows when only the window <link linkend="termHandle">handle</link> is known.  For these cases
+  use a <link linkend="clsWindow">Window</link> object.
+</para>
+</section>
+
+
 </section>
 
 </chapter>
