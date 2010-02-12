@@ -7882,29 +7882,6 @@ a button. It is used to move bitmaps within buttons. </para>
 <para></para>
 </section>
 
-<section id="mthGetTextSize"><title>GetTextSize <emphasis role="bold">(deprecated)</emphasis></title>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>PlainBaseDialog class</secondary>
-  <tertiary>getTextSize</tertiary>
-</indexterm>
-<note><title>Note</title>
-<para>
-  This method is deprecated.  It is maintained for compatibility to versions of ooDialog previous to
-  4.0.0. It's functionality is replaced by the <link
-  linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>() method. Do <emphasis
-  role="bold">not</emphasis> use this method in new code. Try to migrate existing code to use the
-  <computeroutput>getTextSizeDlg()</computeroutput> method. This method may not exist in future versions
-  of ooDialog.
-</para>
-<para>
-  This method never worked correctly, the previous documentation for this method was incorrect and /
-  or misleading. That has been fixed with with getTextSizeDlg(). The documentation for getTextSizeDlg()
-  correctly explains how the method works and, hopefully, is not misleading.
-</para></note>
-</section>
-
-
 </section>
 
 <section id="man0025"><title>Animated Buttons</title>
@@ -8236,6 +8213,7 @@ end
 </section>
 
 <section><title>checkMenuItem</title>
+<indexterm><primary>Deprecated</primary><secondary>checkMenuItem</secondary></indexterm>
 <indexterm>
   <primary>Deprecated</primary>
   <secondary>dialog</secondary>
@@ -8267,7 +8245,6 @@ end
   <secondary>dialog</secondary>
   <tertiary>connectButton</tertiary>
 </indexterm>
-<para>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectButtonEvent">connectButtonEvent</link>(id, "CLICKED", methodName) method.
@@ -8301,6 +8278,7 @@ end
 </section>
 
 <section><title>deInstall</title>
+<indexterm><primary>Deprecated</primary><secondary>deInstall</secondary></indexterm>
 <indexterm>
   <primary>Deprecated</primary>
   <secondary>dialog</secondary>
@@ -8315,6 +8293,7 @@ end
 </section>
 
 <section><title>disableMenuItem</title>
+<indexterm><primary>Deprecated</primary><secondary>disableMenuItem</secondary></indexterm>
 <indexterm>
   <primary>Deprecated</primary>
   <secondary>dialog</secondary>
@@ -8327,6 +8306,7 @@ end
 </section>
 
 <section><title>enableMenuItem</title>
+<indexterm><primary>Deprecated</primary><secondary>enableMenuItem</secondary></indexterm>
 <indexterm>
   <primary>Deprecated</primary>
   <secondary>dialog</secondary>
@@ -8338,7 +8318,25 @@ end
 </para>
 </section>
 
+<section id="mthGetTextSize"><title>getTextSize</title>
+<indexterm><primary>Deprecated</primary><secondary>getTextSize</secondary></indexterm>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>dialog</secondary>
+  <tertiary>getTextSize</tertiary>
+</indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Replace this method with the <link
+  linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>() method.
+</para>
+<para>
+  This method never worked correctly, the previous documentation for this method was incorrect and /
+  or misleading. That has been fixed in the <emphasis role="italic">getTextSizeDlg</emphasis>() method.
+</para></note>
+</section>
+
 <section><title>getMenuItemState</title>
+<indexterm><primary>Deprecated</primary><secondary>getMenuItemState</secondary></indexterm>
 <indexterm>
   <primary>Deprecated</primary>
   <secondary>dialog</secondary>
@@ -8350,22 +8348,22 @@ end
 </para>
 </section>
 
-<section id="mthGetSystemMetricsClsBaseDialog"><title>getSystemMetrics <emphasis role="bold">(deprecated)</emphasis></title>
+<section><title>getSystemMetrics</title>
+<indexterm><primary>Deprecated</primary><secondary>getSystemMetrics</secondary></indexterm>
 <indexterm>
   <primary>Deprecated</primary>
-  <secondary>BaseDialog class</secondary>
+  <secondary>dialog</secondary>
   <tertiary>getSystemMetrics</tertiary>
 </indexterm>
-<note><title>Note</title><para>
-  This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the .DlgUtil class.  Do not
-  use this method in new code. Try to migrate existing code to to the
-  <computeroutput>.DlgUtil~getSystemMetrics()</computeroutput> method.  This method may not exist in
-  future versions of ooDialog.
-</para></note>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replaced this mehtod the functionally equivalent
+  <link linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the <emphasis
+  role="italic">.DlgUtil</emphasis>class.
+</para>
 </section>
 
 <section><title>grayMenuItem</title>
+<indexterm><primary>Deprecated</primary><secondary>grayMenuItem</secondary></indexterm>
 <indexterm>
   <primary>Deprecated</primary>
   <secondary>dialog</secondary>
@@ -8378,6 +8376,7 @@ end
 </section>
 
 <section><title>setMenuItemRadio</title>
+<indexterm><primary>Deprecated</primary><secondary>setMenuItemRadio</secondary></indexterm>
 <indexterm>
   <primary>Deprecated</primary>
   <secondary>dialog</secondary>
@@ -8390,6 +8389,7 @@ end
 </section>
 
 <section><title>uncheckMenuItem</title>
+<indexterm><primary>Deprecated</primary><secondary>uncheckMenuItem</secondary></indexterm>
 <indexterm>
   <primary>Deprecated</primary>
   <secondary>dialog</secondary>
