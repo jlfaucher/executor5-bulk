@@ -5258,25 +5258,21 @@ used.
   linkend="mthGetTextSizeScreen">getTextSizeScreen</link>() method.
 </para>
 <para>
-  In general, dialog units are only of value in laying out the dialog controls before the underlying
-  dialog is created.  Once the underlying dialog is created, it makes more sense to work with pixels.
-  Historically, the ooDialog documentation did not make that distinction clear.  In addition, dialog
-  units are tied directly to the font used by a dialog.  Therefore, it does not make much sense for
-  this method to be an instance method of a dialog control.
+  In general, dialog units are only of value in laying out the dialog controls before the underlying dialog is
+  created.  Once the underlying dialog is created, it makes more sense to work with pixels. Historically, the
+  ooDialog documentation did not make that distinction clear.  In addition, dialog units are tied directly to the
+  font used by a specific dialog.  Therefore, the window handle argument does not make much sens.
 </para>
 <para>
-  The normal use of this method would be to invoke it on a dialog object to help layout the dialog's
-  controls prior to the creation of the underlying dialog.  In this use case, the hwnd argument is
-  meaningless.  There is no handle to either the dialog window or any of its controls, prior to the
-  underlying dialog creation.  There is little point in using a window handle from some other dialog.
-  However, to maintain compatibility with previous versions of ooDialog, the hwnd argument remains, and
-  the method is still an instance method of a dialog control.
+  The normal use of this method would be to invoke it on a dialog object to help layout the dialog's controls prior
+  to the creation of the underlying dialog.  In this use case, the hwnd argument is meaningless. There is no window
+  handle for the dialog prior to the underlying dialog creation.  There is little point in using a window handle
+  from some other dialog. The hwnd argument remains to maintain compatibility with previous versions of ooDialog.
 </para>
 <para>
   This method replaces the deprecated <link linkend="deprecatedDialogMethods">deprecated</link> <emphasis
-  role="italic">getTextSize</emphasis>() method.  The compatibility restraint is a result of this.  The
-  compatibility restraint makes it harder than necessary to document exactly how this method works, because the
-  behavior is different in places if the method is inovked on a dialog object or on a dialog control object.
+  role="italic">getTextSize</emphasis> method of the dialog object.  Becuase of the backwards compatibility
+  restraint it is harder than necessary to document exactly how this method works.
 </para>
 <para>
   The ooDialog programmer is <emphasis role="bold">strongly</emphasis> encouraged to only inovke this
