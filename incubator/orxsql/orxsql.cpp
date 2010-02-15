@@ -106,6 +106,8 @@ typedef struct _dbself {
                                                SQLINTEGER Attribute, SQLPOINTER Value,
                                                SQLINTEGER BufferLength,
                                                SQLINTEGER *StringLength);
+    SQLRETURN SQL_API (*instSQLEndTran)(SQLSMALLINT HandleType, SQLHANDLE Handle,
+                                        SQLSMALLINT CompletionType);
 } dbself;
 
 typedef struct _stmtself {
@@ -131,6 +133,20 @@ typedef struct _stmtself {
 /*============================================================================*/
 /* Public Methods                                                             */
 /*============================================================================*/
+
+/**
+ * Method:  OrxDB_version
+ *
+ * Return the OrxSQL version string.
+ *
+ * @return        Zero.
+ **/
+RexxMethod0(RexxObjectPtr,             // Return type
+            OrxDB_version)             // Object_method name
+{
+    
+    return (RexxObjectPtr)context->NewStringFromAsciiz(VERSTRING(VMAJOR, VMINOR, VREL));
+}
 
 /**
  * Method:  OrxDB_dbinit
@@ -522,6 +538,91 @@ RexxMethod2(RexxObjectPtr,             // Return type
 
     return (RexxObjectPtr)context->Nil();
 }
+
+/**
+ * Method:  OrxDB_commit
+ *
+ * Commit a database transaction.
+ *
+ * @return        Return code.
+ **/
+RexxMethod1(int,                       // Return type
+            OrxDB_commit,              // Object_method name
+            CSELF, cself)
+{
+    dbself *pself = (dbself *)cself;
+
+    // if necessary, get the symbol(s)
+    if (pself->instSQLEndTran == SQL_NULL_HANDLE) {
+#if defined WIN32 || defined WIN64
+        pself->instSQLEndTran = GetProcAddress(pself->handle, "SQLEndTran");
+#else
+        *(void**)(&pself->instSQLEndTran) = dlsym(pself->handle, "SQLEndTran");
+#endif
+        if (!pself->instSQLEndTran) {
+            context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                     (RexxObjectPtr)context->String("Could not load symbol SQLEndTran from CLI library."));
+            return 0;  
+        }
+    }
+    // commit the transaction
+    SQLRETURN retc = (*pself->instSQLEndTran)(SQL_HANDLE_ENV, pself->henv, SQL_COMMIT);
+    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    
+    return 0;
+}
+
+/**
+ * Method:  OrxDB_rollback
+ *
+ * Roll back a database transaction.
+ *
+ * @return        Return code.
+ **/
+RexxMethod1(int,                       // Return type
+            OrxDB_rollback,            // Object_method name
+            CSELF, cself)
+{
+    dbself *pself = (dbself *)cself;
+
+    // if necessary, get the symbol(s)
+    if (pself->instSQLEndTran == SQL_NULL_HANDLE) {
+#if defined WIN32 || defined WIN64
+        pself->instSQLEndTran = GetProcAddress(pself->handle, "SQLEndTran");
+#else
+        *(void**)(&pself->instSQLEndTran) = dlsym(pself->handle, "SQLEndTran");
+#endif
+        if (!pself->instSQLEndTran) {
+            context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                     (RexxObjectPtr)context->String("Could not load symbol SQLEndTran from CLI library."));
+            return 0;  
+        }
+    }
+    // rollback the transaction
+    SQLRETURN retc = (*pself->instSQLEndTran)(SQL_HANDLE_ENV, pself->henv, SQL_ROLLBACK);
+    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+
+    return 0;
+}
+
+/**
+ * Method:  OrxDB_check_connx
+ *
+ * Is the database connection live?
+ *
+ * @return        Boolean return code.
+ **/
+RexxMethod1(logical_t,                 // Return type
+            OrxDB_check_connx,         // Object_method name
+            CSELF, cself)
+{
+    dbself *pself = (dbself *)cself;
+    
+    if (pself->hdbc == SQL_NULL_HANDLE) {
+        return 0;
+    }
+    return 1;
+}
 //
 // /**
 //  * Method:  OrxDB_prepare
@@ -581,38 +682,6 @@ RexxMethod2(RexxObjectPtr,             // Return type
 // }
 //
 // /**
-//  * Method:  OrxDB_commit
-//  *
-//  * Commit a database transaction.
-//  *
-//  * @return        Return code.
-//  **/
-// RexxMethod1(int,                       // Return type
-//             OrxDB_commit,              // Object_method name
-//             CSELF, cself)
-// {
-//     dbself *pself = (dbself *)cself;
-//     
-//     return 0;
-// }
-//
-// /**
-//  * Method:  OrxDB_rollback
-//  *
-//  * Roll back a database transaction.
-//  *
-//  * @return        Return code.
-//  **/
-// RexxMethod1(int,                       // Return type
-//             OrxDB_rollback,            // Object_method name
-//             CSELF, cself)
-// {
-//     dbself *pself = (dbself *)cself;
-//     
-//     return 0;
-// }
-//
-// /**
 //  * Method:  OrxDB_get_connx_attr
 //  *
 //  * Get an attribute.
@@ -651,22 +720,6 @@ RexxMethod2(RexxObjectPtr,             // Return type
 //     dbself *pself = (dbself *)cself;
 //     
 //     return 0;
-// }
-//
-// /**
-//  * Method:  OrxDB_check_liveness
-//  *
-//  * Is the database connection live?
-//  *
-//  * @return        Boolean return code.
-//  **/
-// RexxMethod1(logical_t,                 // Return type
-//             OrxDB_check_liveness,      // Object_method name
-//             CSELF, cself)
-// {
-//     dbself *pself = (dbself *)cself;
-//     
-//     return 1;
 // }
 //
 // /*----------------------------------------------------------------------------*/
@@ -825,6 +878,7 @@ RexxRoutineEntry orxsql_routines[] = {
 
 // build the actual method entry list
 RexxMethodEntry orxsql_methods[] = {
+    REXX_METHOD(OrxDB_version, OrxDB_version),
     REXX_METHOD(OrxDB_dbinit, OrxDB_dbinit),
     REXX_METHOD(OrxDB_set_env_attr, OrxDB_set_env_attr),
     REXX_METHOD(OrxDB_get_env_attr, OrxDB_get_env_attr),
@@ -832,6 +886,9 @@ RexxMethodEntry orxsql_methods[] = {
     REXX_METHOD(OrxDB_close, OrxDB_close),
     REXX_METHOD(OrxDB_set_connx_attr, OrxDB_set_connx_attr),
     REXX_METHOD(OrxDB_get_connx_attr, OrxDB_get_connx_attr),
+    REXX_METHOD(OrxDB_commit, OrxDB_commit),
+    REXX_METHOD(OrxDB_rollback, OrxDB_rollback),
+    REXX_METHOD(OrxDB_check_connx, OrxDB_check_connx),
 
 
     REXX_LAST_METHOD()

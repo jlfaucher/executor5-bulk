@@ -73,6 +73,10 @@
 ::method disconnect EXTERNAL "Library orxsql OrxDB_close"
 ::method get_connect_attr EXTERNAL "Library orxsql OrxDB_get_connx_attr"
 ::method set_connect_attr EXTERNAL "Library orxsql OrxDB_set_connx_attr"
+::method commit EXTERNAL "Library orxsql OrxDB_commit"
+::method rollback EXTERNAL "Library orxsql OrxDB_rollback"
+::method check_connection EXTERNAL "Library orxsql OrxDB_check_connx"
+::method version class EXTERNAL "Library orxsql OrxDB_version"
 
 
 
@@ -85,11 +89,6 @@
 --
 -- ::method prepare EXTERNAL "Library orxsql OrxDB_prepare"
 -- ::method execute EXTERNAL "Library orxsql OrxDB_dbexecute"
--- ::method begin EXTERNAL "Library orxsql OrxDB_begin"
--- ::method commit EXTERNAL "Library orxsql OrxDB_commit"
--- ::method rollback EXTERNAL "Library orxsql OrxDB_rollback"
--- ::method check_liveness EXTERNAL "Library orxsql OrxDB_check_liveness"
--- ::method version class EXTERNAL "Library orxsql OrxDB_version"
 --
 -- ::method init EXTERNAL "Library orxsql OrxDB_stmtinit"
 -- ::method destroy EXTERNAL "Library orxsql OrxDB_destroy"
