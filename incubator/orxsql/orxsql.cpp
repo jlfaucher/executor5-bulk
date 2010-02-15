@@ -77,7 +77,11 @@
 #define VERSTRING(major,minor,rel) #major "." #minor "." #rel
 
 typedef struct _dbself {
+#if defined WIN32 || defined WIN64
+    HMODULE handle;
+#else
     void *handle;
+#endif
     SQLHENV henv;
     SQLHDBC hdbc;
     SQLRETURN SQL_API (*instSQLAllocHandle)(SQLSMALLINT HandleType,
@@ -149,7 +153,11 @@ RexxMethod1(int,                       // Return type
     // allocate the sql environment if not already allocated
     if (pself->henv == SQL_NULL_HANDLE) {
         // if necessary, load the library
+#if defined WIN32 || defined WIN64
+        pself->handle = LoadLibrary(libname);
+#else
         pself->handle = dlopen(libname, RTLD_LAZY);
+#endif
         if (!pself->handle) {
             context->RaiseException1(Rexx_Error_System_resources_user_defined,
                                      (RexxObjectPtr)context->String("Could not load CLI library."));
@@ -157,7 +165,11 @@ RexxMethod1(int,                       // Return type
         }
         // if necessary, get the symbol(s)
         if (pself->instSQLAllocHandle == SQL_NULL_HANDLE) {
+#if defined WIN32 || defined WIN64
+            pself->instSQLAllocHandle = GetProcAddress(pself->handle, "SQLAllocHandle");
+#else
             *(void**)(&pself->instSQLAllocHandle) = dlsym(pself->handle, "SQLAllocHandle");
+#endif
             if (!pself->instSQLAllocHandle) {
                 context->RaiseException1(Rexx_Error_System_resources_user_defined,
                                          (RexxObjectPtr)context->String("Could not load symbol SQLAllocHandle from CLI library."));
@@ -195,7 +207,11 @@ RexxMethod3(int,                       // Return type
 
     // if necessary, get the symbol(s)
     if (pself->instSQLSetEnvAttr == SQL_NULL_HANDLE) {
+#if defined WIN32 || defined WIN64
+        pself->instSQLSetEnvAttr = GetProcAddress(pself->handle, "SQLSetEnvAttr");
+#else
         *(void**)(&pself->instSQLSetEnvAttr) = dlsym(pself->handle, "SQLSetEnvAttr");
+#endif
         if (!pself->instSQLSetEnvAttr) {
             context->RaiseException1(Rexx_Error_System_resources_user_defined,
                                      (RexxObjectPtr)context->String("Could not load symbol SQLSetEnvAttr from CLI library."));
@@ -249,7 +265,11 @@ RexxMethod2(RexxObjectPtr,             // Return type
 
     // if necessary, get the symbol(s)
     if (pself->instSQLGetEnvAttr == SQL_NULL_HANDLE) {
+#if defined WIN32 || defined WIN64
+        pself->instSQLGetEnvAttr = GetProcAddress(pself->handle, "SQLGetEnvAttr");
+#else
         *(void**)(&pself->instSQLGetEnvAttr) = dlsym(pself->handle, "SQLGetEnvAttr");
+#endif
         if (!pself->instSQLGetEnvAttr) {
             context->RaiseException1(Rexx_Error_System_resources_user_defined,
                                      (RexxObjectPtr)context->String("Could not load symbol SQLGetEnvAttr from CLI library."));
@@ -304,11 +324,15 @@ RexxMethod4(int,                       // Return type
     
     if (pself->hdbc == SQL_NULL_HANDLE) {
         // if necessary, get the symbol(s)
-        if (pself->instSQLGetEnvAttr == SQL_NULL_HANDLE) {
-            *(void**)(&pself->instSQLGetEnvAttr) = dlsym(pself->handle, "SQLGetEnvAttr");
-            if (!pself->instSQLGetEnvAttr) {
+        if (pself->instSQLConnect == SQL_NULL_HANDLE) {
+#if defined WIN32 || defined WIN64
+            pself->instSQLConnect = GetProcAddress(pself->handle, "SQLConnect");
+#else
+            *(void**)(&pself->instSQLConnect) = dlsym(pself->handle, "SQLConnect");
+#endif
+            if (!pself->instSQLConnect) {
                 context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                         (RexxObjectPtr)context->String("Could not load symbol SQLGetEnvAttr from CLI library."));
+                                         (RexxObjectPtr)context->String("Could not load symbol SQLConnect from CLI library."));
                 return 0;  
             }
         }
@@ -337,7 +361,11 @@ RexxMethod1(int,                       // Return type
     
     // if necessary, get the symbol(s)
     if (pself->instSQLDisconnect == SQL_NULL_HANDLE) {
+#if defined WIN32 || defined WIN64
+        pself->instSQLDisconnect = GetProcAddress(pself->handle, "SQLDisconnect");
+#else
         *(void**)(&pself->instSQLDisconnect) = dlsym(pself->handle, "SQLDisconnect");
+#endif
         if (!pself->instSQLDisconnect) {
             context->RaiseException1(Rexx_Error_System_resources_user_defined,
                                      (RexxObjectPtr)context->String("Could not load symbol SQLDisconnect from CLI library."));
@@ -375,7 +403,11 @@ RexxMethod3(int,                       // Return type
 
     // if necessary, get the symbol(s)
     if (pself->instSQLSetConnectAttr == SQL_NULL_HANDLE) {
+#if defined WIN32 || defined WIN64
+        pself->instSQLSetConnectAttr = GetProcAddress(pself->handle, "SQLSetConnectAttr");
+#else
         *(void**)(&pself->instSQLSetConnectAttr) = dlsym(pself->handle, "SQLSetConnectAttr");
+#endif
         if (!pself->instSQLSetConnectAttr) {
             context->RaiseException1(Rexx_Error_System_resources_user_defined,
                                      (RexxObjectPtr)context->String("Could not load symbol SQLSetConnectAttr from CLI library."));
@@ -441,7 +473,11 @@ RexxMethod2(RexxObjectPtr,             // Return type
 
     // if necessary, get the symbol(s)
     if (pself->instSQLGetConnectAttr == SQL_NULL_HANDLE) {
+#if defined WIN32 || defined WIN64
+        pself->instSQLGetConnectAttr = GetProcAddress(pself->handle, "SQLGetConnectAttr");
+#else
         *(void**)(&pself->instSQLGetConnectAttr) = dlsym(pself->handle, "SQLGetConnectAttr");
+#endif
         if (!pself->instSQLGetConnectAttr) {
             context->RaiseException1(Rexx_Error_System_resources_user_defined,
                                      (RexxObjectPtr)context->String("Could not load symbol SQLGetConnectAttr from CLI library."));
