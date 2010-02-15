@@ -1028,7 +1028,7 @@ RexxMethod0(int,                       // Return type
 /**
  * Method:  OrxCurCopywin
  *
- * Copy a rectangle from one window to another.
+ * Copy a rectangle from one window to self.
  *
  * @param swin    Source window.
  *
@@ -1582,6 +1582,8 @@ RexxMethod1(RexxObjectPtr,             // Return type
  *
  * Get a string from the terminal.
  *
+ * @param n       Number of characters to get.
+ *
  * @return        Zero.
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
@@ -1608,6 +1610,10 @@ RexxMethod2(RexxObjectPtr,             // Return type
  *
  * Get a string from the terminal after moving the cursor.
  *
+ * @param y       New Y positions for the cursor.
+ *
+ * @param x       New X positions for the cursor.
+ *
  * @return        Zero.
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
@@ -1632,6 +1638,12 @@ RexxMethod3(RexxObjectPtr,             // Return type
  * Method:  OrxCurGetnstr
  *
  * Get a string from the terminal after moving the cursor.
+ *
+ * @param y       New Y positions for the cursor.
+ *
+ * @param x       New X positions for the cursor.
+ *
+ * @param n       Number of characters to get.
  *
  * @return        Zero.
  **/
@@ -1660,6 +1672,8 @@ RexxMethod4(RexxObjectPtr,             // Return type
  * Method:  OrxCurGetwinprivate
  *
  * Create a new window from a file.
+ *
+ * @param filename File name containing the window information.
  *
  * @return        Zero.
  **/
@@ -1897,6 +1911,12 @@ RexxMethod3(int,                  // Return type
             int, x)
 {
 
+    if (cself == NULL) {
+        context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
+                                 context->WholeNumberToObject(1),
+                                 context->NewStringFromAsciiz("Window"));
+        return 0;
+    }
     return (int)mvwinch((WINDOW *)cself, SUBTRACTONE(y), SUBTRACTONE(x));
 }
 
@@ -2055,7 +2075,7 @@ RexxMethod4(int,                       // Return type
  *
  * Assign foreground an background colors to a color pair.
  *
- * @param c       Color pair number to change.
+ * @param c       COLOR_PAIR number to change.
  *
  * @param f       Foreground color.
  *
@@ -2155,7 +2175,7 @@ RexxMethod2(int,                       // Return type
 /**
  * Method:  OrxCurInsertln
  *
- * Insert/delete lines.
+ * Insert one line.
  *
  * @return        Zero.
  **/
@@ -2176,7 +2196,7 @@ RexxMethod1(int,                       // Return type
 /**
  * Method:  OrxCurInsstr
  *
- * Insert/delete a string.
+ * Insert a string.
  *
  * @param str     String to insert.
  *
@@ -2200,7 +2220,7 @@ RexxMethod2(int,                       // Return type
 /**
  * Method:  OrxCurInsnstr
  *
- * Insert/delete a string.
+ * Insert a string.
  *
  * @param str     String to insert.
  *
@@ -2227,7 +2247,7 @@ RexxMethod3(int,                       // Return type
 /**
  * Method:  OrxCurMvinsstr
  *
- * Insert/delete a string after moving the cursor.
+ * Insert a string after moving the cursor.
  *
  * @param y       New cursor y position.
  *
@@ -2257,7 +2277,7 @@ RexxMethod4(int,                       // Return type
 /**
  * Method:  OrxCurInsnstr
  *
- * Insert/delete a string.
+ * Insert a string.
  *
  * @param y       New cursor y position.
  *
@@ -2856,7 +2876,7 @@ RexxMethod0(int,                       // Return type
 /**
  * Method:  OrxCurNonl
  *
- * Do no distinguish between cr and lf.
+ * Do not distinguish between cr and lf.
  *
  * @return        Zero.
  **/
@@ -3221,7 +3241,7 @@ RexxMethod1(int,                       // Return type
  *
  * Dump the terminal screen to a file.
  *
- * @param fname   File name.
+ * @param fname   Output file name.
  *
  * @return        Zero.
  **/
@@ -3238,7 +3258,7 @@ RexxMethod1(int,                       // Return type
  *
  * Restore the terminal screen drom a file.
  *
- * @param fname   File name.
+ * @param fname   Input file name.
  *
  * @return        Zero.
  **/
