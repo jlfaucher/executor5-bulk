@@ -108,9 +108,14 @@ typedef struct _dbself {
                                                SQLINTEGER *StringLength);
     SQLRETURN SQL_API (*instSQLEndTran)(SQLSMALLINT HandleType, SQLHANDLE Handle,
                                         SQLSMALLINT CompletionType);
+    SQLRETURN SQL_API (*instSQLFreeHandle)(SQLSMALLINT HandleType, SQLHANDLE Handle);
+    SQLRETURN SQL_API (*instSQLGetInfo)(SQLHDBC ConnectionHandle, SQLUSMALLINT InfoType,
+                                        SQLPOINTER InfoValue, SQLSMALLINT BufferLength,
+                                        SQLSMALLINT *StringLength);
 } dbself;
 
 typedef struct _stmtself {
+    dbself *pdbself;
     SQLHSTMT hstmt;
 } stmtself;
 
@@ -133,6 +138,26 @@ typedef struct _stmtself {
 /*============================================================================*/
 /* Public Methods                                                             */
 /*============================================================================*/
+
+/**
+ * Method:  OrxDB_isbitset
+ *
+ * Return true if a bit is set.
+ *
+ * @param field   Field value to test.
+ *
+ * @param bit     The bit to test.
+ *
+ * @return        Zero.
+ **/
+RexxMethod2(logical_t,                 // Return type
+            OrxDB_isbitset,            // Object_method name
+            uint32_t, field,
+            uint32_t, bit)
+{
+
+    return (field | bit);
+}
 
 /**
  * Method:  OrxDB_version
@@ -301,14 +326,12 @@ RexxMethod2(RexxObjectPtr,             // Return type
         retc = (*pself->instSQLGetEnvAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)&itmp, 0, 0);
         context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
         return context->Int32(itmp);
-        break;
 #if defined WIN32 || defined WIN64
     case SQL_ATTR_CONNECTION_POOLING:
     case SQL_ATTR_CP_MATCH:
         retc = (*pself->instSQLGetEnvAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0, 0);
         context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
         return context->UnsignedInt32(utmp);
-        break;
 #endif
     default:
         context->RaiseException1(Rexx_Error_Invalid_argument_general,
@@ -508,7 +531,6 @@ RexxMethod2(RexxObjectPtr,             // Return type
         retc = (*pself->instSQLGetConnectAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)ctmp, 0, 0);
         context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
         return context->String(ctmp);
-        break;
     case SQL_ATTR_ACCESS_MODE:
 #if defined WIN32 || defined WIN64
     case SQL_ATTR_ASYNC_DBC_FUNCTIONS_ENABLE:
@@ -529,7 +551,6 @@ RexxMethod2(RexxObjectPtr,             // Return type
         retc = (*pself->instSQLGetConnectAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0, 0);
         context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
         return context->UnsignedInt32(utmp);
-        break;
     default:
         context->RaiseException1(Rexx_Error_Invalid_argument_general,
                                  (RexxObjectPtr)context->String("1 invalid."));
@@ -623,141 +644,339 @@ RexxMethod1(logical_t,                 // Return type
     }
     return 1;
 }
-//
-// /**
-//  * Method:  OrxDB_prepare
-//  *
-//  * Prepare an SQL statement for execution.
-//  *
-//  * @param sql     SQL statement to be prepared.
-//  *
-//  * @param options Options string.
-//  *
-//  * @return        Instance of the Statement class.
-//  **/
-// RexxMethod3(RexxObjectPtr,             // Return type
-//             OrxDB_prepare,             // Object_method name
-//             CSTRING, sql,
-//             CSTRING, options,
-//             CSELF, cself)
-// {
-//     dbself *pself = (dbself *)cself;
-//
-//     return context->Nil();
-// }
-//
-// /**
-//  * Method:  OrxDB_dbexecute
-//  *
-//  * Execute a raw SQL statemwnt.
-//  *
-//  * @param sql     SQL statement to be executed.
-//  *
-//  * @return        Return code.
-//  **/
-// RexxMethod2(int,                       // Return type
-//             OrxDB_dbexecute,           // Object_method name
-//             CSTRING, sql,
-//             CSELF, cself)
-// {
-//     dbself *pself = (dbself *)cself;
-//     
-//     return 0;
-// }
-//
-// /**
-//  * Method:  OrxDB_begin
-//  *
-//  * Begin a database transaction.
-//  *
-//  * @return        Return code.
-//  **/
-// RexxMethod1(int,                       // Return type
-//             OrxDB_begin,               // Object_method name
-//             CSELF, cself)
-// {
-//     dbself *pself = (dbself *)cself;
-//     
-//     return 0;
-// }
-//
-// /**
-//  * Method:  OrxDB_get_connx_attr
-//  *
-//  * Get an attribute.
-//  *
-//  * @param attr    Attribute name.
-//  *
-//  * @return        Attribute value.
-//  **/
-// RexxMethod2(RexxObjectPtr,             // Return type
-//             OrxDB_get_connx_attr,      // Object_method name
-//             int, attr,
-//             CSELF, cself)
-// {
-//     dbself *pself = (dbself *)cself;
-//
-//     return (RexxObjectPtr)context->String("");
-// }
-//
-// /**
-//  * Method:  OrxDB_set_connx_attr
-//  *
-//  * Set an attribute.
-//  *
-//  * @param attr    Attribute name.
-//  *
-//  * @param val     Attribute value.
-//  *
-//  * @return        Return code.
-//  **/
-// RexxMethod3(int,                       // Return type
-//             OrxDB_set_connx_attr,      // Object_method name
-//             CSTRING, attr,
-//             RexxObjectPtr, val,
-//             CSELF, cself)
-// {
-//     dbself *pself = (dbself *)cself;
-//     
-//     return 0;
-// }
-//
-// /*----------------------------------------------------------------------------*/
-// /* Statement class methods                                                    */
-// /*----------------------------------------------------------------------------*/
-//
-// /**
-//  * Method:  OrxDB_stmtinit
-//  *
-//  * Init the statement class.
-//  *
-//  * @return        Zero.
-//  **/
-// RexxMethod0(int,                       // Return type
-//             OrxDB_stmtinit)            // Object_method name
-// {
-//     stmtself *pstmtself;
-//     
-//     return 0;
-// }
-//
-// /**
-//  * Method:  OrxDB_destroy
-//  *
-//  * Destroy a statement instance.
-//  *
-//  * @return        Return code.
-//  **/
-// RexxMethod1(int,                       // Return type
-//             OrxDB_destroy,             // Object_method name
-//             CSELF, cself)
-// {
-//     
-//     if (cself != NULL) {
-//         free(cself);
-//     }
-//     return 0;
-// }
+
+/**
+ * Method:  OrxDB_destroy
+ *
+ * Destroy a database instance.
+ *
+ * @return        Return code.
+ **/
+RexxMethod1(int,                       // Return type
+            OrxDB_destroy,             // Object_method name
+            CSELF, cself)
+{
+    dbself *pself = (dbself *)cself;
+    
+    // if necessary, get the symbol(s)
+    if (pself->instSQLFreeHandle == SQL_NULL_HANDLE) {
+#if defined WIN32 || defined WIN64
+        pself->instSQLFreeHandle = GetProcAddress(pself->handle, "SQLFreeHandle");
+#else
+        *(void**)(&pself->instSQLFreeHandle) = dlsym(pself->handle, "SQLFreeHandle");
+#endif
+        if (!pself->instSQLFreeHandle) {
+            context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                     (RexxObjectPtr)context->String("Could not load symbol SQLFreeHandle from CLI library."));
+            return 0;  
+        }
+    }
+    if (pself->hdbc != NULL) {
+        SQLRETURN retc = (*pself->instSQLFreeHandle)(SQL_HANDLE_DBC, &pself->hdbc);
+    }
+    if (pself->henv != NULL) {
+        SQLRETURN retc = (*pself->instSQLFreeHandle)(SQL_HANDLE_ENV, &pself->henv);
+    }
+    if (pself != NULL) {
+        free(pself);
+    }
+    return 0;
+}
+
+/**
+ * Method:  OrxDB_get_info
+ *
+ * Get information.
+ *
+ * @param attr    Attribute name.
+ *
+ * @return        Attribute value.
+ **/
+RexxMethod2(RexxObjectPtr,             // Return type
+            OrxDB_get_info,            // Object_method name
+            int, attr,
+            CSELF, cself)
+{
+    dbself *pself = (dbself *)cself;
+    SQLRETURN retc;
+    char ctmp[1024];
+    SQLSMALLINT buflen;
+    SQLUSMALLINT u16tmp;
+    SQLUINTEGER u32tmp;
+
+    // if necessary, get the symbol(s)
+    if (pself->instSQLGetInfo == SQL_NULL_HANDLE) {
+#if defined WIN32 || defined WIN64
+        pself->instSQLGetInfo = GetProcAddress(pself->handle, "SQLGetInfo");
+#else
+        *(void**)(&pself->instSQLGetInfo) = dlsym(pself->handle, "SQLGetInfo");
+#endif
+        *(void**)(&pself->instSQLGetInfo) = dlsym(pself->handle, "SQLGetInfo");
+        if (!pself->instSQLGetInfo) {
+            context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                     (RexxObjectPtr)context->String("Could not load symbol SQLGetInfo from CLI library."));
+            return 0;  
+        }
+    }
+    //
+    switch (attr) {
+    case SQL_ACCESSIBLE_PROCEDURES:
+    case SQL_ACCESSIBLE_TABLES:
+    case SQL_CATALOG_NAME:
+    case SQL_CATALOG_NAME_SEPARATOR:
+    case SQL_CATALOG_TERM:
+    case SQL_COLLATION_SEQ:
+    case SQL_COLUMN_ALIAS:
+    case SQL_DATA_SOURCE_NAME:
+    case SQL_DATA_SOURCE_READ_ONLY:
+    case SQL_DATABASE_NAME:
+    case SQL_DBMS_NAME:
+    case SQL_DBMS_VER:
+    case SQL_DESCRIBE_PARAMETER:
+    case SQL_DM_VER:
+    case SQL_DRIVER_NAME:
+    case SQL_DRIVER_ODBC_VER:
+    case SQL_DRIVER_VER:
+    case SQL_EXPRESSIONS_IN_ORDERBY:
+    case SQL_IDENTIFIER_QUOTE_CHAR:
+    case SQL_INTEGRITY:
+    case SQL_KEYWORDS:
+    case SQL_LIKE_ESCAPE_CLAUSE:
+    case SQL_MAX_ROW_SIZE_INCLUDES_LONG:
+    case SQL_MULT_RESULT_SETS:
+    case SQL_MULTIPLE_ACTIVE_TXN:
+    case SQL_NEED_LONG_DATA_LEN:
+    case SQL_ODBC_VER:
+    case SQL_ORDER_BY_COLUMNS_IN_SELECT:
+    case SQL_PROCEDURE_TERM:
+    case SQL_PROCEDURES:
+    case SQL_ROW_UPDATES:
+    case SQL_SCHEMA_TERM:
+    case SQL_SEARCH_PATTERN_ESCAPE:
+    case SQL_SERVER_NAME:
+    case SQL_SPECIAL_CHARACTERS:
+    case SQL_TABLE_TERM:
+    case SQL_USER_NAME:
+    case SQL_XOPEN_CLI_YEAR:
+        retc = (*pself->instSQLGetInfo)(pself->hdbc, (SQLUSMALLINT)attr, (SQLPOINTER)ctmp, sizeof(ctmp), &buflen);
+        context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+        return context->String(ctmp, (size_t)buflen);
+    case SQL_ACTIVE_ENVIRONMENTS:
+    case SQL_CATALOG_LOCATION:
+    case SQL_CONCAT_NULL_BEHAVIOR:
+    case SQL_CORRELATION_NAME:
+    case SQL_CURSOR_COMMIT_BEHAVIOR:
+    case SQL_CURSOR_ROLLBACK_BEHAVIOR:
+    case SQL_FILE_USAGE:
+    case SQL_GROUP_BY:
+    case SQL_IDENTIFIER_CASE:
+    case SQL_MAX_CATALOG_NAME_LEN:
+    case SQL_MAX_COLUMN_NAME_LEN:
+    case SQL_MAX_COLUMNS_IN_GROUP_BY:
+    case SQL_MAX_COLUMNS_IN_INDEX:
+    case SQL_MAX_COLUMNS_IN_ORDER_BY:
+    case SQL_MAX_COLUMNS_IN_SELECT:
+    case SQL_MAX_CONCURRENT_ACTIVITIES:
+    case SQL_MAX_CURSOR_NAME_LEN:
+    case SQL_MAX_DRIVER_CONNECTIONS:
+    case SQL_MAX_IDENTIFIER_LEN:
+    case SQL_MAX_PROCEDURE_NAME_LEN:
+    case SQL_MAX_SCHEMA_NAME_LEN:
+    case SQL_MAX_TABLE_NAME_LEN:
+    case SQL_MAX_TABLES_IN_SELECT:
+    case SQL_MAX_USER_NAME_LEN:
+    case SQL_NON_NULLABLE_COLUMNS:
+    case SQL_NULL_COLLATION:
+    case SQL_QUOTED_IDENTIFIER_CASE:
+    case SQL_TXN_CAPABLE:
+        retc = (*pself->instSQLGetInfo)(pself->hdbc, (SQLINTEGER)attr, (SQLPOINTER)&u16tmp, 0, NULL);
+        context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+        return context->UnsignedInt32((uint32_t)u16tmp);
+#if defined WIN32 || defined WIN64
+    case SQL_ASYNC_DBC_FUNCTIONS:
+    case SQL_DRIVER_HDBCSQL_DRIVER_HENV:
+#endif
+    case SQL_AGGREGATE_FUNCTIONS:
+    case SQL_ALTER_DOMAIN:
+    case SQL_ALTER_TABLE:
+    case SQL_ASYNC_MODE:
+    case SQL_BATCH_ROW_COUNT:
+    case SQL_BATCH_SUPPORT:
+    case SQL_BOOKMARK_PERSISTENCE:
+    case SQL_CATALOG_USAGE:
+    case SQL_CONVERT_BIGINT:
+    case SQL_CONVERT_BINARY:
+    case SQL_CONVERT_BIT:
+    case SQL_CONVERT_CHAR:
+    case SQL_CONVERT_DATE:
+    case SQL_CONVERT_DECIMAL:
+    case SQL_CONVERT_DOUBLE:
+    case SQL_CONVERT_FLOAT:
+    case SQL_CONVERT_INTEGER:
+    case SQL_CONVERT_LONGVARCHAR:
+    case SQL_CONVERT_NUMERIC:
+    case SQL_CONVERT_REAL:
+    case SQL_CONVERT_SMALLINT:
+    case SQL_CONVERT_TIME:
+    case SQL_CONVERT_TIMESTAMP:
+    case SQL_CONVERT_TINYINT:
+    case SQL_CONVERT_VARBINARY:
+    case SQL_CONVERT_VARCHAR:
+    case SQL_CONVERT_LONGVARBINARY:
+    case SQL_CONVERT_GUID:
+    case SQL_CONVERT_FUNCTIONS:
+    case SQL_CREATE_ASSERTION:
+    case SQL_CREATE_CHARACTER_SET:
+    case SQL_CREATE_COLLATION:
+    case SQL_CREATE_DOMAIN:
+    case SQL_CREATE_SCHEMA:
+    case SQL_CREATE_TABLE:
+    case SQL_CREATE_TRANSLATION:
+    case SQL_CREATE_VIEW:
+    case SQL_CURSOR_SENSITIVITY:
+    case SQL_DATETIME_LITERALS:
+    case SQL_DDL_INDEX:
+    case SQL_DEFAULT_TXN_ISOLATION:
+    case SQL_DRIVER_HDESC:
+    case SQL_DRIVER_HLIB:
+    case SQL_DRIVER_HSTMT:
+    case SQL_DROP_ASSERTION:
+    case SQL_DROP_CHARACTER_SET:
+    case SQL_DROP_COLLATION:
+    case SQL_DROP_DOMAIN:
+    case SQL_DROP_SCHEMA:
+    case SQL_DROP_TABLE:
+    case SQL_DROP_TRANSLATION:
+    case SQL_DROP_VIEW:
+    case SQL_DYNAMIC_CURSOR_ATTRIBUTES1:
+    case SQL_DYNAMIC_CURSOR_ATTRIBUTES2:
+    case SQL_FORWARD_ONLY_CURSOR_ATTRIBUTES1:
+    case SQL_FORWARD_ONLY_CURSOR_ATTRIBUTES2:
+    case SQL_GETDATA_EXTENSIONS:
+    case SQL_INDEX_KEYWORDS:
+    case SQL_INFO_SCHEMA_VIEWS:
+    case SQL_INSERT_STATEMENT:
+    case SQL_KEYSET_CURSOR_ATTRIBUTES1:
+    case SQL_KEYSET_CURSOR_ATTRIBUTES2:
+    case SQL_MAX_ASYNC_CONCURRENT_STATEMENTS:
+    case SQL_MAX_BINARY_LITERAL_LEN:
+    case SQL_MAX_CHAR_LITERAL_LEN:
+    case SQL_MAX_INDEX_SIZE:
+    case SQL_MAX_ROW_SIZE:
+    case SQL_MAX_STATEMENT_LEN:
+    case SQL_NUMERIC_FUNCTIONS:
+    case SQL_ODBC_INTERFACE_CONFORMANCE:
+    case SQL_OJ_CAPABILITIES:
+    case SQL_PARAM_ARRAY_ROW_COUNTS:
+    case SQL_PARAM_ARRAY_SELECTS:
+    case SQL_POS_OPERATIONS:
+    case SQL_SCHEMA_USAGE:
+    case SQL_SCROLL_OPTIONS:
+    case SQL_SQL_CONFORMANCE:
+    case SQL_SQL92_DATETIME_FUNCTIONS:
+    case SQL_SQL92_FOREIGN_KEY_DELETE_RULE:
+    case SQL_SQL92_FOREIGN_KEY_UPDATE_RULE:
+    case SQL_SQL92_GRANT:
+    case SQL_SQL92_NUMERIC_VALUE_FUNCTIONS:
+    case SQL_SQL92_PREDICATES:
+    case SQL_SQL92_RELATIONAL_JOIN_OPERATORS:
+    case SQL_SQL92_REVOKE:
+    case SQL_SQL92_ROW_VALUE_CONSTRUCTOR:
+    case SQL_SQL92_STRING_FUNCTIONS:
+    case SQL_SQL92_VALUE_EXPRESSIONS:
+    case SQL_STANDARD_CLI_CONFORMANCE:
+    case SQL_STATIC_CURSOR_ATTRIBUTES1:
+    case SQL_STATIC_CURSOR_ATTRIBUTES2:
+    case SQL_STRING_FUNCTIONS:
+    case SQL_SUBQUERIES:
+    case SQL_SYSTEM_FUNCTIONS:
+    case SQL_TIMEDATE_ADD_INTERVALS:
+    case SQL_TIMEDATE_DIFF_INTERVALS:
+    case SQL_TIMEDATE_FUNCTIONS:
+    case SQL_TXN_ISOLATION_OPTION:
+    case SQL_UNION:
+        retc = (*pself->instSQLGetInfo)(pself->hdbc, (SQLINTEGER)attr, (SQLPOINTER)&u32tmp, 0, NULL);
+        context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+        return context->UnsignedInt32(u32tmp);
+    default:
+        context->RaiseException1(Rexx_Error_Invalid_argument_general,
+                                 (RexxObjectPtr)context->String("1 invalid."));
+        return 0;  
+    }
+
+    return (RexxObjectPtr)context->Nil();
+}
+
+/*----------------------------------------------------------------------------*/
+/* Statement class methods                                                    */
+/*----------------------------------------------------------------------------*/
+
+/**
+ * Method:  OrxDB_stmtinit
+ *
+ * Init the statement class.
+ *
+ * @param db      Database connection object.
+ *
+ * @return        Zero.
+ **/
+RexxMethod1(int,                       // Return type
+            OrxDB_stmtinit,            // Object_method name
+            RexxObjectPtr, db)
+{
+    stmtself *pself;
+
+    // allocate memory for our self data
+    pself = (stmtself *)malloc(sizeof(stmtself));
+    memset(pself, 0, sizeof(stmtself));
+    context->SetObjectVariable("CSELF", context->NewPointer(pself));
+
+    // get the database connction pointer
+    pself->pdbself = (dbself *)context->ObjectToCSelf(db);
+    
+    // allocate a statement handle
+    SQLRETURN retc = (*pself->pdbself->instSQLAllocHandle)(SQL_HANDLE_STMT,
+                                                           pself->pdbself->hdbc,
+                                                           &pself->hstmt);
+    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    
+    return 0;
+}
+
+/**
+ * Method:  OrxDB_stmtdestroy
+ *
+ * Destroy a statement instance.
+ *
+ * @return        Return code.
+ **/
+RexxMethod1(int,                       // Return type
+            OrxDB_stmtdestroy,         // Object_method name
+            CSELF, cself)
+{
+    stmtself *pself = (stmtself *)cself;
+    
+    // if necessary, get the symbol(s)
+    if (pself->pdbself->instSQLFreeHandle == SQL_NULL_HANDLE) {
+#if defined WIN32 || defined WIN64
+        pself->pdbself->instSQLFreeHandle = GetProcAddress(pself->pdbself->handle, "SQLFreeHandle");
+#else
+        *(void**)(&pself->pdbself->instSQLFreeHandle) = dlsym(pself->pdbself->handle, "SQLFreeHandle");
+#endif
+        if (!pself->pdbself->instSQLFreeHandle) {
+            context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                     (RexxObjectPtr)context->String("Could not load symbol SQLFreeHandle from CLI library."));
+            return 0;  
+        }
+    }
+    if (pself->hstmt != NULL) {
+        SQLRETURN retc = (*pself->pdbself->instSQLFreeHandle)(SQL_HANDLE_STMT, &pself->hstmt);
+    }
+    if (pself != NULL) {
+        free(pself);
+    }
+    return 0;
+}
 //
 // /**
 //  * Method:  OrxDB_stmtexecute
@@ -869,6 +1088,47 @@ RexxMethod1(logical_t,                 // Return type
 //     
 //     return 0;
 // }
+//
+// /**
+//  * Method:  OrxDB_prepare
+//  *
+//  * Prepare an SQL statement for execution.
+//  *
+//  * @param sql     SQL statement to be prepared.
+//  *
+//  * @param options Options string.
+//  *
+//  * @return        Instance of the Statement class.
+//  **/
+// RexxMethod3(RexxObjectPtr,             // Return type
+//             OrxDB_prepare,             // Object_method name
+//             CSTRING, sql,
+//             CSTRING, options,
+//             CSELF, cself)
+// {
+//     dbself *pself = (dbself *)cself;
+//
+//     return context->Nil();
+// }
+//
+// /**
+//  * Method:  OrxDB_dbexecute
+//  *
+//  * Execute a raw SQL statemwnt.
+//  *
+//  * @param sql     SQL statement to be executed.
+//  *
+//  * @return        Return code.
+//  **/
+// RexxMethod2(int,                       // Return type
+//             OrxDB_dbexecute,           // Object_method name
+//             CSTRING, sql,
+//             CSELF, cself)
+// {
+//     dbself *pself = (dbself *)cself;
+//     
+//     return 0;
+// }
 
 // build the actual function entry list
 RexxRoutineEntry orxsql_routines[] = {
@@ -878,6 +1138,7 @@ RexxRoutineEntry orxsql_routines[] = {
 
 // build the actual method entry list
 RexxMethodEntry orxsql_methods[] = {
+    REXX_METHOD(OrxDB_isbitset, OrxDB_isbitset),
     REXX_METHOD(OrxDB_version, OrxDB_version),
     REXX_METHOD(OrxDB_dbinit, OrxDB_dbinit),
     REXX_METHOD(OrxDB_set_env_attr, OrxDB_set_env_attr),
@@ -889,6 +1150,10 @@ RexxMethodEntry orxsql_methods[] = {
     REXX_METHOD(OrxDB_commit, OrxDB_commit),
     REXX_METHOD(OrxDB_rollback, OrxDB_rollback),
     REXX_METHOD(OrxDB_check_connx, OrxDB_check_connx),
+    REXX_METHOD(OrxDB_destroy, OrxDB_destroy),
+    REXX_METHOD(OrxDB_get_info, OrxDB_get_info),
+    REXX_METHOD(OrxDB_stmtinit, OrxDB_stmtinit),
+    REXX_METHOD(OrxDB_stmtdestroy, OrxDB_stmtdestroy),
 
 
     REXX_LAST_METHOD()

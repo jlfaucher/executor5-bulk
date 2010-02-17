@@ -3,7 +3,7 @@
 
 This is a VERY preliminary library to support SQL CLI access from ooRexx. Nothing
 you see here should be taken as the final design as most of it will probably
-change as the design become more complete.
+change as the design becomes more complete.
 
 The C++ code in this file conforms to the ISO/IEC 9075-3: "SQL Call-Level
 Interface" and the ODBC V3.5 updates. Any database or driver that supplies a CLI
