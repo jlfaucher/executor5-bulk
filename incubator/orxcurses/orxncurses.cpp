@@ -2463,7 +2463,7 @@ RexxMethod2(logical_t,                 // Return type
             int, bit)
 {
 
-    return (field | bit);
+    return (field & bit);
 }
 
 /**

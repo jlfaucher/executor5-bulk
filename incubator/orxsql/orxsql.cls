@@ -621,15 +621,15 @@
 ::attribute SQLRETURN
 
 ::method init EXTERNAL "Library orxsql OrxDB_dbinit"
-::method getenvattr EXTERNAL "Library orxsql OrxDB_get_env_attr"
-::method setenvattr EXTERNAL "Library orxsql OrxDB_set_env_attr"
+::method get_env_attr EXTERNAL "Library orxsql OrxDB_get_env_attr"
+::method set_env_attr EXTERNAL "Library orxsql OrxDB_set_env_attr"
 ::method connect EXTERNAL "Library orxsql OrxDB_connect"
 ::method disconnect EXTERNAL "Library orxsql OrxDB_close"
 ::method get_connect_attr EXTERNAL "Library orxsql OrxDB_get_connx_attr"
 ::method set_connect_attr EXTERNAL "Library orxsql OrxDB_set_connx_attr"
 ::method commit EXTERNAL "Library orxsql OrxDB_commit"
 ::method rollback EXTERNAL "Library orxsql OrxDB_rollback"
-::method check_connection EXTERNAL "Library orxsql OrxDB_check_connx"
+::method isConnected EXTERNAL "Library orxsql OrxDB_check_connx"
 ::method get_info EXTERNAL "Library orxsql OrxDB_get_info"
 ::method destroy EXTERNAL "Library orxsql OrxDB_destroy"
 ::method version class EXTERNAL "Library orxsql OrxDB_version"

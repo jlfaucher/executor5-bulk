@@ -156,7 +156,7 @@ RexxMethod2(logical_t,                 // Return type
             uint32_t, bit)
 {
 
-    return (field | bit);
+    return (field & bit);
 }
 
 /**
@@ -277,7 +277,7 @@ RexxMethod3(int,                       // Return type
 #endif
     default:
         context->RaiseException1(Rexx_Error_Invalid_argument_general,
-                                 (RexxObjectPtr)context->String("1 invalid."));
+                                 (RexxObjectPtr)context->String("1 unsupported."));
         return 0;  
     }
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
@@ -335,7 +335,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
 #endif
     default:
         context->RaiseException1(Rexx_Error_Invalid_argument_general,
-                                 (RexxObjectPtr)context->String("1 invalid."));
+                                 (RexxObjectPtr)context->String("1 unsupported."));
         return 0;  
     }
 
@@ -483,7 +483,7 @@ RexxMethod3(int,                       // Return type
         break;
     default:
         context->RaiseException1(Rexx_Error_Invalid_argument_general,
-                                 (RexxObjectPtr)context->String("1 invalid."));
+                                 (RexxObjectPtr)context->String("1 unsupported."));
         return 0;  
     }
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
@@ -553,7 +553,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
         return context->UnsignedInt32(utmp);
     default:
         context->RaiseException1(Rexx_Error_Invalid_argument_general,
-                                 (RexxObjectPtr)context->String("1 invalid."));
+                                 (RexxObjectPtr)context->String("1 unsupported."));
         return 0;  
     }
 
@@ -900,7 +900,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
         return context->UnsignedInt32(u32tmp);
     default:
         context->RaiseException1(Rexx_Error_Invalid_argument_general,
-                                 (RexxObjectPtr)context->String("1 invalid."));
+                                 (RexxObjectPtr)context->String("1 unsupported."));
         return 0;  
     }
 
