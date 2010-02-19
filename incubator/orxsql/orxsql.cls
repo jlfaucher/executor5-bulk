@@ -40,16 +40,33 @@
 
 
 /*----------------------------------------------------------------------------*/
-/* Class: database                                                            */
+/* Class: CLI                                                                 */
 /*----------------------------------------------------------------------------*/
 
-::class database public
+::class cli public
 
--- This is just a base class to hold all the constants used by the dbconnx and
--- SQLstatement classes.
+-- This is a base class to hold all the common constants, attributes and
+-- methods use by the subclasses.
+
+::attribute SQLRETURN                   -- set on return from all methods
+::attribute SQLDIAG                     -- diagnostic array of messages
+
+::method version class EXTERNAL "Library orxsql OrxDB_version"
+::method isBitSet class EXTERNAL "Library orxsql OrxDB_isbitset"
+
+-- SQL return codes
+::constant SQL_NULL_DATA                -1
+::constant SQL_DATA_AT_EXEC             -2
+::constant SQL_SUCCESS                  0
+::constant SQL_SUCCESS_WITH_INFO        1
+::constant SQL_NO_DATA                  100
+::constant SQL_ERROR                    -1
+::constant SQL_INVALID_HANDLE           -2
+::constant SQL_STILL_EXECUTING          2
+::constant SQL_NEED_DATA                99
 
 -- environment attributes
-::constant SQL_ATTR_OUTPUT_NTS          10001    -- probably not needed for 00Rexx
+::constant SQL_ATTR_OUTPUT_NTS          10001    -- probably not needed for ooRexx
 
 -- connection attributes
 ::constant SQL_ATTR_ACCESS_MODE         101
@@ -616,9 +633,7 @@
 /* Class: dbconnx                                                             */
 /*----------------------------------------------------------------------------*/
 
-::class dbconnx public subclass database
-
-::attribute SQLRETURN
+::class dbconnx public subclass cli
 
 ::method init EXTERNAL "Library orxsql OrxDB_dbinit"
 ::method get_env_attr EXTERNAL "Library orxsql OrxDB_get_env_attr"
@@ -632,28 +647,27 @@
 ::method isConnected EXTERNAL "Library orxsql OrxDB_check_connx"
 ::method get_info EXTERNAL "Library orxsql OrxDB_get_info"
 ::method destroy EXTERNAL "Library orxsql OrxDB_destroy"
-::method version class EXTERNAL "Library orxsql OrxDB_version"
-::method isBitSet class EXTERNAL "Library orxsql OrxDB_isbitset"
 
 
 /*----------------------------------------------------------------------------*/
 /* Class: SQLstatement                                                        */
 /*----------------------------------------------------------------------------*/
 
-::class SQLstatement public subclass database
+::class SQLstatement public subclass cli
+
+::attribute stmt
 
 ::method init EXTERNAL "Library orxsql OrxDB_stmtinit"
+::method execute EXTERNAL "Library orxsql OrxDB_execute"
+::method execDirect EXTERNAL "Library orxsql OrxDB_execdirect"
+::method bindParms EXTERNAL "Library orxsql OrxDB_bind_parms"
+::method prepare EXTERNAL "Library orxsql OrxDB_prepare"
+::method fetch EXTERNAL "Library orxsql OrxDB_fetch"
+::method numResultCols EXTERNAL "Library orxsql OrxDB_num_result_cols"
+::method getData EXTERNAL "Library orxsql OrxDB_get_data"
 ::method destroy EXTERNAL "Library orxsql OrxDB_stmtdestroy"
-::method isBitSet class EXTERNAL "Library orxsql OrxDB_isbitset"
 
 
--- ::method prepare EXTERNAL "Library orxsql OrxDB_prepare"
--- ::method execute EXTERNAL "Library orxsql OrxDB_dbexecute"
--- ::method destroy EXTERNAL "Library orxsql OrxDB_destroy"
--- ::method execute EXTERNAL "Library orxsql OrxDB_stmtexecute"
--- ::method fetch EXTERNAL "Library orxsql OrxDB_fetch"
--- ::method describe_col EXTERNAL "Library orxsql OrxDB_describe_col"
--- ::method get_col_data EXTERNAL "Library orxsql OrxDB_get_col_data"
 -- ::method get_attr EXTERNAL "Library orxsql OrxDB_get_stmt_attr"
 -- ::method set_attr EXTERNAL "Library orxsql OrxDB_set_stmt_attr"
 
