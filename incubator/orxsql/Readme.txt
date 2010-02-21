@@ -1,9 +1,9 @@
                             OrxSQL Library Reference
 
 
-This is a VERY preliminary library to support SQL CLI access from ooRexx. Nothing
-you see here should be taken as the final design as most of it will probably
-change as the design becomes more complete.
+This is a preliminary library to support SQL CLI access from ooRexx. This
+design is fairly complete but can still change as it is still not tested
+to any extent.
 
 The C++ code in this file conforms to the ISO/IEC 9075-3: "SQL Call-Level
 Interface" and the ODBC V3.5 updates. Any database or driver that supplies a CLI
@@ -11,7 +11,8 @@ that conforms to this specification should be able to utilize this source code.
 However, the design does NOT statically link to a vendor's CLI library. All
 calls to CLI APIs are linked dynamically at run time. Thus this library is
 independent of any vendor's specific CLI implementation and compiling the code
-does not even require the vendor's library or header files to be present.
+does not even require the vendor's library or header files to be present
+(but it does require a set of compliant header files).
 
 To compile the code on Windows does require a vendor's header files. We utilize
 Microsoft's ODBC header files for this purpose as they are readily available

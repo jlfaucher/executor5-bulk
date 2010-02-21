@@ -128,6 +128,12 @@ static SQLRETURN SQL_API (*instSQLDescribeCol)(SQLHSTMT StatementHandle,
                                                SQLSMALLINT BufferLength, SQLSMALLINT *NameLength,
                                                SQLSMALLINT *DataType, SQLULEN *ColumnSize,
                                                SQLSMALLINT *DecimalDigits, SQLSMALLINT *Nullable) = NULL;
+static SQLRETURN SQL_API (*instSQLSetStmtAttr)(SQLHSTMT StatementHandle,
+                                      SQLINTEGER Attribute, SQLPOINTER Value,
+                                      SQLINTEGER StringLength) = NULL;
+static SQLRETURN SQL_API (*instSQLGetStmtAttr)(SQLHSTMT StatementHandle,
+                                      SQLINTEGER Attribute, SQLPOINTER Value,
+                                      SQLINTEGER BufferLength, SQLINTEGER *StringLength) = NULL;
 
 
 /*----------------------------------------------------------------------------*/
@@ -1370,47 +1376,142 @@ RexxMethod2(RexxObjectPtr,             // Return type
 
     return (RexxObjectPtr)context->String((char *)buf, (size_t)buflen);
 }
-//
-// /**
-//  * Method:  OrxDB_get_stmt_attr
-//  *
-//  * Get an attribute.
-//  *
-//  * @param attr    Attribute name.
-//  *
-//  * @return        Attribute value.
-//  **/
-// RexxMethod2(RexxObjectPtr,             // Return type
-//             OrxDB_get_stmt_attr,       // Object_method name
-//             CSTRING, attr,
-//             CSELF, cself)
-// {
-//     stmtself *pstmtself = (stmtself *)cself;
-//
-//     return context->Nil();
-// }
-//
-// /**
-//  * Method:  OrxDB_set_stmt_attr
-//  *
-//  * Set an attribute.
-//  *
-//  * @param attr    Attribute name.
-//  *
-//  * @param val     Attribute value.
-//  *
-//  * @return        Return code.
-//  **/
-// RexxMethod3(int,                       // Return type
-//             OrxDB_set_stmt_attr,       // Object_method name
-//             CSTRING, attr,
-//             CSTRING, val,
-//             CSELF, cself)
-// {
-//     stmtself *pstmtself = (stmtself *)cself;
-//     
-//     return 0;
-// }
+
+/**
+ * Method:  OrxDB_get_stmt_attr
+ *
+ * Get an attribute.
+ *
+ * @param attr    Attribute name.
+ *
+ * @return        Attribute value.
+ **/
+RexxMethod2(RexxObjectPtr,             // Return type
+            OrxDB_get_stmt_attr,       // Object_method name
+            int, attr,
+            CSELF, cself)
+{
+    stmtself *pself = (stmtself *)cself;
+    SQLRETURN retc;
+    uint32_t utmp;
+
+    // if necessary, get the symbol(s)
+    if (instSQLGetStmtAttr == SQL_NULL_HANDLE) {
+#if defined WIN32 || defined WIN64
+        instSQLGetStmtAttr = GetProcAddress(pself->pdbself->handle, "SQLGetStmtAttr");
+#else
+        *(void**)(&instSQLGetStmtAttr) = dlsym(pself->pdbself->handle, "SQLGetStmtAttr");
+#endif
+        if (!instSQLGetStmtAttr) {
+            context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                     (RexxObjectPtr)context->String("Could not load symbol SQLGetStmtAttr from CLI library."));
+            return 0;  
+        }
+    }
+    //
+    switch (attr) {
+    case SQL_ATTR_ASYNC_ENABLE:
+    case SQL_ATTR_CONCURRENCY:
+    case SQL_ATTR_CURSOR_SCROLLABLE:
+    case SQL_ATTR_CURSOR_SENSITIVITY:
+    case SQL_ATTR_CURSOR_TYPE:
+    case SQL_ATTR_ENABLE_AUTO_IPD:
+    case SQL_ATTR_KEYSET_SIZE:
+    case SQL_ATTR_MAX_LENGTH:
+    case SQL_ATTR_MAX_ROWS:
+    case SQL_ATTR_METADATA_ID:
+    case SQL_ATTR_NOSCAN:
+    case SQL_ATTR_PARAM_BIND_TYPE:
+    case SQL_ATTR_PARAMSET_SIZE:
+    case SQL_ATTR_QUERY_TIMEOUT:
+    case SQL_ATTR_RETRIEVE_DATA:
+    case SQL_ATTR_ROW_ARRAY_SIZE:
+    case SQL_ATTR_ROW_BIND_TYPE:
+    case SQL_ATTR_ROW_NUMBER:
+    case SQL_ATTR_SIMULATE_CURSOR:
+    case SQL_ATTR_USE_BOOKMARKS:
+        retc = (*instSQLGetStmtAttr)(pself->hstmt, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0, 0);
+        context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+        SETDIAG(retc, pself->pdbself->henv, pself->pdbself->hdbc, SQL_NULL_HANDLE);
+        return context->UnsignedInt32(utmp);
+    default:
+        context->RaiseException1(Rexx_Error_Invalid_argument_general,
+                                 (RexxObjectPtr)context->String("1 unsupported."));
+        return 0;  
+    }
+
+    return (RexxObjectPtr)context->Nil();
+}
+
+/**
+ * Method:  OrxDB_set_stmt_attr
+ *
+ * Set an attribute.
+ *
+ * @param attr    Attribute name.
+ *
+ * @param val     Attribute value.
+ *
+ * @return        Return code.
+ **/
+RexxMethod3(int,                       // Return type
+            OrxDB_set_stmt_attr,       // Object_method name
+            int, attr,
+            RexxObjectPtr, val,
+            CSELF, cself)
+{
+    stmtself *pself = (stmtself *)cself;
+    SQLRETURN retc;
+    uint32_t utmp;
+
+    // if necessary, get the symbol(s)
+    if (instSQLSetStmtAttr == SQL_NULL_HANDLE) {
+#if defined WIN32 || defined WIN64
+        instSQLSetStmtAttr = GetProcAddress(pself->pdbself->handle, "SQLSetStmtAttr");
+#else
+        *(void**)(&instSQLSetStmtAttr) = dlsym(pself->pdbself->handle, "SQLSetStmtAttr");
+#endif
+        if (!instSQLSetStmtAttr) {
+            context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                     (RexxObjectPtr)context->String("Could not load symbol SQLSetStmtAttr from CLI library."));
+            return 0;  
+        }
+    }
+    //
+    switch (attr) {
+    case SQL_ATTR_ASYNC_ENABLE:
+    case SQL_ATTR_CONCURRENCY:
+    case SQL_ATTR_CURSOR_SCROLLABLE:
+    case SQL_ATTR_CURSOR_SENSITIVITY:
+    case SQL_ATTR_CURSOR_TYPE:
+    case SQL_ATTR_ENABLE_AUTO_IPD:
+    case SQL_ATTR_KEYSET_SIZE:
+    case SQL_ATTR_MAX_LENGTH:
+    case SQL_ATTR_MAX_ROWS:
+    case SQL_ATTR_METADATA_ID:
+    case SQL_ATTR_NOSCAN:
+    case SQL_ATTR_PARAM_BIND_TYPE:
+    case SQL_ATTR_PARAMSET_SIZE:
+    case SQL_ATTR_QUERY_TIMEOUT:
+    case SQL_ATTR_RETRIEVE_DATA:
+    case SQL_ATTR_ROW_ARRAY_SIZE:
+    case SQL_ATTR_ROW_BIND_TYPE:
+    case SQL_ATTR_ROW_NUMBER:
+    case SQL_ATTR_SIMULATE_CURSOR:
+    case SQL_ATTR_USE_BOOKMARKS:
+        context->ObjectToUnsignedInt32(val, &utmp);
+        retc = (*instSQLSetStmtAttr)(pself->hstmt, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0);
+        break;
+    default:
+        context->RaiseException1(Rexx_Error_Invalid_argument_general,
+                                 (RexxObjectPtr)context->String("1 unsupported."));
+        return 0;  
+    }
+    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    SETDIAG(retc, pself->pdbself->henv, pself->pdbself->hdbc, SQL_NULL_HANDLE);
+    
+    return 0;
+}
 
 // build the actual function entry list
 RexxRoutineEntry orxsql_routines[] = {
@@ -1442,6 +1543,8 @@ RexxMethodEntry orxsql_methods[] = {
     REXX_METHOD(OrxDB_fetch, OrxDB_fetch),
     REXX_METHOD(OrxDB_num_result_cols, OrxDB_num_result_cols),
     REXX_METHOD(OrxDB_get_data, OrxDB_get_data),
+    REXX_METHOD(OrxDB_set_stmt_attr, OrxDB_set_stmt_attr),
+    REXX_METHOD(OrxDB_get_stmt_attr, OrxDB_get_stmt_attr),
     REXX_METHOD(OrxDB_stmtdestroy, OrxDB_stmtdestroy),
 
 

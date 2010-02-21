@@ -88,12 +88,34 @@
 ::constant SQL_ATTR_ENLIST_IN_XA        1208
 ::constant SQL_ATTR_CONNECTION_DEAD     1209
 
+-- statement attributes
+::constant SQL_ATTR_ASYNC_ENABLE                4
+::constant SQL_ATTR_CONCURRENCY                 7
+::constant SQL_ATTR_CURSOR_SCROLLABLE           -1
+::constant SQL_ATTR_CURSOR_SENSITIVITY          -2
+::constant SQL_ATTR_CURSOR_TYPE                 6
+::constant SQL_ATTR_ENABLE_AUTO_IPD             15
+::constant SQL_ATTR_KEYSET_SIZE                 8
+::constant SQL_ATTR_MAX_LENGTH                  3
+::constant SQL_ATTR_MAX_ROWS                    1
+::constant SQL_ATTR_METADATA_ID                 10014
+::constant SQL_ATTR_NOSCAN                      2
+::constant SQL_ATTR_PARAM_BIND_TYPE             18
+::constant SQL_ATTR_PARAMSET_SIZE               22
+::constant SQL_ATTR_QUERY_TIMEOUT               0
+::constant SQL_ATTR_RETRIEVE_DATA               11
+::constant SQL_ATTR_ROW_BIND_TYPE               5
+::constant SQL_ATTR_ROW_NUMBER                  14
+::constant SQL_ATTR_ROW_ARRAY_SIZE              27  
+::constant SQL_ATTR_SIMULATE_CURSOR             10
+::constant SQL_ATTR_USE_BOOKMARKS               12
+
 -- getinfo types
-::constant SQL_ACCESSIBLE_PROCEDURES            20
+::constant SQL_ACCESSIBLE_PROCEDURES           20
 ::constant SQL_MAX_DRIVER_CONNECTIONS          0
-::constant SQL_MAXIMUM_DRIVER_CONNECTIONS       0
+::constant SQL_MAXIMUM_DRIVER_CONNECTIONS      0
 ::constant SQL_MAX_CONCURRENT_ACTIVITIES       1
-::constant SQL_MAXIMUM_CONCURRENT_ACTIVITIES    1
+::constant SQL_MAXIMUM_CONCURRENT_ACTIVITIES   1
 ::constant SQL_DATA_SOURCE_NAME                2
 ::constant SQL_FETCH_DIRECTION                 8
 ::constant SQL_SERVER_NAME                     13
@@ -107,20 +129,20 @@
 ::constant SQL_IDENTIFIER_CASE                 28
 ::constant SQL_IDENTIFIER_QUOTE_CHAR           29
 ::constant SQL_MAX_COLUMN_NAME_LEN             30
-::constant SQL_MAXIMUM_COLUMN_NAME_LENGTH       30
+::constant SQL_MAXIMUM_COLUMN_NAME_LENGTH      30
 ::constant SQL_MAX_CURSOR_NAME_LEN             31
-::constant SQL_MAXIMUM_CURSOR_NAME_LENGTH       31
+::constant SQL_MAXIMUM_CURSOR_NAME_LENGTH      31
 ::constant SQL_MAX_SCHEMA_NAME_LEN             32
-::constant SQL_MAXIMUM_SCHEMA_NAME_LENGTH       32
+::constant SQL_MAXIMUM_SCHEMA_NAME_LENGTH      32
 ::constant SQL_MAX_CATALOG_NAME_LEN            34
-::constant SQL_MAXIMUM_CATALOG_NAME_LENGTH      34
+::constant SQL_MAXIMUM_CATALOG_NAME_LENGTH     34
 ::constant SQL_MAX_TABLE_NAME_LEN              35
 ::constant SQL_SCROLL_CONCURRENCY              43
 ::constant SQL_TXN_CAPABLE                     46
-::constant SQL_TRANSACTION_CAPABLE              46
+::constant SQL_TRANSACTION_CAPABLE             46
 ::constant SQL_USER_NAME                       47
 ::constant SQL_TXN_ISOLATION_OPTION            72
-::constant SQL_TRANSACTION_ISOLATION_OPTION 72
+::constant SQL_TRANSACTION_ISOLATION_OPTION    72
 ::constant SQL_INTEGRITY                       73
 ::constant SQL_GETDATA_EXTENSIONS              81
 ::constant SQL_NULL_COLLATION                  85
@@ -128,25 +150,25 @@
 ::constant SQL_ORDER_BY_COLUMNS_IN_SELECT      90
 ::constant SQL_SPECIAL_CHARACTERS              94
 ::constant SQL_MAX_COLUMNS_IN_GROUP_BY         97
-::constant SQL_MAXIMUM_COLUMNS_IN_GROUP_BY      97
+::constant SQL_MAXIMUM_COLUMNS_IN_GROUP_BY     97
 ::constant SQL_MAX_COLUMNS_IN_INDEX            98
-::constant SQL_MAXIMUM_COLUMNS_IN_INDEX     98
+::constant SQL_MAXIMUM_COLUMNS_IN_INDEX        98
 ::constant SQL_MAX_COLUMNS_IN_ORDER_BY         99
-::constant SQL_MAXIMUM_COLUMNS_IN_ORDER_BY      99
+::constant SQL_MAXIMUM_COLUMNS_IN_ORDER_BY     99
 ::constant SQL_MAX_COLUMNS_IN_SELECT           100
-::constant SQL_MAXIMUM_COLUMNS_IN_SELECT        100
+::constant SQL_MAXIMUM_COLUMNS_IN_SELECT       100
 ::constant SQL_MAX_COLUMNS_IN_TABLE            101
 ::constant SQL_MAX_INDEX_SIZE                  102
-::constant SQL_MAXIMUM_INDEX_SIZE               102
+::constant SQL_MAXIMUM_INDEX_SIZE              102
 ::constant SQL_MAX_ROW_SIZE                    104
-::constant SQL_MAXIMUM_ROW_SIZE             104
+::constant SQL_MAXIMUM_ROW_SIZE                104
 ::constant SQL_MAX_STATEMENT_LEN               105
-::constant SQL_MAXIMUM_STATEMENT_LENGTH     105
+::constant SQL_MAXIMUM_STATEMENT_LENGTH        105
 ::constant SQL_MAX_TABLES_IN_SELECT            106
-::constant SQL_MAXIMUM_TABLES_IN_SELECT     106
+::constant SQL_MAXIMUM_TABLES_IN_SELECT        106
 ::constant SQL_MAX_USER_NAME_LEN               107
-::constant SQL_MAXIMUM_USER_NAME_LENGTH     107
-::constant SQL_OUTER_JOIN_CAPABILITIES          115
+::constant SQL_MAXIMUM_USER_NAME_LENGTH        107
+::constant SQL_OUTER_JOIN_CAPABILITIES         115
 
 -- bit masks/values
 ::constant SQL_AF_AVG                                   1
@@ -665,9 +687,11 @@
 ::method fetch EXTERNAL "Library orxsql OrxDB_fetch"
 ::method numResultCols EXTERNAL "Library orxsql OrxDB_num_result_cols"
 ::method getData EXTERNAL "Library orxsql OrxDB_get_data"
+::method get_attr EXTERNAL "Library orxsql OrxDB_get_stmt_attr"
+::method set_attr EXTERNAL "Library orxsql OrxDB_set_stmt_attr"
+::method get_stmt_attr EXTERNAL "Library orxsql OrxDB_get_stmt_attr"
+::method set_stmt_attr EXTERNAL "Library orxsql OrxDB_set_stmt_attr"
 ::method destroy EXTERNAL "Library orxsql OrxDB_stmtdestroy"
 
 
--- ::method get_attr EXTERNAL "Library orxsql OrxDB_get_stmt_attr"
--- ::method set_attr EXTERNAL "Library orxsql OrxDB_set_stmt_attr"
 
