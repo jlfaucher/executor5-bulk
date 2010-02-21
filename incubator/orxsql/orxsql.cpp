@@ -69,71 +69,6 @@
 /* Global variables                                                           */
 /*----------------------------------------------------------------------------*/
 
-static SQLRETURN SQL_API (*instSQLAllocHandle)(SQLSMALLINT HandleType,
-                                               SQLHANDLE InputHandle,
-                                               SQLHANDLE *OutputHandle) = NULL;
-static SQLRETURN SQL_API (*instSQLSetEnvAttr)(SQLHENV EnvironmentHandle,
-                                              SQLINTEGER Attribute, SQLPOINTER Value,
-                                              SQLINTEGER StringLength) = NULL;
-static SQLRETURN SQL_API (*instSQLGetEnvAttr)(SQLHENV EnvironmentHandle,
-                                              SQLINTEGER Attribute, SQLPOINTER Value,
-                                              SQLINTEGER BufferLength,
-                                              SQLINTEGER *StringLength) = NULL;
-static SQLRETURN SQL_API (*instSQLConnect)(SQLHDBC ConnectionHandle,
-                                           SQLCHAR *ServerName, SQLSMALLINT NameLength1,
-                                           SQLCHAR *UserName, SQLSMALLINT NameLength2,
-                                           SQLCHAR *Authentication,
-                                           SQLSMALLINT NameLength3) = NULL;
-static SQLRETURN SQL_API (*instSQLDisconnect)(SQLHDBC ConnectionHandle) = NULL;
-static SQLRETURN SQL_API (*instSQLSetConnectAttr)(SQLHDBC ConnectionHandle,
-                                                  SQLINTEGER Attribute, SQLPOINTER Value,
-                                                  SQLINTEGER StringLength) = NULL;
-static SQLRETURN SQL_API (*instSQLGetConnectAttr)(SQLHDBC ConnectionHandle,
-                                                  SQLINTEGER Attribute, SQLPOINTER Value,
-                                                  SQLINTEGER BufferLength,
-                                                  SQLINTEGER *StringLength) = NULL;
-static SQLRETURN SQL_API (*instSQLEndTran)(SQLSMALLINT HandleType, SQLHANDLE Handle,
-                                           SQLSMALLINT CompletionType) = NULL;
-static SQLRETURN SQL_API (*instSQLFreeHandle)(SQLSMALLINT HandleType,
-                                              SQLHANDLE Handle) = NULL;
-static SQLRETURN SQL_API (*instSQLGetInfo)(SQLHDBC ConnectionHandle, SQLUSMALLINT InfoType,
-                                           SQLPOINTER InfoValue, SQLSMALLINT BufferLength,
-                                           SQLSMALLINT *StringLength) = NULL;
-static SQLRETURN SQL_API (*instSQLExecute)(SQLHSTMT StatementHandle) = NULL;
-static SQLRETURN SQL_API (*instSQLExecDirect)(SQLHSTMT StatementHandle,
-                                              SQLCHAR *StatementText,
-                                              SQLINTEGER TextLength) = NULL;
-static SQLRETURN SQL_API (*instSQLBindParam)(SQLHSTMT StatementHandle,
-                                             SQLUSMALLINT ParameterNumber, SQLSMALLINT ValueType,
-                                             SQLSMALLINT ParameterType, SQLULEN LengthPrecision,
-                                             SQLSMALLINT ParameterScale, SQLPOINTER ParameterValue,
-                                             SQLLEN *StrLen_or_Ind) = NULL;
-static SQLRETURN SQL_API (*instSQLPrepare)(SQLHSTMT StatementHandle,
-                                           SQLCHAR *StatementText,
-                                           SQLINTEGER TextLength) = NULL;
-static SQLRETURN SQL_API (*instSQLError)(SQLHENV EnvironmentHandle,
-                                         SQLHDBC ConnectionHandle, SQLHSTMT StatementHandle,
-                                         SQLCHAR *Sqlstate, SQLINTEGER *NativeError,
-                                         SQLCHAR *MessageText, SQLSMALLINT BufferLength,
-                                         SQLSMALLINT *TextLength) = NULL;
-static SQLRETURN SQL_API (*instSQLFetch)(SQLHSTMT StatementHandle) = NULL;
-static SQLRETURN SQL_API (*instSQLNumResultCols)(SQLHSTMT StatementHandle,
-                                                 SQLSMALLINT *ColumnCount) = NULL;
-static SQLRETURN SQL_API (*instSQLGetData)(SQLHSTMT StatementHandle,
-                                           SQLUSMALLINT ColumnNumber, SQLSMALLINT TargetType,
-                                           SQLPOINTER TargetValue, SQLLEN BufferLength,
-                                           SQLLEN *StrLen_or_Ind) = NULL;
-static SQLRETURN SQL_API (*instSQLDescribeCol)(SQLHSTMT StatementHandle,
-                                               SQLUSMALLINT ColumnNumber, SQLCHAR *ColumnName,
-                                               SQLSMALLINT BufferLength, SQLSMALLINT *NameLength,
-                                               SQLSMALLINT *DataType, SQLULEN *ColumnSize,
-                                               SQLSMALLINT *DecimalDigits, SQLSMALLINT *Nullable) = NULL;
-static SQLRETURN SQL_API (*instSQLSetStmtAttr)(SQLHSTMT StatementHandle,
-                                      SQLINTEGER Attribute, SQLPOINTER Value,
-                                      SQLINTEGER StringLength) = NULL;
-static SQLRETURN SQL_API (*instSQLGetStmtAttr)(SQLHSTMT StatementHandle,
-                                      SQLINTEGER Attribute, SQLPOINTER Value,
-                                      SQLINTEGER BufferLength, SQLINTEGER *StringLength) = NULL;
 
 
 /*----------------------------------------------------------------------------*/
@@ -155,8 +90,8 @@ static SQLRETURN SQL_API (*instSQLGetStmtAttr)(SQLHSTMT StatementHandle,
         snprintf(msgbuf, sizeof(msgbuf), "ooRexx Method: %s, SQL Return Code %d.", \
                  context->GetMessageName(), retc); \
         context->ArrayAppendString(arr, msgbuf, strlen(msgbuf)); \
-        while (instSQLError(henv, hdbc, hstmt, sqlstate, &sqlcode, msgbuffer, \
-                            sizeof(msgbuffer), &msglen) == SQL_SUCCESS) { \
+        while ((*pself->instSQLError)(henv, hdbc, hstmt, sqlstate, &sqlcode, msgbuffer, \
+                                   sizeof(msgbuffer), &msglen) == SQL_SUCCESS) { \
             snprintf(msgbuf, sizeof(msgbuf), "SQLCODE: %d, SQLSTATE: %s", \
                      sqlcode, (char *)sqlstate); \
             context->ArrayAppendString(arr, msgbuf, strlen(msgbuf)); \
@@ -176,6 +111,71 @@ typedef struct _dbself {
 #endif
     SQLHENV henv;
     SQLHDBC hdbc;
+    SQLRETURN SQL_API (*instSQLAllocHandle)(SQLSMALLINT HandleType,
+                                            SQLHANDLE InputHandle,
+                                            SQLHANDLE *OutputHandle);
+    SQLRETURN SQL_API (*instSQLSetEnvAttr)(SQLHENV EnvironmentHandle,
+                                           SQLINTEGER Attribute, SQLPOINTER Value,
+                                           SQLINTEGER StringLength);
+    SQLRETURN SQL_API (*instSQLGetEnvAttr)(SQLHENV EnvironmentHandle,
+                                           SQLINTEGER Attribute, SQLPOINTER Value,
+                                           SQLINTEGER BufferLength,
+                                           SQLINTEGER *StringLength);
+    SQLRETURN SQL_API (*instSQLConnect)(SQLHDBC ConnectionHandle,
+                                        SQLCHAR *ServerName, SQLSMALLINT NameLength1,
+                                        SQLCHAR *UserName, SQLSMALLINT NameLength2,
+                                        SQLCHAR *Authentication,
+                                        SQLSMALLINT NameLength3);
+    SQLRETURN SQL_API (*instSQLDisconnect)(SQLHDBC ConnectionHandle);
+    SQLRETURN SQL_API (*instSQLSetConnectAttr)(SQLHDBC ConnectionHandle,
+                                               SQLINTEGER Attribute, SQLPOINTER Value,
+                                               SQLINTEGER StringLength);
+    SQLRETURN SQL_API (*instSQLGetConnectAttr)(SQLHDBC ConnectionHandle,
+                                               SQLINTEGER Attribute, SQLPOINTER Value,
+                                               SQLINTEGER BufferLength,
+                                               SQLINTEGER *StringLength);
+    SQLRETURN SQL_API (*instSQLEndTran)(SQLSMALLINT HandleType, SQLHANDLE Handle,
+                                        SQLSMALLINT CompletionType);
+    SQLRETURN SQL_API (*instSQLFreeHandle)(SQLSMALLINT HandleType,
+                                           SQLHANDLE Handle);
+    SQLRETURN SQL_API (*instSQLGetInfo)(SQLHDBC ConnectionHandle, SQLUSMALLINT InfoType,
+                                        SQLPOINTER InfoValue, SQLSMALLINT BufferLength,
+                                        SQLSMALLINT *StringLength);
+    SQLRETURN SQL_API (*instSQLExecute)(SQLHSTMT StatementHandle);
+    SQLRETURN SQL_API (*instSQLExecDirect)(SQLHSTMT StatementHandle,
+                                           SQLCHAR *StatementText,
+                                           SQLINTEGER TextLength);
+    SQLRETURN SQL_API (*instSQLBindParam)(SQLHSTMT StatementHandle,
+                                          SQLUSMALLINT ParameterNumber, SQLSMALLINT ValueType,
+                                          SQLSMALLINT ParameterType, SQLULEN LengthPrecision,
+                                          SQLSMALLINT ParameterScale, SQLPOINTER ParameterValue,
+                                          SQLLEN *StrLen_or_Ind);
+    SQLRETURN SQL_API (*instSQLPrepare)(SQLHSTMT StatementHandle,
+                                        SQLCHAR *StatementText,
+                                        SQLINTEGER TextLength);
+    SQLRETURN SQL_API (*instSQLError)(SQLHENV EnvironmentHandle,
+                                      SQLHDBC ConnectionHandle, SQLHSTMT StatementHandle,
+                                      SQLCHAR *Sqlstate, SQLINTEGER *NativeError,
+                                      SQLCHAR *MessageText, SQLSMALLINT BufferLength,
+                                      SQLSMALLINT *TextLength);
+    SQLRETURN SQL_API (*instSQLFetch)(SQLHSTMT StatementHandle);
+    SQLRETURN SQL_API (*instSQLNumResultCols)(SQLHSTMT StatementHandle,
+                                              SQLSMALLINT *ColumnCount);
+    SQLRETURN SQL_API (*instSQLGetData)(SQLHSTMT StatementHandle,
+                                        SQLUSMALLINT ColumnNumber, SQLSMALLINT TargetType,
+                                        SQLPOINTER TargetValue, SQLLEN BufferLength,
+                                        SQLLEN *StrLen_or_Ind);
+    SQLRETURN SQL_API (*instSQLDescribeCol)(SQLHSTMT StatementHandle,
+                                            SQLUSMALLINT ColumnNumber, SQLCHAR *ColumnName,
+                                            SQLSMALLINT BufferLength, SQLSMALLINT *NameLength,
+                                            SQLSMALLINT *DataType, SQLULEN *ColumnSize,
+                                            SQLSMALLINT *DecimalDigits, SQLSMALLINT *Nullable);
+    SQLRETURN SQL_API (*instSQLSetStmtAttr)(SQLHSTMT StatementHandle,
+                                   SQLINTEGER Attribute, SQLPOINTER Value,
+                                   SQLINTEGER StringLength);
+    SQLRETURN SQL_API (*instSQLGetStmtAttr)(SQLHSTMT StatementHandle,
+                                   SQLINTEGER Attribute, SQLPOINTER Value,
+                                   SQLINTEGER BufferLength, SQLINTEGER *StringLength);
 } dbself;
 
 typedef struct _stmtself {
@@ -255,48 +255,253 @@ RexxMethod1(int,                       // Return type
     memset(pself, 0, sizeof(dbself));
     context->SetObjectVariable("CSELF", context->NewPointer(pself));
     
-    // allocate the sql environment if not already allocated
-    if (pself->henv == SQL_NULL_HANDLE) {
-        // if necessary, load the library
+    // load the library
 #if defined WIN32 || defined WIN64
-        pself->handle = LoadLibrary(libname);
+    pself->handle = LoadLibrary(libname);
 #else
-        pself->handle = dlopen(libname, RTLD_LAZY);
+    pself->handle = dlopen(libname, RTLD_LAZY);
 #endif
-        if (!pself->handle) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load CLI library."));
-            return 0;
-        }
-        // if necessary, get the symbol(s)
-        if (instSQLAllocHandle == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-            instSQLAllocHandle = GetProcAddress(pself->handle, "SQLAllocHandle");
-#else
-            *(void**)(&instSQLAllocHandle) = dlsym(pself->handle, "SQLAllocHandle");
-#endif
-            if (!instSQLAllocHandle) {
-                context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                         (RexxObjectPtr)context->String("Could not load symbol SQLAllocHandle from CLI library."));
-                return 0;  
-            }
-        }
-        if (instSQLError == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-            instSQLError = GetProcAddress(pself->handle, "SQLError");
-#else
-            *(void**)(&instSQLError) = dlsym(pself->handle, "SQLError");
-#endif
-            if (!instSQLError) {
-                context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                         (RexxObjectPtr)context->String("Could not load symbol SQLError from CLI library."));
-                return 0;  
-            }
-        }
-        SQLRETURN retc = (*instSQLAllocHandle)(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &pself->henv);
-        context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
-        SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
+    if (!pself->handle) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load CLI library."));
+        return 0;
     }
+    // get the symbols
+#if defined WIN32 || defined WIN64
+    pself->instSQLAllocHandle = GetProcAddress(pself->handle, "SQLAllocHandle");
+#else
+    *(void**)(&pself->instSQLAllocHandle) = dlsym(pself->handle, "SQLAllocHandle");
+#endif
+    if (!pself->instSQLAllocHandle) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLAllocHandle from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLError = GetProcAddress(pself->handle, "SQLError");
+#else
+    *(void**)(&pself->instSQLError) = dlsym(pself->handle, "SQLError");
+#endif
+    if (!pself->instSQLError) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLError from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLSetEnvAttr = GetProcAddress(pself->handle, "SQLSetEnvAttr");
+#else
+    *(void**)(&pself->instSQLSetEnvAttr) = dlsym(pself->handle, "SQLSetEnvAttr");
+#endif
+    if (!pself->instSQLSetEnvAttr) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLSetEnvAttr from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLGetEnvAttr = GetProcAddress(pself->handle, "SQLGetEnvAttr");
+#else
+    *(void**)(&pself->instSQLGetEnvAttr) = dlsym(pself->handle, "SQLGetEnvAttr");
+#endif
+    if (!pself->instSQLGetEnvAttr) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLGetEnvAttr from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLConnect = GetProcAddress(pself->handle, "SQLConnect");
+#else
+    *(void**)(&pself->instSQLConnect) = dlsym(pself->handle, "SQLConnect");
+#endif
+    if (!pself->instSQLConnect) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLConnect from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLDisconnect = GetProcAddress(pself->handle, "SQLDisconnect");
+#else
+    *(void**)(&pself->instSQLDisconnect) = dlsym(pself->handle, "SQLDisconnect");
+#endif
+    if (!pself->instSQLDisconnect) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLDisconnect from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLSetConnectAttr = GetProcAddress(pself->handle, "SQLSetConnectAttr");
+#else
+    *(void**)(&pself->instSQLSetConnectAttr) = dlsym(pself->handle, "SQLSetConnectAttr");
+#endif
+    if (!pself->instSQLSetConnectAttr) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLSetConnectAttr from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLGetConnectAttr = GetProcAddress(pself->handle, "SQLGetConnectAttr");
+#else
+    *(void**)(&pself->instSQLGetConnectAttr) = dlsym(pself->handle, "SQLGetConnectAttr");
+#endif
+    if (!pself->instSQLGetConnectAttr) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLGetConnectAttr from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLEndTran = GetProcAddress(pself->handle, "SQLEndTran");
+#else
+    *(void**)(&pself->instSQLEndTran) = dlsym(pself->handle, "SQLEndTran");
+#endif
+    if (!pself->instSQLEndTran) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLEndTran from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLFreeHandle = GetProcAddress(pself->handle, "SQLFreeHandle");
+#else
+    *(void**)(&pself->instSQLFreeHandle) = dlsym(pself->handle, "SQLFreeHandle");
+#endif
+    if (!pself->instSQLFreeHandle) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLFreeHandle from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLEndTran = GetProcAddress(pself->handle, "SQLEndTran");
+#else
+    *(void**)(&pself->instSQLEndTran) = dlsym(pself->handle, "SQLEndTran");
+#endif
+    if (!pself->instSQLEndTran) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLEndTran from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLFreeHandle = GetProcAddress(pself->handle, "SQLFreeHandle");
+#else
+    *(void**)(&pself->instSQLFreeHandle) = dlsym(pself->handle, "SQLFreeHandle");
+#endif
+    if (!pself->instSQLFreeHandle) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLFreeHandle from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLExecute = GetProcAddress(pself->handle, "SQLExecute");
+#else
+    *(void**)(&pself->instSQLExecute) = dlsym(pself->handle, "SQLExecute");
+#endif
+    if (!pself->instSQLExecute) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLExecute from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLExecDirect = GetProcAddress(pself->handle, "SQLExecDirect");
+#else
+    *(void**)(&pself->instSQLExecDirect) = dlsym(pself->handle, "SQLExecDirect");
+#endif
+    if (!pself->instSQLExecDirect) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLExecDirect from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLBindParam = GetProcAddress(pself->handle, "SQLBindParam");
+#else
+    *(void**)(&pself->instSQLBindParam) = dlsym(pself->handle, "SQLBindParam");
+#endif
+    if (!pself->instSQLBindParam) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLBindParam from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLPrepare = GetProcAddress(pself->handle, "SQLPrepare");
+#else
+    *(void**)(&pself->instSQLPrepare) = dlsym(pself->handle, "SQLPrepare");
+#endif
+    if (!pself->instSQLPrepare) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLPrepare from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLFetch = GetProcAddress(pself->handle, "SQLFetch");
+#else
+    *(void**)(&pself->instSQLFetch) = dlsym(pself->handle, "SQLFetch");
+#endif
+    if (!pself->instSQLFetch) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLFetch from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLNumResultCols = GetProcAddress(pself->handle, "SQLNumResultCols");
+#else
+    *(void**)(&pself->instSQLNumResultCols) = dlsym(pself->handle, "SQLNumResultCols");
+#endif
+    if (!pself->instSQLNumResultCols) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLNumResultCols from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLGetData = GetProcAddress(pself->handle, "SQLGetData");
+#else
+    *(void**)(&pself->instSQLGetData) = dlsym(pself->handle, "SQLGetData");
+#endif
+    if (!pself->instSQLGetData) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLGetData from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLDescribeCol = GetProcAddress(pself->handle, "SQLDescribeCol");
+#else
+    *(void**)(&pself->instSQLDescribeCol) = dlsym(pself->handle, "SQLDescribeCol");
+#endif
+    if (!pself->instSQLDescribeCol) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLDescribeCol from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLGetStmtAttr = GetProcAddress(pself->handle, "SQLGetStmtAttr");
+#else
+    *(void**)(&pself->instSQLGetStmtAttr) = dlsym(pself->handle, "SQLGetStmtAttr");
+#endif
+    if (!pself->instSQLGetStmtAttr) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLGetStmtAttr from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLSetStmtAttr = GetProcAddress(pself->handle, "SQLSetStmtAttr");
+#else
+    *(void**)(&pself->instSQLSetStmtAttr) = dlsym(pself->handle, "SQLSetStmtAttr");
+#endif
+    if (!pself->instSQLSetStmtAttr) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLSetStmtAttr from CLI library."));
+        return 0;  
+    }
+#if defined WIN32 || defined WIN64
+    pself->instSQLGetInfo = GetProcAddress(pself->handle, "SQLGetInfo");
+#else
+    *(void**)(&pself->instSQLGetInfo) = dlsym(pself->handle, "SQLGetInfo");
+#endif
+    *(void**)(&pself->instSQLGetInfo) = dlsym(pself->handle, "SQLGetInfo");
+    if (!pself->instSQLGetInfo) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLGetInfo from CLI library."));
+        return 0;  
+    }
+    // allocate the sql environment if not already allocated
+    SQLRETURN retc = (*pself->instSQLAllocHandle)(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &pself->henv);
+    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
 
     return 0;
 }
@@ -323,19 +528,6 @@ RexxMethod3(int,                       // Return type
     int32_t itmp;
     uint32_t utmp;
 
-    // if necessary, get the symbol(s)
-    if (instSQLSetEnvAttr == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLSetEnvAttr = GetProcAddress(pself->handle, "SQLSetEnvAttr");
-#else
-        *(void**)(&instSQLSetEnvAttr) = dlsym(pself->handle, "SQLSetEnvAttr");
-#endif
-        if (!instSQLSetEnvAttr) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLSetEnvAttr from CLI library."));
-            return 0;  
-        }
-    }
     //
     switch (attr) {
     case SQL_ATTR_OUTPUT_NTS:
@@ -343,13 +535,13 @@ RexxMethod3(int,                       // Return type
     case SQL_ATTR_ODBC_VERSION:
 #endif
         context->ObjectToInt32(val, &itmp);
-        retc = (*instSQLSetEnvAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)&itmp, 0);
+        retc = (*pself->instSQLSetEnvAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)&itmp, 0);
         break;
 #if defined WIN32 || defined WIN64
     case SQL_ATTR_CONNECTION_POOLING:
     case SQL_ATTR_CP_MATCH:
         context->ObjectToUnsignedInt32(val, &utmp);
-        retc = (*instSQLSetEnvAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0);
+        retc = (*pself->instSQLSetEnvAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0);
         break;
 #endif
     default:
@@ -382,33 +574,20 @@ RexxMethod2(RexxObjectPtr,             // Return type
     int32_t itmp;
     uint32_t utmp;
 
-    // if necessary, get the symbol(s)
-    if (instSQLGetEnvAttr == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLGetEnvAttr = GetProcAddress(pself->handle, "SQLGetEnvAttr");
-#else
-        *(void**)(&instSQLGetEnvAttr) = dlsym(pself->handle, "SQLGetEnvAttr");
-#endif
-        if (!instSQLGetEnvAttr) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLGetEnvAttr from CLI library."));
-            return 0;  
-        }
-    }
     //
     switch (attr) {
     case SQL_ATTR_OUTPUT_NTS:
 #if defined WIN32 || defined WIN64
     case SQL_ATTR_ODBC_VERSION:
 #endif
-        retc = (*instSQLGetEnvAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)&itmp, 0, 0);
+        retc = (*pself->instSQLGetEnvAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)&itmp, 0, 0);
         context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
         SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
         return context->Int32(itmp);
 #if defined WIN32 || defined WIN64
     case SQL_ATTR_CONNECTION_POOLING:
     case SQL_ATTR_CP_MATCH:
-        retc = (*instSQLGetEnvAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0, 0);
+        retc = (*instpself->SQLGetEnvAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0, 0);
         context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
         SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
         return context->UnsignedInt32(utmp);
@@ -442,25 +621,12 @@ RexxMethod4(int,                       // Return type
     SQLRETURN retc;
     
     if (pself->hdbc == SQL_NULL_HANDLE) {
-        // if necessary, get the symbol(s)
-        if (instSQLConnect == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-            instSQLConnect = GetProcAddress(pself->handle, "SQLConnect");
-#else
-            *(void**)(&instSQLConnect) = dlsym(pself->handle, "SQLConnect");
-#endif
-            if (!instSQLConnect) {
-                context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                         (RexxObjectPtr)context->String("Could not load symbol SQLConnect from CLI library."));
-                return 0;  
-            }
-        }
         // allocate a connection handle
-        retc = (*instSQLAllocHandle)(SQL_HANDLE_DBC, pself->henv, &pself->hdbc);
+        retc = (*pself->instSQLAllocHandle)(SQL_HANDLE_DBC, pself->henv, &pself->hdbc);
     }
     // connect to the database
-    retc = (*instSQLConnect)(pself->hdbc, (SQLCHAR *)dbname, strlen(dbname),
-                            (SQLCHAR *)user, strlen(user), (SQLCHAR *)pw, strlen(pw));
+    retc = (*pself->instSQLConnect)(pself->hdbc, (SQLCHAR *)dbname, strlen(dbname),
+                                    (SQLCHAR *)user, strlen(user), (SQLCHAR *)pw, strlen(pw));
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
     return 0;
@@ -479,21 +645,8 @@ RexxMethod1(int,                       // Return type
 {
     dbself *pself = (dbself *)cself;
     
-    // if necessary, get the symbol(s)
-    if (instSQLDisconnect == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLDisconnect = GetProcAddress(pself->handle, "SQLDisconnect");
-#else
-        *(void**)(&instSQLDisconnect) = dlsym(pself->handle, "SQLDisconnect");
-#endif
-        if (!instSQLDisconnect) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLDisconnect from CLI library."));
-            return 0;  
-        }
-    }
     // disconnect from the database
-    SQLRETURN retc = (*instSQLDisconnect)(pself->hdbc);
+    SQLRETURN retc = (*pself->instSQLDisconnect)(pself->hdbc);
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
     // do not free the hdbc or the henv handle!
@@ -522,26 +675,13 @@ RexxMethod3(int,                       // Return type
     const char *ctmp;
     uint32_t utmp;
 
-    // if necessary, get the symbol(s)
-    if (instSQLSetConnectAttr == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLSetConnectAttr = GetProcAddress(pself->handle, "SQLSetConnectAttr");
-#else
-        *(void**)(&instSQLSetConnectAttr) = dlsym(pself->handle, "SQLSetConnectAttr");
-#endif
-        if (!instSQLSetConnectAttr) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLSetConnectAttr from CLI library."));
-            return 0;  
-        }
-    }
     //
     switch (attr) {
     case SQL_ATTR_CURRENT_CATALOG:
     case SQL_ATTR_TRACEFILE:
     case SQL_ATTR_TRANSLATE_LIB:
         ctmp = context->CString(val);
-        retc = (*instSQLSetConnectAttr)(pself->hdbc, (SQLINTEGER)attr, (SQLPOINTER)ctmp, strlen(ctmp));
+        retc = (*pself->instSQLSetConnectAttr)(pself->hdbc, (SQLINTEGER)attr, (SQLPOINTER)ctmp, strlen(ctmp));
         break;
     case SQL_ATTR_ACCESS_MODE:
 #if defined WIN32 || defined WIN64
@@ -561,7 +701,7 @@ RexxMethod3(int,                       // Return type
     case SQL_ATTR_TRANSLATE_OPTION:
     case SQL_ATTR_TXN_ISOLATION:
         context->ObjectToUnsignedInt32(val, &utmp);
-        retc = (*instSQLSetConnectAttr)(pself->hdbc, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0);
+        retc = (*pself->instSQLSetConnectAttr)(pself->hdbc, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0);
         break;
     default:
         context->RaiseException1(Rexx_Error_Invalid_argument_general,
@@ -594,25 +734,12 @@ RexxMethod2(RexxObjectPtr,             // Return type
     uint32_t utmp;
     int32_t itmp = 1;
 
-    // if necessary, get the symbol(s)
-    if (instSQLGetConnectAttr == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLGetConnectAttr = GetProcAddress(pself->handle, "SQLGetConnectAttr");
-#else
-        *(void**)(&instSQLGetConnectAttr) = dlsym(pself->handle, "SQLGetConnectAttr");
-#endif
-        if (!instSQLGetConnectAttr) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLGetConnectAttr from CLI library."));
-            return 0;  
-        }
-    }
     //
     switch (attr) {
     case SQL_ATTR_CURRENT_CATALOG:
     case SQL_ATTR_TRACEFILE:
     case SQL_ATTR_TRANSLATE_LIB:
-        retc = (*instSQLGetConnectAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)ctmp, 0, &itmp);
+        retc = (*pself->instSQLGetConnectAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)ctmp, 0, &itmp);
         context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
         SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
         return context->String(ctmp, (size_t)itmp);
@@ -633,7 +760,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     case SQL_ATTR_TRACE:
     case SQL_ATTR_TRANSLATE_OPTION:
     case SQL_ATTR_TXN_ISOLATION:
-        retc = (*instSQLGetConnectAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0, 0);
+        retc = (*pself->instSQLGetConnectAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0, 0);
         context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
         SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
         return context->UnsignedInt32(utmp);
@@ -659,21 +786,8 @@ RexxMethod1(int,                       // Return type
 {
     dbself *pself = (dbself *)cself;
 
-    // if necessary, get the symbol(s)
-    if (instSQLEndTran == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLEndTran = GetProcAddress(pself->handle, "SQLEndTran");
-#else
-        *(void**)(&instSQLEndTran) = dlsym(pself->handle, "SQLEndTran");
-#endif
-        if (!instSQLEndTran) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLEndTran from CLI library."));
-            return 0;  
-        }
-    }
     // commit the transaction
-    SQLRETURN retc = (*instSQLEndTran)(SQL_HANDLE_ENV, pself->henv, SQL_COMMIT);
+    SQLRETURN retc = (*pself->instSQLEndTran)(SQL_HANDLE_ENV, pself->henv, SQL_COMMIT);
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
     
@@ -693,21 +807,8 @@ RexxMethod1(int,                       // Return type
 {
     dbself *pself = (dbself *)cself;
 
-    // if necessary, get the symbol(s)
-    if (instSQLEndTran == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLEndTran = GetProcAddress(pself->handle, "SQLEndTran");
-#else
-        *(void**)(&instSQLEndTran) = dlsym(pself->handle, "SQLEndTran");
-#endif
-        if (!instSQLEndTran) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLEndTran from CLI library."));
-            return 0;  
-        }
-    }
     // rollback the transaction
-    SQLRETURN retc = (*instSQLEndTran)(SQL_HANDLE_ENV, pself->henv, SQL_ROLLBACK);
+    SQLRETURN retc = (*pself->instSQLEndTran)(SQL_HANDLE_ENV, pself->henv, SQL_ROLLBACK);
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
 
@@ -746,25 +847,12 @@ RexxMethod1(int,                       // Return type
 {
     dbself *pself = (dbself *)cself;
     
-    // if necessary, get the symbol(s)
-    if (instSQLFreeHandle == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLFreeHandle = GetProcAddress(pself->handle, "SQLFreeHandle");
-#else
-        *(void**)(&instSQLFreeHandle) = dlsym(pself->handle, "SQLFreeHandle");
-#endif
-        if (!instSQLFreeHandle) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLFreeHandle from CLI library."));
-            return 0;  
-        }
-    }
     if (pself->hdbc != NULL) {
-        SQLRETURN retc = (*instSQLFreeHandle)(SQL_HANDLE_DBC, &pself->hdbc);
+        SQLRETURN retc = (*pself->instSQLFreeHandle)(SQL_HANDLE_DBC, &pself->hdbc);
         SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
     }
     if (pself->henv != NULL) {
-        SQLRETURN retc = (*instSQLFreeHandle)(SQL_HANDLE_ENV, &pself->henv);
+        SQLRETURN retc = (*pself->instSQLFreeHandle)(SQL_HANDLE_ENV, &pself->henv);
         SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
     }
     if (pself != NULL) {
@@ -794,20 +882,6 @@ RexxMethod2(RexxObjectPtr,             // Return type
     SQLUSMALLINT u16tmp;
     SQLUINTEGER u32tmp;
 
-    // if necessary, get the symbol(s)
-    if (instSQLGetInfo == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLGetInfo = GetProcAddress(pself->handle, "SQLGetInfo");
-#else
-        *(void**)(&instSQLGetInfo) = dlsym(pself->handle, "SQLGetInfo");
-#endif
-        *(void**)(&instSQLGetInfo) = dlsym(pself->handle, "SQLGetInfo");
-        if (!instSQLGetInfo) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLGetInfo from CLI library."));
-            return 0;  
-        }
-    }
     //
     switch (attr) {
     case SQL_ACCESSIBLE_PROCEDURES:
@@ -848,7 +922,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     case SQL_TABLE_TERM:
     case SQL_USER_NAME:
     case SQL_XOPEN_CLI_YEAR:
-        retc = (*instSQLGetInfo)(pself->hdbc, (SQLUSMALLINT)attr, (SQLPOINTER)ctmp, sizeof(ctmp), &buflen);
+        retc = (*pself->instSQLGetInfo)(pself->hdbc, (SQLUSMALLINT)attr, (SQLPOINTER)ctmp, sizeof(ctmp), &buflen);
         context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
         SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
         return context->String(ctmp, (size_t)buflen);
@@ -880,7 +954,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     case SQL_NULL_COLLATION:
     case SQL_QUOTED_IDENTIFIER_CASE:
     case SQL_TXN_CAPABLE:
-        retc = (*instSQLGetInfo)(pself->hdbc, (SQLINTEGER)attr, (SQLPOINTER)&u16tmp, 0, NULL);
+        retc = (*pself->instSQLGetInfo)(pself->hdbc, (SQLINTEGER)attr, (SQLPOINTER)&u16tmp, 0, NULL);
         context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
         SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
         return context->UnsignedInt32((uint32_t)u16tmp);
@@ -987,7 +1061,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     case SQL_TIMEDATE_FUNCTIONS:
     case SQL_TXN_ISOLATION_OPTION:
     case SQL_UNION:
-        retc = (*instSQLGetInfo)(pself->hdbc, (SQLINTEGER)attr, (SQLPOINTER)&u32tmp, 0, NULL);
+        retc = (*pself->instSQLGetInfo)(pself->hdbc, (SQLINTEGER)attr, (SQLPOINTER)&u32tmp, 0, NULL);
         context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
         SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
         return context->UnsignedInt32(u32tmp);
@@ -1018,21 +1092,22 @@ RexxMethod2(int,                       // Return type
             RexxObjectPtr, db,
             OPTIONAL_CSTRING, stmt)
 {
-    stmtself *pself;
+    stmtself *pstmtself;
 
     // allocate memory for our self data
-    pself = (stmtself *)malloc(sizeof(stmtself));
-    memset(pself, 0, sizeof(stmtself));
-    context->SetObjectVariable("CSELF", context->NewPointer(pself));
+    pstmtself = (stmtself *)malloc(sizeof(stmtself));
+    memset(pstmtself, 0, sizeof(stmtself));
+    context->SetObjectVariable("CSELF", context->NewPointer(pstmtself));
 
     // get the database connction pointer
-    pself->pdbself = (dbself *)context->ObjectToCSelf(db);
+    pstmtself->pdbself = (dbself *)context->ObjectToCSelf(db);
+    dbself *pself = pstmtself->pdbself;
     
     // allocate a statement handle
-    SQLRETURN retc = (*instSQLAllocHandle)(SQL_HANDLE_STMT, pself->pdbself->hdbc,
-                                           &pself->hstmt);
+    SQLRETURN retc = (*pself->instSQLAllocHandle)(SQL_HANDLE_STMT, pself->hdbc,
+                                                  &pstmtself->hstmt);
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
-    SETDIAG(retc, pself->pdbself->henv, pself->pdbself->hdbc, pself->hstmt);
+    SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
 
     // save SQL statement
     if (stmt != NULL) {
@@ -1056,27 +1131,15 @@ RexxMethod1(int,                       // Return type
             OrxDB_stmtdestroy,         // Object_method name
             CSELF, cself)
 {
-    stmtself *pself = (stmtself *)cself;
-    
-    // if necessary, get the symbol(s)
-    if (instSQLFreeHandle == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLFreeHandle = GetProcAddress(pself->pdbself->handle, "SQLFreeHandle");
-#else
-        *(void**)(&instSQLFreeHandle) = dlsym(pself->pdbself->handle, "SQLFreeHandle");
-#endif
-        if (!instSQLFreeHandle) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLFreeHandle from CLI library."));
-            return 0;  
-        }
+    stmtself *pstmtself = (stmtself *)cself;
+    dbself *pself = pstmtself->pdbself;
+
+    if (pstmtself->hstmt != NULL) {
+        SQLRETURN retc = (*pself->instSQLFreeHandle)(SQL_HANDLE_STMT, &pstmtself->hstmt);
+        SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
     }
-    if (pself->hstmt != NULL) {
-        SQLRETURN retc = (*instSQLFreeHandle)(SQL_HANDLE_STMT, &pself->hstmt);
-        SETDIAG(retc, pself->pdbself->henv, pself->pdbself->hdbc, pself->hstmt);
-    }
-    if (pself != NULL) {
-        free(pself);
+    if (pstmtself != NULL) {
+        free(pstmtself);
     }
     return 0;
 }
@@ -1092,26 +1155,13 @@ RexxMethod1(int,                       // Return type
             OrxDB_execute,             // Object_method name
             CSELF, cself)
 {
-    stmtself *pself = (stmtself *)cself;
-    
-    // if necessary, get the symbol(s)
-    if (instSQLExecute == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLExecute = GetProcAddress(pself->pdbself->handle, "SQLExecute");
-#else
-        *(void**)(&instSQLExecute) = dlsym(pself->pdbself->handle, "SQLExecute");
-#endif
-        if (!instSQLExecute) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLExecute from CLI library."));
-            return 0;  
-        }
-    }
+    stmtself *pstmtself = (stmtself *)cself;
+    dbself *pself = pstmtself->pdbself;
 
     // execute the SQL statement
-    SQLRETURN retc = (*instSQLExecute)(pself->hstmt);
+    SQLRETURN retc = (*pself->instSQLExecute)(pstmtself->hstmt);
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
-    SETDIAG(retc, pself->pdbself->henv, pself->pdbself->hdbc, pself->hstmt);
+    SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
     
     return 0;
 }
@@ -1128,21 +1178,8 @@ RexxMethod2(int,                       // Return type
             OPTIONAL_CSTRING, stmt,
             CSELF, cself)
 {
-    stmtself *pself = (stmtself *)cself;
-    
-    // if necessary, get the symbol(s)
-    if (instSQLExecDirect == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLExecDirect = GetProcAddress(pself->pdbself->handle, "SQLExecDirect");
-#else
-        *(void**)(&instSQLExecDirect) = dlsym(pself->pdbself->handle, "SQLExecDirect");
-#endif
-        if (!instSQLExecDirect) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLExecDirect from CLI library."));
-            return 0;  
-        }
-    }
+    stmtself *pstmtself = (stmtself *)cself;
+    dbself *pself = pstmtself->pdbself;
 
     // if no statement passed then use the stmt attribute variable
     if (stmt == NULL) {
@@ -1150,9 +1187,9 @@ RexxMethod2(int,                       // Return type
     }
 
     // execute the SQL statement
-    SQLRETURN retc = (*instSQLExecDirect)(pself->hstmt, (SQLCHAR *)stmt, strlen(stmt));
+    SQLRETURN retc = (*pself->instSQLExecDirect)(pstmtself->hstmt, (SQLCHAR *)stmt, strlen(stmt));
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
-    SETDIAG(retc, pself->pdbself->henv, pself->pdbself->hdbc, pself->hstmt);
+    SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
     
     return 0;
 }
@@ -1175,33 +1212,21 @@ RexxMethod2(int,                       // Return type
             RexxArrayObject, parms,
             CSELF, cself)
 {
-    stmtself *pself = (stmtself *)cself;
+    stmtself *pstmtself = (stmtself *)cself;
+    dbself *pself = pstmtself->pdbself;
     SQLRETURN retc;
     
-    // if necessary, get the symbol(s)
-    if (instSQLBindParam == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLBindParam = GetProcAddress(pself->pdbself->handle, "SQLBindParam");
-#else
-        *(void**)(&instSQLBindParam) = dlsym(pself->pdbself->handle, "SQLBindParam");
-#endif
-        if (!instSQLBindParam) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLBindParam from CLI library."));
-            return 0;  
-        }
-    }
 
     // bind all parameters
     size_t items = context->ArrayItems(parms);
     for (int n = 1; n <= items; n++) {
         SQLPOINTER p = (SQLPOINTER)context->CString((RexxStringObject)context->ArrayAt(parms, n));
-        retc = (*instSQLBindParam)(pself->hstmt, (SQLUSMALLINT)n, SQL_C_CHAR, SQL_CHAR,
-                                                   0, 0, p, (SQLLEN *)SQL_NTS);
+        retc = (*pself->instSQLBindParam)(pstmtself->hstmt, (SQLUSMALLINT)n, SQL_C_CHAR, SQL_CHAR,
+                                                             0, 0, p, (SQLLEN *)SQL_NTS);
 
     }
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
-    SETDIAG(retc, pself->pdbself->henv, pself->pdbself->hdbc, pself->hstmt);
+    SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
     
     return 0;
 }
@@ -1218,21 +1243,8 @@ RexxMethod2(int,                       // Return type
             OPTIONAL_CSTRING, stmt,
             CSELF, cself)
 {
-    stmtself *pself = (stmtself *)cself;
-    
-    // if necessary, get the symbol(s)
-    if (instSQLPrepare == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLPrepare = GetProcAddress(pself->pdbself->handle, "SQLPrepare");
-#else
-        *(void**)(&instSQLPrepare) = dlsym(pself->pdbself->handle, "SQLPrepare");
-#endif
-        if (!instSQLPrepare) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLPrepare from CLI library."));
-            return 0;  
-        }
-    }
+    stmtself *pstmtself = (stmtself *)cself;
+    dbself *pself = pstmtself->pdbself;
 
     // if no statement passed then use the stmt attribute variable
     if (stmt == NULL) {
@@ -1240,9 +1252,9 @@ RexxMethod2(int,                       // Return type
     }
 
     // execute the SQL statement
-    SQLRETURN retc = (*instSQLPrepare)(pself->hstmt, (SQLCHAR *)stmt, strlen(stmt));
+    SQLRETURN retc = (*pself->instSQLPrepare)(pstmtself->hstmt, (SQLCHAR *)stmt, strlen(stmt));
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
-    SETDIAG(retc, pself->pdbself->henv, pself->pdbself->hdbc, pself->hstmt);
+    SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
     
     return 0;
 }
@@ -1258,26 +1270,13 @@ RexxMethod1(int,                       // Return type
             OrxDB_fetch,               // Object_method name
             CSELF, cself)
 {
-    stmtself *pself = (stmtself *)cself;
-    
-    // if necessary, get the symbol(s)
-    if (instSQLFetch == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLFetch = GetProcAddress(pself->pdbself->handle, "SQLFetch");
-#else
-        *(void**)(&instSQLFetch) = dlsym(pself->pdbself->handle, "SQLFetch");
-#endif
-        if (!instSQLFetch) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLFetch from CLI library."));
-            return 0;  
-        }
-    }
+    stmtself *pstmtself = (stmtself *)cself;
+    dbself *pself = pstmtself->pdbself;
 
     // execute the SQL statement
-    SQLRETURN retc = (*instSQLFetch)(pself->hstmt);
+    SQLRETURN retc = (*pself->instSQLFetch)(pstmtself->hstmt);
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
-    SETDIAG(retc, pself->pdbself->henv, pself->pdbself->hdbc, pself->hstmt);
+    SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
     
     return 0;
 }
@@ -1293,27 +1292,14 @@ RexxMethod1(int,                       // Return type
             OrxDB_num_result_cols,     // Object_method name
             CSELF, cself)
 {
-    stmtself *pself = (stmtself *)cself;
+    stmtself *pstmtself = (stmtself *)cself;
+    dbself *pself = pstmtself->pdbself;
     SQLSMALLINT n;
-    
-    // if necessary, get the symbol(s)
-    if (instSQLNumResultCols == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLNumResultCols = GetProcAddress(pself->pdbself->handle, "SQLNumResultCols");
-#else
-        *(void**)(&instSQLNumResultCols) = dlsym(pself->pdbself->handle, "SQLNumResultCols");
-#endif
-        if (!instSQLNumResultCols) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLNumResultCols from CLI library."));
-            return 0;  
-        }
-    }
 
     // execute the SQL statement
-    SQLRETURN retc = (*instSQLNumResultCols)(pself->hstmt, &n);
+    SQLRETURN retc = (*pself->instSQLNumResultCols)(pstmtself->hstmt, &n);
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
-    SETDIAG(retc, pself->pdbself->henv, pself->pdbself->hdbc, pself->hstmt);
+    SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
     
     return (int32_t)n;
 }
@@ -1332,47 +1318,22 @@ RexxMethod2(RexxObjectPtr,             // Return type
             int, column,
             CSELF, cself)
 {
-    stmtself *pself = (stmtself *)cself;
+    stmtself *pstmtself = (stmtself *)cself;
+    dbself *pself = pstmtself->pdbself;
     SQLCHAR *buf;
     SQLULEN buflen;
-    
-    // if necessary, get the symbol(s)
-    if (instSQLGetData == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLGetData = GetProcAddress(pself->pdbself->handle, "SQLGetData");
-#else
-        *(void**)(&instSQLGetData) = dlsym(pself->pdbself->handle, "SQLGetData");
-#endif
-        if (!instSQLGetData) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLGetData from CLI library."));
-            return 0;  
-        }
-    }
-    if (instSQLDescribeCol == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLDescribeCol = GetProcAddress(pself->pdbself->handle, "SQLDescribeCol");
-#else
-        *(void**)(&instSQLDescribeCol) = dlsym(pself->pdbself->handle, "SQLDescribeCol");
-#endif
-        if (!instSQLDescribeCol) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLDescribeCol from CLI library."));
-            return 0;  
-        }
-    }
 
     // get the size of the buffer needed and allocate the buffer
-    SQLRETURN retc = (*instSQLDescribeCol)(pself->hstmt, column, NULL, 0, NULL,
-                                           NULL, &buflen, NULL, NULL);
+    SQLRETURN retc = (*pself->instSQLDescribeCol)(pstmtself->hstmt, column, NULL, 0, NULL,
+                                                  NULL, &buflen, NULL, NULL);
     buflen++;  // add one byte for the null terminator
     buf = (SQLCHAR *)alloca((size_t)buflen);
     
     // execute the SQL statement
-    retc = (*instSQLGetData)(pself->hstmt, column, SQL_C_CHAR, buf, buflen,
-                             (SQLLEN *)&buflen);
+    retc = (*pself->instSQLGetData)(pstmtself->hstmt, column, SQL_C_CHAR, buf, buflen,
+                                    (SQLLEN *)&buflen);
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
-    SETDIAG(retc, pself->pdbself->henv, pself->pdbself->hdbc, pself->hstmt);
+    SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
 
     return (RexxObjectPtr)context->String((char *)buf, (size_t)buflen);
 }
@@ -1391,23 +1352,11 @@ RexxMethod2(RexxObjectPtr,             // Return type
             int, attr,
             CSELF, cself)
 {
-    stmtself *pself = (stmtself *)cself;
+    stmtself *pstmtself = (stmtself *)cself;
+    dbself *pself = pstmtself->pdbself;
     SQLRETURN retc;
     uint32_t utmp;
 
-    // if necessary, get the symbol(s)
-    if (instSQLGetStmtAttr == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLGetStmtAttr = GetProcAddress(pself->pdbself->handle, "SQLGetStmtAttr");
-#else
-        *(void**)(&instSQLGetStmtAttr) = dlsym(pself->pdbself->handle, "SQLGetStmtAttr");
-#endif
-        if (!instSQLGetStmtAttr) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLGetStmtAttr from CLI library."));
-            return 0;  
-        }
-    }
     //
     switch (attr) {
     case SQL_ATTR_ASYNC_ENABLE:
@@ -1430,9 +1379,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
     case SQL_ATTR_ROW_NUMBER:
     case SQL_ATTR_SIMULATE_CURSOR:
     case SQL_ATTR_USE_BOOKMARKS:
-        retc = (*instSQLGetStmtAttr)(pself->hstmt, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0, 0);
+        retc = (*pself->instSQLGetStmtAttr)(pstmtself->hstmt, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0, 0);
         context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
-        SETDIAG(retc, pself->pdbself->henv, pself->pdbself->hdbc, SQL_NULL_HANDLE);
+        SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
         return context->UnsignedInt32(utmp);
     default:
         context->RaiseException1(Rexx_Error_Invalid_argument_general,
@@ -1460,23 +1409,11 @@ RexxMethod3(int,                       // Return type
             RexxObjectPtr, val,
             CSELF, cself)
 {
-    stmtself *pself = (stmtself *)cself;
+    stmtself *pstmtself = (stmtself *)cself;
+    dbself *pself = pstmtself->pdbself;
     SQLRETURN retc;
     uint32_t utmp;
 
-    // if necessary, get the symbol(s)
-    if (instSQLSetStmtAttr == SQL_NULL_HANDLE) {
-#if defined WIN32 || defined WIN64
-        instSQLSetStmtAttr = GetProcAddress(pself->pdbself->handle, "SQLSetStmtAttr");
-#else
-        *(void**)(&instSQLSetStmtAttr) = dlsym(pself->pdbself->handle, "SQLSetStmtAttr");
-#endif
-        if (!instSQLSetStmtAttr) {
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     (RexxObjectPtr)context->String("Could not load symbol SQLSetStmtAttr from CLI library."));
-            return 0;  
-        }
-    }
     //
     switch (attr) {
     case SQL_ATTR_ASYNC_ENABLE:
@@ -1500,7 +1437,7 @@ RexxMethod3(int,                       // Return type
     case SQL_ATTR_SIMULATE_CURSOR:
     case SQL_ATTR_USE_BOOKMARKS:
         context->ObjectToUnsignedInt32(val, &utmp);
-        retc = (*instSQLSetStmtAttr)(pself->hstmt, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0);
+        retc = (*pself->instSQLSetStmtAttr)(pstmtself->hstmt, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0);
         break;
     default:
         context->RaiseException1(Rexx_Error_Invalid_argument_general,
@@ -1508,7 +1445,7 @@ RexxMethod3(int,                       // Return type
         return 0;  
     }
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
-    SETDIAG(retc, pself->pdbself->henv, pself->pdbself->hdbc, SQL_NULL_HANDLE);
+    SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
     
     return 0;
 }
