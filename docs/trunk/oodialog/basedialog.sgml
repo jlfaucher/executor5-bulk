@@ -729,24 +729,35 @@ to Init.
 <entry><link linkend="h000782">GetSBRange</link></entry>
 </row>
 <row>
-<entry>GetSelf</entry>
-<entry><link linkend="mthGetSelf">GetSelf</link></entry>
+<entry><link linkend="mthGetSelf">getSelf</link></entry>
+<entry>Returns the window handle of the dialog.</entry>
 </row>
 <row>
-<entry>GetSize</entry>
-<entry><link linkend="getsize">GetSize</link></entry>
+<entry><link linkend="mthGetSize">getSize</link></entry>
+<entry>Returns the size of the window <emphasis role="bold">(not accurate.)</emphasis></entry>
 </row>
 <row>
 <entry>getStyleRaw</entry>
 <entry><link linkend="mthGetStyleRaw">getStyleRaw</link></entry>
 </row>
 <row>
-<entry>getTextSizeDlg</entry>
 <entry><link linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link></entry>
+<entry>Calculates the size needed to display a string in dialog units.</entry>
 </row>
 <row>
-<entry>getTextSizeScreen</entry>
+<entry><link linkend="mthGetTextSizeDu">getTextSizeDu</link></entry>
+<entry>
+  Calculates the size needed to display a string in dialog units <emphasis role="bold">(preferred
+  method.)</emphasis>
+</entry>
+</row>
+<row>
+<entry><link linkend="mthGetTextSizePx">getTextSizePx</link></entry>
+<entry>Calculates the size needed for a string in pixels <emphasis role="bold">(preferred method.)</emphasis></entry>
+</row>
+<row>
 <entry><link linkend="mthGetTextSizeScreen">getTextSizeScreen</link></entry>
+<entry>Calculates the size needed for a string in pixels.</entry>
 </row>
 <row>
 <entry>GetValue</entry>
@@ -1429,53 +1440,54 @@ to Init.
 </programlisting>
 
 <para>
-  Prior to the creation of the underlying Windows dialog, the font name attribute specifies the name of
-  the font that will be used to create the dialog. This font is only used when the font is not specified
-  in the <link linkend="mthCreate">create</link>() or the <link
-  linkend="mthCreateCenter">createCenter</link>() methods. After the creation of the dialog, the
-  attribute reflects the font name that was actually used to create the dialog.
+  Prior to the creation of the underlying Windows dialog, the font name attribute specifies the name of the font that
+  will be used to create the dialog. This font is used in a <link linkend="clsUserDialog"></link> when the font is not
+  specified in the <link linkend="mthCreate">create</link>() or the <link
+  linkend="mthCreateCenter">createCenter</link>() methods, or in a <link linkend="clsRcDialog">RcDialog</link> where the
+  font is not specified in the resource script file. With a binary compiled dialog resource (<link
+  linkend="clsResDialog">ResDialog</link>) the font has already been specified when the dialog template
+  was compiled and can not be changed. Therefore the font name attribute has no effect on a ResDialog prior to the
+  execution of the dialog.
 </para>
 <para>
-  This applies to all dialogs, with this cavaet.  With a binary compiled dialog resource (<link
-  linkend="clsResDialog">ResDialog</link>) the font has always been specified when the dialog template
-  was compiled. Therefore the font name attribute has no effect on a ResDialog prior to the execution of
-  the dialog.  However, when the ResDialog object is executed, the font name attribute is updated to
-  reflect the font used by the dialog.
+  After the creation of the dialog, the attribute always reflects the font name that was actually used the underlying
+  dialog was created. The public <link linkend="mthSetDlgFont">setDlgFont</link>() method can be used to set both the
+  font name and font size attributes at the same time.
+</para>
+<para>
+  In order to accurately caclulate <link linkend="defDialogUnit">dialog units</link> in methods such as <link
+  linkend="mthGetTextSizeDu">getTexSizeDu</link>(), it is important that the <emphasis role="italic">fontName</emphasis>
+  and <link linkend="atrFontSize">fontSize</link> attributes match the actual font that the dialog will use. Therefore,
+  whenever dialog unit calculations are going to be made before the underlying dialog is created, it is important to set
+  these attributes to match the font that will be used in the dialog. This must be done before the dialog unit
+  calculations.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
     <para>
       Getting the value of the font name attribute is public:
-      <programlisting>
-      <![CDATA[
-      name = dlgObj~fontName
-      ]]>
-      </programlisting>
+<programlisting>
+<![CDATA[
+  name = dlgObj~fontName
+]]>
+</programlisting>
     </para>
     <para>
-      Setting the value of the font name attribute is private:
-      <programlisting>
-      <![CDATA[
-      dlgObj~fontName = "MS Sans Serif"
-      ]]>
-      </programlisting>
-      will result in an error.
-    </para>
-    <para>
-      Set the value of the font name within a method context of the dialog object:
-      <programlisting>
-      <![CDATA[
-      ::class 'MessageBox' subclass UserDialog
+      Setting the value of the font name attribute is private and can only be used within a method context of the
+      dialog object:
+<programlisting>
+<![CDATA[
+  ::class 'MessageBox' subclass UserDialog
 
-      ::method init
+  ::method init
 
-        forward class (super) continue
-        if self~initCode <> 0 then return
+    forward class (super) continue
+    if self~initCode <> 0 then return
 
-        self~fontName = "MS Sans Serif"
-      ]]>
-      </programlisting>
+    self~fontName = "MS Sans Serif"
+]]>
+</programlisting>
     </para>
     <note><title>Note</title><para>
       The font name and font size attributes are set in the super class init() method to the value of the
@@ -1552,53 +1564,36 @@ to Init.
 </programlisting>
 
 <para>
-  Prior to the creation of the underlying Windows dialog, the font size attribute specifies the size of
-  the font that will be used to create the dialog. This font is only used when the font is not specified
-  in the <link linkend="mthCreate">create</link>() or the <link
-  linkend="mthCreateCenter">createCenter</link>() methods. After the creation of the dialog, the
-  attribute reflects the font size that was actually used to create the dialog.
-</para>
-<para>
-  This applies to all dialogs, with this cavaet.  With a binary compiled dialog resource (<link
-  linkend="clsResDialog">ResDialog</link>) the font has always been specified when the dialog template
-  was compiled. Therefore the font size attribute has no effect on a ResDialog prior to the execution of
-  the dialog.  However, when the ResDialog object is executed, the font size attribute is updated to
-  reflect the font used by the dialog.
+  The <emphasis role="italic">fontSize</emphasis> attribute is the counterpart to the <link
+  linkend="atrFontName">fontName</link> attribute. The description and remarks for the <emphasis
+  role="italic">fontName</emphasis> attribute apply equally well to the <emphasis role="italic">fontSize</emphasis>
+  attribute.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
     <para>
       Getting the value of the font size attribute is public:
-      <programlisting>
-      <![CDATA[
-      size = dlgObj~fontSize
-      ]]>
-      </programlisting>
+<programlisting>
+<![CDATA[
+  size = dlgObj~fontSize
+]]>
+</programlisting>
     </para>
     <para>
       Setting the value of the font size attribute is private:
-      <programlisting>
-      <![CDATA[
-      dlgObj~fontSize = 8
-      ]]>
-      </programlisting>
-      will result in an error.
-    </para>
-    <para>
-      Set the value of the font name within a method context of the dialog object:
-      <programlisting>
-      <![CDATA[
-      ::class 'MessageBox' subclass UserDialog
+<programlisting>
+<![CDATA[
+::class 'MessageBox' subclass UserDialog
 
-      ::method init
+::method init
 
-        forward class (super) continue
-        if self~initCode <> 0 then return
+  forward class (super) continue
+  if self~initCode <> 0 then return
 
-        self~fontSize = 8
-      ]]>
-      </programlisting>
+  self~fontSize = 8
+]]>
+</programlisting>
     </para>
     <note><title>Note</title><para>
       The font name and font size attributes are set in the super class init() method to the value of the
@@ -1734,6 +1729,82 @@ IDs defined in the header file.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthSetDlgFont"><title>setDlgFont</title>
+<indexterm><primary>setDlgFont</primary>
+<secondary>PlainBaseDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setDlgFont(--fontName--+-----------+--)------------------------------------><
+                           +-,-fontSize+
+]]>
+</programlisting>
+
+<para>
+  Sets the font that to be used for the underlying Windows dialog, when it is created.  This is primarily of use in a
+  <link linkend="clsUserDialog">UserDialog</link> or a subclasses of a <emphasis role="italic">UserDialog</emphasis>.
+  This method sets the <link linkend="atrFontName">fontName</link> and <link linkend="atrFontSize">fontSize</link>
+  attributes.
+</para>
+<para>
+  In a <link linkend="clsResDialog">ResDialog</link>, the font of the compiled binary resource will always be used, and
+  the font set by this method has no bearing. In a <link linkend="clsRcDialog">RcDialog</link>, if the resource script
+  file specifies the font, that font will be used. Likewise, in a <link linkend="clsUserDialog">UserDialog</link>, if
+  the programmer specifies a font in the <emphasis role="italic">create</emphasis>() method call, (or the <emphasis
+  role="italic">createCenter</emphasis>() method call,) the specified font over-rides what is set by this method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.  The font name must be less than 256 characters in
+    length.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>fontName</term>
+    <listitem>
+    <para>
+      Required. The name of the font, such as Tahoma.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fontSize</term>
+    <listitem>
+    <para>
+      Optional. The point size of the font, such as 10. The default point size when this argument is omitted is 8.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PlainBaseDialog::setDlgFont() -->
 
 <section id="mthInitAutoDetection"><title>InitAutoDetection</title>
 <indexterm><primary>InitAutoDetection</primary>
@@ -4848,8 +4919,8 @@ includes things like the width of a scroll bar or the number of monitors
 attached to the system.
 </para>
 
-<section id="mthGetSelf"><title>GetSelf</title>
-<indexterm><primary>GetSelf</primary></indexterm>
+<section id="mthGetSelf"><title>getSelf</title>
+<indexterm><primary>getSelf</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aBaseDialog~GetSelf----------------------------------------><
@@ -4858,15 +4929,15 @@ attached to the system.
 ]]>
 </programlisting>
 
-<para>The GetSelf method returns the handle of the Windows Dialog associated
+<para>The getSelf method returns the handle of the Windows Dialog associated
 with the ooDialog dialog instance. A handle is a unique reference to a
 particular Windows object. Handles are used within some of the methods to work
 on a specific Windows object.
 </para>
 <note><title><emphasis role="bold">Note</emphasis></title><para>
-Prior to ooRexx 3.2.0, the <computeroutput>GetSelf</computeroutput> method was
+Prior to ooRexx 3.2.0, the <computeroutput>getSelf</computeroutput> method was
 not documented.  The <link linkend="h000086">Get</link> method was documented as
-if it were the <computeroutput>GetSelf</computeroutput> method. The
+if it were the <computeroutput>getSelf</computeroutput> method. The
 <computeroutput>Get</computeroutput> method returns the handle to the most
 recently created dialog.  In an application with more than one dialog this may
 not be the same as the Windows dialog associated with the instance object the
@@ -5207,7 +5278,7 @@ in one string separated by blanks. </para>
 <varlistentry><term>hwnd</term>
 <listitem><para>The handle of the window.  There are a number of ways to get the
 window handle of objects used in ooDialog. For instance, use the <link
-linkend="h000086">GetSelf</link> method to retrieve the window handle of the
+linkend="h000086">getSelf</link> method to retrieve the window handle of the
 dialog instance.  Use the  <link linkend="h000086">Get</link> method to retrieve
 the window handle of the most recently created dialog.  To get the window handle
 to a dialog control, the <link linkend="mthGetItem">GetItem</link> method can be
@@ -5242,96 +5313,48 @@ used.
   linkend="update">Update</link>) to redraw the dialog.
 </para>
 
-<section id="mthGetTextSizeDlgClsPlainBaseDialog"><title>getTextSizeDlg</title>
-<indexterm><primary>getTextSizeDlg</primary>
-<secondary>PlainBaseDialog class</secondary></indexterm>
+
+<section id="mthGetTextSizeDu"><title>getTextSizeDu</title>
+<indexterm><primary>getTextSizeDu</primary></indexterm>
+<indexterm><primary>PlainBaseDialog class</primary>
+<secondary></secondary>getTextSizeDu</indexterm>
+<indexterm><primary>dialog object</primary>
+<secondary>getTextSizeDu</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getTextSizeDlg(--text--+-------------+--+-------------+--+---------+--)----><
-                           +-,-fontname--+  +-,-fontSize--+  +-,-hwnd--+
+>>--getTextSizeDu(--text--)----------------------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  Calculates the size, (width and height,) needed to display the given text in the specified font.  The
-  size is expressed in dialog units.  To calculate the size in pixels use the <link
-  linkend="mthGetTextSizeScreen">getTextSizeScreen</link>() method.
+  Calculates the size the given string will occupy in the dialog.  The size is returned in <link
+  linkend="defDialogUnit">dialog units</link>.  To calculate the size in pixels use the <link
+  linkend="mthGetTextSizePx">getTextSizePx</link>() method.
 </para>
 <para>
-  In general, dialog units are only of value in laying out the dialog controls before the underlying dialog is
-  created.  Once the underlying dialog is created, it makes more sense to work with pixels. Historically, the
-  ooDialog documentation did not make that distinction clear.  In addition, dialog units are tied directly to the
-  font used by a specific dialog.  Therefore, the window handle argument does not make much sens.
-</para>
-<para>
-  The normal use of this method would be to invoke it on a dialog object to help layout the dialog's controls prior
-  to the creation of the underlying dialog.  In this use case, the hwnd argument is meaningless. There is no window
-  handle for the dialog prior to the underlying dialog creation.  There is little point in using a window handle
-  from some other dialog. The hwnd argument remains to maintain compatibility with previous versions of ooDialog.
-</para>
-<para>
-  This method replaces the deprecated <link linkend="deprecatedDialogMethods">deprecated</link> <emphasis
-  role="italic">getTextSize</emphasis> method of the dialog object.  Becuase of the backwards compatibility
-  restraint it is harder than necessary to document exactly how this method works.
-</para>
-<para>
-  The ooDialog programmer is <emphasis role="bold">strongly</emphasis> encouraged to only inovke this
-  method through a dialog object.  Future versions of ooDialog may remove this method from the instance
-  methods of the <link linkend="clsDialogControl">DialogControl</link> class.
+  The primary use of this method would be in laying out the dialog template in a <link
+  linkend="clsUserDialog">UserDialog</link> before the underlying dialog is created.  To be sure the calculation is
+  correct, ensure that the <link linkend="atrFontName">dialog font attributes</link> are set to the font that will be
+  used by the dialog when it is created. The attributes can be set directly or by using the <link
+  linkend="mthSetDlgFont">setDlgFont</link>() method.
+<programlisting>
+<![CDATA[
+
+  dlg~setDlgFont("fontName", fontSize)
+  dlg~getTextSizeDu("some text")
+]]>
+</programlisting>
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
+    <para>The only argument is:
     <variablelist>
       <varlistentry><term>text</term>
       <listitem>
         <para>
-          The string whose size is desired.  If none of the optional arguments are specified then the
-          dialog font is used to calculate the size.
-        </para>
-        <para>
-          However, there are some exceptions to this if the method is invoked <emphasis
-          role="italic">after</emphasis> the underlying dialog is created.
-          <orderedlist>
-            <listitem>
-            <para>
-              If this method is invoked through a dialog control object, then the size is calculated
-              using the dialog control font.  This usage is deprecated and the ooDialog programmer is
-              <emphasis role="bold">strongly</emphasis> encouraged to not use this method in this manner.
-            </para>
-            </listitem>
-            <listitem>
-            <para>
-              If the fourth, optional, hwnd argument is used, then the font of that window is used to
-              calculate the size. Again, the ooDialog programmer is <emphasis
-              role="bold">strongly</emphasis> encouraged to not use this method in this manner.
-            </para>
-            </listitem>
-          </orderedlist>
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>fontName</term>
-      <listitem>
-        <para>
-          Optional. The name of the font to use to calculate the size needed for the string.  Use This
-          argument when the string will be displayed in a font <emphasis role="bold">different</emphasis>
-          than the dialog font.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>fontSize</term>
-      <listitem>
-        <para>
-          Optional. The size of the font named by the fontName argument. If this argument is omitted then
-          the defualt font size is used. (Currently the default size is 8.)
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>hwnd</term>
-      <listitem>
-        <para>
-          Optional. A valid window handle. The font of this window is used to calculate the text size.
-          This argument is always ignored when the fontName argument is specified.  As per the notes
-          above the ooDialog programmer is encouraged not to use this argument.
+          Calculate the size for this string.
         </para>
       </listitem></varlistentry>
     </variablelist>
@@ -5340,8 +5363,7 @@ used.
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The size needed for the string is returned in a <link linkend="clsSize">Size</link> object.  The
-      size is specified in dialog units.
+      The size needed for the string is returned as a <link linkend="clsSize">Size</link> object.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -5352,7 +5374,7 @@ used.
       defineDialog() to add the message text to the dialog.
       <programlisting>
       <![CDATA[
-      size = self~getTextSizeDlg(message)
+      size = self~getTextSizeDu(message)
       messageRect = .directory~new
       messageRect~x = 10
       messageRect~y = 10
@@ -5368,6 +5390,106 @@ used.
 
       ]]>
       </programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PlainBaseDialog::getTextSizeDu() -->
+
+
+<section id="mthGetTextSizeDlgClsPlainBaseDialog"><title>getTextSizeDlg</title>
+<indexterm><primary>getTextSizeDlg</primary></indexterm>
+<indexterm><primary>getTextSizeDlg</primary>
+<secondary>PlainBaseDialog class</secondary></indexterm>
+<indexterm><primary>PlainBaseDialog class</primary>
+<secondary>getTextSizeDlg</secondary></indexterm>
+<indexterm><primary>dialog object</primary>
+<secondary>getTextSizeDlg</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getTextSizeDlg(--text--+-------------+--+-------------+--+---------+--)----><
+                           +-,-fontname--+  +-,-fontSize--+  +-,-hwnd--+
+]]>
+</programlisting>
+
+<para>
+  Calculates the size, (width and height,) in <link linkend="defDialogUnit">dialog units</link> for a given string.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> this method replaces the deprecated <link
+  linkend="deprecatedDialogMethods">deprecated</link> <emphasis role="italic">getTextSize</emphasis> method of the
+  dialog object. The convoluted arguments to this method are needed to retain backwards compatibility with that method.
+  The <link linkend="mthGetTextSizeDu">getTextSizeDu</link>() method should be used if at all possible.
+</para>
+<para>
+  In general, dialog units are only of value in laying out the dialog controls before the underlying dialog is
+  created.  Once the underlying dialog is created, it makes more sense to work with pixels. Since dialog units are tied
+  directly to the font actually used by a specific dialog, specifying a font different from that used by the dialog will
+  usually give incorrect results. Likewise, specifying a window handle other than the window handle of the dialog will
+  also give incorrect results.
+</para>
+<para>
+  One exception to this, is when the text size is being calculated for a dialog control that the programmer intends to
+  set to a different font than the dialog font. In this case, specify the name and size of the font that the dialog
+  control will use.
+</para>
+<para>
+  If this method is used to aid in the lay out of the dialog controls, to be sure the calculation is correct, the <link
+  linkend="atrFontName">dialog font attributes</link> must be set to the font that will be used by the dialog when it is
+  created. The attributes can be set directly or by using the <link linkend="mthSetDlgFont">setDlgFont</link>() method.
+<programlisting> <![CDATA[
+
+  dlg~setDlgFont("fontName", fontSize)
+  size = dlg~getTextSizeDlg("some text")
+]]>
+</programlisting>
+</para>
+<para>
+  The ooDialog programmer is <emphasis role="bold">strongly</emphasis> encouraged to use the <link
+  linkend="mthGetTextSizeDu"></link>() rather than this method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>text</term>
+      <listitem>
+        <para>
+          The string whose size is desired.  If none of the optional arguments are specified then the
+          dialog font is used to calculate the size.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fontName</term>
+      <listitem>
+        <para>
+          Optional. The name of the font to use to calculate the size needed for the string.  Use This argument when the
+          string will be displayed in a dialog control that is using a font <emphasis role="bold">different</emphasis>
+          than the dialog font.  When this argument is used, then the specified font is always used in the calculation.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fontSize</term>
+      <listitem>
+        <para>
+          Optional. The size of the font named by the fontName argument. This argument is always ignored when the
+          fontName argument is omitted. If the fontName is specified and this argument is omitted then the default font
+          size is used. (Currently the default size is 8.)
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>hwnd</term>
+      <listitem>
+        <para>
+          Optional. A valid window handle. The font of this window is used to calculate the text size. This argument is
+          always ignored when the fontName argument is specified.  As per the notes above the Rexx programmer is
+          encouraged not to use this argument.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The size needed for the string is returned in a <link linkend="clsSize">Size</link> object.
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -6234,7 +6356,7 @@ or a dialog item. </para>
 <variablelist>
 <varlistentry><term>hwnd</term>
 <listitem><para>A handle to the window or dialog item. Use the <link
-linkend="mthGetSelf">GetSelf</link> or <link linkend="mthGetItem">GetItem</link>
+linkend="mthGetSelf">getSelf</link> or <link linkend="mthGetItem">GetItem</link>
 method to get a handle.
 </para></listitem></varlistentry>
 </variablelist>
@@ -6976,7 +7098,7 @@ of a window. The values are in pixels. </para>
 <variablelist>
 <varlistentry><term>hwnd</term>
 <listitem><para>The handle of the window. See <link
-linkend="mthGetSelf">GetSelf</link> or <link linkend="mthGetItem">GetItem</link>
+linkend="mthGetSelf">getSelf</link> or <link linkend="mthGetItem">GetItem</link>
 for information on obtaining a window handle.
 </para></listitem></varlistentry>
 <varlistentry><term>left</term>
@@ -6998,7 +7120,7 @@ for information on obtaining a window handle.
 
 <programlisting>
 <![CDATA[
-hwnd=MyDialog~GetSelf
+hwnd=MyDialog~getSelf
 MyDialog~ClearRect(hwnd, 2, 4, 22, 24)
 ]]>
 </programlisting>
@@ -7048,7 +7170,7 @@ of the given window. </para>
 <variablelist>
 <varlistentry><term>hwnd</term>
 <listitem><para>The handle of the window. See <link
-linkend="mthGetSelf">GetSelf</link>, <link linkend="h000086">Get</link>, or
+linkend="mthGetSelf">getSelf</link>, <link linkend="h000086">Get</link>, or
 <link linkend="mthGetItem">GetItem</link> for some methods to get a window handle.
 </para></listitem></varlistentry>
 </variablelist>
@@ -8317,12 +8439,13 @@ end
   <tertiary>getTextSize</tertiary>
 </indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Replace this method with the <link
-  linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>() method.
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Replace this method with the preferably, or the <link
+  linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>() method is absolutely necessary.
 </para>
 <para>
   This method never worked correctly, the previous documentation for this method was incorrect and /
-  or misleading. That has been fixed in the <emphasis role="italic">getTextSizeDlg</emphasis>() method.
+  or misleading. That has been fixed in the <emphasis role="italic">getTextSizeDu</emphasis>() and <emphasis
+  role="italic">getTextSizeDlg</emphasis>() methods.
 </para>
 </section>
 
