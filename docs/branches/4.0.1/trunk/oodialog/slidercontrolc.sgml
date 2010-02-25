@@ -1,0 +1,956 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="slidercontrolc"><title>SliderControl Class</title>
+<indexterm><primary>SliderControl class</primary></indexterm>
+<para>A slider control, which is also called a trackbar, is a window that contains
+a slider and optional tick marks.  When the user moves the slider, using either
+the mouse or the direction keys, the slider sends notification messages to
+indicate the change.</para>
+<para>Sliders are useful if you want the user to select a specific value or a
+set of consecutive values within a specific range. For example, you might
+use a slider to enable the user to set the repeat rate of the keyboard by
+moving the slider to a given tick mark.</para>
+<para>The slider in a trackbar moves in increments that you specify when you
+create it.  For example, if you specify that the trackbar should have a range
+from 0 to 10, the slider can occupy only eleven positions: a position at the
+left side of the slider and one position for each increment in the range.
+Typically, each of these positions is identified by a tick mark.</para>
+<para>After you have created a slider, you can use the SliderControl methods
+to set and retrieve its properties. Refer to PROPDEMO.REX in
+the OODIALOG\SAMPLES directory for an example.</para>
+<para>The SliderControl class sends notification messages
+to notify about the event. For information about notification messages, refer
+to <link linkend="connectlistnotify">ConnectListNotify</link>.</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The SliderControl class requires the class definition
+file <computeroutput>oodwin32.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "oodwin32.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem><para>Instances of the SliderControl class implement
+the methods listed in the
+<link linkend="t000030">SliderControl Instance Methods</link> table.</para>
+
+<table id="t000030" frame="all">
+<title>SliderControl Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>ClearSelRange</entry>
+<entry><link linkend="clearselrange">ClearSelRange</link></entry>
+</row>
+<row>
+<entry>ClearTicks</entry>
+<entry><link linkend="clearticks">ClearTicks</link></entry>
+</row>
+<row>
+<entry>CountTicks</entry>
+<entry><link linkend="countticks">CountTicks</link></entry>
+</row>
+<row>
+<entry>GetLineStep</entry>
+<entry><link linkend="getlinestep">GetLineStep</link></entry>
+</row>
+<row>
+<entry>GetPageStep</entry>
+<entry><link linkend="getpagestep">GetPageStep</link></entry>
+</row>
+<row>
+<entry>GetTick</entry>
+<entry><link linkend="gettick">GetTick</link></entry>
+</row>
+<row>
+<entry>InitRange</entry>
+<entry><link linkend="initrange">InitRange</link></entry>
+</row>
+<row>
+<entry>InitSelRange</entry>
+<entry><link linkend="initselrange">InitSelRange</link></entry>
+</row>
+<row>
+<entry>Pos</entry>
+<entry><link linkend="pos">Pos</link></entry>
+</row>
+<row>
+<entry>Pos=</entry>
+<entry><link linkend="posnew">Pos=</link></entry>
+</row>
+<row>
+<entry>Range</entry>
+<entry><link linkend="rangesc">Range</link></entry>
+</row>
+<row>
+<entry>SelRange</entry>
+<entry><link linkend="selrange">SelRange</link></entry>
+</row>
+<row>
+<entry>SetLineStep</entry>
+<entry><link linkend="setlinestep">SetLineStep</link></entry>
+</row>
+<row>
+<entry>SetMax</entry>
+<entry><link linkend="setmax">SetMax</link></entry>
+</row>
+<row>
+<entry>SetMin</entry>
+<entry><link linkend="setmin">SetMin</link></entry>
+</row>
+<row>
+<entry>SetPageStep</entry>
+<entry><link linkend="setpagestep">SetPageStep</link></entry>
+</row>
+<row>
+<entry>setPos</entry>
+<entry><link linkend="setpossc">setPos</link></entry>
+</row>
+<row>
+<entry>SetSelEnd</entry>
+<entry><link linkend="setselend">SetSelEnd</link></entry>
+</row>
+<row>
+<entry>SetSelStart</entry>
+<entry><link linkend="setselstart">SetSelStart</link></entry>
+</row>
+<row>
+<entry>SetTickAt</entry>
+<entry><link linkend="settickat">SetTickAt</link></entry>
+</row>
+<row>
+<entry>SetTickFrequency</entry>
+<entry><link linkend="settickfrequency">SetTickFrequency</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+<section id="posnew"><title>Pos=</title>
+<indexterm><primary>Pos=</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSliderControl~Pos=--value----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Pos= method sets the new logical position of
+the slider and redraws the slider.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>value</term>
+<listitem><para>The new logical position. A valid position is an integer value within
+the range of the minimum and maximum positions of the slider. If you specify
+a value outside this range, the position is set to the maximum or minimum
+position.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setpossc"><title>setPos</title>
+<indexterm><primary>setPos</primary>
+<secondary>SliderControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                                   +-0-+
+>>-aSliderControl~setPos(--pos--,--+---+--)--------------------><
+                                   +-1-+
+
+
+]]>
+</programlisting>
+
+<para>The setPos method sets the new logical position
+of the slider and redraws the slider if required.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>pos</term>
+<listitem><para>The new logical position. A valid position is an integer value within
+the range of the minimum and maximum positions of the slider. If you specify
+a value outside this range, the position is set to the maximum or minimum
+position.
+</para></listitem></varlistentry>
+<varlistentry><term>redraw</term>
+<listitem><para>The redraw flag. If you specify 1, the control is redrawn with the slider
+at the position given by <emphasis role="italic">pos</emphasis>.
+If you specify 0 or omit this argument, the control is not redrawn. However,
+the new position is set regardless of the redraw argument.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example sets the slider to the maximum position, with
+the range of the slider already been set to 0 to 100 using the setRange method:
+<programlisting>
+<![CDATA[
+::method SetToMax
+  ctrl=self~GetSliderControl("IDC_1")
+  ctrl~setPos(100,1)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="pos"><title>Pos</title>
+<indexterm><primary>Pos</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSliderControl~Pos------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Pos method retrieves the current logical position
+of the slider.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The current logical position of the slider.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays the current slider position:
+<programlisting>
+<![CDATA[
+::method DisplayPos
+  ctrl=self~GetSliderControl("IDC_1")
+  pos = ctrl~Pos
+  say pos
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="initrange"><title>InitRange</title>
+<indexterm><primary>InitRange</primary></indexterm>
+<programlisting>
+<![CDATA[
+                              +-0---+     +-100-+     +-0-+
+>>-aSliderControl~InitRange(--+-----+--,--+-----+--,--+---+--)-><
+                              +-min-+     +-max-+     +-1-+
+
+
+]]>
+</programlisting>
+
+<para>The InitRange method sets the minimum and maximum
+positions of the slider and redraws the slider, if required.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>min</term>
+<listitem><para>The minimum position of the slider. The default is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>max</term>
+<listitem><para>The maximum position of the slider. The default is 100.
+</para></listitem></varlistentry>
+<varlistentry><term>redraw</term>
+<listitem><para>The redraw flag. If you specify 1, the slider is redrawn after the range
+is set. If you specify 0 or omit this argument, the slider is not redrawn.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The range was set.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>The minimum you specified is greater than the maximum.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example sets the range, the line step, the page step,
+and the tick frequency of the slider:
+<programlisting>
+<![CDATA[
+::method InitDialog
+  curSL = self~GetSliderControl("IDC_1")
+  if curSL \= .Nil then do
+    curSL~InitRange(0,100)
+    curSL~SetLineStep(1)
+    curSL~SetPageStep(10)
+    curSL~SetTickFrequency(10)
+  end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setmin"><title>SetMin</title>
+<indexterm><primary>SetMin</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                   +-1-+
+>>-aSliderControl~SetMin(--min--,--+---+--)--------------------><
+                                   +-0-+
+
+
+]]>
+</programlisting>
+
+<para>The SetMin method sets the minimum logical position
+for a slider and redraws the slider, if required.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>min</term>
+<listitem><para>The minimum position of the slider.
+</para></listitem></varlistentry>
+<varlistentry><term>redraw</term>
+<listitem><para>The redraw flag. If you specify 1 or omit this argument, the slider
+is redrawn after the minimum position is set. If you specify 0, the slider
+is not redrawn.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The minimum position was set.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You omitted <emphasis role="italic">min</emphasis>.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setmax"><title>SetMax</title>
+<indexterm><primary>SetMax</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                   +-1-+
+>>-aSliderControl~SetMax(--max--,--+---+--)--------------------><
+                                   +-0-+
+
+
+]]>
+</programlisting>
+
+<para>The SetMax method sets the maximum logical position
+for a slider and redraws the slider, if required.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>min</term>
+<listitem><para>The maximum position of the slider.
+</para></listitem></varlistentry>
+<varlistentry><term>redraw</term>
+<listitem><para>The redraw flag. If you specify 1 or omit this argument, the slider
+is redrawn after the maximum position is set. If you specify 0, the slider
+is not redrawn.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The maximum position was set successfully.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You omitted <emphasis role="italic">min</emphasis>.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="rangesc"><title>Range</title>
+<indexterm><primary>Range</primary>
+<secondary>SliderControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSliderControl~Range----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Range method retrieves the minimum and maximum
+positions of the slider.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The minimum and maximum positions of the slider, separated by a blank.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays the range of a slider:
+<programlisting>
+<![CDATA[
+::method DisplayRange
+  ctrl=self~GetSlidercontrol("IDC_1")
+  range = ctrl~Range
+  parse var range min max
+  say min max
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="clearticks"><title>ClearTicks</title>
+<indexterm><primary>ClearTicks</primary></indexterm>
+<programlisting>
+<![CDATA[
+                               +-1-+
+>>-aSliderControl~ClearTicks(--+---+--)------------------------><
+                               +-0-+
+
+
+]]>
+</programlisting>
+
+<para>The ClearTicks method removes the current tick
+marks from a slider. It does not, however, remove the first and last tick
+marks because they are created automatically by the slider.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>redraw</term>
+<listitem><para>The redraw flag. If you specify 1 or omit this argument, the slider
+is redrawn after the tick marks are removed. If you specify 0, the slider
+is not redrawn.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>0.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="countticks"><title>CountTicks</title>
+<indexterm><primary>CountTicks</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSliderControl~CountTicks-----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The CountTicks method retrieves the number of tick
+marks in a slider, including the first and last tick marks, which are created
+automatically by the slider.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of tick marks.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="gettick"><title>GetTick</title>
+<indexterm><primary>GetTick</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSliderControl~GetTick(--tic--)-----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetTick method retrieves the logical position
+of a tick mark in a slider. A valid position is an integer value within the
+minimum and maximum positions of the slider.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>tic</term>
+<listitem><para>A zero-based index identifying a tick mark. A valid index is in the
+range of 0 to 2 ticks less than the tick count returned by the CountTicks
+method (see <link linkend="countticks">CountTicks</link>).
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The logical position of the specified tick mark, or -1 if you
+did not specify a valid index for <emphasis role="italic">tic</emphasis>.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="settickat"><title>SetTickAt</title>
+<indexterm><primary>SetTickAt</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSliderControl~SetTickAt(--pos--)---------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SetTickAt method sets a tick mark at the specified
+logical position in the slider.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>pos</term>
+<listitem><para>An integer value within the minimum and maximum positions of the slider.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The tick mark was set.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You omitted <emphasis role="italic">pos</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="settickfrequency"><title>SetTickFrequency</title>
+<indexterm><primary>SetTickFrequency</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                     +-1----+
+>>-aSliderControl~SetTickFrequency(--+------+--)---------------><
+                                     +-freq-+
+
+
+]]>
+</programlisting>
+
+<para>The SetTickFrequency method sets the interval frequency
+for tick marks in a slider. For example, if you set the frequency to 2, a
+tick mark is displayed for every other increment in the slider's range.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>freq</term>
+<listitem><para>The frequency of the tick marks. The default is 1, that is,
+every increment in the range is associated with a tick mark.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The tick mark frequency was set.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>You omitted <emphasis role="italic">freq</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example sets the range, the line step, the page step,
+and the tick frequency of the slider:
+<programlisting>
+<![CDATA[
+::method InitDialog
+  curSL = self~GetSliderControl("IDC_1")
+  if curSL \= .Nil then do
+    curSL~InitRange(0,100)
+    curSL~SetLineStep(1)
+    curSL~SetPageStep(10)
+    curSL~SetTickFrequency(10)
+  end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="getlinestep"><title>GetLineStep</title>
+<indexterm><primary>GetLineStep</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSliderControl~GetLineStep----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetLineStep method retrieves the number of
+logical positions that the slider moves in response to keyboard input from
+the arrow keys, such as the Right arrow or the Down arrow keys. The logical
+positions are the integer increments within the minimum and maximum positions
+of the slider.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The line size for the slider.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="getpagestep"><title>GetPageStep</title>
+<indexterm><primary>GetPageStep</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSliderControl~GetPageStep----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetPageStep method retrieves the number of
+logical positions that the slider moves in response to keyboard input, such
+as the PageUp or PageDown keys, or mouse input, such as clicks in the slider's
+channel. The logical positions are the integer increments within the minimum
+and maximum positions of the slider.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The page size for the slider.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setlinestep"><title>SetLineStep</title>
+<indexterm><primary>SetLineStep</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSliderControl~SetLineStep(--step--)------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SetLineStep method sets the number of logical
+positions that the slider moves in response to keyboard input from the arrow
+keys, such as the Right arrow or the Down arrow keys. The logical positions
+are the integer increments within the minimum and maximum positions of the
+slider.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>step</term>
+<listitem><para>The new line size.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The previous line size, or -1 if you omit
+<emphasis role="italic">step</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example sets the range, the line step, the page step,
+and the tick frequency of the slider:
+<programlisting>
+<![CDATA[
+::method InitDialog
+  curSL = self~GetSliderControl("IDC_1")
+  if curSL \= .Nil then do
+    curSL~InitRange(0,100)
+    curSL~SetLineStep(1)
+    curSL~SetPageStep(10)
+    curSL~SetTickFrequency(10)
+  end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setpagestep"><title>SetPageStep</title>
+<indexterm><primary>SetPageStep</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSliderControl~SetPageStep(--step--)------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SetPageStep method sets the number of logical
+positions that the slider moves in response to keyboard input, such as the
+PageUp or PageDown keys, or mouse input, such as clicks in the slider's
+channel. The logical positions are the integer increments within the minimum
+and maximum positions of the slider.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>step</term>
+<listitem><para>The new page size.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The previous page size.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example sets the range, the line step, the page step,
+and the tick frequency of the slider:
+<programlisting>
+<![CDATA[
+::method InitDialog
+  curSL = self~GetSliderControl("IDC_1")
+  if curSL \= .Nil then do
+    curSL~InitRange(0,100)
+    curSL~SetLineStep(1)
+    curSL~SetPageStep(10)
+    curSL~SetTickFrequency(10)
+  end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="initselrange"><title>InitSelRange</title>
+<indexterm><primary>InitSelRange</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                 +-0---+                 +-0------+
+>>-aSliderControl~InitSelRange(--+-----+--,--+-----+--,--+--------+--)-><
+                                 +-min-+     +-max-+     +-redraw-+
+
+
+]]>
+</programlisting>
+
+<para>The InitSelRange method sets the starting and ending
+logical positions for the current selection range in a slider. It is ignored
+if the slider does not have a selection range.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>min</term>
+<listitem><para>The logical starting position of the selection range.
+The default is 0.
+</para></listitem></varlistentry>
+<varlistentry><term>max</term>
+<listitem><para>The logical ending position of the selection range. If you omit this
+argument, the maximum position of the slider's range is assumed.
+</para></listitem></varlistentry>
+<varlistentry><term>redraw</term>
+<listitem><para>The redraw flag. If you specify 1, the slider is redrawn after the selection
+range is set. If you specify 0 or omit this argument, the selection range
+is set but the slider is not redrawn.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The minimum you specified is greater than the maximum.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>In all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setselstart"><title>SetSelStart</title>
+<indexterm><primary>SetSelStart</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                        +-1------+
+>>-aSliderControl~SetSelStart(--min--,--+--------+--)----------><
+                                        +-redraw-+
+
+
+]]>
+</programlisting>
+
+<para>The SetSelStart method sets the starting logical
+position for the current selection range in a slider. It is ignored if the
+slider does not have a selection range.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>min</term>
+<listitem><para>The logical starting position of the selection range.
+</para></listitem></varlistentry>
+<varlistentry><term>redraw</term>
+<listitem><para>The redraw flag. If you specify 1 or omit this argument, the slider
+is redrawn after the starting position has been set. If you specify 0, the
+starting position is set but the slider is not redrawn.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>You omitted <emphasis role="italic">min</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>In all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setselend"><title>SetSelEnd</title>
+<indexterm><primary>SetSelEnd</primary></indexterm>
+<programlisting>
+<![CDATA[
+                                      +-1------+
+>>-aSliderControl~SetSelEnd(--max--,--+--------+--)------------><
+                                      +-redraw-+
+
+
+]]>
+</programlisting>
+
+<para>The SetSelEnd method sets the logical ending position
+for the current selection range in a slider. It is ignored if the slider does
+not have a selection range.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>min</term>
+<listitem><para>The logical ending position of the selection range.
+</para></listitem></varlistentry>
+<varlistentry><term>redraw</term>
+<listitem><para>The redraw flag. If you specify 1 or omit this argument, the
+slider is redrawn after the ending position has been set. If you specify 0,
+the ending position is set but the slider is not redrawn.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>You omitted <emphasis role="italic">max</emphasis>.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>In all other cases.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="clearselrange"><title>ClearSelRange</title>
+<indexterm><primary>ClearSelRange</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSliderControl~ClearSelRange(--redraw--)--------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ClearSelRange method clears the current selection
+range in a slider.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>redraw</term>
+<listitem><para>The redraw flag. If you specify 1, the slider is redrawn after
+the selection is cleared.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>0.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selrange"><title>SelRange</title>
+<indexterm><primary>SelRange</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aSliderControl~SelRange-------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SelRange method retrieves the starting position
+of the current selection range in a slider.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The starting and ending positions of the current selection
+range, separated by a blank.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</chapter>

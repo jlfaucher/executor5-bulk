@@ -1,0 +1,997 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="listboxc"><title>ListBox Class</title>
+<indexterm><primary>ListBox class</primary></indexterm>
+<para>The ListBox class provides methods to query and
+modify list box controls. It inherits all methods of the DialogControl class
+(see page <link linkend="clsDialogControl">DialogControl Class</link>).</para>
+<para>Use the GetListBox method (see page <link linkend="getlistbox">GetListBox</link>)
+to retrieve an object of the ListBox class.</para>
+<variablelist>
+<varlistentry><term>Requires:</term>
+<listitem><para>The ListBox class requires the class definition
+file <computeroutput>oodwin32.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "oodwin32.cls"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Methods:</term>
+<listitem><para>Instances of the ListBox class implement the
+methods listed in the
+<link linkend="t000025">ListBox Instance Methods</link> table.</para>
+
+<table id="t000025" frame="all">
+<title>ListBox Instance Methods</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...on page</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>Add</entry>
+<entry><link linkend="add">Add</link></entry>
+</row>
+<row>
+<entry>AddDirectory</entry>
+<entry><link linkend="adddirectory">AddDirectory</link></entry>
+</row>
+<row>
+<entry>ColumnWidth</entry>
+<entry><link linkend="columnwidth">ColumnWidth</link></entry>
+</row>
+<row>
+<entry>Delete</entry>
+<entry><link linkend="delete">Delete</link></entry>
+</row>
+<row>
+<entry>DeleteAll</entry>
+<entry><link linkend="deleteall">DeleteAll</link></entry>
+</row>
+<row>
+<entry>DeSelectIndex</entry>
+<entry><link linkend="deselectindex">DeSelectIndex</link></entry>
+</row>
+<row>
+<entry>DeselectRange</entry>
+<entry><link linkend="deselectrange">DeselectRange</link></entry>
+</row>
+<row>
+<entry>Find</entry>
+<entry><link linkend="find">Find</link></entry>
+</row>
+<row>
+<entry>GetFirstVisible</entry>
+<entry><link linkend="getfirstvisible">GetFirstVisible</link></entry>
+</row>
+<row>
+<entry>GetText</entry>
+<entry><link linkend="gettext">GetText</link></entry>
+</row>
+<row>
+<entry>Insert</entry>
+<entry><link linkend="insert">Insert</link></entry>
+</row>
+<row>
+<entry>ItemHeight</entry>
+<entry><link linkend="itemheight">ItemHeight</link></entry>
+</row>
+<row>
+<entry>ItemHeight=</entry>
+<entry><link linkend="itemheightnew">ItemHeight=</link></entry>
+</row>
+<row>
+<entry>Items</entry>
+<entry><link linkend="items">Items</link></entry>
+</row>
+<row>
+<entry>MakeFirstVisible</entry>
+<entry><link linkend="makefirstvisible">MakeFirstVisible</link></entry>
+</row>
+<row>
+<entry>Modify</entry>
+<entry><link linkend="modify">Modify</link></entry>
+</row>
+<row>
+<entry>Select</entry>
+<entry><link linkend="selectlib">Select</link></entry>
+</row>
+<row>
+<entry>Selected</entry>
+<entry><link linkend="selectedlib">Selected</link></entry>
+</row>
+<row>
+<entry>SelectedIndex</entry>
+<entry><link linkend="selectedindex">SelectedIndex</link></entry>
+</row>
+<row>
+<entry>SelectedIndexes</entry>
+<entry><link linkend="selectedindexes">SelectedIndexes</link></entry>
+</row>
+<row>
+<entry>SelectedItems</entry>
+<entry><link linkend="selecteditems">SelectedItems</link></entry>
+</row>
+<row>
+<entry>SelectIndex</entry>
+<entry><link linkend="selectindex">SelectIndex</link></entry>
+</row>
+<row>
+<entry>SelectRange</entry>
+<entry><link linkend="selectrange">SelectRange</link></entry>
+</row>
+<row>
+<entry>SetTabulators</entry>
+<entry><link linkend="settabulators">SetTabulators</link></entry>
+</row>
+<row>
+<entry>SetWidth</entry>
+<entry><link linkend="setwidth">SetWidth</link></entry>
+</row>
+<row>
+<entry>Width</entry>
+<entry><link linkend="width">Width</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</listitem></varlistentry>
+</variablelist>
+
+<section id="add"><title>Add</title>
+<indexterm><primary>Add</primary>
+<secondary>ListBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~Add(--listEntry--)---------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Add method adds a new item to the list. If
+the list is not sorted, the new item is added to the end of the list.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>listEntry</term>
+<listitem><para>A text string added to the list.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A one-based index that specifies the position at which the entry has
+been added, or 0 or a value less than 0 to indicate an error.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="insert"><title>Insert</title>
+<indexterm><primary>Insert</primary>
+<secondary>ListBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~Insert(--+-------+--,--listEntry--)----------------><
+                     +-index-+
+
+
+]]>
+</programlisting>
+
+<para>The Insert method inserts a new item into the list
+after the specified item.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The index (starting with 1) of the list item after which the new item
+is to be added. If this argument is omitted, the list entry is added after
+the currently selected item.
+</para></listitem></varlistentry>
+<varlistentry><term>listEntry</term>
+<listitem><para>A text string added to the list.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A one-based index that specifies the position at which the entry has
+been added, or 0 or a value less than 0 to indicate an error.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="delete"><title>Delete</title>
+<indexterm><primary>Delete</primary>
+<secondary>ListBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~Delete(--+-------+--)------------------------------><
+                     +-index-+
+
+
+]]>
+</programlisting>
+
+<para>The Delete method removes a list item from the
+associated list box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The index (starting with 1) of the list item to be removed from the
+list. If this argument is omitted, the currently selected item is deleted.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of remaining list items, or 0 to indicate an error.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="deleteall"><title>DeleteAll</title>
+<indexterm><primary>DeleteAll</primary>
+<secondary>ListBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~DeleteAll------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The DeleteAll method removes all list items from
+the associated list box.</para>
+</section>
+
+<section id="find"><title>Find</title>
+<indexterm><primary>Find</primary>
+<secondary>ListBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~Find(--TextorPrefix--+---------------------------------+--)-><
+                                 +-,--+------------+--+----------+-+
+                                      +-startIndex-+  +-,--exact-+
+
+
+]]>
+</programlisting>
+
+<para>The Find method searches the list box for a list
+entry containing the specified text or prefix. The search is caseless.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>TextorPrefix</term>
+<listitem><para>The text or prefix for which the list is searched.
+</para></listitem></varlistentry>
+<varlistentry><term>startIndex</term>
+<listitem><para>The first list item at which the search is to be started. When the search
+reaches the bottom of the list, it is continued backward. If you omit this
+argument or specify 0, the entire list is searched.
+</para></listitem></varlistentry>
+<varlistentry><term>exact</term>
+<listitem><para>If you specify 1 or E, the text of the list item must exactly match
+the text specified for <emphasis role="italic">TextorPrefix</emphasis>. If you omit this argument or
+specify 0, the list entries are searched for a prefix that matches <emphasis role="italic">TextorPrefix</emphasis>.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The one-based index of the list entry that matches the search text,
+or 0 if not found.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selectedindex"><title>SelectedIndex</title>
+<indexterm><primary>SelectedIndex</primary>
+<secondary>ListBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~SelectedIndex--------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SelectedIndex method retrieves the
+index of the currently selected list entry. This entry is highlighted and
+surrounded by a dotted border. To get the selected items for a multiple selection
+listbox, use GetMultiList; see <link linkend="h000506">GetMultiList</link>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The one-based index of the currently selected list entry, or 0 if none
+is selected.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selectedlib"><title>Selected</title>
+<indexterm><primary>Selected</primary>
+<secondary>ListBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~Selected-------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Selected method retrieves the text of the currently
+selected list entry.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The text of the currently selected list entry, or an empty string if
+none is selected.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selectindex"><title>SelectIndex</title>
+<indexterm><primary>SelectIndex</primary>
+<secondary>ListBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~SelectIndex(--index--)-----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SelectIndex method selects the list
+entry at the specified position. The currently selected list item is highlighted
+and surrounded by a dotted border. To select multiple items of a multiple
+selection listbox, use SetMultiList; see <link linkend="h000575">SetMultiList</link>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The index (starting with 1) of the list item to be selected. If you
+specify 0 for this argument, the list box must not contain any selection.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>0 if an error occurred or you specified 0 for <emphasis role="italic">index</emphasis> to remove
+the selection.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="deselectindex"><title>DeSelectIndex</title>
+<indexterm><primary>DeselectIndex</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~DeSelectIndex(--+-------+--)-----------------------><
+                            +-index-+
+
+
+]]>
+</programlisting>
+
+<para>The DeSelectIndex method deselects the list entry
+at the specified position for multiple selection listboxes. The currently
+selected list item is highlighted and surrounded by a dotted border.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The index (starting with 1) of the list item to be deselected. If you
+specify no index or 0 for this argument, all items are deselected.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>-1 if an error occurred.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selectlib"><title>Select</title>
+<indexterm><primary>Select</primary>
+<secondary>ListBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~Select(--ItemText--)-------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Select method selects the list entry that matches
+the specified text.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>ItemText</term>
+<listitem><para>The text that the list box is searched for.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>0 if an error occurred or a matching list entry was not found.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selectrange"><title>SelectRange</title>
+<indexterm><primary>SelectRange</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~SelectRange(--+-----------------------------+--)---><
+                          +-startIndex--+-------------+-+
+                                        +-,--endIndex-+
+
+
+]]>
+</programlisting>
+
+<para>The SelectRange method selects one or more consecutive
+items of the associated multiselection list box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:</para>
+<variablelist>
+<varlistentry><term>startIndex</term>
+<listitem><para>The position of the first list item to be selected. If this argument
+is omitted, the selection range starts with the first item in the list.
+</para></listitem></varlistentry>
+<varlistentry><term>endIndex</term>
+<listitem><para>The position of the last list item to be selected. If this argument
+is omitted, the selection range ends with the last item in the list.
+</para></listitem></varlistentry>
+</variablelist>
+<para>If <emphasis role="italic">startIndex</emphasis> is equal to <emphasis role="italic">endIndex</emphasis>, a single item
+of the list is selected.</para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>-1 if an error occurred. This can happen, for example, if the
+list box is not a multiselection list box.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example selects the items 5 through 9:</para>
+<programlisting>
+<![CDATA[
+lb = self~GetListBox("Offers")
+if lb == .Nil then return
+lb~SelectRange(5,9)
+]]>
+</programlisting>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="deselectrange"><title>DeselectRange</title>
+<indexterm><primary>DeselectRange</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~DeselectRange(--+-----------------------------+--)-><
+                            +-startIndex--+-------------+-+
+                                          +-,--endIndex-+
+
+
+]]>
+</programlisting>
+
+<para>The DeselectRange method removes the selection
+for one or more consecutive items of the associated multiselection list box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:</para>
+<variablelist>
+<varlistentry><term>startIndex</term>
+<listitem><para>The position of the first list item to be deselected. If this argument
+is omitted, the deselection range starts with the first item in the list.
+</para></listitem></varlistentry>
+<varlistentry><term>endIndex</term>
+<listitem><para>The position of the last list item to be deselected. If this argument
+is omitted, the deselection range ends with the last item in the list.
+</para></listitem></varlistentry>
+</variablelist>
+<para>If <emphasis role="italic">startIndex</emphasis> is equal to <emphasis role="italic">endIndex</emphasis>, a single item
+of the list is deselected.</para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>-1 if an error occurred. This can happen, for example, if the
+list box is no multiselection list box.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example deselects the items 1 through 5:</para>
+<programlisting>
+<![CDATA[
+lb = self~GetListBox("Offers")
+if lb == .Nil then return
+lb~DeselectRange(,6)
+]]>
+</programlisting>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="items"><title>Items</title>
+<indexterm><primary>Items</primary>
+<secondary>ListBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~Items----------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Items method retrieves the number of items
+in the list box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of items in the list box.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selecteditems"><title>SelectedItems</title>
+<indexterm><primary>SelectedItems</primary>
+<secondary>ListBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~SelectedItems--------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SelectedItems method retrieves the number of
+items that are currently selected in the associated multiselection list box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The number of selected items, or -1 if this method fails, for
+example if the list box is no multiselection list box.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>For an example, refer to <link linkend="selectedindexes">SelectedIndexes</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="selectedindexes"><title>SelectedIndexes</title>
+<indexterm><primary>SelectedIndexes</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~SelectedIndexes------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SelectedIndexes method retrieves the indexes
+of all items that are currently selected in the associated multiselection
+list box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A text string containing the indexes of the selected items in the list,
+separated by blanks.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example lists all items selected in the associated multiselection
+list box:
+<programlisting>
+<![CDATA[
+lb = self~GetListBox("Offers")
+if lb == .Nil then return
+sit = lb~SelectedItems
+if sit > 0 then do
+   say "You ordered:"
+   sndx = lb~SelectedIndexes
+   do i = 1 to sit
+      parse var sndx order sndx
+      say "1 x" lb~GetText(order)
+   end
+end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="makefirstvisible"><title>MakeFirstVisible</title>
+<indexterm><primary>MakeFirstVisible</primary>
+<secondary>ListBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~MakeFirstVisible(--index--)------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The MakeFirstVisible method makes the list entry
+at the specified position the first visible list item when you scroll up or
+down.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The one-based index of the list box item to be made first visible.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>-1 if an error occurred.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="getfirstvisible"><title>GetFirstVisible</title>
+<indexterm><primary>GetFirstVisible</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~GetFirstVisible------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetFirstVisible method retrieves the index
+of the first list item visible in the list box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The one-based index of the list box item visible first.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="gettext"><title>GetText</title>
+<indexterm><primary>GetText</primary>
+<secondary>ListBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~GetText(--index--)---------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetText method gets the text of the list item
+at the specified position in the list box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The one-based index of the list box item containing the text you are
+interested in.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The text of the list box item at the given position, or an empty string
+if the <emphasis role="italic">index</emphasis> does not refer to an item or an error occurred.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="modify"><title>Modify</title>
+<indexterm><primary>Modify</primary>
+<secondary>ListBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~Modify(--+-------+--,--newText--)------------------><
+                     +-index-+
+
+
+]]>
+</programlisting>
+
+<para>The Modify method changes the text of the list
+item at the specified position in the list box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>index</term>
+<listitem><para>The one-based index of the list box item of which the text is to be
+changed. If you omit this argument, the currently selected item is modified.
+</para></listitem></varlistentry>
+<varlistentry><term>newText</term>
+<listitem><para>The new text string to be displayed at the given position.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The one-based index of the modified list box item at the given position.
+The return value is 0 if an error occurred, or -1 if the <emphasis role="italic">index</emphasis>
+does not refer to an item.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="settabulators"><title>SetTabulators</title>
+<indexterm><primary>SetTabulators</primary></indexterm>
+<programlisting>
+<![CDATA[
+                            +-,------+
+                            V        |
+>>-aListBox~SetTabulators(----tabPos-+--)----------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SetTabulators method sets the tabulators for
+the associated list box control. This enables you to use items containing
+tab characters ("09"x), which is useful if you want to format the
+list in more than one column when using proportional fonts.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>tabPos</term>
+<listitem><para>The position or positions of the tabs relative to the left edge of the
+list box, in dialog units.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>1 if an error occurred.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a list that can handle up to three tabulators
+in a list entry. The tabulator positions are 10, 20, and 30.
+<programlisting>
+<![CDATA[
+lb = MyDialog~GetListBox(102)
+if lb == .Nil then return
+lb~SetTabulators(10, 20, 30)
+lb~Add(textcol1 || "09"x || textcol2 || "09"x || textcol3 || "09"x ||,
+   textcol4)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="adddirectory"><title>AddDirectory</title>
+<indexterm><primary>AddDirectory</primary>
+<secondary>ListBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                                          +---------------+
+                                          V               |
+>>-aListBox~AddDirectory(--drvPath--,--"----+-READWRITE-+-+--"--)-><
+                                            +-READONLY--+
+                                            +-HIDDEN----+
+                                            +-SYSTEM----+
+                                            +-DIRECTORY-+
+                                            +-ARCHIVE---+
+
+
+]]>
+</programlisting>
+
+<para>The AddDirectory method adds all or selected file
+names of a given directory to the list box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>drvpath</term>
+<listitem><para>The drive, path, and name pattern.
+</para></listitem></varlistentry>
+<varlistentry><term>fileAttributes</term>
+<listitem><para>The attributes that the files must have in order to be added:
+<variablelist>
+<varlistentry><term>READWRITE</term>
+<listitem><para>Normal read/write files (same as none).
+</para></listitem></varlistentry>
+<varlistentry><term>READONLY</term>
+<listitem><para>Files that have the read-only bit.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>Files that have the hidden bit.
+</para></listitem></varlistentry>
+<varlistentry><term>SYSTEM</term>
+<listitem><para>Files that have the system bit.
+</para></listitem></varlistentry>
+<varlistentry><term>DIRECTORY</term>
+<listitem><para>Files that have the directory bit.
+</para></listitem></varlistentry>
+<varlistentry><term>ARCHIVE</term>
+<listitem><para>Files that have the archive bit.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The one-based index of the file added last to the list, or 0 if an error
+occurred.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example puts the names of all read/write files with extension
+.REX in the given directory of the list box:
+<programlisting>
+<![CDATA[
+MyDialog~AddDirectory(203, drive":\"path"\*.rex", "READWRITE")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setwidth"><title>SetWidth</title>
+<indexterm><primary>SetWidth</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~SetWidth(--width--)--------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SetWidth method sets the internal width of
+the list box, in dialog units. If the internal width exceeds the width of
+the list box control and the list box has the HSCROLL style, the list box
+provides a horizontal scroll bar.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>width</term>
+<listitem><para>The width of the list box, in dialog units.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example sets the internal width twice the width of the
+list box control:
+<programlisting>
+<![CDATA[
+lb = MyDialog~GetListBox(102)
+if lb == .Nil then return
+lb~SetWidth(lb~SizeX*2)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="width"><title>Width</title>
+<indexterm><primary>Width</primary>
+<secondary>ListBox class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~Width----------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The Width method retrieves the internal width of
+the associated list box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The internal width of the list box, in dialog units, or 0 if an error
+occurred.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="itemheight"><title>ItemHeight</title>
+<indexterm><primary>ItemHeight</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~ItemHeight-----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ItemHeight method retrieves the height of the
+items in the list box, in dialog units.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The height of the list box items, in dialog units.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="itemheightnew"><title>ItemHeight=</title>
+<indexterm><primary>ItemHeight=</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~ItemHeight=--height--------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ItemHeight= method sets the height of the items
+in the list box, in dialog units.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>height</term>
+<listitem><para>The height of all list box items, in dialog units.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="columnwidthnew"><title>ColumnWidth=</title>
+<indexterm><primary>ColumnWidth=</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aListBox~ColumnWidth=--width--------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ColumnWidth= method sets the width of the list
+box columns in a multicolumn list box control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>width</term>
+<listitem><para>The width of all list box columns, in dialog units.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</chapter>
