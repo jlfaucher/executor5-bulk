@@ -1,5 +1,5 @@
 ---------------------------------------------------------
-Version 3.1.2
+Version 4.0.1
 ---------------------------------------------------------
 This release provides documentation for Open Object Rexx.
 
@@ -48,6 +48,8 @@ The above configuration is available in Fedora Core 3 and later.
 
 WARNING!!!!!!!!
 
+You can ignore the following if you are using Fedora 10 or later.
+
 The standard /usr/share/texmf/web2c/texmf.cnf file contains settings
 that are too small to process the rexxref documentation. Please reference the
 texmf.cnf file in the trunk of the docs repository for the entries that need
@@ -70,6 +72,8 @@ the primary delivery format for all documents is PDF. You will need to
 modify the makefiles to create other kinds of output.
 
 WARNING!!!!!!!!
+
+You can ignore the following if you are using Fedora 10 or later.
 
 The standard /usr/share/texmf/web2c/texmf.cnf file contains settings
 that are too small to process the rexxref documentation. Please reference the

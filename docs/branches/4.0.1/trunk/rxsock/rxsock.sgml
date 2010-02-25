@@ -1625,6 +1625,13 @@ If data is not available at socket, the SockRecv() call waits for a message and 
 the caller unless the socket is in nonblocking mode. See SockIoctl() for a
 description of how to set the nonblocking mode.
 </para>
+<para>SockRecv() may return fewer bytes than requested. This is due to the underlying TCP/IP
+subsystem and is not controllable by the RxSock programmer. When you receive fewer bytes
+than you request you should follow immediately with another request for the balance of the
+requested bytes. You may have to call SockRecv() repeatedly to obtain all the bytes.
+Each subsequent call should request the difference between the previous request number of
+bytes and the number of bytes actually received.
+</para>
 <para><emphasis role="bold">Return values:</emphasis></para>
 <para>If successful, the length of the data in bytes is returned. The value 0 indicates that
 the connection is closed. The value -1 indicates an error. You can get the specific

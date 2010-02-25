@@ -1050,17 +1050,17 @@ the function name.</para>
 Registered External Functions are an older style of routine that is only capable
 of dealing with String data.  These routines do not have access to any of the
 object-oriented features of the language.  The registered external functions
-are described here, but should be considered only if compability with older
+are described here, but should be considered only if compatibility with older
 versions of Object Rexx or other Rexx interpreters is a consideration.</para>
 <para>The newer style functions have access to Rexx objects and a fuller set of
 APIs for interfacing with the interpreter runtime.  These functions are the
-preferred method for writing Open Object Rexx extensions are are defined in
+preferred method for writing Open Object Rexx extensions are defined in
 <link linkend="buildinglibs">Building an External Native Library</link>.
 </para>
 <section id="xffmt"><title>Registering External Functions</title>
 <para>An external function can reside in the same module (executable
 or library)
-as an application, or in a separate lodable library library.
+as an application, or in a separate loadable library.
 RexxRegisterFunctionExe registers external functions within an application
 module. External functions registered with RexxRegisterFunctionExe are available
 only to Rexx programs called from the registering application.</para>
@@ -3039,7 +3039,7 @@ int SetRexxVariable(
 </section>
 
 <section id="rexxmemfuncts">
-<title>Dynamically Allocating and De-allocating Memory</title
+<title>Dynamically Allocating and De-allocating Memory</title>
 <indexterm><primary>application programming interfaces</primary>
 <secondary>system memory interface</secondary></indexterm>
 <para>For several functions of the Rexx-API it is necessary or possible to
@@ -3215,7 +3215,7 @@ retc = RexxOpenQueue(RequestedName, CreatedFlag);
 <listitem><para>is the address of an ASCII queue name. If no queue of that name exists,
 a queue is created with the requested name.  and the CreatedFlag will be set to TRUE.
 If the name already exists, this
-will just return a succesful return code.
+will just return a successful return code.
 The maximum length for a queue name is 1024 characters.</para>
 </listitem></varlistentry>
 <varlistentry><term>CreateFlag  (size_t *) - output</term>

@@ -137,8 +137,8 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromNormalDate(-date-+----------------------------+-)-------------><
-                        +-,-+-----------+--+---------+
+>>-fromNormalDate(-date-+------------------------------+-)-------------><
+                        +-,-+-----------+--+---------+-+
                             +-separator-+  +-,offset-+
 ]]>
 </programlisting>
@@ -165,8 +165,8 @@ number value. The default <emphasis role="italic">offset</emphasis> is the curre
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromEuropeanDate(-date-+----------------------------+--)------------><
-                          +-,-+-----------+--+---------+
+>>-fromEuropeanDate(-date-+------------------------------+--)------------><
+                          +-,-+-----------+--+---------+-+
                               +-separator-+  +-,offset-+
 ]]>
 </programlisting>
@@ -195,8 +195,8 @@ number value. The default <emphasis role="italic">offset</emphasis> is the curre
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromOrderedDate(-date-+----------------------------+--)------------><
-                         +-,-+-----------+--+---------+
+>>-fromOrderedDate(-date-+------------------------------+--)------------><
+                         +-,-+-----------+--+---------+-+
                              +-separator-+  +-,offset-+
 ]]>
 </programlisting>
@@ -224,8 +224,8 @@ number value. The default <emphasis role="italic">offset</emphasis> is the curre
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromStandardDate(-date-+----------------------------+--)------------><
-                          +-,-+-----------+--+---------+
+>>-fromStandardDate(-date-+------------------------------+--)------------><
+                          +-,-+-----------+--+---------+-+
                               +-separator-+  +-,offset-+
 ]]>
 </programlisting>
@@ -252,8 +252,8 @@ number value. The default <emphasis role="italic">offset</emphasis> is the curre
 <tertiary>of DateTime class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-fromUsaDate(-date-+----------------------------+--)------------><
-                     +-,-+-----------+--+---------+
+>>-fromUsaDate(-date-+------------------------------+--)------------><
+                     +-,-+-----------+--+---------+-+
                          +-separator-+  +-,offset-+
 ]]>
 </programlisting>
@@ -443,7 +443,7 @@ the ISO format as the string form of a DateTime object.
 >>-init(fullDate--+---------+-)-------------------------------><
                   +-,offset-+
 
->>-init(year,month,day-+---------+--------------------------------+----><
+>>-init(year,month,day-+---------+--------------------------------)----><
                        +-,offset-+
 
 >>-init(year,month,day,hours,minutes,seconds--+--------------------------------+-)-><
@@ -1958,7 +1958,7 @@ is not altered by this operation.
 <![CDATA[
 t1 = .timespan~fromHours(1)
 t2 = t1 * 2
--- displays "01:00:00.000000 01:30:00.000000 02:30:00.000000"
+-- displays "01:00:00.000000 02:00:00.000000 03:00:00.000000"
 say t1 t2 (t1 + t2)
 ]]>
 </programlisting>
@@ -3300,7 +3300,7 @@ comparisons.
 <programlisting>
 <![CDATA[
 >>-caselessMatch(start,other-+----------------------------+-)-------------------><
-                             +-,--+---+--+---------+-+
+                             +-,--+---+--+---------+------+
                                   +-n-+  +-,length-+
 ]]>
 </programlisting>
@@ -3715,7 +3715,7 @@ default separator is the newline character.</para>
 <programlisting>
 <![CDATA[
 >>-match(start,other-+----------------------------+-)-------------------><
-                     +-,--+---+--+---------+-+
+                     +-,--+---+--+---------+------+
                           +-n-+  +-,length-+
 ]]>
 </programlisting>
@@ -3990,7 +3990,7 @@ characters between the selected words.
 <programlisting>
 <![CDATA[
 >>-translate-+--------------------------------------------------------------------------+-><
-             +-(--+-------------------------------------+-+-----------------------+-)-+
+             +-(--+-------------------------------------+-+-----------------------+-)---+
                   +-tableo--+-------------------------+-+ +-,--+---+--+---------+-+
                             +-,--+--------+--+------+-+        +-n-+  +-,length-+
                                  +-tablei-+  +-,pad-+
