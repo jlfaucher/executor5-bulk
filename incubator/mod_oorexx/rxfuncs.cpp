@@ -892,8 +892,8 @@ RexxMethod1(RexxObjectPtr,             // Return type
  */
 RexxMethod2(RexxObjectPtr,             // Return type
             WWWReqRecStatus_line,      // Routine name
-            CSELF, self,               // self
-            OPTIONAL_CSTRING, sl)      // New status line
+            OPTIONAL_CSTRING, sl,      // New status line
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
@@ -919,8 +919,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  */
 RexxMethod2(int,                       // Return type
             WWWReqRecStatus,           // Routine name
-            CSELF, self,               // self
-            OPTIONAL_CSTRING, st)      // New status
+            OPTIONAL_CSTRING, st,      // New status
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
@@ -943,8 +943,8 @@ RexxMethod2(int,                       // Return type
  */
 RexxMethod2(RexxObjectPtr,             // Return type
             WWWReqRecMethod,           // Routine name
-            CSELF, self,               // self
-            OPTIONAL_CSTRING, m)       // New method
+            OPTIONAL_CSTRING, m,       // New method
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
@@ -970,8 +970,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  */
 RexxMethod2(int,                       // Return type
             WWWReqRecMethod_number,    // Routine name
-            CSELF, self,               // self
-            OPTIONAL_CSTRING, m)       // New method number
+            OPTIONAL_CSTRING, m,       // New method number
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
@@ -994,8 +994,8 @@ RexxMethod2(int,                       // Return type
  */
 RexxMethod2(int,                       // Return type
             WWWReqRecAllowed,          // Routine name
-            CSELF, self,               // self
-            OPTIONAL_CSTRING, a)       // New allowed number
+            OPTIONAL_CSTRING, a,       // New allowed number
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
@@ -1036,9 +1036,9 @@ RexxMethod1(int,                       // Return type
  */
 RexxMethod3(RexxObjectPtr,             // Return type
             WWWReqRecHeader_in,        // Routine name
-            CSELF, self,               // self
             CSTRING, key,              // Lookup key
-            OPTIONAL_CSTRING, val)     // New value for the key
+            OPTIONAL_CSTRING, val,     // New value for the key
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
@@ -1063,9 +1063,9 @@ RexxMethod3(RexxObjectPtr,             // Return type
  */
 RexxMethod3(int,                       // Return type
             WWWReqRecHeader_out,       // Routine name
-            CSELF, self,               // self
             CSTRING, key,              // Lookup key
-            CSTRING, val)              // New value for the key
+            CSTRING, val,              // New value for the key
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
@@ -1088,9 +1088,9 @@ RexxMethod3(int,                       // Return type
  */
 RexxMethod3(RexxObjectPtr,             // Return type
             WWWReqRecErr_header_out,   // Routine name
-            CSELF, self,               // self
             CSTRING, key,              // Lookup key
-            OPTIONAL_CSTRING, val)     // New value for the key
+            OPTIONAL_CSTRING, val,     // New value for the key
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
@@ -1115,9 +1115,9 @@ RexxMethod3(RexxObjectPtr,             // Return type
  */
 RexxMethod3(RexxObjectPtr,             // Return type
             WWWReqRecSubprocess_env,   // Routine name
-            CSELF, self,               // self
             CSTRING, key,              // Lookup key
-            OPTIONAL_CSTRING, val)     // New value for the key
+            OPTIONAL_CSTRING, val,     // New value for the key
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
@@ -1145,9 +1145,9 @@ RexxMethod3(RexxObjectPtr,             // Return type
  */
 RexxMethod3(RexxObjectPtr,             // Return type
             WWWReqRecNotes,            // Routine name
-            CSELF, self,               // self
             CSTRING, key,              // Lookup key
-            OPTIONAL_CSTRING, val)     // New value for the key
+            OPTIONAL_CSTRING, val,     // New value for the key
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
@@ -1173,8 +1173,8 @@ RexxMethod3(RexxObjectPtr,             // Return type
  */
 RexxMethod2(RexxObjectPtr,             // Return type
             WWWReqRecContent_type,     // Routine name
-            CSELF, self,               // self
-            OPTIONAL_CSTRING, type)    // New type
+            OPTIONAL_CSTRING, type,    // New type
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
@@ -1200,8 +1200,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  */
 RexxMethod2(RexxObjectPtr,             // Return type
             WWWReqRecContent_encoding, // Routine name
-            CSELF, self,               // self
-            OPTIONAL_CSTRING, type)    // New type
+            OPTIONAL_CSTRING, type,    // New type
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
@@ -1227,8 +1227,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  */
 RexxMethod2(RexxObjectPtr,             // Return type
             WWWReqRecHandler,          // Routine name
-            CSELF, self,               // self
-            OPTIONAL_CSTRING, type)    // New type
+            OPTIONAL_CSTRING, type,    // New type
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
@@ -1251,8 +1251,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  */
 RexxMethod2(RexxObjectPtr,             // Return type
             WWWReqRecContent_languages, // Routine name
-            CSELF, self,               // self
-            OPTIONAL_CSTRING, lang)    // New language
+            OPTIONAL_CSTRING, lang,    // New language
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
     char **element;
@@ -1288,8 +1288,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  */
 RexxMethod2(int,                       // Return type
             WWWReqRecNo_cache,         // Routine name
-            CSELF, self,               // self
-            OPTIONAL_CSTRING, val)     // New no_cache value
+            OPTIONAL_CSTRING, val,     // New no_cache value
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
@@ -1313,8 +1313,8 @@ RexxMethod2(int,                       // Return type
  */
 RexxMethod2(RexxObjectPtr,             // Return type
             WWWReqRecUri,              // Routine name
-            CSELF, self,               // self
-            OPTIONAL_CSTRING, uri)     // New uri
+            OPTIONAL_CSTRING, uri,     // New uri
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
@@ -1337,8 +1337,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  */
 RexxMethod2(RexxObjectPtr,             // Return type
             WWWReqRecFilename,         // Routine name
-            CSELF, self,               // self
-            OPTIONAL_CSTRING, fn)      // New filename
+            OPTIONAL_CSTRING, fn,      // New filename
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
@@ -1361,8 +1361,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  */
 RexxMethod2(RexxObjectPtr,             // Return type
             WWWReqRecPath_info,        // Routine name
-            CSELF, self,               // self
-            OPTIONAL_CSTRING, pi)      // New path_info
+            OPTIONAL_CSTRING, pi,      // New path_info
+            CSELF, self)               // self
 {
     request_rec *r = (request_rec *)self;
 
