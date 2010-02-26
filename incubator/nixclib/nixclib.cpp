@@ -78,12 +78,18 @@ RexxRoutine2(int,
              CSTRING, sigact)
 {
 
-    // According to POSIX we should only allow the following values for this function
-    if (*sigact == 'D' || *sigact == 'd') {
-        return (int) signal(signum, SIG_DFL);
+    if (strlen(sigact) == 0) {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysSignal"));
+        return 0;
     }
-    if (*sigact == 'I' || *sigact == 'i') {
-        return (int) signal(signum, SIG_IGN);
+    // According to POSIX we should only allow the following values for this function
+    else if (*sigact == 'D' || *sigact == 'd') {
+        signal(signum, SIG_DFL);
+        return 0;
+    }
+    else if (*sigact == 'I' || *sigact == 'i') {
+        signal(signum, SIG_IGN);
+        return 0;
     }
     context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysSignal"));
     return 0;
@@ -512,6 +518,10 @@ RexxRoutine2(RexxObjectPtr,
              CSTRING, user,
              CSTRING, ichar)
 {
+    if (strlen(user) == 0 || strlen(ichar) != 1) {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysGetpwnam"));
+        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+    }
     struct passwd *pw = getpwnam(user);
     if (pw == NULL) {
         return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
@@ -557,6 +567,10 @@ RexxRoutine2(RexxObjectPtr,
              int, uid,
              CSTRING, ichar)
 {
+    if (strlen(ichar) != 1) {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysGetpwuid"));
+        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+    }
     struct passwd *pw = getpwuid((uid_t)uid);
     if (pw == NULL) {
         return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
@@ -602,6 +616,10 @@ RexxRoutine2(RexxObjectPtr,
              CSTRING, grpname,
              CSTRING, ichar)
 {
+    if (strlen(grpname) == 0 || strlen(ichar) != 1) {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysGetgrnam"));
+        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+    }
     struct group *gr = getgrnam(grpname);
     if (*ichar == 'N' || *ichar == 'n') {
         return (RexxObjectPtr)context->NewStringFromAsciiz(gr->gr_name);
@@ -641,6 +659,10 @@ RexxRoutine2(RexxObjectPtr,
              int, gid,
              CSTRING, ichar)
 {
+    if (strlen(ichar) != 1) {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysGetgrgid"));
+        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+    }
     struct group *gr = getgrgid(gid);
     if (*ichar == 'N' || *ichar == 'n') {
         return (RexxObjectPtr)context->NewStringFromAsciiz(gr->gr_name);
@@ -684,6 +706,10 @@ RexxRoutine2(RexxObjectPtr,
     struct stat64 mystat;
     char buf[32];  // used for both the file times and the permissions
 
+    if (strlen(fname) == 0 || strlen(ichar) != 1) {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysStat"));
+        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+    }
     int retc = stat64(fname, &mystat);
     if (retc != 0) {
         return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
@@ -900,6 +926,10 @@ RexxRoutine3(RexxObjectPtr,
              CSTRING, proto,
              CSTRING, ichar)
 {
+    if (strlen(name) == 0 || strlen(proto) == 0 || strlen(ichar) != 1) {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysGetservbyname"));
+        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+    }
     struct servent *se = getservbyname(name, proto);
     if (*ichar == 'N' || *ichar == 'n') {
         return (RexxObjectPtr)context->NewStringFromAsciiz(se->s_name);
@@ -939,6 +969,10 @@ RexxRoutine3(RexxObjectPtr,
              CSTRING, proto,
              CSTRING, ichar)
 {
+    if (port == 0 || strlen(proto) == 0 || strlen(ichar) != 1) {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysGetservbyname"));
+        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+    }
     struct servent *se = getservbyport(port, proto);
     if (ichar == NULL) {
         return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
@@ -977,6 +1011,10 @@ RexxRoutine1(RexxObjectPtr,
 {
     wordexp_t p;
     char **w;
+    if (strlen(inexp) == 0) {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysWordexp"));
+        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+    }
     RexxArrayObject arr = context->NewArray(1);
 
     wordexp(inexp, &p, 0);
