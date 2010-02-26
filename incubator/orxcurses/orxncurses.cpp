@@ -222,8 +222,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurAddch,               // Object_method name
-            CSELF, cself,              // Self
-            CSTRING, str)              // Character
+            CSTRING, str,              // Character
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -250,10 +250,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             OrxCurMvaddch,             // Object_method name
-            CSELF, cself,              // Self
             int, y,                    // Y position
             int, x,                    // X position
-            CSTRING, str)              // Character
+            CSTRING, str,              // Character
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -276,8 +276,8 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurAddchstr,            // Object_method name
-            CSELF, cself,              // Self
-            CSTRING, str)              // Character
+            CSTRING, str,              // Character
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -305,10 +305,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             OrxCurMvaddchstr,          // Object_method name
-            CSELF, cself,              // Self
             int, y,                    // Y position
             int, x,                    // X position
-            CSTRING, str)              // Character
+            CSTRING, str,              // Character
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -333,9 +333,9 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             OrxCurAddchnstr,           // Object_method name
-            CSELF, cself,              // Self
             CSTRING, str,              // Character
-            int, n)                    // Number of characters
+            int, n,                    // Number of characters
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -365,11 +365,11 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod5(int,                       // Return type
             OrxCurMvaddchnstr,         // Object_method name
-            CSELF, cself,              // Self
             int, y,                    // Y position
             int, x,                    // X position
             CSTRING, str,              // Character
-            int, n)                    // Number of characters
+            int, n,                    // Number of characters
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -392,8 +392,8 @@ RexxMethod5(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurAddstr,              // Object_method name
-            CSELF, cself,              // Self
-            CSTRING, str)              // Character
+            CSTRING, str,              // Character
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -420,10 +420,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             OrxCurMvaddstr,            // Object_method name
-            CSELF, cself,              // Self
             int, y,                    // Y position
             int, x,                    // X position
-            CSTRING, str)              // Character
+            CSTRING, str,              // Character
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -448,9 +448,9 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             OrxCurAddnstr,             // Object_method name
-            CSELF, cself,              // Self
             CSTRING, str,              // Character
-            int, n)                    // Number of characters
+            int, n,                    // Number of characters
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -479,11 +479,11 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod5(int,                       // Return type
             OrxCurMvaddnstr,           // Object_method name
-            CSELF, cself,              // Self
             int, y,                    // Y position
             int, x,                    // X position
             CSTRING, str,              // Character
-            int, n)                    // Number of characters
+            int, n,                    // Number of characters
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -526,8 +526,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurAttroff,             // Object_method name
-            CSELF, cself,              // Self
-            int, attr)            // Attribute(s)
+            int, attr,                 // Attribute(s)
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -550,8 +550,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurAttron,              // Object_method name
-            CSELF, cself,              // Self
-            int, attr)            // Attribute(s)
+            int, attr,                 // Attribute(s)
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -574,8 +574,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurAttrset,             // Object_method name
-            CSELF, cself,              // Self
-            int, attr)            // Attribute(s)
+            int, attr,                 // Attribute(s)
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -626,8 +626,8 @@ RexxMethod0(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurBkgd,                // Object_method name
-            CSELF, cself,              // Self
-            int, attr)             // Attribute(s)
+            int, attr,             // Attribute(s)
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -650,8 +650,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurBkgdset,             // Object_method name
-            CSELF, cself,              // Self
-            int, attr)            // Attribute(s)
+            int, attr,                 // Attribute(s)
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -689,7 +689,6 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod9(int,                       // Return type
             OrxCurBorder,              // Object_method name
-            CSELF, cself,              // Self
             int, ls,
             int, rs,
             int, ts,
@@ -697,7 +696,8 @@ RexxMethod9(int,                       // Return type
             int, tl,
             int, tr,
             int, bl,
-            int, br)
+            int, br,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -740,9 +740,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             OrxCurBox,                 // Object_method name
-            CSELF, cself,              // Self
             int, verch,
-            int, horch)
+            int, horch,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -811,10 +811,10 @@ RexxMethod0(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             OrxCurChgat,               // Object_method name
-            CSELF, cself,              // Self
             int, n,
             int, attr,
-            int, color)
+            int, color,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -845,12 +845,12 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod6(int,                       // Return type
             OrxCurMvchgat,             // Object_method name
-            CSELF, cself,              // Self
             int, y,
             int, x,
             int, n,
             int, attr,
-            int, color)
+            int, color,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -895,8 +895,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurClearok,             // Object_method name
-            CSELF, cself,              // Self
-            logical_t, bf)
+            logical_t, bf,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -1050,7 +1050,6 @@ RexxMethod0(int,                       // Return type
  **/
 RexxMethod9(int,                       // Return type
             OrxCurCopywin,             // Object_method name
-            CSELF, cself,              // Self
             RexxObjectPtr, swin,
             int, sminrow,
             int, smincol,
@@ -1058,7 +1057,8 @@ RexxMethod9(int,                       // Return type
             int, dmincol,
             int, dmaxrow,
             int, dmaxcol,
-            logical_t, overlay)
+            logical_t, overlay,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -1190,11 +1190,11 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod5(RexxObjectPtr,             // Return type
             OrxCurDerwinprivate,       // Object_method name
-            CSELF, cself,              // Self
             int, nlines,
             int, ncols,
             int, begy,
-            int, begx)
+            int, begx,
+            CSELF, cself)              // Self
 {
 
     WINDOW *ptr = derwin((WINDOW *)cself, nlines, ncols, SUBTRACTONE(begy), SUBTRACTONE(begx));
@@ -1274,8 +1274,8 @@ RexxMethod0(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurEchochar,            // Object_method name
-            CSELF, cself,              // Self
-            int, ch)
+            int, ch,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -1451,9 +1451,9 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             OrxCurMvgetch,             // Object_method name
-            CSELF, cself,              // Self
             int, y,
-            int, x)
+            int, x,
+            CSELF, cself)              // Self
 {
     char buf[2] = {'\0', '\0'};
     int retc;
@@ -1534,8 +1534,8 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurGetmouseprivate,     // Object_method name
-            CSELF, cself,              // Self
-            RexxObjectPtr, ev)
+            RexxObjectPtr, ev,
+            CSELF, cself)              // Self
 {
     MEVENT mevent;
 
@@ -1588,8 +1588,8 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             OrxCurGetnstr,             // Object_method name
-            CSELF, cself,              // Self
-            int, n)
+            int, n,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -1618,9 +1618,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             OrxCurMvgetstr,            // Object_method name
-            CSELF, cself,              // Self
             int, y,
-            int, x)
+            int, x,
+            CSELF, cself)              // Self
 {
     char buf[1024];
 
@@ -1649,10 +1649,10 @@ RexxMethod3(RexxObjectPtr,             // Return type
  **/
 RexxMethod4(RexxObjectPtr,             // Return type
             OrxCurMvgetnstr,           // Object_method name
-            CSELF, cself,              // Self
             int, y,
             int, x,
-            int, n)
+            int, n,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -1831,8 +1831,8 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurIdcok,               // Object_method name
-            CSELF, cself,              // Self
-            logical_t, bf)
+            logical_t, bf,
+            CSELF, cself)              // Self
 {
 
     idcok((WINDOW *)cself, bf);
@@ -1850,8 +1850,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurIdlok,               // Object_method name
-            CSELF, cself,              // Self
-            logical_t, bf)
+            logical_t, bf,
+            CSELF, cself)              // Self
 {
 
     idlok((WINDOW *)cself, bf);
@@ -1869,8 +1869,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurImmedok,             // Object_method name
-            CSELF, cself,              // Self
-            logical_t, bf)
+            logical_t, bf,
+            CSELF, cself)              // Self
 {
 
     immedok((WINDOW *)cself, bf);
@@ -1906,9 +1906,9 @@ RexxMethod1(int,                  // Return type
  **/
 RexxMethod3(int,                  // Return type
             OrxCurMvinch,              // Object_method name
-            CSELF, cself,              // Self
             int, y,
-            int, x)
+            int, x,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -1960,9 +1960,9 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             OrxCurMvinchstr,           // Object_method name
-            CSELF, cself,              // Self
             int, y,
-            int, x)
+            int, x,
+            CSELF, cself)              // Self
 {
     chtype *buf;
     RexxBufferStringObject rxbuf;
@@ -1990,8 +1990,8 @@ RexxMethod3(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             OrxCurInchnstr,            // Object_method name
-            CSELF, cself,              // Self
-            int, n)
+            int, n,
+            CSELF, cself)              // Self
 {
     chtype *buf;
     RexxBufferStringObject rxbuf;
@@ -2024,10 +2024,10 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod4(RexxObjectPtr,             // Return type
             OrxCurMvinchnstr,          // Object_method name
-            CSELF, cself,              // Self
             int, y,
             int, x,
-            int, n)
+            int, n,
+            CSELF, cself)              // Self
 {
     chtype *buf;
     RexxBufferStringObject rxbuf;
@@ -2104,8 +2104,8 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurInsch,               // Object_method name
-            CSELF, cself,              // Self
-            CSTRING, ch)
+            CSTRING, ch,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2133,10 +2133,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             OrxCurMvinsch,             // Object_method name
-            CSELF, cself,              // Self
             int, y,
             int, x,
-            CSTRING, ch)
+            CSTRING, ch,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2159,8 +2159,8 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurInsdelln,            // Object_method name
-            CSELF, cself,              // Self
-            int, n)
+            int, n,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2204,8 +2204,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurInsstr,              // Object_method name
-            CSELF, cself,              // Self
-            CSTRING, str)
+            CSTRING, str,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2230,9 +2230,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             OrxCurInsnstr,             // Object_method name
-            CSELF, cself,              // Self
             CSTRING, str,
-            int, n)
+            int, n,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2259,10 +2259,10 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             OrxCurMvinsstr,            // Object_method name
-            CSELF, cself,              // Self
             int, y,
             int, x,
-            CSTRING, str)
+            CSTRING, str,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2291,11 +2291,11 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod5(int,                       // Return type
             OrxCurMvinsnstr,           // Object_method name
-            CSELF, cself,              // Self
             int, y,
             int, x,
             CSTRING, str,
-            int, n)
+            int, n,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2341,8 +2341,8 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             OrxCurInnstr,              // Object_method name
-            CSELF, cself,              // Self
-            int, n)
+            int, n,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2371,9 +2371,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             OrxCurMvinstr,             // Object_method name
-            CSELF, cself,              // Self
             int, y,
-            int, x)
+            int, x,
+            CSELF, cself)              // Self
 {
     char buf[1024];
 
@@ -2402,10 +2402,10 @@ RexxMethod3(RexxObjectPtr,             // Return type
  **/
 RexxMethod4(RexxObjectPtr,             // Return type
             OrxCurMvinnstr,            // Object_method name
-            CSELF, cself,              // Self
             int, y,
             int, x,
-            int, n)
+            int, n,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2433,8 +2433,8 @@ RexxMethod4(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurIntrflush,           // Object_method name
-            CSELF, cself,              // Self
-            logical_t, bf)
+            logical_t, bf,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2491,8 +2491,8 @@ RexxMethod0(logical_t,                 // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             OrxCurIs_linetouched,      // Object_method name
-            CSELF, cself,              // Self
-            int, n)
+            int, n,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2554,8 +2554,8 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurKeypad,              // Object_method name
-            CSELF, cself,              // Self
-            logical_t, bf)
+            logical_t, bf,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2595,8 +2595,8 @@ RexxMethod0(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurLeaveok,             // Object_method name
-            CSELF, cself,              // Self
-            logical_t, bf)
+            logical_t, bf,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2647,8 +2647,8 @@ RexxMethod0(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurMeta,                // Object_method name
-            CSELF, cself,              // Self
-            logical_t, bf)
+            logical_t, bf,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2675,10 +2675,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod4(RexxObjectPtr,             // Return type
             OrxCurMouse_trafo,         // Object_method name
-            CSELF, cself,              // Self
             int, y,
             int, x,
-            logical_t, bf)
+            logical_t, bf,
+            CSELF, cself)              // Self
 {
     char buf[32];
 
@@ -2723,9 +2723,9 @@ RexxMethod1(int,                  // Return type
  **/
 RexxMethod3(int,                       // Return type
             OrxCurMove,                // Object_method name
-            CSELF, cself,              // Self
             int, y,
-            int, x)
+            int, x,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2750,9 +2750,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             OrxCurMvderwin,            // Object_method name
-            CSELF, cself,              // Self
             int, y,
-            int, x)
+            int, x,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2777,9 +2777,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             OrxCurMvwin,               // Object_method name
-            CSELF, cself,              // Self
             int, y,
-            int, x)
+            int, x,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -2898,8 +2898,8 @@ RexxMethod0(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurNodelay,             // Object_method name
-            CSELF, cself,              // Self
-            logical_t, bf)
+            logical_t, bf,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -2922,8 +2922,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurNotimeout,           // Object_method name
-            CSELF, cself,              // Self
-            logical_t, bf)
+            logical_t, bf,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -2946,8 +2946,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurOverlay,             // Object_method name
-            CSELF, cself,              // Self
-            RexxObjectPtr, rxdwin)
+            RexxObjectPtr, rxdwin,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -2971,8 +2971,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurOverwrite,           // Object_method name
-            CSELF, cself,              // Self
-            RexxObjectPtr, rxdwin)
+            RexxObjectPtr, rxdwin,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -3034,8 +3034,8 @@ RexxMethod1(int,                  // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurPechochar,           // Object_method name
-            CSELF, cself,              // Self
-            CSTRING, ch)
+            CSTRING, ch,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -3068,13 +3068,13 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod7(int,                       // Return type
             OrxCurPnoutrefresh,        // Object_method name
-            CSELF, cself,              // Self
             int, minrow,
             int, mincol,
             int, sminrow,
             int, smincol,
             int, smaxrow,
-            int, smaxcol)
+            int, smaxcol,
+            CSELF, cself)              // Self
 {
 
     if (cself == NULL) {
@@ -3109,13 +3109,13 @@ RexxMethod7(int,                       // Return type
  **/
 RexxMethod7(int,                       // Return type
             OrxCurPrefresh,            // Object_method name
-            CSELF, cself,              // Pad
             int, minrow,
             int, mincol,
             int, sminrow,
             int, smincol,
             int, smaxrow,
-            int, smaxcol)
+            int, smaxcol,
+            CSELF, cself)              // Pad
 {
     
     if (cself == NULL) {
@@ -3140,8 +3140,8 @@ RexxMethod7(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurPutwin,              // Object_method name
-            CSELF, cself,              // Self
-            CSTRING, filename)
+            CSTRING, filename,
+            CSELF, cself)              // Self
 {
     FILE *wfile;
     
@@ -3281,8 +3281,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurScrl,                // Object_method name
-            CSELF, cself,              // Self
-            int, n)
+            int, n,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -3326,8 +3326,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurScrollok,            // Object_method name
-            CSELF, cself,              // Self
-            logical_t, bf)
+            logical_t, bf,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -3352,9 +3352,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             OrxCurSetscrreg,           // Object_method name
-            CSELF, cself,              // Self
             int, top,
-            int, bot)
+            int, bot,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -3646,12 +3646,12 @@ RexxMethod0(int,                       // Return type
  **/
 RexxMethod6(int,                       // Return type
             OrxCurSubpadprivate,       // Object_method name
-            CSELF, cself,              // Self
             RexxObjectPtr, pad,
             int, nlines,
             int, ncols,
             int, begy,
-            int, begx)
+            int, begx,
+            CSELF, cself)              // Self
 {
 
     WINDOW *padptr = (WINDOW *) context->ObjectToCSelf(pad);
@@ -3677,11 +3677,11 @@ RexxMethod6(int,                       // Return type
  **/
 RexxMethod5(RexxObjectPtr,             // Return type
             OrxCurSubwinprivate,       // Object_method name
-            CSELF, cself,              // Self
             int, nlines,
             int, ncols,
             int, begy,
-            int, begx)
+            int, begx,
+            CSELF, cself)              // Self
 {
 
     WINDOW *ptr = subwin((WINDOW *)cself, nlines, ncols, SUBTRACTONE(begy), SUBTRACTONE(begx));
@@ -3699,8 +3699,8 @@ RexxMethod5(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             OrxCurSyncok,              // Object_method name
-            CSELF, cself,              // Self
-            logical_t, bf)
+            logical_t, bf,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -3790,9 +3790,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             OrxCurTouchline,           // Object_method name
-            CSELF, cself,              // Self
             int, start,
-            int, cnt)
+            int, cnt,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -3940,9 +3940,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             OrxCurVline,               // Object_method name
-            CSELF, cself,              // Self
             int, ch,
-            int, n)
+            int, n,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -3971,11 +3971,11 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod5(int,                       // Return type
             OrxCurMvvline,             // Object_method name
-            CSELF, cself,              // Self
             int, y,
             int, x,
             int, ch,
-            int, n)
+            int, n,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -4000,9 +4000,9 @@ RexxMethod5(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             OrxCurWenclose,            // Object_method name
-            CSELF, cself,              // Self
             int, y,
-            int, x)
+            int, x,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -4048,9 +4048,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             OrxCurWredrawln,           // Object_method name
-            CSELF, cself,              // Self
             int, beg,
-            int, n)
+            int, n,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
@@ -4123,10 +4123,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             OrxCurWtouchln,            // Object_method name
-            CSELF, cself,              // Self
             int, y,
             int, n,
-            logical_t, bf)
+            logical_t, bf,
+            CSELF, cself)              // Self
 {
     
     if (cself == NULL) {
