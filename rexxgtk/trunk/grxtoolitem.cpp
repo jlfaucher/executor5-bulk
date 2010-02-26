@@ -146,10 +146,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxToolItemGetSetHomogeneous, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, homo)  // Homogeneous boolean
+            OPTIONAL_logical_t, homo,  // Homogeneous boolean
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(self), homo);
     }
     else {
@@ -170,10 +170,10 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxToolItemGetSetExpand,   // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, expand)// Expand boolean
+            OPTIONAL_logical_t, expand,// Expand boolean
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_tool_item_set_expand(GTK_TOOL_ITEM(self), expand);
     }
     else {
@@ -198,10 +198,10 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxToolItemSetTooltip,     // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, tooltip,    // The tooltips
             CSTRING, text,             // The tooltip text
-            CSTRING, ptext)            // The tooltip private text
+            CSTRING, ptext,            // The tooltip private text
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(tooltip, "GtkToolTips")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -227,10 +227,10 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxToolItemGetSetUseDragWindow, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, drag)  // Drag boolean
+            OPTIONAL_logical_t, drag,  // Drag boolean
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_tool_item_set_use_drag_window(GTK_TOOL_ITEM(self), drag);
     }
     else {
@@ -249,12 +249,12 @@ RexxMethod2(logical_t,                 // Return type
  *
  * @return        Zero
  **/
-RexxMethod2(logical_t,                  // Return type
+RexxMethod2(logical_t,                 // Return type
             GrxToolItemGetSetVisibleHorizontal, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, visible) // Visible boolean
+            OPTIONAL_logical_t, visible, // Visible boolean
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_tool_item_set_visible_horizontal(GTK_TOOL_ITEM(self), visible);
     }
     else {
@@ -275,10 +275,10 @@ RexxMethod2(logical_t,                  // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxToolItemGetSetVisibleVertical, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, visible) // Visible boolean
+            OPTIONAL_logical_t, visible, // Visible boolean
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_tool_item_set_visible_vertical(GTK_TOOL_ITEM(self), visible);
     }
     else {
@@ -299,10 +299,10 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxToolItemGetSetIsImportant, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, import)// Important boolean
+            OPTIONAL_logical_t, import,// Important boolean
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_tool_item_set_is_important(GTK_TOOL_ITEM(self), import);
     }
     else {
@@ -394,8 +394,8 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxToolItemGetProxyMenuItem, // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, id)               // The id
+            CSTRING, id,               // The id
+            CSELF, self)               // GTK self
 {
     GtkWidget *temp;
 
@@ -412,9 +412,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxToolItemSetProxyMenuItem, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, id,               // Item id
-            RexxObjectPtr, item)       // Proxy menu itemame
+            RexxObjectPtr, item,       // Proxy menu itemame
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(item, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -456,9 +456,9 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxToolItemSignalConnect,  // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

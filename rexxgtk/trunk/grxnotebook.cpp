@@ -182,9 +182,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxNotebookAppendPage,     // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxcontainer, // The container
-            RexxObjectPtr, rxlabel)    // The label
+            RexxObjectPtr, rxlabel,    // The label
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxcontainer, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -219,9 +219,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxNotebookPrependPage,    // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxcontainer, // The container
-            RexxObjectPtr, rxlabel)    // The label
+            RexxObjectPtr, rxlabel,    // The label
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxcontainer, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -258,10 +258,10 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxNotebookInsertPage,     // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxcontainer, // The container
             RexxObjectPtr, rxlabel,    // The label
-            int, pos)                  // The position
+            int, pos,                  // The position
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxcontainer, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -298,10 +298,10 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxNotebookAppendPageMenu, // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxcontainer, // The container
             RexxObjectPtr, rxlabel,    // The label
-            RexxObjectPtr, rxmenu)     // The menu
+            RexxObjectPtr, rxmenu,     // The menu
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxcontainer, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -346,10 +346,10 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxNotebookPrependPageMenu, // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxcontainer, // The container
             RexxObjectPtr, rxlabel,    // The label
-            RexxObjectPtr, rxmenu)     // The menu
+            RexxObjectPtr, rxmenu,     // The menu
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxcontainer, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -396,11 +396,11 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod5(int,                       // Return type
             GrxNotebookInsertPageMenu, // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxcontainer, // The container
             RexxObjectPtr, rxlabel,    // The label
             RexxObjectPtr, rxmenu,     // The menu
-            int, pos)                  // The position
+            int, pos,                  // The position
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxcontainer, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -441,8 +441,8 @@ RexxMethod5(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxNotebookRemovePage,     // Object_method name
-            CSELF, self,               // GTK self
-            int, pos)                  // The position
+            int, pos,                  // The position
+            CSELF, self)               // GTK self
 {
     gtk_notebook_remove_page(GTK_NOTEBOOK(self), pos);
 
@@ -460,8 +460,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxNotebookSetShowBorder,  // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, toggle)         // The border display boolean
+            logical_t, toggle,         // The border display boolean
+            CSELF, self)               // GTK self
 {
     gtk_notebook_set_show_border(GTK_NOTEBOOK(self), toggle);
 
@@ -479,8 +479,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxNotebookSetShowTabs,    // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, toggle)         // The tabs display boolean
+            logical_t, toggle,         // The tabs display boolean
+            CSELF, self)               // GTK self
 {
     gtk_notebook_set_show_tabs(GTK_NOTEBOOK(self), toggle);
 
@@ -498,8 +498,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxNotebookSetTabPos,      // Object_method name
-            CSELF, self,               // GTK self
-            int, pos)                  // The tab position
+            int, pos,                  // The tab position
+            CSELF, self)               // GTK self
 {
     gtk_notebook_set_tab_pos(GTK_NOTEBOOK(self), (GtkPositionType)pos);
 
@@ -517,8 +517,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxNotebookSetHomogeneousTabs, // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, toggle)         // The homogeneous boolean
+            logical_t, toggle,         // The homogeneous boolean
+            CSELF, self)               // GTK self
 {
     gtk_notebook_set_homogeneous_tabs(GTK_NOTEBOOK(self), toggle);
 
@@ -536,8 +536,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxNotebookSetTabBorder,   // Object_method name
-            CSELF, self,               // GTK self
-            int, width)                // The tab border width
+            int, width,                // The tab border width
+            CSELF, self)               // GTK self
 {
     gtk_notebook_set_tab_border(GTK_NOTEBOOK(self), width);
 
@@ -555,8 +555,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxNotebookSetScrollable,  // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, toggle)         // The scrollable boolean
+            logical_t, toggle,         // The scrollable boolean
+            CSELF, self)               // GTK self
 {
     gtk_notebook_set_scrollable(GTK_NOTEBOOK(self), toggle);
 
@@ -606,10 +606,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxNotebookGetSetCurrentPage, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, page)        // The page number
+            OPTIONAL_int, page,        // The page number
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_notebook_set_current_page(GTK_NOTEBOOK(self), page);
     }
     else {
@@ -630,9 +630,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxNotebookSignalConnect,  // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

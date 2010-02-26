@@ -66,8 +66,8 @@
  **/
 RexxMethod2(int,                       // Return type
             GrxGSListNew,              // Routine name
-            OSELF, self,               // Self
-            OPTIONAL_POINTER, ptr)     // List head
+            OPTIONAL_POINTER, ptr,     // List head
+            OSELF, self)               // Self
 {
 
     if (ptr == NULL) {
@@ -107,8 +107,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxGSListAppend,           // Routine name
-            CSELF, self,               // GTK self
-            CSTRING, item)             // Item to append
+            CSTRING, item,             // Item to append
+            CSELF, self)               // GTK self
 {
     GSList *head = g_slist_append((GSList *)self, (void *)item);
     context->SetObjectVariable("CSELF", context->NewPointer(head));
@@ -127,8 +127,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxGSListPrepend,          // Routine name
-            CSELF, self,               // GTK self
-            CSTRING, item)             // Item to append
+            CSTRING, item,             // Item to append
+            CSELF, self)               // GTK self
 {
     GSList *head = g_slist_prepend((GSList *)self, (void *)item);
     context->SetObjectVariable("CSELF", context->NewPointer(head));
@@ -149,9 +149,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxGSListInsert,           // Routine name
-            CSELF, self,               // GTK self
             CSTRING, item,             // Item to append
-            int, pos)                  // Position
+            int, pos,                  // Position
+            CSELF, self)               // GTK self
 {
     GSList *head = g_slist_insert((GSList *)self, (void *)item, pos - 1);
     context->SetObjectVariable("CSELF", context->NewPointer(head));
@@ -257,8 +257,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxGListAppend,            // Routine name
-            CSELF, self,               // GTK self
-            CSTRING, item)             // Item to append
+            CSTRING, item,             // Item to append
+            CSELF, self)               // GTK self
 {
     GList *head = g_list_append((GList *)self, (void *)item);
     context->SetObjectVariable("CSELF", context->NewPointer(head));
@@ -277,8 +277,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxGListPrepend,           // Routine name
-            CSELF, self,               // GTK self
-            CSTRING, item)             // Item to append
+            CSTRING, item,             // Item to append
+            CSELF, self)               // GTK self
 {
     GList *head = g_list_prepend((GList *)self, (void *)item);
     context->SetObjectVariable("CSELF", context->NewPointer(head));
@@ -299,9 +299,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxGListInsert,            // Routine name
-            CSELF, self,               // GTK self
             CSTRING, item,             // Item to append
-            int, pos)                  // Position
+            int, pos,                  // Position
+            CSELF, self)               // GTK self
 {
     GList *head = g_list_insert((GList *)self, (void *)item, pos - 1);
     context->SetObjectVariable("CSELF", context->NewPointer(head));

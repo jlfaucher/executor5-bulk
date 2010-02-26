@@ -73,8 +73,8 @@
  **/
 RexxMethod2(int,                       // Return type
             GrxTreeStoreNew,           // Object_method name
-            OSELF, self,               // Self
-            ARGLIST, args)             // Array of column types
+            ARGLIST, args,             // Array of column types
+            OSELF, self)               // Self
 {
     GtkTreeStore *tstore = NULL;
     size_t       members = context->ArraySize(args);
@@ -111,13 +111,13 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(POINTER,                   // Return type
             GrxTreeStoreAppend,        // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_POINTER, parent)  // Parent object
+            OPTIONAL_POINTER, parent,  // Parent object
+            CSELF, self)               // GTK self
 {
     GtkTreeIter *piter = NULL;
     GtkTreeIter iter;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         piter = (GtkTreeIter *)parent;
     }
     gtk_tree_store_append(GTK_TREE_STORE(self), &iter, piter);
@@ -138,9 +138,9 @@ RexxMethod2(POINTER,                   // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxTreeStoreSetValue,      // Object_method name
-            CSELF, self,               // GTK self
             POINTER, rxiter,           // Row iterator
-            ARGLIST, args)             // Argument array
+            ARGLIST, args,             // Argument array
+            CSELF, self)               // GTK self
 {
     GtkTreeIter *iter = (GtkTreeIter *)rxiter;
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!COLTYPES");
@@ -230,8 +230,8 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxTreeStoreRemove,        // Object_method name
-            CSELF, self,               // GTK self
-            POINTER, iter)             // Parent object
+            POINTER, iter,             // Parent object
+            CSELF, self)               // GTK self
 {
     return gtk_tree_store_remove(GTK_TREE_STORE(self), (GtkTreeIter *)iter);
 }

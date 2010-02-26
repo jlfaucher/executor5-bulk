@@ -81,8 +81,8 @@ static void signal_func_0(GtkWidget *window,
  **/
 RexxMethod2(int,                       // Return type
             GrxTreeSelectionNewFromPtr, // Object_method name
-            OSELF, self,               // Self
-            POINTER, rxptr)            // Widget pointer
+            POINTER, rxptr,            // Widget pointer
+            OSELF, self)               // Self
 {
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(rxptr));
@@ -99,9 +99,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(RexxArrayObject,           // Return type
             GrxTreeSelectionGetSelectedRows, // Object_method name
+            RexxObjectPtr, treemodel,  // The tree model
             OSELF, oself,              // Self
-            CSELF, cself,              // Self
-            RexxObjectPtr, treemodel)  // The tree model
+            CSELF, cself)              // Self
 {
     RexxArrayObject arr = context->NewArray(1);
     RexxObjectPtr ref;
@@ -143,8 +143,8 @@ RexxMethod3(RexxArrayObject,           // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTreeSelectionSetMode,   // Object_method name
-            CSELF, cself,              // Self
-            int, mode)                 // The mode
+            int, mode,                 // The mode
+            CSELF, cself)              // Self
 {
 
     gtk_tree_selection_set_mode((GtkTreeSelection *)cself,
@@ -164,8 +164,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxTreeSelectionSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, name)             // Signal name
+            CSTRING, name,             // Signal name
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

@@ -73,8 +73,8 @@
  **/
 RexxMethod2(int,                       // Return type
             GrxListStoreNew,           // Object_method name
-            OSELF, self,               // Self
-            ARGLIST, args)             // Array of column types
+            ARGLIST, args,             // Array of column types
+            OSELF, self)               // Self
 {
     GtkListStore *lstore = NULL;
     size_t       members = context->ArraySize(args);
@@ -133,9 +133,9 @@ RexxMethod1(POINTER,                   // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxListStoreSetValue,      // Object_method name
-            CSELF, self,               // GTK self
             POINTER, rxiter,           // Row iterator
-            ARGLIST, args)             // Argument array
+            ARGLIST, args,             // Argument array
+            CSELF, self)               // GTK self
 {
     GtkTreeIter *iter = (GtkTreeIter *)rxiter;
     RexxPointerObject rxptr = (RexxPointerObject)context->GetObjectVariable("!COLTYPES");

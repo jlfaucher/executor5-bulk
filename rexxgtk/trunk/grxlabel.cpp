@@ -124,12 +124,12 @@ static void signal_func_2(GtkWidget *window,
  **/
 RexxMethod2(int,                       // Return type
             GrxLabelNew,               // Object_method name
-            OSELF, self,               // Self
-            OPTIONAL_CSTRING, text)    // Label text
+            OPTIONAL_CSTRING, text,    // Label text
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget;
 
-	if(argumentExists(2))
+	if(argumentExists(1))
        myWidget = gtk_label_new(text);
     else
        myWidget = gtk_label_new("\0");
@@ -152,12 +152,12 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxLabelGetSetLabel,       // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_CSTRING, text)    // Label text
+            OPTIONAL_CSTRING, text,    // Label text
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_label_set_label(GTK_LABEL(self), text);
         retc = (RexxObjectPtr)context->Nil();
     }
@@ -179,10 +179,10 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxLabelGetSetJustify,     // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, jtype)       // Justification type
+            OPTIONAL_int, jtype,       // Justification type
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_label_set_justify(GTK_LABEL(self), (GtkJustification)jtype);
         switch (jtype) {
         case GTK_JUSTIFY_LEFT:
@@ -216,8 +216,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxLabelSetSelectable,     // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, flag)           // Selectable boolean
+            logical_t, flag,           // Selectable boolean
+            CSELF, self)               // GTK self
 {
     gtk_label_set_selectable(GTK_LABEL(self), flag);
 
@@ -235,9 +235,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxLabelSignalConnect,     // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

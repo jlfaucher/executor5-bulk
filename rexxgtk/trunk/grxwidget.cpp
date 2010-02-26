@@ -217,9 +217,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxWidgetSetSizeRequest,   // Object_method name
-            CSELF, self,               // GTK self
             int, width,                // width of the widget
-            int, height)               // height of the widget
+            int, height,               // height of the widget
+            CSELF, self)               // GTK self
 {
     gtk_widget_set_size_request(GTK_WIDGET(self), width, height);
 
@@ -269,13 +269,13 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxWidgetGetSetFont,       // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_CSTRING, fontname)// Font name
+            OPTIONAL_CSTRING, fontname,// Font name
+            CSELF, self)               // GTK self
 {
     GtkStyle *style;
     RexxObjectPtr retc;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         style = gtk_style_copy(gtk_widget_get_style(GTK_WIDGET(self)));
         style->font_desc = pango_font_description_from_string(fontname);
         gtk_widget_set_style(GTK_WIDGET(self), style);
@@ -298,12 +298,12 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxWidgetGetSetName,       // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_CSTRING, name)    // New name
+            OPTIONAL_CSTRING, name,    // New name
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_widget_set_name(GTK_WIDGET(self), name);
         retc = (RexxObjectPtr)context->Nil();
     }
@@ -325,8 +325,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxWidgetSetSensitive,     // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, flag)           // Sensitive flag
+            logical_t, flag,           // Sensitive flag
+            CSELF, self)               // GTK self
 {
     gtk_widget_set_sensitive(GTK_WIDGET(self), flag);
 
@@ -347,9 +347,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxWidgetModifyBG,         // Object_method name
-            CSELF, self,               // GTK self
             int, type,                 // State
-            CSTRING, colorstr)         // Color string
+            CSTRING, colorstr,         // Color string
+            CSELF, self)               // GTK self
 {
     GdkColor color;
 
@@ -373,9 +373,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxWidgetModifyFG,         // Object_method name
-            CSELF, self,               // GTK self
             int, type,                 // State
-            CSTRING, colorstr)         // Color string
+            CSTRING, colorstr,         // Color string
+            CSELF, self)               // GTK self
 {
     GdkColor color;
 
@@ -398,9 +398,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxWidgetSetData,          // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Association name
-            CSTRING, data)             // Association data
+            CSTRING, data,             // Association data
+            CSELF, self)               // GTK self
 {
     g_object_set_data(G_OBJECT(self), strdup(name), strdup(data));
 
@@ -418,8 +418,8 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxWidgetGetData,          // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, name)             // Association name
+            CSTRING, name,             // Association name
+            CSELF, self)               // GTK self
 {
 
     char *data = (char *)g_object_get_data(G_OBJECT(self), name);
@@ -456,8 +456,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxWidgetReparent,         // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, parent)     // New parent widget
+            RexxObjectPtr, parent,     // New parent widget
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(parent, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -513,12 +513,12 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxWidgetGetSetParentWindow, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_RexxObjectPtr, parent) // New parent widget
+            OPTIONAL_RexxObjectPtr, parent, // New parent widget
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc = (RexxObjectPtr) context->Nil();
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         if (!context->IsOfType(parent, "GtkWindow")) {
             context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                      context->WholeNumberToObject(1),
@@ -574,8 +574,8 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxWidgetIsAncestor,       // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, ancestor)   // Ancestor widget
+            RexxObjectPtr, ancestor,   // Ancestor widget
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(ancestor, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -599,8 +599,8 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxWidgetGetAncestor,      // Object_method name
-            CSELF, self,               // GTK self
-            int, type)                 // Ancestor type
+            int, type,                 // Ancestor type
+            CSELF, self)               // GTK self
 {
     GtkWidget *ancestor = gtk_widget_get_ancestor(GTK_WIDGET(self), type);
     if (ancestor == NULL) {
@@ -626,10 +626,10 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxWidgetGetSetDirection,  // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, dir)         // Direction
+            OPTIONAL_int, dir,         // Direction
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_widget_set_direction(GTK_WIDGET(self), (GtkTextDirection)dir);
     }
     else {
@@ -688,11 +688,11 @@ RexxMethod0(int,                       // Return type
  **/
 RexxMethod5(int,                       // Return type
             GrxWidgetQueueDrawArea,    // Object_method name
-            CSELF, self,               // GTK self
             int, x,                    // X coordinate
             int, y,                    // Y coordinate
             int, width,                // Width
-            int, height)               // Heaight
+            int, height,               // Heaight
+            CSELF, self)               // GTK self
 {
     gtk_widget_queue_draw_area(GTK_WIDGET(self), x, y, width, height);
 
@@ -729,9 +729,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(logical_t,                 // Return type
             GrxWidgetSetScrollAdjustments, // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, hadj,       // Horizontal Adjustment
-            RexxObjectPtr, vadj)       // Vertical adjustment
+            RexxObjectPtr, vadj,       // Vertical adjustment
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(hadj, "GtkAdjustment")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -763,8 +763,8 @@ RexxMethod3(logical_t,                 // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxWidgetMnemonicActivate, // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, flag)           // Group cycling flag
+            logical_t, flag,           // Group cycling flag
+            CSELF, self)               // GTK self
 {
     return (logical_t)gtk_widget_mnemonic_activate(GTK_WIDGET(self), flag);
 }
@@ -869,8 +869,8 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxWidgetSetEvents,        // Object_method name
-            CSELF, self,               // GTK self
-            int, events)               // Event mask
+            int, events,               // Event mask
+            CSELF, self)               // GTK self
 {
     gtk_widget_set_events(GTK_WIDGET(self), events);
 
@@ -896,12 +896,12 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod6(int,                       // Return type
             GrxWidgetAddAccelerator,   // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, signame,          // Accelerator signal name
             RexxObjectPtr, accelgrp,   // Accelerator group
             int, key,                  // Accelerator key
             int, mods,                 // Accelerator modifiers
-            int, flags)                // Accelerator flags
+            int, flags,                // Accelerator flags
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(accelgrp, "GtkAccelGroup")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -932,10 +932,10 @@ RexxMethod6(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxWidgetRemoveAccelerator, // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, accelgrp,   // Accelerator group
             int, key,                  // Accelerator key
-            int, mods)                 // Accelerator modifiers
+            int, mods,                 // Accelerator modifiers
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(accelgrp, "GtkAccelGroup")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -966,9 +966,9 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxWidgetSetAccelPath,     // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, path,             // Accelerator path
-            RexxObjectPtr, accelgrp)   // Accelerator group
+            RexxObjectPtr, accelgrp,   // Accelerator group
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(accelgrp, "GtkAccelGroup")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -1026,8 +1026,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxWidgetSignalConnect,    // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, name)             // Signal name
+            CSTRING, name,             // Signal name
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

@@ -84,8 +84,8 @@ static void signal_func_0(GtkWidget *window,
  **/
 RexxMethod2(int,                       // Return type
             GrxTextBufferNew,          // Object_method name
-            OSELF, self,               // Self
-            OPTIONAL_POINTER, rxptr)   // buffer pointer
+            OPTIONAL_POINTER, rxptr,   // buffer pointer
+            OSELF, self)               // Self
 {
     GtkTextBuffer       *myBuffer;
 
@@ -114,12 +114,12 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxTextBufferGetSetText,   // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_CSTRING, text)    // Tagtable object
+            OPTIONAL_CSTRING, text,    // Tagtable object
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_text_buffer_set_text(GTK_TEXT_BUFFER(self), text, -1);
         retc = (RexxObjectPtr)context->Nil();
     }
@@ -144,8 +144,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextBufferInsertText,   // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, text)             // Tagtable object
+            CSTRING, text,             // Tagtable object
+            CSELF, self)               // GTK self
 {
     GtkTextMark         *mark;
     GtkTextIter         iter;
@@ -168,8 +168,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextBufferCutClipboard, // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, flag)           // Editable flag
+            logical_t, flag,           // Editable flag
+            CSELF, self)               // GTK self
 {
     GtkClipboard *cb = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
 
@@ -207,8 +207,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextBufferPasteClipboard, // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, flag)           // Editable flag
+            logical_t, flag,           // Editable flag
+            CSELF, self)               // GTK self
 {
     GtkClipboard *cb = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
 
@@ -230,9 +230,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(POINTER,                   // Return type
             GrxTextBufferForwardSearch, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, text,             // Search text
-            logical_t, flag)           // Position boolean
+            logical_t, flag,           // Position boolean
+            CSELF, self)               // GTK self
 {
     gboolean            found;
     GtkTextIter         start, begin, end;
@@ -301,10 +301,10 @@ RexxMethod2(POINTER,                   // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxTextBufferCreateTagInt, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Tag name
             CSTRING, pname,            // Property name
-            int, pvalue)               // The property value
+            int, pvalue,               // The property value
+            CSELF, self)               // GTK self
 {
     gtk_text_buffer_create_tag(GTK_TEXT_BUFFER(self), name, pname, pvalue, NULL);
 
@@ -326,10 +326,10 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxTextBufferCreateTagFloat, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Tag name
             CSTRING, pname,            // Property name
-            float, pvalue)             // The property value
+            float, pvalue,             // The property value
+            CSELF, self)               // GTK self
 {
     gtk_text_buffer_create_tag(GTK_TEXT_BUFFER(self), name, pname, pvalue, NULL);
 
@@ -347,8 +347,8 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextBufferApplyTagByName, // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, name)             // Tag name
+            CSTRING, name,             // Tag name
+            CSELF, self)               // GTK self
 {
     GtkTextIter   start, end;
 
@@ -390,9 +390,9 @@ RexxMethod1(int,                       // Return type
  */
 RexxMethod3(int,                       // Return type
             GrxTextBufferInsertImage,  // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, image,      // Image
-            int, linenum)              // Line number
+            int, linenum,              // Line number
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(image, "GtkImage")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -422,9 +422,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxTextBufferSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

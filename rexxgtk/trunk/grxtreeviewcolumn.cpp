@@ -106,12 +106,12 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxTreeViewColumnGetSetTitle, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_CSTRING, title)   // Title
+            OPTIONAL_CSTRING, title,   // Title
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_tree_view_column_set_title(GTK_TREE_VIEW_COLUMN(self), title);
         retc = (RexxObjectPtr)context->Nil();
     }
@@ -133,9 +133,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxTreeViewColumnPackStart, // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxobj,      // Renderer
-            logical_t, flag)           // Expand boolean
+            logical_t, flag,           // Expand boolean
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxobj, "GtkCellRenderer")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -161,9 +161,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxTreeViewColumnPackEnd, // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxobj,      // Renderer
-            logical_t, flag)           // Expand boolean
+            logical_t, flag,           // Expand boolean
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxobj, "GtkCellRenderer")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -189,10 +189,10 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxTreeViewColumnSetAttribute, // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxobj,      // Renderer
             CSTRING, attr,             // Attribute
-            int, col)                  // Column
+            int, col,                  // Column
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxobj, "GtkCellRenderer")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -219,8 +219,8 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxTreeViewColumnSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, name)             // Signal name
+            CSTRING, name,             // Signal name
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

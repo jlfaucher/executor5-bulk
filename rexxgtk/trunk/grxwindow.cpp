@@ -101,8 +101,8 @@ static void signal_func_1(GtkWidget *window,
  **/
 RexxMethod2(int,                       // Return type
             GrxWindowNew,              // Object_method name
-            OSELF, self,               // Self
-            int, type)                 // Window type
+            int, type,                 // Window type
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget = gtk_window_new((GtkWindowType)type);
 
@@ -142,8 +142,8 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxWindowSetTitle,         // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, title)            // Window title
+            CSTRING, title,            // Window title
+            CSELF, self)               // GTK self
 {
     gtk_window_set_title(GTK_WINDOW(self), title);
 
@@ -161,8 +161,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxWindowSetModal,         // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, modal)          // Window modal flag
+            logical_t, modal,          // Window modal flag
+            CSELF, self)               // GTK self
 {
     gtk_window_set_modal(GTK_WINDOW(self), modal);
 
@@ -194,8 +194,8 @@ RexxMethod1(logical_t,                 // Return type
  **/
 RexxMethod2(int,                        // Return type
             GrxWindowAddAccelGroup,     // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, accelgrp)    // Accelerator group
+            RexxObjectPtr, accelgrp,    // Accelerator group
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(accelgrp, "GtkAccelGroup")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -221,9 +221,9 @@ RexxMethod2(int,                        // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxWindowSignalConnect,    // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

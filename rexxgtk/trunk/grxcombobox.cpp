@@ -141,8 +141,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxComboBoxAppendText,     // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, text)             // Text to append
+            CSTRING, text,             // Text to append
+            CSELF, self)               // GTK self
 {
     gtk_combo_box_append_text(GTK_COMBO_BOX(self), text);
 
@@ -178,11 +178,11 @@ RexxMethod1(RexxObjectPtr,             // Return type
  * @return        Zero.
  **/
 RexxMethod2(int,                       // Return type
-            GrxComboBoxGetSetActive,      // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, active)               // Entry number
+            GrxComboBoxGetSetActive,   // Object_method name
+            OPTIONAL_int, active,      // Entry number
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_combo_box_set_active(GTK_COMBO_BOX(self), active);
     }
     else {
@@ -203,9 +203,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxComboBoxSignalConnect,  // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Image file name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

@@ -230,10 +230,10 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextViewGetSetWrapMode, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, mode)        // Wrap mode
+            OPTIONAL_int, mode,        // Wrap mode
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(self), (GtkWrapMode)mode);
     }
     else {
@@ -254,10 +254,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextViewGetSetJustification, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, just)        // Justification
+            OPTIONAL_int, just,        // Justification
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_text_view_set_justification(GTK_TEXT_VIEW(self), (GtkJustification)just);
     }
     else {
@@ -278,10 +278,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxTextViewGetSetEditable, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, flag)  // Editable boolean
+            OPTIONAL_logical_t, flag,  // Editable boolean
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_text_view_set_editable(GTK_TEXT_VIEW(self), flag);
     }
     else {
@@ -302,10 +302,10 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod2(logical_t,                       // Return type
             GrxTextViewGetSetCursorVisible, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, flag)  // Cursor visible boolean
+            OPTIONAL_logical_t, flag,  // Cursor visible boolean
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(self), flag);
     }
     else {
@@ -326,10 +326,10 @@ RexxMethod2(logical_t,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextViewGetSetPixelsAboveLines, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, pixels)      // Number of pixels
+            OPTIONAL_int, pixels,      // Number of pixels
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_text_view_set_pixels_above_lines(GTK_TEXT_VIEW(self), pixels);
     }
     else {
@@ -350,10 +350,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextViewGetSetPixelsBelowLines, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, pixels)      // Number of pixels
+            OPTIONAL_int, pixels,      // Number of pixels
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_text_view_set_pixels_below_lines(GTK_TEXT_VIEW(self), pixels);
     }
     else {
@@ -374,10 +374,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextViewGetSetPixelsInsideWrap, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, pixels)      // Number of pixels
+            OPTIONAL_int, pixels,      // Number of pixels
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_text_view_set_pixels_inside_wrap(GTK_TEXT_VIEW(self), pixels);
     }
     else {
@@ -398,10 +398,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextViewGetSetLeftMargin, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, pixels)      // Number of pixels
+            OPTIONAL_int, pixels,      // Number of pixels
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_text_view_set_left_margin(GTK_TEXT_VIEW(self), pixels);
     }
     else {
@@ -422,10 +422,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTextViewGetSetRightMargin, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, pixels)      // Number of pixels
+            OPTIONAL_int, pixels,      // Number of pixels
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_text_view_set_right_margin(GTK_TEXT_VIEW(self), pixels);
     }
     else {
@@ -448,9 +448,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxTextViewAddChildAtOffset, // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxchild,    // Child widget
-            int, offset)               // Offset
+            int, offset,               // Offset
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxchild, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -483,9 +483,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxTextViewSignalConnect,  // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

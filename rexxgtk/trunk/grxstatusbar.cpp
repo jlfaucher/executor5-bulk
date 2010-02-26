@@ -110,8 +110,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxStatusbarGetContextId,  // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, desc)             // Description
+            CSTRING, desc,             // Description
+            CSELF, self)               // GTK self
 {
     return gtk_statusbar_get_context_id(GTK_STATUSBAR(self), desc);
 }
@@ -129,9 +129,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxStatusbarPush,          // Object_method name
-            CSELF, self,               // GTK self
             int, cid,                  // Context id
-            CSTRING, text)             // Message text
+            CSTRING, text,             // Message text
+            CSELF, self)               // GTK self
 {
     return gtk_statusbar_push(GTK_STATUSBAR(self), cid, text);
 }
@@ -147,8 +147,8 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxStatusbarPop,           // Object_method name
-            CSELF, self,               // GTK self
-            int, cid)                  // Context id
+            int, cid,                  // Context id
+            CSELF, self)               // GTK self
 {
     gtk_statusbar_pop(GTK_STATUSBAR(self), cid);
 
@@ -168,9 +168,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxStatusbarRemove,        // Object_method name
-            CSELF, self,               // GTK self
             int, cid,                  // Context id
-            int, mid)                  // Message id
+            int, mid,                  // Message id
+            CSELF, self)               // GTK self
 {
     gtk_statusbar_remove(GTK_STATUSBAR(self), cid, mid);
 
@@ -188,10 +188,10 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxStatusbarGetSetHasResizeGrip, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, flag)  // Boolean flag
+            OPTIONAL_logical_t, flag,  // Boolean flag
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR(self), flag);
     }
     else {
@@ -212,9 +212,9 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxStatusbarSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

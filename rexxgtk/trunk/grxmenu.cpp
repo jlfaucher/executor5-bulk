@@ -110,9 +110,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxMenuReorderChild,       // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, child,      // The child widget
-            int, pos)                  // Position
+            int, pos,                  // Position
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(child, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -146,12 +146,12 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod6(int,                       // Return type
             GrxMenuAttach,             // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, child,      // The child widget
             int, left,                 // Left column number
             int, right,                // Right column number
             int, top,                  // Top row number
-            int, bottom)               // Bottom row number
+            int, bottom,               // Bottom row number
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(child, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -194,12 +194,12 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxMenuGetSetAccelGroup,   // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_RexxObjectPtr, accel) // The accel widget
+            OPTIONAL_RexxObjectPtr, accel, // The accel widget
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc = (RexxObjectPtr)context->Nil();
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         if (!context->IsOfType(accel, "GtkAccelGroup")) {
             context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                      context->WholeNumberToObject(1),
@@ -228,8 +228,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuSetAccelPath,       // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, path)             // The accel path
+            CSTRING, path,             // The accel path
+            CSELF, self)               // GTK self
 {
     gtk_menu_set_accel_path(GTK_MENU(self), path);
 
@@ -247,12 +247,12 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxMenuGetSetTitle,        // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_CSTRING, title)   // The accel path
+            OPTIONAL_CSTRING, title,   // The accel path
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_menu_set_title(GTK_MENU(self), title);
         retc = (RexxObjectPtr)context->Nil();
     }
@@ -274,8 +274,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuSetTearoffState,    // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, state)          // The state boolean
+            logical_t, state,          // The state boolean
+            CSELF, self)               // GTK self
 {
     gtk_menu_set_tearoff_state(GTK_MENU(self), state);
 
@@ -339,12 +339,12 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxMenuGetSetActive,       // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, item)        // The item index
+            OPTIONAL_int, item,        // The item index
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc = (RexxObjectPtr)context->Nil();
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_menu_set_active(GTK_MENU(self), item);
     }
     else {
@@ -366,8 +366,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuAttachToWidget,     // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, target)     // The accel widget
+            RexxObjectPtr, target,     // The accel widget
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(target, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -424,9 +424,9 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxMenuSignalConnect,      // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

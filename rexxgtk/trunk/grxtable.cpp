@@ -77,10 +77,10 @@
  **/
 RexxMethod4(int,                       // Return type
             GrxTableNew,               // Object_method name
-            OSELF, self,               // Self
             int, rows,                 // Table rows
             int, cols,                 // Table columns
-            logical_t, homogeneous)    // Homogeneous boolean
+            logical_t, homogeneous,    // Homogeneous boolean
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget = gtk_table_new(rows, cols, homogeneous);
 
@@ -118,7 +118,6 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod10(int,                       // Return type
             GrxTableAttach,            // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxWidget,   // Widget to be added
             int, left,                 // Left position
             int, right,                // Right position
@@ -127,7 +126,8 @@ RexxMethod10(int,                       // Return type
             int, xoptions,             // X options        
             int, yoptions,             // Y options
             int, xpad,                 // X padding
-            int, ypad)                 // Y padding
+            int, ypad,                 // Y padding
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxWidget, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -155,8 +155,8 @@ RexxMethod10(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTableSetRowSpacings,    // Object_method name
-            CSELF, self,               // GTK self
-            int, spacing)              // Row spacing
+            int, spacing,              // Row spacing
+            CSELF, self)               // GTK self
 {
     gtk_table_set_row_spacings(GTK_TABLE(self), spacing);
 
@@ -174,8 +174,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTableSetColSpacings,    // Object_method name
-            CSELF, self,               // GTK self
-            int, spacing)              // Column spacing
+            int, spacing,              // Column spacing
+            CSELF, self)               // GTK self
 {
     gtk_table_set_col_spacings(GTK_TABLE(self), spacing);
 

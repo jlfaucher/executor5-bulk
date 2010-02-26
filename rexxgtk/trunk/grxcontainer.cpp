@@ -101,8 +101,8 @@ static void signal_func_1(GtkWidget *window,
  **/
 RexxMethod2(int,                       // Return type
             GrxContainerAdd,           // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, rxadd)      // Object to add
+            RexxObjectPtr, rxadd,      // Object to add
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxadd, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -128,8 +128,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxContainerRemove,        // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, rxrem)      // Object to add
+            RexxObjectPtr, rxrem,      // Object to add
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxrem, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -155,8 +155,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxContainerSetBorderWidth,// Object_method name
-            CSELF, self,               // GTK self
-            int, width)                // Border widthd
+            int, width,                // Border widthd
+            CSELF, self)               // GTK self
 {
     gtk_container_set_border_width(GTK_CONTAINER(self), width);
 
@@ -180,11 +180,11 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod5(int,                       // Return type
             GrxBoxPackStart,           // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxpack,     // Widget to pack
             logical_t, expand,         // Expand boolean
             logical_t, fill,           // Fill boolean
-            int, padding)              // Padding amount
+            int, padding,              // Padding amount
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxpack, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -216,11 +216,11 @@ RexxMethod5(int,                       // Return type
  **/
 RexxMethod5(int,                       // Return type
             GrxBoxPackEnd,             // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxpack,     // Widget to pack
             logical_t, expand,         // Expand boolean
             logical_t, fill,           // Fill boolean
-            int, padding)              // Padding amount
+            int, padding,              // Padding amount
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxpack, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -248,9 +248,9 @@ RexxMethod5(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxVBoxNew,                // Object_method name
-            OSELF, self,               // Self
             logical_t, homogeneous,    // Homogeneous boolean
-            int, spacing)              // Spacing amount
+            int, spacing,              // Spacing amount
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget = gtk_vbox_new(homogeneous, spacing);
 
@@ -272,8 +272,8 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxVBoxNewFromPtr,         // Object_method name
-            OSELF, self,               // Self
-            POINTER, rxptr)            // Vbox pointer
+            POINTER, rxptr,            // Vbox pointer
+            OSELF, self)               // Self
 {
     GtkVBox *vbox = (GtkVBox *)rxptr;
 
@@ -295,8 +295,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxVBoxNewFromPointer,     // Object_method name
-            OSELF, self,               // Self
-            POINTER, ptr)              // The pointer
+            POINTER, ptr,              // The pointer
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget = (GtkWidget *)ptr;
 
@@ -320,9 +320,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxHBoxNew,                // Object_method name
-            OSELF, self,               // Self
             logical_t, homogeneous,    // Homogeneous boolean
-            int, spacing)              // Spacing amount
+            int, spacing,              // Spacing amount
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget = gtk_hbox_new(homogeneous, spacing);
 
@@ -344,8 +344,8 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxHBoxNewFromPtr,         // Object_method name
-            OSELF, self,               // Self
-            POINTER, rxptr)            // Homogeneous boolean
+            POINTER, rxptr,            // Homogeneous boolean
+            OSELF, self)               // Self
 {
     GtkVBox *hbox = (GtkVBox *)rxptr;
 
@@ -373,11 +373,11 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod5(int,                       // Return type
             GrxAlignmentNew,           // Object_method name
-            OSELF, self,               // Self
             float, xalign,             // X alignment
             float, yalign,             // Y alignment
             float, xscale,             // Y scale
-            float, yscale)             // Y scale
+            float, yscale,             // Y scale
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget = gtk_alignment_new(xalign, yalign, xscale, yscale);
 
@@ -399,9 +399,9 @@ RexxMethod5(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxContainerSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
@@ -454,9 +454,9 @@ RexxMethod3(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxViewportNew,            // Object_method name
-            OSELF, self,               // Self
             RexxObjectPtr, rxhadj,     // Horizontal adjustment object
-            RexxObjectPtr, rxvadj)     // Vertical adjustment object
+            RexxObjectPtr, rxvadj,     // Vertical adjustment object
+            OSELF, self)               // Self
 {
     if (!context->IsOfType(rxhadj, "GtkAdjustment")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -492,9 +492,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxViewportSignalConnect,  // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

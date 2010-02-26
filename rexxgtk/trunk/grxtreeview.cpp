@@ -229,8 +229,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTreeViewAppendColumn,   // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, rxobj)      // Column object
+            RexxObjectPtr, rxobj,      // Column object
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxobj, "GtkTreeViewColumn")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -256,8 +256,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTreeViewRemoveColumn,   // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, rxobj)      // Column object
+            RexxObjectPtr, rxobj,      // Column object
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxobj, "GtkTreeViewColumn")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -285,9 +285,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxTreeViewInsertColumn,   // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxobj,      // Column object
-            int, pos)                  // Position
+            int, pos,                  // Position
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxobj, "GtkTreeViewColumn")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -313,11 +313,11 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxTreeViewGetSetModel,    // Object_method name
-            CSELF, cself,              // GTK self
             OSELF, oself,              // GTK self
-            OPTIONAL_RexxObjectPtr, model) // Column object
+            OPTIONAL_RexxObjectPtr, model, // Column object
+            CSELF, cself)              // GTK self
 {
-    if (argumentExists(3)) {
+    if (argumentExists(2)) {
         // Do not test model for its class as it can be of multiple classes
         GtkTreeModel *modelWidget = (GtkTreeModel *)context->ObjectToCSelf(model);
         gtk_tree_view_set_model(GTK_TREE_VIEW(cself), modelWidget);
@@ -377,9 +377,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxTreeViewSignalConnect,  // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

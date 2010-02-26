@@ -163,9 +163,9 @@ RexxMethod5(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxDialogAddButton,        // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, btext,            // Button text
-            int, bid)                  // Response id
+            int, bid,                  // Response id
+            CSELF, self)               // GTK self
 {
     gtk_dialog_add_button(GTK_DIALOG(self), btext, bid);
 
@@ -183,8 +183,8 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxDialogSetHasSeparator,  // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, flag)           // Separator boolean
+            logical_t, flag,           // Separator boolean
+            CSELF, self)               // GTK self
 {
     gtk_dialog_set_has_separator(GTK_DIALOG(self), flag);
 
@@ -202,8 +202,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxDialogSetDefaultResponse, // Object_method name
-            CSELF, self,               // GTK self
-            int, rid)                  // Response id
+            int, rid,                  // Response id
+            CSELF, self)               // GTK self
 {
     gtk_dialog_set_default_response(GTK_DIALOG(self), rid);
 
@@ -235,9 +235,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxDialogSignalConnect,    // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
@@ -406,12 +406,12 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxFontSelectionDialogGetSetFontName, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_CSTRING, name)    // Font name
+            OPTIONAL_CSTRING, name,    // Font name
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(self),
                                                 name);
         retc = (RexxObjectPtr)context->Nil();
@@ -434,8 +434,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxFontSelectionDialogSetPreviewText, // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, text)             // Preview text
+            CSTRING, text,             // Preview text
+            CSELF, self)               // GTK self
 {
     gtk_font_selection_dialog_set_preview_text(GTK_FONT_SELECTION_DIALOG(self),
                                                text);
@@ -472,8 +472,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAboutDialogSetName,     // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, name)             // Program name
+            CSTRING, name,             // Program name
+            CSELF, self)               // GTK self
 {
     gtk_about_dialog_set_name(GTK_ABOUT_DIALOG(self), name);
 
@@ -491,8 +491,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAboutDialogSetVersion,  // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, version)          // Program version
+            CSTRING, version,          // Program version
+            CSELF, self)               // GTK self
 {
     gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(self), version);
 
@@ -510,8 +510,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAboutDialogSetCopyright, // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, copyright)        // Program copyright text
+            CSTRING, copyright,        // Program copyright text
+            CSELF, self)               // GTK self
 {
     gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(self), copyright);
 
@@ -529,8 +529,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAboutDialogSetComments, // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, comments)         // Program comments
+            CSTRING, comments,         // Program comments
+            CSELF, self)               // GTK self
 {
     gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(self), comments);
 
@@ -548,8 +548,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAboutDialogSetLicense,  // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, license)          // Program license
+            CSTRING, license,          // Program license
+            CSELF, self)               // GTK self
 {
     gtk_about_dialog_set_license(GTK_ABOUT_DIALOG(self), license);
 
@@ -567,8 +567,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAboutDialogSetWrapLicense, // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, flag)           // Wrap boolean
+            logical_t, flag,           // Wrap boolean
+            CSELF, self)               // GTK self
 {
     gtk_about_dialog_set_wrap_license(GTK_ABOUT_DIALOG(self), flag);
 
@@ -586,8 +586,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAboutDialogSetWebsite,  // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, website)          // Program website
+            CSTRING, website,          // Program website
+            CSELF, self)               // GTK self
 {
     gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(self), website);
 
@@ -605,8 +605,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAboutDialogSetWebsiteLabel, // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, label)            // Program website label
+            CSTRING, label,            // Program website label
+            CSELF, self)               // GTK self
 {
     gtk_about_dialog_set_website_label(GTK_ABOUT_DIALOG(self), label);
 
@@ -624,8 +624,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAboutDialogSetAuthors,  // Object_method name
-            CSELF, self,               // GTK self
-            ARGLIST, args)             // Array of authors
+            ARGLIST, args,             // Array of authors
+            CSELF, self)               // GTK self
 {
     size_t members = context->ArraySize(args);
 
@@ -664,8 +664,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAboutDialogSetArtists,  // Object_method name
-            CSELF, self,               // GTK self
-            ARGLIST, args)             // Array of artists
+            ARGLIST, args,             // Array of artists
+            CSELF, self)               // GTK self
 {
     size_t members = context->ArraySize(args);
 
@@ -704,8 +704,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAboutDialogSetDocumentors, // Object_method name
-            CSELF, self,               // GTK self
-            ARGLIST, args)             // Array of authors
+            ARGLIST, args,             // Array of authors
+            CSELF, self)               // GTK self
 {
     size_t members = context->ArraySize(args);
 
@@ -743,8 +743,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAboutDialogSetLogo,     // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, logofile)         // Program logo filename
+            CSTRING, logofile,         // Program logo filename
+            CSELF, self)               // GTK self
 {
     GdkPixbuf *logo;
 

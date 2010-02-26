@@ -97,10 +97,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxFixedPut,               // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxwidget,   // Page number
             int, xpos,                 // X position 
-            int, ypos)                 // Y position
+            int, ypos,                 // Y position
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxwidget, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -130,10 +130,10 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxFixedMove,              // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxwidget,   // Page number
             int, xpos,                 // X position 
-            int, ypos)                 // Y position
+            int, ypos,                 // Y position
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxwidget, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,

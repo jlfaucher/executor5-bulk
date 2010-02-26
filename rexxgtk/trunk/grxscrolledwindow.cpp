@@ -108,13 +108,13 @@ static void signal_func_2(GtkWidget *window,
  **/
 RexxMethod3(int,                       // Return type
             GrxScrolledWindowNew,      // Object_method name
-            OSELF, self,               // Self
             OPTIONAL_RexxObjectPtr, rxhadj, // The horizontal adjustment
-            OPTIONAL_RexxObjectPtr, rxvadj) // The vertical adjustment
+            OPTIONAL_RexxObjectPtr, rxvadj, // The vertical adjustment
+            OSELF, self)               // Self
 {
     GtkAdjustment *hadj = NULL, *vadj = NULL;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         if (rxhadj != context->Nil()) {
             if (!context->IsOfType(rxhadj, "GtkAdjustment")) {
                 context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -125,7 +125,7 @@ RexxMethod3(int,                       // Return type
             hadj = (GtkAdjustment *)context->ObjectToCSelf(rxhadj);
         }
     }
-    if (argumentExists(3)) {
+    if (argumentExists(2)) {
         if (rxvadj != context->Nil()) {
             if (!context->IsOfType(rxvadj, "GtkAdjustment")) {
                 context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -198,9 +198,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxScrolledWindowSetPolicy, // Object_method name
-            CSELF, self,               // GTK self
             int, hpolicy,              // Horizontal policy
-            int, vpolicy)              // Vertical policy
+            int, vpolicy,              // Vertical policy
+            CSELF, self)               // GTK self
 {
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(self),
                                    (GtkPolicyType)hpolicy,
@@ -220,8 +220,8 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxScrolledWindowAddWithViewport, // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, rxchild)    // Child widget
+            RexxObjectPtr, rxchild,    // Child widget
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxchild, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -247,9 +247,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxScrolledWindowSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

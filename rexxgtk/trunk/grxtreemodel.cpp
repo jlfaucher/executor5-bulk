@@ -73,8 +73,8 @@
  **/
 RexxMethod2(int,                       // Return type
             GrxTreePathNew,            // Object_method name
-            OSELF, self,               // Self
-            OPTIONAL_RexxObjectPtr, spath) // Path string
+            OPTIONAL_RexxObjectPtr, spath, // Path string
+            OSELF, self)               // Self
 {
     GtkTreePath *path;
 
@@ -291,9 +291,9 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxTreeRowReferenceNew,    // Object_method name
-            OSELF, self,               // Self
             RexxObjectPtr, modelobj,   // Model pointer
-            OPTIONAL_RexxObjectPtr, pathobj) // Path pointer
+            OPTIONAL_RexxObjectPtr, pathobj, // Path pointer
+            OSELF, self)               // Self
 {
     GtkTreeRowReference *ref;
 
@@ -409,8 +409,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxTreeModelGetColumnType, // Object_method name
-            CSELF, self,               // Self
-            int, idx)                  // Column index
+            int, idx,                  // Column index
+            CSELF, self)               // Self
 {
     return gtk_tree_model_get_column_type((GtkTreeModel *)self, idx);
 }
@@ -426,8 +426,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(POINTER,                   // Return type
             GrxTreeModelGetIter,       // Object_method name
-            CSELF, self,               // Self
-            RexxObjectPtr, pathobj)    // The path
+            RexxObjectPtr, pathobj,    // The path
+            CSELF, self)               // Self
 {
     GtkTreeIter iter;
     if (!context->IsOfType(pathobj, "GtkTreePath")) {
@@ -456,8 +456,8 @@ RexxMethod2(POINTER,                   // Return type
  **/
 RexxMethod2(POINTER,                   // Return type
             GrxTreeModelGetIterFromString, // Object_method name
-            CSELF, self,               // Self
-            CSTRING, str)              // The string
+            CSTRING, str,              // The string
+            CSELF, self)               // Self
 {
     GtkTreeIter iter;
 
@@ -481,9 +481,9 @@ RexxMethod2(POINTER,                   // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxTreeModelGetValue,      // Object_method name
-            CSELF, self,               // GTK self
             POINTER, rxiter,           // Row iterator
-            int, col)                  // Column number
+            int, col,                  // Column number
+            CSELF, self)               // GTK self
 {
     GtkTreeIter *iter = (GtkTreeIter *)rxiter;
     GType type = gtk_tree_model_get_column_type(GTK_TREE_MODEL(self), col);
@@ -536,8 +536,8 @@ RexxMethod3(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(POINTER,                   // Return type
             GrxTreeModelIterNext,      // Object_method name
-            CSELF, self,               // Self
-            POINTER, rxiter)           // The iter
+            POINTER, rxiter,           // The iter
+            CSELF, self)               // Self
 {
     GtkTreeIter *iter = (GtkTreeIter *)rxiter;
 
@@ -560,9 +560,9 @@ RexxMethod2(POINTER,                   // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxTreeModelGetPath,       // Object_method name
-            OSELF, oself,              // Self
             CSELF, cself,              // Self
-            POINTER, rxiter)           // The iter
+            POINTER, rxiter,           // The iter
+            OSELF, oself)              // Self
 {
     GtkTreeIter *iter = (GtkTreeIter *)rxiter;
 
@@ -582,8 +582,8 @@ RexxMethod3(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxTreeModelHasParent,     // Object_method name
-            CSELF, self,               // Self
-            POINTER, rxiter)           // The iter
+            POINTER, rxiter,           // The iter
+            CSELF, self)               // Self
 {
     GtkTreeIter *iter = (GtkTreeIter *)rxiter;
     GtkTreeIter parent;
@@ -602,8 +602,8 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod2(POINTER,                   // Return type
             GrxTreeModelGetParent,     // Object_method name
-            CSELF, self,               // Self
-            POINTER, rxiter)           // The iter
+            POINTER, rxiter,           // The iter
+            CSELF, self)               // Self
 {
     GtkTreeIter *iter = (GtkTreeIter *)rxiter;
     GtkTreeIter parent;

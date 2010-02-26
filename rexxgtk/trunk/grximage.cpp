@@ -93,8 +93,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxImageSetFromFile,       // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, filename)         // File name/path
+            CSTRING, filename,         // File name/path
+            CSELF, self)               // GTK self
 {
     GdkPixbuf *buf;
 
@@ -117,9 +117,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxImageSetFromStock,      // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, stockname,        // Stock name
-            int, size)                 // Icon size type
+            int, size,                 // Icon size type
+            CSELF, self)               // GTK self
 {
     gtk_image_set_from_stock(GTK_IMAGE(self), stockname, (GtkIconSize)size);
 
@@ -139,9 +139,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxImageSetFromIconName,   // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, iconname,         // Icon name
-            int, size)                 // Icon size type
+            int, size,                 // Icon size type
+            CSELF, self)               // GTK self
 {
     gtk_image_set_from_icon_name(GTK_IMAGE(self), iconname, (GtkIconSize)size);
 

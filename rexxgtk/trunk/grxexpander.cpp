@@ -86,8 +86,8 @@ static void signal_func_0(GtkWidget *window,
  **/
 RexxMethod2(int,                       // Return type
             GrxExpanderNew,            // Object_method name
-            OSELF, self,               // Self
-            CSTRING, label)            // Expander label
+            CSTRING, label,            // Expander label
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget = gtk_expander_new(label);
 
@@ -109,8 +109,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxExpanderSetExpanded,    // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, state)          // Expander state
+            logical_t, state,          // Expander state
+            CSELF, self)               // GTK self
 {
     gtk_expander_set_expanded(GTK_EXPANDER(self), state);
 
@@ -128,12 +128,12 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxExpanderGetSetLabel,    // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_CSTRING, label)   // Expander label
+            OPTIONAL_CSTRING, label,   // Expander label
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_expander_set_label(GTK_EXPANDER(self), label);
         retc = (RexxObjectPtr)context->Nil();
     }
@@ -155,8 +155,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxExpanderSetUseUnderline, // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, flag)           // Expander underline boolean
+            logical_t, flag,           // Expander underline boolean
+            CSELF, self)               // GTK self
 {
     gtk_expander_set_use_underline(GTK_EXPANDER(self), flag);
 
@@ -174,8 +174,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxExpanderSetSpacing,     // Object_method name
-            CSELF, self,               // GTK self
-            int, spacing)              // Expander spacing amount
+            int, spacing,              // Expander spacing amount
+            CSELF, self)               // GTK self
 {
     gtk_expander_set_spacing(GTK_EXPANDER(self), spacing);
 
@@ -193,9 +193,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxExpanderSignalConnect,  // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

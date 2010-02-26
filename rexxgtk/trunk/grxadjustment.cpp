@@ -96,13 +96,13 @@ static void signal_func_0(GtkWidget *window,
  **/
 RexxMethod7(int,                       // Return type
             GrxAdjustmentNew,          // Object_method name
-            OSELF, self,               // Self
             double, value,             // Value
             double, upper,             // Upper limit
             double, lower,             // Lower limit
             double, step,              // Step increment
             double, page,              // Page increment
-            double, pagesz)            // Page size
+            double, pagesz,            // Page size
+            OSELF, self)               // Self
 {
     GtkAdjustment   *adj;
 
@@ -127,8 +127,8 @@ RexxMethod7(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAdjustmentNewFromPtr,   // Object_method name
-            OSELF, self,               // Self
-            POINTER, rxptr)            // Widget pointer
+            POINTER, rxptr,            // Widget pointer
+            OSELF, self)               // Self
 {
     GtkAdjustment *adj = (GtkAdjustment *)rxptr;
 
@@ -150,10 +150,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(double,                    // Return type
             GrxAdjustmentGetSetValue,  // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_double, value)    // New value
+            OPTIONAL_double, value,    // New value
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_adjustment_set_value(GTK_ADJUSTMENT(self), value);
     }
     else {
@@ -176,9 +176,9 @@ RexxMethod2(double,                    // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxAdjustmentClampPage,    // Object_method name
-            CSELF, self,               // GTK self
             double, lower,             // Lower limit
-            double, upper)             // Upper limit
+            double, upper,             // Upper limit
+            CSELF, self)               // GTK self
 {
     gtk_adjustment_clamp_page(GTK_ADJUSTMENT(self), lower, upper);
 
@@ -196,8 +196,8 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxAdjustmentSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, name)             // Signal name
+            CSTRING, name,             // Signal name
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

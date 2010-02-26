@@ -92,8 +92,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxProgressBarSetFraction, // Object_method name
-            CSELF, self,               // GTK self
-            double, fraction)          // Fraction
+            double, fraction,          // Fraction
+            CSELF, self)               // GTK self
 {
     gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(self), fraction);
 
@@ -111,8 +111,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxProgressBarSetPulseStep, // Object_method name
-            CSELF, self,               // GTK self
-            double, fraction)          // Fraction
+            double, fraction,          // Fraction
+            CSELF, self)               // GTK self
 {
     gtk_progress_bar_set_pulse_step(GTK_PROGRESS_BAR(self), fraction);
 

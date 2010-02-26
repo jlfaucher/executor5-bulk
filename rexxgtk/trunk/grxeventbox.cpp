@@ -93,10 +93,10 @@ RexxMethod1(int,                       // Return type
  */
 RexxMethod2(int,                       // Return type
             GrxEventBoxGetSetAboveChild, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, flag)  // Flag
+            OPTIONAL_logical_t, flag,  // Flag
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_event_box_set_above_child(GTK_EVENT_BOX(self), flag);
     }
     else {
@@ -117,10 +117,10 @@ RexxMethod2(int,                       // Return type
  */
 RexxMethod2(logical_t,                 // Return type
             GrxEventBoxGetSetVisibleWindow, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, flag)  // Flag
+            OPTIONAL_logical_t, flag,  // Flag
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_event_box_set_visible_window(GTK_EVENT_BOX(self), flag);
     }
     else {

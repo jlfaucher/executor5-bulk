@@ -133,10 +133,10 @@ static void signal_func_2(GtkWidget *window,
  **/
 RexxMethod2(int,                       // Return type
             GrxScaleGetSetDigits,      // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, digits)      // Digits
+            OPTIONAL_int, digits,      // Digits
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_scale_set_digits(GTK_SCALE(self), digits);
     }
     else {
@@ -157,10 +157,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxScaleGetSetValuePos,    // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, type)        // Position type
+            OPTIONAL_int, type,        // Position type
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_scale_set_value_pos(GTK_SCALE(self), (GtkPositionType)type);
     }
     else {
@@ -191,13 +191,13 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod7(int,                       // Return type
             GrxHScaleNew,              // Object_method name
-            OSELF, self,               // Self
             double, value,             // Initial value
             double, lower,             // Lower limit
             double, upper,             // Upper limit
             double, step,              // Step increment
             double, page,              // Page increment
-            double, pagesz)            // Page size
+            double, pagesz,            // Page size
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget;
     GtkAdjustment *adj = (GtkAdjustment *) gtk_adjustment_new(value, lower, upper, step, page, pagesz);
@@ -225,10 +225,10 @@ RexxMethod7(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxHScaleNewWithRange,     // Object_method name
-            OSELF, self,               // Self
             double, min,               // Minimum
             double, max,               // Maximum
-            double, step)              // Step increment
+            double, step,              // Step increment
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget = gtk_hscale_new_with_range(min, max, step);
 
@@ -260,13 +260,13 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod7(int,                       // Return type
             GrxVScaleNew,              // Object_method name
-            OSELF, self,               // Self
             double, value,             // Initial value
             double, lower,             // Lower limit
             double, upper,             // Upper limit
             double, step,              // Step increment
             double, page,              // Page increment
-            double, pagesz)            // Page size
+            double, pagesz,            // Page size
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget;
     GtkAdjustment *adj = (GtkAdjustment *) gtk_adjustment_new(value, lower, upper, step, page, pagesz);
@@ -294,10 +294,10 @@ RexxMethod7(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxVScaleNewWithRange,     // Object_method name
-            OSELF, self,               // Self
             double, min,               // Minimum
             double, max,               // Maximum
-            double, step)              // Step increment
+            double, step,              // Step increment
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget = gtk_vscale_new_with_range(min, max, step);
 
@@ -319,9 +319,9 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxRangeSignalConnect,     // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

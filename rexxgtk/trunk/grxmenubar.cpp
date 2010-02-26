@@ -93,8 +93,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuBarAppend,          // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, child)      // The child menu
+            RexxObjectPtr, child,      // The child menu
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(child, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -120,8 +120,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuBarPrepend,         // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, child)      // The child menu
+            RexxObjectPtr, child,      // The child menu
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(child, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -149,9 +149,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxMenuBarInsert,          // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, child,      // The child menu
-            int, pos)                  // Position
+            int, pos,                  // Position
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(child, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -177,10 +177,10 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuBarGetSetPackDirection, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, dir)         // Position
+            OPTIONAL_int, dir,         // Position
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_menu_bar_set_pack_direction(GTK_MENU_BAR(self), (GtkPackDirection)dir);
     }
     else {
@@ -201,10 +201,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuBarGetSetChildPackDirection, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, dir)         // Position
+            OPTIONAL_int, dir,         // Position
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_menu_bar_set_child_pack_direction(GTK_MENU_BAR(self), (GtkPackDirection)dir);
     }
     else {

@@ -108,8 +108,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxHandleBoxSetShadowType, // Object_method name
-            CSELF, self,               // GTK self
-            int, type)                 // Shadow type
+            int, type,                 // Shadow type
+            CSELF, self)               // GTK self
 {
     gtk_handle_box_set_shadow_type(GTK_HANDLE_BOX(self), (GtkShadowType)type);
 
@@ -127,8 +127,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxHandleBoxSetPosition,   // Object_method name
-            CSELF, self,               // GTK self
-            int, type)                 // Position type
+            int, type,                 // Position type
+            CSELF, self)               // GTK self
 {
     gtk_handle_box_set_handle_position(GTK_HANDLE_BOX(self), (GtkPositionType)type);
 
@@ -146,8 +146,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxHandleBoxSetSnapEdge,   // Object_method name
-            CSELF, self,               // GTK self
-            int, type)                 // Snap edge type
+            int, type,                 // Snap edge type
+            CSELF, self)               // GTK self
 {
     gtk_handle_box_set_snap_edge(GTK_HANDLE_BOX(self), (GtkPositionType)type);
 
@@ -165,9 +165,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxHandleBoxSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

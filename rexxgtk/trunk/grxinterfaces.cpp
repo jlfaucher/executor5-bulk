@@ -86,8 +86,8 @@ static void signal_func_0(GtkWidget *window,
  **/
 RexxMethod2(int,                       // Return type
             GrxFileChooserSetCurrentFolder, // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, dir)              // Directory
+            CSTRING, dir,              // Directory
+            CSELF, self)               // GTK self
 {
     gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(self), dir);
 
@@ -105,8 +105,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxFileChooserSetSelectMultiple, // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, flag)           // Flag boolean
+            logical_t, flag,           // Flag boolean
+            CSELF, self)               // GTK self
 {
     gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(self), flag);
 
@@ -124,8 +124,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxFileChooserAddFilter,   // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, rxfilter)   // Filter object
+            RexxObjectPtr, rxfilter,   // Filter object
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxfilter, "GtkFileFilter")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -197,8 +197,8 @@ RexxMethod1(RexxArrayObject,           // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxFileChooserSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, name)             // Signal name
+            CSTRING, name,             // Signal name
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
@@ -268,8 +268,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxFileFilterSetName,      // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, name)             // Filter name
+            CSTRING, name,             // Filter name
+            CSELF, self)               // GTK self
 {
     gtk_file_filter_set_name(GTK_FILE_FILTER(self), name);
 
@@ -287,8 +287,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxFileFilterAddPattern,   // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, pattern)          // Filter pattern
+            CSTRING, pattern,          // Filter pattern
+            CSELF, self)               // GTK self
 {
     gtk_file_filter_add_pattern(GTK_FILE_FILTER(self), pattern);
 

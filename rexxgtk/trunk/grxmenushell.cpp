@@ -134,8 +134,8 @@ static gboolean signal_func_1b(GtkWidget *window,
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuShellAppend,        // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, child)      // The child widget
+            RexxObjectPtr, child,      // The child widget
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(child, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -161,8 +161,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuShellPrepend,       // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, child)      // The child widget
+            RexxObjectPtr, child,      // The child widget
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(child, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -190,9 +190,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxMenuShellInsert,        // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, child,      // The child widget
-            int, pos)                  // Position
+            int, pos,                  // Position
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(child, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -234,8 +234,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuShellSelectItem,    // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, child)      // The child widget
+            RexxObjectPtr, child,      // The child widget
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(child, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -261,8 +261,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuShellSelectFirst,   // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, ss)             // The search sensitive flag
+            logical_t, ss,             // The search sensitive flag
+            CSELF, self)               // GTK self
 {
     gtk_menu_shell_select_first(GTK_MENU_SHELL(self), ss);
 
@@ -298,9 +298,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxMenuShellActivateItem,  // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, child,      // The child widget
-            logical_t, force)          // Force deactivate flag
+            logical_t, force,          // Force deactivate flag
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(child, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -342,8 +342,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuShellSetTakeFocus,  // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, focus)          // The focus flag
+            logical_t, focus,          // The focus flag
+            CSELF, self)               // GTK self
 {
     gtk_menu_shell_set_take_focus(GTK_MENU_SHELL(self), focus);
 
@@ -375,9 +375,9 @@ RexxMethod1(logical_t,                 // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxMenuShellSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

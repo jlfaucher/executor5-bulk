@@ -99,9 +99,9 @@ static void signal_func_1(GtkWidget *window,
  **/
 RexxMethod3(int,                       // Return type
             GrxMenuItemNew,            // Object_method name
-            OSELF, self,               // Self
             OPTIONAL_CSTRING, label,   // Menu label
-            OPTIONAL_logical_t, mflag) // Mnemonic flag
+            OPTIONAL_logical_t, mflag, // Mnemonic flag
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget;
 
@@ -135,10 +135,10 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxMenuItemGetSetRightJustified, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, state) // The state boolean
+            OPTIONAL_logical_t, state, // The state boolean
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_menu_item_set_right_justified(GTK_MENU_ITEM(self), state);
     }
     else {
@@ -159,8 +159,8 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuItemSetSubmenu,     // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, subm)       // The submenu
+            RexxObjectPtr, subm,       // The submenu
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(subm, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -202,8 +202,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxMenuItemSetAccelPath,   // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, path)             // The accel path
+            CSTRING, path,             // The accel path
+            CSELF, self)               // GTK self
 {
     gtk_menu_item_set_accel_path(GTK_MENU_ITEM(self), path);
 
@@ -253,9 +253,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxMenuItemSignalConnect,  // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
@@ -323,10 +323,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxImageMenuItemNew,       // Object_method name
-            OSELF, self,               // Self
             CSTRING, label,            // Menu label
             OPTIONAL_int, flag,        // Menu flag
-            OPTIONAL_RexxObjectPtr, accelgrp) // Self
+            OPTIONAL_RexxObjectPtr, accelgrp,
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget;
 

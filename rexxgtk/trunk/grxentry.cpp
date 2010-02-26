@@ -191,10 +191,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxEntryGetSetMaxLength,   // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, maxlen)      // Max text length
+            OPTIONAL_int, maxlen,      // Max text length
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_entry_set_max_length(GTK_ENTRY(self), maxlen);
     }
     else {
@@ -215,12 +215,12 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxEntryGetSetText,        // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_CSTRING, text)    // The text to set
+            OPTIONAL_CSTRING, text,    // The text to set
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_entry_set_text(GTK_ENTRY(self), text);
         retc = (RexxObjectPtr) context->Nil();
     }
@@ -242,8 +242,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxEntrySetWidthChars,     // Object_method name
-            CSELF, self,               // GTK self
-            int, width)                // The width
+            int, width,                // The width
+            CSELF, self)               // GTK self
 {
     gtk_entry_set_width_chars(GTK_ENTRY(self), width);
 
@@ -261,10 +261,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxEntryGetSetVisibility,  // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, flag)  // The flag
+            OPTIONAL_logical_t, flag,  // The flag
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_entry_set_visibility(GTK_ENTRY(self), flag);
     }
     else {
@@ -285,12 +285,12 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxEntryGetSetInvisibleChar, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_CSTRING, ichar)   // The character
+            OPTIONAL_CSTRING, ichar,   // The character
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_entry_set_invisible_char(GTK_ENTRY(self), *ichar);
         retc = (RexxObjectPtr)context->Nil();
     }
@@ -315,9 +315,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxEntrySignalConnect,     // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
@@ -427,10 +427,10 @@ RexxMethod3(RexxObjectPtr,             // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxSpinButtonNew,          // Object_method name
-            OSELF, self,               // Self
             RexxObjectPtr, rxadj,      // Adjustment object
             double, crate,             // Climb rate
-            uint32_t, digits)          // Digits
+            uint32_t, digits,          // Digits
+            OSELF, self)               // Self
 {
     if (!context->IsOfType(rxadj, "GtkAdjustment")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -463,10 +463,10 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxSpinButtonNewWithRange, // Object_method name
-            OSELF, self,               // Self
             double, lower,             // Lower limit
             double, upper,             // Upper limit
-            double, step)              // Step
+            double, step,              // Step
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget = gtk_spin_button_new_with_range(lower, upper, step);
 
@@ -488,8 +488,8 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxSpinButtonSetDigits,    // Object_method name
-            CSELF, self,               // GTK self
-            uint32_t, digits)          // The digits
+            uint32_t, digits,          // The digits
+            CSELF, self)               // GTK self
 {
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(self), digits);
 
@@ -507,9 +507,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxSpinButtonSignalConnect, // Object_method name
-            OSELF, self,               // Self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            OSELF, self)               // Self
 {
     cbcb *cblock;
 

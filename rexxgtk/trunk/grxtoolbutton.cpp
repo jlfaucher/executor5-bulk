@@ -88,9 +88,9 @@ static void signal_func_0(GtkWidget *toolitem,
  **/
 RexxMethod3(int,                       // Return type
             GrxToolButtonNew,          // Object_method name
-            OSELF, self,               // Self
             RexxObjectPtr, icon,       // Icon widget
-            CSTRING, label)            // Button label text
+            CSTRING, label,            // Button label text
+            OSELF, self)               // Self
 {
     if (!context->IsOfType(icon, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -119,8 +119,8 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxToolButtonNewFromStock, // Object_method name
-            OSELF, self,               // Self
-            CSTRING, sid)              // Button stock id
+            CSTRING, sid,              // Button stock id
+            OSELF, self)               // Self
 {
     GtkToolItem *toolitem = gtk_tool_button_new_from_stock(sid);
 
@@ -142,12 +142,12 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxToolButtonGetSetLabel,  // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_CSTRING, label)   // Button label text
+            OPTIONAL_CSTRING, label,   // Button label text
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_tool_button_set_label(GTK_TOOL_BUTTON(self), label);
         retc = (RexxObjectPtr)context->Nil();
     }
@@ -169,8 +169,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxToolButtonSetUseUnderline, // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, flag)           // Use underline boolean
+            logical_t, flag,           // Use underline boolean
+            CSELF, self)               // GTK self
 {
     gtk_tool_button_set_use_underline(GTK_TOOL_BUTTON(self), flag);
 
@@ -202,12 +202,12 @@ RexxMethod1(logical_t,                 // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxToolButtonGetSetStockId, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_CSTRING, id)      // The stock id
+            OPTIONAL_CSTRING, id,      // The stock id
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(self), id);
         retc = (RexxObjectPtr)context->Nil();
     }
@@ -229,12 +229,12 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxToolButtonGetSetIconName, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_CSTRING, name)    // The icon name
+            OPTIONAL_CSTRING, name,    // The icon name
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(self), name);
         retc = (RexxObjectPtr)context->Nil();
     }
@@ -256,12 +256,12 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxToolButtonGetSetIconWidget, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_RexxObjectPtr, icon) // The icon widget
+            OPTIONAL_RexxObjectPtr, icon, // The icon widget
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc = (RexxObjectPtr)context->Nil();
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         if (!context->IsOfType(icon, "GtkWidget")) {
             context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                      context->WholeNumberToObject(1),
@@ -290,12 +290,12 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxToolButtonGetSetLabelWidget, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_RexxObjectPtr, label) // The label
+            OPTIONAL_RexxObjectPtr, label, // The label
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc = (RexxObjectPtr)context->Nil();
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         if (!context->IsOfType(label, "GtkWidget")) {
             context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                      context->WholeNumberToObject(1),
@@ -324,9 +324,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxToolButtonSignalConnect,  // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
@@ -372,10 +372,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxSeparatorToolItemGetSetDraw, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, flag)  // The draw boolean
+            OPTIONAL_logical_t, flag,  // The draw boolean
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(self), flag);
     }
     else {

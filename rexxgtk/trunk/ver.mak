@@ -1,5 +1,5 @@
 
 VMAJOR      = 0
-VMINOR      = 10
+VMINOR      = 11
 VREL        = 0
 

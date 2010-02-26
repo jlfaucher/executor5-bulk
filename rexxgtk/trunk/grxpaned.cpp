@@ -73,8 +73,8 @@
  **/
 RexxMethod2(int,                       // Return type
             GrxPanedAdd1,              // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, rxadd)      // Widget to add
+            RexxObjectPtr, rxadd,      // Widget to add
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxadd, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -100,8 +100,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxPanedAdd2,              // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, rxadd)      // Widget to add
+            RexxObjectPtr, rxadd,      // Widget to add
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxadd, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -127,10 +127,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxPanedPack1,             // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxpack,     // Widget to add
             logical_t, resize,         // Resize flag
-            logical_t, shrink)         // Shrink flag
+            logical_t, shrink,         // Shrink flag
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxpack, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -156,10 +156,10 @@ RexxMethod4(int,                       // Return type
  **/
 RexxMethod4(int,                       // Return type
             GrxPanedPack2,             // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, rxpack,     // Widget to add
             logical_t, resize,         // Resize flag
-            logical_t, shrink)         // Shrink flag
+            logical_t, shrink,         // Shrink flag
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(rxpack, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,

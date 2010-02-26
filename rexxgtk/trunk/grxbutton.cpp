@@ -104,8 +104,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxButtonSetUseStock,      // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, flag)           // Label is stock item flag
+            logical_t, flag,           // Label is stock item flag
+            CSELF, self)               // GTK self
 {
     gtk_button_set_use_stock(GTK_BUTTON(self), flag);
 
@@ -123,12 +123,12 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxButtonGetSetLabel,      // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_CSTRING, text)    // Button type
+            OPTIONAL_CSTRING, text,    // Button type
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_button_set_label(GTK_BUTTON(self), text);
         retc = (RexxObjectPtr)context->Nil();
     }
@@ -150,8 +150,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxButtonSetRelief,       // Object_method name
-            CSELF, self,               // GTK self
-            int, relief)               // Button relief style
+            int, relief,               // Button relief style
+            CSELF, self)               // GTK self
 {
     gtk_button_set_relief(GTK_BUTTON(self), (GtkReliefStyle)relief);
 
@@ -169,8 +169,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxButtonUseUnderline,     // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, flag)           // Button underline flag
+            logical_t, flag,           // Button underline flag
+            CSELF, self)               // GTK self
 {
     gtk_button_set_use_underline(GTK_BUTTON(self), flag);
 
@@ -206,8 +206,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxToggleButtonGetSetMode, // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, mode)           // Button mode flag
+            OPTIONAL_logical_t, mode,  // Button mode flag
+            CSELF, self)               // GTK self
 {
     if (argumentExists(2)) {
         gtk_toggle_button_set_mode(GTK_TOGGLE_BUTTON(self), mode);
@@ -229,10 +229,10 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxToggleButtonGetSetActive, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, state) // Button state flag
+            OPTIONAL_logical_t, state, // Button state flag
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(self), state);
     }
     else {
@@ -253,10 +253,10 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxToggleButtonGetSetInconsistent, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, state) // Button state flag
+            OPTIONAL_logical_t, state, // Button state flag
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_toggle_button_set_inconsistent(GTK_TOGGLE_BUTTON(self), state);
     }
     else {
@@ -277,12 +277,12 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxCheckButtonNew,         // Object_method name
-            OSELF, self,               // Self
-            OPTIONAL_CSTRING, text)    // Button text
+            OPTIONAL_CSTRING, text,    // Button text
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
        myWidget = gtk_check_button_new_with_label(text);
     }
     else {
@@ -309,9 +309,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxRadioButtonNew,         // Object_method name
-            OSELF, self,               // Self
             RexxObjectPtr, rxwidget,   // Group widget
-            OPTIONAL_CSTRING, text)    // Button text
+            OPTIONAL_CSTRING, text,    // Button text
+            OSELF, self)               // Self
 {
     GSList *head = NULL;
     GtkWidget *myWidget;
@@ -334,7 +334,7 @@ RexxMethod3(int,                       // Return type
             myWidget = gtk_radio_button_new_from_widget(GTK_RADIO_BUTTON(cpWidget));
         }
     }
-    if (argumentExists(3)) {
+    if (argumentExists(2)) {
         gtk_button_set_label(GTK_BUTTON(myWidget), text);
     }
 
@@ -356,8 +356,8 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxColorButtonNew,         // Object_method name
-            OSELF, self,               // Self
-            OPTIONAL_CSTRING, colorstr)// Color string
+            OPTIONAL_CSTRING, colorstr,// Color string
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget;
     GdkColor color;
@@ -388,8 +388,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxColorButtonSetTitle,    // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, title)            // Color string
+            CSTRING, title,            // Color string
+            CSELF, self)               // GTK self
 {
     gtk_color_button_set_title(GTK_COLOR_BUTTON(self), title);
 
@@ -407,13 +407,13 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxColorButtonGetSetColor, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_CSTRING, colorstr)// Color string
+            OPTIONAL_CSTRING, colorstr,// Color string
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc;
     GdkColor color;
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gdk_color_parse(colorstr, &color);
         gtk_color_button_set_color(GTK_COLOR_BUTTON(self), &color);
         retc = (RexxObjectPtr)context->Nil();
@@ -442,9 +442,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxFileChooserButtonNew,   // Object_method name
-            OSELF, self,               // Self
             CSTRING, title,            // Title string
-            int, action)               // Title action
+            int, action,               // Title action
+            OSELF, self)               // Self
 {
     GtkWidget *myWidget = gtk_file_chooser_button_new(title, (GtkFileChooserAction)action);
 
@@ -486,8 +486,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxFontButtonSetTitle,     // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, title)            // Title string
+            CSTRING, title,            // Title string
+            CSELF, self)               // GTK self
 {
     gtk_font_button_set_title(GTK_FONT_BUTTON(self), title);
 
@@ -524,9 +524,9 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxButtonSignalConnect,    // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
@@ -592,9 +592,9 @@ RexxMethod3(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxToggleButtonSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
@@ -620,9 +620,9 @@ RexxMethod3(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxRadioButtonSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
@@ -648,9 +648,9 @@ RexxMethod3(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxColorButtonSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
@@ -676,9 +676,9 @@ RexxMethod3(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxFileChooserButtonSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
@@ -704,9 +704,9 @@ RexxMethod3(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxFontButtonSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

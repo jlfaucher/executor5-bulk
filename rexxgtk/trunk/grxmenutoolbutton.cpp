@@ -86,9 +86,9 @@ static void signal_func_0(GtkWidget *toolitem,
  **/
 RexxMethod3(int,                       // Return type
             GrxMenuToolButtonNew,      // Object_method name
-            OSELF, self,               // Self
             RexxObjectPtr, icon,       // Icon widget
-            CSTRING, label)            // Button label text
+            CSTRING, label,            // Button label text
+            OSELF, self)               // Self
 {
     if (!context->IsOfType(icon, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -118,12 +118,12 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxMenuToolButtonGetSetMenu,  // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_RexxObjectPtr, rxobj) // The icon widget
+            OPTIONAL_RexxObjectPtr, rxobj, // The icon widget
+            CSELF, self)               // GTK self
 {
     RexxObjectPtr retc = (RexxObjectPtr)context->Nil();
 
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         if (!context->IsOfType(rxobj, "GtkWidget")) {
             context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
                                      context->WholeNumberToObject(1),
@@ -152,9 +152,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxMenuToolButtonSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

@@ -108,9 +108,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(logical_t,                 // Return type
             GrxCalendarSelectMonth,    // Object_method name
-            CSELF, self,               // Self
             uint32_t, month,           // Month
-            uint32_t, year)            // Year
+            uint32_t, year,            // Year
+            CSELF, self)               // Self
 {
 
     return gtk_calendar_select_month(GTK_CALENDAR(self), month, year);
@@ -127,8 +127,8 @@ RexxMethod3(logical_t,                 // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxCalendarSelectDay,      // Object_method name
-            CSELF, self,               // Self
-            uint32_t, day)             // Day
+            uint32_t, day,             // Day
+            CSELF, self)               // Self
 {
 
     gtk_calendar_select_day(GTK_CALENDAR(self), day);
@@ -147,8 +147,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxCalendarMarkDay,        // Object_method name
-            CSELF, self,               // Self
-            uint32_t, day)             // Day
+            uint32_t, day,             // Day
+            CSELF, self)               // Self
 {
 
     return gtk_calendar_mark_day(GTK_CALENDAR(self), day);
@@ -165,8 +165,8 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxCalendarUnmarkDay,      // Object_method name
-            CSELF, self,               // Self
-            uint32_t, day)             // Day
+            uint32_t, day,             // Day
+            CSELF, self)               // Self
 {
 
     return gtk_calendar_unmark_day(GTK_CALENDAR(self), day);
@@ -215,8 +215,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxCalendarSetDisplayOptions, // Object_method name
-            CSELF, self,               // Self
-            int, flags)                // Display options
+            int, flags,                // Display options
+            CSELF, self)               // Self
 {
 
     gtk_calendar_set_display_options(GTK_CALENDAR(self),
@@ -260,8 +260,8 @@ RexxMethod1(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxCalendarSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, name)             // Signal name
+            CSTRING, name,             // Signal name
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

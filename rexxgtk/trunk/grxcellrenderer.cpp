@@ -163,9 +163,9 @@ static void signal_func_4(GtkCellRenderer *renderer,
  **/
 RexxMethod3(int,                       // Return type
             GrxCellRendererSetFixedSize, // Object_method name
-            CSELF, self,               // GTK self
             int, width,                // Width
-            int, height)               // Height
+            int, height,               // Height
+            CSELF, self)               // GTK self
 {
     gtk_cell_renderer_set_fixed_size(GTK_CELL_RENDERER(self), width, height);
 
@@ -183,8 +183,8 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxCellRendererSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
-            CSTRING, name)             // Signal name
+            CSTRING, name,             // Signal name
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
@@ -238,9 +238,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererTextSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
@@ -326,10 +326,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxCellRendererToggleGetSetRadio, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, flag)  // Radio boolean
+            OPTIONAL_logical_t, flag,  // Radio boolean
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_cell_renderer_toggle_set_radio(GTK_CELL_RENDERER_TOGGLE(self), flag);
     }
     else {
@@ -350,10 +350,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxCellRendererToggleGetSetActive, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, flag)  // Radio boolean
+            OPTIONAL_logical_t, flag,  // Radio boolean
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_cell_renderer_toggle_set_active(GTK_CELL_RENDERER_TOGGLE(self), flag);
     }
     else {
@@ -374,9 +374,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererToggleSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
@@ -422,9 +422,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererAccelSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
@@ -478,9 +478,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxCellRendererComboSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

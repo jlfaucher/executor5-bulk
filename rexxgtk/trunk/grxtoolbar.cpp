@@ -165,9 +165,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxToolbarInsert,          // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, child,      // The child item
-            int, pos)                  // Position
+            int, pos,                  // Position
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(child, "GtkToolItem")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -193,8 +193,8 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxToolbarGetItemIndex,    // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, child)      // The child item
+            RexxObjectPtr, child,      // The child item
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(child, "GtkToolItem")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -232,8 +232,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxToolbarGetNthItem,      // Object_method name
-            CSELF, self,               // GTK self
-            int, pos)                  // The child position
+            int, pos,                  // The child position
+            CSELF, self)               // GTK self
 {
     GtkToolItem *item;
 
@@ -254,9 +254,9 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxToolbarGetDropIndex,    // Object_method name
-            CSELF, self,               // GTK self
             int, x,                    // The x coordinate
-            int, y)                    // The y coordinate
+            int, y,                    // The y coordinate
+            CSELF, self)               // GTK self
 {
     GtkToolItem item;
 
@@ -276,9 +276,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxToolbarSetDropHighlightItem, // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, child,      // The child item
-            int, idx)                  // Position index
+            int, idx,                  // Position index
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(child, "GtkToolItem")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -304,10 +304,10 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod2(logical_t,                 // Return type
             GrxToolbarGetSetShowArrow, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_logical_t, flag)  // Show boolean
+            OPTIONAL_logical_t, flag,  // Show boolean
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_toolbar_set_show_arrow(GTK_TOOLBAR(self), flag);
     }
     else {
@@ -328,10 +328,10 @@ RexxMethod2(logical_t,                 // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxToolbarGetSetOrientation, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, orient)      // Orientation
+            OPTIONAL_int, orient,      // Orientation
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_toolbar_set_orientation(GTK_TOOLBAR(self), (GtkOrientation)orient);
     }
     else {
@@ -352,8 +352,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxToolbarSetTooltips,     // Object_method name
-            CSELF, self,               // GTK self
-            logical_t, flag)           // Show boolean
+            logical_t, flag,           // Show boolean
+            CSELF, self)               // GTK self
 {
     gtk_toolbar_set_tooltips(GTK_TOOLBAR(self), flag);
 
@@ -387,10 +387,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxToolbarGetSetStyle,     // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, style)       // Toolbar style
+            OPTIONAL_int, style,       // Toolbar style
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_toolbar_set_style(GTK_TOOLBAR(self), (GtkToolbarStyle)style);
     }
     else {
@@ -411,10 +411,10 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxToolbarGetSetIconSize,  // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, size)        // Toolbar style
+            OPTIONAL_int, size,        // Toolbar style
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_toolbar_set_icon_size(GTK_TOOLBAR(self), (GtkIconSize)size);
     }
     else {
@@ -471,12 +471,12 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod6(RexxObjectPtr,             // Return type
             GrxToolbarAppendItem,      // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, text,             // Button text
             CSTRING, ttext,            // Tooltips text
             CSTRING, tptext,           // Tooltips private text
             RexxObjectPtr, icon,       // Widget icon
-            CSTRING, method)           // The ooRexx method name
+            CSTRING, method,           // The ooRexx method name
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(icon, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -515,12 +515,12 @@ RexxMethod6(RexxObjectPtr,             // Return type
  **/
 RexxMethod6(RexxObjectPtr,             // Return type
             GrxToolbarPrependItem,     // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, text,             // Button text
             CSTRING, ttext,            // Tooltips text
             CSTRING, tptext,           // Tooltips private text
             RexxObjectPtr, icon,       // Widget icon
-            CSTRING, method)           // The ooRexx method name
+            CSTRING, method,           // The ooRexx method name
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(icon, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -561,13 +561,13 @@ RexxMethod6(RexxObjectPtr,             // Return type
  **/
 RexxMethod7(RexxObjectPtr,             // Return type
             GrxToolbarInsertItem,      // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, text,             // Button text
             CSTRING, ttext,            // Tooltips text
             CSTRING, tptext,           // Tooltips private text
             RexxObjectPtr, icon,       // Widget icon
             CSTRING, method,           // The ooRexx method name
-            int, pos)                  // Insert position
+            int, pos,                  // Insert position
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(icon, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -630,8 +630,8 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxToolbarInsertSpace,     // Object_method name
-            CSELF, self,               // GTK self
-            int, pos)                  // Position
+            int, pos,                  // Position
+            CSELF, self)               // GTK self
 {
     gtk_toolbar_insert_space(GTK_TOOLBAR(self), pos);
 
@@ -659,14 +659,14 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod8(RexxObjectPtr,             // Return type
             GrxToolbarAppendElement,   // Object_method name
-            CSELF, self,               // GTK self
             int, type,                 // Child type
             RexxObjectPtr, elem,       // Widget element
             CSTRING, text,             // Button text
             CSTRING, ttext,            // Tooltips text
             CSTRING, tptext,           // Tooltips private text
             RexxObjectPtr, icon,       // Widget icon
-            CSTRING, method)           // The ooRexx method name
+            CSTRING, method,           // The ooRexx method name
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(elem, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -715,14 +715,14 @@ RexxMethod8(RexxObjectPtr,             // Return type
  **/
 RexxMethod8(RexxObjectPtr,             // Return type
             GrxToolbarPrependElement,  // Object_method name
-            CSELF, self,               // GTK self
             int, type,                 // Child type
             RexxObjectPtr, elem,       // Widget element
             CSTRING, text,             // Button text
             CSTRING, ttext,            // Tooltips text
             CSTRING, tptext,           // Tooltips private text
             RexxObjectPtr, icon,       // Widget icon
-            CSTRING, method)           // The ooRexx method name
+            CSTRING, method,           // The ooRexx method name
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(elem, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -773,7 +773,6 @@ RexxMethod8(RexxObjectPtr,             // Return type
  **/
 RexxMethod9(RexxObjectPtr,             // Return type
             GrxToolbarInsertElement,   // Object_method name
-            CSELF, self,               // GTK self
             int, type,                 // Child type
             RexxObjectPtr, elem,       // Widget element
             CSTRING, text,             // Button text
@@ -781,7 +780,8 @@ RexxMethod9(RexxObjectPtr,             // Return type
             CSTRING, tptext,           // Tooltips private text
             RexxObjectPtr, icon,       // Widget icon
             CSTRING, method,           // The ooRexx method name
-            int, pos)                  // The ooRexx method name
+            int, pos,                  // The ooRexx method name
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(elem, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -824,14 +824,14 @@ RexxMethod9(RexxObjectPtr,             // Return type
  **/
 RexxMethod8(RexxObjectPtr,             // Return type
             GrxToolbarAppendWidget,    // Object_method name
-            CSELF, self,               // GTK self
             int, type,                 // Child type
             RexxObjectPtr, tool,       // Widget icon
             CSTRING, text,             // Button text
             CSTRING, ttext,            // Tooltips text
             CSTRING, tptext,           // Tooltips private text
             RexxObjectPtr, icon,       // Widget icon
-            CSTRING, method)           // The ooRexx method name
+            CSTRING, method,           // The ooRexx method name
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(tool, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -875,14 +875,14 @@ RexxMethod8(RexxObjectPtr,             // Return type
  **/
 RexxMethod8(RexxObjectPtr,             // Return type
             GrxToolbarPrependWidget,   // Object_method name
-            CSELF, self,               // GTK self
             int, type,                 // Child type
             RexxObjectPtr, tool,       // Widget icon
             CSTRING, text,             // Button text
             CSTRING, ttext,            // Tooltips text
             CSTRING, tptext,           // Tooltips private text
             RexxObjectPtr, icon,       // Widget icon
-            CSTRING, method)           // The ooRexx method name
+            CSTRING, method,           // The ooRexx method name
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(tool, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -928,7 +928,6 @@ RexxMethod8(RexxObjectPtr,             // Return type
  **/
 RexxMethod9(RexxObjectPtr,             // Return type
             GrxToolbarInsertWidget,    // Object_method name
-            CSELF, self,               // GTK self
             int, type,                 // Child type
             RexxObjectPtr, tool,       // Widget icon
             CSTRING, text,             // Button text
@@ -936,7 +935,8 @@ RexxMethod9(RexxObjectPtr,             // Return type
             CSTRING, tptext,           // Tooltips private text
             RexxObjectPtr, icon,       // Widget icon
             CSTRING, method,           // The ooRexx method name
-            int, pos)                  // Tooltips private text
+            int, pos,                  // Tooltips private text
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(tool, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -984,12 +984,12 @@ RexxMethod9(RexxObjectPtr,             // Return type
  **/
 RexxMethod6(RexxObjectPtr,             // Return type
             GrxToolbarInsertStock,     // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, id,               // Stock id
             CSTRING, ttext,            // Tooltips text
             CSTRING, tptext,           // Tooltips private text
             CSTRING, method,           // The ooRexx method name
-            int, pos)                  // Tooltips private text
+            int, pos,                  // Tooltips private text
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
@@ -1013,8 +1013,8 @@ RexxMethod6(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxToolbarRemoveSpace,     // Object_method name
-            CSELF, self,               // GTK self
-            int, pos)                  // Position
+            int, pos,                  // Position
+            CSELF, self)               // GTK self
 {
     gtk_toolbar_remove_space(GTK_TOOLBAR(self), pos);
 
@@ -1048,9 +1048,9 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxToolbarSignalConnect,   // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 

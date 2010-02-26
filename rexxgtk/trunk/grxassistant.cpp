@@ -123,10 +123,10 @@ RexxMethod1(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAssistantGetSetCurrentPage, // Object_method name
-            CSELF, self,               // GTK self
-            OPTIONAL_int, pagenum)     // Page number
+            OPTIONAL_int, pagenum,     // Page number
+            CSELF, self)               // GTK self
 {
-    if (argumentExists(2)) {
+    if (argumentExists(1)) {
         gtk_assistant_set_current_page(GTK_ASSISTANT(self), pagenum - 1);
     }
     else {
@@ -147,8 +147,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(RexxObjectPtr,             // Return type
             GrxAssistantGetNthPage,    // Object_method name
-            CSELF, self,               // GTK self
-            int, pagenum)              // Page number
+            int, pagenum,              // Page number
+            CSELF, self)               // GTK self
 {
     GtkWidget *pageWidget;
 
@@ -167,8 +167,8 @@ RexxMethod2(RexxObjectPtr,             // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAssistantPrependPage,   // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, page)       // Page
+            RexxObjectPtr, page,       // Page
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(page, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -192,8 +192,8 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod2(int,                       // Return type
             GrxAssistantAppendPage,    // Object_method name
-            CSELF, self,               // GTK self
-            RexxObjectPtr, page)       // Page
+            RexxObjectPtr, page,       // Page
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(page, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -219,9 +219,9 @@ RexxMethod2(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxAssistantInsertPage,    // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, page,       // Page
-            int, pagenum)              // Page number
+            int, pagenum,              // Page number
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(page, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -247,9 +247,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxAssistantSetPageType,   // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, page,       // Page
-            int, type)                 // Page type
+            int, type,                 // Page type
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(page, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -277,9 +277,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxAssistantSetPageTitle,  // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, page,       // Page
-            CSTRING, title)            // Page title
+            CSTRING, title,            // Page title
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(page, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -307,9 +307,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxAssistantSetPageComplete, // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, page,       // Page
-            logical_t, flag)           // Page complete boolean
+            logical_t, flag,           // Page complete boolean
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(page, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -337,9 +337,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxAssistantSetPageHeaderImage, // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, page,       // Page
-            CSTRING, filename)         // Image file name
+            CSTRING, filename,         // Image file name
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(page, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -368,9 +368,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(int,                       // Return type
             GrxAssistantSetPageSideImage, // Object_method name
-            CSELF, self,               // GTK self
             RexxObjectPtr, page,       // Page
-            CSTRING, title)            // Page title
+            CSTRING, title,            // Page title
+            CSELF, self)               // GTK self
 {
     if (!context->IsOfType(page, "GtkWidget")) {
         context->RaiseException2(Rexx_Error_Incorrect_method_noclass,
@@ -396,9 +396,9 @@ RexxMethod3(int,                       // Return type
  **/
 RexxMethod3(RexxObjectPtr,             // Return type
             GrxAssistantSignalConnect, // Object_method name
-            CSELF, self,               // GTK self
             CSTRING, name,             // Signal name
-            SUPER, super)              // The superclass override
+            SUPER, super,              // The superclass override
+            CSELF, self)               // GTK self
 {
     cbcb *cblock;
 
