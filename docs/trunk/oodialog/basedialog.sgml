@@ -45,9 +45,7 @@
 <indexterm><primary>The Dialog Object</primary></indexterm>
 <para>
   All instantiated Rexx dialog objects have a broad base of methods in common. These methods are the same for all
-  dialogs regardless of whether the dialog is implemented as a binary resource, a resource script, or created
-  dynamically. Binary (compiled) resources are stored in a DLL. A dialog is created dynamically by using Add... methods.
-  Dialogs that are implemented using a resource script (.RC) are generated semi-dynamically.
+  dialogs regardless of how the <link linkend="ovvDialogTemplate">dialog template</link> is implemented.
 </para>
 <para>
   The dialog object here is an abstract concept, used to make it simple to understand the basic concepts. To instantiate
@@ -86,7 +84,7 @@ the execution of the dialog.
 </para></listitem></varlistentry>
 <varlistentry><term id="constdir"><emphasis role="bold">ConstDir</emphasis></term>
 <listitem><para>A directory object whose indexes are
-<link linkend="symbolicid">symbolic ID</link>s.  The entry for each index is the
+<link linkend="defSymbolicId">symbolic ID</link>s.  The entry for each index is the
 numerical value of the symbolic ID.  Once a symbolic ID is added to the <computeroutput>
 Constdir</computeroutput> directory, the symbolic ID can be used in place of the numeric
 value in any method of the ooDialog classes that requires a resource ID.
@@ -94,8 +92,8 @@ value in any method of the ooDialog classes that requires a resource ID.
 the <computeroutput>ConstDir</computeroutput> directory of all ooDialogs.  See
 the table, <link linkend="oodsymbolicids">Symbolic IDs Used by ooDialog</link>,
 for a list of these IDs.  The programmer can add symbolic IDs to this directory
-by using <link linkend="pounddefine">#define</link> statements in a resource script
-or a <link linkend="headerfile">header file</link>.  Of course, symbolic
+by using <link linkend="defPoundDefine">#define</link> statements in a resource script
+or a <link linkend="defHeaderFile">header file</link>.  Of course, symbolic
 IDs can also be added directly in the program as the following code snippet
 shows:</para>
 
@@ -558,7 +556,7 @@ to Init.
 </row>
 <row>
 <entry>FontToDC</entry>
-<entry><link linkend="h000948">FontToDC</link></entry>
+<entry><link linkend="mthFontToDC">FontToDC</link></entry>
 </row>
 <row>
 <entry>ForegroundWindow</entry>
@@ -1233,7 +1231,7 @@ to Init.
 </variablelist>
 
 
-<section id="sectDialogClassMethods"><title>Class Methods</title>
+<section id="sctDialogClassMethods"><title>Class Methods</title>
 <indexterm><primary>class methods</primary>
 <secondary>dialog</secondary></indexterm>
 <para>
@@ -1306,7 +1304,7 @@ to Init.
   <listitem>
     <para>
       This example shows a change to the oostddlg.rex sample program.  The default font is changed to
-      Tahoma pt 10.  This causes all the <link linkend="sectStandardDialogs">Standard Dialogs</link> to
+      Tahoma pt 10.  This causes all the <link linkend="sctStandardDialogs">Standard Dialogs</link> to
       be created using this font.
       <programlisting>
       <![CDATA[
@@ -1643,7 +1641,7 @@ You can only create instances of its subclasses.
 binary resources.
 </para></listitem></varlistentry>
 <varlistentry><term>id</term>
-<listitem><para>The resource ID, (numeric or <link linkend="symbolicid">symbolic</link>,) of
+<listitem><para>The resource ID, (numeric or <link linkend="defSymbolicId">symbolic</link>,) of
 the dialog within the resource file.
 </para></listitem></varlistentry>
 <varlistentry><term>DlgData.</term>
@@ -1654,7 +1652,7 @@ is the ID of an entry field, it is initialized with this string. If the dialog i
 OK, the data of the dialog is copied into this stem variable.
 </para></listitem></varlistentry>
 <varlistentry><term>hFile</term>
-<listitem><para>A file, (often called a <link linkend="headerfile">header</link> file,)
+<listitem><para>A file, (often called a <link linkend="defHeaderFile">header</link> file,)
 defining symbolic IDs for resources.  The symbolic IDs defined within the file will be
 added to the <link linkend="constdir">ConstDir</link> directory.
 </para></listitem></varlistentry>
@@ -2332,7 +2330,7 @@ is set to handle the event.</para>
 <para>The AsyncMessageHandling method starts the asynchronous
 handling of dialog messages. It is invoked automatically by <link linkend="h000057">ExecuteAsync</link> with the Start method of the Object class. A message in this
 context is the name of an object method that is processed whenever the corresponding
-event occurs.  You can set the messages that should be sent by using Connect... methods (see page <link linkend="sectConnectingEvents">Connect Methods</link>). </para>
+event occurs.  You can set the messages that should be sent by using Connect... methods (see page <link linkend="sctConnectingEvents">Connect Methods</link>). </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
 <listitem><para>This method is protected and for internal use only.
@@ -5317,7 +5315,7 @@ used.
 <section id="mthGetTextSizeDu"><title>getTextSizeDu</title>
 <indexterm><primary>getTextSizeDu</primary></indexterm>
 <indexterm><primary>PlainBaseDialog class</primary>
-<secondary></secondary>getTextSizeDu</indexterm>
+<secondary>getTextSizeDu</secondary></indexterm>
 <indexterm><primary>dialog object</primary>
 <secondary>getTextSizeDu</secondary></indexterm>
 <programlisting>
@@ -5330,7 +5328,9 @@ used.
 <para>
   Calculates the size the given string will occupy in the dialog.  The size is returned in <link
   linkend="defDialogUnit">dialog units</link>.  To calculate the size in pixels use the <link
-  linkend="mthGetTextSizePx">getTextSizePx</link>() method.
+  linkend="mthGetTextSizePx">getTextSizePx</link>() method. The <link
+  linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>() method is similiar to <emphasis
+  role="italic">getTextSizeDu</emphasis>, but should only be used when necessary
 </para>
 <para>
   The primary use of this method would be in laying out the dialog template in a <link
@@ -5369,24 +5369,45 @@ used.
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example calculates the size needed to display a message.  It then uses that size to create an
-      object that holds the co-ordinates needed to place the text in a dialog.  This is used in
-      defineDialog() to add the message text to the dialog.
+      This example calculates the size needed to display a static message.  It then uses that size to initialize a .Rect
+      object with the co-ordinates of where to place the static control in the dialog. Note that a .Rect object normally
+      defines a bounding rectangle. But, in this case the rectangle is used to specify the upper left corner and the
+      width and the height of the rectangle.
       <programlisting>
       <![CDATA[
+    ::method calcSizes private
+      expose msgRect okRext
+
+      -- Get the size needed for the message, place the static
+      -- control at (10, 10) in the dialog.
+
       size = self~getTextSizeDu(message)
-      messageRect = .directory~new
-      messageRect~x = 10
-      messageRect~y = 10
-      messageRect~cx = size~width
-      messageRect~cy = size~height
+      msgRect = .Rect~new(10, 10, size~width, size~height)
+      ...
+
+      -- Get a reactangle for the ok push button, we know we
+      -- want the width and height to be 40 and 14.
+
+      okRect = .Rect~new(0, 0, 40, 14)
+
+      -- Now calculate its position in relation to the message.
+      -- This aligns the right edge of the button with the right
+      -- edge of the message and places it 5 dialog units below
+      -- the button.
+
+      okRect~left = msgRect~left + msgRect~right  - 40
+      okRect~top  = msgRect~top  + msgRect~bottom + 5
       ...
 
     ::method defineDialog
-      expose message messageRect okRect
+      expose message msgRect okRect
 
-      r = messageRect
-      self~addText(r~x, r~y, r~cx, r~cy, message)
+      -- Create our dialog controls.
+      r = msgRect
+      self~createStaticText(IDC_STATIC, r~left, r~top, r~right, r~bottom, , message)
+
+      r = okRect
+      self~createPushButton(IDOK, r~left, r~top, r~right, r~bottom, "DEFAULT", "Ok")
 
       ]]>
       </programlisting>
@@ -5397,9 +5418,8 @@ used.
 
 
 <section id="mthGetTextSizeDlgClsPlainBaseDialog"><title>getTextSizeDlg</title>
-<indexterm><primary>getTextSizeDlg</primary></indexterm>
 <indexterm><primary>getTextSizeDlg</primary>
-<secondary>PlainBaseDialog class</secondary></indexterm>
+<secondary>dialog object</secondary></indexterm>
 <indexterm><primary>PlainBaseDialog class</primary>
 <secondary>getTextSizeDlg</secondary></indexterm>
 <indexterm><primary>dialog object</primary>
@@ -5425,11 +5445,12 @@ used.
   created.  Once the underlying dialog is created, it makes more sense to work with pixels. Since dialog units are tied
   directly to the font actually used by a specific dialog, specifying a font different from that used by the dialog will
   usually give incorrect results. Likewise, specifying a window handle other than the window handle of the dialog will
-  also give incorrect results.
+  also give incorrect results. Because of this, the optional arguments are usually not of much use, making <emphasis
+  role="italic">getTextSizeDu</emphasis> is easier to use.
 </para>
 <para>
   One exception to this, is when the text size is being calculated for a dialog control that the programmer intends to
-  set to a different font than the dialog font. In this case, specify the name and size of the font that the dialog
+  set to a font different than the dialog font. In this case, specify the name and size of the font that the dialog
   control will use.
 </para>
 <para>
@@ -5514,7 +5535,7 @@ color of a dialog. </para>
 <variablelist>
 <varlistentry><term>color</term>
 <listitem><para>A color-palette index specifying the background color. For information
-on the color numbers, refer to <link linkend="termdef">Definition of Terms</link>.
+on the color numbers, refer to <link linkend="sctTermDefs">Definition of Terms</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -8320,7 +8341,7 @@ end
   methods. To control a window not owned by your program use the <emphasis role="italic">find</emphasis>() method of the
   <emphasis role="italic">WindowsManger</emphasis> class. The <emphasis role="italic">WindowsManager</emphasis>is part
   of the <emphasis role="italic">WinSystm.cls</emphasis> package. In certain cases it may be desirable to invoke a
-  method common to all windows when only the window <link linkend="termHandle">handle</link> is known.  For these cases
+  method common to all windows when only the window <link linkend="defHandle">handle</link> is known.  For these cases
   use a <link linkend="clsWindow">Window</link> object.
 </para>
 </section>
@@ -8432,15 +8453,20 @@ end
 </section>
 
 <section><title>getTextSize</title>
-<indexterm><primary>Deprecated</primary><secondary>getTextSize</secondary></indexterm>
 <indexterm>
   <primary>Deprecated</primary>
   <secondary>dialog</secondary>
   <tertiary>getTextSize</tertiary>
 </indexterm>
+<indexterm>
+  <primary>Deprecated</primary>
+  <secondary>getTextSize</secondary>
+  <tertiary>dialog</tertiary>
+</indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Replace this method with the preferably, or the <link
-  linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>() method is absolutely necessary.
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Replace this method with, preferably, the <link
+  linkend="mthGetTextSizeDu">getTextSizeDu</link>() method, or the <link
+  linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>() method if absolutely necessary.
 </para>
 <para>
   This method never worked correctly, the previous documentation for this method was incorrect and /

@@ -43,7 +43,7 @@
 -->
 
 
-<section id="sectConnectingEvents"><title>Connecting Events</title>
+<section id="sctConnectingEvents"><title>Connecting Events</title>
 <indexterm><primary>connecting events</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connect event methods</secondary></indexterm>
 <para>
@@ -81,7 +81,7 @@
   automatically connects an event to a dialog method. However, for most events, say the resize or move events, the
   connection needs to be made explicitly.  In general, events should be connected before the dialog is shown on the
   screen. So, the connect event methods can be used in the <link linkend="mthInitDialog">initDialog</link>() method.  In
-  a UserDialog, the <link linkend="h001506">defineDialog</link>() method is a good place for the connect event methods.
+  a UserDialog, the <link linkend="mthDefineDialog">defineDialog</link>() method is a good place for the connect event methods.
   If the programmer is overriding the <link linkend="h000025">init</link>() method, the connect event methods can be
   placed there.  But, in this case, do not invoke the connect event methods until after the superclass has been
   initialized.
@@ -607,8 +607,8 @@ virtual key set.  These numeric values are 0 through 255, although both 0 and
 class can be used to make a program more readable.
 </para>
 <note><title>Note</title>
-<para>The programmer can use the <link linkend="windowsdoc">Windows
-documentation</link> and <link linkend="platformsdk">Platform SDK</link> to
+<para>The programmer can use the <link linkend="defWindowsDoc">Windows
+documentation</link> and <link linkend="defPlatformSDK">Platform SDK</link> to
 obtain the full list of the virtual key numbers.
 </para></note>
 <para>In addition there are a few keywords that can be used to specify some
@@ -1517,9 +1517,9 @@ you can specify filters for each parameter. Filters are useful for catching more
 than one message or one parameter with one method.
 </para>
 <para>Details for all Windows messages and their parameters are available in the
-<link linkend="windowsdoc">Windows documentation</link>.  The numeric value of
+<link linkend="defWindowsDoc">Windows documentation</link>.  The numeric value of
 the message IDs (and possibly the message parameters) can be looked up in the
-<link linkend="platformsdk">Windows platform SDK</link>.
+<link linkend="defPlatformSDK">Windows platform SDK</link>.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
@@ -2009,7 +2009,7 @@ holding the button that started the drag operation.</para>
 </para>
 <para>
   For user defined dialogs use the NOTIFY style keyword in the <link
-  linkend="sectAddStaticControls">Add...</link> static control methods when the control is defined. For
+  linkend="sctAddStaticControls">Add...</link> static control methods when the control is defined. For
   dialogs created from a compiled resource or a resource script file use the SS_NOTIFY style when
   defining the control in a resource editor.
 </para>
@@ -2749,7 +2749,7 @@ entry is removed from the mail merge.
 <note><title>Note</title><para>
   In order to recieve the GOTFOCUS, LOSTFOCUS, and DBLCLK events, the button control has to have the
   NOTIFY (BS_NOTIFY) style.  For user defined dialogs use the NOTIFY style keyword in the <link
-  linkend="sectCreateMethods">create ...</link> method when the button is defined.  For dialogs created from a
+  linkend="sctCreateMethods">create ...</link> method when the button is defined.  For dialogs created from a
   compiled resource or a resource script file use the BS_NOTIFY style for the button resource.  The other events
   are always sent and it is not necessary to add the NOTIFY style.
 </para></note>
@@ -2918,7 +2918,7 @@ incorrect.
 </para>
 <para>
   For user defined dialogs use the NOTIFY style keyword in the <link
-  linkend="sectAddStaticControls">Add...</link> static control methods when the control is defined. For
+  linkend="sctAddStaticControls">Add...</link> static control methods when the control is defined. For
   dialogs created from a compiled resource or a resource script file use the SS_NOTIFY style when
   defining the control in a resource editor.
 </para>
@@ -3090,7 +3090,7 @@ incorrect.
 </para>
 <para>
   For user defined dialogs use the NOTIFY style keyword in the <link
-  linkend="sectAddStaticControls">Add...</link> static control methods when the control is defined. For
+  linkend="sctAddStaticControls">Add...</link> static control methods when the control is defined. For
   dialogs created from a compiled resource or a resource script file use the SS_NOTIFY style when
   defining the control in a resource editor.
 </para>
@@ -3520,7 +3520,7 @@ informs the dialog that an event has occurred in the combo box.</para>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>id</term>
-<listitem><para>The <link linkend="resourceid">resource ID</link> of the combo
+<listitem><para>The <link linkend="defResourceId">resource ID</link> of the combo
 box for which a notification is to be connected to a method.
 </para></listitem></varlistentry>
 <varlistentry><term>event</term>
@@ -3589,7 +3589,7 @@ incorrect.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example invokes method PlaySong whenever the list
 of the combo box with the resource ID of PROFESSIONS is about to be made
-visible.  In this case PROFESSIONS is a <link linkend="symbolicid">symbolic
+visible.  In this case PROFESSIONS is a <link linkend="defSymbolicId">symbolic
 ID</link> that has been added to the <link linkend="constdir">ConstDir</link>
 directory of the MyDlgClass in another part of the program:
 <programlisting>

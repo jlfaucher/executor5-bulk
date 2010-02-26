@@ -47,14 +47,15 @@
 <para>
    ooDialog programs primarily deal with dialog and dialog control objects. The top-level objects in the programs, say
    a <link linkend="clsUserDialog">user dialog</link> or a <link linkend="clsButtonControl">button control</link> are
-   actually composed of a number of base objects and / or mixin classes. Since all dialog objects contain the methods of
-   their component classes, this documentation treats the dialog object as a whole in <link
-   linkend="chpDialogObject">The Dialog Object</link> chapter to make it easier to grasp the concepts.
+   actually composed of a number of base objects and / or mixin classes. All dialog and dialog control objects contain
+   the methods of their component base classes. This documentation treats <link linkend="chpDialogObject">the dialog
+   object</link> and <link linkend="chpDialogControl"></link> as a whole in their respecitive chapters to make it easier
+   to grasp the concepts.
 </para>
 <para>
   The PlainBaseDialog inherits from the WindowBase mixin class.  The WindowBase mixin class implements methods that are
   common to all windows.  Since both dialogs and dialog controls are windows, the <link
-  linkend="clsDialogControl">DialogControl</link> class also inherits from WindowBase.
+  linkend="chpDialogControl">DialogControl</link> class also inherits from WindowBase.
 </para>
 <para>
   The more advanced dialog classes, <link linkend="clsResDialog">ResDialog</link>, <link
@@ -80,22 +81,6 @@
 </para>
 </section>
 
-<section id="clsWindowBase"><title>WindowBase Mixin Class</title>
-<indexterm><primary>WindowBase Class</primary></indexterm>
-<para>
-  WindowBase is a mixin class with methods that are common to all windows.  It is inherited by both
-  dialog and dialog control classes.
-</para>
-<para>
-  The instance methods implemented by the WindowBase class are listed here as a cross reference. The
-  methods are fully documented in other sections of this book. Each method listed has a link to the full
-  documentation for that method and an accurate syntax diagram.
-</para>
-<para>
-  Both the PlainBaseDialog and the DialogControl classes inherit the WindowBase class.  Since the
-  PlainBaseDialog is the base class for all dialogs and the DialogControl class is the base class for all
-  controls, every dialog object and every dialog control object have the instance methods listed here.
-</para>
 
 &windowBaseCommon;
 

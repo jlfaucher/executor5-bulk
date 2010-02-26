@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: OODialog Reference SGML file.
     #
-    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -45,16 +45,8 @@
 <para>
   This book describes the ooDialog framework, which is implemented as an external library package, and part of the Open
   Object Rexx distribution on the <trademark class="registered">Windows</trademark> platform.  It describes the classes
-  in the framework and how to use the framework to program grahical user interfaces, (commonly referred to as a GUI.)
-</para>
-<para>
-  In general, the ooDialog framework simply provides the Rexx programmer with an interface to the Windows API, and
-  primarily to the part of the API that deals with dialogs and dialog controls. In almost all cases, the behavior of the
-  dialog and its controls is dictated by the Windows API. ooDialog has very little control of this. While this document
-  strives to be complete enough that a Rexx programmer, knowing very little of the Windows API, can effectively write
-  graphical programs in Rexx, it can never be as comprehensive as the actual Microsoft documentation. Therefore, the
-  Rexx programmer that needs, or desires, to go beyond the basic dialog and dialog behavior, will benefit greatly by
-  consulting the <link linkend="windowsdoc">MSDN Library</link>.
+  in the framework and how to use the framework to program grahical user interfaces, (commonly referred to as a GUI,) on
+  Windows
 </para>
 
 <section id="whoshoulduse"><title>Who Should Use This Book</title>
@@ -66,23 +58,20 @@
 
 <section id="bookstructure"><title>How This Book is Structured</title>
 <para>
-  This document should be divided into two parts - a tutorial and a reference.  In the original documentation
-  accompanying  IBM's Object Rexx, the documentation was in two parts. Unfortunately, the tutorial portion mostly
-  described how to use the IBM Resource Workshop.  The Resource Workshop has not been contributed to the open source
-  community and is therefore not a part of the Open Object Rexx project. Because the tutorial section was primarily
-  directed towards using the Resource Workshop, it does not make much sense in the current context.
+  This book is primarily a reference that describes the classes and methods in the ooDialog framework in detail. In
+  general, each chapter describes a single class and its methods. Although, in some cases similar classes that do not
+  need a lot of documentaion are gathered together in a single chapter with a subsection for each class. For the most
+  part, the documentation for each class will have a table, at the beginning, that lists the methods of the class, with
+  a link to the detailed documentation for the method within that chapter or section.
 </para>
 <para>
-  This book is primarily a reference that describes the classes and methods in detail.  There is no tutorial. The
-  tutorial portion needs to be written (or re-written depending on your point of view.)
+  One slight deviation from that pattern is found in the <link linkend="chpDialogObject">dialog object</link> and <link
+  linkend="chpDialogControl">dialog control object</link> chapters at the beginning of the book. These objects are
+  composed of a number of base classes and mixin classes. These two chapters list the class methods, attributes, and
+  instance methods that are a part of every dialog, or every dialog control object, respectively, without much
+  distinction as to exactly which base, or mixin, class the method comes from. The method tables at the beginning of the
+  chapters will contain links to the detailed documentation, which may be in another chapter.
 </para>
-<note><title><emphasis role="bold">Note</emphasis></title><para>
-  There is no loss of functionality in ooDialog because of the absence of the Resource Workshop.  The Windows resource
-  format is well understood and there are any number of free or inexpensive resource editors that do a better job of
-  designing dialogs than the Resource Workshop did.  (The Resource Workshop was a 16-bit application with limited
-  capacity for the newer features in the Windows user interface.) ooDialog works fine with dialogs designed by any
-  modern resource editor.
-</para></note>
 </section>
 
 <section id="relinf"><title>Related Information</title>
@@ -94,9 +83,9 @@
 <para>
   Throughout this book, syntax is described using the structure defined below. This is similar to, but slightly
   different than, the IBM syntax diagrams used in other ooRexx reference documentation.  The author is calling these
-  diagrams <emphasis role="italic">simplified railroad tracks</emphasis>.  It primarily strives to limit all diagrams to
-  2 lines, and does away with much of the complication of true IBM railroad tracks. The body oftext following the syntax
-  diagrams will resolve any ambiguities in the diagram.
+  diagrams <emphasis role="italic">simplified railroad tracks</emphasis>. It primarily strives to limit all diagrams to
+  2 lines, and does away with much of the complication of true IBM railroad tracks. The body of text following the
+  syntax diagrams will resolve any ambiguities in the diagram.
 </para>
 <note><title>Note</title><para>
   Not all syntax diagrams may be converted to the simplified railroad tracks at this time.

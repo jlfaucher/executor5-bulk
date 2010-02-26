@@ -70,8 +70,8 @@
 </para></listitem>
 <listitem><para>
   Invoke the <link linkend="mthCreate">create</link>() or <link linkend="mthCreateCenter">createCenter</link>()
-  methods to start the dialog template.  Then, in the <link linkend="h001506">defineDialog</link>() method, create
-  each dialog control using one of the <link linkend="sectCreateMethods">create ...</link> methods. The <emphasis
+  methods to start the dialog template.  Then, in the <link linkend="mthDefineDialog">defineDialog</link>() method, create
+  each dialog control using one of the <link linkend="sctCreateMethods">create ...</link> methods. The <emphasis
   role="italic">defineDialog</emphasis> method is invoked automatically by the <emphasis
   role="italic">create</emphasis> or <emphasis role="italic">createCenter</emphasis> methods and is meant to be
   over-ridden by the programmer for the purpose of creating dialog controls.
@@ -324,7 +324,7 @@ the methods listed in the following table.
 </row>
 <row>
 <entry>DefineDialog</entry>
-<entry><link linkend="h001506">DefineDialog</link></entry>
+<entry><link linkend="mthDefineDialog">DefineDialog</link></entry>
 </row>
 <row>
 <entry>Init</entry>
@@ -594,7 +594,7 @@ if success then MyDialog~execute
 </para>
 </section>
 
-<section id="h001506"><title>defineDialog</title>
+<section id="mthDefineDialog"><title>defineDialog</title>
 <indexterm><primary>defineDialog</primary>
 <secondary>UserDialog class</secondary></indexterm>
 <programlisting>
@@ -610,7 +610,7 @@ if success then MyDialog~execute
   linkend="mthCreate"> create</link> or <link linkend="mthCreateCenter">createCenter</link> methods. It is
   designed to be over-ridden in a subclass of UserDialog. The programmer usses this method to dynamically create
   the dialog controls for the dialog by using the appropriate
-  <link linkend="sectCreateMethods">create ...</link> methods. For all practical purposes, all dialog controls of a
+  <link linkend="sctCreateMethods">create ...</link> methods. For all practical purposes, all dialog controls of a
   UserDialog should be created in this method.
 </para>
 <variablelist>
@@ -834,7 +834,7 @@ of dialog 200 or dialog 300, depending on the argument:
 </variablelist>
 </section>
 
-<section id="sectCreateMethods"><title>Add... Methods</title>
+<section id="sctCreateMethods"><title>Add... Methods</title>
 <indexterm><primary>Add... methods</primary></indexterm>
 <para>The methods listed below (all starting with Add) can be used to create a
 dialog dynamically without any resource script (.RC file). The methods are used
@@ -843,7 +843,7 @@ dialog that is created by loading a resource script.  The methods will then be
 used to define controls in addition to the ones defined in the resource script.
 </para>
 <para>The recommended way to create a dialog dynamically is to subclass from
-UserDialog and put all Add... statements into the <link linkend="h001506">
+UserDialog and put all Add... statements into the <link linkend="mthDefineDialog">
 DefineDialog</link> method, which is executed when the dialog is about to be
 created.
 </para>
@@ -1032,8 +1032,8 @@ associated Object Rexx attribute. Add... methods cannot be used after
 <varlistentry><term id="idArgument"><emphasis role="bold">id</emphasis></term>
   <listitem>
   <para id="paraResouceIDs">
-    All dialog controls have a numeric <link linkend="resourceid">resource</link> ID. The ooDialog
-    framework is designed to accept a <link linkend="symbolicid">symbolic</link> ID anywhere a
+    All dialog controls have a numeric <link linkend="defResourceId">resource</link> ID. The ooDialog
+    framework is designed to accept a <link linkend="defSymbolicId">symbolic</link> ID anywhere a
     resource ID is needed.  All the Add... methods accepted a symbolic ID for the id argument.
   </para>
   <para>
@@ -1047,7 +1047,7 @@ associated Object Rexx attribute. Add... methods cannot be used after
 </variablelist>
 
 
-<section id="sectAddButtonControls"><title>Add Button Controls</title>
+<section id="sctAddButtonControls"><title>Add Button Controls</title>
 <indexterm><primary>Add button control methods</primary></indexterm>
 <para>
   The methods in this section are all used to add button controls. Button controls include push buttons,
@@ -3658,7 +3658,7 @@ MyDialog~objectrexx = 1
 
 </section> <!-- End Add Button Controls section -->
 
-<section id="sectAddStaticControls"><title>Add Static Controls</title>
+<section id="sctAddStaticControls"><title>Add Static Controls</title>
 <indexterm><primary>Add static control methods</primary></indexterm>
 <para>
   The methods in this section are all used to add a static control to the dialog. However, there is no
@@ -5866,7 +5866,7 @@ MyDialog~objectrexx = 1
               character set and then back again to the Windows character set. This ensures proper
               character conversion in certain circumstances. Microsoft states that this style is most
               useful when edit controls contain file names that will be used with file systems that do
-              not support Unicode. For further details see the <link linkend="windowsdoc">Windows
+              not support Unicode. For further details see the <link linkend="defWindowsDoc">Windows
               documentation</link> provided by Microsoft.
           </para>
           </listitem></varlistentry>
@@ -6135,7 +6135,7 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
               character set and then back again to the Windows character set. This ensures proper
               character conversion in certain circumstances. Microsoft states that this style is most
               useful when edit controls contain file names that will be used with file systems that do
-              not support Unicode. For further details see the <link linkend="windowsdoc">Windows
+              not support Unicode. For further details see the <link linkend="defWindowsDoc">Windows
               documentation</link> provided by Microsoft.
           </para>
           </listitem></varlistentry>
@@ -6944,7 +6944,7 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
               character set and then back again to the Windows character set. This ensures proper
               character conversion in certain circumstances. Microsoft states that this style is most
               useful when edit controls contain file names that will be used with file systems that do
-              not support Unicode. For further details see the <link linkend="windowsdoc">Windows
+              not support Unicode. For further details see the <link linkend="defWindowsDoc">Windows
               documentation</link> provided by Microsoft.
           </para>
           </listitem></varlistentry>
@@ -7260,7 +7260,7 @@ MyUserDialog~addInput(402, , 20, 30, , 150, , "Your eMail address")
               character set and then back again to the Windows character set. This ensures proper
               character conversion in certain circumstances. Microsoft states that this style is most
               useful when edit controls contain file names that will be used with file systems that do
-              not support Unicode. For further details see the <link linkend="windowsdoc">Windows
+              not support Unicode. For further details see the <link linkend="defWindowsDoc">Windows
               documentation</link> provided by Microsoft.
           </para>
           </listitem></varlistentry>
@@ -7752,7 +7752,7 @@ MyDialog~addInputGroup(301, 20, 20, ,130, "Name FirstName Street City")
               character set and then back again to the Windows character set. This ensures proper
               character conversion in certain circumstances. Microsoft states that this style is most
               useful when edit controls contain file names that will be used with file systems that do
-              not support Unicode. For further details see the <link linkend="windowsdoc">Windows
+              not support Unicode. For further details see the <link linkend="defWindowsDoc">Windows
               documentation</link> provided by Microsoft.
           </para>
           </listitem></varlistentry>
@@ -8005,7 +8005,7 @@ they are for internal use only.</para>
 a real Windows object based on a dialog template.  For a
 <computeroutput>RcDialog</computeroutput> the template is supplied by a resource
 script file.  For a <computeroutput>UserDialog</computeroutput> the template is
-created by using the <link linkend="sectCreateMethods">Add... methods</link>.  The method
+created by using the <link linkend="sctCreateMethods">Add... methods</link>.  The method
 is called by the <link linkend="h000048">Execute</link> or
 <link linkend="h000057">ExecuteAsync</link> methods.</para>
 <variablelist>

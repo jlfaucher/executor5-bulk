@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: OODialog Reference SGML file.
     #
-    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -41,7 +41,7 @@
     #
     #########################################################################
 -->
-<chapter id="clsDialogControl"><title>The DialogControl Object</title>
+<chapter id="chpDialogControl"><title>The DialogControl Object</title>
 <indexterm><primary>DialogControl class</primary></indexterm>
 <para>
   The DialogControl class provides methods that are common to all dialog controls. It is a generic
@@ -64,7 +64,7 @@
 <para>
   The ooDialog programmer chooses the window styles for dialog controls when he defines the dialog,
   either by using a resource editor for dialogs defined with resource scripts or binary compiled
-  resources, or by using the <link linkend="sectCreateMethods">create...</link> methods for a user dialog. After the dialog
+  resources, or by using the <link linkend="sctCreateMethods">create...</link> methods for a user dialog. After the dialog
   control has been created, the individual dialog control classes provide methods to change those styles that can
   be changed, either by sending the proper message to the control or by accessing the control window directly.
 </para>
@@ -253,7 +253,7 @@ listed in the following DialogControl Instance Methods table.
 </row>
 <row>
 <entry>FontToDC</entry>
-<entry><link linkend="h000948">FontToDC</link></entry>
+<entry><link linkend="mthFontToDC">FontToDC</link></entry>
 </row>
 <row>
 <entry>ForegroundWindow</entry>
@@ -1200,8 +1200,8 @@ say MyDialog~GetButtonControl("IDOK")~GetID
   or dialog control.  The flags are returned in their numeric format.  This allows the programmer to
   determine the current style of any dialog or control.  However, the programmer needs to be able to look
   up the numeric value of the window style flags to make use of this functionality.  This can be done
-  using the <link linkend="windowsdoc">Windows documentation</link> and the <link
-  linkend="platformsdk">Platform SDK</link>.
+  using the <link linkend="defWindowsDoc">Windows documentation</link> and the <link
+  linkend="defPlatformSDK">Platform SDK</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1284,7 +1284,7 @@ Tree-view Control styles
   the dialog or dialog control.  The flags are returned in their numeric format. This function is very
   similar to the <link linkend="mthGetStyleRaw">getStyleRaw</link>() method, allowing the programmer to
   get the extended window flags. The numeric value of the extended style flags can be looked up using the
-  <link linkend="windowsdoc">Windows documentation</link> and the <link linkend="platformsdk">Platform
+  <link linkend="defWindowsDoc">Windows documentation</link> and the <link linkend="defPlatformSDK">Platform
   SDK</link>.
 </para>
 <variablelist>
@@ -1790,8 +1790,8 @@ dlgc~FreeDC(hdc)
 </variablelist>
 
 <note><title>Note</title><para>
-Use the <link linkend="windowsdoc">Windows documentation</link> and <link
-linkend="platformsdk">Platform SDK</link> to obtain the Window message numbers.
+Use the <link linkend="defWindowsDoc">Windows documentation</link> and <link
+linkend="defPlatformSDK">Platform SDK</link> to obtain the Window message numbers.
 </para></note>
 </section>
 
@@ -1857,7 +1857,11 @@ See <link linkend="h000584">SetValue</link> for more information.
 
 <section id="mthGetTextSizeDlgClsDialogControl"><title>getTextSizeDlg</title>
 <indexterm><primary>getTextSizeDlg</primary>
-<secondary>DialogControl class</secondary></indexterm>
+<secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary>
+<secondary>getTextSizeDlg</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary>
+<secondary>getTextSizeDlg</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getTextSizeDlg(--text--+-------------+--+-------------+--+---------+--)----><
@@ -1866,33 +1870,27 @@ See <link linkend="h000584">SetValue</link> for more information.
 </programlisting>
 
 <para>
-  Calculates the size, (width and height,) needed to display the given text in the specified font.  The
-  size is expressed in dialog units.  To calculate the size in pixels use the <link
-  linkend="mthGetTextSizeScreen">getTextSizeScreen</link>() method.
+  Calculates the size, (width and height,) in <link linkend="defDialogUnit">dialog units</link> for a given string.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> this method replaces the deprecated <link
+  linkend="deprecatedDialogControl">deprecated</link> <emphasis role="italic">getTextSize</emphasis> method of the
+  dialog control object. The convoluted arguments to this method are needed to retain backwards compatibility with that
+  method. Preferably, the <link linkend="mthGetTextSizeDu">getTextSizeDu</link>() method, or the <link
+  linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>() method of the dialog object, should be used
+  rather than this method if at all possible.
 </para>
 <para>
   In general, dialog units are only of value in laying out the dialog controls before the underlying dialog is
-  created.  Once the underlying dialog is created, it makes more sense to work with pixels. Historically, the
-  ooDialog documentation did not make that distinction clear.  In addition, dialog units are tied directly to the
-  font used by a specific dialog.  Therefore, the window handle argument does not make much sense. In addition, it
-  does not make sense for this method to be a method of a dialog control.
+  created.  Once the underlying dialog is created, it makes more sense to work with pixels. In addition, dialog units
+  are tied directly to the actual font used by a specific dialog.  Therefore, the optional arguments do not make much
+  sense. Since the dialog object directly knows which font it is using, and the dialog control does not, it does not
+  make much sense for this method to be a method of a dialog control in the first place.
 </para>
 <para>
-  The normal use of this method would be to invoke it on a dialog object to help layout the dialog's controls prior
-  to the creation of the underlying dialog.  In this use case, the hwnd argument is meaningless. There is no window
-  handle for the dialog prior to the underlying dialog creation.  There is little point in using a window handle
-  from some other dialog. The hwnd argument remains to maintain compatibility with previous versions of ooDialog.
-  Having this method a method of a dialog control is also to maintian backward compatibility.
-</para>
-<para>
-  This method replaces the deprecated <link linkend="deprecatedDialogControl">deprecated</link> <emphasis
-  role="italic">getTextSize</emphasis> method of the dialog object.  Becausse of the backwards compatibility
-  restraint it is harder than necessary to document exactly how this method works.
-</para>
-<para>
-  The ooDialog programmer is <emphasis role="bold">strongly</emphasis> encouraged to only inovke this
-  method through a dialog object.  Future versions of ooDialog may remove this method from the instance
-  methods of the <link linkend="clsDialogControl">DialogControl</link> class.
+  The ooDialog programmer is therefore <emphasis role="bold">strongly</emphasis> encouraged to use either the <emphasis
+  role="italic">getTextSizeDu</emphasis> or <emphasis role="italic">getTextSizeDlg</emphasis> methods of the dialog
+  object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1929,16 +1927,16 @@ See <link linkend="h000584">SetValue</link> for more information.
       <varlistentry><term>fontName</term>
       <listitem>
         <para>
-          Optional. The name of the font to use to calculate the size needed for the string.  Use This
-          argument when the string will be displayed in a font <emphasis role="bold">different</emphasis>
-          than the dialog font.
+          Optional. The name of the font to use to calculate the size needed for the string.  Use this argument when the
+          string will be displayed in a font <emphasis role="bold">different</emphasis> than the dialog font.
         </para>
       </listitem></varlistentry>
       <varlistentry><term>fontSize</term>
       <listitem>
         <para>
-          Optional. The size of the font named by the fontName argument. If this argument is omitted then
-          the defualt font size is used. (Currently the default size is 8.)
+          Optional. The size of the font named by the fontName argument. If this argument is omitted then the default
+          font size is used. (Currently the default size is 8.) This argument is ignored completely when the fontName
+          argument is omitted.
         </para>
       </listitem></varlistentry>
       <varlistentry><term>hwnd</term>
@@ -1959,34 +1957,8 @@ See <link linkend="h000584">SetValue</link> for more information.
       size is specified in dialog units.
     </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-      This example calculates the size needed to display a message.  It then uses that size to create an
-      object that holds the co-ordinates needed to place the text in a dialog.  This is used in
-      defineDialog() to add the message text to the dialog.
-      <programlisting>
-      <![CDATA[
-      size = self~getTextSizeDlg(message)
-      messageRect = .directory~new
-      messageRect~x = 10
-      messageRect~y = 10
-      messageRect~cx = size~width
-      messageRect~cy = size~height
-      ...
-
-    ::method defineDialog
-      expose message messageRect okRect
-
-      r = messageRect
-      self~addText(r~x, r~y, r~cx, r~cy, message)
-
-      ]]>
-      </programlisting>
-    </para>
-  </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End PlainBaseDialog::getTextSizeDlg() -->
+</section>  <!-- End DialogControl::getTextSizeDlg() -->
 
 </section>
 
@@ -3875,125 +3847,6 @@ of the other arguments.</para>
 </variablelist>
 </section>
 
-<section id="mthGetTextSizeScreen"><title>getTextSizeScreen</title>
-<indexterm><primary>getTextSizeScreen</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
-                             +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
-]]>
-</programlisting>
-
-<para>
-  Gets the size, width and height, in pixels, needed to display a string in a specific font. To calculate
-  the size in dialog units use the <link
-  linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>() method.
-</para>
-<note><title><emphasis role="bold">Note</emphasis></title><para>
-  This method can only be used after the underlying Windows dialog has been created.  In general this
-  means in the <link linkend="mthInitDialog">initDialog</link>() method or later in the life cycle of the
-  dialog.  If this method is invoked prior to the creation of the underlying dialog, a syntax error is
-  rasised.
-</para></note>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>text</term>
-      <listitem>
-        <para>
-          The string whose size is desired.  If none of the optional arguments are specified then the
-          font in use by this object (dialog or dialog control object) is used to calculate the size.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>type</term>
-      <listitem>
-        <para>
-          Optional.  However, if any of the optional arguments are used this argument is required. It
-          signals what fontSrc is.  The allowed types are:
-          <variablelist>
-            <varlistentry><term>Indirect</term>
-            <listitem>
-              <para>
-                fontSrc is a font name and fontSize is the size of the font.  The calculation is done
-                indirectly by temporarily obtaining a logical font using these parameters.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>DC</term>
-            <listitem>
-              <para>
-                fontSrc is a handle to a device context.  The correct font for the calculation must
-                already be selected into this device context.  fontSize is ignored.  See the <link
-                linkend="getdc">getDC</link>() and <link linkend="h000948">fontToDC</link>() methods for
-                information on obtaining a device context and selecting a font into it.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>Font</term>
-            <listitem>
-              <para>
-                fontSrc is a handle to a font. fontSize is ignored.
-              </para>
-            </listitem></varlistentry>
-          </variablelist>
-          Only the first letter of type is needed and case is not significant.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>fontSrc</term>
-      <listitem>
-        <para>
-          Optional. The source of the font to use in calculating the size.  This argument object must
-          match the type specification. It can be either a string, (a font name,) a hand to a device
-          context, or a handle to a font.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>fontSize</term>
-      <listitem>
-        <para>
-          Optional. The size of the font. This argument is always ignored unless the type argument is
-          Indirect. If type is Indirect and this argument is omitted then the defualt font size is used.
-          (Currently the default size is 8.)
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      The size needed for the string is returned in a <link linkend="clsSize">Size</link> object.  The
-      size is specified in pixels.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-      This example uses 2 static controls to display two strings.  The static controls are positioned so
-      that the second string immediately follows the first string.  The size calculated is based on the
-      font currently in use by the controls.  The calculation is correct no matter what font is in use by
-      the controls, even if the two controls use different fonts.  (This is a contrived example, it was
-      used for testing. Instead of having a space character in between the 2 strings, the ending "t" and
-      the beginning "a" are positioned with no space between them.)
-<programlisting>
-<![CDATA[
-stFont1 = self~getStaticControl(IDC_ST_FONT1)
-stFont2 = self~getStaticControl(IDC_ST_FONT2)
-
-size = stFont1~getTextSizeScreen("San Diego is great")
-stFont1~setText("San Diego is great")
-stFont1~setRect(1, 1, size~width, size~height)
-
-nextX = 1 + size~width + 1
-size = stFont2~getTextSizeScreen("and ooRexx is the best")
-stFont2~setText("and ooRexx is the best")
-stFont2~setRect(nextX, 1, size~width, size~height)
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End WindowsExtensions::getTextSizeScreen() -->
-
 <section id="mthSetFont"><title>setFont</title>
 <indexterm><primary>setFont</primary></indexterm>
 <programlisting>
@@ -4184,7 +4037,7 @@ MyDialog~getTreeControl("FILES")~setFont(hfnt, .true)
 <para>
   The returned font can be used in any method that takes a font, such as, <link
   linkend="mthSetFont">setFont</link>(), <link linkend="sifm">setItemFont</link>(), or <link
-  linkend="h000948">fontToDC</link>(). When the programmer is done with the font, the operating system
+  linkend="mthFontToDC">fontToDC</link>(). When the programmer is done with the font, the operating system
   resources used by the font can be released with the <link linkend="mthDeleteFont">deleteFont</link>()
   method.
 </para>
@@ -4213,7 +4066,7 @@ MyDialog~getTreeControl("FILES")~setFont(hfnt, .true)
   <listitem>
     <para>
       This method provides an interface to the Win32 API: <computeroutput>CreateFont()</computeroutput>.
-      Use the <link linkend="windowsdoc">MSDN library</link> documentation to get more information on the
+      Use the <link linkend="defWindowsDoc">MSDN library</link> documentation to get more information on the
       arguments to this method.
     </para>
     <para>
@@ -4256,7 +4109,7 @@ MyDialog~getTreeControl("FILES")~setFont(hfnt, .true)
         <para>
           The indexes are listed below. Each index maps to an argument of the Win32 API,
           <computeroutput>CreateFont()</computeroutput>. As suggested above, the programmer should
-          consult the <link linkend="windowsdoc">MSDN library</link> documentation to get complete
+          consult the <link linkend="defWindowsDoc">MSDN library</link> documentation to get complete
           information on the individual arguments. The value for each index must be either numeric or
           logical, depending on the index.
         </para>
@@ -4392,7 +4245,7 @@ hFont = self~createFontEx("Times New Roman", 14, additional)
   </listitem></varlistentry>
 </variablelist>
 
-<section id="sectFontAttributes"><title>createFontEx Argument Values</title>
+<section id="sctFontAttributes"><title>createFontEx Argument Values</title>
 <para>
   The following list is the indexes of the <computeroutput>.Directory</computeroutput> object that can be
   used for the third argument of the <link linkend="mthCreateFontEx">createFontEx</link>() method. The
@@ -4836,7 +4689,7 @@ hFont = self~createFontEx("Times New Roman", 14, additional)
 </variablelist>
 </section>
 
-<section id="h000948"><title>FontToDC</title>
+<section id="mthFontToDC"><title>FontToDC</title>
 <indexterm><primary>FontToDC</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4936,7 +4789,7 @@ use <link linkend="h001017">DeleteObject</link>. The brush is used to fill recta
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>color</term>
-<listitem><para>The color number. For a list of color numbers, refer to <link linkend="termdef">Definition of Terms</link>.
+<listitem><para>The color number. For a list of color numbers, refer to <link linkend="sctTermDefs">Definition of Terms</link>.
 </para></listitem></varlistentry>
 <varlistentry><term>brushSpecifier</term>
 <listitem><para>The name of a bitmap file or one of the following keywords to create
@@ -5011,7 +4864,7 @@ the default.
 </para></listitem></varlistentry>
 <varlistentry><term>color</term>
 <listitem><para>The color number of the pen. If omitted, 0 is used as default. For a
-list of color numbers, refer to <link linkend="termdef">Definition of Terms</link>.
+list of color numbers, refer to <link linkend="sctTermDefs">Definition of Terms</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -5220,7 +5073,7 @@ context. </para>
 <listitem><para>The position, in pixels.
 </para></listitem></varlistentry>
 <varlistentry><term>color</term>
-<listitem><para>The color number for the pixel. For a list of color numbers, refer to <link linkend="termdef">Definition of Terms</link>.
+<listitem><para>The color number for the pixel. For a list of color numbers, refer to <link linkend="sctTermDefs">Definition of Terms</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -5432,7 +5285,7 @@ color of the brush, in pixels.
 </para></listitem></varlistentry>
 <varlistentry><term>color</term>
 <listitem><para>The color number of the outline figure whose inside will be filled.
-For a list of color numbers, refer to <link linkend="termdef">Definition of Terms</link>.
+For a list of color numbers, refer to <link linkend="sctTermDefs">Definition of Terms</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -5506,7 +5359,7 @@ is the x-axis).
   methods. To control a window not owned by your program use the <emphasis role="italic">find</emphasis>() method of the
   <emphasis role="italic">WindowsManger</emphasis> class. The <emphasis role="italic">WindowsManager</emphasis>is part
   of the <emphasis role="italic">WinSystm.cls</emphasis> package. In certain cases it may be desirable to invoke a
-  method common to all windows when only the window <link linkend="termHandle">handle</link> is known.  For these cases
+  method common to all windows when only the window <link linkend="defHandle">handle</link> is known.  For these cases
   use a <link linkend="clsWindow">Window</link> object.
 </para>
 </section>
@@ -5523,8 +5376,9 @@ is the x-axis).
   <tertiary>dialog control</tertiary>
 </indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Replace this method with the <link
-  linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>() method.
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Replace this method with, preferably, the <link
+  linkend="mthGetTextSizeDu">getTextSizeDu</link>() method, or the <link
+  linkend="mthGetTextSizeDlgClsDialogControl">getTextSizeDlg</link>() method if absolutely necessary.
 </para>
 <para>
   This method never worked correctly, the previous documentation for this method was incorrect and /
