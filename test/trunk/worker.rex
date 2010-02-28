@@ -432,7 +432,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 
 ::method lastToken private
   expose tokenCount
-  use strict arg index msg
+  use strict arg index, msg
 
   if index == tokenCount then do
     self~addErrorMsg(msg)
@@ -442,7 +442,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 
 ::method isSingleValueToken private
   expose tokenCount
-  use strict arg index msg
+  use strict arg index, msg
 
   if (index + 2) < tokenCount, \ self~isOptionToken(index + 2) then do
     self~addErrorMsg(msg)
