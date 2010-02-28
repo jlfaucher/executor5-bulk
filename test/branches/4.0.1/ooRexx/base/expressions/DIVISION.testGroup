@@ -1,0 +1,1527 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.DIVISION.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "DIVISION.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   self~assertSame(999999999E99 / 1.0, 9.99999999E+107)
+
+::method "test_2"
+   self~assertSame(45.876E-15 / 1, 0.000000000000045876)
+
+::method "test_3"
+   Numeric Digits 9
+   self~assertSame(45.876E-15 / 12.3E-23, 372975610)
+   Numeric Digits 18
+   self~assertSame(45.876E-15 / 12.3E-23, 372975609.756097561)
+
+::method "test_4"
+   Numeric Digits 9
+   self~assertSame(1E88 / 123456789123456789E67, 8100.00007)
+   Numeric Digits 18
+   self~assertSame(1E88 / 123456789123456789E67, 8100.00006561000061)
+
+::method "test_5"
+   Numeric Digits 9
+   self~assertSame(123E12 / 12312332434543E88, 9.98998368E-88)
+   Numeric Digits 18
+   self~assertSame(123E12 / 12312332434543E88, 9.98998367319225348E-88)
+
+::method "test_6"
+   Numeric Digits 9
+   self~assertSame(12123123123E-354 / 102938098E9345, 1.17771004E-9697)
+   Numeric Digits 18
+   self~assertSame(12123123123E-354 / 102938098E9345, 1.17771003724976539E-9697)
+
+::method "test_7"
+   self~assertSame(11E999999 / 11E-999999, 1E+1999998)
+
+::method "test_8"
+   self~assertSame(11E-999999 / 11E-9999997, 1E+8999998)
+
+::method "test_9"
+   self~assertSame(11E-999999 / 11E-999997, 0.01)
+
+::method "test_10"
+   self~assertSame(11E-999999 / 11E999999, 1E-1999998)
+
+::method "test_11"
+   self~assertSame(12E12 / 120000000E5, 1)
+
+::method "test_12"
+   self~assertSame(1E100 / 1E100, 1)
+
+::method "test_13"
+   Numeric Digits 9
+   self~assertSame(12E12 / 333, 3.6036036E+10)
+   Numeric Digits 18
+   self~assertSame(12E12 / 333, 36036036036.036036)
+
+::method "test_14"
+   Numeric Digits 9
+   self~assertSame("-12E12" / 333, -3.6036036E+10)
+   Numeric Digits 18
+   self~assertSame("-12E12" / 333, -36036036036.036036)
+
+::method "test_15"
+   Numeric Digits 9
+   self~assertSame(12E12 / "-333", -3.6036036E+10)
+   Numeric Digits 18
+   self~assertSame(12E12 / "-333", -36036036036.036036)
+
+::method "test_16"
+   Numeric Digits 9
+   self~assertSame("-12E12" / "-333", 3.6036036E+10)
+   Numeric Digits 18
+   self~assertSame("-12E12" / "-333", 36036036036.036036)
+
+::method "test_17"
+   Numeric Digits 9
+   self~assertSame(12E12 / 333, 3.6036036E+10)
+   Numeric Digits 18
+   self~assertSame(12E12 / 333, 36036036036.036036)
+
+::method "test_18"
+   Numeric Digits 20
+   self~assertSame(12E12 / 333, 36036036036.036036036)
+
+::method "test_19"
+   Numeric Digits 9
+   self~assertSame(12000000000000 / 333, 3.6036036E+10)
+   Numeric Digits 18
+   self~assertSame(12000000000000 / 333, 36036036036.036036)
+
+::method "test_20"
+   self~assertSame(10E1000 / 10E99999, 1E-98999)
+
+::method "test_21"
+   self~assertSame(999999999E99999 / 999999999E99999999, 1E-99900000)
+
+::method "test_22"
+   self~assertSame(500 / 5, 100)
+
+::method "test_23"
+   Numeric Digits 9
+   self~assertSame(12345 / 7, 1763.57143)
+   Numeric Digits 18
+   self~assertSame(12345 / 7, 1763.57142857142857)
+
+::method "test_24"
+   Numeric Digits 9
+   self~assertSame(77E-20 / 7, 1.1E-19)
+   Numeric Digits 18
+   self~assertSame(77E-20 / 7, 0.00000000000000000011)
+
+::method "test_25"
+   self~assertSame(345 / 6, 57.5)
+
+::method "test_26"
+   self~assertSame(1000 / 25, 40)
+
+::method "test_27"
+   Numeric Digits 9
+   self~assertSame(13 / "-2592", -0.0050154321)
+   Numeric Digits 18
+   self~assertSame(13 / "-2592", -0.0050154320987654321)
+
+::method "test_28"
+   self~assertSame(999999999E99 / 1.0, 9.99999999E+107)
+
+::method "test_29"
+   self~assertSame(4 / 1000, 0.004)
+
+::method "test_30"
+   Numeric Digits 9
+   self~assertSame(1000E-3 / 300, 0.00333333333)
+   Numeric Digits 18
+   self~assertSame(1000E-3 / 300, 0.00333333333333333333)
+
+::method "test_31"
+   Numeric Digits 9
+   self~assertSame(123E34 / 456E12, 2.69736842E+21)
+   Numeric Digits 18
+   self~assertSame(123E34 / 456E12, 2.69736842105263158E+21)
+
+::method "test_32"
+   Numeric Digits 9
+   self~assertSame(123E-65 / "-456E+54", -2.69736842E-120)
+   Numeric Digits 18
+   self~assertSame(123E-65 / "-456E+54", -2.69736842105263158E-120)
+
+::method "test_33"
+   Numeric Digits 9
+   self~assertSame("-123E-34" / "-456E-3", 2.69736842E-32)
+   Numeric Digits 18
+   self~assertSame("-123E-34" / "-456E-3", 2.69736842105263158E-32)
+
+::method "test_34"
+   Numeric Digits 9
+   self~assertSame(12300 / 456, 26.9736842)
+   Numeric Digits 18
+   self~assertSame(12300 / 456, 26.9736842105263158)
+
+::method "test_35"
+   Numeric Digits 9
+   self~assertSame(01230.0 / 4560.00, 0.269736842)
+   Numeric Digits 18
+   self~assertSame(01230.0 / 4560.00, 0.269736842105263158)
+
+::method "test_36"
+   Numeric Digits 9
+   self~assertSame(123.04500 / 12.00500, 10.2494794)
+   Numeric Digits 18
+   self~assertSame(123.04500 / 12.00500, 10.2494793835901708)
+
+::method "test_37"
+   Numeric Digits 9
+   self~assertSame(123.456 / 345.45678, 0.35737032)
+   Numeric Digits 18
+   self~assertSame(123.456 / 345.45678, 0.357370319957246171)
+
+::method "test_38"
+   Numeric Digits 9
+   self~assertSame(123456.789012 / 12345.56789123, 10.0000899)
+   Numeric Digits 18
+   self~assertSame(123456.789012 / 12345.56789123, 10.0000899188850428)
+
+::method "test_39"
+   Numeric Digits 9
+   self~assertSame(100 / "-11", -9.09090909)
+   Numeric Digits 18
+   self~assertSame(100 / "-11", -9.09090909090909091)
+
+::method "test_40"
+   self~assertSame(123.4E-3 / 2, 0.0617)
+
+::method "test_41"
+   Numeric Digits 9
+   self~assertSame(23.9E-8 / 3, 0.0000000796666667)
+   Numeric Digits 18
+   self~assertSame(23.9E-8 / 3, 0.0000000796666666666666667)
+
+::method "test_42"
+   Numeric Digits 9
+   self~assertSame(45.8786E-15 / 23E-7, 0.0000000199472174)
+   Numeric Digits 18
+   self~assertSame(45.8786E-15 / 23E-7, 0.0000000199472173913043478)
+
+::method "test_43"
+   Numeric Digits 9
+   self~assertSame("-56.78E-5" / "-6787.76E-15", 83650571)
+   Numeric Digits 18
+   self~assertSame("-56.78E-5" / "-6787.76E-15", 83650571.0278501302)
+
+::method "test_44"
+   Numeric Digits 9
+   self~assertSame(3456757 / 8768E-34, 3.94246921E+36)
+   Numeric Digits 18
+   self~assertSame(3456757 / 8768E-34, 3.94246920620437956E+36)
+
+::method "test_45"
+   Numeric Digits 9
+   self~assertSame(56E-2 / 67E-2, 0.835820896)
+   Numeric Digits 18
+   self~assertSame(56E-2 / 67E-2, 0.83582089552238806)
+
+::method "test_46"
+   Numeric Digits 9
+   self~assertSame(12.00 / 1.005000, 11.9402985)
+   Numeric Digits 18
+   self~assertSame(12.00 / 1.005000, 11.9402985074626866)
+
+::method "test_47"
+   Numeric Digits 9
+   self~assertSame(1E9 / 999999999E19, 1E-19)
+   Numeric Digits 18
+   self~assertSame(1E9 / 999999999E19, 0.0000000000000000001000000001)
+
+::method "test_48"
+   Numeric Digits 9
+   self~assertSame(9218374.9128374 / 98123749821.299873242345, 0.000093946419)
+   Numeric Digits 18
+   self~assertSame(9218374.9128374 / 98123749821.299873242345, 0.0000939464189824139108)
+
+::method "test_49"
+   Numeric Digits 15
+   self~assertSame(1111111111111 / 1111111111111, 1)
+
+::method "test_50"
+   Numeric Digits 5
+   self~assertSame(1111111111111 / 1111111111111, 1)
+
+::method "test_51"
+   Numeric Digits 30
+   self~assertSame(9999999999999 / 9999999999999, 1)
+
+::method "test_52"
+   Numeric Digits 5
+   self~assertSame(9999999999999 / 9999999999999, 1)
+
+::method "test_53"
+   Numeric Form ENGINEERING
+   self~assertSame(999999999E99 / 1.0, 999.999999E+105)
+
+::method "test_54"
+   Numeric Form ENGINEERING
+   self~assertSame(45.876E-15 / 1, 0.000000000000045876)
+
+::method "test_55"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(45.876E-15 / 12.3E-23, 372975610)
+   Numeric Digits 18
+   self~assertSame(45.876E-15 / 12.3E-23, 372975609.756097561)
+
+::method "test_56"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(1E88 / 123456789123456789E67, 8100.00007)
+   Numeric Digits 18
+   self~assertSame(1E88 / 123456789123456789E67, 8100.00006561000061)
+
+::method "test_57"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(123E12 / 12312332434543E88, 998.998368E-90)
+   Numeric Digits 18
+   self~assertSame(123E12 / 12312332434543E88, 998.998367319225348E-90)
+
+::method "test_58"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(12123123123E-354 / 102938098E9345, 117.771004E-9699)
+   Numeric Digits 18
+   self~assertSame(12123123123E-354 / 102938098E9345, 117.771003724976539E-9699)
+
+::method "test_59"
+   Numeric Form ENGINEERING
+   self~assertSame(11E999999 / 11E-999999, 1E+1999998)
+
+::method "test_60"
+   Numeric Form ENGINEERING
+   self~assertSame(11E-999999 / 11E-9999997, 10E+8999997)
+
+::method "test_61"
+   Numeric Form ENGINEERING
+   self~assertSame(11E-999999 / 11E-999997, 0.01)
+
+::method "test_62"
+   Numeric Form ENGINEERING
+   self~assertSame(11E-999999 / 11E999999, 1E-1999998)
+
+::method "test_63"
+   Numeric Form ENGINEERING
+   self~assertSame(12E12 / 120000000E5, 1)
+
+::method "test_64"
+   Numeric Form ENGINEERING
+   self~assertSame(1E100 / 1E100, 1)
+
+::method "test_65"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(12E12 / 333, 36.036036E+9)
+   Numeric Digits 18
+   self~assertSame(12E12 / 333, 36036036036.036036)
+
+::method "test_66"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame("-12E12" / 333, -36.036036E+9)
+   Numeric Digits 18
+   self~assertSame("-12E12" / 333, -36036036036.036036)
+
+::method "test_67"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(12E12 / "-333", -36.036036E+9)
+   Numeric Digits 18
+   self~assertSame(12E12 / "-333", -36036036036.036036)
+
+::method "test_68"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame("-12E12" / "-333", 36.036036E+9)
+   Numeric Digits 18
+   self~assertSame("-12E12" / "-333", 36036036036.036036)
+
+::method "test_69"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(12E12 / 333, 36.036036E+9)
+   Numeric Digits 18
+   self~assertSame(12E12 / 333, 36036036036.036036)
+
+::method "test_70"
+   Numeric Form ENGINEERING
+   Numeric Digits 20
+   self~assertSame(12E12 / 333, 36036036036.036036036)
+
+::method "test_71"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(12000000000000 / 333, 36.036036E+9)
+   Numeric Digits 18
+   self~assertSame(12000000000000 / 333, 36036036036.036036)
+
+::method "test_72"
+   Numeric Form ENGINEERING
+   self~assertSame(10E1000 / 10E99999, 10E-99000)
+
+::method "test_73"
+   Numeric Form ENGINEERING
+   self~assertSame(999999999E99999 / 999999999E99999999, 1E-99900000)
+
+::method "test_74"
+   Numeric Form ENGINEERING
+   self~assertSame(500 / 5, 100)
+
+::method "test_75"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(12345 / 7, 1763.57143)
+   Numeric Digits 18
+   self~assertSame(12345 / 7, 1763.57142857142857)
+
+::method "test_76"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(77E-20 / 7, 110E-21)
+   Numeric Digits 18
+   self~assertSame(77E-20 / 7, 0.00000000000000000011)
+
+::method "test_77"
+   Numeric Form ENGINEERING
+   self~assertSame(45 / 6, 7.5)
+
+::method "test_78"
+   Numeric Form ENGINEERING
+   self~assertSame(1000 / 25, 40)
+
+::method "test_79"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(13 / "-2592", -0.0050154321)
+   Numeric Digits 18
+   self~assertSame(13 / "-2592", -0.0050154320987654321)
+
+::method "test_80"
+   Numeric Form ENGINEERING
+   self~assertSame(999999999E99 / 1.0, 999.999999E+105)
+
+::method "test_81"
+   Numeric Form ENGINEERING
+   self~assertSame(4 / 1000, 0.004)
+
+::method "test_82"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(1000E-3 / 300, 0.00333333333)
+   Numeric Digits 18
+   self~assertSame(1000E-3 / 300, 0.00333333333333333333)
+
+::method "test_83"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(123E34 / 456E12, 2.69736842E+21)
+   Numeric Digits 18
+   self~assertSame(123E34 / 456E12, 2.69736842105263158E+21)
+
+::method "test_84"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(123E-65 / "-456E+54", -2.69736842E-120)
+   Numeric Digits 18
+   self~assertSame(123E-65 / "-456E+54", -2.69736842105263158E-120)
+
+::method "test_85"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame("-123E-34" / "-456E-3", 26.9736842E-33)
+   Numeric Digits 18
+   self~assertSame("-123E-34" / "-456E-3", 26.9736842105263158E-33)
+
+::method "test_86"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(12300 / 456, 26.9736842)
+   Numeric Digits 18
+   self~assertSame(12300 / 456, 26.9736842105263158)
+
+::method "test_87"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(01230.0 / 4560.00, 0.269736842)
+   Numeric Digits 18
+   self~assertSame(01230.0 / 4560.00, 0.269736842105263158)
+
+::method "test_88"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(123.04500 / 12.00500, 10.2494794)
+   Numeric Digits 18
+   self~assertSame(123.04500 / 12.00500, 10.2494793835901708)
+
+::method "test_89"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(123.456 / 345.45678, 0.35737032)
+   Numeric Digits 18
+   self~assertSame(123.456 / 345.45678, 0.357370319957246171)
+
+::method "test_90"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(123456.789012 / 12345.56789123, 10.0000899)
+   Numeric Digits 18
+   self~assertSame(123456.789012 / 12345.56789123, 10.0000899188850428)
+
+::method "test_91"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(100 / "-11", -9.09090909)
+   Numeric Digits 18
+   self~assertSame(100 / "-11", -9.09090909090909091)
+
+::method "test_92"
+   Numeric Form ENGINEERING
+   self~assertSame(123.4E-3 / 2, 0.0617)
+
+::method "test_93"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(23.9E-8 / 3, 0.0000000796666667)
+   Numeric Digits 18
+   self~assertSame(23.9E-8 / 3, 0.0000000796666666666666667)
+
+::method "test_94"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(45.8786E-15 / 23E-7, 0.0000000199472174)
+   Numeric Digits 18
+   self~assertSame(45.8786E-15 / 23E-7, 0.0000000199472173913043478)
+
+::method "test_95"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame("-56.78E-5" / "-6787.76E-15", 83650571)
+   Numeric Digits 18
+   self~assertSame("-56.78E-5" / "-6787.76E-15", 83650571.0278501302)
+
+::method "test_96"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(3456757 / 8768E-34, 3.94246921E+36)
+   Numeric Digits 18
+   self~assertSame(3456757 / 8768E-34, 3.94246920620437956E+36)
+
+::method "test_97"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(56E-2 / 67E-2, 0.835820896)
+   Numeric Digits 18
+   self~assertSame(56E-2 / 67E-2, 0.83582089552238806)
+
+::method "test_98"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(12.00 / 1.005000, 11.9402985)
+   Numeric Digits 18
+   self~assertSame(12.00 / 1.005000, 11.9402985074626866)
+
+::method "test_99"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(1E9 / 999999999E19, 100E-21)
+   Numeric Digits 18
+   self~assertSame(1E9 / 999999999E19, 0.0000000000000000001000000001)
+
+::method "test_100"
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(9218374.9128374 / 98123749821.299873242345, 0.000093946419)
+   Numeric Digits 18
+   self~assertSame(9218374.9128374 / 98123749821.299873242345, 0.0000939464189824139108)
+
+::method "test_101"
+   Numeric Form ENGINEERING
+   Numeric Digits 15
+   self~assertSame(1111111111111 / 1111111111111, 1)
+
+::method "test_102"
+   Numeric Form ENGINEERING
+   Numeric Digits 5
+   self~assertSame(1111111111111 / 1111111111111, 1)
+
+::method "test_103"
+   Numeric Form ENGINEERING
+   Numeric Digits 30
+   self~assertSame(9999999999999 / 9999999999999, 1)
+
+::method "test_104"
+   Numeric Form ENGINEERING
+   Numeric Digits 5
+   self~assertSame(9999999999999 / 9999999999999, 1)
+
+-- Integer division
+
+::method "test_201"
+   self~expectSyntax(26.11)
+   self~assertSame(999999999E99 % 1.0, 1)
+
+::method "test_202"
+   self~assertSame(1E88 % 123456789123456789E67, 8100)
+
+::method "test_203"
+   self~expectSyntax(26.11)
+   self~assertSame(11E999999 % 11E-999999, 1)
+
+::method "test_204"
+   self~expectSyntax(26.11)
+   self~assertSame(11E-999999 % 11E-9999997, 1)
+
+::method "test_205"
+   self~assertSame(12E12 % 120000000E5, 1)
+
+::method "test_206"
+   self~assertSame(1E100 % 1E100, 1)
+
+::method "test_207"
+   self~expectSyntax(26.11)
+   Numeric Digits 9
+   self~assertSame(12E12 % 333, 1)
+
+::method "test_208"
+   self~expectSyntax(26.11)
+   Numeric Digits 9
+   self~assertSame("-12E12" % 333, 1)
+
+::method "test_209"
+   self~expectSyntax(26.11)
+   Numeric Digits 9
+   self~assertSame(12E12 % "-333", 1)
+
+::method "test_210"
+   self~expectSyntax(26.11)
+   Numeric Digits 9
+   self~assertSame("-12E12" % "-333", 1)
+
+::method "test_211"
+   self~expectSyntax(26.11)
+   Numeric Digits 9
+   self~assertSame(12E12 % 333, 1)
+
+::method "test_212"
+   Numeric Digits 20
+   self~assertSame(12E12 % 333, 36036036036)
+
+::method "test_213"
+   self~expectSyntax(26.11)
+   Numeric Digits 9
+   self~assertSame(12000000000000 % 333, 1)
+
+::method "test_214"
+   self~assertSame(500 % 5, 100)
+
+::method "test_215"
+   self~assertSame(12345 % 7, 1763)
+
+::method "test_216"
+   self~assertSame(345 % 6, 57)
+
+::method "test_217"
+   self~assertSame(1000 % 25, 40)
+
+::method "test_218"
+   self~expectSyntax(26.11)
+   self~assertSame(999999999E99 % 1.0, 1)
+
+::method "test_219"
+   self~expectSyntax(26.11)
+   self~assertSame(123E34 % 456E12, 1)
+
+::method "test_220"
+   self~assertSame(12300 % 456, 26)
+
+::method "test_221"
+   self~assertSame(123.04500 % 12.00500, 10)
+
+::method "test_222"
+   self~assertSame(123456.789012 % 12345.56789123, 10)
+
+::method "test_223"
+   self~assertSame(100 % "-11", -9)
+
+::method "test_224"
+   self~assertSame(123.4E-3 % 2, 0)
+
+::method "test_225"
+   self~assertSame(23.9E-8 % 3, 0)
+
+::method "test_226"
+   self~assertSame("-56.78E-5" % "-6787.76E-15", 83650571)
+
+::method "test_227"
+   self~expectSyntax(26.11)
+   self~assertSame(3456757 % 8768E-34, 1)
+
+::method "test_228"
+   self~assertSame(12.00 % 1.005000, 11)
+
+::method "test_229"
+   self~expectSyntax(26.11)
+   Numeric Digits 1
+   self~assertSame(5678932 % 37, 1)
+
+::method "test_230"
+   self~expectSyntax(26.11)
+   Numeric Digits 2
+   self~assertSame(5678932 % 37, 1)
+
+::method "test_231"
+   self~expectSyntax(26.11)
+   Numeric Digits 3
+   self~assertSame(5678932 % 37, 1)
+
+::method "test_232"
+   self~expectSyntax(26.11)
+   Numeric Digits 4
+   self~assertSame(5678932 % 37, 1)
+
+::method "test_233"
+   self~expectSyntax(26.11)
+   Numeric Digits 5
+   self~assertSame(5678932 % 37, 1)
+
+::method "test_234"
+   Numeric Digits 6
+   self~assertSame(5678932 % 37, 153484)
+
+::method "test_235"
+   Numeric Digits 100
+   self~assertSame(5678932 % 37, 153484)
+
+::method "test_236"
+   self~expectSyntax(26.11)
+   Numeric Digits 1
+   self~assertSame(5678932 % 378678, 1)
+
+::method "test_237"
+   Numeric Digits 2
+   self~assertSame(5678932 % 378678, 15)
+
+::method "test_238"
+   Numeric Digits 3
+   self~assertSame(5678932 % 378678, 14)
+
+::method "test_239"
+   Numeric Digits 4
+   self~assertSame(5678932 % 378678, 14)
+
+::method "test_240"
+   Numeric Digits 5
+   self~assertSame(5678932 % 378678, 14)
+
+::method "test_241"
+   Numeric Digits 6
+   self~assertSame(5678932 % 378678, 14)
+
+::method "test_242"
+   Numeric Digits 100
+   self~assertSame("-5678932" % 378678, -14)
+
+::method "test_243"
+   self~expectSyntax(26.11)
+   Numeric Digits 1
+   self~assertSame("-5678932" % 37, 1)
+
+::method "test_244"
+   self~expectSyntax(26.11)
+   Numeric Digits 2
+   self~assertSame("-5678932" % 37, 1)
+
+::method "test_245"
+   self~expectSyntax(26.11)
+   Numeric Digits 3
+   self~assertSame("-5678932" % 37, 1)
+
+::method "test_246"
+   self~expectSyntax(26.11)
+   Numeric Digits 4
+   self~assertSame("-5678932" % 37, 1)
+
+::method "test_247"
+   self~expectSyntax(26.11)
+   Numeric Digits 5
+   self~assertSame("-5678932" % 37, 1)
+
+::method "test_248"
+   Numeric Digits 6
+   self~assertSame("-5678932" % 37, -153484)
+
+::method "test_249"
+   Numeric Digits 100
+   self~assertSame("-5678932" % 37, -153484)
+
+::method "test_250"
+   self~expectSyntax(26.11)
+   Numeric Digits 1
+   self~assertSame("-5678932" % 37, 1)
+
+::method "test_251"
+   Numeric Digits 2
+   self~assertSame("-5678932" % 378678, -15)
+
+::method "test_252"
+   Numeric Digits 3
+   self~assertSame("-5678932" % 378678, -14)
+
+::method "test_253"
+   Numeric Digits 4
+   self~assertSame("-5678932" % 378678, -14)
+
+::method "test_254"
+   Numeric Digits 5
+   self~assertSame("-5678932" % 378678, -14)
+
+::method "test_255"
+   Numeric Digits 6
+   self~assertSame("-5678932" % 378678, -14)
+
+::method "test_256"
+   Numeric Digits 100
+   self~assertSame("-5678932" % 378678, -14)
+
+::method "test_257"
+   Numeric Digits 100
+   self~assertSame("-5678932" % "-378678", 14)
+
+::method "test_258"
+   self~expectSyntax(26.11)
+   Numeric Digits 1
+   self~assertSame("-5678932" % "-37", 1)
+
+::method "test_259"
+   self~expectSyntax(26.11)
+   Numeric Digits 2
+   self~assertSame("-5678932" % "-37", 1)
+
+::method "test_260"
+   self~expectSyntax(26.11)
+   Numeric Digits 3
+   self~assertSame("-5678932" % "-37", 1)
+
+::method "test_261"
+   self~expectSyntax(26.11)
+   Numeric Digits 4
+   self~assertSame("-5678932" % "-37", 1)
+
+::method "test_262"
+   self~expectSyntax(26.11)
+   Numeric Digits 5
+   self~assertSame("-5678932" % "-37", 1)
+
+::method "test_263"
+   Numeric Digits 6
+   self~assertSame("-5678932" % "-37", 153484)
+
+::method "test_264"
+   Numeric Digits 100
+   self~assertSame("-5678932" % "-37", 153484)
+
+::method "test_265"
+   self~expectSyntax(26.11)
+   Numeric Digits 1
+   self~assertSame("-5678932" % "-378678", 1)
+
+::method "test_266"
+   Numeric Digits 2
+   self~assertSame("-5678932" % "-378678", 15)
+
+::method "test_267"
+   Numeric Digits 3
+   self~assertSame("-5678932" % "-378678", 14)
+
+::method "test_268"
+   Numeric Digits 4
+   self~assertSame("-5678932" % "-378678", 14)
+
+::method "test_269"
+   Numeric Digits 5
+   self~assertSame("-5678932" % "-378678", 14)
+
+::method "test_270"
+   Numeric Digits 5
+   self~assertSame("-5678932" % "-378678", 14)
+
+::method "test_271"
+   Numeric Digits 100
+   self~assertSame("-5678932" % "-378678", 14)
+
+::method "test_272"
+   Numeric Digits 3
+   self~assertSame(5678932 // 345678, 1.48E+5)
+
+::method "test_273"
+   Numeric Digits 3
+   self~assertSame(5678932 % 345678, 16)
+
+::method "test_274"
+   Numeric Digits 4
+   self~assertSame(5678932 // 345678, 1.482E+5)
+
+::method "test_275"
+   Numeric Digits 4
+   self~assertSame(5678932 % 345678, 16)
+
+::method "test_276"
+   Numeric Digits 5
+   self~assertSame(5678932 // 345678, 1.4808E+5)
+
+::method "test_277"
+   Numeric Digits 5
+   self~assertSame(5678932 % 345678, 16)
+
+::method "test_278"
+   Numeric Digits 3
+   self~assertSame(5678932 // 378678, 3.78E+5)
+
+::method "test_279"
+   Numeric Digits 3
+   self~assertSame(5678932 % 378678, 14)
+
+::method "test_280"
+   Numeric Digits 4
+   self~assertSame(5678932 // 378678, 3.775E+5)
+
+::method "test_281"
+   Numeric Digits 4
+   self~assertSame(5678932 % 378678, 14)
+
+::method "test_282"
+   Numeric Digits 5
+   self~assertSame(5678932 // 378678, 3.7744E+5)
+
+::method "test_283"
+   Numeric Digits 5
+   self~assertSame(5678932 % 378678, 14)
+
+::method "test_284"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   self~assertSame(999999999E99 % 1.0, 1)
+
+::method "test_285"
+   Numeric Form ENGINEERING
+   self~assertSame(1E88 % 123456789123456789E67, 8100)
+
+::method "test_286"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   self~assertSame(11E999999 % 11E-999999, 1)
+
+::method "test_287"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   self~assertSame(11E-999999 % 11E-9999997, 1)
+
+::method "test_288"
+   Numeric Form ENGINEERING
+   self~assertSame(12E12 % 120000000E5, 1)
+
+::method "test_289"
+   Numeric Form ENGINEERING
+   self~assertSame(1E100 % 1E100, 1)
+
+::method "test_290"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(12E12 % 333, 1)
+
+::method "test_291"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame("-12E12" % 333, 1)
+
+::method "test_292"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(12E12 % "-333", 1)
+
+::method "test_293"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame("-12E12" % "-333", 1)
+
+::method "test_294"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(12E12 % 333, 1)
+
+::method "test_295"
+   Numeric Form ENGINEERING
+   Numeric Digits 20
+   self~assertSame(12E12 % 333, 36036036036)
+
+::method "test_296"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 9
+   self~assertSame(12000000000000 % 333, 1)
+
+::method "test_297"
+   Numeric Form ENGINEERING
+   self~assertSame(500 % 5, 100)
+
+::method "test_298"
+   Numeric Form ENGINEERING
+   self~assertSame(12345 % 7, 1763)
+
+::method "test_299"
+   Numeric Form ENGINEERING
+   self~assertSame(345 % 6, 57)
+
+::method "test_300"
+   Numeric Form ENGINEERING
+   self~assertSame(1000 % 25, 40)
+
+::method "test_301"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   self~assertSame(999999999E99 % 1.0, 1)
+
+::method "test_302"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   self~assertSame(123E34 % 456E12, 1)
+
+::method "test_303"
+   Numeric Form ENGINEERING
+   self~assertSame(12300 % 456, 26)
+
+::method "test_304"
+   Numeric Form ENGINEERING
+   self~assertSame(123.04500 % 12.00500, 10)
+
+::method "test_305"
+   Numeric Form ENGINEERING
+   self~assertSame(123456.789012 % 12345.56789123, 10)
+
+::method "test_306"
+   Numeric Form ENGINEERING
+   self~assertSame(100 % "-11", -9)
+
+::method "test_307"
+   Numeric Form ENGINEERING
+   self~assertSame(123.4E-3 % 2, 0)
+
+::method "test_308"
+   Numeric Form ENGINEERING
+   self~assertSame(23.9E-8 % 3, 0)
+
+::method "test_309"
+   Numeric Form ENGINEERING
+   self~assertSame("-56.78E-5" % "-6787.76E-15", 83650571)
+
+::method "test_310"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   self~assertSame(3456757 % 8768E-34, 1)
+
+::method "test_311"
+   Numeric Form ENGINEERING
+   self~assertSame(12.00 % 1.005000, 11)
+
+::method "test_312"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 1
+   self~assertSame(5678932 % 37, 1)
+
+::method "test_313"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 2
+   self~assertSame(5678932 % 37, 1)
+
+::method "test_314"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 3
+   self~assertSame(5678932 % 37, 1)
+
+::method "test_315"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 4
+   self~assertSame(5678932 % 37, 1)
+
+::method "test_316"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 5
+   self~assertSame(5678932 % 37, 1)
+
+::method "test_317"
+   Numeric Form ENGINEERING
+   Numeric Digits 6
+   self~assertSame(5678932 % 37, 153484)
+
+::method "test_318"
+   Numeric Form ENGINEERING
+   Numeric Digits 100
+   self~assertSame(5678932 % 37, 153484)
+
+::method "test_319"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 1
+   self~assertSame(5678932 % 37, 153484)
+
+::method "test_320"
+   Numeric Form ENGINEERING
+   Numeric Digits 2
+   self~assertSame(5678932 % 378678, 15)
+
+::method "test_321"
+   Numeric Form ENGINEERING
+   Numeric Digits 3
+   self~assertSame(5678932 % 378678, 14)
+
+::method "test_322"
+   Numeric Form ENGINEERING
+   Numeric Digits 4
+   self~assertSame(5678932 % 378678, 14)
+
+::method "test_323"
+   Numeric Form ENGINEERING
+   Numeric Digits 5
+   self~assertSame(5678932 % 378678, 14)
+
+::method "test_324"
+   Numeric Form ENGINEERING
+   Numeric Digits 6
+   self~assertSame(5678932 % 378678, 14)
+
+::method "test_325"
+   Numeric Form ENGINEERING
+   Numeric Digits 100
+   self~assertSame("-5678932" % 378678, -14)
+
+::method "test_326"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 1
+   self~assertSame("-5678932" % 37, 1)
+
+::method "test_327"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 2
+   self~assertSame("-5678932" % 37, 1)
+
+::method "test_328"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 3
+   self~assertSame("-5678932" % 37, 1)
+
+::method "test_329"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 4
+   self~assertSame("-5678932" % 37, 1)
+
+::method "test_330"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 5
+   self~assertSame("-5678932" % 37, 1)
+
+::method "test_331"
+   Numeric Form ENGINEERING
+   Numeric Digits 6
+   self~assertSame("-5678932" % 37, -153484)
+
+::method "test_332"
+   Numeric Form ENGINEERING
+   Numeric Digits 100
+   self~assertSame("-5678932" % 37, -153484)
+
+::method "test_333"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 1
+   self~assertSame("-5678932" % 37, -153484)
+
+::method "test_334"
+   Numeric Form ENGINEERING
+   Numeric Digits 2
+   self~assertSame("-5678932" % 378678, -15)
+
+::method "test_335"
+   Numeric Form ENGINEERING
+   Numeric Digits 3
+   self~assertSame("-5678932" % 378678, -14)
+
+::method "test_336"
+   Numeric Form ENGINEERING
+   Numeric Digits 3
+   self~assertSame("-5678932" % 378678, -14)
+
+::method "test_337"
+   Numeric Form ENGINEERING
+   Numeric Digits 5
+   self~assertSame("-5678932" % 378678, -14)
+
+::method "test_338"
+   Numeric Form ENGINEERING
+   Numeric Digits 6
+   self~assertSame("-5678932" % 378678, -14)
+
+::method "test_339"
+   Numeric Form ENGINEERING
+   Numeric Digits 100
+   self~assertSame("-5678932" % 378678, -14)
+
+::method "test_340"
+   Numeric Form ENGINEERING
+   Numeric Digits 100
+   self~assertSame("-5678932" % "-378678", 14)
+
+::method "test_341"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 1
+   self~assertSame("-5678932" % "-37", 1)
+
+::method "test_342"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 2
+   self~assertSame("-5678932" % "-37", 1)
+
+::method "test_343"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 3
+   self~assertSame("-5678932" % "-37", 1)
+
+::method "test_344"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 4
+   self~assertSame("-5678932" % "-37", 1)
+
+::method "test_345"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 5
+   self~assertSame("-5678932" % "-37", 1)
+
+::method "test_346"
+   Numeric Form ENGINEERING
+   Numeric Digits 6
+   self~assertSame("-5678932" % "-37", 153484)
+
+::method "test_347"
+   Numeric Form ENGINEERING
+   Numeric Digits 100
+   self~assertSame("-5678932" % "-37", 153484)
+
+::method "test_348"
+   self~expectSyntax(26.11)
+   Numeric Form ENGINEERING
+   Numeric Digits 1
+   self~assertSame("-5678932" % "-378678", 1)
+
+::method "test_349"
+   Numeric Form ENGINEERING
+   Numeric Digits 2
+   self~assertSame("-5678932" % "-378678", 15)
+
+::method "test_350"
+   Numeric Form ENGINEERING
+   Numeric Digits 3
+   self~assertSame("-5678932" % "-378678", 14)
+
+::method "test_351"
+   Numeric Form ENGINEERING
+   Numeric Digits 4
+   self~assertSame("-5678932" % "-378678", 14)
+
+::method "test_352"
+   Numeric Form ENGINEERING
+   Numeric Digits 5
+   self~assertSame("-5678932" % "-378678", 14)
+
+::method "test_353"
+   Numeric Form ENGINEERING
+   Numeric Digits 6
+   self~assertSame("-5678932" % "-378678", 14)
+
+::method "test_354"
+   Numeric Form ENGINEERING
+   Numeric Digits 100
+   self~assertSame("-5678932" % "-378678", 14)
+
+::method "test_355"
+   Numeric Form ENGINEERING
+   Numeric Digits 3
+   self~assertSame(5678932 // 345678, 148E+3)
+
+::method "test_356"
+   Numeric Form ENGINEERING
+   Numeric Digits 3
+   self~assertSame(5678932 % 345678, 16)
+
+::method "test_357"
+   Numeric Form ENGINEERING
+   Numeric Digits 4
+   self~assertSame(5678932 // 345678, 148.2E+3)
+
+::method "test_358"
+   Numeric Form ENGINEERING
+   Numeric Digits 4
+   self~assertSame(5678932 % 345678, 16)
+
+::method "test_359"
+   Numeric Form ENGINEERING
+   Numeric Digits 5
+   self~assertSame(5678932 // 345678, 148.08E+3)
+
+::method "test_360"
+   Numeric Form ENGINEERING
+   Numeric Digits 5
+   self~assertSame(5678932 % 345678, 16)
+
+::method "test_361"
+   Numeric Form ENGINEERING
+   Numeric Digits 3
+   self~assertSame(5678932 // 378678, 378E+3)
+
+::method "test_362"
+   Numeric Form ENGINEERING
+   Numeric Digits 3
+   self~assertSame(5678932 % 378678, 14)
+
+::method "test_363"
+   Numeric Form ENGINEERING
+   Numeric Digits 4
+   self~assertSame(5678932 // 378678, 377.5E+3)
+
+::method "test_364"
+   Numeric Form ENGINEERING
+   Numeric Digits 4
+   self~assertSame(5678932 % 378678, 14)
+
+::method "test_365"
+   Numeric Form ENGINEERING
+   Numeric Digits 5
+   self~assertSame(5678932 // 378678, 377.44E+3)
+
+::method "test_366"
+   Numeric Form ENGINEERING
+   Numeric Digits 5
+   self~assertSame(5678932 % 378678, 14)
+
+::method "test_367"
+   minval=1e-999999999
+   maxval=1e+999999999
+   minv=1e+999999999
+   al=1e+999999999
+   self~assertSame(minval / minval / (2+3), '0.2')
+   self~assertSame(maxval / maxval / minval, '1E+999999999')
+   self~assertSame(maxval / (100 + maxval -100), '1')
+   self~assertSame(maxval / minv || 'al', '1al')
+   self~assertSame(minv || al / maxval, '1E+9999999991')
+
+::method "test_368"
+   self~assertSame(17/2=2, '0')
+
+::method "test_369"
+   self~assertSame(2=2/17, '0')
+
+::method "test_370"
+   self~assertSame(17/2>3, '1')
+
+::method "test_371"
+   self~assertSame(3>2/.5, '0')
+
+::method "test_372"
+   self~assertSame(17/2<3, '0')
+
+::method "test_373"
+   self~assertSame(3<2/.5, '1')
+
+::method "test_374"
+   self~assertSame(17/2<>2, '1')
+
+::method "test_375"
+   self~assertSame(2<>2/17, '1')
+
+::method "test_376"
+   self~assertSame(17/2><2, '1')
+
+::method "test_377"
+   self~assertSame(2><2/17, '1')
+
+::method "test_378"
+   self~assertSame(17/2\=2, '1')
+
+::method "test_379"
+   self~assertSame(2\=2/17, '1')
+
+::method "test_380"
+   self~assertSame(5/3>=2, '0')
+
+::method "test_381"
+   self~assertSame(5/3>=3, '0')
+
+::method "test_382"
+   self~assertSame(3>=3/.25, '0')
+
+::method "test_383"
+   self~assertSame(3>=2/.25, '0')
+
+::method "test_384"
+   self~assertSame(17/2<=3, '0')
+
+::method "test_385"
+   self~assertSame(17/2<=2, '0')
+
+::method "test_386"
+   self~assertSame(2<=3/.25, '1')
+
+::method "test_387"
+   self~assertSame(2<=2/.25, '1')
+
+::method "test_388"
+   self~assertSame(17/2==2, '0')
+
+::method "test_390"
+   self~assertSame(2==2/17, '0')
+
+::method "test_391"
+   self~expectSyntax(34.901)
+   xre=17/1&0
+
+::method "test_392"
+   self~expectSyntax(34.901)
+   xre=1&1/17
+
+::method "test_393"
+   self~expectSyntax(34.901)
+   xre=17/1|0
+
+::method "test_394"
+   self~expectSyntax(34.901)
+   xre=0|1/17
+
+::method "test_395"
+   self~expectSyntax(34.901)
+   xre=17/1&&0
+
+::method "test_396"
+   self~expectSyntax(34.901)
+   xre=0&&1/17
+
+::method "test_397"
+   self~assertSame(5/3\<2, '0')
+
+::method "test_398"
+   self~assertSame(5/3\<2, '0')
+
+::method "test_399"
+   self~assertSame(3\<3/.25, '0')
+
+::method "test_400"
+   self~assertSame(3\<2/.25, '0')
+
+::method "test_401"
+   self~assertSame(17/2\>3, '0')
+
+::method "test_402"
+   self~assertSame(17/2\>2, '0')
+
+::method "test_403"
+   self~assertSame(2\>3/.25, '1')
+
+::method "test_404"
+   self~assertSame(2\>2/.25, '1')
+
+::method "test_405"
+   self~assertSame(17/2\=2, '1')
+
+::method "test_406"
+   self~assertSame(17/2\==2, '1')
+
+::method "test_407"
+   self~assertSame(2\==2/17, '1')
+
+::method "test_408"
+   self~assertSame(2\=2/.5, '1')
+
+::method "test_409"
+   self~assertSame(17/2\==2, '1')
+
+::method "test_410"
+   self~assertSame(2\==2/17, '1')
+
