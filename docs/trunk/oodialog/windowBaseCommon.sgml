@@ -95,13 +95,6 @@
 
 
 <programlisting format='linespecific'>
->>--<link linkend="mthGetSize">getSize</link>----------------------------><
-
-
-</programlisting>
-
-
-<programlisting format='linespecific'>
 >>--<link linkend="mthGetStyleRaw">getStyleRaw</link>------------------------><
 
 
@@ -199,9 +192,19 @@
 </programlisting>
 
 <para>
-  The <emphasis role="italic">getSize</emphasis> method returns the width and height of the dialog or dialog control, in dialog units.
+  The <emphasis role="italic">getSize</emphasis> method returns the width and height of the in dialog units.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      This method can only be used after the <link linkend="ovvUnderlying">underlying Windows dialog</link> has been
+      created.
+    </para>
+    <para>
+      Raises syntax errors for incorrect usage.
+    </para>
+  </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The width and height, separated by a blank.
 </para></listitem></varlistentry>
@@ -228,42 +231,42 @@
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
-    <para>
-      This method can only be used after the <link linkend="ovvUnderlying">underlying Windows dialog</link> has been
-      created.
-    </para>
-    <para>
-      Raises syntax errors for incorrect usage.
-    </para>
+  <para>
+    This method can only be used after the <link linkend="ovvUnderlying">underlying Windows dialog</link> has been
+    created.
+  </para>
+  <para>
+    Raises syntax errors for incorrect usage.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The only argument is:
-    <variablelist>
-      <varlistentry><term>text</term>
-      <listitem>
-        <para>
-          The string whose size is desired.
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </para>
+  <para>The only argument is:
+  <variablelist>
+    <varlistentry><term>text</term>
+    <listitem>
+      <para>
+        The string whose size is desired.
+      </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The size needed for the string is returned in a <link linkend="clsSize">Size</link> object.  The size is specified
-      in pixels.
-    </para>
+  <para>
+    The size needed for the string is returned in a <link linkend="clsSize">Size</link> object.  The size is specified
+    in pixels.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example uses 2 static controls to display two strings.  The static controls are positioned so that the second
-      string immediately follows the first string.  The size calculated is based on the font currently in use by the
-      controls.  The calculation is correct no matter what font is in use by the controls, even if the two controls use
-      different fonts.  (This is a contrived example, to illustrate the method. Instead of having a space character in
-      between the 2 strings, the ending "t" and the beginning "a" are positioned with no space between them.)
+  <para>
+    This example uses 2 static controls to display two strings.  The static controls are positioned so that the second
+    string immediately follows the first string.  The size calculated is based on the font currently in use by the
+    controls.  The calculation is correct no matter what font is in use by the controls, even if the two controls use
+    different fonts.  (This is a contrived example, to illustrate the method. Instead of having a space character in
+    between the 2 strings, the ending "t" and the beginning "a" are positioned with no space between them.)
 <programlisting>
 <![CDATA[
 stFont1 = self~newStaticText(IDC_ST_FONT1)
@@ -285,8 +288,9 @@ stFont2~setText("and ooRexx is the best")
 stFont2~setRect(r)
 ]]>
 </programlisting>
-    </para>
-  </listitem></varlistentry>
+  </para>
+  </listitem>
+  </varlistentry>
 </variablelist>
 </section>  <!-- End WindowBase::getTextSizePx() -->
 
