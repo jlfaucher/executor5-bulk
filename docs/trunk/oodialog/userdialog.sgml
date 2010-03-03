@@ -44,11 +44,11 @@
 <chapter id="clsUserDialog"><title>UserDialog Class</title>
 <indexterm><primary>UserDialog class</primary></indexterm>
 <para>
-  The <emphasis role="italic">UserDialog</emphasis> class extends the <link linkend="chpDialogObject">base dialog</link>
-  object. This class allows the programmer to dynamically define the dialog template in memory.  The class provides
-  methods to begin the dialog template, specifying the size, position, and other basic attributes of the dialog.  In
-  addition, methods are provided to create the dialog controls within the dialog.  These methods allow the programmer to
-  create any of the dialog controls supported by ooDialog.
+  The <emphasis role="italic">UserDialog</emphasis> class extends the <link linkend="chpDialogObject">dialog
+  object</link>. This class allows the programmer to dynamically define the dialog template in memory.  The class
+  provides methods to begin the dialog template, specifying the size, position, and other basic attributes of the
+  dialog.  In addition, methods are provided to create the dialog controls within the dialog.  These methods allow the
+  programmer to create any of the dialog controls supported by ooDialog.
 </para>
 
 <note><title>Note</title><para>
@@ -243,6 +243,26 @@ the methods listed in the following table.
 <entry><link linkend="mthAddListBox">addListBox</link></entry>
 </row>
 <row>
+<entry>AddListControl</entry>
+<entry><link linkend="mthAddListControl">AddListControl</link></entry>
+</row>
+<row>
+<entry>addProgressBar</entry>
+<entry><link linkend="mthAddProgressBar">addProgressBar</link></entry>
+</row>
+<row>
+<entry>AddSliderControl</entry>
+<entry><link linkend="addslidercontrol">AddSliderControl</link></entry>
+</row>
+<row>
+<entry>AddTabControl</entry>
+<entry><link linkend="addtabcontrol">AddTabControl</link></entry>
+</row>
+<row>
+<entry>AddTreeControl</entry>
+<entry><link linkend="addtreecontrol">AddTreeControl</link></entry>
+</row>
+<row>
 <entry>AddMenuItem</entry>
 <entry><link linkend="amim">AddMenuItem</link></entry>
 </row>
@@ -399,7 +419,7 @@ defined in the file can be used in method calls where resource IDs are required.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example creates a new dialog object, adding any
 symbolic IDs defined in <computeroutput>resources.h</computeroutput> to the object's
-<link linkend="constdir">ConstDir</link> directory:
+<link linkend="atrConstDir">constDir</link> directory:
 
 <programlisting>
 <![CDATA[
@@ -7983,6 +8003,919 @@ MyDialog~addInputStem(401, 20, 20, , 150, FNames.)
 
 </section>
 
+<section id="mthAddListControl"><title>AddListControl</title>
+<indexterm><primary>AddListControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~AddListControl(--id--,--+---------------+--,--x,--y-->
+                                             +-attributeName-+
+
+>--,--cx--,--cy--+--------------------------------+--)-------------------><
+                 |       +-------------------+    |
+                 |       V                   |    |
+                 +-,--"----+-ICON----------+-+--"-+
+                           +-SMALLICON-----+
+                           +-LIST----------+
+                           +-REPORT--------+
+                           +-ALIGNLEFT-----+
+                           +-ALIGNTOP------+
+                           +-AUTOARRANGE---+
+                           +-ASCENDING-----+
+                           +-DESCENDING----+
+                           +-EDIT----------+
+                           +-HSCROLL-------+
+                           +-VSCROLL-------+
+                           +-NOSCROLL------+
+                           +-NOHEADER------+
+                           +-NOSORTHEADER--+
+                           +-NOWRAP--------+
+                           +-SINGLESEL-----+
+                           +-SHOWSELALWAYS-+
+                           +-SHAREIMAGES---+
+                           +-GROUP---------+
+                           +-HIDDEN--------+
+                           +-NOTAB---------+
+                           +-NOBORDER------+
+
+
+]]>
+</programlisting>
+
+<para>The AddListControl method adds a list view to the
+dialog and connects it with a data attribute. For further information on list
+view controls, refer to <link linkend="clsListView">ListControl Class</link>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>A unique identifier assigned to the control. You need the ID to refer
+to this control in other methods.
+</para></listitem></varlistentry>
+<varlistentry><term>attributeName</term>
+<listitem><para>The name of the data attribute associated with the dialog item. See
+<link linkend="connecttreecontrol">ConnectTreeControl</link> to get
+information on what happens when this argument is omitted.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the upper left corner of the control relative to the
+dialog, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>cx, xy</term>
+<listitem><para>The width and height of the dialog item, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>This argument determines the behavior and style of the dialog item and
+can be one or more of the following, separated by blanks:
+<variablelist>
+<varlistentry><term>ICON</term>
+<listitem><para>Use the icon view. Each item appears as a full-sized icon with a label
+below it. The user can drag the items to any location in the list view control.
+</para></listitem></varlistentry>
+<varlistentry><term>SMALLICON</term>
+<listitem><para>Use the small-icon view. Each item appears as a small icon with a label
+to the right of it. The user can drag the items to any location in the list
+view control.
+</para></listitem></varlistentry>
+<varlistentry><term>LIST</term>
+<listitem><para>Use the list view. Each item appears as a small icon with a label to
+the right of it. Items are arranged in columns and cannot be moved by the
+user.
+</para></listitem></varlistentry>
+<varlistentry><term>REPORT</term>
+<listitem><para>Use the report view. Each item appears on a separate line with information
+arranged in columns. The leftmost column contains the small icon and label,
+and subsequent columns contain subitems.
+</para></listitem></varlistentry>
+<varlistentry><term>ALIGNLEFT</term>
+<listitem><para>In icon and small-icon views, the items are left-aligned.
+</para></listitem></varlistentry>
+<varlistentry><term>ALIGNTOP</term>
+<listitem><para>In icon and small-icon views, the items are aligned with the top of
+the control.
+</para></listitem></varlistentry>
+<varlistentry><term>AUTOARRANGE</term>
+<listitem><para>In icon and small-icon views, the icons are always automatically arranged.
+</para></listitem></varlistentry>
+<varlistentry><term>ASCENDING</term>
+<listitem><para>Sorts items by item text in ascending order.
+</para></listitem></varlistentry>
+<varlistentry><term>DESCENDING</term>
+<listitem><para>Sorts items by item text in descending order.
+</para></listitem></varlistentry>
+<varlistentry><term>EDIT</term>
+<listitem><para>The list view allows the user to edit the list view items. To store
+the edited text, you must connect a method to the ENDEDIT notification or
+you connect the DEFAULTEDIT event handler
+(see <link linkend="connecttreenotify">ConnectTreeNotify</link>).
+</para></listitem></varlistentry>
+<varlistentry><term>HSCROLL</term>
+<listitem><para>The list view supports a horizontal scroll bar.
+</para></listitem></varlistentry>
+<varlistentry><term>VSCROLL</term>
+<listitem><para>The list view supports a vertical scroll bar.
+</para></listitem></varlistentry>
+<varlistentry><term>NOSCROLL</term>
+<listitem><para>Disables scrolling.
+</para></listitem></varlistentry>
+<varlistentry><term>NOHEADER</term>
+<listitem><para>No column header is displayed in the report view. By default, columns
+have headers in the report view.
+</para></listitem></varlistentry>
+<varlistentry><term>NOSORTHEADER</term>
+<listitem><para>Specifies that column headers do not work like buttons. This option
+is useful if clicking a header in the report view does not carry out an action.
+</para></listitem></varlistentry>
+<varlistentry><term>NOWRAP</term>
+<listitem><para>Displays item text on a single line in the icon view. By default, the
+item text can wrap in the icon view.
+</para></listitem></varlistentry>
+<varlistentry><term>SINGLESEL</term>
+<listitem><para>Allows only one item to be selected at a time. By default, several items
+can be selected.
+</para></listitem></varlistentry>
+<varlistentry><term>SHOWSELALWAYS</term>
+<listitem><para>Specifies that a selected item remains selected when the list view loses
+focus.
+</para></listitem></varlistentry>
+<varlistentry><term>DEFAULTEDIT</term>
+<listitem><para>Connects the notification that label editing has been started and ended
+with a predefined event-handling method. This method extracts the newly entered
+text from the notification and modifies the item of which the label was edited.
+If this event is not connected you must provide your own event-handling method
+and connect it with the BEGINEDIT and ENDEDIT events. Otherwise, the edited
+text is lost and the item remains unchanged.
+</para></listitem></varlistentry>
+<varlistentry><term>SHAREIMAGES</term>
+<listitem><para>The control does not take ownership of the image lists assigned to it.
+This option enables an image list to be used with several list controls.
+</para></listitem></varlistentry>
+<varlistentry><term>GROUP</term>
+<listitem><para>Specifies the first control of a group of control in which the user
+can move from one control to the next with the arrow keys.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>The control is initially hidden.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTAB</term>
+<listitem><para>The tab key cannot be used to move to this control.
+</para></listitem></varlistentry>
+<varlistentry><term>NOBORDER</term>
+<listitem><para>No border is drawn around the control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+      <para>
+        Success.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+      <para>
+        Error with the in-memory dialog template or with the resource ID.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a list view at position x=100 and y=80
+and with a size of width=40 and height=120. The list view with ID 555 is a
+report view with items sorted in ascending order. It supports item editing
+and column headers do not behave like buttons. Its data is associated with
+attribute EMPLOYEES.
+<programlisting>
+<![CDATA[
+MyDialog~AddListControl(555, "EMPLOYEES", 100, 80, 40, 120, ,
+"REPORT ASCENDING EDIT NOSORTHEADER")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addtreecontrol"><title>AddTreeControl</title>
+<indexterm><primary>AddTreeControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~AddTreeControl(--id--,--+---------------+--,--x--,--y-->
+                                             +-attributeName-+
+
+>--,--cx--,--cy--+--------------------------------+--)---------------------><
+                 |       +-------------------+    |
+                 |       V                   |    |
+                 +-,--"----+-ATROOT--------+-+--"-+
+                           +-BUTTONS-------+
+                           +-LINES---------+
+                           +-EDIT----------+
+                           +-HSCROLL-------+
+                           +-VSCROLL-------+
+                           +-SHOWSELALWAYS-+
+                           +-ALL-----------+
+                           +-NODRAG--------+
+                           +-GROUP---------+
+                           +-HIDDEN--------+
+                           +-NOTAB---------+
+                           +-NOBORDER------+
+
+
+]]>
+</programlisting>
+
+<para>The AddTreeControl method adds a tree view to the
+dialog and connects it with a data attribute. For further information on tree
+view controls, refer to <link linkend="treecontrolc">TreeControl Class</link>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>A unique identifier assigned to the control. You need the ID to refer
+to this control in other methods.
+</para></listitem></varlistentry>
+<varlistentry><term>attributeName</term>
+<listitem><para>The name of the data attribute associated with the dialog item. See
+<link linkend="connecttreecontrol">attributeName</link> to get information on what happens when
+this argument is omitted.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the upper left corner of the control relative to the
+dialog, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>cx, xy</term>
+<listitem><para>The width and height of the dialog item, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>This argument determines the behavior and style of the dialog item and
+can be one or more of the following, separated by blanks:
+<variablelist>
+<varlistentry><term>ATROOT</term>
+<listitem><para>The tree view has lines linking child items to the root of the hierarchy.
+</para></listitem></varlistentry>
+<varlistentry><term>BUTTONS</term>
+<listitem><para>The tree view adds a button to the left of each parent item.
+</para></listitem></varlistentry>
+<varlistentry><term>LINES</term>
+<listitem><para>The tree view has lines linking child items to their corresponding parent
+items.
+</para></listitem></varlistentry>
+<varlistentry><term>EDIT</term>
+<listitem><para>The tree view allows the user to edit the labels of tree view items.
+To store the edited text, you must connect a method to the ENDEDIT notification
+or connect the DEFAULTEDIT event handler (see
+<link linkend="connecttreenotify">ConnectTreeNotify</link>).
+</para></listitem></varlistentry>
+<varlistentry><term>HSCROLL</term>
+<listitem><para>The tree view supports a horizontal scroll bar.
+</para></listitem></varlistentry>
+<varlistentry><term>VSCROLL</term>
+<listitem><para>The tree view supports a vertical scroll bar.
+</para></listitem></varlistentry>
+<varlistentry><term>SHOWSELALWAYS</term>
+<listitem><para>A selected item remains selected when the tree view loses focus.
+</para></listitem></varlistentry>
+<varlistentry><term>ALL</term>
+<listitem><para>The options ATROOT, BUTTONS, LINES, EDIT, HSCROLL, and SHOWSELALWAYS
+are all applied.
+</para></listitem></varlistentry>
+<varlistentry><term>NODRAG</term>
+<listitem><para>The tree view is prevented from sending &quot;begin drag&quot; notifications.
+</para></listitem></varlistentry>
+<varlistentry><term>GROUP</term>
+<listitem><para>The first control of a group of controls in which the user can move
+from one control to the next with the arrow key.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>The control is initially hidden.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTAB</term>
+<listitem><para>The tab key cannot be used to move to this control.
+</para></listitem></varlistentry>
+<varlistentry><term>NOBORDER</term>
+<listitem><para>No border is drawn around the control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+      <para>
+        Success.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+      <para>
+        Error with the in-memory dialog template or with the resource ID.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a tree view at position x=100 and y=80
+and with a size of width=40 and height=120. The ID of the tree is 555 and
+its data is associated with attribute BRANCH. The tree view uses lines for
+child items and roots, displays a button to the left of each parent item,
+and supports item editing.
+<programlisting>
+<![CDATA[
+MyDialog~AddTreeControl(555, "Branch", 100, 80, 40, 120, ,
+"LINES BUTTON EDIT ATROOT")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthAddMonthCalendar"><title>addMonthCalendar</title>
+<indexterm><primary>addMonthCalendar</primary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>--addMonthCalendar(-id--+--------+--x-,--y-,--cx-,--cy-+---------+-)-><
+                          +-,-name-+                     +-,-style-+
+]]>
+</programlisting>
+
+<para>
+  The
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The arguments are:
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+      <para>
+        The resource <link linkend="idArgument">ID</link> for the button.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>name</term>
+    <listitem>
+      <para>
+        The name of the data attribute associated with the dialog item. Using this argument performs the
+        same function as the FIX THIS PLEASE <link
+        linkend="mthConnectEntryLine">connectEntryLine</link>() method. The documentation
+        connectEntryLine() has a good description of the concept of the data attribute.
+      </para>
+      <para>
+        If you omitt this argument then the data attribute is constructed automatically and named by
+        concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA || id</computeroutput>.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>x, y, cx, cy</term>
+    <listitem>
+      <para>
+        The  control <link linkend="listCommonArguments">coordinates</link>
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style</term>
+    <listitem>
+      <para>
+        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+        separated by spaces:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>DEFAULT  </member>
+          <member>OWNER    </member>
+          <member>BITMAP   </member>
+          <member>HIDDEN   </member>
+          <member>DISABLED </member>
+          <member>BORDER   </member>
+          <member>GROUP    </member>
+          <member>NOTAB    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>DEFAULT</term>
+          <listitem>
+            <para>
+              The button becomes the default button in the dialog.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>OWNER</term>
+          <listitem>
+            <para>
+              The programmer is completely responsible for drawing the button when the dialog receives
+              the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
+              implement in ooDialog.  A simpler approach for an owner drawn button is to use an image
+              list with the button.  See the <link
+              linkend="mthSetImageList">setImageList</link>() method.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BITMAP</term>
+          <listitem>
+            <para>
+              The button displays a bitmap image.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+            <para>
+              The <link linkend="wsvisible">not visible</link> window style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+            <para>
+              The <link linkend="wsdisabled">not enabled</link> window style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BORDER</term>
+          <listitem>
+            <para>
+              The <link linkend="wsborder">border</link> window style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+            <para>
+              The <link linkend="wsgroup">group</link> control style.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+            <para>
+              The no <link linkend="wstabstop">tabstop</link> control style.
+            </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthAddProgressBar"><title>addProgressBar</title>
+<indexterm><primary>addProgressBar</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addProgressBar(--id--,--x--,--y--,--cx--,--cy-+-----------+--)-------------><
+                                                  +--,-style--+
+
+]]>
+</programlisting>
+
+<para>
+  The addProgressBar method adds a progress bar to the dialog and connects it with a data attribute. For
+  further information on progress bar controls, refer to <link
+  linkend="clsProgressBar">ProgressBar</link> Class.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      The arguments are:
+    </para>
+    <variablelist>
+      <varlistentry><term>id</term>
+      <listitem>
+        <para>
+          The resource <link linkend="idArgument">ID</link> for the progress bar.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+        <para>
+          The control <link linkend="listCommonArguments">coordinates</link>.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+        <para>
+          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+          separated by spaces.
+        </para>
+        <para>
+          <simplelist type='vert' columns='3'>
+            <member>VERTICAL </member>
+            <member>SMOOTH   </member>
+            <member>MARQUEE  </member>
+            <member>HIDDEN   </member>
+            <member>DISABLED </member>
+            <member>BORDER   </member>
+            <member>GROUP    </member>
+            <member>TAB      </member>
+          </simplelist>
+          <variablelist>
+            <varlistentry><term>VERTICAL</term>
+            <listitem>
+              <para>
+                The progress bar is orientated vertically.  The default orientation is horizontal.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>SMOOTH</term>
+            <listitem>
+              <para>
+                The progress is displayed in a smooth scrolling bar rather than the default segmented
+                bar.  This style is only displayed when Windows classic theme is in effect. All other
+                themes over-ride this style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>MARQUEE</term>
+            <listitem>
+              <para>
+                The progress bar moves like a marquee. This method requires <link
+                linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>HIDDEN</term>
+            <listitem>
+              <para>
+                The <link linkend="wsvisible">not visible</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DISABLED</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">not enabled</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>BORDER</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">border</link> window style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GROUP</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">group</link> control style.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>TAB</term>
+            <listitem>
+              <para>
+                The <link linkend="wsborder">tabstop</link> control style.
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The possible return values are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          Success.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+        <para>
+          Error with the in-memory dialog template or with the resource ID.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example creates a progress bar with ID DONE at the bottom of the dialog. The progress
+      bar is as wide as the dialog.
+<programlisting>
+<![CDATA[
+MyDialog~addProgressBar("DONE",10,MyDialog~sizey-16,MyDialog~sizex-20,12)
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addslidercontrol"><title>AddSliderControl</title>
+<indexterm><primary>AddSliderControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~AddSliderControl(--id--,--+---------------+--,--x-->
+                                               +-attributeName-+
+
+>--,--y--,--cx--,--cy--+---------------------------------+--)----------><
+                       |       +--------------------+    |
+                       |       V                    |    |
+                       +-,--"----+-AUTOTICKS------+-+--"-+
+                                 +-NOTICKS--------+
+                                 +-HORIZONTAL-----+
+                                 +-VERTICAL-------+
+                                 +-TOP------------+
+                                 +-BOTTOM---------+
+                                 +-LEFT-----------+
+                                 +-RIGHT----------+
+                                 +-BOTH-----------+
+                                 +-ENABLESELRANGE-+
+                                 +-GROUP----------+
+                                 +-HIDDEN---------+
+                                 +-NOTAB----------+
+                                 +-NOBORDER-------+
+
+
+]]>
+</programlisting>
+
+<para>The AddSliderControl method adds a slider control
+(track bar) to the dialog and connects it with a data attribute. For further
+information on slider controls, refer to <link linkend="slidercontrolc">SliderControl Class</link>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>A unique identifier assigned to the control. You need the ID to refer
+to this control in other methods.
+</para></listitem></varlistentry>
+<varlistentry><term>attributeName</term>
+<listitem><para>The name of the data attribute associated with the dialog item. See
+<link linkend="connecttreecontrol">attributeName</link> to get information on what happens when
+this argument is omitted.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the upper left corner of the control relative to the
+dialog, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>cx, xy</term>
+<listitem><para>The width and height of the dialog item, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>This argument determines the behavior and style of the dialog item and
+can be one or more of the following:
+<variablelist>
+<varlistentry><term>AUTOTICKS</term>
+<listitem><para>Creates a slider that has a tick mark for each increment in its range
+of values. These tick marks are automatically added when an application calls
+the InitRange method. You cannot use the SetTickAt and SetTickFrequency methods
+to specify the position of the tick marks when you use this option.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTICKS</term>
+<listitem><para>Creates a slider that does not display tick marks.
+</para></listitem></varlistentry>
+<varlistentry><term>HORIZONTAL</term>
+<listitem><para>Orients the slider horizontally. This is the default orientation.
+</para></listitem></varlistentry>
+<varlistentry><term>VERTICAL</term>
+<listitem><para>Orients the slider vertically.
+</para></listitem></varlistentry>
+<varlistentry><term>TOP</term>
+<listitem><para>Displays tick marks along the top of a horizontal slider.
+</para></listitem></varlistentry>
+<varlistentry><term>BOTTOM</term>
+<listitem><para>Displays tick marks along the bottom of a horizontal slider. This option
+can be used together with the TOP option to display tick marks on both sides
+of the slider control.
+</para></listitem></varlistentry>
+<varlistentry><term>LEFT</term>
+<listitem><para>Displays tick marks along the left of a vertical slider.
+</para></listitem></varlistentry>
+<varlistentry><term>RIGHT</term>
+<listitem><para>Displays tick marks along the right of a vertical slider. This option
+can be used together with the LEFT option to display tick marks on both sides
+of the slider control.
+</para></listitem></varlistentry>
+<varlistentry><term>BOTH</term>
+<listitem><para>Displays tick marks on both sides of the slider in any direction.
+</para></listitem></varlistentry>
+<varlistentry><term>ENABLESELRANGE</term>
+<listitem><para>Displays a selection range. If you set this option, the tick marks at
+the starting and ending positions of a selection range are displayed as triangles
+and the selection range is highlighted. This can be used, for example, to
+indicate a preferred selection.
+</para></listitem></varlistentry>
+<varlistentry><term>GROUP</term>
+<listitem><para>Specifies the first control of a group of control in which the user
+can move from one control to the next with the arrow keys.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>The control is initially hidden.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTAB</term>
+<listitem><para>The tab key cannot be used to move to this control.
+</para></listitem></varlistentry>
+<varlistentry><term>NOBORDER</term>
+<listitem><para>No border is drawn around the control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+      <para>
+        Success.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+      <para>
+        Error with the in-memory dialog template or with the resource ID.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a vertical slider control at the right
+border of the dialog. The slider with ID PRESSURE displays automatic tick
+marks on both sides. Its position is associated with attribute PRESSURE.
+<programlisting>
+<![CDATA[
+MyDialog~AddSliderControl("PRESSURE", , MyDialog~sizeX-30, 15, 20, ,
+MyDialog~sizeY-30, "VERTICAL BOTH AUTOTICKS")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="addtabcontrol"><title>AddTabControl</title>
+<indexterm><primary>AddTabControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~AddTabControl(--id--,--+---------------+--,--x-->
+                                            +-attributeName-+
+
+>--,--y--,--cx--,--cy--+------------------------------+--)----------><
+                       |       +-----------------+    |
+                       |       V                 |    |
+                       +-,--"----+-ALIGNRIGHT--+-+--"-+
+                                 +-BUTTONS-----+
+                                 +-FIXED-------+
+                                 +-FOCUSNEVER--+
+                                 +-FOCUSONDOWN-+
+                                 +-ICONLEFT----+
+                                 +-LABELLEFT---+
+                                 +-MULTILINE---+
+                                 +-GROUP-------+
+                                 +-HIDDEN------+
+                                 +-NOTAB-------+
+                                 +-NOBORDER----+
+
+
+]]>
+</programlisting>
+
+<para>The AddTabControl method adds a tab control to
+the dialog and connects it with a data attribute. For further information
+on tab controls, refer to <link linkend="tabcontrolc">TabControl Class</link>.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>A unique identifier assigned to the control. You need the ID to refer
+to this control in other methods.
+</para></listitem></varlistentry>
+<varlistentry><term>attributeName</term>
+<listitem><para>The name of the data attribute associated with the dialog item. See
+<link linkend="connecttreecontrol">ConnectTreeControl</link>
+to get information on what happens when this argument is omitted.
+</para></listitem></varlistentry>
+<varlistentry><term>x, y</term>
+<listitem><para>The position of the upper left corner of the control relative to the
+dialog, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>cx, xy</term>
+<listitem><para>The width and height of the dialog item, in dialog units.
+</para></listitem></varlistentry>
+<varlistentry><term>options</term>
+<listitem><para>This argument determines the behavior and style of the dialog item and
+can be one or more of the following:
+<variablelist>
+<varlistentry><term>ALIGNRIGHT</term>
+<listitem><para>Right-justifies tabs. By default, tabs are left-justified within a row.
+</para></listitem></varlistentry>
+<varlistentry><term>BUTTONS</term>
+<listitem><para>Modifies the appearance of the tabs to look like buttons.
+</para></listitem></varlistentry>
+<varlistentry><term>FIXED</term>
+<listitem><para>Makes all tabs equal in width. You cannot use this option with the ALIGNRIGHT
+option.
+</para></listitem></varlistentry>
+<varlistentry><term>FOCUSNEVER</term>
+<listitem><para>A tab never receives the input focus.
+</para></listitem></varlistentry>
+<varlistentry><term>FOCUSONDOWN</term>
+<listitem><para>A tab receives the input focus when clicked (typically with option BUTTONS).
+</para></listitem></varlistentry>
+<varlistentry><term>ICONLEFT</term>
+<listitem><para>Forces the icon to the left, but leaves the tab label centered. By default,
+the control centers the icon and label, with the icon being to the left of
+the label.
+</para></listitem></varlistentry>
+<varlistentry><term>LABELLEFT</term>
+<listitem><para>Left-aligns both the icon and the label.
+</para></listitem></varlistentry>
+<varlistentry><term>MULTILINE</term>
+<listitem><para>Causes a tab control to display several rows of tabs, enabling all tabs
+to be displayed at the same time.
+</para></listitem></varlistentry>
+<varlistentry><term>GROUP</term>
+<listitem><para>Specifies the first control of a group of control in which the user
+can move from one control to the next with the arrow keys.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>The control is initially hidden.
+</para></listitem></varlistentry>
+<varlistentry><term>NOTAB</term>
+<listitem><para>The tab key cannot be used to move to this control.
+</para></listitem></varlistentry>
+<varlistentry><term>NOBORDER</term>
+<listitem><para>No border is drawn around the control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+      <para>
+        Success.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+      <para>
+        Error with the in-memory dialog template or with the resource ID.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example creates a tab control with ID PAGES and multiline
+capability. Its data (the selected tab) is associated with attribute CURRENTPAGE.
+<programlisting>
+<![CDATA[
+MyDialog~AddTabControl("PAGES","CURRENTPAGE", 10, 120, 200, 20, ,
+"MULTILINE FIXED")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
 
 <section id="dialogcontrolmeth"><title>Dialog Control Methods</title>
 <indexterm><primary>dialog control methods</primary></indexterm>

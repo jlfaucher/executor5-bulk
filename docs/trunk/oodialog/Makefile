@@ -47,8 +47,7 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
              ../shared/oorexx.html.dsl
 
 
-SGML_FILES = advcntlc.sgml \
-	     basedialog.sgml \
+SGML_FILES = basedialog.sgml \
 	     buttoncontrols.sgml \
 	     categorydialog.sgml \
 	     comboboxc.sgml \

@@ -113,8 +113,17 @@
 <para>
   The <emphasis role="italic">factorX</emphasis> and <emphasis role="italic">factorY</emphasis> attributes of the
   <link linkend="chpDialogObject">dialog object</link> were intended to provide a way to convert between <link
-  linkend="defPixel">pixels</link> and <link linkend="defDialogUnit">dialog units</link>, and vice versa. TODO FINSIH
-  TEXT.
+  linkend="defPixel">pixels</link> and <link linkend="defDialogUnit">dialog units</link>, and vice versa. Although their
+  values may have been correct when ooDialog was <link linkend="sctHistory">originally designed</link>, in almost all
+  cases the values are now incorrect. The method used to calculate the ratio between <link
+  linkend="defDialogUnit"></link> and pixels is no longer correct.
+</para>
+<para>
+  Unfortunately, many of the methods in the ooDialog framework use <emphasis role="italic">factorX</emphasis> and
+  <emphasis role="italic">factorY</emphasis> to convert to between pixels and dialog units. This in turn makes all of
+  those methods inaccurate. These methods are all marked as being inaccurate. There is almost always no reason to
+  convert back to dialog units from pixels. Once the underlying dialog has been created, pixels should be used. Each
+  inaccurate method in the framework has a corresponding method that uses pixels instead of dialog units.
 </para>
 </section>
 
@@ -145,10 +154,10 @@
 <section id="ovvNumbers"><title>Numbers in ooDialog:</title>
 <para>
   Numbers in ooDialog are <emphasis role="bold">always</emphasis> whole numbers, unless specifically stated otherwise.
-  To some this may be obvious, to others perhaps not.  Except in very rare cases, the Windows API that ooDialog
-  provides access to, only deals with whole numbers.  Pixels, positions, sizes of fonts, co-ordinates on the screen,
-  etc., are all expressed as whole numbers only. Numerical arguments to methods in ooDialog must always be whole
-  numbers, unless the documentation specifically notes that the method accepts fractional numbers for the argument.
+  Except in very rare cases, the Windows API that ooDialog provides access to, only deals with whole numbers. Pixels,
+  positions, sizes of fonts, co-ordinates on the screen, etc., are all expressed as whole numbers only. Numerical
+  arguments to methods in ooDialog must always be whole numbers, unless the documentation specifically notes that the
+  method accepts fractional numbers for the argument.
 </para>
 </section>
 
@@ -279,7 +288,7 @@
   numeric IDs and can make the code easier to understand.
 </para>
 <para>
-  The mechanism ooDialog provides for using symbolic IDs is the <link linkend="constdir">ConstDir</link> attribute of
+  The mechanism ooDialog provides for using symbolic IDs is the <link linkend="atrConstDir">constDir</link> attribute of
   the dialog classes.  This is a directory object where the indexes are symbolic IDs and the item at each index is the
   numerical value of the ID.
 </para>
@@ -293,7 +302,7 @@
 </para>
 <para>
   The symbolic IDs in the following table are pre-defined by ooDialog and placed in the
-  <computeroutput>ConstDir</computeroutput> when an instance of a dialog class is created.  All symbolic names after
+  <computeroutput>constDir</computeroutput> when an instance of a dialog class is created.  All symbolic names after
   IDC_STATIC in the table refer to resources bound to oodialog.dll for general use by the ooDialog programmer.
 </para>
 <table id="oodsymbolicids" frame="all">
@@ -376,12 +385,12 @@
 </programlisting>
 <para>
   When ooDialog parses a resource script or a header file and finds a define statement, it will add the symbolic ID to
-  the <link linkend="constdir">ConstDir</link> directory object of the dialog.  Resource scripts are used by subclasses
+  the <link linkend="atrConstDir">constDir</link> directory object of the dialog.  Resource scripts are used by subclasses
   of the <computeroutput>UserDialog</computeroutput> (see the <link linkend="h001613">Load</link> method.)  All the
   ooDialog dialog classes accept a header file as an optional parameter when a new instance of a dialog object is
   created.  (See for example the <computeroutput>Init</computeroutput> method in the <link
   linkend="h000025">BaseDialog</link> or <link linkend="h001531">UserDialog</link> sections.) Symbolic IDs added to the
-  <computeroutput>ConstDir</computeroutput> can be used in any method of the ooDialog classes where a resource ID is
+  <computeroutput>constDir</computeroutput> can be used in any method of the ooDialog classes where a resource ID is
   needed.
 </para>
 </section>
@@ -619,7 +628,7 @@ xPixels = xDialogUnits * self~FactorX
 
 </section> <!-- End: Definition of Terms -->
 
-<section id="ovvHistory"><title>History</title>
+<section id="sctHistory"><title>History</title>
 <para>
   PROVIDE TEXT
 </para>
@@ -659,7 +668,7 @@ xPixels = xDialogUnits * self~FactorX
 </variablelist>
 </section>
 
-<section id="sctOODialogFuture"><title>ooDialog 4.0.0 and the future</title>
+<section id="sctOODialogFuture"><title>Future</title>
 <indexterm><primary>future directions</primary></indexterm>
 <para>
   ooDialog is now open source, being developed by committers who volunter their time.  It is no longer

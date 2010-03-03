@@ -45,18 +45,10 @@
 <section id="clsWindowBase"><title>WindowBase Mixin Class</title>
 <indexterm><primary>WindowBase Class</primary></indexterm>
 <para>
-  WindowBase is a mixin class with methods that are common to all windows.  It is inherited by both <link
-  linkend="chpDialogObject">dialog</link> and dialog control classes.
-</para>
-<para>
-  The instance methods implemented by the WindowBase class are listed here as a cross reference. The
-  methods are fully documented in other sections of this book. Each method listed has a link to the full
-  documentation for that method and an accurate syntax diagram.
-</para>
-<para>
-  Both the PlainBaseDialog and the DialogControl classes inherit the WindowBase class.  Since the
-  PlainBaseDialog is the base class for all dialogs and the DialogControl class is the base class for all
-  controls, every dialog object and every dialog control object have the instance methods listed here.
+  WindowBase is a mixin class with methods that are common to all windows. It is inherited by both <link
+  linkend="chpDialogObject">dialog</link> and <link linkend="chpDialogControlObject">dialog control</link> classes.
+  Every dialog object and every dialog control object have the instance methods of the WindowBase class. In addition,
+  the <link linkend="clsWindow">Window</link> class inherits the WindowBase class.
 </para>
 
 <programlisting format='linespecific'>
@@ -241,13 +233,13 @@
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-  <para>The only argument is:
+  <para>
   <variablelist>
     <varlistentry><term>text</term>
     <listitem>
-      <para>
-        The string whose size is desired.
-      </para>
+    <para>
+      The string whose size is desired.
+    </para>
     </listitem></varlistentry>
   </variablelist>
   </para>
@@ -402,3 +394,5 @@ stFont2~setRect(r)
 </variablelist>
 </section>  <!-- End WindowsExtensions::getTextSizeScreen() -->
 
+
+</section>

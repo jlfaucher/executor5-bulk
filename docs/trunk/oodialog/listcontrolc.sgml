@@ -41,7 +41,7 @@
     #
     #########################################################################
 -->
-<chapter id="listcontrolc"><title>ListControl Class</title>
+<chapter id="clsListView"><title>ListControl Class</title>
 <indexterm><primary>ListControl class</primary></indexterm>
 <para>A list view control is a window that displays a collection of items, with
 each item consisting of an icon and a label. It provides several ways of arranging
@@ -2560,7 +2560,7 @@ or 0 in all other cases.
   expose list
 
   list  = self~getListControl(IDC_LV_VIEWS)
-  self~connectListNotify(IDC_LV_VIEWS, 'ACTIVATE', 'onActivate')
+  self~connectListViewEvent(IDC_LV_VIEWS, 'ACTIVATE', 'onActivate')
 
   ...
 
@@ -4406,7 +4406,7 @@ Use <link linkend="deflistdraghandler">DefListDragHandler</link> to support defa
 </para></note>
 <programlisting>
 <![CDATA[
-self~ConnectListNotify(104,"BEGINDRAG","DefListDragHandler")
+self~connectListViewEvent(104,"BEGINDRAG","DefListDragHandler")
 ]]>
 </programlisting>
 </section>
@@ -4463,7 +4463,7 @@ Use <link linkend="deflistdraghandler">DefListDragHandler</link> to support defa
 </para></note>
 <programlisting>
 <![CDATA[
-self~ConnectListNotify(104,"BEGINDRAG","DefListDragHandler")
+self~connectListViewEvent(104,"BEGINDRAG","DefListDragHandler")
 ]]>
 </programlisting>
 </section>
@@ -4779,7 +4779,7 @@ for the text in a list view control.</para>
 <secondary>ListControl class</secondary></indexterm>
 <para>The list view control sends notification messages to its parent (the
 dialog) when certain events happen. For more information on notification
-messages, refer to <link linkend="connectlistnotify">ConnectListNotify</link>.
+messages, refer to <link linkend="mthConnectListViewEvent">connectListViewEvent</link>.
 </para>
 <para>The following example shows how to connect the list view notification messages
 with the corresponding message:</para>
@@ -4798,11 +4798,11 @@ with the corresponding message:</para>
   end
 
   /* Connect dialog control items to class methods */
-  self~ConnectListNotify("IDC_LIST","Changing","OnChanging_IDC_LIST")
-  self~ConnectListNotify("IDC_LIST","Changed","OnChanged_IDC_LIST")
-  self~ConnectListNotify("IDC_LIST","DefaultEdit")
-  self~ConnectListNotify("IDC_LIST","Delete","OnDelete_IDC_LIST")
-  self~ConnectListNotify("IDC_LIST","KeyDown","OnKeyDown_IDC_LIST")
+  self~connectListViewEvent("IDC_LIST","Changing","OnChanging_IDC_LIST")
+  self~connectListViewEvent("IDC_LIST","Changed","OnChanged_IDC_LIST")
+  self~connectListViewEvent("IDC_LIST","DefaultEdit")
+  self~connectListViewEvent("IDC_LIST","Delete","OnDelete_IDC_LIST")
+  self~connectListViewEvent("IDC_LIST","KeyDown","OnKeyDown_IDC_LIST")
   self~connectButtonEvent("IDC_PB_NEW", "CLICKED","IDC_PB_NEW")
   self~connectButtonEvent("IDC_PB_DELETE", "CLICKED","IDC_PB_DELETE")
   return InitRet

@@ -48,74 +48,311 @@
    ooDialog programs primarily deal with dialog and dialog control objects. The top-level objects in the programs, say
    a <link linkend="clsUserDialog">user dialog</link> or a <link linkend="clsButtonControl">button control</link> are
    actually composed of a number of base objects and / or mixin classes. All dialog and dialog control objects contain
-   the methods of their component base classes. This documentation treats <link linkend="chpDialogObject">the dialog
-   object</link> and <link linkend="chpDialogControl"></link> as a whole in their respecitive chapters to make it easier
-   to grasp the concepts.
+   the methods of their component base classes.
 </para>
 <para>
-  The PlainBaseDialog inherits from the WindowBase mixin class.  The WindowBase mixin class implements methods that are
-  common to all windows.  Since both dialogs and dialog controls are windows, the <link
-  linkend="chpDialogControl">DialogControl</link> class also inherits from WindowBase.
+  To make it easier to understand the methods and attributes that all dialogs have in common, this documentation treats
+  <link linkend="chpDialogObject">the dialog object</link> as a whole.  The dialog object chapter shows all the methods
+  and attributes that every dialog has, without making much distinction as to what specific mixin or base class the
+  method belongs to. The <link linkend="chpDialogControlObject">dialog control object</link>, is treated in a similar fashion
+  it its chapter.
 </para>
 <para>
-  The more advanced dialog classes, <link linkend="clsResDialog">ResDialog</link>, <link
-  linkend="clsRcDialog">RcDialog</link>, <link linkend="clsUserDialog">UserDialog</link>, subclass the
-  <link linkend="chpDialogObject">BaseDialog</link> class. The BaseDialog class subclasses PlainBaseDialog,
-  and like PlainBaseDialog should be considered an abstract class. BaseDialog inherits from the
-  WindowExtensions and DialogExtensions mixin classes. These classes implement methods that cover
-  asynchronous dialog execution, scroll bar support, resizing and repositioning, bitmaps, graphics
-  (device context related methods), scrolling text, and menus (action bars).  The ResDialog, RcDialog,
-  UserDialog classes, and their subclasses, allow the programmer to produce very sophisticated graphical
-  user interfaces.
+  This chapter describes the base and mixin classes that make up the dialog object and the dialog control object and
+  shows how they fit together. In addition, it contains the detailed information for the mixin classes inherited by both
+  the dialog and dialog control object. The <link linkend="chpDialogObject">the dialog object</link> and the <link
+  linkend="chpDialogControlObject">the dialog control object</link> chapters link back to this chapter for the detailed
+  information where needed.
 </para>
 
-<section id="clsPlainBaseDialog"><title>PlaingBaseDialog</title>
+<section id="sctComponentClassesDiagram"><title>Component Classes Diagram</title>
+<para>
+  The diagram shown here shows the relation between the dialog and the dialog control objects and their respecitive
+  component classes. The abstract classes are shown in red. The mixin classes in green.  And the concrete subclasses in
+  blue.
+</para>
+
+<figure id="figComponentClassesDiagram"><title>Components</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="dialog_dialogControl_objects_classDiagram.jpg" scale="50">
+</imageobject>
+</mediaobject>
+</figure>
+</section>
+
+<section id="clsPlainBaseDialog"><title>PlainBaseDialog</title>
 <indexterm><primary>PlainBaseDialog Class</primary></indexterm>
 <para>
-  PlainBaseDialog is the base class of all dialog classes in the ooDialog framework.  It implements
-  methods that are common to every dialog.  PlainBaseDialog should be considered an abstract class.
-  Although, a programmer could instantiate a new PlainBaseDialog object, the class does not implement all
-  the methods that are needed to execute a dialog. Therefore, not much can be done with a simple
-  PlainBaseDialog object.  The ooDialog programmer uses subclasses of PlainBaseDialog to actually create
-  and execute a real dialog.
+  PlainBaseDialog is the base class of all dialog classes in the ooDialog framework.  It implements methods that are
+  common to every dialog.  PlainBaseDialog is an abstract class. A programmer can not instantiate a new PlainBaseDialog
+  object and display a dialog on the screen. Rather, the ooDialog programmer subclasses one of the concrete subclasses
+  of PlainBaseDialog, such as, the <link linkend="clsResDialog">ResDialog</link>, the <link
+  linkend="clsRcDialog">RcDialog</link>, or the <link linkend="clsUserDialog">UserDialog</link>, to create and execute a
+  real dialog.
+</para>
+<para>
+  Many of the methods of the PlainBaseDialog are actually implemented in one of the mixin classes inherited by the
+  PlainBaseDialog. See this <link linkend="figComponentClassesDiagram">diagram</link> to visualize the inheritance. In
+  essence the PlainBaseDialog is the <link linkend="chpDialogObject">dialog object</link>. All the methods and
+  attributes of the PlainBaseDialog are listed and documented in the dialog object chapter. This includes the methods
+  and attributes of its inherited mixin classes.
+</para>
+<para>
+  The PlainBaseDialog inherits the following mixin classes:
+  <itemizedlist>
+  <listitem><para><link linkend="clsWindowBase">WindowBase</link></para></listitem>
+  <listitem><para><link linkend="clsWindowExtensions">WindowExtensions</link></para></listitem>
+  <listitem><para><link linkend="clsDialogExtensions">DialogExtensions</link></para></listitem>
+  <listitem><para><link linkend="clsEventNotification">EventNotification</link></para></listitem>
+  <listitem><para><link linkend="clsResourceutils">ResourceUtils</link></para></listitem>
+  </itemizedlist>
 </para>
 </section>
 
+<section id="clsDialogControl"><title>DialogControl</title>
+<indexterm><primary>DialogControl Class</primary></indexterm>
+<para>
+  In a similar manner to <link linkend="clsPlainBaseDialog">PlainBaseDialog</link> and dialogs, Dialog control is the
+  base class of all dialog control classes in the ooDialog framework.  It implements methods that are common to every
+  dialog control. DialogControl is also an abstract class. A programmer can not instantiate a new DialogControl object.
+  Rather, one of the concrete dialog control classes such as, the <link
+  linkend="clsDateTimePicker">DateTimePicker</link> or the <link linkend="clsListView">ListControl</link>, are used.
+</para>
+<para>
+  See this <link linkend="figComponentClassesDiagram">diagram</link> to visualize the mixin classes that the
+  DialogControl inherits. In essence the DialogControl is the <link linkend="chpDialogControlObject">dialog control
+  object</link>. All the methods and attributes of the DialogControl are listed and documented in the dialog control
+  object chapter. This includes the methods and attributes of its inherited mixin classes.
+</para>
+<para>
+  The DialogControl inherits the following mixin classes:
+  <itemizedlist>
+  <listitem><para><link linkend="clsWindowBase">WindowBase</link></para></listitem>
+  <listitem><para><link linkend="clsWindowExtensions">WindowExtensions</link></para></listitem>
+  </itemizedlist>
+</para>
+</section>
 
 &windowBaseCommon;
 
-</section>
-
-<section id="clsWindowExtensions"><title>WindowExtensions Mixin Class</title>
-<indexterm><primary>WindowExtensions Class</primary></indexterm>
-<para>
-  WindowExtensions is a mixin class with methods that are common to all windows.  As the class name
-  implies, it is an extension of the WindowBase class, providing more sophisticated window methods.
-  It is inherited by both dialog and dialog control classes.
-</para>
-<para>
-  The instance methods implemented by the WindowExtensions class are listed here as a cross reference.
-  The methods are fully documented in other sections of this book. Each method listed has a link to the
-  full documentation for that method and an accurate syntax diagram.
-</para>
-<para>
-  Both the BaseDialog and the DialogControl classes inherit the WindowBase class.  The DialogControl
-  class is the base class for all controls.  Therefore, every dialog control object and every dialog
-  object that is a descendent class of the BaseDialog have the instance methods listed here.
-</para>
-
 &windowExtensionsCommon;
 
+<section id="clsDialogExtensions"><title>DialogExtensions Mixin Class</title>
+<indexterm><primary>DialogExtensions Class</primary></indexterm>
+<para>
+  x
+</para>
 </section>
 
-<section id="clsPlainUserDialog"><title>PlainUserDialog Class (Deprecated)</title>
-<indexterm><primary>Deprecated</primary><secondary>PlainUserDialog</secondary></indexterm>
+<section id="clsEventNotification"><title>EventNotification Mixin Class</title>
+<indexterm><primary>EventNotification class</primary></indexterm>
+<para>
+  The event notification class is a <emphasis role="italic">Mixin</emphasis> class that contains methods that connect a
+  <link linkend="ovvEvents">window event</link> with a method in the Rexx dialog object. Except as noted below, the Rexx
+  programmer adds the method to her dialog subclass. Once the event is connected, each time the event occurs in the
+  dialog, the connected method is invoked.  The programmer codes the method to take the appropiate action for the event.
+</para>
+<para>
+  Whenever a dialog object is instantiated, three event connections are automatically made. They connect the <emphasis
+  role="italic">ok</emphasis>, <emphasis role="italic">cancel</emphasis>, and <emphasis role="italic">help</emphasis>
+  events to the <link linkend="mthOk">ok</link>(), <link linkend="mthCancel">cancel</link>(), and <link
+  linkend="mthHelp">help</link>() methods of the dialog object. The <emphasis role="italic">ok</emphasis>() and
+  <emphasis role="italic">cancel</emphasis>() methods are already coded to take the appropriate default action. The
+  default action for the <emphasis role="italic">help</emphasis>() method is to do nothing.  All three methods are
+  intended to be over-ridden by the programmer if the default action is not sufficient.
+</para>
+<para>
+  For all other events the Rexx programmer needs to specifically connect the event to his dialog, through one of the
+  event notification methods, to be able to respond to the event.  Indeed, except for trivial dialogs, most of the
+  programming is deciding which events to be notified of and taking action upon receiving the notification.
+</para>
+<para>
+  The <link linkend="clsEventNotification">EventNotification</link> class implements all the methods that create a
+  connection between a <link linkend="ovvEvents">window event</link> and a method of the Rexx dialog object. In the
+  Windows user interface, as the user interacts with the system, events are generated that specify what the action of
+  the user was. Mouse clicks, keyboard presses, moving or sizing windows, all generate events. In the ooDialogframework,
+  when a specific event is connected to a method in a dialog object, that method will be invoked each time the event
+  occurs.
+</para>
+<para>
+  Some simple examples of how this works:
+<itemizedlist>
+<listitem>
+<para>
+  For push buttons you connect a method to the button. The connected method is called each time the button is pressed
+  (clicked.)
+</para>
+</listitem>
+<listitem>
+<para>
+  List boxes, multiple-select list boxes, and combo boxes can be connected to a method that is called each time a line
+  in the box is selected.
+</para>
+</listitem>
+<listitem>
+<para>
+  For a scroll bar you can specify different methods that are called depending on the user action. The user can click on
+  the arrow buttons, drag the thumb, or use the page down / page up keys.
+</para>
+</listitem></itemizedlist>
+</para>
+<para>
+  In a <computeroutput>UserDialog</computeroutput> some of the methods that create dialog controls have an option that
+  automatically connects an event to a dialog method. However, for most events, say the resize or move events, the
+  connection needs to be made explicitly.  In general, events should be connected before the dialog is shown on the
+  screen. So, the connect event methods can be used in the <link linkend="mthInitDialog">initDialog</link>() method.  In
+  a UserDialog, the <link linkend="mthDefineDialog">defineDialog</link>() method is a good place for the connect event methods.
+  If the programmer is overriding the <link linkend="h000025">init</link>() method, the connect event methods can be
+  placed there.  But, in this case, do not invoke the connect event methods until after the superclass has been
+  initialized.
+</para>
+
+<note><title>Note</title><para>
+  The method name that is to be invoked when the specified event occurs must be less than 256 characters.
+</para></note>
+<para>
+  All event connection methods are in the <emphasis role="italic">EventNotification</emphasis> class. The event
+  notification class is inherited by the base dialog class, the <link linkend="clsPlainBaseDialog">PlainBaseDialog
+  </link>class. Therefore the methods of the class are a part of every dialog.
+</para>
+
+<section id="en-connectButtonEvent"><title>connectButtonEvent</title>
+<programlisting>
+<link linkend="mthConnectButtonEvent">connectButtonEvent</link>
+</programlisting>
+</section>
+
+<section id="en-ConnectCommandEvents"><title>connectCommandEvents</title>
+<programlisting>
+<link linkend="mthConnectCommandEvents">connectCommandEvents</link>
+</programlisting>
+</section>
+
+<section id="en-ConnectComboBoxEvent"><title>connectComboBoxEvent</title>
+<programlisting>
+<link linkend="mthConnectComboBoxEvent">connectComboBoxEvent</link>
+</programlisting>
+</section>
+
+<section id="en-ConnectNotifyEvent"><title>connectNotifyEvent</title>
+<programlisting>
+<link linkend="mthConnectNotifyEvent">connectNotifyEvent</link>
+</programlisting>
+</section>
+
+<section id="en-ConnectEditNotify"><title>ConnectEditNotify</title>
+<programlisting>
+<link linkend="connecteditnotify">ConnectEditNotify</link>
+</programlisting>
+</section>
+
+<section id="en-ConnectListBoxify"><title>ConnectListBoxify</title>
+<programlisting>
+<link linkend="connectlistboxnotify">ConnectListBoxNotify</link>
+</programlisting>
+</section>
+
+<section id="en-ConnectListViewEvent"><title>connectListViewEvent</title>
+<programlisting>
+<link linkend="mthConnectListViewEvent">connectListViewEvent</link>
+</programlisting>
+</section>
+
+<section id="en-ConnectScrollBarNotify"><title>ConnectScrollBarNotify</title>
+<programlisting>
+<link linkend="connectscrollbarnotify">ConnectScrollBarNotify</link>
+</programlisting>
+</section>
+
+<section id="en-ConnectSliderNotify"><title>ConnectSliderNotify</title>
+<programlisting>
+<link linkend="connectscrollbarnotify">ConnectScrollBarNotify</link>
+</programlisting>
+</section>
+
+<section id="en-ConnectStaticNotify"><title>ConnectStaticNotify</title>
+<programlisting>
+<link linkend="mthConnectStaticNotify">connectStaticNotify</link>
+</programlisting>
+</section>
+
+<section id="en-ConnectTabNotify"><title>ConnectTabNotify</title>
+<programlisting>
+<link linkend="connecttabnotify">ConnectTabNotify</link>
+</programlisting>
+</section>
+
+<section id="en-ConnectTreeNotify"><title>ConnectTreeNotify</title>
+<programlisting>
+<link linkend="connecttreenotify">ConnectTreeNotify</link>
+</programlisting>
+</section>
+
+<section id="en-DefListDragHandler"><title>DefListDragHandler</title>
+<programlisting>
+<link linkend="deflistdraghandler">DefListDragHandler</link>
+</programlisting>
+</section>
+
+<section id="en-DefTreeDragHandler"><title>DefTreeDragHandler</title>
+<programlisting>
+<link linkend="deftreedraghandler">DefTreeDragHandler</link>
+</programlisting>
+</section>
+
+</section>
+
+<section id="clsResourceUtils"><title>ResourceUtils Mixin Class</title>
+<indexterm><primary>ResourceUtils Class</primary></indexterm>
+<para>
+  x
+</para>
+</section>
+
+<section id="deprecatedBaseClasses"><title>Deprecated Base Classes</title>
+<indexterm><primary>Deprecated</primary><secondary>base and mixin classes</secondary></indexterm>
+<para>
+  All <link linkend="ovvDeprecated">deprecated</link> base and mixin classes are listed in this section. In general, the
+  deprecated classes are simply not needed anymore, and the programmer need do nothing to replace them.
+</para>
+
+<section><title>AdvancedControls Mixin Class</title>
+<indexterm><primary>Deprecated</primary><secondary>AdvancedControls Mixin Class</secondary></indexterm>
 <para>
   This class is <link linkend="ovvDeprecated">deprecated</link>. The ooDialog framework <link
-  linkend="ovvHistory">no longer</link> makes a distinction between a plain user dialog and an <link
+  linkend="sctHistory">no longer</link> makes a distinction between some types of dialog controls, and how to use the
+  controls. I.e., the programmer no longer needs to inherit a special class to use some of the dialog controls. All the
+  methods of the AdvancedControls have been moved into the appropriate dialog class. Therefore the programmer does not
+  need to do anything to use any dialog control in any dialog. In new code simply omit inheriting AdvancedControls. In
+  old code, <emphasis role="italic">inherit AdvancedContorls</emphasis> can be deleted from any dialog class declaration
+  and the program will behave the same.
+</para>
+</section>
+
+<section><title>MessageExtensions Mixin Class</title>
+<indexterm><primary>Deprecated</primary><secondary>MessageExtensions Mixin Class</secondary></indexterm>
+<para>
+  This class is <link linkend="ovvDeprecated">deprecated</link>. The MessageExtensions class has been renamed to the
+  <link linkend="clsEventNotification">EventNotification</link> class. In addition, the EventNotification class is
+  inherited by the <link linkend="chpDialogObject">dialog object</link> so that the programmer need do nothing special
+  to use event notifications in any dialog. In new code simply omit inheriting MessageExtensions. In old code, <emphasis
+  role="italic">inherit MessageExtensions</emphasis> can be deleted from any dialog class declaration and the program
+  will behave the same.
+</para>
+</section>
+
+<section><title>PlainUserDialog Class</title>
+<indexterm><primary>Deprecated</primary><secondary>PlainUserDialog Class</secondary></indexterm>
+<para>
+  This class is <link linkend="ovvDeprecated">deprecated</link>. The ooDialog framework <link
+  linkend="sctHistory">no longer</link> makes a distinction between a plain user dialog and an <link
   linkend="clsUserDialog">user dialog</link>. Directly subclass the <emphasis role="italic">Userdialog</emphasis>
   instead of the <emphasis role="italic">PlainUserDialog</emphasis>.
 </para>
+</section>
+
 </section>
 
 </chapter>
