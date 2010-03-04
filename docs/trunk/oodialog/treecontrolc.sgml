@@ -2118,13 +2118,13 @@ with the corresponding message:</para>
   end
 
   /* Connect dialog control items to class methods */
-  self~ConnectTreeNotify("IDC_TREE","SelChanging","OnSelChanging_IDC_TREE")
-  self~ConnectTreeNotify("IDC_TREE","SelChanged","OnSelChanged_IDC_TREE")
-  self~ConnectTreeNotify("IDC_TREE","Expanding","OnExpanding_IDC_TREE")
-  self~ConnectTreeNotify("IDC_TREE","Expanded","OnExpanded_IDC_TREE")
-  self~ConnectTreeNotify("IDC_TREE","DefaultEdit")
-  self~ConnectTreeNotify("IDC_TREE","Delete","OnDelete_IDC_TREE")
-  self~ConnectTreeNotify("IDC_TREE","KeyDown","OnKeyDown_IDC_TREE")
+  self~connectTreeViewEvent("IDC_TREE","SelChanging","OnSelChanging_IDC_TREE")
+  self~connectTreeViewEvent("IDC_TREE","SelChanged","OnSelChanged_IDC_TREE")
+  self~connectTreeViewEvent("IDC_TREE","Expanding","OnExpanding_IDC_TREE")
+  self~connectTreeViewEvent("IDC_TREE","Expanded","OnExpanded_IDC_TREE")
+  self~connectTreeViewEvent("IDC_TREE","DefaultEdit")
+  self~connectTreeViewEvent("IDC_TREE","Delete","OnDelete_IDC_TREE")
+  self~connectTreeViewEvent("IDC_TREE","KeyDown","OnKeyDown_IDC_TREE")
   self~connectButtonEvent("IDC_PB_NEW", "CLICKED", "IDC_PB_NEW")
   self~connectButtonEvent("IDC_PB_DELETE", "CLICKED", "IDC_PB_DELETE")
   return InitRet

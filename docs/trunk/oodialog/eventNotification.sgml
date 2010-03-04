@@ -47,10 +47,12 @@
 <indexterm><primary>connecting events</primary></indexterm>
 <indexterm><primary>dialog object</primary>
 <secondary>connect event methods</secondary></indexterm>
+<indexterm><primary>connect event methods</primary>
+<secondary>dialog object</secondary></indexterm>
 <para>
-  All the methods that create a connection between a <link linkend="ovvEvents">Windows event</link> and a method of the
-  Rexx dialog object are implemented in the <link linkend="clsEventNotification">EventNotification</link> class. These
-  methods are documented here.
+  The dialog object methods that create a connection between a <link linkend="ovvEvents">Windows event</link> and a
+  method of the Rexx dialog object are all implemented in the <link
+  linkend="clsEventNotification">EventNotification</link> class. These methods are documented here.
 </para>
 
 <section id="mthConnectResize"><title>ConnectResize</title>
@@ -999,41 +1001,137 @@ set to reflect whether hot keys are currently enabled or not.
 
 <section id="mthConnectCommandEvents"><title>connectCommandEvents</title>
 <indexterm><primary>connectCommandEvents</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectCommandEvents</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>connectCommandEvents</secondary></indexterm>
+
 <programlisting>
 <![CDATA[
->>-aBaseDialog~connectCommandEvents(--id--+---------------+--)-------><
-                                    +-,--msgToRaise-+
-
+>>--connectCommandEvents(--id--,--methodName--)----------------><
 
 ]]>
 </programlisting>
 
-<para>The connectCommandEvents method connects a dialog control
-with a method. </para>
+<para>
+  The <emphasis role="italic">connectCommandEvents</emphasis> method connects a Rexx dialog method to the command <link
+  linkend="ovvEvents">event</link> notifications sent by a Windows dialog control to its parent dialog.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the dialog element.
-</para></listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent each time the button is clicked. Provide
-a method with the matching name.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The specified symbolic ID could not be resolved.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      The <emphasis role="italic">connectCommandEvents</emphasis> method is a member of the <link
+      linkend="clsEventNotification">EventNotification</link> mixin class.
+    </para>
+  <para>
+    Syntax errors are raised when incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
+    command events happen.
+  </para>
+  <para>
+    In Windows itself, command events are sent to the parent dialog using the WM_COMMAND message.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control, may be symbolic or numeric.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>methodName [required]</term>
+    <listitem>
+    <para>
+      The name of the method to be invoked in the Rexx dialog object each time a command event occurs in the dialog
+      control. The method name can not be the empty string.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      The specified symbolic ID could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      An error. Most likely, either the message table is full, or the interpreter is out of usable memory.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Two arguments are sent to the connected method.  The first contains the notification code in the high word and the
+    ID of the control in the low word. The second argument is the window handle of the control.
+  </para>
+  <para>
+    The number of different notification codes and the meanings of the notifications are dependent on the type of dialog
+    control specified. Therefore, it is more advisable to use the specific connectXXXEvent() method for the control.
+    Such as the <link linkend="mthConnectListBoxEvent">connectListBoxEvent</link>() method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example connects a list box command event notifications to the <emphasis role="italic">onCommand</emphasis>()
+    method of the dialog. Note that the notification code 1 corresponds to the list box SELCHANGE event, 4 is the
+    SETFOCUS, and 5 is KILLFOCUS events.
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  ...
+  self~connectCommandEvents(IDC_LB_FILES, onCommand)
+
+::method onCommand
+  use arg cmdCode, hwnd
+  say 'cmdCode:                  ' cmdCode
+  say 'hwnd:                     ' hwnd
+  say 'hi word notification code:' .DlgUtil~hiWord(cmdCode)
+  say 'lo word resource ID:      ' .DlgUtil~loWord(cmdCode)
+  say '(List box resource ID)    ' self~constDir[IDC_LB_FILES]
+  say
+
+/* Output might be:
+cmdCode:                   263147
+hwnd:                      1772350
+hi word notification code: 4
+lo word resource ID:       1003
+(List box resource ID)     1003
+
+cmdCode:                   66539
+hwnd:                      1772350
+hi word notification code: 1
+lo word resource ID:       1003
+(List box resource ID)     1003
+
+cmdCode:                   328683
+hwnd:                      1772350
+hi word notification code: 5
+lo word resource ID:       1003
+(List box resource ID)     1003
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -1560,538 +1658,6 @@ but not before init:super has been called.
 </para></note>
 </section>
 
-<section id="connecttreenotify"><title>ConnectTreeNotify</title>
-<indexterm><primary>ConnectTreeNotify</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aMessageExtensions~ConnectTreeNotify(--id--,--"--+-BEGINDRAG---+--"-->
-                                                    +-BEGINRDRAG--+
-                                                    +-BEGINEDIT---+
-                                                    +-ENDEDIT-----+
-                                                    +-DEFAULTEDIT-+
-                                                    +-EXPANDING---+
-                                                    +-EXPANDED----+
-                                                    +-DELETE------+
-                                                    +-KEYDOWN-----+
-                                                    +-SELCHANGING-+
-                                                    +-SELCHANGED--+
-
->--+---------------+--)----------------------------------------><
-   +-,--msgToRaise-+
-
-
-]]>
-</programlisting>
-
-<para>The ConnectTreeNotify method connects a particular
-WM_NOTIFY message for a tree view control with a method. The WM_NOTIFY
-message informs the dialog that an event has occurred in the tree view.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:</para>
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the tree view control of which a notification is to be connected
-to a method.
-</para></listitem></varlistentry>
-<varlistentry><term>event</term>
-<listitem><para>The event to be connected with a method:</para>
-<variablelist>
-<varlistentry><term>BEGINDRAG</term>
-<listitem><para>A drag-and-drop operaton was initiated. See <link linkend="deftreedraghandler">DefTreeDragHandler</link> for
-information on how to implement a drag-and-drop handler.
-</para></listitem></varlistentry>
-<varlistentry><term>BEGINRDRAG</term>
-<listitem><para>A drag-and-drop operaton involving the right mouse button was initiated.
-See <link linkend="deftreedraghandler">DefTreeDragHandler</link> for information on how to implement
-a drag-and-drop handler.
-</para></listitem></varlistentry>
-<varlistentry><term>BEGINEDIT</term>
-<listitem><para>Editing a label has been started.
-</para></listitem></varlistentry>
-<varlistentry><term>ENDEDIT</term>
-<listitem><para>Label editing has ended.
-</para></listitem></varlistentry>
-<varlistentry><term>DEFAULTEDIT</term>
-<listitem><para>This event connects the notification that label editing has been started
-and ended with a predefined event-handling method. This method extracts the
-newly entered text from the notification and modifies the item of which the
-label was edited. If this event is not connected you must provide your own
-event-handling method and connect it with the BEGINEDIT and ENDEDIT events.
-Otherwise, the edited text is lost and the item remains unchanged.</para>
-<para>When
-you specify this event, omit the <emphasis role="italic">msgToRaise</emphasis> argument.</para>
-</listitem></varlistentry>
-<varlistentry><term>EXPANDING</term>
-<listitem><para>An item is about to expand or collapse. This notification is sent before
-the item has expanded or collapsed.
-</para></listitem></varlistentry>
-<varlistentry><term>EXPANDED</term>
-<listitem><para>An item has expanded or collapsed. This notification is sent after the
-item expanded or collapsed.
-</para></listitem></varlistentry>
-<varlistentry><term>DELETE</term>
-<listitem><para>An item has been deleted.
-</para></listitem></varlistentry>
-<varlistentry><term>KEYDOWN</term>
-<listitem><para>A key was pressed inside the tree view. This notification is not sent
-while a label is being edited.
-</para></listitem></varlistentry>
-<varlistentry><term>SELCHANGING</term>
-<listitem><para>Another item is about to be selected. This notification is sent before
-the selection has changed.
-</para></listitem></varlistentry>
-<varlistentry><term>SELCHANGED</term>
-<listitem><para>Another item was selected. This notification is sent after the selection
-was changed.
-</para></listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent whenever the specified notification is
-received from the tree view control. Provide a method with a matching name.
-If you omit this argument, the event is preceded by <computeroutput>On</computeroutput>.
-</para></listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return codes are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>No error detected.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>The resource ID could not be resolved or the event argument is
-incorrect.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>The message was not connected correctly.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example connects the selection-changed event for the tree
-view FileTree with method NewTreeSelection and displays the text of the new
-selection:
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog
-
-::method Init
-  self~init:super(...)
-  self~ConnectTreeNotify("FileTree", "SELCHANGED", "NewTreeSelection")
-
-::method NewTreeSelection
-  tc = self~GetTreeControl("FileTree")
-  info. = tc~ItemInfo(tc~Selected)
-  say "New selection is:" info.!text
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-<orderedlist>
-<listitem><para>Connections are usually placed in the <link linkend="h000025">Init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
-before init:super has been called.</para></listitem>
-<listitem><para>The event-handling method connected to ENDEDIT receives two arguments:
-the item handle of which the label has been edited and the newly entered text.
-Example:
-<programlisting>
-<![CDATA[
-::method OnEndEdit
-  use arg item, newText
-]]>
-</programlisting></para></listitem>
-<listitem><para>The event-handling method connected to KEYDOWN receives two arguments:
-the control ID of the tree view control and the virtual key code pressed.
-Use the method <link linkend="keyname">KeyName</link> of the VirtualKeyCodes class to get
-the name of the key. Note that your class must inherit from the VirtualKeyCodes
-class to use the KeyName method. Example:
-<programlisting>
-<![CDATA[
-::method OnKeyDown
-  use arg id, vkey
-  say "Key" self~KeyName(vkey) "was pressed."
-]]>
-</programlisting></para></listitem>
-<listitem><para>The event-handling method connected to EXPANDED or EXPANDING receives
-three arguments: the control ID of the tree view control, the tree item expanded
-or collapsed, and a string that indicates whether the item was expanded or
-collapsed. Example:
-<programlisting>
-<![CDATA[
-::method OnExpanding
-  use arg id, item, what
-  say "Item with handle" item "is going to be" what
-]]>
-</programlisting></para></listitem>
-<listitem><para>The event-handling method connected to BEGINDRAG or BEGINRDRAG receives
-three arguments: the control ID of the tree view control, the tree item to
-be dragged, and the point where the mouse cursor was pressed (x and y positions,
-separated by a blank). Example:
-<programlisting>
-<![CDATA[
-::method OnBeginDrag
-  use arg id, item, where
-  say "Item with handle" item "is in drag-and-drop mode"
-  parse var where x y
-  say "The drag operation started at point ("x","y")"
-]]>
-</programlisting></para></listitem>
-</orderedlist>
-</para></note>
-</section>
-
-<section id="deflistdraghandler"><title>DefListDragHandler</title>
-<indexterm><primary>DefListDragHandler</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aMessageExtensions~DefListDragHandler-----------------------><
-
-
-]]>
-</programlisting>
-
-<para>A list view control cannot handle a drag-and-drop operation within the
-list view. Therefore, you can connect the DefListDragHandler method with the BEGINDRAG or BEGINRDRAG notification message (see <link linkend="mthConnectListViewEvent">connectListViewEvent</link>) to allow the dragging of an item from one location
-to another within an icon view and a smallicon view. The cursor shape is changed
-to a crosshair during the drag operation. You can cancel the drag operation
-by clicking the other mouse button while holding the button that started the
-drag operation. Note that the item position is not flexible when the list
-view control has the AUTOARRANGE style.</para>
-<para>The DefListDragHandler is implemented as follows:</para>
-<programlisting>
-<![CDATA[
-::method DefListDragHandler
-   use arg id, item, pt
-   lc = self~GetListControl(id)
-   hc = lc~Cursor_Cross   /* change cursor and store current */
-   parse value lc~GetRect with left top right bottom
-   parse var pt oldx oldy
-   origin = lc~ItemPos(item)
-   lmb = self~IsMouseButtonDown("LEFT")
-   rmb = self~IsMouseButtonDown("RIGHT")
-   do while (lmb \= 0 | rmb \= 0) & \(lmb \= 0 & rmb \= 0)
-     pos = self~CursorPos
-     parse var pos x y
-     parse value lc~ScreenToClient(x, y) with newx newy
-     hs = lc~HScrollPos; vs = lc~VScrollPos
-     sx = x-right
-     sy = y-bottom
-      in_rx = (sx <= 30) & (newx >= -30)
-      in_ry = (sy <= 30) & (newy >= -30)
-      if (in_rx & in_ry) then do    /* is the mouse cursor inside the drag
-                                                      rectangle */
-          if xright then sx = sx + 30; else sx = 0
-          if ybottom then sy = sy + 30; else sy = 0
-          newx = newx+hs;  newy = newy +vs;
-          if newx < 0 then newx = 0
-          if newy < 0 then newy = 0
-          if (in_rx & oldx \= newx) | (in_ry & oldy \= newy) then do
-           lc~SetItemPos(item, newx, newy)
-             oldx = newx
-             oldy = newy
-             if sx \= 0 | sy \= 0 then do
-                lc~Scroll(sx, sy)
-                call msSleep 30
-             end
-        end
-      end
-      else do    /* no, so force the mouse cursor back inside the rectangle */
-         if newx < -30 then newx = -30
-         if sx > 30 then newx = (right-left) + 28
-         if newy < -30 then newy = -30
-         if sy > 30 then newy = (bottom-top) + 28
-         parse value lc~ClientToSCreen(newx, newy) with x y
-         self~SetCursorPos(x, y)
-      end
-      lmb = self~IsMouseButtonDown("LEFT")
-      rmb = self~IsMouseButtonDown("RIGHT")
-   end
-   if (lmb \= 0 & rmb \= 0) then do  /* if both buttons pressed restore
-                                         original pos */
-      parse var origin x y
-      lc~SetItemPos(item, x, y)
-   end
-   lc~RestoreCursorShape(hc)  /* restore old cursor */
-   pos = self~CursorPos
-   parse var pos x y
-   self~SetCursorPos(x+1, y+1)  /* move cursor to force redraw */
-]]>
-</programlisting>
-</section>
-
-<section id="deftreedraghandler"><title>DefTreeDragHandler</title>
-<indexterm><primary>DefTreeDragHandler</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aMessageExtensions~DefTreeDragHandler-----------------------><
-
-
-]]>
-</programlisting>
-
-<para>A tree view control cannot handle a drag-and-drop operation within the
-tree view. Therefore, you can connect the DefTreeDragHandler method with the BEGINDRAG or BEGINRDRAG notification message (see <link linkend="connecttreenotify">ConnectTreeNotify</link>) to allow the moving of an item or a node with
-all its subitems from one parent node to another within a tree view. The cursor
-shape is changed to a crosshair during the drag operation. If the cursor is
-moved over the item dragged, the cursor shape is changed to a slashed circle.
-You can cancel the drag operation by clicking the other mouse button while
-holding the button that started the drag operation.</para>
-<para>The DefTreeDragHandler is implemented as follows:</para>
-<programlisting>
-<![CDATA[
-::method DefTreeDragHandler
-   use arg id, item, pt
-   tc = self~GetTreeControl(id)
-   hc = tc~Cursor_Cross   /* change cursor and store current */
-   parse value tc~GetRect with left top right bottom
-   oldItem = 0
-   nocurs = 0
-   lmb = self~IsMouseButtonDown("LEFT")
-   rmb = self~IsMouseButtonDown("RIGHT")
-   call time "R"
-   do while (lmb \= 0 | rmb \= 0) & \(lmb \= 0 & rmb \= 0)
-     pos = self~CursorPos
-     parse var pos x y
-     parse value tc~ScreenToClient(x, y) with newx newy
-      ht = tc~HitTest(newx, newy)
-      if ht \= 0 & ht~wordpos("ONITEM") > 0 then do
-          parse var ht newParent where
-          /* check if droptarget is the current parent or one of the dragged
-             item&apos;s children */
-          if newParent \= Item & newParent \= tc~Parent(Item) & tc~IsAncestor,
-             (Item,newParent) = 0
-          then do
-             is. = tc~ItemInfo(newParent)
-             if is.!State~Wordpos("INDROP") = 0 then
-             do
-                call time "R"
-                tc~DropHighlight(newParent)
-                if nocurs \= 0 then do
-                  tc~RestoreCursorShape(nocurs) /*restore old cursor (cross)*/
-                  nocurs = 0
-                end
-             end
-             else if time("E") > 1 then do  /* expand node after 1 second */
-                 if is.!Children \= 0 & is.!State~Wordpos("EXPANDED") = 0 then
-                 tc~expand(newParent)
-             end
-          end
-          else do
-             if nocurs = 0 then do
-                nocurs = tc~Cursor_No  /* set no cursor and retrieve
-                                              current cursor (cross) */
-                tc~DropHighlight  /* remove drop highlight */
-             end
-          end
-      end
-      else do
-          if newParent \= 0 then do
-             /* necessary to redraw cursor when moving on a valid item again */
-              tc~DropHighlight  /* remove drop highlight */
-              newParent = 0
-          end
-          if nocurs = 0 then nocurs = tc~Cursor_No  /* set no cursor and
-                                      retrieve current cursor (cross) */
-          /* handle scrolling */
-          fvItem = tc~FirstVisible
-          if (ybottom) & (tc~NextVisible(fvItem) \= 0) then do
-              tc~MakeFirstVisible(tc~NextVisible(fvItem))
-              if y-bottom < 200 then call msSleep 200-(y-bottom)
-          end
-      end
-      lmb = self~IsMouseButtonDown("LEFT")
-      rmb = self~IsMouseButtonDown("RIGHT")
-   end
-   if ht~wordpos("ONITEM") > 0 & lmb = 0 & rmb = 0 then do /* if mouse on item
-                                                  and both mouse buttons up */
-       item = tc~MoveItem(Item, newParent, 1)  /* move item under newParent */
-   end
-   tc~DropHighlight(0)  /* remove drop highlight */
-   tc~select(item)      /* select item */
-   tc~EnsureVisible(item)
-   tc~RestoreCursorShape(hc)  /* restore old cursor */
-   pos = self~CursorPos
-   parse var pos x y
-   self~SetCursorPos(x+1, y+1)  /* move cursor to force redraw */
-]]>
-</programlisting>
-</section>
-
-<section id="mthConnectMonthCalendarNotify"><title>connectMonthCalendarNotify</title>
-<indexterm><primary>connectMonthCalendarNotify</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--connectStaticNotify(--id--,--"event"--,-+---------------+--)--------><
-                                            +-,--methodName-+
-
-]]>
-</programlisting>
-
-<para>
-  PLEASE FIXE ME TODO
-  The connectStaticNotify connects a notification message from a static control to a method, defined by
-  the programmer, of the dialog.  Normally, static controls do not send notification messages.  A static
-  control will only send the messages when it has the SS_NOTIFY style.  The notification messages inform
-  the dialog that an event has occurred with regard to the static control.
-</para>
-<para>
-  For user defined dialogs use the NOTIFY style keyword in the <link
-  linkend="sctAddStaticControls">Add...</link> static control methods when the control is defined. For
-  dialogs created from a compiled resource or a resource script file use the SS_NOTIFY style when
-  defining the control in a resource editor.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-    <varlistentry><term>id</term>
-    <listitem>
-      <para>
-        The resource ID of the static control.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>event</term>
-    <listitem>
-      <para>
-        A keyword specifying the event to be connected with a method:
-        <variablelist>
-          <varlistentry><term>CLICK</term>
-          <listitem>
-            <para>
-              The static control has been clicked with the mouse.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DBLCLK</term>
-          <listitem>
-            <para>
-              The static control has been double-clicked with the mouse.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DISABLE</term>
-          <listitem>
-            <para>
-              The static control has been disabled.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>ENABLE</term>
-          <listitem>
-            <para>
-              The static control has been enabled.
-            </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </para>
-    </listitem></varlistentry>
-    <varlistentry><term>methodName</term>
-    <listitem>
-      <para>
-        The method that is to be invoked whenever the specified notification is received from the static
-        control. The programmer defines this method. If this argument is omitted, a method name is
-        automatically generated that consists of the event keyword preceded by
-        <computeroutput>on</computeroutput>. For instance, <computeroutput>onClick</computeroutput>.
-      </para>
-    </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      The return codes are:
-      <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-        <para>
-          No error detected.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-1</term>
-      <listitem>
-        <para>
-          The resource ID could not be resolved or the event argument is incorrect.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>1</term>
-      <listitem>
-        <para>
-          The message was not connected correctly.
-        </para>
-      </listitem></varlistentry>
-      </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Additional Notes:</emphasis></term>
-  <listitem>
-    <orderedlist>
-    <listitem>
-      <para>
-        The invocation of connectStaticNotify() can be placed in the <link linkend="h000025">init</link>
-        or <link linkend="mthInitDialog">initDialog</link> method.  (Indeed the invocation can be done
-        anywhere. But, it makes most sense to have the connection made before the dialog starts
-        executing.) If the connection is made in the init() method, be sure that the super class init()
-        is invoked first.
-      </para>
-    </listitem>
-    <listitem>
-      <para>
-        The defined event-handling methods will receive two arguments. The first arg contains information
-        about the specific control and its event. The second arg is the window handle of the static
-        control.
-      </para>
-      <para>
-        The low word of the first arg is the control ID and the high word is the event ID.
-      </para>
-    </listitem>
-    </orderedlist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-      The following example comes from an application that displays employee statistics.  A single click
-      on the employee number field advances the display to the next employee.  A double click on either
-      the employee name or employee job duties alllows those fields to be edited.
-    </para>
-<programlisting>
-<![CDATA[
-::method initDialog
-
-  self~connectStaticNotify(IDC_ST_EMPNO, "CLICK", empLookup)
-
-  self~connectStaticNotify(IDC_ST_EMPJOB, "DBLCLK", editStats)
-  self~connectStaticNotify(IDC_ST_EMPNAME, "DBLCLK", editStats)
-
-  first = self~initDatabase
-  self~setStats(first)
-]]>
-</programlisting>
-      <para>
-        In this example, (a continuation of the above example,) the control ID determines if the user has
-        double clicked on the employee job duties field, or the employee name field.  The event ID is not
-        used, or needed. Its purpose in the code snippet is simply an example. The same thing applies to
-        the window handle.
-      </para>
-<programlisting>
-<![CDATA[
-::method editStats
-  use arg ctrlInfo, ctrlHwnd
-
-  ctrlID = .DlgUtil~loWord(ctrlInfo)
-  eventID = .DlgUtil~hiWord(ctrlInfo)
-
-  rec = self~getCurrentRecord
-
-  if self~userUpdate(ctrlID, rec) then self~setStats(rec)
-]]>
-</programlisting>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="mthConnectListViewEvent"><title>connectListViewEvent</title>
 <indexterm><primary>connectListViewEvent</primary></indexterm>
 <programlisting>
@@ -2112,16 +1678,16 @@ holding the button that started the drag operation.</para>
   <listitem>
   <para>
   <variablelist>
-    <varlistentry><term>id</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The ID of the list view control for which a notification is to be connected.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>event</term>
+    <varlistentry><term>event [required]</term>
     <listitem>
     <para>
-      The event keyword. The following keywords are valid, case is not significant:
+      The event keyword. Use one of the following keywords, case is not significant:
     <variablelist>
       <varlistentry><term>ACTIVATE</term>
       <listitem>
@@ -2132,7 +1698,7 @@ holding the button that started the drag operation.</para>
       <varlistentry><term>BEGINDRAG</term>
       <listitem>
       <para>
-        A drag-and-drop operaton was initiated. See <link linkend="deflistdraghandler">DefListDragHandler</link> for
+        A drag-and-drop operaton was initiated. See <link linkend="mthDefListDragHandler">defListDragHandler</link> for
         information on how to implement a drag-and-drop handler.
       </para>
       </listitem></varlistentry>
@@ -2140,7 +1706,7 @@ holding the button that started the drag operation.</para>
       <listitem>
       <para>
         A drag-and-drop operaton involving the right mouse button was initiated. See <link
-        linkend="deflistdraghandler">DefListDragHandler</link> for information on how to implement a drag-and-drop
+        linkend="mthDefListDragHandler">defListDragHandler</link> for information on how to implement a drag-and-drop
         handler.
       </para>
       </listitem></varlistentry>
@@ -2153,17 +1719,17 @@ holding the button that started the drag operation.</para>
       <varlistentry><term>ENDEDIT</term>
       <listitem>
       <para>
-        Label editing has ended.. Do not connect this event if you are using the DEFAULTEDIT keyword.
+        Label editing has ended. Do not connect this event if you are using the DEFAULTEDIT keyword.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>DEFAULTEDIT</term>
       <listitem>
       <para>
-        This keyword connects the event that label editing has been started and ended with a predefined event-handling
-        method, the <link linkend="deflistdraghandler">defListDragHandler</link>() method. This method extracts the
-        newly entered text from the notification and modifies the item of which the label was edited. If this keyword is
-        not used you must provide your own event-handling method and connect it with the begin edit and end edit events.
-        Otherwise, the edited text is lost and the item remains unchanged.
+        This keyword connects the event that label editing has been started and the ended event with event handling
+        methods supplied by the ooDialog framework. The supplied methods extract the newly entered text from the
+        notification and modifies the item label which was edited. If this keyword is not used you must provide your own
+        event-handling methods and connect them with the begin edit and end edit events. Otherwise, the edited text is
+        lost and the item label remains unchanged.
       </para>
       <para>
         When you specify this event, omit the <emphasis role="italic">methodName</emphasis> argument. This keyword
@@ -2255,8 +1821,8 @@ holding the button that started the drag operation.</para>
     <para>
       The name of the event handling method. This method is invoked each time the specified event occurs for the list
       view control. If you omit this argument, the event handler method name is generated for you. This name will be the
-      event keyword, preceded by <computeroutput>On</computeroutput>. For example <emphasis
-      role="italic">onColumnClick</emphasis>
+      event keyword, preceded by <computeroutput>On</computeroutput>. For example: <emphasis
+      role="italic">onColumnClick</emphasis>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2584,6 +2150,392 @@ list item to be dragged, and the point where the mouse cursor was pressed
 </programlisting></listitem>
 </orderedlist>
 </note>
+</section>
+
+<section id="mthConnectTreeViewEvent"><title>connectTreeViewEvent</title>
+<indexterm><primary>connectTreeViewEvent</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-connectTreeViewEvent(--id--,--event--+----------------+--)------------------><
+                                        +-,--methodName--+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectTreeViewEvent</emphasis> method connects a method in a Rexx dialog to a particular
+  tree view <link linkend="ovvEvents">event</link>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      The <emphasis role="italic">connectTreeViewEvent</emphasis> method is a member of the <link
+      linkend="clsEventNotification">EventNotification</link> mixin class.
+    </para>
+  <para>
+    Syntax errors are raised when incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
+    command events happen.
+  </para>
+  <para>
+    In Windows itself, tree view event notifications are sent to the parent dialog using the WM_NOTIFY message.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The arguments are:</para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the tree view control. This can be the numeric or symbolic ID.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>event</term>
+    <listitem>
+    <para>
+      A keyword indicating which event is to be connected. The keyword must be one of the following:
+      <variablelist>
+        <varlistentry><term>BEGINDRAG</term>
+        <listitem>
+        <para>
+          A drag-and-drop operaton using the left mouse button was initiated. The documentation for the <link
+          linkend="mthDefTreeDragHandler">defTreeDragHandler</link>() method contains further information on how to
+          implement a drag-and-drop handler.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BEGINRDRAG</term>
+        <listitem>
+        <para>
+          A drag-and-drop operaton involving the right mouse button was initiated. The documentation for the <link
+          linkend="mthDefTreeDragHandler">defTreeDragHandler</link>() method contains further information on how to
+          implement a drag-and-drop handler.
+        handler.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BEGINEDIT</term>
+        <listitem><para>Editing a label has been started.
+        </para></listitem></varlistentry>
+        <varlistentry><term>ENDEDIT</term>
+        <listitem><para>Label editing has ended.
+        </para></listitem></varlistentry>
+        <varlistentry><term>DEFAULTEDIT</term>
+        <listitem><para>This event connects the notification that label editing has been started
+        and ended with a predefined event-handling method. This method extracts the
+        newly entered text from the notification and modifies the item of which the
+        label was edited. If this event is not connected you must provide your own
+        event-handling method and connect it with the BEGINEDIT and ENDEDIT events.
+        Otherwise, the edited text is lost and the item remains unchanged.</para>
+        <para>When
+        you specify this event, omit the <emphasis role="italic">msgToRaise</emphasis> argument.</para>
+        </listitem></varlistentry>
+        <varlistentry><term>EXPANDING</term>
+        <listitem><para>An item is about to expand or collapse. This notification is sent before
+        the item has expanded or collapsed.
+        </para></listitem></varlistentry>
+        <varlistentry><term>EXPANDED</term>
+        <listitem><para>An item has expanded or collapsed. This notification is sent after the
+        item expanded or collapsed.
+        </para></listitem></varlistentry>
+        <varlistentry><term>DELETE</term>
+        <listitem><para>An item has been deleted.
+        </para></listitem></varlistentry>
+        <varlistentry><term>KEYDOWN</term>
+        <listitem><para>A key was pressed inside the tree view. This notification is not sent
+        while a label is being edited.
+        </para></listitem></varlistentry>
+        <varlistentry><term>SELCHANGING</term>
+        <listitem><para>Another item is about to be selected. This notification is sent before
+        the selection has changed.
+        </para></listitem></varlistentry>
+        <varlistentry><term>SELCHANGED</term>
+        <listitem><para>Another item was selected. This notification is sent after the selection
+        was changed.
+        </para></listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>methodName</term>
+    <listitem>
+    <para>
+      The name of the event handling method. This method is invoked each time the specified event occurs for the tree
+      view control. If you omit this argument, the method name is generated for you. This name will be the event
+      keyword, preceded by <computeroutput>on</computeroutput>. For example: <emphasis
+      role="italic">onExpanded</emphasis>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error detected.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      The resource ID was symbolic and it could not be resolved, or the event keyword is not correct.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Some other error and the message was not connected correctly. This may indicate the message table is full, or the
+      interpreter is out of usable memory.
+    </para>
+    </listitem></varlistentry>
+  </variablelist> </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem><para>The following example connects the selection-changed event for the tree
+  view FileTree with method NewTreeSelection and displays the text of the new
+  selection:
+  <programlisting>
+  <![CDATA[
+  ::class MyDlgClass subclass UserDialog
+
+  ::method Init
+    self~init:super(...)
+    self~connectTreeViewEvent("FileTree", "SELCHANGED", "NewTreeSelection")
+
+  ::method NewTreeSelection
+    tc = self~GetTreeControl("FileTree")
+    info. = tc~ItemInfo(tc~Selected)
+    say "New selection is:" info.!text
+  ]]>
+  </programlisting>
+  </para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+<orderedlist>
+<listitem><para>Connections are usually placed in the <link linkend="h000025">Init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
+before init:super has been called.</para></listitem>
+<listitem><para>The event-handling method connected to ENDEDIT receives two arguments:
+the item handle of which the label has been edited and the newly entered text.
+Example:
+<programlisting>
+<![CDATA[
+::method OnEndEdit
+  use arg item, newText
+]]>
+</programlisting></para></listitem>
+<listitem><para>The event-handling method connected to KEYDOWN receives two arguments:
+the control ID of the tree view control and the virtual key code pressed.
+Use the method <link linkend="keyname">KeyName</link> of the VirtualKeyCodes class to get
+the name of the key. Note that your class must inherit from the VirtualKeyCodes
+class to use the KeyName method. Example:
+<programlisting>
+<![CDATA[
+::method OnKeyDown
+  use arg id, vkey
+  say "Key" self~KeyName(vkey) "was pressed."
+]]>
+</programlisting></para></listitem>
+<listitem><para>The event-handling method connected to EXPANDED or EXPANDING receives
+three arguments: the control ID of the tree view control, the tree item expanded
+or collapsed, and a string that indicates whether the item was expanded or
+collapsed. Example:
+<programlisting>
+<![CDATA[
+::method OnExpanding
+  use arg id, item, what
+  say "Item with handle" item "is going to be" what
+]]>
+</programlisting></para></listitem>
+<listitem><para>The event-handling method connected to BEGINDRAG or BEGINRDRAG receives
+three arguments: the control ID of the tree view control, the tree item to
+be dragged, and the point where the mouse cursor was pressed (x and y positions,
+separated by a blank). Example:
+<programlisting>
+<![CDATA[
+::method OnBeginDrag
+  use arg id, item, where
+  say "Item with handle" item "is in drag-and-drop mode"
+  parse var where x y
+  say "The drag operation started at point ("x","y")"
+]]>
+</programlisting></para></listitem>
+</orderedlist>
+</para></note>
+
+</section>
+
+<section id="mthConnectMonthCalendarNotify"><title>connectMonthCalendarNotify</title>
+<indexterm><primary>connectMonthCalendarNotify</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectStaticNotify(--id--,--"event"--,-+---------------+--)--------><
+                                            +-,--methodName-+
+
+]]>
+</programlisting>
+
+<para>
+  PLEASE FIXE ME TODO
+  The connectStaticNotify connects a notification message from a static control to a method, defined by
+  the programmer, of the dialog.  Normally, static controls do not send notification messages.  A static
+  control will only send the messages when it has the SS_NOTIFY style.  The notification messages inform
+  the dialog that an event has occurred with regard to the static control.
+</para>
+<para>
+  For user defined dialogs use the NOTIFY style keyword in the <link
+  linkend="sctAddStaticControls">Add...</link> static control methods when the control is defined. For
+  dialogs created from a compiled resource or a resource script file use the SS_NOTIFY style when
+  defining the control in a resource editor.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+      <para>
+        The resource ID of the static control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>event</term>
+    <listitem>
+      <para>
+        A keyword specifying the event to be connected with a method:
+        <variablelist>
+          <varlistentry><term>CLICK</term>
+          <listitem>
+            <para>
+              The static control has been clicked with the mouse.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DBLCLK</term>
+          <listitem>
+            <para>
+              The static control has been double-clicked with the mouse.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLE</term>
+          <listitem>
+            <para>
+              The static control has been disabled.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ENABLE</term>
+          <listitem>
+            <para>
+              The static control has been enabled.
+            </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>methodName</term>
+    <listitem>
+      <para>
+        The method that is to be invoked whenever the specified notification is received from the static
+        control. The programmer defines this method. If this argument is omitted, a method name is
+        automatically generated that consists of the event keyword preceded by
+        <computeroutput>on</computeroutput>. For instance, <computeroutput>onClick</computeroutput>.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return codes are:
+      <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+        <para>
+          No error detected.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+        <para>
+          The resource ID could not be resolved or the event argument is incorrect.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>1</term>
+      <listitem>
+        <para>
+          The message was not connected correctly.
+        </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Additional Notes:</emphasis></term>
+  <listitem>
+    <orderedlist>
+    <listitem>
+      <para>
+        The invocation of connectStaticNotify() can be placed in the <link linkend="h000025">init</link>
+        or <link linkend="mthInitDialog">initDialog</link> method.  (Indeed the invocation can be done
+        anywhere. But, it makes most sense to have the connection made before the dialog starts
+        executing.) If the connection is made in the init() method, be sure that the super class init()
+        is invoked first.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        The defined event-handling methods will receive two arguments. The first arg contains information
+        about the specific control and its event. The second arg is the window handle of the static
+        control.
+      </para>
+      <para>
+        The low word of the first arg is the control ID and the high word is the event ID.
+      </para>
+    </listitem>
+    </orderedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example comes from an application that displays employee statistics.  A single click
+      on the employee number field advances the display to the next employee.  A double click on either
+      the employee name or employee job duties alllows those fields to be edited.
+    </para>
+<programlisting>
+<![CDATA[
+::method initDialog
+
+  self~connectStaticNotify(IDC_ST_EMPNO, "CLICK", empLookup)
+
+  self~connectStaticNotify(IDC_ST_EMPJOB, "DBLCLK", editStats)
+  self~connectStaticNotify(IDC_ST_EMPNAME, "DBLCLK", editStats)
+
+  first = self~initDatabase
+  self~setStats(first)
+]]>
+</programlisting>
+      <para>
+        In this example, (a continuation of the above example,) the control ID determines if the user has
+        double clicked on the employee job duties field, or the employee name field.  The event ID is not
+        used, or needed. Its purpose in the code snippet is simply an example. The same thing applies to
+        the window handle.
+      </para>
+<programlisting>
+<![CDATA[
+::method editStats
+  use arg ctrlInfo, ctrlHwnd
+
+  ctrlID = .DlgUtil~loWord(ctrlInfo)
+  eventID = .DlgUtil~hiWord(ctrlInfo)
+
+  rec = self~getCurrentRecord
+
+  if self~userUpdate(ctrlID, rec) then self~setStats(rec)
+]]>
+</programlisting>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="mthConnectButtonEvent"><title>connectButtonEvent</title>
@@ -3233,11 +3185,11 @@ before init:super has been called.</para></listitem>
 </note>
 </section>
 
-<section id="connectlistboxnotify"><title>ConnectListBoxNotify</title>
-<indexterm><primary>ConnectListBoxNotify</primary></indexterm>
+<section id="mthConnectListBoxEvent"><title>connectListBoxEvent</title>
+<indexterm><primary>connectListBoxEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectListBoxNotify(--id--,--"--+-DBLCLK----+--"-->
+>>-aMessageExtensions~connectListBoxEvent(--id--,--"--+-DBLCLK----+--"-->
                                                        +-ERRSPACE--+
                                                        +-GOTFOCUS--+
                                                        +-LOSTFOCUS-+
@@ -3251,7 +3203,7 @@ before init:super has been called.</para></listitem>
 ]]>
 </programlisting>
 
-<para>The ConnectListBoxNotify method connects a particular
+<para>The connectListBoxEvent method connects a particular
 WM_NOTIFY message for a list box with a method. The WM_NOTIFY message
 informs the dialog that an event has occurred in the list box.</para>
 <variablelist>
@@ -3315,7 +3267,7 @@ incorrect.
 
 ::method Init
   self~init:super(...)
-  self~ConnectListBoxNotify("MYLIST", "SELCHANGE", "SelectionChanged")
+  self~connectListBoxEvent("MYLIST", "SELCHANGE", "SelectionChanged")
 
 ::method SelectionChanged
   li = self~GetListBox("MYLIST")
@@ -3855,6 +3807,105 @@ slider position by extracting the high-oder word. Example:
 </programlisting></para></listitem>
 </orderedlist>
 </para></note>
+</section>
+
+<section id="mthDefListDragHandler"><title>defListDragHandler</title>
+<indexterm><primary>defListDragHandler</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-defListDragHandler(--id--,--item--,--point--)---------------><
+
+
+]]>
+</programlisting>
+
+<para>
+  A list view control does not handle a drag-and-drop operation itself. It defers that handling to the programmer by
+  sending a BEGINGDRAG, (left mouse drag,) or a BEGINRDRAG, (right mouse drag,) event notification. The programmer can
+  code his own <link linkend="ovvEvents">event</link> handling method and use <link
+  linkend="mthConnectListViewEvent">connectListViewEvent</link>() method to connect the method to the drag-and-drop
+  operation.
+</para>
+<para>
+  The <emphasis role="italic">defListDragHandler</emphasis> method is an event handling method supplied by the ooDialog
+  framework and the programmer can use this method rather than code his own.
+</para>
+<para>
+  This method implementation allows the user to drag an item from one location to another within an icon view and
+  a small icon view. The cursor shape is changed to a crosshair during the drag operation. The user can cancel the drag
+  operation by clicking the other mouse button while holding the button that started the drag operation. Note that the
+  final icon position is not flexible when the list view control has the AUTOARRANGE style.
+</para>
+<para>
+  If the programmer wants to implement her own drag-and-drop event handler, she may want to examine the how the
+  <emphasis role="italic">defListDragHandler</emphasis> method in the <computeroutput>ooDialog.cls</computeroutput>
+  file. In addition the <computeroutput>oodlist.rex</computeroutput> example progam uses the <emphasis
+  role="italic">defListDragHandler</emphasis>. Running the example program will show the behavior of the current
+  <emphasis role="italic">defListDragHandler</emphasis> implementation.
+</para>
+<para>
+  <emphasis role="bold">Example:</emphasis>
+<programlisting>
+<![CDATA[
+::method initDialog
+
+  ...
+
+  self~connectListViewEvent(ID_LV_ICON, "BEGINDRAG", "defListDragHandler")
+  -- Drag and drop operations are not automatically handled.
+]]>
+</programlisting>
+</para>
+</section>
+
+<section id="mthDefTreeDragHandler"><title>defTreeDragHandler</title>
+<indexterm><primary>defTreeDragHandler</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-defTreeDragHandler(--id--,--item--,--point--)---------------><
+
+
+]]>
+</programlisting>
+
+<para>
+  A tree view control does not handle a drag-and-drop operation itself. It defers that handling to the programmer by
+  sending a BEGINGDRAG, (left mouse drag,) or a BEGINRDRAG, (right mouse drag,) event notification. The programmer can
+  code his own <link linkend="ovvEvents">event</link> handling method and use <link
+  linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>() method to connect the method to the drag-and-drop
+  operation.
+</para>
+<para>
+  The <emphasis role="italic">defTreeDragHandler</emphasis> method is an event handling method supplied by the ooDialog
+  framework and the programmer can use this method rather than code his own.
+</para>
+<para>
+  This method implementation allows the user to move an item, or a node with all its subitems, from one parent node to
+  another within the tree view. The cursor shape is changed to a crosshair during the drag operation. If the cursor is
+  moved over the item dragged, the cursor shape is changed to a slashed circle. The user can cancel the drag operation
+  by clicking the other mouse button while holding the button that started the drag operation.
+</para>
+<para>
+  If the programmer wants to implement her own drag-and-drop event handler, she may want to examine the how the
+  <emphasis role="italic">defTreeDragHandler</emphasis> method in the <computeroutput>ooDialog.cls</computeroutput>
+  file. In addition both the <computeroutput>oodtree.rex</computeroutput> and
+  <computeroutput>propdemo.rex</computeroutput> example progams uses the <emphasis
+  role="italic">defTreeDragHandler</emphasis>. Running these example programs will show the behavior of the current
+  <emphasis role="italic">defTreeDragHandler</emphasis> implementation.
+</para>
+<para>
+  <emphasis role="bold">Example:</emphasis>
+<programlisting>
+<![CDATA[
+::method initDialog
+
+  ...
+
+  self~connectTreeViewEvent("IDC_TREE","BEGINDRAG", "defTreeDragHandler")
+  -- Drag and drop operations are not automatically handled.
+]]>
+</programlisting>
+</para>
 </section>
 
 <section id="deprecatedEventNotification"><title>Deprecated Methods</title>
