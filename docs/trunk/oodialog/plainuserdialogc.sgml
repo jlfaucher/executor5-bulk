@@ -114,10 +114,10 @@
 <section id="clsDialogControl"><title>DialogControl</title>
 <indexterm><primary>DialogControl Class</primary></indexterm>
 <para>
-  In a similar manner to <link linkend="clsPlainBaseDialog">PlainBaseDialog</link> and dialogs, Dialog control is the
-  base class of all dialog control classes in the ooDialog framework.  It implements methods that are common to every
-  dialog control. DialogControl is also an abstract class. A programmer can not instantiate a new DialogControl object.
-  Rather, one of the concrete dialog control classes such as, the <link
+  In a similar manner to <link linkend="clsPlainBaseDialog">PlainBaseDialog</link> and dialogs, <emphasis
+  role="italic">DialogControl</emphasis> is the base class of all dialog control classes in the ooDialog framework.  It
+  implements methods that are common to every dialog control. DialogControl is also an abstract class. A programmer can
+  not instantiate a new DialogControl object. Rather, one of the concrete dialog control classes such as, the <link
   linkend="clsDateTimePicker">DateTimePicker</link> or the <link linkend="clsListView">ListControl</link>, are used.
 </para>
 <para>
@@ -149,46 +149,29 @@
 <section id="clsEventNotification"><title>EventNotification Mixin Class</title>
 <indexterm><primary>EventNotification class</primary></indexterm>
 <para>
-  The event notification class is a <emphasis role="italic">Mixin</emphasis> class that contains methods that connect a
-  <link linkend="ovvEvents">window event</link> with a method in the Rexx dialog object. Except as noted below, the Rexx
-  programmer adds the method to her dialog subclass. Once the event is connected, each time the event occurs in the
-  dialog, the connected method is invoked.  The programmer codes the method to take the appropiate action for the event.
+  The event notification class is a <emphasis role="italic">Mixin</emphasis> class that contains methods that connect
+  the notification of a Windows <link linkend="ovvEvents">event</link> sent to the <link
+  linkend="ovvUnderlying">underlying</link> dialog with a method in the Rexx dialog object. Except as noted below, the
+  Rexx programmer adds the method to her dialog subclass. Once the event notification is connected, each time the event
+  occurs, the connected method is invoked. The programmer codes the method to take the appropiate action for the event.
 </para>
 <para>
-  Whenever a dialog object is instantiated, three event connections are automatically made. They connect the <emphasis
-  role="italic">ok</emphasis>, <emphasis role="italic">cancel</emphasis>, and <emphasis role="italic">help</emphasis>
-  events to the <link linkend="mthOk">ok</link>(), <link linkend="mthCancel">cancel</link>(), and <link
-  linkend="mthHelp">help</link>() methods of the dialog object. The <emphasis role="italic">ok</emphasis>() and
-  <emphasis role="italic">cancel</emphasis>() methods are already coded to take the appropriate default action. The
-  default action for the <emphasis role="italic">help</emphasis>() method is to do nothing.  All three methods are
-  intended to be over-ridden by the programmer if the default action is not sufficient.
-</para>
-<para>
-  For all other events the Rexx programmer needs to specifically connect the event to his dialog, through one of the
-  event notification methods, to be able to respond to the event.  Indeed, except for trivial dialogs, most of the
-  programming is deciding which events to be notified of and taking action upon receiving the notification.
-</para>
-<para>
-  The <link linkend="clsEventNotification">EventNotification</link> class implements all the methods that create a
-  connection between a <link linkend="ovvEvents">window event</link> and a method of the Rexx dialog object. In the
-  Windows user interface, as the user interacts with the system, events are generated that specify what the action of
-  the user was. Mouse clicks, keyboard presses, moving or sizing windows, all generate events. In the ooDialogframework,
-  when a specific event is connected to a method in a dialog object, that method will be invoked each time the event
-  occurs.
+  In the Windows user interface, as the user interacts with the system, events are generated that specify what the
+  action of the user was. Mouse clicks, keyboard presses, moving or sizing windows, all generate events.
 </para>
 <para>
   Some simple examples of how this works:
 <itemizedlist>
 <listitem>
 <para>
-  For push buttons you connect a method to the button. The connected method is called each time the button is pressed
-  (clicked.)
+  For push buttons you connect a method to one of the events the button control notifies its parent dialog of. Typically
+  the CLICKED event is connected. Then, the connected method is called each time the button is pressed (clicked.)
 </para>
 </listitem>
 <listitem>
 <para>
   List boxes, multiple-select list boxes, and combo boxes can be connected to a method that is called each time a line
-  in the box is selected.
+  in the list box or combo box is selected.
 </para>
 </listitem>
 <listitem>
@@ -199,34 +182,67 @@
 </listitem></itemizedlist>
 </para>
 <para>
-  In a <computeroutput>UserDialog</computeroutput> some of the methods that create dialog controls have an option that
-  automatically connects an event to a dialog method. However, for most events, say the resize or move events, the
-  connection needs to be made explicitly.  In general, events should be connected before the dialog is shown on the
-  screen. So, the connect event methods can be used in the <link linkend="mthInitDialog">initDialog</link>() method.  In
-  a UserDialog, the <link linkend="mthDefineDialog">defineDialog</link>() method is a good place for the connect event methods.
-  If the programmer is overriding the <link linkend="h000025">init</link>() method, the connect event methods can be
-  placed there.  But, in this case, do not invoke the connect event methods until after the superclass has been
-  initialized.
+  Whenever a dialog object is instantiated, the ooDialog framwork <link
+  linkend="sctStandardEventMethods">automatically</link> makes several event connections. For all other events the Rexx
+  programmer, usually, needs to specifically connect the event to his dialog, through one of the event notification
+  methods, to be able to respond to the event. However, in a <link linkend="clsUserDialog">UserDialog</link>, some of
+  the methods that create dialog controls have an option that automatically connects an event to a dialog method.
+  However, for most events, say the resize or move events, the connection needs to be made explicitly.  Indeed, except
+  for trivial dialogs, most of the programming is deciding which events to be notified of and taking action upon
+  receiving the notification.
 </para>
-
-<note><title>Note</title><para>
-  The method name that is to be invoked when the specified event occurs must be less than 256 characters.
-</para></note>
 <para>
-  All event connection methods are in the <emphasis role="italic">EventNotification</emphasis> class. The event
-  notification class is inherited by the base dialog class, the <link linkend="clsPlainBaseDialog">PlainBaseDialog
-  </link>class. Therefore the methods of the class are a part of every dialog.
+  In general, events should be connected before the dialog is shown on the screen, or immediately after the dialog is
+  created. Connecting the events in the <link linkend="mthInitDialog">initDialog</link>() method is usually sufficient.
+  In a UserDialog, the <link linkend="mthDefineDialog">defineDialog</link>() method also makes a good place for the
+  connect event methods. If the programmer is overriding the <link linkend="h000025">init</link>() method, the connect
+  event methods can be placed there.  But, in this case, do not invoke the connect event methods until <emphasis
+  role="bold">after</emphasis> the superclass has been initialized.
 </para>
 
-<section id="en-connectButtonEvent"><title>connectButtonEvent</title>
+<section id="enConnect"><title>connectHelp</title>
 <programlisting>
-<link linkend="mthConnectButtonEvent">connectButtonEvent</link>
+<link linkend="mthConnectHelp">connectHelp</link>
+
+<![CDATA[
+>>--connectHelp(--methodname--)--------------------------------><
+]]>
 </programlisting>
 </section>
 
-<section id="en-ConnectCommandEvents"><title>connectCommandEvents</title>
+<section id="enConnectResize"><title>connectResize</title>
+<programlisting>
+<link linkend="mthConnectResize">connectResize</link>
+
+<![CDATA[
+>>--connectResize(--methodName--)------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectMove"><title>connectMove</title>
+<programlisting>
+<link linkend="mthConnectMove">connectMove</link>
+
+<![CDATA[
+>>--connectMove(--methodName--)--------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectButtonEvent"><title>connectButtonEvent</title>
+<programlisting>
+<link linkend="mthConnectButtonEvent">connectButtonEvent</link>
+
+</programlisting>
+</section>
+
+<section id="enConnectCommandEvents"><title>connectCommandEvents</title>
 <programlisting>
 <link linkend="mthConnectCommandEvents">connectCommandEvents</link>
+
 <![CDATA[
 >>--connectCommandEvents(--id--,--methodName--)----------------><
 
@@ -234,68 +250,82 @@
 </programlisting>
 </section>
 
-<section id="en-ConnectComboBoxEvent"><title>connectComboBoxEvent</title>
+<section id="enConnectComboBoxEvent"><title>connectComboBoxEvent</title>
 <programlisting>
 <link linkend="mthConnectComboBoxEvent">connectComboBoxEvent</link>
 </programlisting>
 </section>
 
-<section id="en-ConnectNotifyEvent"><title>connectNotifyEvent</title>
+<section id="enConnectNotifyEvent"><title>connectNotifyEvent</title>
 <programlisting>
 <link linkend="mthConnectNotifyEvent">connectNotifyEvent</link>
 </programlisting>
 </section>
 
-<section id="en-ConnectEditNotify"><title>ConnectEditNotify</title>
+<section id="enConnectEditNotify"><title>ConnectEditNotify</title>
 <programlisting>
 <link linkend="connecteditnotify">ConnectEditNotify</link>
 </programlisting>
 </section>
 
-<section id="en-ConnectListBoxEvent"><title>connectListBoxEvent</title>
+<section id="enConnectListBoxEvent"><title>connectListBoxEvent</title>
 <programlisting>
 <link linkend="mthConnectListBoxEvent">connectListBoxEvent</link>
 </programlisting>
 </section>
 
-<section id="en-ConnectListViewEvent"><title>connectListViewEvent</title>
+<section id="enConnectListViewEvent"><title>connectListViewEvent</title>
 <programlisting>
 <link linkend="mthConnectListViewEvent">connectListViewEvent</link>
 </programlisting>
 </section>
 
-<section id="en-ConnectScrollBarNotify"><title>ConnectScrollBarNotify</title>
+<section id="enConnectScrollBarNotify"><title>ConnectScrollBarNotify</title>
 <programlisting>
 <link linkend="connectscrollbarnotify">ConnectScrollBarNotify</link>
 </programlisting>
 </section>
 
-<section id="en-ConnectSliderNotify"><title>ConnectSliderNotify</title>
+<section id="enConnectSliderNotify"><title>ConnectSliderNotify</title>
 <programlisting>
 <link linkend="connectscrollbarnotify">ConnectScrollBarNotify</link>
 </programlisting>
 </section>
 
-<section id="en-ConnectStaticNotify"><title>ConnectStaticNotify</title>
+<section id="enConnectStaticNotify"><title>ConnectStaticNotify</title>
 <programlisting>
 <link linkend="mthConnectStaticNotify">connectStaticNotify</link>
 </programlisting>
 </section>
 
-<section id="en-ConnectTabNotify"><title>ConnectTabNotify</title>
+<section id="enConnectTabNotify"><title>ConnectTabNotify</title>
 <programlisting>
 <link linkend="connecttabnotify">ConnectTabNotify</link>
 </programlisting>
 </section>
 
-<section id="en-ConnectTreeNotify"><title>connectTreeViewEvent</title>
+<section id="enConnectTreeViewEvent"><title>connectTreeViewEvent</title>
 <programlisting>
 <link linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>
+
 </programlisting>
 </section>
 
-<section id="en-DefListDragHandler"><title>defListDragHandler</title>
+<section id="enConnectUpDownEvent"><title>conectUpDownEvent</title>
 <programlisting>
+<link linkend="mthConnectUpDownEvent">connectUpDownEvent</link>
+
+<![CDATA[
+>>--connectUpDownEvent(--id--,--event--+----------------+--)-------------------><
+                                       +--,-methodName--+
+]]>
+</programlisting>
+
+</section>
+
+<section id="enDefListDragHandler"><title>defListDragHandler</title>
+<programlisting>
+
 <link linkend="mthDefListDragHandler">defListDragHandler</link>
 <![CDATA[
 >>-defListDragHandler------------------------------------------><
@@ -305,7 +335,7 @@
 </programlisting>
 </section>
 
-<section id="en-DefTreeDragHandler"><title>defTreeDragHandler</title>
+<section id="enDefTreeDragHandler"><title>defTreeDragHandler</title>
 <programlisting>
 <link linkend="mthDefTreeDragHandler">defTreeDragHandler</link>
 </programlisting>

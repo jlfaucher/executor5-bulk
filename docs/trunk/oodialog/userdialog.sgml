@@ -132,7 +132,7 @@ updated by ooDialog.  If the programmer requires that the
 <computeroutput>SizeX</computeroutput> attribute always reflects the actual size
 of the dialog, (for a resizable dialog,) then the programmer is responsible for
 updating its value when the size of the dialog changes.  The programmer would
-use the <link linkend="mthConnectResize">ConnectResize</link> method to receive
+use the <link linkend="mthConnectResize">connectResize</link> method to receive
 notifications when the dialog changed size and update the attribute accordingly.
 </para></listitem></varlistentry>
 <varlistentry><term>SizeY</term>
@@ -6234,201 +6234,203 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
     <para>
-      The arguments are:
+      The resource <link linkend="idArgument">ID</link> for the control.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>name</term>
+    <listitem>
+    <para>
+      The name of the data attribute associated with the dialog item. Using this argument performs the
+      same function as the <link linkend="mthConnectListBox">connectListBox</link>() method for
+      single selection list boxes, or the <link
+      linkend="mthConnectMultiListBox">connectListBox</link>() method for multi selection list
+      boxes. The documentation for the <link linkend="mthConnectEntryLine">connectEntryLine</link>()
+      method has a good description of the concept of the data attribute.
+    </para>
+    <para>
+      If you omitt this argument then the data attribute is constructed automatically and named by
+      concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA || id</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>x, y, cx, cy</term>
+    <listitem>
+    <para>
+      The  control <link linkend="listCommonArguments">coordinates</link>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+      separated by spaces:
+    </para>
+    <simplelist type='vert' columns='3'>
+      <member>MULTI   </member>
+      <member>NOTIFY  </member>
+      <member>SORT    </member>
+      <member>COLUMNS </member>
+      <member>VSCROLL </member>
+      <member>HSCROLL </member>
+      <member>MCOLUMN </member>
+      <member>PARTIAL </member>
+      <member>SBALWAYS</member>
+      <member>KEYINPUT</member>
+      <member>EXTSEL  </member>
+      <member>HIDDEN  </member>
+      <member>GROUP   </member>
+      <member>DISABLED</member>
+      <member>NOBORDER</member>
+      <member>NOTAB   </member>
+    </simplelist>
     <variablelist>
-      <varlistentry><term>id</term>
+      <varlistentry><term>MULTI</term>
       <listitem>
-        <para>
-          The resource <link linkend="idArgument">ID</link> for the control.
-        </para>
+      <para>
+        Makes the list box a multiple choice list box, that is, you can select more than one line.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>name</term>
+      <varlistentry><term>NOTIFY</term>
       <listitem>
-        <para>
-          The name of the data attribute associated with the dialog item. Using this argument performs the
-          same function as the <link linkend="mthConnectListBox">connectListBox</link>() method for
-          single selection list boxes, or the <link
-          linkend="mthConnectMultiListBox">connectListBox</link>() method for multi selection list
-          boxes. The documentation for the <link linkend="mthConnectEntryLine">connectEntryLine</link>()
-          method has a good description of the concept of the data attribute.
-        </para>
-        <para>
-          If you omitt this argument then the data attribute is constructed automatically and named by
-          concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA || id</computeroutput>.
-        </para>
+      <para>
+        The list box only sends the DBLCLICK, SELCHANGE, and SELCANCEL <link linkend="ovvEvents">event</link>
+        notifications when it has the NOTIFY style.  All other event notifications are always sent. Use the <link
+        linkend="mthConnectListBoxEvent">connectListBoxEvent</link>() method to connect event notifications to a
+        method in the Rexx dialog.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>x, y, cx, cy</term>
+      <varlistentry><term>SORT</term>
       <listitem>
-        <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>.
-        </para>
+      <para>
+        The items in the dialog are listed in the noted order.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>style</term>
+      <varlistentry><term>COLUMNS</term>
       <listitem>
-        <para>
-          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-          separated by spaces:
-        </para>
-        <simplelist type='vert' columns='3'>
-          <member>MULTI   </member>
-          <member>NOTIFY  </member>
-          <member>SORT    </member>
-          <member>COLUMNS </member>
-          <member>VSCROLL </member>
-          <member>HSCROLL </member>
-          <member>MCOLUMN </member>
-          <member>PARTIAL </member>
-          <member>SBALWAYS</member>
-          <member>KEYINPUT</member>
-          <member>EXTSEL  </member>
-          <member>HIDDEN  </member>
-          <member>GROUP   </member>
-          <member>DISABLED</member>
-          <member>NOBORDER</member>
-          <member>NOTAB   </member>
-        </simplelist>
-        <variablelist>
-          <varlistentry><term>MULTI</term>
-          <listitem>
-            <para>
-              Makes the list box a multiple choice list box, that is, you can select more than one line.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOTIFY</term>
-          <listitem>
-            <para>
-              A message is posted whenever the user selects an item of the list box. To use this feature
-              you have to connect the list to a method (see <link linkend="h000132">ConnectList</link>).
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>SORT</term>
-          <listitem>
-            <para>
-              The items in the dialog are listed in the noted order.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>COLUMNS</term>
-          <listitem>
-            <para>
-              The list box can handle tab characters ("09"x). Use this option together with the
-              SetListTabulators method (see page <link linkend="h000435">SetListTabulators</link>) to
-              have more than one column in a list.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>VSCROLL</term>
-          <listitem>
-            <para>
-              Adds a vertical scroll bar to the list box. Scroll bars appear only if the list contains
-              more lines than can fit in the available space.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HSCROLL</term>
-          <listitem>
-            <para>
-              Adds a horizontal scroll bar to the list box. See also <link
-              linkend="setlistwidth">SetListWidth</link>.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>MCOLUMN</term>
-          <listitem>
-            <para>
-              Makes the list box a multicolumn list box that can be scrolled horizontally. <link
-              linkend="setlistcolumnwidth">SetListColumnWidth</link> sets the width of the columns.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>PARTIAL</term>
-          <listitem>
-            <para>
-              The size of the list box equals the size specified by the application when it created the
-              list box. Windows usually sizes a list box such that the list box does not display partial
-              items.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>SBALWAYS</term>
-          <listitem>
-            <para>
-              The list box shows a disabled scroll bar if there is no need to scroll. If you do not
-              specify this option, the scroll bar is hidden when the list box does not contain enough
-              items.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>KEYINPUT</term>
-          <listitem>
-            <para>
-              Specifies that the owner of the list box receives WM_VKEYTOITEM messages whenever the user
-              presses a key and the list box has the input focus. This enables an application to perform
-              special processing on the keyboard input.
-            </para>
-            <para>
-              To take advantage of this style, the programmer would need to use the <link
-              linkend="mthAddUserMsg">addUserMsg</link>() method to recieve the keyboard event
-              notification. Furture versions of ooDialog may support this event directly.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>EXTSEL</term>
-          <listitem>
-            <para>
-              Allows multiple items to be selected by using the SHIFT key and the mouse or special key
-              combinations.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDDEN</term>
-          <listitem>
-            <para>
-              Create the control without the <link linkend="wsvisible">visible</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DISABLED</term>
-          <listitem>
-            <para>
-              Create the control without the <link linkend="wsdisabled">enabled</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>GROUP</term>
-          <listitem>
-            <para>
-              Create the control with the <link linkend="wsgroup">group</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOTAB</term>
-          <listitem>
-            <para>
-              Create the control without the <link linkend="wstabstop">tabstop</link> style. By default
-              the list box control is created with the tabstop style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOBORDER</term>
-          <listitem>
-            <para>
-              Create the control without the <link linkend="wsborder">border</link> style.  By default
-              list box controls are created with a border.
-            </para>
-          </listitem></varlistentry>
-        </variablelist>
+      <para>
+        The list box can handle tab characters ("09"x). Use this option together with the
+        SetListTabulators method (see page <link linkend="h000435">SetListTabulators</link>) to
+        have more than one column in a list.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>VSCROLL</term>
+      <listitem>
+      <para>
+        Adds a vertical scroll bar to the list box. Scroll bars appear only if the list contains
+        more lines than can fit in the available space.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HSCROLL</term>
+      <listitem>
+      <para>
+        Adds a horizontal scroll bar to the list box. See also <link
+        linkend="setlistwidth">SetListWidth</link>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MCOLUMN</term>
+      <listitem>
+      <para>
+        Makes the list box a multicolumn list box that can be scrolled horizontally. <link
+        linkend="setlistcolumnwidth">SetListColumnWidth</link> sets the width of the columns.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>PARTIAL</term>
+      <listitem>
+      <para>
+        The size of the list box equals the size specified by the application when it created the
+        list box. Windows usually sizes a list box such that the list box does not display partial
+        items.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SBALWAYS</term>
+      <listitem>
+      <para>
+        The list box shows a disabled scroll bar if there is no need to scroll. If you do not
+        specify this option, the scroll bar is hidden when the list box does not contain enough
+        items.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>KEYINPUT</term>
+      <listitem>
+      <para>
+        Specifies that the owner of the list box receives WM_VKEYTOITEM messages whenever the user
+        presses a key and the list box has the input focus. This enables an application to perform
+        special processing on the keyboard input.
+      </para>
+      <para>
+        To take advantage of this style, the programmer would need to use the <link
+        linkend="mthAddUserMsg">addUserMsg</link>() method to recieve the keyboard event
+        notification. Furture versions of ooDialog may support this event directly.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>EXTSEL</term>
+      <listitem>
+      <para>
+        Allows multiple items to be selected by using the SHIFT key and the mouse or special key
+        combinations.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HIDDEN</term>
+      <listitem>
+      <para>
+        Create the control without the <link linkend="wsvisible">visible</link> style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DISABLED</term>
+      <listitem>
+      <para>
+        Create the control without the <link linkend="wsdisabled">enabled</link> style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>GROUP</term>
+      <listitem>
+      <para>
+        Create the control with the <link linkend="wsgroup">group</link> style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOTAB</term>
+      <listitem>
+      <para>
+        Create the control without the <link linkend="wstabstop">tabstop</link> style. By default
+        the list box control is created with the tabstop style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOBORDER</term>
+      <listitem>
+      <para>
+        Create the control without the <link linkend="wsborder">border</link> style.  By default
+        list box controls are created with a border.
+      </para>
       </listitem></varlistentry>
     </variablelist>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The possible return values are:
-      <variablelist>
+  <para>
+    The possible return values are:
+    <variablelist>
       <varlistentry><term>0</term>
       <listitem>
-        <para>
-          Success.
-        </para>
+      <para>
+        Success.
+      </para>
       </listitem></varlistentry>
       <varlistentry><term>less than 0</term>
       <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
+      <para>
+        Error with the in-memory dialog template or with the resource ID.
+      </para>
       </listitem></varlistentry>
-      </variablelist>
-    </para>
+    </variablelist>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 

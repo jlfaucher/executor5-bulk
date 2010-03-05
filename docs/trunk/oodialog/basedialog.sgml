@@ -271,16 +271,12 @@
 <entry><link linkend="mthConnectFKeyPressBaseDialog">ConnectFKeyPress</link></entry>
 </row>
 <row>
-<entry>ConnectHelp</entry>
-<entry><link linkend="mthConnectHelp">ConnectHelp</link></entry>
+<entry><link linkend="mthConnectHelp">connectHelp</link></entry>
+<entry>Connects the Windows Help event to a method in the Rexx dialog</entry>
 </row>
 <row>
 <entry>ConnectKeyPress</entry>
 <entry><link linkend="mthConnectKeyPressBaseDialog">ConnectKeyPress</link></entry>
-</row>
-<row>
-<entry>ConnectList</entry>
-<entry><link linkend="h000132">ConnectList</link></entry>
 </row>
 <row>
 <entry>ConnectListBox</entry>
@@ -299,32 +295,32 @@
 <entry><link linkend="connecttreecontrol">ConnectTreeControl</link></entry>
 </row>
 <row>
-<entry>ConnectListLeftDoubleClick</entry>
-<entry><link linkend="clldcm">ConnectListLeftDoubleClick</link></entry>
+<entry><link linkend="mthConnectUpDownEvent">connectUpDownEvent</link></entry>
+<entry>Connects an UpDown control's event notification to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry>ConnectMouseCapture</entry>
 <entry><link linkend="connectmousecapture">ConnectMouseCapture</link></entry>
 </row>
 <row>
-<entry>ConnectMove</entry>
-<entry><link linkend="connectmove">ConnectMove</link></entry>
+<entry><link linkend="mthConnectMove">connectMove</link></entry>
+<entry>Connects the dialog move event notification to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry>ConnectMultiListBox</entry>
 <entry><link linkend="mthConnectMultiListBox">ConnectMultiListBox</link></entry>
 </row>
 <row>
-<entry>ConnectPosChanged</entry>
-<entry><link linkend="connectposchanged">ConnectPosChanged</link></entry>
+<entry><link linkend="mthConnectPosChanged">connectPosChanged</link></entry>
+<entry>Connects the dialog position has changed event notification to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry>ConnectRadioButton</entry>
 <entry><link linkend="mthConnectRadioButton">ConnectRadioButton</link></entry>
 </row>
 <row>
-<entry>ConnectResize</entry>
-<entry><link linkend="mthConnectResize">ConnectResize</link></entry>
+<entry><link linkend="mthConnectResize">connectResize</link></entry>
+<entry>Connects the dialog size event notification to a method in the Rexx dialog</entry>
 </row>
 <row>
 <entry>connectButtonEvent</entry>
@@ -332,7 +328,7 @@
 </row>
 <row>
 <entry><link linkend="mthConnectCommandEvents">connectCommandEvents</link></entry>
-<entry>connect a command event of a dialog control to a method</entry>
+<entry>Connects a command event notification from a dialog control to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry>connectComboBoxEvent</entry>
@@ -395,8 +391,8 @@
 <entry><link linkend="h001026">CreateBrush</link></entry>
 </row>
 <row>
-<entry>createFontEx</entry>
 <entry><link linkend="mthCreateFontEx">createFontEx</link></entry>
+<entry>Retrieves a handle to a logical font from the system font manager</entry>
 </row>
 <row>
 <entry>CreatePen</entry>
@@ -1250,8 +1246,8 @@
 <entry><link linkend="update">Update</link></entry>
 </row>
 <row>
-<entry>Validate</entry>
-<entry><link linkend="h001462">Validate</link></entry>
+<entry>validate</entry>
+<entry><link linkend="mthValidate">validate</link></entry>
 </row>
 <row>
 <entry>VScrollPos</entry>
@@ -3028,7 +3024,7 @@ the invocation of <link linkend="h002048">StartIt</link>).
 
 <para>The GetEditControl method returns an object of
 the EditControl class that is assigned to the entry line with the specified
-ID. The EditControl class (see <link linkend="editcontrolc">EditControl Class</link>)
+ID. The EditControl class (see <link linkend="clsEdit">EditControl Class</link>)
 provides methods to query and manipulate edit controls.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3055,7 +3051,7 @@ is empty, the dialog is not valid.
 <![CDATA[
 ::class MyDlgClass subclass UserDialog inherit AdvancedControls
 
-::method Validate
+::method validate
   di = self~GetEditControl("NAME")
   if di == .Nil then return 0
   if di~Title~space(0) \="" then return 1
@@ -3910,22 +3906,41 @@ the invocation of <link linkend="h002048">StartIt</link>).
 <!-- <section id="sctConnectingEvents"><title>Connecting Events</title> END   -->
 
 
-<section id="man0002"><title>Connecting Attributes</title>
-<indexterm><primary>connecting attributes</primary></indexterm>
+<section id="sctDataAttributes"><title>Data Attribute Methodss</title>
+<indexterm><primary>data attributes</primary></indexterm>
+<indexterm><primary>connecting data attributes</primary></indexterm>
 <indexterm><primary>dialog object</primary>
 <secondary>connect attribute methods</secondary></indexterm>
+<indexterm><primary>dialog object</primary>
+<secondary>data attributes</secondary></indexterm>
 <para>
-  The following methods create a connection between a dialog control and an attribute of the dialog object. The
-  attribute is used to reflect the value associated with the dialog control.  For instance, the text of an edit control.
+  This section contains methods for working with <emphasis role="bold">data attributes</emphasis>. It contains methods
+  to create a connection between the underlying dialog control and an attribute of the Rexx dialog object. The attribute
+  is used to reflect the value associated with the underlying dialog control. For instance, the value of an <link
+  linkend="clsText">edit</link> control could be thought of as the text of the control. There are also methods
+  <emphasis role="bold">getting</emphasis> and <emphasis role="bold">setting</emphasis> the values of these attributes.
+</para>
+<para>
+  In order to better understand the data attribute methods, it is userful to first discuss this concept in general.
+  During the <link linkend="ovvHistory">original</link> development of ooDialog the abstraction used was that there were
+  only two objects.  One was the Rexx dialog object and the other was the <link
+  linkend="ovvUnderlying">underlying</link> system dialog that the user sees on the screen. Dialog controls were not
+  thought of as objects, but rather as the <emphasis role="bold">data</emphasis> of the underlying dialog.
 </para>
 <itemizedlist>
-<listitem><para>For data items, such as an entry line, list box, or combo box, an attribute
-is created and added to the dialog object. The attribute is used as an interface
-to the data of the entry line, list box, or combo box.</para></listitem>
-<listitem><para>Check boxes and radio buttons are also data items and are therefore connected
-to an attribute. The only valid values for these attributes are 1 for selected
-and 0 for not selected.
-</para></listitem></itemizedlist>
+  <listitem>
+  <para>
+    For data items, such as an entry line, list box, or combo box, an attribute is created and added to the dialog
+    object. The attribute is used as an interface to the data of the entry line, list box, or combo box.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Check boxes and radio buttons are also data items and are therefore connected to an attribute. The only valid
+    values for these attributes are 1 for selected and 0 for not selected.
+  </para>
+  </listitem>
+</itemizedlist>
 <para>In a UserDialog the Connect... attribute methods are called automatically
 from the Add... methods. The proper place for Connect... attribute methods is
 the <link linkend="mthInitDialog">InitDialog</link> method.</para>
@@ -4434,8 +4449,8 @@ say MyDialog~LISTBOX_DAYS
 
 <para>
   The SetData method transfers the values of the dialog object attributes, that are connected to dialog
-  items, to the Windows dialog controls. See the section, <link linkend="man0002">Connect Attribute
-  Methods</link> for a discussion of connecting object attributes to the underlying dialog controls.
+  items, to the Windows dialog controls. The data <link linkend="sctDataAttributes">attributes</link> section discusses
+  the many of the details concerning connecting the Rexx dialog object attributes to the underlying dialog controls.
 </para>
 <para>
   <emphasis role="bold">Note</emphasis> that this method transfers the data for every connected
@@ -5140,126 +5155,258 @@ self~setDataStem(dlgStem.)
 
 </section>
 
-<section id="man0032"><title>Standard Event Methods</title>
-<indexterm><primary>standard event methods</primary></indexterm>
-<para>The following methods are abstract methods that are called each time a
-push button with ID 1, 2, or 9 is pressed.</para>
+<section id="sctStandardEventMethods"><title>Standard Event Handling Methods</title>
+<indexterm><primary>standard event handler methods</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>standard event handlers</secondary></indexterm>
+<para>
+  The ooDialog framework provides some default command <link linkend="ovvEvents">event</link> handling methods. At this
+  time there are 3 handlers, one for the <emphasis role="italic">ok</emphasis>, the <emphasis
+  role="italic">cancel</emphasis>, and the <emphasis role="italic">help</emphasis> command events. These 3 specific
+  command events are generated when a <link linkend="clsButtonControl">button</link>, with the correct <link
+  linkend="defResourceId">resource ID</link>, is clicked or pushed. They can also be generated when a <link
+  linkend="chpMenus">menu</link> item, again with the correct resource ID, is selected. The cancel event is also
+  generated, in a dialog, when the user closes the dialog using the close icon in the title bar, or presses the escape
+  key.
+</para>
+<para>
+  When a new dialog object is instantiated, ooDialog uses the <link
+  linkend="clsEventNotification">EventNotification</link> class to automatically connect the notifications for these
+  events to the methods documented in this section. <link linkend="defSymbolicId">Symbolic</link> IDs are also defined
+  and placed in the <link linkend="atrConstDir">constDir</link>. This table summarizes these 3 events, their resource
+  IDs, symbolic IDs, and event handling methods:
+  <table id="tblStandEventHandlers" frame="all">
+  <title>Standard Event Handling</title>
+  <tgroup cols="4">
+  <thead>
+  <row>
+  <entry>Event</entry>
+  <entry>Resource ID</entry>
+  <entry>Symbolic ID</entry>
+  <entry>Default Method</entry>
+  </row>
+  </thead>
+  <tbody>
+  <row>
+  <entry>ok</entry>
+  <entry>1</entry>
+  <entry>IDOK</entry>
+  <entry><link linkend="mthOk">ok</link></entry>
+  </row>
+  <row>
+  <entry>cancel</entry>
+  <entry>2</entry>
+  <entry>IDCANCEL</entry>
+  <entry><link linkend="mthCancel">cancel</link></entry> </row>
+  <row>
+  <entry>help</entry>
+  <entry>9</entry>
+  <entry>IDHELP</entry>
+  <entry><link linkend="mthHelp">help</link></entry>
+  </row>
+  </tbody></tgroup>
+  </table>
+</para>
+<para>
+  Note that the help <emphasis role="bold">command</emphasis> event notification discussed here is not the same as the
+  Windows help event notification connected through the <link linkend="mthConnectHelp">connectHelp</link>() method.
+</para>
 
-<section id="mthOk"><title>OK</title>
-<indexterm><primary>OK</primary></indexterm>
+<section id="mthOk"><title>ok</title>
+<indexterm><primary>ok</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>ok</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~OK----------------------------------------------><
-
+>>--ok---------------------------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>The OK method is called in response to a pressed
-OK button. It calls <link linkend="h001462">Validate</link> to get its return code.
-The default return code is the self~finished attribute,
-which is usually 1, in which case the dialog is terminated. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected. You might want to override it in your subclass.
-If you do, forward the OK message to the parent class after processing has
-finished. Set the self~finished attribute
-to 1 or 0 and return it. The dialog continues executing if you return the
-value 0. See also <link linkend="h001462">Validate</link>.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example shows how to override the OK method:
+<para>
+  A default <emphasis role="italic">ok</emphasis> method is provided by the ooDialog framework. The
+  <computeroutput>ok</computeroutput> event notification is <link linkend="sctStandardEventMethods">automatically</link>
+  connected to this method. This method is meant to be overridden by the programmer if the default implementation is not
+  sufficient for the needs of the program.
+</para>
+<para>
+  The method is invoked in response to the <computeroutput>ok</computeroutput> command event. The default implementation
+  calls the <link linkend="mthValidate">validate</link>() method to determine if the dialog should close or not. If
+  <emphasis role="italic">validate</emphasis> returns true the dialog is closed. If it returns false, the dialog
+  continues to execute. The default implementation of <emphasis role="italic">validate</emphasis> always returns true.
+</para>
+<para>
+  The programmer might want to override the <emphasis role="italic">ok</emphasis> method in his subclass. In general,
+  there is probaly no need to. Anything done in the overridden <emphasis role="italic">ok</emphasis> method, could just
+  as easily be done by overriding the <link linkend="mthValidate">validate</link>() and / or the <link
+  linkend="mthLeaving"></link>() methods.
+
+  TODO NEED TO DECIDE EXACTLY WHAT TO DOCUMENT OR NOT DOCUMENT HERE
+
+  If you do, forward the OK message to the parent class after processing has finished. Set the self~finished attribute
+  to 1 or 0 and return it. The dialog continues executing if you return the value 0. See also <link
+  linkend="mthValidate">validate</link>.
+</para>
+<para>
+  <emphasis role="bold">Example:</emphasis>
+</para>
+<para>
+  The following example shows how to override the OK method.  It checks that the user really wants to quite.
+<programlisting>
+<![CDATA[
+
+::method ok unguarded
+
+  dateTime = .DateTime~new
+  currentTime = dateTime~civilTime
+
+  buttons   = "OKCANCEL"
+  defButton = "DEFBUTTON1"
+  icon      = "INFORMATION"
+  msg       = "It is now:" currentTime
+  title     = "Quitting Now"
+
+  if dateTime~hours < 16 then do
+    break = .endOfLine~copies(2)
+
+    icon = "WARNING"
+    defButton = "DEFBUTTON2"
+    chide = "It is NOT 4:00 pm." break "Are you SURE you should quite!"
+
+    msg ||= break || chide
+  end
+
+  ret = messageDialog(msg, self~hwnd, title, buttons, icon, defButton)
+
+  if ret == 1 then return self~ok:super
+  else return 0
+
+]]>
+</programlisting>
+  As noted above, rather than override the <emphasis role="italic">ok</emphasis> method the same code could have been
+  put into the <emphasis role="italic">validate</emphasis> method.
 
 <programlisting>
 <![CDATA[
-::method OK
-...
-self~ok:super()
-self~finished = 1
-return self~finished
+
+::method validate unguarded
+
+  dateTime = .DateTime~new
+  currentTime = dateTime~civilTime
+
+  buttons   = "OKCANCEL"
+  defButton = "DEFBUTTON1"
+  icon      = "INFORMATION"
+  msg       = "It is now:" currentTime
+  title     = "Quitting Now"
+
+  if dateTime~hours < 16 then do
+    break = .endOfLine~copies(2)
+
+    icon = "WARNING"
+    defButton = "DEFBUTTON2"
+    chide = "It is NOT 4:00 pm." break "Are you SURE you should quite!"
+
+    msg ||= break || chide
+  end
+
+  ret = messageDialog(msg, self~hwnd, title, buttons, icon, defButton)
+
+  if ret == 1 then return .true
+  else return .false
+
 ]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
+</para>
 </section>
 
-<section id="mthCancel"><title>Cancel</title>
-<indexterm><primary>Cancel</primary></indexterm>
+<section id="mthCancel"><title>cancel</title>
+<indexterm><primary>cancel</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>cancel</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~Cancel------------------------------------------><
-
+>>--cancel-----------------------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>The Cancel method is called in response to a pressed
-Cancel button. The default return code is the self~finished attribute, which is
-usually 1, in which case the dialog is terminated. The InitCode attribute is
-set to 2 if the dialog is terminated. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected. You might want to override it in your subclass.
-If you do, forward the Cancel message to the parent class after processing
-has finished. Set the self~finished attribute
-to 1 or 0 and return it. The dialog continues executing if you return the
-value 0.
-</para></listitem></varlistentry>
-</variablelist>
+<para>
+  A default <emphasis role="italic">cancel</emphasis> method is provided by the ooDialog framework. The
+  <computeroutput>cancel</computeroutput> event notification is <link
+  linkend="sctStandardEventMethods">automatically</link> connected to this method. This method is meant to be overridden
+  by the programmer if the default implementation is not sufficient for the needs of the program.
+</para>
+<para>
+  The method is invoked in response to the <computeroutput>cancel</computeroutput> command event. The default
+  implementation sets the <link linkend="atrInitCode">initCode</link> attribute to 2 and causes the dialog to be closed.
+</para>
+<para>
+  The programmer might want to override the <emphasis role="italic">cancel</emphasis> method in her subclass. If the
+  method is overridden, it should be an UNGUARDED method.
+
+  TODO NEED TO DECIDE EXACTLY WHAT TO DOCUMENT OR NOT DOCUMENT HERE
+
+  If you do, forward the Cancel message to the parent class after processing has finished. Set the self~finished
+  attribute to 1 or 0 and return it. The dialog continues executing if you return the value 0.
+</para>
 </section>
 
-<section id="mthHelp"><title>Help</title>
-<indexterm><primary>Help</primary></indexterm>
+<section id="mthHelp"><title>help</title>
+<indexterm><primary>help</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~Help--------------------------------------------><
-
+>>--help-------------------------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>The Help method is called in response to a pressed
-Help button. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected. You might want to override it in your subclass.
-</para></listitem></varlistentry>
-</variablelist>
+<para>
+  A default <emphasis role="italic">help</emphasis> method is provided by the ooDialog framework. The
+  <computeroutput>help</computeroutput> event notification is <link
+  linkend="sctStandardEventMethods">automatically</link> connected to this method. This method is meant to be overridden
+  by the programmer. The default implementation does nothing and returns 0. The programmer could override this method to
+  display some form of help to the user.
+</para>
 </section>
 
-<section id="h001462"><title>Validate</title>
-<indexterm><primary>Validate</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<section id="mthValidate"><title>validate</title>
+<indexterm><primary>validate</primary>
+<secondary>dialog object</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~Validate----------------------------------------><
+>>--validate---------------------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Validate method is an abstract method that
-is called to determine whether the dialog can be closed. This method is called
-by the OK method. The standard implementation is that Validate returns 1 and
-the dialog is closed. The dialog is not closed if Validate returns 0. </para>
+<para>
+  The <emphasis role="italic">validate</emphasis> method is a method that is intended to be overridden by the
+  programmer. Its purpose would be to validate the user's input and decide whether or not to close the dialog. The
+  default <link linkend="mthOk">ok</link> method implementation calls <emphasis role="italic">validate</emphasis>. If
+  the return is true, the <emphasis role="italic">ok</emphasis> method will close the dialog. If the return is false,
+  the dialog is not closed.
+</para>
+<para>
+  The default implementation of <emphasis role="italic">validate</emphasis> provided by the ooDialog framework does
+  nothing and always returns true.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>The method is designed to be defined in a subclass.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>In the following example Validate checks whether
-entry line 203 is empty. If it is empty, Validate returns
-0, which indicates that the dialog cannot be closed.
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In the following example of an override of <emphasis role="italic">validate</emphasis>, a check is done to determine
+    if the edit control with resource ID 203 is empty. If it is empty, validate returns false, which indicates that the
+    dialog cannot be closed.
 
 <programlisting>
 <![CDATA[
 ::class MyDialog subclass UserDialog
-::method Validate
-   if self~GetEntryLine(203) = "" then return 0
-   else return 1
+
+::method validate unguarded
+   if self~newEdit(203)~getText = "" then return .false
+   else return .true
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -5267,16 +5414,16 @@ entry line 203 is empty. If it is empty, Validate returns
 <indexterm><primary>leaving</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~leaving-----------------------------------------><
+>>--leaving----------------------------------------------------><
 
 
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">leaving</emphasis>leaving method is called when the underlying Windows
-  dialog is being closed.  It is intended to be over-ridden by the programmer, if desired.  The default
-  implementation does nothing. It gives the programmer a chance to do some final clean up.
+  The <emphasis role="italic">leaving</emphasis>leaving method is called when the underlying Windows dialog is being
+  closed.  It is intended to be overridden by the programmer, if desired.  The default implementation does nothing.
+  Overridding the method gives the programmer a chance to do some final clean up.
 </para>
 </section>
 
@@ -8428,7 +8575,7 @@ the control.  The program overrides this method to turn auto detection off.
 <listitem><para><link linkend="mthNoAutoDetection">NoAutoDetection</link>: Used
 in turning auto detection off.
 </para></listitem>
-<listitem><para><link linkend="mthConnectResize">ConnectResize</link>: When the
+<listitem><para><link linkend="mthConnectResize">connectResize</link>: When the
 viewer dialog is resized, the <computeroutput>onSize</computeroutput> method is
 invoked.  The size of the multi-line edit control is then changed so it
 completely takes up the client area of the dialog.  (The client area of a window
@@ -9815,7 +9962,7 @@ end
 <secondary>BaseDialog class</secondary></indexterm>
 <para>
   Prior to ooDialog version 4.1.0, menus were really only minimally supported, through a few methods of the dialog
-  class.  In ooDialog 4.1.0 true <link linkend="menuclasses">menu</link> objects were introduced.  Therefore the menu
+  class.  In ooDialog 4.1.0 true <link linkend="chpMenus">menu</link> objects were introduced.  Therefore the menu
   methods of the dialog, other than <link linkend="mthGetMenuBar">getMenuBar</link>() and <link
   linkend="mthHasMenuBar">hasMenuBar</link>(), are deprecated.  Use the methods of the menu classes directly to work
   with menus. The listing of the <link linkend="deprecatedDialogMethods">deprecated dialog methods</link> documents all
@@ -9834,7 +9981,7 @@ end
 
 <para>
   The <emphasis role="italic">getMenuBar</emphasis> method returns the <link
-  linkend="menuclasses">menu</link> object attached to the dialog, or <emphasis
+  linkend="chpMenus">menu</link> object attached to the dialog, or <emphasis
   role="bold">.nil</emphasis> if there is no menu attached.
 </para>
 <variablelist>
@@ -9984,7 +10131,7 @@ end
   <tertiary>checkMenuItem</tertiary>
 </indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="menuclasses">menu</link>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
@@ -10036,7 +10183,7 @@ end
   <tertiary>connectMenuItem</tertiary>
 </indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="menuclasses">menu</link>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
@@ -10064,7 +10211,7 @@ end
   <tertiary>disableMenuItem</tertiary>
 </indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="menuclasses">menu</link>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
@@ -10077,7 +10224,7 @@ end
   <tertiary>enableMenuItem</tertiary>
 </indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="menuclasses">menu</link>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
@@ -10113,7 +10260,7 @@ end
   <tertiary>getMenuItemState</tertiary>
 </indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="menuclasses">menu</link>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
@@ -10140,7 +10287,7 @@ end
   <tertiary>grayMenuItem</tertiary>
 </indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="menuclasses">menu</link>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
@@ -10153,7 +10300,7 @@ end
   <tertiary>setMenuItemRadio</tertiary>
 </indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="menuclasses">menu</link>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
@@ -10166,7 +10313,7 @@ end
   <tertiary>uncheckMenuItem</tertiary>
 </indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="menuclasses">menu</link>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
