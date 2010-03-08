@@ -153,8 +153,8 @@ listed in the following DialogControl Instance Methods table.
 <entry><link linkend="mthConnectFKeyPressDialogControl">ConnectFKeyPress</link></entry>
 </row>
 <row>
-<entry>ConnectKeyPress</entry>
-<entry><link linkend="mthConnectKeyPressDialogControl">ConnectKeyPress</link></entry>
+<entry>connectKeyPress</entry>
+<entry><link linkend="mthConnectKeyPressDialogControl">connectKeyPress</link></entry>
 </row>
 <row>
 <entry>CreateBrush</entry>
@@ -1981,18 +1981,18 @@ See <link linkend="h000584">SetValue</link> for more information.
 programmer defines in the parent dialog class.
 </para>
 
-<section id="mthConnectKeyPressDialogControl"><title>ConnectKeyPress</title>
-<indexterm><primary>ConnectKeyPress</primary>
+<section id="mthConnectKeyPressDialogControl"><title>connectKeyPress</title>
+<indexterm><primary>connectKeyPress</primary>
 <secondary>DialogControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~ConnectKeyPress(--msgToRaise--,--keys--+-----------+--)----><
+>>-aDialogControl~connectKeyPress(--msgToRaise--,--keys--+-----------+--)----><
                                                          +-,-filter--+
 
 ]]>
 </programlisting>
 
-<para>The <computeroutput>ConnectKeyPress</computeroutput> method connects a key
+<para>The <computeroutput>connectKeyPress</computeroutput> method connects a key
 down event, when the control has the keyboard focus, with a programmer defined
 method in the parent dialog of the control.  The underlying Windows dialog must
 exist before this method can be invoked.
@@ -2002,13 +2002,13 @@ This method is only available on systems running Windows XP or later.  On
 earlier versions of Windows, the method will fail and return -4.
 </para></note>
 <para>The arguments, return values, and behavior of this method are the same as
-those for the <computeroutput>ConnectKeyPress</computeroutput> method of the
+those for the <computeroutput>connectKeyPress</computeroutput> method of the
 <computeroutput>BaseDialog</computeroutput>.  However, the method of the
 <computeroutput>BaseDialog</computeroutput> connects any key down event when the
 dialog is the active window and this method of the <computeroutput>
 DialogControl</computeroutput> only connects the key down events when the
 specific control has the focus.  See the <link
-linkend="mthConnectKeyPressBaseDialog">ConnectKeyPress</link> method of the
+linkend="mthConnectKeyPressBaseDialog">connectKeyPress</link> method of the
 <computeroutput>BaseDialog</computeroutput> for a detailed description of
 the arguments, return values, and behavior.
 </para>
@@ -2249,7 +2249,7 @@ already connected to a key down event for this dialog control.
 </emphasis></term>
 <listitem><para>The ooDialog method connected to the F key down event receives
 five arguments.  This arguments are described in detail in the <link
-linkend="keyDownEventDialogControl">ConnectKeyPress</link> method of the
+linkend="keyDownEventDialogControl">connectKeyPress</link> method of the
 <computeroutput>DialogControl</computeroutput>.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2319,7 +2319,7 @@ earlier versions of Windows, the method will fail and return -4.
 those for the <computeroutput>DisonnectKeyPress</computeroutput> method of the
 <computeroutput>BaseDialog</computeroutput>.  However, this method only works
 for connections made using the <computeroutput>DialogControl's</computeroutput>
-<link linkend="mthConnectKeyPressDialogControl"> ConnectKeyPress</link> method.
+<link linkend="mthConnectKeyPressDialogControl"> connectKeyPress</link> method.
 It can not work with a connection made though the
 <computeroutput>BaseDialog's</computeroutput> method. See the
 <link linkend="mthDisconnectKeyPressBaseDialog"> DisconnectKeyPress</link>
@@ -2409,7 +2409,7 @@ earlier versions of Windows, the method will fail and return -4.
 those for the <computeroutput>HasKeyPressConnection</computeroutput> method of
 the <computeroutput>BaseDialog</computeroutput>. However, this method only works
 for connections made using the <computeroutput>DialogControl's</computeroutput>
-<link linkend="mthConnectKeyPressDialogControl"> ConnectKeyPress</link> method.
+<link linkend="mthConnectKeyPressDialogControl"> connectKeyPress</link> method.
 It can not work with a connection made though the
 <computeroutput>BaseDialog's</computeroutput> method.  The <link
 linkend="mthHasKeyPressConnectionBaseDialog"> HasKeyPressConnection</link>

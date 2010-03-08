@@ -45,7 +45,8 @@
 <indexterm><primary>The Dialog Object</primary></indexterm>
 <para>
   All instantiated Rexx dialog objects have a broad base of methods in common. These methods are the same for all
-  dialogs regardless of how the <link linkend="ovvDialogTemplate">dialog template</link> is implemented.
+  dialogs regardless of the class of the dialog or how the <link linkend="ovvDialogTemplate">dialog template</link> is
+  created.
 </para>
 <para>
   The dialog object here is an abstract concept, used to make it simpler to understand the basic concepts. To
@@ -58,37 +59,35 @@
 
 <section id="tblDialogObjectMethods"><Title>Dialog Object Methods</Title>
 <para>
-  The following table cross references the descriptions for all of the dialog object class methods, attributes, and
-  instance methods:
-<table id="t000013" frame="all">
-<title>Dialog Object Method Reference</title>
+  The following table lists the class methods, attributes, and instance methods that all dialogs have in common:
+<table id="t000013" frame="all"> <title>Dialog Object Method Reference</title>
 <tgroup cols="2">
 <thead>
 <row>
-<entry>Item...</entry>
-<entry>...description</entry>
+<entry>Dialog Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry align="center"><emphasis role="bold">Class Method</emphasis></entry>
-<entry align="center"><emphasis role="bold">Link</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>getFontName (Class method)</entry>
-<entry><link linkend="mthClsGetFontName">getFontName</link></entry>
+<entry><link linkend="mthClsGetFontName">getFontName</link> (Class method)</entry>
+<entry>Returns the default font for all dialogs.</entry>
 </row>
 <row>
-<entry>getFontSize (Class method)</entry>
-<entry><link linkend="mthClsGetFontSize">getFontSize</link></entry>
+<entry><link linkend="mthClsGetFontSize">getFontSize</link> (Class method)</entry>
+<entry>Returns the default font size for all dialogs.</entry>
 </row>
 <row>
-<entry>setDefaultFont (Class method)</entry>
-<entry><link linkend="mthClsSetDefaultFont">setDefaultFont</link></entry>
+<entry><link linkend="mthClsSetDefaultFont">setDefaultFont</link> (Class method)</entry>
+<entry>Sets the default font name and size for all dialogs.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
-<entry align="center"><emphasis role="bold">Link</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
 <entry><link linkend="atrAutoDetect">autoDetect</link> (Attribute)</entry>
@@ -132,7 +131,7 @@
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Link</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
 <entry>AbsRect2LogRect</entry>
@@ -259,8 +258,8 @@
 <entry>connect a command event of a dialog control to a method</entry>
 </row>
 <row>
-<entry>ConnectDraw</entry>
-<entry><link linkend="h111111">ConnectDraw</link></entry>
+<entry><link linkend=""mthConnectDraw"">connectDraw</link></entry>
+<entry>Connects the draw item event notification to a method in the Rexx dialog</entry>
 </row>
 <row>
 <entry>ConnectEntryLine</entry>
@@ -275,8 +274,8 @@
 <entry>Connects the Windows Help event to a method in the Rexx dialog</entry>
 </row>
 <row>
-<entry>ConnectKeyPress</entry>
-<entry><link linkend="mthConnectKeyPressBaseDialog">ConnectKeyPress</link></entry>
+<entry><link linkend="mthConnectKeyPressBaseDialog">connectKeyPress</link></entry>
+<entry>Connects a key press (a key is typed) with a method in the Rexx dialog</entry>
 </row>
 <row>
 <entry>ConnectListBox</entry>
@@ -299,8 +298,10 @@
 <entry>Connects an UpDown control's event notification to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>ConnectMouseCapture</entry>
-<entry><link linkend="connectmousecapture">ConnectMouseCapture</link></entry>
+<entry><link linkend="mthConnectMouseCapture">connectMouseCapture</link></entry>
+<entry>
+  Connects the event notification that the dialog is losing the mouse capture to a method in the Rexx dialog.
+</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectMove">connectMove</link></entry>
