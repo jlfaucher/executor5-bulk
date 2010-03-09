@@ -50,8 +50,8 @@
 <indexterm><primary>connect event methods</primary>
 <secondary>dialog object</secondary></indexterm>
 <para>
-  The dialog object methods that create a connection between a Windows <link linkend="ovvEvents">event</link> and a
-  method of the Rexx dialog object are all implemented in the <link
+  The dialog object methods that create a connection between a Windows <link linkend="ovvEvents">event</link>
+  notification and a method of the Rexx dialog object are all implemented in the <link
   linkend="clsEventNotification">EventNotification</link> class. These methods are documented here.
 </para>
 
@@ -1057,18 +1057,18 @@ Help request:
 
 </section>
 
-<section id="mthConnectFKeyPressBaseDialog"><title>ConnectFKeyPress</title>
-<indexterm><primary>ConnectFKeyPress</primary>
+<section id="mthConnectFKeyPressBaseDialog"><title>connectFKeyPress</title>
+<indexterm><primary>connectFKeyPress</primary>
 <secondary>BaseDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~ConnectFKeyPress(--msgToRaise--)-------------><
+>>-aDialogControl~connectFKeyPress(--msgToRaise--)-------------><
 
 
 ]]>
 </programlisting>
 
-<para>The <computeroutput>ConnectFKeyPress</computeroutput> method connects a
+<para>The <computeroutput>connectFKeyPress</computeroutput> method connects a
 function key press to a method in the dialog instance.  This works for function
 keys F2 through F24, without the shift, control, or alt keys also being pressed.
 The underlying Windows dialog must exist before this method can be invoked.
@@ -1494,18 +1494,8 @@ lo word resource ID:       1003
 <indexterm><primary>connectNotifyEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~connectNotifyEvent(--id--,--"--+-OUTOFMEMORY-+-->
-                                                      +-CLICK-------+
-                                                      +-DBLCLK------+
-                                                      +-ENTER-------+
-                                                      +-RCLICK------+
-                                                      +-RDBLCLK-----+
-                                                      +-GOTFOCUS----+
-                                                      +-LOSTFOCUS---+
-
->--"--+---------------+--)-------------------------------------><
-      +-,--msgToRaise-+
-
+>>--connectNotifyEvent(--id--,--event--+---------------+--)--------------------><
+                                       +-,--methodName-+
 
 ]]>
 </programlisting>
@@ -1554,7 +1544,7 @@ to a method.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
+<varlistentry><term>methodName</term>
 <listitem><para>The message that is to be sent whenever the specified notification is
 received. Provide a method with a matching name. If you omit this argument,
 the event is preceded by <computeroutput>On</computeroutput>.
@@ -1602,18 +1592,18 @@ but not before init:super has been called.
 </para></note>
 </section>
 
-<section id="mthConnectStaticNotify"><title>connectStaticNotify</title>
-<indexterm><primary>connectStaticNotify</primary></indexterm>
+<section id="mthConnectStaticEvent"><title>connectStaticEvent</title>
+<indexterm><primary>connectStaticEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectStaticNotify(--id--,--"event"--,-+---------------+--)--------><
-                                            +-,--methodName-+
+>>--connectStaticNotify(--id--,--event--,-+---------------+--)-----------------><
+                                          +-,--methodName-+
 
 ]]>
 </programlisting>
 
 <para>
-  The connectStaticNotify connects a notification message from a static control to a method, defined by
+  The connectStaticEvent connects a notification message from a static control to a method, defined by
   the programmer, of the dialog.  Normally, static controls do not send notification messages.  A static
   control will only send the messages when it has the SS_NOTIFY style.  The notification messages inform
   the dialog that an event has occurred with regard to the static control.
@@ -1712,7 +1702,7 @@ but not before init:super has been called.
     <orderedlist>
     <listitem>
       <para>
-        The invocation of connectStaticNotify() can be placed in the <link linkend="h000025">init</link>
+        The invocation of connectStaticEvent() can be placed in the <link linkend="h000025">init</link>
         or <link linkend="mthInitDialog">initDialog</link> method.  (Indeed the invocation can be done
         anywhere. But, it makes most sense to have the connection made before the dialog starts
         executing.) If the connection is made in the init() method, be sure that the super class init()
@@ -1742,10 +1732,10 @@ but not before init:super has been called.
 <![CDATA[
 ::method initDialog
 
-  self~connectStaticNotify(IDC_ST_EMPNO, "CLICK", empLookup)
+  self~connectStaticEvent(IDC_ST_EMPNO, "CLICK", empLookup)
 
-  self~connectStaticNotify(IDC_ST_EMPJOB, "DBLCLK", editStats)
-  self~connectStaticNotify(IDC_ST_EMPNAME, "DBLCLK", editStats)
+  self~connectStaticEvent(IDC_ST_EMPJOB, "DBLCLK", editStats)
+  self~connectStaticEvent(IDC_ST_EMPNAME, "DBLCLK", editStats)
 
   first = self~initDatabase
   self~setStats(first)
@@ -1991,27 +1981,16 @@ incorrect.
 
 </section>
 
-<section id="connecteditnotify"><title>ConnectEditNotify</title>
-<indexterm><primary>ConnectEditNotify</primary></indexterm>
+<section id="mthConnectEditEvent"><title>connectEditEvent</title>
+<indexterm><primary>connectEditEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectEditNotify(--id--,--"--+-CHANGE----+--"-->
-                                                    +-UPDATE----+
-                                                    +-ERRSPACE--+
-                                                    +-MAXTEXT---+
-                                                    +-HSCROLL---+
-                                                    +-VSCROLL---+
-                                                    +-GOTFOCUS--+
-                                                    +-LOSTFOCUS-+
-
->--+---------------+--)----------------------------------------------><
-   +-,--msgToRaise-+
-
-
+>>--connectEditEvent(--id--,--event--+---------------+--)----------------------><
+                                     +-,--methodName-+
 ]]>
 </programlisting>
 
-<para>The ConnectEditNotify method connects a particular
+<para>The connectEditEvent method connects a particular
 WM_NOTIFY message for an edit control with a method. The WM_NOTIFY message
 informs the dialog that an event has occurred with regard to the edit control.</para>
 <variablelist>
@@ -2093,7 +2072,7 @@ it to 0 when a nonnumeric value was entered:
 
 ::method Init
   self~init:super(...)
-  self~ConnectEditNotify("AMOUNT", "CHANGE")
+  self~connectEditEvent("AMOUNT", "CHANGE")
 
 ::method OnChange
   ec = self~GetEditControl("AMOUNT")
@@ -2130,16 +2109,8 @@ before init:super has been called.</para></listitem>
 <indexterm><primary>connectListBoxEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~connectListBoxEvent(--id--,--"--+-DBLCLK----+--"-->
-                                                       +-ERRSPACE--+
-                                                       +-GOTFOCUS--+
-                                                       +-LOSTFOCUS-+
-                                                       +-SELCANCEL-+
-                                                       +-SELCHANGE-+
-
->--+---------------+--)-------------------------------------------------><
-   +-,--msgToRaise-+
-
+>>--connectListBoxEvent(--id--,--event--+---------------+--)-------------------><
+                                        +-,--methodName-+
 
 ]]>
 </programlisting>
@@ -2241,21 +2212,8 @@ before init:super has been called.</para></listitem>
 <indexterm><primary>connectComboBoxEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~connectComboBoxEvent(--id--,--"--+-CHANGE-------+--"-->
-                                                        +-UPDATE-------+
-                                                        +-CLOSEUP------+
-                                                        +-DROPDOWN-----+
-                                                        +-DBLCLK-------+
-                                                        +-ERRSPACE-----+
-                                                        +-GOTFOCUS-----+
-                                                        +-LOSTFOCUS----+
-                                                        +-SELCHANGE----+
-                                                        +-SELENDOK-----+
-                                                        +-SELENDCANCEL-+
-
->--+---------------+--)----------------------------------------------------><
-   +-,--msgToRaise-+
-
+>>--connectComboBoxEvent(--id--,--event--+---------------+--)------------------><
+                                         +-,--methodName-+
 
 ]]>
 </programlisting>
@@ -2376,28 +2334,17 @@ the window handle of the combo box. Example:
 </para></note>
 </section>
 
-<section id="connectscrollbarnotify"><title>ConnectScrollBarNotify</title>
-<indexterm><primary>ConnectScrollBarNotify</primary></indexterm>
+<section id="mthConnectScrollBarEvent"><title>connectScrollBarEvent</title>
+<indexterm><primary>connectScrollBarEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectScrollBarNotify(--id--,--"--+-UP--------+--"-->
-                                                         +-DOWN------+
-                                                         +-TOP-------+
-                                                         +-BOTTOM----+
-                                                         +-PAGEUP----+
-                                                         +-PAGEDOWN--+
-                                                         +-DRAG------+
-                                                         +-ENDSCROLL-+
-                                                         +-POSITION--+
-
->--+---------------+--)---------------------------------------------------><
-   +-,--msgToRaise-+
-
+>>--connectScrollBarEvent(--id--,--event--+---------------+--)-----------------><
+                                          +-,--methodName=+
 
 ]]>
 </programlisting>
 
-<para>The ConnectScrollBarNotify method connects a particular
+<para>The connectScrollBarEvent method connects a particular
 WM_NOTIFY message for a scroll bar with a method. The WM_NOTIFY message
 informs the dialog that an event has occurred with regard to the scroll bar.</para>
 <variablelist>
@@ -2475,7 +2422,7 @@ for POSITION, which is to be 4:
 
 ::method InitDialog
   self~InitDialog:super(...)
-  self~ConnectScrollBarNotify("MYSCROLL", "POSITION")
+  self~connectScrollBarEvent("MYSCROLL", "POSITION")
 
 ::method OnPosition
   use arg ev_pos, hnd
@@ -2512,37 +2459,22 @@ keep the selected position.</para></listitem>
 </note>
 </section>
 
-<section id="h000802"><title>ConnectScrollBar</title>
-<indexterm><primary>ConnectScrollBar</primary></indexterm>
+<section id="mthConnectEachSBEvent"><title>connectEachSBEvent</title>
+<indexterm><primary>connectEachSBEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~ConnectScrollBar(--id--,--msgWhenUp--,--msgWhenDown-->
+>>--connectEachSBEvent(-id-,-mthWhenUp-,-mthWhenDown-+---------------+-+-------+-+-------+---------+-->
+                                                     +-,-mthWhenDrag-+ +-,-min-+ +-,-max-+ +-,-pos-+
 
->--+--------------------------------------------------------------------+-->
-   +-,--+-------------+--+--------------------------------------------+-+
-        +-msgWhenDrag-+  +-,--+-----+--+----------------------------+-+
-                              +-min-+  +-,--+-----+--+------------+-+
-                                            +-max-+  +-,--+-----+-+
-                                                          +-pos-+
+>--+-----------+-+-----------+-+----------+-+--------------+-+-------------+-+-------------+-)--------><
+   +-,-mthPgUp-+ +-,-mthPgDn-+ +-,-mthTop-+ +-,-progbuttom-+ +-,-progtrack-+ +-,-progendsc-+
 
->--+----------------------------------------------------------+-->
-   +-,--+----------+--+-------------------------------------+-+
-        +-progpgup-+  +-,--+----------+--+----------------+-+
-                           +-progpgdn-+  +-,--+---------+-+
-                                              +-progtop-+
-
->--+-------------------+--+------------------------------------+-->
-   +-,--+------------+-+  +-,--+-----------+--+--------------+-+
-        +-progbuttom-+         +-progtrack-+  +-,--progendsc-+
-
-
->--)-----------------------------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The ConnectScrollBar method initializes and connects
+<para>The connectEachSBEvent method initializes and connects
 a scroll bar to an Object Rexx object. Use this method in the <link linkend="mthInitDialog">InitDialog</link> method. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
@@ -2618,7 +2550,7 @@ value:
      .
      .
 ::method DefineDialog
-self~ConnectScrollBar(255,"Increase","Decrease","Drag",1,20,6)
+self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
      .
      .
      .
@@ -2641,16 +2573,12 @@ self~ConnectScrollBar(255,"Increase","Decrease","Drag",1,20,6)
 </variablelist>
 </section>
 
-<section id="allsbe"><title>ConnectAllSBEvents</title>
-<indexterm><primary>ConnectAllSBEvents</primary></indexterm>
+<section id="mthConnectAllSBEvents"><title>connectAllSBEvents</title>
+<indexterm><primary>connectAllSBEvents</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~ConnectAllSBEvents(--id--,--Prog----------------->
-
->--+----------------------------------------+--)---------------><
-   +-,--+-----+--+------------------------+-+
-        +-min-+  +-,--+-----+--+--------+-+
-                      +-max-+  +-,--pos-+
+>>--connectAllSBEvents(--id--,--methodName--+-------+-+-------+-+-------+--)---><
+                                            +-,-min-+ +-,-max-+ +-,-pos-+
 
 
 ]]>
@@ -2688,117 +2616,6 @@ self~ConnectScrollBar(255,"Increase","Decrease","Drag",1,20,6)
 <listitem><para>No error.
 </para></listitem></varlistentry>
 </variablelist>
-</listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthAddUserMsg"><title>addUserMsg</title>
-<indexterm><primary>addUserMsg</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~addUserMsg(--msgToRaise--,--msgWindows----------->
-
->--+--------------------------------------------------------------------+-->
-   +-,--filt1--+------------------------------------------------------+-+
-               +-,--wParam--+---------------------------------------+-+
-                            +-,--filt2--+-------------------------+-+
-                                        +-,--lParam--+----------+-+
-                                                     +-,--filt3-+
-
->--)-----------------------------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The addUserMsg method connects a Windows message with an Object Rexx
-method. This method is designed to be used by ooDialog programmers who are
-familiar with the Windows API.
-</para>
-<para>You have to pass the Windows message ID and the two message parameters
-(wParam and lParam) to specify the exact event you want to catch. In addition,
-you can specify filters for each parameter. Filters are useful for catching more
-than one message or one parameter with one method.
-</para>
-<para>Details for all Windows messages and their parameters are available in the
-<link linkend="defWindowsDoc">Windows documentation</link>.  The numeric value of
-the message IDs (and possibly the message parameters) can be looked up in the
-<link linkend="defPlatformSDK">Windows platform SDK</link>.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected. You can use it only within the scope of the
-BaseDialog class or its subclasses.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent to the Object Rexx dialog object each time
-the specified Windows message is caught. Provide a method with the
-same name. The maximum size for a message is limited to 256 characters.
-</para></listitem></varlistentry>
-<varlistentry><term>msgWindows</term>
-<listitem><para>The message in the Windows environment that is to be caught.
-</para></listitem></varlistentry>
-<varlistentry><term>filt1</term>
-<listitem><para>This filter is used to binary AND the incoming Windows message.
-</para></listitem></varlistentry>
-<varlistentry><term>wParam</term>
-<listitem><para>This is the first parameter that must be passed with the Windows message.
-</para></listitem></varlistentry>
-<varlistentry><term>filt2</term>
-<listitem><para>This filter is used to binary AND the <emphasis role="italic">wParam</emphasis> argument.
-</para></listitem></varlistentry>
-<varlistentry><term>lParam</term>
-<listitem><para>This is the second message parameter.
-</para></listitem></varlistentry>
-<varlistentry><term>filt3</term>
-<listitem><para>This is the filter for <emphasis role="italic">lParam</emphasis>.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem>
-<para>
-  TODO REWRITE THIS EXAMPLE TO CREATE A NEW METHOD, connectButtonClick. The following example shows an implementation of
-  the ConnectList method:
-</para>
-
-<programlisting>
-<![CDATA[
-::class BaseDialog
-      .
-      .
-      .
-::method ConnectList
-  use arg msgToRaise, id
-  self~addUserMsg(msgToRaise, "0x00000111", "0xFFFFFFFF", ,
-                 "0x0001"||id~d2x(4), "0xFFFFFFFF", 0, 0)
-]]>
-</programlisting>
-<para>Assume that this method is called with ID=254 and msgToRaise=&quot;ListChanged&quot;.
-After the ConnectList is executed, the ListChanged message is sent to the Object Rexx dialog object if the following
-conditions are true: </para>
-<itemizedlist>
-<listitem><para>Message &quot;0x00000111&quot; (WM_COMMAND) is generated by Windows in
-answer to an event (for example, a button is clicked or a list has changed).
-The filter &quot;0xFFFFFFFF&quot; ensures that only that message is caught;
-if the filter were &quot;0xFFFFEFFF&quot;, the message &quot;0x00001111&quot;
-would be caught as well.</para></listitem>
-<listitem><para>The first message parameter is &quot;0x000100FF&quot;. The first part, &quot;0x0001&quot;,
-specifies the event, and the second part, &quot;0x00FE&quot; (equals decimal
-254), specifies the dialog control where the event occurred. By using another
-filter it is possible to make more than one event a trigger for the ListChanged method; for example, filter &quot;0xFFFFFFFE&quot; would ignore
-the last bit of the ID, and this the same event for dialog item 255 would
-call ListChanged as well.</para></listitem>
-<listitem><para>The second message parameter and its filter are ignored.</para></listitem></itemizedlist>
-<para>The following example invokes a user-defined method <computeroutput>DoubleClick</computeroutput> each time the left mouse button is double-clicked: </para>
-<programlisting>
-<![CDATA[
-self~addUserMsg("DoubleCick","0x00000203","0xFFFFFFFF",0,0,0,0)
-]]>
-</programlisting>
 </listitem></varlistentry>
 </variablelist>
 </section>
@@ -3512,22 +3329,17 @@ separated by a blank). Example:
 
 </section>
 
-<section id="connecttabnotify"><title>ConnectTabNotify</title>
-<indexterm><primary>ConnectTabNotify</primary></indexterm>
+<section id="mthConnectTabEvent"><title>connectTabEvent</title>
+<indexterm><primary>connectTabEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectTabNotify(--id--,--"--+-KEYDOWN-----+--"-->
-                                                   +-SELCHANGE---+
-                                                   +-SELCHANGING-+
-
->--+---------------+--)-----------------------------------------------><
-   +-,--msgToRaise-+
-
+>>--connectTabEvent(--id--,--event--+---------------+--)-----------------------><
+                                    +-,--methodName-+
 
 ]]>
 </programlisting>
 
-<para>The ConnectTabNotify method connects a particular
+<para>The connectTabEvent method connects a particular
 WM_NOTIFY message for a tab control with a method. The WM_NOTIFY message
 informs the dialog that an event has occurred with regard to the tab control.</para>
 <variablelist>
@@ -3585,7 +3397,7 @@ is selected in the tab control PAGE:
 
 ::method Init
   self~init:super(...)
-  self~ConnectTabNotify("PAGE", "SELCHANGE")
+  self~connectTabEvent("PAGE", "SELCHANGE")
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -3621,28 +3433,17 @@ Example:
 </para></note>
 </section>
 
-<section id="connectslidernotify"><title>ConnectSliderNotify</title>
-<indexterm><primary>ConnectSliderNotify</primary></indexterm>
+<section id="mthConnectTrackBarEvent"><title>connectTrackBarEvent</title>
+<indexterm><primary>connectTrackBarEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMessageExtensions~ConnectSliderNotify(--id--,--"--+-UP-------+--"-->
-                                                      +-DOWN-----+
-                                                      +-TOP------+
-                                                      +-BOTTOM---+
-                                                      +-PAGEUP---+
-                                                      +-PAGEDOWN-+
-                                                      +-DRAG-----+
-                                                      +-POSITION-+
-                                                      +-ENDTRACK-+
-
->--+---------------+--)----------------------------------------><
-   +-,--msgToRaise-+
-
+>>--connectTrackBarEvent(--id--,--event--+---------------+--)------------------><
+                                         +-,--methodName-+
 
 ]]>
 </programlisting>
 
-<para>The ConnectSliderNotify method connects a particular
+<para>The connectTrackBarEvent method connects a particular
 WM_NOTIFY message for a slider control, which is also called a track bar,
 with a method. The WM_NOTIFY message informs the dialog that an event has
 occurred with regard to the slider control.</para>
@@ -3720,7 +3521,7 @@ for POSITION, which should be 4:
 
 ::method InitDialog
   self~InitDialog:super(...)
-  self~ConnectSliderNotify("MYSLIDER", "POSITION", PosSet)
+  self~connectTrackBarEvent("MYSLIDER", "POSITION", PosSet)
 
 ::method PosSet
   use arg ev_pos, hnd
@@ -3852,7 +3653,7 @@ slider position by extracting the high-oder word. Example:
     <orderedlist>
     <listitem>
       <para>
-        The invocation of connectStaticNotify() can be placed in the <link linkend="h000025">init</link>
+        The invocation of connectStaticEvent() can be placed in the <link linkend="h000025">init</link>
         or <link linkend="mthInitDialog">initDialog</link> method.  (Indeed the invocation can be done
         anywhere. But, it makes most sense to have the connection made before the dialog starts
         executing.) If the connection is made in the init() method, be sure that the super class init()
@@ -3882,10 +3683,10 @@ slider position by extracting the high-oder word. Example:
 <![CDATA[
 ::method initDialog
 
-  self~connectStaticNotify(IDC_ST_EMPNO, "CLICK", empLookup)
+  self~connectStaticEvent(IDC_ST_EMPNO, "CLICK", empLookup)
 
-  self~connectStaticNotify(IDC_ST_EMPJOB, "DBLCLK", editStats)
-  self~connectStaticNotify(IDC_ST_EMPNAME, "DBLCLK", editStats)
+  self~connectStaticEvent(IDC_ST_EMPJOB, "DBLCLK", editStats)
+  self~connectStaticEvent(IDC_ST_EMPNAME, "DBLCLK", editStats)
 
   first = self~initDatabase
   self~setStats(first)
@@ -3914,19 +3715,19 @@ slider position by extracting the high-oder word. Example:
 </variablelist>
 </section>
 
-<section id="mthConnectMonthCalendarNotify"><title>connectMonthCalendarNotify</title>
-<indexterm><primary>connectMonthCalendarNotify</primary></indexterm>
+<section id="mthConnectMonthCalendarEvent"><title>connectMonthCalendarEvent</title>
+<indexterm><primary>connectMonthCalendarEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectStaticNotify(--id--,--"event"--,-+---------------+--)--------><
-                                            +-,--methodName-+
+>>--connectMonthCalendarEvent(--id--,--event--,-+---------------+--)-----------><
+                                                +-,--methodName-+
 
 ]]>
 </programlisting>
 
 <para>
   PLEASE FIXE ME TODO
-  The connectStaticNotify connects a notification message from a static control to a method, defined by
+  The connectStaticEvent connects a notification message from a static control to a method, defined by
   the programmer, of the dialog.  Normally, static controls do not send notification messages.  A static
   control will only send the messages when it has the SS_NOTIFY style.  The notification messages inform
   the dialog that an event has occurred with regard to the static control.
@@ -4025,7 +3826,7 @@ slider position by extracting the high-oder word. Example:
     <orderedlist>
     <listitem>
       <para>
-        The invocation of connectStaticNotify() can be placed in the <link linkend="h000025">init</link> or <link
+        The invocation of connectStaticEvent() can be placed in the <link linkend="h000025">init</link> or <link
         linkend="mthInitDialog">initDialog</link> method.  (Indeed the invocation can be done anywhere. But, it makes
         most sense to have the connection made before the dialog starts executing.) If the connection is made in the
         init() method, be sure that the super class init() is invoked first.
@@ -4053,10 +3854,10 @@ slider position by extracting the high-oder word. Example:
 <![CDATA[
 ::method initDialog
 
-  self~connectStaticNotify(IDC_ST_EMPNO, "CLICK", empLookup)
+  self~connectStaticEvent(IDC_ST_EMPNO, "CLICK", empLookup)
 
-  self~connectStaticNotify(IDC_ST_EMPJOB, "DBLCLK", editStats)
-  self~connectStaticNotify(IDC_ST_EMPNAME, "DBLCLK", editStats)
+  self~connectStaticEvent(IDC_ST_EMPJOB, "DBLCLK", editStats)
+  self~connectStaticEvent(IDC_ST_EMPNAME, "DBLCLK", editStats)
 
   first = self~initDatabase
   self~setStats(first)
@@ -4150,12 +3951,109 @@ slider position by extracting the high-oder word. Example:
 </variablelist>
 </section>  <!-- End EventNotification::connectUpDownEvent() -->
 
+<section id="mthAddUserMsg"><title>addUserMsg</title>
+<indexterm><primary>addUserMsg</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addUserMsg(-methodName-,-winMsg-+------+-+----------+-+------+-+----------+-+------+-><
+                                    +-,-f1-+ +-,-wParam-+ +-,-f2-+ +-,-lParam-+ +-,-f3-+
+
+]]>
+</programlisting>
+
+<para>The addUserMsg method connects a Windows message with an Object Rexx
+method. This method is designed to be used by ooDialog programmers who are
+familiar with the Windows API.
+</para>
+<para>You have to pass the Windows message ID and the two message parameters
+(wParam and lParam) to specify the exact event you want to catch. In addition,
+you can specify filters for each parameter. Filters are useful for catching more
+than one message or one parameter with one method.
+</para>
+<para>Details for all Windows messages and their parameters are available in the
+<link linkend="defWindowsDoc">Windows documentation</link>.  The numeric value of
+the message IDs (and possibly the message parameters) can be looked up in the
+<link linkend="defPlatformSDK">Windows platform SDK</link>.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>msgToRaise</term>
+<listitem><para>The message that is to be sent to the Object Rexx dialog object each time
+the specified Windows message is caught. Provide a method with the
+same name. The maximum size for a message is limited to 256 characters.
+</para></listitem></varlistentry>
+<varlistentry><term>msgWindows</term>
+<listitem><para>The message in the Windows environment that is to be caught.
+</para></listitem></varlistentry>
+<varlistentry><term>filt1</term>
+<listitem><para>This filter is used to binary AND the incoming Windows message.
+</para></listitem></varlistentry>
+<varlistentry><term>wParam</term>
+<listitem><para>This is the first parameter that must be passed with the Windows message.
+</para></listitem></varlistentry>
+<varlistentry><term>filt2</term>
+<listitem><para>This filter is used to binary AND the <emphasis role="italic">wParam</emphasis> argument.
+</para></listitem></varlistentry>
+<varlistentry><term>lParam</term>
+<listitem><para>This is the second message parameter.
+</para></listitem></varlistentry>
+<varlistentry><term>filt3</term>
+<listitem><para>This is the filter for <emphasis role="italic">lParam</emphasis>.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem>
+<para>
+  TODO REWRITE THIS EXAMPLE TO CREATE A NEW METHOD, connectButtonClick. The following example shows an implementation of
+  the ConnectList method:
+</para>
+
+<programlisting>
+<![CDATA[
+::class BaseDialog
+      .
+      .
+      .
+::method ConnectList
+  use arg msgToRaise, id
+  self~addUserMsg(msgToRaise, "0x00000111", "0xFFFFFFFF", ,
+                 "0x0001"||id~d2x(4), "0xFFFFFFFF", 0, 0)
+]]>
+</programlisting>
+<para>Assume that this method is called with ID=254 and msgToRaise=&quot;ListChanged&quot;.
+After the ConnectList is executed, the ListChanged message is sent to the Object Rexx dialog object if the following
+conditions are true: </para>
+<itemizedlist>
+<listitem><para>Message &quot;0x00000111&quot; (WM_COMMAND) is generated by Windows in
+answer to an event (for example, a button is clicked or a list has changed).
+The filter &quot;0xFFFFFFFF&quot; ensures that only that message is caught;
+if the filter were &quot;0xFFFFEFFF&quot;, the message &quot;0x00001111&quot;
+would be caught as well.</para></listitem>
+<listitem><para>The first message parameter is &quot;0x000100FF&quot;. The first part, &quot;0x0001&quot;,
+specifies the event, and the second part, &quot;0x00FE&quot; (equals decimal
+254), specifies the dialog control where the event occurred. By using another
+filter it is possible to make more than one event a trigger for the ListChanged method; for example, filter &quot;0xFFFFFFFE&quot; would ignore
+the last bit of the ID, and this the same event for dialog item 255 would
+call ListChanged as well.</para></listitem>
+<listitem><para>The second message parameter and its filter are ignored.</para></listitem></itemizedlist>
+<para>The following example invokes a user-defined method <computeroutput>DoubleClick</computeroutput> each time the left mouse button is double-clicked: </para>
+<programlisting>
+<![CDATA[
+self~addUserMsg("DoubleCick","0x00000203","0xFFFFFFFF",0,0,0,0)
+]]>
+</programlisting>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="mthDefListDragHandler"><title>defListDragHandler</title>
 <indexterm><primary>defListDragHandler</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-defListDragHandler(--id--,--item--,--point--)---------------><
-
 
 ]]>
 </programlisting>
@@ -4204,7 +4102,6 @@ slider position by extracting the high-oder word. Example:
 <programlisting>
 <![CDATA[
 >>-defTreeDragHandler(--id--,--item--,--point--)---------------><
-
 
 ]]>
 </programlisting>
@@ -4259,48 +4156,30 @@ slider position by extracting the high-oder word. Example:
   replacing all of the deprecated methods.
 </para>
 
-<section><title>connectButtonNotify</title>
-<indexterm><primary>Deprecated</primary><secondary>connectButtonNotify</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectButtonNotify</tertiary></indexterm>
+<section><title>connectControl</title>
+<indexterm><primary>Deprecated</primary><secondary>connectControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectControl</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
+  linkend="mthConnectCommandEvents">connectCommandEvents</link>() method.
 </para>
 </section>
 
-<section><title>connectList</title>
-<indexterm><primary>Deprecated</primary><secondary>connectList</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectList</tertiary></indexterm>
+<section><title>connectCommonNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectCommonNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectCommonNotify</tertiary></indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method by using the <link
-  linkend="mthConnectListViewEvent">connectListBoxEvent</link>() method in this manner:
-<programlisting>
-<![CDATA[
-  -- Change the following code:
-  self~connectList(IDC_LISTBOX, onList)
-
-  -- To this code:
-  self~connectListBoxEvent(IDC_LISTBOX, "SELCHANGE", onList)
-]]>
-</programlisting>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectNotifyEvent">connectNotifyEvent</link>() method.
 </para>
 </section>
 
-<section><title>ConnectListLeftDoubleClick</title>
-<indexterm><primary>Deprecated</primary><secondary>connectListLeftDoubleClick</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectListLeftDoubleClick</tertiary></indexterm>
+<section><title>connectTreeNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectTreeNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectTreeNotify</tertiary></indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method by using the <link
-  linkend="mthConnectListViewEvent">connectListBoxEvent</link>() method in this manner:
-<programlisting>
-<![CDATA[
-  -- Change the following code:
-  self~connectListLeftDoubleClick(IDC_LISTBOX, onDoubleClick)
-
-  -- To this code:
-  self~connectListBoxEvent(IDC_LISTBOX, "DLBCLK", onDoubleClick)
-]]>
-</programlisting>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>() method.
 </para>
 </section>
 
@@ -4322,12 +4201,120 @@ slider position by extracting the high-oder word. Example:
 </para>
 </section>
 
-<section><title>connectTreeNotify</title>
-<indexterm><primary>Deprecated</primary><secondary>connectTreeNotify</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectTreeNotify</tertiary></indexterm>
+<section><title>connectButtonNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectButtonNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectButtonNotify</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>() method.
+  linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectEditNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectEditNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectEditNotify</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectEditEvent">connectEditEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectListBoxNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectListBoxNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectListBoxNotify</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectListBoxEvent">connectListBoxEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectComboBoxNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectComboBoxNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectComboBoxNotify</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectComboBoxEvent">connectComboBoxEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectScrollBarNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectScrollBarNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectScrollBarNotify</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectTabNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectTabNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectTabNotify</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTabEvent">connectTabEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectSliderNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectSliderNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectSliderNotify</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTrackBarEvent">connectTrackBarEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectStaticNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectStaticNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectStaticNotify</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectStaticEvent">connectStaticEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectScrollBar</title>
+<indexterm><primary>Deprecated</primary><secondary>connectScrollBar</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectScrollBar</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectEachSBEvent">connectEachSBEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectList</title>
+<indexterm><primary>Deprecated</primary><secondary>connectList</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectList</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method by using the <link
+  linkend="mthConnectListViewEvent">connectListBoxEvent</link>() method in this manner:
+<programlisting>
+<![CDATA[
+  -- Change the following code:
+  self~connectList(IDC_LISTBOX, onList)
+
+  -- To this code:
+  self~connectListBoxEvent(IDC_LISTBOX, "SELCHANGE", onList)
+]]>
+</programlisting>
+</para>
+</section>
+
+<section><title>connectListLeftDoubleClick</title>
+<indexterm><primary>Deprecated</primary><secondary>connectListLeftDoubleClick</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectListLeftDoubleClick</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method by using the <link
+  linkend="mthConnectListViewEvent">connectListBoxEvent</link>() method in this manner:
+<programlisting>
+<![CDATA[
+  -- Change the following code:
+  self~connectListLeftDoubleClick(IDC_LISTBOX, onDoubleClick)
+
+  -- To this code:
+  self~connectListBoxEvent(IDC_LISTBOX, "DLBCLK", onDoubleClick)
+]]>
+</programlisting>
 </para>
 </section>
 

@@ -57,10 +57,10 @@
   that are unique to the subclass.
 </para>
 
-<section id="tblDialogObjectMethods"><Title>Dialog Object Methods</Title>
+<section id="sctMethodsDlgObject"><Title>Method Table</Title>
 <para>
   The following table lists the class methods, attributes, and instance methods that all dialogs have in common:
-<table id="t000013" frame="all"> <title>Dialog Object Method Reference</title>
+<table id="tblMethodsDlgObject" frame="all"> <title>Dialog Object Method Reference</title>
 <tgroup cols="2">
 <thead>
 <row>
@@ -230,16 +230,16 @@
 <entry><link linkend="h000372">ComboDrop</link></entry>
 </row>
 <row>
-<entry>ConnectAllSBEvents</entry>
-<entry><link linkend="allsbe">ConnectAllSBEvents</link></entry>
+<entry><link linkend="mthConnectAllSBEvents">connectAllSBEvents</link></entry>
+<entry>Connects all event notifications from a scroll bar control to a single method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>ConnectAnimatedButton</entry>
-<entry><link linkend="h001393">ConnectAnimatedButton</link></entry>
+<entry><link linkend="mthInstallAnimatedButton">installAnimatedButton</link></entry>
+<entry>Installs an animated button and runs it concurrently with the main activity.</entry>
 </row>
 <row>
-<entry>installBitmapButton</entry>
 <entry><link linkend="mthInstallBitmapButton">installBitmapButton</link></entry>
+<entry>installBitmapButton</entry>
 </row>
 <row>
 <entry>connectButtonEvent</entry>
@@ -255,27 +255,27 @@
 </row>
 <row>
 <entry><link linkend="mthConnectCommandEvents">connectCommandEvents</link></entry>
-<entry>connect a command event of a dialog control to a method</entry>
+<entry>Connects a command event notification from a dialog control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry><link linkend=""mthConnectDraw"">connectDraw</link></entry>
-<entry>Connects the draw item event notification to a method in the Rexx dialog</entry>
+<entry><link linkend="mthConnectDraw">connectDraw</link></entry>
+<entry>Connects the draw item event notification to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>ConnectEntryLine</entry>
-<entry><link linkend="mthConnectEntryLine">ConnectEntryLine</link></entry>
+<entry>connectEdit</entry>
+<entry><link linkend="mthConnectEdit">connectEdit</link></entry>
 </row>
 <row>
-<entry>ConnectFKeyPress</entry>
-<entry><link linkend="mthConnectFKeyPressBaseDialog">ConnectFKeyPress</link></entry>
+<entry><link linkend="mthConnectFKeyPressBaseDialog">connectFKeyPress</link></entry>
+<entry>Connects a F key press (a F key is typed) with a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectHelp">connectHelp</link></entry>
-<entry>Connects the Windows Help event to a method in the Rexx dialog</entry>
+<entry>Connects the Windows Help event to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectKeyPressBaseDialog">connectKeyPress</link></entry>
-<entry>Connects a key press (a key is typed) with a method in the Rexx dialog</entry>
+<entry>Connects a key press (a key is typed) with a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry>ConnectListBox</entry>
@@ -295,17 +295,15 @@
 </row>
 <row>
 <entry><link linkend="mthConnectUpDownEvent">connectUpDownEvent</link></entry>
-<entry>Connects an UpDown control's event notification to a method in the Rexx dialog.</entry>
+<entry>Connects an event notification from an UpDown control to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectMouseCapture">connectMouseCapture</link></entry>
-<entry>
-  Connects the event notification that the dialog is losing the mouse capture to a method in the Rexx dialog.
-</entry>
+<entry>Connects the losing the mouse capture event notification to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectMove">connectMove</link></entry>
-<entry>Connects the dialog move event notification to a method in the Rexx dialog.</entry>
+<entry>Connects the move event notification to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry>ConnectMultiListBox</entry>
@@ -313,67 +311,62 @@
 </row>
 <row>
 <entry><link linkend="mthConnectPosChanged">connectPosChanged</link></entry>
-<entry>Connects the dialog position has changed event notification to a method in the Rexx dialog.</entry>
+<entry>Connects the position has changed event notification to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>ConnectRadioButton</entry>
-<entry><link linkend="mthConnectRadioButton">ConnectRadioButton</link></entry>
+<entry><link linkend="mthConnectRadioButton">connectRadioButton</link></entry>
+<entry>Creates and connects a data attribute to an uderlying radio button control.</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectResize">connectResize</link></entry>
-<entry>Connects the dialog size event notification to a method in the Rexx dialog</entry>
+<entry>Connects the size event notification to a method in the Rexx dialog</entry>
 </row>
 <row>
-<entry>connectButtonEvent</entry>
 <entry><link linkend="mthConnectButtonEvent">connectButtonEvent</link></entry>
+<entry>Connect an event notification from a button control to a method in the Rexx Dialog</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectCommandEvents">connectCommandEvents</link></entry>
 <entry>Connects a command event notification from a dialog control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectComboBoxEvent</entry>
 <entry><link linkend="mthConnectComboBoxEvent">connectComboBoxEvent</link></entry>
+<entry>Connects an event notification from a combo box to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectNotifyEvent</entry>
 <entry><link linkend="mthConnectNotifyEvent">connectNotifyEvent</link></entry>
+<entry>Connects a generic event notification from a dialog control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>ConnectEditNotify</entry>
-<entry><link linkend="connecteditnotify">ConnectEditNotify</link></entry>
+<entry><link linkend="mthConnectEditEvent">connectEditEvent</link></entry>
+<entry>Connects an event notification from an edit control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>ConnectListBoxEvent</entry>
 <entry><link linkend="mthConnectListBoxEvent">connectListBoxEvent</link></entry>
+<entry>Connects an event notification from a list box control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectListViewEvent</entry>
 <entry><link linkend="mthConnectListViewEvent">connectListViewEvent</link></entry>
+<entry>Connects an event notification from a list view control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectListViewEvent</entry>
-<entry><link linkend="mthConnectListViewEvent">connectListViewEvent</link></entry>
+<entry><link linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link></entry>
+<entry>Connects an event notification from a scroll bar control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>ConnectScrollBarNotify</entry>
-<entry><link linkend="connectscrollbarnotify">ConnectScrollBarNotify</link></entry>
+<entry><link linkend="mthConnectTrackBarEvent">connectTrackBarEvent</link></entry>
+<entry>Connects an event notification from a track bar control to a method in the Rexx dialog. </entry>
 </row>
 <row>
-<entry>ConnectSliderNotify</entry>
-<entry><link linkend="connectscrollbarnotify">ConnectScrollBarNotify</link></entry>
+<entry>connectStaticEvent</entry>
+<entry><link linkend="mthConnectStaticEvent">connectStaticEvent</link></entry>
 </row>
 <row>
-<entry>ConnectStaticNotify</entry>
-<entry><link linkend="mthConnectStaticNotify">connectStaticNotify</link></entry>
-</row>
-<row>
-<entry>ConnectTabNotify</entry>
-<entry><link linkend="connecttabnotify">ConnectTabNotify</link></entry>
-</row>
+<entry><link linkend="mthConnectTabEvent">connectTabEvent</link></entry>
+<entry>Connects an event notification from a tab control to a method in the Rexx dialog.</entry> </row>
 <row>
 <entry><link linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link></entry>
-<entry>Connects a tree view control event to a method in a Rexx dialog object.</entry>
+<entry>Connects an event notification from a tree view control to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthDefListDragHandler">defListDragHandler</link></entry>
@@ -384,8 +377,8 @@
 <entry>Default implementation of a drag and drop handler for a tree view control.</entry>
 </row>
 <row>
-<entry>ConnectScrollBar</entry>
-<entry><link linkend="h000802">ConnectScrollBar</link></entry>
+<entry><link linkend="mthConnectEachSBEvent">connectEachSBEvent</link></entry>
+<entry>Connects each specified event notification from a scroll bar to a separate method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry>CreateBrush</entry>
@@ -628,8 +621,8 @@
 <entry><link linkend="h000417">GetCurrentListIndex</link></entry>
 </row>
 <row>
-<entry>GetData</entry>
-<entry><link linkend="h000269">GetData</link></entry>
+<entry>getData</entry>
+<entry><link linkend="mthGetData">getData</link></entry>
 </row>
 <row>
 <entry>getDataStem</entry>
@@ -847,8 +840,8 @@
 <entry><link linkend="mthIsVisible">isVisible</link></entry>
 </row>
 <row>
-<entry>ItemTitle</entry>
-<entry><link linkend="h001348">ItemTitle</link></entry>
+<entry>getControlText</entry>
+<entry><link linkend="mthGetControlText">getControlText</link></entry>
 </row>
 <row>
 <entry>ListAddDirectory</entry>
@@ -1079,8 +1072,8 @@
 <entry><link linkend="h000418">SetCurrentListIndex</link></entry>
 </row>
 <row>
-<entry>SetData</entry>
-<entry><link linkend="h000264">SetData</link></entry>
+<entry>setData</entry>
+<entry><link linkend="mthSetData">setData</link></entry>
 </row>
 <row>
 <entry>setDataStem</entry>
@@ -1163,8 +1156,8 @@
 <entry><link linkend="h000770">SetSBRange</link></entry>
 </row>
 <row>
-<entry>SetStaticText</entry>
-<entry><link linkend="h000255">SetStaticText</link></entry>
+<entry>setStaticData</entry>
+<entry><link linkend="mthSetStaticData">setStaticData</link></entry>
 </row>
 <row>
 <entry>SetTabStop</entry>
@@ -2397,7 +2390,7 @@ to change the standard behavior.
 <para>The InitDialog method is called after the Windows dialog
 has been created. It is useful for setting data fields and initializing combo
 and list boxes. Do not use Set... methods because
-the <link linkend="h000264">SetData</link> method is executed automatically afterwards
+the <link linkend="mthSetData">setData</link> method is executed automatically afterwards
 and sets the values of all dialog items from the attributes. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
@@ -3907,18 +3900,18 @@ the invocation of <link linkend="h002048">StartIt</link>).
 <!-- <section id="sctConnectingEvents"><title>Connecting Events</title> END   -->
 
 
-<section id="sctDataAttributes"><title>Data Attribute Methodss</title>
+<section id="sctDataAttributes"><title>Data Attribute Methods</title>
 <indexterm><primary>data attributes</primary></indexterm>
 <indexterm><primary>connecting data attributes</primary></indexterm>
-<indexterm><primary>dialog object</primary>
-<secondary>connect attribute methods</secondary></indexterm>
-<indexterm><primary>dialog object</primary>
-<secondary>data attributes</secondary></indexterm>
+<indexterm><primary>get and set data methods</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connect attribute methods</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>data attributes</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>get and set data methods</secondary></indexterm>
 <para>
   This section contains methods for working with <emphasis role="bold">data attributes</emphasis>. It contains methods
   to create a connection between the underlying dialog control and an attribute of the Rexx dialog object. The attribute
   is used to reflect the value associated with the underlying dialog control. For instance, the value of an <link
-  linkend="clsEdit">edit</link> control could be thought of as the text of the control. There are also methods
+  linkend="clsEdit">edit</link> control could be thought of as the text of the control. There are also methods for
   <emphasis role="bold">getting</emphasis> and <emphasis role="bold">setting</emphasis> the values of these attributes.
 </para>
 <para>
@@ -3926,44 +3919,52 @@ the invocation of <link linkend="h002048">StartIt</link>).
   During the <link linkend="sctHistory">original</link> development of ooDialog the abstraction used was that there were
   only two objects.  One was the Rexx dialog object and the other was the <link
   linkend="ovvUnderlying">underlying</link> system dialog that the user sees on the screen. Dialog controls were not
-  thought of as objects, but rather as the <emphasis role="bold">data</emphasis> of the underlying dialog.
+  thought of as objects, but rather as the <emphasis role="bold">data</emphasis> of the underlying dialog. In this
+  abstraction, the <emphasis role="bold">value</emphasis> of the data was the <emphasis role="bold">state</emphasis> of
+  the dialog control.
 </para>
-<itemizedlist>
-  <listitem>
-  <para>
-    For data items, such as an entry line, list box, or combo box, an attribute is created and added to the dialog
-    object. The attribute is used as an interface to the data of the entry line, list box, or combo box.
-  </para>
-  </listitem>
-  <listitem>
-  <para>
-    Check boxes and radio buttons are also data items and are therefore connected to an attribute. The only valid
-    values for these attributes are 1 for selected and 0 for not selected.
-  </para>
-  </listitem>
-</itemizedlist>
-<para>In a UserDialog the Connect... attribute methods are called automatically
-from the Add... methods. The proper place for Connect... attribute methods is
-the <link linkend="mthInitDialog">InitDialog</link> method.</para>
+<para>
+  For instance, a radio button can be either checked or not checked. Therefore, its value could be 0 (not checked) or 1
+  (checked.) Thus the data of the radio button would be a 1 or a 0. Using this abstraction of two objects, the Rexx
+  dialog and the underlying on screen dialog, then leads to the idea of exchanging the data between the two objects. Or,
+  typically, getting and setting the data of the underlying dialog. To facilitate this exchange of data, for each
+  <emphasis role="bold">data item</emphasis>, (a dialog control,) in the underlying dialog an attribute is added to the
+  Rexx dialog object. This attribute is then used to exchange data between the Rexx dialog object and the underlying
+  dialog.
+</para>
+<para>
+  The operation of <emphasis role="bold">connecting</emphasis> a dialog control is the action of creating the attribute
+  (the data attribute) in the Rexx dialog object, and internally mapping the attribute to the specified dialog control
+  in the underlying dialog. The operation of <emphasis role="bold">seting data</emphasis> then becomes the action of
+  setting the state of the underlying dialog control to match the value of the corresponding attribute of the Rexx
+  dialog object The operation of <emphasis role="bold">getting data</emphasis> becomes the action of setting the value
+  of the attribute in the Rexx dialog object to match the state of the corresponding dialog control in the underlying
+  dialog.
+</para>
+<para>
+  In a <link linkend="clsUserDialog"></link>UserDialog the Connect... attribute methods are called automatically
+from the Add... methods. The proper place for Connect... attribute methods is the <link
+linkend="mthInitDialog">InitDialog</link> method.
+</para>
 
-<section id="mthConnectEntryLine"><title>ConnectEntryLine</title>
-<indexterm><primary>ConnectEntryLine</primary></indexterm>
+<section id="mthConnectEdit"><title>connectEdit</title>
+<indexterm><primary>connectEdit</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~ConnectEntryLine(--id--+------------------+--)--><
-                                      +-,--attributeName-+
-
+>>--connectEdit(--id--+------------------+--)------------------><
+                      +-,--attributeName-+
 
 ]]>
 </programlisting>
 
-<para>The ConnectEntryLine method creates a new attribute
-and connects it to the entry line id. The attribute
-has to be synchronized with the entry line manually. This can be done globally
-with the SetData and GetData methods (see page <link linkend="h000269">GetData</link>),
+<para>
+  The connectEdit method creates a new attribute in the Rexx dialog and connects it to the edit control resource id. The
+  attribute has to be synchronized with the edit control manually. This can be done globally with the setData and
+  getData methods (see page <link linkend="mthGetData">getData</link>),
 or for only one item with the SetEntryLine and GetEntryLine methods (see page <link linkend="h000466">GetEntryLine</link>). It is done automatically by <link linkend="h000048">Execute</link> when the dialog starts and after it terminates. If AutoDetection
 is enabled, or if the dialog is created dynamically (manually or based on
-a resource script), you do not have to use this method or any other Connect... methods that deal with dialog controls). </para>
+a resource script), you do not have to use this method or any other Connect... methods that deal with dialog controls).
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -4000,7 +4001,7 @@ have changed, is copied back to the attribute Name.
 
 <programlisting>
 <![CDATA[
-MyDialog~ConnectEntryLine(202, "Name")
+MyDialog~connectEdit(202, "Name")
 MyDialog~Name="Put your name here!"
 MyDialog~Execute("SHOWTOP")
 say MyDialog~Name
@@ -4027,7 +4028,7 @@ say MyDialog~Name
 <para>The connectComboBox method creates an attribute
 and connects it to a combo box. The value of the combo box, that is, the text
 in the entry line or the selected list item, is associated with this attribute.
-See <link linkend="mthConnectEntryLine">ConnectEntryLine</link> for a more detailed description.</para>
+See <link linkend="mthConnectEdit">connectEdit</link> for a more detailed description.</para>
 <para>If the combo box is of type &quot;Drop down list&quot;, you must specify &quot;LIST&quot;
 to connect an attribute with the combo box.</para>
 <variablelist>
@@ -4058,7 +4059,7 @@ to connect an attribute with the combo box.</para>
 
 <para>The ConnectCheckBox method connects a check box
 control to a newly created attribute. A check box attribute has only two valid
-values: 1 if the box has a check mark, and 0 if it has not. See <link linkend="mthConnectEntryLine">ConnectEntryLine</link> for
+values: 1 if the box has a check mark, and 0 if it has not. See <link linkend="mthConnectEdit">connectEdit</link> for
 a more detailed description.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -4075,11 +4076,11 @@ a more detailed description.</para>
 </variablelist>
 </section>
 
-<section id="mthConnectRadioButton"><title>ConnectRadioButton</title>
-<indexterm><primary>ConnectRadioButton</primary></indexterm>
+<section id="mthConnectRadioButton"><title>connectRadioButton</title>
+<indexterm><primary>connectRadioButton</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~ConnectRadioButton(--id--+------------------+---->
+>>-aBaseDialog~connectRadioButton(--id--+------------------+---->
                                         +-,--attributeName-+
 
 >--)-----------------------------------------------------------><
@@ -4088,10 +4089,10 @@ a more detailed description.</para>
 ]]>
 </programlisting>
 
-<para>The ConnectRadioButton method connects a radio
+<para>The connectRadioButton method connects a radio
 button control to a newly created attribute. A radio button attribute has
 only two valid values: 1 if the radio button is marked and 0 if it is not.
-See <link linkend="mthConnectEntryLine">ConnectEntryLine</link> for a more detailed description.</para>
+See <link linkend="mthConnectEdit">connectEdit</link> for a more detailed description.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>
@@ -4122,7 +4123,7 @@ See <link linkend="mthConnectEntryLine">ConnectEntryLine</link> for a more detai
 a newly created attribute. The value of the attribute is the number of the
 selected line. Therefore, if the attribute value is 3, the third line is currently
 selected or will be selected, depending on whether you set data to the dialog
-or receive it. See <link linkend="mthConnectEntryLine">ConnectEntryLine</link> for a more detailed description.</para>
+or receive it. See <link linkend="mthConnectEdit">connectEdit</link> for a more detailed description.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>
@@ -4153,8 +4154,8 @@ or receive it. See <link linkend="mthConnectEntryLine">ConnectEntryLine</link> f
 and connects it to the tree view <emphasis role="italic">id</emphasis>.
 The attribute has to be synchronized
 manually with the tree view. You can do this globally using the
-<link linkend="h000264">SetData</link> and
-<link linkend="h000269">GetData</link> methods
+<link linkend="mthSetData">setData</link> and
+<link linkend="mthGetData">getData</link> methods
 or methods provided by the TreeControl class.
 A tree view can contain many items. When the dialog data is set, the first
 tree view item containing the same text as the text stored in the connected
@@ -4218,9 +4219,9 @@ and connects it to the list view <emphasis role="italic">id</emphasis>.
 The <emphasis role="italic">attributeName</emphasis> is
 a string containing the numbers of the selected lines. The numbers are separated
 by blanks. Therefore, if value of the attribute after
-<link linkend="h000269">GetData</link> is "3 5 6", the third,
+<link linkend="mthGetData">getData</link> is "3 5 6", the third,
 fifth, and sixth items are currently selected,
-or will be selected when <link linkend="h000264">SetData</link>
+or will be selected when <link linkend="mthSetData">setData</link>
 is executed. For further information, refer to
 <link linkend="connecttreecontrol">ConnectTreeControl</link>.</para>
 <variablelist>
@@ -4294,7 +4295,7 @@ box), that is, you can select more than one item at the same time. The value
 of the attribute is a string containing the numbers of the selected lines.
 The numbers are separated by blank spaces. Therefore, if the attribute value
 is 3 5 6, the third, fifth, and sixth item are currently selected, or will
-be selected if SetData is executed. See <link linkend="mthConnectEntryLine">ConnectEntryLine</link> for a more
+be selected if setData is executed. See <link linkend="mthConnectEdit">connectEdit</link> for a more
 detailed description. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -4388,17 +4389,9 @@ self~AddAttribute(35, "Update+Refresh")
 </para></listitem></varlistentry>
 </variablelist>
 </section>
-</section>
 
-<section id="getsetmeth"><title>Get and Set Methods</title>
-<indexterm><primary>get and set methods</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<para>Get methods are used to retrieve the data from all or individual controls
-of a dialog. Set methods are used to set the values of all or individual controls,
-without changing the associated Object Rexx attributes.</para>
-
-<section id="h000269"><title>GetData</title>
-<indexterm><primary>GetData</primary></indexterm>
+<section id="mthGetData"><title>getData</title>
+<indexterm><primary>getData</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aBaseDialog~GetData-----------------------------------------><
@@ -4407,18 +4400,18 @@ without changing the associated Object Rexx attributes.</para>
 ]]>
 </programlisting>
 
-<para>The GetData method receives data from the Windows dialog
+<para>The getData method receives data from the Windows dialog
 and copies it to the associated object attributes. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example continues the <link linkend="h000264">SetData</link> example:
+<listitem><para>The following example continues the <link linkend="mthSetData">setData</link> example:
 
 <programlisting>
 <![CDATA[
      .
      .
      .
-MyDialog~ConnectEntryLine(102, "ENTRYLINE_1")
+MyDialog~connectEdit(102, "ENTRYLINE_1")
 MyDialog~ConnectCheckBox(201, )
 MyDialog~ConnectListbox(203, "LISTBOX_DAYS")
      .
@@ -4428,7 +4421,7 @@ MyDialog~ConnectListbox(203, "LISTBOX_DAYS")
      .
      .
      .
-MyDialog~GetData            /* retrieve dialog item value */
+MyDialog~getData            /* retrieve dialog item value */
 say MyDialog~ENTRYLINE_1
 say MyDialog~DATA201
 say MyDialog~LISTBOX_DAYS
@@ -4438,8 +4431,8 @@ say MyDialog~LISTBOX_DAYS
 </variablelist>
 </section>
 
-<section id="h000264"><title>SetData</title>
-<indexterm><primary>SetData</primary></indexterm>
+<section id="mthSetData"><title>setData</title>
+<indexterm><primary>setData</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aBaseDialog~SetData-----------------------------------------><
@@ -4449,7 +4442,7 @@ say MyDialog~LISTBOX_DAYS
 </programlisting>
 
 <para>
-  The SetData method transfers the values of the dialog object attributes, that are connected to dialog
+  The setData method transfers the values of the dialog object attributes, that are connected to dialog
   items, to the Windows dialog controls. The data <link linkend="sctDataAttributes">attributes</link> section discusses
   the many of the details concerning connecting the Rexx dialog object attributes to the underlying dialog controls.
 </para>
@@ -4469,13 +4462,13 @@ say MyDialog~LISTBOX_DAYS
     <computeroutput>ENTRYLINE_1</computeroutput>, <computeroutput>DATA201</computeroutput>, and
     <computeroutput>LISTBOX_DAYS</computeroutput>. Attribute <computeroutput>DATA201</computeroutput> is
     generated by the ConnectCheckBox method. Then the attributes are initialized with some values. This
-    does not change the dialog window, unless you run the SetData method.
+    does not change the dialog window, unless you run the setData method.
 <programlisting>
 <![CDATA[
      .
      .
      .
-MyDialog~ConnectEntryLine(102, "ENTRYLINE_1")
+MyDialog~connectEdit(102, "ENTRYLINE_1")
 MyDialog~ConnectCheckBox(201,)
 MyDialog~ConnectListbox(203, "LISTBOX_DAYS")
      .
@@ -4485,7 +4478,7 @@ MyDialog~ENTRYLINE_1="Memorial Day"
 MyDialog~DATA201=1
 MyDialog~LISTBOX_DAYS="Monday"
 
-MyDialog~SetData
+MyDialog~setData
 ]]>
 </programlisting>
   </para>
@@ -4493,41 +4486,17 @@ MyDialog~SetData
 </variablelist>
 </section>
 
-<section id="h001348"><title>ItemTitle</title>
-<indexterm><primary>ItemTitle</primary></indexterm>
+<section id="mthSetStaticData"><title>setStaticData</title>
+<indexterm><primary>setStaticData</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~ItemTitle(--id--)-------------------------------><
+>>-aBaseDialog~setStaticData(--id--,--aString--)---------------><
 
 
 ]]>
 </programlisting>
 
-<para>The ItemTitle method returns the title of the given
-dialog item. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the dialog item.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000255"><title>SetStaticText</title>
-<indexterm><primary>SetStaticText</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~SetStaticText(--id--,--aString--)---------------><
-
-
-]]>
-</programlisting>
-
-<para>The SetStaticText method changes the text of a
+<para>The setStaticData method changes the text of a
 static text control. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5118,7 +5087,6 @@ self~setDataStem(dlgStem.)
 <![CDATA[
 >>--getDataStem(--dataStem.--)-----------------------------><
 
-
 ]]>
 </programlisting>
 
@@ -5144,16 +5112,15 @@ self~setDataStem(dlgStem.)
     <variablelist>
     <varlistentry><term>dataStem.</term>
     <listitem>
-      <para>
-        The name of a stem variable to which the data is returned.  Remember the trailing period.
-      </para>
+    <para>
+      The name of a stem variable in which the data is returned.  Remember the trailing period.
+    </para>
     </listitem></varlistentry>
     </variablelist>
   </para>
 </listitem></varlistentry>
 </variablelist>
 </section>
-
 </section>
 
 <section id="sctStandardEventMethods"><title>Standard Event Handling Methods</title>
@@ -6573,7 +6540,7 @@ The default is 1.
 <para>The CombineELwithSB method connects an entry line
 with a scroll bar such that each time the slider of the scroll bar is moved,
 the value of the entry field is changed. This method must be used in a method
-registered with <link linkend="h000802">ConnectScrollBar</link>. </para>
+registered with <link linkend="mthConnectEachSBEvent">connectEachSBEvent</link>. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -7417,7 +7384,7 @@ a = .Alarm~new("17:30:00", msg)
       .
       .
 ::method Remind
-  self~SetStaticText(102, "Don&apos;t forget to go home!")
+  self~setStaticData(102, "Don&apos;t forget to go home!")
   self~ToTheTop
 </programlisting>
 
@@ -8480,6 +8447,36 @@ to manually update the display.
 </variablelist>
 </section>
 
+<section id="mthGetControlText"><title>getControlText</title>
+<indexterm><primary>getControlText</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getControlText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getControlText(--id--)-------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getControlText</emphasis> method returns the text of the specified dialog control.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem>
+<para>
+  The resource ID of the dialog control. May be numeric or symbolic.
+</para>
+</listitem></varlistentry>
+</variablelist>
+</para>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="h000246"><title>SetWindowTitle</title>
 <indexterm><primary>SetWindowTitle</primary></indexterm>
 <programlisting>
@@ -9418,6 +9415,164 @@ parse var bmpPos x y
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="h001383"><title>AddAutoStartMethod</title>
+<indexterm><primary>AddAutoStartMethod</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~AddAutoStartMethod(--+---------+--,--MethodName--+---------------+--)-><
+                                    +-InClass-+                 +-,--Parameters-+
+
+
+]]>
+</programlisting>
+
+<para>The AddAutoStartMethod method adds a method name
+and parameters to a special internal queue. All methods in this queue will
+be started automatically and run concurrently when the dialog is executed.
+The given method (MethodName) in the given class (InClass) is started concurrently with the dialog when
+the dialog is activated using the <link linkend="h000048">Execute</link> or <link linkend="h000057">ExecuteAsync</link> method. This is useful for processing animated
+buttons. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>InClass</term>
+<listitem><para>The class where the method is defined. If this argument is omitted,
+the method is assumed to be defined in the dialog class.
+</para></listitem></varlistentry>
+<varlistentry><term>MethodName</term>
+<listitem><para>The name of the method
+</para></listitem></varlistentry>
+<varlistentry><term>Parameters</term>
+<listitem><para>All parameters that are passed to this method
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example installs the ExecuteB method
+of the MyAnimatedButton class so that it is processed
+concurrently with the dialog execution:
+
+<programlisting>
+<![CDATA[
+MyDialog~AddAutoStartMethod("MyAnimatedButton", "ExecuteB")
+
+::class MyAnimatedButton
+::method ExecuteB
+     .
+     .
+     .
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthInstallAnimatedButton"><title>installAnimatedButton</title>
+<indexterm><primary>installAnimatedButton</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~installAnimatedButton(--id,--+------------+--,--->
+                                            +-msgToRaise-+
+
+>--+-----------+--,--bmpFrom--,--+-------+--,--moveX--,--moveY--,-->
+   +-AutoClass-+                 +-bmpTo-+
+
+>--+-------+--,--+-------+--,--delay--,--+------+--,--+------+--)-><
+   +-sizeX-+     +-sizeY-+               +-xNow-+     +-yNow-+
+
+
+]]>
+</programlisting>
+
+<para>The installAnimatedButton method installs an animated
+button and runs it concurrently with the main activity. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the button
+</para></listitem></varlistentry>
+<varlistentry><term>msgToRaise</term>
+<listitem><para>The name of a method within the same class. This method is called each
+time the button is clicked.
+</para></listitem></varlistentry>
+<varlistentry><term>AutoClass</term>
+<listitem><para>The class that controls the animation (default is <link linkend="anibut">AnimatedButton Class</link>)
+</para></listitem></varlistentry>
+<varlistentry><term>bmpFrom</term>
+<listitem><para>The ID of the first bitmap in the animation sequence within a binary
+resource. It can also be the name of an array stored in the .local directory
+containing handles of bitmaps to be animated and bmpTo is omitted. See <link linkend="h000667">LoadBitmap</link> for how to get bitmap
+handles. The array starts at index 1.
+</para></listitem></varlistentry>
+<varlistentry><term>bmpTo</term>
+<listitem><para>The ID of the last bitmap in the animation sequence within a binary
+resource. If omitted, bmpFrom is expected to be the
+name of an array stored in .local that holds the bitmap handles of the bitmaps
+that are to be animated.
+</para></listitem></varlistentry>
+<varlistentry><term>moveX, moveY</term>
+<listitem><para>Size of one move (in pixels)
+</para></listitem></varlistentry>
+<varlistentry><term>sizeX, sizeY</term>
+<listitem><para>Size of the bitmaps (if omitted, the size of the bitmaps is retrieved)
+</para></listitem></varlistentry>
+<varlistentry><term>delay</term>
+<listitem><para>The time in milliseconds the method waits after each move
+</para></listitem></varlistentry>
+<varlistentry><term>xnow, ynow</term>
+<listitem><para>The starting position of the bitmap
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example defines and runs an animated button. The example
+loads ten bitmaps (&quot;anibmp1.bmp&quot; to &quot;anibmp10.bmp&quot;) into memory
+and stores them into the array "My.Bitmaps" that is stored in the .local directory.
+The name "My.Bitmaps" is specified as the <computeroutput>bmpfrom</computeroutput> and <computeroutput>bmpto</computeroutput> is omitted. After the dialog execution the bitmaps are removed from
+memory again. The sample also uses a different animation class (".MyAnimation")
+which subclasses from .AnimatedButton and overrides method HitRight which
+plays a tune each time the animated bitmap hits the right border.
+</para></listitem></varlistentry>
+</variablelist>
+
+<programlisting>
+<![CDATA[
+/* store array in .local */
+.Local["My.Bitmaps"] = .array~new(10)
+/* load 10 bitmaps into .local array */
+do i= 1 to 10
+  .Local["My.Bitmaps"][i] = Dialog~LoadBitmap("anibmp"i".bmp")
+  /* you could also use .My.Bitmaps[i] =  ... */
+end
+
+/* connect bitmap sequence and .MyAnimated class with button IDANI */
+Dialog~installAnimatedButton("IDANI", ,.MyAnimation,"My.Bitmaps", ,1,1, , ,100)
+
+...
+Dialog~Execute
+...
+
+/* Free the bitmap previously loaded */
+do bmp over .Local["My.Bitmaps"] /* You could also use do bmp over .My.Bitmaps */
+   Dialog~RemoveBitmap(bmp)
+end
+
+
+::class MyAnimation subclass AnimatedButton
+
+/* play sound.wav whenever the bitmap hits the right border */
+
+::method HitRight
+   ret = Play("sound.wav", yes)
+   return self~super:hitright
+]]>
+</programlisting>
+</section>
+
 </section>
 
 <section id="man0021"><title>Device Context Methods</title>
@@ -9797,171 +9952,9 @@ a button. It is used to move bitmaps within buttons. </para>
 
 </section>
 
-<section id="man0025"><title>Animated Buttons</title>
-<indexterm><primary>animated button methods</primary></indexterm>
-<para>The methods listed below work with animated buttons.</para>
-
-<section id="h001383"><title>AddAutoStartMethod</title>
-<indexterm><primary>AddAutoStartMethod</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~AddAutoStartMethod(--+---------+--,--MethodName--+---------------+--)-><
-                                    +-InClass-+                 +-,--Parameters-+
-
-
-]]>
-</programlisting>
-
-<para>The AddAutoStartMethod method adds a method name
-and parameters to a special internal queue. All methods in this queue will
-be started automatically and run concurrently when the dialog is executed.
-The given method (MethodName) in the given class (InClass) is started concurrently with the dialog when
-the dialog is activated using the <link linkend="h000048">Execute</link> or <link linkend="h000057">ExecuteAsync</link> method. This is useful for processing animated
-buttons. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>InClass</term>
-<listitem><para>The class where the method is defined. If this argument is omitted,
-the method is assumed to be defined in the dialog class.
-</para></listitem></varlistentry>
-<varlistentry><term>MethodName</term>
-<listitem><para>The name of the method
-</para></listitem></varlistentry>
-<varlistentry><term>Parameters</term>
-<listitem><para>All parameters that are passed to this method
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example installs the ExecuteB method
-of the MyAnimatedButton class so that it is processed
-concurrently with the dialog execution:
-
-<programlisting>
-<![CDATA[
-MyDialog~AddAutoStartMethod("MyAnimatedButton", "ExecuteB")
-
-::class MyAnimatedButton
-::method ExecuteB
-     .
-     .
-     .
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h001393"><title>ConnectAnimatedButton</title>
-<indexterm><primary>ConnectAnimatedButton</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ConnectAnimatedButton(--id,--+------------+--,--->
-                                            +-msgToRaise-+
-
->--+-----------+--,--bmpFrom--,--+-------+--,--moveX--,--moveY--,-->
-   +-AutoClass-+                 +-bmpTo-+
-
->--+-------+--,--+-------+--,--delay--,--+------+--,--+------+--)-><
-   +-sizeX-+     +-sizeY-+               +-xNow-+     +-yNow-+
-
-
-]]>
-</programlisting>
-
-<para>The ConnectAnimatedButton method installs an animated
-button and runs it concurrently with the main activity. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the button
-</para></listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The name of a method within the same class. This method is called each
-time the button is clicked.
-</para></listitem></varlistentry>
-<varlistentry><term>AutoClass</term>
-<listitem><para>The class that controls the animation (default is <link linkend="anibut">AnimatedButton Class</link>)
-</para></listitem></varlistentry>
-<varlistentry><term>bmpFrom</term>
-<listitem><para>The ID of the first bitmap in the animation sequence within a binary
-resource. It can also be the name of an array stored in the .local directory
-containing handles of bitmaps to be animated and bmpTo is omitted. See <link linkend="h000667">LoadBitmap</link> for how to get bitmap
-handles. The array starts at index 1.
-</para></listitem></varlistentry>
-<varlistentry><term>bmpTo</term>
-<listitem><para>The ID of the last bitmap in the animation sequence within a binary
-resource. If omitted, bmpFrom is expected to be the
-name of an array stored in .local that holds the bitmap handles of the bitmaps
-that are to be animated.
-</para></listitem></varlistentry>
-<varlistentry><term>moveX, moveY</term>
-<listitem><para>Size of one move (in pixels)
-</para></listitem></varlistentry>
-<varlistentry><term>sizeX, sizeY</term>
-<listitem><para>Size of the bitmaps (if omitted, the size of the bitmaps is retrieved)
-</para></listitem></varlistentry>
-<varlistentry><term>delay</term>
-<listitem><para>The time in milliseconds the method waits after each move
-</para></listitem></varlistentry>
-<varlistentry><term>xnow, ynow</term>
-<listitem><para>The starting position of the bitmap
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example defines and runs an animated button. The example
-loads ten bitmaps (&quot;anibmp1.bmp&quot; to &quot;anibmp10.bmp&quot;) into memory
-and stores them into the array "My.Bitmaps" that is stored in the .local directory.
-The name "My.Bitmaps" is specified as the <computeroutput>bmpfrom</computeroutput> and <computeroutput>bmpto</computeroutput> is omitted. After the dialog execution the bitmaps are removed from
-memory again. The sample also uses a different animation class (".MyAnimation")
-which subclasses from .AnimatedButton and overrides method HitRight which
-plays a tune each time the animated bitmap hits the right border.
-</para></listitem></varlistentry>
-</variablelist>
-
-<programlisting>
-<![CDATA[
-/* store array in .local */
-.Local["My.Bitmaps"] = .array~new(10)
-/* load 10 bitmaps into .local array */
-do i= 1 to 10
-  .Local["My.Bitmaps"][i] = Dialog~LoadBitmap("anibmp"i".bmp")
-  /* you could also use .My.Bitmaps[i] =  ... */
-end
-
-/* connect bitmap sequence and .MyAnimated class with button IDANI */
-Dialog~ConnectAnimatedButton("IDANI", ,.MyAnimation,"My.Bitmaps", ,1,1, , ,100)
-
-...
-Dialog~Execute
-...
-
-/* Free the bitmap previously loaded */
-do bmp over .Local["My.Bitmaps"] /* You could also use do bmp over .My.Bitmaps */
-   Dialog~RemoveBitmap(bmp)
-end
-
-
-::class MyAnimation subclass AnimatedButton
-
-/* play sound.wav whenever the bitmap hits the right border */
-
-::method HitRight
-   ret = Play("sound.wav", yes)
-   return self~super:hitright
-]]>
-</programlisting>
-</section>
-</section>
-
-<section id="nnn"><title>Menu Methods</title>
-<indexterm><primary>menu methods</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<section id="sctMenuMethodsDlgObject"><title>Menu Methods</title>
+<indexterm><primary>dialog object</primary>
+<secondary>menu methods</secondary></indexterm>
 <para>
   Prior to ooDialog version 4.1.0, menus were really only minimally supported, through a few methods of the dialog
   class.  In ooDialog 4.1.0 true <link linkend="chpMenus">menu</link> objects were introduced.  Therefore the menu

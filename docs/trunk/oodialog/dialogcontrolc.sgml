@@ -149,8 +149,8 @@ listed in the following DialogControl Instance Methods table.
 <entry><link linkend="clienttoscreen">ClientToScreen</link></entry>
 </row>
 <row>
-<entry>ConnectFKeyPress</entry>
-<entry><link linkend="mthConnectFKeyPressDialogControl">ConnectFKeyPress</link></entry>
+<entry>connectFKeyPress</entry>
+<entry><link linkend="mthConnectFKeyPressDialogControl">connectFKeyPress</link></entry>
 </row>
 <row>
 <entry>connectKeyPress</entry>
@@ -2170,18 +2170,18 @@ to delete the current line, and Shift-Alt-D delete the current paragraph:
 
 </section>
 
-<section id="mthConnectFKeyPressDialogControl"><title>ConnectFKeyPress</title>
-<indexterm><primary>ConnectFKeyPress</primary>
+<section id="mthConnectFKeyPressDialogControl"><title>connectFKeyPress</title>
+<indexterm><primary>connectFKeyPress</primary>
 <secondary>DialogControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~ConnectFKeyPress(--msgToRaise--)-------------><
+>>-aDialogControl~connectFKeyPress(--msgToRaise--)-------------><
 
 
 ]]>
 </programlisting>
 
-<para>The <computeroutput>ConnectFKeyPress</computeroutput> method is a
+<para>The <computeroutput>connectFKeyPress</computeroutput> method is a
 convenience method that connects all F key down events, when the control has the
 keyboard focus, with a programmer defined method in the parent dialog of the
 control. (This is for the standard function keys, F2 through F24.)  The
@@ -2192,13 +2192,13 @@ This method is only available on systems running Windows XP or later.  On
 earlier versions of Windows, the method will fail and return -4.
 </para></note>
 <para>The arguments, return values, and behavior of this method are the same as
-those for the <computeroutput>ConnectFKeyPress</computeroutput> method of the
+those for the <computeroutput>connectFKeyPress</computeroutput> method of the
 <computeroutput>BaseDialog</computeroutput>.  However, the method of the
 <computeroutput>BaseDialog</computeroutput> class connects any F key down event
 when the dialog is the active window and this method of the <computeroutput>
 DialogControl</computeroutput> class only connects the F key down events when
 the specific control has the focus.  See the <link
-linkend="mthConnectFKeyPressBaseDialog">ConnectFKeyPress</link> method of the
+linkend="mthConnectFKeyPressBaseDialog">connectFKeyPress</link> method of the
 <computeroutput>BaseDialog</computeroutput> for a more detailed description of
 the arguments, return values, and behavior.
 </para>

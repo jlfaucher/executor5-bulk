@@ -216,7 +216,6 @@
 
 <![CDATA[
 >>--connectResize(--methodName--)------------------------------><
-
 ]]>
 </programlisting>
 </section>
@@ -227,18 +226,16 @@
 
 <![CDATA[
 >>--connectMove(--methodName--)--------------------------------><
-
 ]]>
 </programlisting>
 </section>
 
-<section id="enConnectPosChanged"><title>connectPoschanged</title>
+<section id="enConnectPosChanged"><title>connectPosChanged</title>
 <programlisting>
 <link linkend="mthConnectPosChanged">connectPosChanged</link>
 
 <![CDATA[
 >>--connectPosChanged(--methodName--)--------------------------><
-
 ]]>
 </programlisting>
 </section>
@@ -250,7 +247,6 @@
 <![CDATA[
 >>--connectDraw--(--+-----+--+---------------+--)--------------><
                     +--id-+  +-,--methodName-+
-
 ]]>
 </programlisting>
 </section>
@@ -261,7 +257,6 @@
 
 <![CDATA[
 >>--connectMouseCapture(--methodName--)------------------------><
-
 ]]>
 
 </programlisting>
@@ -271,6 +266,10 @@
 <programlisting>
 <link linkend="mthConnectButtonEvent">connectButtonEvent</link>
 
+<![CDATA[
+>>--connectButtonEvent(--id--,--event--+---------------+--)--------------------><
+                                       +-,--methodName=+
+]]>
 </programlisting>
 </section>
 
@@ -280,7 +279,6 @@
 
 <![CDATA[
 >>--connectCommandEvents(--id--,--methodName--)----------------><
-
 ]]>
 </programlisting>
 </section>
@@ -288,54 +286,113 @@
 <section id="enConnectComboBoxEvent"><title>connectComboBoxEvent</title>
 <programlisting>
 <link linkend="mthConnectComboBoxEvent">connectComboBoxEvent</link>
+
+<![CDATA[
+>>--connectComboBoxEvent(--id--,--event--+---------------+--)------------------><
+                                         +-,--methodName=+
+]]>
 </programlisting>
 </section>
 
 <section id="enConnectNotifyEvent"><title>connectNotifyEvent</title>
 <programlisting>
 <link linkend="mthConnectNotifyEvent">connectNotifyEvent</link>
+
+<![CDATA[
+>>--connectNotifyEvent(--id--,--event--+---------------+--)--------------------><
+                                       +-,--methodName=+
+]]>
 </programlisting>
 </section>
 
-<section id="enConnectEditNotify"><title>ConnectEditNotify</title>
+<section id="enConnectEditEvent"><title>connectEditEvent</title>
 <programlisting>
-<link linkend="connecteditnotify">ConnectEditNotify</link>
+<link linkend="mthConnectEditEvent">connectEditEvent</link>
+
+<![CDATA[
+>>--connectEditEvent(--id--,--event--+---------------+--)----------------------><
+                                     +-,--methodName=+
+]]>
 </programlisting>
 </section>
 
 <section id="enConnectListBoxEvent"><title>connectListBoxEvent</title>
 <programlisting>
 <link linkend="mthConnectListBoxEvent">connectListBoxEvent</link>
+
+<![CDATA[
+>>--connectListBoxEvent(--id--,--event--+---------------+--)-------------------><
+                                        +-,--methodName=+
+]]>
 </programlisting>
 </section>
 
 <section id="enConnectListViewEvent"><title>connectListViewEvent</title>
 <programlisting>
 <link linkend="mthConnectListViewEvent">connectListViewEvent</link>
+
+<![CDATA[
+>>--connectListviewEvent(--id--,--event--+---------------+--)------------------><
+                                         +-,--methodName=+
+]]>
 </programlisting>
 </section>
 
-<section id="enConnectScrollBarNotify"><title>ConnectScrollBarNotify</title>
+<section id="enConnectScrollBarEvent"><title>connectScrollBarEvent</title>
 <programlisting>
-<link linkend="connectscrollbarnotify">ConnectScrollBarNotify</link>
+<link linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link>
+
+<![CDATA[
+>>--connectScrollBarEvent(--id--,--event--+---------------+--)-----------------><
+                                          +-,--methodName=+
+]]>
 </programlisting>
 </section>
 
-<section id="enConnectSliderNotify"><title>ConnectSliderNotify</title>
+<section id="enConnectEachSBEvent"><title>connectEachSBEvent</title>
 <programlisting>
-<link linkend="connectscrollbarnotify">ConnectScrollBarNotify</link>
+<link linkend="mthConnectEachSBEvent">connectEachSBEvent</link>
+
+<![CDATA[
+>>--connectEachSBEvent(-id-,-mthWhenUp-,-mthWhenDown-+---------------+-+-------+-+-------+---------+-->
+                                                     +-,-mthWhenDrag-+ +-,-min-+ +-,-max-+ +-,-pos-+
+
+>--+-----------+-+-----------+-+----------+-+--------------+-+-------------+-+-------------+-)--------><
+   +-,-mthPgUp-+ +-,-mthPgDn-+ +-,-mthTop-+ +-,-progbuttom-+ +-,-progtrack-+ +-,-progendsc-+
+]]>
 </programlisting>
 </section>
 
-<section id="enConnectStaticNotify"><title>ConnectStaticNotify</title>
+<section id="enConnectTrackBarEvent"><title>connectTrackBarEvent</title>
 <programlisting>
-<link linkend="mthConnectStaticNotify">connectStaticNotify</link>
+<link linkend="mthConnectTrackBarEvent">connectTrackBarEvent</link>
+
+<![CDATA[
+>>--connectTrackBarEvent(--id--,--event--+---------------+--)------------------><
+                                         +-,--methodName-+
+]]>
 </programlisting>
 </section>
 
-<section id="enConnectTabNotify"><title>ConnectTabNotify</title>
+<section id="enConnectStaticEvent"><title>connectStaticEvent</title>
 <programlisting>
-<link linkend="connecttabnotify">ConnectTabNotify</link>
+<link linkend="mthConnectStaticEvent">connectStaticEvent</link>
+
+<![CDATA[
+>>--connectStaticNotify(--id--,--event--,-+---------------+--)-----------------><
+                                          +-,--methodName-+
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectTabEvent"><title>connectTabEvent</title>
+<programlisting>
+<link linkend="mthConnectTabEvent">connectTabEvent</link>
+
+<![CDATA[
+>>--connectTabEvent(--id--,--event--+---------------+--)-----------------------><
+                                    +-,--methodName-+
+]]>
 </programlisting>
 </section>
 
@@ -343,6 +400,21 @@
 <programlisting>
 <link linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>
 
+<![CDATA[
+>>--connectTreeViewEvent(--id--,--event--+---------------+--)------------------><
+                                         +-,--methodName-+
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectMonthCalendarEvent"><title>connectMonthCalendarEvent</title>
+<programlisting>
+<link linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link>
+
+<![CDATA[
+>>--connectMonthCalendarEvent(--id--,--event--,-+---------------+--)-----------><
+                                                +-,--methodName-+
+]]>
 </programlisting>
 </section>
 
@@ -358,13 +430,26 @@
 
 </section>
 
+<section id="enAddUserMsg"><title>addUserMsg</title>
+<programlisting>
+<link linkend="mthAddUserMsg">addUserMsg</link>
+
+<![CDATA[
+>>--addUserMsg(-methodName-,-winMsg-+------+-+----------+-+------+-+----------+-+------+-><
+                                    +-,-f1-+ +-,-wParam-+ +-,-f2-+ +-,-lParam-+ +-,-f3-+
+
+]]>
+</programlisting>
+
+</section>
+
 <section id="enDefListDragHandler"><title>defListDragHandler</title>
 <programlisting>
 
 <link linkend="mthDefListDragHandler">defListDragHandler</link>
-<![CDATA[
->>-defListDragHandler------------------------------------------><
 
+<![CDATA[
+>>-defListDragHandler(--id--,--item--,--point--)---------------><
 
 ]]>
 </programlisting>
@@ -373,6 +458,11 @@
 <section id="enDefTreeDragHandler"><title>defTreeDragHandler</title>
 <programlisting>
 <link linkend="mthDefTreeDragHandler">defTreeDragHandler</link>
+
+<![CDATA[
+>>-defTreeDragHandler(--id--,--item--,--point--)---------------><
+
+]]>
 </programlisting>
 </section>
 

@@ -2121,7 +2121,7 @@ MyDialog~addButtonGroup(20, 235, , ,               -
           <para>
             The name of the data attribute associated with the dialog item. Using this argument performs
             the same function as the <link linkend="mthConnectRadioButton">connectRadioButton</link>()
-            method. The <link linkend="mthConnectEntryLine">connectEntryLine</link>() documentation has a
+            method. The <link linkend="mthConnectEdit">connectEdit</link>() documentation has a
             good description of the concept of the data attribute.
           </para>
           <para>
@@ -2898,7 +2898,7 @@ MyDialog~Execute
           <para>
             The name of the data attribute associated with the dialog item. Using this argument performs
             the same function as the <link linkend="mthConnectCheckBox">connectCheckBox</link>()
-            method. The <link linkend="mthConnectEntryLine">connectEntryLine</link>() documentation has a
+            method. The <link linkend="mthConnectEdit">connectEdit</link>() documentation has a
             good description of the concept of the data attribute.
           </para>
           <para>
@@ -3886,8 +3886,8 @@ MyDialog~objectrexx = 1
                 Causes the static control to send notification messages for the click, double click,
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
-                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
+                linkend="mthConnectStaticEvent">connectStaticEvent()</link> method of the <link
+                linkend="clsEventNotification">EventNotification</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -4144,8 +4144,8 @@ MyDialog~objectrexx = 1
                 Causes the static control to send notification messages for the click, double click,
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
-                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
+                linkend="mthConnectStaticEvent">connectStaticEvent()</link> method of the <link
+                linkend="clsEventNotification">EventNotification</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>CENTERIMAGE</term>
@@ -4319,14 +4319,14 @@ MyDialog~objectrexx = 1
 
         self~addButton(IDOK, 210, 157, 50, 14, "Ok", ok, "DEFAULT")
 
-        self~connectStaticNotify(IDC_ST_WHITERECT, "CLICK", onClick)
-        self~connectStaticNotify(IDC_ST_WHITEFRAME, "CLICK", onClick)
-        self~connectStaticNotify(IDC_ST_WHITEFRAME_SUNKEN, "CLICK", onClick)
-        self~connectStaticNotify(IDC_ST_WHITEFRAME_BORDER, "CLICK", onClick)
-        self~connectStaticNotify(IDC_ST_WHITEFRAME_SUNKEN_BORDER, "CLICK", onClick)
-        self~connectStaticNotify(IDC_ST_ETCHED, "CLICK", onClick)
-        self~connectStaticNotify(IDC_ST_HORZ, "CLICK", onClick)
-        self~connectStaticNotify(IDC_ST_VERT, "CLICK", onClick)
+        self~connectStaticEvent(IDC_ST_WHITERECT, "CLICK", onClick)
+        self~connectStaticEvent(IDC_ST_WHITEFRAME, "CLICK", onClick)
+        self~connectStaticEvent(IDC_ST_WHITEFRAME_SUNKEN, "CLICK", onClick)
+        self~connectStaticEvent(IDC_ST_WHITEFRAME_BORDER, "CLICK", onClick)
+        self~connectStaticEvent(IDC_ST_WHITEFRAME_SUNKEN_BORDER, "CLICK", onClick)
+        self~connectStaticEvent(IDC_ST_ETCHED, "CLICK", onClick)
+        self~connectStaticEvent(IDC_ST_HORZ, "CLICK", onClick)
+        self~connectStaticEvent(IDC_ST_VERT, "CLICK", onClick)
 
       ::method onClick
         say 'Got click on static with ID:' .DlgUtil~loWord(arg(1))
@@ -4423,8 +4423,8 @@ MyDialog~objectrexx = 1
                 Causes the static control to send notification messages for the click, double click,
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
-                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
+                linkend="mthConnectStaticEvent">connectStaticEvent()</link> method of the <link
+                linkend="clsEventNotification">EventNotification</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -4592,8 +4592,8 @@ MyDialog~objectrexx = 1
                 Causes the static control to send notification messages for the click, double click,
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
-                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
+                linkend="mthConnectStaticEvent">connectStaticEvent()</link> method of the <link
+                linkend="clsEventNotification">EventNotification</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -4708,8 +4708,8 @@ MyDialog~objectrexx = 1
                 Causes the static control to send notification messages for the click, double click,
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
-                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
+                linkend="mthConnectStaticEvent">connectStaticEvent()</link> method of the <link
+                linkend="clsEventNotification">EventNotification</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -4824,8 +4824,8 @@ MyDialog~objectrexx = 1
                 Causes the static control to send notification messages for the click, double click,
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
-                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
+                linkend="mthConnectStaticEvent">connectStaticEvent()</link> method of the <link
+                linkend="clsEventNotification">EventNotification</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -4940,8 +4940,8 @@ MyDialog~objectrexx = 1
                 Causes the static control to send notification messages for the click, double click,
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
-                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
+                linkend="mthConnectStaticEvent">connectStaticEvent()</link> method of the <link
+                linkend="clsEventNotification">EventNotification</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -5056,8 +5056,8 @@ MyDialog~objectrexx = 1
                 Causes the static control to send notification messages for the click, double click,
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
-                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
+                linkend="mthConnectStaticEvent">connectStaticEvent()</link> method of the <link
+                linkend="clsEventNotification">EventNotification</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -5172,8 +5172,8 @@ MyDialog~objectrexx = 1
                 Causes the static control to send notification messages for the click, double click,
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
-                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
+                linkend="mthConnectStaticEvent">connectStaticEvent()</link> method of the <link
+                linkend="clsEventNotification">EventNotification</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -5287,8 +5287,8 @@ MyDialog~objectrexx = 1
                 Causes the static control to send notification messages for the click, double click,
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
-                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
+                linkend="mthConnectStaticEvent">connectStaticEvent()</link> method of the <link
+                linkend="clsEventNotification">EventNotification</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -5402,8 +5402,8 @@ MyDialog~objectrexx = 1
                 Causes the static control to send notification messages for the click, double click,
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
-                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
+                linkend="mthConnectStaticEvent">connectStaticEvent()</link> method of the <link
+                linkend="clsEventNotification">EventNotification</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -5517,8 +5517,8 @@ MyDialog~objectrexx = 1
                 Causes the static control to send notification messages for the click, double click,
                 disabled, and enabled events.  A static control without this style does not send
                 notification messages.  See the <link
-                linkend="mthConnectStaticNotify">connectStaticNotify()</link> method of the <link
-                linkend="clsEventNotification">.MessageExtensions</link> class for further information.
+                linkend="mthConnectStaticEvent">connectStaticEvent()</link> method of the <link
+                linkend="clsEventNotification">EventNotification</link> class for further information.
               </para>
             </listitem></varlistentry>
             <varlistentry><term>SUNKEN</term>
@@ -5716,8 +5716,8 @@ MyDialog~objectrexx = 1
       <listitem>
         <para>
           The name of the data attribute associated with the dialog item. Using this argument performs the
-          same function as the <link linkend="mthConnectEntryLine">connectEntryLine</link>() method. The
-          documentation connectEntryLine() has a good description of the concept of the data attribute.
+          same function as the <link linkend="mthConnectEdit">connectEdit</link>() method. The
+          documentation connectEdit() has a good description of the concept of the data attribute.
         </para>
         <para>
           If you omitt this argument then the data attribute is constructed automatically and named by
@@ -5996,8 +5996,8 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
       <listitem>
         <para>
           The name of the data attribute associated with the dialog item. Using this argument performs the
-          same function as the <link linkend="mthConnectEntryLine">connectEntryLine</link>() method. The
-          documentation connectEntryLine() has a good description of the concept of the data attribute.
+          same function as the <link linkend="mthConnectEdit">connectEdit</link>() method. The
+          documentation connectEdit() has a good description of the concept of the data attribute.
         </para>
         <para>
           If you omitt this argument then the data attribute is constructed automatically and named by
@@ -6251,7 +6251,7 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
       same function as the <link linkend="mthConnectListBox">connectListBox</link>() method for
       single selection list boxes, or the <link
       linkend="mthConnectMultiListBox">connectListBox</link>() method for multi selection list
-      boxes. The documentation for the <link linkend="mthConnectEntryLine">connectEntryLine</link>()
+      boxes. The documentation for the <link linkend="mthConnectEdit">connectEdit</link>()
       method has a good description of the concept of the data attribute.
     </para>
     <para>
@@ -6467,7 +6467,7 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
         <para>
           The name of the data attribute associated with the dialog item. Using this argument performs the
           same function as the <link linkend="mthConnectComboBox">connectComboBox</link>() method. The
-          documentation for the <link linkend="mthConnectEntryLine">connectEntryLine</link>() method has
+          documentation for the <link linkend="mthConnectEdit">connectEdit</link>() method has
           a good description of the concept of the data attribute.
         </para>
         <para>
@@ -6632,8 +6632,8 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
       <para>
         The name of the data attribute associated with the dialog item. Using this argument performs the
         same function as the FIX THIS PLEASE <link
-        linkend="mthConnectEntryLine">connectEntryLine</link>() method. The documentation
-        connectEntryLine() has a good description of the concept of the data attribute.
+        linkend="mthConnectEdit">connectEdit</link>() method. The documentation
+        connectEdit() has a good description of the concept of the data attribute.
       </para>
       <para>
         If you omitt this argument then the data attribute is constructed automatically and named by
@@ -6790,8 +6790,8 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
       <listitem>
         <para>
           The name of the data attribute associated with the edit contorl Using this argument performs the
-          same function as the <link linkend="mthConnectEntryLine">connectEntryLine</link>() method. The
-          documentation for connectEntryLine() has a good description of the concept of the data
+          same function as the <link linkend="mthConnectEdit">connectEdit</link>() method. The
+          documentation for connectEdit() has a good description of the concept of the data
           attribute.
         </para>
         <para>
@@ -7402,7 +7402,7 @@ MyDialog~addInputGroup(301, 20, 20, ,130, "Name FirstName Street City")
         <para>
           The name of the data attribute associated with the combo box. Using this argument performs the
           same function as the <link linkend="mthConnectComboBox">connectComboBox</link>() method. The
-          documentation for <link linkend="mthConnectEntryLine">connectEntryLine</link>() has a good
+          documentation for <link linkend="mthConnectEdit">connectEdit</link>() has a good
           description of the concept of the data attribute.
         </para>
         <para>
@@ -8373,8 +8373,8 @@ MyDialog~AddTreeControl(555, "Branch", 100, 80, 40, 120, ,
       <para>
         The name of the data attribute associated with the dialog item. Using this argument performs the
         same function as the FIX THIS PLEASE <link
-        linkend="mthConnectEntryLine">connectEntryLine</link>() method. The documentation
-        connectEntryLine() has a good description of the concept of the data attribute.
+        linkend="mthConnectEdit">connectEdit</link>() method. The documentation
+        connectEdit() has a good description of the concept of the data attribute.
       </para>
       <para>
         If you omitt this argument then the data attribute is constructed automatically and named by
