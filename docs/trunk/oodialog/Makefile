@@ -47,31 +47,30 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
              ../shared/oorexx.html.dsl
 
 
-SGML_FILES = basedialog.sgml \
+SGML_FILES = baseClasses.sgml \
 	     buttoncontrols.sgml \
 	     categorydialog.sgml \
 	     comboboxc.sgml \
 	     datetimepicker.sgml \
-	     eventNotification.sgml \
-	     dialogcontrolc.sgml \
-	     dialogcontrolCommon.sgml \
+	     dialogControlObject.sgml \
+	     dialogObject.sgml \
 	     editcontrolc.sgml \
+	     eventNotification.sgml \
 	     listboxc.sgml \
 	     listcontrolc.sgml \
 	     menus.sgml \
 	     monthcalendar.sgml \
 	     oodialog.sgml \
 	     overview.sgml \
-	     plainuserdialogc.sgml \
 	     preface.sgml \
 	     progressbarc.sgml \
 	     propertysheetc.sgml \
 	     resdialog.sgml \
+	     resources.sgml \
 	     scrollbarc.sgml \
 	     slidercontrolc.sgml \
 	     standarddialog.sgml \
 	     staticcontrolc.sgml \
-	     resources.sgml \
 	     tabcontrolc.sgml \
 	     treecontrolc.sgml \
 	     userdialog.sgml \
