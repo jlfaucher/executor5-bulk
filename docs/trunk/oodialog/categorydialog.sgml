@@ -237,8 +237,8 @@ a category dialog.
 <entry><link linkend="h100534">HideCategoryItem</link></entry>
 </row>
 <row>
-<entry>Init</entry>
-<entry><link linkend="h100015">Init</link></entry>
+<entry>init</entry>
+<entry><link linkend="h100015">init</link></entry>
 </row>
 <row>
 <entry>InitCategories</entry>
@@ -350,12 +350,12 @@ a category dialog.
 <para>The following methods are used to set up the pages of the dialog and start
 it.</para>
 
-<section id="h100015"><title>Init</title>
-<indexterm><primary>Init</primary>
+<section id="h100015"><title>init</title>
+<indexterm><primary>init</primary>
 <secondary>CategoryDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aCategoryDialog~Init(--+----------+--,--+------+--,--+------+--,--+-------+--,-->
+>>-aCategoryDialog~init(--+----------+--,--+------+--,--+------+--,--+-------+--,-->
                           +-DlgData.-+     +-catx-+     +-caty-+     +-catcx-+
 
 >--+--------------------+--,--+----------+--,--+----------+--,--+--------+--,------>
@@ -369,7 +369,7 @@ it.</para>
 ]]>
 </programlisting>
 
-<para>The Init method initializes the category dialog
+<para>The init method initializes the category dialog
 object. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -444,7 +444,7 @@ dlg~execute("SHOWTOP")
 </programlisting>
 </para>
 <para>An additional <link linkend="basedialoginitexample">example</link> can be
-found under the <computeroutput>Init</computeroutput> method, in the BaseDialog
+found under the <computeroutput>init</computeroutput> method, in the BaseDialog
 section.  This example shows the use of the dialog data stem and header file
 arguments in more detail.
 </para></listitem></varlistentry>
@@ -461,7 +461,7 @@ arguments in more detail.
 ]]>
 </programlisting>
 
-<para>The InitCategories method is called by Init to set the characteristics of the category dialog. </para>
+<para>The InitCategories method is called by init to set the characteristics of the category dialog. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
 <listitem><para>This method is protected.
@@ -472,7 +472,7 @@ of the dialog. The directory entries are:</para>
 <variablelist>
 <varlistentry><term>names</term>
 <listitem><para>An array containing the names of the categories. The array
-is initialized with the names given in the Init method
+is initialized with the names given in the init method
 (argument cattable). These names are used as labels
 for page selection control and as messages sent to the object to define the
 single pages.</para>
@@ -482,11 +482,11 @@ using <link linkend="h001636">LoadItems</link> to load the dialog items from a r
 script or Add... methods. Notice that blanks are removed
 when you call the Define... methods.</para>
 <para>If your
-subclass provides methods with the prefix Init followed by the name of the
+subclass provides methods with the prefix init followed by the name of the
 categories (blanks removed), these methods are called by <link linkend="h100079">InitDialog</link> to initialize the dialog (each page is a dialog) that contains
 the corresponding category.</para>
 <para>Unless you already specified the categories
-with the Init method, you must assign an array to
+with the init method, you must assign an array to
 this Catalog entry.</para>
 </listitem></varlistentry>
 <varlistentry><term>count</term>
@@ -517,7 +517,7 @@ this Catalog entry.</para>
 <listitem><para>Total number of expected dialog items of all category pages (200)
 </para></listitem></varlistentry>
 <varlistentry><term>btnwidth</term>
-<listitem><para>Width of Backward and Forward push buttons (see WIZARD in Init method)
+<listitem><para>Width of Backward and Forward push buttons (see WIZARD in init method)
 </para></listitem></varlistentry>
 <varlistentry><term>leftbtntext</term>
 <listitem><para>Alternate label of Backward button
@@ -680,7 +680,7 @@ be displayed.</para>
 <para>Do not override this method to initialize your category dialog
 pages but define an Init... method for each of your
 pages that you want to initialize like adding combo and list box items. If
-your subclassed dialog defines a method that has the prefix &quot;Init&quot;
+your subclassed dialog defines a method that has the prefix &quot;init&quot;
 followed by the name of the category (without blanks), this method is called
 by InitDialog to handle the initialization of the
 corresponding page. If you use a method that requires a category specifier,

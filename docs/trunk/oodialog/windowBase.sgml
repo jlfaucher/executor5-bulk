@@ -1,0 +1,863 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: OODialog Reference SGML file.
+    #
+    # Copyright (c) 2008-2010, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+
+<section id="clsWindowBase"><title>WindowBase Mixin Class</title>
+<indexterm><primary>WindowBase Class</primary></indexterm>
+<para>
+  WindowBase is a mixin class with methods that are common to all windows. It is inherited by both the <link
+  linkend="chpDialogObject">dialog</link> and <link linkend="chpDialogControlObject">dialog control</link> objects.
+  Every dialog object and every dialog control object have the instance methods of the WindowBase class. In addition,
+  the <link linkend="clsWindow">Window</link> class inherits the WindowBase class.
+</para>
+
+
+<section id="atrfactorX"><title>factorX (Attribute)</title>
+<indexterm><primary>factorX</primary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>factorX</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--factorX-----------------------------------------------------><
+
+>>--factorX-=-ratio---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  <emphasis role="italic">factorX</emphasis> was intended to be the horizontal size of one dialog unit, in pixels.
+  However, the value is not <link linkend="ovvInaccurate">correct</link> with modern dialogs except under rare
+  circumstances.
+</para>
+<para>
+  To accurately convert between dialog units and pixels use the appropriate <link
+  linkend="mthDlgUnit2Pixel">dlgUnit2pixel</link>() or <link linkend="mthPixel2dlgUnit">pixel2dlgUnit</link>() method.
+</para>
+</section>  <!-- End WindowBase::factorX() [attribute]  -->
+
+<section id="atrfactorY"><title>factorY (Attribute)</title>
+<indexterm><primary>factorY</primary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>factorY</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--factorY-----------------------------------------------------><
+
+>>--factorY-=-ratio---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  <emphasis role="italic">factorY</emphasis> was intended to be the vertical size of one dialog unit, in pixels.
+  However, the value is not <link linkend="ovvInaccurate">correct</link> with modern dialogs except under rare
+  circumstances.
+</para>
+<para>
+  To accurately convert between dialog units and pixels use the appropriate <link
+  linkend="mthDlgUnit2Pixel">dlgUnit2pixel</link>() or <link linkend="mthPixel2dlgUnit">pixel2dlgUnit</link>() method.
+</para>
+</section>  <!-- End WindowBase::factorX() [attribute]  -->
+
+<section id="atrHwnd"><title>hwnd (Attribute)</title>
+<indexterm><primary>hwnd</primary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>hwnd</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>hwnd</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>hwnd</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hwnd-----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The window <link linkend="defHandle">handle</link> of the underlying window.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">hwnd get:</emphasis></term>
+  <listitem>
+  <para>
+    Before the underlying dialog object is created, the <emphasis role="italic">hwnd</emphasis> attribute for a dialog is not valid.
+    Since dialog control objects can not be instantiated before the underlying controls is created, their handles are
+    always valid.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">hwnd set:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer can not set the <emphasis role="italic">hwnd</emphasis> attribute, it is set internally by the
+    ooDialog framework.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowBase::hwnd() [attribute]  -->
+
+
+<section id="atrInitCode"><title>initCode (Attribute)</title>
+<indexterm><primary>initCode</primary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>initCode</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>initCode</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>initCode</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--initCode-----------------------------------------------------><
+
+>>--initCode-=-code----------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  A whole number representing the success of initialization of a dialog object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    For a dialog <link linkend="chpDialogControObject">control</link> the <emphasis role="italic">initCode</emphasis>
+    does not have any meaning.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">initCode get:</emphasis></term>
+  <listitem>
+  <para>
+    For a dialog control, the valus is always 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    For a dialog object, after the <emphasis role="italic">init</emphasis> method has executed the <emphasis
+    role="italic">initCode</emphasis> attribute will be 0 if the dialog initialization detected no errors. The attribute
+    will be non-zero if initialization failed or an error was detected. The programmer should always check the <emphasis
+    role="italic">initCode</emphasis> attribute after instantiating a dialog object. If the attribute is not zero, then
+    the dialog was not initialized correctly and its behavior is undefined.
+  </para>
+  <para>
+    After the underlying dialog is closed, the <emphasis role="italic">initCode</emphasis> attribute will be 1 if the
+    dialog was terminated with Ok and 2 if terminated with Cancel.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example instantiates a new dialog and checks the init code for error:
+<programlisting>
+<![CDATA[
+
+  style = "CENTER CONNECTBUTTONS CONNECTRADIOS CONNECTCHECKS"
+
+  dlg = .SimpleButtons~new("buttons.rc", IDD_DIALOG1, , "resource.h", style)
+
+  if dlg~initCode = 0 then do
+    dlg~Execute("SHOWTOP")
+    dlg~Deinstall
+  end
+  else do
+    say "Problem creating the dialog.  Init code:" dlg~initCode
+    return 99
+  end
+
+  return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowBase::initCode() [attribute]  -->
+
+<section id="atrPixelCX"><title>pixelCX (Attribute)</title>
+<indexterm><primary>pixelCX</primary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>pixelCX</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--pixelCX-----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">pixelCX get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">pixelCX set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+</variablelist>
+</section>  <!-- End WindowBase::pixelCX() [attribute]  -->
+
+<section id="atrPixelCY"><title>pixelCY (Attribute)</title>
+<indexterm><primary>pixelCY</primary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>pixelCY</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--pixelCY-----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">pixelCY get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">pixelCY set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+</variablelist>
+</section>  <!-- End WindowBase::pixelCY() [attribute]  -->
+
+<section id="atrSizeX"><title>sizeX (Attribute)</title>
+<indexterm><primary>sizeX</primary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>sizeX</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sizeX-----------------------------------------------------><
+
+>>--sizeX-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">sizeX get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">sizeX set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+</variablelist>
+</section>  <!-- End WindowBase::sizeX() [attribute]  -->
+
+<section id="atrSizeY"><title>sizeY (Attribute)</title>
+<indexterm><primary>sizeY</primary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>sizeY</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sizeY-----------------------------------------------------><
+
+>>--sizeY-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">sizeY get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">sizeY set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+</variablelist>
+</section>  <!-- End WindowBase::sizeY() [attribute]  -->
+
+<section id="mthDisable"><title>disable</title>
+<indexterm><primary>disable</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>disable</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>disable</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>disable</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-disable-----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">disable</emphasis>() method disables the window. When a window is disabled it no longer
+  responds to the mouse of the keyboard.  The operating system usually draws disabled windows in a way that makes it
+  eassy for the user to see that the window is disabled.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    True if the window was previously disabled, returns false if the window was not previously disabled. Note that this
+    is not succes or failure return.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem><para>
+
+<programlisting>
+<![CDATA[
+if self~isVisible then self~disable
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthEnable"><title>enable</title>
+<indexterm><primary>enable</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>enable</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>enable</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>enable</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--enable-----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">enable</emphasis>() method enables the window. When a window is enabled it receives all
+  user input, such as mouse clicks and key presses.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    True if the window was previously disabled, returns false if the window was not previously disabled. Note that this
+    is not succes or failure return.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem><para>
+<programlisting>
+<![CDATA[
+lastName = self~newEdit(IDC_EDIT_LASTNAME)~getText
+
+if self~isValidLastName(lastName) then self~newEdit(IDC_EDIT_FIRSTNAME)~enable
+
+]]>
+</programlisting>
+  </para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthGetSize"><title>getSize</title>
+<indexterm><primary>getSize</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>getSize</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getSize</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getSize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getSize----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getSize</emphasis> method returns the width and height of the in dialog units.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      This method can only be used after the <link linkend="ovvUnderlying">underlying Windows dialog</link> has been
+      created.
+    </para>
+    <para>
+      Raises syntax errors for incorrect usage.
+    </para>
+  </listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The width and height, separated by a blank.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>For an example, see <link linkend="resize">Resize</link>.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthGetTextSizePx"><title>getTextSizePx</title>
+<indexterm><primary>getTextSizePx</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>getTextSizePx</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getTextSizePx</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getTextSizePx</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getTextSizePx(-text--)-------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Gets the size, width and height, in pixels, needed to display a string in this window. To calculate the size in dialog
+  units use the <link linkend="mthGetTextSizeDu">getTextSizeDu</link>() method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be used after the <link linkend="ovvUnderlying">underlying Windows dialog</link> has been
+    created.
+  </para>
+  <para>
+    Raises syntax errors for incorrect usage.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+  <variablelist>
+    <varlistentry><term>text</term>
+    <listitem>
+    <para>
+      The string whose size is desired.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The size needed for the string is returned in a <link linkend="clsSize">Size</link> object.  The size is specified
+    in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example uses 2 static controls to display two strings.  The static controls are positioned so that the second
+    string immediately follows the first string.  The size calculated is based on the font currently in use by the
+    controls.  The calculation is correct no matter what font is in use by the controls, even if the two controls use
+    different fonts.  (This is a contrived example, to illustrate the method. Instead of having a space character in
+    between the 2 strings, the ending "t" and the beginning "a" are positioned with no space between them.)
+<programlisting>
+<![CDATA[
+stFont1 = self~newStaticText(IDC_ST_FONT1)
+stFont2 = self~newStaticText(IDC_ST_FONT2)
+
+-- Get the size needed for the message
+size = stFont1~getTextSizePx("San Diego is great")
+r = .Rect~new(1, 1, size~width, size~height)
+
+stFont1~setText("San Diego is great")
+stFont1~setRect(r)
+
+size = stFont2~getTextSizePx("and ooRexx is the best")
+r~left = 1 + r~right + 1
+r~right = size~width
+r~bottom = size~height
+
+stFont2~setText("and ooRexx is the best")
+stFont2~setRect(r)
+]]>
+</programlisting>
+  </para>
+  </listitem>
+  </varlistentry>
+</variablelist>
+</section>  <!-- End WindowBase::getTextSizePx() -->
+
+<section id="mthGetTextSizeScreen"><title>getTextSizeScreen</title>
+<indexterm><primary>getTextSizeScreen</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>getTextSizePx</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getTextSizePx</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getTextSizePx</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
+                             +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
+
+]]>
+</programlisting>
+
+<para>
+  Gets the size, width and height, in pixels, needed to display a string in a specific font.
+</para>
+<note><title><emphasis role="bold">Note</emphasis></title><para>
+  This method can only be used after the underlying Windows dialog has been created.  In general this
+  means in the <link linkend="mthInitDialog">initDialog</link>() method or later in the life cycle of the
+  dialog.  If this method is invoked prior to the creation of the underlying dialog, a syntax error is
+  rasised.
+</para></note>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      This method can only be used after the <link linkend="ovvUnderlying">underlying Windows dialog</link> has been
+      created.
+    </para>
+    <para>
+      Raises syntax errors for incorrect usage.
+    </para>
+    <para>
+      Part of the purpose of this method is to provide backwards compatibility to the <link
+      linkend="ovvDeprecated">deprecated</link> <emphasis role="italic">getTextSize</emphasis> method. This is the
+      reason for the rather convulted arguments. In general, the Rexx programmer should always use the <link
+      linkend="mthGetTextSizePx">getTextSizePx</link>() method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>text</term>
+      <listitem>
+        <para>
+          The string whose size is desired.  If none of the optional arguments are specified then the font in use by
+          this window (dialog or dialog control object) is used to calculate the size. This usage is exactly the same as
+          using the <emphasis role="italic">getTextSizePx</emphasis> method.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>type</term>
+      <listitem>
+        <para>
+          Optional.  However, if any of the optional arguments are used this argument is required. It signals what
+          fontSrc is.  The allowed types are:
+          <variablelist>
+            <varlistentry><term>Indirect</term>
+            <listitem>
+              <para>
+                fontSrc is a font name and fontSize is the size of the font.  The calculation is done indirectly by
+                temporarily obtaining a logical font using these parameters.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>DC</term>
+            <listitem>
+              <para>
+                fontSrc is a handle to a device context.  The correct font for the calculation must already be selected
+                into this device context. fontSize is ignored. See the <link linkend="getdc">getDC</link>() and <link
+                linkend="mthFontToDC">fontToDC</link>() methods for information on obtaining a device context and selecting
+                a font into it.
+              </para>
+            </listitem></varlistentry>
+            <varlistentry><term>Font</term>
+            <listitem>
+              <para>
+                fontSrc is a handle to a font. fontSize is ignored.
+              </para>
+            </listitem></varlistentry>
+          </variablelist>
+          Only the first letter of type is needed and case is not significant.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fontSrc</term>
+      <listitem>
+        <para>
+          Optional. The source of the font to use in calculating the size.  This argument object must match the type
+          specification argument. It can be either a string, (a font name,) a handle to a device context, or a handle to
+          a font.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fontSize</term>
+      <listitem>
+        <para>
+          Optional. The size of the font. This argument is always ignored unless the type argument is Indirect. If type
+          is Indirect and this argument is omitted then the defualt font size is used. (Currently the default size is
+          8.)
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The size needed for the string is returned in a <link linkend="clsSize">Size</link> object.  The
+      size is specified in pixels.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowsBase::getTextSizeScreen() -->
+
+
+<section id="mthIsEnabled"><title>isEnabled</title>
+<indexterm><primary>isEnabled</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>isEnabled</secondary</indexterm>
+<indexterm><primary>dialog object</primary><secondary>isEnabled</secondary</indexterm>
+<indexterm><primary>dialog control object</primary><secondary>isEnabled</secondary</indexterm>
+<programlisting>
+<![CDATA[
+>>--isEnabled--------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Tests if the window is enabled
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns .true if the window is enabled, otherwise .false
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem><para>
+<programlisting>
+<![CDATA[
+::method toggleState private
+
+listView = self~newListView(IDC_LV_NAMES)
+if listView~isEnabled then
+   listView~disable
+else
+   listView~enable
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthIsVisible"><title>isVisible</title>
+<indexterm><primary>isVisible</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>isVisible</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>isVisible</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>isVisible</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isVisible--------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Tests if the window is visible.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if the window is visible, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem><para>
+  <programlisting>
+  <![CDATA[
+  if \ self~isVisible then self~show
+  ]]>
+  </programlisting>
+  </para></listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>

@@ -87,17 +87,17 @@
 <para>
   PlainBaseDialog is the base class of all dialog classes in the ooDialog framework.  It implements methods that are
   common to every dialog.  PlainBaseDialog is an abstract class. A programmer can not instantiate a new PlainBaseDialog
-  object and display a dialog on the screen. Rather, the ooDialog programmer subclasses one of the concrete subclasses
-  of PlainBaseDialog, such as, the <link linkend="clsResDialog">ResDialog</link>, the <link
-  linkend="clsRcDialog">RcDialog</link>, or the <link linkend="clsUserDialog">UserDialog</link>, to create and execute a
-  real dialog.
+  object and display a dialog on the screen. Rather, the ooDialog programmer subclasses one of the concrete classes
+  provided by the ooDialog framework, such as the <link linkend="clsResDialog">ResDialog</link>, the <link
+  linkend="clsRcDialog">RcDialog</link>, or the <link linkend="clsUserDialog">UserDialog</link>, to create and
+  execute a real dialog.
 </para>
 <para>
   Many of the methods of the PlainBaseDialog are actually implemented in one of the mixin classes inherited by the
   PlainBaseDialog. See this <link linkend="figComponentClassesDiagram">diagram</link> to visualize the inheritance. In
   essence the PlainBaseDialog is the <link linkend="chpDialogObject">dialog object</link>. All the methods and
-  attributes of the PlainBaseDialog are listed and documented in the dialog object chapter. This includes the methods
-  and attributes of its inherited mixin classes.
+  attributes of the PlainBaseDialog are listed in the dialog object chapter. This includes the methods and attributes of
+  its inherited mixin classes.
 </para>
 <para>
   The PlainBaseDialog inherits the following mixin classes:
@@ -135,9 +135,9 @@
 </para>
 </section>
 
-&windowBaseCommon;
+&windowBase;
 
-&windowExtensionsCommon;
+&windowExtensions;
 
 <section id="clsDialogExtensions"><title>DialogExtensions Mixin Class</title>
 <indexterm><primary>DialogExtensions Class</primary></indexterm>
@@ -195,7 +195,7 @@
   In general, events should be connected before the dialog is shown on the screen, or immediately after the dialog is
   created. Connecting the events in the <link linkend="mthInitDialog">initDialog</link>() method is usually sufficient.
   In a UserDialog, the <link linkend="mthDefineDialog">defineDialog</link>() method also makes a good place for the
-  connect event methods. If the programmer is overriding the <link linkend="h000025">init</link>() method, the connect
+  connect event methods. If the programmer is overriding the <link linkend="mthInitPlainBaseDialog">init</link>() method, the connect
   event methods can be placed there.  But, in this case, do not invoke the connect event methods until <emphasis
   role="bold">after</emphasis> the superclass has been initialized.
 </para>

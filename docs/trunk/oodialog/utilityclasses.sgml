@@ -2110,12 +2110,12 @@ DlgArea on a UserDialog.</para>
 </mediaobject>
 </figure>
 
-<section id="dlgareainit"><title>Init</title>
-<indexterm><primary>Init</primary>
+<section id="dlgareainit"><title>init</title>
+<indexterm><primary>init</primary>
 <secondary>DlgArea class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>- aDlgArea~Init(--X--,--Y--,--Width--,--Height--+-------------+--)--><
+>>- aDlgArea~init(--X--,--Y--,--Width--,--Height--+-------------+--)--><
                                                   +--,--Margin--+
 ]]>
 </programlisting>
@@ -2576,8 +2576,8 @@ self~addButton(1,b~x,b~y(-15),b~w,15,"OK","OK","Default")
 ::requires "OODIALOG.CLS"
 </programlisting>
 
-<section id="dlgareauinit"><title>Init</title>
-<indexterm><primary>Init</primary>
+<section id="dlgareauinit"><title>init</title>
+<indexterm><primary>init</primary>
 <secondary>DlgAreaU class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2861,7 +2861,7 @@ exit
 /* ========================================================================= */
 ::class MyDialog Subclass UserDialog
 /* ========================================================================= */
-::method Init
+::method init
 /* ------------------------------------------------------------------------- */
   self~Init:super
   rc=self~CreateCenter(250,250,"MyDialog","ThickFrame", ,"MS Sans Serif",8)

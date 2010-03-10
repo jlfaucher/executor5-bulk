@@ -45,18 +45,17 @@
 <indexterm><primary>dialog control object</primary></indexterm>
 <indexterm><primary>DialogControl class</primary></indexterm>
 <para>
-  The DialogControl class provides methods that are common to all dialog controls. It is a generic
-  class that serves as a superclass to all dialog control specific classes.  In the graphical user
-  interface (GUI) for the Windows operating system both dialogs and dialog controls are windows.
-  Therefore, many of the methods of the DialogControl class are the same as the methods of the
-  ooDialog dialog classes.  These are the methods that are common to all windows, whether they are
-  dialog windows or dialog control windows.
+  This chapter discussses the <emphasis role="italic">dialog control object</emphasis> is a fashion similar to the <link
+  linkend="chpDialogObject"></link> It lists the methods that are common to all dialog controls. In the graphical user
+  interface (GUI) for the Windows operating system both dialogs and dialog controls are windows. Therefore, many of the
+  methods of a dialog control object are the same as the methods of the dialog object. These are the methods that are
+  common to all windows, whether they are dialog windows or dialog control windows.
 </para>
 <para id="paraDialogControlStyles">
   In the Windows GUI all windows are created with a set of <emphasis role="italic">window
   styles</emphasis>.  Dialog control windows are created using styles that are common to all
   windows, (for example the visible style,) and styles specific to the dialog control itself, (for
-  example the multi-line style of the <link linkend="clsEdit">EditControl</link> class.)  In
+  example the multi-line style of the <link linkend="clsEdit">Edit</link> control class.)  In
   general the styles of a control fall into three categories: Styles that can only be set when the
   control is created and then can not be changed afterwards. Styles that can be changed after
   control creation by sending messages to the control. And, styles that can be changed after the
@@ -65,65 +64,43 @@
 <para>
   The ooDialog programmer chooses the window styles for dialog controls when he defines the dialog,
   either by using a resource editor for dialogs defined with resource scripts or binary compiled
-  resources, or by using the <link linkend="sctCreateMethods">create...</link> methods for a user dialog. After the dialog
-  control has been created, the individual dialog control classes provide methods to change those styles that can
-  be changed, either by sending the proper message to the control or by accessing the control window directly.
+  resources, or by using the one of the <link linkend="sctCreateMethods">create...</link> methods for a user dialog.
+  After the dialog control has been created, the individual dialog control classes provide methods to change those
+  styles that can be changed, either by sending the proper message to the control or by accessing the control window
+  directly.
 </para>
-<variablelist>
-<varlistentry><term>Requires:</term>
-<listitem>
+
+<section id="sctMethodsDlgContorlObject"><Title>Method Table</Title>
 <para>
-  The DialogControl class requires the class definition file
-  <computeroutput>oodwin32.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires oodwin32.cls
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>Attributes:</term>
-<listitem><para>Instances of the DialogControl class have the following
-attributes:
-<variablelist>
-<varlistentry><term>FactorX</term>
-<listitem><para>The horizontal size of one dialog unit, in pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>FactorY</term>
-<listitem><para>The vertical size of one dialog unit, in pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>SizeX</term>
-<listitem><para>The width of the dialog control, in dialog units, when the
-Rexx object that represents the control is created.</para>
-<para><emphasis role="bold">Note: </emphasis>
-The <computeroutput>SizeX</computeroutput> attribute is not changed by ooDialog
-after the object is instantiated.  If the programmer resizes the dialog control
-manually, and requires that the value of the attribute be correct, then the
-programmer would need to update the value herself.
-</para></listitem></varlistentry>
-<varlistentry><term>SizeY</term>
-<listitem><para>The height of the dialog control, in dialog units, when the
-Rexx object that represents the control is created.</para>
-<para><emphasis role="bold">Note: </emphasis>
-The <computeroutput>SizeY</computeroutput> attribute is not changed by ooDialog
-after the object is instantiated.  If the programmer resizes the dialog control
-manually, the programmer would also need to update the value of this attribute
-herself, if she requires that the value remain correct.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term>Methods:</term>
-<listitem><para>Instances of the DialogControl class implement the methods
-listed in the following DialogControl Instance Methods table.
-<table id="tdialogclass" frame="all">
+  The following table lists the class methods, attributes, and instance methods that all dialog controls have in
+  common:
+
+<table id="tblDialogControlObject" frame="all">
 <title>DialogControl Instance Methods</title>
 <tgroup cols="2">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...on page</entry>
+<entry>Dialog Control Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbDCOHwnd">hwnd</link></entry>
+<entry>The window handle of the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wbDCOInitCode">initCode</link></entry>
+<entry>Meaningless for a dialog control, is always 0.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
 <row>
 <entry>AbsRect2LogRect</entry>
 <entry><link linkend="absrect2logrect">AbsRect2LogRect</link></entry>
@@ -205,8 +182,8 @@ listed in the following DialogControl Instance Methods table.
 <entry><link linkend="h001017">DeleteObject</link></entry>
 </row>
 <row>
-<entry>Disable</entry>
-<entry><link linkend="disable">Disable</link></entry>
+<entry><link linkend="mthDisable">disable</link></entry>
+<entry>Disables the control.</entry>
 </row>
 <row>
 <entry>DisconnectKeyPress</entry>
@@ -241,8 +218,8 @@ listed in the following DialogControl Instance Methods table.
 <entry><link linkend="h001200">DrawPixel</link></entry>
 </row>
 <row>
-<entry>Enable</entry>
-<entry><link linkend="enable">Enable</link></entry>
+<entry>enable</entry>
+<entry><link linkend="mthEnable">enable</link></entry>
 </row>
 <row>
 <entry>FillDrawing</entry>
@@ -518,8 +495,156 @@ listed in the following DialogControl Instance Methods table.
 </row>
 </tbody></tgroup>
 </table>
-</para></listitem></varlistentry>
-</variablelist>
+
+</section>
+
+
+<section id="sctDialogControlAttributes"><title>Attributes</title>
+<indexterm><primary>dialog contorl object attributes</primary></indexterm>
+<para>
+  This section describes the attributes of the dialog control object.
+</para>
+
+<section id="wbDCOHwnd"><title>hwnd</title>
+<programlisting>
+WindowBase::<link linkend="atrHwnd">hwnd</link>
+
+<![CDATA[
+>>--hwnd-----------------------------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="wbDCOInitCode"><title>initCode</title>
+<programlisting>
+<link linkend="atrInitCode">initCode</link>
+
+<![CDATA[
+>>--initCode-----------------------------------------------------><
+
+>>--initCode-=-code----------------------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+</section>  <!-- End Attributes Section -->
+
+<section id="sctWindowBaseDCO"><title>Basic Window Methods</title>
+<indexterm><primary>dialog control object</primary><secondary>basic window methods</secondary></indexterm>
+<para>
+  Recall that in the Windows graphical user interface, everything is a window. The <link
+  linkend="clsWindowBase">WindowBase</link> class is a mixin class that contains methods common to all windows. Since a
+  dialog control is a window, it inherits the <emphasis role="italic">WindowBase</emphasis> class, the same as the <link
+  linkend="chpDialogObject"></link> dialog object does. All <emphasis role="italic">WindowBase</emphasis> methods are
+  common to both dialogs and dialog controls. This section lists all the basic window methods for the dialog object.
+</para>
+
+<section id="wbDCODisable"><title>disable</title>
+<programlisting>
+WindowBase::<link linkend="mthDisable">disable</link>
+
+<![CDATA[
+>>-disable-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbDCOEnable"><title>enable</title>
+<programlisting>
+WindowBase::<link linkend="mthEnable">enable</link>
+
+<![CDATA[
+>>--enable-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbDCOIsEnabled"><title>isEnabled</title>
+<programlisting>
+WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
+
+<![CDATA[
+>>--isEnabled--------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbDCOIsVisible"><title>isVisible</title>
+<programlisting>
+WindowBase::<link linkend="mthIsVisible">isVisible</link>
+
+<![CDATA[
+>>--isVisible--------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbDCOGetSize"><title>getSize</title>
+<programlisting>
+WindowBase::<link linkend="mthGetSize">getSize</link>
+
+<![CDATA[
+>>--getSize----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbDCOGetTextSizePx"><title>getTextSizePx</title>
+<programlisting>
+WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
+
+<![CDATA[
+>>--getTextSizePx(-text--)-------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbDCOGetTextSizeScreen"><title>getTextSizeScreen</title>
+<programlisting>
+WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
+
+<![CDATA[
+>>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
+                             +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
+]]>
+</programlisting>
+</section>
+
+
+</section> <!-- END Section Basic Window Methods  -->
+
+
+<section id="sctWindowExtensionsDCO"><title>Extended Window Methods</title>
+<indexterm><primary>dialog control object</primary><secondary>extended window methods</secondary></indexterm>
+<para>
+  The methods implemented by <link linkend="clsWindowExtensions">WindowExtensions</link> class are listed in this
+  section. The class name, <emphasis role="italic">WindowExtensions</emphasis> would seem to imply that the methods were
+  common to all windows. However, the methods of this class are really just extensions to the original ooDialog
+  framework, and many of the methods are not window specific methods.
+</para>
+<para>
+  In many ways a lot of these methods do not make a lot of sense in the context of a dialog control. However, the
+  methods have been dialog control methods for many years and must therefore remain dialog control methods for the sake
+  of backwards compatibility. In almost all instances, the methods are best used in the context of a <link
+  linkend="chpDialogObject">dialog object</link> rather than a dialog control object.
+</para>
+
+<section id="weDCOCreateFontEx"><title>createFontEx</title>
+<programlisting>
+WindowExtensions::<link linkend="mthCreateFontEx">createFontEx</link>
+
+<![CDATA[
+>>--createFontEx(--fontName-+--------------+--+---------------+--)-------------><
+                            +-,-pointSize--+  +-,-additional--+
+]]>
+</programlisting>
+</section>
+
+</section> <!-- END Section Extended Window Methods  -->
+
 
 <section id="appmodmeth"><title>Appearance and Behavior Methods</title>
 <indexterm><primary>enable methods</primary>
@@ -709,132 +834,6 @@ MyDialog~GetTreeControl(IDC_TREECONTROL_FILES)~Display("NORMAL FAST")
 This is usually done when there are a number of controls to make visible at one
 time.  The programmer would make them all visible without redrawing. Then use
 the <link linkend="update">Update</link> method to repaint everything at once.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthIsVisible"><title>isVisible</title>
-<indexterm><primary>isVisible</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--isVisible--------------------------------------------------><
-]]>
-</programlisting>
-
-<para>
-  Tests if the window (dialog or dialog control) is visible.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem>
-<para>
-  There are no arguments.
-</para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem>
-<para>
-  Returns .true if the window is visible, otherwise .false
-</para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-<programlisting>
-<![CDATA[
-if \ self~isVisible then self~show
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="enable"><title>Enable</title>
-<indexterm><primary>Enable</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~Enable---------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The Enable method enables a dialog or dialog control
-to accept user interaction.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-<programlisting>
-<![CDATA[
-MyDialog~GetEditControl("Name")~Enable
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="disable"><title>Disable</title>
-<indexterm><primary>Disable</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~Disable--------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The Disable method disables a dialog or dialog
-control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-
-<programlisting>
-<![CDATA[
-MyDialog~GetEditControl("Name")~Disable
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthIsEnabled"><title>isEnabled</title>
-<indexterm><primary>isEnabled</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--isEnabled--------------------------------------------------><
-]]>
-</programlisting>
-
-<para>
-  Tests if the window (dialog or dialog control) is enabled
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem>
-<para>
-  There are no arguments.
-</para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem>
-<para>
-  Returns .true if the window is enabled, otherwise .false
-</para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-<programlisting>
-<![CDATA[
-::method toggleState private
-listView = self~getListControl(IDC_LV_NAMES)
-if listView~isEnabled then
-   listView~disable
-else
-   listView~enable
-]]>
-</programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -1473,17 +1472,6 @@ the dimensions of the associated dialog or dialog control are returned.
 separated by blanks.
 </para></listitem></varlistentry>
 </variablelist>
-</section>
-
-<section id="wb-getSize-dco"><title>getSize</title>
-<programlisting>
-<link linkend="mthGetSize">WindowBase::getSize</link>
-<![CDATA[
->>--getSize----------------------------------------------------><
-
-
-]]>
-</programlisting>
 </section>
 
 <section id="assignfocus"><title>AssignFocus</title>
@@ -4031,649 +4019,6 @@ MyDialog~getTreeControl("FILES")~setFont(hfnt, .true)
   </listitem></varlistentry>
 </variablelist>
 </section>
-
-<section id="mthCreateFontEx"><title>createFontEx</title>
-<indexterm><primary>createFontEx</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--createFontEx(--fontName-+--------------+--+---------------+--)-------------><
-                            +-,-pointSize--+  +-,-additional--+
-]]>
-</programlisting>
-
-<para>
-  Creates a logical font with the characteristics requested. This should be the preferred method to
-  create fonts in ooDialog. The <link linkend="mthCreateFont">createFont</link>() method does <emphasis
-  role="bold">not</emphasis> properly create the font requested.
-</para>
-<para>
-  The returned font can be used in any method that takes a font, such as, <link
-  linkend="mthSetFont">setFont</link>(), <link linkend="sifm">setItemFont</link>(), or <link
-  linkend="mthFontToDC">fontToDC</link>(). When the programmer is done with the font, the operating system
-  resources used by the font can be released with the <link linkend="mthDeleteFont">deleteFont</link>()
-  method.
-</para>
-<para>
-  The Windows operating system uses a font mapper to map a logical font to the characteristics of the
-  font requested. Because available fonts can vary from system to system, the returned font is not always
-  the same as the requested font. For example, if a font named Palatino is requested, but no such font is
-  available on the system, the font mapper will substitute a font that has similar attributes but a
-  different name.
-</para>
-<para>
-  The interface to the font mapper takes a wide range of arguments to specify many different attributes
-  of the requested font. The <emphasis role="italic">additional</emphasis> argument gives the ooRexx
-  programmer the ability to use any, or all, of these arguments. On the other hand, The
-  <computeroutput>createFontEx</computeroutput>() method has good defaults for each of the arguments,
-  allowing the programmer to use the method with a minimum of effort.
-</para>
-<para>
-  If an application will run on different systems, where the programmer does not know in advance what
-  fonts will be available on each system, carefully specifying the font characteristics will help give
-  the application the same look on each system. The font mapper will pick a font on each system that most
-  closely matches the requested attributes.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-    <para>
-      This method provides an interface to the Win32 API: <computeroutput>CreateFont()</computeroutput>.
-      Use the <link linkend="defWindowsDoc">MSDN library</link> documentation to get more information on the
-      arguments to this method.
-    </para>
-    <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-    </para>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term><emphasis role="italic">fontName</emphasis></term>
-      <listitem>
-        <para>
-          The typeface name of the requested font. The <emphasis role="italic">fonts</emphasis> folder,
-          accessed from the Control Panel, on Windows lists the typeface names of all fonts installed on
-          the system.
-        </para>
-        <para>
-          As noted above, the font mapper will try to substitute a similar font if the typeface name does
-          not match any of the installed fonts.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term><emphasis role="italic">pointSize</emphasis></term>
-      <listitem>
-        <para>
-          Optional. The point size of the requested font. The default is 8.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term><emphasis role="italic">additional</emphasis></term>
-      <listitem>
-        <para>
-          Optional. A <computeroutput>.Directory</computeroutput> object whose indexes define additional
-          characteristics of the requested font. For any missing index, the default value is used for
-          that characteristic. If this argument is omitted then the default value for all characteristics
-          is used.
-        </para>
-        <para>
-          The indexes are listed below. Each index maps to an argument of the Win32 API,
-          <computeroutput>CreateFont()</computeroutput>. As suggested above, the programmer should
-          consult the <link linkend="defWindowsDoc">MSDN library</link> documentation to get complete
-          information on the individual arguments. The value for each index must be either numeric or
-          logical, depending on the index.
-        </para>
-        <para>
-          The indexes below are listed in the same order as the arguments to
-          <computeroutput>CreateFont()</computeroutput> from <emphasis role="italic">nWidth</emphasis> to
-          <emphasis role="italic">fdwPitchAndFamily</emphasis>. Where an index has a link, the link
-          provides some more information on the possible values for index. The valid indexes are:
-          <informaltable frame='none' colsep='0' rowsep='0'>
-          <tgroup cols='3'>
-          <colspec align='left' colwidth='1*'>
-          <colspec align='left' colwidth='1*'>
-          <colspec align='left' colwidth='1*'>
-          <thead>
-          <row><entry>Index</entry><entry>Meaning</entry><entry>Default</entry></row>
-          </thead>
-          <tbody>
-          <row>
-            <entry><link linkend="cfxWidth">WIDTH</link></entry>
-            <entry>The average width of the characters in the requested font</entry>
-            <entry>0</entry>
-          </row>
-          <row>
-            <entry><link linkend="cfxEscarpment">ESCARPMENT</link></entry>
-            <entry>The angle between the escapement vector and the x-axis of the device</entry>
-            <entry>0</entry>
-          </row>
-          <row>
-            <entry><link linkend="cfxOrientation">ORIENTATION</link></entry>
-            <entry>The angle between each character's base line and the x-axis of the device</entry>
-            <entry>0</entry>
-          </row>
-          <row>
-            <entry><link linkend="cfxWeight">WEIGHT</link></entry>
-            <entry>The weight of the font</entry>
-            <entry>FW_NORMAL</entry>
-          </row>
-          <row>
-            <entry>ITALIC</entry>
-            <entry>True for an italic font</entry>
-            <entry>false</entry>
-          </row>
-          <row>
-            <entry>UNDERLINE</entry>
-            <entry>True for an uderlined font</entry>
-            <entry>false</entry>
-          </row>
-          <row>
-            <entry>STRIKEOUT</entry>
-            <entry>True for a strikeout font</entry>
-            <entry>false</entry>
-          </row>
-          <row>
-            <entry><link linkend="cfxCharset">CHARSET</link></entry>
-            <entry>Specifies the character set</entry>
-            <entry>DEFAULT_CHARSET</entry>
-          </row>
-          <row>
-            <entry><link linkend="cfxOutputPrecision">OUTPUTPRECISION</link></entry>
-            <entry>Specifies the output precision</entry>
-            <entry>OUT_TT_PRECIS</entry>
-          </row>
-          <row>
-            <entry><link linkend="cfxClipPrecision">CLIPPRECISION</link></entry>
-            <entry>Specifies the clipping precision</entry>
-            <entry>CLIP_DEFAULT_PRECIS</entry>
-          </row>
-          <row>
-            <entry><link linkend="cfxQuality">QUALITY</link></entry>
-            <entry>Specifies the output quality</entry>
-            <entry>DEFAULT_QUALITY</entry>
-          </row>
-          <row>
-            <entry><link linkend="cfxPitchAndFamily">PITCHANDFAMILY</link></entry>
-            <entry>Specifies the pitch and family of the font</entry>
-            <entry>FF_DONTCARE</entry>
-          </row>
-          </tbody>
-          </tgroup>
-          </informaltable>
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      The return is a handle to a font that can be used in any ooDialog method that requires a font
-      handle. Because of the way the font mapper works, it is hard to conceive of a circustance where
-      this method would fail. However, if it were to fail, the <link
-      linkend="dotSystemErrorCode">.SystemErrorCode</link> variable would be non-zero.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-      This example creates a 16 point, italic, underlined, Ariel font and then uses the font for a static
-      control.
-<programlisting>
-<![CDATA[
-
-additional = .directory~new
-additional~italic = .true
-additional~underline = .true
-
-hFont = self~createFontEx("Arial", 16, additional)
-hOldFont = self~getStaticControl(IDC_ST_ALERT)~setFont(hFont)
-...
-]]>
-</programlisting>
-    </para>
-    <para>
-      This example creates a 14 point, bold, italic, Times New Roman font and instructs the font mapper
-      to only choose from true type fonts. If there are no true type fonts installed on the system, then
-      the font mapper returns to its default behavior.
-<programlisting>
-<![CDATA[
-
-FW_BOLD = 700
-OUT_TT_ONLY_PRECIS = 7
-
-additional = .directory~new
-additional~italic = .true
-additional~weight = FW_BOLD
-additional~outputPrecison = OUT_TT_ONLY_PRECIS
-
-hFont = self~createFontEx("Times New Roman", 14, additional)
-
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-
-<section id="sctFontAttributes"><title>createFontEx Argument Values</title>
-<para>
-  The following list is the indexes of the <computeroutput>.Directory</computeroutput> object that can be
-  used for the third argument of the <link linkend="mthCreateFontEx">createFontEx</link>() method. The
-  list provides additional information on the meaning of values that can be assigned to each index.
-</para>
-<variablelist>
-  <varlistentry id="cfxWidth"><term><emphasis role="bold">width</emphasis> Must be an integer.</term>
-  <listitem>
-    <para>
-      Specifies the average width, in logical units, of the characters in the requested font. The default
-      value of zero, tells the font mapper to choose a closest match value. This is likely to produce the
-      best results, unless the programmer has some need that requires specifying the character width.
-    </para>
-    <para>
-      The closest match value is determined by comparing the absolute values of the difference between
-      the current device's aspect ratio and the digitized aspect ratio of available fonts.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry id="cfxEscarpment"><term><emphasis role="bold">escarpment</emphasis> Must be an integer.</term>
-  <listitem>
-    <para>
-      Specifies the angle, in tenths of degrees, between the escapement vector and the x-axis of the
-      device. The escapement vector is parallel to the base line of a row of text. Windows has no
-      predefined values for this argument.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry id="cfxOrientation"><term><emphasis role="bold">orientation</emphasis> Must be an integer.</term>
-  <listitem>
-    <para>
-      Specifies the angle, in tenths of degrees, between each character's base line and the x-axis of the
-      device. Windows has no predefined values for this argument.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry id="cfxWeight"><term><emphasis role="bold">weight</emphasis> Must be an integer.</term>
-  <listitem>
-    <para>
-      Specifies the weight of the font in the range 0 through 1000. For example, 400 is normal and 700 is
-      bold. If this value is zero, a default weight is used. The following table shows Windows predefined
-      values for this argument:
-    </para>
-    <informaltable id="tblCfxWeight" frame="all">
-    <tgroup cols="2">
-    <colspec align='left' colwidth='4*'>
-    <colspec align='right' colwidth='2*'>
-    <thead>
-    <row><entry>Value</entry><entry>Weight</entry></row>
-    </thead>
-    <tbody>
-    <row><entry>FW_DONTCARE  </entry><entry>  0</entry></row>
-    <row><entry>FW_THIN      </entry><entry>100</entry></row>
-    <row><entry>FW_EXTRALIGHT</entry><entry>200</entry></row>
-    <row><entry>FW_ULTRALIGHT</entry><entry>200</entry></row>
-    <row><entry>FW_LIGHT     </entry><entry>300</entry></row>
-    <row><entry>FW_NORMAL    </entry><entry>400</entry></row>
-    <row><entry>FW_REGULAR   </entry><entry>400</entry></row>
-    <row><entry>FW_MEDIUM    </entry><entry>500</entry></row>
-    <row><entry>FW_SEMIBOLD  </entry><entry>600</entry></row>
-    <row><entry>FW_DEMIBOLD  </entry><entry>600</entry></row>
-    <row><entry>FW_BOLD      </entry><entry>700</entry></row>
-    <row><entry>FW_EXTRABOLD </entry><entry>800</entry></row>
-    <row><entry>FW_ULTRABOLD </entry><entry>800</entry></row>
-    <row><entry>FW_HEAVY     </entry><entry>900</entry></row>
-    <row><entry>FW_BLACK     </entry><entry>900</entry></row>
-    </tbody></tgroup>
-    </informaltable>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">italic</emphasis> Must be a logical.</term>
-  <listitem>
-    <para>
-      Set this index to <computeroutput>.true</computeroutput> to request an italic font. The default is
-      <computeroutput>.false</computeroutput>.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">underline</emphasis> Must be a logical.</term>
-  <listitem>
-    <para>
-      Set this index to <computeroutput>.true</computeroutput> to request an underlined font. The default
-      is <computeroutput>.false</computeroutput>.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">strikeout</emphasis> Must be a logical.</term>
-  <listitem>
-    <para>
-      Set this index to <computeroutput>.true</computeroutput> to request a strike out font. The default
-      is <computeroutput>.false</computeroutput>.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry id="cfxCharset"><term><emphasis role="bold">charset</emphasis> Must be an integer.</term>
-  <listitem>
-    <para>
-      Specifies the character set. The following values are predefined in Windows:
-    </para>
-    <informaltable id="tblCfxCharset" frame="all">
-    <tgroup cols="2">
-    <colspec align='left' colwidth='4*'>
-    <colspec align='right' colwidth='2*'>
-    <thead>
-    <row><entry>Symbol</entry><entry>Value</entry></row>
-    </thead>
-    <tbody>
-    <row><entry>ANSI_CHARSET       </entry><entry>0</entry></row>
-    <row><entry>BALTIC_CHARSET     </entry><entry>186</entry></row>
-    <row><entry>CHINESEBIG5_CHARSET</entry><entry>136</entry></row>
-    <row><entry>DEFAULT_CHARSET    </entry><entry>1</entry></row>
-    <row><entry>EASTEUROPE_CHARSET </entry><entry>238</entry></row>
-    <row><entry>GB2312_CHARSET     </entry><entry>134</entry></row>
-    <row><entry>GREEK_CHARSET      </entry><entry>161</entry></row>
-    <row><entry>HANGUL_CHARSET     </entry><entry>129</entry></row>
-    <row><entry>MAC_CHARSET        </entry><entry>77</entry></row>
-    <row><entry>OEM_CHARSET        </entry><entry>255</entry></row>
-    <row><entry>RUSSIAN_CHARSET    </entry><entry>204</entry></row>
-    <row><entry>SHIFTJIS_CHARSET   </entry><entry>128</entry></row>
-    <row><entry>SYMBOL_CHARSET     </entry><entry>2</entry></row>
-    <row><entry>TURKISH_CHARSET    </entry><entry>162</entry></row>
-    <row><entry>VIETNAMESE_CHARSET </entry><entry>163</entry></row>
-    </tbody></tgroup>
-    </informaltable>
-  </listitem></varlistentry>
-  <varlistentry id="cfxOutputPrecision"><term><emphasis role="bold">outputPrecsion</emphasis> Must be an integer.</term>
-  <listitem>
-    <para>
-      The output precision defines how closely the output must match the requested font's height, width,
-      character orientation, escapement, pitch, and font type.
-    </para>
-    <para>
-      Applications can use the OUT_DEVICE_PRECIS, OUT_RASTER_PRECIS, OUT_TT_PRECIS, and
-      OUT_PS_ONLY_PRECIS values to control how the font mapper chooses a font when the operating system
-      contains more than one font with a specified name. For example, if an operating system contains a
-      font named Symbol in raster and TrueType form, specifying OUT_TT_PRECIS forces the font mapper to
-      choose the TrueType version. Specifying OUT_TT_ONLY_PRECIS forces the font mapper to choose a
-      TrueType font, even if it must substitute a TrueType font of another name.
-    </para>
-    <para>
-      It can be one of the following values:
-    </para>
-    <informaltable id="tblCfxOutputPrecision" frame="all">
-    <tgroup cols="3">
-    <colspec align='left' colwidth='3*'>
-    <colspec align='left' colwidth='4*'>
-    <colspec align='right' colwidth='1*'>
-    <thead>
-    <row><entry>Symbol</entry><entry>Meaning</entry><entry>Value</entry></row>
-    </thead>
-    <tbody>
-    <row>
-      <entry>OUT_CHARACTER_PRECIS</entry>
-      <entry>Not used.</entry>
-      <entry>2</entry></row>
-    <row>
-      <entry>OUT_DEFAULT_PRECIS  </entry>
-      <entry>
-        Specifies the default font mapper behavior.
-      </entry>
-      <entry>0</entry></row>
-    <row>
-      <entry>OUT_DEVICE_PRECIS   </entry>
-      <entry>
-        Instructs the font mapper to choose a Device font when the system contains multiple fonts with the same name.
-      </entry>
-      <entry>5</entry></row>
-    <row>
-      <entry>OUT_OUTLINE_PRECIS  </entry>
-      <entry>
-        This value instructs the font mapper to choose from TrueType and other outline-based fonts.
-      </entry>
-      <entry>8</entry></row>
-    <row>
-      <entry>OUT_PS_ONLY_PRECIS  </entry>
-      <entry>
-        Instructs the font mapper to choose from only PostScript fonts. If there are no PostScript fonts installed in the
-        system, the font mapper returns to default behavior.
-      </entry>
-      <entry>10</entry></row>
-    <row>
-      <entry>OUT_RASTER_PRECIS   </entry>
-      <entry>
-        Instructs the font mapper to choose a raster font when the system contains multiple fonts with the same name.
-      </entry>
-      <entry>6</entry></row>
-    <row>
-      <entry>OUT_STRING_PRECIS   </entry>
-      <entry>Not used.</entry>
-      <entry>1</entry></row>
-    <row>
-      <entry>OUT_STROKE_PRECIS   </entry>
-      <entry>Not used.</entry>
-      <entry>3</entry></row>
-    <row>
-      <entry>OUT_TT_ONLY_PRECIS  </entry>
-      <entry>
-        Instructs the font mapper to choose from only TrueType fonts. If there are no TrueType fonts installed in the system,
-        the font mapper returns to default behavior.
-      </entry>
-      <entry>7</entry></row>
-    <row>
-      <entry>OUT_TT_PRECIS       </entry>
-      <entry>
-        Instructs the font mapper to choose a TrueType font when the system contains multiple fonts with the same name.
-      </entry>
-      <entry>4</entry></row>
-    </tbody></tgroup>
-    </informaltable>
-  </listitem></varlistentry>
-  <varlistentry id="cfxClipPrecision"><term><emphasis role="bold">clipPrecision</emphasis> Must be an integer.</term>
-  <listitem>
-    <para>
-      The clipping precision defines how to clip characters that are partially outside the clipping
-      region. It can be one or more of the following values. Use <link
-      linkend="mthOrClsDlgUtil">.DlgUtil~or</link> to combine values.
-    </para>
-    <informaltable id="tblCfxClipPrecision" frame="all">
-    <tgroup cols="3">
-    <colspec align='left' colwidth='2*'>
-    <colspec align='left' colwidth='3*'>
-    <colspec align='right' colwidth='1*'>
-    <thead>
-    <row><entry>Symbol</entry><entry>Meaning</entry><entry>Value</entry></row>
-    </thead>
-    <tbody>
-    <row>
-      <entry>CLIP_CHARACTER_PRECIS
-      </entry><entry>Not used.</entry>
-      <entry>1 (0x01)</entry>
-    </row>
-    <row>
-      <entry>CLIP_DEFAULT_PRECIS</entry>
-      <entry>Specifies default clipping behavior.</entry>
-      <entry>0 (0x00)</entry>
-    </row>
-    <row>
-      <entry>CLIP_DFA_DISABLE</entry>
-      <entry>
-        Windows XP SP1: Turns off font association for the font. Note that this flag is not guaranteed to have any effect on
-        any platform after Windows Server 2003.
-      </entry>
-      <entry>64 (0x40)</entry>
-    </row>
-    <row>
-      <entry>CLIP_EMBEDDED</entry>
-      <entry>
-        You must specify this flag to use an embedded read-only font.
-      </entry>
-      <entry>128 (0x80)</entry>
-    </row>
-    <row>
-      <entry>CLIP_LH_ANGLES</entry>
-      <entry>
-        When this value is used, the rotation for all fonts depends on whether the orientation of the coordinate system is
-        left-handed or right-handed. If not used, device fonts always rotate counterclockwise, but the rotation of other
-        fonts is dependent on the orientation of the coordinate system. For more information about the orientation of
-        coordinate systems, see the description of the orientation parameter.
-      </entry>
-      <entry>16 (0x10)</entry>
-    </row>
-    <row>
-      <entry>CLIP_MASK</entry>
-      <entry>Not used.</entry>
-      <entry>15 (0x0f)</entry>
-    </row>
-    <row>
-      <entry>CLIP_STROKE_PRECIS</entry>
-      <entry>Not used.</entry>
-      <entry>2 (0x02)</entry>
-    </row>
-    <row>
-      <entry>CLIP_TT_ALWAYS</entry>
-      <entry>Not used.</entry>
-      <entry>32 (0x20)</entry>
-    </row>
-    </tbody></tgroup>
-    </informaltable>
-  </listitem></varlistentry>
-  <varlistentry id="cfxQuality"><term><emphasis role="bold">quality</emphasis> Must be an integer.</term>
-  <listitem>
-    <para>
-      The output quality defines how carefully the font mapper must attempt to match the logical-font
-      attributes to those of an actual physical font.
-    </para>
-    <para>
-      <emphasis role="bold">Note</emphasis> that if neither ANTIALIASED_QUALITY nor
-      NONANTIALIASED_QUALITY is selected, the font is antialiased only if the user chooses "smooth screen
-      fonts" in Control Panel. Quality can be one of the following values:
-    </para>
-    <informaltable id="tblCfxQuality" frame="all">
-    <tgroup cols="3">
-    <colspec align='left' colwidth='3*'>
-    <colspec align='left' colwidth='4*'>
-    <colspec align='right' colwidth='1*'>
-    <thead>
-    <row><entry>Symbol</entry><entry>Meaning</entry><entry>Value</entry></row>
-    </thead>
-    <tbody>
-    <row>
-      <entry>ANTIALIASED_QUALITY</entry>
-      <entry>
-        Font is antialiased, or smoothed, if the font supports it and the size of the font is not too small or too large.
-      </entry>
-      <entry>4</entry>
-    </row>
-    <row>
-      <entry>CLEARTYPE_QUALITY</entry>
-      <entry>
-        If set, text is rendered (when possible) using ClearType antialiasing method. See Remarks for more information.
-      </entry>
-      <entry>6</entry>
-    </row>
-    <row>
-      <entry>DEFAULT_QUALITY</entry>
-      <entry>
-        Appearance of the font does not matter.
-      </entry>
-      <entry>0</entry>
-    </row>
-    <row>
-      <entry>DRAFT_QUALITY</entry>
-      <entry>
-        Appearance of the font is less important than when the PROOF_QUALITY value is used. For GDI raster fonts, scaling is
-        enabled, which means that more font sizes are available, but the quality may be lower. Bold, italic, underline, and
-        strikeout fonts are synthesized, if necessary.
-      </entry>
-      <entry>1</entry>
-    </row>
-    <row>
-      <entry>NONANTIALIASED_QUALITY</entry>
-      <entry>
-        Font is never antialiased, that is, font smoothing is not done.
-      </entry>
-      <entry>3</entry>
-    </row>
-    <row>
-      <entry>PROOF_QUALITY</entry>
-      <entry>
-        Character quality of the font is more important than exact matching of the logical-font attributes. For GDI raster
-        fonts, scaling is disabled and the font closest in size is chosen. Although the chosen font size may not be mapped
-        exactly when PROOF_QUALITY is used, the quality of the font is high and there is no distortion of appearance. Bold,
-        italic, underline, and strikeout fonts are synthesized, if necessary.
-      </entry>
-      <entry>2</entry>
-    </row>
-    </tbody></tgroup>
-    </informaltable>
-  </listitem></varlistentry>
-  <varlistentry id="cfxPitchAndFamily"><term><emphasis role="bold">pitchAndFamily</emphasis> Must be an integer.</term>
-  <listitem>
-    <para>
-      Specifies the pitch and family of the font. Font families describe the look of a font in a general
-      way. They are intended for specifying fonts when the exact typeface requested is not available.
-    </para>
-    <para>
-      Combine one pitch value with one family value. The values are combined using a boolean or, but in
-      this case they could simply be added. The programmer can also use <link
-      linkend="mthOrClsDlgUtil">.DlgUtil~or</link> to combine values.
-    </para>
-    <informaltable id="tblCfxPitchAndFamily" frame="all">
-    <tgroup cols="3">
-    <colspec align='left' colwidth='2*'>
-    <colspec align='left' colwidth='4*'>
-    <colspec align='right' colwidth='1*'>
-    <thead>
-    <row><entry>Symbol</entry><entry>Meaning</entry><entry>Value</entry></row>
-    </thead>
-    <tbody>
-    <row><entry><emphasis role="bold">Pitch</emphasis></entry><entry></entry><entry></entry></row>
-    <row><entry>DEFAULT_PITCH </entry><entry></entry><entry>0</entry></row>
-    <row><entry>FIXED_PITCH   </entry><entry></entry><entry>1</entry></row>
-    <row><entry>VARIABLE_PITCH</entry><entry></entry><entry>2</entry></row>
-    <row><entry><emphasis role="bold">Family</emphasis></entry></row>
-    <row>
-      <entry>FF_DECORATIVE</entry>
-      <entry>
-        Novelty fonts. Old English is an example.
-      </entry>
-      <entry>128 (0x80)</entry>
-    </row>
-    <row>
-      <entry>FF_DONTCARE</entry>
-      <entry>
-        Use default font.
-      </entry>
-      <entry>4 (0x04)</entry>
-    </row>
-    <row>
-      <entry>FF_MODERN</entry>
-      <entry>
-        Fonts with constant stroke width, with or without serifs. Pica, Elite, and Courier New are examples.
-      </entry>
-      <entry>32 (0x20)</entry>
-    </row>
-    <row>
-      <entry>FF_ROMAN</entry>
-      <entry>
-        Fonts with variable stroke width and with serifs. MS Serif is an example.
-      </entry>
-      <entry>8 (10x08)</entry>
-    </row>
-    <row>
-      <entry>FF_SCRIPT</entry>
-      <entry>
-        Fonts designed to look like handwriting. Script and Cursive are examples.
-      </entry>
-      <entry>64 (0x40)</entry>
-    </row>
-    <row>
-      <entry>FF_SWISS</entry>
-      <entry>
-        Fonts with variable stroke width and without serifs. MS Sans Serif is an example.
-      </entry>
-      <entry>16 (0x10)</entry>
-      </row>
-    </tbody></tgroup>
-    </informaltable>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End createFontEx Argument Values -->
-
-</section>  <!-- End WindowExtensions::createFontEx() -->
 
 <section id="mthDeleteFont"><title>deleteFont</title>
 <indexterm><primary>deleteFont</primary></indexterm>

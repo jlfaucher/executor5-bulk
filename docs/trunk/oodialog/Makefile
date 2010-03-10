@@ -76,8 +76,8 @@ SGML_FILES = basedialog.sgml \
 	     treecontrolc.sgml \
 	     userdialog.sgml \
 	     utilityclasses.sgml \
-	     windowBaseCommon.sgml \
-	     windowExtensionsCommon.sgml \
+	     windowBase.sgml \
+	     windowExtensions.sgml \
 	     ../shared/notices.sgml \
 	     ../shared/legalstuff.sgml \
 	     ../shared/gethelp.sgml \
@@ -92,30 +92,30 @@ SGML_FILES = basedialog.sgml \
 
 
 HTML_IMAGE_FILES = rxou0s12.jpg \
-              rxou0s17.jpg \
+	      rxou0s17.jpg \
 	      rxou0s18.jpg \
 	      rxou0s19.jpg \
 	      rxou0s20.jpg \
 	      rxou0s24.jpg \
 	      rxou0s25.jpg \
- 	      docbook-1.png \
+	      docbook-1.png \
 	      oorexx.jpg \
-          dlgArea.png \
-          dlgareaplan.png \
-          sample1.png
+	      dlgArea.png \
+	      dlgareaplan.png \
+	      sample1.png
 
 PDF_IMAGE_FILES = rxou0s12.jpg \
-          rxou0s17.jpg \
+	      rxou0s17.jpg \
 	      rxou0s18.jpg \
 	      rxou0s19.jpg \
 	      rxou0s20.jpg \
 	      rxou0s24.jpg \
 	      rxou0s25.jpg \
- 	      docbook-1.png \
+	      docbook-1.png \
 	      oorexx.jpg \
-          dlgArea.pdf \
-          dlgareaplan.pdf \
-          sample1.png
+	      dlgArea.pdf \
+	      dlgareaplan.pdf \
+	      sample1.png
 
 JADETEXFMT  = ./pdfjadetex.fmt
 HYPERREFCFG = ./hyperref.cfg

@@ -171,7 +171,7 @@
   </para>
   <para>
     An additional <link linkend="basedialoginitexample">example</link> can be found under the
-    <computeroutput>Init</computeroutput> method, in the BaseDialog section, that shows the use of the
+    <computeroutput>init</computeroutput> method, in the BaseDialog section, that shows the use of the
     dialog data stem and header file arguments in more detail.
   </para>
   </listitem></varlistentry>
@@ -296,12 +296,12 @@ subclass of <computeroutput>UserDialog</computeroutput>.
 </para></listitem></varlistentry>
 </variablelist>
 
-<section id="mthInitRcDialog"><title>Init</title>
-<indexterm><primary>Init</primary>
+<section id="mthInitRcDialog"><title>init</title>
+<indexterm><primary>init</primary>
 <secondary>RcDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aRcDialog~Init(--script--,--dlgID--+-------------+--+----------+--------->
+>>-aRcDialog~init(--script--,--dlgID--+-------------+--+----------+--------->
                                       +-,--dlgData.-+  +-,--hFile-+
 
 >--+------------------------------------------------------+--)-------------><
@@ -316,7 +316,7 @@ subclass of <computeroutput>UserDialog</computeroutput>.
 ]]>
 </programlisting>
 
-<para>The Init method of the parent class,
+<para>The init method of the parent class,
 <computeroutput>UserDialog</computeroutput>, has been overridden.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -400,7 +400,7 @@ will contain the text of the selected item in the list box.</para>
     dlg~Execute("SHOWTOP")
   end
   else do
-    say "Problem creating the dialog.  Init code:" dlg~initCode
+    say "Problem creating the dialog.  init code:" dlg~initCode
     return 99
   end
 

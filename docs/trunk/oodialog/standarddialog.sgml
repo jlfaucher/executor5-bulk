@@ -207,9 +207,9 @@ the standard dialog classes.
 <varlistentry><term>Preparation:</term>
 <listitem><para>Standard dialogs are prepared by using the
 <computeroutput>new</computeroutput> method of the class, which in turn
-invokes the <computeroutput>Init</computeroutput> method. The parameters for
+invokes the <computeroutput>init</computeroutput> method. The parameters for
 the <computeroutput>new</computeroutput> method are described for the
-<computeroutput>Init</computeroutput> method of each class.
+<computeroutput>init</computeroutput> method of each class.
 </para></listitem></varlistentry>
 <varlistentry><term>Execution:</term>
 <listitem><para>The dialog is then run by using the
@@ -249,18 +249,18 @@ this class
 </variablelist>
 <para>The methods listed below are defined by this class.</para>
 
-<section id="initTimedMessage"><title>Init</title>
-<indexterm><primary>Init</primary>
+<section id="initTimedMessage"><title>init</title>
+<indexterm><primary>init</primary>
 <secondary>TimedMessage class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTimedMessage~Init(--msg--,--title--,--sleeping--+--------------+--)----><
+>>-aTimedMessage~init(--msg--,--title--,--sleeping--+--------------+--)----><
                                                     +-,-earlyReply-+
 
 ]]>
 </programlisting>
 
-<para>The Init method prepares the dialog. </para>
+<para>The init method prepares the dialog. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -395,7 +395,7 @@ class and how to add a background bitmap to the dialog window:
 </programlisting>
 
 <para>The Execute method creates and shows the message window. If the specified
-duration (see <link linkend="initTimedMessage">Init</link> method) is not
+duration (see <link linkend="initTimedMessage">init</link> method) is not
 negative, this method destroys the dialog automatically when the duration is up.
 If the duration is less than 0, then the programmer must destroy the dialog
 manually by invoking the <computeroutput>stopIt</computeroutput> method.  See
@@ -426,18 +426,18 @@ PlainUserDialog</computeroutput> class
 </variablelist>
 <para>The methods listed below are defined by this class.</para>
 
-<section id="initInputBox"><title>Init</title>
-<indexterm><primary>Init</primary>
+<section id="initInputBox"><title>init</title>
+<indexterm><primary>init</primary>
 <secondary>InputBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aInputBox~Init(--message--,--title--,--prevalue--,--len--)----><
+>>-aInputBox~init(--message--,--title--,--prevalue--,--len--)----><
 
 
 ]]>
 </programlisting>
 
-<para>The Init method prepares the input dialog. </para>
+<para>The init method prepares the input dialog. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -626,12 +626,12 @@ by the user are stored in attributes matching the labels of the entry lines.
 <para>The methods are the same as for the <link linkend="clsInputBox">InputBox Class</link>
 class, with the exception of Init.</para>
 
-<section id="initMultiInputBox"><title>Init</title>
-<indexterm><primary>Init</primary>
+<section id="initMultiInputBox"><title>init</title>
+<indexterm><primary>init</primary>
 <secondary>MultiInputBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aMultiInputBox~Init(--message--,--title--,--labels.--,--datas.-->
+>>-aMultiInputBox~init(--message--,--title--,--labels.--,--datas.-->
 
 >--+--------+--)--------------------------------------------------><
    +-,--len-+
@@ -640,7 +640,7 @@ class, with the exception of Init.</para>
 ]]>
 </programlisting>
 
-<para>The Init method is called automatically whenever
+<para>The init method is called automatically whenever
 a new instance of this class is created.  It prepares the dialog. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -718,12 +718,12 @@ is used to terminate the dialog. </para>
 </variablelist>
 <para>The method listed below is defined by this class.</para>
 
-<section id="initListChoice"><title>Init</title>
-<indexterm><primary>Init</primary>
+<section id="initListChoice"><title>init</title>
+<indexterm><primary>init</primary>
 <secondary>ListChoice class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListChoice~Init(--message--,--title--,--input.-------------->
+>>-aListChoice~init(--message--,--title--,--input.-------------->
 
 >--+---------------------------------------------------+-------><
    +-,--+------+--+-------------------------------+--)-+
@@ -734,7 +734,7 @@ is used to terminate the dialog. </para>
 ]]>
 </programlisting>
 
-<para>The Init method is used to initialize a newly created
+<para>The init method is used to initialize a newly created
 instance of this class. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -846,12 +846,12 @@ selected by the user are marked in a stem variable with the value 1.
 </variablelist>
 <para>The method listed below is defined by this class.</para>
 
-<section id="initCheckList"><title>Init</title>
-<indexterm><primary>Init</primary>
+<section id="initCheckList"><title>init</title>
+<indexterm><primary>init</primary>
 <secondary>CheckList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aCheckList~Init(--message--,--title--,--labels.--,--datas.-->
+>>-aCheckList~init(--message--,--title--,--labels.--,--datas.-->
 
 >---+------------------------+--)-----------------------------><
     +-,--+-----+--+--------+-+
@@ -943,12 +943,12 @@ a group of radio buttons. The user can select only one item of the group. </para
 </variablelist>
 <para>The method listed below is defined by this class.</para>
 
-<section id="initSingleSelection"><title>Init</title>
-<indexterm><primary>Init</primary>
+<section id="initSingleSelection"><title>init</title>
+<indexterm><primary>init</primary>
 <secondary>SingleList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSingleSelection~Init(--message--,--title--,--labels.--,--data-->
+>>-aSingleSelection~init(--message--,--title--,--labels.--,--data-->
 
 >--+------------------------+--)-------------------------------><
    +-,--+-----+--+--------+-+
@@ -1462,7 +1462,7 @@ linkend="clsTimedMessage">TimedMessage</link> dialog as a function:
 ret = TimedMessage("We are starting...","Please wait",3000)
 ]]>
 </programlisting><para> The parameters are the same as described in the
-<link linkend="initTimedMessage">Init</link> method of the <computeroutput>
+<link linkend="initTimedMessage">init</link> method of the <computeroutput>
 TimedMessage</computeroutput> class.
 </para>
 <para>The function returns 0, always, when the duration is non-negative.  When
@@ -1538,7 +1538,7 @@ end
 say "Your name:" InputBox("Please enter your name","Personal Data")
 ]]>
 </programlisting><para> The parameters are described in the <link
-linkend="initInputBox">Init</link> method of the<computeroutput>
+linkend="initInputBox">init</link> method of the<computeroutput>
 InputBox</computeroutput> class.</para>
 </section>
 
@@ -1556,7 +1556,7 @@ pwd = PasswordBox("Please enter your password","Security")
 ]]>
 </programlisting>
 <para> The parameters are described in the <link
-linkend="initInputBox">Init</link> method of the <computeroutput>
+linkend="initInputBox">init</link> method of the <computeroutput>
 InputBox</computeroutput>class.
 </para>
 </section>
@@ -1575,7 +1575,7 @@ say "Your age:" IntegerBox("Please enter your age","Personal Data")
 ]]>
 </programlisting>
 <para> The parameters are described in the <link
-linkend="initInputBox">Init</link> method of the <computeroutput>
+linkend="initInputBox">init</link> method of the <computeroutput>
 InputBox</computeroutput>class.
 </para>
 </section>
@@ -1598,7 +1598,7 @@ if res \= .Nil then do entry over res
 ]]>
 </programlisting>
 <para> The parameters are described in the <link
-linkend="initMultiInputbox">Init</link> method of the <computeroutput>
+linkend="initMultiInputbox">init</link> method of the <computeroutput>
 MultiInputBox</computeroutput>class.  However, instead of using stems,
 arrays are used for input.
 </para>
@@ -1625,7 +1625,7 @@ say "Your favorite day is" day
 ]]>
 </programlisting>
 <para> The parameters are described in the <link
-linkend="initListChoice">Init</link> method of the <computeroutput>
+linkend="initListChoice">init</link> method of the <computeroutput>
 ListChoice</computeroutput>class. However, instead of an input stem an array is
 passed into the function.
 </para>
@@ -1653,7 +1653,7 @@ if days <> .Nil then do day over days
 ]]>
 </programlisting>
 <para> The parameters are described in the <link
-linkend="initListChoice">Init</link> method of the <computeroutput>
+linkend="initListChoice">init</link> method of the <computeroutput>
 MultiListChoice</computeroutput>class. However, instead of stems, arrays are
 passed into the function.
 </para>
@@ -1686,7 +1686,7 @@ dialog: </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are similar to what is described in the <link
-linkend="initCheckList">Init</link> method of the <computeroutput>
+linkend="initCheckList">init</link> method of the <computeroutput>
 CheckList</computeroutput>class. However, instead of stems, arrays are
 passed into and returned from the function.
 <variablelist>
@@ -1794,7 +1794,7 @@ else
 ]]>
 </programlisting>
 <para> The parameters are described in the <link
-linkend="initSingleSelection">Init</link> method of the <computeroutput>
+linkend="initSingleSelection">init</link> method of the <computeroutput>
 SingleSelection</computeroutput>class. However, instead of an input stem an
 array is passed into the function.
 </para>

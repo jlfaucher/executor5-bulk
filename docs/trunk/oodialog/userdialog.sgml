@@ -347,8 +347,8 @@ the methods listed in the following table.
 <entry><link linkend="mthDefineDialog">DefineDialog</link></entry>
 </row>
 <row>
-<entry>Init</entry>
-<entry><link linkend="h001531">Init</link></entry>
+<entry>init</entry>
+<entry><link linkend="h001531">init</link></entry>
 </row>
 <row>
 <entry>InitAutoDetection</entry>
@@ -387,19 +387,19 @@ the methods listed in the following table.
 </para></listitem></varlistentry>
 </variablelist>
 
-<section id="h001531"><title>Init</title>
-<indexterm><primary>Init</primary>
+<section id="h001531"><title>init</title>
+<indexterm><primary>init</primary>
 <secondary>UserDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~Init(--+----------+--+---------------+--)-------><
+>>-aUserDialog~init(--+----------+--+---------------+--)-------><
                       +-DlgData.-+  +-,--headerFile-+
 
 
 ]]>
 </programlisting>
 
-<para>The Init method initializes a new dialog object. </para>
+<para>The init method initializes a new dialog object. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -445,7 +445,7 @@ use of the dialog data stem and header file arguments in more detail.
 ]]>
 </programlisting>
 
-<para>The InitAutoDetection method is called by the Init to determine whether or not automatic data field
+<para>The InitAutoDetection method is called by the init to determine whether or not automatic data field
 detection should be used. For a UserDialog, autodetection
 is disabled. </para>
 <variablelist>
@@ -941,7 +941,7 @@ associated Object Rexx attribute. Add... methods cannot be used after
   </para>
   <para>
     All controls can have their enabled style changed during program execution by using the <link
-    linkend="disable">Disable</link> or <link linkend="enable">Enable</link> methods. (Or any of the
+    linkend="mthDisable">disable</link> or <link linkend="mthEnable">enable</link> methods. (Or any of the
     related methods like <link linkend="h001229">DisableItem</link>, <link
     linkend="h001221">EnableItem</link>, etc..)
   </para></listitem>

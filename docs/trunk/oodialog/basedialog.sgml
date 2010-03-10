@@ -74,15 +74,15 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthClsGetFontName">getFontName</link> (Class method)</entry>
+<entry><link linkend="mthClsGetFontName">getFontName</link></entry>
 <entry>Returns the default font for all dialogs.</entry>
 </row>
 <row>
-<entry><link linkend="mthClsGetFontSize">getFontSize</link> (Class method)</entry>
+<entry><link linkend="mthClsGetFontSize">getFontSize</link></entry>
 <entry>Returns the default font size for all dialogs.</entry>
 </row>
 <row>
-<entry><link linkend="mthClsSetDefaultFont">setDefaultFont</link> (Class method)</entry>
+<entry><link linkend="mthClsSetDefaultFont">setDefaultFont</link></entry>
 <entry>Sets the default font name and size for all dialogs.</entry>
 </row>
 <row>
@@ -90,43 +90,43 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="atrAutoDetect">autoDetect</link> (Attribute)</entry>
+<entry><link linkend="atrAutoDetect">autoDetect</link></entry>
 <entry>If automatic data field detection is on or off.</entry>
 </row>
 <row>
-<entry><link linkend="atrAutomaticMethods">automaticMethods</link> (Attribute)</entry>
+<entry><link linkend="atrAutomaticMethods">automaticMethods</link></entry>
 <entry>A queue containing the methods that are started concurrently before the execution of the dialog. </entry>
 </row>
 <row>
-<entry><link linkend="atrBkgBitmap">bkgBitmap</link> (Attribute)</entry>
+<entry><link linkend="atrBkgBitmap">bkgBitmap</link></entry>
 <entry>The handle to a bitmap that is displayed as the dialog's background.</entry>
 </row>
 <row>
-<entry><link linkend="atrBkgBrushBmp">bkgBrushBmp</link> (Attribute)</entry>
+<entry><link linkend="atrBkgBrushBmp">bkgBrushBmp</link></entry>
 <entry>The handle to a bitmap brush that is used to draw the dialog's background.</entry>
 </row>
 <row>
-<entry><link linkend="atrConstDir">constDir</link> (Attribute)</entry>
+<entry><link linkend="atrConstDir">constDir</link></entry>
 <entry>A directory object that maps symbolic resource IDS to their numeric IDs</entry>
 </row>
 <row>
-<entry><link linkend="atrDlgHandle">dlgHandle</link> (Attribute)</entry>
+<entry><link linkend="atrDlgHandle">dlgHandle</link></entry>
 <entry>The window handle of the dialog.</entry>
 </row>
 <row>
-<entry><link linkend="atrHwnd">hwnd</link> (Attribute)</entry>
+<entry><link linkend="wbDOHwnd">hwnd</link></entry>
 <entry>The window handle of the dialog.</entry>
 </row>
 <row>
-<entry><link linkend="atrInitCode">initCode</link> (Attribute)</entry>
+<entry><link linkend="wbDOInitCode">initCode</link></entry>
 <entry>Reflects if the object initialization was successful.</entry>
 </row>
 <row>
-<entry><link linkend="atrFontName">fontName</link> (Attribute)</entry>
+<entry><link linkend="atrFontName">fontName</link></entry>
 <entry>Name of the dialog's font.</entry>
 </row>
 <row>
-<entry><link linkend="atrFontSize">fontSize</link> (Attribute)</entry>
+<entry><link linkend="atrFontSize">fontSize</link></entry>
 <entry>Point size of the dialog's font.</entry>
 </row>
 <row>
@@ -437,8 +437,8 @@
 <entry><link linkend="detersb">DetermineSBPosition</link></entry>
 </row>
 <row>
-<entry>Disable</entry>
-<entry><link linkend="disable">Disable</link></entry>
+<entry><link linkend="mthDisable">disable</link></entry>
+<entry>Disables the dialog.</entry>
 </row>
 <row>
 <entry>DisableItem</entry>
@@ -493,8 +493,8 @@
 <entry><link linkend="dumpdialog">Dump</link></entry>
 </row>
 <row>
-<entry>Enable</entry>
-<entry><link linkend="enable">Enable</link></entry>
+<entry>enable</entry>
+<entry><link linkend="mthEnable">enable</link></entry>
 </row>
 <row>
 <entry>EnableItem</entry>
@@ -792,8 +792,8 @@
 <entry><link linkend="h001261">HideWindowFast</link></entry>
 </row>
 <row>
-<entry>Init</entry>
-<entry><link linkend="h000025">Init</link></entry>
+<entry>init</entry>
+<entry><link linkend="mthInitPlainBaseDialog">init</link></entry>
 </row>
 <row>
 <entry>InitAutoDetection</entry>
@@ -1512,7 +1512,7 @@
 <programlisting>
 <![CDATA[
 
-::method Init
+::method init
   forward class (super) continue
 
   self~constDir["ID_GB"] = 101
@@ -1613,7 +1613,7 @@
 </variablelist>
 </section>  <!-- End PlainBaseDialog::autoDetect() [attribute]  -->
 
-<section id="atrautomaticMethods"><title>automaticMethods (Attribute)</title>
+<section id="atrAutomaticMethods"><title>automaticMethods (Attribute)</title>
 <indexterm><primary>automaticMethods</primary></indexterm>
 <indexterm><primary>PlainBaseDialog class</primary>
 <secondary>automaticMethods</secondary></indexterm>
@@ -1668,7 +1668,7 @@
 </variablelist>
 </section>  <!-- End PlainBaseDialog::automaticMethods() [attribute]  -->
 
-<section id="atrbkgBitmap"><title>bkgBitmap (Attribute)</title>
+<section id="atrBkgBitmap"><title>bkgBitmap (Attribute)</title>
 <indexterm><primary>bkgBitmap</primary></indexterm>
 <indexterm><primary>PlainBaseDialog class</primary>
 <secondary>bkgBitmap</secondary></indexterm>
@@ -1723,7 +1723,7 @@
 </variablelist>
 </section>  <!-- End PlainBaseDialog::bkgBitmap() [attribute]  -->
 
-<section id="atrbkgBrushBmp"><title>bkgBrushBmp (Attribute)</title>
+<section id="atrBkgBrushBmp"><title>bkgBrushBmp (Attribute)</title>
 <indexterm><primary>bkgBrushBmp</primary></indexterm>
 <indexterm><primary>PlainBaseDialog class</primary>
 <secondary>bkgBrushBmp</secondary></indexterm>
@@ -1778,7 +1778,7 @@
 </variablelist>
 </section>  <!-- End PlainBaseDialog::bkgBrushBmp() [attribute]  -->
 
-<section id="atrdlgHandle"><title>dlgHandle (Attribute)</title>
+<section id="atrDlgHandle"><title>dlgHandle (Attribute)</title>
 <indexterm><primary>dlgHandle</primary></indexterm>
 <indexterm><primary>PlainBaseDialog class</primary>
 <secondary>dlgHandle</secondary></indexterm>
@@ -1832,125 +1832,6 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End PlainBaseDialog::dlgHandle() [attribute]  -->
-
-<section id="atrhwnd"><title>hwnd (Attribute)</title>
-<indexterm><primary>hwnd</primary></indexterm>
-<indexterm><primary>WindowBase class</primary>
-<secondary>hwnd</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--hwnd-----------------------------------------------------><
-
->>--hwnd-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">hwnd get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">hwnd set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para></listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End WindowBase::hwnd() [attribute]  -->
-
-<section id="atrinitCode"><title>initCode (Attribute)</title>
-<indexterm><primary>initCode</primary></indexterm>
-<indexterm><primary>WindowBase class</primary>
-<secondary>initCode</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--initCode-----------------------------------------------------><
-
->>--initCode-=-code----------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">initCode get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">initCode set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    After the <emphasis role="italic">init</emphasis> method has executed the <emphasis
-    role="italic">initCode</emphasis> attribute will be 0 if the object initialization detected no errors. The attribute
-    will be non-zero if initialization failed or an error was detected. The programmer should always check the <emphasis
-    role="italic">initCode</emphasis> attribute after instantiating a dialog object. If the attribute is not zero, then
-    the object was not initialized correctly and its behavior is undefined.
-  </para>
-  <para>
-    After the dialog is finished, the <emphasis role="italic">initCode</emphasis> attribute will be 1 if terminated with
-    Ok, 2 if terminated with Cancel.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End WindowBase::initCode() [attribute]  -->
 
 <section id="atrFontName"><title>fontName (Attribute)</title>
 <indexterm><primary>fontName</primary></indexterm>
@@ -2132,18 +2013,43 @@
 </variablelist>
 </section>  <!-- End PlainBaseDialog::fontSize [attribute] -->
 
+<section id="wbDOHwnd"><title>hwnd</title>
+<programlisting>
+WindowBase::<link linkend="atrHwnd">hwnd</link>
+
+<![CDATA[
+>>--hwnd-----------------------------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="wbDOInitCode"><title>initCode</title>
+<programlisting>
+<link linkend="atrInitCode">initCode</link>
+
+<![CDATA[
+>>--initCode-----------------------------------------------------><
+
+>>--initCode-=-code----------------------------------------------><
+
+]]>
+</programlisting>
+</section>
+
 </section>  <!-- End Attributes Section -->
 
-<section id="prepdialog"><title>Preparing and Running the Dialog</title>
+<section id="sctPrepDialog"><title>Preparing and Running the Dialog</title>
 <indexterm><primary>preparing and running dialogs</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>preparing and running</secondary></indexterm>
 <para>
-  This section presents the methods used to prepare and initialize a dialog, show it, execute it, and stop it.
+  This section documents the methods used to prepare and initialize a dialog, show it, execute it, and stop it.
 </para>
 
-<section id="h000025"><title>Init</title>
+<section id="mthInitPlainBaseDialog"><title>init</title>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~Init(--+---------+--,--id--+-------------+--+----------+--)--><
+>>-aBaseDialog~init(--+---------+--,--id--+-------------+--+----------+--)--><
                       +-Library-+         +-,--DlgData.-+  +-,--hFile-+
 
 
@@ -2339,7 +2245,7 @@ IDs defined in the header file.
 ]]>
 </programlisting>
 
-<para>The InitAutoDetection method is called by the Init
+<para>The InitAutoDetection method is called by the init
 method to change the default setting for the automatic data field detection.</para>
 <para>Automatic data field detection means that for every
 dialog data item a corresponding Object Rexx attribute is created automatically.
@@ -2936,6 +2842,114 @@ MyDialog~SendMessageToItem(9001, "0x000000F1", 1, 0)
 </variablelist>
 </section>
 </section>
+
+<section id="sctWindowBaseDO"><title>Basic Window Methods</title>
+<indexterm><primary>dialog object</primary><secondary>basic window methods</secondary></indexterm>
+<para>
+  Recall that in the Windows graphical user interface, everything is a window. The <link
+  linkend="clsWindowBase">WindowBase</link> class is a mixin class that contains methods common to all windows. Since a
+  dialog is a window, it inherits the <emphasis role="italic">WindowBase</emphasis> class. This section lists all the
+  basic window methods for the dialog object.
+</para>
+
+<section id="wbDODisable"><title>disable</title>
+<programlisting>
+WindowBass::<link linkend="mthDisable">disable</link>
+
+<![CDATA[
+>>-disable-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbDOEnable"><title>enable</title>
+<programlisting>
+WindowBase::<link linkend="mthEnable">enable</link>
+
+<![CDATA[
+>>--enable-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbDOIsEnabled"><title>isEnabled</title>
+<programlisting>
+WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
+
+<![CDATA[
+>>--isEnabled--------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbDOIsVisible"><title>isVisible</title>
+<programlisting>
+WindowBase::<link linkend="mthIsVisible">isVisible</link>
+
+<![CDATA[
+>>--isVisible--------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbDOGetSize"><title>getSize</title>
+<programlisting>
+WindowBase::<link linkend="mthGetSize">getSize</link>
+
+<![CDATA[
+>>--getSize----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbDOGetTextSizePx"><title>getTextSizePx</title>
+<programlisting>
+WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
+
+<![CDATA[
+>>--getTextSizePx(-text--)-------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbDOGetTextSizeScreen"><title>getTextSizeScreen</title>
+<programlisting>
+WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
+
+<![CDATA[
+>>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
+                             +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
+]]>
+</programlisting>
+</section>
+
+
+</section> <!-- END Section Basic Window Methods  -->
+
+
+<section id="sctWindowExtensionsDO"><title>Extended Window Methods</title>
+<indexterm><primary>dialog object</primary><secondary>extended window methods</secondary></indexterm>
+<para>
+  The methods implemented by <link linkend="clsWindowExtensions">WindowExtensions</link> class are listed in this
+  section. The class name, <emphasis role="italic">WindowExtensions</emphasis> would seem to imply that the methods were
+  common to all windows. However, the methods of this class are really just extensions to the original ooDialog
+  framework, and many of the methods are not window specific methods.
+</para>
+
+<section id="weDOCreateFontEx"><title>createFontEx</title>
+<programlisting>
+WindowExtensions::<link linkend="mthCreateFontEx">createFontEx</link>
+
+<![CDATA[
+>>--createFontEx(--fontName-+--------------+--+---------------+--)-------------><
+                            +-,-pointSize--+  +-,-additional--+
+]]>
+</programlisting>
+</section>
+
+</section> <!-- END Section Extended Window Methods  -->
+
 
 <section id="sctInstantiateControls"><Title>Instantiating Dialog Controls</Title>
 <para>
@@ -5651,7 +5665,7 @@ combo box item within entry line 240:</para>
      .
      .
      .
-::method Init
+::method init
    self~Init:super
    self~ConnectList(230, "ListSelected")
      .
@@ -6919,6 +6933,174 @@ one of the check boxes instead.
 </variablelist>
 </section>
 
+<section id="mthDlgUnit2pixel"><title>dlgUnit2pixel</title>
+<indexterm><primary>dlgUnit2pixel</primary>
+<indexterm><primary>dialog object</primary><secondary>dlgUnit2pixel</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--dlgUnit2pixel(--du--)--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Takes a dimension expressed in dialog units of this dialog and tranforms it to a dimension expressed in pixels.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>du [required] [In/Out]</term>
+    <listitem>
+    <para>
+      The object to transform, can be either a <link linkend="clsPoint">Point</link>, <link
+      linkend="clsSize">Size</link>, or <link linkend="clsRext">Rect</link>  On input, the unit of measurement is
+      assumed to be dialog units and on return the dialog units will have been converted to pixels
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success and false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+    <para>
+      This method accurately converts dialog units of this dialog to pixels. Do not use <link
+      linkend="atrFactorX">factorX</link> and <link linkend="atrFactorY">factorY</link> for the conversion as they are
+      <link linkend="ovvInaccurate">inaccurate</link>.
+    </para>
+    <para>
+      Normally, this method is invoked prior to the creation of the underlying dialog. In order to be accurate, the
+      <link linkend="atrFontName">fontName</link> and <link linkend="atrFontSize">fontSize</link> attributes must
+      reflect the actual font the dialog will use.  Use the <link linkend="mthSetDlgFont">setDlgFont</link>() method if
+      necessary.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    TODO NEED EXAMPLE
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::dlgUnit2pixel() -->
+
+<section id="mthPixel2dlgUnit"><title>pixel2dlgUnit</title>
+<indexterm><primary>pixel2dlgUnit</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>pixel2dlgUnit</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--pixel2dlgUnit(--pixels--)----------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Takes a dimension expressed in pixels and tranforms it to a dimension expressed in dialog units of this dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>pixels [required] [In/Out]</term>
+    <listitem>
+    <para>
+      The object to transform, can be either a <link linkend="clsPoint">Point</link>, <link
+      linkend="clsSize">Size</link>, or <link linkend="clsRext">Rect</link>  On input, the unit of measurement is
+      assumed to be pixels and on return the pixels will have been converted to dialog units.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True on succes, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method accurately converts pixels to the correct dialog units of this dialog. Do not use <link
+    linkend="atrFactorX">factorX</link> and <link linkend="atrFactorY">factorY</link> as they are <link
+    linkend="ovvInaccurate">inaccurate</link>.
+  </para>
+  <para>
+    However, if this method is invoked prior to the creation of the underlying dialog, the <link
+    linkend="atrFontName">fontName</link> and <link linkend="atrFontSize">fontSize</link> attributes must reflect the
+    actual font the dialog will use.  Use the <link linkend="mthSetDlgFont">setDlgFont</link>() method if necessary.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows how to position controls in a <link linkend="clsUserDialog">UserDialog</link> relative to a
+    static image control. The pixel size of the picture is known.  That size is then coverted to dialog units so the
+    other controls can be positioned correctly.
+<programlisting>
+<![CDATA[
+
+::method defineDialog
+
+  -- Be sure the font name and size attributes are correct.  We are using MS
+  -- Shell Dlg 2 with a point size of 8 to create the dialog:
+  self~setDlgFont("MS Shell Dlg 2", 8)
+
+  caption = "Conrad, King of the Hill"
+
+  -- The values used for the size and width of the image are ignored by the OS
+  -- when the REALSIZEIMAGE style is used.  The OS will addjust the size of the
+  -- static control to match the actual size of the bitmap.
+  self~createStaticImage(IDC_BMP_PICTURE, 10, 10, 20, 17, "BITMAP REALSIZEIMAGE")
+
+  -- We know the real size of the bitmap in pixels:
+  size = .Size~new(265, 282)
+
+  -- Convert the pixels to dialog units so we can position the other controls.
+  self~pixel2dlgUnit(size)
+
+  -- Position the caption, 5 dialog units below the picture, aligned with the
+  -- left edge of the picture.
+  yPos = 10 + size~height + 5
+  self~createStaticText(IDC_ST_DESCRIPTION, 10, yPos, 176, 20, "TEXT LEFT", caption)
+
+  -- Position the Ok button top aligned with the caption and aligne with the
+  -- right edge of the picture.
+  xPos = 10 + size~width - 50
+  self~createPushButton(IDOK, xPos, yPos, 50, 14, "DEFAULT", "Ok", ok)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::pixel2dlgUnit() -->
 
 <section id="mthGetPos"><title>getPos</title>
 <indexterm><primary>GetPos</primary>
@@ -8304,17 +8486,6 @@ by blanks:
 </variablelist>
 </section>
 
-<section id="wb-getSize-do"><title>getSize</title>
-<programlisting>
-<link linkend="mthGetSize">WindowBase::getSize</link>
-<![CDATA[
->>--getSize----------------------------------------------------><
-
-
-]]>
-</programlisting>
-</section>
-
 <section id="h001301"><title>ResizeItem</title>
 <indexterm><primary>ResizeItem</primary></indexterm>
 <programlisting>
@@ -8516,7 +8687,7 @@ reference to how the code snippets all fit together.
 <para>The documentation for the individual methods used in the program has
 additional commentary that will help in understanding how the program works.
 <itemizedlist>
-<listitem><para><link linkend="h000025">Init</link>: This program uses a header
+<listitem><para><link linkend="mthInitPlainBaseDialog">init</link>: This program uses a header
 file, <computeroutput>fileView.h</computeroutput> to define symbolic IDs for the
 dialog controls. The name of the file is one of the arguments used to create a
 new instance of a dialog object. (As in all Rexx classes, the arguments used
@@ -8531,7 +8702,7 @@ documentation has more detail on the application icon.
 </para></listitem>
 <listitem><para><link linkend="mthInitDialog">InitDialog</link> This method is called
 after the underlying Windows dialog has been created, but before it is shown on
-the screen.  In the viewer dialog the <computeroutput>Init</computeroutput>
+the screen.  In the viewer dialog the <computeroutput>init</computeroutput>
 method is overridden and the text of the read-only multi-line edit control is
 set to the contents of the file.  In both dialogs, this method is used to get
 and save a reference to the edit control of the dialog.
@@ -10268,8 +10439,8 @@ a button. It is used to move bitmaps within buttons. </para>
   <tertiary>getSystemMetrics</tertiary>
 </indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replaced this mehtod the functionally equivalent
-  <link linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the <emphasis
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this mehtod the functionally equivalent <link
+  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the <emphasis
   role="italic">.DlgUtil</emphasis>class.
 </para>
 </section>
