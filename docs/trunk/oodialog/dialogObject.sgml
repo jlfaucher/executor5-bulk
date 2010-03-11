@@ -3989,25 +3989,31 @@ the invocation of <link linkend="h002048">StartIt</link>).
   (the data attribute) in the Rexx dialog object, and internally mapping the attribute to the specified dialog control
   in the underlying dialog. The operation of <emphasis role="bold">seting data</emphasis> then becomes the action of
   setting the state of the underlying dialog control to match the value of the corresponding attribute of the Rexx
-  dialog object The operation of <emphasis role="bold">getting data</emphasis> becomes the action of setting the value
+  dialog object. The operation of <emphasis role="bold">getting data</emphasis> becomes the action of setting the value
   of the attribute in the Rexx dialog object to match the state of the corresponding dialog control in the underlying
   dialog.
 </para>
 <para>
   The term <emphasis role="italic">automatic data field detection</emphasis> is used for this process of creating and
-  connecting data attributes. The process can be turned on or off. By default the process is <emphasis
-  role="bold">on</emphasis>. In addition to creating and connecting the data attributes, if automatic data field
-  detection is on, when the underling dialog is created, the state of its controls are automatically set to the values
-  of the data attributes. This is done <emphasis role="bold">after</emphasis> <link
-  linkend="mthInitDialog">initDialog</link>() is invoked. The consequence of this is that, if the programmer explicitly
-  sets the state of the dialog controls in the <emphasis role="italic">initDialog</emphasis>() method, the ooDialog
-  framwork will then <emphasis role="bold">reset</emphasis> the state of all the dialog controls afterwards. This can be
-  disconcerting to the programmer if automatic data field detection is not understood.
+  connecting data attributes. It is implemented in all three main classes of dialogs, the <link
+  linkend="clsUserDialog">UserDialog</link>, <link linkend="clsResDialog">ResDialog</link>, and <link
+  linkend="clsRcDialog">RcDialog</link>, and of course their subclasses. The process can be turned on or off. By default
+  the process is <emphasis role="bold">on</emphasis>. The best way to turn automatic data field detection off is to
+  over-ride the <link linkend="mthInitAutoDetection">initAutoDetection</link>() method in your class.
 </para>
 <para>
   In a <link linkend="clsUserDialog">UserDialog</link> the connectXXX attribute methods are called automatically from
   the create... methods. The proper place for Connect... attribute methods is the <link
   linkend="mthInitDialog">InitDialog</link> method.
+</para>
+<para>
+  In addition to creating and connecting the data attributes, if automatic data field detection is on, when the
+  underling dialog is created, the state of its controls are automatically set to the values of the data attributes.
+  This is done <emphasis role="bold">after</emphasis> <link linkend="mthInitDialog">initDialog</link>() is invoked. The
+  consequence of this is that, if the programmer explicitly sets the state of the dialog controls in the <emphasis
+  role="italic">initDialog</emphasis>() method, the ooDialog framwork will then <emphasis role="bold">reset</emphasis>
+  the state of all the dialog controls afterwards. This can be disconcerting to the programmer if automatic data field
+  detection is not understood.
 </para>
 
 <section id="mthInitAutoDetection"><title>initAutoDetection</title>
