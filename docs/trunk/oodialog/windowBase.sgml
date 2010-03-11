@@ -55,6 +55,8 @@
 <section id="atrfactorX"><title>factorX (Attribute)</title>
 <indexterm><primary>factorX</primary></indexterm>
 <indexterm><primary>WindowBase class</primary><secondary>factorX</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>factorX</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>factorX</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--factorX-----------------------------------------------------><
@@ -66,7 +68,7 @@
 
 <para>
   <emphasis role="italic">factorX</emphasis> was intended to be the horizontal size of one dialog unit, in pixels.
-  However, the value is not <link linkend="ovvInaccurate">correct</link> with modern dialogs except under rare
+  However, the value is not <link linkend="ovvInaccurate">correct</link> with modern dialogs, except under rare
   circumstances.
 </para>
 <para>
@@ -78,6 +80,8 @@
 <section id="atrfactorY"><title>factorY (Attribute)</title>
 <indexterm><primary>factorY</primary></indexterm>
 <indexterm><primary>WindowBase class</primary><secondary>factorY</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>factorY</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>factorY</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--factorY-----------------------------------------------------><
@@ -117,9 +121,9 @@
   <varlistentry><term><emphasis role="bold">hwnd get:</emphasis></term>
   <listitem>
   <para>
-    Before the underlying dialog object is created, the <emphasis role="italic">hwnd</emphasis> attribute for a dialog is not valid.
-    Since dialog control objects can not be instantiated before the underlying controls is created, their handles are
-    always valid.
+    Before the underlying dialog object is created, the <emphasis role="italic">hwnd</emphasis> attribute for a dialog
+    is not valid. Since dialog control objects can not be instantiated before the underlying controls is created, their
+    handles are always valid.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">hwnd set:</emphasis></term>
@@ -129,22 +133,29 @@
     ooDialog framework.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para></listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-  <para>
-    This example ...
 <programlisting>
 <![CDATA[
 
+::method inspectHandles private
+  okButton = self~newPushButton(IDOK)
+  cancelButton = self~newPushButton(IDCANCEL)
+
+  say "Window handeles:"
+  say "  ok button:    " okButton~hwnd
+  say "  cancel button:" cancelButton~hwnd
+
+/* Output might be:
+
+Window handeles:
+  ok button:     0x00180298
+  cancel button: 0x001A037A
+
+*/
 
 ]]>
 </programlisting>
-  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End WindowBase::hwnd() [attribute]  -->
@@ -227,6 +238,8 @@
 <section id="atrPixelCX"><title>pixelCX (Attribute)</title>
 <indexterm><primary>pixelCX</primary></indexterm>
 <indexterm><primary>WindowBase class</primary><secondary>pixelCX</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>pixelCX</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>pixelCX</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--pixelCX-----------------------------------------------------><
@@ -235,40 +248,83 @@
 </programlisting>
 
 <para>
-  xx
+  The value of the <emphasis role="italic">pixelCX</emphasis> is the width of the window in <link
+  linkend="defPixel">pixels</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    xx
+    The <emphasis role="italic">pixelCX</emphasis> value is the correct
+    width of the window, as oppossed to the <link linkend="atrSizeX">sizeX</link> attribute which is usually <link
+    linkend="ovvInaccurate">incorrect</link> because it is calculated using <link linkend="atrFactorX">factorX</link>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">pixelCX get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    For a dialog object, before the underlying dialog is created the value of this attribute is 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">pixelCX set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The programmer can not set the <emphasis role="italic">pixelCX</emphasis> attribute, it is set internally by the
+    ooDialog framework.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para></listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+    To convert the pixel width of a window to dialog units, the <link linkend="mthDlgUnit2Pixel">dlgUnit2Pixel</link>()
+    method can be used. Although, once the underlying dialog is created, it is usually more convenient to work with
+    pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="examplePixelCX"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example displays the pixel size of the ok button and then converts that size back to the dialog unit size of
+    the button. Note that the converted size matches the size the button was actually created with.
 <programlisting>
 <![CDATA[
 
+::method defineDialog
 
+  self~createPushButton(IDOK, 142, 99, 50, 14, "DEFAULT", "Ok")
+  self~createPushButton(IDCANCEL, 197, 99, 50, 14, , "Cancel")
+
+::method ok unguarded
+
+  okButton = self~newPushButton(IDOK)
+
+  say 'The ok button was created' 50 'dialog units wide.'
+  say 'The ok button was created' 14 'dialog units high.'
+  say
+  say 'The pixel width of the button is: ' okButton~pixelCX
+  say 'The pixel height of the button is:' okButton~pixelCY
+  say
+  say 'Convert pixels to dialog units.'
+  size = .Size~new(okButton~pixelCX, okButton~pixelCY)
+  self~pixel2dlgUnit(size)
+  say 'The dialog unit width of the button is: ' size~width
+  say 'The dialog unit height of the button is:' size~height
+
+  self~ok:super
+
+/* Output might be:
+
+The ok button was created 50 dialog units wide.
+The ok button was created 14 dialog units high.
+
+The pixel width of the button is:  75
+The pixel height of the button is: 23
+
+Convert pixels to dialog units.
+The dialog unit width of the button is:  50
+The dialog unit height of the button is: 14
+
+*/
 ]]>
 </programlisting>
   </para>
@@ -279,6 +335,8 @@
 <section id="atrPixelCY"><title>pixelCY (Attribute)</title>
 <indexterm><primary>pixelCY</primary></indexterm>
 <indexterm><primary>WindowBase class</primary><secondary>pixelCY</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>pixelCY</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>pixelCY</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--pixelCY-----------------------------------------------------><
@@ -287,42 +345,44 @@
 </programlisting>
 
 <para>
-  xx
+  The value of the <emphasis role="italic">pixelCY</emphasis> is the height of the window in <link
+  linkend="defPixel">pixels</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
+    The <emphasis role="italic">pixelCY</emphasis> value is the correct height of the window, as oppossed to the <link
+    linkend="atrSizeY">sizeY</link> attribute which is usually
+    <link linkend="ovvInaccurate">incorrect</link> because it is calculated using <link
+    linkend="atrFactorY">factorY</link>.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">pixelCY get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    For a dialog object, before the underlying dialog is created the value of this attribute is 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">pixelCY set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The programmer can not set the <emphasis role="italic">pixelCY</emphasis> attribute, it is set internally by the
+    ooDialog framework.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para></listitem></varlistentry>
+    To convert the pixel width of a window to dialog units, the <link linkend="mthDlgUnit2Pixel">dlgUnit2Pixel</link>()
+    method can be used. Although, once the underlying dialog is created, it is usually more convenient to work with
+    pixels.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    The <link linkend="examplePixelCX">pixelCX</link> example also uses the <emphasis role="italic">pixelCY</emphasis>
+    attribute.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -335,46 +395,76 @@
 <![CDATA[
 >>--sizeX-----------------------------------------------------><
 
->>--sizeX-=-varName-------------------------------------------><
+>>--sizeX-=-dialogUnits---------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">sizeX</emphasis> attribute was intended to be the width of the window and <link
+  linkend="atrSizeY">sizeY</link> the height of the window in dialog <link linkend="defDialogUnit">units</link>.
+  However, in almost all cases, the value is not <link linkend="ovvInaccurate">correct.</link>
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    xx
+    For a dialog control, <emphasis role="italic">sizeX</emphasis> and <link linkend="atrSizeY">sizeY</link> are
+    calculated using <link linkend="atrFactorX">factorX</link> and <link linkend="atrFactorY">factorY</link>, which
+    inherently makes them incorrect in almost all cases. <link linkend="clsUserDialog">User</link> dialogs and their
+    subclasses will have the correct values. However, the <emphasis role="italic">sizeX</emphasis> and <emphasis
+    role="italic">sizeY</emphasis> values in a <link linkend="clsResDialog">Resource</link> dialog are 0.
   </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">sizeX get:</emphasis></term>
-  <listitem>
   <para>
-    details about get
+    These attributes are set one time by the ooDialog framework and not changed by the framework again.
   </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">sizeX set:</emphasis></term>
-  <listitem>
   <para>
-    details about set
+    To obtain the correct width and height of a window in either pixels or dialog units, use the <link
+    linkend="atrPixelCX">pixelCX</link> and <link linkend="atrPixelCY">pixelCY</link> attributes. These valuse can be
+    correctly <link linkend="examplePixelCX">converted</link> to dialog units if dialog units are desired.
   </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para></listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example displays the width and height of the ok button using <emphasis role="italic">sizeX</emphasis> and
+    <emphasis role="italic">sizeY</emphasis>. Contrast the output with the <link linkend="examplePixelCX">example</link>
+    for <emphasis role="italic">pixelCx</emphasis>.
 <programlisting>
 <![CDATA[
 
+::method defineDialog
 
+  self~createPushButton(IDOK, 142, 99, 50, 14, "DEFAULT", "Ok")
+  self~createPushButton(IDCANCEL, 197, 99, 50, 14, , "Cancel")
+
+::method ok unguarded
+
+  okButton = self~newPushButton(IDOK)
+
+  say 'The ok button was created' 50 'dialog units wide.'
+  say 'The ok button was created' 14 'dialog units high.'
+  say
+  say 'The pixel width of the button is: ' okButton~pixelCX
+  say 'The pixel height of the button is:' okButton~pixelCY
+  say
+  say 'Use sizeX and sizeY to display dialog units.'
+  say 'The dialog unit width of the button is: ' okButton~sizeX
+  say 'The dialog unit height of the button is:' okButton~sizeY
+
+  self~ok:super
+
+  /* Output might be:
+
+The ok button was created 50 dialog units wide.
+The ok button was created 14 dialog units high.
+
+The pixel width of the button is:  75
+The pixel height of the button is: 23
+
+Use sizeX and sizeY to display dialog units.
+The dialog unit width of the button is:  37
+The dialog unit height of the button is: 11
+  */
 ]]>
 </programlisting>
   </para>
@@ -389,51 +479,17 @@
 <![CDATA[
 >>--sizeY-----------------------------------------------------><
 
->>--sizeY-=-varName-------------------------------------------><
+>>--sizeY-=-dialogUnits---------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">sizeY</emphasis> attribute is the counterpart to the <emphasis
+  role="italic">sizeX</emphasis> attribute. The attribute was meant to be the height of the window in dialog <link
+  linkend="defDialog">units</link>, but is not accurate. The documentation for <link linkend="atrSizeX">sizeX</link> has
+  a complete discussion of both attributes.
 </para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">sizeY get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">sizeY set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para></listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
 </section>  <!-- End WindowBase::sizeY() [attribute]  -->
 
 <section id="mthDisable"><title>disable</title>

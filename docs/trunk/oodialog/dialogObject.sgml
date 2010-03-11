@@ -114,11 +114,35 @@
 <entry>The window handle of the dialog.</entry>
 </row>
 <row>
-<entry><link linkend="wbDOHwnd">hwnd</link></entry>
+<entry><link linkend="wbdoFactorX">factorX</link></entry>
+<entry>The horizontal size of one dialog unit in pixels. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="wbdoFactorY">factorY</link></entry>
+<entry>The vertical size of one dialog unit in pixels. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="wbdoSizeX">sizeX</link></entry>
+<entry>The width of the dialog in dialog units. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="wbdoSizeY">sizeY</link></entry>
+<entry>The height of the dialog in dialog units. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="wbdoPixelCX">pixelCX</link></entry>
+<entry>The width of the dialog in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoPixelCY">pixelCY</link></entry>
+<entry>The height of the dialog in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoHwnd">hwnd</link></entry>
 <entry>The window handle of the dialog.</entry>
 </row>
 <row>
-<entry><link linkend="wbDOInitCode">initCode</link></entry>
+<entry><link linkend="wbdoInitCode">initCode</link></entry>
 <entry>Reflects if the object initialization was successful.</entry>
 </row>
 <row>
@@ -796,8 +820,8 @@
 <entry><link linkend="mthInitPlainBaseDialog">init</link></entry>
 </row>
 <row>
-<entry>InitAutoDetection</entry>
-<entry><link linkend="mthInitAutoDetection">InitAutoDetection</link></entry>
+<entry>initAutoDetection</entry>
+<entry><link linkend="mthInitAutoDetection">initAutoDetection</link></entry>
 </row>
 <row>
 <entry>InitDialog</entry>
@@ -1458,7 +1482,7 @@
   This section describes the attributes of the dialog object.
 </para>
 
-<section id="atrConstDir"><title>constDir</title>
+<section id="atrConstDir"><title>constDir (Attribute)</title>
 <indexterm><primary>constDir</primary></indexterm>
 <indexterm><primary>ResourceUtils class</primary>
 <secondary>constDir</secondary></indexterm>
@@ -1466,21 +1490,28 @@
 <secondary>constDir</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--constDir-----------------------------------------------------><
+>>--constDir---------------------------------------------------><
 
->>--constDir-=-varName-------------------------------------------><
+>>--constDir[symbol]-=-numericValue----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
   A directory object whose indexes are <link linkend="defSymbolicId">symbolic resource ID</link>s. The entry for each
-  index is the numerical value of the symbolic ID.  Once a symbolic ID is added to the <computeroutput>
-  Constdir</computeroutput> directory, the symbolic ID can be used in place of the numeric value in any method of the
-  ooDialog classes that requires a resource ID.
+  index is the numeric value of the <link linkend="defResourceId">resource ID</link>.  Once a symbolic ID is added to
+  the <emphasis role="italic">constDir</emphasis> directory, the symbolic ID can be used in place of the numeric value
+  in any method of the ooDialog classes that requires a resource ID.
+</para>
+<para>
+  The use of the <emphasis role="italic">constDir</emphasis> is mostly transparent to the programmer and handled
+  automatically by the ooDialog framework. See the remarks section for how entries are added to the <emphasis
+  role="italic">constDir</emphasis>. Internally, the framework uses the <emphasis role="italic">constDir</emphasis> to
+  resolve a symbolic ID used in an method invocation to its numeric value.  This is completely transparent to the
+  programmer.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     The <emphasis role="italic">constDir</emphasis> attribute is inherited from the <link
@@ -1496,9 +1527,10 @@
   <varlistentry><term><emphasis role="bold">constDir set:</emphasis></term>
   <listitem>
   <para>
-    The set
-  </para>
-  </listitem></varlistentry>
+    Setting the <emphasis role="italic">constDir</emphasis> attribute is private and in general should not be done by
+    the programmer. The ooDialog framework automatically sets the attribute to a
+    <computeroutput>Directory</computeroutput> object when a new dialog or menu object is created.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
@@ -1524,38 +1556,26 @@
 
 ::method defineDialog
 
-  self~addGroupBox(10, 20, 150, 90, "Pick an interpreter", "BORDER", ID_GB)
-  self~addCheckBox(ID_CB_REGINA, "cb1", 30, 40, , , "Regina", "GROUP")
-  self~addCheckBox(ID_CB_REGINALD, "cb2", 30, 60, , , "Reginald")
-  self~addCheckBox(ID_CB_OOREXX, "cb3", 30, 80, , , "ooRexx")
+  self~createGroupBox(ID_GB, 10, 20, 150, 90, "BORDER", "Pick an interpreter")
+  self~createCheckBox(ID_CB_REGINA, "cb1", 30, 40, , , "GROUP", "Regina")
+  self~createCheckBox(ID_CB_REGINALD, "cb2", 30, 60, , , , "Reginald")
+  self~createCheckBox(ID_CB_OOREXX, "cb3", 30, 80, , , , "ooRexx")
 
 ...
 
 ::method ok
 
-  oorexxCB = self~getCheckControl(ID_CB_OOREXX)
+  oorexxCB = self~newCheckBox(ID_CB_OOREXX)
   if oorexxCB~checked then
     say "You picked the right interpreter."
 
 ]]>
 </programlisting>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ResourceUtils::constDir() [attribute]  -->
 
-<section id="atrAutoDetect"><title>autoDetect</title>
+<section id="atrAutoDetect"><title>autoDetect (Attribute)</title>
 <indexterm><primary>autoDetect</primary></indexterm>
 <indexterm><primary>PlainBaseDialog class</primary>
 <secondary>autoDetect</secondary></indexterm>
@@ -1833,6 +1853,28 @@
 </variablelist>
 </section>  <!-- End PlainBaseDialog::dlgHandle() [attribute]  -->
 
+<section id="wbdoFactorX"><title>factorX (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="mthFactorX">factorX</link>
+
+>>--factorX-----------------------------------------------------><
+
+>>--factorX-=-ratio---------------------------------------------><
+
+</programlisting>
+</section>
+
+<section id="wbdoFactorY"><title>factorY (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="mthFactorY">factorY</link>
+
+>>--factorY-----------------------------------------------------><
+
+>>--factorY-=-ratio---------------------------------------------><
+
+</programlisting>
+</section>
+
 <section id="atrFontName"><title>fontName (Attribute)</title>
 <indexterm><primary>fontName</primary></indexterm>
 <indexterm><primary>dialog object</primary>
@@ -2013,7 +2055,7 @@
 </variablelist>
 </section>  <!-- End PlainBaseDialog::fontSize [attribute] -->
 
-<section id="wbDOHwnd"><title>hwnd</title>
+<section id="wbdoHwnd"><title>hwnd (Attribute)</title>
 <programlisting>
 WindowBase::<link linkend="atrHwnd">hwnd</link>
 
@@ -2024,7 +2066,7 @@ WindowBase::<link linkend="atrHwnd">hwnd</link>
 </programlisting>
 </section>
 
-<section id="wbDOInitCode"><title>initCode</title>
+<section id="wbdoInitCode"><title>initCode (Attribute)</title>
 <programlisting>
 <link linkend="atrInitCode">initCode</link>
 
@@ -2033,6 +2075,50 @@ WindowBase::<link linkend="atrHwnd">hwnd</link>
 
 >>--initCode-=-code----------------------------------------------><
 
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoPixelCX"><title>pixelCX</title>
+<programlisting>
+<link linkend="mthPixelCX">pixelCX</link>
+
+<![CDATA[
+>>--pixelCX-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoPixelCY"><title>pixelCY</title>
+<programlisting>
+<link linkend="mthPixelCY">pixelCY</link>
+
+<![CDATA[
+>>--pixelCY-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoSizeX"><title>sizeX (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="mthSizeX">sizeX</link>
+
+<![CDATA[
+>>--sizeX-----------------------------------------------------><
+
+>>--sizeX-=-dialogUnits---------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoSizeY"><title>sizeY (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="mthSizeY">sizeY</link>
+
+<![CDATA[
+>>--sizeY-----------------------------------------------------><
+
+>>--sizeY-=-dialogUnits---------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -2233,54 +2319,6 @@ IDs defined in the header file.
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End PlainBaseDialog::setDlgFont() -->
-
-<section id="mthInitAutoDetection"><title>InitAutoDetection</title>
-<indexterm><primary>InitAutoDetection</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~InitAutoDetection-------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The InitAutoDetection method is called by the init
-method to change the default setting for the automatic data field detection.</para>
-<para>Automatic data field detection means that for every
-dialog data item a corresponding Object Rexx attribute is created automatically.
-If you disable automatic detection, you have to use the Connect... methods to assign a dialog item to an Object Rexx attribute. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected. You can override this method within your subclass
-to change the standard behavior.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example overrides the method to switch off auto detection:
-
-<programlisting>
-<![CDATA[
-::class MyDialog subclass UserDialog
-::method InitAutoDetection
-   self~NoAutoDetection
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthNoAutoDetection"><title>NoAutoDetection</title>
-<indexterm><primary>NoAutoDetection</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~NoAutoDetection---------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The NoAutoDetection method switches off auto detection.</para>
-</section>
 
 <section id="mthInitDialog"><title>InitDialog</title>
 <indexterm><primary>InitDialog</primary>
@@ -2852,7 +2890,7 @@ MyDialog~SendMessageToItem(9001, "0x000000F1", 1, 0)
   basic window methods for the dialog object.
 </para>
 
-<section id="wbDODisable"><title>disable</title>
+<section id="wbdoDisable"><title>disable</title>
 <programlisting>
 WindowBass::<link linkend="mthDisable">disable</link>
 
@@ -2862,7 +2900,7 @@ WindowBass::<link linkend="mthDisable">disable</link>
 </programlisting>
 </section>
 
-<section id="wbDOEnable"><title>enable</title>
+<section id="wbdoEnable"><title>enable</title>
 <programlisting>
 WindowBase::<link linkend="mthEnable">enable</link>
 
@@ -2872,7 +2910,7 @@ WindowBase::<link linkend="mthEnable">enable</link>
 </programlisting>
 </section>
 
-<section id="wbDOIsEnabled"><title>isEnabled</title>
+<section id="wbdoIsEnabled"><title>isEnabled</title>
 <programlisting>
 WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
 
@@ -2882,7 +2920,7 @@ WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
 </programlisting>
 </section>
 
-<section id="wbDOIsVisible"><title>isVisible</title>
+<section id="wbdoIsVisible"><title>isVisible</title>
 <programlisting>
 WindowBase::<link linkend="mthIsVisible">isVisible</link>
 
@@ -2892,7 +2930,7 @@ WindowBase::<link linkend="mthIsVisible">isVisible</link>
 </programlisting>
 </section>
 
-<section id="wbDOGetSize"><title>getSize</title>
+<section id="wbdoGetSize"><title>getSize</title>
 <programlisting>
 WindowBase::<link linkend="mthGetSize">getSize</link>
 
@@ -2903,7 +2941,7 @@ WindowBase::<link linkend="mthGetSize">getSize</link>
 </section>
 
 
-<section id="wbDOGetTextSizePx"><title>getTextSizePx</title>
+<section id="wbdoGetTextSizePx"><title>getTextSizePx</title>
 <programlisting>
 WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
 
@@ -2913,7 +2951,7 @@ WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
 </programlisting>
 </section>
 
-<section id="wbDOGetTextSizeScreen"><title>getTextSizeScreen</title>
+<section id="wbdoGetTextSizeScreen"><title>getTextSizeScreen</title>
 <programlisting>
 WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
 
@@ -3956,10 +3994,69 @@ the invocation of <link linkend="h002048">StartIt</link>).
   dialog.
 </para>
 <para>
-  In a <link linkend="clsUserDialog"></link>UserDialog the Connect... attribute methods are called automatically
-from the Add... methods. The proper place for Connect... attribute methods is the <link
-linkend="mthInitDialog">InitDialog</link> method.
+  The term <emphasis role="italic">automatic data field detection</emphasis> is used for this process of creating and
+  connecting data attributes. The process can be turned on or off. By default the process is <emphasis
+  role="bold">on</emphasis>. In addition to creating and connecting the data attributes, if automatic data field
+  detection is on, when the underling dialog is created, the state of its controls are automatically set to the values
+  of the data attributes. This is done <emphasis role="bold">after</emphasis> <link
+  linkend="mthInitDialog">initDialog</link>() is invoked. The consequence of this is that, if the programmer explicitly
+  sets the state of the dialog controls in the <emphasis role="italic">initDialog</emphasis>() method, the ooDialog
+  framwork will then <emphasis role="bold">reset</emphasis> the state of all the dialog controls afterwards. This can be
+  disconcerting to the programmer if automatic data field detection is not understood.
 </para>
+<para>
+  In a <link linkend="clsUserDialog">UserDialog</link> the connectXXX attribute methods are called automatically from
+  the create... methods. The proper place for Connect... attribute methods is the <link
+  linkend="mthInitDialog">InitDialog</link> method.
+</para>
+
+<section id="mthInitAutoDetection"><title>initAutoDetection</title>
+<indexterm><primary>initAutoDetection</primary></indexterm>
+<indexterm><primary>initAutoDetection</primary><secondary>dialog object</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-initAutoDetection-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">initAutoDetection</emphasis> method is called by the init
+method to change the default setting for the automatic data field detection.</para>
+<para>Automatic data field detection means that for every
+dialog data item a corresponding Object Rexx attribute is created automatically.
+If you disable automatic detection, you have to use the Connect... methods to assign a dialog item to an Object Rexx attribute. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
+<listitem><para>This method is protected. You can override this method within your subclass
+to change the standard behavior.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example overrides the method to switch off auto detection:
+
+<programlisting>
+<![CDATA[
+::class MyDialog subclass UserDialog
+::method initAutoDetection
+   self~NoAutoDetection
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthNoAutoDetection"><title>NoAutoDetection</title>
+<indexterm><primary>NoAutoDetection</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~NoAutoDetection---------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The NoAutoDetection method switches off auto detection.</para>
+</section>
 
 <section id="mthConnectEdit"><title>connectEdit</title>
 <indexterm><primary>connectEdit</primary></indexterm>
@@ -6912,10 +7009,10 @@ one of the check boxes instead.
 ::method defineDialog
 
   self~addGroupBox(10, 20, 130, 90, "Check Needed Groceries", "", IDC_GB_LIST);
-  self~addCheckBox(IDC_CB_MILK, , 30, 35, , , "Milk", "GROUP");
-  self~addCheckBox(IDC_CB_BREAD, , 30, 55, , , "Bread", "NOTAB");
-  self~addCheckBox(IDC_CB_FRUIT, , 30, 75, , , "Fruit", "NOTAB");
-  self~addCheckBox(IDC_CB_CEREAL, , 30, 95, , , "Cereal", "NOTAB");
+  self~createCheckBox(IDC_CB_MILK, , 30, 35, , , "Milk", "GROUP");
+  self~createCheckBox(IDC_CB_BREAD, , 30, 55, , , "Bread", "NOTAB");
+  self~createCheckBox(IDC_CB_FRUIT, , 30, 75, , , "Fruit", "NOTAB");
+  self~createCheckBox(IDC_CB_CEREAL, , 30, 95, , , "Cereal", "NOTAB");
 
   self~addButton(IDOK, 105, 120, 35, 15, "OK", , "GROUP")
 
@@ -8733,7 +8830,7 @@ reduces the flicker on the screen.
 <listitem><para><link linkend="mthMinimize">Minimize</link>: When the viewer
 dialog is maximized, the main dialog is minimized to the task bar.
 </para></listitem>
-<listitem><para><link linkend="mthInitAutoDetection">InitAutoDetection</link>:
+<listitem><para><link linkend="mthInitAutoDetection">initAutoDetection</link>:
 Because the contents of the file are loaded into the multi-line edit control
 during <computeroutput>InitDialog</computeroutput>, auto detection must be
 turned off.  Otherwise, after <computeroutput>InitDialog</computeroutput>

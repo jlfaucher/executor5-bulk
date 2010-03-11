@@ -1332,7 +1332,7 @@ set to reflect whether hot keys are currently enabled or not.
 ::method defineDialog
 
   ...
-  self~addCheckBox(IDC_CHECK_FKEYSENABlED, , 30, 60, , , "Hot Keys Enabled")
+  self~createCheckBox(IDC_CHECK_FKEYSENABlED, , 30, 60, , , "Hot Keys Enabled")
   ...
   self~addButton(IDC_PB_RESET, 60, 135, 45, 15, "Reset", onReset)
   ...
@@ -1610,7 +1610,7 @@ but not before init:super has been called.
 </para>
 <para>
   For user defined dialogs use the NOTIFY style keyword in the <link
-  linkend="sctAddStaticControls">Add...</link> static control methods when the control is defined. For
+  linkend="sctAddStaticControls">create...</link> static control methods when the control is defined. For
   dialogs created from a compiled resource or a resource script file use the SS_NOTIFY style when
   defining the control in a resource editor.
 </para>
@@ -3734,7 +3734,7 @@ slider position by extracting the high-oder word. Example:
 </para>
 <para>
   For user defined dialogs use the NOTIFY style keyword in the <link
-  linkend="sctAddStaticControls">Add...</link> static control methods when the control is defined. For
+  linkend="sctAddStaticControls">create...</link> static control methods when the control is defined. For
   dialogs created from a compiled resource or a resource script file use the SS_NOTIFY style when
   defining the control in a resource editor.
 </para>

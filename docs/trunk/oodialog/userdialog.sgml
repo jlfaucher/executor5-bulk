@@ -179,8 +179,8 @@ the methods listed in the following table.
 <entry><link linkend="mthAddButtonGroup">addButtonGroup</link></entry>
 </row>
 <row>
-<entry>addCheckBox</entry>
-<entry><link linkend="mthAddCheckBox">addCheckBox</link></entry>
+<entry>createCheckBox</entry>
+<entry><link linkend="mthCreateCheckBox">createCheckBox</link></entry>
 </row>
 <row>
 <entry>addCheckBoxStem</entry>
@@ -351,10 +351,6 @@ the methods listed in the following table.
 <entry><link linkend="h001531">init</link></entry>
 </row>
 <row>
-<entry>InitAutoDetection</entry>
-<entry><link linkend="h001539">InitAutoDetection</link></entry>
-</row>
-<row>
 <entry>Load</entry>
 <entry><link linkend="h001613">Load</link></entry>
 </row>
@@ -434,40 +430,6 @@ use of the dialog data stem and header file arguments in more detail.
 </variablelist>
 </section>
 
-<section id="h001539"><title>InitAutoDetection</title>
-<indexterm><primary>InitAutoDetection</primary>
-<secondary>UserDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aUserDialog~InitAutoDetection-------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The InitAutoDetection method is called by the init to determine whether or not automatic data field
-detection should be used. For a UserDialog, autodetection
-is disabled. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected. It is called by the class itself and can be
-overwritten.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example overrides the method to switch off auto detection:
-
-<programlisting>
-<![CDATA[
-::class MyClass subclass UserDialog
-
-::method InitAutoDetection
-self~NoAutoDetection
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="mthCreate"><title>create</title>
 <indexterm><primary>create</primary></indexterm>
 <programlisting>
@@ -477,7 +439,6 @@ self~NoAutoDetection
 
 >----+------------+--+------------+--+------------+--)---------------------><
      +-,-fontName-+  +-,-fontSize-+  +-,-expected-+
-
 
 ]]>
 </programlisting>
@@ -603,7 +564,6 @@ if success then MyDialog~execute
 >----+------------+--+------------+--+------------+--)---------------><
      +-,-fontName-+  +-,-fontSize-+  +-,-expected-+
 
-
 ]]>
 </programlisting>
 
@@ -620,7 +580,6 @@ if success then MyDialog~execute
 <programlisting>
 <![CDATA[
 >>-defineDialog------------------------------------------------------><
-
 
 ]]>
 </programlisting>
@@ -854,35 +813,37 @@ of dialog 200 or dialog 300, depending on the argument:
 </variablelist>
 </section>
 
-<section id="sctCreateMethods"><title>Add... Methods</title>
-<indexterm><primary>Add... methods</primary></indexterm>
-<para>The methods listed below (all starting with Add) can be used to create a
-dialog dynamically without any resource script (.RC file). The methods are used
-to define the individual dialog controls. The methods can also be used in a
-dialog that is created by loading a resource script.  The methods will then be
-used to define controls in addition to the ones defined in the resource script.
-</para>
-<para>The recommended way to create a dialog dynamically is to subclass from
-UserDialog and put all Add... statements into the <link linkend="mthDefineDialog">
-DefineDialog</link> method, which is executed when the dialog is about to be
-created.
-</para>
-<para>The Add... methods call the matching Connect... methods to create the
-associated Object Rexx attribute. Add... methods cannot be used after
-<link linkend="h000048">Execute</link> has started.
-</para>
-<para id="paraStyleExplanation">
-  The behavior and appearance of all dialog controls created using one of the Add... methods are
-  controlled by a style option.  For each of the Add... methods, one of the arguments consists of a
-  set of keywords that define the style of the control being defined.  These keywords allow the
-  programmer to change the default behavior and  / or appearance of the control.
+<section id="sctCreateMethods"><title>create... Methods</title>
+<indexterm><primary>create.. methods</primary></indexterm>
+<para>
+  The methods listed below (all starting with create) can be used to create a dialog dynamically without any <link
+  linkend="defResourceScript">resource script</link> (.rc file). The methods are used to define the individual dialog
+  controls. The methods can also be used in a dialog that is created by loading a resource script.  The methods will
+  then be used to define controls in addition to the ones defined in the resource script.
 </para>
 <para>
-  An attempt is made for each method to list all the style keywords that will be accepted. However, the
-  behaviour and appearance that the specified style gives any particular control is determined by the
-  operating system, not ooDialog. For many of the dialog controls, certain combinations of styles do not
-  make much sense. It is up to the individual programmer to decide whether a style is appropriate for her
-  program.
+  The recommended way to create a dialog dynamically is to subclass the <computeroutput>UserDialog</computeroutput>
+  class and put all create... statements into the <link linkend="mthDefineDialog">defineDialog</link>() method. The
+  ooDialog framework invokes <emphasis role="italic">defineDialog</emphasis> automatically when the dialog is about to
+  be created.
+</para>
+<para>
+  The create... methods automatically create and connect the associated <link linkend="sctDataAttributes">data
+  attribute</link> by invoking the matching connect... method, when automatic data field <link
+  linkend="mthInitAutoDetection">detection</link> is on. The create... methods cannot be used after the <link
+  linkend="h000048">execute</link>() or the <link linkend="h000057">executeAsyn</link>() methods have been invoked.
+</para>
+<para id="paraStyleExplanation">
+  The behavior and appearance of all dialog controls defined using one of the create... methods are controlled by a
+  style option.  For each of the create... methods, one of the arguments consists of a set of keywords that define the
+  style of the control being defined.  These keywords allow the programmer to change the default behavior and  / or
+  appearance of the control.
+</para>
+<para>
+  An attempt is made for each method to list all the style keywords that will be accepted. However, the behaviour and
+  appearance that the specified style gives any particular control is determined by the operating system, not ooDialog.
+  For many of the dialog controls, certain combinations of styles do not make much sense. It is up to the individual
+  programmer to decide whether a style is appropriate for her program.
 </para>
 <para>
   There are five styles that all dialog controls share:
@@ -895,122 +856,108 @@ associated Object Rexx attribute. Add... methods cannot be used after
   <listitem><para>TabStop</para></listitem>
 </itemizedlist>
 <para>
-  The following style keyword list explains these styles and how the keywords are used for the
-  styles.  In many cases, there is a common default value for the style and the programmer only
-  needs to specify a keyword when she wants a non-default value for the style. For instance,
-  normally all dialog controls are created enabled. The programmer would only need to specify the
-  DISABLED keyword when the control should be disabled as the dialog is first displayed.
+  The following style keyword list explains these styles and how the keywords are used for the styles.  In many cases,
+  there is a common default value for the style and the programmer only needs to specify a keyword when she wants a
+  non-default value for the style. For instance, normally all dialog controls are created enabled. The programmer would
+  only need to specify the DISABLED keyword when the control should be disabled as the dialog is first displayed.
 </para>
 <variablelist>
-<varlistentry><term id="wsvisible"><emphasis role="bold">HIDDEN</emphasis></term>
+  <varlistentry><term id="wsvisible"><emphasis role="bold">HIDDEN</emphasis></term>
   <listitem>
   <para>
-    All windows (and every dialog control is a window) can be visible or invisible.  When a control
-    is invisible it is not displayed on the screen and the user will not see it.  The control is
-    also not active and will not accept any keyboard or mouse input.  But, the control still exists
-    and does not lose any of its internal state.  Since the control is invisible, whatever is
-    underneath it will be displayed on the screen.  Normally this would be the owner dialog.
-    However, it could also be another dialog control.  If this other dialog control is visible, the
+    All windows (and every dialog control is a window) can be visible or invisible.  When a control is invisible it is
+    not displayed on the screen and the user will not see it.  The control is also not active and will not accept any
+    keyboard or mouse input.  But, the control still exists and does not lose any of its internal state.  Since the
+    control is invisible, whatever is underneath it will be displayed on the screen.  Normally this would be the owner
+    dialog. However, it could also be another dialog control.  If this other dialog control is visible, the
     user will see and can interact with it rather than the invisible control.
   </para>
   <para>
-    In ooDialog by default all controls created using the Add... methods will be created visible.
-    To change the default for any control when using the Add... methods add the HIDDEN keyword to
-    the style argument.  This will make the control invisible when the dialog is first shown on the
-    screen.
+    In ooDialog by default all controls created using the create... methods will be created visible. To change the
+    default for any control when using the create... methods add the HIDDEN keyword to the style argument.  This will
+    make the control invisible when the dialog is first shown on the screen.
   </para>
   <para>
     For any control, the visible style can be changed during program execution by using the <link
-    linkend="hide">Hide</link> or <link linkend="showdc">Show</link> methods. (Or any of the related
-    methods like <link linkend="hidefast">HideFast</link>, <link linkend="display">Display</link>,
-    etc..)
+    linkend="hide">Hide</link> or <link linkend="showdc">Show</link> methods. (Or any of the related methods like <link
+    linkend="hidefast">HideFast</link>, <link linkend="display">Display</link>, etc..)
   </para></listitem>
-</varlistentry>
-<varlistentry><term id="wsdisabled"><emphasis role="bold">DISABLED</emphasis></term>
+  </varlistentry>
+  <varlistentry><term id="wsdisabled"><emphasis role="bold">DISABLED</emphasis></term>
   <listitem>
   <para>
-    All windows can be disabled or enabled.  When a dialog control is disabled it will not accept
-    keyboard or mouse input and therefore the user can not interact with it.  The operating system
-    will draw disabled controls in a different manner than enabled controls to give the user a
-    visual clue that the control is disabled.
+    All windows can be disabled or enabled.  When a dialog control is disabled it will not accept keyboard or mouse
+    input and therefore the user can not interact with it.  The operating system will draw disabled controls in a
+    different manner than enabled controls to give the user a visual clue that the control is disabled.
   </para>
   <para>
-    When using the Add... methods controls will be created enabled.  To change this for any control
-    add the DISABLED keyword to the style argument.  The control will then be disabled when the
-    dialog is first shown on the screen.
+    When using the create... methods controls will be created enabled.  To change this for any control add the DISABLED
+    keyword to the style argument.  The control will then be disabled when the dialog is first shown on the screen.
   </para>
   <para>
     All controls can have their enabled style changed during program execution by using the <link
-    linkend="mthDisable">disable</link> or <link linkend="mthEnable">enable</link> methods. (Or any of the
-    related methods like <link linkend="h001229">DisableItem</link>, <link
-    linkend="h001221">EnableItem</link>, etc..)
+    linkend="mthDisable">disable</link> or <link linkend="mthEnable">enable</link> methods. (Or any of the related
+    methods like <link linkend="h001229">DisableItem</link>, <link linkend="h001221">EnableItem</link>, etc..)
   </para></listitem>
-</varlistentry>
-<varlistentry><term id="wsborder"><emphasis role="bold">BORDER, NOBORDER</emphasis></term>
+  </varlistentry>
+  <varlistentry><term id="wsborder"><emphasis role="bold">BORDER, NOBORDER</emphasis></term>
   <listitem>
   <para>
-    Most, but not all, windows are drawn with a border.  When using the Add... methods individual
-    controls are drawn by default with, or without, a border.  The default is changed by using
-    either the BORDER or NOBORDER keywords.  The reference for each individual Add... method notes
-    the default for the control for this style and which keyword is used to change the default.  In
-    general, this style can not be changed after a control is created.
+    Most, but not all, windows are drawn with a border.  When using the create... methods individual controls are drawn
+    by default with, or without, a border.  The default is changed by using either the BORDER or NOBORDER keywords.  The
+    reference for each individual create... method notes the default for the control for this style and which keyword is
+    used to change the default.  In general, this style can not be changed after a control is created.
   </para></listitem>
-</varlistentry>
-<varlistentry>
-  <term id="wsgroup"><emphasis role="bold">GROUP</emphasis></term>
+  </varlistentry>
+  <varlistentry><term id="wsgroup"><emphasis role="bold">GROUP</emphasis></term>
   <listitem>
   <para>
-    This style is used to place a series of consecutive dialog controls in a group.  The first
-    control with the group style starts a new group of controls.  This group continues for each
-    control that does not have the group style.  As soon as a successive control is encountered with
-    the group style, a new group is started.  This style is only meaningful for dialog control
-    windows.
+    This style is used to place a series of consecutive dialog controls in a group.  The first control with the group
+    style starts a new group of controls.  This group continues for each control that does not have the group style.  As
+    soon as a successive control is encountered with the group style, a new group is started. This style is only
+    meaningful for dialog control windows.
   </para>
   <para>
-    The Windows dialog manager uses this style to determine the behavior of a dialog, mostly the
-    navigation behavior.  Within a group of controls the user navigates from one control to the
-    other using the arrow keys rather than the tab key.
+    The Windows dialog manager uses this style to determine the behavior of a dialog, mostly the navigation behavior.
+    Within a group of controls the user navigates from one control to the other using the arrow keys rather than the tab
+    key.
   </para>
   <para>
-    The GROUP keyword is used to give a control the group style when it is created using one of the
-    Add... methods. After the control has been created its group style can be changed during the
-    execution of a dialog by using the <link linkend="mthSetGroup">SetGroup</link> method of the
-    PlainBaseDialog class or the <link linkend="mthGroup">Group</link> method of the DialogControl
-    class.
+    The GROUP keyword is used to give a control the group style when it is created using one of the create... methods.
+    After the control has been created its group style can be changed during the execution of a dialog by using the
+    <link linkend="mthSetGroup">SetGroup</link> method of the PlainBaseDialog class or the <link
+    linkend="mthGroup">Group</link> method of the DialogControl class.
   </para></listitem>
-</varlistentry>
-<varlistentry>
-  <term id="wstabstop"><emphasis role="bold">TAB, NOTAB</emphasis></term>
+  </varlistentry>
+  <varlistentry><term id="wstabstop"><emphasis role="bold">TAB, NOTAB</emphasis></term>
   <listitem>
   <para>
-    The tabstop style is another style that is only meaningful with dialog controls.  When a control
-    has the tabstop style the user can navigate to it using the tab key.  If a control does not have
-    this style, the tab key will skip over the control.  Dialog controls in the same class usually
-    all have the same style for tabstop.  As an example, all button controls usually have the
-    tabstop style, whereas all static text controls usually do not have the tabstop style.
+    The tabstop style is another style that is only meaningful with dialog controls.  When a control has the tabstop
+    style the user can navigate to it using the tab key.  If a control does not have this style, the tab key will skip
+    over the control.  Dialog controls in the same class usually all have the same style for tabstop.  As an example,
+    all button controls usually have the tabstop style, whereas all static text controls usually do not have the tabstop
+    style.
   </para>
   <para>
-    When a control as added to an UserDialog instance it is given the tabstop style that is normal
-    for the control. The individual Add... methods document the default for the control.  The
-    programmer uses either the TAB or NOTAB keywords to change the default. After controls have been
-    created they can have their tabstop style changed using the <link
-    linkend="mthSetTabSTop">SetTabStop</link> method of the PlainBaseDialog class or the <link
+    When a control as added to an UserDialog instance it is given the tabstop style that is normal for the control. The
+    individual create... methods document the default for the control.  The programmer uses either the TAB or NOTAB
+    keywords to change the default. After controls have been created they can have their tabstop style changed using the
+    <link linkend="mthSetTabSTop">SetTabStop</link> method of the PlainBaseDialog class or the <link
     linkend="mthTabStop">TabStop</link> method of the DialogControl class.
   </para></listitem>
-</varlistentry>
+  </varlistentry>
 </variablelist>
 <para>
-  All dialog controls have a position and size.  The position of the control is specified by the
-  coordinates of its upper left corner (x, y) and the size is specified by its width (cx) and height
-  (cy).  Windows uses a coordinate system that specifies the upper left corner of the screen as
-  (0,0). Moving to the left in this system increases the x value and moving down increases the y
-  value.  Negative values for either x or y would then move off the screen.  (Normally. This simple
-  explanation becomes more complicated with dual-monitor systems.)
+  All dialog controls have a position and size.  The position of the control is specified by the coordinates of its
+  upper left corner (x, y) and the size is specified by its width (cx) and height (cy).  Windows uses a coordinate
+  system that specifies the upper left corner of the screen as (0,0). Moving to the left in this system increases the x
+  value and moving down increases the y value.  Negative values for either x or y would then move off the screen.
+  (Normally. This simple explanation becomes more complicated with dual-monitor systems.)
 </para>
 <note><title>Note</title>
 <para>
-  Unless otherwise stated, the coordinates (the x, y, cx, and cy arguments) of the dialog control
-  definitions are specified in dialog units.
+  Unless otherwise stated, the coordinates (the x, y, cx, and cy arguments) of the dialog control definitions are
+  specified in dialog units.
 </para></note>
 <note><title>Note</title>
 <para>
@@ -1020,9 +967,8 @@ associated Object Rexx attribute. Add... methods cannot be used after
   around.
 </para></note>
 <para>
-  All the Add... Methods that create a single control have the following common arguments.  Some of
-  the other Add... Methods that create a group of controls will only take the postion, or the size
-  arguments:
+  All the create... Methods that create a single control have the following common arguments.  Some of the other
+  create... Methods that create a group of controls will only take the postion, or the size arguments:
 </para>
 <variablelist id="listCommonArguments">
 <varlistentry><term id="xArgument"><emphasis role="bold">x</emphasis></term>
@@ -1052,16 +998,15 @@ associated Object Rexx attribute. Add... methods cannot be used after
 <varlistentry><term id="idArgument"><emphasis role="bold">id</emphasis></term>
   <listitem>
   <para id="paraResouceIDs">
-    All dialog controls have a numeric <link linkend="defResourceId">resource</link> ID. The ooDialog
-    framework is designed to accept a <link linkend="defSymbolicId">symbolic</link> ID anywhere a
-    resource ID is needed.  All the Add... methods accepted a symbolic ID for the id argument.
+    All dialog controls have a numeric <link linkend="defResourceId">resource</link> ID. The ooDialog framework is
+    designed to accept a <link linkend="defSymbolicId">symbolic</link> ID anywhere a resource ID is needed.  All the
+    create... methods accepted a symbolic ID for the id argument.
   </para>
   <para>
-    By default static controls and group boxes are assigned a resource id of -1. However, assigning
-    a positive id allows the programmer to modify the static control or group box after it is
-    created, perhaps to change the text of its title, or to change its postition. Without a positive
-    ID, a static control or group box can not be modified.  Which is fine, normally static controls
-    and group boxes do not need to be modified.
+    By default static controls and group boxes are assigned a resource id of -1. However, assigning a positive id allows
+    the programmer to modify the static control or group box after it is created, perhaps to change the text of its
+    title, or to change its postition. Without a positive ID, a static control or group box can not be modified.  Which
+    is fine, normally static controls and group boxes do not need to be modified.
   </para></listitem>
 </varlistentry>
 </variablelist>
@@ -2866,228 +2811,238 @@ MyDialog~Execute
 
 </section>
 
-<section id="mthAddCheckBox"><title>addCheckBox</title>
-<indexterm><primary>addCheckBox</primary></indexterm>
+<section id="mthCreateCheckBox"><title>createCheckBox</title>
+<indexterm><primary>createCheckBox</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addCheckBox(-id--+--------+-,-x-,-y--+------+--+------+-,-text--+---------+-)--><
-                     +-,-name-+          +-,-cx-+  +-,-cy-+         +-,-style-+
+>>--createCheckBox(-id-,--x-,--y--+------+--+------+--+---------+-,--text------->
+                                  +-,-cx-+  +-,-cy-+  +-,-style-+
+
+>----+-----------------+--+--------------+----------------------------------)--><
+     +-,-attributeName-+  +-,-connectOpt-+
 ]]>
 </programlisting>
 
 <para>
-  The addCheckBox() method adds a check box to the dialog. By default the check box will be an automatic
-  check box. This can be changed to an automatic three-state check box by using the 3STATE style.
-  Standard and standard three-state check boxes can not be created through this method. See the <link
-  linkend="clsCheckBox">CheckBox</link> class for more information on check box controls.
+  The createCheckBox() method creates a check box to the dialog. By default the check box will be an automatic check
+  box. This can be changed to an automatic three-state check box by using the 3STATE style. Standard and standard
+  three-state check boxes can not be created through this method. See the <link linkend="clsCheckBox">CheckBox</link>
+  class for more information on check box controls.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      The arguments are:
-      <variablelist>
-        <varlistentry><term>id</term>
-        <listitem>
-          <para>
-            The resource <link linkend="idArgument">ID</link> for the control.
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>name</term>
-        <listitem>
-          <para>
-            The name of the data attribute associated with the dialog item. Using this argument performs
-            the same function as the <link linkend="mthConnectCheckBox">connectCheckBox</link>()
-            method. The <link linkend="mthConnectEdit">connectEdit</link>() documentation has a
-            good description of the concept of the data attribute.
-          </para>
-          <para>
-            If you omitt this argument then the data attribute is constructed automatically and named by
-            concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA || id</computeroutput>.
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>x, y, cx, cy</term>
-        <listitem>
-          <para>
-            The  control <link linkend="listCommonArguments">coordinates</link> If cx or cy are omitted,
-            then the size for the check box is calcuated internally using its label. (The text argument.)
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>text</term>
-        <listitem>
-          <para>
-            The text that is displayed next to the check box.
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>style</term>
-        <listitem>
-          <para>
-            A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-            separated by spaces:
-          </para>
-          <para>
-            <simplelist type='vert' columns='3'>
-              <member>3STATE   </member>
-              <member>OWNER    </member>
-              <member>BITMAP   </member>
-              <member>ICON     </member>
-              <member>LEFT     </member>
-              <member>RIGHT    </member>
-              <member>HCENTER  </member>
-              <member>TOP      </member>
-              <member>BOTTOM   </member>
-              <member>VCENTER  </member>
-              <member>MULTILINE</member>
-              <member>NOTIFY   </member>
-              <member>PUSHLIKE </member>
-              <member>FLAT     </member>
-              <member>HIDDEN   </member>
-              <member>DISABLED </member>
-              <member>BORDER   </member>
-              <member>GROUP    </member>
-              <member>NOTAB    </member>
-            </simplelist>
-            <variablelist>
-              <varlistentry><term>3STATE</term>
-              <listitem>
-                <para>
-                  A three-state check box is created. All check box controls have two states, checked and
-                  cleared (not checked.) A three-state check box also has an indeterminate state. This is
-                  represented by a grayed box inside the check box. The programmer can use methods of the
-                  <link linkend="clsCheckbox">CheckBox</link> class to determine which of the 3 states a
-                  check box is in.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>OWNER</term>
-              <listitem>
-                <para>
-                  The programmer is completely responsible for drawing the button when the dialog receives
-                  the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
-                  implement in ooDialog. For a check box, the difficulty would probably make this
-                  impractical.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>ICON</term>
-              <listitem>
-                <para>
-                  The check box displays an icon image.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BITMAP</term>
-              <listitem>
-                <para>
-                  The check box displays a bitmap image.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>LEFT</term>
-              <listitem>
-                <para>
-                  Left justifies the text to the right of the check box.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>RIGHT</term>
-              <listitem>
-                <para>
-                  Right justifies the text to the right side of the check box.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>HCENTER</term>
-              <listitem>
-                <para>
-                  The text is centered horizontally to the right of the check box.  This is the
-                  default if neither LEFT nor RIGHT are specified.
-              </para></listitem></varlistentry>
-              <varlistentry><term>TOP</term>
-              <listitem>
-                <para>
-                  The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
-                  specified the text is vertically centered in the button rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BOTTOM</term>
-              <listitem>
-                <para>
-                  The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
-                  specified the text is vertically centered in the button rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>VCENTER</term>
-              <listitem>
-                <para>
-                  The text is vertically centered in the button rectanble.  This is the default if neither
-                  TOP nor BOTTOM are specified.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>MULTILINE</term>
-              <listitem>
-                <para>
-                  If the text for the label of the button is longer than the width of the button rectangle,
-                  the operating system will word wrap the text producing more than one line.  The height of
-                  the button rectangle has to be sufficient to display the extra line(s) or the text is
-                  clipped.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOTIFY</term>
-              <listitem>
-                <para>
-                  Enables the button to send notifications for the gained focus,lost focus, and double click
-                  events.  This is only necessary when the <link
-                  linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
-                  the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
-                  buttons and owner-drawn buttons will recieve the DBLCLICK event.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>PUSHLIKE</term>
-              <listitem>
-                <para>
-                  Makes the button look and act like a push button. The button looks raised when it isn't
-                  pushed or checked, and sunken when it is pushed or checked. The button is drawn with a
-                  flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
-                  rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>FLAT</term>
-              <listitem>
-                <para>
-                  The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
-                  text inside the rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>HIDDEN</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsvisible">not visible</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>DISABLED</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsdisabled">not enabled</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BORDER</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsborder">border</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>GROUP</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsgroup">group</link> control style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOTAB</term>
-              <listitem>
-                <para>
-                  The no <link linkend="wstabstop">tabstop</link> control style.
-                </para>
-              </listitem></varlistentry>
-            </variablelist>
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource <link linkend="idArgument">ID</link> for the control. May be numeric or symbolic.
       </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x [required], y [required], cx [optional], cy [optional]</term>
+      <listitem>
+      <para>
+        The  control <link linkend="listCommonArguments">coordinates</link> If cx or cy are omitted, then the size for
+        the check box is calcuated internally using its label. (The text argument.)
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+        separated by spaces:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>3STATE   </member>
+          <member>OWNER    </member>
+          <member>BITMAP   </member>
+          <member>ICON     </member>
+          <member>LEFT     </member>
+          <member>RIGHT    </member>
+          <member>HCENTER  </member>
+          <member>TOP      </member>
+          <member>BOTTOM   </member>
+          <member>VCENTER  </member>
+          <member>MULTILINE</member>
+          <member>NOTIFY   </member>
+          <member>PUSHLIKE </member>
+          <member>FLAT     </member>
+          <member>HIDDEN   </member>
+          <member>DISABLED </member>
+          <member>BORDER   </member>
+          <member>GROUP    </member>
+          <member>NOTAB    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>3STATE</term>
+          <listitem>
+          <para>
+            A three-state check box is created. All check box controls have two states, checked and cleared (not
+            checked.) A three-state check box also has an indeterminate state. This is represented by a grayed box
+            inside the check box. The programmer can use methods of the <link linkend="clsCheckbox">CheckBox</link>
+            class to determine which of the 3 states a check box is in.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>OWNER</term>
+          <listitem>
+          <para>
+            The programmer is completely responsible for drawing the button when the dialog receives the WM_DRAWITEM
+            message.  Currently this would be difficult (but not impossible) to implement in ooDialog. For a check box,
+            the difficulty would probably make this impractical.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ICON</term>
+          <listitem>
+          <para>
+            The check box displays an icon image.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BITMAP</term>
+          <listitem>
+          <para>
+            The check box displays a bitmap image.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LEFT</term>
+          <listitem>
+          <para>
+            Left justifies the text to the right of the check box.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RIGHT</term>
+          <listitem>
+          <para>
+            Right justifies the text to the right side of the check box.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HCENTER</term>
+          <listitem>
+          <para>
+            The text is centered horizontally to the right of the check box.  This is the default if neither LEFT nor
+            RIGHT are specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TOP</term>
+          <listitem>
+          <para>
+            The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are specified the text is
+            vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BOTTOM</term>
+          <listitem>
+          <para>
+            The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are specified the text
+            is vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VCENTER</term>
+          <listitem>
+          <para>
+            The text is vertically centered in the button rectanble.  This is the default if neither TOP nor BOTTOM are
+            specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MULTILINE</term>
+          <listitem>
+          <para>
+            If the text for the label of the button is longer than the width of the button rectangle, the operating
+            system will word wrap the text producing more than one line.  The height of the button rectangle has to be
+            sufficient to display the extra line(s) or the text is clipped.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTIFY</term>
+          <listitem>
+          <para>
+            Enables the button to send notifications for the gained focus,lost focus, and double click events.  This is
+            only necessary when the <link linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and
+            only for the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio buttons and
+            owner-drawn buttons will recieve the DBLCLICK event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PUSHLIKE</term>
+          <listitem>
+          <para>
+            Makes the button look and act like a push button. The button looks raised when it isn't pushed or checked,
+            and sunken when it is pushed or checked. The button is drawn with a flat appearance, i.e., it is drawn as a
+            flat rectangle the label text inside the rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FLAT</term>
+          <listitem>
+          <para>
+            The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
+            rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            The <link linkend="wsvisible">not visible</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+          <para>
+            The <link linkend="wsdisabled">not enabled</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BORDER</term>
+          <listitem>
+          <para>
+            The <link linkend="wsborder">border</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+          <para>
+            The <link linkend="wsgroup">group</link> control style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+          <para>
+            The no <link linkend="wstabstop">tabstop</link> control style.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text [required]</term>
+      <listitem>
+      <para>
+        The text that is displayed next to the check box.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>attributeName [optional]</term>
+      <listitem>
+      <para>
+        The name of a <link linkend="sctDataAttributes">data attribute</link> to connect with the check box. Using
+        this argument allows the programmer to control the name of the data attribute. The name must be a valid Rexx
+        variable name and must not be the name of any method of the dialog. If you omit this argument then the data
+        attribute name is constructed automatically by concatenating the string DATA with the id argument, i.e.:
+        <computeroutput>DATA || id</computeroutput>.
+      </para>
+      <para>
+        If automatic data <link linkend="mthInitAutoDetection">detection</link> is off then no data attribute is
+        created, whether this argument is used or not. The <link linkend="mthConnectCheckBox">connectCheckBox</link>()
+        method can then be used to manually create and connect the data attrbiute when automatic data detection is off.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>connectOpt [optional]</term>
+      <listitem>
+      <para>
+        A text string. If this string contains the word CONNECTCHECKS, case insignificant, then the <link
+        linkend="mthConnectButtonEvent">button</link> CLICKED event notification is automatically connected to a method
+        in the dialog. The method name is generated from the label of the button with all space, tab, ampersand, colon,
+        and plus sign characters removed. In addition, if the label were to have a trailing ... that is also removed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
     </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -3112,8 +3067,8 @@ MyDialog~Execute
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      The following example defines an automatic three-state check box. The label for the check box is
-      rather long, so a multiline style is used.
+      The following example defines an automatic three-state check box. The label for the check box is rather long, so a
+      multilinee style is used.
     </para>
 <programlisting>
 <![CDATA[
@@ -3121,14 +3076,17 @@ MyDialog~Execute
 
   label = "Use condensed type only"
   style = "3STATE MULTILINE NOTIFY"
-  self~addCheckBox(IDC_CB_CONDENSED, , 125, 19, 30, 20, label, style)
+  self~createCheckBox(IDC_CB_CONDENSED, 125, 19, 30, 20, style, label)
 ]]>
 </programlisting>
-    <note><title>Note</title><para>
-      There are also methods that create a whole group of check boxes automatically (see the <link
-      linkend="mthAddCheckGroup">addCheckGroup</link> method below and <link
-      linkend="mthAddCheckBoxStem">addCheckBoxStem</link>).
-    </para></note>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Note;</emphasis></term>
+  <listitem>
+  <para>
+    There are also two methods that create a whole group of check boxes automatically, the <link
+    linkend="mthAddCheckGroup">addCheckGroup</link>() and <link linkend="mthAddCheckBoxStem">addCheckBoxStem</link>()
+    methods.
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
@@ -8940,7 +8898,7 @@ they are for internal use only.</para>
 a real Windows object based on a dialog template.  For a
 <computeroutput>RcDialog</computeroutput> the template is supplied by a resource
 script file.  For a <computeroutput>UserDialog</computeroutput> the template is
-created by using the <link linkend="sctCreateMethods">Add... methods</link>.  The method
+created by using the <link linkend="sctCreateMethods">create... methods</link>.  The method
 is called by the <link linkend="h000048">Execute</link> or
 <link linkend="h000057">ExecuteAsync</link> methods.</para>
 <variablelist>

@@ -46,10 +46,10 @@
 <indexterm><primary>DialogControl class</primary></indexterm>
 <para>
   This chapter discussses the <emphasis role="italic">dialog control object</emphasis> is a fashion similar to the <link
-  linkend="chpDialogObject"></link> It lists the methods that are common to all dialog controls. In the graphical user
-  interface (GUI) for the Windows operating system both dialogs and dialog controls are windows. Therefore, many of the
-  methods of a dialog control object are the same as the methods of the dialog object. These are the methods that are
-  common to all windows, whether they are dialog windows or dialog control windows.
+  linkend="chpDialogObject">dialog object</link>. It lists the methods that are common to all dialog controls. In the
+  graphical user interface (GUI) for the Windows operating system both dialogs and dialog controls are windows.
+  Therefore, many of the methods of a dialog control object are the same as the methods of the dialog object. These are
+  the methods that are common to all windows, whether they are dialog windows or dialog control windows.
 </para>
 <para id="paraDialogControlStyles">
   In the Windows GUI all windows are created with a set of <emphasis role="italic">window
@@ -90,12 +90,36 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="wbDCOHwnd">hwnd</link></entry>
+<entry><link linkend="wbdcoFactorX">factorX</link></entry>
+<entry>The horizontal size of one dialog unit in pixels. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoFactorY">factorY</link></entry>
+<entry>The vertical size of one dialog unit in pixels. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSizeX">sizeX</link></entry>
+<entry>The width of the dialog control in dialog units. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSizeY">sizeY</link></entry>
+<entry>The height of the dialog control in dialog units. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoPixelCX">pixelCX</link></entry>
+<entry>The width of the dialog control in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoPixelCY">pixelCY</link></entry>
+<entry>The height of the dialog control in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoHwnd">hwnd</link></entry>
 <entry>The window handle of the dialog control.</entry>
 </row>
 <row>
-<entry><link linkend="wbDCOInitCode">initCode</link></entry>
-<entry>Meaningless for a dialog control, is always 0.</entry>
+<entry><link linkend="wbdcoInitCode">initCode</link></entry>
+<entry>Meaningless for a dialog control, it is always 0.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -506,7 +530,29 @@
   This section describes the attributes of the dialog control object.
 </para>
 
-<section id="wbDCOHwnd"><title>hwnd</title>
+<section id="wbdcoFactorX"><title>factorX (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="mthFactorX">factorX</link>
+
+>>--factorX-----------------------------------------------------><
+
+>>--factorX-=-ratio---------------------------------------------><
+
+</programlisting>
+</section>
+
+<section id="wbdcoFactorY"><title>factorY (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="mthFactorY">factorY</link>
+
+>>--factorY-----------------------------------------------------><
+
+>>--factorY-=-ratio---------------------------------------------><
+
+</programlisting>
+</section>
+
+<section id="wbdcoHwnd"><title>hwnd</title>
 <programlisting>
 WindowBase::<link linkend="atrHwnd">hwnd</link>
 
@@ -517,7 +563,7 @@ WindowBase::<link linkend="atrHwnd">hwnd</link>
 </programlisting>
 </section>
 
-<section id="wbDCOInitCode"><title>initCode</title>
+<section id="wbdcoInitCode"><title>initCode</title>
 <programlisting>
 <link linkend="atrInitCode">initCode</link>
 
@@ -526,6 +572,50 @@ WindowBase::<link linkend="atrHwnd">hwnd</link>
 
 >>--initCode-=-code----------------------------------------------><
 
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoPixelCX"><title>pixelCX</title>
+<programlisting>
+<link linkend="mthPixelCX">pixelCX</link>
+
+<![CDATA[
+>>--pixelCX-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoPixelCY"><title>pixelCY</title>
+<programlisting>
+<link linkend="mthPixelCY">pixelCY</link>
+
+<![CDATA[
+>>--pixelCY-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoSizeX"><title>sizeX (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="mthSizeX">sizeX</link>
+
+<![CDATA[
+>>--sizeX-----------------------------------------------------><
+
+>>--sizeX-=-dialogUnits---------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoSizeY"><title>sizeY (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="mthSizeY">sizeY</link>
+
+<![CDATA[
+>>--sizeY-----------------------------------------------------><
+
+>>--sizeY-=-dialogUnits---------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -542,7 +632,7 @@ WindowBase::<link linkend="atrHwnd">hwnd</link>
   common to both dialogs and dialog controls. This section lists all the basic window methods for the dialog object.
 </para>
 
-<section id="wbDCODisable"><title>disable</title>
+<section id="wbdcoDisable"><title>disable</title>
 <programlisting>
 WindowBase::<link linkend="mthDisable">disable</link>
 
@@ -552,7 +642,7 @@ WindowBase::<link linkend="mthDisable">disable</link>
 </programlisting>
 </section>
 
-<section id="wbDCOEnable"><title>enable</title>
+<section id="wbdcoEnable"><title>enable</title>
 <programlisting>
 WindowBase::<link linkend="mthEnable">enable</link>
 
@@ -562,7 +652,7 @@ WindowBase::<link linkend="mthEnable">enable</link>
 </programlisting>
 </section>
 
-<section id="wbDCOIsEnabled"><title>isEnabled</title>
+<section id="wbdcoIsEnabled"><title>isEnabled</title>
 <programlisting>
 WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
 
@@ -572,7 +662,7 @@ WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
 </programlisting>
 </section>
 
-<section id="wbDCOIsVisible"><title>isVisible</title>
+<section id="wbdcoIsVisible"><title>isVisible</title>
 <programlisting>
 WindowBase::<link linkend="mthIsVisible">isVisible</link>
 
@@ -582,7 +672,7 @@ WindowBase::<link linkend="mthIsVisible">isVisible</link>
 </programlisting>
 </section>
 
-<section id="wbDCOGetSize"><title>getSize</title>
+<section id="wbdcoGetSize"><title>getSize</title>
 <programlisting>
 WindowBase::<link linkend="mthGetSize">getSize</link>
 
@@ -593,7 +683,7 @@ WindowBase::<link linkend="mthGetSize">getSize</link>
 </section>
 
 
-<section id="wbDCOGetTextSizePx"><title>getTextSizePx</title>
+<section id="wbdcoGetTextSizePx"><title>getTextSizePx</title>
 <programlisting>
 WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
 
@@ -603,7 +693,7 @@ WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
 </programlisting>
 </section>
 
-<section id="wbDCOGetTextSizeScreen"><title>getTextSizeScreen</title>
+<section id="wbdcoGetTextSizeScreen"><title>getTextSizeScreen</title>
 <programlisting>
 WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
 
@@ -2442,7 +2532,7 @@ that shows whether hot keys are currently enabled or not.
 ::method defineDialog
 
   ...
-  self~addCheckBox(IDC_CHECK_FKEYSENABlED, , 30, 60, , , "Hot Keys Enabled")
+  self~createCheckBox(IDC_CHECK_FKEYSENABlED, , 30, 60, , , "Hot Keys Enabled")
   ...
   self~addButton(IDC_PB_RESET, 60, 135, 45, 15, "Reset", onReset)
   ...

@@ -471,8 +471,88 @@
 <section id="clsResourceUtils"><title>ResourceUtils Mixin Class</title>
 <indexterm><primary>ResourceUtils Class</primary></indexterm>
 <para>
-  x
+  The <computeroutput>ResourceUtils</computeroutput> class provides utility methods for dealing with resource <link
+  linkend="defResourceID">IDs</link> and parsing resource <link linkend="defResourceScript">script</link> files. The
+  class is inherited by the <link linkend="chpDialogObject">dialog</link> object and also by the <link
+  linkend="chpMenus">menu</link> classes.
 </para>
+<para>
+  Most of the methods of the <computeroutput>ResourceUtils</computeroutput> class are used <link
+  linkend="ovvUndocumented">internally</link> and not documented. However, the most important member of class is the
+  <emphasis role="italic">constDir</emphasis>. The use of this attribute should be understood by the progammer and is
+  documented <link linkend="chpDialogObject">dialog</link> object chapter.
+</para>
+
+<section id="ruConstDir"><title>constDir</title>
+<programlisting>
+<link linkend="atrConstDir">constDir</link>
+
+<![CDATA[
+>>--constDir---------------------------------------------------><
+
+>>--constDir[symbol]-=-numericValue----------------------------><
+]]>
+</programlisting>
+</section>
+
+</section>
+
+<section id="clsDynamicDialog"><title>DynamicDialog Mixin Class</title>
+<indexterm><primary>DynamicDialog Class</primary></indexterm>
+<para>
+  The ooDialog framework allows the Rexx programmer to dynamically define a dialog <link
+  linkend="ovvDialogTemplate">template</link> in her code. This functionality is implemented by the
+  <computeroutput>DynamicDialog</computeroutput> class. This class is inherited by the <link
+  linkend="clsUserDialog">UserDialog</link> and its methods are fully documented there.
+</para>
+<para>
+  Historically the ooDialog documentation did not distinguish the difference between the
+  <computeroutput>UserDialog</computeroutput> methods and the <computeroutput>DynamicDialog</computeroutput> methods.
+  The documentation merely treated the <computeroutput>DynamicDialog</computeroutput> methods as methods of the
+  <computeroutput>UserDialog</computeroutput>. The <computeroutput>DynamicDialog</computeroutput> methods are listed
+  here as a reference with a link to the full documentation in the <computeroutput>UserDialog</computeroutput> chapter.
+</para>
+
+<section id="ddCreate"><title>create</title>
+<programlisting>
+<link linkend="mthCreate">create</link>
+
+<![CDATA[
+>>-create(--x--,--y--,--cx--,--cy--,--title-+-----------+--+------------+-->
+                                            +-,-options-+  +-,-dlgClass-+
+
+>----+------------+--+------------+--+------------+--)---------------------><
+     +-,-fontName-+  +-,-fontSize-+  +-,-expected-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateCenter"><title>createCenter</title>
+<programlisting>
+<link linkend="mthCreateCenter">createCenter</link>
+
+<![CDATA[
+>>-createCenter(--cx--,--cy--,--title-+-----------+--+------------+-->
+                                      +-,-options-+  +-,-dlgClass-+
+
+>----+------------+--+------------+--+------------+--)---------------><
+     +-,-fontName-+  +-,-fontSize-+  +-,-expected-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddDefineDialog"><title>defineDialog</title>
+<programlisting>
+<link linkend="mthDefineDialog">defineDialog</link>
+
+<![CDATA[
+>>-defineDialog------------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+
+
 </section>
 
 <section id="deprecatedBaseClasses"><title>Deprecated Base Classes</title>

@@ -260,6 +260,21 @@
 </para>
 </section>
 
+<section id="ovvUndocumented"><title>Undocumented Items</title>
+<para>
+  ooRexx is open source and anyone can peruse the source to see all functions, classes, and methods of the ooDialog
+  framework. Any of these items that are undocumented should not be used by the Rexx programmer. If the programmer does
+  use any undocumented features in the framework, he does so at his own risk. The framework strives to be backwards
+  compatible, but only for documented features. Undocumented features in the framework are intended for internal use
+  only and are subject to change, or even removal from the framework.
+</para>
+<para>
+  In addition, previous versions of the ooDialog documentation, documented some features, but added some form of the
+  caveat: <emphasis role="italic">for internal use</emphasis>. The prudent programmer would not use any feature
+  docuemented for internal use. These features are also subject to change.
+</para>
+</section>
+
 </section> <!-- End: Throughout ooDialog -->
 
 
@@ -269,15 +284,28 @@
   familiar to the average Rexx programmer.
 </para>
 
+<section id="defResourceScript"><title>Resource Script</title>
+<para>
+  Resource script files are plain text files usually produced by a resource editor.  The files generally have a file
+  extension of &quot;.rc&quot;, but an extension of &quot;.dlg&quot; is used by some resource editors. The text of a
+  resource script defines a dialog <link linkend="ovvDialogTemplate">template</link>. The format of the text is defined
+  by Microsoft and public knowledge. The format is easily parsable by computer and is used by resource compilers to
+  produce a compiled (binary) file containing the dialog template(s) defined in the script file. The ooDialog framework
+  can parse a resource script file and dynamically produce a dialog template in memory. This is the basis of how a <link
+  linkend="clsRcDialog">RcDialog</link> works.
+</para>
+</section>
+
 <section id="defResourceId"><title>resource id</title>
 <para>
-  The identification number of a dialog resource. There areseveral different types of dialog resources, menus, dialog
-  controls, and bitmaps, to name a few.  You assign IDs when you create the resource definition for your dialog.  An ID
+  The identification number of a dialog resource. There ares everal different types of dialog resources, menus, dialog
+  controls, and bitmaps, to name a few. You assign IDs when you create the resource definition for your dialog.  An ID
   can be either numerical (for example, 1) or symbolic (for example, "IDOK").
 </para>
 <para>
   IDs must be unique for each resource of the same type.  Although two resources of different types may have the same
-  ID, when using symbolic IDs with ooDialog, it is advisable to give all resources unique numerical IDs.
+  ID, when using symbolic IDs with ooDialog, when using the ooDialog framework it is advisable to give all resources
+  unique numerical IDs.
 </para>
 </section>
 
@@ -476,12 +504,13 @@
 
 <section id="defPixel"><title>pixel</title>
 <para>
-  Individual addressable point on the monitor (screen or display.) Ancient VGA screens supported 640 by 480 pixels, SVGA
-  screens supported higher resolutions, such as 800 by 600, 1024 by 768, and up. Modern displays support much higher
-  resolutions. 1600 by 1200 is common and displays with 2560x1600 are available. Pixel values start at the top left
-  corner of the main display, with that corner being (0,0). Prior to dual monitor capabilities, pixel values were always
-  non-negative. On a dual monitor system that is no longer true, depending on the virtual position of the secondary
-  monitor. If it is to the left or above the primary monitor negative pixel values are possible.
+  Individual addressable point on the monitor (screen or display.) Pixels are whole numbers. Ancient VGA screens
+  supported 640 by 480 pixels, SVGA screens supported higher resolutions, such as 800 by 600, 1024 by 768, and up.
+  Modern displays support much higher resolutions. 1600 by 1200 is common and displays with 2560x1600 are available.
+  Pixel values start at the top left corner of the main display, with that corner being (0,0). Prior to dual monitor
+  capabilities, pixel values were always non-negative. On a dual monitor system that is no longer true, depending on the
+  virtual position of the secondary monitor. If it is to the left or above the primary monitor negative pixel values are
+  possible.
 </para>
 </section>
 
