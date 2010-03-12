@@ -494,12 +494,12 @@
 <entry><link linkend="update">Update</link></entry>
 </row>
 <row>
-<entry>Value</entry>
-<entry><link linkend="value">Value</link></entry>
+<entry><link linkend="mthData">data</link></entry>
+<entry>Retrievs the data (value) of the underlying control's state.</entry>
 </row>
 <row>
-<entry>Value=</entry>
-<entry><link linkend="valuenew">Value=</link></entry>
+<entry><link linkend="mthDataEquals">data=</link></entry>
+<entry>Sets the state of the underlying dialog control to the data (value) specified.</entry>
 </row>
 <row>
 <entry>VScrollPos</entry>
@@ -532,7 +532,7 @@
 
 <section id="wbdcoFactorX"><title>factorX (Attribute)</title>
 <programlisting>
-WindowBase::<link linkend="mthFactorX">factorX</link>
+WindowBase::<link linkend="atrFactorX">factorX</link>
 
 >>--factorX-----------------------------------------------------><
 
@@ -543,7 +543,7 @@ WindowBase::<link linkend="mthFactorX">factorX</link>
 
 <section id="wbdcoFactorY"><title>factorY (Attribute)</title>
 <programlisting>
-WindowBase::<link linkend="mthFactorY">factorY</link>
+WindowBase::<link linkend="atrFactorY">factorY</link>
 
 >>--factorY-----------------------------------------------------><
 
@@ -578,7 +578,7 @@ WindowBase::<link linkend="atrHwnd">hwnd</link>
 
 <section id="wbdcoPixelCX"><title>pixelCX</title>
 <programlisting>
-<link linkend="mthPixelCX">pixelCX</link>
+<link linkend="atrPixelCX">pixelCX</link>
 
 <![CDATA[
 >>--pixelCX-----------------------------------------------------><
@@ -588,7 +588,7 @@ WindowBase::<link linkend="atrHwnd">hwnd</link>
 
 <section id="wbdcoPixelCY"><title>pixelCY</title>
 <programlisting>
-<link linkend="mthPixelCY">pixelCY</link>
+<link linkend="atrPixelCY">pixelCY</link>
 
 <![CDATA[
 >>--pixelCY-----------------------------------------------------><
@@ -598,7 +598,7 @@ WindowBase::<link linkend="atrHwnd">hwnd</link>
 
 <section id="wbdcoSizeX"><title>sizeX (Attribute)</title>
 <programlisting>
-WindowBase::<link linkend="mthSizeX">sizeX</link>
+WindowBase::<link linkend="atrSizeX">sizeX</link>
 
 <![CDATA[
 >>--sizeX-----------------------------------------------------><
@@ -610,7 +610,7 @@ WindowBase::<link linkend="mthSizeX">sizeX</link>
 
 <section id="wbdcoSizeY"><title>sizeY (Attribute)</title>
 <programlisting>
-WindowBase::<link linkend="mthSizeY">sizeY</link>
+WindowBase::<link linkend="atrSizeY">sizeY</link>
 
 <![CDATA[
 >>--sizeY-----------------------------------------------------><
@@ -1886,64 +1886,106 @@ linkend="defPlatformSDK">Platform SDK</link> to obtain the Window message number
 </para></note>
 </section>
 
-<section id="value"><title>Value</title>
-<indexterm><primary>Value</primary></indexterm>
+<section id="mthData"><title>data</title>
+<indexterm><primary>data method</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>data method</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~Value----------------------------------------><
-
+>>--data-------------------------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>The Value method retrieves the current value of
-a dialog control.</para>
+<para>
+  The <emphasis role="italic">data</emphasis> method retrieves the current <link
+  linkend="sctUnderstandingDataAttributes">data</link> of the dialog control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The current value set in the dialog control.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The current data of the dialog control as a string. Exactly what this string represents is dependent on the type of
+    the control. The <link linkend="sctDataAttributes">Data Attribute Methods</link> section of this reference has a
+    detailed discussion on data attributes and the meaning of the <emphasis role="italic">data</emphasis> of a dialog
+    control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method was really intended to be used on controls that have previously been connected to a data attribute.
+    But, since the dialog control object, itself, knows which type of control it is, the method works whether the
+    control is connected or not. However, the abstraction of viewing a dialog control's state as data, represented by a
+    single string, is restrictive and somewhat out of date. It is more flexible, and often easier, to use the methods of
+    the specific dialog control object to determine the control's state.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 
-<note><title>Note</title><para>
-See <link linkend="h000514">GetValue</link> for more information.
-</para></note>
 </section>
 
-<section id="valuenew"><title>Value=</title>
-<indexterm><primary>Value=</primary></indexterm>
+<section id="mthDataEquals"><title>data=</title>
+<indexterm><primary>data=</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>data=</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~Value=--new_value----------------------------><
-
+>>--data-=--newData--------------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>The Value= method sets a value for a dialog control.</para>
+<para>
+  Sets the <link linkend="sctUnderstandingDataAttributes">data</link> of the dialog control to the new value specified.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>new_value</term>
-<listitem><para>The value assigned to the dialog control.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example selects check box RESTART and deselects check
-box VERIFY:</para>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>newData</term>
+    <listitem>
+    <para>
+      A string used to set the data of the dialog control. The exact format of this string is dependent on the type of
+      the control. The <link linkend="sctDataAttributes">Data Attribute Methods</link> section of this reference has a
+      detailed discussion on data attributes and the meaning of the <emphasis role="italic">data</emphasis> of a dialog
+      control.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method was really intended to be used on controls that have previously been connected to a data attribute.
+    But, since the dialog control object, itself, knows which type of control it is, the method works whether the
+    control is connected or not. However, the abstraction of viewing a dialog control's state as data, represented by a
+    single string, is restrictive and somewhat out of date. It is more flexible, and often easier, to use the methods of
+    the specific dialog control object to set the control's state.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example unchecks the check box with the symbolic resource id of IDC_CHK_RESTART and checks the check
+    box with the symbolic resource id of IDC_CHK_VERIFY:
+
 <programlisting>
 <![CDATA[
-MyDialog~GetCheckControl("RESTART")~Value=1
-MyDialog~GetCheckControl("VERIFY")~Value=0
+MyDialog~newCheckBox(IDC_CHK_RESTART)~data = 1
+MyDialog~newCheckBox(IDC_CHK_VERIFY)~data = 0
 ]]>
 </programlisting>
-</listitem></varlistentry>
+    The same thing can be accomplished in this manner:
+
+<programlisting>
+<![CDATA[
+MyDialog~newCheckBox(IDC_CHK_RESTART)~check
+MyDialog~newCheckBox(IDC_CHK_VERIFY)~unCheck
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 
-<note><title>Note</title><para>
-See <link linkend="h000584">SetValue</link> for more information.
-</para></note>
 </section>
 
 <section id="mthGetTextSizeDlgClsDialogControl"><title>getTextSizeDlg</title>

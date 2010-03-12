@@ -828,9 +828,10 @@ of dialog 200 or dialog 300, depending on the argument:
   be created.
 </para>
 <para>
-  The create... methods automatically create and connect the associated <link linkend="sctDataAttributes">data
-  attribute</link> by invoking the matching connect... method, when automatic data field <link
-  linkend="mthInitAutoDetection">detection</link> is on. The create... methods cannot be used after the <link
+  When automatic data field <link linkend="mthInitAutoDetection">detection</link> is on, the create... methods
+  automatically create and connect the associated <link linkend="sctUnderstandingDataAttributes">data attribute</link>
+  by invoking the matching <link linkend="sctConnectDataMethods">connect... method</link>. The create... methods cannot
+  be used after the underlying dialog has been created. In general this is after the <link
   linkend="h000048">execute</link>() or the <link linkend="h000057">executeAsyn</link>() methods have been invoked.
 </para>
 <para id="paraStyleExplanation">
@@ -3020,16 +3021,15 @@ MyDialog~Execute
       <varlistentry><term>attributeName [optional]</term>
       <listitem>
       <para>
-        The name of a <link linkend="sctDataAttributes">data attribute</link> to connect with the check box. Using
-        this argument allows the programmer to control the name of the data attribute. The name must be a valid Rexx
-        variable name and must not be the name of any method of the dialog. If you omit this argument then the data
-        attribute name is constructed automatically by concatenating the string DATA with the id argument, i.e.:
-        <computeroutput>DATA || id</computeroutput>.
+        The name of a <link linkend="sctUnderstandingDataAttributes">data attribute</link> to connect with the check
+        box. Using this argument allows the programmer to control the name of the data attribute. If you omit this
+        argument, or the supplied name is not valid, then the data attribute name is constructed <link
+        linkend="sctDataAttributeNames">automatically</link>.
       </para>
       <para>
         If automatic data <link linkend="mthInitAutoDetection">detection</link> is off then no data attribute is
         created, whether this argument is used or not. The <link linkend="mthConnectCheckBox">connectCheckBox</link>()
-        method can then be used to manually create and connect the data attrbiute when automatic data detection is off.
+        method can then be used to manually create and connect the data attrbiute when data detection is off.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>connectOpt [optional]</term>
