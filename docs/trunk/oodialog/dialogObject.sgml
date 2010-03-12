@@ -4115,15 +4115,13 @@ the invocation of <link linkend="h002048">StartIt</link>).
 
 <programlisting>
 <![CDATA[
+  -- The generated name will be DATA202
   self~connectEdit(202)
 
-  -- The generated name is DATA202
-
+  -- The generated name will be DATAIDC_EDIT_FNAME
   self~connectEdit(IDC_EDIT_FNAME)
-
-  -- The generated name is DATAIDC_EDIT_FNAME
-
 ]]>
+</programlisting>
     </para>
     <para>
       If the name is not valid or a duplicate of an already existing method name in the dialog, then the name is created
@@ -4134,21 +4132,56 @@ the invocation of <link linkend="h002048">StartIt</link>).
 <![CDATA[
   self~constDir[IDC_EDIT_FNAME] = 344
 
+  -- The generated name will be DATA202
   self~connectEdit(202, "COPY")
 
-  -- The generated name is DATA202
-
+  -- The generated name will be DATA344
   self~connectEdit(IDC_EDIT_FNAME, 'FNAME+ADDRESSBOOK')
 
-  -- The generated name is DATA344
-
 ]]>
+</programlisting>
     </para>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">UserDialog create... methods:</emphasis></term>
     <listitem>
     <para>
-      xxx and xxx sss.
+      Using one of the <link linkend="sctCreateMethods">create...</link> methods of the
+      <computeroutput>UserDialog</computeroutput> is similar to using one of the connect... methods. The attribute name
+      argument can be omitted, or the specified attribute name might not be valid. In these cases, the internally
+      generated name is created in this way:
+    </para>
+    <para>
+      If the name is omitted, and the dialog control is <emphasis role="bold">not</emphasis> a check box or radio
+      button, then the name is created by prepending <computeroutput>DATA</computeroutput> with the resource ID
+      argument. Example:
+
+<programlisting>
+<![CDATA[
+  -- The generated name will be DATA202
+  self~connectEdit(202)
+
+  -- The generated name will be DATAIDC_EDIT_FNAME
+  self~connectEdit(IDC_EDIT_FNAME)
+]]>
+</programlisting>
+    </para>
+    <para>
+      If the name is not valid or a duplicate of an already existing method name in the dialog, then the name is created
+      by prepending <computeroutput>DATA</computeroutput> with the <emphasis role="bold">numeric</emphasis> value of
+      the resource ID argument. This is true even when the id argument is specified as a symbolic ID. Example:
+
+<programlisting>
+<![CDATA[
+  self~constDir[IDC_EDIT_FNAME] = 344
+
+  -- The generated name will be DATA202
+  self~connectEdit(202, "COPY")
+
+  -- The generated name will be DATA344
+  self~connectEdit(IDC_EDIT_FNAME, 'FNAME+ADDRESSBOOK')
+
+]]>
+</programlisting>
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4170,7 +4203,7 @@ the invocation of <link linkend="h002048">StartIt</link>).
   controls like a check box, a radio button, or an edit control. However it quickly starts to break down with more
   complex controls like tree views and list views. Indeed, when the more complicated controls were added to ooDialog,
   there were no get and set data methods implemente for them.  There is no <emphasis
-  role="italic">getTreeViewData</emphasis> or <emphasis role="italic">setListViewData</emphasis> methods.
+  role="italic">getTreeViewData</emphasis> or <emphasis role="italic">setListViewData</emphasis> method.
 </para>
 <para>
   A more flexible abstraction is that everything is an object, that all the dialog controls are objects. In this
@@ -4184,7 +4217,7 @@ the invocation of <link linkend="h002048">StartIt</link>).
   quite difficult to know exactly what the name is.
 </para>
 <para>
-  With auto detection on, the states of the dialog controls are set to the failures of the corresponding data
+  With auto detection on, the states of the dialog controls are set to the data (values) of the corresponding data
   attributes. This is done <emphasis role="bold">after</emphasis> <link linkend="mthInitDialog">initDialog</link>() is
   invoked. The consequence of this is that, if the programmer explicitly sets the state of the dialog controls in the
   <emphasis role="italic">initDialog</emphasis>() method, the ooDialog framwork will then <emphasis
@@ -4196,7 +4229,7 @@ the invocation of <link linkend="h002048">StartIt</link>).
 
 <section id="mthInitAutoDetection"><title>initAutoDetection</title>
 <indexterm><primary>initAutoDetection</primary></indexterm>
-<indexterm><primary>initAutoDetection</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary></primary>dialog object<secondary>initAutoDetection</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-initAutoDetection-------------------------------------------><
@@ -4237,15 +4270,34 @@ the invocation of <link linkend="h002048">StartIt</link>).
 
 <section id="mthNoAutoDetection"><title>noAutoDetection</title>
 <indexterm><primary>noAutoDetection</primary></indexterm>
+<indexterm><primary></primary>dialog object<secondary>noAutoDetection</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~NoAutoDetection---------------------------------><
-
+>>--noAutoDetection--------------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>The noAutoDetection method switches off auto detection.</para>
+<para>
+  The <emphasis role="italic">noAutoDetection</emphasis> method switches off <link
+  linkend="paraAutomaticDataDetection">automatic</link> data detection.
+</para>
+</section>
+
+<section id="mthAutoDetection"><title>autoDetection</title>
+<indexterm><primary>autoDetection</primary></indexterm>
+<indexterm><primary></primary>dialog object<secondary>autoDetection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--autoDetection----------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">autoDetection</emphasis> method switches on <link
+  linkend="paraAutomaticDataDetection">automatic</link> data detection.
+</para>
 </section>
 
 <section id="sctConnectDataMethods"><title>Connect Data Attribute Methods</title>
