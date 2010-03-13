@@ -145,11 +145,11 @@ typedef struct _dbself {
     SQLRETURN SQL_API (*instSQLExecDirect)(SQLHSTMT StatementHandle,
                                            SQLCHAR *StatementText,
                                            SQLINTEGER TextLength);
-    SQLRETURN SQL_API (*instSQLBindParam)(SQLHSTMT StatementHandle,
-                                          SQLUSMALLINT ParameterNumber, SQLSMALLINT ValueType,
-                                          SQLSMALLINT ParameterType, SQLULEN LengthPrecision,
-                                          SQLSMALLINT ParameterScale, SQLPOINTER ParameterValue,
-                                          SQLLEN *StrLen_or_Ind);
+    SQLRETURN SQL_API (*instSQLBindParameter)(SQLHSTMT StatementHandle,
+                                              SQLUSMALLINT ParameterNumber, SQLSMALLINT ValueType,
+                                              SQLSMALLINT ParameterType, SQLULEN LengthPrecision,
+                                              SQLSMALLINT ParameterScale, SQLPOINTER ParameterValue,
+                                              SQLLEN *StrLen_or_Ind);
     SQLRETURN SQL_API (*instSQLPrepare)(SQLHSTMT StatementHandle,
                                         SQLCHAR *StatementText,
                                         SQLINTEGER TextLength);
@@ -408,13 +408,13 @@ RexxMethod1(int,                       // Return type
         return 0;  
     }
 #if defined WIN32 || defined WIN64
-    pself->instSQLBindParam = GetProcAddress(pself->handle, "SQLBindParam");
+    pself->instSQLBindParameter = GetProcAddress(pself->handle, "SQLBindParameter");
 #else
-    *(void**)(&pself->instSQLBindParam) = dlsym(pself->handle, "SQLBindParam");
+    *(void**)(&pself->instSQLBindParameter) = dlsym(pself->handle, "SQLBindParameter");
 #endif
-    if (!pself->instSQLBindParam) {
+    if (!pself->instSQLBindParameter) {
         context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                 (RexxObjectPtr)context->String("Could not load symbol SQLBindParam from CLI library."));
+                                 (RexxObjectPtr)context->String("Could not load symbol SQLBindParameter from CLI library."));
         return 0;  
     }
 #if defined WIN32 || defined WIN64
@@ -732,7 +732,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     SQLRETURN retc;
     char *ctmp;
     uint32_t utmp;
-    int32_t itmp = 1;
+    SQLINTEGER itmp = 1;
 
     //
     switch (attr) {
@@ -989,7 +989,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     case SQL_CONVERT_VARBINARY:
     case SQL_CONVERT_VARCHAR:
     case SQL_CONVERT_LONGVARBINARY:
-    case SQL_CONVERT_GUID:
+//    case SQL_CONVERT_GUID:
     case SQL_CONVERT_FUNCTIONS:
     case SQL_CREATE_ASSERTION:
     case SQL_CREATE_CHARACTER_SET:
@@ -1221,8 +1221,8 @@ RexxMethod2(int,                       // Return type
     size_t items = context->ArrayItems(parms);
     for (int n = 1; n <= items; n++) {
         SQLPOINTER p = (SQLPOINTER)context->CString((RexxStringObject)context->ArrayAt(parms, n));
-        retc = (*pself->instSQLBindParam)(pstmtself->hstmt, (SQLUSMALLINT)n, SQL_C_CHAR, SQL_CHAR,
-                                                             0, 0, p, (SQLLEN *)SQL_NTS);
+        retc = (*pself->instSQLBindParameter)(pstmtself->hstmt, (SQLUSMALLINT)n, SQL_C_CHAR, SQL_CHAR,
+                                                                 0, 0, p, (SQLLEN *)SQL_NTS);
 
     }
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
