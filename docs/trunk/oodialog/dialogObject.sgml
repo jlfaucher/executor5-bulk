@@ -654,7 +654,7 @@
 </row>
 <row>
 <entry>getEditData</entry>
-<entry><link linkend=mthGetEditData>getEditData</link></entry>
+<entry><link linkend="mthGetEditData">getEditData</link></entry>
 </row>
 <row>
 <entry>getExStyleRaw</entry>
@@ -4240,6 +4240,7 @@ the invocation of <link linkend="h002048">StartIt</link>).
   -- etc..
 
 ]]>
+</programlisting>
     </para>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">RcDialog:</emphasis></term>
@@ -4281,6 +4282,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
   IDC_CHK_TEST
 
 ]]>
+</programlisting>
     </para>
     <para>
       However, as always, the attribute name is checked to be a valid method name, not the empty string, and not a
@@ -4320,6 +4322,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
   DATA1004
 
 ]]>
+</programlisting>
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4511,8 +4514,8 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
     <para>
       The attribute has to be synchronized with the edit control manually. This can be done globally with the <link
       linkend="mthSetData">setData</link> and <link linkend="mthGetData">getData</link> methods. For a finer grain of
-      control use the <link linkend="mthSetEditData">setEditData</link>() or <link
-      linkend="mthGetEditData">getEditData</link>() methods.
+      control use the <link linkend="mthSetControlDataAttribute">setControlDataAttribute</link>() or <link
+      linkend="mthGetControlDataAttribute">getControlDataAttribute</link>() methods.
     </para>
     <para>
       The <emphasis role="italic">connectEdit</emphasis> should only be used when automatic data <link
@@ -5028,7 +5031,7 @@ static text control. </para>
 </variablelist>
 </section>
 
-<section id=mthGetEditData><title>getEditData</title>
+<section id="mthGetEditData"><title>getEditData</title>
 <indexterm><primary>getEditData</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5529,37 +5532,44 @@ MyDialog~setControlData(123, "1 2 3")
 
 <section id="mthGetControlDataAttribute"><title>getControlDataAttribute</title>
 <indexterm><primary>getControlDataAttribute</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getControlDataAttribute</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~getControlDataAttribute(--attributeName--)--------------------><
-
+>>-getControlDataAttribute(--attributeName--)------------------><
 
 ]]>
 </programlisting>
 
-<para>The getControlDataAttribute method assigns the value of a dialog
-item to the associated Object Rexx attribute. It does not return a value. You do
-not have to know the ID or the type of the dialog item. </para>
+<para>
+  The <emphasis role="italic">getControlDataAttribute</emphasis> method transfers the data of a dialog control to the
+  connected <link linkend="sctUnderstandingDataAttributes">data attribute</link> of the Rexx dialog object.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>attributeName</term>
-<listitem><para>The name of the attribute.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example shows how to get the data value of a dialog item
-without knowing its ID:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>attributeName [required]</term>
+    <listitem>
+    <para>
+      The name of the data attribute that receives the data of the underlying dialog control.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example shows how to get the data of a dialog control and synchronize its connected data
+    attribute.
 
 <programlisting>
 <![CDATA[
-MyDialog~getControlDataAttribute("FirstName")
-if MyDialog~FirstName\="" then ...
+  self~getControlDataAttribute("FIRSTNAME")
+  if self~firstName \= "" then ...
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
