@@ -866,7 +866,7 @@ static char * pull (
    }
 
 
-static void hostemu_loader(RexxThreadContext *context) {
+static void RexxEntry hostemu_loader(RexxThreadContext *context) {
    RexxReturnCode rc;
 
    rc = RexxRegisterSubcomExe("HostEmu", (REXXPFN)GrxHost, NULL);
@@ -879,7 +879,7 @@ static void hostemu_loader(RexxThreadContext *context) {
    }
 
 
-static void hostemu_unloader(RexxThreadContext *context) {
+static void RexxEntry hostemu_unloader(RexxThreadContext *context) {
    PLL pll;
 
    /* close all our open files */
@@ -896,8 +896,8 @@ RexxPackageEntry hostemu_package_entry = {
     REXX_INTERPRETER_4_0_0,              // anything after 4.0.0 will work
     "HostEmu",                           // name of the package
     "1.0.0",                             // package information
-    (RexxPackageLoader)hostemu_loader,   // load function
-    (RexxPackageUnloader)hostemu_unloader, // unload function
+    hostemu_loader,                      // load function
+    hostemu_unloader,                    // unload function
     NULL,                                // the exported routines
     NULL                                 // the exported methods
     };
