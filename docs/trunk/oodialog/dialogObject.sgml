@@ -585,8 +585,8 @@
 <entry><link linkend="h001213">GetArcDirection</link></entry>
 </row>
 <row>
-<entry>GetAttrib</entry>
-<entry><link linkend="h000522">GetAttrib</link></entry>
+<entry>getControlDataAttribute</entry>
+<entry><link linkend="mthGetControlDataAttribute">getControlDataAttribute</link></entry>
 </row>
 <row>
 <entry>GetBitmapSizeX</entry>
@@ -653,8 +653,8 @@
 <entry><link linkend="getdc">GetDC</link></entry>
 </row>
 <row>
-<entry>GetEntryLine</entry>
-<entry><link linkend="h000466">GetEntryLine</link></entry>
+<entry>getEditData</entry>
+<entry><link linkend=mthGetEditData>getEditData</link></entry>
 </row>
 <row>
 <entry>getExStyleRaw</entry>
@@ -1072,8 +1072,8 @@
 <entry><link linkend="h001214">SetArcDirection</link></entry>
 </row>
 <row>
-<entry>SetAttrib</entry>
-<entry><link linkend="h000593">SetAttrib</link></entry>
+<entry>setControlDataAttribute</entry>
+<entry><link linkend="mthSetControlDataAttribute">setControlDataAttribute</link></entry>
 </row>
 <row>
 <entry>SetCheckBox</entry>
@@ -1104,8 +1104,8 @@
 <entry><link linkend="mthSetDataStem">setDataStem</link></entry>
 </row>
 <row>
-<entry>SetEntryLine</entry>
-<entry><link linkend="h000530">SetEntryLine</link></entry>
+<entry>setEditData</entry>
+<entry><link linkend="mthSetEditData">setEditData</link></entry>
 </row>
 <row>
 <entry>SetFocus</entry>
@@ -4080,108 +4080,246 @@ the invocation of <link linkend="h002048">StartIt</link>).
   linkend="sctCreateMethods">create...</link> methods of the <computeroutput>UserDialog</computeroutput>, the data
   attribute names are generated internally. Even when the name is explicitly specified by the programmer, if the name is
   not a valid method name or is a duplicate method name, the attribute name is generated internally. The rules for how
-  the attribute names are generated can be hard to grasp and are difficult to describe, at best. Nevertheless, the
-  following list is intended to be complete.
+  the attribute names are generated can be a little difficult to grasp. The following list is intended to be complete
+  description of the rules in all circumstances.
 
   <variablelist>
-    <varlistentry><term><emphasis role="bold">UserDialog:</emphasis></term>
+    <varlistentry id="termConnectAutoNames"><term><emphasis role="bold">connect... data attribute methods:</emphasis></term>
     <listitem>
     <para>
-      xxx and xxx sss.
+      When the programmer uses one of the <link linkend="sctConnectDataMethods">connect...</link> methods, the attribute
+      name can be omitted, or the name specified could not be valid. For these cases, the internally generated name is
+      created in this way:
+    </para>
+    <para>
+      If the name is omitted, then the name is created by prepending <computeroutput>DATA</computeroutput> with the
+      resource ID argument. Recall that the resource ID argument can possibly be a symbolic ID. Example:
+
+<programlisting>
+<![CDATA[
+  -- The attribute name will be DATA202
+  self~connectEdit(202)
+
+  -- The attribute name will be DATAIDC_EDIT_FNAME
+  self~connectEdit(IDC_EDIT_FNAME)
+]]>
+</programlisting>
+    </para>
+    <para>
+      Whether the attribute name was specified or not, before the attribute is actually added to the dialog object, the
+      name is checked to see that it is a valid method name, that it is not the empty string, and not a duplicate of an
+      already existing method name in the dialog. When the check fails, the name is created by prepending
+      <computeroutput>DATA</computeroutput> with the <emphasis role="bold">numeric</emphasis> value of the
+      resource ID argument. This is true even when the id argument is specified as a symbolic ID. Example:
+
+<programlisting>
+<![CDATA[
+  self~constDir[IDC_EDIT_FNAME] = 344
+
+  -- The attribute name will be DATA202
+  self~connectEdit(202, "COPY")
+
+  -- The attribute name will be DATA344
+  self~connectEdit(IDC_EDIT_FNAME, 'FNAME+ADDRESSBOOK')
+
+]]>
+</programlisting>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry id="termCreateAutoNames"><term><emphasis role="bold">UserDialog create... methods:</emphasis></term>
+    <listitem>
+    <para>
+      In the typical <computeroutput>UserDialog</computeroutput>all cotrols are added to the dialog by using one of the
+      <link linkend="sctCreateMethods">create...</link> methods. This is similar to using one of the connect... methods.
+      The attribute name argument can be omitted, or the specified attribute name might not be valid. For these cases,
+      the internally generated name is created in this way:
+    </para>
+    <para>
+      If the name is omitted, and the dialog control is <emphasis role="bold">not</emphasis> a check box or radio
+      button, then the name is created by prepending <computeroutput>DATA</computeroutput> with the numeric value of the
+      resource ID argument. Example:
+
+<programlisting>
+<![CDATA[
+  self~constDir[IDC_EDIT_FNAME] = 344
+
+  -- The attribute name will be DATA344
+  self~createEdit(344, 10, 10, 100, 12, "AUTOSCROLLH MULTILINE")
+
+  -- The attribute name will be DATA344
+  self~createEdit(IDC_EDIT_FNAME, 10, 10, 100, 12, "AUTOSCROLLH MULTILINE")
+]]>
+</programlisting>
+    </para>
+    <para>
+      If the name is omitted and the dialog control <emphasis role="bold">is</emphasis> a check box or radio button,
+      then the name is created from the text of the <emphasis role="bold">label</emphasis> of the button. First all
+      spaces, ampersands, and colons, if any, are removed from the label. The result is used for the attribute name.
+      Examples:
+
+<programlisting>
+<![CDATA[
+  self~constDir[IDC_CHK_LN] = 200
+  self~constDir[IDC_CHK_MAIL] = 201
+  self~constDir[IDC_CHK_RECEIPT] = 202
+
+  -- The attribute name will be USELASTNAME
+  self~createCheckBox(IDC_CHK_LN, 10, 10, 80, 12, "GROUP", "&Use last name")
+
+  -- The attribute name will be MAILITEM
+  self~createCheckBox(IDC_CHK_MAIL, 10, 27, 80, 12, "RBUTTON RIGHT", "Mail item:")
+
+  -- The attribute name will be RECEIPT
+  self~createCheckBox(IDC_CHK_RECEIPT, 10, 45, 80, 12, , "Receipt")
+]]>
+</programlisting>
+    </para>
+    <para>
+      Whether the attribute name was specified or generated by the framework, the name is always checked to see if it is
+      the empty string, not a valid method name, or a duplicate of an already existing method name in the dialog.  When
+      the check fails, then the name is created by prepending <computeroutput>DATA</computeroutput> with the <emphasis
+      role="bold">numeric</emphasis> value of the resource ID argument. This is true even when the id argument is
+      specified as a symbolic ID. Examples:
+
+<programlisting>
+<![CDATA[
+  self~constDir[IDC_EDIT_CLASS] = 344
+  self~constDir[IDC_CHK_DEFAULTNAME] = 201
+  self~constDir[IDC_CHK_COPY] = 202
+
+  -- The attribute name will be DATA344 (CLASS is an existing method name.)
+  self~createEdit(IDC_EDIT_CLASS, 10, 10, 100, 12, "AUTOSCROLLH MULTILINE", "Class")
+
+  -- The attribute name will be DATA201 (defaultName is an existing method name.)
+  self~createCheckBox(IDC_CHK_DEFAULTNAME, 10, 27, 80, 12, , "Default Name")
+
+  -- The attribute name will be DATA202
+  self~createCheckBox(IDC_CHK_COPY, 10, 45, 80, 12, , "&Copy")
+
+]]>
+</programlisting>
     </para>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">ResDialog:</emphasis></term>
     <listitem>
     <para>
-      xxx and xxx sss.
+      For a <computeroutput>ResDialog</computeroutput>, the attribute names are always generated by the ooDialog
+      framework, there is no way for the programmer to specify the name. When the underlying dialog is created, the
+      numeric resource ID and the text of all the dialog controls is collected. For <emphasis
+      role="bold">each</emphasis> control, the data attribute is created using the <emphasis role="bold">text</emphasis>
+      of the control.
+    </para>
+    <para>
+      <emphasis role="bold">Note</emphasis> this important detail: every dialog control can have text associated with it
+      when compiled from a <link linkend="defResourceScript">resource script</link>. Although for many controls, text is
+      not usually associated with them, it is always possible that they do have text.
+    </para>
+    <para>
+      The text of the control has all spaces, ampersands, and colons removed. The result is checked as usual. If it is
+      the empty string, or not a valid method name, or a duplicate of an existing method name, then the attribute name
+      is changed to <computeroutput>DATA</computeroutput> prepended to the resource ID. The attribute name then follows
+      the pattern(s) already seen. Examples:
+
+<programlisting>
+<![CDATA[
+  -- For an edit control with resource ID 344 and no associated text:
+  DATA344
+
+  -- For a check box with resource ID 400 and a label of "Compile":
+  COMPILE
+
+  -- For a radio button with resource ID 200 and a label of "&Copy":
+  DATA200
+
+  -- For a tree view with resource 320 and text associated of "C: Drive"
+  CDRIVE
+
+  -- Same tree view with no text assoicate, (the usual case):
+  DATA320
+
+  -- etc..
+
+]]>
     </para>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">RcDialog:</emphasis></term>
     <listitem>
     <para>
-      xxx and xxx sss.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry id="termConnectAutoNames"><term><emphasis role="bold">connect... data attribute methods:</emphasis></term>
-    <listitem>
-    <para>
-      When the programmer use one of the <link linkend="sctConnectDataMethods">connect...</link> methods, the attribute
-      name can be omitted, or the name specified could not be valid. The internally generated name is created in this
-      way:
-    </para>
-    <para>
-      If the name is omitted, then the name is created by prepending <computeroutput>DATA</computeroutput> with the
-      resource ID argument. Example:
+      Although a <computeroutput>RcDialog</computeroutput> is actually a subclass of a
+      <computeroutput>UserDialog</computeroutput> and the dialog controls are added to the dialog <link
+      linkend="ovvDialogTemplate">template</link> through the <link linkend="sctCreateMethods">create...</link> methods,
+      the generated attribute names have a different pattern. If the resource ID of the control in the <link
+      linkend="defResourceScript">resource script</link> file is a symbolic ID, then the attribute name will be the
+      symbolic ID. On the other hand, if the resource ID is numeric in the resource script file, then the attribute name
+      will be <computeroutput>DATA</computeroutput> prepended to the numeric ID. Example:
 
 <programlisting>
 <![CDATA[
-  -- The generated name will be DATA202
-  self~connectEdit(202)
+  -- For this resource script file:
 
-  -- The generated name will be DATAIDC_EDIT_FNAME
-  self~connectEdit(IDC_EDIT_FNAME)
+//
+// Dialog resources
+//
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDD_DIALOG1 DIALOGEX 0, 0, 237, 131
+STYLE  DS_MODALFRAME | WS_VISIBLE | WS_BORDER | WS_CAPTION | WS_DLGFRAME | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg 2", 400, 0, 1
+{
+    EDITTEXT        1003, 27, 22, 116, 47, WS_GROUP | ES_AUTOHSCROLL | ES_MULTILINE
+    EDITTEXT        IDC_EDIT2, 27, 84, 116, 12, ES_AUTOHSCROLL
+    AUTOCHECKBOX    "Hello There", IDC_CHK_TEST, 27, 109, 52, 10
+    DEFPUSHBUTTON   "OK", IDOK, 125, 107, 50, 14
+    PUSHBUTTON      "Cancel", IDCANCEL, 177, 107, 50, 14
+    LTEXT           "Just a test of a static control", IDC_ST_TEST, 163, 28, 54, 24, SS_LEFT
+}
+
+  -- The attribute names will be:
+
+  DATA1003
+  IDC_EDIT2
+  IDC_CHK_TEST
+
 ]]>
-</programlisting>
     </para>
     <para>
-      If the name is not valid or a duplicate of an already existing method name in the dialog, then the name is created
-      by prepending <computeroutput>DATA</computeroutput> with the <emphasis role="bold">numeric</emphasis> value of
-      the resource ID argument. This is true even when the id argument is specified as a symbolic ID. Example:
+      However, as always, the attribute name is checked to be a valid method name, not the empty string, and not a
+      duplicate of an existing method name. If the resource script file is valid, it can not be the empty string.
+      Usually, programmers do not name their symbolic IDs in a fashion that would conflict with an existing method name,
+      but there is no reason why they could not. If the check fails, then the attribute name will once again be
+      <computeroutput>DATA</computeroutput> prepended to the <emphasis role="bold">numeric</emphasis> value of the
+      resource ID.  Example:
 
 <programlisting>
 <![CDATA[
-  self~constDir[IDC_EDIT_FNAME] = 344
+  -- For this resource script file:
 
-  -- The generated name will be DATA202
-  self~connectEdit(202, "COPY")
+#define COPY 1004
 
-  -- The generated name will be DATA344
-  self~connectEdit(IDC_EDIT_FNAME, 'FNAME+ADDRESSBOOK')
+//
+// Dialog resources
+//
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDD_DIALOG1 DIALOGEX 0, 0, 237, 131
+STYLE  DS_MODALFRAME | WS_VISIBLE | WS_BORDER | WS_CAPTION | WS_DLGFRAME | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg 2", 400, 0, 1
+{
+    EDITTEXT        1003, 27, 22, 116, 47, WS_GROUP | ES_AUTOHSCROLL | ES_MULTILINE
+    EDITTEXT        IDC_EDIT2, 27, 84, 116, 12, ES_AUTOHSCROLL
+    AUTOCHECKBOX    "Hello There", COPY, 27, 109, 52, 10
+    DEFPUSHBUTTON   "OK", IDOK, 125, 107, 50, 14
+    PUSHBUTTON      "Cancel", IDCANCEL, 177, 107, 50, 14
+    LTEXT           "Just a test of a static control", IDC_ST_TEST, 163, 28, 54, 24, SS_LEFT
+}
 
-]]>
-</programlisting>
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">UserDialog create... methods:</emphasis></term>
-    <listitem>
-    <para>
-      Using one of the <link linkend="sctCreateMethods">create...</link> methods of the
-      <computeroutput>UserDialog</computeroutput> is similar to using one of the connect... methods. The attribute name
-      argument can be omitted, or the specified attribute name might not be valid. In these cases, the internally
-      generated name is created in this way:
-    </para>
-    <para>
-      If the name is omitted, and the dialog control is <emphasis role="bold">not</emphasis> a check box or radio
-      button, then the name is created by prepending <computeroutput>DATA</computeroutput> with the resource ID
-      argument. Example:
+  -- The attribute names will be:
 
-<programlisting>
-<![CDATA[
-  -- The generated name will be DATA202
-  self~connectEdit(202)
-
-  -- The generated name will be DATAIDC_EDIT_FNAME
-  self~connectEdit(IDC_EDIT_FNAME)
-]]>
-</programlisting>
-    </para>
-    <para>
-      If the name is not valid or a duplicate of an already existing method name in the dialog, then the name is created
-      by prepending <computeroutput>DATA</computeroutput> with the <emphasis role="bold">numeric</emphasis> value of
-      the resource ID argument. This is true even when the id argument is specified as a symbolic ID. Example:
-
-<programlisting>
-<![CDATA[
-  self~constDir[IDC_EDIT_FNAME] = 344
-
-  -- The generated name will be DATA202
-  self~connectEdit(202, "COPY")
-
-  -- The generated name will be DATA344
-  self~connectEdit(IDC_EDIT_FNAME, 'FNAME+ADDRESSBOOK')
+  DATA1003
+  IDC_EDIT2
+  DATA1004
 
 ]]>
-</programlisting>
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4189,7 +4327,7 @@ the invocation of <link linkend="h002048">StartIt</link>).
 
 </section>
 
-<section id="sctDataAttributeProblems"><title>Problems with Data Attribute</title>
+<section id="sctDataAttributeProblems"><title>Problems with Data Attributes</title>
 <indexterm><primary>data attribute problems</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>data attribute problems</secondary></indexterm>
 <para>
@@ -4229,7 +4367,7 @@ the invocation of <link linkend="h002048">StartIt</link>).
 
 <section id="mthInitAutoDetection"><title>initAutoDetection</title>
 <indexterm><primary>initAutoDetection</primary></indexterm>
-<indexterm><primary></primary>dialog object<secondary>initAutoDetection</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>initAutoDetection</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-initAutoDetection-------------------------------------------><
@@ -4270,7 +4408,7 @@ the invocation of <link linkend="h002048">StartIt</link>).
 
 <section id="mthNoAutoDetection"><title>noAutoDetection</title>
 <indexterm><primary>noAutoDetection</primary></indexterm>
-<indexterm><primary></primary>dialog object<secondary>noAutoDetection</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>noAutoDetection</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--noAutoDetection--------------------------------------------><
@@ -4286,7 +4424,7 @@ the invocation of <link linkend="h002048">StartIt</link>).
 
 <section id="mthAutoDetection"><title>autoDetection</title>
 <indexterm><primary>autoDetection</primary></indexterm>
-<indexterm><primary></primary>dialog object<secondary>autoDetection</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>autoDetection</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--autoDetection----------------------------------------------><
@@ -4305,12 +4443,14 @@ the invocation of <link linkend="h002048">StartIt</link>).
 <indexterm><primary>dialog object</primary><secondary>connect data attribute methods</secondary></indexterm>
 <para>
   The methods in this section are used to manually create and connect a <link
-  linkend="sctUnderstandingDataAttributes">data attribute</link>. They should only be used when <link
-  linkend="mthInitAutoDetection">automatic</link> data field detection is off.
+  linkend="sctUnderstandingDataAttributes">data attribute</link>. There purpose is to manually do what is done when
+  <link linkend="mthInitAutoDetection">automatic</link> data field detection is on. They should only be used when
+  automatic detection is off.
 </para>
 
 <section id="mthConnectEdit"><title>connectEdit</title>
 <indexterm><primary>connectEdit</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectEdit</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--connectEdit(--id--+------------------+--)------------------><
@@ -4370,36 +4510,61 @@ the invocation of <link linkend="h002048">StartIt</link>).
     <listitem>
     <para>
       The attribute has to be synchronized with the edit control manually. This can be done globally with the <link
-      linkend="mthSetData">setData</link> and <link linkend="mthGetData">getData</link> methods.
-      linkend="mthGetData">getData</link>),
-    or for only one item with the SetEntryLine and GetEntryLine methods (see page <link linkend="h000466">GetEntryLine</link>). It is done automatically by <link linkend="h000048">Execute</link> when the dialog starts and after it terminates. If AutoDetection
-    is enabled, or if the dialog is created dynamically (manually or based on
-    a resource script), you do not have to use this method or any other Connect... methods that deal with dialog controls).
+      linkend="mthSetData">setData</link> and <link linkend="mthGetData">getData</link> methods. For a finer grain of
+      control use the <link linkend="mthSetEditData">setEditData</link>() or <link
+      linkend="mthGetEditData">getEditData</link>() methods.
     </para>
     <para>
-      An unused valid Rexx symbol because an attribute with exactly this name is added to the dialog object with this
-      method. Blank spaces, ampersands (&amp;), and colons (:) are removed from the attributeName. If this argument
-    is omitted, is not valid, or already exists, and the ID is numeric, an attribute with the name DATAid is
-    used, where id is the value of the first argument.
-    </para>
-    <para>
-      xx
+      The <emphasis role="italic">connectEdit</emphasis> should only be used when automatic data <link
+      linkend="paraAutomaticDataDetection">detection</link> is off.
     </para>
     </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    In the following example, the entry line with ID 202 is associated with the attribute Name. &quot;Put your name
-  here!&quot; is assigned to the newly created attribute. Then the dialog is executed. After
-  the dialog has terminated, the data of the entry line, which the user might have changed, is copied back to the
-  attribute Name.
+    In the following example, the edit control with symbolic resource ID IDC_EDIT is connected to the Rexx dialog
+    object's <emphasis role="italic">NAME</emphasis> attribute. The connection process creates the data attribute. The
+    string: <emphasis role="italic">Put your name here</emphasis> is assigned to the newly created data attribute. When
+    the dialog is executed, the underlying edit control is manually synchronized with the attribute. This has the
+    effect of setting the text of the edit control to the value of the attribute, which is the string, Put your name
+    here.
+  </para>
+  <para>
+    When the dialog is closed by the user with an <emphasis role="italic">ok</emphasis> command, the data attribute is
+    manually synchronized with the state of the edit control. The state of an edit control is defined to be the text
+    within the control. This synchronization has the effect of copying whatever text is in the edit control to the data
+    attribute. Then, when the dialog has terminated, the name the user entered is displayed. (Of course the user may not
+    have entered her name. What is displayed is whatever the text in the edit control was when the dialog was closed.)
 
 <programlisting>
 <![CDATA[
-MyDialog~connectEdit(202, "Name")
-MyDialog~Name="Put your name here!"
-MyDialog~Execute("SHOWTOP")
-say MyDialog~Name
+
+  dlg = .NameDlg~new("nameExample.dll", IDD_DIALOG1, , "nameExample.h" )
+
+  if dlg~initCode == 0 then do
+    dlg~noAutoDetection
+    dlg~connectEdit(IDC_EDIT, "NAME")
+    dlg~name = "Put your name here"
+
+    ret = dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+
+    if ret == 1 then say "The user's name is:" dlg~name
+    else say "The user canceled."
+  end
+
+return 0
+
+::requires "ooDialog.cls"
+
+::class 'NameDlg' subclass ResDialog
+
+::method initDialog
+  self~setControlDataAttribute("NAME")
+
+::method ok
+  self~getControlDataAttribute("NAME")
+  self~ok:super
+
 ]]>
   </programlisting>
   </para>
@@ -4801,7 +4966,7 @@ The setData method transfers the values of the dialog object <link linkend="sctU
   <emphasis role="bold">Note</emphasis> that this method transfers the data for every connected attribute. This may not
   always be desirable. For instance the focused node of a tree-view control may be changed. For finely grained control
   of which values are transfered the programmer should use the <link linkend="mthSetControlData">setControlData</link>() or <link
-  linkend="h000593">setAttribute</link>() methods. Both of these methods transfer the value of a single object attribute
+  linkend="mthSetControlDataAttribute">setAttribute</link>() methods. Both of these methods transfer the value of a single object attribute
   that is specified by the programmer.
 </para>
 <variablelist>
@@ -4863,17 +5028,17 @@ static text control. </para>
 </variablelist>
 </section>
 
-<section id="h000466"><title>GetEntryLine</title>
-<indexterm><primary>GetEntryLine</primary></indexterm>
+<section id=mthGetEditData><title>getEditData</title>
+<indexterm><primary>getEditData</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~GetEntryLine(--id--)----------------------------><
+>>-aBaseDialog~getEditData(--id--)----------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The GetEntryLine method returns the value of the
+<para>The getEditData method returns the value of the
 given entry line. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4887,17 +5052,17 @@ given entry line. </para>
 </variablelist>
 </section>
 
-<section id="h000530"><title>SetEntryLine</title>
-<indexterm><primary>SetEntryLine</primary></indexterm>
+<section id="mthSetEditData"><title>setEditData</title>
+<indexterm><primary>setEditData</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~SetEntryLine(--id--,--aString--)----------------><
+>>-aBaseDialog~setEditData(--id--,--aString--)----------------><
 
 
 ]]>
 </programlisting>
 
-<para>The SetEntryLine method puts the value of a string
+<para>The setEditData method puts the value of a string
 into an entry line. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4914,7 +5079,7 @@ into an entry line. </para>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>Assume that three methods are connected to push buttons. The SetToDefault
 method overrides the value in the Windows dialog entry line 234 with the
-value 256 but does not change its associated attribute. Using SetEntryLine
+value 256 but does not change its associated attribute. Using setEditData
 has the same effect as a change to the entry line made by the user. The associated
 attribute in the Object Rexx object (<computeroutput>DATA234</computeroutput>) still has the original
 value. Thus it is possible to undo the changes or confirm them.
@@ -4922,13 +5087,13 @@ value. Thus it is possible to undo the changes or confirm them.
 <programlisting>
 <![CDATA[
 ::method SetToDefault
-   self~SetEntryLine(234, "256")
+   self~setEditData(234, "256")
 
 ::method AcceptValues
-   self~GetAttrib(DATA234)
+   self~getControlDataAttribute(DATA234)
 
 ::method UndoChanges
-   self~SetAttrib(DATA234)
+   self~setControlDataAttribute(DATA234)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -5362,17 +5527,17 @@ MyDialog~setControlData(123, "1 2 3")
 </variablelist>
 </section>
 
-<section id="h000522"><title>GetAttrib</title>
-<indexterm><primary>GetAttrib</primary></indexterm>
+<section id="mthGetControlDataAttribute"><title>getControlDataAttribute</title>
+<indexterm><primary>getControlDataAttribute</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~GetAttrib(--attributeName--)--------------------><
+>>-aBaseDialog~getControlDataAttribute(--attributeName--)--------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The GetAttrib method assigns the value of a dialog
+<para>The getControlDataAttribute method assigns the value of a dialog
 item to the associated Object Rexx attribute. It does not return a value. You do
 not have to know the ID or the type of the dialog item. </para>
 <variablelist>
@@ -5390,7 +5555,7 @@ without knowing its ID:
 
 <programlisting>
 <![CDATA[
-MyDialog~GetAttrib("FirstName")
+MyDialog~getControlDataAttribute("FirstName")
 if MyDialog~FirstName\="" then ...
 ]]>
 </programlisting>
@@ -5398,17 +5563,17 @@ if MyDialog~FirstName\="" then ...
 </variablelist>
 </section>
 
-<section id="h000593"><title>SetAttrib</title>
-<indexterm><primary>SetAttrib</primary></indexterm>
+<section id="mthSetControlDataAttribute"><title>setControlDataAttribute</title>
+<indexterm><primary>setControlDataAttribute</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~SetAttrib(--attributeName--)--------------------><
+>>-aBaseDialog~setControlDataAttribute(--attributeName--)--------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The SetAttrib method copies the value of an attribute
+<para>The setControlDataAttribute method copies the value of an attribute
 to the associated dialog item. You do not have to know the ID or the type
 of the dialog item. </para>
 <variablelist>
@@ -5425,7 +5590,7 @@ of the dialog item. </para>
 
 <programlisting>
 <![CDATA[
-MyBaseDialog~SetAttrib("DATA101")
+MyBaseDialog~setControlDataAttribute("DATA101")
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -5450,11 +5615,13 @@ MyBaseDialog~SetAttrib("DATA101")
   numeric resource IDs or symbolic resource IDs.
 </para>
 <para>
-  This method only works on controls that have been registered in the data table through one of the
-  <emphasis role="italic">connect control</emphasis> methods.  Every registered control has its state set
-  when this method is invoked.  If the data stem, <emphasis role="italic">data.</emphasis> has no
-  matching index for a registered control, that control's state is set to the empty string.  Any indexes
-  in the data stem that do not match the resource ID of a registered control are ignored.
+  This method only works for controls that have been connected to a <link
+  linkend="sctUnderstandingDataAttributes">data</link> attributue. Either by automatic data <link
+  linkend="paraAutomaticDataDetection">detection</link>, or througt one of the <link
+  linkend="sctConnectDataMethods">connect...</link> methods. Every connected control has its state set when this method
+  is invoked.  If the data stem, <emphasis role="italic">data.</emphasis> has no matching index for a connected control,
+  that control's state is set to the empty string.  Any indexes in the data stem that do not match the resource ID of a
+  registered control are ignored.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6070,7 +6237,7 @@ combo box item within entry line 240:</para>
      .
 ::method ListSelected
    line = self~GetCurrentComboIndex(230)
-   SetEntryLine(240, line)
+   setEditData(240, line)
 ]]>
 </programlisting>
 <para>Method <computeroutput>ListSelected</computeroutput> is called
@@ -6149,7 +6316,7 @@ the currently selected line of combo box 230 to the value in entry line 250:
      .
 ::method ChangeButtonPressed
    idx = self~GetCurrentComboEntry(230)
-   str = self~GetEntryLine(250)
+   str = self~getEditData(250)
    self~ChangeComboEntry(230, idx, str)
 ]]>
 </programlisting>
@@ -6473,7 +6640,7 @@ contained in it:
       .
       .
 ::method PutEntryInList
-   str = self~GetEntryLine(214)
+   str = self~getEditData(214)
    if self~FindListEntry(215, str) = 0 then
       self~AddListEntry(215, str)
 ]]>
