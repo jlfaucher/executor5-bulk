@@ -586,7 +586,7 @@
 </row>
 <row>
 <entry>getDataAttribute</entry>
-<entry><link linkend="mthGetControlDataAttribute">getDataAttribute</link></entry>
+<entry><link linkend="mthGetDataAttribute">getDataAttribute</link></entry>
 </row>
 <row>
 <entry>GetBitmapSizeX</entry>
@@ -1073,7 +1073,7 @@
 </row>
 <row>
 <entry>setDataAttribute</entry>
-<entry><link linkend="mthSetControlDataAttribute">setDataAttribute</link></entry>
+<entry><link linkend="mthSetDataAttribute">setDataAttribute</link></entry>
 </row>
 <row>
 <entry>SetCheckBox</entry>
@@ -4515,8 +4515,8 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
     <para>
       The attribute has to be synchronized with the edit control manually. This can be done globally with the <link
       linkend="mthSetData">setData</link> and <link linkend="mthGetData">getData</link> methods. For a finer grain of
-      control use the <link linkend="mthSetControlDataAttribute">setDataAttribute</link>() or <link
-      linkend="mthGetControlDataAttribute">getDataAttribute</link>() methods.
+      control use the <link linkend="mthSetDataAttribute">setDataAttribute</link>() or <link
+      linkend="mthGetDataAttribute">getDataAttribute</link>() methods.
     </para>
     <para>
       The <emphasis role="italic">data</emphasis> of an edit control is defined to be the text entered in the control.
@@ -4643,8 +4643,8 @@ return 0
     <para>
       The attribute has to be synchronized with the combo box control manually. This can be done globally with the <link
       linkend="mthSetData">setData</link> and <link linkend="mthGetData">getData</link> methods. For a finer grain of
-      control use the <link linkend="mthSetControlDataAttribute">setDataAttribute</link>() or <link
-      linkend="mthGetControlDataAttribute">getDataAttribute</link>() methods.
+      control use the <link linkend="mthSetDataAttribute">setDataAttribute</link>() or <link
+      linkend="mthGetDataAttribute">getDataAttribute</link>() methods.
     </para>
     <para>
       The <emphasis role="italic">data</emphasis> of a <link linkend="clsComboBox">combo box</link> is defined to be the
@@ -4728,8 +4728,8 @@ return 0
     <para>
       The attribute has to be synchronized with the check box control manually. This can be done globally with the <link
       linkend="mthSetData">setData</link> and <link linkend="mthGetData">getData</link> methods. For a finer grain of
-      control use the <link linkend="mthSetControlDataAttribute">setDataAttribute</link>() or <link
-      linkend="mthGetControlDataAttribute">getDataAttribute</link>() methods.
+      control use the <link linkend="mthSetDataAttribute">setDataAttribute</link>() or <link
+      linkend="mthGetDataAttribute">getDataAttribute</link>() methods.
     </para>
     <para>
       The <emphasis role="italic">data</emphasis> of a <link linkend="clsCheckBox">check box</link> is defined to be the
@@ -4815,8 +4815,8 @@ return 0
     <para>
       The attribute has to be synchronized with the radio button control manually. This can be done globally with the
       <link linkend="mthSetData">setData</link> and <link linkend="mthGetData">getData</link> methods. For a finer grain
-      of control use the <link linkend="mthSetControlDataAttribute">setDataAttribute</link>() or <link
-      linkend="mthGetControlDataAttribute">getDataAttribute</link>() methods.
+      of control use the <link linkend="mthSetDataAttribute">setDataAttribute</link>() or <link
+      linkend="mthGetDataAttribute">getDataAttribute</link>() methods.
     </para>
     <para>
       The <emphasis role="italic">data</emphasis> of a <link linkend="clsRadioButton">radio button</link> is defined to
@@ -4905,8 +4905,8 @@ or receive it. See <link linkend="mthConnectEdit">connectEdit</link> for a more 
     <para>
       The attribute has to be synchronized with the list box manually. This can be done globally with the
       <link linkend="mthSetData">setData</link> and <link linkend="mthGetData">getData</link> methods. For a finer grain
-      of control use the <link linkend="mthSetControlDataAttribute">setDataAttribute</link>() or <link
-      linkend="mthGetControlDataAttribute">getDataAttribute</link>() methods.
+      of control use the <link linkend="mthSetDataAttribute">setDataAttribute</link>() or <link
+      linkend="mthGetDataAttribute">getDataAttribute</link>() methods.
     </para>
     <para>
       The <emphasis role="italic">data</emphasis> of a <emphasis role="bold">single-selection</emphasis> <link
@@ -5491,7 +5491,7 @@ The setData method transfers the values of the dialog object <link linkend="sctU
   <emphasis role="bold">Note</emphasis> that this method transfers the data for every connected attribute. This may not
   always be desirable. For instance the focused node of a tree-view control may be changed. For finely grained control
   of which values are transfered the programmer should use the <link linkend="mthSetControlData">setControlData</link>() or <link
-  linkend="mthSetControlDataAttribute">setAttribute</link>() methods. Both of these methods transfer the value of a single object attribute
+  linkend="mthSetDataAttribute">setAttribute</link>() methods. Both of these methods transfer the value of a single object attribute
   that is specified by the programmer.
 </para>
 <variablelist>
@@ -6052,7 +6052,7 @@ MyDialog~setControlData(123, "1 2 3")
 </variablelist>
 </section>
 
-<section id="mthGetControlDataAttribute"><title>getDataAttribute</title>
+<section id="mthGetDataAttribute"><title>getDataAttribute</title>
 <indexterm><primary>getDataAttribute</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>getDataAttribute</secondary></indexterm>
 <programlisting>
@@ -6095,7 +6095,7 @@ MyDialog~setControlData(123, "1 2 3")
 </variablelist>
 </section>
 
-<section id="mthSetControlDataAttribute"><title>setDataAttribute</title>
+<section id="mthSetDataAttribute"><title>setDataAttribute</title>
 <indexterm><primary>setDataAttribute</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>setDataAttribute</secondary></indexterm>
 <programlisting>
@@ -6121,7 +6121,6 @@ MyDialog~setControlData(123, "1 2 3")
     </para>
     </listitem></varlistentry>
   </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
