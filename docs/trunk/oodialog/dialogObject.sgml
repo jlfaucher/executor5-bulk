@@ -6057,7 +6057,7 @@ MyDialog~setControlData(123, "1 2 3")
 <indexterm><primary>dialog object</primary><secondary>getDataAttribute</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-getControlDataAttribute(--attributeName--)------------------><
+>>--getDataAttribute(--attributeName--)------------------------><
 
 ]]>
 </programlisting>
@@ -6100,7 +6100,7 @@ MyDialog~setControlData(123, "1 2 3")
 <indexterm><primary>dialog object</primary><secondary>setDataAttribute</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setControlDataAttribute(--attributeName--)-----------------><
+>>--setDataAttribute(--attributeName--)-----------------><
 
 ]]>
 </programlisting>
@@ -6141,7 +6141,7 @@ MyDialog~setControlData(123, "1 2 3")
 <indexterm><primary>dialog object</primary><secondary>setDataStem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setDataStem(--dataStem.--)-----------------------------><
+>>--setDataStem(--dataStem.--)---------------------------------><
 
 ]]>
 </programlisting>
@@ -6162,25 +6162,20 @@ MyDialog~setControlData(123, "1 2 3")
   registered control are ignored.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem>
-  <para>
-    The only argument is:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
     <variablelist>
     <varlistentry><term>dataStem.</term>
     <listitem><para>
-      A stem variable containing the values used to set a dialog control's state. Remember the trailing
-      period.
+      A stem variable containing the values used to set a dialog control's state. Remember the trailing period.
     </para></listitem></varlistentry>
     </variablelist>
-  </para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
   <para>
-    The following example initializes the dialog controls with IDs 21, 22, and 23, provided they have
-    been registered in the data table through one of the <emphasis role="italic">connect
-    control</emphasis> methods:
+    The following example initializes the dialog controls with IDs 21, 22, and 23, provided they have been connected
+    previously:
 <programlisting>
 <![CDATA[
      .
@@ -6192,41 +6187,39 @@ dlgStem.23="1 2 3"
 self~setDataStem(dlgStem.)
 ]]>
 </programlisting>
-  </para>
-</listitem></varlistentry>
+   </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
 <section id="mthGetDataStem"><title>getDataStem</title>
 <indexterm><primary>getDataStem</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getDataStem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getDataStem(--dataStem.--)-----------------------------><
+>>--getDataStem(--dataStem.--)---------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
   The <emphasis role="italic">getDataStem</emphasis>() method is the reverse of the <link
-  linkend="mthSetDataStem">setDataStem</link>() method.  The method gets the <emphasis
-  role="italic">data,</emphasis> (the state,) of all the dialog controls that have been registered
-  through one of the <emphasis role="italic">connect control</emphasis> methods and copies the state of
-  that control to the given stem.
+  linkend="mthSetDataStem">setDataStem</link>() method.  The method gets the <emphasis role="italic">data</emphasis> of
+  all the dialog controls in the underlying dialog that have been connected to a <link
+  linkend="sctUnderstandingDataAttributes">data attribute</link> of the Rexx dialog object. The data of each control is
+  copied to the specified stem.
 </para>
 <para>
-  A stem index for each control registered in the data table will be set.  The stem index will be the
-  numeric ID for the control.  The value at that index is the state of the matching dialog control.  In
-  addition, if the <link linkend="atrConstDir">constDir</link> directory has a symbolic ID for the numeric
-  ID of the control, a stem index of the symbolic ID is also set.  This of course only works reliably if
-  the Rexx programmer uses unique numeric IDs for all resouces.
+  A stem index for each  connected control is set.  The stem index is the numeric ID for the control.  The value at that
+  index is the data of the matching dialog control.  In addition, if the <link linkend="atrConstDir">constDir</link>
+  directory has a symbolic ID for the numeric ID of the control, a stem index of the symbolic ID is also set.  This of
+  course only works reliably if the Rexx programmer uses unique numeric IDs for all resouces.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem>
-  <para>
-    The only argument is:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
     <variablelist>
-    <varlistentry><term>dataStem.</term>
+    <varlistentry><term>dataStem. [required]</term>
     <listitem>
     <para>
       The name of a stem variable in which the data is returned.  Remember the trailing period.
@@ -6234,9 +6227,10 @@ self~setDataStem(dlgStem.)
     </listitem></varlistentry>
     </variablelist>
   </para>
-</listitem></varlistentry>
+  </listitem></varlistentry>
 </variablelist>
 </section>
+
 </section>
 
 <section id="sctStandardEventMethods"><title>Standard Event Handling Methods</title>
