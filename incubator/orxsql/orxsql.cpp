@@ -653,6 +653,7 @@ RexxMethod1(int,                       // Return type
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
     // do not free the hdbc or the henv handle!
+    pself->hdbc = SQL_NULL_HANDLE;
     return 0;
 }
 
