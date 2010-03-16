@@ -25,6 +25,40 @@ distribution so you will need to add them. Your specific distribution's Software
 Update/Install mechanism should be used to install the required unixODBC
 development header files.
 
+Example code
+============
+
+Here is some example code to get you stated on using the dbconnx class.
+
+
+   dbx = .dbconnx~new('libmyodbc3.so')  -- mysql odbc library
+   retc = dbx~connect('dbname', 'username', 'password')
+
+   ...
+
+   retc = dbx~disconnect()
+
+
+This is an example on how to use the sqlstatement class. It assumes a dbconnx is
+already connected (see example above).
+
+   stmt = .sqlstatement~new(dbx)
+   stmt~stmt = 'select * from mytable where name = ?'
+   arr = .array~new()
+   arr[1] = 'Brandon Cherry'    -- specify the substitution parameter array
+   retc = stmt~bindParams(arr)  -- bind the parameters
+   retc = stmt~prepare()	-- prepare the statement
+   retc = stmt~execute()	-- execute the statement
+   retc = stmt~fetch()	        -- fetch the first row
+   do while retc <. 100
+      cols = stmt~getRow()	-- get all the result columns as an array
+      do col over cols	        -- display the array
+         say col
+         end
+      retc = stmt~fetch()	-- fetch the next row
+      end
+
+
 David Ashley
 ooRexx Team
 
