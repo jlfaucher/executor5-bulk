@@ -503,6 +503,9 @@ RexxMethod1(int,                       // Return type
     context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
 
+    // needed for some versions of odbc
+    retc = (*pself->instSQLSetEnvAttr)(pself->henv, SQL_ATTR_ODBC_VERSION, (void *)ODBCVER, 0); 
+
     return 0;
 }
 
