@@ -191,13 +191,15 @@
   for trivial dialogs, most of the programming is deciding which events to be notified of and taking action upon
   receiving the notification.
 </para>
-<para>
+<para id="paraWhereToConnectEvents">
   In general, events should be connected before the dialog is shown on the screen, or immediately after the dialog is
-  created. Connecting the events in the <link linkend="mthInitDialog">initDialog</link>() method is usually sufficient.
-  In a UserDialog, the <link linkend="mthDefineDialog">defineDialog</link>() method also makes a good place for the
-  connect event methods. If the programmer is overriding the <link linkend="mthInitPlainBaseDialog">init</link>() method, the connect
-  event methods can be placed there.  But, in this case, do not invoke the connect event methods until <emphasis
-  role="bold">after</emphasis> the superclass has been initialized.
+  created. However, the programmer can place the invocation where ever it makes the most sense. Connecting the events in
+  the <link linkend="mthInitDialog">initDialog</link>() method is usually sufficient. In a
+  <computeroutput>UserDialog</computeroutput>, the <link linkend="mthDefineDialog">defineDialog</link>() method also
+  makes a good place for the connect event methods. If the programmer is overriding the <emphasis
+  role="italic">init</emphasis>() method, the connect event methods can be placed there.  But, in this case, do not
+  invoke the connect event method until <emphasis role="bold">after</emphasis> the <link
+  linkend="mthNewDialogObject">superclass</link> has been initialized.
 </para>
 
 <section id="enConnect"><title>connectHelp</title>

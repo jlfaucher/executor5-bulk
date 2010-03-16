@@ -44,37 +44,28 @@
 <chapter id="clsUserDialog"><title>UserDialog Class</title>
 <indexterm><primary>UserDialog class</primary></indexterm>
 <para>
-  The <emphasis role="italic">UserDialog</emphasis> class extends the <link linkend="chpDialogObject">dialog
+  The <computeroutput>UserDialog</computeroutput> class is a concrete subclass of <link linkend="chpDialogObject">dialog
   object</link>. This class allows the programmer to dynamically define the dialog template in memory.  The class
   provides methods to begin the dialog template, specifying the size, position, and other basic attributes of the
   dialog.  In addition, methods are provided to create the dialog controls within the dialog.  These methods allow the
   programmer to create any of the dialog controls supported by ooDialog.
 </para>
 
-<note><title>Note</title><para>
-  The class has all the methods of the <link linkend="chpDialogObject">base dialog</link> object. Only the methods
-  specific to the <emphasis role="italic">UserDialog</emphasis> are documented here.
-</para></note>
+<para>
+  <emphasis role="bold">Note:</emphasis> The class has all the methods of the <link linkend="chpDialogObject">
+  dialog</link> object. Only the methods specific to the <computeroutput>UserDialog</computeroutput> are documented here.
+</para>
 <para>
   There are three basic ways of creating a dialog using the UserDialog class:
 </para>
-<itemizedlist>
-<listitem><para>
-  Read the dialog template from a resource script using the <link linkend="h001613">load</link> method.
-  This will create the dialog template in memory, including all its controls, using the definitions in the resource
-  script.  An alternative to calling the <computeroutput>load</computeroutput> method is to use the <link
-  linkend="clsRcDialog">RcDialog</link> class.  This class is a subclass of the
-  <computeroutput>UserDialog</computeroutput> class and provides a convenient way to create a dialog from a
-  resource script.  It handles the details of loading the resource script transparently and leaves the programmer
-  free to concentrate on the details of the behavior of the dialog.
-</para></listitem>
-<listitem><para>
-  Invoke the <link linkend="mthCreate">create</link>() or <link linkend="mthCreateCenter">createCenter</link>()
-  methods to start the dialog template.  Then, in the <link linkend="mthDefineDialog">defineDialog</link>() method, create
-  each dialog control using one of the <link linkend="sctCreateMethods">create ...</link> methods. The <emphasis
-  role="italic">defineDialog</emphasis> method is invoked automatically by the <emphasis
-  role="italic">create</emphasis> or <emphasis role="italic">createCenter</emphasis> methods and is meant to be
-  over-ridden by the programmer for the purpose of creating dialog controls.
+<para>
+  The basic process for creating a <computeroutput>UserDialog</computeroutput> is this: Invoke the <link
+  linkend="mthCreate">create</link>() or <link linkend="mthCreateCenter">createCenter</link>() methods to start the
+  dialog template.  Then, in the <link linkend="mthDefineDialog">defineDialog</link>() method, create each dialog
+  control using one of the <link linkend="sctCreateMethods">create ...</link> methods. The <emphasis
+  role="italic">defineDialog</emphasis> method is invoked automatically by the <emphasis role="italic">create</emphasis>
+  or <emphasis role="italic">createCenter</emphasis> methods and is meant to be over-ridden by the programmer for the
+  purpose of creating dialog controls.
 </para>
 <para>
   In addition to creating dialog controls one at a time, there are also methods that enable you to define a group
@@ -82,82 +73,42 @@
   role="italic">create</emphasis> and usually end with <emphasis role="italic">Group</emphasis>, <emphasis
   role="italic">Input</emphasis>, or <emphasis role="italic">Stem</emphasis>. Although, there are also some methods
   for creating the Ok and Cancel buttons as a group. These methods begin with <emphasis
-  role="italic">cerateOkCancel</emphasis>.
-</para></listitem>
-<listitem><para>
-  Combine reading a dialog from a resource script and creating controls dynamically.  This would create the dialog
-  template and some of the dialog controls using the resource script.  The programmer could then create additional
-  dialog controls using the <emphasis role="italic">create ...</emphasis> methods in the <emphasis role="italic">
-  defineDialog</emphasis> method. For instance, this could be useful in an application that had several dialogs
-  with similar features.  The similar aspects of each dialog could be placed in a resource script and then the
-  individual dialogs could be customized using the <emphasis role="italic">create ...</emphasis> methods.
-</para></listitem></itemizedlist>
-<variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para>
-<programlisting>
-<![CDATA[
-::requires "ooDialog.cls"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>Subclass:</term>
-<listitem><para>The UserDialog class is a subclass of BaseDialog.
-</para></listitem></varlistentry>
-<varlistentry><term>Attributes:</term>
-<listitem><para>Instances of the UserDialog class have the following
-attributes:
-<variablelist>
-<varlistentry><term>AktPtr</term>
-<listitem><para>An attribute for internal use
-</para></listitem></varlistentry>
-<varlistentry><term>BasePtr</term>
-<listitem><para>An attribute for internal use
-</para></listitem></varlistentry>
-<varlistentry><term>DialogItemCount</term>
-<listitem><para>An attribute for internal use
-</para></listitem></varlistentry>
-<varlistentry><term>FactorX</term>
-<listitem><para>Horizontal size of one dialog unit (in pixels)
-</para></listitem></varlistentry>
-<varlistentry><term>FactorY</term>
-<listitem><para>Vertical size of one dialog unit (in pixels)
-</para></listitem></varlistentry>
-<varlistentry><term>SizeX</term>
-<listitem><para>The width of the dialog, in dialog units, when the underlying
-Windows dialog object is created.</para>
-<para><emphasis role="bold">Note:</emphasis>  If the program creates a resizable
-dialog and the user changes the size of the dialog, this attribute is not
-updated by ooDialog.  If the programmer requires that the
-<computeroutput>SizeX</computeroutput> attribute always reflects the actual size
-of the dialog, (for a resizable dialog,) then the programmer is responsible for
-updating its value when the size of the dialog changes.  The programmer would
-use the <link linkend="mthConnectResize">connectResize</link> method to receive
-notifications when the dialog changed size and update the attribute accordingly.
-</para></listitem></varlistentry>
-<varlistentry><term>SizeY</term>
-<listitem><para>The height of the dialog, in dialog units, when the Windows
-dialog object is created.</para>
-<para><emphasis role="bold">Note:</emphasis>  In a similar fashion to the
-<computeroutput>SizeX</computeroutput> attribute, the programmer would be
-responsible for updating this attribute for resizable dialogs.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term>Methods:</term>
-<listitem><para>Instances of the UserDialog class implement
-the methods listed in the following table.
+  role="italic">createOkCancel</emphasis>.
+</para>
+<para>
+  It is also possible to combine reading a dialog from a resource script and creating controls dynamically. The easiest
+  way to do this would be to start with a <link linkend="clsRcDialog">RcDialog</link>. This would create the dialog
+  template and some of the dialog controls using a resource script. Since a <computeroutput>RcDialog</computeroutput>
+  is a subclass of the <computeroutput>UserDialog</computeroutput>, it also has a <emphasis
+  role="italic">defineDialog</emphasis>() method that can be over-ridden by the programmer.
+</para>
+<para>
+  The programmer could over-ride the <emphasis role="italic">defineDialog</emphasis> method and create additional dialog
+  controls using the <emphasis role="italic">create ...</emphasis> methods. For instance, this could be useful in an
+  application that had several dialogs with similar features.  The similar aspects of each dialog could be placed in a
+  resource script and then the individual dialogs could be customized using the <emphasis role="italic">create
+  ...</emphasis> methods.
+</para>
+
+<section id="sctMethodsDlgObject"><Title>Method Table</Title>
+<para>
+  Instances of the <computeroutput>UserDialog</computeroutput> class implement the methods listed in the following
+  table.
 
 <table id="tUserDialogClass" frame="all">
 <title>UserDialog Instance Methods</title>
 <tgroup cols="2">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...on page</entry>
+<entry>Dialog Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
+<row>
+<entry><link linkend="mthNewClsUserDialog">new (Class method)</link></entry>
+<entry>Instantiates a new <computeroutput>UserDialog</computeroutput> object.</entry>
+</row>
 <row>
 <entry>addBitmapButton</entry>
 <entry><link linkend="mthAddBitmapButton">addBitmapButton</link></entry>
@@ -347,8 +298,8 @@ the methods listed in the following table.
 <entry><link linkend="mthDefineDialog">DefineDialog</link></entry>
 </row>
 <row>
-<entry>init</entry>
-<entry><link linkend="h001531">init</link></entry>
+<entry><link linkend="mthNewClsUserDialog">new</link></entry>
+<entry>Instantiates a new <computeroutput>UserDialog</computeroutput> object.</entry>
 </row>
 <row>
 <entry>Load</entry>
@@ -380,53 +331,87 @@ the methods listed in the following table.
 </row>
 </tbody></tgroup>
 </table>
-</para></listitem></varlistentry>
-</variablelist>
-
-<section id="h001531"><title>init</title>
-<indexterm><primary>init</primary>
-<secondary>UserDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aUserDialog~init(--+----------+--+---------------+--)-------><
-                      +-DlgData.-+  +-,--headerFile-+
-
-
-]]>
-</programlisting>
-
-<para>The init method initializes a new dialog object. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>DlgData.</term>
-<listitem><para>A stem variable that is used to initialize the data fields of the dialog.
-If the dialog is terminated by means of the OK button,
-the values of the dialog's data fields are copied to this variable. The ID
-of the dialog items is used to name each entry within the stem.
-</para></listitem></varlistentry>
-<varlistentry><term>headerFile</term>
-<listitem><para>A file defining symbolic IDs for dialog resources.  Symbolic IDs
-defined in the file can be used in method calls where resource IDs are required.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example creates a new dialog object, adding any
-symbolic IDs defined in <computeroutput>resources.h</computeroutput> to the object's
-<link linkend="atrConstDir">constDir</link> directory:
-
-<programlisting>
-<![CDATA[
-MyDialog=.UserDialog~new(aStem., "resources.h")
-]]>
-</programlisting>
 </para>
-<para>The <link linkend="basedialoginitexample">example</link> for the
-<computeroutput>init</computeroutput> method in the BaseDialog section shows the
-use of the dialog data stem and header file arguments in more detail.
-</para></listitem></varlistentry>
+
+</section>
+
+<section id="mthNewClsUserDialog"><title>new (Class method)</title>
+<indexterm><primary>new</primary><secondary>UserDialog class</secondary></indexterm>
+<indexterm><primary>UserDialog class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+----------+--+---------------+--)-------><
+          +-dlgData.-+  +-,--headerFile-+
+
+
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new <computeroutput>UserDialog</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>dlgData. [optional]</term>
+    <listitem>
+    <para>
+      A dialog <link linkend="termDialogDataStem">data stem</link> variable (don't forget the trailing period) that
+      contains data used to initialize the underlying dialog's controls.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hFile [optional]</term>
+    <listitem>
+    <para>
+      The file name of a <link linkend="termHFile">file</link> containing symbolic ID defines for resource IDs.
+    </para>
+    </listitem></varlistentry>
+    </listitem></varlistentry>
+  </variablelist> </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Normally a programmer does not directly instantiate a <computeroutput>UserDialog</computeroutput> directly, but
+    rather creates a subclass of a <computeroutput>UserDialog</computeroutput> and instantiates the subclass. Recall
+    that in ooRexx, when a new object is instantiated, the <emphasis role="italic">new</emphasis> method invokes the
+    <emphasis role="italic">init</emphasis>() method of the object, using the method arguments of the <emphasis
+    role="italic">new</emphasis>() method. The arguments of the <emphasis role="italic">new</emphasis> method are also
+    the arguments of the <emphasis role="italic">init</emphasis> method.
+  </para>
+  <para>
+    Therefore, if the programmer over-rides the <emphasis role="italic">init</emphasis> method in the subclass of the
+    <computeroutput>UserDialog</computeroutput>, care must be taken to invoke the superclass <emphasis
+    role="italic">init</emphasis>method with the correct arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>The following example creates a new dialog object, adding any symbolic IDs defined in
+  <computeroutput>resources.h</computeroutput> to the object's <link linkend="atrConstDir">constDir</link> directory:
+
+<programlisting>
+<![CDATA[
+  dlg =.PhoneBookDlg~new(aStem., "resources.h")
+  ...
+
+::requires "ooDialog.cls"
+
+::class "PhoneBookDlg" subclass UserDialog
+
+...
+
+]]>
+</programlisting>
+  </para>
+  <para>
+    The <link linkend="exampleDialogObjectnew">example</link> for the <emphasis role="italic">new</emphasis> method in
+    the dialog object shows the use of the dialog data stem and header file arguments in more detail.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 

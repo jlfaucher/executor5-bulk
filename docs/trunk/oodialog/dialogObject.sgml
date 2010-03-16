@@ -74,6 +74,10 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
+<entry><link linkend="mthNewDialogObject">new</link></entry>
+<entry>Instantiates a new dialog object.</entry>
+</row>
+<row>
 <entry><link linkend="mthClsGetFontName">getFontName</link></entry>
 <entry>Returns the default font for all dialogs.</entry>
 </row>
@@ -812,10 +816,6 @@
 <entry><link linkend="h001261">HideWindowFast</link></entry>
 </row>
 <row>
-<entry>init</entry>
-<entry><link linkend="mthInitPlainBaseDialog">init</link></entry>
-</row>
-<row>
 <entry><link linkend="mthInitAutoDetection">initAutoDetection</link></entry>
 <entry>Switches automatic data field detection on or off.</entry>
 </row>
@@ -1295,9 +1295,168 @@
 <section id="sctDialogClassMethods"><title>Class Methods</title>
 <indexterm><primary>class methods</primary>
 <secondary>dialog object</secondary></indexterm>
+
+<section id="mthNewDialogObject"><title>new (Class method)</title>
+<indexterm><primary>new</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>new method</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+---------+--,--id--+-------------+--+----------+--)------------------><
+          +-library-+         +-,--dlgData.-+  +-,--hFile-+
+
+
+]]>
+</programlisting>
+
 <para>
-  Dialogs have a few class methods, primarily dealing with the dialog font.
+  Although the dialog object is an abstract class that the programmer will not instantiate directly, the programmer
+  should understand the arguments of the dialog object's <emphasis role="italic">new</emphasis>() method. Recall that
+  in ooRexx, when a new object is instantiated, the <emphasis role="italic">new</emphasis> method invokes the <emphasis
+  role="italic">init</emphasis>() method of the object, using the method arguments of the <emphasis
+  role="italic">new</emphasis>() method. So, the arguments of the <emphasis role="italic">new</emphasis> method are also
+  the arguments of the <emphasis role="italic">init</emphasis> method.
 </para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    The dialog object is abstract, the programmer can not directly instantiate a workable new dialog object. Rather, the
+    programmer instantiates one of the conrete subclasses. Such as a subclass of a <link
+    linkend="clsRcDialog">RcDialog</link> or a <link linkend="clsResDialog">ResDialog</link>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>library [optional]</term>
+      <listitem>
+      <para>
+        The file name of the file containing the dialog template. Subclasses that do not use a file containing the
+        dialog template, such as the <computeroutput>UserDialog</computeroutput>, pass an empty string for this
+        argument.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the dialog within the resource file. This may be numeric or <link
+        linkend="defSymbolicId">symbolic</link>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="termDialogDataStem"><term>dlgData. [optional]</term>
+      <listitem>
+      <para>
+        A dialog data stem variable (don't forget the trailing period) that contains data used to initialize the
+        underlying dialog's controls. This is part of the automatic <link linkend="sctUnderstandingDataAttributes">data
+        detection</link> feature. When <link linkend="mthInitAutoDetection">automatic</link> data detecion is off, using
+        this argument does nothing.
+      </para>
+      <para>
+        Each index of the data stem should be the resource ID of one of the dialog's controls. The value at that index
+        is used to set the state of the corresponding, connected, dialog control when the underlying dialog is created.
+        If the stem does not contain an index for a connected dialog control, then the state of that control is set to
+        the empty string. The ooDialog framework keeps track of the data stem argument when it is used. If a data stem
+        argument is used, when the dialog is closed with the <emphasis role="italic">ok</emphasis> command, the data of
+        each connected dialog control is copied to the stem at the index corresponding to the dialog control's resource
+        ID.
+      </para>
+      <para>
+        <emphasis role="bold">Note:</emphasis> when the argument is used the behavior of automatic data detection is
+        changed in this way. When the underlying dialog is created, the data stem <emphasis role="bold">only</emphasis>
+        is used to set the state of the dialog controls. The values of the <link
+        linkend="sctUnderstandingDataAttributes">data attributes</link> are ignored. However, when the dialog closes
+        with the <emphasis role="italic">ok</emphasis> command, the values of both the data attributes <emphasis
+        role="bold">and</emphasis> the data stem indexes are updated.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="termHFile"><term>hFile [optional]</term>
+      <listitem>
+      <para>
+        A file, (often called a <link linkend="defHeaderFile">header</link> file,) defining <link
+        linkend="defSymbolicID">symbolic IDs</link> for resources. The symbolic IDs defined within the file will be
+        added to the <link linkend="atrConstDir">constDir</link> directory.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleDialogObjectnew"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example shows how a header file, symbolic IDs, and the data stem can be used in instantiating a new
+    object that is a subclass of the ResDialog. Assume <computeroutput>resources.h</computeroutput> is a file in the
+    same directory as the program file and contains the following:
+
+<programlisting> <![CDATA[
+/* resources.h */
+  #define IDD_BUILD_DLG           100
+  #define IDC_EDITFIELD_INCLUDE   110
+  #define IDC_COMBOBOX_PROJECT    120
+  #define IDC_RADIO_DEBUG         130
+  #define IDC_RADIO_RELEASE       131
+  #define IDC_CHECKBOX_CLEAN      140
+  #define IDI_DLG_ICON            514
+
+]]>
+</programlisting>
+  </para>
+  <para>
+    The dialog (a fictitious build dialog) will have an edit control, a combo box, two radio buttons, and a check box.
+    The <computeroutput>dlgData.</computeroutput> stem will be used to initialize the values of the controls using the
+    symbolic IDs defined in the header file.
+
+<programlisting>
+<![CDATA[
+/* BuildDlg.rex */
+  DlgData.IDC_EDITFIELD_INCLUDE = "C:\sdk\include"
+  DlgData.IDC_COMBOBOX_PROJECT = "Calculator"
+  DlgData.RADIO_DEBUG = 0
+  DlgData.RADIO_RELEASE = 1
+  DlgData.CHECKBOX_CLEAN = 0
+
+  dlg = .BuildDialog~new("dlg.dll", IDD_BUILD_DLG, DlgData, "resources.h")
+  if dlg~initCode <> 0 then do
+    say "Error starting dialog.  initCode:" dlg~initCode
+    return dlg~initCode
+  end
+
+  dlg~execute("NORMAL", IDI_DLG_ICON)
+  ...
+
+]]>
+</programlisting>
+  </para>
+  <para>
+    At this point the dialog is shown, the edit control will contain &quot;C:\sdk\include&quot;, the combo box will have the
+    Calculator project selected, the release radio button will be checked, (the debug radio button will not be checked,)
+    and the clean check box will not be checked.
+  </para>
+  <para>
+    The user interacts with the dialog and selects ok to close it.  Now the state of the dialog when it was closed can
+    be determined by checking the <computeroutput>dlgData.</computeroutput> stem values.
+
+<programlisting>
+<![CDATA[
+  ...
+
+  if DlgData.CHECKBOX_CLEAN == 1 then doClean()
+
+  includePath = DlgData.IDC_EDITFIELD_INCLUDE
+  if DlgData.RADIO_RELEASE == 1 then
+    success = doReleaseBuild(includePath)
+  else
+    success = doDebugBuild(includePath)
+
+  return success
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
 
 <section id="mthClsSetDefaultFont"><title>setDefaultFont (Class method)</title>
 <indexterm><primary>setDefaultFont</primary></indexterm>
@@ -2131,118 +2290,6 @@ WindowBase::<link linkend="atrSizeY">sizeY</link>
 <para>
   This section documents the methods used to prepare and initialize a dialog, show it, execute it, and stop it.
 </para>
-
-<section id="mthInitPlainBaseDialog"><title>init</title>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~init(--+---------+--,--id--+-------------+--+----------+--)--><
-                      +-Library-+         +-,--DlgData.-+  +-,--hFile-+
-
-
-]]>
-</programlisting>
-
-<para>The constructor of the class installs the necessary C functions for the Object Rexx API
-manager and prepares the dialog management for a new dialog. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected. You cannot create an instance of BaseDialog.
-You can only create instances of its subclasses.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>Library</term>
-<listitem><para>The file name of a .DLL file. Pass an empty string if you do not use
-binary resources.
-</para></listitem></varlistentry>
-<varlistentry><term>id</term>
-<listitem><para>The resource ID, (numeric or <link linkend="defSymbolicId">symbolic</link>,) of
-the dialog within the resource file.
-</para></listitem></varlistentry>
-<varlistentry><term>DlgData.</term>
-<listitem><para>A stem variable (remember the period!) that contains initialization
-data for the dialog. For example, if you assign the string &quot;Hello world&quot;
-to <computeroutput>DlgData.103</computeroutput>, where <computeroutput>103</computeroutput>
-is the ID of an entry field, it is initialized with this string. If the dialog is terminated with
-OK, the data of the dialog is copied into this stem variable.
-</para></listitem></varlistentry>
-<varlistentry><term>hFile</term>
-<listitem><para>A file, (often called a <link linkend="defHeaderFile">header</link> file,)
-defining symbolic IDs for resources.  The symbolic IDs defined within the file will be
-added to the <link linkend="atrConstDir">constDir</link> directory.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry id="basedialoginitexample"><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example shows how a header file, symbolic IDs, and the
-data stem can be used in instantiating a new object that is a subclass of the ResDialog.
-Assume <computeroutput>resources.h</computeroutput> is a file in the same directory
-as the program file and contains the following:
-<programlisting>
-<![CDATA[
-/* resources.h */
-  #define IDD_BUILD_DLG           100
-  #define IDC_EDITFIELD_INCLUDE   110
-  #define IDC_COMBOBOX_PROJECT    120
-  #define IDC_RADIO_DEBUG         130
-  #define IDC_RADIO_RELEASE       131
-  #define IDC_CHECKBOX_CLEAN      140
-  #define IDI_DLG_ICON            514
-
-]]>
-</programlisting></para>
-<para>The dialog (a fictitious build dialog) will have an entry line, a combo box,
-two radio buttons, and a check box.  The <computeroutput>DlgData.</computeroutput>
-stem will be used to initialize the values of the controls using the symbolic
-IDs defined in the header file.
-<programlisting>
-<![CDATA[
-/* BuildDlg.rex */
-  DlgData.IDC_EDITFIELD_INCLUDE = "C:\sdk\include"
-  DlgData.IDC_COMBOBOX_PROJECT = "Calculator"
-  DlgData.RADIO_DEBUG = 0
-  DlgData.RADIO_RELEASE = 1
-  DlgData.CHECKBOX_CLEAN = 0
-
-  dlg = .BuildDialog~new( "dlg.dll", IDD_BUILD_DLG, DlgData, "resources.h" )
-  if dlg~initCode <> 0 then do
-    say "Error starting dialog.  initCode:" dlg~initCode
-    return dlg~initCode
-  end
-
-  dlg~execute( "NORMAL", IDI_DLG_ICON )
-  ...
-
-]]>
-</programlisting></para>
-<para>
-  At this point the dialog is shown, the entry line will contain "C:\sdk\include", the combo box will
-  have the Calculator project selected, the release radio button will be checked, (the debug radio button
-  will not be checked,) and the clean check box will not be checked.
-</para>
-<para>
-  The user interacts with the dialog and selects ok to close it.  Now the state of the dialog when it was
-  closed can be determined by checking the DlgData. stem values.
-<programlisting>
-<![CDATA[
-  ...
-
-  if DlgData.CHECKBOX_CLEAN == 1 then doClean()
-
-  includePath = DlgData.IDC_EDITFIELD_INCLUDE
-  if DlgData.RADIO_RELEASE == 1 then
-    success = doReleaseBuild(includePath)
-  else
-    success = doDebugBuild(includePath)
-
-  return success
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 
 <section id="mthSetDlgFont"><title>setDlgFont</title>
 <indexterm><primary>setDlgFont</primary>
@@ -3348,7 +3395,7 @@ control does not exist.
 </para></note>
 </section>
 
-<section id="mthNewDateTimePicker"><title>newDateTimePicker</title>
+<section id="mthNewClsDateTimePicker"><title>newDateTimePicker</title>
 <indexterm><primary>newDateTimePicker</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3361,21 +3408,21 @@ control does not exist.
 
 <para>
   The <emphasis role="italic">newDateTimePicker</emphasis> method returns a date and time picker object that represents
-  the date and time picker control with the specified resource ID in the dialog. See the <link
+  the date and time picker control with the specified resource ID in the underlying dialog. See the <link
   linkend="clsDateTimePicker">DateTimePicker</link> class for details about date and time picker controls.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem><para>The arguments are:
   <variablelist>
-    <varlistentry><term>id</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The <link linkend="defResourceId">resource ID</link> of the date and time picker. This may be <link
       linkend="defSymbolicId">symbolic</link> or numeric.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>category</term>
+    <varlistentry><term>category [optional]</term>
     <listitem>
     <para>
       The number of the page containing the control in a <link linkend="clsCategoryDialog">category dialog</link>, if
@@ -9780,13 +9827,15 @@ reference to how the code snippets all fit together.
 <para>The documentation for the individual methods used in the program has
 additional commentary that will help in understanding how the program works.
 <itemizedlist>
-<listitem><para><link linkend="mthInitPlainBaseDialog">init</link>: This program uses a header
-file, <computeroutput>fileView.h</computeroutput> to define symbolic IDs for the
-dialog controls. The name of the file is one of the arguments used to create a
-new instance of a dialog object. (As in all Rexx classes, the arguments used
-in <computeroutput>new</computeroutput> are passed on to the <computeroutput>
-init</computeroutput> method of the class.)
-</para></listitem>
+<listitem>
+<para>
+  <link linkend="mthNewDialogObject">new</link>: This program uses a header file,
+  <computeroutput>fileView.h</computeroutput> to define symbolic IDs for the dialog controls. The name of the file is one
+  of the arguments used to create a new instance of a dialog object. (As in all Rexx classes, the arguments used in the
+  <emphasis role="italic">new</emphasis> method are passed on to the <emphasis role="italic">init</emphasis> method of
+  the class.)
+</para>
+</listitem>
 <listitem><para><link linkend="h000048">Execute</link>: Two dialogs are created
 in the example.  The first dialog allows the user to enter the name of a file to
 view.  Then the file itself is displayed in a second dialog.  Each dialog uses a

@@ -45,10 +45,8 @@
 
 <section id="sctConnectingEvents"><title>Connecting Events</title>
 <indexterm><primary>connecting events</primary></indexterm>
-<indexterm><primary>dialog object</primary>
-<secondary>connect event methods</secondary></indexterm>
-<indexterm><primary>connect event methods</primary>
-<secondary>dialog object</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connect event methods</secondary></indexterm>
+<indexterm><primary>connect event methods</primary><secondary>dialog object</secondary></indexterm>
 <para>
   The dialog object methods that create a connection between a Windows <link linkend="ovvEvents">event</link>
   notification and a method of the Rexx dialog object are all implemented in the <link
@@ -1585,15 +1583,11 @@ on dialog control DLGITEM1 with method OnDblClk:
 </para></listitem></varlistentry>
 </variablelist>
 
-<note><title>Note</title><para>
-Connections are usually placed in the <link linkend="mthInitPlainBaseDialog">init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods
-are defined, use init as the place for this connection -
-but not before init:super has been called.
-</para></note>
 </section>
 
 <section id="mthConnectStaticEvent"><title>connectStaticEvent</title>
 <indexterm><primary>connectStaticEvent</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectStaticEvent</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--connectStaticNotify(--id--,--event--,-+---------------+--)-----------------><
@@ -1603,16 +1597,15 @@ but not before init:super has been called.
 </programlisting>
 
 <para>
-  The connectStaticEvent connects a notification message from a static control to a method, defined by
-  the programmer, of the dialog.  Normally, static controls do not send notification messages.  A static
-  control will only send the messages when it has the SS_NOTIFY style.  The notification messages inform
-  the dialog that an event has occurred with regard to the static control.
+  <emphasis role="italic">connectStaticEvent</emphasis> connects a notification message from a static control to a
+  method, defined by the programmer, in the Rexx dialog object.  Normally, static controls do not send notification
+  messages.  A static control will only send the messages when it has the SS_NOTIFY style.  The notification messages
+  inform the dialog that an event has occurred with regard to the static control.
 </para>
 <para>
-  For user defined dialogs use the NOTIFY style keyword in the <link
-  linkend="sctAddStaticControls">create...</link> static control methods when the control is defined. For
-  dialogs created from a compiled resource or a resource script file use the SS_NOTIFY style when
-  defining the control in a resource editor.
+  For user defined dialogs use the NOTIFY style keyword in the <link linkend="sctAddStaticControls">create...</link>
+  static control methods when the control is defined. For dialogs created from a compiled resource or a resource script
+  file use the SS_NOTIFY style when defining the control in a resource editor.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1620,53 +1613,52 @@ but not before init:super has been called.
   <para>
     The arguments are:
     <variablelist>
-    <varlistentry><term>id</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
-      <para>
-        The resource ID of the static control.
+    <para>
+      The resource ID of the static control. May be numeric or symbolic.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>event</term>
+    <varlistentry><term>event [required]</term>
     <listitem>
-      <para>
-        A keyword specifying the event to be connected with a method:
-        <variablelist>
-          <varlistentry><term>CLICK</term>
-          <listitem>
-            <para>
-              The static control has been clicked with the mouse.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DBLCLK</term>
-          <listitem>
-            <para>
-              The static control has been double-clicked with the mouse.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DISABLE</term>
-          <listitem>
-            <para>
-              The static control has been disabled.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>ENABLE</term>
-          <listitem>
-            <para>
-              The static control has been enabled.
-            </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </para>
+    <para>
+      A keyword specifying the event to be connected with a method:
+      <variablelist>
+        <varlistentry><term>CLICK</term>
+        <listitem>
+        <para>
+          The static control has been clicked with the mouse.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DBLCLK</term>
+        <listitem>
+        <para>
+          The static control has been double-clicked with the mouse.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DISABLE</term>
+        <listitem>
+        <para>
+          The static control has been disabled.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ENABLE</term>
+        <listitem>
+        <para>
+          The static control has been enabled.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
     </listitem></varlistentry>
     <varlistentry><term>methodName [optional]</term>
     <listitem>
-      <para>
-        The method that is to be invoked whenever the specified notification is received from the static
-        control. The programmer defines this method. The method name can not be the empty string and must be less than
-        256 characters in length. If this argument is omitted, a method name is automatically generated that consists of
-        the event keyword preceded by <computeroutput>on</computeroutput>. For instance,
-        <computeroutput>onClick</computeroutput>.
-      </para>
+    <para>
+      The method that is to be invoked whenever the specified notification is received from the static control. The
+      programmer defines this method. The method name can not be the empty string and must be less than 256 characters
+      in length. If this argument is omitted, a method name is automatically generated that consists of the event
+      keyword preceded by <computeroutput>on</computeroutput>. For instance, <computeroutput>onClick</computeroutput>.
+    </para>
     </listitem></varlistentry>
     </variablelist>
   </para>
@@ -1697,37 +1689,33 @@ but not before init:super has been called.
       </variablelist>
     </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Additional Notes:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
-    <orderedlist>
-    <listitem>
-      <para>
-        The invocation of connectStaticEvent() can be placed in the <link linkend="mthInitPlainBaseDialog">init</link>
-        or <link linkend="mthInitDialog">initDialog</link> method.  (Indeed the invocation can be done
-        anywhere. But, it makes most sense to have the connection made before the dialog starts
-        executing.) If the connection is made in the init() method, be sure that the super class init()
-        is invoked first.
-      </para>
-    </listitem>
-    <listitem>
-      <para>
-        The defined event-handling methods will receive two arguments. The first arg contains information
-        about the specific control and its event. The second arg is the window handle of the static
-        control.
-      </para>
-      <para>
-        The low word of the first arg is the control ID and the high word is the event ID.
-      </para>
-    </listitem>
-    </orderedlist>
+  <orderedlist>
+  <listitem>
+  <para>
+    There are some <link linkend="paraWhereToConnectEvents">common</link> guidelines for the invocation of the event
+    connection methods.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    The defined event-handling method will receive two arguments. The first arg contains information about the
+    specific control and its event. The second arg is the window handle of the static control.
+  </para>
+  <para>
+    The low word of the first arg is the control ID and the high word is the event ID.
+  </para>
+  </listitem>
+  </orderedlist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      The following example comes from an application that displays employee statistics.  A single click
-      on the employee number field advances the display to the next employee.  A double click on either
-      the employee name or employee job duties alllows those fields to be edited.
-    </para>
+  <para>
+    The following example comes from an application that displays employee statistics.  A single click on the employee
+    number field advances the display to the next employee.  A double click on either the employee name or employee job
+    duties alllows those fields to be edited.
+  </para>
 <programlisting>
 <![CDATA[
 ::method initDialog
@@ -1741,12 +1729,11 @@ but not before init:super has been called.
   self~setStats(first)
 ]]>
 </programlisting>
-      <para>
-        In this example, (a continuation of the above example,) the control ID determines if the user has
-        double clicked on the employee job duties field, or the employee name field.  The event ID is not
-        used, or needed. Its purpose in the code snippet is simply an example. The same thing applies to
-        the window handle.
-      </para>
+  <para>
+    In this example, (a continuation of the above example,) the control ID determines if the user has double clicked on
+    the employee job duties field, or the employee name field.  The event ID is not used, or needed. Its purpose in the
+    code snippet is simply an example. The same thing applies to the window handle.
+  </para>
 <programlisting>
 <![CDATA[
 ::method editStats
@@ -1910,22 +1897,20 @@ incorrect.
   <listitem>
     <orderedlist>
     <listitem>
-      <para>
-        The invocation of connectButtonEvent() can be placed in the <link linkend="mthInitPlainBaseDialog">init</link>
-        or <link linkend="mthInitDialog">initDialog</link> method.  (Indeed the invocation can be done
-        anywhere. But, it makes most sense to have the connection made before the dialog starts
-        executing.) If the connection is made in the init() method, be sure that the super class init()
-        is invoked first.
-      </para>
+    <para>
+      There are some <link linkend="paraWhereToConnectEvents">common</link> guidelines for the invocation of the event
+      connection methods.
+    </para>
     </listitem>
     <listitem>
-      <para>
-        For all events other than the HOTITEM event, the event-handling methods will receive two
-        arguments. The first arg contains information about the specific control and its event. The
-        second arg is the window handle of the button control.
-      </para>
-      <para>
-        The low word of the first arg is the control ID and the high word is the event ID. Example:
+    <para>
+      For all events other than the HOTITEM event, the event-handling methods will receive two arguments. The first arg
+      contains information about the specific control and its event. The second arg is the window handle of the button
+      control.
+    </para>
+    <para>
+      The low word of the first arg is the control ID and the high word is the event ID. Example:
+
 <programlisting>
 <![CDATA[
 ::method handler
@@ -1934,13 +1919,13 @@ incorrect.
   ...
 ]]>
 </programlisting>
-      </para>
+    </para>
     </listitem>
     <listitem>
-      <para>
-        The method for the HOTITEM event also receives two arguments. The first arg is the control id.
-        The second arg is .true or .false. True if the mouse moved over the button, false if it left the
-        area over the button. Example:
+    <para>
+      The method for the HOTITEM event also receives two arguments. The first arg is the control id. The second arg is
+      .true or .false. True if the mouse moved over the button, false if it left the area over the button. Example:
+
 <programlisting>
 <![CDATA[
 ::method onHover
@@ -2063,6 +2048,34 @@ incorrect.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+<listitem>
+  <orderedlist>
+  <listitem>
+  <para>
+    There are some <link linkend="paraWhereToConnectEvents">common</link> guidelines for the invocation of the event
+    connection methods.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    The event-handling method receives two arguments. The first arg contains information about the event. In the
+    low-order word is the ID of the edit control. The high-order word contains the event ID. The second arg is the
+    handle to the edit control.
+  </para>
+  <para><emphasis role="bold">Example:</emphasis></para>
+  <programlisting>
+  <![CDATA[
+  ::method Handler
+    use arg info, handle
+    id = .DlgUtil~loWord(info)
+    eventID = .DlgUtil~hiWord(info
+    ...
+  ]]>
+  </programlisting>
+  </listitem>
+  </orderedlist>
+</listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example verifies the input of entry line AMOUNT and resets
 it to 0 when a nonnumeric value was entered:
@@ -2086,23 +2099,6 @@ it to 0 when a nonnumeric value was entered:
 </para></listitem></varlistentry>
 </variablelist>
 
-<note><title>Notes</title>
-<orderedlist>
-<listitem><para>Connections are usually placed in the <link linkend="mthInitPlainBaseDialog">init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
-before init:super has been called.</para></listitem>
-<listitem><para>The event-handling methods receive two arguments: the ID of the edit control
-(extract the low-order word) and the handle to the edit control.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
-<programlisting>
-<![CDATA[
-::method Handler
-  use arg ev_id, handle
-  id = .DlgUtil~loWord(ev_id)
-  ...
-]]>
-</programlisting></listitem>
-</orderedlist>
-</note>
 </section>
 
 <section id="mthConnectListBoxEvent"><title>connectListBoxEvent</title>
@@ -2190,9 +2186,9 @@ incorrect.
 </variablelist>
 
 
-<note><title>Notes</title><para>
+<note><title>Notes TODO FIX THIS</title><para>
 <orderedlist>
-<listitem><para>Connections are usually placed in the <link linkend="mthInitPlainBaseDialog">init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
+<listitem><para>Connections are usually placed in the <link linkend="mthNewDialogObject">init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
 before init:super has been called.</para></listitem>
 <listitem><para>The event-handling methods receive two arguments: the ID of the list box
 (extract the low-order word) and the handle to the list box. Example:
@@ -2310,10 +2306,10 @@ directory of the MyDlgClass in another part of the program:
 </para></listitem></varlistentry>
 </variablelist>
 
-<note><title>Notes</title><para>
+<note><title>Notes TODO FIX THIS</title><para>
 <orderedlist>
 <listitem><para>Connections are usually placed in the <link
-linkend="mthInitPlainBaseDialog">init</link>  or <link linkend="mthInitDialog">InitDialog</link>
+linkend="mthNewDialogObject">init</link>  or <link linkend="mthInitDialog">InitDialog</link>
 method. If both methods are defined, use init as the place for this connection -
 but not before init:super has been called.</para></listitem>
 <listitem><para>The event-handling methods receive two arguments: the first is a
@@ -3058,9 +3054,9 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   </listitem></varlistentry>
 </variablelist>
 
-<note><title>Notes</title>
+<note><title>Notes TODO FIX THIS</title>
 <orderedlist>
-<listitem><para>Connections are usually placed in the <link linkend="mthInitPlainBaseDialog">init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
+<listitem><para>Connections are usually placed in the <link linkend="mthNewDialogObject">init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
 before init:super has been called.</para></listitem>
 <listitem><para>The event-handling method connected to ENDEDIT receives two arguments:
 the item ID of which the label has been edited and the newly entered text.</para>
@@ -3275,9 +3271,9 @@ list item to be dragged, and the point where the mouse cursor was pressed
   </listitem></varlistentry>
 </variablelist>
 
-<note><title>Note</title><para>
+<note><title>Note TODO FIX THIS</title><para>
 <orderedlist>
-<listitem><para>Connections are usually placed in the <link linkend="mthInitPlainBaseDialog">init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
+<listitem><para>Connections are usually placed in the <link linkend="mthNewDialogObject">init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
 before init:super has been called.</para></listitem>
 <listitem><para>The event-handling method connected to ENDEDIT receives two arguments:
 the item handle of which the label has been edited and the newly entered text.
@@ -3403,9 +3399,9 @@ is selected in the tab control PAGE:
 </para></listitem></varlistentry>
 </variablelist>
 
-<note><title>Notes</title><para>
+<note><title>Notes TODO FIX THIS</title><para>
 <orderedlist>
-<listitem><para>Connections are usually placed in the <link linkend="mthInitPlainBaseDialog">init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
+<listitem><para>Connections are usually placed in the <link linkend="mthNewDialogObject">init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
 before init:super has been called.</para></listitem>
 <listitem><para>The event-handling method that is connected to KEYDOWN receives two arguments:
 the control ID of the tab control and the virtual key code that has been pressed.
@@ -3648,29 +3644,25 @@ slider position by extracting the high-oder word. Example:
       </variablelist>
     </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Additional Notes:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
-    <orderedlist>
-    <listitem>
-      <para>
-        The invocation of connectStaticEvent() can be placed in the <link linkend="mthInitPlainBaseDialog">init</link>
-        or <link linkend="mthInitDialog">initDialog</link> method.  (Indeed the invocation can be done
-        anywhere. But, it makes most sense to have the connection made before the dialog starts
-        executing.) If the connection is made in the init() method, be sure that the super class init()
-        is invoked first.
-      </para>
-    </listitem>
-    <listitem>
-      <para>
-        The defined event-handling methods will receive two arguments. The first arg contains information
-        about the specific control and its event. The second arg is the window handle of the static
-        control.
-      </para>
-      <para>
-        The low word of the first arg is the control ID and the high word is the event ID.
-      </para>
-    </listitem>
-    </orderedlist>
+  <orderedlist>
+  <listitem>
+  <para>
+    There are some <link linkend="paraWhereToConnectEvents">common</link> guidelines for the invocation of the event
+    connection methods.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    The defined event-handling method will receive two arguments. The first arg contains information about the
+    specific control and its event. The second arg is the window handle of the static control.
+  </para>
+  <para>
+    The low word of the first arg is the control ID and the high word is the event ID.
+  </para>
+  </listitem>
+  </orderedlist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
@@ -3823,25 +3815,23 @@ slider position by extracting the high-oder word. Example:
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
-    <orderedlist>
-    <listitem>
-      <para>
-        The invocation of connectStaticEvent() can be placed in the <link linkend="mthInitPlainBaseDialog">init</link> or <link
-        linkend="mthInitDialog">initDialog</link> method.  (Indeed the invocation can be done anywhere. But, it makes
-        most sense to have the connection made before the dialog starts executing.) If the connection is made in the
-        init() method, be sure that the super class init() is invoked first.
-      </para>
-    </listitem>
-    <listitem>
-      <para>
-        The defined event-handling methods will receive two arguments. The first arg contains information about the
-        specific control and its event. The second arg is the window handle of the static control.
-      </para>
-      <para>
-        The low word of the first arg is the control ID and the high word is the event ID.
-      </para>
-    </listitem>
-    </orderedlist>
+  <orderedlist>
+  <listitem>
+  <para>
+    There are some <link linkend="paraWhereToConnectEvents">common</link> guidelines for the invocation of the event
+    connection methods.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    The defined event-handling method will receive two arguments. The first arg contains information about the
+    specific control and its event. The second arg is the window handle of the static control.
+  </para>
+  <para>
+    The low word of the first arg is the control ID and the high word is the event ID.
+  </para>
+  </listitem>
+  </orderedlist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
