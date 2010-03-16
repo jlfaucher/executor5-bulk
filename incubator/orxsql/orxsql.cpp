@@ -1203,10 +1203,6 @@ RexxMethod2(int,                       // Return type
  *
  * Bind all parameters of an SQL statement
  *
- * Note: The API used here may need to be changed for Windows to
- * SQLBindParameter. The SQLBindParam API is not documented on
- * the MS web pages.
- *
  * @param parms   Argument array
  *
  * @return        Return code.

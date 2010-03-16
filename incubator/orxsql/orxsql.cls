@@ -693,5 +693,17 @@
 ::method set_stmt_attr EXTERNAL "Library orxsql OrxDB_set_stmt_attr"
 ::method destroy EXTERNAL "Library orxsql OrxDB_stmtdestroy"
 
+::method getRow
+-- after a successful fetch is performed this will return all columns as an array
+n = self~numResultCols()
+arr = .array~new(n)
+do i = 1 to n
+   arr[n] = self~getData(n)
+   end
+return arr
+
+
+
+
 
 
