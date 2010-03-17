@@ -352,7 +352,7 @@ end
 </variablelist>
 </section>
 
-<section id="defDlgTimedMessage"><title>DefineDialog</title>
+<section id="defDlgTimedMessage"><title>defineDialog</title>
 <indexterm><primary>Define</primary>
 <secondary>TimedMessage</secondary></indexterm>
 <programlisting>
@@ -362,7 +362,7 @@ end
 ]]>
 </programlisting>
 
-<para>The DefineDialog method is called by the Create method of the parent
+<para>The defineDialog method is called by the Create method of the parent
 class, PlainUserDialog, which in turn is called at the very beginning of
 Execute. You do not have to call it. However, you may want to override it in
 your subclass to add more dialog controls to the window.  If you override it,
@@ -376,7 +376,7 @@ class and how to add a background bitmap to the dialog window:
 <![CDATA[
 ::class MyTimedMessage subclass TimedMessage inherit DialogExtensions
 
-::method DefineDialog
+::method defineDialog
    self~BackgroundBitmap("mybackg.bmp", "USEPAL")
    self~DefineDialog:super()
 ]]>
@@ -473,8 +473,8 @@ drop dlg
 </variablelist>
 </section>
 
-<section id="h002128"><title>DefineDialog</title>
-<indexterm><primary>DefineDialog</primary>
+<section id="h002128"><title>defineDialog</title>
+<indexterm><primary>defineDialog</primary>
 <secondary>InputBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -484,7 +484,7 @@ drop dlg
 ]]>
 </programlisting>
 
-<para>The DefineDialog method is called by the Create method of the parent
+<para>The defineDialog method is called by the Create method of the parent
 class, PlainUserDialog, which in turn is called at the very beginning of
 Execute. You do not have to call it. However, you may want to override it in
 your subclass to add more dialog controls to the window. If you override it, you

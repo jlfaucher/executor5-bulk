@@ -141,8 +141,8 @@ a category dialog.
 <entry><link linkend="h100035">CurrentCategory</link></entry>
 </row>
 <row>
-<entry>DefineDialog</entry>
-<entry><link linkend="h100029">DefineDialog</link></entry>
+<entry>defineDialog</entry>
+<entry><link linkend="h100029">defineDialog</link></entry>
 </row>
 <row>
 <entry>DeleteCategoryComboEntry</entry>
@@ -559,7 +559,7 @@ named after them.
    self~catalog["page"]["rightbtntext"] = "&Next"
 
 ::method TextEditor       /* blanks are removed when the message is sent
-                             from DefineDialog */
+                             from defineDialog */
                           /* add control to the first page */
       .
       .
@@ -579,8 +579,8 @@ named after them.
 </variablelist>
 </section>
 
-<section id="h100029"><title>DefineDialog</title>
-<indexterm><primary>DefineDialog</primary>
+<section id="h100029"><title>defineDialog</title>
+<indexterm><primary>defineDialog</primary>
 <secondary>CategoryDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -590,7 +590,7 @@ named after them.
 ]]>
 </programlisting>
 
-<para>The DefineDialog method is called
+<para>The defineDialog method is called
 after the main dialog has been created. This method must not be overwritten
 in a subclass because it defines the layout of the frame window and calls
 the definition methods for each category page.</para>
@@ -601,7 +601,7 @@ the definition methods for each category page.</para>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>Assume that you have the categories &quot;Common Data&quot;, &quot;Company
 Data&quot;, and &quot;Special&quot;. The following methods are automatically
-called by DefineDialog to add dialog items to the
+called by defineDialog to add dialog items to the
 associated page:</para>
 <variablelist>
 <varlistentry><term>CommonData</term>
@@ -857,7 +857,7 @@ without an action. The user can override this method to react to page changes. <
 <link linkend="h000048">Execute</link> or <link linkend="h000057">ExecuteAsync</link>
 methods to create a real Windows object based on a dialog template.  In the
 <computeroutput>CategoryDialog</computeroutput> class the Windows object(s) are
-created in the <computeroutput>DefineDialog</computeroutput> method.  Therefore,
+created in the <computeroutput>defineDialog</computeroutput> method.  Therefore,
 the <computeroutput>StartIt</computeroutput> method is overridden in this class
 to change the default behavior of the superclass.  (If unchanged the superclass
 would create a second duplicate Windows object from the dialog template.)</para>

@@ -210,8 +210,8 @@
 <entry>Disables the control.</entry>
 </row>
 <row>
-<entry>DisconnectKeyPress</entry>
-<entry><link linkend="mthDisconnectKeyPressDialogControl">DisconnectKeyPress</link></entry>
+<entry>disconnectKeyPress</entry>
+<entry><link linkend="mthDisconnectKeyPressDialogControl">disconnectKeyPress</link></entry>
 </row>
 <row>
 <entry>Display</entry>
@@ -322,8 +322,8 @@
 <entry><link linkend="mthGroup">Group</link></entry>
 </row>
 <row>
-<entry>HasKeyPressConnection</entry>
-<entry><link linkend="mthHasKeyPressConnectionDialogControl">HasKeyPressConnection</link></entry>
+<entry>hasKeyPressConnection</entry>
+<entry><link linkend="mthHasKeyPressConnectionDialogControl">hasKeyPressConnection</link></entry>
 </row>
 <row>
 <entry>Hide</entry>
@@ -563,9 +563,9 @@ WindowBase::<link linkend="atrHwnd">hwnd</link>
 </programlisting>
 </section>
 
-<section id="wbdcoInitCode"><title>initCode</title>
+<section id="wbdcoInitCode"><title>initCode (Attribute)</title>
 <programlisting>
-<link linkend="atrInitCode">initCode</link>
+WindowBase::<link linkend="atrInitCode">initCode</link>
 
 <![CDATA[
 >>--initCode-----------------------------------------------------><
@@ -576,9 +576,9 @@ WindowBase::<link linkend="atrHwnd">hwnd</link>
 </programlisting>
 </section>
 
-<section id="wbdcoPixelCX"><title>pixelCX</title>
+<section id="wbdcoPixelCX"><title>pixelCX (Attribute)</title>
 <programlisting>
-<link linkend="atrPixelCX">pixelCX</link>
+WindowBase::<link linkend="atrPixelCX">pixelCX</link>
 
 <![CDATA[
 >>--pixelCX-----------------------------------------------------><
@@ -586,9 +586,9 @@ WindowBase::<link linkend="atrHwnd">hwnd</link>
 </programlisting>
 </section>
 
-<section id="wbdcoPixelCY"><title>pixelCY</title>
+<section id="wbdcoPixelCY"><title>pixelCY (Attribute)</title>
 <programlisting>
-<link linkend="atrPixelCY">pixelCY</link>
+WindowBase::<link linkend="atrPixelCY">pixelCY</link>
 
 <![CDATA[
 >>--pixelCY-----------------------------------------------------><
@@ -2416,18 +2416,18 @@ appropriate action.  For this application, the F3 key is the search key.
 </variablelist>
 </section>
 
-<section id="mthDisconnectKeyPressDialogControl"><title>DisconnectKeyPress</title>
-<indexterm><primary>DisconnectKeyPress</primary>
+<section id="mthDisconnectKeyPressDialogControl"><title>disconnectKeyPress</title>
+<indexterm><primary>disconnectKeyPress</primary>
 <secondary>DialogControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~DisconnectKeyPress(--+--------------+--)-----><
+>>-aDialogControl~disconnectKeyPress(--+--------------+--)-----><
                                        +--methodName--+
 
 ]]>
 </programlisting>
 
-<para>The <computeroutput>DisconnectKeyPress</computeroutput> method disconnects
+<para>The <computeroutput>disconnectKeyPress</computeroutput> method disconnects
 a previously connected method with a key down event.  If no method name is
 specified than all key down event connections are removed.  Otherwise, only the
 key down events connected to the specific method are removed.
@@ -2443,7 +2443,7 @@ for connections made using the <computeroutput>DialogControl's</computeroutput>
 <link linkend="mthConnectKeyPressDialogControl"> connectKeyPress</link> method.
 It can not work with a connection made though the
 <computeroutput>BaseDialog's</computeroutput> method. See the
-<link linkend="mthDisconnectKeyPressBaseDialog"> DisconnectKeyPress</link>
+<link linkend="mthDisconnectKeyPressBaseDialog"> disconnectKeyPress</link>
 method of the <computeroutput>BaseDialog</computeroutput> for a more detailed
 description of the behavior of this method.
 </para>
@@ -2508,12 +2508,12 @@ method onDisable
 
 </section>
 
-<section id="mthHasKeyPressConnectionDialogControl"><title>HasKeyPressConnection</title>
-<indexterm><primary>HasKeyPressConnection</primary>
+<section id="mthHasKeyPressConnectionDialogControl"><title>hasKeyPressConnection</title>
+<indexterm><primary>hasKeyPressConnection</primary>
 <secondary>DialogControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~HasKeyPressConnection(--+--------------+--)-----><
+>>-aDialogControl~hasKeyPressConnection(--+--------------+--)-----><
                                           +--methodName--+
 
 ]]>
@@ -2527,13 +2527,13 @@ This method is only available on systems running Windows XP or later.  On
 earlier versions of Windows, the method will fail and return -4.
 </para></note>
 <para>The arguments, return values, and behavior of this method are the same as
-those for the <computeroutput>HasKeyPressConnection</computeroutput> method of
+those for the <computeroutput>hasKeyPressConnection</computeroutput> method of
 the <computeroutput>BaseDialog</computeroutput>. However, this method only works
 for connections made using the <computeroutput>DialogControl's</computeroutput>
 <link linkend="mthConnectKeyPressDialogControl"> connectKeyPress</link> method.
 It can not work with a connection made though the
 <computeroutput>BaseDialog's</computeroutput> method.  The <link
-linkend="mthHasKeyPressConnectionBaseDialog"> HasKeyPressConnection</link>
+linkend="mthHasKeyPressConnectionBaseDialog"> hasKeyPressConnection</link>
 method of the <computeroutput>BaseDialog</computeroutput> may provide some
 additional insight into the behavior of this method.
 </para>
@@ -2543,7 +2543,7 @@ additional insight into the behavior of this method.
 <variablelist>
 <varlistentry><term>methodName</term>
 <listitem><para>When this argument is not used,
-<computeroutput>HasKeyPressConnection</computeroutput> queries if any key down
+<computeroutput>hasKeyPressConnection</computeroutput> queries if any key down
 event for the dialog control is connected to a method.  When
 <computeroutput>methodName</computeroutput> is specified, the query checks for a
 connection to the specified method.

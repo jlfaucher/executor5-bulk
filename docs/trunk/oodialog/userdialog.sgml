@@ -294,16 +294,16 @@
 <entry><link linkend="cmm">CreateMenu</link></entry>
 </row>
 <row>
-<entry>DefineDialog</entry>
-<entry><link linkend="mthDefineDialog">DefineDialog</link></entry>
+<entry>defineDialog</entry>
+<entry><link linkend="mthDefineDialog">defineDialog</link></entry>
 </row>
 <row>
 <entry><link linkend="mthNewClsUserDialog">new</link></entry>
 <entry>Instantiates a new <computeroutput>UserDialog</computeroutput> object.</entry>
 </row>
 <row>
-<entry>Load</entry>
-<entry><link linkend="h001613">Load</link></entry>
+<entry>load</entry>
+<entry><link linkend="mthLoad">load</link></entry>
 </row>
 <row>
 <entry>LoadFrame</entry>
@@ -366,7 +366,7 @@
     <varlistentry><term>hFile [optional]</term>
     <listitem>
     <para>
-      The file name of a <link linkend="termHFile">file</link> containing symbolic ID defines for resource IDs.
+      The name of a <link linkend="termHFile">file</link> containing symbolic ID defines for resource IDs.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -375,23 +375,25 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Normally a programmer does not directly instantiate a <computeroutput>UserDialog</computeroutput> directly, but
-    rather creates a subclass of a <computeroutput>UserDialog</computeroutput> and instantiates the subclass. Recall
-    that in ooRexx, when a new object is instantiated, the <emphasis role="italic">new</emphasis> method invokes the
-    <emphasis role="italic">init</emphasis>() method of the object, using the method arguments of the <emphasis
-    role="italic">new</emphasis>() method. The arguments of the <emphasis role="italic">new</emphasis> method are also
-    the arguments of the <emphasis role="italic">init</emphasis> method.
+    Normally a programmer does not instantiate a <computeroutput>UserDialog</computeroutput> directly, but rather
+    creates a subclass of a <computeroutput>UserDialog</computeroutput> and instantiates the subclass. Recall that in
+    ooRexx, when a new object is instantiated, the <emphasis role="italic">new</emphasis> method invokes the <emphasis
+    role="italic">init</emphasis>() method of the object, using the arguments of the <emphasis
+    role="italic">new</emphasis>() method. Therefore, the arguments of the <emphasis role="italic">new</emphasis> method
+    are also the arguments of the <emphasis role="italic">init</emphasis> method.
   </para>
   <para>
-    Therefore, if the programmer over-rides the <emphasis role="italic">init</emphasis> method in the subclass of the
+    If the programmer over-rides the <emphasis role="italic">init</emphasis> method in the subclass of the
     <computeroutput>UserDialog</computeroutput>, care must be taken to invoke the superclass <emphasis
     role="italic">init</emphasis>method with the correct arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-  <para>The following example creates a new dialog object, adding any symbolic IDs defined in
-  <computeroutput>resources.h</computeroutput> to the object's <link linkend="atrConstDir">constDir</link> directory:
+  <para>
+    The following example creates a new dialog object, adding any symbolic IDs defined in
+    <computeroutput>resources.h</computeroutput> to the object's <link linkend="atrConstDir">constDir</link>
+    directory:
 
 <programlisting>
 <![CDATA[
@@ -606,11 +608,11 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
 </variablelist>
 </section>
 
-<section id="h001613"><title>Load</title>
-<indexterm><primary>Load</primary></indexterm>
+<section id="mthLoad"><title>load</title>
+<indexterm><primary>load</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aUserDialog~Load(--resourceFileName--,--dialogId------------->
+>>-aUserDialog~load(--resourceFileName--,--dialogId------------->
 
 >--+------------------------------------------------------+----->
    +-,--+------------------------------+--+-------------+-+
@@ -627,7 +629,7 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
 ]]>
 </programlisting>
 
-<para>The <computeroutput>Load</computeroutput> method creates the dialog based
+<para>The <computeroutput>load</computeroutput> method creates the dialog based
 on the data of a given resource script (a file with the extension .RC). It
 calls the LoadFrame and LoadItems methods to retrieve the dialog data from the file.</para>
 <variablelist>
@@ -680,7 +682,7 @@ to a message named after the buttons' title.
 <programlisting>
 <![CDATA[
 MyDlg = .UserDialog~new()
-MyDlg~Load("Dialog1.rc", 100, "CONNECTBUTTONS CONNECTRADIOS")
+MyDlg~load("Dialog1.rc", 100, "CONNECTBUTTONS CONNECTRADIOS")
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -706,7 +708,7 @@ MyDlg~Load("Dialog1.rc", 100, "CONNECTBUTTONS CONNECTRADIOS")
 
 <para>The LoadFrame method creates the window frame using
 the data of the given dialog resource with dialogid in
-file resfile. It is usually called by the <link linkend="h001613">Load</link> method.</para>
+file resfile. It is usually called by the <link linkend="mthLoad">load</link> method.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
 <listitem><para>This method is protected. It can only be used internally within a class
@@ -728,7 +730,7 @@ otherwise it has to be specified.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example overrides the <link linkend="h001613">Load</link> method,
+<listitem><para>The following example overrides the <link linkend="mthLoad">load</link> method,
 so it loads the dialog window (just the frame) but not its contents:
 
 <programlisting>
@@ -737,7 +739,7 @@ so it loads the dialog window (just the frame) but not its contents:
      .
      .
      .
-::method Load
+::method load
 self~LoadFrame("Dialog2.rc", 100, "CENTER", 20)
 ]]>
 </programlisting>
@@ -766,14 +768,14 @@ self~LoadFrame("Dialog2.rc", 100, "CENTER", 20)
 </programlisting>
 
 <para>The LoadItems method creates the dialog items,
-using the data of the given resource script. It is either called by the <link linkend="h001613">Load</link> method, or it can be used in the context of a
+using the data of the given resource script. It is either called by the <link linkend="mthLoad">load</link> method, or it can be used in the context of a
 category dialog.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
 <listitem><para>This method cannot be called from outside the class.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>See <link linkend="h001613">Load</link> for a description.
+<listitem><para>See <link linkend="mthLoad">load</link> for a description.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>In the following example the dialog is created either with the items
@@ -785,7 +787,7 @@ of dialog 200 or dialog 300, depending on the argument:
       .
       .
       .
-::method Load
+::method load
    use arg view
    self~LoadFrame("Dialog2.rc", 200, "CENTER", 200)
    if view="special" then
@@ -1888,7 +1890,7 @@ MyDialog~addButtonGroup(20, 235, , ,               -
 <![CDATA[
 ::class MyClass subclass UserDialog
 
-::method DefineDialog
+::method defineDialog
       .
       .
       .

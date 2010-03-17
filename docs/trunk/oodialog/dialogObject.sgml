@@ -469,8 +469,8 @@
 <entry><link linkend="h001229">DisableItem</link></entry>
 </row>
 <row>
-<entry>DisconnectKeyPress</entry>
-<entry><link linkend="mthDisconnectKeyPressBaseDialog">DisconnectKeyPress</link></entry>
+<entry>disconnectKeyPress</entry>
+<entry><link linkend="mthDisconnectKeyPressBaseDialog">disconnectKeyPress</link></entry>
 </row>
 <row>
 <entry>DisplaceBitmap</entry>
@@ -780,8 +780,8 @@
 <entry><link linkend="h000756">HandleMessages</link></entry>
 </row>
 <row>
-<entry>HasKeyPressConnection</entry>
-<entry><link linkend="mthHasKeyPressConnectionBaseDialog">HasKeyPressConnection</link></entry>
+<entry>hasKeyPressConnection</entry>
+<entry><link linkend="mthHasKeyPressConnectionBaseDialog">hasKeyPressConnection</link></entry>
 </row>
 <row>
 <entry>HScrollPos</entry>
@@ -1312,7 +1312,7 @@
   Although the dialog object is an abstract class that the programmer will not instantiate directly, the programmer
   should understand the arguments of the dialog object's <emphasis role="italic">new</emphasis>() method. Recall that
   in ooRexx, when a new object is instantiated, the <emphasis role="italic">new</emphasis> method invokes the <emphasis
-  role="italic">init</emphasis>() method of the object, using the method arguments of the <emphasis
+  role="italic">init</emphasis>() method of the object, using the arguments sent to the <emphasis
   role="italic">new</emphasis>() method. So, the arguments of the <emphasis role="italic">new</emphasis> method are also
   the arguments of the <emphasis role="italic">init</emphasis> method.
 </para>
@@ -1320,7 +1320,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    The dialog object is abstract, the programmer can not directly instantiate a workable new dialog object. Rather, the
+    The dialog object is abstract, the programmer can not directly instantiate a workable dialog object. Rather, the
     programmer instantiates one of the conrete subclasses. Such as a subclass of a <link
     linkend="clsRcDialog">RcDialog</link> or a <link linkend="clsResDialog">ResDialog</link>.
   </para>
@@ -1333,11 +1333,9 @@
       <varlistentry><term>library [optional]</term>
       <listitem>
       <para>
-        The file name of the file containing the dialog template. Subclasses that do not use a file containing the
-        dialog template, such as the <computeroutput>UserDialog</computeroutput>, pass an empty string for this
-        argument.
-      </para>
-      </listitem></varlistentry>
+        The name of the file containing the dialog template. Subclasses that do not use a file containing the dialog
+        template, such as the <computeroutput>UserDialog</computeroutput>, pass an empty string for this argument.
+      </para> </listitem></varlistentry>
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
@@ -1404,7 +1402,7 @@
   </para>
   <para>
     The dialog (a fictitious build dialog) will have an edit control, a combo box, two radio buttons, and a check box.
-    The <computeroutput>dlgData.</computeroutput> stem will be used to initialize the values of the controls using the
+    The <computeroutput>dlgData.</computeroutput> stem will be used to initialize the stae of the controls using the
     symbolic IDs defined in the header file.
 
 <programlisting>
@@ -11403,23 +11401,15 @@ a button. It is used to move bitmaps within buttons. </para>
 </section>
 
 <section id="deprecatedDialogMethods"><title>Deprecated Methods</title>
-<indexterm><primary>Deprecated</primary><secondary>dialog methods</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object methods</secondary></indexterm>
 <para>
   <link linkend="ovvDeprecated">Deprecated</link> dialog methods and their replacement methods are listed in this
   section.
 </para>
 
 <section><title>assignWindow</title>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>dialog</secondary>
-  <tertiary>assignWindow</tertiary>
-</indexterm>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>assignWindow</secondary>
-  <tertiary>dialog</tertiary>
-</indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>assignWindow</tertiary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>assignWindow</secondary><tertiary>dialog object</tertiary></indexterm>
 <para>
   This method is deprecated and always returns 0, <emphasis role="italic">the assignment failed</emphasis>. To work with
   a dialog or dialog control object, construct the proper ooDialog object. This ensures that the object has the correct
@@ -11433,11 +11423,7 @@ a button. It is used to move bitmaps within buttons. </para>
 
 <section><title>checkMenuItem</title>
 <indexterm><primary>Deprecated</primary><secondary>checkMenuItem</secondary></indexterm>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>dialog</secondary>
-  <tertiary>checkMenuItem</tertiary>
-</indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>checkMenuItem</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
@@ -11446,63 +11432,16 @@ a button. It is used to move bitmaps within buttons. </para>
 
 <section><title>connectBitmapButton</title>
 <indexterm><primary>Deprecated</primary><secondary>connectBitmapButton</secondary></indexterm>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>dialog</secondary>
-  <tertiary>connectBitmapButton</tertiary>
-</indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectBitmapButton</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthInstallBitmapButton">installBitmapButton</link>() method.
 </para>
 </section>
 
-<section><title>connectButton</title>
-<indexterm><primary>Deprecated</primary><secondary>connectButton</secondary></indexterm>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>dialog</secondary>
-  <tertiary>connectButton</tertiary>
-</indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectButtonEvent">connectButtonEvent</link>(id, "CLICKED", methodName) method.
-</para>
-</section>
-
-<section><title>connectControl</title>
-<indexterm><primary>Deprecated</primary><secondary>connectContol</secondary></indexterm>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>dialog</secondary>
-  <tertiary>connectControl</tertiary>
-</indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectCommandEvents">connectCommandEvents</link>() method.
-</para>
-</section>
-
-<section><title>connectMenuItem</title>
-<indexterm><primary>Deprecated</primary><secondary>connectMenuItem</secondary></indexterm>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>dialog</secondary>
-  <tertiary>connectMenuItem</tertiary>
-</indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
-  object methods directly.
-</para>
-</section>
-
 <section><title>deInstall</title>
 <indexterm><primary>Deprecated</primary><secondary>deInstall</secondary></indexterm>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>dialog</secondary>
-  <tertiary>deInstall</tertiary>
-</indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>deInstall</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>.  It does nothing and always returns 0. In older
   versions of ooDialog, the <emphasis role="italic">deInstall</emphasis>() method was used to deregister the
@@ -11513,11 +11452,7 @@ a button. It is used to move bitmaps within buttons. </para>
 
 <section><title>disableMenuItem</title>
 <indexterm><primary>Deprecated</primary><secondary>disableMenuItem</secondary></indexterm>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>dialog</secondary>
-  <tertiary>disableMenuItem</tertiary>
-</indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>disableMenuItem</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
@@ -11526,11 +11461,7 @@ a button. It is used to move bitmaps within buttons. </para>
 
 <section><title>enableMenuItem</title>
 <indexterm><primary>Deprecated</primary><secondary>enableMenuItem</secondary></indexterm>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>dialog</secondary>
-  <tertiary>enableMenuItem</tertiary>
-</indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>enableMenuItem</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
@@ -11538,16 +11469,8 @@ a button. It is used to move bitmaps within buttons. </para>
 </section>
 
 <section><title>getTextSize</title>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>dialog</secondary>
-  <tertiary>getTextSize</tertiary>
-</indexterm>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>getTextSize</secondary>
-  <tertiary>dialog</tertiary>
-</indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getTextSize</tertiary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>getTextSize</secondary><tertiary>dialog object</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>.  Replace this method with, preferably, the <link
   linkend="mthGetTextSizeDu">getTextSizeDu</link>() method, or the <link
@@ -11561,12 +11484,8 @@ a button. It is used to move bitmaps within buttons. </para>
 </section>
 
 <section><title>getMenuItemState</title>
-<indexterm><primary>Deprecated</primary><secondary>getMenuItemState</secondary></indexterm>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>dialog</secondary>
-  <tertiary>getMenuItemState</tertiary>
-</indexterm>
+<indexterm><primary>Deprecated</primary><secondary>getMenuItemState</secondary></indexterm><indexterm>
+<primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getMenuItemState</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
@@ -11575,11 +11494,7 @@ a button. It is used to move bitmaps within buttons. </para>
 
 <section><title>getSystemMetrics</title>
 <indexterm><primary>Deprecated</primary><secondary>getSystemMetrics</secondary></indexterm>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>dialog</secondary>
-  <tertiary>getSystemMetrics</tertiary>
-</indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getSystemMetrics</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this mehtod the functionally equivalent <link
   linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the <emphasis
@@ -11589,11 +11504,7 @@ a button. It is used to move bitmaps within buttons. </para>
 
 <section><title>grayMenuItem</title>
 <indexterm><primary>Deprecated</primary><secondary>grayMenuItem</secondary></indexterm>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>dialog</secondary>
-  <tertiary>grayMenuItem</tertiary>
-</indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>grayMenuItem</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
@@ -11602,11 +11513,7 @@ a button. It is used to move bitmaps within buttons. </para>
 
 <section><title>setMenuItemRadio</title>
 <indexterm><primary>Deprecated</primary><secondary>setMenuItemRadio</secondary></indexterm>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>dialog</secondary>
-  <tertiary>setMenuItemRadio</tertiary>
-</indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>setMenuItemRadio</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
@@ -11615,11 +11522,7 @@ a button. It is used to move bitmaps within buttons. </para>
 
 <section><title>uncheckMenuItem</title>
 <indexterm><primary>Deprecated</primary><secondary>uncheckMenuItem</secondary></indexterm>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>dialog</secondary>
-  <tertiary>uncheckMenuItem</tertiary>
-</indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>uncheckMenuItem</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.

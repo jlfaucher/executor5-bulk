@@ -88,6 +88,8 @@
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    The only argument is:
   <variablelist>
     <varlistentry><term>methodName [required]</term>
     <listitem>
@@ -97,6 +99,7 @@
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -237,6 +240,8 @@ Help request:
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    The only argument is:
   <variablelist>
     <varlistentry><term>methodName [required]</term>
     <listitem>
@@ -246,6 +251,7 @@ Help request:
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -370,6 +376,8 @@ Help request:
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    The only argument is:
   <variablelist>
     <varlistentry><term>methodName [required]</term>
     <listitem>
@@ -379,6 +387,7 @@ Help request:
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -460,6 +469,8 @@ Help request:
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    The only argument is:
   <variablelist>
     <varlistentry><term>methodName [required]</term>
     <listitem>
@@ -469,6 +480,7 @@ Help request:
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -554,6 +566,8 @@ Help request:
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    The arguments are:
   <variablelist>
     <varlistentry><term>id [optional]</term>
     <listitem>
@@ -571,6 +585,7 @@ Help request:
       framework will connect the notification to the <computeroutput>onDraw</computeroutput> method.
     </para></listitem></varlistentry>
   </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -633,6 +648,8 @@ Help request:
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    The argument is:
   <variablelist>
     <varlistentry><term>methodName [required]</term>
     <listitem>
@@ -642,6 +659,7 @@ Help request:
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -691,8 +709,8 @@ Help request:
     Unlike most other methods that connect event notifications, the underlying Windows dialog must exist before this
     method can be used. That means it can be used in <link linkend="mthInitDialog">initDialog</link> or any time
     thereafter.  There is a maximum limit of 63 methods, per dialog, that can be connected to key press events.
-    Connections can be removed (see the <link linkend="mthDisconnectKeyPressBaseDialog">DisconnectKeyPress</link> method)
-    if there is no longer a need for a notification of a key press.
+    Connections can be removed using the <link linkend="mthDisconnectKeyPressBaseDialog">disconnectKeyPress</link>
+    method if there is no longer a need for a notification of a key press.
   </para>
   <para>
     The dialog control object also has a <link linkend="mthConnectKeyPressDialogcontrol">connectKeyPress</link>()
@@ -709,11 +727,13 @@ Help request:
   </para>
   <para>
     Due to the nature of key press events, the low-level implementation of capturing the key strokes is different from
-    most of the other methods of the EventNotication class. There is no single message sent to the underlying dialog for
-    a key stroke event.
+    most of the other methods of the <computeroutput>EventNotication</computeroutput> class. There is no single message sent to the underlying dialog
+    for a key stroke event.
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    The arguments are:
   <variablelist>
     <varlistentry><term>methodName [required]</term>
     <listitem>
@@ -831,6 +851,7 @@ Help request:
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -892,7 +913,7 @@ Help request:
     <varlistentry><term>-7</term>
     <listitem>
     <para>
-      The <computeroutput>msgToRaise</computeroutput> method is already connected to a key down event for this dialog.
+      The <computeroutput>methodName</computeroutput> method is already connected to a key down event for this dialog.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1038,7 +1059,7 @@ Help request:
 
 ::method onF3
 
-  prodNum = self~getEditControl(IDC_EDIT_PRODUCT)~getText
+  prodNum = self~newEdit(IDC_EDIT_PRODUCT)~getText
   if prodNum \== "" then self~showProductInfo(prodNum)
 
 ::method onF4
@@ -1056,175 +1077,259 @@ Help request:
 </section>
 
 <section id="mthConnectFKeyPressBaseDialog"><title>connectFKeyPress</title>
-<indexterm><primary>connectFKeyPress</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<indexterm><primary>connectFKeyPress</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>connectFKeyPress</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~connectFKeyPress(--msgToRaise--)-------------><
-
+>>--connectFKeyPress(--methodName--)---------------------------><
 
 ]]>
 </programlisting>
 
-<para>The <computeroutput>connectFKeyPress</computeroutput> method connects a
-function key press to a method in the dialog instance.  This works for function
-keys F2 through F24, without the shift, control, or alt keys also being pressed.
-The underlying Windows dialog must exist before this method can be invoked.
-This is a convenience method and is exactly equivalent to:
+<para>
+  The <emphasis role="italic">connectFKeyPress</emphasis> method connects a function key press event notification to a
+  method in the Rexx dialog object. This works for function keys F2 through F24, without the shift, control, or alt
+  keys also being pressed. This is a convenience method and is exactly equivalent to:
+
 <programlisting>
 <![CDATA[
 ::method initDialog
   ...
   keys = self~vCode('F2') "-" self~vCode('F24')
-  self~connectKeyPress(msgToRaise, keys, "NONE")
+  self~connectKeyPress(methodName, keys, "NONE")
 ]]>
 </programlisting>
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The required argument is:
-<variablelist>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The method to be invoked for the F key press event.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para> The return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success.
-</para></listitem></varlistentry>
-<varlistentry><term>-2</term>
-<listitem><para>The underlying mechanism in the Windows API that is used to
-capture key events failed.
-</para></listitem></varlistentry>
-<varlistentry><term>-4</term>
-<listitem><para>An (internal) problem with the dialog window.
-</para></listitem></varlistentry>
-<varlistentry><term>-5</term>
-<listitem><para>Memory allocation error in the underlying Windows API.
-</para></listitem></varlistentry>
-<varlistentry><term>-6</term>
-<listitem><para>The maximum number of connections has been reached.
-</para></listitem></varlistentry>
-<varlistentry><term>-7</term>
-<listitem><para>The <computeroutput>msgToRaise</computeroutput> method is
-already connected to a key down event for this dialog.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example is a variation on the <link
-linkend="connectKeyPressExample">example</link> shown for the <link
-linkend="mthConnectKeyPressBaseDialog">connectKeyPress</link> method. It
-connects all the function keys to the same method and then determines what
-action to take by examining which key was pressed.
-<programlisting>
-<![CDATA[
-::method initDialog
+  <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
+  <listitem>
+  <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+  </para>
+  <para>
+    Unlike most other methods that connect event notifications, the underlying Windows dialog must exist before this
+    method can be used. That means it can be used in <link linkend="mthInitDialog">initDialog</link> or any time
+    thereafter.  There is a maximum limit of 63 methods, per dialog, that can be connected to key press events.
+    Connections can be removed using the <link linkend="mthDisconnectKeyPressBaseDialog">disconnectKeyPress</link>
+    method if there is no longer a need for a notification of a key press.
+  </para>
+  <para>
+    The dialog control object also has a <link linkend="mthConnectFKeyPressDialogcontrol">connectFKeyPress</link>()
+    method.  It is important to note this distinction between the two methods.  The method of the dialog object (this
+    method) will capture any F key press event when the dialog is the active window. The method of the dialg control
+    object will only capture a F key press when the control has the keyboard focus.
+  </para>
+  <para>
+    In general error return codes are used to indicate incorrect usage rather than raised syntax conditions.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
+    draw events happen.
+  </para>
+  <para>
+    Due to the nature of key press events, the low-level implementation of capturing the key strokes is different from
+    most of the other methods of the <computeroutput>EventNotication</computeroutput> class. There is no single message
+    sent to the underlying dialog for a key stroke event.
+  </para> </listitem>
+  </varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single arguments is;
+  <variablelist>
+    <varlistentry><term>methodName [required]</term>
+    <listitem>
+    <para>
+      The name of the method that is to be invoked when the key press event happens.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-2</term>
+    <listitem>
+    <para>
+      The underlying mechanism in the Windows API that is used to capture key events failed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-4</term>
+    <listitem>
+    <para>
+      An (internal) problem with the dialog window.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-5</term>
+    <listitem>
+    <para>
+      Memory allocation error in the underlying Windows API.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-6</term>
+    <listitem>
+    <para>
+      The maximum number of connections has been reached.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-7</term>
+    <listitem>
+    <para>
+      The <computeroutput>methodName</computeroutput> method is already connected to a key down event for this dialog.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  </para>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example is a variation on the <link linkend="connectKeyPressExample">example</link> shown for the
+    <link linkend="mthConnectKeyPressBaseDialog">connectKeyPress</link> method. It connects all the function keys to the
+    same method and then determines what action to take by examining which key was pressed.
 
-  ...
+  <programlisting>
+  <![CDATA[
+  ::method initDialog
 
-  -- Capture all function key presses.
-  self~connectFKeyPress(onFKey)
+    ...
 
-  ...
+    -- Capture all function key presses.
+    self~connectFKeyPress(onFKey)
 
-::method onFKey
-  use arg keyPressed
+    ...
 
-  select
-    when self~keyName(keyPressed) == 'F2' then self~showCustomerLookupDialog
+  ::method onFKey
+    use arg keyPressed
 
-    when keyPressed = 114 then do
-      prodNum = self~getEditControl(IDC_EDIT_PRODUCT)~getText
-      if prodNum \== "" then self~showProductInfo(prodNum)
+    select
+      when self~keyName(keyPressed) == 'F2' then self~showCustomerLookupDialog
+
+      when keyPressed = 114 then do
+        prodNum = self~newEdit(IDC_EDIT_PRODUCT)~getText
+        if prodNum \== "" then self~showProductInfo(prodNum)
+      end
+
+      when keyPressed = 115 then self~resetAllFields
+      when keyPressed = 116 then self~printInvoice
+
+      otherwise do
+        -- Not interested in any other function keys
+        nop
+      end
     end
 
-    when keyPressed = 115 then self~resetAllFields
-    when keyPressed = 116 then self~printInvoice
-
-    otherwise do
-      -- Not interested in any other function keys
-      nop
-    end
-  end
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
+  ]]>
+  </programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthDisconnectKeyPressBaseDialog"><title>DisconnectKeyPress</title>
-<indexterm><primary>DisconnectKeyPress</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<section id="mthDisconnectKeyPressBaseDialog"><title>disconnectKeyPress</title>
+<indexterm><primary>disconnectKeyPress</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>connectFKeyPress</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~DisconnectKeyPress(--+--------------+--)--------><
-                                    +--methodName--+
+>>--disconnectKeyPress(--+--------------+--)-------------------><
+                         +--methodName--+
 
 ]]>
 </programlisting>
 
-<para>The <computeroutput>DisconnectKeyPress</computeroutput> method disconnects
-a key press event from a method that was previously connected using <link
-linkend="mthConnectKeyPressBaseDialog">connectKeyPress</link>.  If no
-method name is specified than all key press event connections are removed.
-Otherwise, only the key press events connected to the specific method are
-removed.
+<para>
+  The <emphasis role="italic">disconnectKeyPress</emphasis> method disconnects a key press event from a method that was
+  previously connected using <link linkend="mthConnectKeyPressBaseDialog">connectKeyPress</link>, or <link
+  linkend="mthConnectFKeyPressBaseDialog">connectFKeyPress</link>.  If no method name is specified than all key press
+  event connections are removed. Otherwise, only the key press events connected to the specific method are removed.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The single optional argument is:
-<variablelist>
-<varlistentry><term>methodName</term>
-<listitem><para>If <computeroutput>methodName</computeroutput> is specified,
-only the key press events connected to that method are disconnected.  If the
-argument is omitted, then all key press events for the dialog will be
-disconnected.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Success.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>The specified <computeroutput>methodName</computeroutput> is not
-connected to any key press events for this dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>-2</term>
-<listitem><para>This return code can only occur when removing the connection for
-a single <computeroutput>methodName</computeroutput>.  It indicates that after
-removing the connection, the underlying mechanism in the Windows API that
-captures the key press events could not be re-initialized.  (It is doubtful this
-error would ever occur.)
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example is a variation on the <link
-linkend="connectKeyPressExample">example</link> shown for the <link
-linkend="mthConnectKeyPressBaseDialog">connectKeyPress</link> method. It builds
-on the fictitious customer order system.  The F7 key saves the completed invoice
-into the system and enters a different phase of the companies business process.
-At this point (for whatever fictitious business reason) the fields can no longer
-be cleared and the user is not allowed to look up customer or product
-information.  But, the user may still need to print the invoice.  To prevent the
-accidental press of the hot keys causing the wrong action, those key presses are
-disconnected.
-</para>
-<para>To demonstrate how key press connections can be added and removed through
-out the live time of the dialog, this example adds the F9 hot key.  F9 starts a
-new order entry cycle and re-connects the hot keys used during the creation of
-a customer invoice.  When the user then saves the next completed invoice, key
-press connections are removed, when she starts a new invoice key press
-connections are restored.  This cycle could continue though out the day without
-the user ever closing the main dialog.
+  <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
+  <listitem>
+  <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+  </para>
+  <para>
+    The dialog control object also has a <link linkend="mthDisconnectKeyPressDialogcontrol">disconnectKeyPress</link>()
+    method.  It is important to note this distinction between the two methods.  The method of the dialog object (this
+    method) only disconnects key press events that were set with the dialog object's versions of <emphasis
+    role="italic">connectKeyPress</emphasis> and <emphasis role="italic">connectFKeyPress</emphasis> methods.
+  </para>
+  <para>
+    In general error return codes are used to indicate incorrect usage rather than raised syntax conditions.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>methodName [optional]</term>
+    <listitem>
+    <para>
+      If <computeroutput>methodName</computeroutput> is specified, only the key press events connected to that method
+      are disconnected. If the argument is omitted, then all key press events for the dialog will be disconnected.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>The return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      The specified <computeroutput>methodName</computeroutput> is not connected to any key press events for this
+      dialog.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-2</term>
+    <listitem>
+    <para>
+      This return code can only occur when removing the connection for a single
+      <computeroutput>methodName</computeroutput>.  It indicates that after removing the connection, the underlying
+      mechanism in the Windows API that captures the key press events could not be re-initialized.  (It is doubtful this
+      error would ever occur.)
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example is a variation on the <link linkend="connectKeyPressExample">example</link> shown for the
+    <link linkend="mthConnectKeyPressBaseDialog">connectKeyPress</link> method. It builds on the fictitious customer
+    order system.  The F7 key saves the completed invoice into the system and enters a different phase of the companies
+    business process. At this point (for whatever fictitious business reason) the fields can no longer be cleared and
+    the user is not allowed to look up customer or product information.  But, the user may still need to print the
+    invoice.  To prevent the accidental press of the hot keys causing the wrong action, those key presses are
+    disconnected.
+  </para>
+  <para>
+    To demonstrate how key press connections can be added and removed through out the live time of the dialog, this
+    example adds the F9 hot key.  F9 starts a new order entry cycle and re-connects the hot keys used during the
+    creation of a customer invoice.  When the user then saves the next completed invoice, key press connections are
+    removed, when she starts a new invoice key press connections are restored.  This cycle could continue though out the
+    day without the user ever closing the main dialog.
+
 <programlisting>
 <![CDATA[
 
@@ -1250,7 +1355,7 @@ the user ever closing the main dialog.
 
 ::method onF3
 
-  prodNum = self~getEditControl(IDC_EDIT_PRODUCT)~getText
+  prodNum = self~newEdit(IDC_EDIT_PRODUCT)~getText
   if prodNum \== "" then self~showProductInfo(prodNum)
 
 ::method onF4
@@ -1275,64 +1380,92 @@ the user ever closing the main dialog.
 
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 
 </section>
 
-<section id="mthHasKeyPressConnectionBaseDialog"><title>HasKeyPressConnection</title>
-<indexterm><primary>HasKeyPressConnection</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<section id="mthHasKeyPressConnectionBaseDialog"><title>hasKeyPressConnection</title>
+<indexterm><primary>hasKeyPressConnection</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>connectFKeyPress</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~HasKeyPressConnection(--+--------------+--)--------><
-                                       +--methodName--+
+>>--hasKeyPressConnection(--+--------------+--)----------------><
+                            +--methodName--+
 
 ]]>
 </programlisting>
 
-<para>This method is used to query if a connection to a key press event already
-exists.  It returns true or false so it can always be used in a boolean
-expression.  If no argument is specified the method returns true if any key
-press events have been connected for the dialog and false otherwise.  When the
-<computeroutput>methodName</computeroutput> argument is used, the query is only
-if there are key press events connected to the specified method.
+<para>
+  This method is used to query if a connection to a key press event already exists.  It returns true or false so it can
+  always be used in a boolean expression.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The single optional argument is:
-<variablelist>
-<varlistentry><term>methodName</term>
-<listitem><para>Query if any key press events are connected to this method.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The returned value is always <computeroutput>true
-</computeroutput> or <computeroutput>false</computeroutput>.
-<variablelist>
-<varlistentry><term>true</term>
-<listitem><para>A connection exists.
-</para></listitem></varlistentry>
-<varlistentry><term>false</term>
-<listitem><para>No connection exists.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example could come from a dialog where the user
-has the option to use hot keys or not.  When the reset button is pushed the
-state of the dialog fields are reset.  The hot keys enabled check box is
-set to reflect whether hot keys are currently enabled or not.
+  <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
+  <listitem>
+  <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+  </para>
+  <para>
+    The dialog control object also has a <link
+    linkend="mthHasKeyPressConnectionDialogcontrol">hasKeyPressConnection</link>() method. It is important to note this
+    distinction between the two methods.  The method of the dialog object (this method) only queries for key press
+    events that were set with the dialog object's versions of <emphasis role="italic">connectKeyPress</emphasis> and
+    <emphasis role="italic">connectFKeyPress</emphasis> methods.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>The single optional argument is:
+  <variablelist>
+    <varlistentry><term>methodName [optional]</term>
+    <listitem>
+    <para>
+      Query if any key press events are connected to the speicified method. If this argument is omitted, the query is if
+      any key press events are connected to <emphasis role="bold">any</emphasis> methods.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The returned value is always <computeroutput>true </computeroutput> or <computeroutput>false</computeroutput>.
+  <variablelist>
+    <varlistentry><term>true</term>
+    <listitem>
+    <para>
+      A connection exists.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>false</term>
+    <listitem>
+    <para>
+      No connection exists.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example could come from a dialog where the user has the option to use hot keys or not.  When the
+    reset button is pushed the state of the dialog fields are reset.  The hot keys enabled check box is set to reflect
+    whether hot keys are currently enabled or not.
+
 <programlisting>
+
 <![CDATA[
 
 ::method defineDialog
 
   ...
-  self~createCheckBox(IDC_CHECK_FKEYSENABlED, , 30, 60, , , "Hot Keys Enabled")
+  self~createCheckBox(IDC_CHECK_FKEYSENABlED, 30, 60, , , , "Hot Keys Enabled")
   ...
-  self~addButton(IDC_PB_RESET, 60, 135, 45, 15, "Reset", onReset)
+  self~createPushButton(IDC_PB_RESET, 60, 135, 45, 15, , "Reset", onReset)
   ...
 
 ::method onReset
@@ -1346,7 +1479,8 @@ set to reflect whether hot keys are currently enabled or not.
 
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 
 
@@ -1490,6 +1624,8 @@ lo word resource ID:       1003
 
 <section id="mthConnectNotifyEvent"><title>connectNotifyEvent</title>
 <indexterm><primary>connectNotifyEvent</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectNotifyEvent</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>connectNotifyEvent</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--connectNotifyEvent(--id--,--event--+---------------+--)--------------------><
@@ -1498,75 +1634,98 @@ lo word resource ID:       1003
 ]]>
 </programlisting>
 
-<para>The connectNotifyEvent method connects a particular
-WM_NOTIFY message for a dialog control with a method. The WM_NOTIFY
-message informs the dialog that an event has occurred with regard to a dialog
-control.</para>
-<para>If a specific Connect...Notify method exists for the dialog control, use
-this method instead of the connectNotifyEvent method because the system might
-send a specific notification instead of a common one.</para>
+<para>
+  The <emphasis role="italic">connectNotifyEvent</emphasis> method connects one of the generic event notifications from
+  a dialog control to a method in the Rexx dialog object.
+</para>
+<para>
+  Most event notifications are specific to the particular type of control that sends them. These generic event
+  notifications are common to a number of dialog controls. In general, if one of the dialog control specific event
+  connection methods, such as <link linkend="mthConnectListViewEvent">connectListViewEvent</link> can make a connection
+  for the event, then <emphasis role="italic">connectNotifyEvent</emphasis> should not be used. In these cases, the
+  dialog control does not send one of the generic event notificaions. It sends a notification specific to itself.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the dialog control of which a notification is to be connected
-to a method.
-</para></listitem></varlistentry>
-<varlistentry><term>event</term>
-<listitem><para>The event to be connected with a method:
-<variablelist>
-<varlistentry><term>OUTOFMEMORY</term>
-<listitem><para>The dialog control went out of memory.
-</para></listitem></varlistentry>
-<varlistentry><term>CLICK</term>
-<listitem><para>The left mouse button was clicked on the dialog control.
-</para></listitem></varlistentry>
-<varlistentry><term>DBLCLK</term>
-<listitem><para>The left mouse button was double-clicked on the dialog control.
-</para></listitem></varlistentry>
-<varlistentry><term>ENTER</term>
-<listitem><para>The return key was pressed in the dialog item.
-</para></listitem></varlistentry>
-<varlistentry><term>RCLICK</term>
-<listitem><para>The right mouse button was clicked on the dialog item.
-</para></listitem></varlistentry>
-<varlistentry><term>RDBLCLK</term>
-<listitem><para>The right mouse button was double-clicked on the dialog control.
-</para></listitem></varlistentry>
-<varlistentry><term>GOTFOCUS</term>
-<listitem><para>The dialog item got the input focus.
-</para></listitem></varlistentry>
-<varlistentry><term>LOSTFOCUS</term>
-<listitem><para>The dialog item lost the input focus.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term>methodName</term>
-<listitem><para>The message that is to be sent whenever the specified notification is
-received. Provide a method with a matching name. If you omit this argument,
-the event is preceded by <computeroutput>On</computeroutput>.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return codes are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>No error detected.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>The resource ID could not be resolved or the event argument is
-incorrect.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>The message was not connected correctly.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example connects the double-click of the left mouse button
-on dialog control DLGITEM1 with method OnDblClk:
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      The <emphasis role="italic">connectNovityEvent</emphasis> method is a member of the <link
+      linkend="clsEventNotification">EventNotification</link> mixin class.
+    </para>
+    <para>
+      Syntax errors are raised when incorrect usage is detected.
+    </para>
+    <para>
+      If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if the
+      connected event happen.
+    </para>
+    <para>
+      In Windows itself, these events are sent to the parent dialog using the WM_NOTIFY message.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The arguments are:
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem><para>The ID of the dialog control of which a notification is to be connected
+    to a method.
+    </para></listitem></varlistentry>
+    <varlistentry><term>event</term>
+    <listitem><para>The event to be connected with a method:
+    <variablelist>
+      <varlistentry><term>OUTOFMEMORY</term>
+      <listitem><para>The dialog control went out of memory.
+      </para></listitem></varlistentry>
+      <varlistentry><term>CLICK</term>
+      <listitem><para>The left mouse button was clicked on the dialog control.
+      </para></listitem></varlistentry>
+      <varlistentry><term>DBLCLK</term>
+      <listitem><para>The left mouse button was double-clicked on the dialog control.
+      </para></listitem></varlistentry>
+      <varlistentry><term>ENTER</term>
+      <listitem><para>The return key was pressed in the dialog item.
+      </para></listitem></varlistentry>
+      <varlistentry><term>RCLICK</term>
+      <listitem><para>The right mouse button was clicked on the dialog item.
+      </para></listitem></varlistentry>
+      <varlistentry><term>RDBLCLK</term>
+      <listitem><para>The right mouse button was double-clicked on the dialog control.
+      </para></listitem></varlistentry>
+      <varlistentry><term>GOTFOCUS</term>
+      <listitem><para>The dialog item got the input focus.
+      </para></listitem></varlistentry>
+      <varlistentry><term>LOSTFOCUS</term>
+      <listitem><para>The dialog item lost the input focus.
+      </para></listitem></varlistentry>
+    </variablelist>
+    </para></listitem></varlistentry>
+    <varlistentry><term>methodName</term>
+    <listitem><para>The message that is to be sent whenever the specified notification is
+    received. Provide a method with a matching name. If you omit this argument,
+    the event is preceded by <computeroutput>On</computeroutput>.
+    </para></listitem></varlistentry>
+  </variablelist>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem><para>The return codes are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem><para>No error detected.
+    </para></listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem><para>The resource ID could not be resolved or the event argument is
+    incorrect.
+    </para></listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem><para>The message was not connected correctly. The message was not connected
+    </para></listitem></varlistentry>
+  </variablelist>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example connects the double-click of the left mouse button on dialog control DLGITEM1 with method
+    onDblClk:
 <programlisting>
 <![CDATA[
 ::class MyDlgClass subclass UserDialog
@@ -1575,12 +1734,13 @@ on dialog control DLGITEM1 with method OnDblClk:
   self~init:super(...)
   self~connectNotifyEvent(DLGITEM1, "DBLCLK")
 
-::method OnDblClk
-  use arg id
-  say "Item" id " has been double-clicked!"
+::method onDblClk
+  use arg id, hwnd
+  say "Control" id " has been double-clicked! It's window handle is:" hwnd
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 
 </section>
@@ -1683,7 +1843,7 @@ on dialog control DLGITEM1 with method OnDblClk:
       <varlistentry><term>1</term>
       <listitem>
         <para>
-          The message was not connected correctly.
+          The message was not connected correctly. The message was not connected
         </para>
       </listitem></varlistentry>
       </variablelist>
@@ -1766,8 +1926,6 @@ on dialog control DLGITEM1 with method OnDblClk:
   linkend="clsButtonControl">button</link> control  The <emphasis role="italic">connectButtonEvent</emphasis> method is
   used for all types of buttons (push button, radio button, or check box.)
 </para>
-<note><title>Note</title><para>
-</para></note>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
@@ -1792,130 +1950,143 @@ on dialog control DLGITEM1 with method OnDblClk:
   <para>
     In Windows itself, some notifications are sent to the parent dialog using the WM_COMMAND message and others are
     sent using the WM_NOTIFY message.
-  </para> </listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem>
 <para>
-<variablelist>
-  <varlistentry><term>id [required]</term>
-  <listitem>
-  <para>
-    The resource ID of the button control this connection applies. This can be a symbolic ID or the numeric value of the
-    ID.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>event</term>
-  <listitem>
-  <para>
-    A keyword specifying the event to be connected with a method. This can be exactly one of the following:
+  The arguments are:
   <variablelist>
-  <varlistentry><term>CLICKED</term>
-  <listitem>
-  <para>
-    The button has been clicked.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>DBLCLK</term>
-  <listitem>
-  <para>
-    The button has been double-clicked.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>DISABLE</term>
-  <listitem>
-  <para>
-    The button has been disabled.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>GOTFOCUS</term>
-  <listitem>
-  <para>
-    The button got the input focus.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>LOSTFOCUS</term>
-  <listitem>
-  <para>
-    The button lost the input focus.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>HILITE</term>
-  <listitem>
-  <para>
-    The button has been selected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>UNHILITE</term>
-  <listitem>
-  <para>
-    The highlighting is to be removed (lost selection).
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>HOTITEM</term>
-  <listitem>
+    <varlistentry><term>id [required]</term>
+    <listitem>
     <para>
-      Notifies the dialog that the mouse has moved over the button, or that the mouse is leaving the area
-      over the button.
+      The resource ID of the button control this connection applies. This can be a symbolic ID or the numeric value of
+      the ID.
     </para>
-  </listitem></varlistentry>
-  <varlistentry><term>PAINT</term>
-  <listitem>
-  <para>
-    The button is to be repainted. This notification is only sent for owner-drawn buttons.
-  </para>
-  </listitem></varlistentry>
+    </listitem></varlistentry>
+    <varlistentry><term>event [required]</term>
+    <listitem>
+    <para>
+      A keyword specifying the event to be connected with a method. This can be exactly one of the following, case is
+      not significant:
+      <variablelist>
+        <varlistentry><term>CLICKED</term>
+        <listitem>
+        <para>
+          The button has been clicked.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DBLCLK</term>
+        <listitem>
+        <para>
+          The button has been double-clicked.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DISABLE</term>
+        <listitem>
+        <para>
+          The button has been disabled.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>GOTFOCUS</term>
+        <listitem>
+        <para>
+          The button got the input focus.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>LOSTFOCUS</term>
+        <listitem>
+        <para>
+          The button lost the input focus.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HILITE</term>
+        <listitem>
+        <para>
+          The button has been selected.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>UNHILITE</term>
+        <listitem>
+        <para>
+          The highlighting is to be removed (lost selection).
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HOTITEM</term>
+        <listitem>
+        <para>
+          Notifies the dialog that the mouse has moved over the button, or that the mouse is leaving the area
+          over the button.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>PAINT</term>
+        <listitem>
+        <para>
+          The button is to be repainted. This notification is only sent for owner-drawn buttons.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>methodName [optional]</term>
+    <listitem>
+    <para>
+      The name of the method to inovke whenever the specified notification is received from the button control. Provide
+      a method with a matching name. If you omit this argument, a method name is generated automatically. The name
+      consists of the event keyword preceded by <computeroutput>on</computeroutput>. For instance:
+      <computeroutput>onGotFocus</computeroutput>. The method name can not be the empty string and must be less than 256
+      characters in length.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>methodName [optional]</term>
-  <listitem>
-  <para>
-    The name of the method to inovke whenever the specified notification is received from the button control. Provide a
-    method with a matching name. If you omit this argument, a method name is generated automatically. The name consists
-    of the event keyword preceded by <computeroutput>On</computeroutput>. For instance:
-    <computeroutput>onGotFocus</computeroutput>. The method name can not be the empty string and must be less than 256
-    characters in length.
-  </para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+</para>
+</listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return codes are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>No error detected.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>The resource ID could not be resolved or the event argument is
-incorrect.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>The message was not connected correctly.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+<listitem>
+<para>The return codes are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error detected.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      The resource ID could not be resolved or the event argument is incorrect.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The message was not connected correctly. Most likely the message table is full.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+</para>
+</listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
     <orderedlist>
     <listitem>
     <para>
-      There are some <link linkend="paraWhereToConnectEvents">common</link> guidelines for the invocation of the event
-      connection methods.
+      The documentation for the <computeroutput>EventNotification</computeroutput> class provides some <link
+      linkend="paraWhereToConnectEvents">common</link> guidelines for using the event connection methods.
     </para>
     </listitem>
     <listitem>
     <para>
       For all events other than the HOTITEM event, the event-handling methods will receive two arguments. The first arg
       contains information about the specific control and its event. The second arg is the window handle of the button
-      control.
-    </para>
-    <para>
-      The low word of the first arg is the control ID and the high word is the event ID. Example:
+      control. The low word of the first arg is the control ID and the high word is the event ID. Example:
 
 <programlisting>
 <![CDATA[
 ::method handler
   use arg info, handle
   id = .DlgUtil~loWord(info)
+  eventCode = .DlgUtil~hiWord(info)
   ...
 ]]>
 </programlisting>
@@ -1930,20 +2101,20 @@ incorrect.
 <![CDATA[
 ::method onHover
   use arg id, entering
-  say 'onHover id:' id 'entering:' entering
+  say 'onHover() id:' id 'entering:' entering
   ...
 
 /* Output might be:
 
-  onHover id: 1044 entering: 1
-  onHover id: 1044 entering: 0
-  onHover id: 1001 entering: 1
-  onHover id: 1001 entering: 0
+  onHover() id: 1044 entering: 1
+  onHover() id: 1044 entering: 0
+  onHover() id: 1001 entering: 1
+  onHover() id: 1001 entering: 0
 
 */
 ]]>
 </programlisting>
-      </para>
+     </para>
     </listitem>
     </orderedlist>
   </listitem></varlistentry>
@@ -1957,7 +2128,7 @@ incorrect.
   self~init:super(...)
   self~connectButtonEvent("OK", "HILITE")
 
-::method OnHilite
+::method onHilite
   say "The OK button has been selected"
 ]]>
 </programlisting>
@@ -2044,7 +2215,7 @@ you omit this argument, the event is preceded by <computeroutput>On</computerout
 incorrect.
 </para></listitem></varlistentry>
 <varlistentry><term>1</term>
-<listitem><para>The message was not connected correctly.
+<listitem><para>The message was not connected correctly. The message was not connected
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -2163,7 +2334,7 @@ omit this argument, the event is preceded by <computeroutput>On</computeroutput>
 incorrect.
 </para></listitem></varlistentry>
 <varlistentry><term>1</term>
-<listitem><para>The message was not connected correctly.
+<listitem><para>The message was not connected correctly. The message was not connected
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -2284,7 +2455,7 @@ incorrect.
 <listitem><para>No errors were detected.
 </para></listitem></varlistentry>
 <varlistentry><term>1</term>
-<listitem><para>The message was not connected correctly.
+<listitem><para>The message was not connected correctly. The message was not connected
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -2545,7 +2716,7 @@ value:
      .
      .
      .
-::method DefineDialog
+::method defineDialog
 self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
      .
      .
@@ -2623,13 +2794,13 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 >>-connectListViewEvent(--id--,--event--+---------------+--)-------------------><
                                         +-,--methodName-+
 
-
 ]]>
 </programlisting>
 
 <para>
-  The connectListViewEvent method connects a particular <link linkend="ovvEvents">event</link> for a list view control
-  with an event handling method in the Rexx dialog.
+  The <emphasis role="italic">connectListViewEvent</emphasis> method connects a particular <link
+  linkend="ovvEvents">event</link> notification from a list view control with an event handling method in the Rexx
+  dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3638,7 +3809,7 @@ slider position by extracting the high-oder word. Example:
       <varlistentry><term>1</term>
       <listitem>
         <para>
-          The message was not connected correctly.
+          The message was not connected correctly. The message was not connected
         </para>
       </listitem></varlistentry>
       </variablelist>
@@ -3807,7 +3978,7 @@ slider position by extracting the high-oder word. Example:
       <varlistentry><term>1</term>
       <listitem>
         <para>
-          The message was not connected correctly.
+          The message was not connected correctly. The message was not connected
         </para>
       </listitem></varlistentry>
       </variablelist>
@@ -4146,48 +4317,22 @@ self~addUserMsg("DoubleCick","0x00000203","0xFFFFFFFF",0,0,0,0)
   replacing all of the deprecated methods.
 </para>
 
-<section><title>connectControl</title>
-<indexterm><primary>Deprecated</primary><secondary>connectControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectControl</tertiary></indexterm>
+<section><title>connectButton</title>
+<indexterm><primary>Deprecated</primary><secondary>connectButton</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotifcation</secondary><tertiary>connectButton</tertiary>
+</indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectCommandEvents">connectCommandEvents</link>() method.
-</para>
-</section>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method using the <link
+  linkend="mthConnectButtonEvent">connectButtonEvent</link>() method in this maner:
+<programlisting>
+<![CDATA[
+  -- Change the following code:
+  self~connectButton(IDC_PB_REFRESH, onRefresh)
 
-<section><title>connectCommonNotify</title>
-<indexterm><primary>Deprecated</primary><secondary>connectCommonNotify</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectCommonNotify</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectNotifyEvent">connectNotifyEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectTreeNotify</title>
-<indexterm><primary>Deprecated</primary><secondary>connectTreeNotify</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectTreeNotify</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectListNotify</title>
-<indexterm><primary>Deprecated</primary><secondary>connectListNotify</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectListNotify</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectListViewEvent">connectListViewEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectListViewNotify</title>
-<indexterm><primary>Deprecated</primary><secondary>connectListViewNotify</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectListViewNotify</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectListViewEvent">connectListViewEvent</link>() method.
+  -- To this code:
+  self~connectListButtonEvent(IDC_PB_REFRESH, "CLICKED", onRefresh)
+]]>
+</programlisting>
 </para>
 </section>
 
@@ -4200,24 +4345,6 @@ self~addUserMsg("DoubleCick","0x00000203","0xFFFFFFFF",0,0,0,0)
 </para>
 </section>
 
-<section><title>connectEditNotify</title>
-<indexterm><primary>Deprecated</primary><secondary>connectEditNotify</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectEditNotify</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectEditEvent">connectEditEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectListBoxNotify</title>
-<indexterm><primary>Deprecated</primary><secondary>connectListBoxNotify</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectListBoxNotify</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectListBoxEvent">connectListBoxEvent</link>() method.
-</para>
-</section>
-
 <section><title>connectComboBoxNotify</title>
 <indexterm><primary>Deprecated</primary><secondary>connectComboBoxNotify</secondary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectComboBoxNotify</tertiary></indexterm>
@@ -4227,48 +4354,30 @@ self~addUserMsg("DoubleCick","0x00000203","0xFFFFFFFF",0,0,0,0)
 </para>
 </section>
 
-<section><title>connectScrollBarNotify</title>
-<indexterm><primary>Deprecated</primary><secondary>connectScrollBarNotify</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectScrollBarNotify</tertiary></indexterm>
+<section><title>connectCommonNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectCommonNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectCommonNotify</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link>() method.
+  linkend="mthConnectNotifyEvent">connectNotifyEvent</link>() method.
 </para>
 </section>
 
-<section><title>connectTabNotify</title>
-<indexterm><primary>Deprecated</primary><secondary>connectTabNotify</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectTabNotify</tertiary></indexterm>
+<section><title>connectControl</title>
+<indexterm><primary>Deprecated</primary><secondary>connectControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectControl</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectTabEvent">connectTabEvent</link>() method.
+  linkend="mthConnectCommandEvents">connectCommandEvents</link>() method.
 </para>
 </section>
 
-<section><title>connectSliderNotify</title>
-<indexterm><primary>Deprecated</primary><secondary>connectSliderNotify</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectSliderNotify</tertiary></indexterm>
+<section><title>connectEditNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectEditNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectEditNotify</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectTrackBarEvent">connectTrackBarEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectStaticNotify</title>
-<indexterm><primary>Deprecated</primary><secondary>connectStaticNotify</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectStaticNotify</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectStaticEvent">connectStaticEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectScrollBar</title>
-<indexterm><primary>Deprecated</primary><secondary>connectScrollBar</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectScrollBar</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectEachSBEvent">connectEachSBEvent</link>() method.
+  linkend="mthConnectEditEvent">connectEditEvent</link>() method.
 </para>
 </section>
 
@@ -4290,6 +4399,15 @@ self~addUserMsg("DoubleCick","0x00000203","0xFFFFFFFF",0,0,0,0)
 </para>
 </section>
 
+<section><title>connectListBoxNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectListBoxNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectListBoxNotify</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectListBoxEvent">connectListBoxEvent</link>() method.
+</para>
+</section>
+
 <section><title>connectListLeftDoubleClick</title>
 <indexterm><primary>Deprecated</primary><secondary>connectListLeftDoubleClick</secondary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectListLeftDoubleClick</tertiary></indexterm>
@@ -4305,6 +4423,88 @@ self~addUserMsg("DoubleCick","0x00000203","0xFFFFFFFF",0,0,0,0)
   self~connectListBoxEvent(IDC_LISTBOX, "DLBCLK", onDoubleClick)
 ]]>
 </programlisting>
+</para>
+</section>
+
+<section><title>connectListNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectListNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectListNotify</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectListViewEvent">connectListViewEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectListViewNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectListViewNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectListViewNotify</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectListViewEvent">connectListViewEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectMenuItem</title>
+<indexterm><primary>Deprecated</primary><secondary>connectMenuItem</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectMenuItem</tertiary>
+</indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpMenus">menu</link> object
+  methods directly.
+</para>
+</section>
+
+<section><title>connectScrollBar</title>
+<indexterm><primary>Deprecated</primary><secondary>connectScrollBar</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectScrollBar</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectEachSBEvent">connectEachSBEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectScrollBarNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectScrollBarNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectScrollBarNotify</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectSliderNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectSliderNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectSliderNotify</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTrackBarEvent">connectTrackBarEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectStaticNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectStaticNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectStaticNotify</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectStaticEvent">connectStaticEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectTabNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectTabNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectTabNotify</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTabEvent">connectTabEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectTreeNotify</title>
+<indexterm><primary>Deprecated</primary><secondary>connectTreeNotify</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification</secondary><tertiary>connectTreeNotify</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>() method.
 </para>
 </section>
 
