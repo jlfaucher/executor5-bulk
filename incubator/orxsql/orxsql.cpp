@@ -627,6 +627,14 @@ RexxMethod4(int,                       // Return type
         // allocate a connection handle
         retc = (*pself->instSQLAllocHandle)(SQL_HANDLE_DBC, pself->henv, &pself->hdbc);
     }
+
+    // make sure we have a handle
+    if (pself->hdbc == SQL_NULL_HANDLE) {
+        context->RaiseException1(Rexx_Error_System_resources_user_defined,
+                                 (RexxObjectPtr)context->String("The SQL connection handle is not valid."));
+        return -1;
+    }
+
     // connect to the database
     retc = (*pself->instSQLConnect)(pself->hdbc, (SQLCHAR *)dbname, strlen(dbname),
                                     (SQLCHAR *)user, strlen(user), (SQLCHAR *)pw, strlen(pw));
