@@ -41,27 +41,34 @@
     #
     #########################################################################
 -->
-<chapter id="propertysheetc"><title>PropertySheet Class</title>
+<chapter id="clsPropertySheet"><title>Property Sheet Dialogs</title>
 <indexterm><primary>PropertySheet class</primary></indexterm>
-<para>The PropertySheet class provides methods to control
-a property sheet. It is a subclass of the CategoryDialog class (see
-<link linkend="clsCategoryDialog">CategoryDialog Class</link>).
-A property sheet is similar to a category
-dialog that spreads its dialog items over several pages (categories), where
-the individual pages are controlled by a tab control instead of radio buttons
-or combo box lists.</para>
-<para>Refer to PROPDEMO.REX in the OODIALOG\SAMPLES directory for an example.</para>
-<para>The PropertySheet class requires the class definition
-file <computeroutput>oodwin32.cls</computeroutput>:</para>
-<programlisting>
-<![CDATA[
-::requires "oodwin32.cls"
-]]>
-</programlisting>
-<para>Use an object of the DialogControl class or one
-of its subclasses to work with an individual dialog item of the sheets. To
-retrieve such an object, you can call one of the following methods depending
-on the requested control:</para>
+<para>
+  The <computeroutput>PropertySheet</computeroutput> class is a dialog object that represents an underlying dialog that
+  is similar to the Windows Property Sheet control and to the <computeroutput>CategoryDialog</computeroutput>. The
+  <computeroutput>PropertSheet</computeroutput> dialog is a subclass of the <link
+  linkend="clsCategoryDialog">CategoryDialog</link>.
+</para>
+<para>
+  A Windows Property Sheet control is a window that allows the user to view and edit the properties of an item. However,
+  the ooDialog <computeroutput>PropertySheet</computeroutput> dialog uses a <link linkend="clsTab">tab</link> control
+  instead of an actual property sheet control, and there is no convention that the dialog is limited to viewing the
+  properties of an item.  Like a <computeroutput>CategoryDialog</computeroutput>, the
+  <computeroutput>PropertySheet</computeroutput> diaolg provides a way to spread a number of  dialog controls over
+  several pages.
+</para>
+<para>
+  A good example of using a property sheet dialog is in the <computeroutput>propdemo.rex</computeroutput> program that
+  is included with the ooDialog example programs. All example programs are installed under the
+  <computeroutput>samples</computeroutput> directory in the Windows distribution of ooRexx.
+</para>
+<para>
+  The programmer works with the dialog controls on the indvidual pages of a property sheet in the same manner as is done
+  throughout the ooDialog framework. A dialog control<link linkend="chpDialogControlObject">object</link> is retrieved
+  using one of the dialog object's <link linkend="sctInstantiateControls">methods</link> for instantiating control
+  objects. For a <computeroutput>PropertySheet</computeroutput> dialog, the programmer uses the second optional argument
+  of the methods to specify which page of the dialog the control is on.
+</para>
 <itemizedlist>
 <listitem><para><link linkend="getstaticcontrol">GetStaticControl</link></para></listitem>
 <listitem><para><link linkend="geteditcontrol">GetEditControl</link></para></listitem>

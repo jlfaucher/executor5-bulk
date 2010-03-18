@@ -182,10 +182,6 @@
 <entry><link linkend="mthAddUserMsg">addUserMsg</link></entry>
 </row>
 <row>
-<entry>AsyncMessageHandling</entry>
-<entry><link linkend="h000746">AsyncMessageHandling</link></entry>
-</row>
-<row>
 <entry>BackgroundBitmap</entry>
 <entry><link linkend="h001053">BackgroundBitmap</link></entry>
 </row>
@@ -589,9 +585,8 @@
 <entry><link linkend="h001213">GetArcDirection</link></entry>
 </row>
 <row>
-<entry>getDataAttribute</entry>
-<entry><link linkend="mthGetDataAttribute">getDataAttribute</link></entry>
-</row>
+<entry>Sets a data attribute of the Rexx dialog using the data from a connected Windows dialog control.</entry>
+<entry><link linkend="mthGetDataAttribute">getDataAttribute</link></entry> </row>
 <row>
 <entry>GetBitmapSizeX</entry>
 <entry><link linkend="h001127">GetBitmapSizeX</link></entry>
@@ -860,8 +855,8 @@
 <entry><link linkend="mthIsVisible">isVisible</link></entry>
 </row>
 <row>
-<entry>getControlText</entry>
 <entry><link linkend="mthGetControlText">getControlText</link></entry>
+<entry>Gets the text of the specified dialog control</entry>
 </row>
 <row>
 <entry>ListAddDirectory</entry>
@@ -1072,8 +1067,8 @@
 <entry><link linkend="h001214">SetArcDirection</link></entry>
 </row>
 <row>
-<entry>setDataAttribute</entry>
 <entry><link linkend="mthSetDataAttribute">setDataAttribute</link></entry>
+<entry>Sets the state of a dialog control using the value of a data attribute of the Rexx dialog.</entry>
 </row>
 <row>
 <entry>SetCheckBox</entry>
@@ -1082,6 +1077,10 @@
 <row>
 <entry>SetComboLine</entry>
 <entry><link linkend="h000548">SetComboLine</link></entry>
+</row>
+<row>
+<entry><link linkend="mthSetControlText">setControlText</link></entry>
+<entry>Sets the text for the specified dialog control</entry>
 </row>
 <row>
 <entry>SetCursorPos</entry>
@@ -1180,10 +1179,6 @@
 <entry><link linkend="h000770">SetSBRange</link></entry>
 </row>
 <row>
-<entry>setStaticData</entry>
-<entry><link linkend="mthSetStaticData">setStaticData</link></entry>
-</row>
-<row>
 <entry>SetTabStop</entry>
 <entry><link linkend="mthSetTabStop">SetTabStop</link></entry>
 </row>
@@ -1226,10 +1221,6 @@
 <row>
 <entry>ShowWindowFast</entry>
 <entry><link linkend="h001277">ShowWindowFast</link></entry>
-</row>
-<row>
-<entry>StopIt</entry>
-<entry><link linkend="h000073">StopIt</link></entry>
 </row>
 <row>
 <entry>TabToNext</entry>
@@ -2782,27 +2773,6 @@ if MyDialog~IsDialogActive then ...
 </variablelist>
 </section>
 
-<section id="h000073"><title>StopIt</title>
-<indexterm><primary>StopIt</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~StopIt------------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The StopIt method removes the Windows dialog
-from the memory. It is called by <link linkend="h000048">Execute</link>, after
-the user terminates the dialog. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected and for internal use only.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="h000756"><title>HandleMessages</title>
 <indexterm><primary>HandleMessages</primary></indexterm>
 <programlisting>
@@ -2817,35 +2787,6 @@ the user terminates the dialog. </para>
 synchronously. It is called by <link linkend="h000048">Execute</link>. HandleMessages
 is a dispatcher that receives Windows events and posts the message that
 is set to handle the event.</para>
-</section>
-
-<section id="h000746"><title>AsyncMessageHandling</title>
-<indexterm><primary>AsyncMessageHandling</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~AsyncMessageHandling(--sleeptime--)-------------><
-
-
-]]>
-</programlisting>
-
-<para>The AsyncMessageHandling method starts the asynchronous
-handling of dialog messages. It is invoked automatically by <link linkend="h000057">ExecuteAsync</link> with the Start method of the Object class. A message in this
-context is the name of an object method that is processed whenever the corresponding
-event occurs.  You can set the messages that should be sent by using Connect... methods (see page <link linkend="sctConnectingEvents">Connect Methods</link>). </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected and for internal use only.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>sleeptime</term>
-<listitem><para>The time slice, in milliseconds, until the next message is processed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
 </section>
 
 <section id="peekdialogmessage"><title>PeekDialogMessage</title>
@@ -2926,1077 +2867,6 @@ MyDialog~SendMessageToItem(9001, "0x000000F1", 1, 0)
 </section>
 </section>
 
-<section id="sctWindowBaseDO"><title>Basic Window Methods</title>
-<indexterm><primary>dialog object</primary><secondary>basic window methods</secondary></indexterm>
-<para>
-  Recall that in the Windows graphical user interface, everything is a window. The <link
-  linkend="clsWindowBase">WindowBase</link> class is a mixin class that contains methods common to all windows. Since a
-  dialog is a window, it inherits the <emphasis role="italic">WindowBase</emphasis> class. This section lists all the
-  basic window methods for the dialog object.
-</para>
-
-<section id="wbdoDisable"><title>disable</title>
-<programlisting>
-WindowBass::<link linkend="mthDisable">disable</link>
-
-<![CDATA[
->>-disable-----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoEnable"><title>enable</title>
-<programlisting>
-WindowBase::<link linkend="mthEnable">enable</link>
-
-<![CDATA[
->>--enable-----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoIsEnabled"><title>isEnabled</title>
-<programlisting>
-WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
-
-<![CDATA[
->>--isEnabled--------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoIsVisible"><title>isVisible</title>
-<programlisting>
-WindowBase::<link linkend="mthIsVisible">isVisible</link>
-
-<![CDATA[
->>--isVisible--------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoGetSize"><title>getSize</title>
-<programlisting>
-WindowBase::<link linkend="mthGetSize">getSize</link>
-
-<![CDATA[
->>--getSize----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-
-<section id="wbdoGetTextSizePx"><title>getTextSizePx</title>
-<programlisting>
-WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
-
-<![CDATA[
->>--getTextSizePx(-text--)-------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoGetTextSizeScreen"><title>getTextSizeScreen</title>
-<programlisting>
-WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
-
-<![CDATA[
->>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
-                             +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
-]]>
-</programlisting>
-</section>
-
-
-</section> <!-- END Section Basic Window Methods  -->
-
-
-<section id="sctWindowExtensionsDO"><title>Extended Window Methods</title>
-<indexterm><primary>dialog object</primary><secondary>extended window methods</secondary></indexterm>
-<para>
-  The methods implemented by <link linkend="clsWindowExtensions">WindowExtensions</link> class are listed in this
-  section. The class name, <emphasis role="italic">WindowExtensions</emphasis> would seem to imply that the methods were
-  common to all windows. However, the methods of this class are really just extensions to the original ooDialog
-  framework, and many of the methods are not window specific methods.
-</para>
-
-<section id="weDOCreateFontEx"><title>createFontEx</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCreateFontEx">createFontEx</link>
-
-<![CDATA[
->>--createFontEx(--fontName-+--------------+--+---------------+--)-------------><
-                            +-,-pointSize--+  +-,-additional--+
-]]>
-</programlisting>
-</section>
-
-</section> <!-- END Section Extended Window Methods  -->
-
-
-<section id="sctInstantiateControls"><Title>Instantiating Dialog Controls</Title>
-<para>
-  The methods in this section are used to instantiate one of the concrete <link linkend="chpDialogControlObject">dialog
-  control</link> objects.
-</para>
-
-<section id="getstaticcontrol"><title>GetStaticControl</title>
-<indexterm><primary>GetStaticControl</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anAdvancedControl~GetStaticControl(--id--+-------------+--)-><
-                                            +-,--category-+
-
-
-]]>
-</programlisting>
-
-<para>The GetStaticControl method returns an object of
-the StaticControl class that is assigned to the static dialog item with the
-specified ID. The StaticControl class provides methods to query and manipulate
-static dialog items like static text, group boxes, or frames. The static controls
-must have a positive ID.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the static dialog item.
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The number of the category dialog page containing the requested dialog
-item. This argument must only be specified for category dialogs.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>An object of the StaticControl class or .Nil if the requested dialog
-item does not exist.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example requests an object of dialog item ITEM7 and, if
-the dialog item exists, resizes it, changes the displayed text, and sets another
-background and foreground color:
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog inherit AdvancedControls
-
-::method ReArrange
-  di = self~GetStaticControl("ITEM7")
-  if di == .Nil then return
-  di~Resize(100, 25, "HIDE")
-  di~Title="Processing layout update!"
-  di~SetColor(7,4)
-  di~Show
-  ...
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-GetStaticControl connects an Object Rexx object with a Windows object.
-If the object does not exist, the Nil object is returned. Therefore, this
-method can only be applied after the Windows dialog has been created (after
-the invocation of <link linkend="h002048">StartIt</link>).
-</para></note>
-</section>
-
-<section id="geteditcontrol"><title>GetEditControl</title>
-<indexterm><primary>GetEditControl</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anAdvancedControl~GetEditControl(--id--+-------------+--)---><
-                                          +-,--category-+
-
-
-]]>
-</programlisting>
-
-<para>The GetEditControl method returns an object of
-the EditControl class that is assigned to the entry line with the specified
-ID. The EditControl class (see <link linkend="clsEdit">EditControl Class</link>)
-provides methods to query and manipulate edit controls.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the edit control.
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The number of the category dialog page containing the requested edit
-control. This argument must only be specified for category dialogs.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>An object of the StaticControl class or .Nil
-if the requested edit control does not exist.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example gets an object of the EditControl class
-and checks whether the NAME entry line is empty. If the name field
-is empty, the dialog is not valid.
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog inherit AdvancedControls
-
-::method validate
-  di = self~GetEditControl("NAME")
-  if di == .Nil then return 0
-  if di~Title~space(0) \="" then return 1
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-GetEditControl connects an Object Rexx object with a Windows object.
-If the object does not exist, the Nil object is returned. Therefore, this
-method can only be applied after the Windows dialog has been created (after
-the invocation of <link linkend="h002048">StartIt</link>).
-</para></note>
-</section>
-
-<section id="mthGetButtonControl"><title>GetButtonControl</title>
-<indexterm><primary>GetButtonControl</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anAdvancedControl~GetButtonControl(--id--+-------------+--)-><
-                                            +-,--category-+
-
-
-]]>
-</programlisting>
-
-<para>The GetButtonControl method returns an object of
-the ButtonControl class that is assigned to the push button with the specified
-ID. The ButtonControl class (see <link linkend="clsButtonControl">ButtonControl Class</link>)
-provides methods to query and manipulate push buttons.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the push button.
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The number of the category dialog page containing the requested push
-button. This argument must only be specified for category dialogs.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>An object of the ButtonControl class or .Nil if the requested push button
-does not exist.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example displays the current state of the OK button by
-retrieving an object of the Button class and calling the State method:
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog inherit AdvancedControls
-
-::method CurrentState
-  di = self~GetButtonControl(1)
-  if di == .Nil then return 0
-  say "State is" di~State
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-GetButtonControl connects an Object Rexx object with a Windows object.
-If the object does not exist, the Nil object is returned. Therefore, this
-method can only be applied after the Windows dialog has been created (after
-the invocation of <link linkend="h002048">StartIt</link>).
-</para></note>
-</section>
-
-<section id="mthGetRadioControl"><title>GetRadioControl</title>
-<indexterm><primary>GetRadioControl</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anAdvancedControl~GetRadioControl(--id--+-------------+--)--><
-                                           +-,--category-+
-
-
-]]>
-</programlisting>
-
-<para>
-  The GetRadioControl method returns an object of the RadioButton class that is assigned to the radio
-  button with the specified ID. The RadioButton class (see <link linkend="clsRadioButton">RadioButton
-  </link>Class) provides methods to query and manipulate radio buttons.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the radio button.
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The number of the category dialog page containing the requested radio
-button. This argument must only be specified for category dialogs.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>An object of the RadioButton class or .Nil if the requested radio button
-does not exist.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example displays a message when radio button CHOICE1 is
-selected:
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog inherit AdvancedControls
-
-::method CurrentState
-  di = self~GetRadioControl("CHOICE1")
-  if di == .Nil then return 0
-  if di~checked then say "The radio button is selected!"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-GetRadioControl connects an Object Rexx object with a Windows object.
-If the object does not exist, the Nil object is returned. Therefore, this
-method can only be applied after the Windows dialog has been created (after
-the invocation of <link linkend="h002048">StartIt</link>).
-</para></note>
-</section>
-
-<section id="mthGetCheckControl"><title>GetCheckControl</title>
-<indexterm><primary>GetCheckControl</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anAdvancedControl~GetCheckControl(--id--+-------------+--)--><
-                                           +-,--category-+
-
-
-]]>
-</programlisting>
-
-<para>The GetCheckControl method returns an object of
-the CheckBox class that is assigned to the check box with the specified ID.
-The CheckBox class (see <link linkend="clsCheckBox">CheckBox Class</link>) provides
-methods to query and manipulate check boxes.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the check box.
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The number of the category dialog page containing the requested check
-box. This argument must only be specified for category dialogs.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>An object of the CheckBox class or .Nil if the requested check box does
-not exist.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example displays a message when check box CHOICE1
-is checked:
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog inherit AdvancedControls
-
-::method CurrentState
-  di = self~GetCheckControl("CHOICE1")
-  if di == .Nil then return 0
-  if di~checked then say "The check box is checked!"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-GetCheckControl connects an Object Rexx object with a Windows object.
-If the object does not exist, the Nil object is returned. Therefore, this
-method can only be applied after the Windows dialog has been created (after
-the invocation of <link linkend="h002048">StartIt</link>).
-</para></note>
-</section>
-
-<section id="mthGetGroupBox"><title>getGroupBox</title>
-<indexterm><primary>getGroupBox</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anAdvancedControl~getGroupBox(--id--+-------------+--)------><
-                                       +-,--category-+
-
-
-]]>
-</programlisting>
-
-<para>
-  The getGroupBox method returns an object of the GroupBox class that represents
-  the group box with the specified resource ID. See the
-  <link linkend="clsGroupBox">GroupBox Class</link> for more detail on group
-  boxes.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The resource ID of the group box.
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The number of the category dialog page containing the requested
-group box. This argument must only be specified for category dialogs.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>A GroupBox object or .Nil if the underlying Windows group box
-control does not exist.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example shows how the text (label) of a group box
-  could be changed during program execution:
-<programlisting>
-<![CDATA[
-::class MyPhoneBook subclass ResDialog inherit AdvancedControls
-
-::method onUseFull
-  gb = self~getGroupBox(IDC_GB_TELEPHONE)
-  chkBox = self~getCheckBox(IDC_CHK_USE_FULL)
-  if chkBox~checked then do
-    gb~setTitle("Phone Numbers (including area code)")
-  end
-  else do
-    gb~setTitle("Phone Numbers")
-  end
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title>
-<para>
-  getGroupBox connects the ooDialog object with a Windows control.  If the
-  control does not exist, this connection can not be made. Therefore, this
-  method should only be used after the Windows dialog has been created. In
-  <link linkend="mthInitDialog">initDialog()</link> or at some point in the life
-  cycle of the dialog after initDialog().
-</para></note>
-</section>
-
-<section id="mthNewClsDateTimePicker"><title>newDateTimePicker</title>
-<indexterm><primary>newDateTimePicker</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-newDateTimePicker(--id--+-------------+--)------------------><
-                           +-,--category-+
-
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">newDateTimePicker</emphasis> method returns a date and time picker object that represents
-  the date and time picker control with the specified resource ID in the underlying dialog. See the <link
-  linkend="clsDateTimePicker">DateTimePicker</link> class for details about date and time picker controls.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem><para>The arguments are:
-  <variablelist>
-    <varlistentry><term>id [required]</term>
-    <listitem>
-    <para>
-      The <link linkend="defResourceId">resource ID</link> of the date and time picker. This may be <link
-      linkend="defSymbolicId">symbolic</link> or numeric.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>category [optional]</term>
-    <listitem>
-    <para>
-      The number of the page containing the control in a <link linkend="clsCategoryDialog">category dialog</link>, if
-      appropriate. Specifying this argument in a dialog that is not a category dialog will likely cause the method to
-      fail.
-    </para>
-    </listitem></varlistentry>
-  </variablelist> </para></listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    A date and time picker object on success, or .nil if the method fails. The underlying Windows dialog must exist for
-    this method to succeed.
-  </para>
-</listitem></varlistentry>
-</variablelist>
-
-</section>
-
-<section id="getlistbox"><title>GetListBox</title>
-<indexterm><primary>GetListBox</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anAdvancedControl~GetListBox(--id--+-------------+--)-------><
-                                      +-,--category-+
-
-
-]]>
-</programlisting>
-
-<para>The GetListBox method returns an object of the
-ListBox class that is assigned to the list box with the specified ID. The
-ListBox class (see <link linkend="clsListBox">ListBox Class</link>) provides
-methods to query and manipulate list boxes.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the list box.
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The number of the category dialog page containing the requested list
-box. This argument must only be specified for category dialogs.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>An object of the ListBox class or .Nil if the requested list box does
-not exist.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example removes all entries of list box AREAS and adds
-several new entries. Entry City will be preselected. Object &quot;di&quot; is
-connected to list box AREAS.
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog inherit AdvancedControls
-
-::method UpdateList
-  di = self~GetListBox("AREAS")
-  if di == .Nil then return 0
-  di~DeleteAll
-  di~Add("Town")
-  di~Add("City")
-  di~Add("Green")
-  di~Add("Forest")
-  di~Select("City")
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-GetListBox connects an Object Rexx object with a Windows object.
-If the object does not exist, the Nil object is returned. Therefore, this
-method can only be applied after the Windows dialog has been created (after
-the invocation of <link linkend="h002048">StartIt</link>).
-</para></note>
-</section>
-
-<section id="getcombobox"><title>GetComboBox</title>
-<indexterm><primary>GetComboBox</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anAdvancedControl~GetComboBox(--id--+-------------+--)------><
-                                       +-,--category-+
-
-
-]]>
-</programlisting>
-
-<para>The GetComboBox method returns an object of the
-ComboBox class that is assigned to the list box with the specified ID. The
-ComboBox class (see <link linkend="clsComboBox">ComboBox Class</link>) provides
-methods to query and manipulate combo boxes.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the combo box.
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The number of the category dialog page containing the requested combo
-box. This argument must only be specified for category dialogs.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>An object of the ComboBox class or .Nil if the requested combo box does
-not exist.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example comes from a fictious accounting program.
-In one of the dialogs for the program, when the user selects a specific city,
-say San Diego, the zip code combo box is populated with the valid zip codes for
-that city.  In the program, <link linkend="defSymbolicId">symbolic ID</link>s have
-been used for the controls.  The valid zip codes are passed into the method as
-an array.
-<programlisting>
-<![CDATA[
-::class "BillingDlg" subclass RcDialog inherit
-
-...
-
-::method setZipCodes
-  use strict arg codes
-
-  combo = self~getComboBox(IDC_COMBO_ZIP)
-  if combo == .Nil then return .false
-
-  lowest = 99999
-  combo~deleteAll
-  do zipCode over codes
-    combo~add(zipCode)
-    if zipCode < lowest then do
-      lowest = zipCode
-    end
-  end
-  combo~select(lowest)
-  return .true
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-GetComboBox connects an Object Rexx object with a Windows object.
-If the object does not exist, the Nil object is returned. Therefore, this
-method can only be applied after the Windows dialog has been created (after
-the invocation of <link linkend="h002048">StartIt</link>).
-</para></note>
-</section>
-
-<section id="mthGetMonthCalendar"><title>getMonthCalendar</title>
-<indexterm><primary>getMonthCalendar</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anAdvancedControl~getGroupBox(--id--+-------------+--)------><
-                                       +-,--category-+
-
-
-]]>
-</programlisting>
-
-<para>
-  TODO PLEASE FIX ME
-  The getGroupBox method returns an object of the GroupBox class that represents the group box with the
-  specified resource ID. See the <link linkend="clsGroupBox">GroupBox Class</link> for more detail on
-  group boxes.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The resource ID of the group box.
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The number of the category dialog page containing the requested
-group box. This argument must only be specified for category dialogs.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>A GroupBox object or .Nil if the underlying Windows group box
-control does not exist.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example shows how the text (label) of a group box
-  could be changed during program execution:
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title>
-<para>
-  getGroupBox connects the ooDialog object with a Windows control.  If the
-  control does not exist, this connection can not be made. Therefore, this
-  method should only be used after the Windows dialog has been created. In
-  <link linkend="mthInitDialog">initDialog()</link> or at some point in the life
-  cycle of the dialog after initDialog().
-</para></note>
-</section>
-
-<section id="getscrollbar"><title>GetScrollBar</title>
-<indexterm><primary>GetScrollBar</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anAdvancedControl~GetScrollBar(--id--+-------------+--)-----><
-                                        +-,--category-+
-
-
-]]>
-</programlisting>
-
-<para>The GetScrollBar method returns an object of the
-ScrollBar class that is assigned to the scroll bar with the specified ID.
-The ScrollBar class (see <link linkend="scrollbarc">ScrollBar Class</link>) provides
-methods to query and manipulate scroll bars.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the scroll bar.
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The number of the category dialog page containing the requested scroll
-bar. This argument must only be specified for category dialogs.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>An object of the ScrollBar class or .Nil if the requested scroll bar
-does not exist.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example sets a new range and a new position for scroll
-bar HORSB. Object &quot;di&quot; is connected to scroll bar HORSB.
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog inherit AdvancedControls
-
-::method FocusPage
-  di = self~GetScrollBar("HORSB")
-  if di == .Nil then return 0
-  di~setRange(0, 1000, 0)
-  di~setPos(500, 1)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-GetScrollBar connects an Object Rexx object with a Windows object.
-If the object does not exist, the Nil object is returned. Therefore, this
-method can only be applied after the Windows dialog has been created (after
-the invocation of <link linkend="h002048">StartIt</link>).
-</para></note>
-</section>
-
-<section id="gettreecontrol"><title>GetTreeControl</title>
-<indexterm><primary>GetTreeControl</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anAdvancedControl~GetTreeControl(--id--+-------------+--)---><
-                                          +-,--category-+
-
-
-]]>
-</programlisting>
-
-<para>The GetTreeControl method returns an object of
-the TreeControl class that is assigned to the tree view with the specified
-ID. The TreeControl class (see <link linkend="treecontrolc">TreeControl Class</link>)
-provides methods to query and manipulate tree views.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the tree view.
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The number of the category dialog page containing the requested tree
-view. This argument must only be specified for category dialogs.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>An object of the TreeControl class or .Nil if the requested tree view
-does not exist.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example initializes tree view 101 by sending message ADD
-to object &quot;tc&quot;, which is assigned to 101 by using GetTreeControl:
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog inherit AdvancedControls
-
-::method InitDialog
-  tc = self~GetTreeControl(101)
-  if tc == .Nil then return
-  tc~Add("Root 1")
-  tc~Add(  ,"Item 1")
-  tc~Add(  ,"Item 2")
-  tc~Add(  ,"Item 3")
-  tc~Add("Root 2", , ,"EXPANDED")
-  tc~Add(  ,"Item 4", , ,"BOLD")
-  tc~Add(  ,"Item 5")
-  tc~Add(  ,"Subroot")
-  tc~Add(  ,    ,"Item 6",3)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-GetTreeControl connects an Object Rexx object with a Windows object.
-If the object does not exist, the Nil object is returned. Therefore, this
-method can only be applied after the Windows dialog has been created (after
-the invocation of <link linkend="h002048">StartIt</link>).
-</para></note>
-</section>
-
-<section id="getlistcontrol"><title>GetListControl</title>
-<indexterm><primary>GetListControl</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anAdvancedControl~GetListControl(--id--+-------------+--)---><
-                                          +-,--category-+
-
-
-]]>
-</programlisting>
-
-<para>The GetListControl method returns an object of
-the ListControl class that is assigned to the list view with the specified
-ID. The ListControl class (see <link linkend="clsListView">ListControl Class</link>)
-provides methods to query and manipulate list views.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the list view.
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The number of the category dialog page containing the requested list
-view. This argument must only be specified for category dialogs.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>An object of the ListControl class or .Nil if the requested list view
-does not exist.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example initializes list view 101 by sending message ADD
-to object lc, which is assigned to 101 by using GetListControl:
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog inherit AdvancedControls
-
-::method InitDialog
-  lc = self~GetListControl(101)
-  if lc == .Nil then return
-  lc~~Add(101222)~~Add(,"Smith")~~Add(, ,"John")
-  lc~~Add(101223)~~Add(,"Michael")~~Add(, ,"Carl")
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-GetListControl connects an Object Rexx object with a Windows object.
-If the object does not exist, the Nil object is returned. Therefore, this
-method can only be applied after the Windows dialog has been created (after
-the invocation of <link linkend="h002048">StartIt</link>).
-</para></note>
-</section>
-
-<section id="mthGetProgressBar"><title>getProgressBar</title>
-<indexterm><primary>getProgressBar</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anAdvancedControl~getProgressBar(--id--+-------------+--)---><
-                                          +-,--category-+
-
-
-]]>
-</programlisting>
-
-<para>The getProgressBar method returns an object of
-the ProgressBar Control class that is assigned to the progress bar with the
-specified ID. The ProgressBar class (see
-<link linkend="clsProgressBar">ProgressBar Class</link>)
-provides methods to query and manipulate progress bars.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the progress bar.
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The number of the category dialog page containing the requested progress
-bar. This argument must only be specified for category dialogs.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>An object of the ProgressBar class or .Nil if the requested progress
-bar does not exist.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example initializes and modifies progress bar PROGRESS
-by sending messages to the object that is returned by GetProgressBar:
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog inherit AdvancedControls
-
-::method InitDialog
-  pb = self~getProgressBar("PROGRESS")
-  if pb == .Nil then return
-  pb~setstep(50)
-  pb~setrange(,500)
-
-::method UpdateProgress
-  use arg amount
-  self~getProgressBar("PROGRESS")~setPos(amount)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-getProgressBar connects an Object Rexx object with a Windows object.
-If the object does not exist, the Nil object is returned. Therefore, this
-method can only be applied after the Windows dialog has been created (after
-the invocation of <link linkend="h002048">StartIt</link>).
-</para></note>
-</section>
-
-<section id="getslidercontrol"><title>GetSliderControl</title>
-<indexterm><primary>GetSliderControl</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anAdvancedControl~GetSliderControl(--id--+-------------+--)-><
-                                            +-,--category-+
-
-
-]]>
-</programlisting>
-
-<para>The GetSliderControl method returns an object of
-the SliderControl class that is assigned to the track bar with the specified
-ID. The SliderControl class (see
-<link linkend="slidercontrolc">SliderControl Class</link>)
-provides methods to query and manipulate track bars.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the track bar.
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The number of the category dialog page containing the requested track
-bar. This argument must only be specified for category dialogs.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>An object of the SliderControl class or .Nil if the requested track
-bar does not exist.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example initializes track bar 103:
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog inherit AdvancedControls
-
-::method InitTheSlider
-  sl = self~GetSliderControl(103)
-  if sl == .Nil then return
-  no = 0; yes = 1
-  sl~ClearSelRange(no)
-  sl~SetMax(200,no)
-  sl~SetTickFrequency(50)
-  sl~SetTickAt(75)
-  sl~SetSelStart(20, no)
-  sl~SetSelEnd(180, yes)
-  sl~Pos = 167
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-GetSliderControl connects an Object Rexx object with a Windows object.
-If the object does not exist, the Nil object is returned. Therefore, this
-method can only be applied after the Windows dialog has been created (after
-the invocation of <link linkend="h002048">StartIt</link>).
-</para></note>
-</section>
-
-<section id="gettabcontrol"><title>GetTabControl</title>
-<indexterm><primary>GetTabControl</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anAdvancedControl~GetTabControl(--id--+-------------+--)----><
-                                         +-,--category-+
-
-
-]]>
-</programlisting>
-
-<para>The GetTabControl method returns an object of the
-TabControl class that is assigned to the tab control with the specified ID.
-The TabControl class (see <link linkend="tabcontrolc">TabControl Class</link>)
-provides methods to query and manipulate tab controls.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the tab control.
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>The number of the category dialog page containing the requested tab
-control. This argument must only be specified for category dialogs.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>An object of the TabControl class or .Nil if the requested tab control
-does not exist.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example initializes tab control PAGES to have five tabs:
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog inherit AdvancedControls
-
-::method InitDialog
-  self~GetTabControl("PAGES")~AddSequence("Design","Implementation", ,
-  "Test","Review","Release")
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-GetTabControl connects an Object Rexx object with a Windows object.
-If the object does not exist, the Nil object is returned. Therefore, this
-method can only be applied after the Windows dialog has been created (after
-the invocation of <link linkend="h002048">StartIt</link>).
-</para></note>
-</section>
-
-</section>
-
-<!-- <section id="sctConnectingEvents"><title>Connecting Events</title> START -->
-&connectingEvents;
-<!-- <section id="sctConnectingEvents"><title>Connecting Events</title> END   -->
-
-
 <section id="sctDataAttributes"><title>Data Attribute Methods</title>
 <indexterm><primary>data attributes</primary></indexterm>
 <indexterm><primary>connecting data attributes</primary></indexterm>
@@ -4055,6 +2925,14 @@ the invocation of <link linkend="h002048">StartIt</link>).
   linkend="clsRcDialog">RcDialog</link>, and of course their subclasses. Automatic data detection can be turned on or
   off. By default it is <emphasis role="bold">on</emphasis>. The best way to turn automatic data field detection off is
   to over-ride the <link linkend="mthInitAutoDetection">initAutoDetection</link>() method in your class.
+</para>
+<para>
+  Some dialog controls are not considered to be <emphasis role="italic">data</emphasis> and therefore data attributes
+  are not created for those controls. (This is a quirk going back to the original implementation of of ooDialog.) The
+  non-data controls are those, in general, that the user would change or update in a dialog. <link
+  linkend="clsButtonControl">Push buttons</link>, <link linkend="clsGroupBox">group boxes</link>, and <link
+  linkend="clsStatic">static</link> controls are all considered non-data controls. There are no data attribute methods
+  for these controls.
 </para>
 <para>
   When automatic data detection is turned off, the programmer can use the <link
@@ -5571,33 +4449,6 @@ MyDialog~setData
 </variablelist>
 </section>
 
-<section id="mthSetStaticData"><title>setStaticData</title>
-<indexterm><primary>setStaticData</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~setStaticData(--id--,--aString--)---------------><
-
-
-]]>
-</programlisting>
-
-<para>The setStaticData method changes the text of a
-static text control. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the static text control for which you want to change the text.
-</para></listitem></varlistentry>
-<varlistentry><term>aString</term>
-<listitem><para>The new text for the static text control.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="mthGetEditData"><title>getEditData</title>
 <indexterm><primary>getEditData</primary></indexterm>
 <programlisting>
@@ -6277,6 +5128,11 @@ self~setDataStem(dlgStem.)
 
 </section>
 
+<!-- <section id="sctConnectingEvents"><title>Connecting Events</title> START -->
+&connectingEvents;
+<!-- <section id="sctConnectingEvents"><title>Connecting Events</title> END   -->
+
+
 <section id="sctStandardEventMethods"><title>Standard Event Handling Methods</title>
 <indexterm><primary>standard event handler methods</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>standard event handlers</secondary></indexterm>
@@ -6551,6 +5407,995 @@ self~setDataStem(dlgStem.)
 </section>
 
 </section>
+
+
+<section id="sctInstantiateControls"><Title>Instantiating Dialog Controls</Title>
+<para>
+  The methods in this section are used to instantiate one of the concrete <link linkend="chpDialogControlObject">dialog
+  control</link> objects.
+</para>
+
+<section id="getstaticcontrol"><title>GetStaticControl</title>
+<indexterm><primary>GetStaticControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetStaticControl(--id--+-------------+--)-><
+                                            +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetStaticControl method returns an object of
+the StaticControl class that is assigned to the static dialog item with the
+specified ID. The StaticControl class provides methods to query and manipulate
+static dialog items like static text, group boxes, or frames. The static controls
+must have a positive ID.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the static dialog item.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested dialog
+item. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the StaticControl class or .Nil if the requested dialog
+item does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example requests an object of dialog item ITEM7 and, if
+the dialog item exists, resizes it, changes the displayed text, and sets another
+background and foreground color:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method ReArrange
+  di = self~GetStaticControl("ITEM7")
+  if di == .Nil then return
+  di~Resize(100, 25, "HIDE")
+  di~Title="Processing layout update!"
+  di~SetColor(7,4)
+  di~Show
+  ...
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="geteditcontrol"><title>GetEditControl</title>
+<indexterm><primary>GetEditControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetEditControl(--id--+-------------+--)---><
+                                          +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetEditControl method returns an object of
+the EditControl class that is assigned to the entry line with the specified
+ID. The EditControl class (see <link linkend="clsEdit">EditControl Class</link>)
+provides methods to query and manipulate edit controls.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the edit control.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested edit
+control. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the StaticControl class or .Nil
+if the requested edit control does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example gets an object of the EditControl class
+and checks whether the NAME entry line is empty. If the name field
+is empty, the dialog is not valid.
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method validate
+  di = self~GetEditControl("NAME")
+  if di == .Nil then return 0
+  if di~Title~space(0) \="" then return 1
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthGetButtonControl"><title>GetButtonControl</title>
+<indexterm><primary>GetButtonControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetButtonControl(--id--+-------------+--)-><
+                                            +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetButtonControl method returns an object of
+the ButtonControl class that is assigned to the push button with the specified
+ID. The ButtonControl class (see <link linkend="clsButtonControl">ButtonControl Class</link>)
+provides methods to query and manipulate push buttons.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the push button.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested push
+button. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the ButtonControl class or .Nil if the requested push button
+does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays the current state of the OK button by
+retrieving an object of the Button class and calling the State method:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method CurrentState
+  di = self~GetButtonControl(1)
+  if di == .Nil then return 0
+  say "State is" di~State
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthGetRadioControl"><title>GetRadioControl</title>
+<indexterm><primary>GetRadioControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetRadioControl(--id--+-------------+--)--><
+                                           +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>
+  The GetRadioControl method returns an object of the RadioButton class that is assigned to the radio
+  button with the specified ID. The RadioButton class (see <link linkend="clsRadioButton">RadioButton
+  </link>Class) provides methods to query and manipulate radio buttons.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the radio button.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested radio
+button. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the RadioButton class or .Nil if the requested radio button
+does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays a message when radio button CHOICE1 is
+selected:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method CurrentState
+  di = self~GetRadioControl("CHOICE1")
+  if di == .Nil then return 0
+  if di~checked then say "The radio button is selected!"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthGetCheckControl"><title>GetCheckControl</title>
+<indexterm><primary>GetCheckControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetCheckControl(--id--+-------------+--)--><
+                                           +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetCheckControl method returns an object of
+the CheckBox class that is assigned to the check box with the specified ID.
+The CheckBox class (see <link linkend="clsCheckBox">CheckBox Class</link>) provides
+methods to query and manipulate check boxes.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the check box.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested check
+box. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the CheckBox class or .Nil if the requested check box does
+not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example displays a message when check box CHOICE1
+is checked:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method CurrentState
+  di = self~GetCheckControl("CHOICE1")
+  if di == .Nil then return 0
+  if di~checked then say "The check box is checked!"
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthGetGroupBox"><title>getGroupBox</title>
+<indexterm><primary>getGroupBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~getGroupBox(--id--+-------------+--)------><
+                                       +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>
+  The getGroupBox method returns an object of the GroupBox class that represents
+  the group box with the specified resource ID. See the
+  <link linkend="clsGroupBox">GroupBox Class</link> for more detail on group
+  boxes.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The resource ID of the group box.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested
+group box. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A GroupBox object or .Nil if the underlying Windows group box
+control does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example shows how the text (label) of a group box
+  could be changed during program execution:
+<programlisting>
+<![CDATA[
+::class MyPhoneBook subclass ResDialog inherit AdvancedControls
+
+::method onUseFull
+  gb = self~getGroupBox(IDC_GB_TELEPHONE)
+  chkBox = self~getCheckBox(IDC_CHK_USE_FULL)
+  if chkBox~checked then do
+    gb~setTitle("Phone Numbers (including area code)")
+  end
+  else do
+    gb~setTitle("Phone Numbers")
+  end
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title>
+<para>
+  getGroupBox connects the ooDialog object with a Windows control.  If the
+  control does not exist, this connection can not be made. Therefore, this
+  method should only be used after the Windows dialog has been created. In
+  <link linkend="mthInitDialog">initDialog()</link> or at some point in the life
+  cycle of the dialog after initDialog().
+</para></note>
+</section>
+
+<section id="mthNewClsDateTimePicker"><title>newDateTimePicker</title>
+<indexterm><primary>newDateTimePicker</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-newDateTimePicker(--id--+-------------+--)------------------><
+                           +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">newDateTimePicker</emphasis> method returns a date and time picker object that represents
+  the date and time picker control with the specified resource ID in the underlying dialog. See the <link
+  linkend="clsDateTimePicker">DateTimePicker</link> class for details about date and time picker controls.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The <link linkend="defResourceId">resource ID</link> of the date and time picker. This may be <link
+      linkend="defSymbolicId">symbolic</link> or numeric.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>category [optional]</term>
+    <listitem>
+    <para>
+      The number of the page containing the control in a <link linkend="clsCategoryDialog">category dialog</link>, if
+      appropriate. Specifying this argument in a dialog that is not a category dialog will likely cause the method to
+      fail.
+    </para>
+    </listitem></varlistentry>
+  </variablelist> </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A date and time picker object on success, or .nil if the method fails. The underlying Windows dialog must exist for
+    this method to succeed.
+  </para>
+</listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="getlistbox"><title>GetListBox</title>
+<indexterm><primary>GetListBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetListBox(--id--+-------------+--)-------><
+                                      +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetListBox method returns an object of the
+ListBox class that is assigned to the list box with the specified ID. The
+ListBox class (see <link linkend="clsListBox">ListBox Class</link>) provides
+methods to query and manipulate list boxes.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the list box.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested list
+box. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the ListBox class or .Nil if the requested list box does
+not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example removes all entries of list box AREAS and adds
+several new entries. Entry City will be preselected. Object &quot;di&quot; is
+connected to list box AREAS.
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method UpdateList
+  di = self~GetListBox("AREAS")
+  if di == .Nil then return 0
+  di~DeleteAll
+  di~Add("Town")
+  di~Add("City")
+  di~Add("Green")
+  di~Add("Forest")
+  di~Select("City")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="getcombobox"><title>GetComboBox</title>
+<indexterm><primary>GetComboBox</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetComboBox(--id--+-------------+--)------><
+                                       +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetComboBox method returns an object of the
+ComboBox class that is assigned to the list box with the specified ID. The
+ComboBox class (see <link linkend="clsComboBox">ComboBox Class</link>) provides
+methods to query and manipulate combo boxes.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the combo box.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested combo
+box. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the ComboBox class or .Nil if the requested combo box does
+not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example comes from a fictious accounting program.
+In one of the dialogs for the program, when the user selects a specific city,
+say San Diego, the zip code combo box is populated with the valid zip codes for
+that city.  In the program, <link linkend="defSymbolicId">symbolic ID</link>s have
+been used for the controls.  The valid zip codes are passed into the method as
+an array.
+<programlisting>
+<![CDATA[
+::class "BillingDlg" subclass RcDialog inherit
+
+...
+
+::method setZipCodes
+  use strict arg codes
+
+  combo = self~getComboBox(IDC_COMBO_ZIP)
+  if combo == .Nil then return .false
+
+  lowest = 99999
+  combo~deleteAll
+  do zipCode over codes
+    combo~add(zipCode)
+    if zipCode < lowest then do
+      lowest = zipCode
+    end
+  end
+  combo~select(lowest)
+  return .true
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthGetMonthCalendar"><title>getMonthCalendar</title>
+<indexterm><primary>getMonthCalendar</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~getGroupBox(--id--+-------------+--)------><
+                                       +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>
+  TODO PLEASE FIX ME
+  The getGroupBox method returns an object of the GroupBox class that represents the group box with the
+  specified resource ID. See the <link linkend="clsGroupBox">GroupBox Class</link> for more detail on
+  group boxes.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The resource ID of the group box.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested
+group box. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>A GroupBox object or .Nil if the underlying Windows group box
+control does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example shows how the text (label) of a group box
+  could be changed during program execution:
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title>
+<para>
+  getGroupBox connects the ooDialog object with a Windows control.  If the
+  control does not exist, this connection can not be made. Therefore, this
+  method should only be used after the Windows dialog has been created. In
+  <link linkend="mthInitDialog">initDialog()</link> or at some point in the life
+  cycle of the dialog after initDialog().
+</para></note>
+</section>
+
+<section id="getscrollbar"><title>GetScrollBar</title>
+<indexterm><primary>GetScrollBar</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetScrollBar(--id--+-------------+--)-----><
+                                        +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetScrollBar method returns an object of the
+ScrollBar class that is assigned to the scroll bar with the specified ID.
+The ScrollBar class (see <link linkend="scrollbarc">ScrollBar Class</link>) provides
+methods to query and manipulate scroll bars.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the scroll bar.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested scroll
+bar. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the ScrollBar class or .Nil if the requested scroll bar
+does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example sets a new range and a new position for scroll
+bar HORSB. Object &quot;di&quot; is connected to scroll bar HORSB.
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method FocusPage
+  di = self~GetScrollBar("HORSB")
+  if di == .Nil then return 0
+  di~setRange(0, 1000, 0)
+  di~setPos(500, 1)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="gettreecontrol"><title>GetTreeControl</title>
+<indexterm><primary>GetTreeControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetTreeControl(--id--+-------------+--)---><
+                                          +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetTreeControl method returns an object of
+the TreeControl class that is assigned to the tree view with the specified
+ID. The TreeControl class (see <link linkend="treecontrolc">TreeControl Class</link>)
+provides methods to query and manipulate tree views.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the tree view.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested tree
+view. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the TreeControl class or .Nil if the requested tree view
+does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example initializes tree view 101 by sending message ADD
+to object &quot;tc&quot;, which is assigned to 101 by using GetTreeControl:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method InitDialog
+  tc = self~GetTreeControl(101)
+  if tc == .Nil then return
+  tc~Add("Root 1")
+  tc~Add(  ,"Item 1")
+  tc~Add(  ,"Item 2")
+  tc~Add(  ,"Item 3")
+  tc~Add("Root 2", , ,"EXPANDED")
+  tc~Add(  ,"Item 4", , ,"BOLD")
+  tc~Add(  ,"Item 5")
+  tc~Add(  ,"Subroot")
+  tc~Add(  ,    ,"Item 6",3)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="getlistcontrol"><title>GetListControl</title>
+<indexterm><primary>GetListControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetListControl(--id--+-------------+--)---><
+                                          +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetListControl method returns an object of
+the ListControl class that is assigned to the list view with the specified
+ID. The ListControl class (see <link linkend="clsListView">ListControl Class</link>)
+provides methods to query and manipulate list views.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the list view.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested list
+view. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the ListControl class or .Nil if the requested list view
+does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example initializes list view 101 by sending message ADD
+to object lc, which is assigned to 101 by using GetListControl:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method InitDialog
+  lc = self~GetListControl(101)
+  if lc == .Nil then return
+  lc~~Add(101222)~~Add(,"Smith")~~Add(, ,"John")
+  lc~~Add(101223)~~Add(,"Michael")~~Add(, ,"Carl")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthGetProgressBar"><title>getProgressBar</title>
+<indexterm><primary>getProgressBar</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~getProgressBar(--id--+-------------+--)---><
+                                          +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The getProgressBar method returns an object of
+the ProgressBar Control class that is assigned to the progress bar with the
+specified ID. The ProgressBar class (see
+<link linkend="clsProgressBar">ProgressBar Class</link>)
+provides methods to query and manipulate progress bars.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the progress bar.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested progress
+bar. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the ProgressBar class or .Nil if the requested progress
+bar does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example initializes and modifies progress bar PROGRESS
+by sending messages to the object that is returned by GetProgressBar:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method InitDialog
+  pb = self~getProgressBar("PROGRESS")
+  if pb == .Nil then return
+  pb~setstep(50)
+  pb~setrange(,500)
+
+::method UpdateProgress
+  use arg amount
+  self~getProgressBar("PROGRESS")~setPos(amount)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="getslidercontrol"><title>GetSliderControl</title>
+<indexterm><primary>GetSliderControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetSliderControl(--id--+-------------+--)-><
+                                            +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetSliderControl method returns an object of
+the SliderControl class that is assigned to the track bar with the specified
+ID. The SliderControl class (see
+<link linkend="slidercontrolc">SliderControl Class</link>)
+provides methods to query and manipulate track bars.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the track bar.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested track
+bar. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the SliderControl class or .Nil if the requested track
+bar does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example initializes track bar 103:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method InitTheSlider
+  sl = self~GetSliderControl(103)
+  if sl == .Nil then return
+  no = 0; yes = 1
+  sl~ClearSelRange(no)
+  sl~SetMax(200,no)
+  sl~SetTickFrequency(50)
+  sl~SetTickAt(75)
+  sl~SetSelStart(20, no)
+  sl~SetSelEnd(180, yes)
+  sl~Pos = 167
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="gettabcontrol"><title>GetTabControl</title>
+<indexterm><primary>GetTabControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-anAdvancedControl~GetTabControl(--id--+-------------+--)----><
+                                         +-,--category-+
+
+
+]]>
+</programlisting>
+
+<para>The GetTabControl method returns an object of the
+TabControl class that is assigned to the tab control with the specified ID.
+The TabControl class (see <link linkend="clsTab">TabControl Class</link>)
+provides methods to query and manipulate tab controls.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the tab control.
+</para></listitem></varlistentry>
+<varlistentry><term>category</term>
+<listitem><para>The number of the category dialog page containing the requested tab
+control. This argument must only be specified for category dialogs.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>An object of the TabControl class or .Nil if the requested tab control
+does not exist.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example initializes tab control PAGES to have five tabs:
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog inherit AdvancedControls
+
+::method InitDialog
+  self~GetTabControl("PAGES")~AddSequence("Design","Implementation", ,
+  "Test","Review","Release")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>
+
+
+<section id="sctWindowBaseDO"><title>Basic Window Methods</title>
+<indexterm><primary>dialog object</primary><secondary>basic window methods</secondary></indexterm>
+<para>
+  Recall that in the Windows graphical user interface, everything is a window. The <link
+  linkend="clsWindowBase">WindowBase</link> class is a mixin class that contains methods common to all windows. Since a
+  dialog is a window, it inherits the <emphasis role="italic">WindowBase</emphasis> class. This section lists all the
+  basic window methods for the dialog object.
+</para>
+
+<section id="wbdoDisable"><title>disable</title>
+<programlisting>
+WindowBass::<link linkend="mthDisable">disable</link>
+
+<![CDATA[
+>>-disable-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoEnable"><title>enable</title>
+<programlisting>
+WindowBase::<link linkend="mthEnable">enable</link>
+
+<![CDATA[
+>>--enable-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoIsEnabled"><title>isEnabled</title>
+<programlisting>
+WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
+
+<![CDATA[
+>>--isEnabled--------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoIsVisible"><title>isVisible</title>
+<programlisting>
+WindowBase::<link linkend="mthIsVisible">isVisible</link>
+
+<![CDATA[
+>>--isVisible--------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetSize"><title>getSize</title>
+<programlisting>
+WindowBase::<link linkend="mthGetSize">getSize</link>
+
+<![CDATA[
+>>--getSize----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdoGetTextSizePx"><title>getTextSizePx</title>
+<programlisting>
+WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
+
+<![CDATA[
+>>--getTextSizePx(-text--)-------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetTextSizeScreen"><title>getTextSizeScreen</title>
+<programlisting>
+WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
+
+<![CDATA[
+>>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
+                             +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
+]]>
+</programlisting>
+</section>
+
+
+</section> <!-- END Section Basic Window Methods  -->
+
+
+<section id="sctWindowExtensionsDO"><title>Extended Window Methods</title>
+<indexterm><primary>dialog object</primary><secondary>extended window methods</secondary></indexterm>
+<para>
+  The methods implemented by <link linkend="clsWindowExtensions">WindowExtensions</link> class are listed in this
+  section. The class name, <emphasis role="italic">WindowExtensions</emphasis> would seem to imply that the methods were
+  common to all windows. However, the methods of this class are really just extensions to the original ooDialog
+  framework, and many of the methods are not window specific methods.
+</para>
+
+<section id="weDOCreateFontEx"><title>createFontEx</title>
+<programlisting>
+WindowExtensions::<link linkend="mthCreateFontEx">createFontEx</link>
+
+<![CDATA[
+>>--createFontEx(--fontName-+--------------+--+---------------+--)-------------><
+                            +-,-pointSize--+  +-,-additional--+
+]]>
+</programlisting>
+</section>
+
+</section> <!-- END Section Extended Window Methods  -->
+
 
 <section id="comboboxmeth"><title>Combo Box Methods</title>
 <indexterm><primary>combo box methods</primary></indexterm>
@@ -9763,26 +9608,119 @@ to manually update the display.
 <![CDATA[
 >>--getControlText(--id--)-------------------------------><
 
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getControlText</emphasis> method gets the text of the specified dialog control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>The only argument is:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The text of the dialog control, which may be the empty string.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    All windows can have text associated with them, although some times it is simply the empty string. For different
+    types of windows the text serves different purposes and is called various things. For buttons the text is often
+    called labels, for dialogs and main windows the text is often called the window title.
+  </para>
+  <para>
+    If the empty string is returned, the programmer can check the <emphasis role="italic">.SystemErrorCode</emphasis>
+    for error.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSetControlText"><title>setControlText</title>
+<indexterm><primary>setControlText</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setControlText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getControlText(--id--,--text--)-------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">getControlText</emphasis> method returns the text of the specified dialog control.
+  The <emphasis role="italic">setControlText</emphasis> method sets the text of the specified dialog control to that
+  specified.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem>
-<para>
-  The resource ID of the dialog control. May be numeric or symbolic.
-</para>
-</listitem></varlistentry>
-</variablelist>
-</para>
-</listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The new text for the dialog control.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      Error.
+     </para>
+    </listitem></varlistentry>
+  </variablelist>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    All windows can have text associated with them, although some times it is simply the empty string. For different
+    types of windows the text serves different purposes and is called various things. For buttons the text is often
+    called labels, for dialogs and main windows the text is often called the window title.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -11496,7 +11434,7 @@ a button. It is used to move bitmaps within buttons. </para>
 <indexterm><primary>Deprecated</primary><secondary>getSystemMetrics</secondary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getSystemMetrics</tertiary></indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this mehtod the functionally equivalent <link
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method the functionally equivalent <link
   linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the <emphasis
   role="italic">.DlgUtil</emphasis>class.
 </para>
@@ -11511,12 +11449,33 @@ a button. It is used to move bitmaps within buttons. </para>
 </para>
 </section>
 
+<section<title>itemText</title>
+<indexterm><primary>itemText</primary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>itemText</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>itemText</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthSetControlText">setControlText</link>() method. <emphasis role="bold">Note</emphasis> that this method has
+  always been present in ooDialog, but was never previously documented.
+</para>
+</section>
+
 <section><title>setMenuItemRadio</title>
 <indexterm><primary>Deprecated</primary><secondary>setMenuItemRadio</secondary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>setMenuItemRadio</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
+</para>
+</section>
+
+<section<title>setStaticText</title>
+<indexterm><primary>setStaticText</primary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>setStaticText</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>setStaticText</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthSetControlText">setControlText</link>() method.
 </para>
 </section>
 

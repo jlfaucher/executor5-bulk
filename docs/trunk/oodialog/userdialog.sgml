@@ -41,14 +41,15 @@
     #
     #########################################################################
 -->
-<chapter id="clsUserDialog"><title>UserDialog Class</title>
+<chapter id="clsUserDialog"><title>User Dialogs</title>
 <indexterm><primary>UserDialog class</primary></indexterm>
 <para>
   The <computeroutput>UserDialog</computeroutput> class is a concrete subclass of <link linkend="chpDialogObject">dialog
-  object</link>. This class allows the programmer to dynamically define the dialog template in memory.  The class
-  provides methods to begin the dialog template, specifying the size, position, and other basic attributes of the
-  dialog.  In addition, methods are provided to create the dialog controls within the dialog.  These methods allow the
-  programmer to create any of the dialog controls supported by ooDialog.
+  object</link>. This class allows the programmer to dynamically define the dialog <link
+  linkend="ovvDialogTemplate">template</link> in memory. The class provides methods to begin the dialog template,
+  specifying the size, position, and other basic attributes of the dialog.  In addition, methods are provided to create
+  the dialog controls within the dialog. These methods allow the programmer to create any of the dialog controls
+  supported by ooDialog.
 </para>
 
 <para>
@@ -321,14 +322,6 @@
 <entry>SetMenu</entry>
 <entry><link linkend="smm">SetMenu</link></entry>
 </row>
-<row>
-<entry>StartIt</entry>
-<entry><link linkend="h002048">StartIt</link></entry>
-</row>
-<row>
-<entry>StopIt</entry>
-<entry><link linkend="h002057">StopIt</link></entry>
-</row>
 </tbody></tgroup>
 </table>
 </para>
@@ -385,7 +378,7 @@
   <para>
     If the programmer over-rides the <emphasis role="italic">init</emphasis> method in the subclass of the
     <computeroutput>UserDialog</computeroutput>, care must be taken to invoke the superclass <emphasis
-    role="italic">init</emphasis>method with the correct arguments.
+    role="italic">init</emphasis> method with the correct arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -8761,7 +8754,7 @@ MyDialog~sizeY-30, "VERTICAL BOTH AUTOTICKS")
 
 <para>The AddTabControl method adds a tab control to
 the dialog and connects it with a data attribute. For further information
-on tab controls, refer to <link linkend="tabcontrolc">TabControl Class</link>.</para>
+on tab controls, refer to <link linkend="clsTab">TabControl Class</link>.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -8864,74 +8857,6 @@ MyDialog~AddTabControl("PAGES","CURRENTPAGE", 10, 120, 200, 20, ,
 </variablelist>
 </section>
 
-<section id="dialogcontrolmeth"><title>Dialog Control Methods</title>
-<indexterm><primary>dialog control methods</primary></indexterm>
-<para>The methods described in this section control the execution of the dialog;
-they are for internal use only.</para>
-
-<section id="h002048"><title>StartIt</title>
-<indexterm><primary>StartIt</primary>
-<secondary>UserDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aUserDialog~StartIt(--+------+--+-----------+--)-------------><
-                         +-icon-+  +-,--modal--+
-
-
-]]>
-</programlisting>
-
-<para>The StartIt method is intended for internal use only. It is used to create
-a real Windows object based on a dialog template.  For a
-<computeroutput>RcDialog</computeroutput> the template is supplied by a resource
-script file.  For a <computeroutput>UserDialog</computeroutput> the template is
-created by using the <link linkend="sctCreateMethods">create... methods</link>.  The method
-is called by the <link linkend="h000048">Execute</link> or
-<link linkend="h000057">ExecuteAsync</link> methods.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Internal Use:</emphasis></term>
-<listitem><para>This method is intended for internal use.  It can be overridden,
-although that is not recommended.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>There are two optional arguments:
-<variablelist>
-<varlistentry><term>icon</term>
-<listitem><para>The resource ID of the icon to be used as the dialog icon.  When
-this argument is omitted the default dialog icon is used.
-</para></listitem></varlistentry>
-<varlistentry><term>modal</term>
-<listitem><para>If a modal or a modeless dialog is to be created.  A value of 0
-signals a modal dialog should be created.  A value of 1, or the string
-&quot;NOTMODAL&quot; case insignificant, signals a modeless dialog should be
-created.  The default is 0.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h002057"><title>StopIt</title>
-<indexterm><primary>Stopit</primary>
-<secondary>UserDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aUserDialog~StopIt------------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The StopIt method is for internal use only. It
-is the counterpart to the BaseDialog class StopIt method to remove the Windows object. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected and cannot be called from outside the instance.
-It can be overwritten, although this is not recommended.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-</section>
 
 <section id="menumeth"><title>Menu Methods</title>
 <indexterm><primary>Menu methods</primary></indexterm>

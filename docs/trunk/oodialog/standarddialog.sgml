@@ -282,7 +282,7 @@ action.
 <para>If the number is less than 0 then the message window is shown
 indefinitely.  The <computeroutput>Execute</computeroutput> method returns
 immediately.  In this case, the programmer needs to dismiss the window manually.
-This is done by invoking the <computeroutput>stopIt</computeroutput> method. See
+This is done by invoking the <computeroutput>ok</computeroutput> method. See
 <emphasis role="bold">Example 2</emphasis> below.
 </para></listitem></varlistentry>
 <varlistentry><term>earlyReply</term>
@@ -320,7 +320,7 @@ dlg = .TimedMessage~New("The WidgetCreator Application - loading ...", -
                         "The Widget Factory", -1)
 dlg~Execute
 ret = doStartup()
-dlg~stopIt
+dlg~ok
 drop dlg
 if ret <> 0 then do
   ...
@@ -398,7 +398,7 @@ class and how to add a background bitmap to the dialog window:
 duration (see <link linkend="initTimedMessage">init</link> method) is not
 negative, this method destroys the dialog automatically when the duration is up.
 If the duration is less than 0, then the programmer must destroy the dialog
-manually by invoking the <computeroutput>stopIt</computeroutput> method.  See
+manually by invoking the <computeroutput>ok</computeroutput> method.  See
 this <link linkend="example2TimedMessage">example</link> for a code snippet showing the
 procedure.
 </para>
@@ -1498,7 +1498,7 @@ returned.  The programmer only needs to use this to dismiss / destroy the dialog
 dlg = timedMessage("The WidgetCreator Application - loading ...", -
                    "The Widget Factory", -1)
 ret = doStartup()
-dlg~stopIt
+dlg~ok
 if ret <> 0 then do
   ...
 end

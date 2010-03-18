@@ -41,13 +41,17 @@
     #
     #########################################################################
 -->
-<chapter id="clsCategoryDialog"><title>CategoryDialog Class</title>
+<chapter id="clsCategoryDialog"><title>Category Dialogs</title>
 <indexterm><primary>CategoryDialog class</primary></indexterm>
-<para>The CategoryDialog class creates and controls a
-dialog that has more than one panel. It is similar to the notebook control available in OS/2 or the property sheet available in the Windows 95 user interface.</para>
-<para>Depending on the style you choose, you can switch among different pages
-by either clicking radio buttons or selecting an item from a drop down list.
-Each page has its own window controls. </para>
+<para>
+  The <computeroutput>CategoryDialog</computeroutput> class creates and controls a dialog that has more than one page.
+  It is similar to the notebook control available in OS/2 or the property sheet available in the Windows 95 user
+  interface.
+</para>
+<para>
+  Depending on the style you choose, you can switch among different pages by either clicking radio buttons or selecting
+  an item from a drop down list. Each page has its own window controls.
+</para>
 <variablelist>
 <varlistentry><term>Requires:</term>
 <listitem><para><computeroutput>CatDlg.cls</computeroutput> is the source file of this class.
@@ -336,10 +340,6 @@ a category dialog.
 <entry>ShowCategoryItem</entry>
 <entry><link linkend="h100543">ShowCategoryItem</link></entry>
 </row>
-<row>
-<entry>StartIt</entry>
-<entry><link linkend="h100113">StartIt</link></entry>
-</row>
 </tbody></tgroup>
 </informaltable>
 </para></listitem></varlistentry>
@@ -491,15 +491,6 @@ this Catalog entry.</para>
 </listitem></varlistentry>
 <varlistentry><term>count</term>
 <listitem><para>Number of categories
-</para></listitem></varlistentry>
-<varlistentry><term>handles</term>
-<listitem><para>For internal use only
-</para></listitem></varlistentry>
-<varlistentry><term>id</term>
-<listitem><para>For internal use only
-</para></listitem></varlistentry>
-<varlistentry><term>category</term>
-<listitem><para>For internal use only
 </para></listitem></varlistentry>
 <varlistentry><term>page</term>
 <listitem><para>A directory with the following entries:</para>
@@ -842,45 +833,6 @@ without an action. The user can override this method to react to page changes. <
 </variablelist>
 </section>
 
-<section id="h100113"><title>StartIt</title>
-<indexterm><primary>StartIt</primary>
-<secondary>CategoryDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aCategoryDialog~StartIt-------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The <computeroutput>StartIt</computeroutput> method is called by the
-<link linkend="h000048">Execute</link> or <link linkend="h000057">ExecuteAsync</link>
-methods to create a real Windows object based on a dialog template.  In the
-<computeroutput>CategoryDialog</computeroutput> class the Windows object(s) are
-created in the <computeroutput>defineDialog</computeroutput> method.  Therefore,
-the <computeroutput>StartIt</computeroutput> method is overridden in this class
-to change the default behavior of the superclass.  (If unchanged the superclass
-would create a second duplicate Windows object from the dialog template.)</para>
-<para>You might override this method in your subclass, but be sure to forward
-the message to the parent method and to return the result to the caller.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This is a template for overridding this method:
-
-<programlisting>
-<![CDATA[
-::class MyCatDlg subclass CategoryDialog
-::method StartIt
-   say "this is method "StartIt" !"
-   self~StartIt:super()
-   handle = result
-   ...
-   return handle
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 </section>
 
 <section id="connectmeth"><title>Connect... Methods</title>
@@ -991,7 +943,7 @@ the mixin class name &quot;AdvancedControls&quot;. For example:</para>
 ]]>
 </programlisting>
 
-<para>For more information, see <link linkend="mthSetStaticData">setStaticData</link>.</para>
+<para>For more information, see TODO SORT THIS OUT DEPRECATED OR WHAT?</para>
 </section>
 
 <section id="h100355"><title>GetCategoryEntryLine</title>

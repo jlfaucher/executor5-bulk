@@ -103,8 +103,9 @@
 </table>
 </para>
 
-<section id="clsButtonControl"><title>ButtonControl Class</title>
+<section id="clsButtonControl"><title>Push Buttons</title>
 <indexterm><primary>ButtonControl class</primary></indexterm>
+<indexterm><primary>Push buttons</primary></indexterm>
 <para>
   Push buttons are rectangular controls containing a label (a text string,) an icon, or a bitmap defined
   by the programmer. The label or image  indicates what the button does when it is pushed or clicked. A
@@ -118,23 +119,12 @@
   matter which control currently has the input focus.
 </para>
 <para>
-  The ButtonControl class provides methods to query and modify push button controls. In addition, the
-  class has methods that allow the Rexx programmer to partially implement owner drawn buttons using
-  bitmaps.
+  The <computeroutput>ButtonControl</computeroutput> class provides methods to query and modify all types of button
+  controls, including push buttons. It is the superclass of both the <link linkend="clsRadiobutton">RadioButton</link>
+  and <link linkend="clsCheckbox">CheckBox</link> classes. In addition, the class has methods that allow the Rexx
+  programmer to partially implement owner drawn buttons using bitmaps.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Requires</emphasis>:</term>
-  <listitem>
-    <para>
-      The ButtonControl class requires the class definition file
-      <computeroutput>oodwin32.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "oodwin32.cls"
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
   <listitem>
     <para>
@@ -178,18 +168,20 @@
       button events.
     </para>
   </listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Methods</emphasis>:</term>
-<listitem>
+</variablelist>
+
+<section id="sctMethodsButtonControl"><title>Method Table</title>
+
 <para>
-  The ButtonControl class implements the class and instance methods listed in the following table.
+  The <computeroutput>ButtonControl</computeroutput> class implements the class and instance methods listed in the following table.
 </para>
 <table id="t000023" frame="all">
 <title>ButtonControl Instance Methods</title>
 <tgroup cols="2">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...on page</entry>
+<entry>Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
@@ -283,13 +275,10 @@
 </row>
 </tbody></tgroup>
 </table>
-</listitem></varlistentry>
-</variablelist>
-
+</section>
 
 <section id="mthPush"><title>push</title>
-<indexterm><primary>push</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<indexterm><primary>push</primary><secondary>ButtonControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--push---------------------------------------><
@@ -1765,9 +1754,10 @@ within the associated bitmap button from one position to another.</para>
 <para>For an explanation of the arguments, refer to
 <link linkend="h001172">ScrollBitmapFromTo</link>.</para>
 </section>
+
 </section>
 
-<section id="clsRadioButton"><title>RadioButton Class</title>
+<section id="clsRadioButton"><title>Radio Buttons</title>
 <indexterm><primary>RadioButton class</primary></indexterm>
 <para>
    Radio buttons consist of a round button and a programmer defined label, icon, or bitmap that indicates
@@ -1779,18 +1769,6 @@ within the associated bitmap button from one position to another.</para>
   The RadioButton class provides methods to query and modify radio button controls.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Requires</emphasis>:</term>
-  <listitem>
-    <para>
-      The RadioButton class requires the class definition file <computeroutput>oodWin32.cls
-      </computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "oodWin32.cls"
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
   <listitem>
     <para>
@@ -1836,18 +1814,21 @@ within the associated bitmap button from one position to another.</para>
       of events as with a ButtonControl: <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
     </para>
   </listitem></varlistentry>
-  <varlistentry><term>Methods:</term>
-  <listitem>
-    <para>
-      The RadioControl class implements the class and instance methods listed in the following table:
-    </para>
+</variablelist>
+
+<section id="sctMethodsRadioButton"><title>Method Table</title>
+
+<para>
+  The <computeroutput>RadioButton</computeroutput> class implements the class and instance methods listed in the
+  following table:
+</para>
 <table id="t000024" frame="all">
 <title>RadioButton Class and Instance Methods</title>
 <tgroup cols="2">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...Description</entry>
+<entry>Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
@@ -1868,22 +1849,13 @@ within the associated bitmap button from one position to another.</para>
 <entry><link linkend="mthGetCheckStateClsRadioButton">getCheckState</link></entry>
 </row>
 <row>
-<entry>indeterminate <emphasis role="bold">Deprecated</emphasis></entry>
-<entry><link linkend="deprecatedIndeterminate">indeterminate</link></entry>
-</row>
-<row>
-<entry>isChecked <emphasis role="bold">Deprecated</emphasis></entry>
-<entry><link linkend="mthIsChecked">isChecked</link></entry>
-</row>
-<row>
 <entry>uncheck</entry>
 <entry><link linkend="mthUncheck">uncheck</link></entry>
 </row>
 </tbody></tgroup>
 </table>
-  </listitem></varlistentry>
-</variablelist>
 
+</section>
 
 <section id="mthcheckInGroupCls"><title>checkInGroup (Class)</title>
 <indexterm><primary>checkInGroup</primary></indexterm>
@@ -2092,46 +2064,38 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 </para>
 </section>
 
-<section id="mthIsChecked"><title>isChecked <emphasis role="bold">(deprecated)</emphasis></title>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>RadioButton class</secondary>
-  <tertiary>isChecked</tertiary>
-</indexterm>
-<note><title>Note</title><para>
-  This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthGetCheckStateClsRadioButton">getCheckState</link>() method for radio buttons, and the
-  overridden <link linkend="mthGetCheckStateClsCheckBox">getCheckState</link>() method for check boxes.
-  This method was poorly named and in some circumstances produced inconsistent results.  Do not use this
-  method in new code. Try to migrate existing code to the appropriate
-  <computeroutput>getCheckState()</computeroutput> method. This method may not exist in
-  future versions of ooDialog.
-</para></note>
+<section id="deprecatedRadiobuttonMethods"><title>Deprecated Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>radio button methods</secondary></indexterm>
+<para>
+  <link linkend="ovvDeprecated">Deprecated</link> readio button methods and their replacement methods are listed in this
+  section.
+</para>
 
+<section><title>isChecked</title>
+<indexterm><primary>Deprecated</primary><secondary>RadioButton class</secondary><tertiary>isChecked</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetCheckStateClsRadioButton">getCheckState</link>() method for radio buttons, and the overridden <link
+  linkend="mthGetCheckStateClsCheckBox">getCheckState</link>() method for check boxes. This method was poorly named and
+  in some circumstances produced inconsistent results.
+</para>
 </section>
 
-<section id="deprecatedIndeterminate"><title>indeterminate <emphasis role="bold">(deprecated)</emphasis></title>
-<indexterm>
-  <primary>Deprecated</primary>
-  <secondary>RadioButton class</secondary>
-  <tertiary>indeterminate</tertiary>
-</indexterm>
-<note><title>Note</title><para>
-  This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthSetIndeterminate">setIndeterminate</link>() method of the <link
-  linkend="clsCheckBox">CheckBox</link> class. Radio buttons can not be set to indeterminate. Using this
-  method with a radio button sets it to the checked state, not the indeterminate state. In addition, this
-  method was poorly named. One can check a button, but one does not indeterminate a check box. Do not use
-  this method in new code. Try to migrate existing code to the
-  <computeroutput>setIndeterminate()</computeroutput> method. This method may not exist in future
-  versions of ooDialog.
-</para></note>
-
+<section><title>indeterminate</title>
+<indexterm><primary>Deprecated</primary><secondary>RadioButton class</secondary><tertiary>indeterminate</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthSetIndeterminate">setIndeterminate</link>() method of the <link linkend="clsCheckBox">CheckBox</link>
+  class. Radio buttons can not be set to indeterminate. Using this method with a radio button sets it to the checked
+  state, not the indeterminate state. In addition, this method was poorly named. One can check a button, but one does
+  not indeterminate a check box.
+</para>
 </section>
 
 </section>
+</section>
 
-<section id="clsCheckBox"><title>CheckBox Class</title>
+<section id="clsCheckBox"><title>Check Boxes</title>
 <indexterm><primary>CheckBox class</primary></indexterm>
 <para>
   Check boxes are similar in many ways to radio buttons. A check box consists of a square box and a
@@ -2155,18 +2119,6 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 </para>
 
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Requires</emphasis>:</term>
-  <listitem>
-    <para>
-      The CheckBox class requires the class definition file <computeroutput>oodWin32.cls
-      </computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "oodWin32.cls"
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
   <listitem>
     <para>
@@ -2213,11 +2165,14 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
       ButtonControl: the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
     </para>
   </listitem></varlistentry>
-  <varlistentry><term>Methods:</term>
-  <listitem>
-    <para>
-      The CheckBox class implements the instance methods listed in the following table:
-    </para>
+</variablelist>
+
+<section id="sctMethodsCheckBox"><title>Method Table</title>
+
+<para>
+  The CheckBox class implements the instance methods listed in the following table:
+</para>
+
 <table id="tblCheckBoxMethods" frame="all">
 <title>CheckBox Instance Methods</title>
 <tgroup cols="2">
@@ -2242,8 +2197,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 </row>
 </tbody></tgroup>
 </table>
-  </listitem></varlistentry>
-</variablelist>
+</section>
 
 <section id="mthIsIndeterminate"><title>isIndeterminate</title>
 <indexterm><primary>checked</primary></indexterm>
@@ -2368,7 +2322,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 
 </section>
 
-<section id="clsGroupBox"><title>GroupBox Class</title>
+<section id="clsGroupBox"><title>Group Boxes</title>
 <indexterm><primary>GroupBox class</primary></indexterm>
 <para>
   The Windows Group Box control is actually a button control, not a static control.  Its purpose is to
@@ -2523,7 +2477,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 
 </section>
 
-<section id="anibut"><title>AnimatedButton Class</title>
+<section id="anibut"><title>Animated Buttons</title>
 <indexterm><primary>AnimatedButton class</primary></indexterm>
 <para>The AnimatedButton class provides the methods to
 implement an animated button within a dialog. The attributes and methods are
