@@ -1472,9 +1472,9 @@ Help request:
 
   ...
   if self~hasKeyPressConnection then
-    self~getCheckControl(IDC_CHECK_FKEYSENABlED)~check
+    self~newCheckBox(IDC_CHECK_FKEYSENABlED)~check
   else
-    self~getCheckControl(IDC_CHECK_FKEYSENABlED)~uncheck
+    self~newCheckBox(IDC_CHECK_FKEYSENABlED)~uncheck
   ...
 
 ]]>
@@ -1923,7 +1923,7 @@ lo word resource ID:       1003
 
 <para>
   Connects a method in the Rexx dialog to the Windows <link linkend="ovvEvents">event</link> notification from a <link
-  linkend="clsButtonControl">button</link> control  The <emphasis role="italic">connectButtonEvent</emphasis> method is
+  linkend="clsButton">button</link> control  The <emphasis role="italic">connectButtonEvent</emphasis> method is
   used for all types of buttons (push button, radio button, or check box.)
 </para>
 <variablelist>
@@ -2259,7 +2259,7 @@ it to 0 when a nonnumeric value was entered:
   self~connectEditEvent("AMOUNT", "CHANGE")
 
 ::method OnChange
-  ec = self~GetEditControl("AMOUNT")
+  ec = self~newEdit("AMOUNT")
   if ec~GetText~Space(0) \= "" & ec~GetText~DataType("N") = 0 then do
     ec~SetModified(0)
     ec~Select
@@ -2349,7 +2349,7 @@ incorrect.
   self~connectListBoxEvent("MYLIST", "SELCHANGE", "SelectionChanged")
 
 ::method SelectionChanged
-  li = self~GetListBox("MYLIST")
+  li = self~newListBox("MYLIST")
   say "New selection is:" li~Selected
 ]]>
 </programlisting>
@@ -2596,7 +2596,7 @@ for POSITION, which is to be 4:
   pos = .DlgUtil~hiWord(ev_pos)
 
   -- redraw scroll bar with new position
-  self~GetScrollBar("MYSCROLL")~setPos(pos,1)
+  self~newScrollBar("MYSCROLL")~setPos(pos,1)
 
   say "Pos:" pos
   say "Verify event code (should be 4):" .DlgUtil~loWord(ev_pos)
@@ -3038,7 +3038,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 
   ::method ColumnAction
     use arg id, column
-    lc = self~GetListControl("EMPLOYEES")
+    lc = self~newListView("EMPLOYEES")
     lc~ReplaceStyle("REPORT", "SMALLICON EDIT SINGLESEL ASCENDING")
     if column > 0 then ...
   ]]>
@@ -3203,7 +3203,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
     expose mailList
 
     ...
-    mailList = self~getListControl(IDC_LV_ADDRESSES)
+    mailList = self~newListView(IDC_LV_ADDRESSES)
     ...
 
     -- Since the methodName argument is omitted, ooDialog will construct a default
@@ -3433,7 +3433,7 @@ list item to be dragged, and the point where the mouse cursor was pressed
     self~connectTreeViewEvent("FileTree", "SELCHANGED", "NewTreeSelection")
 
   ::method NewTreeSelection
-    tc = self~GetTreeControl("FileTree")
+    tc = self~newTreeView("FileTree")
     info. = tc~ItemInfo(tc~Selected)
     say "New selection is:" info.!text
   ]]>

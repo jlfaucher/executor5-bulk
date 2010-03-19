@@ -80,7 +80,7 @@
 <tbody>
 <row>
 <entry>Push Button</entry>
-<entry><link linkend="clsButtonControl">ButtonControl Class</link></entry>
+<entry><link linkend="clsButton">ButtonControl Class</link></entry>
 </row>
 <row>
 <entry>Check Box Button</entry>
@@ -97,13 +97,13 @@
 <row>
 <entry>Owner Drawn Button</entry>
 <entry><link linkend="anibut">AnimatedButton Class</link>,
-<link linkend="clsButtonControl">ButtonControl Class</link></entry>
+<link linkend="clsButton">ButtonControl Class</link></entry>
 </row>
 </tbody></tgroup>
 </table>
 </para>
 
-<section id="clsButtonControl"><title>Push Buttons</title>
+<section id="clsButton"><title>Push Buttons</title>
 <indexterm><primary>ButtonControl class</primary></indexterm>
 <indexterm><primary>Push buttons</primary></indexterm>
 <para>
@@ -148,7 +148,7 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
     <para>
-      Use the <link linkend="mthGetButtonControl">getButtonControl</link>() method to retrieve an object of
+      Use the <link linkend="mthNewPushButton">newPushButton</link>() method to retrieve an object of
       the button control class.
     </para>
   </listitem></varlistentry>
@@ -309,7 +309,7 @@
 ::method validateHandle private
     use strict arg hwnd
     if \ self~isWindowHandle(hwnd) then do
-        self~getButtonControl(IDC_PB_REFRESH)~push
+        self~newPushButton(IDC_PB_REFRESH)~push
         return .false
     end
     ...
@@ -347,7 +347,7 @@ return .true
   cancel button.  (Provided of course that the dialog has a cancel button.)
 <programlisting>
 <![CDATA[
-self~getButtonControl(IDCANCEL)~click
+self~newPushButton(IDCANCEL)~click
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -407,7 +407,7 @@ from the text string, the button does not have the focus.
 <listitem><para>
 <programlisting>
 <![CDATA[
-button = MyDialog~GetButtonControl("IDOK")
+button = MyDialog~newPushButton("IDOK")
 if button == .Nil then return
 say button~State
 ]]>
@@ -477,7 +477,7 @@ say button~State
 <listitem><para>
 <programlisting>
 <![CDATA[
-button = MyDialog~GetButtonControl("IDOK")
+button = MyDialog~newPushButton("IDOK")
 if button == .Nil then return
 button~state="FOCUS PUSHED"
 ]]>
@@ -695,7 +695,7 @@ except that the operating system maintains the check state for the programmer.
 <listitem><para>The following example makes the OK button the default button:
 <programlisting>
 <![CDATA[
-button = MyDialog~GetButtonControl("IDOK")
+button = MyDialog~newPushButton("IDOK")
 if button == .Nil then return
 button~style="DEFPUSHBUTTON"
 ]]>
@@ -712,13 +712,13 @@ button~style="DEFPUSHBUTTON"
   use arg wParam, lParam
 
   id = .DlgUtil~loWord(wParam)
-  if self~getCheckControl(id)~checked then do
-    chkButton = self~getCheckControl(IDC_CHECK_TWO)
+  if self~newCheckBox(id)~checked then do
+    chkButton = self~newCheckBox(IDC_CHECK_TWO)
     chkButton~style = "MULTILINE TOP HCENTER"
     chkButton~setTitle("Use IPv6 not IPv4 during this connection")
   end
   else do
-    chkButton = self~getCheckControl(IDC_CHECK_TWO)
+    chkButton = self~newCheckBox(IDC_CHECK_TWO)
     chkButton~style = "NOTMULTILINE VCENTER LEFT"
     chkButton~setTitle("Connect")
   end
@@ -782,7 +782,7 @@ button~style="DEFPUSHBUTTON"
 <programlisting>
 <![CDATA[
 
-  size = self~getButtonControl(IDC_PB_REVIEW)~getIdealSize
+  size = self~newPushButton(IDC_PB_REVIEW)~getIdealSize
   say 'The ideal height for the button is' size~height'
   say 'The ideal width for the button is' size~width
 
@@ -837,7 +837,7 @@ button~style="DEFPUSHBUTTON"
 <para> This example gets the text margins for the Redraw button and displays the information:
 <programlisting>
 <![CDATA[
-margins = self~getButtonControl(IDC_PB_REDRAW)~getTextMagin
+margins = self~newPushButton(IDC_PB_REDRAW)~getTextMagin
 say 'The text margins for the "Redraw" button:'
 say '  Left:  ' margins~left
 say '  Top:   ' margins~top
@@ -908,7 +908,7 @@ say '  Bottom:' margins~bottom
 <programlisting>
 <![CDATA[
 margins = .Rect~new(5, 5, 5, 5)
-self~getButtonControl(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
+self~newPushButton(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -988,7 +988,7 @@ self~getButtonControl(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 <programlisting>
 <![CDATA[
 
-  pbView = self~getButtonControl(IDC_PB_VIEW)
+  pbView = self~newPushButton(IDC_PB_VIEW)
   d = pbView~getImageList
 
   say 'Got image list:' d
@@ -1252,7 +1252,7 @@ return 0
 <programlisting>
 <![CDATA[
 ::method cancel
-  button = self~getButtonControl(IDC_PB_PUSHME)
+  button = self~newPushButton(IDC_PB_PUSHME)
   image = button~getImage
   if image <> .nil then image~release
   return self~cancel:super
@@ -1312,7 +1312,7 @@ return 0
 ::method initDialog
   module = .ResourceImage~new("imageButton.dll", self)
   image = module~getImage(101)
-  self~getButtonControl(IDC_PB_PUSHME)~setImage(image)
+  self~newPushButton(IDC_PB_PUSHME)~setImage(image)
   self~connectButtonEvent(IDC_PB_PUSHME, "CLICKED", onPushMe)
 ]]>
 </programlisting>
@@ -1403,7 +1403,7 @@ library.
 <listitem><para>
 <programlisting>
 <![CDATA[
-button = MyDialog~GetButtonControl("IDOK")
+button = MyDialog~newPushButton("IDOK")
 if button == .Nil then return
 button~ChangeBitmap("AddBut_n.bmp", "AddBut_f.bmp", "AddBut_s.bmp", ,
 "AddBut_d.bmp", "FRAME")
@@ -1446,7 +1446,7 @@ be used.
 button 4 screen pixels to the right and 3 pixels upward:
 <programlisting>
 <![CDATA[
-button = MyDialog~GetButtonControl("IDOK")
+button = MyDialog~newPushButton("IDOK")
 if button == .Nil then return
 parse value button~GetBmpDisplacement with dx dy
 button~DisplacementBitmap(244, dx+4, dy-3)
@@ -1590,7 +1590,7 @@ top of the client area, one move is 3 screen pixels, and the delay time after
 each movement is 15 ms.
 <programlisting>
 <![CDATA[
-button = MyDialog~GetButtonControl("IFOK")
+button = MyDialog~newPushButton("IFOK")
 if button == .Nil then return
 button~ScrollText("Hello world!", "Arial", 36, "BOLD ITALIC", 2, 3, 15, 4)
 ]]>
@@ -1773,7 +1773,7 @@ within the associated bitmap button from one position to another.</para>
   <listitem>
     <para>
       The radio button class is a direct subclass of the <link
-      linkend="clsButtonControl">ButtonControl</link> class, and therefore an indirect subclass of the
+      linkend="clsButton">ButtonControl</link> class, and therefore an indirect subclass of the
       <link linkend="chpDialogControlObject">DialogControl class</link> class. Thus it inherits all the methods
       of both classes.
     </para>
@@ -1794,7 +1794,7 @@ within the associated bitmap button from one position to another.</para>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
     <para>
-      Use the <link linkend="mthGetRadioControl">getRadioControl</link>() method to retrieve an object of
+      Use the <link linkend="mthNewRadioButton">newRadioButton</link>() method to retrieve an object of
       the radio button class.
     </para>
   </listitem></varlistentry>
@@ -1963,10 +1963,10 @@ return 0
       selection:
 <programlisting>
 <![CDATA[
-if self~getRadioControl(IDC_RB_CURRENT)~checked then do
+if self~newRadioButton(IDC_RB_CURRENT)~checked then do
   --Print the current page ...
 end
-else if self~getRadioControl(IDC_RB_ALL)~checked then do
+else if self~newRadioButton(IDC_RB_ALL)~checked then do
   -- Print all pages ...
 end
 else do
@@ -2024,7 +2024,7 @@ end
       This method is straightforward to use:
 <programlisting>
 <![CDATA[
-rb = self~getRadioControl(IDC_RB_ITALIC)
+rb = self~newRadioButton(IDC_RB_ITALIC)
 if rb~getCheckState == "CHECKED" then self~printInItalics()
 ...
 ]]>
@@ -2124,7 +2124,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
     <para>
       The check box class is a direct subclass of the <link linkend="clsRadioButton">RadioButton</link>
       class, and therefore an indirect subclass of the <link
-      linkend="clsButtonControl">ButtonControl</link> class and the <link
+      linkend="clsButton">ButtonControl</link> class and the <link
       linkend="chpDialogControlObject">DialogControl class</link> class. It inherits all the methods of all
       three classes.
     </para>
@@ -2145,7 +2145,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
     <para>
-      Use the <link linkend="mthGetCheckControl">getCheckControl</link>() method to retrieve an object of
+      Use the <link linkend="mthNewCheckBox">newCheckBox</link>() method to retrieve an object of
       the check box class.
     </para>
   </listitem></varlistentry>
@@ -2231,7 +2231,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 
 <programlisting>
 <![CDATA[
-  chkBox = self~getCheckControl(IDC_CHK_BACKGROUND)
+  chkBox = self~newCheckBox(IDC_CHK_BACKGROUND)
   if chkBox~isIndeterminate then return self~grayBackground
 ]]>
 </programlisting>
@@ -2288,7 +2288,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
       This example is a variation of the example for the isIndeterminate() method.
 <programlisting>
 <![CDATA[
-  state = self~getCheckControl(IDC_CHK_BACKGROUND)~getCheckState
+  state = self~newCheckBox(IDC_CHK_BACKGROUND)~getCheckState
 
   select
     when state == "CHECKED" then return self~blackBackground
@@ -2353,7 +2353,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
     <para>
       Although the group box is a button, since it does not have a state, can not be selected, does not
       send notifications, etc., it does not inherit from the <link
-      linkend="clsButtonControl">ButtonControl</link> class. A group box does not share behaviour or
+      linkend="clsButton">ButtonControl</link> class. A group box does not share behaviour or
       characteristics with the other button classes. Therefore, the group box class is a direct subclass
       of the <link linkend="chpDialogControlObject">DialogControl</link> class. It therefore inherits all
       methods of that class.
@@ -2375,7 +2375,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
     <para>
-      Use the <link linkend="mthGetGroupBox">getGroupBox</link>() method to retrieve an object of
+      Use the <link linkend="mthNewGroupBox">newGroupBox</link>() method to retrieve an object of
       the group box class.
     </para>
   </listitem></varlistentry>
@@ -2465,7 +2465,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
     <para> Changing the style is staightforward:
 <programlisting>
 <![CDATA[
-  gb = self~getGroupBox(IDC_GB_AREACODES)
+  gb = self~newGroupBox(IDC_GB_AREACODES)
   if gb == .Nil then return
   gb~style="RIGHT"
 ]]>

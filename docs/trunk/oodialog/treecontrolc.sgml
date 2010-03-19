@@ -41,7 +41,7 @@
     #
     #########################################################################
 -->
-<chapter id="treecontrolc"><title>Tree View Controls</title>
+<chapter id="clsTreeView"><title>Tree View Controls</title>
 <indexterm><primary>TreeControl class</primary></indexterm>
 <para>The tree view control is a dialog that displays a hierarchical list of
 items, such as the headings in a document, the entries in an index, or the
@@ -337,7 +337,7 @@ is expanded. The text strings for the items are loaded from a file.
 ::method OnExpanding_IDC_TREE
   use arg tree, item
   itemFile = "root6.inp"
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   itemInfo. = curTree~ItemInfo(item)
 
   if itemInfo.!TEXT = "Root 6" & \itemInfo.!STATE~POS("EXPANDED") then
@@ -465,7 +465,7 @@ child items only when the user expands the item.</para>
 <![CDATA[
 ::method InitDialog
   InitDlgRet = self~InitDialog:super
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   if curTree \= .Nil then
   do
     curTree~Add("Peter", , ,"BOLD EXPANDED")
@@ -622,7 +622,7 @@ when it is selected:</para>
 <programlisting>
 <![CDATA[
 ::method OnSelChanging_IDC_TREE
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   curTree~Modify(curTree~selected, , , ,"BOLD")
 ]]>
 </programlisting>
@@ -711,7 +711,7 @@ to parent items.
 <programlisting>
 <![CDATA[
 ::method Info
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   itemInfo. = curTree~ItemInfo(curTree~Selected)
   say itemInfo.!TEXT
   say itemInfo.!CHILDREN
@@ -745,7 +745,7 @@ in a tree view control.</para>
 <programlisting>
 <![CDATA[
 ::method Count
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   say curTree~Items
 ]]>
 </programlisting>
@@ -779,7 +779,7 @@ visible:
 <programlisting>
 <![CDATA[
 ::method Visible
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   say curTree~VisibleItems
 ]]>
 </programlisting>
@@ -808,7 +808,7 @@ item of the tree view control.</para>
 <programlisting>
 <![CDATA[
 ::method RootName
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   itemInfo. = curTree~ItemInfo(curTree~Root)
   say ItemInfo.!Text
 ]]>
@@ -848,7 +848,7 @@ specified or is 0, or 0 in all other cases.
 <programlisting>
 <![CDATA[
 ::method Parent
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   itemInfo. = curTree~ItemInfo(curTree~Parent(curTree~Selected))
   say ItemInfo.!Text
 ]]>
@@ -888,7 +888,7 @@ retrieved.
 <programlisting>
 <![CDATA[
 ::method Child
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   itemInfo. = curTree~ItemInfo(curTree~Child(curTree~Selected))
   say ItemInfo.!Text
 ]]>
@@ -919,7 +919,7 @@ item.</para>
 <programlisting>
 <![CDATA[
 ::method SelectedName
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   itemInfo. = curTree~ItemInfo(curTree~Selected)
   say ItemInfo.!Text
 ]]>
@@ -970,7 +970,7 @@ item in the client window of a tree view control.</para>
 <programlisting>
 <![CDATA[
 ::method FirstVisibleName
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   itemInfo. = curTree~ItemInfo(curTree~FirstVisible)
   say ItemInfo.!Text
 ]]>
@@ -1011,7 +1011,7 @@ siblings:
 <programlisting>
 <![CDATA[
 ::method SiblingNames
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   nextItem = curTree~Selected
   do while nextItem \= 0
     itemInfo. = curTree~ItemInfo(nextItem)
@@ -1156,7 +1156,7 @@ if any:
 <programlisting>
 <![CDATA[
 ::method IDC_PB_DELETE
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   curTree~Delete(curTree~Selected)
 ]]>
 </programlisting>
@@ -1232,7 +1232,7 @@ items associated with the specified parent item.</para>
 <programlisting>
 <![CDATA[
 ::method CollapseSelected
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   curTree~Collapse(curTree~Selected)
 ]]>
 </programlisting>
@@ -1283,7 +1283,7 @@ all its child items:
 <programlisting>
 <![CDATA[
 ::method CollapseSelectedAndReset
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   curTree~CollapseAndReset(curTree~Selected)
 ]]>
 </programlisting>
@@ -1331,7 +1331,7 @@ associated with the specified parent item.</para>
 <programlisting>
 <![CDATA[
 ::method ExpandSelected
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   curTree~Expand(curTree~Selected)
 ]]>
 </programlisting>
@@ -1381,7 +1381,7 @@ collapsing a selected item:
 <programlisting>
 <![CDATA[
 ::method ToggleSelected
-  curTree = self~GetTreeControl("IDC_TREE")
+  curTree = self~newTreeView("IDC_TREE")
   curTree~Toggle(curTree~Selected)
 ]]>
 </programlisting>

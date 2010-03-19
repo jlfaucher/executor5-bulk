@@ -48,8 +48,8 @@ which are also called entry lines in the ooDialog documentation. It inherits all
 methods of the DialogControl class (see page <link
 linkend="chpDialogControlObject">DialogControl Class</link>).
 </para>
-<para>Use the GetEditControl method (see page <link
-linkend="geteditcontrol">GetEditControl</link>) to retrieve an object of the
+<para>Use the newEdit method (see page <link
+linkend="mthNewEdit">newEdit</link>) to retrieve an object of the
 EditControl class.
 </para>
 <variablelist>
@@ -228,7 +228,7 @@ text selection of the edit control NAME. It then selects the entire text of
 the edit control.
 <programlisting>
 <![CDATA[
-edit = MyDialog~GetEditControl("NAME")
+edit = MyDialog~newEdit("NAME")
 if edit == .Nil then return
 parse value edit~Selected with start end
 say "Starting index of selection is" start
@@ -327,7 +327,7 @@ is omitted, the scroll command is issued once.
 <listitem><para>The following example scrolls down 3 lines in the edit control:
 <programlisting>
 <![CDATA[
-edit = MyDialog~GetEditControl("NAME")
+edit = MyDialog~newEdit("NAME")
 if edit == .Nil then return
 edit~ScrollCommand("DOWN",3)
 ]]>
@@ -498,7 +498,7 @@ linkend="exampleSetText">SetText</link> example.
 <![CDATA[
 ::method Save
     /* write contents to file */
-    edit = MyDialog~GetEditControl("TEXT")
+    edit = MyDialog~newEdit("TEXT")
     ...
     edit~SetModified(0)
 ]]>
@@ -561,7 +561,7 @@ displays the number of text lines (3), the starting index of the second line
 (carriage return, 0x0d, and line feed, 0x0a, which mark a line break, are also
 considered to be characters), and the length of the third line:
 <programlisting> <![CDATA[
-editControl = MyDialog~GetEditControl("TEXT")
+editControl = MyDialog~newEdit("TEXT")
 if .nil == editControl then return
 
 text = "It is easy to learn and easy to use." || '0d0a'x || -
@@ -615,7 +615,7 @@ contained in the edit control or an invalid character index was specified,
 <listitem><para>The following example displays the line in which character 55 is contained:
 <programlisting>
 <![CDATA[
-edit = MyDialog~GetEditControl("TEXT")
+edit = MyDialog~newEdit("TEXT")
 if edit == .Nil then return
 
 "It is easy to learn and easy to use." || 13~d2c || 10~d2c ||,
@@ -696,7 +696,7 @@ you omit this argument, the maximum number of characters retrieved is 255.
 in a stem. If a line consists of more than 1024 characters, it is truncated.
 <programlisting>
 <![CDATA[
-edit = MyDialog~GetEditControl("EDITOR")
+edit = MyDialog~newEdit("EDITOR")
 if edit == .Nil then return
 do i = 1 to edit~Lines
    lines.i = edit~GetLine(i, 1024)
@@ -804,7 +804,7 @@ as a simple file editor:
 
 ::method initDialog
   expose editControl
-  editControl = self~getEditControl(110)
+  editControl = self~newEdit(110)
 
 ::method onOpen
   expose editControl
@@ -869,7 +869,7 @@ text in the associated edit control with a new one.</para>
 <listitem><para>
 <programlisting>
 <![CDATA[
-edit = MyDialog~GetEditControl("TEXT")
+edit = MyDialog~newEdit("TEXT")
 if edit == .Nil then return
 edit~Title = "Object Rexx is a hybrid language."
 edit~Select(17,25)
@@ -935,7 +935,7 @@ for the edit control, the dollar sign ($) is displayed
 for each character typed in the edit control:
 <programlisting>
 <![CDATA[
-edit = MyDialog~GetEditControl("TEXT")
+edit = MyDialog~newEdit("TEXT")
 if edit == .Nil then return
 edit~PasswordChar = "$"
 say "The new password character is" edit~PasswordChar
@@ -1032,7 +1032,7 @@ the left indent is 10 screen pixels and on the right there is a spacing of
 5 pixels between the text and the frame of the edit control:
 <programlisting>
 <![CDATA[
-edit = MyDialog~GetEditControl("TEXT")
+edit = MyDialog~newEdit("TEXT")
 if edit == .Nil then return
 edit~SetMargins(10, 5)
      parse value edit~Margins with left right
@@ -1354,7 +1354,7 @@ ballon tip is hidden by the program.
 ::method initDialog
   expose editControl hwndEditControl
 
-  editControl = self~getEditControl(IDC_ENTRYLINE)
+  editControl = self~newEdit(IDC_ENTRYLINE)
   hwndEditControl = self~getItem(IDC_ENTRYLINE)
 
   self~connectEditNotify(IDC_ENTRYLINE, GOTFOCUS, "onFocus")
@@ -1557,7 +1557,7 @@ handle of the edit control.
 group styles to an edit control.
 <programlisting>
 <![CDATA[
-editControl = dlg~getEditControl(IDC_ENTRYLINE)
+editControl = dlg~newEdit(IDC_ENTRYLINE)
 if .nil == editControl  then return
 editControl~addStyle("NUMBER TAB GROUP")
 ]]>
@@ -1629,7 +1629,7 @@ handle of the edit control.
 tabstop styles from an edit control.
 <programlisting>
 <![CDATA[
-editControl = dlg~getEditControl(IDC_ENTRYLINE)
+editControl = dlg~newEdit(IDC_ENTRYLINE)
 if .nil == editControl  then return
 editControl~removeStyle("LOWER GROUP")
 ]]>
@@ -1709,7 +1709,7 @@ handle of the edit control.
 allows numbers to one that uppercases all letters entered, while removing the
 tabstop style and adding the group style.
 <programlisting> <![CDATA[
-editControl = dlg~getEditControl(IDC_ENTRYLINE)
+editControl = dlg~newEdit(IDC_ENTRYLINE)
 if .nil == editControl then return
 editControl~replaceStyle("NUMBER TAB", "UPPER GROUP")
 ]]>
@@ -1770,7 +1770,7 @@ numbers only and accepting all characters based on the options the user has
 selected.
 <programlisting>
 <![CDATA[
-editControl = dlg~getEditControl(IDC_ENTRYLINE)
+editControl = dlg~newEdit(IDC_ENTRYLINE)
 if .nil == editControl then return
 style = editControl~getStyle
 if style~wordPos("NUMBER") <> 0 then

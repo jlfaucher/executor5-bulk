@@ -47,7 +47,7 @@
 each item consisting of an icon and a label. It provides several ways of arranging
 and displaying items. Refer to OODLIST.REX in the OODIALOG\SAMPLES directory
 for an example.</para>
-<para>Use the GetListControl method (see page <link linkend="getlistcontrol">GetListControl</link>)
+<para>Use the newListView method (see page <link linkend="mthNewListView">newListView</link>)
 to retrieve an object of the ListControl class.</para>
 <variablelist>
 <varlistentry><term>Notes</term>
@@ -565,13 +565,13 @@ of the different styles, refer to <link linkend="mthAddListControl">AddListContr
 ::method initDialog
   expose list
 
-  self~getRadioControl(IDC_RB_ICON)~check
+  self~newRadioButton(IDC_RB_ICON)~check
   self~connectButtonEvent(IDC_RB_REPORT, "CLICKED", onReport)
   self~connectButtonEvent(IDC_RB_LIST, "CLICKED", onList)
   self~connectButtonEvent(IDC_RB_ICON, "CLICKED", onIcon)
   self~connectButtonEvent(IDC_RB_SMALL_ICON, "CLICKED", onSmallIcon)
 
-  list  = self~getListControl(IDC_LV_VIEWS)
+  list  = self~newListView(IDC_LV_VIEWS)
 
   flags = .Image~toID(ILC_COLOR24)
   imageList = .ImageList~create(.Size~new(16), flags, 7, 0)
@@ -896,7 +896,7 @@ first column.
   expose listView
 
   ...
-  listView = self~getListControl(IDC_LIST)
+  listView = self~newListView(IDC_LIST)
   if listView == .nil then return
 
   listView~addExtendedStyle("CHECKBOXES GRIDLINES FULLROWSELECT HEADERDRAGDROP")
@@ -973,7 +973,7 @@ view.
 <programlisting>
 <![CDATA[
 
-  listView = self~getListControl(IDC_LIST)
+  listView = self~newListView(IDC_LIST)
   if listView == .nil then return
 
   listView~removeExtendedStyle("CHECKBOXES")
@@ -1058,7 +1058,7 @@ adds check boxes to the list view.
 <programlisting>
 <![CDATA[
 
-  listView = self~getListControl(IDC_LIST)
+  listView = self~newListView(IDC_LIST)
   if listView == .nil then return
 
   removeStyle = "UNDERLINECOLD UNDERLINEHOT"
@@ -1131,7 +1131,7 @@ view control does have the style.
   expose listView
 
   ...
-  listView = self~getListControl(IDC_LIST)
+  listView = self~newListView(IDC_LIST)
   if listView == .nil then return
 
   listView~addExtendedStyle("CHECKBOXES FULLROWSELECT TRACKSELECT")
@@ -1140,7 +1140,7 @@ view control does have the style.
 ::method onCheckboxClick
   expose listView
 
-  chkBox = self~getCheckControl(IDC_CHECK_USETRACKSELECT)
+  chkBox = self~newCheckBox(IDC_CHECK_USETRACKSELECT)
   if chkBox~checked then
     listView~addExtendedStyle("TRACKSELECT")
   else
@@ -1205,7 +1205,7 @@ replaces the <computeroutput>GetExtendedStyle</computeroutput> invocation with a
   expose listView
 
   ...
-  listView = self~getListControl(IDC_LIST)
+  listView = self~newListView(IDC_LIST)
   if listView == .nil then return
 
   listView~addExtendedStyle("CHECKBOXES FULLROWSELECT TRACKSELECT")
@@ -1214,7 +1214,7 @@ replaces the <computeroutput>GetExtendedStyle</computeroutput> invocation with a
 ::method onCheckboxClick
   expose listView
 
-  chkBox = self~getCheckControl(IDC_CHECK_USETRACKSELECT)
+  chkBox = self~newCheckBox(IDC_CHECK_USETRACKSELECT)
   if chkBox~checked then
     listView~addExtendedStyle("TRACKSELECT")
   else
@@ -1282,7 +1282,7 @@ incremented or decremented by .1 of a second.
   expose list
 
   ...
-  list = self~getListControl(IDC_LIST)
+  list = self~newListView(IDC_LIST)
   list~addExtendedStyle("ONECLICKACTIVATE TRACKSELECT FULLROWSELECT")
   list~setHoverTime(400)
   ...
@@ -1346,7 +1346,7 @@ second the row is automatically selectd.
 ::method initDilaog
 
   ...
-  list = self~getListControl(IDC_LIST)
+  list = self~newListView(IDC_LIST)
   list~addExtendedStyle("ONECLICKACTIVATE FULLROWSELECT TRACKSELECT")
 
   oldTime = list~setHoverTime(400)
@@ -1412,9 +1412,9 @@ with a specified zip code.
 
 ::method onUseZip
 
-  text = self~getEditControl(IDC_EDIT_ZIPCODE)~getText
+  text = self~newEdit(IDC_EDIT_ZIPCODE)~getText
   if self~validateZip(text) then do
-     list = self~getListControl(IDC_LIST)
+     list = self~newListView(IDC_LIST)
      do i = 0 to addresses~items - 1
        infoTable = address[i + 1]
        if infoTable['zip'] == text then list~check(i)
@@ -1486,7 +1486,7 @@ dynamically remove some patients from the statement list.
 ::method onDeferBilling
   expose billingList
 
-  text = self~getEditControl(IDC_EDIT_MINAMOUNT)~getText
+  text = self~newEdit(IDC_EDIT_MINAMOUNT)~getText
   minimun = self~decimalNumber(text)
 
   if minimum > 0 then do i = 0 to billingList~items
@@ -1547,7 +1547,7 @@ that allows the user to check all the check boxes:
 
 ::method onCheckAll
 
-  list = self~getListControl(IDC_LIST_REPUBLICANS)
+  list = self~newListView(IDC_LIST_REPUBLICANS)
   list~checkAll
 
 ]]>
@@ -1598,7 +1598,7 @@ that allows the user to remove the check mark from all the check boxes:
 
 ::method onUncheckAll
 
-  list = self~getListControl(IDC_LIST_REPUBLICANS)
+  list = self~newListView(IDC_LIST_REPUBLICANS)
   list~uncheckAll
 
 ]]>
@@ -1660,7 +1660,7 @@ determine if a list view control currently has the check box extended style.
 <![CDATA[
 
   ...
-  list = self~getListControl(IDC_LV_DOCTORS)
+  list = self~newListView(IDC_LV_DOCTORS)
   if list~getCheck(0) == -2 then
     return   -- The list view does not currently have the check box style in effect
 
@@ -1795,7 +1795,7 @@ column. It can be one of the following values:
 <programlisting>
 <![CDATA[
 ::method InitReport
-  curList = self~GetListControl(102)
+  curList = self~newListView(102)
   if curList \= .Nil then
   do
     curList~InsertColumn(0,"First Name",50)
@@ -1916,7 +1916,7 @@ first column in a report list:
 <programlisting>
 <![CDATA[
 ::method ChangeColumn
-  curList = self~GetListControl(102)
+  curList = self~newListView(102)
   curList~ModifyColumn(0,"New Title",100,"RIGHT")
 ]]>
 </programlisting>
@@ -1973,7 +1973,7 @@ box when the column is clicked on:
 
 ::method onColumnClick
   use arg id, column
-  listView = self~getListControl(100)
+  listView = self~newListView(100)
   info. = listView~columnInfo(column)
 
   msg = "Column Title : " info.!Text   || .endOfLine || -
@@ -2022,7 +2022,7 @@ when the column is clicked on:
 <![CDATA[
 ::method onColumnClick
   use arg id, column
-  listView = self~getListControl(102)
+  listView = self~newListView(102)
   call infoDialog listView~columnWidth(column)
 ]]>
 </programlisting>
@@ -2077,7 +2077,7 @@ is sized automatically.
 <![CDATA[
 ::method OnColumnClick
   use arg id, column
-  curList = self~GetListControl(102)
+  curList = self~newListView(102)
   curList~SetColumnWidth(column,curList~ColumnWidth(column)+10)
 ]]>
 </programlisting>
@@ -2193,7 +2193,7 @@ colCount = list~getColumnCount
 <programlisting>
 <![CDATA[
   ...
-  list = self~getListControl(100)
+  list = self~newListView(100)
 
   columnNames = .array~of("Occupation", "Name", "Age", "Sex")
   list~addExtendedStyle("FULLROWSELECT GRIDLINES CHECKBOXES HEADERDRAGDROP")
@@ -2330,7 +2330,7 @@ Current order:
 <programlisting>
 <![CDATA[
   ...
-  list = self~getListControl(100)
+  list = self~newListView(100)
 
   columnNames = .array~of("Occupation", "Name", "Age", "Sex")
   list~addExtendedStyle("FULLROWSELECT GRIDLINES CHECKBOXES")
@@ -2468,7 +2468,7 @@ or 0 in all other cases.
 <programlisting>
 <![CDATA[
 ::method initReport
-  curList = self~getListControl(102)
+  curList = self~newListView(102)
   if curList \= .nil then
   do
     curList~insert(, ,"First")
@@ -2559,7 +2559,7 @@ or 0 in all other cases.
 ::method initDialog
   expose list
 
-  list  = self~getListControl(IDC_LV_VIEWS)
+  list  = self~newListView(IDC_LV_VIEWS)
   self~connectListViewEvent(IDC_LV_VIEWS, 'ACTIVATE', 'onActivate')
 
   ...
@@ -2815,7 +2815,7 @@ and on the system colors used for a selection.
 <![CDATA[
 ::method initDialog
 
-  curList = self~getListControl(IDC_LIST_REP)
+  curList = self~newListView(IDC_LIST_REP)
   if curList \= .nil then do
     imageList = .ImageList~create(.Size~new(16), .Image~toID(ILC_COLOR24), 9, 0)
     imageList~add(.Image~getImage("E:\oodlist\oodlist.BMP"))
@@ -2897,7 +2897,7 @@ and on the system colors used for a selection.
 <programlisting>
 <![CDATA[
 ::method InitList
-  curList = self~GetListControl(101)
+  curList = self~newListView(101)
   curList~addRow(, ,"Mike","Miller")
   curList~addRow(, ,"Sue","Muller")
   curList~addRow(, ,"Chris","Watson")
@@ -2948,7 +2948,7 @@ control.</para>
 <programlisting>
 <![CDATA[
 ::method DeleteSelectedItem
-  curList = self~GetListControl(102)
+  curList = self~newListView(102)
   curList~Delete(curList~Selected)
 ]]>
 </programlisting>
@@ -3157,7 +3157,7 @@ state in a message box:
 
 ::method displayItemInfo
 
-  listView = self~getListControl(100)
+  listView = self~newListView(100)
   item = listView~selected
   if item == -1 then do
     msg = "No item selected."
@@ -3993,7 +3993,7 @@ This is the default.
   imageList = .ImageList~create(size, flags, 4, 0)
   imageList~addImages(icons)
 
-  list = self~getListControl(IDC_LV_IMAGES)
+  list = self~newListView(IDC_LV_IMAGES)
   list~setImageList(imageList, .Image~toID(LVSIL_NORMAL))
 
   do i = 1 to ids~items
@@ -4661,7 +4661,7 @@ yellow:
 <programlisting>
 <![CDATA[
 ::method Yellow
-  curList = self~GetListControl(104)
+  curList = self~newListView(104)
   curList~BkColor = 15
   curList~Update
 ]]>
@@ -4718,7 +4718,7 @@ blue:
 <programlisting>
 <![CDATA[
 ::method LightBlue
-  curList = self~GetListControl(104)
+  curList = self~newListView(104)
   curList~BkColor = 9
   curList~Update
 ]]>

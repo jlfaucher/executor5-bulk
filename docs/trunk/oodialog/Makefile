@@ -73,6 +73,7 @@ SGML_FILES = baseClasses.sgml \
 	     staticcontrolc.sgml \
 	     tabcontrolc.sgml \
 	     treecontrolc.sgml \
+	     updown.sgml \
 	     userdialog.sgml \
 	     utilityclasses.sgml \
 	     windowBase.sgml \

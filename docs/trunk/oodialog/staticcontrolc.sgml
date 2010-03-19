@@ -106,7 +106,7 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
     <para>
-      Use the <link linkend="getstaticcontrol">getStaticControl</link>() method to retrieve an object of
+      Use the <link linkend="mthNewStatic">newStatic</link>() method to retrieve an object of
       the static control class. To use this method, the static control must have a positive ID.
     </para>
   </listitem></varlistentry>
@@ -179,7 +179,7 @@
 <para>
   The static control class is not intended to be instantiated directly by the programmer using the new() method.  Rather
   the programmer should obtain a new static control object by using the <link
-  linkend="getstaticcontrol">getStaticControl</link>() method of the <link linkend="chpDialogObject">dialog
+  linkend="mthNewStatic">newStatic</link>() method of the <link linkend="chpDialogObject">dialog
   object</link>.
 </para>
 </section>  <!-- End StaticControl::new() [class method] -->
@@ -240,7 +240,7 @@
       This method is straight forward to use.
 <programlisting>
 <![CDATA[
-static = self~getStaticControl(IDC_ST_FULLNAME)
+static = self~newStatic(IDC_ST_FULLNAME)
 static~setText("James Madison")
 ]]>
 </programlisting>
@@ -290,7 +290,7 @@ static~setText("James Madison")
     <para>
 <programlisting>
 <![CDATA[
-static = self~getStaticControl(IDC_ST_DESCRIPTION)
+static = self~newStatic(IDC_ST_DESCRIPTION)
 text = static~getText
 ]]>
 </programlisting>
@@ -410,7 +410,7 @@ end
       This example ...
 <programlisting>
 <![CDATA[
-staticControl = self~getStaticControl(IDC_ST_ICON)
+staticControl = self~newStatic(IDC_ST_ICON)
 icon = staticControl~getIcon
 ]]>
 </programlisting>

@@ -41,37 +41,40 @@
     #
     #########################################################################
 -->
-<chapter id="slidercontrolc"><title>Track Bar Controls</title>
+<chapter id="clsTrackBar"><title>Track Bar Controls</title>
 <indexterm><primary>SliderControl class</primary></indexterm>
-<para>A slider control, which is also called a trackbar, is a window that contains
-a slider and optional tick marks.  When the user moves the slider, using either
-the mouse or the direction keys, the slider sends notification messages to
-indicate the change.</para>
-<para>Sliders are useful if you want the user to select a specific value or a
-set of consecutive values within a specific range. For example, you might
-use a slider to enable the user to set the repeat rate of the keyboard by
-moving the slider to a given tick mark.</para>
-<para>The slider in a trackbar moves in increments that you specify when you
-create it.  For example, if you specify that the trackbar should have a range
-from 0 to 10, the slider can occupy only eleven positions: a position at the
-left side of the slider and one position for each increment in the range.
-Typically, each of these positions is identified by a tick mark.</para>
-<para>After you have created a slider, you can use the SliderControl methods
-to set and retrieve its properties. Refer to PROPDEMO.REX in
-the OODIALOG\SAMPLES directory for an example.</para>
-<para>The SliderControl class sends notification messages
-to notify about the event. For information about notification messages, refer
-to <link linkend="mthConnectListViewEvent">connectListViewEvent</link>.</para>
+<para>
+  A trackbar is a window that contains a slider and optional tick marks. Prior to the effort to <link
+  linkend="termMethodNameUnification">unify</link> the ooDialog class and method names, a track bar was called a slider
+  control. This was misnomer, the slider is a part of the the track bar. Track bars are now called by their correct name
+  in this documentation.
+</para>
+<para>
+  Track bars are useful if you want the user to select a specific value or a set of consecutive values within a specific
+  range. For example, you might use a track bar to enable the user to set the repeat rate of the keyboard by moving the
+  slider in the track bar to a given tick mark.
+</para>
+<para>
+  When the user moves the slider in the track bar, using either the mouse or the direction keys, the track bar sends
+  notification messages to its parent dialog to indicate the change.
+</para>
+<para>
+<para>
+  The slider in a track bar moves in increments that you specify when you create it. For example, if you specify that
+  the track bar should have a range from 0 to 10, the slider can occupy only eleven positions: a position at the left
+  side of the slider and one position for each increment in the range. Typically, each of these positions is identified
+  by a tick mark.
+</para>
+<para>
+  After you have created a track bar, you can use its methods to set and retrieve its properties. Refer to the
+  <computeroutput>propdemo.rex</computeroutput> example program included in the ooRexx distribution under the
+  <computeroutput>samples</computeroutput> subdirectory for some help in getting started using a track bar.
+</para>
+<para>
+  The SliderControl class sends notification messages to notify about the event. For information about notification
+  messages, refer to <link linkend="mthConnectListViewEvent">connectListViewEvent</link>.
+</para>
 <variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para>The SliderControl class requires the class definition
-file <computeroutput>oodwin32.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "oodwin32.cls"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
 <varlistentry><term>Methods:</term>
 <listitem><para>Instances of the SliderControl class implement
 the methods listed in the
@@ -242,7 +245,7 @@ the range of the slider already been set to 0 to 100 using the setRange method:
 <programlisting>
 <![CDATA[
 ::method SetToMax
-  ctrl=self~GetSliderControl("IDC_1")
+  ctrl=self~newTrackBar("IDC_1")
   ctrl~setPos(100,1)
 ]]>
 </programlisting>
@@ -271,7 +274,7 @@ of the slider.</para>
 <programlisting>
 <![CDATA[
 ::method DisplayPos
-  ctrl=self~GetSliderControl("IDC_1")
+  ctrl=self~newTrackBar("IDC_1")
   pos = ctrl~Pos
   say pos
 ]]>
@@ -327,7 +330,7 @@ and the tick frequency of the slider:
 <programlisting>
 <![CDATA[
 ::method InitDialog
-  curSL = self~GetSliderControl("IDC_1")
+  curSL = self~newTrackBar("IDC_1")
   if curSL \= .Nil then do
     curSL~InitRange(0,100)
     curSL~SetLineStep(1)
@@ -446,7 +449,7 @@ positions of the slider.</para>
 <programlisting>
 <![CDATA[
 ::method DisplayRange
-  ctrl=self~GetSlidercontrol("IDC_1")
+  ctrl=self~newTrackBar("IDC_1")
   range = ctrl~Range
   parse var range min max
   say min max
@@ -622,7 +625,7 @@ and the tick frequency of the slider:
 <programlisting>
 <![CDATA[
 ::method InitDialog
-  curSL = self~GetSliderControl("IDC_1")
+  curSL = self~newTrackBar("IDC_1")
   if curSL \= .Nil then do
     curSL~InitRange(0,100)
     curSL~SetLineStep(1)
@@ -713,7 +716,7 @@ and the tick frequency of the slider:
 <programlisting>
 <![CDATA[
 ::method InitDialog
-  curSL = self~GetSliderControl("IDC_1")
+  curSL = self~newTrackBar("IDC_1")
   if curSL \= .Nil then do
     curSL~InitRange(0,100)
     curSL~SetLineStep(1)
@@ -759,7 +762,7 @@ and the tick frequency of the slider:
 <programlisting>
 <![CDATA[
 ::method InitDialog
-  curSL = self~GetSliderControl("IDC_1")
+  curSL = self~newTrackBar("IDC_1")
   if curSL \= .Nil then do
     curSL~InitRange(0,100)
     curSL~SetLineStep(1)

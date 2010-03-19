@@ -392,7 +392,7 @@ Too bad, you are still running ooRexx 4.0.0
 
   if .DlgUtil~comCtl32Version < 6.0 then return self~doW2KReposition
 
-  size = self~getButtonControl(IDC_CHECK_TWO)~getIdealSize
+  size = self~newPushButton(IDC_CHECK_TWO)~getIdealSize
   if size == .nil then return .false
 
   -- do the repositioning
@@ -2895,7 +2895,7 @@ self~addButton( 1,b~x,b~y("90%"),b~w,b~h("9%"),"Ok","Ok","DEFAULT")
 ::method Unknown
 /* ------------------------------------------------------------------------- */
 use arg msgname, args
-StatusLine = Self~GetStaticControl(11)
+StatusLine = Self~newStatic(11)
 StatusLine~SetTitle("You Pressed" msgname)
 
 /* ------------------------------------------------------------------------- */
@@ -2995,7 +2995,7 @@ view depending on the selected key:
 <![CDATA[
 ::method OnKeyDown_IDC_TREE
   use arg treeId, key
-  curTree = self~GetTreeControl(treeId)
+  curTree = self~newTreeView(treeId)
   /* if the Delete key is pressed, delete the selected item */
   if self~KeyName(key) = "DELETE" then
      curTree~Delete(curTree~Selected)

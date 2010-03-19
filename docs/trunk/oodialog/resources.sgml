@@ -805,7 +805,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <programlisting id="exampleGetRValueClsImage">
     <![CDATA[
-      progressBar = self~getProgressBar("IDC_PB_FILES")
+      progressBar = self~newProgressBar("IDC_PB_FILES")
       if progressBar <> .nil then do
         purple = .Image~colorRef(245, 89, 255)
 
@@ -1035,7 +1035,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <![CDATA[
       ::method onTest
 
-        iconControl = self~getStaticControl(IDC_ICON_QUESTION)
+        iconControl = self~newStatic(IDC_ICON_QUESTION)
         if iconControl <> .nil then do
           hQuestion = .Image~getImage(.Image~toID(IDI_QUESTION), .Image~toID(IMAGE_ICON))
           say 'Question icon:' hQuestion~handle
@@ -1757,7 +1757,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       control in a dialog.
       <programlisting>
       <![CDATA[
-      list  = self~getListControl(IDC_LV_IMAGES)
+      list  = self~newListView(IDC_LV_IMAGES)
 
       files1 = .array~new()
       files1[ 1] = "Bee.ico"
@@ -2056,7 +2056,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       ::method removeFromMenu private
         use strict arg index
 
-        menu = self~getListControl(IDC_LV_MENU)
+        menu = self~newListView(IDC_LV_MENU)
 
         bigIcons = menu~getImageList(.Image~toID(LVSIL_NORMAL))
         bigIcons~remove(index)
@@ -2126,7 +2126,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <![CDATA[
       ::method stopOrders private
 
-        menu = self~getListControl(IDC_LV_MENU)
+        menu = self~newListView(IDC_LV_MENU)
 
         bigIcons = menu~getImageList(.Image~toID(LVSIL_NORMAL))
         bigIcons~removeAll
@@ -2486,7 +2486,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       ::method initDialog
         expose list
 
-        list  = self~getListControl(IDC_LV_IMAGES)
+        list  = self~newListView(IDC_LV_IMAGES)
 
         ids = .array~new()
         ids[1] = self~constDir[IDI_DLG_OODIALOG]
@@ -2645,7 +2645,7 @@ A fancy purple: 16734709 (0x00FF59F5)
         resources = .ResourceImage~new("simpleImage.dll", self)
         image = resources~getImage(self~constDir[ID_BMP_IMAGE1])
         ...
-        picture = self~getStaticControl(IDC_BMP_PICTURE)
+        picture = self~newStatic(IDC_BMP_PICTURE)
         oldImage = picture~setImage(image)
       ]]>
       </programlisting>
@@ -2823,8 +2823,8 @@ A fancy purple: 16734709 (0x00FF59F5)
         descriptions[3] = "Cienna, Deer in the Headlights"
         descriptions[4] = "Vail, The Flower Child"
 
-        picture = self~getStaticControl(IDC_BMP_PICTURE)
-        description = self~getStaticControl(IDC_ST_DESCRIPTION)
+        picture = self~newStatic(IDC_BMP_PICTURE)
+        description = self~newStatic(IDC_ST_DESCRIPTION)
         self~connectButtonEvent(IDC_PB_NEXT, "CLICKED", onNext)
 
         nextImage = 1

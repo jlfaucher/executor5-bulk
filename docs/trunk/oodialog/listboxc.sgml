@@ -46,7 +46,7 @@
 <para>The ListBox class provides methods to query and
 modify list box controls. It inherits all methods of the DialogControl class
 (see page <link linkend="chpDialogControlObject">DialogControl Class</link>).</para>
-<para>Use the GetListBox method (see page <link linkend="getlistbox">GetListBox</link>)
+<para>Use the newListBox method (see page <link linkend="mthNewListBox">newListBox</link>)
 to retrieve an object of the ListBox class.</para>
 <variablelist>
 <varlistentry><term>Requires:</term>
@@ -504,7 +504,7 @@ list box is not a multiselection list box.
 <listitem><para>The following example selects the items 5 through 9:</para>
 <programlisting>
 <![CDATA[
-lb = self~GetListBox("Offers")
+lb = self~newListBox("Offers")
 if lb == .Nil then return
 lb~SelectRange(5,9)
 ]]>
@@ -551,7 +551,7 @@ list box is no multiselection list box.
 <listitem><para>The following example deselects the items 1 through 5:</para>
 <programlisting>
 <![CDATA[
-lb = self~GetListBox("Offers")
+lb = self~newListBox("Offers")
 if lb == .Nil then return
 lb~DeselectRange(,6)
 ]]>
@@ -627,7 +627,7 @@ separated by blanks.
 list box:
 <programlisting>
 <![CDATA[
-lb = self~GetListBox("Offers")
+lb = self~newListBox("Offers")
 if lb == .Nil then return
 sit = lb~SelectedItems
 if sit > 0 then do
@@ -791,7 +791,7 @@ list box, in dialog units.
 in a list entry. The tabulator positions are 10, 20, and 30.
 <programlisting>
 <![CDATA[
-lb = MyDialog~GetListBox(102)
+lb = MyDialog~newListBox(102)
 if lb == .Nil then return
 lb~SetTabulators(10, 20, 30)
 lb~Add(textcol1 || "09"x || textcol2 || "09"x || textcol3 || "09"x ||,
@@ -898,7 +898,7 @@ provides a horizontal scroll bar.</para>
 list box control:
 <programlisting>
 <![CDATA[
-lb = MyDialog~GetListBox(102)
+lb = MyDialog~newListBox(102)
 if lb == .Nil then return
 lb~SetWidth(lb~SizeX*2)
 ]]>

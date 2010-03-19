@@ -234,7 +234,7 @@ with the specified text and a specific item:
 <![CDATA[
 ::method InitDialog
   InitDlgRet = self~InitDialog:super
-  curTab = self~GetTabControl("ID_TAB")
+  curTab = self~newTab("ID_TAB")
   if curTab \= .Nil then do
     curTab~setImageList(imageList)
     curTab~Insert(,"First Tab",0)
@@ -328,7 +328,7 @@ of the tab inserted last is increased by 1.</para>
 <![CDATA[
 ::method InitDialog
   InitDlgRet = self~InitDialog:super
-  curTab = self~GetTabControl("ID_TAB")
+  curTab = self~newTab("ID_TAB")
   if curTab \= .Nil then do
     curTab~AddSequence("First Tab","Second Tab","Third Tab")
   end
@@ -380,7 +380,7 @@ icon:
 <![CDATA[
 ::method InitDialog
   InitDlgRet = self~InitDialog:super
-  curTab = self~GetTabControl("ID_TAB")
+  curTab = self~newTab("ID_TAB")
   if curTab \= .Nil then do
     curTab~setImageList(imageList)
     curTab~AddFullSeq("s11", 0, , "s12", 1, , "s13", 2, , "s14", 3)
@@ -414,7 +414,7 @@ a tab control.</para>
 <programlisting>
 <![CDATA[
 ::method DisplayTabNum
-  curTab = self~GetTabControl("ID_TAB")
+  curTab = self~newTab("ID_TAB")
   if curTab \= .Nil then do
     say curTab~Items
   end
@@ -487,7 +487,7 @@ if the tab does not have an image.
 <programlisting>
 <![CDATA[
 ::method DisplayText
-  curTab = self~GetTabControl("ID_TAB")
+  curTab = self~newTab("ID_TAB")
   if curTab \= .Nil then do
     do i = 0 to curTab~Items - 1
        ItemInfo. = curTab~ItemInfo(i)

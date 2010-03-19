@@ -770,7 +770,7 @@ and activates it.</para>
 it:
 <programlisting>
 <![CDATA[
-MyDialog~GetEditControl("NAME")~Show
+MyDialog~newEdit("NAME")~Show
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -796,7 +796,7 @@ invisible and activates another dialog or dialog control.</para>
 
 <programlisting>
 <![CDATA[
-MyDialog~GetEditControl("NAME")~Hide
+MyDialog~newEdit("NAME")~Hide
 
 ]]>
 </programlisting>
@@ -822,7 +822,7 @@ a redraw.</para>
 <listitem><para>
 <programlisting>
 <![CDATA[
-MyDialog~GetEditControl("NAME")~HideFast
+MyDialog~newEdit("NAME")~HideFast
 ...
 MyDialog~Update
 ]]>
@@ -849,7 +849,7 @@ a redraw.</para>
 <listitem><para>
 <programlisting>
 <![CDATA[
-MyDialog~GetEditControl("NAME")~ShowFast
+MyDialog~newEdit("NAME")~ShowFast
 ...
 MyDialog~Update
 ]]>
@@ -918,7 +918,7 @@ blank, to suppress the redrawing of the dialog control.
 visible without redrawing it.
 <programlisting>
 <![CDATA[
-MyDialog~GetTreeControl(IDC_TREECONTROL_FILES)~Display("NORMAL FAST")
+MyDialog~newTreeView(IDC_TREECONTROL_FILES)~Display("NORMAL FAST")
 ]]>
 </programlisting>
 
@@ -1103,7 +1103,7 @@ it.
 the size of  the window and displays the new size:
 <programlisting>
 <![CDATA[
-obj = MyDialog~GetTreeControl("FILES")
+obj = MyDialog~newTreeView("FILES")
 if obj = .Nil then return
 obj~Resize(MyDialog~SizeX -10, MyDialog~SizeY -20)
 parse value obj~getSize with width height
@@ -1176,7 +1176,7 @@ it.
 upper left corner of  the window and displays the new position:
 <programlisting>
 <![CDATA[
-obj = MyDialog~GetTreeControl("FILES")
+obj = MyDialog~newTreeView("FILES")
 if obj = .Nil then return
 obj~Move(1,1)
 parse value obj~GetPos with x y
@@ -1270,7 +1270,7 @@ of the associated dialog or dialog control.</para>
 <listitem><para>The following example displays 1 in most cases:
 <programlisting>
 <![CDATA[
-say MyDialog~GetButtonControl("IDOK")~GetID
+say MyDialog~newPushButton("IDOK")~GetID
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -1332,7 +1332,7 @@ say MyDialog~GetButtonControl("IDOK")~GetID
   TVS_DISABLEDRAGDROP = "0x0010"
   TVS_EDITLABELS      = "0x0008"
 
-  treeControl = self~getTreeControl(IDC_TREE)
+  treeControl = self~newTreeView(IDC_TREE)
   style = treeControl~getStyleRaw
   style = "0x" || style~d2x~right(8, '0')
 
@@ -1452,7 +1452,7 @@ of the bottom right-hand corner.</para>
 <listitem><para>The following example calculates the width and height of an entry line:
 <programlisting>
 <![CDATA[
-parse value MyDialog~GetEditControl("Name")~GetRect with left top,
+parse value MyDialog~newEdit("Name")~GetRect with left top,
 right bottom
 width = right - left
 height = bottom - top
@@ -1722,7 +1722,7 @@ colors of the dialog control.</para>
 blue:
 <programlisting>
 <![CDATA[
-MyDialog~GetListBox("FILES")~SetColor(4, 15)
+MyDialog~newListBox("FILES")~SetColor(4, 15)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -1809,7 +1809,7 @@ or dialog control.
 CHOICE2:
 <programlisting>
 <![CDATA[
-MyDialog~GetRadioControl("CHOICE2")~Title="&Object Rexx (preferred choice)"
+MyDialog~newRadioButton("CHOICE2")~Title="&Object Rexx (preferred choice)"
 MyDialog~Redraw
 ]]>
 </programlisting>
@@ -1870,7 +1870,7 @@ to a dialog control.</para>
 with the resource ID (symbolic ID) of IDC_EDIT1:
 <programlisting>
 <![CDATA[
-dlgc = MyDialog~GetEditControl("IDC_EDIT1")
+dlgc = MyDialog~newEdit("IDC_EDIT1")
 WM_ERASEBACKGROUND = "14"~x2d
 hdc = dlgc~GetDc
 dlgc~ProcessMessage(WM_ERASEBACKGROUND, hdc, 0)
@@ -2261,7 +2261,7 @@ to delete the current line, and Shift-Alt-D delete the current paragraph:
 ::method initDialog
   expose editControl
 
-  editControl = self~getEditControl(IDC_EDTIT)
+  editControl = self~newEdit(IDC_EDTIT)
   ...
 
   -- Capture the D key press when either the Alt or Control keys are
@@ -2382,7 +2382,7 @@ appropriate action.  For this application, the F3 key is the search key.
 ::method initDialog
   expose editControl searchToken
 
-  editControl = self~getEditControl(IDC_EDIT)
+  editControl = self~newEdit(IDC_EDIT)
   editControl~connectFKeyPress(onFKey)
   ...
   lastSearchToken = ""
@@ -2498,7 +2498,7 @@ the hot keys for the edit control by removing the key press connections.
   ...
 
 method onDisable
-  editControl = self~getEditControl(IDC_EDIT)
+  editControl = self~newEdit(IDC_EDIT)
   editControl~disconnectKeyPress
 
 ]]>
@@ -2582,12 +2582,12 @@ that shows whether hot keys are currently enabled or not.
 ::method onReset
 
   ...
-  editControl = self~getEditControl(IDC_EDIT)
+  editControl = self~newEdit(IDC_EDIT)
 
   if editControl~hasKeyPressConnection then
-    self~getCheckControl(IDC_CHECK_FKEYSENABlED)~check
+    self~newCheckBox(IDC_CHECK_FKEYSENABlED)~check
   else
-    self~getCheckControl(IDC_CHECK_FKEYSENABlED)~uncheck
+    self~newCheckBox(IDC_CHECK_FKEYSENABlED)~uncheck
   ...
 
 ]]>
@@ -3590,7 +3590,7 @@ returns the handle to the display device context of a dialog or dialog control.<
 processes the drawing commands, and frees the device context resources:
 <programlisting>
 <![CDATA[
-obj = MyDialog~GetButtonControl("DRAWINGS")
+obj = MyDialog~newPushButton("DRAWINGS")
 if obj = .Nil then return -1
 dc = obj~GetDC
 if dc = 0 then return -1
@@ -4029,7 +4029,7 @@ of the other arguments.</para>
 <programlisting>
 <![CDATA[
 hfnt = Mydialog~createFontEx("Arial", 14)
-MyDialog~getTreeControl("FILES")~setFont(hfnt, .true)
+MyDialog~newTreeView("FILES")~setFont(hfnt, .true)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -4071,8 +4071,8 @@ MyDialog~getTreeControl("FILES")~setFont(hfnt, .true)
 <programlisting>
 <![CDATA[
 ::method onToggle private
-  static1 = self~getStaticControl(IDC_ST_OUTSTANDING_BLANCE)
-  static2 = self~getStaticControl(IDC_ST_LASTPAYMENT)
+  static1 = self~newStatic(IDC_ST_OUTSTANDING_BLANCE)
+  static2 = self~newStatic(IDC_ST_LASTPAYMENT)
 
   font1 = static1~getFont
   font2 = static2~getFont
