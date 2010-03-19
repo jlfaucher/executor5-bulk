@@ -57,7 +57,7 @@ SGML_FILES = baseClasses.sgml \
 	     editcontrolc.sgml \
 	     eventNotification.sgml \
 	     listboxc.sgml \
-	     listcontrolc.sgml \
+	     listview.sgml \
 	     menus.sgml \
 	     monthcalendar.sgml \
 	     oodialog.sgml \
@@ -68,11 +68,11 @@ SGML_FILES = baseClasses.sgml \
 	     resdialog.sgml \
 	     resources.sgml \
 	     scrollbarc.sgml \
-	     slidercontrolc.sgml \
 	     standarddialog.sgml \
 	     staticcontrolc.sgml \
 	     tabcontrolc.sgml \
-	     treecontrolc.sgml \
+	     trackbar.sgml \
+	     treeview.sgml \
 	     updown.sgml \
 	     userdialog.sgml \
 	     utilityclasses.sgml \
