@@ -77,7 +77,8 @@
 
 #define VERSTRING(major,minor,rel) #major "." #minor "." #rel
 
-#define SETDIAG(retc, henv, hdbc, hstmt) \
+#define SETDIAG(retc, henv, hdbc, hstmt) { \
+    RexxArrayObject arr = (RexxArrayObject)context->NewArray(0); \
     if (retc != SQL_SUCCESS) { \
         SQLCHAR sqlstate[SQL_SQLSTATE_SIZE + 1]; \
         SQLINTEGER sqlcode; \
@@ -85,8 +86,6 @@
         SQLCHAR msgbuffer[SQL_MAX_MESSAGE_LENGTH + 1]; \
         char msgbuf[SQL_MAX_MESSAGE_LENGTH + 30]; \
                                                   \
-        context->SetObjectVariable("SQLDIAG", context->NewArray(0)); \
-        RexxArrayObject arr = (RexxArrayObject)context->GetObjectVariable("SQLDIAG"); \
         snprintf(msgbuf, sizeof(msgbuf), "ooRexx Method: %s, SQL Return Code %d.", \
                  context->GetMessageName(), retc); \
         context->ArrayAppendString(arr, msgbuf, strlen(msgbuf)); \
@@ -99,9 +98,8 @@
             context->ArrayAppendString(arr, msgbuf, strlen(msgbuf)); \
         } \
     } \
-    else { \
-        context->SetObjectVariable("SQLDIAG", context->NewArray(0)); \
-    }
+    context->SendMessage1(context->GetSelf(), "SQLDIAG=", arr); \
+}
 
 typedef struct _dbself {
 #if defined WIN32 || defined WIN64
@@ -244,9 +242,10 @@ RexxMethod0(RexxObjectPtr,             // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             OrxDB_dbinit,              // Object_method name
-            CSTRING, libname)          // CLI library name
+            CSTRING, libname,          // CLI library name
+            OSELF, oself)
 {
     dbself *pself;
 
@@ -500,7 +499,7 @@ RexxMethod1(int,                       // Return type
     }
     // allocate the sql environment if not already allocated
     SQLRETURN retc = (*pself->instSQLAllocHandle)(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &pself->henv);
-    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
 
     // needed for some versions of odbc
@@ -520,11 +519,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Return code.
  **/
-RexxMethod3(int,                       // Return type
+RexxMethod4(int,                       // Return type
             OrxDB_set_env_attr,        // Object_method name
             int, attr,
             RexxObjectPtr, val,
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     dbself *pself = (dbself *)cself;
     SQLRETURN retc;
@@ -552,7 +552,7 @@ RexxMethod3(int,                       // Return type
                                  (RexxObjectPtr)context->String("1 unsupported."));
         return 0;  
     }
-    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
     
     return 0;
@@ -567,10 +567,11 @@ RexxMethod3(int,                       // Return type
  *
  * @return        Attribute value.
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             OrxDB_get_env_attr,        // Object_method name
             int, attr,
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     dbself *pself = (dbself *)cself;
     SQLRETURN retc;
@@ -584,14 +585,14 @@ RexxMethod2(RexxObjectPtr,             // Return type
     case SQL_ATTR_ODBC_VERSION:
 #endif
         retc = (*pself->instSQLGetEnvAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)&itmp, 0, 0);
-        context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+        context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
         SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
         return context->Int32(itmp);
 #if defined WIN32 || defined WIN64
     case SQL_ATTR_CONNECTION_POOLING:
     case SQL_ATTR_CP_MATCH:
         retc = (*instpself->SQLGetEnvAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0, 0);
-        context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+        context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
         SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
         return context->UnsignedInt32(utmp);
 #endif
@@ -613,12 +614,13 @@ RexxMethod2(RexxObjectPtr,             // Return type
  *
  * @return        Boolean return code.
  **/
-RexxMethod4(int,                       // Return type
+RexxMethod5(int,                       // Return type
             OrxDB_connect,             // Object_method name
             CSTRING, dbname,
             OPTIONAL_CSTRING, user,
             OPTIONAL_CSTRING, pw,
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     dbself *pself = (dbself *)cself;
     SQLRETURN retc;
@@ -638,7 +640,7 @@ RexxMethod4(int,                       // Return type
     // connect to the database
     retc = (*pself->instSQLConnect)(pself->hdbc, (SQLCHAR *)dbname, strlen(dbname),
                                     (SQLCHAR *)user, strlen(user), (SQLCHAR *)pw, strlen(pw));
-    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
     return 0;
 }
@@ -650,15 +652,16 @@ RexxMethod4(int,                       // Return type
  *
  * @return        Return code.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             OrxDB_close,               // Object_method name
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     dbself *pself = (dbself *)cself;
     
     // disconnect from the database
     SQLRETURN retc = (*pself->instSQLDisconnect)(pself->hdbc);
-    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
     // do not free the hdbc or the henv handle!
     pself->hdbc = SQL_NULL_HANDLE;
@@ -676,11 +679,12 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Return code.
  **/
-RexxMethod3(int,                       // Return type
+RexxMethod4(int,                       // Return type
             OrxDB_set_connx_attr,      // Object_method name
             int, attr,
             RexxObjectPtr, val,
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     dbself *pself = (dbself *)cself;
     SQLRETURN retc;
@@ -720,7 +724,7 @@ RexxMethod3(int,                       // Return type
                                  (RexxObjectPtr)context->String("1 unsupported."));
         return 0;  
     }
-    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
     
     return 0;
@@ -735,10 +739,11 @@ RexxMethod3(int,                       // Return type
  *
  * @return        Attribute value.
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             OrxDB_get_connx_attr,      // Object_method name
             int, attr,
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     dbself *pself = (dbself *)cself;
     SQLRETURN retc;
@@ -752,7 +757,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     case SQL_ATTR_TRACEFILE:
     case SQL_ATTR_TRANSLATE_LIB:
         retc = (*pself->instSQLGetConnectAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)ctmp, 0, &itmp);
-        context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+        context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
         SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
         return context->String(ctmp, (size_t)itmp);
     case SQL_ATTR_ACCESS_MODE:
@@ -773,7 +778,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     case SQL_ATTR_TRANSLATE_OPTION:
     case SQL_ATTR_TXN_ISOLATION:
         retc = (*pself->instSQLGetConnectAttr)(pself->henv, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0, 0);
-        context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+        context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
         SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
         return context->UnsignedInt32(utmp);
     default:
@@ -792,15 +797,16 @@ RexxMethod2(RexxObjectPtr,             // Return type
  *
  * @return        Return code.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             OrxDB_commit,              // Object_method name
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     dbself *pself = (dbself *)cself;
 
     // commit the transaction
     SQLRETURN retc = (*pself->instSQLEndTran)(SQL_HANDLE_ENV, pself->henv, SQL_COMMIT);
-    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
     
     return 0;
@@ -813,15 +819,16 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Return code.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             OrxDB_rollback,            // Object_method name
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     dbself *pself = (dbself *)cself;
 
     // rollback the transaction
     SQLRETURN retc = (*pself->instSQLEndTran)(SQL_HANDLE_ENV, pself->henv, SQL_ROLLBACK);
-    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
 
     return 0;
@@ -882,10 +889,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Attribute value.
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             OrxDB_get_info,            // Object_method name
             int, attr,
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     dbself *pself = (dbself *)cself;
     SQLRETURN retc;
@@ -935,7 +943,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     case SQL_USER_NAME:
     case SQL_XOPEN_CLI_YEAR:
         retc = (*pself->instSQLGetInfo)(pself->hdbc, (SQLUSMALLINT)attr, (SQLPOINTER)ctmp, sizeof(ctmp), &buflen);
-        context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+        context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
         SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
         return context->String(ctmp, (size_t)buflen);
     case SQL_ACTIVE_ENVIRONMENTS:
@@ -967,7 +975,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     case SQL_QUOTED_IDENTIFIER_CASE:
     case SQL_TXN_CAPABLE:
         retc = (*pself->instSQLGetInfo)(pself->hdbc, (SQLINTEGER)attr, (SQLPOINTER)&u16tmp, 0, NULL);
-        context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+        context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
         SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
         return context->UnsignedInt32((uint32_t)u16tmp);
 #if defined WIN32 || defined WIN64
@@ -1074,7 +1082,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     case SQL_TXN_ISOLATION_OPTION:
     case SQL_UNION:
         retc = (*pself->instSQLGetInfo)(pself->hdbc, (SQLINTEGER)attr, (SQLPOINTER)&u32tmp, 0, NULL);
-        context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+        context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
         SETDIAG(retc, pself->henv, pself->hdbc, SQL_NULL_HANDLE);
         return context->UnsignedInt32(u32tmp);
     default:
@@ -1099,10 +1107,11 @@ RexxMethod2(RexxObjectPtr,             // Return type
  *
  * @return        Zero.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             OrxDB_stmtinit,            // Object_method name
             RexxObjectPtr, db,
-            OPTIONAL_CSTRING, stmt)
+            OPTIONAL_CSTRING, stmt,
+            OSELF, oself)
 {
     stmtself *pstmtself;
 
@@ -1118,7 +1127,7 @@ RexxMethod2(int,                       // Return type
     // allocate a statement handle
     SQLRETURN retc = (*pself->instSQLAllocHandle)(SQL_HANDLE_STMT, pself->hdbc,
                                                   &pstmtself->hstmt);
-    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
 
     // save SQL statement
@@ -1163,16 +1172,17 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Return code.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             OrxDB_execute,             // Object_method name
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     stmtself *pstmtself = (stmtself *)cself;
     dbself *pself = pstmtself->pdbself;
 
     // execute the SQL statement
     SQLRETURN retc = (*pself->instSQLExecute)(pstmtself->hstmt);
-    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
     
     return 0;
@@ -1185,10 +1195,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Return code.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             OrxDB_execdirect,          // Object_method name
             OPTIONAL_CSTRING, stmt,
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     stmtself *pstmtself = (stmtself *)cself;
     dbself *pself = pstmtself->pdbself;
@@ -1200,7 +1211,7 @@ RexxMethod2(int,                       // Return type
 
     // execute the SQL statement
     SQLRETURN retc = (*pself->instSQLExecDirect)(pstmtself->hstmt, (SQLCHAR *)stmt, strlen(stmt));
-    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
     
     return 0;
@@ -1215,10 +1226,11 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Return code.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             OrxDB_bind_parms,          // Object_method name
             RexxArrayObject, parms,
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     stmtself *pstmtself = (stmtself *)cself;
     dbself *pself = pstmtself->pdbself;
@@ -1233,7 +1245,7 @@ RexxMethod2(int,                       // Return type
                                                                  0, 0, p, (SQLLEN *)SQL_NTS);
 
     }
-    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
     
     return 0;
@@ -1246,10 +1258,11 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Return code.
  **/
-RexxMethod2(int,                       // Return type
+RexxMethod3(int,                       // Return type
             OrxDB_prepare,             // Object_method name
             OPTIONAL_CSTRING, stmt,
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     stmtself *pstmtself = (stmtself *)cself;
     dbself *pself = pstmtself->pdbself;
@@ -1261,7 +1274,7 @@ RexxMethod2(int,                       // Return type
 
     // execute the SQL statement
     SQLRETURN retc = (*pself->instSQLPrepare)(pstmtself->hstmt, (SQLCHAR *)stmt, strlen(stmt));
-    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
     
     return 0;
@@ -1274,16 +1287,17 @@ RexxMethod2(int,                       // Return type
  *
  * @return        Return code.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             OrxDB_fetch,               // Object_method name
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     stmtself *pstmtself = (stmtself *)cself;
     dbself *pself = pstmtself->pdbself;
 
     // execute the SQL statement
     SQLRETURN retc = (*pself->instSQLFetch)(pstmtself->hstmt);
-    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
     
     return 0;
@@ -1296,9 +1310,10 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Number of cols.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             OrxDB_num_result_cols,     // Object_method name
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     stmtself *pstmtself = (stmtself *)cself;
     dbself *pself = pstmtself->pdbself;
@@ -1306,7 +1321,7 @@ RexxMethod1(int,                       // Return type
 
     // execute the SQL statement
     SQLRETURN retc = (*pself->instSQLNumResultCols)(pstmtself->hstmt, &n);
-    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
     
     return (int32_t)n;
@@ -1321,10 +1336,11 @@ RexxMethod1(int,                       // Return type
  *
  * @return        Rexx string.
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             OrxDB_get_data,            // Object_method name
             int, column,
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     stmtself *pstmtself = (stmtself *)cself;
     dbself *pself = pstmtself->pdbself;
@@ -1340,7 +1356,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     // execute the SQL statement
     retc = (*pself->instSQLGetData)(pstmtself->hstmt, column, SQL_C_CHAR, buf, buflen,
                                     (SQLLEN *)&buflen);
-    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
 
     return (RexxObjectPtr)context->String((char *)buf, (size_t)buflen);
@@ -1355,10 +1371,11 @@ RexxMethod2(RexxObjectPtr,             // Return type
  *
  * @return        Attribute value.
  **/
-RexxMethod2(RexxObjectPtr,             // Return type
+RexxMethod3(RexxObjectPtr,             // Return type
             OrxDB_get_stmt_attr,       // Object_method name
             int, attr,
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     stmtself *pstmtself = (stmtself *)cself;
     dbself *pself = pstmtself->pdbself;
@@ -1388,7 +1405,7 @@ RexxMethod2(RexxObjectPtr,             // Return type
     case SQL_ATTR_SIMULATE_CURSOR:
     case SQL_ATTR_USE_BOOKMARKS:
         retc = (*pself->instSQLGetStmtAttr)(pstmtself->hstmt, (SQLINTEGER)attr, (SQLPOINTER)&utmp, 0, 0);
-        context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+        context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
         SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
         return context->UnsignedInt32(utmp);
     default:
@@ -1411,11 +1428,12 @@ RexxMethod2(RexxObjectPtr,             // Return type
  *
  * @return        Return code.
  **/
-RexxMethod3(int,                       // Return type
+RexxMethod4(int,                       // Return type
             OrxDB_set_stmt_attr,       // Object_method name
             int, attr,
             RexxObjectPtr, val,
-            CSELF, cself)
+            CSELF, cself,
+            OSELF, oself)
 {
     stmtself *pstmtself = (stmtself *)cself;
     dbself *pself = pstmtself->pdbself;
@@ -1452,7 +1470,7 @@ RexxMethod3(int,                       // Return type
                                  (RexxObjectPtr)context->String("1 unsupported."));
         return 0;  
     }
-    context->SetObjectVariable("SQLRETURN", context->Int32((int32_t) retc));
+    context->SendMessage1(oself, "SQLRETURN=", context->Int32((int32_t) retc));
     SETDIAG(retc, pself->henv, pself->hdbc, pstmtself->hstmt);
     
     return 0;
