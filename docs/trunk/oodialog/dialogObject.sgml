@@ -1059,8 +1059,8 @@
 <entry><link linkend="h000879">ScrollText</link></entry>
 </row>
 <row>
-<entry>SendMessageToItem</entry>
-<entry><link linkend="h000614">SendMessageToItem</link></entry>
+<entry><link linkend="mthSendMessageToControl">sendMessageToControl</link></entry>
+<entry>Sends a Windows message to a dialog control</entry>
 </row>
 <row>
 <entry>SetArcDirection</entry>
@@ -1115,8 +1115,12 @@
 <entry><link linkend="setfocustowindow">SetFocusToWindow</link></entry>
 </row>
 <row>
-<entry>setFont</entry>
-<entry><link linkend="mthSetFont">setFont</link></entry>
+<entry><link linkend="wedoGetFont">getFont</link></entry>
+<entry>Returns the font used by the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wedoSetFont">setFont</link></entry>
+<entry>Sets a new font to be used by the dialog.</entry>
 </row>
 <row>
 <entry>SetForegroundWindow</entry>
@@ -2460,7 +2464,7 @@ the same process, it is disabled by Execute.
 <listitem><para>See <link linkend="show">Show</link>.
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
-<listitem><para>The resource ID of the <link linkend="dialogicon">dialog's
+<listitem><para>The resource ID of the <link linkend="defDialogIcon">dialog's
 icon</link>.  If an icon ID is not supplied, the default ooDialog icon will be
 used.
 </para></listitem></varlistentry>
@@ -2484,7 +2488,7 @@ used.
 <listitem><para>The following example instantiates a new dialog object (remember that
 it is not possible to instantiate an object of the BaseDialog class), creates
 a dialog template, and runs the dialog as the topmost window.  The
-<link linkend="dialogicon">dialog icon</link> is one of the pre-defined icons
+<link linkend="defDialogIcon">dialog icon</link> is one of the pre-defined icons
 supplied by ooDialog:
 
 <programlisting>
@@ -2534,7 +2538,7 @@ method returns immediately after the dialog has been started. </para>
 <listitem><para>See <link linkend="show">Show</link>.
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
-<listitem><para>The resource ID of the <link linkend="dialogicon">dialog's
+<listitem><para>The resource ID of the <link linkend="defDialogIcon">dialog's
 icon</link>.  If an icon ID is not supplied, the default ooDialog icon will be
 used.
 </para></listitem></varlistentry>
@@ -2641,7 +2645,7 @@ You can therefore use Popup to produce nonmodal dialogs.</para>
 <listitem><para>The time, in milliseconds, until the next message is processed.
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
-<listitem><para>The resource ID of the <link linkend="dialogicon">dialog's
+<listitem><para>The resource ID of the <link linkend="defDialogIcon">dialog's
 icon</link>.  If an icon ID is not supplied, the default ooDialog icon will be
 used.
 </para></listitem></varlistentry>
@@ -2716,7 +2720,7 @@ is the parent of the newly started dialog.
 <listitem><para>The time, in milliseconds, until the next message is processed.
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
-<listitem><para>The resource ID of the <link linkend="dialogicon">dialog's
+<listitem><para>The resource ID of the <link linkend="defDialogIcon">dialog's
 icon</link>.  If an icon ID is not supplied, the default ooDialog icon will be
 used.
 </para></listitem></varlistentry>
@@ -2827,48 +2831,201 @@ the message queue.</para>
 messages.</para>
 </section>
 
-<section id="h000614"><title>SendMessageToItem</title>
-<indexterm><primary>SendMessageToItem</primary></indexterm>
+<section id="mthSendMessageToControl"><title>sendMessageToControl</title>
+<indexterm><primary>sendMessageToControl</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~SendMessageToItem(--id--,--msg--,--wp--,--lp--)-><
-
+>>--sendMessageToControl(--id--,--msg--,--wParam--,--lParam--)-----------------><
 
 ]]>
 </programlisting>
 
-<para>The SendMessageToItem method sends a Windows message
-to a dialog item. It is used to influence the behavior of dialog items. </para>
+<para>
+  The <emphasis role="italic">sendMessageToControl</emphasis> method sends a Windows message to a dialog control and
+  returns the response as a whole number.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the dialog item.
-</para></listitem></varlistentry>
-<varlistentry><term>msg</term>
-<listitem><para>The Windows message (you need a Windows SDK
-to look up these numbers).
-</para></listitem></varlistentry>
-<varlistentry><term>wp</term>
-<listitem><para>The first message parameter (wParam).
-</para></listitem></varlistentry>
-<varlistentry><term>lp</term>
-<listitem><para>The second message parameter (lParam).
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example sets the marker to radio button 9001:
+    <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+    <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>msg [required]</term>
+    <listitem>
+    <para>
+      The Windows message ID. This may be numeric or a string in <link linkend="defConventionalHex">conventional</link>
+      hexadecimal formt.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>wParam [required]</term>
+    <listitem>
+    <para>
+      The WPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>lParam [required]</term>
+    <listitem>
+    <para>
+      The LPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The underlying dialog control's response to the message, as a whole number.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    In general, most of what ooDialog does is done by sending Windows message to the underlying operating system
+    windows. This is designed to allow the Rexx programmer to use dialogs without understanding any of the details of
+    Windows messages. This method on the other hand, can not be used by the Rexx programmer without some knowledge of
+    the Windows message being sent. The programmer would need to consult the <link linkend="defWindowsDoc">Windows
+    Documentation</link> to understand what both the WPARAM and LPARAM arguments must be, and to understand what the
+    return, if any means. In addition, the programmer would need to determine the numeric value of the Windows message
+    ID. This could be done using a <link linkend="defPlatformSDK">Windows platform SDK</link>, or perhaps through a
+    Google search.
+  </para>
+  <para>
+    This method returns the response as a whole number. This will not be usable if the response is a window <link
+    linkend="defHandle">handle</link>. For those cases, use the <link
+    linkend="mthSendMessageToControlH">sendMessageToControlH</link>() method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example checks the radio button with resource ID 9001.
 
 <programlisting>
 <![CDATA[
-MyDialog~SendMessageToItem(9001, "0x000000F1", 1, 0)
+MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthSendMessageToControlH"><title>sendMessageToControlH</title>
+<indexterm><primary>sendMessageToControlH</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>sendMessageToControlH</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sendMessageToControlH(--id--,--msg--,--wParam--,--lParam--)----------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">sendMessageToControlH</emphasis> method sends a Windows message to a dialog control and
+  returns the response as a window handle.
+</para>
+<variablelist>
+    <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+    <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>msg [required]</term>
+    <listitem>
+    <para>
+      The Windows message ID. This may be numeric or a string in <link linkend="defConventionalHex">conventional</link>
+      hexadecimal formt.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>wParam [required]</term>
+    <listitem>
+    <para>
+      The WPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>lParam [required]</term>
+    <listitem>
+    <para>
+      The LPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The underlying dialog control's response to the message, as a window handle.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    In general, most of what ooDialog does is done by sending Windows message to the underlying operating system
+    windows. This is designed to allow the Rexx programmer to use dialogs without understanding any of the details of
+    Windows messages. This method on the other hand, can not be used by the Rexx programmer without some knowledge of
+    the Windows message being sent. The programmer would need to consult the <link linkend="defWindowsDoc">Windows
+    Documentation</link> to understand what both the WPARAM and LPARAM arguments must be, and to understand what the
+    return, if any means. In addition, the programmer would need to determine the numeric value of the Windows message
+    ID. This could be done using a <link linkend="defPlatformSDK">Windows platform SDK</link>, or perhaps through a
+    Google search.
+  </para>
+  <para>
+    This method returns the response as a window <link linkend="defHandle">handle</link>. This will not be of much use
+    if the dialog control's response is a whole number. For those cases, use the <link
+    linkend="mthSendMessageToControl">sendMessageToControl</link>() method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example changes the font of the list view control with symbolic ID of IDC_LV_ADDRESSES and returns
+    the old font. Note that this is exactly what the <link linkend="mthGetFont">getFont</link>() and <link
+    linkend="mthSetFont">setFont</link> methods do. In most cases, there is really no need for the Rexx programmer to
+    use the <emphasis role="italic">sendMessageToControl</emphasis> or <emphasis
+    role="italic">sendMessageToControlH</emphasis> methods.
+
+<programlisting>
+<![CDATA[
+::method changeFont private
+  use strict arg newFont
+
+  oldFont = self~sendMessageToControlH(IDC_LV_ADDRESSES, "0x0031", 0, 0)
+  self~sendMessageToControl(IDC_LV_ADDRESSES, "0x0030", newFont, 1)
+
+  return oldFont
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
 </section>
 
 <section id="sctDataAttributes"><title>Data Attribute Methods</title>
@@ -6765,7 +6922,28 @@ WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
   framework, and many of the methods are not window specific methods.
 </para>
 
-<section id="weDOCreateFontEx"><title>createFontEx</title>
+<section id="wedoGetFont"><title>getFont</title>
+<programlisting>
+WindowExtensions::<link linkend="mthGetFont">getFont</link>
+
+<![CDATA[
+>>--getFont----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedoSetFont"><title>setFont</title>
+<programlisting>
+WindowExtensions::<link linkend="mthSetFont">setFont</link>
+
+<![CDATA[
+>>--setFont(--fontHandle--+---------+--)-------------------------><
+                          +-,redraw-+
+]]>
+</programlisting>
+</section>
+
+<section id="wedoCreateFontEx"><title>createFontEx</title>
 <programlisting>
 WindowExtensions::<link linkend="mthCreateFontEx">createFontEx</link>
 
@@ -10275,7 +10453,7 @@ still minimized, then this method restores it to its normal position.
 
 ::method defineDialog
 
-  self~addText(10, 25, 150, 10, " Enter the name of a file to view:", "", IDC_ST_TYPE)
+  self~createStaticText(IDC_ST_TYPE, 10, 25, 150, 10, "", " Enter the name of a file to view:")
   self~addEntryLine(IDC_ENTRYLINE, , 10, 35, 150, 10, "AUTOSCROLLH")
 
   -- When the view button is pushed, another dialog will show the file.
@@ -11794,6 +11972,132 @@ a button. It is used to move bitmaps within buttons. </para>
 </para>
 </section>
 
+<section><title>getButtonControl</title>
+<indexterm><primary>Deprecated</primary><secondary>getButtonControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getButtonControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewPushButton">newPushButton</link>() method.
+</para>
+</section>
+
+<section><title>getCheckControl</title>
+<indexterm><primary>Deprecated</primary><secondary>getCheckControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getCheckControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewCheckBox">newCheckBox</link>() method.
+</para>
+</section>
+
+<section><title>getComboBox</title>
+<indexterm><primary>Deprecated</primary><secondary>getComboBox</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getComboBox</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewComboBox">newComboBox</link>() method.
+</para>
+</section>
+
+<section><title>getEditControl</title>
+<indexterm><primary>Deprecated</primary><secondary>getEditControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getEditControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewEdit">newEdit</link>() method.
+</para>
+</section>
+
+<section><title>getGroupBox</title>
+<indexterm><primary>Deprecated</primary><secondary>getGroupBox</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getGroupBox</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewGroupBox">newGroupBox</link>() method.
+</para>
+</section>
+
+<section><title>getListBox</title>
+<indexterm><primary>Deprecated</primary><secondary>getListBox</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getListBox</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewListBox">newListBox</link>() method.
+</para>
+</section>
+
+<section><title>getListControl</title>
+<indexterm><primary>Deprecated</primary><secondary>getListControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getListControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewListView">newListView</link>() method.
+</para>
+</section>
+
+<section><title>getProgressBar</title>
+<indexterm><primary>Deprecated</primary><secondary>getProgressBar</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getProgressBar</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewProgressBar">newProgressBar</link>() method.
+</para>
+</section>
+
+<section><title>getRadioControl</title>
+<indexterm><primary>Deprecated</primary><secondary>getRadioControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getRadioControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewRadioButton">newRadioButton</link>() method.
+</para>
+</section>
+
+<section><title>getScrollBar</title>
+<indexterm><primary>Deprecated</primary><secondary>getScrollBar</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getScrollBar</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewScrollBar">newScrollBar</link>() method.
+</para>
+</section>
+
+<section><title>getSliderControl</title>
+<indexterm><primary>Deprecated</primary><secondary>getSliderControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getSliderControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewTrackBar">newTrackBar</link>() method.
+</para>
+</section>
+
+<section><title>getStaticControl</title>
+<indexterm><primary>Deprecated</primary><secondary>getStaticControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getStaticControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewStatic">newStatic</link>() method.
+</para>
+</section>
+
+<section><title>getTabControl</title>
+<indexterm><primary>Deprecated</primary><secondary>getTabControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getTabControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewTab">newTab</link>() method.
+</para>
+</section>
+
+<section><title>getTreeControl</title>
+<indexterm><primary>Deprecated</primary><secondary>getTreeControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getTreeControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewTreeView">newTreeView</link>() method.
+</para>
+</section>
+
 <section><title>getTextSize</title>
 <indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getTextSize</tertiary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>getTextSize</secondary><tertiary>dialog object</tertiary></indexterm>
@@ -11837,7 +12141,7 @@ a button. It is used to move bitmaps within buttons. </para>
 </para>
 </section>
 
-<section<title>itemText</title>
+<section><title>itemText</title>
 <indexterm><primary>itemText</primary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>itemText</secondary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>itemText</tertiary></indexterm>
@@ -11857,7 +12161,7 @@ a button. It is used to move bitmaps within buttons. </para>
 </para>
 </section>
 
-<section<title>setStaticText</title>
+<section><title>setStaticText</title>
 <indexterm><primary>setStaticText</primary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>setStaticText</secondary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>setStaticText</tertiary></indexterm>

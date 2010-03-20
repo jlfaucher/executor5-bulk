@@ -68,6 +68,111 @@
 </para>
 
 
+<section id="mthSetFont"><title>setFont</title>
+<indexterm><primary>setFont</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setFont(--fontHandle--+---------+--)-------------------------><
+                          +-,redraw-+
+
+]]>
+</programlisting>
+
+<para>
+  The setFont method assigns another font to be used for the text in a dialog or dialog control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The arguments are:
+  <variablelist>
+  <varlistentry><term>fontHandle</term>
+  <listitem>
+    <para>
+      The handle to the font that is to be used by the dialog or dialog control. There are several
+      methods to get the font handle, including <link linkend="mthCreateFontEx">createFontEx</link>() or
+      <link linkend="mthGetFont">getFont</link>().
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>redraw</term>
+  <listitem>
+    <para>Optional, .true or .false. If you specify .true, the message sent to the underlying dialog or
+      dialog control tells it to redraw itself.  If you specify .false, the dialog or dialog control is not
+      told to redraw itself.  The default is .true.
+    </para>
+  </listitem></varlistentry>
+  </variablelist>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method always returns 0.
+    </para>
+  </listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem>
+  <para>
+    The following example creates the font Arial with a size of 14 and assigns it to the tree view
+    control FILES, which is forced to be redrawn.
+<programlisting>
+<![CDATA[
+hfnt = Mydialog~createFontEx("Arial", 14)
+MyDialog~newTreeView("FILES")~setFont(hfnt, .true)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthGetFont"><title>getFont</title>
+<indexterm><primary>getFont</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getFont----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrieves a handle to the font currently being used by the dialog or dialog control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments for this method
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method returns a handle to the font for text used by the dialog or dialog control.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This is an example from a fictious program where a custom font is used to emphasis the text in two
+      static controls.  When the user does some action, the text in one control is emphasised and the
+      other is de-emphsised.  One way to do this is to just swap the fonts.
+<programlisting>
+<![CDATA[
+::method onToggle private
+  static1 = self~newStatic(IDC_ST_OUTSTANDING_BLANCE)
+  static2 = self~newStatic(IDC_ST_LASTPAYMENT)
+
+  font1 = static1~getFont
+  font2 = static2~getFont
+  static1~setFont(font2)
+  static2~setFont(font1)
+
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ::getFont() -->
+
 <section id="mthCreateFontEx"><title>createFontEx</title>
 <indexterm><primary>createFontEx</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>createFontEx</secondary></indexterm>

@@ -2538,7 +2538,7 @@ b=.dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      )
 self~addEntryLine(12,"text",e~x,e~y,e~w,e~h,"multiline")
 
 /* Status Area Coterminous with area s margins                               */
-self~addText(s~x,s~y,s~w,s~h,"Status info appears here", ,11)
+self~createStaticText(11, s~x, s~y, s~w, s~h, , "Status info appears here")
 
 /* Seven buttons evenly spaced at 10% intervals, 9% high                     */
 do i = 0 to 6
@@ -2880,7 +2880,7 @@ s=.dlgArea~new(u~x       ,u~y("90%"),u~w("70%"),u~hr      )   /* status area */
 b=.dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      )   /* button area */
 
 self~addEntryLine(12,"text",e~x,e~y,e~w,e~h,"multiline")
-self~addText(s~x,s~y,s~w,s~h,"Status info appears here", ,11)
+self~createStaticText(11, s~x, s~y, s~w, s~h, , "Status info appears here")
 
 self~addButton(13,b~x,b~y("00%"),b~w,b~h("9%"),"Button" 0,"Button"||0)
 self~addButton(14,b~x,b~y("10%"),b~w,b~h("9%"),"Button" 1,"Button"||1)

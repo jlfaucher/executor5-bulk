@@ -441,7 +441,7 @@
 </para>
 </section>
 
-<section id="dialogicon"><title>dialog icon</title>
+<section id="defDialogIcon"><title>dialog icon</title>
 <para>
   The term <emphasis role="italic">dialog icon</emphasis> is used in this documentation to refer to the icon that is
   displayed in the left hand corner of the title bar of a dialog. In Windows this is often called the <emphasis
@@ -576,6 +576,35 @@ xPixels = xDialogUnits * self~FactorX
   from device to device.  The colors in the default palette depend on the device. Display devices, for example, often
   use the 16 standard colors of the VGA display and 4 other colors defined by Windows.
 </para>
+</section>
+
+<section id="defConventionalHex"><title>Conventional Hexadecimal Format</title>
+<para>
+  There are a number of methods in the ooDialog framework that have an argument that can be in numeric format, a whole
+  number, or in a <emphasis role="italic">conventional hexadecimal</emphasis> format. For the purposes of this
+  documentation this hexadecimal format is defined to be a Rexx string that begins with &quot;0x&quot; followed by a
+  maximum of 16 characters, which are only characters that represent hexadecimal numbers. I.e., &quot;0&quot; through
+  &quot;F&quot;. The following is meant to clarify this:
+</para>
+<programlisting>
+<![CDATA[
+
+-- Acceptable:
+"0xffff"
+"0XFFFF"
+"0x000012aB"
+"0xFFFF0000aaaa9999"
+"0x0"
+
+-- Incorrect:
+" 0xffff"
+"0XFZFF"
+"000012ab"
+"0xFFFF0000aaaa99991"
+"00x0"
+
+]]>
+</programlisting>
 </section>
 
 <section id="defWindowsDoc"><title>Windows documentation</title>
