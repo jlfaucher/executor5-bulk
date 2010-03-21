@@ -139,11 +139,11 @@
 <section id="sctMethodsImageClass"><title>Method Table</title>
 
 <para>
-  Instances of the Image class implement the methods listed in the following table:
+  Instances of the <computeroutput>Image</computeroutput> class implement the methods listed in the following table:
 </para>
 
 <table id="tblImageMethods" frame="all">
-<title>Methods of the .Image Class</title>
+<title>Methods of the <computeroutput>Image</computeroutput> Class</title>
 <tgroup cols="2">
 <thead>
 <row>
@@ -153,40 +153,52 @@
 </thead>
 <tbody>
 <row>
-<entry>colorRef (Class method)</entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry>colorRef</entry>
 <entry><link linkend="mthColorRef">colorRef</link></entry>
 </row>
 <row>
-<entry>fromFiles (Class method)</entry>
+<entry>fromFiles</entry>
 <entry><link linkend="mthFromFilesClsImage">fromFiles</link></entry>
 </row>
 <row>
-<entry>fromIDs (Class method)</entry>
+<entry>fromIDs</entry>
 <entry><link linkend="mthFromIDsClsImage">fromIDs</link></entry>
 </row>
 <row>
-<entry>getBValue (Class method)</entry>
+<entry>getBValue</entry>
 <entry><link linkend="mthGetBValue">getBValue</link></entry>
 </row>
 <row>
-<entry>getGValue (Class method)</entry>
+<entry>getGValue</entry>
 <entry><link linkend="mthGetGValue">getGValue</link></entry>
 </row>
 <row>
-<entry>getImage (Class method)</entry>
+<entry>getImage</entry>
 <entry><link linkend="mthGetImageClsImage">getImage</link></entry>
 </row>
 <row>
-<entry>getRValue (Class method)</entry>
+<entry>getRValue</entry>
 <entry><link linkend="mthGetRValue">getRValue</link></entry>
 </row>
 <row>
-<entry>toID (Class method)</entry>
+<entry>new</entry>
+<entry><link linkend="mthNewClsImage">new</link></entry>
+</row>
+<row>
+<entry>toID</entry>
 <entry><link linkend="mthToIDClsImage">toID</link></entry>
 </row>
 <row>
-<entry>new (Class method)</entry>
-<entry><link linkend="mthNewClsImage">new</link></entry>
+<entry><link linkend="mthUserIcon">userIcon</link></entry>
+<entry>Returns a new image object from an icon resource added to the Rexx dialog object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
 <entry>handle</entry>
@@ -224,6 +236,7 @@
   <member>Image (class) method: <link linkend="mthGetImageClsImage">getImage()</link></member>
   <member>Image (class) method: <link linkend="mthFromFilesClsImage">fromFiles()</link></member>
   <member>Image (class) method: <link linkend="mthfromIDsClsImage">fromIDs()</link></member>
+  <member>Image (class) method: <link linkend="mthUserIcon">userIcon()</link></member>
   <member>ResourceImage (instance) method: <link linkend="mthGetImageClsResourceImage">getImage()</link></member>
   <member>ResourceImage (instance) method: <link linkend="mthGetImagesClsResourceImage">getImages()</link></member>
   </simplelist>
@@ -686,6 +699,149 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::fromIDs() [class method] -->
+
+<section id="mthUserIcon"><title>userIcon</title>
+<indexterm><primary>userIcon</primary></indexterm>
+<indexterm><primary>userIcon</primary><secondary>Image class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--userIcon(--dlg--,--id--+---------+--+---------+--)---------><
+                           +-,-size--+  +-,-opts--+
+]]>
+</programlisting>
+
+<para>
+  Returns a new <computeroutput>Image</computeroutput> object from an icon resource added to the dialog through the
+  <link linkend="addIconResource">addIconResource</link>() method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected. This includes an invalid sybmbolic ID.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>dlg [required]</term>
+    <listitem>
+    <para>
+      The Rexx dialog object to which the user icon was added.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+       The resource ID of the icon. Can be numeric or <link linkend="defSymbolicID">symbolic</link>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>size [optional]</term>
+    <listitem>
+    <para>
+      A <link linkend="clsSize">Size</link> object that specifies the size of the image.
+    </para>
+    <para>
+      If this argument is omitted, a size of 0 is used. Under most circumstances this indicates that the actual size of
+      the icon should be used.  However, if LR_DEFAULTSIZE is used as one of the flags in the <emphasis
+      role="italic">opts</emphasis> argument, then the width and height specified by the system metric values for icons
+      is used.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>opts [optional]</term>
+    <listitem>
+    <para>
+      A whole number that specifies the flags that control how the operating system loads the icon. The flags are one or
+      more of the following symbols. You can use <link linkend="mthToIDClsImage">.Image~toID()</link> to get the correct
+      numeric value for any of the following symbols. The <link linkend="mthOrClsDlgUtil">or</link> method of the <link
+      linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine more than one of the symbols if needed.
+      <simplelist type='horiz' columns='2'>
+      <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
+      <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
+      <member>LR_LOADMAP3DCOLORS</member> <member>LR_LOADTRANSPARENT</member>
+      <member>LR_MONOCHROME</member>      <member>LR_SHARED</member>
+      <member>LR_VGACOLOR</member>
+      </simplelist>
+    </para>
+    <para>
+      The default value is LR_LOADFROMFILE. The flags for this method, must include LR_LOADFROMFILE and can not contain
+      LR_SHARED. If this argument is specified by the programmer, the value is checked, and corrected if necessary. See
+      the remarks section for some additional comments.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    An image object, which may be a <link linkend="mthIsNullClsImage">null</link> image on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    For most usage, the Rexx programmer would do one of the following things:
+    <itemizedlist>
+    <listitem>
+    <para>
+      Omit the <emphasis role="italic">size</emphasis> and <emphasis role="italic">flags</emphasis> arguments. This
+      would load the icon using the actual size of the icon. If multiple icon images are included in the file, then the
+      first image found would be used.
+    </para>
+    </listitem>
+    </itemizedlist>
+      Omit the <emphasis role="italic">size</emphasis> and include the LR_DEFAULTSIZE flag in the <emphasis
+      role="italic">flags</emphasis>. This would load the using the system metric values for icons.
+    <itemizedlist>
+    <listitem>
+    <para>
+      Specify the size for the loaded image and omit the <emphasis role="italic">flags</emphasis> argument.
+    </para>
+    </listitem>
+    </itemizedlist>
+    This method uses the LoadImage() Windows API to actually load the icon image. For more advanced uses of this method,
+    consult the <link linkend="defWindowsDoc">MSDN library</link> documentation.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example adds an icon resource to the dialog through the <link
+    linkend="mthAddIconResource">addIconResource</link> method and then uses that icon for the image in a <link
+    linkend="clsStatic">static</link> image control.
+<programlisting>
+<![CDATA[
+
+  dlg = .SimpleDialog~new("Simple.rc", IDD_DIALOG1, , 'Simple.h')
+  if dlg~initCode = 0 then do
+    dlg~addIconResource(IDI_ENHANCED_QUESTION_MARK, 'fancyQuestion.ico')
+    dlg~execute("SHOWTOP", IDI_CORPORATE_IMAGE)
+  end
+
+::method initDialog
+  expose iconControl
+
+  iconControl = self~newStatic(IDC_ICON_QUESTION)
+  if iconControl <> .nil then do
+    questionMark = .Image~userIcon(self, IDI_ENHANCED_QUESTION_MARK, .Size~new(64, 64) )
+    if \ questionMark~isNull then iconControl~setIcon(questionMark)
+  end
+
+  self~connectButtonEvent(IDC_PB_YES, "CLICKED", onYes)
+  self~connectButtonEvent(IDC_PB_NO, "CLICKED", onNo)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Image::userIcon() -->
 
 
 <section id="mthColorRef"><title>colorRef (Class Method)</title>
@@ -1272,7 +1428,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </row>
 <row>
 <entry>addIcon</entry>
-<entry><link linkend="mthAddIconClsImageList">addIcon</link></entry>
+<entry><link linkend="mthAddIcon">addIcon</link></entry>
 </row>
 <row>
 <entry>addImages</entry>
@@ -1601,7 +1757,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ImageList::addMasked() -->
 
 
-<section id="mthAddIconClsImageList"><title>addIcon</title>
+<section id="mthAddIcon"><title>addIcon</title>
 <indexterm><primary>addIcon</primary>
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
@@ -2791,7 +2947,7 @@ A fancy purple: 16734709 (0x00FF59F5)
         dlg = .SimpleDialog~new( , 'simpleImage.h')
         if dlg~initCode = 0 then do
           dlg~createCenter(200, 247, "Simple Image Viewer", "", , "MS Shell Dlg 2", 8)
-          dlg~Execute("SHOWTOP", 14)
+          dlg~execute("SHOWTOP", 14)
         end
 
       return 0

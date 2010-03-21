@@ -213,10 +213,10 @@ the <computeroutput>new</computeroutput> method are described for the
 </para></listitem></varlistentry>
 <varlistentry><term>Execution:</term>
 <listitem><para>The dialog is then run by using the
-<computeroutput>Execute</computeroutput> method. For most of the standard
-dialogs <computeroutput>Execute</computeroutput> returns the user's input if
+<computeroutput>execute</computeroutput> method. For most of the standard
+dialogs <computeroutput>execute</computeroutput> returns the user's input if
 the OK button is clicked and the null string if the Cancel button is clicked to
-terminate the dialog. If there is more than one return value, Execute returns
+terminate the dialog. If there is more than one return value, execute returns
 the value 1 and stores the results in an attribute.  Exceptions to the general
 rule are noted in the documentation for the individual dialog.
 </para></listitem></varlistentry>
@@ -280,7 +280,7 @@ time and automatically dismisses itself.  The programmer need take no further
 action.
 </para>
 <para>If the number is less than 0 then the message window is shown
-indefinitely.  The <computeroutput>Execute</computeroutput> method returns
+indefinitely.  The <computeroutput>execute</computeroutput> method returns
 immediately.  In this case, the programmer needs to dismiss the window manually.
 This is done by invoking the <computeroutput>ok</computeroutput> method. See
 <emphasis role="bold">Example 2</emphasis> below.
@@ -302,7 +302,7 @@ role="italic">Infomation</emphasis> for a duration of 3 seconds:
 <![CDATA[
 dlg = .TimedMessage~New("Application will be started, please wait", -
                         "Information", 3000)
-dlg~Execute
+dlg~execute
 drop dlg
 ]]>
 </programlisting>
@@ -318,7 +318,7 @@ programmer dismisses the window and destroys the dialog manually.
 <![CDATA[
 dlg = .TimedMessage~New("The WidgetCreator Application - loading ...", -
                         "The Widget Factory", -1)
-dlg~Execute
+dlg~execute
 ret = doStartup()
 dlg~ok
 drop dlg
@@ -343,7 +343,7 @@ dialog has been destroyed.</para></note>
 <programlisting> <![CDATA[
 dlg = .TimedMessage~New("The WidgetCreator Application - loading ...", -
                         "The Widget Factory", 2000)
-dlg~Execute
+dlg~execute
 if doStartup() <> 0 then do
   ...
 end
@@ -385,8 +385,8 @@ class and how to add a background bitmap to the dialog window:
 </variablelist>
 </section>
 
-<section id="h002097"><title>Execute</title>
-<indexterm><primary>Execute</primary>
+<section id="h002097"><title>execute</title>
+<indexterm><primary>execute</primary>
 <secondary>TimedMessage class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -394,7 +394,7 @@ class and how to add a background bitmap to the dialog window:
 ]]>
 </programlisting>
 
-<para>The Execute method creates and shows the message window. If the specified
+<para>The execute method creates and shows the message window. If the specified
 duration (see <link linkend="initTimedMessage">init</link> method) is not
 negative, this method destroys the dialog automatically when the duration is up.
 If the duration is less than 0, then the programmer must destroy the dialog
@@ -464,7 +464,7 @@ text in the entry line, just pass an empty string.
 <![CDATA[
 dlg = .InputBox~New("Please enter your email address", -
                     "Input", "user@host.domain", 150)
-value = dlg~Execute
+value = dlg~execute
 say "You entered:" value
 drop dlg
 ]]>
@@ -507,8 +507,8 @@ have to forward the message to the parent class by using the keyword super.
 entry line to the dialog.</para>
 </section>
 
-<section id="h002148"><title>Execute</title>
-<indexterm><primary>Execute</primary>
+<section id="h002148"><title>execute</title>
+<indexterm><primary>execute</primary>
 <secondary>InputBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -518,7 +518,7 @@ entry line to the dialog.</para>
 ]]>
 </programlisting>
 
-<para>The Execute method creates and shows the dialog. After termination, the
+<para>The execute method creates and shows the dialog. After termination, the
 value of the entry line is returned if the user clicks the OK button; a null
 string is returned if the user clicks on Cancel.</para>
 </section>
@@ -781,7 +781,7 @@ say "Your ListChoice data:" dlg~execute
 <indexterm><primary>standard dialogs</primary>
 <secondary>MultiListChoice</secondary></indexterm>
 <para>The MultiListChoice class is an extension of the ListChoice class. It makes it possible for the user to
-select more than one line at a time. The Execute method
+select more than one line at a time. The execute method
 returns the selected items' indexes separated by blank spaces.  The first
 item has index 1. </para>
 <variablelist>
@@ -800,7 +800,7 @@ The first entry has index 1 and the rest are increments of one.
 </para></listitem></varlistentry>
 </variablelist>
 <para>The methods are the same as for the <link linkend="clsListChoice">ListChoice Class</link>
-class, except that Execute returns the index numbers
+class, except that execute returns the index numbers
 of the selected entries. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>

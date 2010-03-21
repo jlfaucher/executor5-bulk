@@ -529,12 +529,12 @@
 <entry><link linkend="mthEnsureVisible">EnsureVisible</link></entry>
 </row>
 <row>
-<entry>Execute</entry>
-<entry><link linkend="h000048">Execute</link></entry>
+<entry>execute</entry>
+<entry><link linkend="mthExecute">execute</link></entry>
 </row>
 <row>
-<entry>ExecuteAsync</entry>
-<entry><link linkend="h000057">ExecuteAsync</link></entry>
+<entry>executeAsync</entry>
+<entry><link linkend="mthExecuteAsync">executeAsync</link></entry>
 </row>
 <row>
 <entry>FillDrawing</entry>
@@ -971,12 +971,12 @@
 <entry><link linkend="peekdialogmessage">PeekDialogMessage</link></entry>
 </row>
 <row>
-<entry>Popup</entry>
-<entry><link linkend="popup">Popup</link></entry>
+<entry>popup</entry>
+<entry><link linkend="mthPopup">popup</link></entry>
 </row>
 <row>
-<entry>PopupAsChild</entry>
-<entry><link linkend="mthPopupAsChild">PopupAsChild</link></entry>
+<entry>popupAsChild</entry>
+<entry><link linkend="mthPopupAsChild">popupAsChild</link></entry>
 </row>
 <row>
 <entry>Rectangle</entry>
@@ -2110,7 +2110,7 @@ WindowBase::<link linkend="atrFactorY">factorY</link>
 
     dlg = .MessageBox~new( , , message, title, fontName, fontSize)
     if dlg~initCode = 0 then do
-      dlg~Execute("SHOWTOP", 14)
+      dlg~execute("SHOWTOP", 14)
     end
 
   return 0
@@ -2424,18 +2424,18 @@ called from outside the class.
 <variablelist>
 <varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
 <listitem><para>Run is a protected method. You cannot call this method directly; it
-is called by <link linkend="h000048">Execute</link>.
+is called by <link linkend="mthExecute">execute</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="h000048"><title>Execute</title>
-<indexterm><primary>Execute</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<section id="mthExecute"><title>execute</title>
+<indexterm><primary>execute</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>execute</secondary></indexterm>
 <programlisting>
 <![CDATA[
                             +-DEFAULT--+
->>-aBaseDialog~Execute(--"--+----------+--"--+---------+--)----><
+>>-aBaseDialog~execute(--"--+----------+--"--+---------+--)----><
                             +-NORMAL---+     +-,--icon-+
                             +-SHOWTOP--+
                             +-HIDE-----+
@@ -2447,7 +2447,7 @@ is called by <link linkend="h000048">Execute</link>.
 ]]>
 </programlisting>
 
-<para>The Execute method creates the dialog, shows it
+<para>The execute method creates the dialog, shows it
 (see <link linkend="show">Show</link>), starts automatic methods, and destroys the dialog.
 The data is passed to the Windows dialog before execution and received
 from it after the dialog is terminated.</para>
@@ -2495,15 +2495,15 @@ supplied by ooDialog:
 <![CDATA[
 MyDialog = .UserDialog~new(...)
 MyDialog~Create(...)
-MyDialog~Execute("SHOWTOP", IDI_DLG_OOREXX)
+MyDialog~execute("SHOWTOP", IDI_DLG_OOREXX)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="h000057"><title>ExecuteAsync</title>
-<indexterm><primary>ExecuteAsync</primary></indexterm>
+<section id="mthExecuteAsync"><title>executeAsync</title>
+<indexterm><primary>executeAsync</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aBaseDialog~ExecuteAsync--+--------------+------------------->
@@ -2524,8 +2524,8 @@ MyDialog~Execute("SHOWTOP", IDI_DLG_OOREXX)
 ]]>
 </programlisting>
 
-<para>The ExecuteAsync method does the same as Execute,
-except that it dispatches messages asynchronously. Therefore the ExecuteAsync
+<para>The executeAsync method does the same as execute,
+except that it dispatches messages asynchronously. Therefore the executeAsync
 method returns immediately after the dialog has been started. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2558,11 +2558,11 @@ case.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example starts a dialog and runs the statements between
-ExecuteAsync and EndAsyncExecution asynchronously to the dialog:
+executeAsync and EndAsyncExecution asynchronously to the dialog:
 
 <programlisting>
 <![CDATA[
-ret = MyDialog~ExecuteAsync(1000, "SHOWTOP")
+ret = MyDialog~executeAsync(1000, "SHOWTOP")
 if ret = 0 then do
    ...
    /* Object Rexx statements to run while the dialog is executing */
@@ -2607,17 +2607,17 @@ waits until the user terminates it. </para>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See the example in <link linkend="h000057">ExecuteAsync</link>.
+<listitem><para>See the example in <link linkend="mthExecuteAsync">executeAsync</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="popup"><title>Popup</title>
-<indexterm><primary>Popup</primary></indexterm>
+<section id="mthPopup"><title>popup</title>
+<indexterm><primary>popup</primary></indexterm>
 <programlisting>
 <![CDATA[
                           +-DEFAULT--+
->>-aBaseDialog~Popup(--"--+----------+--"--+-------------------------------+--)-><
+>>-aBaseDialog~popup(--"--+----------+--"--+-------------------------------+--)-><
                           +-NORMAL---+     +-,--+-----------+--+---------+-+
                           +-SHOWTOP--+          +-sleeptime-+  +-,--icon-+
                           +-HIDE-----+
@@ -2629,11 +2629,11 @@ waits until the user terminates it. </para>
 ]]>
 </programlisting>
 
-<para>The Popup method starts a dialog, dispatches messages
+<para>The popup method starts a dialog, dispatches messages
 asynchronously, and returns immediately after the dialog is started.</para>
-<para>A dialog started with Popup is independent of any other dialog. This means
+<para>A dialog started with popup is independent of any other dialog. This means
 that a dialog already started in the same process is not disabled by Popup.
-You can therefore use Popup to produce nonmodal dialogs.</para>
+You can therefore use popup to produce nonmodal dialogs.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -2656,13 +2656,13 @@ used.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example starts a dialog and runs the statements after
-Popup asynchronously to the dialog. This means that the dialog reacts to an
+popup asynchronously to the dialog. This means that the dialog reacts to an
 event like pressing a button and calls the connected method while the DO loop
 is being processed:</para>
 
 <programlisting>
 <![CDATA[
-MyDialog~Popup("SHOWTOP", 250)
+MyDialog~popup("SHOWTOP", 250)
 do i = 1 to 1000
    say "Iteration" i
    call msSleep 100
@@ -2676,12 +2676,12 @@ of dialog A. If dialog A is closed, MyDialog remains unaffected and active.
 </variablelist>
 </section>
 
-<section id="mthPopupAsChild"><title>PopupAsChild</title>
-<indexterm><primary>PopupAsChild</primary></indexterm>
+<section id="mthPopupAsChild"><title>popupAsChild</title>
+<indexterm><primary>popupAsChild</primary></indexterm>
 <programlisting>
 <![CDATA[
                                             +-DEFAULT--+
->>-aBaseDialog~PopupAsChild(--parent--,--"--+----------+--"----->
+>>-aBaseDialog~popupAsChild(--parent--,--"--+----------+--"----->
                                             +-NORMAL---+
                                             +-SHOWTOP--+
                                             +-HIDE-----+
@@ -2697,12 +2697,12 @@ of dialog A. If dialog A is closed, MyDialog remains unaffected and active.
 ]]>
 </programlisting>
 
-<para>The PopupAsChild method starts a dialog as a child
+<para>The popupAsChild method starts a dialog as a child
 dialog of another dialog, dispatches messages asynchronously, and returns
 immediately after the dialog is started.</para>
-<para>A dialog started with PopupAsChild and its parent dialog can be active
+<para>A dialog started with popupAsChild and its parent dialog can be active
 at the same time. This means that the parent dialog is not disabled by the
-child dialog. You can therefore use PopupAsChild to produce nonmodal dialogs.
+child dialog. You can therefore use popupAsChild to produce nonmodal dialogs.
 However, the child dialog is automatically terminated when the parent dialog
 is closed.</para>
 <variablelist>
@@ -2731,7 +2731,7 @@ used.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example starts a dialog and runs the statements after
-PopupAsChild asynchronously to the dialog. This means that the dialog reacts
+popupAsChild asynchronously to the dialog. This means that the dialog reacts
 to an event like pressing a button and calls the connected method while the
 DO loop is being processed. The new dialog is started as a child of MyParent
 and is therefore closed when the MyParent dialog is closed:</para>
@@ -2740,9 +2740,9 @@ and is therefore closed when the MyParent dialog is closed:</para>
 <![CDATA[
 MyParent = .UserDialog~new
 ...
-MyParent~Popup("SHOWTOP")
+MyParent~popup("SHOWTOP")
 ...
-MyDialog~PopupAsChild(MyParent, "SHOWTOP", 250)
+MyDialog~popupAsChild(MyParent, "SHOWTOP", 250)
 do i = 1 to 1000
    say "Iteration" i
    call msSleep 100
@@ -2792,7 +2792,7 @@ if MyDialog~IsDialogActive then ...
 </programlisting>
 
 <para>The HandleMessages method handles dialog messages
-synchronously. It is called by <link linkend="h000048">Execute</link>. HandleMessages
+synchronously. It is called by <link linkend="mthExecute">execute</link>. HandleMessages
 is a dispatcher that receives Windows events and posts the message that
 is set to handle the event.</para>
 </section>
@@ -4365,7 +4365,7 @@ is copied to the attribute FileName.
 <![CDATA[
 MyDialog~ConnectTreeControl(202, "FileName")
 MyDialog~FileName="TEST.REX"
-MyDialog~Execute("SHOWTOP")
+MyDialog~execute("SHOWTOP")
 say MyDialog~FileName
 ]]>
 </programlisting>
@@ -4499,7 +4499,7 @@ do season over seasons
   MyDialog~AddListEntry(205, season)
 end
 MyDialog~ListBox="2 4"
-MyDialog~Execute("SHOWTOP")
+MyDialog~execute("SHOWTOP")
 selItems = MyDialog~ListBox
 do until anItem =""
    parse var selItems anItem selItems
@@ -8431,7 +8431,7 @@ one of the check boxes instead.
 
   if dlg~initCode = 0 then do
     dlg~create(30, 30, 150, 150, "The Simple Grocery List", "VISIBLE")
-    dlg~Execute("SHOWTOP")
+    dlg~execute("SHOWTOP")
   end
 
 -- End of entry point.
@@ -8497,9 +8497,6 @@ one of the check boxes instead.
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    xx
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
@@ -8522,17 +8519,17 @@ one of the check boxes instead.
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
-    <para>
-      This method accurately converts dialog units of this dialog to pixels. Do not use <link
-      linkend="atrFactorX">factorX</link> and <link linkend="atrFactorY">factorY</link> for the conversion as they are
-      <link linkend="ovvInaccurate">inaccurate</link>.
-    </para>
-    <para>
-      Normally, this method is invoked prior to the creation of the underlying dialog. In order to be accurate, the
-      <link linkend="atrFontName">fontName</link> and <link linkend="atrFontSize">fontSize</link> attributes must
-      reflect the actual font the dialog will use.  Use the <link linkend="mthSetDlgFont">setDlgFont</link>() method if
-      necessary.
-    </para>
+  <para>
+    This method accurately converts dialog units of this dialog to pixels. Do not use <link
+    linkend="atrFactorX">factorX</link> and <link linkend="atrFactorY">factorY</link> for the conversion as they are
+    <link linkend="ovvInaccurate">inaccurate</link>.
+  </para>
+  <para>
+    Normally, this method is invoked prior to the creation of the underlying dialog. In order to be accurate, the
+    <link linkend="atrFontName">fontName</link> and <link linkend="atrFontSize">fontSize</link> attributes must
+    reflect the actual font the dialog will use.  Use the <link linkend="mthSetDlgFont">setDlgFont</link>() method if
+    necessary.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
@@ -9025,7 +9022,7 @@ on the color numbers, refer to <link linkend="sctTermDefs">Definition of Terms</
 </programlisting>
 
 <para>The Show method shows the dialog. It is called by <link
-linkend="h000048">Execute</link> or <link linkend="h000057">ExecuteAsync</link>
+linkend="mthExecute">execute</link> or <link linkend="mthExecuteAsync">executeAsync</link>
 methods to initially display the dialog.  Once the dialog has been initially
 shown, the programmer can use the <computeroutput>Show</computeroutput> to
 change the appearance of the dialog.  For instance the dialog can be hidden,
@@ -10338,10 +10335,10 @@ additional commentary that will help in understanding how the program works.
   the class.)
 </para>
 </listitem>
-<listitem><para><link linkend="h000048">Execute</link>: Two dialogs are created
+<listitem><para><link linkend="mthExecute">execute</link>: Two dialogs are created
 in the example.  The first dialog allows the user to enter the name of a file to
 view.  Then the file itself is displayed in a second dialog.  Each dialog uses a
-different application icon. The <computeroutput>Execute</computeroutput> method
+different application icon. The <computeroutput>execute</computeroutput> method
 documentation has more detail on the application icon.
 </para></listitem>
 <listitem><para><link linkend="mthInitDialog">InitDialog</link> This method is called
@@ -10360,7 +10357,7 @@ the user.
 the secondary viewer dialog, the &quot;View File&quot; button is enabled so the
 user can choose to view another file.
 </para></listitem>
-<listitem><para><link linkend="mthPopupAsChild">PopupAsChild</link>: The viewer
+<listitem><para><link linkend="mthPopupAsChild">popupAsChild</link>: The viewer
 dialog is executed using this method so that both dialogs run independently,
 both dialogs stay enabled.  The <computeroutput>HIDE</computeroutput> keyword is
 used for the show argument.  This creates the dialog as invisible and prevents
@@ -10443,7 +10440,7 @@ still minimized, then this method restores it to its normal position.
   dlg = .FileView~new( , "fileView.h")
   if dlg~initCode = 0 then do
     dlg~createCenter(170, 90, "The File Viewer Dialog", "VISIBLE MAXIMIZEBOX MINIMIZEBOX")
-    dlg~Execute("SHOWTOP", IDI_DLG_OOREXX)
+    dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
   end
 
 -- End of entry point.
@@ -11246,7 +11243,7 @@ parse var bmpPos x y
 and parameters to a special internal queue. All methods in this queue will
 be started automatically and run concurrently when the dialog is executed.
 The given method (MethodName) in the given class (InClass) is started concurrently with the dialog when
-the dialog is activated using the <link linkend="h000048">Execute</link> or <link linkend="h000057">ExecuteAsync</link> method. This is useful for processing animated
+the dialog is activated using the <link linkend="mthExecute">execute</link> or <link linkend="mthExecuteAsync">executeAsync</link> method. This is useful for processing animated
 buttons. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -11368,7 +11365,7 @@ end
 Dialog~installAnimatedButton("IDANI", ,.MyAnimation,"My.Bitmaps", ,1,1, , ,100)
 
 ...
-Dialog~Execute
+Dialog~execute
 ...
 
 /* Free the bitmap previously loaded */
@@ -12110,6 +12107,46 @@ a button. It is used to move bitmaps within buttons. </para>
   This method never worked correctly, the previous documentation for this method was incorrect and /
   or misleading. That has been fixed in the <emphasis role="italic">getTextSizeDu</emphasis>() and <emphasis
   role="italic">getTextSizeDlg</emphasis>() methods.
+</para>
+</section>
+
+<section<title>getStaticControl</title>
+<indexterm><primary>getStaticControl</primary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>getStaticControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getStaticControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewStatic">newStatic</link>() method.
+</para>
+</section>
+
+<section<title>getButtonControl</title>
+<indexterm><primary>getButtonControl</primary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>getButtonControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getButtonControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewPushButton">newPushButton</link>() method.
+</para>
+</section>
+
+<section<title>getRadioControl</title>
+<indexterm><primary>getRadioControl</primary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>getRadioControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getRadioControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewRadioButton">newRadioButton</link>() method.
+</para>
+</section>
+
+<section<title>getCheckControl</title>
+<indexterm><primary>getCheckControl</primary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>getCheckControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getCheckControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewCheckBox">newCheckBox</link>() method.
 </para>
 </section>
 

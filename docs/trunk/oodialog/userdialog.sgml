@@ -69,8 +69,8 @@
   purpose of creating dialog controls.
 </para>
 <para>
-  In addition to creating dialog controls one at a time, there are also methods that enable you to define a group
-  of the same dialog controls together. The names of these methods begin with <emphasis
+  In addition to creating dialog controls one at a time, there are also methods that allow the programmer to define a
+  group of the same dialog controls together. The names of these methods begin with <emphasis
   role="italic">create</emphasis> and usually end with <emphasis role="italic">Group</emphasis>, <emphasis
   role="italic">Input</emphasis>, or <emphasis role="italic">Stem</emphasis>. Although, there are also some methods
   for creating the Ok and Cancel buttons as a group. These methods begin with <emphasis
@@ -175,8 +175,8 @@
 <entry><link linkend="addEtchedHorizontal">addEtchedHorizontal</link></entry>
 </row>
 <row>
-<entry>addIcon</entry>
-<entry><link linkend="mthAddIconClsUserDialog">addIcon</link></entry>
+<entry>addIconResource</entry>
+<entry><link linkend="mthAddIconResource">addIconResource</link></entry>
 </row>
 <row>
 <entry>addInput</entry>
@@ -793,18 +793,19 @@ of dialog 200 or dialog 300, depending on the argument:
 </variablelist>
 </section>
 
-<section id="mthAddIconClsUserDialog"><title>addIcon</title>
-<indexterm><primary>addIcon</primary><secondary>UserDialog class</secondary></indexterm>
-<indexterm><primary>UserDialog</primary><secondary>addIcon</secondary></indexterm>
+<section id="mthAddIconResource"><title>addIconResource</title>
+<indexterm><primary>addIconResource</primary></indexterm>
+<indexterm><primary>UserDialog</primary><secondary>addIconResource</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addIcon(--id--,--fileName--)-----------------------------------------------><
+>>--addIconResource(--id--,--fileName--)---------------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">addIcon</emphasis> method adds an icon resource to the dialog.  This is equivalent to using the
-  <computeroutput>ICON</computeroutput> statement in a resource script.
+  The <emphasis role="italic">addIconResource</emphasis> adds an icon resource file name to the dialog.  The icon file
+  name is added by the programmer by directly invoking this method. In addition, when a resource script is parsed, this
+  method is automatically invoked when an ICON resource statement encountered.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -813,13 +814,14 @@ of dialog 200 or dialog 300, depending on the argument:
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>id</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID for the icon. This can be numeric or <link linkend="defSymbolicID">symbolic</link>.
+      The resource <link linkend="para"></link>ID for the icon. This can be numeric or <link
+      linkend="defSymbolicID">symbolic</link>.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>fileName</term>
+    <varlistentry><term>fileName [required]</term>
     <listitem>
     <para>
       The file name of the icon.  If the icon file is not in the current directory, then a relative or fully qualified
@@ -832,46 +834,70 @@ of dialog 200 or dialog 300, depending on the argument:
   <listitem>
   <para>
     The possible return values are:
-    <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-        <para>
-          Success.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>less than 0</term>
-      <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A problem with the resource ID. Either a symbolic ID could not be resolved, or the ID is reserved.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Once the icon file name is added to the dialog it will still need to be loaded into memory to be of use in a Rexx
+    program. There are two ways in which this can be done:
+    <orderedlist>
+    <listitem>
+    <para>
+      The icon can be used as the <link linkend="defApplicationIcon">application icon</link> of the dialog. Specify the
+      resource ID of the icon as the <emphasis role="italic">icon</emphasis> argument in the <link
+      linkend="mthExecute">execute</link>, <link linkend="mthExecuteAsync">executeAsync</link>, <link
+      linkend="mthPopup">popup</link>, or <link linkend="mthPopupAsChild">popupAsChild</link> methods. The ooDialog will
+      automatically load the icon.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      The icon can be loaded into memory use the <link linkend="mthUserIcon">useIcon</link>() method of the <link
+      linkend="clsImage">Image</link> class.
+    </para>
+    </listitem>
+    </orderedlist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
     The following example creates a very simple dialog that has an OK button and a static text box. The <emphasis
-    role="italic">addIcon</emphasis> method is used to load an icon resource using the ID of 15.  That icon is then used
+    role="italic">addIconResource</emphasis> method is used to load an icon resource using the ID of 15.  That icon is then used
     in the <emphasis role="italic">execute</emphasis> method for the <link linkend="defDialogIcon">dialog icon</link>.
   </para>
 <programlisting>
 <![CDATA[
   dlg = .SimpleDialog~new
   if dlg~initCode = 0 then do
-    self~addIcon(105, "MyAppIcon.ico")
+    self~addIconResource(105, "MyAppIcon.ico")
     dlg~create(30, 30, 150, 100, "The Simple Dialog", "VISIBLE")
     dlg~execute("SHOWTOP", 105)
   end
 
 ::requires "ooDialog.cls"
 
-::class SimpleDialog subclass UserDialog
+::class 'SimpleDialog' subclass UserDialog
 
 ::method defineDialog
 
-  self~createStaticText(10, 20, 130, 30, "Simple message", "CENTER BORDER", 100)
-  self~addButton(IDOK, 105, 70, 35, 15, "OK")
+  self~createStaticText(100, 10, 20, 130, 30, "CENTER BORDER", "Simple message")
+  self~createPushButton(IDOK, 105, 70, 35, 15, "DEFAULT", "OK")
 
 ]]>
 </programlisting>
@@ -911,7 +937,7 @@ of dialog 200 or dialog 300, depending on the argument:
   <para>
     The arguments to all the create... methods all use the same order. Although sometimes some arguments may be required
     and other times optional. The order is exactly: resourceID, control <link
-    linkend="listCommonArguments">coordinates</link>, style option, text if any, attribute name if any, methodName to
+    linkend="paraControlCoordinates">coordinates</link>, style option, text if any, attribute name if any, methodName to
     connect if any.
   </para>
   </listitem>
@@ -928,7 +954,7 @@ of dialog 200 or dialog 300, depending on the argument:
   automatically create and connect the associated <link linkend="sctUnderstandingDataAttributes">data attribute</link>
   by invoking the matching <link linkend="sctConnectDataMethods">connect... method</link>. The create... methods cannot
   be used after the underlying dialog has been created. In general this is after the <link
-  linkend="h000048">execute</link>() or the <link linkend="h000057">executeAsyn</link>() methods have been invoked.
+  linkend="mthExecute">execute</link>() or the <link linkend="mthExecuteAsync">executeAsync</link>() methods have been invoked.
 </para>
 <para id="paraStyleExplanation">
   The behavior and appearance of all dialog controls defined using one of the create... methods are controlled by a
@@ -1044,67 +1070,65 @@ of dialog 200 or dialog 300, depending on the argument:
   </para></listitem>
   </varlistentry>
 </variablelist>
-<para>
-  All dialog controls have a position and size.  The position of the control is specified by the coordinates of its
-  upper left corner (x, y) and the size is specified by its width (cx) and height (cy).  Windows uses a coordinate
-  system that specifies the upper left corner of the screen as (0,0). Moving to the left in this system increases the x
-  value and moving down increases the y value.  Negative values for either x or y would then move off the screen.
-  (Normally. This simple explanation becomes more complicated with dual-monitor systems.)
+<para id="paraControlCoordinates">
+  All dialog controls have a position and size. The position of the control is specified by the coordinates of its upper
+  left corner (x, y) and the size is specified by its width (cx) and height (cy).  Windows uses a coordinate system that
+  specifies the upper left corner of the screen as (0,0). Moving to the left in this system increases the x value and
+  moving down increases the y value.  Negative values for either x or y would then move off the screen. (Normally. This
+  simple explanation becomes more complicated with dual-monitor systems.)
 </para>
-<note><title>Note</title>
 <para>
-  Unless otherwise stated, the coordinates (the x, y, cx, and cy arguments) of the dialog control definitions are
-  specified in dialog units.
-</para></note>
-<note><title>Note</title>
-<para>
-  When dialog controls are defined, their position and size is specified in relation to the upper left corner of the
-  dialog's <emphasis role="italic">client window</emphasis>.  Specifying the position relative to the screen would of
-  course be meaningless as the dialog is moved around.
-</para></note>
-<para>
-  All the create... Methods that create a single control have the following common arguments.  Some of the other
-  create... Methods that create a group of controls will only take the postion, or the size arguments:
+  For the create... methods all coordinates, (the x, y, cx, and cy arguments,) are specified in dialog <link
+  linkend="defDialogUnit">units</link>. The position of the dialog control is specified in relation to the upper left
+  corner of the dialog's <emphasis role="italic">client window</emphasis>. All the create... methods that create a
+  single control have the following common arguments.  Some of the other create... methods that create a group of
+  controls will only take the postion, or the size arguments:
 </para>
-<variablelist id="listCommonArguments">
-<varlistentry><term id="xArgument"><emphasis role="bold">x</emphasis></term>
+<variablelist>
+  <varlistentry><term id="xArgument"><emphasis role="bold">x</emphasis></term>
   <listitem>
   <para>
-    The left position of the control in the dialog's client window, in dialog units.
-  </para></listitem>
-</varlistentry>
-<varlistentry><term id="yArgument"><emphasis role="bold">y</emphasis></term>
+    The left position of the control in the dialog's client window, in dialog <link
+    linkend="devDialogUnit">units</link>.
+  </para>
+  </listitem>
+  </varlistentry>
+  <varlistentry><term id="yArgument"><emphasis role="bold">y</emphasis></term>
   <listitem>
   <para>
     The top position of the control in the dialog's client window, in dialog units.
-  </para></listitem>
-</varlistentry>
-<varlistentry><term id="cxArgument"><emphasis role="bold">cx</emphasis></term>
+  </para>
+  </listitem>
+  </varlistentry>
+  <varlistentry><term id="cxArgument"><emphasis role="bold">cx</emphasis></term>
   <listitem>
   <para>
     The width of the control in dialog units.
-  </para></listitem>
-</varlistentry>
-<varlistentry><term id="cyArgument"><emphasis role="bold">cx</emphasis></term>
+  </para>
+  </listitem>
+  </varlistentry>
+  <varlistentry><term id="cyArgument"><emphasis role="bold">cx</emphasis></term>
   <listitem>
   <para>
     The height of the control in dialog units.
-  </para></listitem>
-</varlistentry>
-<varlistentry><term id="idArgument"><emphasis role="bold">id</emphasis></term>
+  </para>
+  </listitem>
+  </varlistentry>
+  <varlistentry><term id="idArgument"><emphasis role="bold">id</emphasis></term>
   <listitem>
-  <para id="paraResouceIDs">
+  <para id="paraResourceIDs">
     All dialog controls have a numeric <link linkend="defResourceId">resource</link> ID. The ooDialog framework is
     designed to accept a <link linkend="defSymbolicId">symbolic</link> ID anywhere a resource ID is needed.  All the
     create... methods accepted a symbolic ID for the id argument.
   </para>
   <para>
     By default static controls and group boxes are assigned a resource id of -1. However, assigning a positive id allows
-    the programmer to modify the static control or group box after it is created, perhaps to change the text of its
-    title, or to change its postition. Without a positive ID, a static control or group box can not be modified.  Which
-    is fine, normally static controls and group boxes do not need to be modified.
-  </para></listitem>
-</varlistentry>
+    the programmer to modify the static control or group box after it is created, perhaps to change the text of
+    its title, or to change its postition. Without a positive ID, a static control or group box can not be modified.
+    Which is fine, normally static controls and group boxes do not need to be modified.
+  </para>
+  </listitem>
+  </varlistentry>
 </variablelist>
 
 </section>
@@ -1171,7 +1195,7 @@ of dialog 200 or dialog 300, depending on the argument:
     <varlistentry><term>x, y, cx, cy [required]</term>
     <listitem>
     <para>
-      The  control <link linkend="listCommonArguments">coordinates</link>
+      The  control <link linkend="paraControlCoordinates">coordinates</link>
     </para>
     </listitem></varlistentry>
     <varlistentry><term>style [optional]</term>
@@ -1504,7 +1528,7 @@ of dialog 200 or dialog 300, depending on the argument:
     <varlistentry><term>x, y, cx, cy</term>
     <listitem>
     <para>
-      The <link linkend="listCommonArguments">control </link> coordinates.  When cx and cy are omitted, then width and
+      The <link linkend="paraControlCoordinates">control </link> coordinates.  When cx and cy are omitted, then width and
       height of the control are calculated automatically based on the width and height of the text string.
     </para>
     </listitem></varlistentry>
@@ -1687,7 +1711,7 @@ of dialog 200 or dialog 300, depending on the argument:
   dlg = .SimpleDialog~new( , 'AllStyles.h')
   if dlg~initCode = 0 then do
     dlg~createCenter(269, 183, "Frames and Rectangles", "", , "MS Shell Dlg 2", 8)
-    dlg~Execute("SHOWTOP", IDI_DLG_OOREXX)
+    dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
   end
 
 return 0
@@ -1802,7 +1826,7 @@ return 0
     <varlistentry><term>x, y, cx, cy</term>
     <listitem>
       <para>
-        The  control <link linkend="listCommonArguments">coordinates</link>
+        The  control <link linkend="paraControlCoordinates">coordinates</link>
       </para>
     </listitem></varlistentry>
     <varlistentry><term>style</term>
@@ -1994,7 +2018,7 @@ return 0
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>
+          The  control <link linkend="paraControlCoordinates">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -2110,7 +2134,7 @@ return 0
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>
+          The  control <link linkend="paraControlCoordinates">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -2226,7 +2250,7 @@ return 0
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>
+          The  control <link linkend="paraControlCoordinates">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -2342,7 +2366,7 @@ return 0
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>
+          The  control <link linkend="paraControlCoordinates">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -2458,7 +2482,7 @@ return 0
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>
+          The  control <link linkend="paraControlCoordinates">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -2574,7 +2598,7 @@ return 0
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>
+          The  control <link linkend="paraControlCoordinates">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -2689,7 +2713,7 @@ return 0
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>
+          The  control <link linkend="paraControlCoordinates">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -2804,7 +2828,7 @@ return 0
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>
+          The  control <link linkend="paraControlCoordinates">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -2928,7 +2952,7 @@ return 0
     <varlistentry><term>x, y, cx, cy</term>
     <listitem>
     <para>
-      The  control <link linkend="listCommonArguments">coordinates</link>
+      The  control <link linkend="paraControlCoordinates">coordinates</link>
     </para>
     </listitem></varlistentry>
     <varlistentry><term>style</term>
@@ -3052,7 +3076,7 @@ return 0
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>
+          The  control <link linkend="paraControlCoordinates">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>text</term>
@@ -3165,7 +3189,7 @@ return 0
     <varlistentry><term>x, y, cx, cy</term>
     <listitem>
       <para>
-        The  control <link linkend="listCommonArguments">coordinates</link>
+        The  control <link linkend="paraControlCoordinates">coordinates</link>
       </para>
     </listitem></varlistentry>
     <varlistentry><term>text</term>
@@ -3424,7 +3448,7 @@ MyDialog~addButton(555, 100, 80, 40, 15, "&Get new Info", ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>
+          The  control <link linkend="paraControlCoordinates">coordinates</link>
         </para>
       </listitem></varlistentry>
       <varlistentry><term>text</term>
@@ -3648,7 +3672,7 @@ MyDialog~addBitmapButton(601, 20, 317, 80, 30, , "BmpPushed", ,
         <varlistentry><term>x, y, cx, cy</term>
         <listitem>
           <para>
-            The <link linkend="listCommonArguments">control</link> coordinates. In this case x and y are
+            The <link linkend="paraControlCoordinates">control</link> coordinates. In this case x and y are
             the position of the entire group. cx and cy are the size of a single button and both are
             optional. The default for cx is 40 and for cy 12.
           </para>
@@ -4086,7 +4110,7 @@ MyDialog~addButtonGroup(20, 235, , ,               -
         <varlistentry><term>x, y, cx, cy</term>
         <listitem>
           <para>
-            The  control <link linkend="listCommonArguments">coordinates</link>. If either cx or cy are
+            The  control <link linkend="paraControlCoordinates">coordinates</link>. If either cx or cy are
             omitted, then the size for the radio button is calculated internally using its label. (The
             text argument.)
           </para>
@@ -4338,7 +4362,7 @@ end
         <varlistentry><term>x, y, cx</term>
         <listitem>
           <para>
-            The control <link linkend="listCommonArguments">coordinates</link>.  x and y name the
+            The control <link linkend="paraControlCoordinates">coordinates</link>.  x and y name the
             position of the first radio button control. The other radio buttons are positioned
             automatically. cx specifies the length of the radio button plus text. If omitted, the space
             needed is calculated.
@@ -4533,7 +4557,7 @@ MyDialog = .UserDialog~new
 MyDialog~Create(100,100,80,60,"Radio Button Group")
 MyDialog~addRadioGroup(301, 23, 18, ,"Fast Medium Slow")
 MyDialog~fast = 1
-MyDialog~Execute
+MyDialog~execute
 ]]>
 </programlisting>
 
@@ -4584,7 +4608,7 @@ MyDialog~Execute
         <varlistentry><term>x, y, cx</term>
         <listitem>
           <para>
-            The control <link linkend="listCommonArguments">coordinates</link>.  x and y name the
+            The control <link linkend="paraControlCoordinates">coordinates</link>.  x and y name the
             position of the first radio button control. The other radio buttons are positioned
             automatically. cx specifies the length of the radio button plus text. If omitted, the space
             needed is calculated.
@@ -4792,7 +4816,7 @@ MyDialog~Execute
 
   if dlg~initCode = 0 then do
     dlg~createCenter(150, 83, "Testing Radio Buttons", "VISIBLE", , "Ms Shell Dlg 2", 8)
-    dlg~Execute("SHOWTOP")
+    dlg~execute("SHOWTOP")
   end
 
 ::requires "oodWin32.cls"
@@ -4853,7 +4877,7 @@ MyDialog~Execute
       <varlistentry><term>x [required], y [required], cx [optional], cy [optional]</term>
       <listitem>
       <para>
-        The  control <link linkend="listCommonArguments">coordinates</link> If cx or cy are omitted, then the size for
+        The  control <link linkend="paraControlCoordinates">coordinates</link> If cx or cy are omitted, then the size for
         the check box is calcuated internally using its label. (The text argument.)
       </para>
       </listitem></varlistentry>
@@ -5131,7 +5155,7 @@ MyDialog~Execute
         <varlistentry><term>x, y, cx</term>
         <listitem>
           <para>
-            The control <link linkend="listCommonArguments">coordinates</link>.  x and y name the
+            The control <link linkend="paraControlCoordinates">coordinates</link>.  x and y name the
             position of the first check box control. The other check boxes are positioned automatically.
             cx specifies the length of the check box plus text. If omitted, the space needed is
             calculated.
@@ -5387,7 +5411,7 @@ MyDialog~objectrexx = 1
         <varlistentry><term>x, y, cx</term>
         <listitem>
           <para>
-            The control <link linkend="listCommonArguments">coordinates</link>.  x and y name the
+            The control <link linkend="paraControlCoordinates">coordinates</link>.  x and y name the
             position of the first check box control. The other check boxes are positioned automatically.
             cx specifies the length of the check plus text. If omitted, the space needed is
             calculated.
@@ -5607,7 +5631,7 @@ MyDialog~objectrexx = 1
 
   if dlg~initCode = 0 then do
     dlg~createCenter(215, 83, "Testing Check Boxes", "VISIBLE", , "Ms Shell Dlg 2", 8)
-    dlg~Execute("SHOWTOP")
+    dlg~execute("SHOWTOP")
   end
 
 ::requires "oodWin32.cls"
@@ -5685,7 +5709,7 @@ MyDialog~objectrexx = 1
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>. If cy is omitted, then the
+          The  control <link linkend="paraControlCoordinates">coordinates</link>. If cy is omitted, then the
           height is calculated to fit the height of the dialog font.
         </para>
       </listitem></varlistentry>
@@ -5965,7 +5989,7 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>. If cy is omitted, then the
+          The  control <link linkend="paraControlCoordinates">coordinates</link>. If cy is omitted, then the
           height is calculated to fit the height of the dialog font.
         </para>
       </listitem></varlistentry>
@@ -6220,7 +6244,7 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
     <varlistentry><term>x, y, cx, cy</term>
     <listitem>
     <para>
-      The  control <link linkend="listCommonArguments">coordinates</link>.
+      The  control <link linkend="paraControlCoordinates">coordinates</link>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>style</term>
@@ -6437,7 +6461,7 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>.
+          The  control <link linkend="paraControlCoordinates">coordinates</link>.
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -6601,7 +6625,7 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
     <varlistentry><term>x, y, cx, cy</term>
     <listitem>
       <para>
-        The  control <link linkend="listCommonArguments">coordinates</link>
+        The  control <link linkend="paraControlCoordinates">coordinates</link>
       </para>
     </listitem></varlistentry>
     <varlistentry><term>style</term>
@@ -6719,9 +6743,8 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
 <indexterm><primary>dialog object</primary><secondary>createUpDown</secondary></indexterm>
 <programlisting>
 <![CDATA[
-
->>--createUpDown(-id--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)---><
-                                         +-,-style-+  +-,-attributeName-+
+>>--createUpDown(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)---><
+                                           +-,-style-+  +-,-attributeName-+
 ]]>
 </programlisting>
 
@@ -6730,126 +6753,137 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem><para>The arguments are:
+  <listitem>
+  <para>
+    The arguments are:
   <variablelist>
-    <varlistentry><term>id</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
-      <para>
-        The resource <link linkend="idArgument">ID</link> for the button.
-      </para>
-    </listitem></varlistentry>
-    <varlistentry><term>name</term>
-    <listitem>
-      <para>
-        The name of the data attribute associated with the dialog item. Using this argument performs the
-        same function as the FIX THIS PLEASE <link
-        linkend="mthConnectEdit">connectEdit</link>() method. The documentation
-        connectEdit() has a good description of the concept of the data attribute.
-      </para>
-      <para>
-        If you omitt this argument then the data attribute is constructed automatically and named by
-        concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA || id</computeroutput>.
-      </para>
+    <para>
+      The resource <link linkend="idArgument">ID</link> for the up-down control. May be numeric or <link
+      linkend="defSymbolicID">symbolic</link>.
+    </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y, cx, cy</term>
     <listitem>
-      <para>
-        The  control <link linkend="listCommonArguments">coordinates</link>
-      </para>
+    <para>
+      The  control <link linkend="paraControlCoordinates">coordinates</link>
+    </para>
     </listitem></varlistentry>
     <varlistentry><term>style</term>
     <listitem>
-      <para>
-        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-        separated by spaces:
-      </para>
-      <para>
-        <simplelist type='vert' columns='3'>
-          <member>DEFAULT  </member>
-          <member>OWNER    </member>
-          <member>BITMAP   </member>
-          <member>HIDDEN   </member>
-          <member>DISABLED </member>
-          <member>BORDER   </member>
-          <member>GROUP    </member>
-          <member>NOTAB    </member>
-        </simplelist>
-        <variablelist>
-          <varlistentry><term>DEFAULT</term>
-          <listitem>
-            <para>
-              The button becomes the default button in the dialog.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>OWNER</term>
-          <listitem>
-            <para>
-              The programmer is completely responsible for drawing the button when the dialog receives
-              the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
-              implement in ooDialog.  A simpler approach for an owner drawn button is to use an image
-              list with the button.  See the <link
-              linkend="mthSetImageList">setImageList</link>() method.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>BITMAP</term>
-          <listitem>
-            <para>
-              The button displays a bitmap image.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDDEN</term>
-          <listitem>
-            <para>
-              The <link linkend="wsvisible">not visible</link> window style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DISABLED</term>
-          <listitem>
-            <para>
-              The <link linkend="wsdisabled">not enabled</link> window style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>BORDER</term>
-          <listitem>
-            <para>
-              The <link linkend="wsborder">border</link> window style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>GROUP</term>
-          <listitem>
-            <para>
-              The <link linkend="wsgroup">group</link> control style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOTAB</term>
-          <listitem>
-            <para>
-              The no <link linkend="wstabstop">tabstop</link> control style.
-            </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </para>
+    <para>
+      A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+      separated by spaces:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>DEFAULT  </member>
+        <member>OWNER    </member>
+        <member>BITMAP   </member>
+        <member>HIDDEN   </member>
+        <member>DISABLED </member>
+        <member>BORDER   </member>
+        <member>GROUP    </member>
+        <member>NOTAB    </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>DEFAULT</term>
+        <listitem>
+          <para>
+            The button becomes the default button in the dialog.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>OWNER</term>
+        <listitem>
+          <para>
+            The programmer is completely responsible for drawing the button when the dialog receives
+            the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
+            implement in ooDialog.  A simpler approach for an owner drawn button is to use an image
+            list with the button.  See the <link
+            linkend="mthSetImageList">setImageList</link>() method.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BITMAP</term>
+        <listitem>
+          <para>
+            The button displays a bitmap image.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HIDDEN</term>
+        <listitem>
+          <para>
+            The <link linkend="wsvisible">not visible</link> window style.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DISABLED</term>
+        <listitem>
+          <para>
+            The <link linkend="wsdisabled">not enabled</link> window style.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BORDER</term>
+        <listitem>
+          <para>
+            The <link linkend="wsborder">border</link> window style.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>GROUP</term>
+        <listitem>
+          <para>
+            The <link linkend="wsgroup">group</link> control style.
+          </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTAB</term>
+        <listitem>
+          <para>
+            The no <link linkend="wstabstop">tabstop</link> control style.
+          </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>name</term>
+    <listitem>
+    <para>
+      The name of the data <link linkend="sctUnderstandingDataAttributes">attribute</link> associated with the dialog
+      control. If you omit this argument then the name of the data attribute is constructed <link
+      linkend="sctDataAttributeNames">automatically</link>.
+    </para>
     </listitem></varlistentry>
   </variablelist>
   </para></listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The possible return values are:
-      <variablelist>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        The dialog template has either not been started or is complete.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>0</term>
       <listitem>
-        <para>
-          Success.
-        </para>
+      <para>
+        Success.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>less than 0</term>
+      <varlistentry><term>1</term>
       <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
+      <para>
+        The control was added to the dialog template but the data attribute could not be connected because the maximum
+        number of data connections has been reached.
+      </para>
       </listitem></varlistentry>
-      </variablelist>
+    </variablelist>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -6914,7 +6948,7 @@ MyDialog~addEntryLine(201, "FIRSTNAME", 12, 14, 150, ,"AUTOSCROLLH")
       <varlistentry><term>x, y, cx1, cx2, cy</term>
       <listitem>
         <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>. x and y are the position of
+          The  control <link linkend="paraControlCoordinates">coordinates</link>. x and y are the position of
           the upper-left edge of the label. The edit control is aligned automatically.
         </para>
         <para>
@@ -7210,7 +7244,7 @@ MyUserDialog~addInput(402, , 20, 30, , 150, , "Your eMail address")
       <listitem>
         <para>
           Position of the input group's upper-left <link
-          linkend="listCommonArguments">coordinates</link>.
+          linkend="paraControlCoordinates">coordinates</link>.
         </para>
       </listitem></varlistentry>
       <varlistentry><term>cx1</term>
@@ -7525,7 +7559,7 @@ MyDialog~addInputGroup(301, 20, 20, ,130, "Name FirstName Street City")
       <varlistentry><term>x, y, cx1, cx2, cy</term>
       <listitem>
         <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>. x and y are the position of
+          The  control <link linkend="paraControlCoordinates">coordinates</link>. x and y are the position of
           the upper-left edge of the label. The combo box is aligned automatically.
         </para>
         <para>
@@ -7701,7 +7735,7 @@ MyDialog~addInputGroup(301, 20, 20, ,130, "Name FirstName Street City")
       <listitem>
         <para>
           Position of the input group's upper-left <link
-          linkend="listCommonArguments">coordinates</link>.
+          linkend="paraControlCoordinates">coordinates</link>.
         </para>
       </listitem></varlistentry>
       <varlistentry><term>cx1</term>
@@ -8009,7 +8043,7 @@ MyDialog~addInputStem(401, 20, 20, , 150, FNames.)
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The  control <link linkend="listCommonArguments">coordinates</link>.
+          The  control <link linkend="paraControlCoordinates">coordinates</link>.
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
@@ -8495,7 +8529,7 @@ MyDialog~AddTreeControl(555, "Branch", 100, 80, 40, 120, ,
     <varlistentry><term>x, y, cx, cy</term>
     <listitem>
       <para>
-        The  control <link linkend="listCommonArguments">coordinates</link>
+        The  control <link linkend="paraControlCoordinates">coordinates</link>
       </para>
     </listitem></varlistentry>
     <varlistentry><term>style</term>
@@ -8639,7 +8673,7 @@ MyDialog~AddTreeControl(555, "Branch", 100, 80, 40, 120, ,
       <varlistentry><term>x, y, cx, cy</term>
       <listitem>
         <para>
-          The control <link linkend="listCommonArguments">coordinates</link>.
+          The control <link linkend="paraControlCoordinates">coordinates</link>.
         </para>
       </listitem></varlistentry>
       <varlistentry><term>style</term>
