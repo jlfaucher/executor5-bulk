@@ -2,7 +2,7 @@
 #
 # Description: Makefile for the Object Rexx FTP Class library Documents.
 #
-# Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+# Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -47,11 +47,11 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
              ../shared/oorexx.html.dsl
 
 
-SGML_FILES = rxftp.sgml \
-     ../shared/notices.sgml \
-     ../shared/legalstuff.sgml \
-     ../shared/gethelp.sgml \
-     ../shared/CPLv1.0.sgml
+xml_FILES = rxftp.xml \
+     ../shared/notices.xml \
+     ../shared/legalstuff.xml \
+     ../shared/gethelp.xml \
+     ../shared/CPLv1.0.xml
 
 IMAGE_FILES = oorexx.jpg \
  	      docbook-1.png \
@@ -70,11 +70,11 @@ pdf: rxftp.pdf
 
 html: rxftp-html.zip
 
-rxftp.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
-	docbook2pdf -d ../shared/oorexx.print.dsl rxftp.sgml
+rxftp.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
+	docbook2pdf -d ../shared/oorexx.print.dsl rxftp.xml
 
-book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
-	docbook2html -d ../shared/oorexx.html.dsl rxftp.sgml
+book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp
+	docbook2html -d ../shared/oorexx.html.dsl rxftp.xml
 
 rxftp-html.zip: book1.htm
 	zip rxftp-html *.htm *.jpg *.png
@@ -82,11 +82,11 @@ rxftp-html.zip: book1.htm
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
 
-genindex.sgml: $(HTML_STYLESHEET) $(SGML_FILES) svnrev.tmp
-	collateindex.pl -N -o genindex.sgml
-	jade -t sgml -d ../shared/oorexx.html.dsl -V html-index rxftp.sgml
+genindex.xml: $(HTML_STYLESHEET) $(xml_FILES) svnrev.tmp
+	collateindex.pl -N -o genindex.xml
+	jade -t xml -d ../shared/oorexx.html.dsl -V html-index rxftp.xml
 	rm *.htm
-	collateindex.pl -p -g -o genindex.sgml HTML.index
+	collateindex.pl -p -g -o genindex.xml HTML.index
 
 svnrev.tmp:
 	svnversion > svnrev.tmp
@@ -95,6 +95,6 @@ svnrev.tmp:
 
 
 clean:
-	rm -f *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip \
+	rm -f *.log *.aux *.out *.fmt *.pdf genindex.xml *.htm *.zip \
            HTML.index *.tmp
 
