@@ -2,7 +2,7 @@
 #
 # Description: Makefile for the Object Rexx Programming Guide Documents.
 #
-# Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+# Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -47,23 +47,23 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
              ../shared/oorexx.html.dsl
 
 
-SGML_FILES = classes.sgml \
-             api.sgml \
-             classicapi.sgml \
-	     command.sgml \
-	     concept.sgml \
-	     meet.sgml \
-	     preface.sgml \
-	     provide.sgml \
-	     rexio.sgml \
-	     rexxpg.sgml \
-	     rxruntime.sgml \
-	     samples.sgml \
-	     tour.sgml \
-	     ../shared/notices.sgml \
-	     ../shared/legalstuff.sgml \
-	     ../shared/gethelp.sgml \
-	     ../shared/CPLv1.0.sgml
+xml_FILES = classes.xml \
+             api.xml \
+             classicapi.xml \
+	     command.xml \
+	     concept.xml \
+	     meet.xml \
+	     preface.xml \
+	     provide.xml \
+	     rexio.xml \
+	     rexxpg.xml \
+	     rxruntime.xml \
+	     samples.xml \
+	     tour.xml \
+	     ../shared/notices.xml \
+	     ../shared/legalstuff.xml \
+	     ../shared/gethelp.xml \
+	     ../shared/CPLv1.0.xml
 
 HTML_IMAGE_FILES = ReportObject.png \
 	      BallObject.png \
@@ -138,11 +138,11 @@ pdf: rexxpg.pdf
 
 html: rexxpg-html.zip
 
-rexxpg.pdf: $(PDF_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
-	docbook2pdf -d ../shared/oorexx.print.dsl rexxpg.sgml
+rexxpg.pdf: $(PDF_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
+	docbook2pdf -d ../shared/oorexx.print.dsl rexxpg.xml
 
-book1.htm: $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
-	docbook2html -d ../shared/oorexx.html.dsl rexxpg.sgml
+book1.htm: $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp
+	docbook2html -d ../shared/oorexx.html.dsl rexxpg.xml
 
 rexxpg-html.zip: book1.htm
 	zip rexxpg-html *.htm *.jpg *.png
@@ -150,11 +150,11 @@ rexxpg-html.zip: book1.htm
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
 
-genindex.sgml: $(HTML_STYLESHEET) $(SGML_FILES) svnrev.tmp
-	collateindex.pl -N -o genindex.sgml
-	jade -t sgml -d ../shared/oorexx.html.dsl -V html-index rexxpg.sgml
+genindex.xml: $(HTML_STYLESHEET) $(xml_FILES) svnrev.tmp
+	collateindex.pl -N -o genindex.xml
+	jade -t xml -d ../shared/oorexx.html.dsl -V html-index rexxpg.xml
 	rm *.htm
-	collateindex.pl -p -g -o genindex.sgml HTML.index
+	collateindex.pl -p -g -o genindex.xml HTML.index
 
 svnrev.tmp:
 	svnversion > svnrev.tmp
@@ -163,6 +163,6 @@ svnrev.tmp:
 
 
 clean:
-	rm -f *.log *.aux *.out *.fmt rexxpg.pdf genindex.sgml *.htm *.zip \
+	rm -f *.log *.aux *.out *.fmt rexxpg.pdf genindex.xml *.htm *.zip \
            HTML.index *.tmp
 
