@@ -48,10 +48,10 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
 
 
 XML_FILES = orxncurses.xml \
-     ../shared/notices.sgml \
-     ../shared/legalstuff.sgml \
-     ../shared/gethelp.sgml \
-     ../shared/CPLv1.0.sgml
+     ../shared/notices.xml \
+     ../shared/legalstuff.xml \
+     ../shared/gethelp.xml \
+     ../shared/CPLv1.0.xml
 
 IMAGE_FILES = oorexx.jpg \
  	      docbook-1.png \
@@ -70,10 +70,10 @@ pdf: orxncurses.pdf
 
 html: orxncurses-html.zip
 
-orxncurses.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
+orxncurses.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
 	docbook2pdf -d ../shared/oorexx.print.dsl orxncurses.xml
 
-book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
+book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp
 	docbook2html -d ../shared/oorexx.html.dsl orxncurses.xml
 
 orxncurses-html.zip: book1.htm
@@ -82,11 +82,11 @@ orxncurses-html.zip: book1.htm
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
 
-genindex.sgml: $(HTML_STYLESHEET) $(XML_FILES) svnrev.tmp
-	collateindex.pl -N -o genindex.sgml
-	jade -t sgml -d ../shared/oorexx.html.dsl -V html-index orxncurses.xml
+genindex.xml: $(HTML_STYLESHEET) $(XML_FILES) svnrev.tmp
+	collateindex.pl -N -o genindex.xml
+	jade -t xml -d ../shared/oorexx.html.dsl -V html-index orxncurses.xml
 	rm *.htm
-	collateindex.pl -p -g -o genindex.sgml HTML.index
+	collateindex.pl -p -g -o genindex.xml HTML.index
 
 svnrev.tmp:
 	svnversion > svnrev.tmp
@@ -95,6 +95,6 @@ svnrev.tmp:
 
 
 clean:
-	rm -f *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip \
+	rm -f *.log *.aux *.out *.fmt *.pdf genindex.xml *.htm *.zip \
            HTML.index *.tmp
 
