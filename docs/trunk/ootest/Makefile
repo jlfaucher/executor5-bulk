@@ -2,7 +2,7 @@
 #
 # Description: Makefile for the ooTest Framework Documents.
 #
-# Copyright (c) 2008-2009, Rexx Language Association. All rights reserved.
+# Copyright (c) 2008-20010, Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -44,21 +44,21 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
              ../shared/oorexx.html.dsl
 
 
-OOTEST_SGML_FILES = ootest.sgml \
-     testoorexx.sgml \
-     oorexxunit.sgml \
-     ootestframework.sgml \
-     writetests.sgml \
-     ../shared/notices.sgml \
-     ../shared/legalstuff.sgml \
-     ../shared/gethelp.sgml \
-     ../shared/CPLv1.0.sgml
+OOTEST_xml_FILES = ootest.xml \
+     testoorexx.xml \
+     oorexxunit.xml \
+     ootestframework.xml \
+     writetests.xml \
+     ../shared/notices.xml \
+     ../shared/legalstuff.xml \
+     ../shared/gethelp.xml \
+     ../shared/CPLv1.0.xml
 
-OOTESTQS_SGML_FILES = ootestQuick.sgml \
-     legalstuff_oot.sgml \
-     ../shared/notices.sgml \
-     ../shared/gethelp.sgml \
-     ../shared/CPLv1.0.sgml
+OOTESTQS_xml_FILES = ootestQuick.xml \
+     legalstuff_oot.xml \
+     ../shared/notices.xml \
+     ../shared/gethelp.xml \
+     ../shared/CPLv1.0.xml
 
 IMAGE_FILES = oorexx.jpg \
  	      docbook-1.png \
@@ -77,14 +77,14 @@ pdf: ootest.pdf ootestQuickStart.pdf
 
 html: ootest-html.zip
 
-ootest.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) ootest_index.sgml svnrev.tmp
-	docbook2pdf -d ../shared/oorexx.print.dsl ootest.sgml
+ootest.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) ootest_index.xml svnrev.tmp
+	docbook2pdf -d ../shared/oorexx.print.dsl ootest.xml
 
-ootestQuickStart.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) ootestQuick_index.sgml svnrev.tmp
-	docbook2pdf -d ../shared/oorexx.print.dsl ootestQuick.sgml
+ootestQuickStart.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) ootestQuick_index.xml svnrev.tmp
+	docbook2pdf -d ../shared/oorexx.print.dsl ootestQuick.xml
 
-book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) ootest_index.sgml svnrev.tmp
-	docbook2html -d ../shared/oorexx.html.dsl ootest.sgml
+book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) ootest_index.xml svnrev.tmp
+	docbook2html -d ../shared/oorexx.html.dsl ootest.xml
 
 ootest-html.zip: book1.htm
 	zip ootest-html *.htm *.jpg *.png
@@ -92,23 +92,23 @@ ootest-html.zip: book1.htm
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
 
-ootest_index.sgml: $(HTML_STYLESHEET) $(OOTEST_SGML_FILES) svnrev.tmp
-	collateindex.pl -N -o ootest_index.sgml
-	jade -t sgml -d ../shared/oorexx.html.dsl -V html-index ootest.sgml
+ootest_index.xml: $(HTML_STYLESHEET) $(OOTEST_xml_FILES) svnrev.tmp
+	collateindex.pl -N -o ootest_index.xml
+	jade -t xml -d ../shared/oorexx.html.dsl -V html-index ootest.xml
 	rm *.htm
-	collateindex.pl -p -g -o ootest_index.sgml HTML.index
+	collateindex.pl -p -g -o ootest_index.xml HTML.index
 
-ootestQuick_index.sgml: $(HTML_STYLESHEET) $(OOTESTQS_SGML_FILES) svnrev.tmp
-	collateindex.pl -N -o ootestQuick_index.sgml
-	jade -t sgml -d ../shared/oorexx.html.dsl -V html-index ootestQuick.sgml
+ootestQuick_index.xml: $(HTML_STYLESHEET) $(OOTESTQS_xml_FILES) svnrev.tmp
+	collateindex.pl -N -o ootestQuick_index.xml
+	jade -t xml -d ../shared/oorexx.html.dsl -V html-index ootestQuick.xml
 	rm *.htm
-	collateindex.pl -p -g -o ootestQuick_index.sgml HTML.index
+	collateindex.pl -p -g -o ootestQuick_index.xml HTML.index
 
 svnrev.tmp:
 	svnversion > svnrev.tmp
 
 
 clean:
-	@rm -f *.log *.aux *.out *.fmt *.pdf ootest_index.sgml *.htm *.zip \
-           HTML.index *.tmp ootestQuick_index.sgml *.tmp
+	@rm -f *.log *.aux *.out *.fmt *.pdf ootest_index.xml *.htm *.zip \
+           HTML.index *.tmp ootestQuick_index.xml *.tmp
 
