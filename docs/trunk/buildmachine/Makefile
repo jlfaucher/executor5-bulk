@@ -2,7 +2,7 @@
 #
 # Description: Makefile for the Object Rexx FTP Class library PDF
 #
-# Copyright (c) 2005-2006, Rexx Language Association. All rights reserved.
+# Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -44,15 +44,15 @@
 STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl
 HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl
 
-SGML_FILES = ooRexxBuild.sgml \
-       admin.sgml \
-       guestos.sgml \
-       releases.sgml \
-       vmware.sgml \
+xml_FILES = ooRexxBuild.xml \
+       admin.xml \
+       guestos.xml \
+       releases.xml \
+       vmware.xml \
        oorexx.dsl \
-       notices.sgml \
-       legalstuff.sgml \
-       CPLv1.0.sgml
+       notices.xml \
+       legalstuff.xml \
+       CPLv1.0.xml
 
 IMAGE_FILES = docbook-1.png \
               oorexx.jpg
@@ -68,21 +68,21 @@ all: pdf
 
 pdf: ooRexxBuild.pdf
 
-ooRexxBuild.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml
-	docbook2pdf -d oorexx.dsl ooRexxBuild.sgml
+ooRexxBuild.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml
+	docbook2pdf -d oorexx.dsl ooRexxBuild.xml
 
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
 
-genindex.sgml: $(HTML_STYLESHEET) $(SGML_FILES)
-	collateindex.pl -N -o genindex.sgml
-	jade -t sgml -d $(HTML_STYLESHEET) -V html-index ooRexxBuild.sgml
+genindex.xml: $(HTML_STYLESHEET) $(xml_FILES)
+	collateindex.pl -N -o genindex.xml
+	jade -t xml -d $(HTML_STYLESHEET) -V html-index ooRexxBuild.xml
 	rm *.htm
-	collateindex.pl -p -g -o genindex.sgml HTML.index
+	collateindex.pl -p -g -o genindex.xml HTML.index
 
 
 
 
 clean:
-	rm -f *.log *.aux *.out *.fmt ooRexxBuild.pdf genindex.sgml *.htm *.zip HTML.index
+	rm -f *.log *.aux *.out *.fmt ooRexxBuild.pdf genindex.xml *.htm *.zip HTML.index
 
