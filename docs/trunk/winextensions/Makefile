@@ -2,7 +2,7 @@
 #
 # Description: Makefile for the Object Rexx Reference Documents.
 #
-# Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
+# Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -47,19 +47,19 @@ STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl \
 HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
 	                ../shared/oorexx.html.dsl
 
-SGML_FILES = winprogmanager.sgml \
-						 clipboard.sgml \
-						 winregistry.sgml \
-						 wineventlog.sgml \
-						 windowmanager.sgml \
-						 windowobj.sgml \
-						 menuobj.sgml \
-						 winole.sgml \
-						 wsheng.sgml \
-	           ../shared/legalstuff.sgml \
-	           ../shared/notices.sgml \
-	           ../shared/gethelp.sgml \
-	           ../shared/CPLv1.0.sgml
+xml_FILES = winprogmanager.xml \
+		   clipboard.xml \
+		   winregistry.xml \
+		   wineventlog.xml \
+		   windowmanager.xml \
+		   windowobj.xml \
+		   menuobj.xml \
+		   winole.xml \
+		   wsheng.xml \
+	           ../shared/legalstuff.xml \
+	           ../shared/notices.xml \
+	           ../shared/gethelp.xml \
+	           ../shared/CPLv1.0.xml
 
 IMAGE_FILES =	docbook-1.png \
 	            oorexx.jpg
@@ -76,11 +76,11 @@ pdf: winextensions.pdf
 
 html: winextensions-html.zip
 
-winextensions.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
-	docbook2pdf -d ../shared/oorexx.print.dsl winextensions.sgml
+winextensions.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
+	docbook2pdf -d ../shared/oorexx.print.dsl winextensions.xml
 
-book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
-	docbook2html -d ../shared/oorexx.html.dsl winextensions.sgml
+book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp
+	docbook2html -d ../shared/oorexx.html.dsl winextensions.xml
 
 winextensions-html.zip: book1.htm
 	zip winextensions-html *.htm *.jpg *.png
@@ -88,16 +88,16 @@ winextensions-html.zip: book1.htm
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
 
-genindex.sgml: $(HTML_STYLESHEET) $(SGML_FILES) svnrev.tmp
-	collateindex.pl -N -o genindex.sgml
-	jade -t sgml -d ../shared/oorexx.html.dsl -V html-index winextensions.sgml
+genindex.xml: $(HTML_STYLESHEET) $(xml_FILES) svnrev.tmp
+	collateindex.pl -N -o genindex.xml
+	jade -t xml -d ../shared/oorexx.html.dsl -V html-index winextensions.xml
 	rm *.htm
-	collateindex.pl -p -g -o genindex.sgml HTML.index
+	collateindex.pl -p -g -o genindex.xml HTML.index
 
 svnrev.tmp:
 	svnversion > svnrev.tmp
 
 
 clean:
-	rm -f *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip HTML.index *.tmp
+	rm -f *.log *.aux *.out *.fmt *.pdf genindex.xml *.htm *.zip HTML.index *.tmp
 
