@@ -47,41 +47,41 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
              ../shared/oorexx.html.dsl
 
 
-SGML_FILES = baseClasses.sgml \
-	     buttoncontrols.sgml \
-	     categorydialog.sgml \
-	     comboboxc.sgml \
-	     datetimepicker.sgml \
-	     dialogControlObject.sgml \
-	     dialogObject.sgml \
-	     editcontrolc.sgml \
-	     eventNotification.sgml \
-	     listboxc.sgml \
-	     listview.sgml \
-	     menus.sgml \
-	     monthcalendar.sgml \
-	     oodialog.sgml \
-	     overview.sgml \
-	     preface.sgml \
-	     progressbarc.sgml \
-	     propertysheetc.sgml \
-	     resdialog.sgml \
-	     resources.sgml \
-	     scrollbarc.sgml \
-	     standarddialog.sgml \
-	     staticcontrolc.sgml \
-	     tabcontrolc.sgml \
-	     trackbar.sgml \
-	     treeview.sgml \
-	     updown.sgml \
-	     userdialog.sgml \
-	     utilityclasses.sgml \
-	     windowBase.sgml \
-	     windowExtensions.sgml \
-	     ../shared/notices.sgml \
-	     ../shared/legalstuff.sgml \
-	     ../shared/gethelp.sgml \
-	     ../shared/CPLv1.0.sgml
+xml_FILES = baseClasses.xml \
+	     buttoncontrols.xml \
+	     categorydialog.xml \
+	     comboboxc.xml \
+	     datetimepicker.xml \
+	     dialogControlObject.xml \
+	     dialogObject.xml \
+	     editcontrolc.xml \
+	     eventNotification.xml \
+	     listboxc.xml \
+	     listview.xml \
+	     menus.xml \
+	     monthcalendar.xml \
+	     oodialog.xml \
+	     overview.xml \
+	     preface.xml \
+	     progressbarc.xml \
+	     propertysheetc.xml \
+	     resdialog.xml \
+	     resources.xml \
+	     scrollbarc.xml \
+	     standarddialog.xml \
+	     staticcontrolc.xml \
+	     tabcontrolc.xml \
+	     trackbar.xml \
+	     treeview.xml \
+	     updown.xml \
+	     userdialog.xml \
+	     utilityclasses.xml \
+	     windowBase.xml \
+	     windowExtensions.xml \
+	     ../shared/notices.xml \
+	     ../shared/legalstuff.xml \
+	     ../shared/gethelp.xml \
+	     ../shared/CPLv1.0.xml
 # the following files are not used & are here only for historical reasons
 #	     conceptoverv.sgml \
 #	     graphui.sgml \
@@ -130,11 +130,11 @@ pdf: oodialog.pdf
 
 html: oodialog-html.zip
 
-oodialog.pdf: $(PDF_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
-	docbook2pdf -d ../shared/oorexx.print.dsl oodialog.sgml
+oodialog.pdf: $(PDF_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
+	docbook2pdf -d ../shared/oorexx.print.dsl oodialog.xml
 
-book1.htm: $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
-	docbook2html -d ../shared/oorexx.html.dsl oodialog.sgml
+book1.htm: $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp
+	docbook2html -d ../shared/oorexx.html.dsl oodialog.xml
 
 oodialog-html.zip: book1.htm
 	zip oodialog-html *.htm *.jpg *.png
@@ -142,16 +142,16 @@ oodialog-html.zip: book1.htm
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
 
-genindex.sgml: $(HTML_STYLESHEET) $(SGML_FILES) svnrev.tmp
-	collateindex.pl -N -o genindex.sgml
-	jade -t sgml -d ../shared/oorexx.html.dsl -V html-index oodialog.sgml
+genindex.xml: $(HTML_STYLESHEET) $(xml_FILES) svnrev.tmp
+	collateindex.pl -N -o genindex.xml
+	jade -t xml -d ../shared/oorexx.html.dsl -V html-index oodialog.xml
 	rm *.htm
-	collateindex.pl -p -g -o genindex.sgml HTML.index
+	collateindex.pl -p -g -o genindex.xml HTML.index
 
 svnrev.tmp:
 	svnversion > svnrev.tmp
 
 
 clean:
-	rm -f *.log *.aux *.out *.fmt oodialog.pdf genindex.sgml *.htm *.zip HTML.index *.tmp
+	rm -f *.log *.aux *.out *.fmt oodialog.pdf genindex.xml *.htm *.zip HTML.index *.tmp
 
