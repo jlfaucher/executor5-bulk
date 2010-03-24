@@ -8462,7 +8462,7 @@ one of the check boxes instead.
   self~createCheckBox(IDC_CB_FRUIT, , 30, 75, , , "Fruit", "NOTAB");
   self~createCheckBox(IDC_CB_CEREAL, , 30, 95, , , "Cereal", "NOTAB");
 
-  self~addButton(IDOK, 105, 120, 35, 15, "OK", , "GROUP")
+  self~createPushButton(IDOK, 105, 120, 35, 15, "GROUP", "OK")
 
 ::method initDialog
 
@@ -10454,8 +10454,8 @@ still minimized, then this method restores it to its normal position.
   self~addEntryLine(IDC_ENTRYLINE, , 10, 35, 150, 10, "AUTOSCROLLH")
 
   -- When the view button is pushed, another dialog will show the file.
-  self~addButton(IDC_PB_VIEW, 10, 55, 35, 15, "View File", onView, "DEFAULT GROUP")
-  self~addButton(IDOK, 130, 55, 35, 15, "Quit")
+  self~createPushButton(IDC_PB_VIEW, 10, 55, 35, 15, "DEFAULT GROUP", "View File", onView)
+  self~createPushButton(IDOK, 130, 55, 35, 15, , "Quit")
 
 ::method initDialog
   expose editCntrl

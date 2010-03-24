@@ -2519,7 +2519,7 @@ the hot keys for the edit control by removing the key press connections.
 ::method defineDialog
 
   ...
-  self~addButton(IDC_PB_DISABLE, 60, 135, 65, 15, "Disable Hot Keys", onDisable)
+  self~createPushButton(IDC_PB_DISABLE, 60, 135, 65, 15, , "Disable Hot Keys", onDisable)
   ...
 
 method onDisable
@@ -2599,9 +2599,9 @@ that shows whether hot keys are currently enabled or not.
 ::method defineDialog
 
   ...
-  self~createCheckBox(IDC_CHECK_FKEYSENABlED, , 30, 60, , , "Hot Keys Enabled")
+  self~createCheckBox(IDC_CHECK_FKEYSENABlED, 30, 60, , , , "Hot Keys Enabled")
   ...
-  self~addButton(IDC_PB_RESET, 60, 135, 45, 15, "Reset", onReset)
+  self~createPushButton(IDC_PB_RESET, 60, 135, 45, 15, , "Reset", onReset)
   ...
 
 ::method onReset
