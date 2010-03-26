@@ -925,4 +925,243 @@ else
 </variablelist>
 </section>
 
+<section id="mthShowClsWindowBase"><title>show</title>
+<indexterm><primary>show</primary><secondary>dialog control</secondary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>show</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>show</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--show-------------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Makes the window visible if it was previously hidden. If the window is a top-level window it is also activated.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if the window was previously visible and false if the window was previously hidden.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example makes the button controls visible:
+
+<programlisting>
+<![CDATA[
+::method showButtons private
+
+  self~newPushbutton(IDC_PB_COMMIT)~show
+  self~newPushbutton(IDC_PB_SUBMIT)~show
+  self~newPushbutton(IDC_PB_REVERT)~show
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSendMessage"><title>sendMessage</title>
+<indexterm><primary>sendMessage</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>sendMessage</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>sendMessage</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sendMessage(--id--,--msg--,--wParam--,--lParam--)----------><
+
+]]>
+</programlisting>
+
+<para>
+  Sends a Windows message to the underlying window this object represents and returns the response as a whole number.
+</para>
+<variablelist>
+    <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+    <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    <para>
+      This method requires an <link linkend="ovvWindowsMessages">understanding</link> of Windows messages.
+    </para>
+    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>msg [required]</term>
+    <listitem>
+    <para>
+      The Windows message ID. This may be numeric or a string in <link linkend="defConventionalHex">conventional</link>
+      hexadecimal formt.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>wParam [required]</term>
+    <listitem>
+    <para>
+      The WPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>lParam [required]</term>
+    <listitem>
+    <para>
+      The LPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The underlying windows's response to the message, as a whole number.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns the response as a whole number. This will not be usable if the response is a window <link
+    linkend="defHandle">handle</link>. For those cases, use the <link
+    linkend="mthSendMessageHandle">sendMessageHandle</link>() method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example causes the dialog to reposition itself that that it completely fits within the desktop area.
+    (The <link linkend="mthEnsureVisibleClsPlainBaseDialog">ensureVisible</link>() method does the same thing.)
+
+<programlisting>
+<![CDATA[
+MovableDialog~sendMessage"0x0402", 0, 0)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSendMessageHandle"><title>sendMessageHandle</title>
+<indexterm><primary>sendMessageHandle</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>sendMessage</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>sendMessage</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sendMessageHandle(--id--,--msg--,--wParam--,--lParam--)----><
+
+]]>
+</programlisting>
+
+<para>
+  Sends a Windows message to the underlying window this object represents and
+  returns the response as a <link linkend="defHandle">handle</link>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    This method requires an <link linkend="ovvWindowsMessages">understanding</link> of Windows messages.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>msg [required]</term>
+    <listitem>
+    <para>
+      The Windows message ID. This may be numeric or a string in <link linkend="defConventionalHex">conventional</link>
+      hexadecimal formt.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>wParam [required]</term>
+    <listitem>
+    <para>
+      The WPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>lParam [required]</term>
+    <listitem>
+    <para>
+      The LPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The underlying windows's response to the message, as a handle
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns the response as a handle. This will not be usable if the response is a whole number. For those
+    cases, use the <link linkend="mthSendMessage">sendMessage</link>() method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example sets a new <link linkend="defDialogIcon">application</link> icon. The old icon handle is saved
+    so it can be restored at some later point.
+
+<programlisting>
+<![CDATA[
+::method initDialog
+  expose oldIcon
+
+  oldIcon = .nil
+  ...
+
+::method swapIcon private
+  expose oldIcon
+  use strict arg iconID
+
+  loadFlags = .DlgUtil~or(.Image~toID(LR_DEFAULTSIZE), .Image~toID(LR_LOADFROMFILE))
+  customIcon = .Image~userIcon(self, IDI_SHAVEICE, .Size~new(0, 0), loadFlags)
+
+  if \ customIcon~isNull then do
+    oldIcon = self~sendMessageHandle("0x0080", 0, customIcon~handle)
+    return .true
+  end
+
+  return .false
+
+::method restoreAppState private
+  expose oldIcon
+
+  if oldIcon <> .nil then self~sendMessageHandle("0x0080", 0, oldIcon)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
 </section>

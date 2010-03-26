@@ -414,6 +414,16 @@
 <entry><link linkend="scroll">Scroll</link></entry>
 </row>
 <row>
+<entry><link linkend="wbdcoSendMessage">sendMessage</link></entry>
+<entry>Sends a Windows message to the underlying window and returns its response as a whole number.
+</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSendMessageHandle">sendMessageHandle</link></entry>
+<entry>Sends a Windows message to the underlying window and returns its response as a handle.
+</entry>
+</row>
+<row>
 <entry>SetArcDirection</entry>
 <entry><link linkend="h001214">SetArcDirection</link></entry>
 </row>
@@ -462,8 +472,10 @@
 <entry><link linkend="settitle">SetTitle</link></entry>
 </row>
 <row>
-<entry>Show</entry>
-<entry><link linkend="showdc">Show</link></entry>
+<entry><link linkend="wbdcoShow">show</link>
+</entry>
+<entry>Makes the dialog control visible if it was hidden.
+</entry>
 </row>
 <row>
 <entry>ShowFast</entry>
@@ -776,30 +788,15 @@ dialog control. The list contains methods to get or change the size, position,
 visibility, behavior, etc., of dialog controls.
 </para>
 
-<section id="showdc"><title>Show</title>
-<indexterm><primary>Show</primary>
-<secondary>DialogControl class</secondary></indexterm>
+<section id="wbdcoShow"><title>show</title>
 <programlisting>
-<![CDATA[
->>-aDialogControl~Show-----------------------------------------><
+<link linkend="mthShowClsWindowBase">show</link>
 
+<![CDATA[
+>>--show-------------------------------------------------------><
 
 ]]>
 </programlisting>
-
-<para>The Show method makes a dialog control visible
-and activates it.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example makes the edit control NAME visible and activates
-it:
-<programlisting>
-<![CDATA[
-MyDialog~newEdit("NAME")~Show
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
 </section>
 
 <section id="hide"><title>Hide</title>
@@ -912,7 +909,7 @@ NORMAL</computeroutput>:
 <variablelist>
 <varlistentry><term>NORMAL</term>
 <listitem><para>Shows (makes visible) the dialog control. Same as calling the
-Show method (see page <link linkend="showdc">Show</link>).
+Show method (see page <link linkend="mthShowClsWindowBase">Show</link>).
 </para></listitem></varlistentry>
 <varlistentry><term>DEFAULT</term>
 <listitem><para>Default is an alias for <computeroutput>NORMAL</computeroutput>.
@@ -1857,58 +1854,30 @@ or dialog control. It is equal to <link linkend="mthTitleEquals">Title=</link>.<
 </section>
 </section>
 
-<section id="miscDialogControl"><title>Miscellaneous Dialog Control
-Methods</title>
-<indexterm><primary>miscellaneous dialog control methods</primary></indexterm>
-<para>The following methods are general purpose dialog control methods.
+<section id="miscDialogControl"><title>Miscellaneous Dialog Control Methods</title>
+<indexterm><primary>Miscellaneous Methods</primary></indexterm>
+<para>
+  The following methods are general purpose dialog control methods.
 </para>
 
-<section id="processmessage"><title>ProcessMessage</title>
-<indexterm><primary>ProcessMessage</primary></indexterm>
+<section id="wbdoSendMessage"><title>sendMessage</title>
 <programlisting>
+WindowBase::<link linkend="mthSendMessage">sendMessage</link>
+
 <![CDATA[
->>-aDialogControl~ProcessMessage(--message--,--firstParam--,--secondParam--)-><
-
-
+>>--sendMessage(--id--,--msg--,--wParam--,--lParam--)----------><
 ]]>
 </programlisting>
+</section>
 
-<para>The ProcessMessage method sends a Windows message
-to a dialog control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>message</term>
-<listitem><para>The number of the message to be sent to the dialog control.
-</para></listitem></varlistentry>
-<varlistentry><term>firstParam,secondParam</term>
-<listitem><para>Additional arguments specific to the message.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return values are message-specific.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example erases the background of the edit control
-with the resource ID (symbolic ID) of IDC_EDIT1:
+<section id="wbdoSendMessageHandle"><title>sendMessageHandle</title>
 <programlisting>
+<link linkend="mthSendMessageHandle">sendMessageHandle</link>
+
 <![CDATA[
-dlgc = MyDialog~newEdit("IDC_EDIT1")
-WM_ERASEBACKGROUND = "14"~x2d
-hdc = dlgc~GetDc
-dlgc~ProcessMessage(WM_ERASEBACKGROUND, hdc, 0)
-dlgc~FreeDC(hdc)
+>>--sendMessageHandle(--id--,--msg--,--wParam--,--lParam--)----><
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-Use the <link linkend="defWindowsDoc">Windows documentation</link> and <link
-linkend="defPlatformSDK">Platform SDK</link> to obtain the Window message numbers.
-</para></note>
 </section>
 
 <section id="mthData"><title>data</title>
@@ -4776,6 +4745,15 @@ is the x-axis).
 <para>
   This method never worked correctly, the previous documentation for this method was incorrect and /
   or misleading. That has been fixed in the <emphasis role="italic">getTextSizeDlg</emphasis>() method.
+</para>
+</section>
+
+<section><title>processMessage</title>
+<indexterm><primary>Deprecated</primary><secondary>processMessage</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>processMessage</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="wbdcoSendMessage">sendMessage</link>() method.
 </para>
 </section>
 

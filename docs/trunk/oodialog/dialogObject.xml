@@ -525,8 +525,8 @@
 <entry><link linkend="h000068">EndAsyncExecution</link></entry>
 </row>
 <row>
-<entry>EnsureVisible</entry>
-<entry><link linkend="mthEnsureVisible">EnsureVisible</link></entry>
+<entry><link linkend="mthEnsureVisibleClsPlainBaseDialog">ensureVisible</link></entry>
+<entry>Causes the dialog to reposition itself so that it is entirely on the visible screen.</entry>
 </row>
 <row>
 <entry>execute</entry>
@@ -1059,8 +1059,30 @@
 <entry><link linkend="h000879">ScrollText</link></entry>
 </row>
 <row>
+<entry><link linkend="wbdoSendMessage">sendMessage</link></entry>
+<entry>Sends a Windows message to the underlying window and returns its response as a whole number.
+</entry>
+</row>
+<row>
+<entry><link linkend="wbdoSendMessageHandle">sendMessageHandle</link></entry>
+<entry>Sends a Windows message to the underlying window and returns its response as a handle.
+</entry>
+</row>
+<row>
 <entry><link linkend="mthSendMessageToControl">sendMessageToControl</link></entry>
-<entry>Sends a Windows message to a dialog control</entry>
+<entry>Sends a Windows message to a dialog control and returns its response as a whole number.</entry>
+</row>
+<row>
+<entry><link linkend="mthSendMessageToControlH">sendMessageToControlH</link></entry>
+<entry>Sends a Windows message to a dialog control and returns its response as a handle.</entry>
+</row>
+<row>
+<entry><link linkend="mthSendMessageToWindow">sendMessageToWindow</link></entry>
+<entry>Sends a Windows message to a window and returns its response as a whole number.</entry>
+</row>
+<row>
+<entry><link linkend="mthSendMessageToWindowH">sendMessageToWindowH</link></entry>
+<entry>Sends a Windows message to a window and returns its response as a handle.</entry>
 </row>
 <row>
 <entry>SetArcDirection</entry>
@@ -1204,7 +1226,7 @@
 </row>
 <row>
 <entry>Show</entry>
-<entry><link linkend="show">Show</link></entry>
+<entry><link linkend=mthShowClsPlainBaseDialog>Show</link></entry>
 </row>
 <row>
 <entry>ShowFast</entry>
@@ -2448,7 +2470,7 @@ is called by <link linkend="mthExecute">execute</link>.
 </programlisting>
 
 <para>The execute method creates the dialog, shows it
-(see <link linkend="show">Show</link>), starts automatic methods, and destroys the dialog.
+(see <link linkend=mthShowClsPlainBaseDialog>Show</link>), starts automatic methods, and destroys the dialog.
 The data is passed to the Windows dialog before execution and received
 from it after the dialog is terminated.</para>
 
@@ -2461,7 +2483,7 @@ the same process, it is disabled by Execute.
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>show</term>
-<listitem><para>See <link linkend="show">Show</link>.
+<listitem><para>See <link linkend=mthShowClsPlainBaseDialog>Show</link>.
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
 <listitem><para>The resource ID of the <link linkend="defDialogIcon">dialog's
@@ -2535,7 +2557,7 @@ method returns immediately after the dialog has been started. </para>
 <listitem><para>The time slice, in milliseconds, until the next message is processed.
 </para></listitem></varlistentry>
 <varlistentry><term>show</term>
-<listitem><para>See <link linkend="show">Show</link>.
+<listitem><para>See <link linkend=mthShowClsPlainBaseDialog>Show</link>.
 </para></listitem></varlistentry>
 <varlistentry><term>icon</term>
 <listitem><para>The resource ID of the <link linkend="defDialogIcon">dialog's
@@ -2639,7 +2661,7 @@ You can therefore use popup to produce nonmodal dialogs.</para>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>show</term>
-<listitem><para>See <link linkend="show">Show</link>.
+<listitem><para>See <link linkend=mthShowClsPlainBaseDialog>Show</link>.
 </para></listitem></varlistentry>
 <varlistentry><term>sleeptime</term>
 <listitem><para>The time, in milliseconds, until the next message is processed.
@@ -2714,7 +2736,7 @@ is closed.</para>
 is the parent of the newly started dialog.
 </para></listitem></varlistentry>
 <varlistentry><term>show</term>
-<listitem><para>See <link linkend="show">Show</link>.
+<listitem><para>See <link linkend=mthShowClsPlainBaseDialog>Show</link>.
 </para></listitem></varlistentry>
 <varlistentry><term>sleeptime</term>
 <listitem><para>The time, in milliseconds, until the next message is processed.
@@ -2829,201 +2851,6 @@ the message queue.</para>
 
 <para>The ClearMessages method clears all pending dialog
 messages.</para>
-</section>
-
-<section id="mthSendMessageToControl"><title>sendMessageToControl</title>
-<indexterm><primary>sendMessageToControl</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--sendMessageToControl(--id--,--msg--,--wParam--,--lParam--)-----------------><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">sendMessageToControl</emphasis> method sends a Windows message to a dialog control and
-  returns the response as a whole number.
-</para>
-<variablelist>
-    <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-    <listitem>
-    <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-    </para>
-    </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  <variablelist>
-    <varlistentry><term>id [required]</term>
-    <listitem>
-    <para>
-      The resource ID of the dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>msg [required]</term>
-    <listitem>
-    <para>
-      The Windows message ID. This may be numeric or a string in <link linkend="defConventionalHex">conventional</link>
-      hexadecimal formt.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>wParam [required]</term>
-    <listitem>
-    <para>
-      The WPARAM message parameter.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>lParam [required]</term>
-    <listitem>
-    <para>
-      The LPARAM message parameter.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The underlying dialog control's response to the message, as a whole number.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    In general, most of what ooDialog does is done by sending Windows message to the underlying operating system
-    windows. This is designed to allow the Rexx programmer to use dialogs without understanding any of the details of
-    Windows messages. This method on the other hand, can not be used by the Rexx programmer without some knowledge of
-    the Windows message being sent. The programmer would need to consult the <link linkend="defWindowsDoc">Windows
-    Documentation</link> to understand what both the WPARAM and LPARAM arguments must be, and to understand what the
-    return, if any means. In addition, the programmer would need to determine the numeric value of the Windows message
-    ID. This could be done using a <link linkend="defPlatformSDK">Windows platform SDK</link>, or perhaps through a
-    Google search.
-  </para>
-  <para>
-    This method returns the response as a whole number. This will not be usable if the response is a window <link
-    linkend="defHandle">handle</link>. For those cases, use the <link
-    linkend="mthSendMessageToControlH">sendMessageToControlH</link>() method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example checks the radio button with resource ID 9001.
-
-<programlisting>
-<![CDATA[
-MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthSendMessageToControlH"><title>sendMessageToControlH</title>
-<indexterm><primary>sendMessageToControlH</primary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>sendMessageToControlH</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--sendMessageToControlH(--id--,--msg--,--wParam--,--lParam--)----------------><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">sendMessageToControlH</emphasis> method sends a Windows message to a dialog control and
-  returns the response as a window handle.
-</para>
-<variablelist>
-    <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-    <listitem>
-    <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-    </para>
-    </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  <variablelist>
-    <varlistentry><term>id [required]</term>
-    <listitem>
-    <para>
-      The resource ID of the dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>msg [required]</term>
-    <listitem>
-    <para>
-      The Windows message ID. This may be numeric or a string in <link linkend="defConventionalHex">conventional</link>
-      hexadecimal formt.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>wParam [required]</term>
-    <listitem>
-    <para>
-      The WPARAM message parameter.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>lParam [required]</term>
-    <listitem>
-    <para>
-      The LPARAM message parameter.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The underlying dialog control's response to the message, as a window handle.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    In general, most of what ooDialog does is done by sending Windows message to the underlying operating system
-    windows. This is designed to allow the Rexx programmer to use dialogs without understanding any of the details of
-    Windows messages. This method on the other hand, can not be used by the Rexx programmer without some knowledge of
-    the Windows message being sent. The programmer would need to consult the <link linkend="defWindowsDoc">Windows
-    Documentation</link> to understand what both the WPARAM and LPARAM arguments must be, and to understand what the
-    return, if any means. In addition, the programmer would need to determine the numeric value of the Windows message
-    ID. This could be done using a <link linkend="defPlatformSDK">Windows platform SDK</link>, or perhaps through a
-    Google search.
-  </para>
-  <para>
-    This method returns the response as a window <link linkend="defHandle">handle</link>. This will not be of much use
-    if the dialog control's response is a whole number. For those cases, use the <link
-    linkend="mthSendMessageToControl">sendMessageToControl</link>() method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example changes the font of the list view control with symbolic ID of IDC_LV_ADDRESSES and returns
-    the old font. Note that this is exactly what the <link linkend="mthGetFont">getFont</link>() and <link
-    linkend="mthSetFont">setFont</link> methods do. In most cases, there is really no need for the Rexx programmer to
-    use the <emphasis role="italic">sendMessageToControl</emphasis> or <emphasis
-    role="italic">sendMessageToControlH</emphasis> methods.
-
-<programlisting>
-<![CDATA[
-::method changeFont private
-  use strict arg newFont
-
-  oldFont = self~sendMessageToControlH(IDC_LV_ADDRESSES, "0x0031", 0, 0)
-  self~sendMessageToControl(IDC_LV_ADDRESSES, "0x0030", newFont, 1)
-
-  return oldFont
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
 </section>
 
 </section>
@@ -9002,26 +8829,21 @@ on the color numbers, refer to <link linkend="sctTermDefs">Definition of Terms</
 </variablelist>
 </section>
 
-<section id="show"><title>Show</title>
-<indexterm><primary>Show</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<section id=mthShowClsPlainBaseDialog><title>show</title>
+<indexterm><primary>show</primary><secondary>dialog object</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                         +-NORMAL---+
->>-aBaseDialog~Show(--"--+----------+--"--)--------------------><
-                         +-DEFAULT--+
-                         +-SHOWTOP--+
-                         +-HIDE-----+
-                         +-MIN------+
-                         +-MAX------+
-                         +-INACTIVE-+
-                         +-RESTORE--+
-
+>>--show(--+--------+--)---------------------------------------><
+           +--opts--+
 
 ]]>
 </programlisting>
 
-<para>The Show method shows the dialog. It is called by <link
+<para>
+  Sets the dialog window's show state.
+</para>
+<para>
+  The Show method shows the dialog. It is called by <link
 linkend="mthExecute">execute</link> or <link linkend="mthExecuteAsync">executeAsync</link>
 methods to initially display the dialog.  Once the dialog has been initially
 shown, the programmer can use the <computeroutput>Show</computeroutput> to
@@ -9029,53 +8851,56 @@ change the appearance of the dialog.  For instance the dialog can be hidden,
 maximized, minimized, etc..
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
-<listitem><para>The argument can be one of the following keywords, case is not
-significant:
-<variablelist>
-<varlistentry><term>NORMAL</term>
-<listitem><para>Makes the dialog visible with its default window size. This is
-the default keyword if the argument is omitted.
-</para></listitem></varlistentry>
-<varlistentry><term>DEFAULT</term>
-<listitem><para><computeroutput>DEFAULT</computeroutput> is an alias for
-<computeroutput>NORMAL</computeroutput>. The two keywords are functionally
-identical.
-</para></listitem></varlistentry>
-<varlistentry><term>SHOWTOP</term>
-<listitem><para>Shows and makes the dialog the topmost dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>HIDE</term>
-<listitem><para>Makes the dialog invisible.
-</para></listitem></varlistentry>
-<varlistentry><term>MIN</term>
-<listitem><para>Minimizes the dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>MAX</term>
-<listitem><para>Maximizes the dialog.
-</para></listitem></varlistentry>
-<varlistentry><term>INACTIVE</term>
-<listitem><para>Shows the dialog without changing the active window.  When the
-<computeroutput>Normal</computeroutput> keyword is used, the dialog is shown and
-becomes the active window.  Using the <computeroutput>INACTIVE</computeroutput>
-keyword allows the dialog to be shown and let another window remain active.
-</para></listitem></varlistentry>
-<varlistentry><term>RESTORE</term>
-<listitem><para>
-  Shows and activates the dialog. If the dialog is minimized or maximized, the system restores it to its
-  original size and position. An application should specify this flag when restoring a minimized window.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following statement hides the dialog:
+  <varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
+  <listitem>
+  <para>
+    The single <emphasis role="italic">opts</emphasis> argument can be zero of one of the following keywords, case is
+    not significant. Only the first letter of the argument is needed:
+  <variablelist>
+    <varlistentry><term>NORMAL</term>
+    <listitem><para>Makes the dialog visible with its default window size. This is
+    the default keyword if the argument is omitted.
+    </para></listitem></varlistentry>
+    <varlistentry><term>DEFAULT</term>
+    <listitem><para><computeroutput>DEFAULT</computeroutput> is an alias for
+    <computeroutput>NORMAL</computeroutput>. The two keywords are functionally
+    identical.
+    </para></listitem></varlistentry>
+    <varlistentry><term>SHOWTOP</term>
+    <listitem><para>Shows and makes the dialog the topmost dialog.
+    </para></listitem></varlistentry>
+    <varlistentry><term>HIDE</term>
+    <listitem><para>Makes the dialog invisible.
+    </para></listitem></varlistentry>
+    <varlistentry><term>MIN</term>
+    <listitem><para>Minimizes the dialog.
+    </para></listitem></varlistentry>
+    <varlistentry><term>MAX</term>
+    <listitem><para>Maximizes the dialog.
+    </para></listitem></varlistentry>
+    <varlistentry><term>INACTIVE</term>
+    <listitem><para>Shows the dialog without changing the active window.  When the
+    <computeroutput>Normal</computeroutput> keyword is used, the dialog is shown and
+    becomes the active window.  Using the <computeroutput>INACTIVE</computeroutput>
+    keyword allows the dialog to be shown and let another window remain active.
+    </para></listitem></varlistentry>
+    <varlistentry><term>RESTORE</term>
+    <listitem><para>
+      Shows and activates the dialog. If the dialog is minimized or maximized, the system restores it to its
+      original size and position. An application should specify this flag when restoring a minimized window.
+    </para></listitem></varlistentry>
+  </variablelist>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem><para>The following statement hides the dialog:
 
 <programlisting>
 <![CDATA[
 MyDialog~Show("HIDE")
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -9122,8 +8947,8 @@ See the <citetitle>Open Object Rexx: Reference</citetitle> for further informati
 </variablelist>
 </section>
 
-<section id="mthEnsureVisible"><title>EnsureVisible</title>
-<indexterm><primary>EnsureVisible</primary>
+<section id="mthEnsureVisibleClsPlainBaseDialog"><title>ensureVisible</title>
+<indexterm><primary>ensureVisible</primary>
 <secondary>BaseDialog class</secondary></indexterm>
 
 <programlisting>
@@ -9134,14 +8959,14 @@ See the <citetitle>Open Object Rexx: Reference</citetitle> for further informati
 ]]>
 </programlisting>
 
-<para>The <computeroutput>EnsureVisible</computeroutput> method causes the
+<para>The <computeroutput>ensureVisible</computeroutput> method causes the
 dialog to reposition itself so that the entire dialog is on the visible screen.
 If the entire dialog is already on the visible screen then no action is taken.
 </para>
 <para>This is useful in a number of situations.  It allows the programmer to
 move or resize the dialog and not have to worry that the dialog is off the
 screen.  After finishing the move or resizing, the programmer can invoke the
-EnsureVisible method and know that the dialog is entirely on the screen.
+ensureVisible method and know that the dialog is entirely on the screen.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -9156,7 +8981,7 @@ the dialog and then opens the dialog in the position that the user had closed
 it.  If the INI file is corrupted, or had been accidently edited, or a number of
 other things, it is possible that sizing and positioning the dialog using the
 values from the INI file will place the dialog of the screen.  Invoking
-<computeroutput>EnsureVisible</computeroutput> will cause the dialog to
+<computeroutput>ensureVisible</computeroutput> will cause the dialog to
 reposition itself so that it is completely on the screen, but only if needed.
 If the dialog is already completely on the screen, then no action is taken.
 
@@ -9203,7 +9028,7 @@ on the dialog window.  This method will minimize the dialog even if it does not
 have the <computeroutput>MINIMIZEBOX</computeroutput> style when it is created.
 </para>
 <para>This is a convenience method.  It is functionally equivalent to using the
-<link linkend="show">Show</link> method with the <computeroutput>MIN
+<link linkend=mthShowClsPlainBaseDialog>Show</link> method with the <computeroutput>MIN
 </computeroutput> keyword.
 </para>
 <variablelist>
@@ -9272,7 +9097,7 @@ on the dialog window.  This method will maximize the dialog even if it does not
 have the <computeroutput>MAXIMIZEBOX</computeroutput> style when it is created.
 </para>
 <para>This is a convenience method.  It is functionally equivalent to using the
-<link linkend="show">Show</link> method with the <computeroutput>MAX
+<link linkend=mthShowClsPlainBaseDialog>Show</link> method with the <computeroutput>MAX
 </computeroutput> keyword.
 </para>
 <variablelist>
@@ -9332,7 +9157,7 @@ taking action to restore the dialog window.  The programmer can use this method
 to restore a dialog window that he previously minimized or maximized.
 </para>
 <para>This is a convenience method.  It is functionally equivalent to using the
-<link linkend="show">Show</link> method with the <computeroutput>RESTORE
+<link linkend=mthShowClsPlainBaseDialog>Show</link> method with the <computeroutput>RESTORE
 </computeroutput> keyword.
 </para>
 <variablelist>
@@ -11853,6 +11678,389 @@ a button. It is used to move bitmaps within buttons. </para>
 
 </section>
 
+<section id="sctSendingWindowsMessages"><title>Sending Windows Messages</title>
+
+<section id="wbdoSendMessage"><title>sendMessage</title>
+<programlisting>
+WindowBase::<link linkend="mthSendMessage">sendMessage</link>
+
+<![CDATA[
+>>--sendMessage(--id--,--msg--,--wParam--,--lParam--)----------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoSendMessageHandle"><title>sendMessageHandle</title>
+<programlisting>
+<link linkend="mthSendMessageHandle">sendMessageHandle</link>
+
+<![CDATA[
+>>--sendMessageHandle(--id--,--msg--,--wParam--,--lParam--)----><
+]]>
+</programlisting>
+</section>
+
+<section id="mthSendMessageToWindow"><title>sendMessageToWindow</title>
+<indexterm><primary>sendMessageToControl</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>sendMessageToControl</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sendMessageToWindow(--hwnd--,--msg--,--wParam--,--lParam--)----------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">sendMessageToWindow</emphasis> method sends a Windows message to a dialog control and
+  returns the response as a whole number.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    This method requires an <link linkend="ovvWindowsMessages">understanding</link> of Windows messages.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>msg [required]</term>
+    <listitem>
+    <para>
+      The Windows message ID. This may be numeric or a string in <link linkend="defConventionalHex">conventional</link>
+      hexadecimal formt.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>wParam [required]</term>
+    <listitem>
+    <para>
+      The WPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>lParam [required]</term>
+    <listitem>
+    <para>
+      The LPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The underlying windows's response to the message, as a whole number.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns the response as a whole number. This will not be usable if the response is a window <link
+    linkend="defHandle">handle</link>. For those cases, use the <link
+    linkend="mthSendMessageToWindowH">sendMessageToWindowH</link>() method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleSendMessageToWindow"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example sets a new font for the date time picker's month calendar and returs the font it was using.
+    Note that the same thing can be done by using the <link linkend="mthGetMonthCalFont">getMonthCalFont</link> and
+    <link linkend="mthSetMonthCalfont"></link> methods of the <link linkend="clsDateTimePicker"></link> class. In most
+    cases, there is really no need for the Rexx programmer to use the <emphasis
+    role="italic">sendMessageToWindow</emphasis> or <emphasis role="italic">sendMessageToWindowH</emphasis> methods.
+
+<programlisting>
+<![CDATA[
+::method changeCalendarFont private
+  use strict arg hNewFont
+
+  hwnd = self~newDateTimePicker(IDC_DTP_SCHEDULER)~hwnd
+
+  hOldFont = self~sendMessageToWindowH(hwnd, "0x100A", 0, 0)
+  self~sendMessageToWindow(hwnd, "0x1009", hNewFont, 1)
+
+  return hOldFont
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSendMessageToWindowH"><title>sendMessageToWindowH</title>
+<indexterm><primary>sendMessageToWindowH</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>sendMessageToWindowH</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sendMessageToWindowH(--hwnd,--msg--,--wParam--,--lParam--)-----------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">sendMessageToWindowH</emphasis> method sends a Windows message to a window and returns the
+  response as a <link linkend="defHandle">handle</link>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    This method requires an <link linkend="ovvWindowsMessages">understanding</link> of Windows messages.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>hwnd [required]</term>
+    <listitem>
+    <para>
+      The <link linkend="defHandle">handle</link> of the window the message is sent to.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>msg [required]</term>
+    <listitem>
+    <para>
+      The Windows message ID. This may be numeric or a string in <link linkend="defConventionalHex">conventional</link>
+      hexadecimal formt.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>wParam [required]</term>
+    <listitem>
+    <para>
+      The WPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>lParam [required]</term>
+    <listitem>
+    <para>
+      The LPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The underlying windows's response to the message, as a handle.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns the response as a handle. This will not be of much use if the windows's response is a whole
+    number. For those cases, use the <link linkend="mthSendMessageToWindow">sendMessageToWindow</link>() method.
+  </para> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">sendMessageToWinow</emphasis> <link linkend="exampleSendMessageToWindow">example</link>
+    also uses the <emphasis role="italic">sendMessageToWindowH</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSendMessageToControl"><title>sendMessageToControl</title>
+<indexterm><primary>sendMessageToControl</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sendMessageToControl(--id--,--msg--,--wParam--,--lParam--)-----------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">sendMessageToControl</emphasis> method sends a Windows message to a dialog control and
+  returns the response as a whole number.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    This method requires an <link linkend="ovvWindowsMessages">understanding</link> of Windows messages.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>msg [required]</term>
+    <listitem>
+    <para>
+      The Windows message ID. This may be numeric or a string in <link linkend="defConventionalHex">conventional</link>
+      hexadecimal formt.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>wParam [required]</term>
+    <listitem>
+    <para>
+      The WPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>lParam [required]</term>
+    <listitem>
+    <para>
+      The LPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The underlying dialog control's response to the message, as a whole number.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns the response as a whole number. This will not be usable if the response is a window <link
+    linkend="defHandle">handle</link>. For those cases, use the <link
+    linkend="mthSendMessageToControlH">sendMessageToControlH</link>() method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example checks the radio button with resource ID 9001.
+
+<programlisting>
+<![CDATA[
+MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSendMessageToControlH"><title>sendMessageToControlH</title>
+<indexterm><primary>sendMessageToControlH</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>sendMessageToControlH</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sendMessageToControlH(--id--,--msg--,--wParam--,--lParam--)----------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">sendMessageToControlH</emphasis> method sends a Windows message to a dialog control and
+  returns the response as a window handle.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    This method requires an <link linkend="ovvWindowsMessages">understanding</link> of Windows messages.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>msg [required]</term>
+    <listitem>
+    <para>
+      The Windows message ID. This may be numeric or a string in <link linkend="defConventionalHex">conventional</link>
+      hexadecimal formt.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>wParam [required]</term>
+    <listitem>
+    <para>
+      The WPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>lParam [required]</term>
+    <listitem>
+    <para>
+      The LPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The underlying dialog control's response to the message, as a window handle.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns the response as a window <link linkend="defHandle">handle</link>. This will not be of much use
+    if the dialog control's response is a whole number. For those cases, use the <link
+    linkend="mthSendMessageToControl">sendMessageToControl</link>() method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example changes the font of the list view control with symbolic ID of IDC_LV_ADDRESSES and returns
+    the old font. Note that this is exactly what the <link linkend="mthGetFont">getFont</link>() and <link
+    linkend="mthSetFont">setFont</link> methods do. In most cases, there is really no need for the Rexx programmer to
+    use the <emphasis role="italic">sendMessageToControl</emphasis> or <emphasis
+    role="italic">sendMessageToControlH</emphasis> methods.
+
+<programlisting>
+<![CDATA[
+::method changeFont private
+  use strict arg newFont
+
+  oldFont = self~sendMessageToControlH(IDC_LV_ADDRESSES, "0x0031", 0, 0)
+  self~sendMessageToControl(IDC_LV_ADDRESSES, "0x0030", newFont, 1)
+
+  return oldFont
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>  <!-- End Sending Windows Messages Section -->
+
+
 <section id="debuggingmeth"><title>Debugging Methods</title>
 <indexterm><primary>debugging methods</primary></indexterm>
 <para>
@@ -12111,7 +12319,6 @@ a button. It is used to move bitmaps within buttons. </para>
 </section>
 
 <section><title>getStaticControl</title>
-<indexterm><primary>getStaticControl</primary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>getStaticControl</secondary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getStaticControl</tertiary></indexterm>
 <para>
@@ -12121,7 +12328,6 @@ a button. It is used to move bitmaps within buttons. </para>
 </section>
 
 <section><title>getButtonControl</title>
-<indexterm><primary>getButtonControl</primary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>getButtonControl</secondary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getButtonControl</tertiary></indexterm>
 <para>
@@ -12131,7 +12337,6 @@ a button. It is used to move bitmaps within buttons. </para>
 </section>
 
 <section><title>getRadioControl</title>
-<indexterm><primary>getRadioControl</primary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>getRadioControl</secondary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getRadioControl</tertiary></indexterm>
 <para>
@@ -12141,7 +12346,6 @@ a button. It is used to move bitmaps within buttons. </para>
 </section>
 
 <section><title>getCheckControl</title>
-<indexterm><primary>getCheckControl</primary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>getCheckControl</secondary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getCheckControl</tertiary></indexterm>
 <para>
@@ -12151,8 +12355,8 @@ a button. It is used to move bitmaps within buttons. </para>
 </section>
 
 <section><title>getMenuItemState</title>
-<indexterm><primary>Deprecated</primary><secondary>getMenuItemState</secondary></indexterm><indexterm>
-<primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getMenuItemState</tertiary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>getMenuItemState</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getMenuItemState</tertiary></indexterm>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
@@ -12179,7 +12383,6 @@ a button. It is used to move bitmaps within buttons. </para>
 </section>
 
 <section><title>itemText</title>
-<indexterm><primary>itemText</primary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>itemText</secondary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>itemText</tertiary></indexterm>
 <para>
@@ -12199,7 +12402,6 @@ a button. It is used to move bitmaps within buttons. </para>
 </section>
 
 <section><title>setStaticText</title>
-<indexterm><primary>setStaticText</primary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>setStaticText</secondary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>setStaticText</tertiary></indexterm>
 <para>
