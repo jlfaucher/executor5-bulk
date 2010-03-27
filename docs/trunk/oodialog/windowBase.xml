@@ -1,6 +1,6 @@
 <!--#########################################################################
     #
-    # Description: Open Object Rexx: OODialog Reference SGML file.
+    # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
     # Copyright (c) 2008-2010, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
@@ -256,7 +256,7 @@ Window handeles:
   <listitem>
   <para>
     The <emphasis role="italic">pixelCX</emphasis> value is the correct
-    width of the window, as oppossed to the <link linkend="atrSizeX">sizeX</link> attribute which is usually <link
+    width of the window, as opposed to the <link linkend="atrSizeX">sizeX</link> attribute which is usually <link
     linkend="ovvInaccurate">incorrect</link> because it is calculated using <link linkend="atrFactorX">factorX</link>.
   </para>
   </listitem></varlistentry>
@@ -352,7 +352,7 @@ The dialog unit height of the button is: 14
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">pixelCY</emphasis> value is the correct height of the window, as oppossed to the <link
+    The <emphasis role="italic">pixelCY</emphasis> value is the correct height of the window, as opposed to the <link
     linkend="atrSizeY">sizeY</link> attribute which is usually
     <link linkend="ovvInaccurate">incorrect</link> because it is calculated using <link
     linkend="atrFactorY">factorY</link>.
@@ -609,25 +609,36 @@ if self~isValidLastName(lastName) then self~newEdit(IDC_EDIT_FIRSTNAME)~enable
 </programlisting>
 
 <para>
-  The <emphasis role="italic">getSize</emphasis> method returns the width and height of the in dialog units.
+  The <emphasis role="italic">getSize</emphasis> method returns the width and height of the window in dialog units.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
-    <para>
-      This method can only be used after the <link linkend="ovvUnderlying">underlying Windows dialog</link> has been
-      created.
-    </para>
-    <para>
-      Raises syntax errors for incorrect usage.
-    </para>
+  <para>
+    The values returned by this method are usually <link linkend="ovvInaccurate">incorrect</link> because they are
+    calculated using <link linkend="atrFactorX">factorX</link> and <link linkend="atrFactorY">factorY</link>. The <link
+    linkend="mthGetRealSize">getRealSize</link>() method should be used instead.
+  </para>
+  <para>
+    This method can only be used after the <link linkend="ovvUnderlying">underlying Windows dialog</link> has been
+    created.
+  </para>
+  <para>
+    Raises syntax errors for incorrect usage.
+  </para>
   </listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The width and height, separated by a blank.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>For an example, see <link linkend="resize">Resize</link>.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A string with the width and height of the window, separated by a blank.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -730,98 +741,93 @@ stFont2~setRect(r)
 <para>
   Gets the size, width and height, in pixels, needed to display a string in a specific font.
 </para>
-<note><title><emphasis role="bold">Note</emphasis></title><para>
-  This method can only be used after the underlying Windows dialog has been created.  In general this
-  means in the <link linkend="mthInitDialog">initDialog</link>() method or later in the life cycle of the
-  dialog.  If this method is invoked prior to the creation of the underlying dialog, a syntax error is
-  rasised.
-</para></note>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
-    <para>
-      This method can only be used after the <link linkend="ovvUnderlying">underlying Windows dialog</link> has been
-      created.
-    </para>
-    <para>
-      Raises syntax errors for incorrect usage.
-    </para>
-    <para>
-      Part of the purpose of this method is to provide backwards compatibility to the <link
-      linkend="ovvDeprecated">deprecated</link> <emphasis role="italic">getTextSize</emphasis> method. This is the
-      reason for the rather convulted arguments. In general, the Rexx programmer should always use the <link
-      linkend="mthGetTextSizePx">getTextSizePx</link>() method.
-    </para>
+  <para>
+    This method can only be used after the <link linkend="ovvUnderlying">underlying Windows dialog</link> has been
+    created.
+  </para>
+  <para>
+    Raises syntax errors for incorrect usage.
+  </para>
+  <para>
+    Part of the purpose of this method is to provide backwards compatibility to the <link
+    linkend="ovvDeprecated">deprecated</link> <emphasis role="italic">getTextSize</emphasis> method. This is the reason
+    for the rather convulted arguments. In general, the Rexx programmer should always use the <link
+    linkend="mthGetTextSizePx">getTextSizePx</link>() method.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The string whose size is desired.  If none of the optional arguments are specified then the font in use by this
+      window (dialog or dialog control object) is used to calculate the size. This usage is exactly the same as using
+      the <emphasis role="italic">getTextSizePx</emphasis> method.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>type [optional / required]</term>
+    <listitem>
+    <para>
+      If any of the optional arguments are used this argument is required. It signals what <emphasis
+      role="italic">fontSrc</emphasis> is. The allowed types are:
     <variablelist>
-      <varlistentry><term>text</term>
+      <varlistentry><term>Indirect</term>
       <listitem>
-        <para>
-          The string whose size is desired.  If none of the optional arguments are specified then the font in use by
-          this window (dialog or dialog control object) is used to calculate the size. This usage is exactly the same as
-          using the <emphasis role="italic">getTextSizePx</emphasis> method.
-        </para>
+      <para>
+        <emphasis role="italic">fontSrc</emphasis> is a font name and <emphasis role="italic">fontSize</emphasis> is the
+        size of the font. The calculation is done indirectly by temporarily obtaining a logical font using these
+        parameters.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>type</term>
+      <varlistentry><term>DC</term>
       <listitem>
-        <para>
-          Optional.  However, if any of the optional arguments are used this argument is required. It signals what
-          fontSrc is.  The allowed types are:
-          <variablelist>
-            <varlistentry><term>Indirect</term>
-            <listitem>
-              <para>
-                fontSrc is a font name and fontSize is the size of the font.  The calculation is done indirectly by
-                temporarily obtaining a logical font using these parameters.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>DC</term>
-            <listitem>
-              <para>
-                fontSrc is a handle to a device context.  The correct font for the calculation must already be selected
-                into this device context. fontSize is ignored. See the <link linkend="getdc">getDC</link>() and <link
-                linkend="mthFontToDC">fontToDC</link>() methods for information on obtaining a device context and selecting
-                a font into it.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>Font</term>
-            <listitem>
-              <para>
-                fontSrc is a handle to a font. fontSize is ignored.
-              </para>
-            </listitem></varlistentry>
-          </variablelist>
-          Only the first letter of type is needed and case is not significant.
-        </para>
+      <para>
+        <emphasis role="italic">fontSrc</emphasis> is a handle to a device context.  The correct font for the
+        calculation must already be selected into this device context. <emphasis role="italic">fontSize</emphasis> is
+        ignored. See the <link linkend="getdc">getDC</link>() and <link linkend="mthFontToDC">fontToDC</link>() methods
+        for information on obtaining a device context and selecting a font into it.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>fontSrc</term>
+      <varlistentry><term>Font</term>
       <listitem>
-        <para>
-          Optional. The source of the font to use in calculating the size.  This argument object must match the type
-          specification argument. It can be either a string, (a font name,) a handle to a device context, or a handle to
-          a font.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>fontSize</term>
-      <listitem>
-        <para>
-          Optional. The size of the font. This argument is always ignored unless the type argument is Indirect. If type
-          is Indirect and this argument is omitted then the defualt font size is used. (Currently the default size is
-          8.)
-        </para>
+      <para>
+        <emphasis role="italic">fontSrc</emphasis> is a handle to a font. <emphasis role="italic">fontSize</emphasis> is ignored.
+      </para>
       </listitem></varlistentry>
     </variablelist>
+      Only the first letter of type is needed and case is not significant.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fontSrc [optional]</term>
+    <listitem>
+    <para>
+      The source of the font to use in calculating the size.  This argument object must match the <emphasis
+      role="italic">type</emphasis> specification argument. It can be either a string, (a font name,) a handle to a device
+      context, or a handle to a font.
+    </para> </listitem></varlistentry>
+    <varlistentry><term>fontSize [optional]</term>
+    <listitem>
+    <para>
+      The size of the font. This argument is always ignored unless the <emphasis role="italic">type</emphasis> argument
+      is Indirect. If <emphasis role="italic">type</emphasis> is Indirect and this argument is omitted then the defualt
+      font size is used. (Currently the default size is 8.)
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The size needed for the string is returned in a <link linkend="clsSize">Size</link> object.  The
-      size is specified in pixels.
-    </para>
+  <para>
+    The size needed for the string is returned in a <link linkend="clsSize">Size</link> object.  The
+    size is specified in pixels.
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End WindowsBase::getTextSizeScreen() -->
@@ -937,7 +943,8 @@ else
 </programlisting>
 
 <para>
-  Makes the window visible if it was previously hidden. If the window is a top-level window it is also activated.
+  Makes the window visible if it was previously hidden. If the window is a top-level window it is also activated,
+  (given the focus for all intents and purposes.)
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -978,8 +985,438 @@ else
 </variablelist>
 </section>
 
+<section id="mthHide"><title>hide</title>
+<indexterm><primary>hide</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>hide</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>hide</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>hide</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hide-------------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">hide</emphasis> method makes the window invisible and sets the focus to the next window in
+  the window order.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The method accepts no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True if the window was previously visible, false if the window was previously hidden.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+
+<programlisting>
+<![CDATA[
+  sefl~newEdit(IDC_EDIT_NAME)~hide
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthShowfast"><title>showFast</title>
+<indexterm><primary>showFast</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>showFast</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>showFast</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>showFast</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--showFast---------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Marks the window as visible but does not cause it to be redrawn.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The method accepts no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True if the window was previously visible, false if the window was previously hidden.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a window is marked invisible, the operating system does not redraw the window until necessary. For example if
+    the window is covered by another window and then uncovered. There are several methods that the programmer can use to
+    cause a window to be redrawn, <link linkend="mthUpdate">update</link>), <link linkend="mthDraw">draw</link>, etc..
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+<programlisting>
+<![CDATA[
+::method showChoices private
+
+  self~newGroupBox(IDC_GB_CHOICES)~showFast
+  self~newRadioButton(IDC_RB_CHOICE1)~showFast
+  self~newRadioButton(IDC_RB_CHOICE2)~showFast
+  self~newRadioButton(IDC_RB_CHOICE3)~showFast
+  self~newRadioButton(IDC_RB_CHOICE4)~showFast
+  self~newRadioButton(IDC_RB_CHOICE5)~showFast
+  self~newRadioButton(IDC_RB_CHOICE6)~showFast
+  ...
+  self~update
+]]>
+  </programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthHideFast"><title>hideFast</title>
+<indexterm><primary>hideFast</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>hideFast</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>hideFast</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>hideFast</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hideFast----------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">hideFast</emphasis> method marks the window as invisible but does not cause it to be
+  redrawn.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The method accepts no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True if the window was previously visible, false if the window was previously hidden.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a window is marked invisible, the operating system does not redraw the window until necessary. For example if
+    the window is covered by another window and then uncovered. There are several methods that the programmer can use to
+    cause a window to be redrawn, <link linkend="mthUpdate">update</link>), <link linkend="mthDraw">draw</link>, etc..
+  </para>
+  <para>
+    Be aware through that when the window is marked invisible, having the window update or redraw itself will do
+    nothing. The window is hidden. Rather, the window beneath the hidden window must be redrawn. The consequence of this
+    is, if the window marked invisible is a dialog control, then having the dialog update or redraw itself works well.
+    However, if the window is a dialog, then it is the window beneath the dialog that must update. Normally the Rexx
+    programmer will not have a way to force that window to update, and therefore the <emphasis
+    role="italic">hideFast</emphasis> method does not work well for dialogs.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+<programlisting>
+<![CDATA[
+::method hideChoices private
+
+  self~newGroupBox(IDC_GB_CHOICES)~hideFast
+  self~newRadioButton(IDC_RB_CHOICE1)~hideFast
+  self~newRadioButton(IDC_RB_CHOICE2)~hideFast
+  self~newRadioButton(IDC_RB_CHOICE3)~hideFast
+  self~newRadioButton(IDC_RB_CHOICE4)~hideFast
+  self~newRadioButton(IDC_RB_CHOICE5)~hideFast
+  self~newRadioButton(IDC_RB_CHOICE6)~hideFast
+  ...
+  self~update
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthRedrawClient"><title>redrawClient</title>
+<indexterm><primary>redrawClient</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>redrawClient</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>redrawClient</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>redrawClient</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~redrawClient(--+------------+--)-------------><
+                                 +--eraseBkg--+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">redrawClient</emphasis> method causes the entire <link
+  linkend="defClientArea">client area</link> of the window to be redrawn.
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>eraseBkg [optional]</term>
+    <listitem>
+    <para>
+      Whether the background of the window should be erased before redrawing. If you specify this argument and it is
+      true or &quot;Y&quot;, the background of the dialog is erased before redrawing. The default if the argument is
+      omitted is false.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Redrawing was successful.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Redrawing failed. Check <computeroutput>.SystemErrorCode</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Having a window redraw its client area has no effect if the window itself is hidden, there is nothing to draw. On
+    the other hand, if a window, such as a dialog window, contains hidden windows that are still showing, then having it
+    redraw has the effect of erasing the hidden windows, <emphasis role="italic">provided</emphasis> that the background
+    is first erased.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthDraw"><title>draw</title>
+<indexterm><primary>draw</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>draw</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>draw</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>draw</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--draw-------------------------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>
+  The draw method casuses the <link linkend="defClientArea">client area</link> of the window to be immemdiately
+  repainted. It is very similar to the <link linkend="mthRedrawClient">redrawClient</link> method, except that the
+  backgroung is never erased.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Redrawing was successful.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Redrawing failed. Check <computeroutput>.SystemErrorCode</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Having a window redraw its client area has no effect if the window itself is hidden, there is nothing to draw. On
+    the other hand, if a window, such as a dialog window, contains hidden windows that are still showing, then having it
+    redraw has the effect of erasing the hidden windows, <emphasis role="italic">provided</emphasis> that the background
+    is first erased.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthUpdate"><title>update</title>
+<indexterm><primary>update</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>update</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>update</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>update</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~Update---------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The update method makes the contents of the dialog
+or dialog control invalid and therefore forces it to be updated.</para>
+</section>
+
+<section id="display"><title>Display</title>
+<indexterm><primary>display</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>display</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>display</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>display</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+                               +-NORMAL---+------+--+
+                               |          +-FAST-+  |
+>>-aDialogControl~Display(--"--+-DEFAULT--+------+--+--"--)----><
+                               |          +-FAST-+  |
+                               +-HIDE-----+------+--+
+                               |          +-FAST-+  |
+                               +-INACTIVE-----------+
+
+
+]]>
+</programlisting>
+
+<para>The Display method displays (shows, makes visible, or invisible) a dialog
+control as specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  <para>
+    Raises syntax errors for incorrect usage.
+  </para>
+  </listitem></varlistentry>
+<varlistentry><term>Argument:</term>
+<listitem><para>This argument can be one of the following keywords (case is not
+significant.)  If no argument is given, the default keyword is <computeroutput>
+NORMAL</computeroutput>:
+</para>
+<variablelist>
+<varlistentry><term>NORMAL</term>
+<listitem><para>Shows (makes visible) the dialog control. Same as calling the
+Show method (see page <link linkend="mthShowClsWindowBase">Show</link>).
+</para></listitem></varlistentry>
+<varlistentry><term>DEFAULT</term>
+<listitem><para>Default is an alias for <computeroutput>NORMAL</computeroutput>.
+The behavior is exactly the same for the two keywords.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDE</term>
+<listitem><para>Hides (makes invisible) the dialog control.  Same as calling the
+hide method (see page <link linkend="mthHide">hide</link>).
+</para></listitem></varlistentry>
+<varlistentry><term>INACTIVE</term>
+<listitem><para>Displays (shows, makes visible,) the dialog control in its
+current state. The active dialog remains active.  When this method is invoked
+with the <computeroutput>NORMAL</computeroutput> keyword the dialog the control
+belongs to will be made the active window.  If instead the <computeroutput>
+INACTIVE</computeroutput> keyword is used, the active window will not be
+changed. (Obviously, if the dialog that the control belongs to is already the
+active window, the <computeroutput>INACTIVE</computeroutput> keyword behaves
+exactly the same as the <computeroutput>NORMAL</computeroutput> keyword.
+</para></listitem></varlistentry>
+</variablelist>
+<para>To each keyword, except the <computeroutput>INACTIVE</computeroutput>
+keyword, you can add <computeroutput>FAST</computeroutput>, separated by a
+blank, to suppress the redrawing of the dialog control.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following statement makes a tree control in the dialog
+visible without redrawing it.
+<programlisting>
+<![CDATA[
+MyDialog~newTreeView(IDC_TREECONTROL_FILES)~Display("NORMAL FAST")
+]]>
+</programlisting>
+
+This is usually done when there are a number of controls to make visible at one
+time.  The programmer would make them all visible without redrawing. Then use
+the <link linkend="mthUpdate">update</link> method to repaint everything at once.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="mthSendMessage"><title>sendMessage</title>
 <indexterm><primary>sendMessage</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>sendMessage</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>sendMessage</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>sendMessage</secondary></indexterm>
 <programlisting>
@@ -1000,6 +1437,9 @@ else
     </para>
     <para>
       This method requires an <link linkend="ovvWindowsMessages">understanding</link> of Windows messages.
+    </para>
+    <para>
+      Using this method before the underlying dialog is created does nothing.
     </para>
     </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1061,6 +1501,7 @@ MovableDialog~sendMessage"0x0402", 0, 0)
 
 <section id="mthSendMessageHandle"><title>sendMessageHandle</title>
 <indexterm><primary>sendMessageHandle</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>sendMessage</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>sendMessage</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>sendMessage</secondary></indexterm>
 <programlisting>

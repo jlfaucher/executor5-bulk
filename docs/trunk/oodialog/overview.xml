@@ -1,6 +1,6 @@
 <!--#########################################################################
     #
-    # Description: Open Object Rexx: OODialog Reference SGML file.
+    # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
     # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
@@ -137,13 +137,13 @@
   returns a value, another opaque type called LRESULT, which again may have no meaning for the particular message.
 </para>
 <para>
-  In general, most of what ooDialog does is done by sending Windows message to the underlying operating system windows.
-  This is designed to allow the Rexx programmer to use dialogs without understanding any of the details of Windows
-  messages. However, the ooDialog framework provides a few generic methods that send Windows messages to the underlying
-  operating system windows. These methods, on the other hand, can not be used by the Rexx programmer without some
+  In general, most of what ooDialog does is done by sending Windows message to the operating system windows. This is
+  designed to allow the Rexx programmer to use dialogs without understanding any of the details of Windows messages.
+  However, the ooDialog framework provides a few generic methods that send Windows messages to the underlying operating
+  system windows. These methods, in contrast to most methods, can not be used by the Rexx programmer without some
   knowledge of the Windows message being sent. The methods are clearly marked. The programmer would need to consult the
   <link linkend="defWindowsDoc">Windows Documentation</link> to understand what both the WPARAM and LPARAM arguments
-  must be, and to understand what the LRESULT return, if any means. In addition, the programmer would need to determine
+  must be, and to understand what the LRESULT return, if any, means. In addition, the programmer would need to determine
   the numeric value of the Windows message ID. This could be done using a <link linkend="defPlatformSDK">Windows
   platform SDK</link>, or perhaps through a Google search.
 </para>
@@ -463,17 +463,39 @@
 </para>
 </section>
 
-<section id="defHandle"><title>handle</title>
+<section id="defDialogUnit"><title>Dialog Unit</title>
 <para>
-  A unique reference to a Windows object assigned by the system. It can be a reference to a dialog, a particular dialog
-  control, a window, or a graphic object (pen, brush, font). Handles are required for certain methods. A handle is an
-  opaque type, the Rexx programmer need not be aware of the specific format of a handle. The ooDialog framework provides
-  methods that return handles and methods for retrieving handles from the operating system. When a method requires a
-  handle as an argument, the Rexx programmer needs to obtain the handle from one of those provided methods.
+  Dialog box templates contain measurements that define the size and position of the dialog box and its controls. These
+  measurements are device independent. This allows a single template to be used to create the same dialog box for all
+  types of display devices. Using device independent measurements allows a dialog box to have the same proportions and
+  appearance on all screens despite differing resolutions and aspect ratios between screens.
+</para>
+<para>
+  These measurements are called dialog template units, often shortened to just dialog units in this documentation.
+</para>
+<para>
+  The following paragraph in italics, which has been the sole documentation of dialog units in the ooDialog
+  documentation prior to version 4.0.0, is unfortunately incorrect.  The value of a dialog unit is dependent on the font
+  actually used in the dialog, not on the system font. The statements below were probably true in very early versions of
+  Windows when every dialog used system 8 pt font. Today it is highly unusual for a dialog to use system 8 pt font. The
+  factorX and factorY values are calculated incorrectly. These values are only correct if the dialog is using system 8
+  pt font and are incorrect for a dialog using any other font.
+</para>
+<para>
+  <emphasis role="italic">There is a horizontal and a vertical dialog base unit to convert width and height of dialog
+  boxes and controls from dialog units to pixels and vice versa. The value of these base units depend on the screen
+  resolution and the active system font; they are stored in attributes of the UserDialog class.</emphasis>
+<programlisting>
+<![CDATA[
+xPixels = xDialogUnits * self~FactorX
+]]>
+</programlisting>
+  <emphasis role="bold">Note</emphasis> that in the above line of code <computeroutput>xPixles</computeroutput> will not
+  be <link linkend="ovvInaccurate">accurate</link>.
 </para>
 </section>
 
-<section id="defDialogIcon"><title>dialog icon</title>
+<section id="defDialogIcon"><title>Dialog Icon</title>
 <para>
   The term <emphasis role="italic">dialog icon</emphasis> is used in this documentation to refer to the icon that is
   displayed in the left hand corner of the title bar of a dialog. In Windows this is often called the <emphasis
@@ -539,7 +561,26 @@
 </para>
 </section>
 
-<section id="defDeviceContext"><title>device context</title>
+<section id="defModalModeless"><title>Modal and Modeless Dialogs</title>
+<para>
+  Dialogs are executed in two basic ways. A <emphasis role="italic">modal</emphasis> dialog blocks keyboard and mouse
+  input to all other windows started by the program. The user can not switch to another window in the program without
+  closing the modal dialog. In ooDialog this essentially is all other dialogs started by the program. A <emphasis
+  role="italic">modeless</emphasis> dialog operates independently of the other dialogs in the program. The user can
+  switch away from a modeless dialog and work with any of the other dialogs in the program.
+</para> </section>
+
+<section id="defHandle"><title>handle</title>
+<para>
+  A unique reference to a Windows object assigned by the system. It can be a reference to a dialog, a particular dialog
+  control, a window, or a graphic object (pen, brush, font). Handles are required for certain methods. A handle is an
+  opaque type, the Rexx programmer need not be aware of the specific format of a handle. The ooDialog framework provides
+  methods that return handles and methods for retrieving handles from the operating system. When a method requires a
+  handle as an argument, the Rexx programmer needs to obtain the handle from one of those provided methods.
+</para>
+</section>
+
+<section id="defDeviceContext"><title>Device Context</title>
 <para>
   Stores information about the graphic objects that are displayed, such as bitmaps, lines, and pixels, and the tools
   used to display them, such as pens, brushes, and fonts. A device context can be acquired for a dialog or a dialog
@@ -547,7 +588,7 @@
 </para>
 </section>
 
-<section id="defPixel"><title>pixel</title>
+<section id="defPixel"><title>Pixel</title>
 <para>
   Individual addressable point on the monitor (screen or display.) Pixels are whole numbers. Ancient VGA screens
   supported 640 by 480 pixels, SVGA screens supported higher resolutions, such as 800 by 600, 1024 by 768, and up.
@@ -556,38 +597,6 @@
   capabilities, pixel values were always non-negative. On a dual monitor system that is no longer true, depending on the
   virtual position of the secondary monitor. If it is to the left or above the primary monitor negative pixel values are
   possible.
-</para>
-</section>
-
-<section id="defDialogUnit"><title>dialog unit</title>
-<para>
-  Dialog box templates contain measurements that define the size and position of the dialog box and its controls. These
-  measurements are device independent. This allows a single template to be used to create the same dialog box for all
-  types of display devices. Using device independent measurements allows a dialog box to have the same proportions and
-  appearance on all screens despite differing resolutions and aspect ratios between screens.
-</para>
-<para>
-  These measurements are called dialog template units, often shortened to just dialog units in this documentation.
-</para>
-<para>
-  The following paragraph in italics, which has been the sole documentation of dialog units in the ooDialog
-  documentation prior to version 4.0.0, is unfortunately incorrect.  The value of a dialog unit is dependent on the font
-  actually used in the dialog, not on the system font. The statements below were probably true in very early versions of
-  Windows when every dialog used system 8 pt font. Today it is highly unusual for a dialog to use system 8 pt font. The
-  factorX and factorY values are calculated incorrectly. These values are only correct if the dialog is using system 8
-  pt font and are incorrect for a dialog using any other font.
-</para>
-<para>
-  <emphasis role="italic">There is a horizontal and a vertical dialog base unit to convert width and height of dialog
-  boxes and controls from dialog units to pixels and vice versa. The value of these base units depend on the screen
-  resolution and the active system font; they are stored in attributes of the UserDialog class.</emphasis>
-<programlisting>
-<![CDATA[
-xPixels = xDialogUnits * self~FactorX
-]]>
-</programlisting>
-  <emphasis role="bold">Note</emphasis> that in the above line of code <computeroutput>xPixles</computeroutput> will not
-  be <link linkend="ovvInaccurate">accurate</link>.
 </para>
 </section>
 
@@ -652,6 +661,22 @@ xPixels = xDialogUnits * self~FactorX
 </programlisting>
 </section>
 
+<section id="defSystemErrorCode"><title>System Error Code</title>
+<para>
+  The term <emphasis role="italic">system error code</emphasis> refers to an error code set by the Windows operating
+  system when an API fails. ooDialog provides an interface to the Windows APIs and when an error is detected many of
+  the ooDialog methods have some means of conveying the system error code to the programmer. The ooDialog programmer can
+  look up the meaning of a system error code in the <link linkend="defWindowsDoc">MSDN library</link> to understand
+  better the cause of a failure.
+</para>
+<para>
+  ooDialog provides the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> environment entry as a means for the
+  Rexx programmer to determine the value of the system error code after a method has executed. Note that not all of the
+  Windows APIs set the system error code. And, likewise, not all of the ooDialog methods set the
+  <computeroutput>.SystemErrorCode</computeroutput>.
+</para>
+</section>
+
 <section id="defWindowsDoc"><title>Windows Documentation</title>
 <para>
   The term <emphasis role="italic">Windows documentation</emphasis> is used throughout the ooDialog reference to refer
@@ -713,21 +738,6 @@ xPixels = xDialogUnits * self~FactorX
   it.
 </para>
 </section>
-
-<section id="defSystemErrorCode"><title>System Error Code</title>
-<para>
-  The term <emphasis role="italic">system error code</emphasis> refers to an error code set by the Windows operating
-  system when an API fails. ooDialog provides an interface to the Windows APIs and when an error is detected many of
-  the ooDialog methods have some means of conveying the system error code to the programmer. The ooDialog programmer can
-  look up the meaning of a system error code in the <link linkend="defWindowsDoc">MSDN library</link> to understand
-  better the cause of a failure.
-</para>
-<para>
-  ooDialog provides the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> environment entry as a means for the
-  Rexx programmer to determine the value of the system error code after a method has executed. Note that not all of the
-  Windows APIs set the system error code. And, likewise, not all of the ooDialog methods set the
-  <computeroutput>.SystemErrorCode</computeroutput>.
-</para> </section>
 
 </section> <!-- End: Definition of Terms -->
 
@@ -941,11 +951,13 @@ xPixels = xDialogUnits * self~FactorX
 </section>
 
 
-<section id="reference"><title>OODialog Class Reference</title>
-<para>The classes provided by OODialog form a hierarchy as shown in
-<link linkend="fig52">The Hierarchy of OODialog Classes</link>.</para>
+<section id="reference"><title>ooDialog Class Reference</title>
+<para>
+  The classes provided by ooDialog form a hierarchy as shown in <link linkend="fig52">The Hierarchy of ooDialog
+  Classes</link>.
+</para>
 
-<figure id="fig52"><title>The Hierarchy of OODialog Classes</title>
+<figure id="fig52"><title>The Hierarchy of ooDialog Classes</title>
 <mediaobject>
 <imageobject>
 <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->

@@ -1,6 +1,6 @@
 <!--#########################################################################
     #
-    # Description: Open Object Rexx: OODialog Reference SGML file.
+    # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
     # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
@@ -166,8 +166,8 @@
 <entry><link linkend="absrect2logrect">AbsRect2LogRect</link></entry>
 </row>
 <row>
-<entry>AddAutoStartMethod</entry>
-<entry><link linkend="h001383">AddAutoStartMethod</link></entry>
+<entry>addAutoStartMethod</entry>
+<entry><link linkend="mthAddAutoStartMethod">addAutoStartMethod</link></entry>
 </row>
 <row>
 <entry>AddComboEntry</entry>
@@ -477,8 +477,8 @@
 <entry><link linkend="display">Display</link></entry>
 </row>
 <row>
-<entry>Draw</entry>
-<entry><link linkend="draw">Draw</link></entry>
+<entry>draw</entry>
+<entry><link linkend="wbdoDraw">draw</link></entry>
 </row>
 <row>
 <entry>DrawAngleArc</entry>
@@ -787,12 +787,13 @@
 <entry><link linkend="mthHelp">Help</link></entry>
 </row>
 <row>
-<entry>Hide</entry>
-<entry><link linkend="hide">Hide</link></entry>
+<entry>hide</entry>
+<entry><link linkend="wbdoHide">hide</link>
+</entry>
 </row>
 <row>
-<entry>HideFast</entry>
-<entry><link linkend="hidefast">HideFast</link></entry>
+<entry>hideFast</entry>
+<entry><link linkend="wbdoHideFast">hideFast</link></entry>
 </row>
 <row>
 <entry>HideItem</entry>
@@ -987,8 +988,8 @@
 <entry><link linkend="redraw">Redraw</link></entry>
 </row>
 <row>
-<entry>RedrawClient</entry>
-<entry><link linkend="redrawclient">RedrawClient</link></entry>
+<entry>redrawClient</entry>
+<entry><link linkend="wbdoRedrawClient">redrawClient</link></entry>
 </row>
 <row>
 <entry>RedrawButton</entry>
@@ -1226,11 +1227,11 @@
 </row>
 <row>
 <entry>Show</entry>
-<entry><link linkend=mthShowClsPlainBaseDialog>Show</link></entry>
+<entry><link linkend=mthShowClsPlainBaseDialog>show</link></entry>
 </row>
 <row>
-<entry>ShowFast</entry>
-<entry><link linkend="showfast">ShowFast</link></entry>
+<entry>showFast</entry>
+<entry><link linkend="wbdoShowfast">showFast</link></entry>
 </row>
 <row>
 <entry>ShowItem</entry>
@@ -1277,8 +1278,8 @@
 <entry><link linkend="h000109">ToTheTop</link></entry>
 </row>
 <row>
-<entry>Update</entry>
-<entry><link linkend="update">Update</link></entry>
+<entry>update</entry>
+<entry><link linkend="wbdoUpdate">update</link></entry>
 </row>
 <row>
 <entry>validate</entry>
@@ -1546,7 +1547,7 @@
 
       /*--------------------------------------------------------------------------*/
       /*                                                                          */
-      /* OODialog\Samples\oostddlg.rex   Standard Dialog demonstration            */
+      /* oodialog\samples\oostddlg.rex   Standard Dialog demonstration            */
       /*                                                                          */
       /*--------------------------------------------------------------------------*/
 
@@ -2456,71 +2457,186 @@ is called by <link linkend="mthExecute">execute</link>.
 <indexterm><primary>dialog object</primary><secondary>execute</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                            +-DEFAULT--+
->>-aBaseDialog~execute(--"--+----------+--"--+---------+--)----><
-                            +-NORMAL---+     +-,--icon-+
-                            +-SHOWTOP--+
-                            +-HIDE-----+
-                            +-MIN------+
-                            +-MAX------+
-                            +-INACTIVE-+
+>>--execute(--+-------------+--+---------+--)------------------><
+              +--showOption-+  +-,--icon-+
 
 
 ]]>
 </programlisting>
 
-<para>The execute method creates the dialog, shows it
-(see <link linkend=mthShowClsPlainBaseDialog>Show</link>), starts automatic methods, and destroys the dialog.
-The data is passed to the Windows dialog before execution and received
-from it after the dialog is terminated.</para>
-
-<note><title>Note</title><para>
-If another dialog has already been started in
-the same process, it is disabled by Execute.
-</para></note>
+<para>
+  The <emphasis role="italic">execute</emphasis> method, creates the <link linkend="ovvUnderlying">underlying</link>
+  dialog, <link linkend="mthShowClsPlainBaseDialog">shows</link> it, starts the <link
+  linkend="mthAddAutoStartMethod">automatic</link> methods, if any, and destroys the underlying dialog when the user
+  closes it. If <link linkend="mthInitAutoDetection">auto detection</link> is on, the dialog <link
+  linkend="sctUnderstandingDataAttributes">data</link> is passed to the underlying dialog before execution and received
+  from it after the dialog is terminated.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>show</term>
-<listitem><para>See <link linkend=mthShowClsPlainBaseDialog>Show</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>icon</term>
-<listitem><para>The resource ID of the <link linkend="defDialogIcon">dialog's
-icon</link>.  If an icon ID is not supplied, the default ooDialog icon will be
-used.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The dialog was not executed.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>You terminated the method using the OK button.
-</para></listitem></varlistentry>
-<varlistentry><term>2</term>
-<listitem><para>You terminated the method using the Cancel button.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example instantiates a new dialog object (remember that
-it is not possible to instantiate an object of the BaseDialog class), creates
-a dialog template, and runs the dialog as the topmost window.  The
-<link linkend="defDialogIcon">dialog icon</link> is one of the pre-defined icons
-supplied by ooDialog:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>showOption [optional]</term>
+    <listitem>
+    <para>
+      Zero or one of the following keywords to specify how the dialog is shown. This keyword is used in the automatic
+      invocation of the <link linkend=mthShowClsPlainBaseDialog>show</link> method. Case is not significant. If this
+      argument is omitted, the NORMAL keyword is used:
+      <variablelist>
+        <varlistentry><term>NORMAL</term>
+        <listitem>
+        <para>
+          Makes the dialog visible in its default position and window size. This has the effect of restoring the dialog size
+          and position if it is minimized or maximized. This is the default if the argument is omitted.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DEFAULT</term>
+        <listitem>
+        <para>
+          DEFAULT is an alias for NORMAL. The two keywords are functionally identical.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SHOWTOP</term>
+        <listitem>
+        <para>
+          Makes the dialog visible and the topmost window. Note that the dialog size and position are not restored if the
+          dialog is minimized or maximized.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HIDE</term>
+        <listitem>
+        <para>
+          Makes the dialog invisible.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MIN</term>
+        <listitem>
+        <para>
+          Minimizes the dialog and activates the next window in the window order.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MAX</term>
+        <listitem>
+        <para>
+          Maximizes, and makes visible if necessary, the dialog.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>INACTIVE</term>
+        <listitem>
+        <para>
+          Makes the dialog visible without changing the active window.  When the NORMAL keyword is used, the dialog is shown
+          and becomes the active window. The INACTIVE keyword makes the dialog visible without changing the focuse from the
+          current active window.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RESTORE</term>
+        <listitem>
+        <para>
+          Makes the dialog visible and restores it to its original size and position if it was minimized or maximized. An
+          application should specify this flag when restoring a minimized window.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>icon [optional]</term>
+    <listitem>
+    <para>
+      The resource ID of the <link linkend="defDialogIcon">dialog's icon</link>. May be numeric or <link
+      linkend="defSymbolicID">symbolic</link>.  If an icon ID is not supplied, the default ooDialog icon will be used.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">TERM:</emphasis></term>
+  <listitem>
+  <para>
+    Although any of the show keywords can be used, for the <emphasis role="italic">execute</emphasis> method the
+    SHOWTOP, HIDE, and MAX keywords make the most sense. SHOWTOP is the usual keyword.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return value is one of the following codes:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Some error ocurred, the dialog was not executed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The user terminated the dialog using an ok command.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>2</term>
+    <listitem>
+    <para>
+      The user terminated the dialog using a cancel comamnd.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If another ooDialog dialog has been started by the Rexx program, it is disabled when <emphasis
+    role="italic">execute</emphasis> is invoked. This in effect makes the dialog a <link
+    linkend="defModalModeless">modal</link> dialog. To start a <emphasis role="italic">modeless</emphasis> dialog use
+    the <link linkend="mthPopup">popup</link> or <link linkend="mthPopupAsChild">popupAsChild</link> methods.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example instantiates a new <link linkend="UserDialog">UserDialog</link> subclass object. The dialog
+    <link linkend="ovvDialogTemplate">template</link> is started by the <emphasis role="italic">create</emphasis>
+    method and finished in the <emphasis role="italic">defineDialog</emphasis> method. Then the <emphasis
+    role="italic">execute</emphasis> method runs the dialog as the topmost window.  The <link
+    linkend="defDialogIcon">dialog icon</link> is set to one of the pre-defined icons supplied by ooDialog.
+  </para>
+  <para>
+    When the user terminates the dialog, the return from <emphasis role="italic">execute</emphasis> is checked to
+    determine how the user closed the dialog. Typically, if the user canceled the dialog, any changes in the dialog are
+    ignored:
 
 <programlisting>
 <![CDATA[
-MyDialog = .UserDialog~new(...)
-MyDialog~create(...)
-MyDialog~execute("SHOWTOP", IDI_DLG_OOREXX)
+dlg = .MyDialog~new(...)
+dlg~create(...)
+
+ret = dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+if ret == 1 then do
+  -- The user closed the dialog with the ok command.
+  ...
+end
+else do
+  -- The user canceled the dialog.
+  ...
+end
+
+::class 'MyDialog' subclass UserDialog
+
+...
+
+::method defineDialog
+
+  self~createStaticText(...)
+  self~createEdit(...)
+  self~createPushButton(...)
+  ...
+
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -2917,7 +3033,7 @@ messages.</para>
 <para>
   Some dialog controls are not considered to be <emphasis role="italic">data</emphasis> and therefore data attributes
   are not created for those controls. (This is a quirk going back to the original implementation of of ooDialog.) The
-  non-data controls are those, in general, that the user would change or update in a dialog. <link
+  non-data controls are those, in general, that the user would not change or update in a dialog. <link
   linkend="clsButton">Push buttons</link>, <link linkend="clsGroupBox">group boxes</link>, and <link
   linkend="clsStatic">static</link> controls are all considered non-data controls. There are no data attribute methods
   for these controls.
@@ -8591,8 +8707,8 @@ used.
 <para>
   Some of the methods come in two flavors, normal (for example, ShowWindow and fast (for example,
   ShowWindowFast). The fast extension indicates that the method does not redraw the control or window
-  immediately. After modifying several items, invoke the Update method (see page <link
-  linkend="update">Update</link>) to redraw the dialog.
+  immediately. After modifying several items, invoke the update method (see page <link
+  linkend="mthUpdate">update</link>) to redraw the dialog.
 </para>
 
 
@@ -8842,61 +8958,100 @@ on the color numbers, refer to <link linkend="sctTermDefs">Definition of Terms</
 <para>
   Sets the dialog window's show state.
 </para>
-<para>
-  The Show method shows the dialog. It is called by <link
-linkend="mthExecute">execute</link> or <link linkend="mthExecuteAsync">executeAsync</link>
-methods to initially display the dialog.  Once the dialog has been initially
-shown, the programmer can use the <computeroutput>Show</computeroutput> to
-change the appearance of the dialog.  For instance the dialog can be hidden,
-maximized, minimized, etc..
-</para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
   <listitem>
   <para>
-    The single <emphasis role="italic">opts</emphasis> argument can be zero of one of the following keywords, case is
-    not significant. Only the first letter of the argument is needed:
+    The single, optional, <emphasis role="italic">opts</emphasis> argument can be zero or one of the following keywords,
+    case is not significant:
   <variablelist>
     <varlistentry><term>NORMAL</term>
-    <listitem><para>Makes the dialog visible with its default window size. This is
-    the default keyword if the argument is omitted.
-    </para></listitem></varlistentry>
+    <listitem>
+    <para>
+      Makes the dialog visible in its default position and window size. This has the effect of restoring the dialog size
+      and position if it is minimized or maximized. This is the default if the argument is omitted.
+    </para>
+    </listitem></varlistentry>
     <varlistentry><term>DEFAULT</term>
-    <listitem><para><computeroutput>DEFAULT</computeroutput> is an alias for
-    <computeroutput>NORMAL</computeroutput>. The two keywords are functionally
-    identical.
-    </para></listitem></varlistentry>
+    <listitem>
+    <para>
+      DEFAULT is an alias for NORMAL. The two keywords are functionally identical.
+    </para>
+    </listitem></varlistentry>
     <varlistentry><term>SHOWTOP</term>
-    <listitem><para>Shows and makes the dialog the topmost dialog.
-    </para></listitem></varlistentry>
+    <listitem>
+    <para>
+      Makes the dialog visible and the topmost window. Note that the dialog size and position are not restored if the
+      dialog is minimized or maximized.
+    </para>
+    </listitem></varlistentry>
     <varlistentry><term>HIDE</term>
-    <listitem><para>Makes the dialog invisible.
-    </para></listitem></varlistentry>
+    <listitem>
+    <para>
+      Makes the dialog invisible.
+    </para>
+    </listitem></varlistentry>
     <varlistentry><term>MIN</term>
-    <listitem><para>Minimizes the dialog.
-    </para></listitem></varlistentry>
+    <listitem>
+    <para>
+      Minimizes the dialog and activates the next window in the window order.
+    </para>
+    </listitem></varlistentry>
     <varlistentry><term>MAX</term>
-    <listitem><para>Maximizes the dialog.
-    </para></listitem></varlistentry>
+    <listitem>
+    <para>
+      Maximizes, and makes visible if necessary, the dialog.
+    </para>
+    </listitem></varlistentry>
     <varlistentry><term>INACTIVE</term>
-    <listitem><para>Shows the dialog without changing the active window.  When the
-    <computeroutput>Normal</computeroutput> keyword is used, the dialog is shown and
-    becomes the active window.  Using the <computeroutput>INACTIVE</computeroutput>
-    keyword allows the dialog to be shown and let another window remain active.
-    </para></listitem></varlistentry>
+    <listitem>
+    <para>
+      Makes the dialog visible without changing the active window.  When the NORMAL keyword is used, the dialog is shown
+      and becomes the active window. The INACTIVE keyword makes the dialog visible without changing the focuse from the
+      current active window.
+    </para>
+    </listitem></varlistentry>
     <varlistentry><term>RESTORE</term>
-    <listitem><para>
-      Shows and activates the dialog. If the dialog is minimized or maximized, the system restores it to its
-      original size and position. An application should specify this flag when restoring a minimized window.
-    </para></listitem></varlistentry>
+    <listitem>
+    <para>
+      Makes the dialog visible and restores it to its original size and position if it was minimized or maximized. An
+      application should specify this flag when restoring a minimized window.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
-  </para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">show</emphasis> method is invoked automatically by the methods that run a dialog, <link
+    linkend="mthExecute">execute</link>, <link linkend="mthPopup">popup</link>, etc.. Once the dialog is running this
+    method can be used to hide, maximize, or otherwise change the show state as described by the keywords. There are
+    also a number of conveninece methods that do similiar things, <link linkend="mthHide">hide</link>, <link
+    linkend="mthDisplay">display</link>, <link linkend="mthMinimize">minimize</link>, <link
+    linkend="mthRestor">restore</link>, and so on.
+  </para>
+  <para>
+    The <emphasis role="italic">show</emphasis> method over-rides the <link linkend="mthShowClsWindowBae">show</link>
+    method of the <link linkend="clsWindow">WindowBase</link> class, which takes no arguments. The primary purpose of
+    the dialog object <emphasis role="italic">show</emphasis> method is to allow flexibility in how the dialog is
+    initialy shown when it is run.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if the window was previously visible and false if the window was previously hidden.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem><para>The following statement hides the dialog:
+  <listitem>
+  <para>
+    The following statement makes the dialog invisible:
 
 <programlisting>
 <![CDATA[
-MyDialog~Show("HIDE")
+  dlg~show("HIDE")
 ]]>
 </programlisting>
   </para>
@@ -9593,7 +9748,7 @@ in the dialog and you can transfer its data. </para>
 <para>The HideItemFast method hides an item without redrawing
 its area. It is similar to the <link linkend="mthHideItem">HideItem</link> method,
 but it is faster because the item's area is not redrawn. The HideItemFast method is used when more than one item state is modified.
-After the operations, you can manually redraw the dialog window, using the <link linkend="update">Update</link> method. </para>
+After the operations, you can manually redraw the dialog window, using the <link linkend="mthUpdate">update</link> method. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -9695,7 +9850,7 @@ MyDialog~HideWindow(hwnd)
 <para>The HideWindowFast method is similar to the <link linkend="h001253">HideWindow</link> method, but it is faster because the window's
 or item's area is not redrawn. The HideWindowFast method
 is used when more than one state is modified. After the operations, you can
-manually redraw the dialog window, using the <link linkend="update">Update</link> method. </para>
+manually redraw the dialog window, using the <link linkend="mthUpdate">update</link> method. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -9889,7 +10044,7 @@ item. </para>
 <listitem><para>Shows the item
 </para></listitem></varlistentry>
 <varlistentry><term>NOREDRAW</term>
-<listitem><para>Resizes the item without updating the display. Use the <link linkend="update">Update</link> method to manually update the display.
+<listitem><para>Resizes the item without updating the display. Use the <link linkend="mthUpdate">update</link> method to manually update the display.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -9943,7 +10098,7 @@ position within the dialog window. </para>
 <listitem><para>Shows the dialog
 </para></listitem></varlistentry>
 <varlistentry><term>NOREDRAW</term>
-<listitem><para>Moves the dialog item without updating the display. Use the <link linkend="update">Update</link> method
+<listitem><para>Moves the dialog item without updating the display. Use the <link linkend="mthUpdate">update</link> method
 to manually update the display.
 </para></listitem></varlistentry>
 </variablelist>
@@ -9978,7 +10133,7 @@ center. </para>
 <listitem><para>Shows the dialog
 </para></listitem></varlistentry>
 <varlistentry><term>NOREDRAW</term>
-<listitem><para>Center the dialog without updating the display. Use the <link linkend="update">Update</link> method
+<listitem><para>Center the dialog without updating the display. Use the <link linkend="mthUpdate">update</link> method
 to manually update the display.
 </para></listitem></varlistentry>
 </variablelist>
@@ -10371,7 +10526,7 @@ still minimized, then this method restores it to its normal position.
 
 </section>
 
-<section id="man0016"><title>Window Draw Methods</title>
+<section id="man0016"><title>Window draw Methods</title>
 <indexterm><primary>draw methods</primary>
 <secondary>BaseDialog class</secondary></indexterm>
 <para>The methods listed below are used to draw, redraw, and clear window areas.</para>
@@ -11053,18 +11208,18 @@ parse var bmpPos x y
 </variablelist>
 </section>
 
-<section id="h001383"><title>AddAutoStartMethod</title>
-<indexterm><primary>AddAutoStartMethod</primary></indexterm>
+<section id="mthAddAutoStartMethod"><title>addAutoStartMethod</title>
+<indexterm><primary>addAutoStartMethod</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~AddAutoStartMethod(--+---------+--,--MethodName--+---------------+--)-><
+>>-aBaseDialog~addAutoStartMethod(--+---------+--,--MethodName--+---------------+--)-><
                                     +-InClass-+                 +-,--Parameters-+
 
 
 ]]>
 </programlisting>
 
-<para>The AddAutoStartMethod method adds a method name
+<para>The addAutoStartMethod method adds a method name
 and parameters to a special internal queue. All methods in this queue will
 be started automatically and run concurrently when the dialog is executed.
 The given method (MethodName) in the given class (InClass) is started concurrently with the dialog when
@@ -11093,7 +11248,7 @@ concurrently with the dialog execution:
 
 <programlisting>
 <![CDATA[
-MyDialog~AddAutoStartMethod("MyAnimatedButton", "ExecuteB")
+MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
 
 ::class MyAnimatedButton
 ::method ExecuteB

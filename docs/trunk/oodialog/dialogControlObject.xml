@@ -1,6 +1,6 @@
 <!--#########################################################################
     #
-    # Description: Open Object Rexx: OODialog Reference SGML file.
+    # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
     # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
@@ -52,22 +52,20 @@
   the methods that are common to all windows, whether they are dialog windows or dialog control windows.
 </para>
 <para id="paraDialogControlStyles">
-  In the Windows GUI all windows are created with a set of <emphasis role="italic">window
-  styles</emphasis>.  Dialog control windows are created using styles that are common to all
-  windows, (for example the visible style,) and styles specific to the dialog control itself, (for
-  example the multi-line style of the <link linkend="clsEdit">Edit</link> control class.)  In
-  general the styles of a control fall into three categories: Styles that can only be set when the
-  control is created and then can not be changed afterwards. Styles that can be changed after
-  control creation by sending messages to the control. And, styles that can be changed after the
-  control is created by accessing the control window directly.
+  In the Windows GUI all windows are created with a set of <emphasis role="italic">window styles</emphasis>.  Dialog
+  control windows are created using styles that are common to all windows, (for example the visible style,) and styles
+  specific to the dialog control itself, (for example the multi-line style of the <link linkend="clsEdit">Edit</link>
+  control class.)  In general the styles of a control fall into three categories: Styles that can only be set when the
+  control is created and then can not be changed afterwards. Styles that can be changed after control creation by
+  sending messages to the control. And, styles that can be changed after the control is created by accessing the control
+  window directly.
 </para>
 <para>
-  The ooDialog programmer chooses the window styles for dialog controls when he defines the dialog,
-  either by using a resource editor for dialogs defined with resource scripts or binary compiled
-  resources, or by using the one of the <link linkend="sctCreateMethods">create...</link> methods for a user dialog.
-  After the dialog control has been created, the individual dialog control classes provide methods to change those
-  styles that can be changed, either by sending the proper message to the control or by accessing the control window
-  directly.
+  The ooDialog programmer chooses the window styles for dialog controls when he defines the dialog, either by using a
+  resource editor for dialogs defined with resource scripts or binary compiled resources, or by using the one of the
+  <link linkend="sctCreateMethods">create...</link> methods for a user dialog. After the dialog control has been
+  created, the individual dialog control classes provide methods to change those styles that can be changed, either by
+  sending the proper message to the control or by accessing the control window directly.
 </para>
 
 <section id="sctMethodsDlgContorlObject"><Title>Method Table</Title>
@@ -218,8 +216,8 @@
 <entry><link linkend="display">Display</link></entry>
 </row>
 <row>
-<entry>Draw</entry>
-<entry><link linkend="draw">Draw</link></entry>
+<entry>draw</entry>
+<entry><link linkend="wbdcoDraw">draw</link></entry>
 </row>
 <row>
 <entry>DrawAngleArc</entry>
@@ -326,12 +324,14 @@
 <entry><link linkend="mthHasKeyPressConnectionDialogControl">hasKeyPressConnection</link></entry>
 </row>
 <row>
-<entry>Hide</entry>
-<entry><link linkend="hide">Hide</link></entry>
+<entry>hide</entry>
+<entry><link linkend="wbdcoHide">hide</link>
+</entry>
 </row>
 <row>
-<entry>HideFast</entry>
-<entry><link linkend="hidefast">HideFast</link></entry>
+<entry>hideFast</entry>
+<entry><link linkend="wbdcoHideFast">hideFast</link>
+</entry>
 </row>
 <row>
 <entry>HScrollPos</entry>
@@ -347,7 +347,8 @@
 </row>
 <row>
 <entry>isVisible</entry>
-<entry><link linkend="mthIsVisible">isVisible</link></entry>
+<entry><link linkend="wbdcoIsVisible">isVisible</link>
+</entry>
 </row>
 <row>
 <entry>LoadBitmap</entry>
@@ -370,10 +371,6 @@
 <entry><link linkend="h000842">OpaqueText</link></entry>
 </row>
 <row>
-<entry>ProcessMessage</entry>
-<entry><link linkend="processmessage">ProcessMessage</link></entry>
-</row>
-<row>
 <entry>Rectangle</entry>
 <entry><link linkend="h001115">Rectangle</link></entry>
 </row>
@@ -382,8 +379,8 @@
 <entry><link linkend="redraw">Redraw</link></entry>
 </row>
 <row>
-<entry>RedrawClient</entry>
-<entry><link linkend="redrawclient">RedrawClient</link></entry>
+<entry>redrawClient</entry>
+<entry><link linkend="wbdcoRedrawClient">redrawClient</link></entry>
 </row>
 <row>
 <entry>RedrawRect</entry>
@@ -478,8 +475,8 @@
 </entry>
 </row>
 <row>
-<entry>ShowFast</entry>
-<entry><link linkend="showfast">ShowFast</link></entry>
+<entry>showFast</entry>
+<entry><link linkend="wbdcoShowfast">showFast</link></entry>
 </row>
 <row>
 <entry>TabStop</entry>
@@ -506,8 +503,8 @@
 <entry><link linkend="h000841">TransparentText</link></entry>
 </row>
 <row>
-<entry>Update</entry>
-<entry><link linkend="update">Update</link></entry>
+<entry>update</entry>
+<entry><link linkend="wbdcoUpdate">update</link></entry>
 </row>
 <row>
 <entry><link linkend="mthData">data</link></entry>
@@ -790,165 +787,13 @@ visibility, behavior, etc., of dialog controls.
 
 <section id="wbdcoShow"><title>show</title>
 <programlisting>
-<link linkend="mthShowClsWindowBase">show</link>
+WindowBase::<link linkend="mthShowClsWindowBase">show</link>
 
 <![CDATA[
 >>--show-------------------------------------------------------><
 
 ]]>
 </programlisting>
-</section>
-
-<section id="hide"><title>Hide</title>
-<indexterm><primary>Hide</primary>
-<secondary>DialogControl class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~Hide-----------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The Hide method makes a dialog or dialog control
-invisible and activates another dialog or dialog control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-
-<programlisting>
-<![CDATA[
-MyDialog~newEdit("NAME")~Hide
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="hidefast"><title>HideFast</title>
-<indexterm><primary>HideFast</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~HideFast-------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The HideFast method marks a dialog or dialog control
-as invisible but does not redraw it. Send the Update method (see page <link linkend="update">Update</link>) to the dialog or dialog control to force
-a redraw.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-<programlisting>
-<![CDATA[
-MyDialog~newEdit("NAME")~HideFast
-...
-MyDialog~Update
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="showfast"><title>ShowFast</title>
-<indexterm><primary>ShowFast</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~ShowFast-------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The ShowFast method marks a dialog or dialog control
-as visible but does not redraw it.  Send the Update method (see page <link linkend="update">Update</link>) to the dialog or dialog control to force
-a redraw.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-<programlisting>
-<![CDATA[
-MyDialog~newEdit("NAME")~ShowFast
-...
-MyDialog~Update
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="display"><title>Display</title>
-<indexterm><primary>Display</primary></indexterm>
-<programlisting>
-<![CDATA[
-
-                               +-NORMAL---+------+--+
-                               |          +-FAST-+  |
->>-aDialogControl~Display(--"--+-DEFAULT--+------+--+--"--)----><
-                               |          +-FAST-+  |
-                               +-HIDE-----+------+--+
-                               |          +-FAST-+  |
-                               +-INACTIVE-----------+
-
-
-]]>
-</programlisting>
-
-<para>The Display method displays (shows, makes visible, or invisible) a dialog
-control as specified.
-</para>
-<variablelist>
-<varlistentry><term>Argument:</term>
-<listitem><para>This argument can be one of the following keywords (case is not
-significant.)  If no argument is given, the default keyword is <computeroutput>
-NORMAL</computeroutput>:
-</para>
-<variablelist>
-<varlistentry><term>NORMAL</term>
-<listitem><para>Shows (makes visible) the dialog control. Same as calling the
-Show method (see page <link linkend="mthShowClsWindowBase">Show</link>).
-</para></listitem></varlistentry>
-<varlistentry><term>DEFAULT</term>
-<listitem><para>Default is an alias for <computeroutput>NORMAL</computeroutput>.
-The behavior is exactly the same for the two keywords.
-</para></listitem></varlistentry>
-<varlistentry><term>HIDE</term>
-<listitem><para>Hides (makes invisible) the dialog control.  Same as calling the
-Hide method (see page <link linkend="hide">Hide</link>).
-</para></listitem></varlistentry>
-<varlistentry><term>INACTIVE</term>
-<listitem><para>Displays (shows, makes visible,) the dialog control in its
-current state. The active dialog remains active.  When this method is invoked
-with the <computeroutput>NORMAL</computeroutput> keyword the dialog the control
-belongs to will be made the active window.  If instead the <computeroutput>
-INACTIVE</computeroutput> keyword is used, the active window will not be
-changed. (Obviously, if the dialog that the control belongs to is already the
-active window, the <computeroutput>INACTIVE</computeroutput> keyword behaves
-exactly the same as the <computeroutput>NORMAL</computeroutput> keyword.
-</para></listitem></varlistentry>
-</variablelist>
-<para>To each keyword, except the <computeroutput>INACTIVE</computeroutput>
-keyword, you can add <computeroutput>FAST</computeroutput>, separated by a
-blank, to suppress the redrawing of the dialog control.
-</para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following statement makes a tree control in the dialog
-visible without redrawing it.
-<programlisting>
-<![CDATA[
-MyDialog~newTreeView(IDC_TREECONTROL_FILES)~Display("NORMAL FAST")
-]]>
-</programlisting>
-
-This is usually done when there are a number of controls to make visible at one
-time.  The programmer would make them all visible without redrawing. Then use
-the <link linkend="update">Update</link> method to repaint everything at once.
-</para></listitem></varlistentry>
-</variablelist>
 </section>
 
 <section id="mthGroup"><title>Group</title>
@@ -1751,21 +1596,6 @@ MyDialog~newListBox("FILES")~SetColor(4, 15)
 </variablelist>
 </section>
 
-<section id="update"><title>Update</title>
-<indexterm><primary>Update</primary>
-<secondary>DialogControl class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~Update---------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The Update method makes the contents of the dialog
-or dialog control invalid and therefore forces it to be updated.</para>
-</section>
-
 <section id="title"><title>Title</title>
 <indexterm><primary>Title</primary></indexterm>
 <programlisting>
@@ -1860,7 +1690,7 @@ or dialog control. It is equal to <link linkend="mthTitleEquals">Title=</link>.<
   The following methods are general purpose dialog control methods.
 </para>
 
-<section id="wbdoSendMessage"><title>sendMessage</title>
+<section id="wbdcoSendMessage"><title>sendMessage</title>
 <programlisting>
 WindowBase::<link linkend="mthSendMessage">sendMessage</link>
 
@@ -1870,9 +1700,9 @@ WindowBase::<link linkend="mthSendMessage">sendMessage</link>
 </programlisting>
 </section>
 
-<section id="wbdoSendMessageHandle"><title>sendMessageHandle</title>
+<section id="wbdcoSendMessageHandle"><title>sendMessageHandle</title>
 <programlisting>
-<link linkend="mthSendMessageHandle">sendMessageHandle</link>
+WindowBase::<link linkend="mthSendMessageHandle">sendMessageHandle</link>
 
 <![CDATA[
 >>--sendMessageHandle(--id--,--msg--,--wParam--,--lParam--)----><
@@ -2600,32 +2430,6 @@ that shows whether hot keys are currently enabled or not.
 <para>The following methods are used to draw, redraw, and clear a dialog or dialog
 control.</para>
 
-<section id="draw"><title>Draw</title>
-<indexterm><primary>Draw</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~Draw-----------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The Draw method draws the dialog or dialog control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Drawing was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Drawing failed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="clear"><title>Clear</title>
 <indexterm><primary>Clear</primary></indexterm>
 <programlisting>
@@ -2768,42 +2572,6 @@ erased before repainting.
 </variablelist>
 </section>
 
-<section id="redrawclient"><title>RedrawClient</title>
-<indexterm><primary>RedrawClient</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~RedrawClient(--erasebkg--)-------------------><
-
-
-]]>
-</programlisting>
-
-<para>The RedrawClient method immediately redraws the
-entire client area of the dialog or dialog control. You can specify whether
-the background of the dialog or dialog control is to be erased before redrawing.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>erasebkg</term>
-<listitem><para>If you specify 1 or &quot;Y&quot;, the background of the dialog is erased
-before redrawing.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Redrawing was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Redrawing failed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 </section>
 
 <section id="conversionmeth"><title>Conversion Methods</title>
