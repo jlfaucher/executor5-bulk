@@ -96,6 +96,14 @@
 <entry>The vertical size of one dialog unit in pixels. (Inaccurate.)</entry>
 </row>
 <row>
+<entry><link linkend="wbdcoHwnd">hwnd</link></entry>
+<entry>The window handle of the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoInitCode">initCode</link></entry>
+<entry>Meaningless for a dialog control, it is always 0.</entry>
+</row>
+<row>
 <entry><link linkend="wbdcoSizeX">sizeX</link></entry>
 <entry>The width of the dialog control in dialog units. (Inaccurate.)</entry>
 </row>
@@ -110,14 +118,6 @@
 <row>
 <entry><link linkend="wbdcoPixelCY">pixelCY</link></entry>
 <entry>The height of the dialog control in pixels.</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoHwnd">hwnd</link></entry>
-<entry>The window handle of the dialog control.</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoInitCode">initCode</link></entry>
-<entry>Meaningless for a dialog control, it is always 0.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -204,20 +204,80 @@
 <entry><link linkend="h001017">DeleteObject</link></entry>
 </row>
 <row>
-<entry><link linkend="mthDisable">disable</link></entry>
-<entry>Disables the control.</entry>
-</row>
-<row>
 <entry>disconnectKeyPress</entry>
 <entry><link linkend="mthDisconnectKeyPressDialogControl">disconnectKeyPress</link></entry>
 </row>
 <row>
-<entry>Display</entry>
-<entry><link linkend="display">Display</link></entry>
+<entry><link linkend="wbdcoDisable">disable</link></entry>
+<entry>Disables the dialog control.</entry>
 </row>
 <row>
-<entry>draw</entry>
+<entry><link linkend="wbdcoEnable">enable</link></entry>
+<entry>Enables the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoIsVisible">isVisible</link></entry>
+<entry>Tests if the dialog control is visibl.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoIsEnabled">isEnabled</link></entry>
+<entry>Tests if the dialog control is enabled.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoShow">show</link></entry>
+<entry>Makes the dialog control visible if it was hidden and repaints it.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoHide">hide</link></entry>
+<entry>Makes the dialog control invisible and repaints it.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoShowfast">showFast</link></entry>
+<entry>Marks the dialog control as visible</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoHideFast">hideFast</link></entry>
+<entry>Marks the dialog control as invisible</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoDisplay">display</link></entry>
+<entry>Shows or hides the dialog control</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoUpdate">update</link></entry>
+<entry>Invalidates the entire client area of the dialog control.</entry>
+</row>
+<row>
 <entry><link linkend="wbdcoDraw">draw</link></entry>
+<entry>Redraws the entire client area of the dialog control immediately.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoRedrawClient">redrawClient</link></entry>
+<entry>Redraws the entire client area of the dialog control immediately.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetRealSize">getRealSize</link></entry>
+<entry>Returns the size of the dialog control in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetSize">getSize</link></entry>
+<entry>Returns the size of the dialog control in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetTextSizePx">getTextSizePx</link></entry>
+<entry>Returns the size needed to display the specified text in pixels (preferred method.)</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetTextSizeScreen">getTextSizeScreen</link></entry>
+<entry>Returns the size needed to display the specified text in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSendMessage">sendMessage</link></entry>
+<entry>Sends a Windows message to the underlying dialog control and returns its response as a whole number.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSendMessageHandle">sendMessageHandle</link></entry>
+<entry>Sends a Windows message to the underlying dialog control and returns its response as a handle.</entry>
 </row>
 <row>
 <entry>DrawAngleArc</entry>
@@ -238,10 +298,6 @@
 <row>
 <entry>DrawPixel</entry>
 <entry><link linkend="h001200">DrawPixel</link></entry>
-</row>
-<row>
-<entry>enable</entry>
-<entry><link linkend="mthEnable">enable</link></entry>
 </row>
 <row>
 <entry>FillDrawing</entry>
@@ -304,16 +360,8 @@
 <entry><link linkend="getrect">GetRect</link></entry>
 </row>
 <row>
-<entry><link linkend="mthGetSize">getSize</link></entry>
-<entry>Returns the size of the window <emphasis role="bold">(not accurate.)</emphasis></entry>
-</row>
-<row>
 <entry>getStyleRaw</entry>
 <entry><link linkend="mthGetStyleRaw">getStyleRaw</link></entry>
-</row>
-<row>
-<entry>getTextSizeScreen</entry>
-<entry><link linkend="mthGetTextSizeScreen">getTextSizeScreen</link></entry>
 </row>
 <row>
 <entry>Group</entry>
@@ -324,31 +372,12 @@
 <entry><link linkend="mthHasKeyPressConnectionDialogControl">hasKeyPressConnection</link></entry>
 </row>
 <row>
-<entry>hide</entry>
-<entry><link linkend="wbdcoHide">hide</link>
-</entry>
-</row>
-<row>
-<entry>hideFast</entry>
-<entry><link linkend="wbdcoHideFast">hideFast</link>
-</entry>
-</row>
-<row>
 <entry>HScrollPos</entry>
 <entry><link linkend="hscrollpos">HScrollPos</link></entry>
 </row>
 <row>
-<entry>isEnabled</entry>
-<entry><link linkend="mthIsEnabled">isEnabled</link></entry>
-</row>
-<row>
 <entry>isMouseButtonDown</entry>
 <entry><link linkend="ismousebuttondown">isMouseButtonDown</link></entry>
-</row>
-<row>
-<entry>isVisible</entry>
-<entry><link linkend="wbdcoIsVisible">isVisible</link>
-</entry>
 </row>
 <row>
 <entry>LoadBitmap</entry>
@@ -379,10 +408,6 @@
 <entry><link linkend="redraw">Redraw</link></entry>
 </row>
 <row>
-<entry>redrawClient</entry>
-<entry><link linkend="wbdcoRedrawClient">redrawClient</link></entry>
-</row>
-<row>
 <entry>RedrawRect</entry>
 <entry><link linkend="redrawrect">RedrawRect</link></entry>
 </row>
@@ -409,16 +434,6 @@
 <row>
 <entry>Scroll</entry>
 <entry><link linkend="scroll">Scroll</link></entry>
-</row>
-<row>
-<entry><link linkend="wbdcoSendMessage">sendMessage</link></entry>
-<entry>Sends a Windows message to the underlying window and returns its response as a whole number.
-</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoSendMessageHandle">sendMessageHandle</link></entry>
-<entry>Sends a Windows message to the underlying window and returns its response as a handle.
-</entry>
 </row>
 <row>
 <entry>SetArcDirection</entry>
@@ -469,16 +484,6 @@
 <entry><link linkend="settitle">SetTitle</link></entry>
 </row>
 <row>
-<entry><link linkend="wbdcoShow">show</link>
-</entry>
-<entry>Makes the dialog control visible if it was hidden.
-</entry>
-</row>
-<row>
-<entry>showFast</entry>
-<entry><link linkend="wbdcoShowfast">showFast</link></entry>
-</row>
-<row>
 <entry>TabStop</entry>
 <entry><link linkend="mthTabStop">TabStop</link></entry>
 </row>
@@ -501,10 +506,6 @@
 <row>
 <entry>TransparentText</entry>
 <entry><link linkend="h000841">TransparentText</link></entry>
-</row>
-<row>
-<entry>update</entry>
-<entry><link linkend="wbdcoUpdate">update</link></entry>
 </row>
 <row>
 <entry><link linkend="mthData">data</link></entry>
@@ -543,39 +544,6 @@
   This section describes the attributes of the dialog control object.
 </para>
 
-<section id="wbdcoFactorX"><title>factorX (Attribute)</title>
-<programlisting>
-WindowBase::<link linkend="atrFactorX">factorX</link>
-
->>--factorX-----------------------------------------------------><
-
->>--factorX-=-ratio---------------------------------------------><
-
-</programlisting>
-</section>
-
-<section id="wbdcoFactorY"><title>factorY (Attribute)</title>
-<programlisting>
-WindowBase::<link linkend="atrFactorY">factorY</link>
-
->>--factorY-----------------------------------------------------><
-
->>--factorY-=-ratio---------------------------------------------><
-
-</programlisting>
-</section>
-
-<section id="wbdcoHwnd"><title>hwnd</title>
-<programlisting>
-WindowBase::<link linkend="atrHwnd">hwnd</link>
-
-<![CDATA[
->>--hwnd-----------------------------------------------------><
-
-]]>
-</programlisting>
-</section>
-
 <section id="wbdcoInitCode"><title>initCode (Attribute)</title>
 <programlisting>
 WindowBase::<link linkend="atrInitCode">initCode</link>
@@ -589,22 +557,13 @@ WindowBase::<link linkend="atrInitCode">initCode</link>
 </programlisting>
 </section>
 
-<section id="wbdcoPixelCX"><title>pixelCX (Attribute)</title>
+<section id="wbdcoHwnd"><title>hwnd</title>
 <programlisting>
-WindowBase::<link linkend="atrPixelCX">pixelCX</link>
+WindowBase::<link linkend="atrHwnd">hwnd</link>
 
 <![CDATA[
->>--pixelCX-----------------------------------------------------><
-]]>
-</programlisting>
-</section>
+>>--hwnd-----------------------------------------------------><
 
-<section id="wbdcoPixelCY"><title>pixelCY (Attribute)</title>
-<programlisting>
-WindowBase::<link linkend="atrPixelCY">pixelCY</link>
-
-<![CDATA[
->>--pixelCY-----------------------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -633,6 +592,48 @@ WindowBase::<link linkend="atrSizeY">sizeY</link>
 </programlisting>
 </section>
 
+<section id="wbdcoFactorX"><title>factorX (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrFactorX">factorX</link>
+
+>>--factorX-----------------------------------------------------><
+
+>>--factorX-=-ratio---------------------------------------------><
+
+</programlisting>
+</section>
+
+<section id="wbdcoFactorY"><title>factorY (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrFactorY">factorY</link>
+
+>>--factorY-----------------------------------------------------><
+
+>>--factorY-=-ratio---------------------------------------------><
+
+</programlisting>
+</section>
+
+<section id="wbdcoPixelCX"><title>pixelCX (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrPixelCX">pixelCX</link>
+
+<![CDATA[
+>>--pixelCX-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoPixelCY"><title>pixelCY (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrPixelCY">pixelCY</link>
+
+<![CDATA[
+>>--pixelCY-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
 </section>  <!-- End Attributes Section -->
 
 <section id="sctWindowBaseDCO"><title>Basic Window Methods</title>
@@ -642,15 +643,26 @@ WindowBase::<link linkend="atrSizeY">sizeY</link>
   linkend="clsWindowBase">WindowBase</link> class is a mixin class that contains methods common to all windows. Since a
   dialog control is a window, it inherits the <emphasis role="italic">WindowBase</emphasis> class, the same as the <link
   linkend="chpDialogObject"></link> dialog object does. All <emphasis role="italic">WindowBase</emphasis> methods are
-  common to both dialogs and dialog controls. This section lists all the basic window methods for the dialog object.
+  common to both dialogs and dialog controls. This section lists all the basic window methods for the dialog control
+  object.
 </para>
 
-<section id="wbdcoDisable"><title>disable</title>
+<section id="wbdcoSendMessage"><title>sendMessage</title>
 <programlisting>
-WindowBase::<link linkend="mthDisable">disable</link>
+WindowBase::<link linkend="mthSendMessage">sendMessage</link>
 
 <![CDATA[
->>-disable-----------------------------------------------------><
+>>--sendMessage(--id--,--msg--,--wParam--,--lParam--)----------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoSendMessageHandle"><title>sendMessageHandle</title>
+<programlisting>
+WindowBase::<link linkend="mthSendMessageHandle">sendMessageHandle</link>
+
+<![CDATA[
+>>--sendMessageHandle(--id--,--msg--,--wParam--,--lParam--)----><
 ]]>
 </programlisting>
 </section>
@@ -665,12 +677,12 @@ WindowBase::<link linkend="mthEnable">enable</link>
 </programlisting>
 </section>
 
-<section id="wbdcoIsEnabled"><title>isEnabled</title>
+<section id="wbdcoDisable"><title>disable</title>
 <programlisting>
-WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
+WindowBase::<link linkend="mthDisable">disable</link>
 
 <![CDATA[
->>--isEnabled--------------------------------------------------><
+>>-disable-----------------------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -685,16 +697,95 @@ WindowBase::<link linkend="mthIsVisible">isVisible</link>
 </programlisting>
 </section>
 
-<section id="wbdcoGetSize"><title>getSize</title>
+<section id="wbdcoIsEnabled"><title>isEnabled</title>
 <programlisting>
-WindowBase::<link linkend="mthGetSize">getSize</link>
+WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
 
 <![CDATA[
->>--getSize----------------------------------------------------><
+>>--isEnabled--------------------------------------------------><
 ]]>
 </programlisting>
 </section>
 
+<section id="wbdcoShow"><title>show</title>
+<programlisting>
+WindowBase::<link linkend="mthShowClsWindowBase">show</link>
+
+<![CDATA[
+>>--show-------------------------------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoHide"><title>hide</title>
+<programlisting>
+WindowBase::<link linkend="mthHide">hide</link>
+
+<![CDATA[
+>>--hide-------------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoShowFast"><title>showFast</title>
+<programlisting>
+WindowBase::<link linkend="mthShowFast">showFast</link>
+
+<![CDATA[
+>>--showFast---------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoHideFast"><title>hideFast</title>
+<programlisting>
+WindowBase::<link linkend="mthHideFast">hideFast</link>
+
+<![CDATA[
+>>--hideFast---------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoDisplay"><title>display</title>
+<programlisting>
+WindowBase::<link linkend="mthDisplay">display</link>
+
+<![CDATA[
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoUpdate"><title>update</title>
+<programlisting>
+WindowBase::<link linkend="mthUpdate">update</link>
+
+<![CDATA[
+]]>
+</programlisting>
+</section>
+r
+<section id="wbdcoDraw"><title>draw</title>
+<programlisting>
+WindowBase::<link linkend="mthDraw">draw</link>
+
+<![CDATA[
+>>--draw-------------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoRedrawClient"><title>redrawClient</title>
+<programlisting>
+WindowBase::<link linkend="mthRedrawClient">redrawClient</link>
+
+<![CDATA[
+>>--redrawClient(--+------------+--)---------------------------><
+                   +--eraseBkg--+
+]]>
+</programlisting>
+</section>
 
 <section id="wbdcoGetTextSizePx"><title>getTextSizePx</title>
 <programlisting>
@@ -713,6 +804,26 @@ WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
 <![CDATA[
 >>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
                              +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoGetRealSize"><title>getRealSize</title>
+<programlisting>
+WindowBase::<link linkend="mthGetSize">getRealSize</link>
+
+<![CDATA[
+>>--getRealSize------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoGetSize"><title>getSize</title>
+<programlisting>
+WindowBase::<link linkend="mthGetSize">getSize</link>
+
+<![CDATA[
+>>--getSize----------------------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -784,17 +895,6 @@ WindowExtensions::<link linkend="mthCreateFontEx">createFontEx</link>
 dialog control. The list contains methods to get or change the size, position,
 visibility, behavior, etc., of dialog controls.
 </para>
-
-<section id="wbdcoShow"><title>show</title>
-<programlisting>
-WindowBase::<link linkend="mthShowClsWindowBase">show</link>
-
-<![CDATA[
->>--show-------------------------------------------------------><
-
-]]>
-</programlisting>
-</section>
 
 <section id="mthGroup"><title>Group</title>
 <indexterm><primary>SetGroup</primary></indexterm>
@@ -1689,26 +1789,6 @@ or dialog control. It is equal to <link linkend="mthTitleEquals">Title=</link>.<
 <para>
   The following methods are general purpose dialog control methods.
 </para>
-
-<section id="wbdcoSendMessage"><title>sendMessage</title>
-<programlisting>
-WindowBase::<link linkend="mthSendMessage">sendMessage</link>
-
-<![CDATA[
->>--sendMessage(--id--,--msg--,--wParam--,--lParam--)----------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdcoSendMessageHandle"><title>sendMessageHandle</title>
-<programlisting>
-WindowBase::<link linkend="mthSendMessageHandle">sendMessageHandle</link>
-
-<![CDATA[
->>--sendMessageHandle(--id--,--msg--,--wParam--,--lParam--)----><
-]]>
-</programlisting>
-</section>
 
 <section id="mthData"><title>data</title>
 <indexterm><primary>data method</primary></indexterm>

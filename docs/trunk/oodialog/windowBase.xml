@@ -51,116 +51,6 @@
   the <link linkend="clsWindow">Window</link> class inherits the WindowBase class.
 </para>
 
-
-<section id="atrfactorX"><title>factorX (Attribute)</title>
-<indexterm><primary>factorX</primary></indexterm>
-<indexterm><primary>WindowBase class</primary><secondary>factorX</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>factorX</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>factorX</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--factorX-----------------------------------------------------><
-
->>--factorX-=-ratio---------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  <emphasis role="italic">factorX</emphasis> was intended to be the horizontal size of one dialog unit, in pixels.
-  However, the value is not <link linkend="ovvInaccurate">correct</link> with modern dialogs, except under rare
-  circumstances.
-</para>
-<para>
-  To accurately convert between dialog units and pixels use the appropriate <link
-  linkend="mthDlgUnit2Pixel">dlgUnit2pixel</link>() or <link linkend="mthPixel2dlgUnit">pixel2dlgUnit</link>() method.
-</para>
-</section>  <!-- End WindowBase::factorX() [attribute]  -->
-
-<section id="atrfactorY"><title>factorY (Attribute)</title>
-<indexterm><primary>factorY</primary></indexterm>
-<indexterm><primary>WindowBase class</primary><secondary>factorY</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>factorY</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>factorY</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--factorY-----------------------------------------------------><
-
->>--factorY-=-ratio---------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  <emphasis role="italic">factorY</emphasis> was intended to be the vertical size of one dialog unit, in pixels.
-  However, the value is not <link linkend="ovvInaccurate">correct</link> with modern dialogs except under rare
-  circumstances.
-</para>
-<para>
-  To accurately convert between dialog units and pixels use the appropriate <link
-  linkend="mthDlgUnit2Pixel">dlgUnit2pixel</link>() or <link linkend="mthPixel2dlgUnit">pixel2dlgUnit</link>() method.
-</para>
-</section>  <!-- End WindowBase::factorX() [attribute]  -->
-
-<section id="atrHwnd"><title>hwnd (Attribute)</title>
-<indexterm><primary>hwnd</primary></indexterm>
-<indexterm><primary>WindowBase class</primary><secondary>hwnd</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>hwnd</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>hwnd</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--hwnd-----------------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The window <link linkend="defHandle">handle</link> of the underlying window.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">hwnd get:</emphasis></term>
-  <listitem>
-  <para>
-    Before the underlying dialog object is created, the <emphasis role="italic">hwnd</emphasis> attribute for a dialog
-    is not valid. Since dialog control objects can not be instantiated before the underlying controls is created, their
-    handles are always valid.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">hwnd set:</emphasis></term>
-  <listitem>
-  <para>
-    The programmer can not set the <emphasis role="italic">hwnd</emphasis> attribute, it is set internally by the
-    ooDialog framework.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-<programlisting>
-<![CDATA[
-
-::method inspectHandles private
-  okButton = self~newPushButton(IDOK)
-  cancelButton = self~newPushButton(IDCANCEL)
-
-  say "Window handeles:"
-  say "  ok button:    " okButton~hwnd
-  say "  cancel button:" cancelButton~hwnd
-
-/* Output might be:
-
-Window handeles:
-  ok button:     0x00180298
-  cancel button: 0x001A037A
-
-*/
-
-]]>
-</programlisting>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End WindowBase::hwnd() [attribute]  -->
-
-
 <section id="atrInitCode"><title>initCode (Attribute)</title>
 <indexterm><primary>initCode</primary></indexterm>
 <indexterm><primary>WindowBase class</primary><secondary>initCode</secondary></indexterm>
@@ -234,6 +124,219 @@ Window handeles:
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End WindowBase::initCode() [attribute]  -->
+
+<section id="atrHwnd"><title>hwnd (Attribute)</title>
+<indexterm><primary>hwnd</primary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>hwnd</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>hwnd</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>hwnd</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hwnd-----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The window <link linkend="defHandle">handle</link> of the underlying window.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">hwnd get:</emphasis></term>
+  <listitem>
+  <para>
+    Before the underlying dialog object is created, the <emphasis role="italic">hwnd</emphasis> attribute for a dialog
+    is not valid. Since dialog control objects can not be instantiated before the underlying controls is created, their
+    handles are always valid.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">hwnd set:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer can not set the <emphasis role="italic">hwnd</emphasis> attribute, it is set internally by the
+    ooDialog framework.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+<programlisting>
+<![CDATA[
+
+::method inspectHandles private
+  okButton = self~newPushButton(IDOK)
+  cancelButton = self~newPushButton(IDCANCEL)
+
+  say "Window handeles:"
+  say "  ok button:    " okButton~hwnd
+  say "  cancel button:" cancelButton~hwnd
+
+/* Output might be:
+
+Window handeles:
+  ok button:     0x00180298
+  cancel button: 0x001A037A
+
+*/
+
+]]>
+</programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowBase::hwnd() [attribute]  -->
+
+<section id="atrSizeX"><title>sizeX (Attribute)</title>
+<indexterm><primary>sizeX</primary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>sizeX</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sizeX-----------------------------------------------------><
+
+>>--sizeX-=-dialogUnits---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">sizeX</emphasis> attribute was intended to be the width of the window and <link
+  linkend="atrSizeY">sizeY</link> the height of the window in dialog <link linkend="defDialogUnit">units</link>.
+  However, in almost all cases, the value is not <link linkend="ovvInaccurate">correct.</link>
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    For a dialog control, <emphasis role="italic">sizeX</emphasis> and <link linkend="atrSizeY">sizeY</link> are
+    calculated using <link linkend="atrFactorX">factorX</link> and <link linkend="atrFactorY">factorY</link>, which
+    inherently makes them incorrect in almost all cases. <link linkend="clsUserDialog">User</link> dialogs and their
+    subclasses will have the correct values. However, the <emphasis role="italic">sizeX</emphasis> and <emphasis
+    role="italic">sizeY</emphasis> values in a <link linkend="clsResDialog">Resource</link> dialog are 0.
+  </para>
+  <para>
+    These attributes are set one time by the ooDialog framework and not changed by the framework again.
+  </para>
+  <para>
+    To obtain the correct width and height of a window in either pixels or dialog units, use the <link
+    linkend="atrPixelCX">pixelCX</link> and <link linkend="atrPixelCY">pixelCY</link> attributes. These valuse can be
+    correctly <link linkend="examplePixelCX">converted</link> to dialog units if dialog units are desired.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example displays the width and height of the ok button using <emphasis role="italic">sizeX</emphasis> and
+    <emphasis role="italic">sizeY</emphasis>. Contrast the output with the <link linkend="examplePixelCX">example</link>
+    for <emphasis role="italic">pixelCx</emphasis>.
+<programlisting>
+<![CDATA[
+
+::method defineDialog
+
+  self~createPushButton(IDOK, 142, 99, 50, 14, "DEFAULT", "Ok")
+  self~createPushButton(IDCANCEL, 197, 99, 50, 14, , "Cancel")
+
+::method ok unguarded
+
+  okButton = self~newPushButton(IDOK)
+
+  say 'The ok button was created' 50 'dialog units wide.'
+  say 'The ok button was created' 14 'dialog units high.'
+  say
+  say 'The pixel width of the button is: ' okButton~pixelCX
+  say 'The pixel height of the button is:' okButton~pixelCY
+  say
+  say 'Use sizeX and sizeY to display dialog units.'
+  say 'The dialog unit width of the button is: ' okButton~sizeX
+  say 'The dialog unit height of the button is:' okButton~sizeY
+
+  self~ok:super
+
+  /* Output might be:
+
+The ok button was created 50 dialog units wide.
+The ok button was created 14 dialog units high.
+
+The pixel width of the button is:  75
+The pixel height of the button is: 23
+
+Use sizeX and sizeY to display dialog units.
+The dialog unit width of the button is:  37
+The dialog unit height of the button is: 11
+  */
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowBase::sizeX() [attribute]  -->
+
+<section id="atrSizeY"><title>sizeY (Attribute)</title>
+<indexterm><primary>sizeY</primary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>sizeY</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sizeY-----------------------------------------------------><
+
+>>--sizeY-=-dialogUnits---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">sizeY</emphasis> attribute is the counterpart to the <emphasis
+  role="italic">sizeX</emphasis> attribute. The attribute was meant to be the height of the window in dialog <link
+  linkend="defDialogUnit">units</link>, but is not accurate. The documentation for <link linkend="atrSizeX">sizeX</link> has
+  a complete discussion of both attributes.
+</para>
+</section>  <!-- End WindowBase::sizeY() [attribute]  -->
+
+<section id="atrFactorX"><title>factorX (Attribute)</title>
+<indexterm><primary>factorX</primary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>factorX</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>factorX</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>factorX</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--factorX-----------------------------------------------------><
+
+>>--factorX-=-ratio---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  <emphasis role="italic">factorX</emphasis> was intended to be the horizontal size of one dialog unit, in pixels.
+  However, the value is not <link linkend="ovvInaccurate">correct</link> with modern dialogs, except under rare
+  circumstances.
+</para>
+<para>
+  To accurately convert between dialog units and pixels use the appropriate <link
+  linkend="mthDlgUnit2Pixel">dlgUnit2pixel</link>() or <link linkend="mthPixel2dlgUnit">pixel2dlgUnit</link>() method.
+</para>
+</section>  <!-- End WindowBase::factorX() [attribute]  -->
+
+<section id="atrFactorY"><title>factorY (Attribute)</title>
+<indexterm><primary>factorY</primary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>factorY</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>factorY</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>factorY</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--factorY-----------------------------------------------------><
+
+>>--factorY-=-ratio---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  <emphasis role="italic">factorY</emphasis> was intended to be the vertical size of one dialog unit, in pixels.
+  However, the value is not <link linkend="ovvInaccurate">correct</link> with modern dialogs except under rare
+  circumstances.
+</para>
+<para>
+  To accurately convert between dialog units and pixels use the appropriate <link
+  linkend="mthDlgUnit2Pixel">dlgUnit2pixel</link>() or <link linkend="mthPixel2dlgUnit">pixel2dlgUnit</link>() method.
+</para>
+</section>  <!-- End WindowBase::factorX() [attribute]  -->
 
 <section id="atrPixelCX"><title>pixelCX (Attribute)</title>
 <indexterm><primary>pixelCX</primary></indexterm>
@@ -388,110 +491,246 @@ The dialog unit height of the button is: 14
 </variablelist>
 </section>  <!-- End WindowBase::pixelCY() [attribute]  -->
 
-<section id="atrSizeX"><title>sizeX (Attribute)</title>
-<indexterm><primary>sizeX</primary></indexterm>
-<indexterm><primary>WindowBase class</primary><secondary>sizeX</secondary></indexterm>
+<section id="mthSendMessage"><title>sendMessage</title>
+<indexterm><primary>sendMessage</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>sendMessage</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>sendMessage</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>sendMessage</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--sizeX-----------------------------------------------------><
-
->>--sizeX-=-dialogUnits---------------------------------------><
+>>--sendMessage(--id--,--msg--,--wParam--,--lParam--)----------><
 
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">sizeX</emphasis> attribute was intended to be the width of the window and <link
-  linkend="atrSizeY">sizeY</link> the height of the window in dialog <link linkend="defDialogUnit">units</link>.
-  However, in almost all cases, the value is not <link linkend="ovvInaccurate">correct.</link>
+  Sends a Windows message to the underlying window this object represents and returns the response as a whole number.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+    <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+    <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    <para>
+      This method requires an <link linkend="ovvWindowsMessages">understanding</link> of Windows messages.
+    </para>
+    <para>
+      Using this method before the underlying dialog is created does nothing.
+    </para>
+    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    For a dialog control, <emphasis role="italic">sizeX</emphasis> and <link linkend="atrSizeY">sizeY</link> are
-    calculated using <link linkend="atrFactorX">factorX</link> and <link linkend="atrFactorY">factorY</link>, which
-    inherently makes them incorrect in almost all cases. <link linkend="clsUserDialog">User</link> dialogs and their
-    subclasses will have the correct values. However, the <emphasis role="italic">sizeX</emphasis> and <emphasis
-    role="italic">sizeY</emphasis> values in a <link linkend="clsResDialog">Resource</link> dialog are 0.
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>msg [required]</term>
+    <listitem>
+    <para>
+      The Windows message ID. This may be numeric or a string in <link linkend="defConventionalHex">conventional</link>
+      hexadecimal formt.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>wParam [required]</term>
+    <listitem>
+    <para>
+      The WPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>lParam [required]</term>
+    <listitem>
+    <para>
+      The LPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
   <para>
-    These attributes are set one time by the ooDialog framework and not changed by the framework again.
+    The underlying windows's response to the message, as a whole number.
   </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
   <para>
-    To obtain the correct width and height of a window in either pixels or dialog units, use the <link
-    linkend="atrPixelCX">pixelCX</link> and <link linkend="atrPixelCY">pixelCY</link> attributes. These valuse can be
-    correctly <link linkend="examplePixelCX">converted</link> to dialog units if dialog units are desired.
+    This method returns the response as a whole number. This will not be usable if the response is a window <link
+    linkend="defHandle">handle</link>. For those cases, use the <link
+    linkend="mthSendMessageHandle">sendMessageHandle</link>() method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example displays the width and height of the ok button using <emphasis role="italic">sizeX</emphasis> and
-    <emphasis role="italic">sizeY</emphasis>. Contrast the output with the <link linkend="examplePixelCX">example</link>
-    for <emphasis role="italic">pixelCx</emphasis>.
+    The following example causes the dialog to reposition itself that that it completely fits within the desktop area.
+    (The <link linkend="mthEnsureVisibleClsPlainBaseDialog">ensureVisible</link>() method does the same thing.)
+
 <programlisting>
 <![CDATA[
-
-::method defineDialog
-
-  self~createPushButton(IDOK, 142, 99, 50, 14, "DEFAULT", "Ok")
-  self~createPushButton(IDCANCEL, 197, 99, 50, 14, , "Cancel")
-
-::method ok unguarded
-
-  okButton = self~newPushButton(IDOK)
-
-  say 'The ok button was created' 50 'dialog units wide.'
-  say 'The ok button was created' 14 'dialog units high.'
-  say
-  say 'The pixel width of the button is: ' okButton~pixelCX
-  say 'The pixel height of the button is:' okButton~pixelCY
-  say
-  say 'Use sizeX and sizeY to display dialog units.'
-  say 'The dialog unit width of the button is: ' okButton~sizeX
-  say 'The dialog unit height of the button is:' okButton~sizeY
-
-  self~ok:super
-
-  /* Output might be:
-
-The ok button was created 50 dialog units wide.
-The ok button was created 14 dialog units high.
-
-The pixel width of the button is:  75
-The pixel height of the button is: 23
-
-Use sizeX and sizeY to display dialog units.
-The dialog unit width of the button is:  37
-The dialog unit height of the button is: 11
-  */
+MovableDialog~sendMessage"0x0402", 0, 0)
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End WindowBase::sizeX() [attribute]  -->
+</section>
 
-<section id="atrSizeY"><title>sizeY (Attribute)</title>
-<indexterm><primary>sizeY</primary></indexterm>
-<indexterm><primary>WindowBase class</primary><secondary>sizeY</secondary></indexterm>
+<section id="mthSendMessageHandle"><title>sendMessageHandle</title>
+<indexterm><primary>sendMessageHandle</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>sendMessage</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>sendMessage</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>sendMessage</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--sizeY-----------------------------------------------------><
-
->>--sizeY-=-dialogUnits---------------------------------------><
+>>--sendMessageHandle(--id--,--msg--,--wParam--,--lParam--)----><
 
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">sizeY</emphasis> attribute is the counterpart to the <emphasis
-  role="italic">sizeX</emphasis> attribute. The attribute was meant to be the height of the window in dialog <link
-  linkend="defDialogUnit">units</link>, but is not accurate. The documentation for <link linkend="atrSizeX">sizeX</link> has
-  a complete discussion of both attributes.
+  Sends a Windows message to the underlying window this object represents and
+  returns the response as a <link linkend="defHandle">handle</link>.
 </para>
-</section>  <!-- End WindowBase::sizeY() [attribute]  -->
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    This method requires an <link linkend="ovvWindowsMessages">understanding</link> of Windows messages.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>msg [required]</term>
+    <listitem>
+    <para>
+      The Windows message ID. This may be numeric or a string in <link linkend="defConventionalHex">conventional</link>
+      hexadecimal formt.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>wParam [required]</term>
+    <listitem>
+    <para>
+      The WPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>lParam [required]</term>
+    <listitem>
+    <para>
+      The LPARAM message parameter.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The underlying windows's response to the message, as a handle
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns the response as a handle. This will not be usable if the response is a whole number. For those
+    cases, use the <link linkend="mthSendMessage">sendMessage</link>() method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example sets a new <link linkend="defDialogIcon">application</link> icon. The old icon handle is saved
+    so it can be restored at some later point.
+
+<programlisting>
+<![CDATA[
+::method initDialog
+  expose oldIcon
+
+  oldIcon = .nil
+  ...
+
+::method swapIcon private
+  expose oldIcon
+  use strict arg iconID
+
+  loadFlags = .DlgUtil~or(.Image~toID(LR_DEFAULTSIZE), .Image~toID(LR_LOADFROMFILE))
+  customIcon = .Image~userIcon(self, IDI_SHAVEICE, .Size~new(0, 0), loadFlags)
+
+  if \ customIcon~isNull then do
+    oldIcon = self~sendMessageHandle("0x0080", 0, customIcon~handle)
+    return .true
+  end
+
+  return .false
+
+::method restoreAppState private
+  expose oldIcon
+
+  if oldIcon <> .nil then self~sendMessageHandle("0x0080", 0, oldIcon)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthEnable"><title>enable</title>
+<indexterm><primary>enable</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>enable</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>enable</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>enable</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--enable-----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">enable</emphasis>() method enables the window. When a window is enabled it receives all
+  user input, such as mouse clicks and key presses.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    True if the window was previously disabled, returns false if the window was not previously disabled. Note that this
+    is not succes or failure return.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem><para>
+<programlisting>
+<![CDATA[
+lastName = self~newEdit(IDC_EDIT_LASTNAME)~getText
+
+if self~isValidLastName(lastName) then self~newEdit(IDC_EDIT_FIRSTNAME)~enable
+
+]]>
+</programlisting>
+  </para></listitem></varlistentry>
+</variablelist>
+</section>
 
 <section id="mthDisable"><title>disable</title>
 <indexterm><primary>disable</primary></indexterm>
@@ -544,22 +783,20 @@ if self~isVisible then self~disable
 </variablelist>
 </section>
 
-
-<section id="mthEnable"><title>enable</title>
-<indexterm><primary>enable</primary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>enable</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>enable</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>enable</secondary></indexterm>
+<section id="mthIsVisible"><title>isVisible</title>
+<indexterm><primary>isVisible</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>isVisible</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>isVisible</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>isVisible</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--enable-----------------------------------------------------><
+>>--isVisible--------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">enable</emphasis>() method enables the window. When a window is enabled it receives all
-  user input, such as mouse clicks and key presses.
+  Tests if the window is visible.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -574,57 +811,549 @@ if self~isVisible then self~disable
     There are no arguments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    True if the window was previously disabled, returns false if the window was not previously disabled. Note that this
-    is not succes or failure return.
+    Returns true if the window is visible, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem><para>
+  <programlisting>
+  <![CDATA[
+  if \ self~isVisible then self~show
+  ]]>
+  </programlisting>
+  </para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthIsEnabled"><title>isEnabled</title>
+<indexterm><primary>isEnabled</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>isEnabled</secondary</indexterm>
+<indexterm><primary>dialog object</primary><secondary>isEnabled</secondary</indexterm>
+<indexterm><primary>dialog control object</primary><secondary>isEnabled</secondary</indexterm>
+<programlisting>
+<![CDATA[
+>>--isEnabled--------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Tests if the window is enabled
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns .true if the window is enabled, otherwise .false
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem><para>
 <programlisting>
 <![CDATA[
-lastName = self~newEdit(IDC_EDIT_LASTNAME)~getText
+::method toggleState private
 
-if self~isValidLastName(lastName) then self~newEdit(IDC_EDIT_FIRSTNAME)~enable
-
+listView = self~newListView(IDC_LV_NAMES)
+if listView~isEnabled then
+   listView~disable
+else
+   listView~enable
 ]]>
 </programlisting>
-  </para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-
-<section id="mthGetSize"><title>getSize</title>
-<indexterm><primary>getSize</primary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>getSize</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>getSize</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>getSize</secondary></indexterm>
+<section id="mthShowClsWindowBase"><title>show</title>
+<indexterm><primary>show</primary><secondary>dialog control</secondary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>show</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>show</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getSize----------------------------------------------------><
+>>--show-------------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">getSize</emphasis> method returns the width and height of the window in dialog units.
+  Makes the window visible in its normal size and position. For a dialog control window, this simply makes it visible,
+  if it was previously hidden. A dialog window is also activated, (given the focus for all intents and purposes,) and
+  restored from a minimized or maximized state if needed.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    The values returned by this method are usually <link linkend="ovvInaccurate">incorrect</link> because they are
-    calculated using <link linkend="atrFactorX">factorX</link> and <link linkend="atrFactorY">factorY</link>. The <link
-    linkend="mthGetRealSize">getRealSize</link>() method should be used instead.
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if the window was previously visible and false if the window was previously hidden.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example makes the button controls visible:
+
+<programlisting>
+<![CDATA[
+::method showButtons private
+
+  self~newPushbutton(IDC_PB_COMMIT)~show
+  self~newPushbutton(IDC_PB_SUBMIT)~show
+  self~newPushbutton(IDC_PB_REVERT)~show
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthHide"><title>hide</title>
+<indexterm><primary>hide</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>hide</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>hide</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>hide</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hide-------------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">hide</emphasis> method makes the window invisible and sets the focus to the next window in
+  the window order.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The method accepts no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True if the window was previously visible, false if the window was previously hidden.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+
+<programlisting>
+<![CDATA[
+  sefl~newEdit(IDC_EDIT_NAME)~hide
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthShowfast"><title>showFast</title>
+<indexterm><primary>showFast</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>showFast</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>showFast</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>showFast</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--showFast---------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Marks the window as visible but does not cause it to be redrawn.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The method accepts no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    0 for success, 1 on error. An error is extremely unlikely.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a window is marked visible, the operating system does not redraw the window until necessary. For example if the
+    window is covered by another window and then uncovered. There are several methods that the programmer can use to
+    cause a window to be redrawn, <link linkend="mthUpdate">update</link>), <link linkend="mthDraw">draw</link>, etc..
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+<programlisting>
+<![CDATA[
+::method showChoices private
+
+  self~newGroupBox(IDC_GB_CHOICES)~showFast
+  self~newRadioButton(IDC_RB_CHOICE1)~showFast
+  self~newRadioButton(IDC_RB_CHOICE2)~showFast
+  self~newRadioButton(IDC_RB_CHOICE3)~showFast
+  self~newRadioButton(IDC_RB_CHOICE4)~showFast
+  self~newRadioButton(IDC_RB_CHOICE5)~showFast
+  self~newRadioButton(IDC_RB_CHOICE6)~showFast
+  ...
+  self~update
+]]>
+  </programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthHideFast"><title>hideFast</title>
+<indexterm><primary>hideFast</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>hideFast</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>hideFast</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>hideFast</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hideFast---------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">hideFast</emphasis> method marks the window as invisible but does not cause it to be
+  redrawn.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The method accepts no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    0 for success, 1 on error. An error is extremely unlikely.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a window is marked invisible, the operating system will not draw or redraw the window. It will only draw or
+    redraw the area the window covered. For example if the window is part of another window's client area, and the
+    client area is redrawn, then the window marked as invisible is not drawn. There are several methods that
+    the programmer can use to cause a window to be redrawn, <link linkend="mthUpdate">update</link>), <link
+    linkend="mthDraw">draw</link>, etc..
   </para>
   <para>
-    This method can only be used after the <link linkend="ovvUnderlying">underlying Windows dialog</link> has been
-    created.
+    To restate this for clarity, when the window is marked invisible, having the window update or redraw itself will do
+    nothing. The window is hidden. Rather, the window beneath the hidden window must be redrawn. The consequence of this
+    is, if the window marked invisible is a dialog control, then having the dialog update or redraw itself works well.
+    However, if the window is a dialog, then it is the window beneath the dialog that must update. Normally the Rexx
+    programmer will not have a way to force that window to update, and therefore the <emphasis
+    role="italic">hideFast</emphasis> method does not work well for dialogs.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+<programlisting>
+<![CDATA[
+::method hideChoices private
+
+  self~newGroupBox(IDC_GB_CHOICES)~hideFast
+  self~newRadioButton(IDC_RB_CHOICE1)~hideFast
+  self~newRadioButton(IDC_RB_CHOICE2)~hideFast
+  self~newRadioButton(IDC_RB_CHOICE3)~hideFast
+  self~newRadioButton(IDC_RB_CHOICE4)~hideFast
+  self~newRadioButton(IDC_RB_CHOICE5)~hideFast
+  self~newRadioButton(IDC_RB_CHOICE6)~hideFast
+  ...
+  self~update
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthDisplay"><title>display</title>
+<indexterm><primary>display</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>display</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>display</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>display</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--display(--+------------+--)--------------------------------><
+              +--optString-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">display</emphasis> method displays (shows, makes visible, or invisible) the window as
+  specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
   </para>
   <para>
     Raises syntax errors for incorrect usage.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
+  <listitem>
+  <para>
+    The single, optional, <emphasis role="italic">optString</emphasis> argument can be zero or one of the following
+    keyword strings, case is not significant:
+  <variablelist>
+    <varlistentry><term>NORMAL</term>
+    <listitem>
+    <para>
+      Makes the window visible in its default position and window size. If the window is a dialog, this has the effect
+      of restoring the dialog size and position if it is minimized or maximized and giving it the focus. A dialog
+      control window is simply made visible, if it was hidden. This is the default if the argument is omitted. This is
+      exactly equivalent to the <link linkend="mthShowClsWindowBase">show</link> method.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>DEFAULT</term>
+    <listitem>
+    <para>
+      DEFAULT is an alias for NORMAL. The two keywords are functionally identical.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>HIDE</term>
+    <listitem>
+    <para>
+      Makes the window invisible. This is exactly equivalent to the <link linkend="mthHide">hide</link> method.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>NORMAL FAST</term>
+    <listitem>
+    <para>
+      Marks the window as visible, but does not force it to be redrawn. If the window is already marked as visible this
+      will have no effect. If the window is marked as invisible, then the next time the operating systme draws the
+      window it will become visible. Note that this is subtly different than using just NORMAL with a dialog window. If
+      the dialog is minimized or maximized, it is not restored. In addition, it is not given the focus. This is exactly
+      equivalent to the <link linkend="mthShowfast">showFast</link> method.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>DEFAULT FAST</term>
+    <listitem>
+    <para>
+      Same as using the NORMAL FAST option string.
+    </para>
+    </listitem></varlistentry>
+    </listitem></varlistentry>
+    <varlistentry><term>HIDE FAST</term>
+    <listitem>
+    <para>
+      Marks the window as invisible, but does not force it to be redrawn. If the window is already marked as invisible
+      this will have no effect. If the window is marked as visible, then the next time the operating system draws the
+      window it will become visible. Note that this is subtly different than using just NORMAL with a dialog window. If
+      the dialog is minimized or maximized, it is not restored. In addition, it is not given the focus. This is exactly
+      equivalent to the <link linkend="mthShowfast">showFast</link> method.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>INACTIVE</term>
+    <listitem>
+    <para>
+      This is the same as using the NORMAL option string, except that if the window is a dialog window it is not given
+      the focus. In other words, for a dialog, if some other top-level window has the focus, the focus remains with that
+      window. For a dialog control window there is no difference between INACTIVE and NORMAL. <emphasis
+      role="bold">Note</emphasis> that INACTIVE FAST is <emphasis role="bold">not</emphasis> valid.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    When FAST is not in the option string, returns true if the window was previously visible and false if the window was
+    previously hidden.
+  </para>
+  <para>
+    When FAST is in the option string, returns 0 for success, 1 on error. An error is extremely unlikely.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When using the HIDE FAST options string, there are a number of caveats that may not be readily apparent. See the
+    <emphasis role="bold">Remarks</emphasis> section in the <link linkend="mthHideFast">hideFast</link> section for a
+    discussion of them.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following statement makes a tree view control in the dialog visible without redrawing it.
+
+<programlisting>
+<![CDATA[
+self~newTreeView(IDC_TREECONTROL_FILES)~display("NORMAL FAST")
+]]>
+</programlisting>
+
+    This is usually done when there are a number of controls to make visible at one time.  The programmer would make
+    them all visible without redrawing. Then use the <link linkend="mthUpdate">update</link> method to schedule
+    repainting everything at once.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthUpdate"><title>update</title>
+<indexterm><primary>update</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>update</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>update</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>update</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--update-----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">update</emphasis> method causes the entire <link linkend="defClientArea">client
+  area</link> of the window to be invalidated and the background erased. This method is similar to both the <link
+  linkend="mthRedrawClient">redrawClient</link> and <link linkend="mthDraw">draw</link> methods except that the window
+  is, potentially, not repainted immediately.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      The invalidation was successful.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Invalidation failed. Check <computeroutput>.SystemErrorCode</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Invalidating an area of a window, in this case the entire client area, will cause that area to be repainted at some
+    point in the future. When an area of a window is invalid, the operating system will send a message to the window to
+    repaint that area, <emphasis role="italic">when there are no other messages</emphasis> in the window's message
+    queue. In effect, the area invalidated is <emphasis role="italic">scheduled</emphasis> to be redrawn when the window
+    is no longer busy.
+  </para>
+  <para>
+    Scheduling a window to redraw its client area has no effect if the window itself is hidden, there is nothing to
+    draw. On the other hand, if a window, such as a dialog window, contains hidden windows that are still showing, then
+    having it redraw has the effect of erasing the hidden windows, <emphasis role="italic">provided</emphasis> that the
+    background is first erased.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthDraw"><title>draw</title>
+<indexterm><primary>draw</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>draw</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>draw</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>draw</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--draw-------------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The draw method casuses the entire <link linkend="defClientArea">client area</link> of the window to be immemdiately
+  repainted. It is exactly the same as the <link linkend="mthRedrawClient">redrawClient</link> method, except that the
+  background is never erased.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -636,12 +1365,109 @@ if self~isValidLastName(lastName) then self~newEdit(IDC_EDIT_FIRSTNAME)~enable
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    A string with the width and height of the window, separated by a blank.
+    The return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Redrawing was successful.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Redrawing failed. Check <computeroutput>.SystemErrorCode</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Having a window redraw its client area has no effect if the window itself is hidden, there is nothing to draw. On
+    the other hand, if a window, such as a dialog window, contains hidden windows that are still showing, then having it
+    redraw has the effect of erasing the hidden windows, <emphasis role="italic">provided</emphasis> that the background
+    is first erased.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
 
+<section id="mthRedrawClient"><title>redrawClient</title>
+<indexterm><primary>redrawClient</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>redrawClient</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>redrawClient</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>redrawClient</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--redrawClient(--+------------+--)---------------------------><
+                   +--eraseBkg--+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">redrawClient</emphasis> method causes the entire <link linkend="defClientArea">client
+  area</link> of the window to be redrawn.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>eraseBkg [optional]</term>
+    <listitem>
+    <para>
+      Whether the background of the window should be erased before redrawing. If you specify this argument and it is
+      true or &quot;Y&quot;, the background of the dialog is erased before redrawing. The default if the argument is
+      omitted is false.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Redrawing was successful.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Redrawing failed. Check <computeroutput>.SystemErrorCode</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Having a window redraw its client area has no effect if the window itself is hidden, there is nothing to draw. On
+    the other hand, if a window, such as a dialog window, contains hidden windows that are still showing, then having it
+    redraw has the effect of erasing the hidden windows, <emphasis role="italic">provided</emphasis> that the background
+    is first erased.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
 
 <section id="mthGetTextSizePx"><title>getTextSizePx</title>
 <indexterm><primary>getTextSizePx</primary></indexterm>
@@ -832,448 +1658,100 @@ stFont2~setRect(r)
 </variablelist>
 </section>  <!-- End WindowsBase::getTextSizeScreen() -->
 
-
-<section id="mthIsEnabled"><title>isEnabled</title>
-<indexterm><primary>isEnabled</primary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>isEnabled</secondary</indexterm>
-<indexterm><primary>dialog object</primary><secondary>isEnabled</secondary</indexterm>
-<indexterm><primary>dialog control object</primary><secondary>isEnabled</secondary</indexterm>
+<section id="mthGetRealSize"><title>getRealSize</title>
+<indexterm><primary>getRealSize</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>getRealSize</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getRealSize</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getRealSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isEnabled--------------------------------------------------><
+>>--getRealSize------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Tests if the window is enabled
+  xx
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Using this method before the underlying dialog is created does nothing.
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    xx
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    There are no arguments.
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns .true if the window is enabled, otherwise .false
+    xx
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem><para>
-<programlisting>
-<![CDATA[
-::method toggleState private
-
-listView = self~newListView(IDC_LV_NAMES)
-if listView~isEnabled then
-   listView~disable
-else
-   listView~enable
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-
-<section id="mthIsVisible"><title>isVisible</title>
-<indexterm><primary>isVisible</primary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>isVisible</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>isVisible</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>isVisible</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--isVisible--------------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Tests if the window is visible.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Using this method before the underlying dialog is created does nothing.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    There are no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns true if the window is visible, otherwise false.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem><para>
-  <programlisting>
-  <![CDATA[
-  if \ self~isVisible then self~show
-  ]]>
-  </programlisting>
+    Additional comments.
   </para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthShowClsWindowBase"><title>show</title>
-<indexterm><primary>show</primary><secondary>dialog control</secondary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>show</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>show</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--show-------------------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Makes the window visible if it was previously hidden. If the window is a top-level window it is also activated,
-  (given the focus for all intents and purposes.)
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Using this method before the underlying dialog is created does nothing.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    There are no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns true if the window was previously visible and false if the window was previously hidden.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example makes the button controls visible:
-
+    This example ...
 <programlisting>
 <![CDATA[
-::method showButtons private
-
-  self~newPushbutton(IDC_PB_COMMIT)~show
-  self~newPushbutton(IDC_PB_SUBMIT)~show
-  self~newPushbutton(IDC_PB_REVERT)~show
 
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End WindowBase::getRealSize() -->
 
-<section id="mthHide"><title>hide</title>
-<indexterm><primary>hide</primary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>hide</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>hide</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>hide</secondary></indexterm>
+<section id="mthGetSize"><title>getSize</title>
+<indexterm><primary>getSize</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>getSize</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getSize</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--hide-------------------------------------------------------><
+>>--getSize----------------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">hide</emphasis> method makes the window invisible and sets the focus to the next window in
-  the window order.
+  The <emphasis role="italic">getSize</emphasis> method returns the width and height of the window in dialog units.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Using this method before the underlying dialog is created does nothing.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The method accepts no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    True if the window was previously visible, false if the window was previously hidden.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-
-<programlisting>
-<![CDATA[
-  sefl~newEdit(IDC_EDIT_NAME)~hide
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthShowfast"><title>showFast</title>
-<indexterm><primary>showFast</primary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>showFast</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>showFast</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>showFast</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--showFast---------------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Marks the window as visible but does not cause it to be redrawn.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Using this method before the underlying dialog is created does nothing.
-  </para>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The method accepts no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    True if the window was previously visible, false if the window was previously hidden.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    When a window is marked invisible, the operating system does not redraw the window until necessary. For example if
-    the window is covered by another window and then uncovered. There are several methods that the programmer can use to
-    cause a window to be redrawn, <link linkend="mthUpdate">update</link>), <link linkend="mthDraw">draw</link>, etc..
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-<programlisting>
-<![CDATA[
-::method showChoices private
-
-  self~newGroupBox(IDC_GB_CHOICES)~showFast
-  self~newRadioButton(IDC_RB_CHOICE1)~showFast
-  self~newRadioButton(IDC_RB_CHOICE2)~showFast
-  self~newRadioButton(IDC_RB_CHOICE3)~showFast
-  self~newRadioButton(IDC_RB_CHOICE4)~showFast
-  self~newRadioButton(IDC_RB_CHOICE5)~showFast
-  self~newRadioButton(IDC_RB_CHOICE6)~showFast
-  ...
-  self~update
-]]>
-  </programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthHideFast"><title>hideFast</title>
-<indexterm><primary>hideFast</primary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>hideFast</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>hideFast</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>hideFast</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-hideFast----------------------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">hideFast</emphasis> method marks the window as invisible but does not cause it to be
-  redrawn.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Using this method before the underlying dialog is created does nothing.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The method accepts no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    True if the window was previously visible, false if the window was previously hidden.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    When a window is marked invisible, the operating system does not redraw the window until necessary. For example if
-    the window is covered by another window and then uncovered. There are several methods that the programmer can use to
-    cause a window to be redrawn, <link linkend="mthUpdate">update</link>), <link linkend="mthDraw">draw</link>, etc..
+    The values returned by this method are usually <link linkend="ovvInaccurate">incorrect</link> because they are
+    calculated using <link linkend="atrFactorX">factorX</link> and <link linkend="atrFactorY">factorY</link>. The <link
+    linkend="mthGetRealSize">getRealSize</link>() method should be used with the <link
+    linkend="mthPixel2DlgUnit">pixel2dlgUnit</link> method instead.
   </para>
   <para>
-    Be aware through that when the window is marked invisible, having the window update or redraw itself will do
-    nothing. The window is hidden. Rather, the window beneath the hidden window must be redrawn. The consequence of this
-    is, if the window marked invisible is a dialog control, then having the dialog update or redraw itself works well.
-    However, if the window is a dialog, then it is the window beneath the dialog that must update. Normally the Rexx
-    programmer will not have a way to force that window to update, and therefore the <emphasis
-    role="italic">hideFast</emphasis> method does not work well for dialogs.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-<programlisting>
-<![CDATA[
-::method hideChoices private
-
-  self~newGroupBox(IDC_GB_CHOICES)~hideFast
-  self~newRadioButton(IDC_RB_CHOICE1)~hideFast
-  self~newRadioButton(IDC_RB_CHOICE2)~hideFast
-  self~newRadioButton(IDC_RB_CHOICE3)~hideFast
-  self~newRadioButton(IDC_RB_CHOICE4)~hideFast
-  self~newRadioButton(IDC_RB_CHOICE5)~hideFast
-  self~newRadioButton(IDC_RB_CHOICE6)~hideFast
-  ...
-  self~update
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthRedrawClient"><title>redrawClient</title>
-<indexterm><primary>redrawClient</primary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>redrawClient</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>redrawClient</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>redrawClient</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~redrawClient(--+------------+--)-------------><
-                                 +--eraseBkg--+
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">redrawClient</emphasis> method causes the entire <link
-  linkend="defClientArea">client area</link> of the window to be redrawn.
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Using this method before the underlying dialog is created does nothing.
+    This method can only be used after the <link linkend="ovvUnderlying">underlying Windows dialog</link> has been
+    created.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The only argument is:
-  <variablelist>
-    <varlistentry><term>eraseBkg [optional]</term>
-    <listitem>
-    <para>
-      Whether the background of the window should be erased before redrawing. If you specify this argument and it is
-      true or &quot;Y&quot;, the background of the dialog is erased before redrawing. The default if the argument is
-      omitted is false.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The return values are:
-  <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      Redrawing was successful.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>1</term>
-    <listitem>
-    <para>
-      Redrawing failed. Check <computeroutput>.SystemErrorCode</computeroutput>.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Having a window redraw its client area has no effect if the window itself is hidden, there is nothing to draw. On
-    the other hand, if a window, such as a dialog window, contains hidden windows that are still showing, then having it
-    redraw has the effect of erasing the hidden windows, <emphasis role="italic">provided</emphasis> that the background
-    is first erased.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthDraw"><title>draw</title>
-<indexterm><primary>draw</primary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>draw</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>draw</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>draw</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--draw-------------------------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>
-  The draw method casuses the <link linkend="defClientArea">client area</link> of the window to be immemdiately
-  repainted. It is very similar to the <link linkend="mthRedrawClient">redrawClient</link> method, except that the
-  backgroung is never erased.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Using this method before the underlying dialog is created does nothing.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Raises syntax errors for incorrect usage.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1285,321 +1763,7 @@ else
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The return values are:
-  <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      Redrawing was successful.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>1</term>
-    <listitem>
-    <para>
-      Redrawing failed. Check <computeroutput>.SystemErrorCode</computeroutput>.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Having a window redraw its client area has no effect if the window itself is hidden, there is nothing to draw. On
-    the other hand, if a window, such as a dialog window, contains hidden windows that are still showing, then having it
-    redraw has the effect of erasing the hidden windows, <emphasis role="italic">provided</emphasis> that the background
-    is first erased.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthUpdate"><title>update</title>
-<indexterm><primary>update</primary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>update</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>update</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>update</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~Update---------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The update method makes the contents of the dialog
-or dialog control invalid and therefore forces it to be updated.</para>
-</section>
-
-<section id="display"><title>Display</title>
-<indexterm><primary>display</primary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>display</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>display</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>display</secondary></indexterm>
-<programlisting>
-<![CDATA[
-
-                               +-NORMAL---+------+--+
-                               |          +-FAST-+  |
->>-aDialogControl~Display(--"--+-DEFAULT--+------+--+--"--)----><
-                               |          +-FAST-+  |
-                               +-HIDE-----+------+--+
-                               |          +-FAST-+  |
-                               +-INACTIVE-----------+
-
-
-]]>
-</programlisting>
-
-<para>The Display method displays (shows, makes visible, or invisible) a dialog
-control as specified.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Using this method before the underlying dialog is created does nothing.
-  </para>
-  <para>
-    Raises syntax errors for incorrect usage.
-  </para>
-  </listitem></varlistentry>
-<varlistentry><term>Argument:</term>
-<listitem><para>This argument can be one of the following keywords (case is not
-significant.)  If no argument is given, the default keyword is <computeroutput>
-NORMAL</computeroutput>:
-</para>
-<variablelist>
-<varlistentry><term>NORMAL</term>
-<listitem><para>Shows (makes visible) the dialog control. Same as calling the
-Show method (see page <link linkend="mthShowClsWindowBase">Show</link>).
-</para></listitem></varlistentry>
-<varlistentry><term>DEFAULT</term>
-<listitem><para>Default is an alias for <computeroutput>NORMAL</computeroutput>.
-The behavior is exactly the same for the two keywords.
-</para></listitem></varlistentry>
-<varlistentry><term>HIDE</term>
-<listitem><para>Hides (makes invisible) the dialog control.  Same as calling the
-hide method (see page <link linkend="mthHide">hide</link>).
-</para></listitem></varlistentry>
-<varlistentry><term>INACTIVE</term>
-<listitem><para>Displays (shows, makes visible,) the dialog control in its
-current state. The active dialog remains active.  When this method is invoked
-with the <computeroutput>NORMAL</computeroutput> keyword the dialog the control
-belongs to will be made the active window.  If instead the <computeroutput>
-INACTIVE</computeroutput> keyword is used, the active window will not be
-changed. (Obviously, if the dialog that the control belongs to is already the
-active window, the <computeroutput>INACTIVE</computeroutput> keyword behaves
-exactly the same as the <computeroutput>NORMAL</computeroutput> keyword.
-</para></listitem></varlistentry>
-</variablelist>
-<para>To each keyword, except the <computeroutput>INACTIVE</computeroutput>
-keyword, you can add <computeroutput>FAST</computeroutput>, separated by a
-blank, to suppress the redrawing of the dialog control.
-</para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following statement makes a tree control in the dialog
-visible without redrawing it.
-<programlisting>
-<![CDATA[
-MyDialog~newTreeView(IDC_TREECONTROL_FILES)~Display("NORMAL FAST")
-]]>
-</programlisting>
-
-This is usually done when there are a number of controls to make visible at one
-time.  The programmer would make them all visible without redrawing. Then use
-the <link linkend="mthUpdate">update</link> method to repaint everything at once.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthSendMessage"><title>sendMessage</title>
-<indexterm><primary>sendMessage</primary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>sendMessage</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>sendMessage</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>sendMessage</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--sendMessage(--id--,--msg--,--wParam--,--lParam--)----------><
-
-]]>
-</programlisting>
-
-<para>
-  Sends a Windows message to the underlying window this object represents and returns the response as a whole number.
-</para>
-<variablelist>
-    <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-    <listitem>
-    <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-    </para>
-    <para>
-      This method requires an <link linkend="ovvWindowsMessages">understanding</link> of Windows messages.
-    </para>
-    <para>
-      Using this method before the underlying dialog is created does nothing.
-    </para>
-    </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  <variablelist>
-    <varlistentry><term>msg [required]</term>
-    <listitem>
-    <para>
-      The Windows message ID. This may be numeric or a string in <link linkend="defConventionalHex">conventional</link>
-      hexadecimal formt.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>wParam [required]</term>
-    <listitem>
-    <para>
-      The WPARAM message parameter.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>lParam [required]</term>
-    <listitem>
-    <para>
-      The LPARAM message parameter.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The underlying windows's response to the message, as a whole number.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    This method returns the response as a whole number. This will not be usable if the response is a window <link
-    linkend="defHandle">handle</link>. For those cases, use the <link
-    linkend="mthSendMessageHandle">sendMessageHandle</link>() method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example causes the dialog to reposition itself that that it completely fits within the desktop area.
-    (The <link linkend="mthEnsureVisibleClsPlainBaseDialog">ensureVisible</link>() method does the same thing.)
-
-<programlisting>
-<![CDATA[
-MovableDialog~sendMessage"0x0402", 0, 0)
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthSendMessageHandle"><title>sendMessageHandle</title>
-<indexterm><primary>sendMessageHandle</primary></indexterm>
-<indexterm><primary>WindowBase</primary><secondary>sendMessage</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>sendMessage</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>sendMessage</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--sendMessageHandle(--id--,--msg--,--wParam--,--lParam--)----><
-
-]]>
-</programlisting>
-
-<para>
-  Sends a Windows message to the underlying window this object represents and
-  returns the response as a <link linkend="defHandle">handle</link>.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  <para>
-    This method requires an <link linkend="ovvWindowsMessages">understanding</link> of Windows messages.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  <variablelist>
-    <varlistentry><term>msg [required]</term>
-    <listitem>
-    <para>
-      The Windows message ID. This may be numeric or a string in <link linkend="defConventionalHex">conventional</link>
-      hexadecimal formt.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>wParam [required]</term>
-    <listitem>
-    <para>
-      The WPARAM message parameter.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>lParam [required]</term>
-    <listitem>
-    <para>
-      The LPARAM message parameter.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The underlying windows's response to the message, as a handle
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    This method returns the response as a handle. This will not be usable if the response is a whole number. For those
-    cases, use the <link linkend="mthSendMessage">sendMessage</link>() method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example sets a new <link linkend="defDialogIcon">application</link> icon. The old icon handle is saved
-    so it can be restored at some later point.
-
-<programlisting>
-<![CDATA[
-::method initDialog
-  expose oldIcon
-
-  oldIcon = .nil
-  ...
-
-::method swapIcon private
-  expose oldIcon
-  use strict arg iconID
-
-  loadFlags = .DlgUtil~or(.Image~toID(LR_DEFAULTSIZE), .Image~toID(LR_LOADFROMFILE))
-  customIcon = .Image~userIcon(self, IDI_SHAVEICE, .Size~new(0, 0), loadFlags)
-
-  if \ customIcon~isNull then do
-    oldIcon = self~sendMessageHandle("0x0080", 0, customIcon~handle)
-    return .true
-  end
-
-  return .false
-
-::method restoreAppState private
-  expose oldIcon
-
-  if oldIcon <> .nil then self~sendMessageHandle("0x0080", 0, oldIcon)
-
-]]>
-</programlisting>
+    A string with the width and height of the window, separated by a blank.
   </para>
   </listitem></varlistentry>
 </variablelist>

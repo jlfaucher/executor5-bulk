@@ -457,8 +457,72 @@
 <entry><link linkend="detersb">DetermineSBPosition</link></entry>
 </row>
 <row>
-<entry><link linkend="mthDisable">disable</link></entry>
+<entry><link linkend="wbdoEnable">enable</link></entry>
+<entry>Enables the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoDisable">disable</link></entry>
 <entry>Disables the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsVisible">isVisible</link></entry>
+<entry>Tests if the dialog is visible.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsEnabled">isEnabled</link></entry>
+<entry>Tests if the dialog is enabled.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoHide">hide</link></entry>
+<entry>Makes the dialog invisible and repaints it.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoShowfast">showFast</link></entry>
+<entry>Marks the dialog as visible.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoHideFast">hideFast</link></entry>
+<entry>Marks the dialog as invisible</entry>
+</row>
+<row>
+<entry><link linkend="wbdoDisplay">display</link></entry>
+<entry>Shows or hides the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoUpdate">update</link></entry>
+<entry>Invalidates the entire client area of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoDraw">draw</link></entry>
+<entry>Redraws the entire client area of the dialog immediately.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoRedrawClient">redrawClient</link></entry>
+<entry>Redraws the entire client area of the dialog immediately.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoGetTextSizePx">getTextSizePx</link></entry>
+<entry>Calculates the size needed for a string in pixels <emphasis role="bold">(preferred method.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbdoGetTextSizeScreen">getTextSizeScreen</link></entry>
+<entry>Calculates the size needed for a string in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoGetRealSize">getRealSize</link></entry>
+<entry>Returns the size of the window in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoGetSize">getSize</link></entry>
+<entry>Returns the size of the window in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbdoSendMessage">sendMessage</link></entry>
+<entry>Sends a Windows message to the underlying window and returns its response as a whole number.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoSendMessageHandle">sendMessageHandle</link></entry>
+<entry>Sends a Windows message to the underlying window and returns its response as a handle.</entry>
 </row>
 <row>
 <entry>DisableItem</entry>
@@ -471,14 +535,6 @@
 <row>
 <entry>DisplaceBitmap</entry>
 <entry><link linkend="h000726">DisplaceBitmap</link></entry>
-</row>
-<row>
-<entry>Display</entry>
-<entry><link linkend="display">Display</link></entry>
-</row>
-<row>
-<entry>draw</entry>
-<entry><link linkend="wbdoDraw">draw</link></entry>
 </row>
 <row>
 <entry>DrawAngleArc</entry>
@@ -511,10 +567,6 @@
 <row>
 <entry>Dump</entry>
 <entry><link linkend="dumpdialog">Dump</link></entry>
-</row>
-<row>
-<entry>enable</entry>
-<entry><link linkend="mthEnable">enable</link></entry>
 </row>
 <row>
 <entry>EnableItem</entry>
@@ -732,10 +784,6 @@
 <entry>Returns the window handle of the dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetSize">getSize</link></entry>
-<entry>Returns the size of the window <emphasis role="bold">(not accurate.)</emphasis></entry>
-</row>
-<row>
 <entry>getStyleRaw</entry>
 <entry><link linkend="mthGetStyleRaw">getStyleRaw</link></entry>
 </row>
@@ -749,14 +797,6 @@
   Calculates the size needed to display a string in dialog units <emphasis role="bold">(preferred
   method.)</emphasis>
 </entry>
-</row>
-<row>
-<entry><link linkend="mthGetTextSizePx">getTextSizePx</link></entry>
-<entry>Calculates the size needed for a string in pixels <emphasis role="bold">(preferred method.)</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="mthGetTextSizeScreen">getTextSizeScreen</link></entry>
-<entry>Calculates the size needed for a string in pixels.</entry>
 </row>
 <row>
 <entry>getControlData</entry>
@@ -785,15 +825,6 @@
 <row>
 <entry>Help</entry>
 <entry><link linkend="mthHelp">Help</link></entry>
-</row>
-<row>
-<entry>hide</entry>
-<entry><link linkend="wbdoHide">hide</link>
-</entry>
-</row>
-<row>
-<entry>hideFast</entry>
-<entry><link linkend="wbdoHideFast">hideFast</link></entry>
 </row>
 <row>
 <entry>HideItem</entry>
@@ -840,20 +871,12 @@
 <entry><link linkend="h000721">IsDialogActive</link></entry>
 </row>
 <row>
-<entry>isEnabled</entry>
-<entry><link linkend="mthIsEnabled">isEnabled</link></entry>
-</row>
-<row>
 <entry>IsMaximized</entry>
 <entry><link linkend="mthIsMaximized">IsMaximized</link></entry>
 </row>
 <row>
 <entry>IsMinimized</entry>
 <entry><link linkend="mthIsMinimized">IsMinimized</link></entry>
-</row>
-<row>
-<entry>isVisible</entry>
-<entry><link linkend="mthIsVisible">isVisible</link></entry>
 </row>
 <row>
 <entry><link linkend="mthGetControlText">getControlText</link></entry>
@@ -988,10 +1011,6 @@
 <entry><link linkend="redraw">Redraw</link></entry>
 </row>
 <row>
-<entry>redrawClient</entry>
-<entry><link linkend="wbdoRedrawClient">redrawClient</link></entry>
-</row>
-<row>
 <entry>RedrawButton</entry>
 <entry><link linkend="h000684">RedrawButton</link></entry>
 </row>
@@ -1058,16 +1077,6 @@
 <row>
 <entry>ScrollText</entry>
 <entry><link linkend="h000879">ScrollText</link></entry>
-</row>
-<row>
-<entry><link linkend="wbdoSendMessage">sendMessage</link></entry>
-<entry>Sends a Windows message to the underlying window and returns its response as a whole number.
-</entry>
-</row>
-<row>
-<entry><link linkend="wbdoSendMessageHandle">sendMessageHandle</link></entry>
-<entry>Sends a Windows message to the underlying window and returns its response as a handle.
-</entry>
 </row>
 <row>
 <entry><link linkend="mthSendMessageToControl">sendMessageToControl</link></entry>
@@ -1230,10 +1239,6 @@
 <entry><link linkend=mthShowClsPlainBaseDialog>show</link></entry>
 </row>
 <row>
-<entry>showFast</entry>
-<entry><link linkend="wbdoShowfast">showFast</link></entry>
-</row>
-<row>
 <entry>ShowItem</entry>
 <entry><link linkend="mthShowItem">ShowItem</link></entry>
 </row>
@@ -1276,10 +1281,6 @@
 <row>
 <entry>ToTheTop</entry>
 <entry><link linkend="h000109">ToTheTop</link></entry>
-</row>
-<row>
-<entry>update</entry>
-<entry><link linkend="wbdoUpdate">update</link></entry>
 </row>
 <row>
 <entry>validate</entry>
@@ -2028,28 +2029,6 @@
 </variablelist>
 </section>  <!-- End PlainBaseDialog::dlgHandle() [attribute]  -->
 
-<section id="wbdoFactorX"><title>factorX (Attribute)</title>
-<programlisting>
-WindowBase::<link linkend="atrFactorX">factorX</link>
-
->>--factorX-----------------------------------------------------><
-
->>--factorX-=-ratio---------------------------------------------><
-
-</programlisting>
-</section>
-
-<section id="wbdoFactorY"><title>factorY (Attribute)</title>
-<programlisting>
-WindowBase::<link linkend="atrFactorY">factorY</link>
-
->>--factorY-----------------------------------------------------><
-
->>--factorY-=-ratio---------------------------------------------><
-
-</programlisting>
-</section>
-
 <section id="atrFontName"><title>fontName (Attribute)</title>
 <indexterm><primary>fontName</primary></indexterm>
 <indexterm><primary>dialog object</primary>
@@ -2230,17 +2209,6 @@ WindowBase::<link linkend="atrFactorY">factorY</link>
 </variablelist>
 </section>  <!-- End PlainBaseDialog::fontSize [attribute] -->
 
-<section id="wbdoHwnd"><title>hwnd (Attribute)</title>
-<programlisting>
-WindowBase::<link linkend="atrHwnd">hwnd</link>
-
-<![CDATA[
->>--hwnd-----------------------------------------------------><
-
-]]>
-</programlisting>
-</section>
-
 <section id="wbdoInitCode"><title>initCode (Attribute)</title>
 <programlisting>
 <link linkend="atrInitCode">initCode</link>
@@ -2254,22 +2222,13 @@ WindowBase::<link linkend="atrHwnd">hwnd</link>
 </programlisting>
 </section>
 
-<section id="wbdoPixelCX"><title>pixelCX (Attribute)</title>
+<section id="wbdoHwnd"><title>hwnd (Attribute)</title>
 <programlisting>
-<link linkend="atrPixelCX">pixelCX</link>
+WindowBase::<link linkend="atrHwnd">hwnd</link>
 
 <![CDATA[
->>--pixelCX-----------------------------------------------------><
-]]>
-</programlisting>
-</section>
+>>--hwnd-----------------------------------------------------><
 
-<section id="wbdoPixelCY"><title>pixelCY (Attribute)</title>
-<programlisting>
-<link linkend="atrPixelCY">pixelCY</link>
-
-<![CDATA[
->>--pixelCY-----------------------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -2294,6 +2253,48 @@ WindowBase::<link linkend="atrSizeY">sizeY</link>
 >>--sizeY-----------------------------------------------------><
 
 >>--sizeY-=-dialogUnits---------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoFactorX"><title>factorX (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrFactorX">factorX</link>
+
+>>--factorX-----------------------------------------------------><
+
+>>--factorX-=-ratio---------------------------------------------><
+
+</programlisting>
+</section>
+
+<section id="wbdoFactorY"><title>factorY (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrFactorY">factorY</link>
+
+>>--factorY-----------------------------------------------------><
+
+>>--factorY-=-ratio---------------------------------------------><
+
+</programlisting>
+</section>
+
+<section id="wbdoPixelCX"><title>pixelCX (Attribute)</title>
+<programlisting>
+<link linkend="atrPixelCX">pixelCX</link>
+
+<![CDATA[
+>>--pixelCX-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoPixelCY"><title>pixelCY (Attribute)</title>
+<programlisting>
+<link linkend="atrPixelCY">pixelCY</link>
+
+<![CDATA[
+>>--pixelCY-----------------------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -2596,7 +2597,7 @@ is called by <link linkend="mthExecute">execute</link>.
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example instantiates a new <link linkend="UserDialog">UserDialog</link> subclass object. The dialog
+    The following example instantiates a new <link linkend="clsUserDialog">UserDialog</link> subclass object. The dialog
     <link linkend="ovvDialogTemplate">template</link> is started by the <emphasis role="italic">create</emphasis>
     method and finished in the <emphasis role="italic">defineDialog</emphasis> method. Then the <emphasis
     role="italic">execute</emphasis> method runs the dialog as the topmost window.  The <link
@@ -6780,16 +6781,6 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   basic window methods for the dialog object.
 </para>
 
-<section id="wbdoDisable"><title>disable</title>
-<programlisting>
-WindowBass::<link linkend="mthDisable">disable</link>
-
-<![CDATA[
->>-disable-----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
 <section id="wbdoEnable"><title>enable</title>
 <programlisting>
 WindowBase::<link linkend="mthEnable">enable</link>
@@ -6800,12 +6791,12 @@ WindowBase::<link linkend="mthEnable">enable</link>
 </programlisting>
 </section>
 
-<section id="wbdoIsEnabled"><title>isEnabled</title>
+<section id="wbdoDisable"><title>disable</title>
 <programlisting>
-WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
+WindowBass::<link linkend="mthDisable">disable</link>
 
 <![CDATA[
->>--isEnabled--------------------------------------------------><
+>>-disable-----------------------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -6820,16 +6811,84 @@ WindowBase::<link linkend="mthIsVisible">isVisible</link>
 </programlisting>
 </section>
 
-<section id="wbdoGetSize"><title>getSize</title>
+<section id="wbdoIsEnabled"><title>isEnabled</title>
 <programlisting>
-WindowBase::<link linkend="mthGetSize">getSize</link>
+WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
 
 <![CDATA[
->>--getSize----------------------------------------------------><
+>>--isEnabled--------------------------------------------------><
 ]]>
 </programlisting>
 </section>
 
+<section id="wbdoHide"><title>hide</title>
+<programlisting>
+WindowBase::<link linkend="mthHide">hide</link>
+
+<![CDATA[
+>>--hide-------------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoShowFast"><title>showFast</title>
+<programlisting>
+WindowBase::<link linkend="mthShowFast">showFast</link>
+
+<![CDATA[
+>>--showFast---------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoHideFast"><title>hideFast</title>
+<programlisting>
+WindowBase::<link linkend="mthHideFast">hideFast</link>
+
+<![CDATA[
+>>--hideFast---------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoDisplay"><title>display</title>
+<programlisting>
+WindowBase::<link linkend="mthDisplay">display</link>
+
+<![CDATA[
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoUpdate"><title>update</title>
+<programlisting>
+WindowBase::<link linkend="mthUpdate">update</link>
+
+<![CDATA[
+]]>
+</programlisting>
+</section>
+r
+<section id="wbdoDraw"><title>draw</title>
+<programlisting>
+WindowBase::<link linkend="mthDraw">draw</link>
+
+<![CDATA[
+>>--draw-------------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoRedrawClient"><title>redrawClient</title>
+<programlisting>
+WindowBase::<link linkend="mthRedrawClient">redrawClient</link>
+
+<![CDATA[
+>>--redrawClient(--+------------+--)---------------------------><
+                   +--eraseBkg--+
+]]>
+</programlisting>
+</section>
 
 <section id="wbdoGetTextSizePx"><title>getTextSizePx</title>
 <programlisting>
@@ -6848,6 +6907,26 @@ WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
 <![CDATA[
 >>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
                              +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetRealSize"><title>getRealSize</title>
+<programlisting>
+WindowBase::<link linkend="mthGetSize">getRealSize</link>
+
+<![CDATA[
+>>--getRealSize------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetSize"><title>getSize</title>
+<programlisting>
+WindowBase::<link linkend="mthGetSize">getSize</link>
+
+<![CDATA[
+>>--getSize----------------------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -8510,6 +8589,8 @@ one of the check boxes instead.
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    The single argument is:
   <variablelist>
     <varlistentry><term>pixels [required] [In/Out]</term>
     <listitem>
@@ -8520,6 +8601,7 @@ one of the check boxes instead.
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -9029,10 +9111,10 @@ on the color numbers, refer to <link linkend="sctTermDefs">Definition of Terms</
     method can be used to hide, maximize, or otherwise change the show state as described by the keywords. There are
     also a number of conveninece methods that do similiar things, <link linkend="mthHide">hide</link>, <link
     linkend="mthDisplay">display</link>, <link linkend="mthMinimize">minimize</link>, <link
-    linkend="mthRestor">restore</link>, and so on.
+    linkend="mthRestore">restore</link>, and so on.
   </para>
   <para>
-    The <emphasis role="italic">show</emphasis> method over-rides the <link linkend="mthShowClsWindowBae">show</link>
+    The <emphasis role="italic">show</emphasis> method over-rides the <link linkend="mthShowClsWindowBase">show</link>
     method of the <link linkend="clsWindow">WindowBase</link> class, which takes no arguments. The primary purpose of
     the dialog object <emphasis role="italic">show</emphasis> method is to allow flexibility in how the dialog is
     initialy shown when it is run.
@@ -11866,8 +11948,8 @@ WindowBase::<link linkend="mthSendMessage">sendMessage</link>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">sendMessageToWindow</emphasis> method sends a Windows message to a dialog control and
-  returns the response as a whole number.
+  The <emphasis role="italic">sendMessageToWindow</emphasis> method sends a Windows message to a window and returns the
+  response as a whole number.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
