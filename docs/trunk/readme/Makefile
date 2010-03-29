@@ -46,13 +46,13 @@ STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl \
 HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
              ../shared/oorexx.html.dsl
 
-SGML_FILES = readme.sgml \
-     newinrelease.sgml \
-     windows.sgml \
-     unix.sgml \
-     ../shared/notices.sgml \
-     ../shared/gethelp.sgml \
-     ../shared/CPLv1.0.sgml
+xml_FILES = readme.xml \
+     newinrelease.xml \
+     windows.xml \
+     unix.xml \
+     ../shared/notices.xml \
+     ../shared/gethelp.xml \
+     ../shared/CPLv1.0.xml
 
 JADETEXFMT  = ./pdfjadetex.fmt
 HYPERREFCFG = ./hyperref.cfg
@@ -71,11 +71,11 @@ pdf: readme.pdf
 
 html: readme.html
 
-readme.pdf: $(STYLESHEET) $(JADETEXFMT) $(SGML_FILES)
-	docbook2pdf -d ../shared/oorexx.print.dsl readme.sgml
+readme.pdf: $(STYLESHEET) $(JADETEXFMT) $(xml_FILES)
+	docbook2pdf -d ../shared/oorexx.print.dsl readme.xml
 
-readme.html: $(HTML_STYLESHEET) $(SGML_FILES)
-	docbook2html -d ../shared/oorexx.html.dsl $(HTML_OPTS) readme.sgml
+readme.html: $(HTML_STYLESHEET) $(xml_FILES)
+	docbook2html -d ../shared/oorexx.html.dsl $(HTML_OPTS) readme.xml
 
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
