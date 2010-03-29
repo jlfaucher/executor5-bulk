@@ -1468,6 +1468,751 @@ self~newTreeView(IDC_TREECONTROL_FILES)~display("NORMAL FAST")
 </variablelist>
 </section>
 
+<section id="mthRedraw"><title>redraw</title>
+<indexterm><primary>redraw</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--redraw-----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">redraw</emphasis> method immediately redraws the entire window and all its child windows,
+  recursively, including the <link linkend="defClientArea">non-client</link> area of the window(s). Contrast this with
+  some of the other draw methods such as <link linkend="mthRedrawClient">redrawClient</link> or <link
+  linkend="mthDraw">draw</link>, which only redraw the <emphasis role="italic">client</emphasis> area and not the child
+  windows.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created does nothing.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Redrawing was successful.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Redrawing failed. Check <computeroutput>.SystemErrorCode</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetID"><title>getID</title>
+<indexterm><primary>getID</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>getID</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getID</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getID------------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the identification number of the window. For a dialog window this will almost certainly be zero. For a
+  dialog control window it will be the <link linkend="defResourceID">resource ID</link> of the control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The numeric ID of the window.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example shows the IDs of the Ok button and the dialog itself. In most cases it will display 1 on the
+    first line and 0 on the second line:
+
+<programlisting>
+<![CDATA[
+::method exampleInfo private
+
+  say 'The resource ID of the Ok push button is:  ' self~newPushButton(IDOK)~getID
+  say 'The identifcation number of this dialog is:' self~getID
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetStyleRaw"><title>getStyleRaw</title>
+<indexterm><primary>getStyleRaw</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>getStyleRaw</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getStyleRaw</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getStyleRaw</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getStyleRaw------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getStyleRaw</emphasis> method retrieves the window style flags of the window. The flags
+  are returned in their numeric format.  This allows the programmer to determine the current style of any dialog or
+  control.  However, the programmer needs to be able to look up the numeric value of the window style flags to make use
+  of this functionality. This can be done using the <link linkend="defWindowsDoc">Windows documentation</link> and the
+  <link linkend="defPlatformSDK">Platform SDK</link>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The numeric value of the window style flags.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example gets the style flags for a tree control and then checks to see if drag and drop is enabled
+    and if label editing is enabled.
+  </para>
+  <para>
+    The value of the style flags has the potential of being larger than can be accommodated by the default numeric
+    digits.  Use <computeroutput>numeric digits 11</computeroutput> if the returned value needs to be manipulated, for
+    instance to use <computeroutput>d2x</computeroutput> on the value.
+  </para>
+  <para>
+    <emphasis role="bold">Note:</emphasis> it is not necessary to convert the <emphasis role="italic">style</emphasis>
+    value in the example to its hexadecimal string representation before using it as an argument in the <emphasis
+    role="italic">and</emphasis> method. That is just done in the example for display purposes.
+  </para>
+<programlisting>
+<![CDATA[
+  ...
+
+  numeric digits 11
+  TVS_DISABLEDRAGDROP = "0x0010"
+  TVS_EDITLABELS      = "0x0008"
+
+  treeControl = self~newTreeView(IDC_TREE)
+  style = treeControl~getStyleRaw
+  style = "0x" || style~d2x~right(8, '0')
+
+  if .DlgUtil~and( style, TVS_DISABLEDRAGDROP ) <> 0 then str1 = 'disabled'
+  else str1 = 'enabled'
+
+  if .DlgUtil~and( style, TVS_EDITLABELS ) <> 0 then str2 = 'enabled'
+  else str2 = 'disabled'
+
+  say 'Tree-view Control styles'
+  say '  Raw style:    ' style
+  say '  Drag and drop:' str1
+  say '  Edit labels:  ' str2
+
+/* Output could be: */
+
+Tree-view Control styles
+  Raw style:     0x5000002F
+  Drag and drop: enabled
+  Edit labels:   enabled
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetExStyleRaw"><title>getExStyleRaw</title>
+<indexterm><primary>getExStyleRaw</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>getExStyleRaw</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getExStyleRaw</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getExStyleRaw</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getExStyleRaw----------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getExStyleRaw</emphasis> method retrieves the extended window style flags of the window.
+  The flags are returned in their numeric format. This function is very similar to the <link
+  linkend="mthGetStyleRaw">getStyleRaw</link>() method, allowing the programmer to get the extended window flags. The
+  numeric value of the extended style flags can be looked up using the <link linkend="defWindowsDoc">Windows
+  documentation</link> and the <link linkend="defPlatformSDK">Platform SDK</link>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method before the underlying dialog is created returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The numeric value of the window extended style flags.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example gets the extended style flags for a list-view control and displays them to the screen in
+    hexadecimal format. The value displayed in the example indicates the following styles.
+  </para>
+  <para>
+  <simplelist type='vert' columns='1'>
+    <member>WS_EX_NOPARENTNOTIFY  ==  0x00000004</member>
+    <member>WS_EX_CLIENTEDGE      ==  0x00000200</member>
+  </simplelist>
+<programlisting>
+<![CDATA[
+
+::method printExStyle private
+  expose list
+
+  val = list~getExStyleRaw
+
+  numeric digits 11
+  val = '0x' || val~d2x~right(8, 0)
+  say "List control extended style flag:"
+  say " " val
+  say
+
+/* Output could be: */
+
+List control extended style flags:
+  0x00000204
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSetText"><title>setText</title>
+<indexterm><primary>setText</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>setText</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setText</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>setText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setText(--newText--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the text associated with the window.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    Using this method before the underlying dialog is created will fail.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>newText [required]</term>
+    <listitem>
+    <para>
+      The new text for the window.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Failure. Check <computeroutput>.SystemErrorCode</computeroutput>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    All windows have text associated with them, even if it is the empty string. For top-level windows like dialogs it is
+    the caption, or title of the dialog. For buttons it is the label for the button. For edit controls it is the text
+    the user has entered, etc..
+  </para>
+  <para>
+    The <emphasis role="italic">setText</emphasis>, <link linkend="mthSetTitle">setTitle</link>, and <link
+    linkend="mthTitleEquals">title=</link> methods do exactly the same thing. The methods are interchangeable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the text that a static text control displays:
+<programlisting>
+<![CDATA[
+  ::method reportError private
+    use strict arg errMsg
+    self~newStatic(IDC_ST_INFO)~setText(errMsg)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowBase::setText() -->
+
+<section id="mthGetText"><title>getText</title>
+<indexterm><primary>getText</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>getText</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getText</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getText----------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Gets the text associated with the window.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    Using this method before the underlying dialog is created will fail.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success the text of the window, on error the empty string. However, the text of any window could be the empty
+    string. Check <computeroutput>.SystemErrorCode</computeroutput> for error, but an error is not likely.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    All windows have text associated with them, even if it is the empty string. For top-level windows like dialogs it is
+    the caption, or title of the dialog. For buttons it is the label for the button. For edit controls it is the text
+    the user has entered, etc..
+  </para>
+  <para>
+    The <emphasis role="italic">getText</emphasis>, and <link linkend="mthTitle">title</link> methods do exactly the
+    same thing. The methods are interchangeable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the text currently entered in an edit control and upper-cases it for uniformity.
+<programlisting>
+<![CDATA[
+  ::method upperDataField private
+    use strict arg id
+
+    edit = self~newEdit(id)
+    text = edit~getText
+
+    if text == "" then return .false
+
+    edit~setText(text~upper)
+    return .true
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowBase::getText() -->
+
+<section id="mthTitleEquals"><title>title=</title>
+<indexterm><primary>title=</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>title=</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>title=</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>title=</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--title-=--newText-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">title=</emphasis> method is an alias for <link linkend="mthSetText">setText</link>().
+</para>
+</section>
+
+<section id="mthSetTitle"><title>setTitle</title>
+<indexterm><primary>title=</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>setTitle</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setTitle</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>setTitle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setTitle(--newText--)--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">setTitle</emphasis> method is an alias for <link linkend="mthSetText">setText</link>().
+</para>
+</section>
+
+<section id="mthTitle"><title>title</title>
+<indexterm><primary>title</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--title------------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">title</emphasis> method is an alias for <link linkend="mthGetText">getText</link>().
+</para>
+</section>
+
+<section id="mthSetRect"><title>setRect</title>
+<indexterm><primary>setRect</primary>
+<secondary>WindowBase class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+Form 1:
+
+>>--setRect(--rectangle--+------------+--)-------------------------------------><
+                         +-,-showOpts-+
+
+Form 2:
+
+>>--setRect(--point--,--size--+------------+--)--------------------------------><
+                              +-,-showOpts-+
+
+Form 3:
+
+>>--setRect(--x-,--y-,--cx-,--cy--+------------+--)----------------------------><
+                                  +-,-showOpts-+
+
+Generic form:
+
+>>--setRect(--ptSizeRectangle--+------------+--)-------------------------------><
+                               +-,-showOpts-+
+
+]]>
+</programlisting>
+
+<para>
+  Sets the new point / size rectangle for the window. A point / size rectangle specifies the position of the upper left
+  corner of the window, relative to its parent window, the width of the window, and the height of the window. The point
+  / size rectangle coordinates are specified in pixels.
+</para>
+<para>
+  In essence this moves and resizes the window. By using different <emphasis role="italic">showOpts</emphasis>, the
+  window can be only moved or only resized.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The first argument(s) specify the new coordinates of the window. These coordinates can be specified using either a
+    <link linkend="clsRect">Rect</link> object, or by using a <link linkend="clsPoint">Point</link> object followed by a
+    <link linkend="clsSize">Size</link> object, or by using the x, y coordinates of the upper left point of the window
+    followed by the width and height of the window.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    This method has no effect if the underlying dialog has not yet been created.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>ptSizeRectangle [required]</term>
+    <listitem>
+    <para>
+      The point / size rectangle argument(s) are all required. They specify the left and top position of the window, the
+      width, and height of the window. As noted above, these coordinates can be specified in the format that is most
+      convenient.
+    </para>
+    <para>
+      <emphasis role="bold">Note carefully:</emphasis> If a <computeroutput>Rectangle</computeroutput> object is used
+      to specify the point / size recatangle, the semantics are not quite correct. The <emphasis
+      role="italic">right</emphasis> member of the <computeroutput>Rectangle</computeroutput> must contain the width of
+      the window and the <emphasis role="italic">bottom</emphasis> member must contain the height of the window.
+    </para>
+    <para>
+      When the <emphasis role="italic">showOpts</emphasis> argument contains the NOMOVE keyword, the x, y coordinates
+      are ignored. Likewise, if <emphasis role="italic">showOpts</emphasis> contains NOSIZE, the width and height
+      portion of the point / size rectangle is ignored.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>showOpts [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces. Case is not significant. If this argument is
+      omitted, the window is made visible, moved to the position specified by the x, y coordinates and resized to the
+      width and height specified by the width and height portion of the point / size rectangle
+    </para>
+    <simplelist type='vert' columns='3'>
+      <member>NOSIZE    </member>
+      <member>NOMOVE    </member>
+      <member>HIDEWINDOW</member>
+      <member>SHOWWINDOW</member>
+      <member>NOREDRAW  </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>NOSIZE</term>
+      <listitem>
+      <para>
+         The window will not be resized. The new width and height specified is ignored. The values can be 0, or any
+         other value.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOMOVE</term>
+      <listitem>
+      <para>
+        The position of the window will not be changed. The new x, y position is ignored. Again, the values can be 0, or
+        any other value.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HIDEWINDOW</term>
+      <listitem>
+      <para>
+        In addition to any moving or resizing that is done, the window is made invisible. Note that the Microsoft <link
+        linkend="defWindowsDoc">documentation</link> says that if this flag is set, the window can not be moved or
+        resized. However, experimentation seems to show that the documentation is wrong. It may be that this behavior is
+        different on different versions of Windows.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SHOWWINDOW</term>
+      <listitem>
+      <para>
+        In addition to any moving or resizing that is done, the window is made invisible.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOREDRAW</term>
+      <listitem>
+      <para>
+        No repainting of any kind is done. The programmer is responsible for invalidating or redrawing any parts of the
+        window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the <link
+        linkend="mthRedraw">redraw</link> method.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Failure. Check <computeroutput>.SystemErrorCode</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Note that the Microsoft <link linkend="defWindowsDoc">documentation</link> says that if HIDEWINDOW or SHOWWINDOW is
+    used, the window can not be moved or resized. However, experimentation seems to show that the documentation is
+    wrong. It may be that this behavior is different on different versions of Windows. In any case, the programmer
+    should keep this in mind.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example increases the size and width of the dialog by 20 pixels and moves the position of the dialog up and to
+    the left by 10 pixels. This has the effect of enlarging the dialog while keeping the center of the dialog at the
+    same spot.
+<programlisting>
+<![CDATA[
+
+::method zoomOut private
+
+ rect = self~windowRect
+ rect~right = rect~right - rect~left + 20
+ rect~bottom = rect~bottom - rect~top + 20
+
+ rect~left -= 10
+ rect~top -= 10
+
+ self~setRect(rect)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowBase::setRect() -->
+
+<section id="mthSetRect"><title>setRect</title>
+<indexterm><primary>setRect</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~setRect(--x--,--y--,--width--,--height-->
+
+>--+-----------------------------+--)--------------------><
+   |       +----------------+    |
+   |       V                |    |
+   +-,--"----+-NOMOVE-----+-+--"-+
+             +-NOSIZE-----+
+             +-HIDEWINDOW-+
+             +-SHOWWINDOW-+
+             +-NOREDRAW---+
+
+]]>
+</programlisting>
+
+<para>The setRect method sets new coordinates for the
+associated dialog or dialog control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>x,y</term>
+<listitem><para>The new position of the upper left corner, in screen pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>width</term>
+<listitem><para>The new width of the dialog or dialog control, in screen pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>height</term>
+<listitem><para>The new height of the dialog or dialog control, in screen pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>showOptions</term>
+<listitem><para>One or more of the following keywords, separated by blanks:
+<variablelist>
+<varlistentry><term>NOMOVE</term>
+<listitem><para>The upper left position of the dialog or dialog control is not changed.
+</para></listitem></varlistentry>
+<varlistentry><term>NOSIZE</term>
+<listitem><para>The size of the dialog or dialog control is not changed.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDEWINDOW</term>
+<listitem><para>The dialog or dialog control is to be made invisible.
+</para></listitem></varlistentry>
+<varlistentry><term>SHOWWINDOW</term>
+<listitem><para>The dialog or dialog control is to be made visible.
+</para></listitem></varlistentry>
+<varlistentry><term>NOREDRAW</term>
+<listitem><para>The dialog or dialog control is to be repositioned without redrawing
+it.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Repositioning was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>Repositioning failed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="mthGetTextSizePx"><title>getTextSizePx</title>
 <indexterm><primary>getTextSizePx</primary></indexterm>
 <indexterm><primary>WindowBase</primary><secondary>getTextSizePx</secondary></indexterm>

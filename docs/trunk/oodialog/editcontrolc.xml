@@ -869,12 +869,12 @@ text in the associated edit control with a new one.</para>
 <listitem><para>
 <programlisting>
 <![CDATA[
-edit = MyDialog~newEdit("TEXT")
-if edit == .Nil then return
-edit~Title = "Object Rexx is a hybrid language."
+edit = self~newEdit("TEXT")
+if edit == .nil then return
+edit~setText("Object Rexx is a hybrid language.")
 edit~Select(17,25)
     edit~ReplaceSelText("n interpreted")
-    say edit~Title
+    say edit~getText
 
 Result: Object Rexx is an interpreted language.
 ]]>

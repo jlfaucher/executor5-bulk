@@ -68,7 +68,7 @@
   sending the proper message to the control or by accessing the control window directly.
 </para>
 
-<section id="sctMethodsDlgContorlObject"><Title>Method Table</Title>
+<section id="sctMethodsDlgContorlObject"><title>Method Table</title>
 <para>
   The following table lists the class methods, attributes, and instance methods that all dialog controls have in
   common:
@@ -256,12 +256,41 @@
 <entry>Redraws the entire client area of the dialog control immediately.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoGetRealSize">getRealSize</link></entry>
-<entry>Returns the size of the dialog control in pixels.</entry>
+<entry>redraw</entry>
+<entry><link linkend="wbdcoRedraw">redraw</link></entry>
+<entry>Redraws the entire dialog control and its child windows, if any, immediately.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoGetSize">getSize</link></entry>
-<entry>Returns the size of the dialog control in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+<entry><link linkend="wbdcoGetID">getID</link></entry>
+<entry>Retrieves the resouce ID of the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetStyleRaw">getStyleRaw</link></entry>
+<entry>Retrieves the numeric value of the dialog control's style flags.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetExStyleRaw">getExStyleRaw</link></entry>
+<entry>Retrieves the numeric value of the dialog control's extended style flags.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSetText">setText</link></entry>
+<entry>Sets the text of the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetText">getText</link></entry>
+<entry>Gets the text of the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoTitleEquals">title=</link></entry>
+<entry>Sets the text of the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSetTitle">setTitle</link></entry>
+<entry>Sets the text of the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoTitle">title</link></entry>
+<entry>Gets the text of the dialog control.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoGetTextSizePx">getTextSizePx</link></entry>
@@ -270,6 +299,18 @@
 <row>
 <entry><link linkend="wbdcoGetTextSizeScreen">getTextSizeScreen</link></entry>
 <entry>Returns the size needed to display the specified text in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSetRect">setRect</link></entry>
+<entry>Moves and resizes the dialog control, optionally, only one or the other.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetRealSize">getRealSize</link></entry>
+<entry>Returns the size of the dialog control in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetSize">getSize</link></entry>
+<entry>Returns the size of the dialog control in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
 </row>
 <row>
 <entry><link linkend="wbdcoSendMessage">sendMessage</link></entry>
@@ -332,16 +373,8 @@
 <entry><link linkend="getdc">GetDC</link></entry>
 </row>
 <row>
-<entry>getExStyleRaw</entry>
-<entry><link linkend="mthGetExStyleRaw">getExStyleRaw</link></entry>
-</row>
-<row>
 <entry>GetFocus</entry>
 <entry><link linkend="getfocus">GetFocus</link></entry>
-</row>
-<row>
-<entry>GetID</entry>
-<entry><link linkend="getid">GetID</link></entry>
 </row>
 <row>
 <entry>GetMouseCapture</entry>
@@ -358,10 +391,6 @@
 <row>
 <entry>GetRect</entry>
 <entry><link linkend="getrect">GetRect</link></entry>
-</row>
-<row>
-<entry>getStyleRaw</entry>
-<entry><link linkend="mthGetStyleRaw">getStyleRaw</link></entry>
 </row>
 <row>
 <entry>Group</entry>
@@ -402,10 +431,6 @@
 <row>
 <entry>Rectangle</entry>
 <entry><link linkend="h001115">Rectangle</link></entry>
-</row>
-<row>
-<entry>Redraw</entry>
-<entry><link linkend="redraw">Redraw</link></entry>
 </row>
 <row>
 <entry>RedrawRect</entry>
@@ -476,14 +501,6 @@
 <entry><link linkend="setvscrollpos">SetVScrollPos</link></entry>
 </row>
 <row>
-<entry>SetRect</entry>
-<entry><link linkend="setrect">SetRect</link></entry>
-</row>
-<row>
-<entry>SetTitle</entry>
-<entry><link linkend="settitle">SetTitle</link></entry>
-</row>
-<row>
 <entry>TabStop</entry>
 <entry><link linkend="mthTabStop">TabStop</link></entry>
 </row>
@@ -494,14 +511,6 @@
 <row>
 <entry>TabToPrevious</entry>
 <entry><link linkend="tabtoprevious">TabToPrevious</link></entry>
-</row>
-<row>
-<entry>Title</entry>
-<entry><link linkend="title">Title</link></entry>
-</row>
-<row>
-<entry>Title=</entry>
-<entry><link linkend="mthTitleEquals">Title=</link></entry>
 </row>
 <row>
 <entry>TransparentText</entry>
@@ -787,6 +796,96 @@ WindowBase::<link linkend="mthRedrawClient">redrawClient</link>
 </programlisting>
 </section>
 
+<section id="wbdcoRedraw"><title>redraw</title>
+<programlisting>
+WindowBase::<link linkend="mthRedraw">redraw</link>
+
+<![CDATA[
+>>--redraw-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoGetID"><title>getID</title>
+<programlisting>
+WindowBase::<link linkend="mthGetID">getID</link>
+
+<![CDATA[
+>>--getID------------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoGetStyleRaw"><title>getStyleRaw</title>
+<programlisting>
+WindowBase::<link linkend="mthGetStyleRaw">getStyleRaw</link>
+
+<![CDATA[
+>>--getStyleRaw------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoGetExStyleRaw"><title>getExStyleRaw</title>
+<programlisting>
+WindowBase::<link linkend="mthGetExStyleRaw">getExStyleRaw</link>
+
+<![CDATA[
+>>--getExStyleRaw----------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoSetText"><title>setText</title>
+<programlisting>
+WindowBase::<link linkend="mthSetText">setText</link>
+
+<![CDATA[
+>>--setText(--newText--)---------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoGetText"><title>getText</title>
+<programlisting>
+WindowBase::<link linkend="mthGetText">getText</link>
+
+<![CDATA[
+>>--getText----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoTitle="><title>title=</title>
+<programlisting>
+WindowBase::<link linkend="mthTitle=">title=</link>
+
+<![CDATA[
+>>--title-=--newText-------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoSetTitle"><title>setTitle</title>
+<programlisting>
+WindowBase::<link linkend="mthSetTitle">setTitle</link>
+
+<![CDATA[
+>>--setTitle(--newText--)--------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoTitle"><title>title</title>
+<programlisting>
+WindowBase::<link linkend="mthTitle">title</link>
+
+<![CDATA[
+>>--title------------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
 <section id="wbdcoGetTextSizePx"><title>getTextSizePx</title>
 <programlisting>
 WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
@@ -804,6 +903,34 @@ WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
 <![CDATA[
 >>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
                              +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoSetRect"><title>setRect</title>
+<programlisting>
+WindowBase::<link linkend="mthSetRect">setRect</link>
+
+<![CDATA[
+Form 1:
+
+>>--setRect(--rectangle--+------------+--)-------------------------------------><
+                         +-,-showOpts-+
+
+Form 2:
+
+>>--setRect(--point--,--size--+------------+--)--------------------------------><
+                              +-,-showOpts-+
+
+Form 3:
+
+>>--setRect(--x-,--y-,--cx-,--cy--+------------+--)----------------------------><
+                                  +-,-showOpts-+
+
+Generic form:
+
+>>--setRect(--ptSizeRectangle--+------------+--)-------------------------------><
+                               +-,-showOpts-+
 ]]>
 </programlisting>
 </section>
@@ -1217,184 +1344,6 @@ to the current foreground window.</para>
 </variablelist>
 </section>
 
-<section id="getid"><title>GetID</title>
-<indexterm><primary>GetID</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~GetID----------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetID method retrieves the identification number
-of the associated dialog or dialog control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The numeric ID.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example displays 1 in most cases:
-<programlisting>
-<![CDATA[
-say MyDialog~newPushButton("IDOK")~GetID
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthGetStyleRaw"><title>getStyleRaw</title>
-<indexterm><primary>getStyleRaw</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--getStyleRaw---------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The <computeroutput>getStyleRaw</computeroutput> method retrieves the window style flags of the dialog
-  or dialog control.  The flags are returned in their numeric format.  This allows the programmer to
-  determine the current style of any dialog or control.  However, the programmer needs to be able to look
-  up the numeric value of the window style flags to make use of this functionality.  This can be done
-  using the <link linkend="defWindowsDoc">Windows documentation</link> and the <link
-  linkend="defPlatformSDK">Platform SDK</link>.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-    <para>
-      There are no arguments.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      The numeric value of the window style flags.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-      The following example gets the style flags for a tree control and then checks to see if drag and
-      drop is enabled and if label editing is enabled.
-    </para>
-    <para>
-      The value of the style flags has the potential of being larger than can be accommodated by the
-      default numeric digits.  Use <computeroutput>numeric digits 11</computeroutput> if the returned
-      value needs to be manipulated, for instance to use <computeroutput>d2x</computeroutput> on the
-      value.
-      <note><title>Note</title><para>
-        It is not necessary to convert the <computeroutput>style</computeroutput> value in the example to
-        its hexadecimal string representation before using it as an argument in the
-        <computeroutput>and</computeroutput>() method.  That is just done in the example for display
-        purposes.
-      </para></note>
-<programlisting>
-<![CDATA[
-  ...
-
-  numeric digits 11
-  TVS_DISABLEDRAGDROP = "0x0010"
-  TVS_EDITLABELS      = "0x0008"
-
-  treeControl = self~newTreeView(IDC_TREE)
-  style = treeControl~getStyleRaw
-  style = "0x" || style~d2x~right(8, '0')
-
-  if .DlgUtil~and( style, TVS_DISABLEDRAGDROP ) <> 0 then str1 = 'disabled'
-  else str1 = 'enabled'
-
-  if .DlgUtil~and( style, TVS_EDITLABELS ) <> 0 then str2 = 'enabled'
-  else str2 = 'disabled'
-
-  say 'Tree-view Control styles'
-  say '  Raw style:    ' style
-  say '  Drag and drop:' str1
-  say '  Edit labels:  ' str2
-
-/* Output could be: */
-
-Tree-view Control styles
-  Raw style:     0x5000002F
-  Drag and drop: enabled
-  Edit labels:   enabled
-
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthGetExStyleRaw"><title>getExStyleRaw</title>
-<indexterm><primary>getExStyleRaw</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--getExStyleRaw---------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The <computeroutput>getExStyleRaw</computeroutput> method retrieves the extended window style flags of
-  the dialog or dialog control.  The flags are returned in their numeric format. This function is very
-  similar to the <link linkend="mthGetStyleRaw">getStyleRaw</link>() method, allowing the programmer to
-  get the extended window flags. The numeric value of the extended style flags can be looked up using the
-  <link linkend="defWindowsDoc">Windows documentation</link> and the <link linkend="defPlatformSDK">Platform
-  SDK</link>.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-    <para>
-      There are no arguments.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      The numeric value of the window extended style flags.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-      The following example gets the extended style flags for a list-view control and displays them to
-      the screen in hexadecimal format. The value displayed in the example indicates the following
-      styles.
-    </para>
-    <para>
-      <simplelist type='vert' columns='1'>
-        <member>WS_EX_NOPARENTNOTIFY  ==  0x00000004</member>
-        <member>WS_EX_CLIENTEDGE      ==  0x00000200</member>
-      </simplelist>
-<programlisting>
-<![CDATA[
-
-::method printExStyle private
-  expose list
-
-  val = list~getExStyleRaw
-
-  numeric digits 11
-  val = '0x' || val~d2x~right(8, 0)
-  say "List control extended style flag:"
-  say " " val
-  say
-
-/* Output could be: */
-
-List control extended style flags:
-  0x00000204
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="getrect"><title>GetRect</title>
 <indexterm><primary>GetRect</primary></indexterm>
 <programlisting>
@@ -1425,76 +1374,6 @@ width = right - left
 height = bottom - top
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="setrect"><title>SetRect</title>
-<indexterm><primary>SetRect</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~SetRect(--x--,--y--,--width--,--height-->
-
->--+-----------------------------+--)--------------------><
-   |       +----------------+    |
-   |       V                |    |
-   +-,--"----+-NOMOVE-----+-+--"-+
-             +-NOSIZE-----+
-             +-HIDEWINDOW-+
-             +-SHOWWINDOW-+
-             +-NOREDRAW---+
-
-]]>
-</programlisting>
-
-<para>The SetRect method sets new coordinates for the
-associated dialog or dialog control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x,y</term>
-<listitem><para>The new position of the upper left corner, in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>width</term>
-<listitem><para>The new width of the dialog or dialog control, in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>height</term>
-<listitem><para>The new height of the dialog or dialog control, in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>showOptions</term>
-<listitem><para>One or more of the following keywords, separated by blanks:
-<variablelist>
-<varlistentry><term>NOMOVE</term>
-<listitem><para>The upper left position of the dialog or dialog control is not changed.
-</para></listitem></varlistentry>
-<varlistentry><term>NOSIZE</term>
-<listitem><para>The size of the dialog or dialog control is not changed.
-</para></listitem></varlistentry>
-<varlistentry><term>HIDEWINDOW</term>
-<listitem><para>The dialog or dialog control is to be made invisible.
-</para></listitem></varlistentry>
-<varlistentry><term>SHOWWINDOW</term>
-<listitem><para>The dialog or dialog control is to be made visible.
-</para></listitem></varlistentry>
-<varlistentry><term>NOREDRAW</term>
-<listitem><para>The dialog or dialog control is to be repositioned without redrawing
-it.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Repositioning was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Repositioning failed.
-</para></listitem></varlistentry>
-</variablelist>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -1696,92 +1575,6 @@ MyDialog~newListBox("FILES")~SetColor(4, 15)
 </variablelist>
 </section>
 
-<section id="title"><title>Title</title>
-<indexterm><primary>Title</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~Title----------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The Title method retrieves the title of the dialog
-or dialog control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The title was retrieved.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Retrieving the title failed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthTitleEquals"><title>Title=</title>
-<indexterm><primary>Title=</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~Title=--new_title----------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The Title= method sets the title of the dialog
-or dialog control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>new_text</term>
-<listitem><para>A text string that is to be used as the title or text of the dialog
-or dialog control.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The title was set.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Setting the title failed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example changes the label of radio button
-CHOICE2:
-<programlisting>
-<![CDATA[
-MyDialog~newRadioButton("CHOICE2")~Title="&Object Rexx (preferred choice)"
-MyDialog~Redraw
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="settitle"><title>SetTitle</title>
-<indexterm><primary>SetTitle</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~SetTitle(--new_title--)----------------------><
-
-
-]]>
-</programlisting>
-
-<para>The SetTitle method sets the title of the dialog
-or dialog control. It is equal to <link linkend="mthTitleEquals">Title=</link>.</para>
-</section>
 </section>
 
 <section id="miscDialogControl"><title>Miscellaneous Dialog Control Methods</title>
@@ -2570,33 +2363,6 @@ control using the background brush.</para>
 </para></listitem></varlistentry>
 <varlistentry><term>1</term>
 <listitem><para>Drawing failed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="redraw"><title>Redraw</title>
-<indexterm><primary>Redraw</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~Redraw---------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The Redraw method redraws the dialog or dialog
-control immediately.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Redrawing was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Redrawing failed.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>

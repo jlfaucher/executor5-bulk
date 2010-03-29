@@ -57,7 +57,7 @@
   that are unique to the subclass.
 </para>
 
-<section id="sctMethodsDlgObject"><Title>Method Table</Title>
+<section id="sctMethodsDlgObject"><title>Method Table</title>
 <para>
   The following table lists the class methods, attributes, and instance methods that all dialogs have in common:
 <table id="tblMethodsDlgObject" frame="all"> <title>Dialog Object Method Reference</title>
@@ -501,12 +501,52 @@
 <entry>Redraws the entire client area of the dialog immediately.</entry>
 </row>
 <row>
+<entry><link linkend="wbdoRedraw">redraw</link></entry>
+<entry>Redraws the entire dialog window and all its child windows immediately.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoGetID">getID</link></entry>
+<entry>Retrieves the identification number of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoGetStyleRaw">getStyleRaw</link></entry>
+<entry>Retrieves the numeric value of the dialog's style flags.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoGetExStyleRaw">getExStyleRaw</link></entry>
+<entry>Retrieves the numeric value of the dialog's extended style flags.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoSetText">setText</link></entry>
+<entry>Sets the text of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoGetText">getText</link></entry>
+<entry>Gets the text of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoTitleEquals">title=</link></entry>
+<entry>Sets the text of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoSetTitle">setTitle</link></entry>
+<entry>Sets the text of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoTitle">title</link></entry>
+<entry>Gets the text of the dialog.</entry>
+</row>
+<row>
 <entry><link linkend="wbdoGetTextSizePx">getTextSizePx</link></entry>
 <entry>Calculates the size needed for a string in pixels <emphasis role="bold">(preferred method.)</emphasis></entry>
 </row>
 <row>
 <entry><link linkend="wbdoGetTextSizeScreen">getTextSizeScreen</link></entry>
 <entry>Calculates the size needed for a string in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoSetRect">setRect</link></entry>
+<entry>Moves and resizes the dialog, optionally, only one or the other.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoGetRealSize">getRealSize</link></entry>
@@ -708,20 +748,12 @@
 <entry><link linkend="mthGetEditData">getEditData</link></entry>
 </row>
 <row>
-<entry>getExStyleRaw</entry>
-<entry><link linkend="mthGetExStyleRaw">getExStyleRaw</link></entry>
-</row>
-<row>
 <entry>GetFocus</entry>
 <entry><link linkend="getfocus">GetFocus</link></entry>
 </row>
 <row>
 <entry>getFont</entry>
 <entry><link linkend="mthGetFont">getFont</link></entry>
-</row>
-<row>
-<entry>GetID</entry>
-<entry><link linkend="getid">GetID</link></entry>
 </row>
 <row>
 <entry>GetItem</entry>
@@ -782,10 +814,6 @@
 <row>
 <entry><link linkend="mthGetSelf">getSelf</link></entry>
 <entry>Returns the window handle of the dialog.</entry>
-</row>
-<row>
-<entry>getStyleRaw</entry>
-<entry><link linkend="mthGetStyleRaw">getStyleRaw</link></entry>
 </row>
 <row>
 <entry><link linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link></entry>
@@ -1007,10 +1035,6 @@
 <entry><link linkend="h001115">Rectangle</link></entry>
 </row>
 <row>
-<entry>Redraw</entry>
-<entry><link linkend="redraw">Redraw</link></entry>
-</row>
-<row>
 <entry>RedrawButton</entry>
 <entry><link linkend="h000684">RedrawButton</link></entry>
 </row>
@@ -1203,10 +1227,6 @@
 <entry><link linkend="h000566">SetRadioButton</link></entry>
 </row>
 <row>
-<entry>SetRect</entry>
-<entry><link linkend="setrect">SetRect</link></entry>
-</row>
-<row>
 <entry>SetSBPos</entry>
 <entry><link linkend="h000791">SetSBPos</link></entry>
 </row>
@@ -1217,10 +1237,6 @@
 <row>
 <entry>SetTabStop</entry>
 <entry><link linkend="mthSetTabStop">SetTabStop</link></entry>
-</row>
-<row>
-<entry>SetTitle</entry>
-<entry><link linkend="settitle">SetTitle</link></entry>
 </row>
 <row>
 <entry>setControlData</entry>
@@ -1265,14 +1281,6 @@
 <row>
 <entry>TiledBackgroundBitmap</entry>
 <entry><link linkend="h001045">TiledBackgroundBitmap</link></entry>
-</row>
-<row>
-<entry>Title</entry>
-<entry><link linkend="title">Title</link></entry>
-</row>
-<row>
-<entry>Title=</entry>
-<entry><link linkend="mthTitleEquals">Title=</link></entry>
 </row>
 <row>
 <entry>TransparentText</entry>
@@ -5514,7 +5522,7 @@ self~setDataStem(dlgStem.)
 </section>
 
 
-<section id="sctInstantiateControls"><Title>Instantiating Dialog Controls</Title>
+<section id="sctInstantiateControls"><title>Instantiating Dialog Controls</title>
 <para>
   The methods in this section are used to instantiate one of the concrete <link linkend="chpDialogControlObject">dialog
   control</link> objects. The dialog control objects can not be instantiated directly by the programmer in Rexx code.
@@ -6890,6 +6898,96 @@ WindowBase::<link linkend="mthRedrawClient">redrawClient</link>
 </programlisting>
 </section>
 
+<section id="wbdoRedraw"><title>redraw</title>
+<programlisting>
+WindowBase::<link linkend="mthRedraw">redraw</link>
+
+<![CDATA[
+>>--redraw-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetID"><title>getID</title>
+<programlisting>
+WindowBase::<link linkend="mthGetID">getID</link>
+
+<![CDATA[
+>>--getID------------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetStyleRaw"><title>getStyleRaw</title>
+<programlisting>
+WindowBase::<link linkend="mthGetStyleRaw">getStyleRaw</link>
+
+<![CDATA[
+>>--getStyleRaw------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetExStyleRaw"><title>getExStyleRaw</title>
+<programlisting>
+WindowBase::<link linkend="mthGetExStyleRaw">getExStyleRaw</link>
+
+<![CDATA[
+>>--getExStyleRaw----------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoSetText"><title>setText</title>
+<programlisting>
+WindowBase::<link linkend="mthSetText">setText</link>
+
+<![CDATA[
+>>--setText(--newText--)---------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetText"><title>getText</title>
+<programlisting>
+WindowBase::<link linkend="mthGetText">getText</link>
+
+<![CDATA[
+>>--getText----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoTitle="><title>title=</title>
+<programlisting>
+WindowBase::<link linkend="mthTitle=">title=</link>
+
+<![CDATA[
+>>--title-=--newText-------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoSetTitle"><title>setTitle</title>
+<programlisting>
+WindowBase::<link linkend="mthSetTitle">setTitle</link>
+
+<![CDATA[
+>>--setTitle(--newText--)--------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoTitle"><title>title</title>
+<programlisting>
+WindowBase::<link linkend="mthTitle">title</link>
+
+<![CDATA[
+>>--title------------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
 <section id="wbdoGetTextSizePx"><title>getTextSizePx</title>
 <programlisting>
 WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
@@ -6907,6 +7005,34 @@ WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
 <![CDATA[
 >>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
                              +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoSetRect"><title>setRect</title>
+<programlisting>
+WindowBase::<link linkend="mthSetRect">setRect</link>
+
+<![CDATA[
+Form 1:
+
+>>--setRect(--rectangle--+------------+--)-------------------------------------><
+                         +-,-showOpts-+
+
+Form 2:
+
+>>--setRect(--point--,--size--+------------+--)--------------------------------><
+                              +-,-showOpts-+
+
+Form 3:
+
+>>--setRect(--x-,--y-,--cx-,--cy--+------------+--)----------------------------><
+                                  +-,-showOpts-+
+
+Generic form:
+
+>>--setRect(--ptSizeRectangle--+------------+--)-------------------------------><
+                               +-,-showOpts-+
 ]]>
 </programlisting>
 </section>
@@ -8852,7 +8978,7 @@ used.
   <listitem>
     <para>
       This example calculates the size needed to display a static message.  It then uses that size to initialize a .Rect
-      object with the co-ordinates of where to place the static control in the dialog. Note that a .Rect object normally
+      object with the coordinates of where to place the static control in the dialog. Note that a .Rect object normally
       defines a bounding rectangle. But, in this case the rectangle is used to specify the upper left corner and the
       width and the height of the rectangle.
       <programlisting>
