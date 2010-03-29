@@ -152,20 +152,12 @@
     <entry><link linkend="mthGetImageClsStaticControl">getImage</link></entry>
     </row>
     <row>
-    <entry>getText</entry>
-    <entry><link linkend="mthGetTextClsStaticControl">getText</link></entry>
-    </row>
-    <row>
     <entry>setIcon</entry>
     <entry><link linkend="mthSetIconClsStaticControl">setIcon</link></entry>
     </row>
     <row>
     <entry>setImage</entry>
     <entry><link linkend="mthSetImageClsStaticControl">setImage</link></entry>
-    </row>
-    <row>
-    <entry>setText</entry>
-    <entry><link linkend="mthSetTextClsStaticControl">setText</link></entry>
     </row>
     </tbody></tgroup>
     </table>
@@ -183,121 +175,6 @@
   object</link>.
 </para>
 </section>  <!-- End StaticControl::new() [class method] -->
-
-
-<section id="mthSetTextClsStaticControl"><title>setText</title>
-<indexterm><primary>setText</primary>
-<secondary>StaticControl class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setText(--text--)----------------------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Sets the text of the static control. This only effects text static controls. For instance, text can not
-  be set for frames or rectangles.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-    <para>The single argument is:
-    <variablelist>
-      <varlistentry><term>text</term>
-      <listitem>
-        <para>
-          The text the control should display.
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      This method returns a non-negative number.
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>other</term>
-        <listitem>
-          <para>
-            Some error was detected.  The number returned is the <link linkend="defSystemErrorCode">system
-            error code</link>.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-      This method is straight forward to use.
-<programlisting>
-<![CDATA[
-static = self~newStatic(IDC_ST_FULLNAME)
-static~setText("James Madison")
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End StaticControl::setText() -->
-
-
-<section id="mthGetTextClsStaticControl"><title>getText</title>
-<indexterm><primary>getText</primary>
-<secondary>StaticControl class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getText--------------------------------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Returns the current text of the control. This method has no effect on any type of static control other
-  than the text static control.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-    <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-    <para>
-      This method does not have any arguments.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      Returns the text of the static control. If an error is detected, this method will set the <link
-      linkend="dotSystemErrorCode">.SystemErrorCode</link> variable and the empty string is returned. (It
-      would be highly unusual for an error to occur.)
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-<programlisting>
-<![CDATA[
-static = self~newStatic(IDC_ST_DESCRIPTION)
-text = static~getText
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End StaticControl::getText() [class method?] -->
 
 
 <section id="mthSetIconClsStaticControl"><title>setIcon</title>

@@ -96,10 +96,6 @@ in the following EditControl Instance Methods table.
 <entry><link linkend="mthGetStyle">GetStyle</link></entry>
 </row>
 <row>
-<entry>GetText</entry>
-<entry><link linkend="mthGetText">GetText</link></entry>
-</row>
-<row>
 <entry>HideBalloon</entry>
 <entry><link linkend="mthHideBalloon">HideBalloon</link></entry>
 </row>
@@ -186,10 +182,6 @@ in the following EditControl Instance Methods table.
 <row>
 <entry>setTabStops</entry>
 <entry><link linkend="mthSetTabStops">setTabStops</link></entry>
-</row>
-<row>
-<entry>SetText</entry>
-<entry><link linkend="mthSetText">SetText</link></entry>
 </row>
 <row>
 <entry>ShowBalloon</entry>
@@ -450,8 +442,8 @@ whether the edit control has been modified.</para>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>(See also the <link
-linkend="exampleSetText">SetText</link> example.)
+<listitem>
+  <para>
 <programlisting>
 <![CDATA[
 if edit~IsModified = 1 then MyDialog~Save
@@ -492,8 +484,7 @@ whether the edit control has been modified.</para>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>In the following example, the Save method stores the dialog
-contents in a file and clears the modified flag.  See also the <link
-linkend="exampleSetText">SetText</link> example.
+contents in a file and clears the modified flag.
 <programlisting>
 <![CDATA[
 ::method Save
@@ -694,6 +685,7 @@ you omit this argument, the maximum number of characters retrieved is 255.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example stores all lines contained in edit control EDITOR
 in a stem. If a line consists of more than 1024 characters, it is truncated.
+TODO FIX THIS TRUNCATION THING.
 <programlisting>
 <![CDATA[
 edit = MyDialog~newEdit("EDITOR")
@@ -708,140 +700,8 @@ end
 
 <note><title>Note</title><para>
 The carriage return and line-feed characters are not included in the returned
-text string. To get the contents of a single line edit control, use the <link
-linkend="mthGetText">GetText</link>) method, or use
-<computeroutput>edit~GetLine</computeroutput> if there is no need to worry about
-truncation, or use <computeroutput>edit~GetLine(1, [maxLength])</computeroutput>
-if the length of the text is greater than 255.
+text string.
 </para></note>
-</section>
-
-<section id="mthGetText"><title>GetText</title>
-<indexterm><primary>GetText</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anEditControl~GetText---------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetText method returns the entire contents of the text buffer of the
-edit control as a string.  The method works the same for both single-line and
-multi-line edit controls.  With multi-line edit controls, the returned string
-will contain the carriage return and line-feed characters present in the text
-buffer.  The programmer does not need to worry about the length of the text in
-the edit control.  All the text is returned no matter what the length of the
-text is.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The text in the edit control.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>For an example, refer to the <link
-linkend="exampleSetText">SetText</link> example.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthSetText"><title>SetText</title>
-<indexterm><primary>SetText</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anEditControl~SetText(--text--)-----------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The SetText method places <emphasis role="italic">text</emphasis> in the
-edit control.  Any current text content in the edit control is completely
-replaced.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>text</term>
-<listitem><para>The text to be displayed in the edit control.  For multi-line
-edit controls the text must contain the carriage return and line-feed
-characters.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return values are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-<varlistentry><term>less than 0</term>
-<listitem><para>Error. The value is the negated Operating System Error code.
-The absolute value of the return can be used to look up the error reason in the
-Windows documentation.
-</para></listitem></varlistentry>
-</variablelist></para></listitem></varlistentry>
-<varlistentry id="exampleSetText"><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following code snippets use the
-<computeroutput>GetText</computeroutput> and
-<computeroutput>SetText</computeroutput> methods in a dialog that could be used
-as a simple file editor:
-<programlisting>
-<![CDATA[
-  ...
-
-::method defineDialog
-
-  ...
-
-  self~addEntryLine(110, , 5, 5, 170, 150, "VSCROLL HSCROLL MULTILINE")
-
-  self~createPushButton(115,  5, 160, 35, 15, , "Open", onOpen)
-  self~createPushButton(116, 45, 160, 35, 15, , "Save", onSave)
-
-  ...
-
-::method initDialog
-  expose editControl
-  editControl = self~newEdit(110)
-
-::method onOpen
-  expose editControl
-
-  if .nil == editControl then return
-
-  fileName = self~getFile
-  if fileName == "" then return
-
-  fObj = .stream~new(fileName)
-  fObj~open
-  if fObj~state \== 'READY' then return
-
-  text = fObj~charin(1, fObj~chars)
-  fObj~close
-
-  editControl~setText(text)
-  editControl~setModified(.false)
-
-::method onSave
-  expose editControl
-
-  if .nil == editControl then return
-
-  if editControl~isModified then do
-    text = editControl~getText
-    self~saveFile(text)
-    editControl~setModified(.false)
-  end
-  else do
-    j = InfoDialog("There is nothing to save")
-  end
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
 </section>
 
 <section id="replaceseltext"><title>ReplaceSelText</title>

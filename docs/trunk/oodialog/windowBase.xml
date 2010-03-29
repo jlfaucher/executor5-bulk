@@ -1663,7 +1663,6 @@ Tree-view Control styles
 
 ]]>
 </programlisting>
-  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
@@ -2142,76 +2141,6 @@ Generic form:
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End WindowBase::setRect() -->
-
-<section id="mthSetRect"><title>setRect</title>
-<indexterm><primary>setRect</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~setRect(--x--,--y--,--width--,--height-->
-
->--+-----------------------------+--)--------------------><
-   |       +----------------+    |
-   |       V                |    |
-   +-,--"----+-NOMOVE-----+-+--"-+
-             +-NOSIZE-----+
-             +-HIDEWINDOW-+
-             +-SHOWWINDOW-+
-             +-NOREDRAW---+
-
-]]>
-</programlisting>
-
-<para>The setRect method sets new coordinates for the
-associated dialog or dialog control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x,y</term>
-<listitem><para>The new position of the upper left corner, in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>width</term>
-<listitem><para>The new width of the dialog or dialog control, in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>height</term>
-<listitem><para>The new height of the dialog or dialog control, in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>showOptions</term>
-<listitem><para>One or more of the following keywords, separated by blanks:
-<variablelist>
-<varlistentry><term>NOMOVE</term>
-<listitem><para>The upper left position of the dialog or dialog control is not changed.
-</para></listitem></varlistentry>
-<varlistentry><term>NOSIZE</term>
-<listitem><para>The size of the dialog or dialog control is not changed.
-</para></listitem></varlistentry>
-<varlistentry><term>HIDEWINDOW</term>
-<listitem><para>The dialog or dialog control is to be made invisible.
-</para></listitem></varlistentry>
-<varlistentry><term>SHOWWINDOW</term>
-<listitem><para>The dialog or dialog control is to be made visible.
-</para></listitem></varlistentry>
-<varlistentry><term>NOREDRAW</term>
-<listitem><para>The dialog or dialog control is to be repositioned without redrawing
-it.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Repositioning was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Repositioning failed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 
 <section id="mthGetTextSizePx"><title>getTextSizePx</title>
 <indexterm><primary>getTextSizePx</primary></indexterm>
