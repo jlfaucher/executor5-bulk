@@ -53,7 +53,7 @@
 
 <section id="atrInitCode"><title>initCode (Attribute)</title>
 <indexterm><primary>initCode</primary></indexterm>
-<indexterm><primary>WindowBase class</primary><secondary>initCode</secondary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>initCode</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>initCode</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>initCode</secondary></indexterm>
 <programlisting>
@@ -127,7 +127,7 @@
 
 <section id="atrHwnd"><title>hwnd (Attribute)</title>
 <indexterm><primary>hwnd</primary></indexterm>
-<indexterm><primary>WindowBase class</primary><secondary>hwnd</secondary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>hwnd</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>hwnd</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>hwnd</secondary></indexterm>
 <programlisting>
@@ -185,7 +185,7 @@ Window handeles:
 
 <section id="atrSizeX"><title>sizeX (Attribute)</title>
 <indexterm><primary>sizeX</primary></indexterm>
-<indexterm><primary>WindowBase class</primary><secondary>sizeX</secondary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>sizeX</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--sizeX-----------------------------------------------------><
@@ -270,7 +270,7 @@ The dialog unit height of the button is: 11
 
 <section id="atrSizeY"><title>sizeY (Attribute)</title>
 <indexterm><primary>sizeY</primary></indexterm>
-<indexterm><primary>WindowBase class</primary><secondary>sizeY</secondary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>sizeY</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--sizeY-----------------------------------------------------><
@@ -290,7 +290,7 @@ The dialog unit height of the button is: 11
 
 <section id="atrFactorX"><title>factorX (Attribute)</title>
 <indexterm><primary>factorX</primary></indexterm>
-<indexterm><primary>WindowBase class</primary><secondary>factorX</secondary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>factorX</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>factorX</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>factorX</secondary></indexterm>
 <programlisting>
@@ -315,7 +315,7 @@ The dialog unit height of the button is: 11
 
 <section id="atrFactorY"><title>factorY (Attribute)</title>
 <indexterm><primary>factorY</primary></indexterm>
-<indexterm><primary>WindowBase class</primary><secondary>factorY</secondary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>factorY</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>factorY</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>factorY</secondary></indexterm>
 <programlisting>
@@ -340,7 +340,7 @@ The dialog unit height of the button is: 11
 
 <section id="atrPixelCX"><title>pixelCX (Attribute)</title>
 <indexterm><primary>pixelCX</primary></indexterm>
-<indexterm><primary>WindowBase class</primary><secondary>pixelCX</secondary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>pixelCX</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>pixelCX</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>pixelCX</secondary></indexterm>
 <programlisting>
@@ -437,7 +437,7 @@ The dialog unit height of the button is: 14
 
 <section id="atrPixelCY"><title>pixelCY (Attribute)</title>
 <indexterm><primary>pixelCY</primary></indexterm>
-<indexterm><primary>WindowBase class</primary><secondary>pixelCY</secondary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>pixelCY</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>pixelCY</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>pixelCY</secondary></indexterm>
 <programlisting>
@@ -1937,6 +1937,9 @@ List control extended style flags:
 
 <section id="mthTitle"><title>title</title>
 <indexterm><primary>title</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>title</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>title</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>title</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--title------------------------------------------------------><
@@ -1948,199 +1951,6 @@ List control extended style flags:
   The <emphasis role="italic">title</emphasis> method is an alias for <link linkend="mthGetText">getText</link>().
 </para>
 </section>
-
-<section id="mthSetRect"><title>setRect</title>
-<indexterm><primary>setRect</primary>
-<secondary>WindowBase class</secondary></indexterm>
-<programlisting>
-<![CDATA[
-Form 1:
-
->>--setRect(--rectangle--+------------+--)-------------------------------------><
-                         +-,-showOpts-+
-
-Form 2:
-
->>--setRect(--point--,--size--+------------+--)--------------------------------><
-                              +-,-showOpts-+
-
-Form 3:
-
->>--setRect(--x-,--y-,--cx-,--cy--+------------+--)----------------------------><
-                                  +-,-showOpts-+
-
-Generic form:
-
->>--setRect(--ptSizeRectangle--+------------+--)-------------------------------><
-                               +-,-showOpts-+
-
-]]>
-</programlisting>
-
-<para>
-  Sets the new point / size rectangle for the window. A point / size rectangle specifies the position of the upper left
-  corner of the window, relative to its parent window, the width of the window, and the height of the window. The point
-  / size rectangle coordinates are specified in pixels.
-</para>
-<para>
-  In essence this moves and resizes the window. By using different <emphasis role="italic">showOpts</emphasis>, the
-  window can be only moved or only resized.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    The first argument(s) specify the new coordinates of the window. These coordinates can be specified using either a
-    <link linkend="clsRect">Rect</link> object, or by using a <link linkend="clsPoint">Point</link> object followed by a
-    <link linkend="clsSize">Size</link> object, or by using the x, y coordinates of the upper left point of the window
-    followed by the width and height of the window.
-  </para>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  <para>
-    This method has no effect if the underlying dialog has not yet been created.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  <variablelist>
-    <varlistentry><term>ptSizeRectangle [required]</term>
-    <listitem>
-    <para>
-      The point / size rectangle argument(s) are all required. They specify the left and top position of the window, the
-      width, and height of the window. As noted above, these coordinates can be specified in the format that is most
-      convenient.
-    </para>
-    <para>
-      <emphasis role="bold">Note carefully:</emphasis> If a <computeroutput>Rectangle</computeroutput> object is used
-      to specify the point / size recatangle, the semantics are not quite correct. The <emphasis
-      role="italic">right</emphasis> member of the <computeroutput>Rectangle</computeroutput> must contain the width of
-      the window and the <emphasis role="italic">bottom</emphasis> member must contain the height of the window.
-    </para>
-    <para>
-      When the <emphasis role="italic">showOpts</emphasis> argument contains the NOMOVE keyword, the x, y coordinates
-      are ignored. Likewise, if <emphasis role="italic">showOpts</emphasis> contains NOSIZE, the width and height
-      portion of the point / size rectangle is ignored.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>showOpts [optional]</term>
-    <listitem>
-    <para>
-      A list of 0 or more of the following keywords separated by spaces. Case is not significant. If this argument is
-      omitted, the window is made visible, moved to the position specified by the x, y coordinates and resized to the
-      width and height specified by the width and height portion of the point / size rectangle
-    </para>
-    <simplelist type='vert' columns='3'>
-      <member>NOSIZE    </member>
-      <member>NOMOVE    </member>
-      <member>HIDEWINDOW</member>
-      <member>SHOWWINDOW</member>
-      <member>NOREDRAW  </member>
-    </simplelist>
-    <variablelist>
-      <varlistentry><term>NOSIZE</term>
-      <listitem>
-      <para>
-         The window will not be resized. The new width and height specified is ignored. The values can be 0, or any
-         other value.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>NOMOVE</term>
-      <listitem>
-      <para>
-        The position of the window will not be changed. The new x, y position is ignored. Again, the values can be 0, or
-        any other value.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>HIDEWINDOW</term>
-      <listitem>
-      <para>
-        In addition to any moving or resizing that is done, the window is made invisible. Note that the Microsoft <link
-        linkend="defWindowsDoc">documentation</link> says that if this flag is set, the window can not be moved or
-        resized. However, experimentation seems to show that the documentation is wrong. It may be that this behavior is
-        different on different versions of Windows.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>SHOWWINDOW</term>
-      <listitem>
-      <para>
-        In addition to any moving or resizing that is done, the window is made invisible.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>NOREDRAW</term>
-      <listitem>
-      <para>
-        No repainting of any kind is done. The programmer is responsible for invalidating or redrawing any parts of the
-        window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the <link
-        linkend="mthRedraw">redraw</link> method.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The return values are:
-  <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      Success.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>1</term>
-    <listitem>
-    <para>
-      Failure. Check <computeroutput>.SystemErrorCode</computeroutput>.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Note that the Microsoft <link linkend="defWindowsDoc">documentation</link> says that if HIDEWINDOW or SHOWWINDOW is
-    used, the window can not be moved or resized. However, experimentation seems to show that the documentation is
-    wrong. It may be that this behavior is different on different versions of Windows. In any case, the programmer
-    should keep this in mind.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example increases the size and width of the dialog by 20 pixels and moves the position of the dialog up and to
-    the left by 10 pixels. This has the effect of enlarging the dialog while keeping the center of the dialog at the
-    same spot.
-<programlisting>
-<![CDATA[
-
-::method zoomOut private
-
- rect = self~windowRect
- rect~right = rect~right - rect~left + 20
- rect~bottom = rect~bottom - rect~top + 20
-
- rect~left -= 10
- rect~top -= 10
-
- self~setRect(rect)
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End WindowBase::setRect() -->
 
 <section id="mthGetTextSizePx"><title>getTextSizePx</title>
 <indexterm><primary>getTextSizePx</primary></indexterm>
@@ -2330,6 +2140,463 @@ stFont2~setRect(r)
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End WindowsBase::getTextSizeScreen() -->
+
+<section id="mthSetRect"><title>setRect</title>
+<indexterm><primary>setRect</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>setRect</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setRect</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>setRect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+Form 1:
+
+>>--setRect(--rectangle--+------------+--)-------------------------------------><
+                         +-,-showOpts-+
+
+Form 2:
+
+>>--setRect(--point--,--size--+------------+--)--------------------------------><
+                              +-,-showOpts-+
+
+Form 3:
+
+>>--setRect(--x-,--y-,--cx-,--cy--+------------+--)----------------------------><
+                                  +-,-showOpts-+
+
+Generic form:
+
+>>--setRect(--ptSizeRectangle--+------------+--)-------------------------------><
+                               +-,-showOpts-+
+
+]]>
+</programlisting>
+
+<para>
+  Sets the new point / size rectangle for the window. A point / size rectangle specifies the position of the upper left
+  corner of the window, relative to its parent window, the width of the window, and the height of the window. The point
+  / size rectangle coordinates are specified in pixels.
+</para>
+<para>
+  In essence this moves and resizes the window. By using different <emphasis role="italic">showOpts</emphasis>, the
+  window can be only moved or only resized.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The first argument(s) specify the new coordinates of the window. These coordinates can be specified using either a
+    <link linkend="clsRect">Rect</link> object, or by using a <link linkend="clsPoint">Point</link> object followed by a
+    <link linkend="clsSize">Size</link> object, or by using the x, y coordinates of the upper left point of the window
+    followed by the width and height of the window.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    This method has no effect if the underlying dialog has not yet been created.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>ptSizeRectangle [required]</term>
+    <listitem>
+    <para>
+      The point / size rectangle argument(s) are all required. They specify the left and top position of the window, the
+      width, and height of the window. As noted above, these coordinates can be specified in the format that is most
+      convenient.
+    </para>
+    <para>
+      <emphasis role="bold">Note carefully:</emphasis> If a <computeroutput>Rectangle</computeroutput> object is used
+      to specify the point / size recatangle, the semantics are not quite correct. The <emphasis
+      role="italic">right</emphasis> member of the <computeroutput>Rectangle</computeroutput> must contain the width of
+      the window and the <emphasis role="italic">bottom</emphasis> member must contain the height of the window.
+    </para>
+    <para>
+      When the <emphasis role="italic">showOpts</emphasis> argument contains the NOMOVE keyword, the x, y coordinates
+      are ignored. Likewise, if <emphasis role="italic">showOpts</emphasis> contains NOSIZE, the width and height
+      portion of the point / size rectangle is ignored.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>showOpts [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces. Case is not significant. If this argument is
+      omitted, the window is made visible, moved to the position specified by the x, y coordinates and resized to the
+      width and height specified by the width and height portion of the point / size rectangle
+    </para>
+    <simplelist type='vert' columns='3'>
+      <member>NOSIZE    </member>
+      <member>NOMOVE    </member>
+      <member>HIDEWINDOW</member>
+      <member>SHOWWINDOW</member>
+      <member>NOREDRAW  </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>NOSIZE</term>
+      <listitem>
+      <para>
+         The window will not be resized. The new width and height specified is ignored. The values can be 0, or any
+         other value.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOMOVE</term>
+      <listitem>
+      <para>
+        The position of the window will not be changed. The new x, y position is ignored. Again, the values can be 0, or
+        any other value.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HIDEWINDOW</term>
+      <listitem>
+      <para>
+        In addition to any moving or resizing that is done, the window is made invisible.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SHOWWINDOW</term>
+      <listitem>
+      <para>
+        In addition to any moving or resizing that is done, the window is made visible.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOREDRAW</term>
+      <listitem>
+      <para>
+        No repainting of any kind is done. The programmer is responsible for invalidating or redrawing any parts of the
+        window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the <link
+        linkend="mthRedraw">redraw</link> method.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Failure. Check <computeroutput>.SystemErrorCode</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Note that the Microsoft <link linkend="defWindowsDoc">documentation</link> says that if HIDEWINDOW or SHOWWINDOW is
+    used, the window can not be moved or resized. However, experimentation seems to show that the documentation is
+    wrong. It may be that this behavior is different on different versions of Windows.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example increases the size and width of the dialog by 20 pixels and moves the position of the dialog up and to
+    the left by 10 pixels. This has the effect of enlarging the dialog while keeping the center of the dialog at the
+    same spot.
+<programlisting>
+<![CDATA[
+
+::method zoomOut private
+
+ rect = self~windowRect
+ rect~right = rect~right - rect~left + 20
+ rect~bottom = rect~bottom - rect~top + 20
+
+ rect~left -= 10
+ rect~top -= 10
+
+ self~setRect(rect)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowBase::setRect() -->
+
+<section id="mthResizeTo"><title>resizeTo</title>
+<indexterm><primary>resizeTo</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>resizeTo</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>resizeTo</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>resizeTo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+Form 1:
+
+>>--resizeTo(--size--+--------------+--)-----------------------><
+                     +--,-showOpts--+
+
+Form 2:
+
+>>--resizeTo(--cx,--cy--+--------------+--)--------------------><
+                        +--,-showOpts--+
+
+Generic form:
+
+>>--resizeTo(--newSize--+--------------+--)--------------------><
+                        +--,-showOpts--+
+]]>
+</programlisting>
+
+<para>
+  Resizes the window to that specified. The new size is specified in pixels.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The first argument(s) specify the new size of the window. These coordinates can be specified using either a
+    <link linkend="clsSize">Size</link> object, or by the new width and new height of the window.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    This method has no effect if the underlying dialog has not yet been created.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>newSize [required]</term>
+    <listitem>
+    <para>
+      As noted above the new size for the window can be specified using a <computeroutput>Size</computeroutput> object
+      or by specifying the new width and then the new height. Both the width and the height are required.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>showOpts [optional]</term>
+  <listitem>
+  <para>
+    A list of 0 or one of the following keywords separated by spaces. Case is not significant. If the window is visible,
+    this argument can, and probably should be, omitted. Combining the arguments makes little sense.
+  </para>
+  <simplelist type='vert' columns='3'>
+    <member>HIDEWINDOW</member>
+    <member>SHOWWINDOW</member>
+    <member>NOREDRAW  </member>
+  </simplelist>
+  <variablelist>
+    <varlistentry><term>HIDEWINDOW</term>
+    <listitem>
+    <para>
+      The window is resized and made invisible.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>SHOWWINDOW</term>
+    <listitem>
+    <para>
+      The window is resized and, if it was hidden, it is made visible.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>NOREDRAW</term>
+    <listitem>
+    <para>
+      No repainting of any kind is done. The programmer is responsible for invalidating or redrawing any parts of the
+      window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the <link
+      linkend="mthRedraw">redraw</link> method.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Failure. Check <computeroutput>.SystemErrorCode</computeroutput>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the minimum size needed for a month calendar control and resizes the control to the result.
+<programlisting>
+<![CDATA[
+
+::method initDialog
+
+  calendar = self~newMonthCalendar(IDC_MC_VACATION)
+  r = .Rect~new
+
+  calendar~getMinRect(r)
+  s = .Size~new(r~right, r~bottom)
+  calendar~resizeTo(s)
+  ...
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowBase::resizeTo() -->
+
+<section id="mthMoveTo"><title>moveTo</title>
+<indexterm><primary>moveTo</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>moveTo</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>moveTo</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>moveTo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+Form 1:
+
+>>--moveTo(--point--+--------------+--)------------------------><
+                    +--,-showOpts--+
+Form 2:
+
+>>--moveTo(--x,--y--+--------------+--)------------------------><
+                    +--,-showOpts--+
+Generic form:
+
+>>--moveTo(--newPos--+--------------+--)-----------------------><
+                     +--,-showOpts--+
+]]>
+</programlisting>
+
+<para>
+  Moves, repositions, the window to the point specified. The new position is specified in pixels and is relative to the
+  top, left corner of the owning window's <link linkend="defClientArea">client</link> area. For a dialog this is the
+  screen and for a dialog control it is the dialog's client area.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The first argument(s) specify the new position of the window. These coordinates can be specified using either a
+    <link linkend="clsPoint">Point</link> object, or by using separate x and y coordinates of the window.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    This method has no effect if the underlying dialog has not yet been created.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>newPos [required]</term>
+    <listitem>
+    <para>
+      As noted above the new position for the window can be specified using a <computeroutput>Point</computeroutput>
+      object or by specifying the separate x and y positions. If a point object is not used, both x and y are required.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Failure. Check <computeroutput>.SystemErrorCode</computeroutput>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term>showOpts [optional]</term>
+  <listitem>
+  <para>
+    A list of 0 or one of the following keywords separated by spaces. Case is not significant. If the window is visible,
+    this argument can, and probably should be, omitted. Combining the arguments makes little sense.
+  </para>
+  <simplelist type='vert' columns='3'>
+    <member>HIDEWINDOW</member>
+    <member>SHOWWINDOW</member>
+    <member>NOREDRAW  </member>
+  </simplelist>
+  <variablelist>
+    <varlistentry><term>HIDEWINDOW</term>
+    <listitem>
+    <para>
+      The window is moved and made invisible.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>SHOWWINDOW</term>
+    <listitem>
+    <para>
+      The window is moved and, if it was hidden, it is made visible.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>NOREDRAW</term>
+    <listitem>
+    <para>
+      No repainting of any kind is done. The programmer is responsible for invalidating or redrawing any parts of the
+      window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the <link
+      linkend="mthRedraw">redraw</link> method.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the minimum size needed for a month calendar control and resizes the control to the result.
+<programlisting>
+<![CDATA[
+
+::method initDialog
+
+  calendar = self~newMonthCalendar(IDC_MC_VACATION)
+  r = .Rect~new
+
+  calendar~getMinRect(r)
+  s = .Size~new(r~right, r~bottom)
+  calendar~resizeTo(s)
+  ...
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowBase::resizeTo() -->
 
 <section id="mthGetRealSize"><title>getRealSize</title>
 <indexterm><primary>getRealSize</primary></indexterm>
