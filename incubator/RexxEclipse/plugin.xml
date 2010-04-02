@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            name="Rexx Editor"
+            extensions="rex, jrex, rexx, cls, rxj, testUnit"
+            icon="icons/rexxLogo.GIF"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="rexxeditor.editors.RexxEditor"
+            id="rexxeditor.editors.RexxEditor">
+      </editor>
+   </extension>
+   <extension point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="rexxeditor.launcher.RexxLaunchConfigurationDelegate"
+            id="rexxeditor.launchConfigurationType"
+            modes="run"
+            name="RexxApplication"
+            public="true">
+         <fileExtension
+               default="true"
+               extension="rex"/>
+   	  </launchConfigurationType>
+   </extension>
+   <extension point="org.eclipse.debug.ui.launchShortcuts">
+    <shortcut
+        id="rexxeditor.rexxLaunchShortcut"
+        class="rexxeditor.launcher.RexxLaunchShortcut"
+        label="Rexx program"
+        icon="icons/rexxLogo.GIF"
+        modes="run">
+            <perspective id="org.eclipse.jdt.ui.JavaPerspective"/>
+            <perspective id="org.eclipse.jdt.ui.JavaHierarchyPerspective"/>
+            <perspective id="org.eclipse.jdt.ui.JavaBrowsingPerspective"/>
+    </shortcut>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="Rexx Preferences"
+            class="rexxeditor.preferences.RexxPreferencePage"
+            id="rexxeditor.preferences.RexxPreferencePage">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="rexxeditor"
+            name="Rexx Wizards"/>
+      <wizard
+            name="ooRexx file"
+            icon="icons/rexxLogo.GIF"
+            category="rexxeditor"
+            class="rexxeditor.wizards.RexxNewWizard"
+            id="rexxeditor.wizards.SampleNewWizard">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="rexxeditor.launcher.RexxLaunchConfigurationTabGroup"
+            id="rexxeditor.launcher.RexxLaunchConfigurationTabGroup"
+            type="rexxeditor.launchConfigurationType">
+         <launchMode mode="run"/>
+      </launchConfigurationTabGroup>
+   </extension>
+   
+	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+	    <launchConfigurationTypeImage
+	        icon="icons/rexxLogo.gif"
+	        configTypeID="rexxeditor.launchConfigurationType"
+	        id="rexxeditor.launchConfigurationTypeImage">
+	    </launchConfigurationTypeImage>
+	</extension>
+ <extension
+       id="ObjectRexxErrorParser"
+       name="Rexx Error Parser for Object Rexx"
+       point="org.eclipse.cdt.core.ErrorParser">
+ </extension>
+
+</plugin>
