@@ -1,0 +1,280 @@
+grammar org.oorexx.workbench.Rexx //with org.eclipse.xtext.common.Terminals
+hidden (ML_COMMENT, SL_COMMENT, WS)
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+generate rexx "http://www.oorexx.org/workbench/Rexx"
+
+File:
+  (instructions+=Instruction)* (requires+=Requires)* (methods+=Method)* (directives+=
+  Directives)*;
+
+Instruction:
+  (Assignment|Do|If|Call) NL;
+
+Assignment:
+  target=Name OP_EQ expression=Expression;
+
+If:
+  'if' expression=Expression 'then' NL? topInstr=Instruction ('else' NL? bottomInstr=
+  Instruction)?;
+
+Do:
+  'do' NL (instrs+=Instruction)+ 'end';
+
+Call:
+  'call' name=Name args=Arguments;
+
+Arguments returns Arguments:
+  {Arguments} (arguments+=Expression (',' arguments+=Expression)*)?;
+
+Expression:
+  {ExprVar} name=Name| fnCall|Message;
+
+fnCall:
+  target=Name '(' args=Arguments ')';
+
+Message:
+  target=Name '~' (discard?='~')? message=Name ('(' args=Arguments ')')?;
+
+Directives:
+  Class|Options;
+
+Class:
+  header=ClassHeader (content+=ClassContent)*;
+
+ClassHeader:
+  '::class' name=Name ('metaclass' meta=Name)? (('subclass' subclass=Name)|(
+  'mixinclass' mixin=Name))? (visibility=VISIBILITY)? ('inherit' (inherit+=Name)+)? NL;
+
+ClassContent:
+  Method|Attribute|Constant;
+
+Method:
+  '::method' name=Name (visibility=VISIBILITY)? (class?='class')? NL;
+
+Attribute:
+  '::attribute' name=Name NL;
+
+Constant:
+  '::constant' name=Name NL;
+
+Routine:
+  '::routine' name=Name NL;
+
+Requires:
+  '::requires' name=Name NL;
+
+Options:
+  '::options' name=Name NL;
+
+Name:
+  STRING|SYMBOL_VAR;
+
+enum VISIBILITY:
+  PRIVATE='private' | PUBLIC='public'; //terminal CONTINUATION:
+//  (OP_MINUS | COMMA) WS? (ML_COMMENT | SL_COMMENT)* WS? NL;
+
+
+terminal WS:
+  (' ' | '\t')+;
+
+terminal ML_COMMENT:
+  '/*'->'*/';
+
+terminal SL_COMMENT:
+  '--' !('\r' | '\n')* ('\r'? '\n')?;
+
+terminal NL:
+  (('\r'? '\n') | ';')+; //terminal METACLASS:
+//  'METACLASS';
+//
+//terminal MIXINCLASS:
+//  'MIXINCLASS';
+//
+//terminal SUBCLASS:
+//  'SUBCLASS';
+//
+//terminal INHERIT:
+//  'INHERIT';
+//
+//terminal DIRECTIVE_CLASS:
+//  '::CLASS';
+//terminal DIRECTIVE_METHOD:
+//  '::METHOD';
+//
+//terminal DIRECTIVE_CONSTANT:
+//  '::CONSTANT';
+//
+//terminal DIRECTIVE_REQUIRES:
+//  '::REQUIRES';
+//
+//terminal DIRECTIVE_ROUTINE:
+//  '::ROUTINE';
+//terminal DIRECTIVE_OPTIONS:
+//  '::OPTIONS';
+
+
+terminal STRING:
+  ('"' (!'"')* '"') | ("'" (!"'" | "''")* "'");
+
+terminal STRING_HEX:
+  STRING ('X' | 'x');
+
+terminal STRING_BOOL:
+  STRING ('B' | 'b');
+
+terminal SYMBOL_VAR:
+  ('A'..'Z' | 'a'..'z' | '_' | '?' | '!') ('A'..'Z' | 'a'..'z' | '0'..'9' | '_' | '.' | '!' | '?')*;
+
+terminal SYMBOL_CLS:
+  '.' SYMBOL_VAR;
+
+terminal SYMBOL_NUM:
+  '0'..'9'+ //| ('0'..'9')* '.' ('0'..'9')+ (('e' | 'E') ('+' | '-')? ('0'..'9')+)
+;
+
+terminal OP_PLUS:
+  '+';
+
+terminal OP_MINUS:
+  '-';
+
+terminal OP_BACKSLASH:
+  '\\';
+
+terminal OP_SLASH:
+  '/';
+
+terminal OP_PERCENT:
+  '%';
+
+terminal OP_STAR:
+  '*';
+
+terminal OP_PIPE:
+  '|';
+
+terminal OP_ET:
+  '&';
+
+terminal OP_EQ:
+  '=';
+
+terminal OP_NEG:
+  '¬';
+
+terminal OP_GT:
+  '>';
+
+terminal OP_LT:
+  '<';
+
+terminal OP_GEQ:
+  '>=';
+
+terminal OP_LEQ:
+  '<=';
+
+terminal OP_BSGT:
+  '\\>';
+
+terminal OP_BSLT:
+  '\\<';
+
+terminal OP_BSEQ:
+  '\\=';
+
+terminal OP_GTLT:
+  '><';
+
+terminal OP_LTGT:
+  '<>';
+
+terminal OP_EQ2:
+  '==';
+
+terminal OP_BSEQ2:
+  '\\==';
+
+terminal OP_SLASH2:
+  '//';
+
+terminal OP_AND2:
+  '&&';
+
+terminal OP_PIPE2:
+  '||';
+
+terminal OP_STAR2:
+  '**';
+
+terminal OP_NGT:
+  '¬>';
+
+terminal OP_NLT:
+  '¬<';
+
+terminal OP_NEQ:
+  '¬=';
+
+terminal OP_NEQ2:
+  '¬==';
+
+terminal OP_GT2:
+  '>>';
+
+terminal OP_LT2:
+  '<<';
+
+terminal OP_GT2EQ:
+  '>>=';
+
+terminal OP_BSLT2:
+  '\\<<';
+
+terminal OP_NLT2:
+  '¬<<';
+
+terminal OP_BSGT2:
+  '\\>>';
+
+terminal OP_NGT2:
+  '¬>>';
+
+terminal OP_LT2EQ:
+  '<<=';
+
+terminal OP_PLUSEQ:
+  '+=';
+
+terminal OP_MINUSEQ:
+  '-=';
+
+terminal OP_STAREQ:
+  '*=';
+
+terminal OP_SLASHEQ:
+  '/=';
+
+terminal OP_PERCENTEQ:
+  '%=';
+
+terminal OP_SLAHS2EQ:
+  '//=';
+
+terminal OP_PIPE2EQ:
+  '||=';
+
+terminal OP_ANDEQ:
+  '&=';
+
+terminal OP_PIPEEQ:
+  '|=';
+
+terminal OP_AND2EQ:
+  '&&=';
+
+terminal COLON:
+  ':';
+	

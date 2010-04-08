@@ -1,0 +1,310 @@
+grammar org.oorexx.workbench.Rexx //with org.eclipse.xtext.common.Terminals
+hidden (ML_COMMENT, SL_COMMENT, WS)
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+generate rexx "http://www.oorexx.org/workbench/Rexx"
+
+File:
+  {File} TERM* (instructions+=Instruction)* (requires+=Requires)* (methods+=Method)* (
+  directives+=Directives)*;
+
+Instruction:
+  (Assignment|Do|If|Call|Arg|UseArg|Raise|Message) TERM+;
+
+Assignment:
+  target=Name '=' expression=Expression;
+
+If:
+  'if' expression=Expression 'then' TERM* topInstr=Instruction ('else' TERM* bottomInstr=
+  Instruction)?;
+
+Do:
+  'do' TERM+ (instrs+=Instruction)+ 'end';
+
+Call:
+  'call' name=Name args=Arguments;
+
+Arg:
+  {Arg} 'arg' ((args+=Name) (',' (args+=Name))*)?;
+
+UseArg:
+  {UseArg} 'use' (strict?='strict')? 'arg' ((args+=UseArgs) (',' (args+=UseArgs))*)?;
+
+UseArgs:
+  name=Name ('=' default=Expression)?;
+
+Arguments returns Arguments:
+  {Arguments} (arguments+=Expression (',' arguments+=Expression)*)?;
+
+Raise:
+  'raise' 'syntax' mayor=SYMBOL_NUM ('.' minor=SYMBOL_NUM);
+
+Expression:
+  {ExprVar} name=Name|fnCall|Message|ArrayAccess|Negate|Const;
+
+ArrayAccess:
+  target=Name '[' index=Expression ']';
+
+fnCall:
+  target=Name '(' args=Arguments ')';
+
+Message:
+  target=Name '~' (discard?='~')? message=Name (':' scope=Name)? (('(' args=Arguments ')')
+  |'=' value=Expression)?;
+
+Negate:
+  '\\' expression=Expression;
+
+Const returns Const:
+  {Const} value=( SYMBOL_NUM | STRING_BOOL | STRING_HEX );
+
+Directives:
+  Class|Options|Routine;
+
+Class:
+  '::class' name=Name ('metaclass' meta=Name)? (('subclass' subclass=Name)|(
+  'mixinclass' mixin=Name))? (visibility=VISIBILITY)? ('inherit' (inherit+=Name)+)?
+  TERM+ (content+=ClassContent)*;
+
+ClassContent:
+  Method|Attribute|Constant;
+
+Method:
+  '::method' name=Name (visibility=VISIBILITY)? (class?='class')? TERM+ ('expose' (
+  expose+=Name)+ TERM+)? (content+=Instruction)*;
+
+Attribute:
+  (AttributeSet|AttributeGet|AttributeNormal) (visibility=VISIBILITY)? (class?=
+  'class')? TERM+ ('expose' (expose+=Name)+ TERM+)? (content+=Instruction)*;
+
+AttributeSet:
+  '::attribute' name=Name 'set';
+
+AttributeGet:
+  '::attribute' name=Name 'get';
+
+AttributeNormal:
+  '::attribute' name=Name;
+
+Constant:
+  '::constant' name=Name TERM+;
+
+Routine:
+  '::routine' name=Name TERM+;
+
+Requires:
+  '::requires' name=Name TERM+;
+
+Options:
+  '::options' name=Name TERM+;
+
+Name:
+  STRING|SYMBOL_VAR;
+
+enum VISIBILITY:
+  PRIVATE='private' | PUBLIC='public'; //terminal CONTINUATION:
+//  (OP_MINUS | COMMA) WS? (ML_COMMENT | SL_COMMENT)* WS? NL;
+
+
+terminal WS:
+  (' ' | '\t')+;
+
+terminal ML_COMMENT:
+  '/*'->'*/';
+
+terminal SL_COMMENT:
+  '--' !('\r' | '\n')*;
+
+terminal TERM:
+  (NL | ';')+;
+
+terminal NL:
+  ('\r'? '\n'); //terminal METACLASS:
+//  'METACLASS';
+//
+//terminal MIXINCLASS:
+//  'MIXINCLASS';
+//
+//terminal SUBCLASS:
+//  'SUBCLASS';
+//
+//terminal INHERIT:
+//  'INHERIT';
+//
+//terminal DIRECTIVE_CLASS:
+//  '::CLASS';
+//terminal DIRECTIVE_METHOD:
+//  '::METHOD';
+//
+//terminal DIRECTIVE_CONSTANT:
+//  '::CONSTANT';
+//
+//terminal DIRECTIVE_REQUIRES:
+//  '::REQUIRES';
+//
+//terminal DIRECTIVE_ROUTINE:
+//  '::ROUTINE';
+//terminal DIRECTIVE_OPTIONS:
+//  '::OPTIONS';
+
+
+terminal STRING:
+  ('"' (!'"')* '"') | ("'" (!"'" | "''")* "'");
+
+terminal STRING_HEX:
+  STRING ('X' | 'x');
+
+terminal STRING_BOOL:
+  STRING ('B' | 'b');
+
+terminal SYMBOL_VAR:
+  ('A'..'Z' | 'a'..'z' | '_' | '?' | '!') ('A'..'Z' | 'a'..'z' | '0'..'9' | '_' | '.' | '!' | '?')*;
+
+terminal SYMBOL_CLS:
+  '.' SYMBOL_VAR;
+
+terminal SYMBOL_NUM:
+  '0'..'9'+ //| ('0'..'9')* '.' ('0'..'9')+ (('e' | 'E') ('+' | '-')? ('0'..'9')+)
+;
+
+terminal OP_PLUS:
+  '+';
+
+terminal OP_MINUS:
+  '-';
+
+terminal OP_SLASH:
+  '/';
+
+terminal OP_PERCENT:
+  '%';
+
+terminal OP_STAR:
+  '*';
+
+terminal OP_PIPE:
+  '|';
+
+terminal OP_ET:
+  '&'; //terminal OP_EQ:
+//  '=';
+
+
+terminal OP_NEG:
+  '¬';
+
+terminal OP_GT:
+  '>';
+
+terminal OP_LT:
+  '<';
+
+terminal OP_GEQ:
+  '>=';
+
+terminal OP_LEQ:
+  '<=';
+
+terminal OP_BSGT:
+  '\\>';
+
+terminal OP_BSLT:
+  '\\<';
+
+terminal OP_BSEQ:
+  '\\=';
+
+terminal OP_GTLT:
+  '><';
+
+terminal OP_LTGT:
+  '<>';
+
+terminal OP_EQ2:
+  '==';
+
+terminal OP_BSEQ2:
+  '\\==';
+
+terminal OP_SLASH2:
+  '//';
+
+terminal OP_AND2:
+  '&&';
+
+terminal OP_PIPE2:
+  '||';
+
+terminal OP_STAR2:
+  '**';
+
+terminal OP_NGT:
+  '¬>';
+
+terminal OP_NLT:
+  '¬<';
+
+terminal OP_NEQ:
+  '¬=';
+
+terminal OP_NEQ2:
+  '¬==';
+
+terminal OP_GT2:
+  '>>';
+
+terminal OP_LT2:
+  '<<';
+
+terminal OP_GT2EQ:
+  '>>=';
+
+terminal OP_BSLT2:
+  '\\<<';
+
+terminal OP_NLT2:
+  '¬<<';
+
+terminal OP_BSGT2:
+  '\\>>';
+
+terminal OP_NGT2:
+  '¬>>';
+
+terminal OP_LT2EQ:
+  '<<=';
+
+terminal OP_PLUSEQ:
+  '+=';
+
+terminal OP_MINUSEQ:
+  '-=';
+
+terminal OP_STAREQ:
+  '*=';
+
+terminal OP_SLASHEQ:
+  '/=';
+
+terminal OP_PERCENTEQ:
+  '%=';
+
+terminal OP_SLAHS2EQ:
+  '//=';
+
+terminal OP_PIPE2EQ:
+  '||=';
+
+terminal OP_ANDEQ:
+  '&=';
+
+terminal OP_PIPEEQ:
+  '|=';
+
+terminal OP_AND2EQ:
+  '&&=';
+
+//terminal COLON:
+//  ':';
+	

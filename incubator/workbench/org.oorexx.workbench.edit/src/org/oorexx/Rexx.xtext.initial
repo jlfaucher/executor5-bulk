@@ -1,0 +1,39 @@
+grammar org.oorexx.Rexx with org.eclipse.xtext.common.Terminals
+
+generate rexx "http://www.oorexx.org/Rexx"
+
+Model returns Namespace:
+	(imports+=Import)*
+	(elements+=ModelElement)*;
+	
+ModelElement:
+	Namespace | Type;
+	
+Namespace:
+	'namespace' name=FQN '{'
+		(imports+=Import)*
+		(elements+=ModelElement)*
+	'}';
+
+FQN:
+	ID ('.' ID)*;
+
+Import :
+	'import' importedNamespace=ImportedFQN;
+
+ImportedFQN:
+	FQN ('.' '*')?;
+
+Type:
+	SimpleType | Entity;
+	
+SimpleType:
+	'type' name=ID;
+	
+Entity :
+	'entity' name=ID ('extends' extends=[Entity|FQN])? '{'
+		properties+=Property*
+	'}';
+
+Property:
+	'property' name=ID ':' type=[Type|FQN] (many?='[]')?;
