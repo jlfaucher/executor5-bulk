@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.oorexx.workbench.edit/src-gen"
+    editDirectory="/org.oorexx.workbench.edit.edit/src" editorDirectory="/org.oorexx.workbench.edit.editor/src"
+    modelPluginID="org.oorexx.workbench.edit" forceOverwrite="true" modelName="Rexx"
+    updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    complianceLevel="5.0" copyrightFields="false" editPluginID="org.oorexx.workbench.edit.edit"
+    editorPluginID="org.oorexx.workbench.edit.editor">
+  <genPackages prefix="Rexx" basePackage="org.oorexx.workbench" disposableProviderFactory="true"
+      ecorePackage="Rexx.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Rexx.ecore#//VISIBILITY">
+      <genEnumLiterals ecoreEnumLiteral="Rexx.ecore#//VISIBILITY/PRIVATE"/>
+      <genEnumLiterals ecoreEnumLiteral="Rexx.ecore#//VISIBILITY/PUBLIC"/>
+    </genEnums>
+    <genClasses ecoreClass="Rexx.ecore#//File">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//File/instructions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//File/requires"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//File/methods"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//File/directives"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//Instruction"/>
+    <genClasses ecoreClass="Rexx.ecore#//Assignment">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Assignment/target"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//Assignment/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//If">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//If/expression"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//If/topInstr"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//If/bottomInstr"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//Do">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//Do/instrs"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//Call">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Call/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//Call/args"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//Arg">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Arg/args"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//UseArg">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//UseArg/strict"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//UseArg/args"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//UseArgs">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//UseArgs/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//UseArgs/default"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//Arguments">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//Arguments/arguments"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//Raise">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Raise/mayor"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Raise/minor"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//Expression"/>
+    <genClasses ecoreClass="Rexx.ecore#//ArrayAccess">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//ArrayAccess/target"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//ArrayAccess/index"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//fnCall">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//fnCall/target"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//fnCall/args"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//Message">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Message/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Message/discard"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Message/message"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Message/scope"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//Message/args"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//Message/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//Negate">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//Negate/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//Const">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Const/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//Directives">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Directives/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//Class">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Class/meta"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Class/subclass"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Class/mixin"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Class/visibility"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Class/inherit"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//Class/content"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//ClassContent">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//ClassContent/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//Method">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Method/visibility"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Method/class"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Method/expose"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//Method/content"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//Attribute">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Attribute/visibility"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Attribute/class"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Attribute/expose"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Rexx.ecore#//Attribute/content"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//AttributeSet"/>
+    <genClasses ecoreClass="Rexx.ecore#//AttributeGet"/>
+    <genClasses ecoreClass="Rexx.ecore#//AttributeNormal"/>
+    <genClasses ecoreClass="Rexx.ecore#//Constant"/>
+    <genClasses ecoreClass="Rexx.ecore#//Routine"/>
+    <genClasses ecoreClass="Rexx.ecore#//Requires">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//Requires/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Rexx.ecore#//Options"/>
+    <genClasses ecoreClass="Rexx.ecore#//ExprVar">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Rexx.ecore#//ExprVar/name"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
