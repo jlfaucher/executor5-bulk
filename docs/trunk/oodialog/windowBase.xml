@@ -2488,8 +2488,8 @@ Generic form:
 </programlisting>
 
 <para>
-  Moves, repositions, the window to the point specified. The new position is specified in pixels and is relative to the
-  top, left corner of the owning window's <link linkend="defClientArea">client</link> area. For a dialog this is the
+  Moves, (repositions,) the window to the point specified. The new position is specified in pixels and is relative to
+  the top, left corner of the owning window's <link linkend="defClientArea">client</link> area. For a dialog this is the
   screen and for a dialog control it is the dialog's client area.
 </para>
 <variablelist>
@@ -2524,34 +2524,19 @@ Generic form:
   </variablelist>
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The return values are:
-  <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      Success.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>1</term>
-    <listitem>
-    <para>
-      Failure. Check <computeroutput>.SystemErrorCode</computeroutput>.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term>showOpts [optional]</term>
   <listitem>
   <para>
     A list of 0 or one of the following keywords separated by spaces. Case is not significant. If the window is visible,
     this argument can, and probably should be, omitted. Combining the arguments makes little sense.
   </para>
-  <simplelist type='vert' columns='3'>
-    <member>HIDEWINDOW</member>
-    <member>SHOWWINDOW</member>
-    <member>NOREDRAW  </member>
-  </simplelist>
+  <para>
+    <simplelist type='vert' columns='2'>
+      <member>HIDEWINDOW</member>
+      <member>SHOWWINDOW</member>
+      <member>NOREDRAW  </member>
+    </simplelist>
+  </para>
   <variablelist>
     <varlistentry><term>HIDEWINDOW</term>
     <listitem>
@@ -2574,6 +2559,23 @@ Generic form:
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Failure. Check <computeroutput>.SystemErrorCode</computeroutput>.
+    </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
@@ -2611,56 +2613,116 @@ Generic form:
 </programlisting>
 
 <para>
-  xx
+  Retrives the size of the window in pixels.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   <para>
-    xx
+    This method has no effect if the underlying dialog has not yet been created.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    This method takes no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The size of the window, in pixels, as a <link linkend="clsSize">Size</link> object. In the unlikely event of an
+    error, the width and height will be 0.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para></listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shrinks the dialog by 10 pixels:
 <programlisting>
 <![CDATA[
 
+::method shrink
+
+  size = self~getRealSize
+
+  size~width -= 10
+  size~height -= 10
+  self~resizeTo(size)
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End WindowBase::getRealSize() -->
+
+<section id="mthGetRealPos"><title>getRealPos</title>
+<indexterm><primary>getRealPos</primary></indexterm>
+<indexterm><primary>WindowBase</primary><secondary>getRealPos</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getRealPos</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getRealPos</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getRealPos-------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrives the position of the window in pixels.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    This method has no effect if the underlying dialog has not yet been created.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The position of the window, in pixels, as a <link linkend="clsPoint">Point</link> object. In the unlikely event of
+    an error, the x and y co-ordingates will be 0. Of course those co-ordinates could be valid, check
+    <computeroutput>.SystemErrorCode</computeroutput> for a possible error code.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shrinks the dialog by 10 pixels:
+<programlisting>
+<![CDATA[
+
+::method move
+  use strict arg newPosition
+
+  pos = self~getRealPos
+  say 'Current dialog position is ('pos~x','pos~y')'
+
+  say 'Going to move to ('newPosition~x','newPosition~y') using moveTo()'
+  self~moveTo(newPosition)
+  say
+  pos = self~getRealPos
+  say 'getRealPos() says position is ('pos~x','pos~y')'
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowBase::getRealPos() -->
 
 <section id="mthGetSize"><title>getSize</title>
 <indexterm><primary>getSize</primary></indexterm>
@@ -2683,8 +2745,9 @@ Generic form:
   <para>
     The values returned by this method are usually <link linkend="ovvInaccurate">incorrect</link> because they are
     calculated using <link linkend="atrFactorX">factorX</link> and <link linkend="atrFactorY">factorY</link>. The <link
-    linkend="mthGetRealSize">getRealSize</link>() method should be used with the <link
-    linkend="mthPixel2DlgUnit">pixel2dlgUnit</link> method instead.
+    linkend="mthGetRealSize">getRealSize</link>() method returns the correct size in pixels. Normally it is not
+    necessary to covert to dialog units. However, if this is desired, use the <link
+    linkend="mthPixel2DlgUnit">pixel2dlgUnit</link> method to get the correct size.
   </para>
   <para>
     This method can only be used after the <link linkend="ovvUnderlying">underlying Windows dialog</link> has been
@@ -2703,7 +2766,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    A string with the width and height of the window, separated by a blank.
+    A string with the width and height of the window, in dialog units, separated by a blank.
   </para>
   </listitem></varlistentry>
 </variablelist>

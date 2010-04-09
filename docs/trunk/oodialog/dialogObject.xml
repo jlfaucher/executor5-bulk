@@ -537,14 +537,6 @@
 <entry>Gets the text of the dialog.</entry>
 </row>
 <row>
-<entry><link linkend="wbdoSetRect">setRect</link></entry>
-<entry>Changes the size and position of the dialog to that specified (in pixels.)</entry>
-</row>
-<row>
-<entry><link linkend="wbdoResizeTo">resizeTo</link></entry>
-<entry>Gives the dialog a new size specified in pixels.</entry>
-</row>
-<row>
 <entry><link linkend="wbdoGetTextSizePx">getTextSizePx</link></entry>
 <entry>Calculates the size needed for a string in pixels <emphasis role="bold">(preferred method.)</emphasis></entry>
 </row>
@@ -557,8 +549,20 @@
 <entry>Moves and resizes the dialog, optionally, only one or the other.</entry>
 </row>
 <row>
+<entry><link linkend="wbdoResizeTo">resizeTo</link></entry>
+<entry>Resizes the dialog to the size specified in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoMoveTo">moveTo</link></entry>
+<entry>Moves the dialog to the position specified in pixels.</entry>
+</row>
+<row>
 <entry><link linkend="wbdoGetRealSize">getRealSize</link></entry>
-<entry>Returns the size of the window in pixels.</entry>
+<entry>Returns the size of the window in pixels as a <computeroutput>Size</computeroutput> object.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoGetRealPos">getRealPos</link></entry>
+<entry>Returns the position of the window in pixels as a <computeroutput>Point</computeroutput> object.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoGetSize">getSize</link></entry>
@@ -1259,8 +1263,8 @@
 <entry><link linkend="h000246">SetWindowTitle</link></entry>
 </row>
 <row>
-<entry>Show</entry>
-<entry><link linkend=mthShowClsPlainBaseDialog>show</link></entry>
+<entry>show</entry>
+<entry><link linkend="mthShowClsPlainBaseDialog">show</link></entry>
 </row>
 <row>
 <entry>ShowItem</entry>
@@ -7045,7 +7049,7 @@ Generic form:
 </programlisting>
 </section>
 
-<section id="wbdcoResizeTo"><title>resizeTo</title>
+<section id="wbdoResizeTo"><title>resizeTo</title>
 <programlisting>
 WindowBase::<link linkend="mthResizeTo">resizeTo</link>
 
@@ -7065,12 +7069,43 @@ Generic form:
 </programlisting>
 </section>
 
+<section id="wbdoMoveTo"><title>moveTo</title>
+<programlisting>
+WindowBase::<link linkend="mthMoveTo">moveTo</link>
+
+<![CDATA[
+Form 1:
+
+>>--moveTo(--point--+--------------+--)------------------------><
+                    +--,-showOpts--+
+Form 2:
+
+>>--moveTo(--x,--y--+--------------+--)------------------------><
+                    +--,-showOpts--+
+Generic form:
+
+>>--moveTo(--newPos--+--------------+--)-----------------------><
+                     +--,-showOpts--+
+]]>
+</programlisting>
+</section>
+
 <section id="wbdoGetRealSize"><title>getRealSize</title>
 <programlisting>
-WindowBase::<link linkend="mthGetSize">getRealSize</link>
+WindowBase::<link linkend="mthGetRealSize">getRealSize</link>
 
 <![CDATA[
 >>--getRealSize------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetRealPos"><title>getRealPos</title>
+<programlisting>
+WindowBase::<link linkend="mthGetSize">getRealPos</link>
+
+<![CDATA[
+>>--getRealPos-------------------------------------------------><
 ]]>
 </programlisting>
 </section>
