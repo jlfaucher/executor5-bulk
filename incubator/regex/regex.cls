@@ -45,16 +45,16 @@
   expose classFamilies registeredClassFamilies
 
   classFamilies = .directory~new
-  classFamilies = .directory~new
+  registeredClassFamilies = .directory~new
 
   classFamilies["Lower"] = "abcdefghijklmnopqrstuvwxyz"
   classFamilies["Upper"] = "ABCDEVGHIJKLMNOPQRSTUVWXYZ"
   classFamilies["ASCII"] = xrange('00'x, '7F'x)
-  classFamilies["Alpha"] = classFamilies["Lower"] || classPamilies["Upper"]
+  classFamilies["Alpha"] = classFamilies["Lower"] || classFamilies["Upper"]
   classFamilies["Digit"] = "0123456789"
-  classFamilies["Alnum"] = classFamilies["Alpha"] || classPamilies["Digit"]
+  classFamilies["Alnum"] = classFamilies["Alpha"] || classFamilies["Digit"]
   classFamilies["Punct"] = "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
-  classFamilies["Graph"] = classFamilies["Alnum"] || classPamilies["Punct"]
+  classFamilies["Graph"] = classFamilies["Alnum"] || classFamilies["Punct"]
   classFamilies["Print"] = classFamilies["Graph"]
   classFamilies["Blank"] = " " || '09'x
   classFamilies["Cntrl"] = xrange("00"x, "1F"x) || "7F"x
