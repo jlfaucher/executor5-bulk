@@ -894,7 +894,7 @@
                               end
                           end
                           when ch == "]" | ch == "&" then do
-                              // either the complete end, or a section end.
+                              -- either the complete end, or a section end.
                               self~previous
                               leave
                           end
@@ -997,14 +997,14 @@
               -- if this is the beginning of the range, we'll return that node instead.
               -- otherwise, we'll process what we have and pick this up later
               if inRange | characters \== "" then do
-                  // push back both characters
+                  -- push back both characters
                   self~previous
                   self~previous
                   leave
               end
 
               version = escaped == "P"
-              // strangely, this could be something like ^\P{ } which is a double negative
+              -- strangely, this could be something like ^\P{ } which is a double negative
               if negated then do
                   version = \version
               end
@@ -1015,13 +1015,13 @@
               -- this is some sort of escaped op, probably
               if ch == .nil then do
                   if inRange | characters \= "" then do
-                      // push back both characters
+                      -- push back both characters
                       self~previous
                       self~previous
                       leave
                   end
                   else do
-                      // we can process this as a node
+                      -- we can process this as a node
                       return self~parseEscapedOperation
                   end
               end
@@ -1182,7 +1182,7 @@
           return x2c(self~readHex || self~readHex)
       end
       otherwise do
-          // if not one of the reserved characters at this point, we return the escaped char
+          -- if not one of the reserved characters at this point, we return the escaped char
           if '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'~pos(ch) == 0 then do
               return ch
           end
@@ -1795,12 +1795,12 @@
       return .false
   end
 
-  // not a alphanumeric at the current position, so cannot be a word start
+  -- not a alphanumeric at the current position, so cannot be a word start
   if wordChars~pos(target~substr(position - 1, 1)) == 0 then do
       return .false
   end
 
-  // if this is at the start, then it is a word start
+  -- if this is at the start, then it is a word start
   if \context->checkStart(position - 1) then do
       return .true
   end
@@ -1847,7 +1847,7 @@
 
   endPosition = context~endPosition - 2
 
-  // not possibly at the end of the text?
+  -- not possibly at the end of the text?
   if position < endPosition then do
       return .false
   end
@@ -1872,7 +1872,7 @@
 
   endPosition = context~endPosition - 2
 
-  // not enough room for a linend?
+  -- not enough room for a linend?
   if position > endPosition then do
       return .false
   end
@@ -1892,7 +1892,7 @@
 
   endPosition = context~endPosition - 1
 
-  // not possibly at the end of the text?
+  -- not possibly at the end of the text?
   if position < endPosition then do
       return .false
   end
@@ -2098,11 +2098,11 @@ self~getMatchMetrics:super(metrics)
           return .false
       end
 
-      // if not moving, this is a failure here
+      -- if not moving, this is a failure here
       if current == context~lastMatch then do
           return .false
       end
-      // step the position and count and check again
+      -- step the position and count and check again
       current = context~lastMatch
       matches = matches + 1
   end
@@ -2643,7 +2643,7 @@ self~getMatchMetrics:super(metrics)
 
   do i = position for probes
       if self~next~match(context, i, target) then do
-          // update the match information
+          -- update the match information
           context~setMatchPosition(i, context~matchEnd);
           return .true
       end
