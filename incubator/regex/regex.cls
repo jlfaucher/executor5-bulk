@@ -1339,8 +1339,8 @@
   next = .nil
   anchored = .false    -- most nodes are not anchored
 
-::method next attribute
-::method anchored
+::attribute next
+::attribute anchored
 
 ::method getMatchMetrics
   expose next
@@ -1364,10 +1364,9 @@
 
 ::class BeginTextNode subclass matchNode
 ::method init
+  self~init:super
   -- these are anchored
   self~anchored = .true
-  self~init:super
-
 
 ::method match
   use arg context, position, target
@@ -1468,6 +1467,7 @@
 ::class SingleCharNode subclass matchNode
 ::method init
   expose matchChar
+  use arg matchChar
   self~init:super
 
 ::method match
@@ -1559,6 +1559,7 @@
 ::class NotSingleChar subclass matchNode
 ::method init
   expose matchChar
+  use arg matchChar
 
   self~init:super
 
@@ -1782,13 +1783,9 @@
 
 
 ::class WordStartNode subclass MatchNode
-::method init
-  expose wordChars
-  wordChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
-  self~init:super
+::constant wordChars 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
 
 ::method match
-  expose wordChars
   use arg context, position, target
 
   if context->checkEnd(position) then do
@@ -1796,7 +1793,7 @@
   end
 
   -- not a alphanumeric at the current position, so cannot be a word start
-  if wordChars~pos(target~substr(position - 1, 1)) == 0 then do
+  if self~wordChars~pos(target~substr(position - 1, 1)) == 0 then do
       return .false
   end
 
@@ -1806,7 +1803,7 @@
   end
 
   -- the previous character must not be a word character
-  if wordChars~pos(target~substr(position - 1, 1)) > 0 then do
+  if self~wordChars~pos(target~substr(position - 1, 1)) > 0 then do
       return .false
   end
 
@@ -1815,10 +1812,7 @@
 
 
 ::class WordEndNode subclass MatchNode
-::method init
-  expose wordChars
-  wordChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
-  self~init:super
+::constant wordChars 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
 
 ::method match
   expose wordChars
@@ -1826,7 +1820,7 @@
 
   -- if not at the end, make sure this position is not a word char
   if \context->checkEnd(position) then do
-      if wordChars~pos(target~substr(position - 1, 1)) > 0 then do
+      if self~wordChars~pos(target~substr(position - 1, 1)) > 0 then do
           return .false
       end
   end
@@ -1880,7 +1874,7 @@
   return target~substr(position, 2) == '0d0a'x & self~next~match(context, position, target)
 
 
--- check for a lineend in non-unix mode.  This matches on a '\r\n' sequence
+-- check for a lineend in unix mode.  This matches on a '\n' sequence
 -- but NOT the end of the input
 ::class UnixLineEndNode subclass MatchNode
 ::method match
@@ -1900,7 +1894,7 @@
   return target~substr(position, 1) == '0a'x & self~next~match(context, position, target)
 
 
--- check for a lineend in non-unix mode.  This matches on a '\r\n' sequence
+-- check for a lineend in unix mode.  This matches on a '\n' sequence
 -- but NOT the end of the input
 ::class UnixMultiLineEndNode subclass MatchNode
 ::method match
@@ -1913,8 +1907,7 @@
   return target~substr(position, 1) == '0a'x & self~next~match(context, position, target)
 
 
--- check for a lineend in non-unix mode.  This matches on a '\r\n' sequence
--- but NOT the end of the input
+-- check for being at the end of the text string.  Does not recognize linend sequences.
 ::class TextEndNode subclass MatchNode
 ::method match
   use arg context, position, target
@@ -2276,8 +2269,8 @@ self~getMatchMetrics:super(metrics)
 
   self~getMatchMetrics:super(metrics)
 
-::method leftSide attribute
-::method rightSide attribute
+::attribute leftSide
+::attribute rightSide
 
 
 ::class ClassOrNode subclass ClassLogicalNode
@@ -2508,7 +2501,7 @@ self~getMatchMetrics:super(metrics)
   return .false
 
 
-::class NegativeLookbehindNode subclass MatchNode
+::class NegativeLookBehindNode subclass MatchNode
 ::method init
   expose group max min
   use arg group, metrics
