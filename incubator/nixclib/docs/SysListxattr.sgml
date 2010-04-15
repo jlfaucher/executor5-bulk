@@ -1,0 +1,35 @@
+
+<section id="utlSysGetxattr"><title>SysListxattr (Unix only)</title>
+<indexterm><primary>SysListxattr</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysListxattr</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysListxattr(fname)-----------------------------------------><
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns an array of the extended attribut names from the specified file.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">fname</emphasis></term>
+<listitem><para>The file name.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns an array of the extended attribute names on success. The array will be empty on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+
+/* list the extended attribute names */
+
+names = SysListxattr('/home/dashley/example.txt')
+do name over names
+   say name
+end
+
+]]>
+</programlisting>
+</section>
+

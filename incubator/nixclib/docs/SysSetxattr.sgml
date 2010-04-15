@@ -1,0 +1,38 @@
+
+<section id="utlSysSetxattr"><title>SysSetxattr (Unix only)</title>
+<indexterm><primary>SysSetxattr</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysSetxattr</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysSetxattr(fname, xname, val)------------------------------><
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Sets an extended attribute on the specified file.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">fname</emphasis></term>
+<listitem><para>The file name.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">xname</emphasis></term>
+<listitem><para>The extended attribute name.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">val</emphasis></term>
+<listitem><para>The value to be set for the extended attribute.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns the 0 on success or -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+
+/* set an extended attribute */
+
+retc = SysSetxattr('/home/dashley/example.txt', 'mimetype', 'text/plain')
+
+]]>
+</programlisting>
+</section>
+

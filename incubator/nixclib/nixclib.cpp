@@ -1027,6 +1027,115 @@ RexxRoutine1(RexxObjectPtr,
     return (RexxObjectPtr)arr;
 }
 
+/**
+ * Method:        SysSetxattr
+ *
+ * Set a file extended attribute.
+ *
+ * @param fname   The file name.
+ *
+ * @param name    The extended attribute name.
+ *
+ * @param val     The extended attribute value.
+ *
+ * @return        0 or -1.
+ */
+RexxRoutine3(int,
+             SysSetxattr,
+             CSTRING, fname,
+             CSTRING, name,
+             CSTRING, val)
+{
+    return setxattr(fname, name, val, strlen(val), 0);
+}
+
+/**
+ * Method:        SysGetxattr
+ *
+ * Get a file extended attribute.
+ *
+ * @param fname   The file name.
+ *
+ * @param name    The extended attribute name.
+ *
+ * @return        0 or -1.
+ */
+RexxRoutine2(RexxObjectPtr,
+             SysGetxattr,
+             CSTRING, fname,
+             CSTRING, name)
+{
+    ssize_t sz;
+    char *buf;
+
+    sz = getxattr(fname, name, NULL, 0);
+    if (sz == -1) {
+        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+    }
+    buf = (char *)alloca(sz + 1);
+    getxattr(fname, name, buf, sizeof(buf));
+
+    return (RexxObjectPtr)context->NewStringFromAsciiz(buf);
+}
+
+/**
+ * Method:        SysListxattr
+ *
+ * List a file's extended attribute(s).
+ *
+ * @param fname   The file name.
+ *
+ * @return        0 or -1.
+ */
+RexxRoutine1(RexxObjectPtr,
+             SysListxattr,
+             CSTRING, fname)
+{
+    ssize_t sz;
+    char *buf, *name;
+    
+    sz = listxattr(fname, NULL, 0);
+    if (sz == -1) {
+        return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
+    }
+    buf = (char *)alloca(sz + 1);
+    listxattr(fname, buf, sizeof(buf));
+
+    // create a Rexx array of the xattr names
+    RexxArrayObject arr = context->NewArray(1);
+    if (sz > 0) {
+        while (sz > 1) {
+            name = buf;
+            context->ArrayAppendString(arr, name, strlen(name));
+            buf = buf + strlen(name) + 1;
+            sz -= strlen(name) + 1;
+        }
+    }
+
+    return (RexxObjectPtr)arr;
+}
+
+/**
+ * Method:        SysRemovexattr
+ *
+ * Remove an extended attribute.
+ *
+ * @param fname   The file name.
+ *
+ * @param name    The extended attribute name.
+ *
+ * @return        0 or -1.
+ */
+RexxRoutine2(int,
+             SysRemovexattr,
+             CSTRING, name,
+             CSTRING, fname)
+{
+    
+
+    return removexattr(fname, name);
+}
+
 
 // initialize the libvirt library
 static void orxnixclib_loader(RexxThreadContext *context) {
@@ -1070,6 +1179,10 @@ RexxRoutineEntry orxnixclib_routines[] = {
     REXX_TYPED_ROUTINE(SysGetservbyname, SysGetservbyname),
     REXX_TYPED_ROUTINE(SysGetservbyport, SysGetservbyport),
     REXX_TYPED_ROUTINE(SysWordexp, SysWordexp),
+    REXX_TYPED_ROUTINE(SysSetxattr, SysSetxattr),
+    REXX_TYPED_ROUTINE(SysGetxattr, SysGetxattr),
+    REXX_TYPED_ROUTINE(SysListxattr, SysListxattr),
+    REXX_TYPED_ROUTINE(SysRemovexattr, SysRemovexattr),
     REXX_LAST_ROUTINE()
 };
 

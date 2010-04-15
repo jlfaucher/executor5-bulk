@@ -1,0 +1,35 @@
+
+<section id="utlSysGetxattr"><title>SysGetxattr (Unix only)</title>
+<indexterm><primary>SysGetxattr</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysGetxattr</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysGetxattr(fname, xname)-----------------------------------><
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Gets an extended attribute from the specified file.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">fname</emphasis></term>
+<listitem><para>The file name.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">xname</emphasis></term>
+<listitem><para>The extended attribute name.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns the extended attribute value on success or a zero-length string on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+
+/* get an extended attribute */
+
+mimetype = SysGetxattr('/home/dashley/example.txt', 'mimetype')
+
+]]>
+</programlisting>
+</section>
+

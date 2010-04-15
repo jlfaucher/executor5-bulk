@@ -61,6 +61,8 @@
 #include <time.h>
 #include <netdb.h>
 #include <wordexp.h>
+#include <alloca.h>
+#include <attr/xattr.h>
 #include <oorexxapi.h>
 
 
