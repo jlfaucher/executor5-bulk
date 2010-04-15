@@ -139,7 +139,7 @@
       return .nil
   end
 
-  ch = pattern~substr(current, 1)
+  ch = pattern~subchar(current)
   current = current + 1
   return ch
 
@@ -150,7 +150,7 @@
       return .nil
   end
 
-  ch = pattern~substr(current, 1)
+  ch = pattern~subchar(current)
   return ch
 
 ::method previous
@@ -162,7 +162,7 @@
   expose pattern current length
   use arg start, end
 
-  if pattern~substr(current, 1) \== start then do
+  if \pattern~match(current, start) then do
       raise syntax
   end
 
@@ -1047,7 +1047,7 @@
 
   familyName = self~extractDelimited("{", "}")
 
-  if familyName~substr(1, 2) == "Is" then do
+  if familyName~match(1, "Is") then do
       familyName = familyName~substr(3)
   end
 
@@ -1333,6 +1333,7 @@
 
 
 ::class MatchNode
+::constant wordChars 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
 ::method init
   expose next anchored
 
@@ -1391,14 +1392,14 @@
   use arg context, position, target
 
   if \context~atStart(position) then do
-      if 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'~pos(target~substr(position - 1, 1)) == 0  then do
-          return self~next~match(context, postion, target)
+      if \target~matchChar(position - 1, self~wordChars) then do
+          return self~next~match(context, position, target)
       end
   end
 
   if \context~atEnd(position) then do
-      if 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'~pos(target~substr(position - 1, 1)) == 0  then do
-          return self~next~match(context, postion, target)
+      if \target~matchChar(position - 1, self~wordChars) then do
+          return self~next~match(context, position, target)
       end
   end
 
@@ -1413,18 +1414,18 @@
   rightBoundary = .false
 
   if \context~atStart(position) then do
-      if 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'~pos(target~substr(position - 1, 1)) == 0  then do
+      if \target~matchChar(position - 1, self~wordChars) then do
           leftBouundary = .true
       end
   end
 
   if \context~atEnd(position) then do
-      if 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'~pos(target~substr(position - 1, 1)) == 0  then do
+      if \target~matchChar(position - 1, self~wordChars) then do
           rightBoundary = .true
       end
   end
 
-  return (\leftBoundary & \rightBoundary) & self~next~match(context, postion, target)
+  return (\leftBoundary & \rightBoundary) & self~next~match(context, position, target)
 
 
 ::class BeginWordBoundaryNode subclass MatchNode
@@ -1432,8 +1433,8 @@
   use arg context, position, target
 
   if \context~atStart(position) then do
-      if 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'~pos(target~substr(position - 1, 1)) == 0  then do
-          return self~next~match(context, postion, target)
+      if \target~matchChar(position - 1, self~wordChars) then do
+          return self~next~match(context, position, target)
       end
   end
 
@@ -1445,8 +1446,8 @@
   use arg context, position, target
 
   if \context~atEnd(position) then do
-      if 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'~pos(target~substr(position - 1, 1)) == 0  then do
-          return self~next~match(context, postion, target)
+      if \target~matchChar(position - 1, self~wordChars) then do
+          return self~next~match(context, position, target)
       end
   end
 
@@ -1457,11 +1458,11 @@
 ::method match
   use arg context, position, target
 
-  if postion \= context~previousMatch then do
+  if position \= context~previousMatch then do
       return .false
   end
 
-  return self~next~match(context, postion, target)
+  return self~next~match(context, position, target)
 
 
 ::class SingleCharNode subclass matchNode
@@ -1479,7 +1480,7 @@
       return .false
   end
 
-  return target~substr(position, 1) == matchChar && self~next~match(context, position + 1, target)
+  return target~matchChar(position, matchChar) && self~next~match(context, position + 1, target)
 
 ::method getMatchMetrics
   use arg metrics
@@ -1519,9 +1520,9 @@
       return .false
   end
 
-  ch = target~substr(position, 1)
+  ch = target~subChar(position)
   -- if positioned on any linend char, this is a failure
-  if ch == '0d'x | ch == '0a'x then do
+  if \target~matchChar(position, '0d0a'x) then do
       return .false
   end
 
@@ -1538,9 +1539,8 @@
       return .false
   end
 
-  ch = target~substr(position, 1)
   -- if positioned on any linend char, this is a failure
-  if ch == '0a'x then do
+  if \target~match(position, '0a'x) then do
       return .false
   end
 
@@ -1572,7 +1572,7 @@
       return .false
   end
 
-  return target~substr(position, 1) != matchChar && self~next~match(context, position + 1, target)
+  return \target~matchChar(position, matchChar) & self~next~match(context, position + 1, target)
 
 ::method getMatchMetrics
   use arg metrics
@@ -1599,7 +1599,7 @@
       return .false
   end
 
-  if target~substr(postion, matchString~length) \== matchString then do
+  if \target~match(position, matchString) then do
       return .false
   end
 
@@ -1618,7 +1618,6 @@
 ::method init
   expose matchString
   use arg matchString
-  matchString = matchString~translate
   self~init:super
 
 
@@ -1631,7 +1630,7 @@
       return .false
   end
 
-  if target~substr(postion, matchString~length)~translate \== matchString then do
+  if \target~caselessMatch(position, matchString) then do
       return .false
   end
 
@@ -1664,7 +1663,7 @@
       return .false
   end
 
-  if target~pos(characters, substr(target, position, 1) < 0 then do
+  if \target~matchChar(position, characters) then do
       return .false
   end
 
@@ -1689,7 +1688,7 @@
       return .false
   end
 
-  if target~pos(characters, substr(target, position, 1) > 0 then do
+  if target~matchChar(position, characters) then do
       return .false
   end
 
@@ -1783,8 +1782,6 @@
 
 
 ::class WordStartNode subclass MatchNode
-::constant wordChars 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
-
 ::method match
   use arg context, position, target
 
@@ -1793,7 +1790,7 @@
   end
 
   -- not a alphanumeric at the current position, so cannot be a word start
-  if self~wordChars~pos(target~substr(position - 1, 1)) == 0 then do
+  if \target~matchChar(position, self~wordChars) then do
       return .false
   end
 
@@ -1803,7 +1800,7 @@
   end
 
   -- the previous character must not be a word character
-  if self~wordChars~pos(target~substr(position - 1, 1)) > 0 then do
+  if target~matchChar(position - 1, self~wordChars) then do
       return .false
   end
 
@@ -1812,7 +1809,6 @@
 
 
 ::class WordEndNode subclass MatchNode
-::constant wordChars 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
 
 ::method match
   expose wordChars
@@ -1820,7 +1816,7 @@
 
   -- if not at the end, make sure this position is not a word char
   if \context->checkEnd(position) then do
-      if self~wordChars~pos(target~substr(position - 1, 1)) > 0 then do
+      if target~matchChar(position, self~wordChars) then do
           return .false
       end
   end
@@ -1847,7 +1843,7 @@
   end
 
   if position == endPosition then do
-      return target~substr(position, 2) == '0d0a'x & self~next~match(context, position, target)
+      return target~match(position, '0d0a'x) & self~next~match(context, position, target)
   end
 
   return .false
@@ -1871,7 +1867,7 @@
       return .false
   end
 
-  return target~substr(position, 2) == '0d0a'x & self~next~match(context, position, target)
+  return target~match(position, '0d0a'x) & self~next~match(context, position, target)
 
 
 -- check for a lineend in unix mode.  This matches on a '\n' sequence
@@ -1891,7 +1887,7 @@
       return .false
   end
 
-  return target~substr(position, 1) == '0a'x & self~next~match(context, position, target)
+  return target~match(position, '0a'x) & self~next~match(context, position, target)
 
 
 -- check for a lineend in unix mode.  This matches on a '\n' sequence
@@ -1904,7 +1900,7 @@
       return self~next~match(context, position, target)
   end
 
-  return target~substr(position, 1) == '0a'x & self~next~match(context, position, target)
+  return target~match(position, '0a'x) & self~next~match(context, position, target)
 
 
 -- check for being at the end of the text string.  Does not recognize linend sequences.
@@ -2153,7 +2149,7 @@ self~getMatchMetrics:super(metrics)
       return .false
   end
 
-  if target~substr(position, matchValue~length) \== matchValue then do
+  if \target~match(position, matchValue) then do
       return .false
   end
 
@@ -2189,9 +2185,7 @@ self~getMatchMetrics:super(metrics)
       return .false
   end
 
-  matchValue = matchValue~translate
-
-  if target~substr(position, matchValue~length)~translate \== matchValue then do
+  if \target~caselessMatch(position, matchValue) then do
       return .false
   end
 
@@ -2389,7 +2383,7 @@ self~getMatchMetrics:super(metrics)
   expose group
   use arg context, position, target
 
-  group~setGroupEnd(context, postion)
+  group~setGroupEnd(context, position)
 
   -- if we're in a good match, then our info is correct.
   if self~next~match(context, position, target) then do
@@ -2555,14 +2549,17 @@ self~getMatchMetrics:super(metrics)
   -- we need to see if we're positioned at a lineend
   if start < position  then do
       ch = target~substr(position - 1, 1)
-      if ch \== "0A"x & ch \== "0D"x then do
+
+      if \target~matchChar(position - 1, "0A0D"x) then do
           -- not positioned after a lineend, so this is a failure
           return .false
+          // TODO:  Obviously, there is a problem here.
+
           -- if the previous character is a CR character, we need to
           -- check if we're positioned between the two.  That's also a match
           -- failure
           if ch == '0D'x then do
-              if target~substr(position, 1) == '0A'x then do
+              if target~match(position, '0A'x) then do
                   return .false
               end
           end
@@ -2586,8 +2583,7 @@ self~getMatchMetrics:super(metrics)
   -- if we're at the start position, this matches.  Otherwise,
   -- we need to see if we're positioned at a lineend
   if start < position  then do
-      ch = target~substr(position - 1, 1)
-      if ch \== "0A"x then do
+      if \target~match(position - 1, "0A"x) then do
           -- not positioned after a lineend, so this is a failure
           return .false
       end
