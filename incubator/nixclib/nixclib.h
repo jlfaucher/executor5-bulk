@@ -63,7 +63,6 @@
 #include <wordexp.h>
 #include <alloca.h>
 #include <attr/xattr.h>
-#include <errno.h>
 #include <oorexxapi.h>
 
 
@@ -77,5 +76,5 @@
 /*----------------------------------------------------------------------------*/
 
  
- #endif /* ORXNIXCLIB_H */
+#endif /* ORXNIXCLIB_H */
  

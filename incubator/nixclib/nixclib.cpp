@@ -1046,12 +1046,7 @@ RexxRoutine3(int,
              CSTRING, name,
              CSTRING, val)
 {
-    int retc = setxattr(fname, name, val, strlen(val) + 1, 0);
-//    if (retc == -1) {
-//        printf("errno = %d\n", errno);
-//    }
-
-    return retc;
+    return setxattr(fname, name, val, strlen(val) + 1, 0);
 }
 
 /**
