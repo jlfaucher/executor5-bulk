@@ -1046,7 +1046,12 @@ RexxRoutine3(int,
              CSTRING, name,
              CSTRING, val)
 {
-    return setxattr(fname, name, val, strlen(val), 0);
+    int retc = setxattr(fname, name, val, strlen(val) + 1, 0);
+//    if (retc == -1) {
+//        printf("errno = %d\n", errno);
+//    }
+
+    return retc;
 }
 
 /**
@@ -1072,8 +1077,8 @@ RexxRoutine2(RexxObjectPtr,
     if (sz == -1) {
         return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
     }
-    buf = (char *)alloca(sz + 1);
-    getxattr(fname, name, buf, sizeof(buf));
+    buf = (char *)alloca(sz);
+    getxattr(fname, name, buf, sz);
 
     return (RexxObjectPtr)context->NewStringFromAsciiz(buf);
 }
@@ -1098,18 +1103,15 @@ RexxRoutine1(RexxObjectPtr,
     if (sz == -1) {
         return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
     }
-    buf = (char *)alloca(sz + 1);
-    listxattr(fname, buf, sizeof(buf));
+    buf = (char *)alloca(sz);
+    listxattr(fname, buf, sz);
 
     // create a Rexx array of the xattr names
     RexxArrayObject arr = context->NewArray(1);
-    if (sz > 0) {
-        while (sz > 1) {
-            name = buf;
-            context->ArrayAppendString(arr, name, strlen(name));
-            buf = buf + strlen(name) + 1;
-            sz -= strlen(name) + 1;
-        }
+    while (sz > 0) {
+        context->ArrayAppendString(arr, buf, strlen(buf));
+        sz -= strlen(buf) + 1;
+        buf += strlen(buf) + 1;
     }
 
     return (RexxObjectPtr)arr;
@@ -1128,8 +1130,8 @@ RexxRoutine1(RexxObjectPtr,
  */
 RexxRoutine2(int,
              SysRemovexattr,
-             CSTRING, name,
-             CSTRING, fname)
+             CSTRING, fname,
+             CSTRING, name)
 {
     
 

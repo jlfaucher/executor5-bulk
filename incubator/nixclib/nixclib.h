@@ -63,6 +63,7 @@
 #include <wordexp.h>
 #include <alloca.h>
 #include <attr/xattr.h>
+#include <errno.h>
 #include <oorexxapi.h>
 
 

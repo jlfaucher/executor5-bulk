@@ -140,6 +140,22 @@ do ent over arr
    say ent
    end
 
+parse source . . file
+say 'Calling SysSetxattr {"'file'", "user.mime_type", "rexx/exec")'
+say 'retc =' SysSetxattr(file, 'user.mime_type', 'rexx/exec')
+
+say 'Calling SysGetxattr {"'file'", "user.mime_type")'
+say 'user.mime_type =' SysGetxattr(file, 'user.mime_type')
+
+say 'Calling SysListxattr {"'file'")'
+arr = SysListxattr(file)
+do name over arr
+   say 'name =' name
+   end
+
+say 'Calling SysRemovexattr {"'file'", "user.mime_type")'
+say 'retc =' SysRemovexattr(file, 'user.mime_type')
+
 return
 
 ::requires 'nixclib' library
