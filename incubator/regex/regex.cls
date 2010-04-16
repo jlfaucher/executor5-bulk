@@ -36,8 +36,20 @@
 /*----------------------------------------------------------------------------*/
 ::class Pattern public
 ::method init
-  expose root
-  use arg root
+  expose pattern root
+  use arg pattern, root
+
+::attribute pattern get
+
+::method string
+  expose pattern
+  return pattern
+
+::method matches
+  -- TODO implement matching logic
+
+::method split
+  -- TODO implement splitting logic
 
 
 ::class RegexCompiler public
@@ -83,7 +95,7 @@
   use arg name, chars
 
   if classFamilies~hasIndex(name) then do
-      raise syntax .....
+      raise syntax 98.900 array("Class family" name "already exists")
   end
 
   registeredClassFamilies[name] = chars
@@ -126,7 +138,7 @@
               self~dotall = .false
           end
           otherwise  do
-              raise syntax ----
+              raise syntax 93.915 array("MULTILINE SINGLELINE INTERNETLINES UNIXLINES CASELESS RESPECTCASE DOTALL DOTRESTRICTED", option)
           end
       end
   end
@@ -163,14 +175,14 @@
   use arg start, end
 
   if \pattern~match(current, start) then do
-      raise syntax
+      raise syntax 13.900 array("Delimiter character" start "expected for delimited string")
   end
 
   startPos = current + 1
 
   endPos = pattern~pos(end, startPos)
   if endPos == 0 then do
-      raise syntax
+      raise syntax 6.900 array("Missing closing delimeter" end)
   end
 
   current = endPos + 1  -- position past the read position
@@ -179,7 +191,7 @@
 
 
 ::method extractNumber
-  number == ""
+  number = ""
 
   do forever
      ch = self~next
@@ -235,16 +247,6 @@
   end
 
 
-
-
-::method stepAndCheck
-  expose current length
-  current = current + 1
-  if current > length then do
-      raise .....
-  end
-
-
 ::method parseSequence
   use arg previousNode
 
@@ -292,7 +294,7 @@
               node = self~parseEscapes
           end
           when ch == "?" | ch == "*" | ch == "+" then do
-              raise .....
+              raise syntax 13.900 array ("Unexpected modifier character '"||ch||"'" )
           end
           otherwise do
               node = self~parseAtom
@@ -325,7 +327,7 @@
   if \self~multiline then do
       return .BeginTextNode~new
   end
-  else if self~unixLineends do
+  else if self~unixLineends then do
       return .UnixMultilineCaretNode~new
   end
   else do
@@ -373,7 +375,7 @@
       -- there are more complex operations that are escaped
       node = self~parseEscapedOperations
       if node == .nil then do
-          raise syntax invalid escape character
+          raise syntax 13.900 array("Missing character after \ escape character")
       end
   end
 
@@ -390,7 +392,7 @@
       select
           when ch == "?" then do
               -- non capture group
-              group = .GroupNode~new
+              group = .Group~new
               -- parse the encapsulated group expression.  This gets
               -- slotted between the group element and the terminator
               group~next = self~parseExpression(group~terminator)
@@ -403,7 +405,7 @@
           end
           when ch == ">" then do
               -- an atomic group.  Matching is managed differently
-              group = .GroupNode~new
+              group = .Group~new
               -- parse the encapsulated group expression.  This gets
               -- slotted between the group element and the terminator
               group~next = self~parseExpression(group~terminator)
@@ -416,7 +418,7 @@
           end
           when ch == "=" then do
               -- a positive look ahead
-              group = .GroupNode~new
+              group = .Group~new
               -- parse the encapsulated group expression.  This gets
               -- slotted between the group element and the terminator
               group~next = self~parseExpression(group~terminator)
@@ -428,7 +430,7 @@
           end
           when ch == "!" then do
               -- a negative look ahead
-              group = .GroupNode~new
+              group = .Group~new
               -- parse the encapsulated group expression.  This gets
               -- slotted between the group element and the terminator
               group~next = self~parseExpression(group~terminator)
@@ -448,7 +450,7 @@
               -- this is the "=" or "!" qualifier
               ch = self~next
 
-              group = .GroupNode~new
+              group = .Group~new
               -- parse the encapsulated group expression.  This gets
               -- slotted between the group element and the terminator
               group~next = self~parseExpression(group~terminator)
@@ -457,7 +459,7 @@
               metrics = self~getPatternMetrics(group~next)
 
               if \info.maxValue then do
-                  raise syntax -- no max value
+                  raise syntax 98.900 array("A look behind group does not have a deterministic maximum length")
               end
               -- look behind match
               if ch == "=" then do
@@ -467,7 +469,7 @@
                   wrapper = .NegativeLookBehind~new(group, metrics)
               end
               else do
-                  raise syntax -- unknown look behind type
+                  raise syntax 93.915 array("=!", ch)
               end
               -- wrappered nodes fill both roles
               groupInfo~firstNode = wrapper
@@ -479,7 +481,7 @@
               referenceName = self~extractDelimited("{", "}")
 
               -- a named capturing group
-              group = .CapturingGroupNode~new(referenceName)
+              group = .CapturingGroup~new(referenceName)
               -- parse the encapsulated group expression.  This gets
               -- slotted between the group element and the terminator
               group~next = self~parseExpression(group~terminator)
@@ -496,7 +498,7 @@
                   return .nil
               end
               -- non capture group after the flag value
-              group = .GroupNode~new
+              group = .Group~new
               -- parse the encapsulated group expression.  This gets
               -- slotted between the group element and the terminator
               group~next = self~parseExpression(group~terminator)
@@ -511,7 +513,7 @@
   end
   else do
       -- a negative look ahead
-      group = .CapturingGroupNode~new(self~nextCapture)
+      group = .CapturingGroup~new(self~nextCapture)
       -- parse the encapsulated group expression.  This gets
       -- slotted between the group element and the terminator
       group~next = self~parseExpression(group~terminator)
@@ -576,14 +578,14 @@
               ch = self~next
           end
           otherwise do
-              raise syntax unsupported mode flag
+              raise syntax 93.915 array("dims-", ch)
           end
       end
   end
 
   ch = self~next
   if ch \== ")" then do
-      raise syntax missing closing paren for mode flag
+      raise syntax 36.900 array('Missing closing parentheses for mode flag')
   end
 
 -- various option flags
@@ -613,7 +615,7 @@
           if ch == "?" then do
               node = .LazyQuestionNode~new(target)
           end
-          else if ch == "+" do
+          else if ch == "+" then do
               node = .PossessiveQuestionNode~new(target)
           end
           else do
@@ -637,7 +639,7 @@
           if ch == "?" then do
               node = .LazyRepetitionNode~new(target, 0, 999999999)
           end
-          else if ch == "+" do
+          else if ch == "+" then do
               node = .PossessiveRepetitionNode~new(target, 0, 999999999)
           end
           else do
@@ -661,7 +663,7 @@
           if ch == "?" then do
               node = .LazyRepetitionNode~new(target, 1, 999999999)
           end
-          else if ch == "+" do
+          else if ch == "+" then do
               node = .PossessiveRepetitionNode~new(target, 1, 999999999)
           end
           else do
@@ -687,22 +689,22 @@
               ch = self~next
           end
           if ch \= "}" then do
-              raise syntax ....
+              raise syntax 36.900 array("Missing closing '}' for repetition count")
           end
 
           if .nil == min || .nil == max then do
-              raise syntax
+              raise syntax 93.900 array("Invalid repetition count")
           end
 
           if max < min then do
-              raise syntax .....
+              raise syntax 93.900 array("Repetition maximum" max "is less than minimum" min)
           end
           ch = self~next
 
           if ch == "?" then do
               node = .LazyRepetitionNode~new(target, min, max)
           end
-          else if ch == "+" do
+          else if ch == "+" then do
               node = .PossessiveRepetitionNode~new(target, min, max)
           end
           else do
@@ -738,7 +740,7 @@
           if ch == "?" then do
               return .LazyQuestionNode~new(target)
           end
-          else if ch == "+" do
+          else if ch == "+" then do
               return .PossessiveQuestionNode~new(target)
           end
           else do
@@ -754,7 +756,7 @@
           if ch == "?" then do
               return .LazyRepetitionNode~new(target, 0, 999999999)
           end
-          else if ch == "+" do
+          else if ch == "+" then do
               return .PossessiveRepetitionNode~new(target, 0, 999999999)
           end
           else do
@@ -770,7 +772,7 @@
           if ch == "?" then do
               return .LazyRepetitionNode~new(target, 1, 999999999)
           end
-          else if ch == "+" do
+          else if ch == "+" then do
               return .PossessiveRepetitionNode~new(target, 1, 999999999)
           end
           else do
@@ -788,22 +790,22 @@
               ch = self~next
           end
           if ch \= "}" then do
-              raise syntax ....
+              raise syntax 36.900 array("Missing closing '}' for repetition count")
           end
 
           if .nil == min || .nil == max then do
-              raise syntax
+              raise syntax 93.900 array("Invalid repetition count")
           end
 
           if max < min then do
-              raise syntax .....
+              raise syntax 93.900 array("Repetition maximum" max "is less than minimum" min)
           end
           ch = self~next
 
           if ch == "?" then do
               return .LazyRepetitionNode~new(target, min, max)
           end
-          else if ch == "+" do
+          else if ch == "+" then do
               return .PossessiveRepetitionNode~new(target, min, max)
           end
           else do
@@ -822,7 +824,7 @@
 
   ch = self~next
   if ch \= "]" then do
-      raise syntax .....
+      raise syntax 36.900 array("Missing closing ']' for character class")
   end
 
   return node
@@ -840,7 +842,7 @@
 
       select
           when ch == .nil then do
-              raise syntax .....   -- unclosed
+              raise syntax 36.900 array("Missing closing ']' for character class")
           end
           when ch == '^' then do
               if firstChar then do
@@ -852,7 +854,7 @@
                   self~previous
               end
           end
-          when ch == ']' do
+          when ch == ']' then do
               -- we've hit the end of this class spec, time to return.
               self~previous
               return previousNode
@@ -874,7 +876,7 @@
               ch = self~next
               if ch == "&" then do     -- this is a logical "&&"
                   if prev == .nil then do
-                      raise syntax ....   -- um what && what?
+                      raise syntax 35.900 array("Missing left term for '&&' operator")
                   end
 
                   rightHand = .nil
@@ -913,7 +915,7 @@
                   end
 
                   if rightHand == .nil then do
-                      raise syntax ....  -- bad logical
+                      raise syntax 35.900 array("Missing right term for '&&' operator")
                   end
                   if previousNode == .nil then do
                       previousNode = rightHand
@@ -1032,7 +1034,7 @@
       end
       else do
           if ch < startRange then do
-              raise syntax ....
+              raise syntax 93.900 array("End range character '"ch"' is less than starting character '"startRange"'")
           end
           characters = characters || xrange(startRange, ch)
           inRange = .false
@@ -1053,7 +1055,7 @@
 
   familyChars = .Pattern~classFamily(familyName)
   if familyChars == .nil then do
-      raise syntax
+      raise syntax 93.900 array("Unknown named class family '"familyName"'")
   end
 
   if negated then do
@@ -1153,7 +1155,7 @@
               return d2c(firstDigit)
           end
 
-          raise syntax
+          raise syntax 93.900 array("Missing octal character")
       end
       when ch == 'a' then do
           return '07'x
@@ -1161,7 +1163,7 @@
       when ch == 'c' then do
           control = self~read
           if .nil == control then do
-              raise syntax
+              raise syntax 93.900 array("Character expected after \c escape")
           end
           return bitxor(control, '40'x)
       end
@@ -1198,12 +1200,12 @@
 
   select
       when .nil == ch then do
-          raise syntax .....
+          raise syntax 93.900 array("Missing character after escape")
       end
       when '123456789'~pos(ch) > 0 then do
           -- a back reference
           if \self~haveGroup(ch) then do
-              raise syntax .....
+              raise syntax 93.900 array("Unrecognized group back reference" ch)
           end
           if self~caseless then do
               return .CaselessBackReferenceNode~new(ch)
@@ -1217,7 +1219,7 @@
           referenceName = self~extractDelimited("{", "}")
 
           if \self~haveGroup(referenceName) then do
-              raise syntax .....
+              raise syntax 93.900 array("Unrecognized group back reference" referenceName)
           end
           if self~caseless then do
               return .CaselessBackReferenceNode~new(referenceName)
@@ -1304,7 +1306,7 @@
       end
   end
 
-  return self~stringNode(self~extract(current, endPosition - current)
+  return self~stringNode(self~extract(current, endPosition - current))
 
 
 ::method readOctal private
@@ -1323,12 +1325,12 @@
   ch = self~next
 
   if .nil \= ch then do
-      if '1234567890abcdefABCDEF'`pos(ch) > 0 then do
-          return ch
+      if '1234567890abcdefABCDEF'~pos(ch) > 0 then do
+          raise syntax 93.900 array("Invalid hex digit '"ch"'")
       end
   end
   -- we can directly raise a syntax error for reading hex
-  raise syntax ....
+  raise syntax 93.900 array("Hex digit expected")
 
 
 
@@ -1372,7 +1374,7 @@
 ::method match
   use arg context, position, target
 
-  if context~atStart(position) & self~next~match(context, position, target) then do
+  if context~atStart(position), self~next~match(context, position, target) then do
       context~updateMatchPosition(position)
       return .true
   end
@@ -1384,7 +1386,10 @@
 ::method match
   use arg context, position, target
 
-  return context~atEnd(position) & self~next~match(context, position, target);
+  if context~atEnd(position), self~next~match(context, position, target) then do
+      return .true
+  end
+  return .false
 
 
 ::class WordBoundaryNode subclass MatchNode
@@ -1425,7 +1430,10 @@
       end
   end
 
-  return (\leftBoundary & \rightBoundary) & self~next~match(context, position, target)
+  if (\leftBoundary & \rightBoundary), self~next~match(context, position, target) then do
+      return .true
+  end
+  return .false
 
 
 ::class BeginWordBoundaryNode subclass MatchNode
@@ -1476,7 +1484,7 @@
 
   use arg context, position, target
 
-  if context->checkEnd(position) then do
+  if context~checkEnd(position) then do
       return .false
   end
 
@@ -1495,7 +1503,7 @@
 ::method match
   use arg context, position, target
 
-  if context->checkEnd(position) then do
+  if context~checkEnd(position) then do
       return .false
   end
 
@@ -1516,7 +1524,7 @@
 ::method match
   use arg context, position, target
 
-  if context->checkEnd(position) then do
+  if context~checkEnd(position) then do
       return .false
   end
 
@@ -1535,7 +1543,7 @@
 ::method match
   use arg context, position, target
 
-  if context->checkEnd(position) then do
+  if context~checkEnd(position) then do
       return .false
   end
 
@@ -1568,11 +1576,14 @@
 
   use arg context, position, target
 
-  if context->checkEnd(position) then do
+  if context~checkEnd(position) then do
       return .false
   end
 
-  return \target~matchChar(position, matchChar) & self~next~match(context, position + 1, target)
+  if \target~matchChar(position, matchChar), self~next~match(context, position + 1, target) then do
+      return .true
+  end
+  return .false
 
 ::method getMatchMetrics
   use arg metrics
@@ -1595,7 +1606,7 @@
 
   use arg context, position, target
 
-  if context->checkEnd(position + matchString~length) then do
+  if context~checkEnd(position + matchString~length) then do
       return .false
   end
 
@@ -1626,7 +1637,7 @@
 
   use arg context, position, target
 
-  if context->checkEnd(position + matchString~length) then do
+  if context~checkEnd(position + matchString~length) then do
       return .false
   end
 
@@ -1659,7 +1670,7 @@
 
   use arg context, position, target
 
-  if context->checkEnd(position) then do
+  if context~checkEnd(position) then do
       return .false
   end
 
@@ -1684,7 +1695,7 @@
 
   use arg context, position, target
 
-  if context->checkEnd(position) then do
+  if context~checkEnd(position) then do
       return .false
   end
 
@@ -1785,7 +1796,7 @@
 ::method match
   use arg context, position, target
 
-  if context->checkEnd(position) then do
+  if context~checkEnd(position) then do
       return .false
   end
 
@@ -1795,7 +1806,7 @@
   end
 
   -- if this is at the start, then it is a word start
-  if \context->checkStart(position - 1) then do
+  if \context~checkStart(position - 1) then do
       return .true
   end
 
@@ -1815,7 +1826,7 @@
   use arg context, position, target
 
   -- if not at the end, make sure this position is not a word char
-  if \context->checkEnd(position) then do
+  if \context~checkEnd(position) then do
       if target~matchChar(position, self~wordChars) then do
           return .false
       end
@@ -1843,7 +1854,9 @@
   end
 
   if position == endPosition then do
-      return target~match(position, '0d0a'x) & self~next~match(context, position, target)
+      if target~match(position, '0d0a'x), self~next~match(context, position, target) then do
+          return .true
+      end
   end
 
   return .false
@@ -1867,7 +1880,10 @@
       return .false
   end
 
-  return target~match(position, '0d0a'x) & self~next~match(context, position, target)
+  if target~match(position, '0d0a'x), self~next~match(context, position, target) then do
+      return .true
+  end
+  return .false
 
 
 -- check for a lineend in unix mode.  This matches on a '\n' sequence
@@ -1887,8 +1903,10 @@
       return .false
   end
 
-  return target~match(position, '0a'x) & self~next~match(context, position, target)
-
+  if target~match(position, '0a'x), self~next~match(context, position, target) then do
+      return .true
+  end
+  return .false
 
 -- check for a lineend in unix mode.  This matches on a '\n' sequence
 -- but NOT the end of the input
@@ -1900,8 +1918,10 @@
       return self~next~match(context, position, target)
   end
 
-  return target~match(position, '0a'x) & self~next~match(context, position, target)
-
+  if target~match(position, '0a'x), self~next~match(context, position, target) then do
+      return .true
+  end
+  return .false
 
 -- check for being at the end of the text string.  Does not recognize linend sequences.
 ::class TextEndNode subclass MatchNode
@@ -1915,7 +1935,7 @@
   return .false
 
 ::class QuestionNode subclass MatchNode
-::init
+::method init
   expose optional
   use arg optional
   self~init:super
@@ -2145,7 +2165,7 @@ self~getMatchMetrics:super(metrics)
 
   matchValue = refGroup~matchString
 
-  if \context->checkEnd(position + matchValue~length - 1) then do
+  if \context~checkEnd(position + matchValue~length - 1) then do
       return .false
   end
 
@@ -2181,7 +2201,7 @@ self~getMatchMetrics:super(metrics)
 
   matchValue = refGroup~matchString
 
-  if \context->checkEnd(position + matchValue~length - 1) then do
+  if \context~checkEnd(position + matchValue~length - 1) then do
       return .false
   end
 
@@ -2272,7 +2292,7 @@ self~getMatchMetrics:super(metrics)
   use arg context, position, target
 
   if \context~checkEnd(position) then do
-      if self~leftSide->match(context, position, target) then do
+      if self~leftSide~match(context, position, target) then do
          return self~next~match(context, context~matchEnd, target)
       end
       else if self~rightSide(context, position, target) then do
@@ -2288,7 +2308,7 @@ self~getMatchMetrics:super(metrics)
   use arg context, position, target
 
   if \context~checkEnd(position) then do
-      if self~leftSide->match(context, position, target) then
+      if self~leftSide~match(context, position, target) then
          if self~rightSide(context, position, target) then do
              return self~next~match(context, context~matchEnd, target)
          end
@@ -2302,7 +2322,7 @@ self~getMatchMetrics:super(metrics)
   use arg context, position, target
 
   if \context~checkEnd(position) then do
-      if self~leftSide->match(context, position, target) then
+      if self~leftSide~match(context, position, target) then
          if \self~rightSide(context, position, target) then do
              return self~next~match(context, context~matchEnd, target)
          end
@@ -2311,7 +2331,7 @@ self~getMatchMetrics:super(metrics)
   return .false
 
 
-::class GroupNode extends MatchNode
+::class Group subclass MatchNode
 ::method init
   expose terminator
   terminator = .GroupTerminator~new(self)
@@ -2342,7 +2362,7 @@ self~getMatchMetrics:super(metrics)
   return terminator
 
 
-::class CapturingGroupNode extends GroupNode
+::class CapturingGroup subclass Group
 ::method init
   expose id
   use arg id
@@ -2373,7 +2393,7 @@ self~getMatchMetrics:super(metrics)
   context~restoreGroupEnd(id)
 
 
-::class GroupTerminatorNode extends Node
+::class GroupTerminatorNode subclass Node
 ::method init
   expose group
   use arg group
@@ -2553,7 +2573,7 @@ self~getMatchMetrics:super(metrics)
       if \target~matchChar(position - 1, "0A0D"x) then do
           -- not positioned after a lineend, so this is a failure
           return .false
-          // TODO:  Obviously, there is a problem here.
+          -- TODO:  Obviously, there is a problem here.
 
           -- if the previous character is a CR character, we need to
           -- check if we're positioned between the two.  That's also a match
@@ -2651,3 +2671,54 @@ self~getMatchMetrics:super(metrics)
   -- because we slide, these are never valid
   metrics~deterministic = .false
   metrics~maxValid = .false
+
+::class Matcher
+::method init
+  expose parentPattern text
+  use strict arg parentPattern, text
+  self~reset    -- reset all field values
+
+-- reset the matcher to a clean state
+::method reset
+  expose first last from to
+
+  first = -1
+  last = 0
+  -- set the scan limits based on the string
+  from = 1
+  to = self~testLength
+  return self
+
+-- get the length of the text
+::method textLength private
+  expose text
+  return text~length
+
+-- Information about an individual match.  The match
+-- may have embedded groups.  The match information for
+-- the embedded groups can also be retrieved
+::class MatchResult subclass GroupMatchResult
+::method init
+expose start end text groups
+use strict arg start, end, text, groups = .nil
+-- return a response if the operation matched.
+::method matched
+  expose start
+  return start > 0
+
+-- individual match results
+::attribute start GET
+::attribute end GET
+::attribute text GET
+
+-- retrieve a group.  This is either a numeric id
+-- or a symbolic name
+::method group
+  expose groups
+  use strict arg id
+  group = groups[id]
+  if .nil == group then do
+      raise syntax ...  -- this is an error
+  end
+
+  return group
