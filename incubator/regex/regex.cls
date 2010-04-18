@@ -1375,7 +1375,7 @@
   use arg context, position, target
 
   if context~atStart(position), self~next~match(context, position, target) then do
-      context~updateMatchPosition(position)
+      context~matchPosition = position
       return .true
   end
 
@@ -1386,7 +1386,7 @@
 ::method match
   use arg context, position, target
 
-  if context~atEnd(position), self~next~match(context, position, target) then do
+  if context~checkEnd(position), self~next~match(context, position, target) then do
       return .true
   end
   return .false
@@ -1396,13 +1396,16 @@
 ::method match
   use arg context, position, target
 
+  -- if at the start of the range, the character must be a word character
   if \context~atStart(position) then do
       if \target~matchChar(position - 1, self~wordChars) then do
           return self~next~match(context, position, target)
       end
   end
 
-  if \context~atEnd(position) then do
+  -- At the very end (e.g., past the end really), the last character
+  -- must be a word character
+  if \context~checkEnd(position) then do
       if \target~matchChar(position - 1, self~wordChars) then do
           return self~next~match(context, position, target)
       end
@@ -1424,7 +1427,7 @@
       end
   end
 
-  if \context~atEnd(position) then do
+  if \context~checkEnd(position) then do
       if \target~matchChar(position - 1, self~wordChars) then do
           rightBoundary = .true
       end
@@ -1453,7 +1456,7 @@
 ::method match
   use arg context, position, target
 
-  if \context~atEnd(position) then do
+  if \context~checkEnd(position) then do
       if \target~matchChar(position - 1, self~wordChars) then do
           return self~next~match(context, position, target)
       end
@@ -1466,7 +1469,7 @@
 ::method match
   use arg context, position, target
 
-  if position \= context~previousMatch then do
+  if position \= context~matchPosition then do
       return .false
   end
 
@@ -1806,7 +1809,7 @@
   end
 
   -- if this is at the start, then it is a word start
-  if \context~checkStart(position - 1) then do
+  if \context~atStart(position - 1) then do
       return .true
   end
 
@@ -1842,7 +1845,8 @@
 ::method match
   use arg context, position, target
 
-  if context~atEnd(position) then do
+  -- always false if past the end
+  if context~checkEnd(position) then do
       .false
   end
 
@@ -1869,7 +1873,7 @@
   use arg context, position, target
 
   -- end match, this is true
-  if context~atEnd(position) then do
+  if context~checkEnd(position) then do
       return self~next~match(context, position, target)
   end
 
@@ -1892,7 +1896,7 @@
 ::method match
   use arg context, position, target
 
-  if context~atEnd(position) then do
+  if context~checkEnd(position) then do
       return .false
   end
 
@@ -1914,7 +1918,7 @@
 ::method match
   use arg context, position, target
 
-  if context~atEnd(position) then do
+  if context~checkEnd(position) then do
       return self~next~match(context, position, target)
   end
 
@@ -1928,7 +1932,7 @@
 ::method match
   use arg context, position, target
 
-  if context~atEnd(position) then do
+  if context~checkEnd(position) then do
       return self~next~match(context, position, target)
   end
 
@@ -1962,7 +1966,7 @@ self~getMatchMetrics:super(metrics)
   -- if we match the optional part, and if we match the following part,
   -- this is gold.
   if optional~match(context, position, target) then do
-      if self~next~match(context, context~lastMatch, target) then do
+      if self~next~match(context, context~matchPosition, target) then do
           return .true
       end
   end
@@ -1987,7 +1991,7 @@ self~getMatchMetrics:super(metrics)
       return .false
   end
 
-  return self~next~match(context, context~lastMatch, target)
+  return self~next~match(context, context~matchPosition, target)
 
 
 ::class PossessiveQuestionNode subclass QuestionNode
@@ -1997,7 +2001,7 @@ self~getMatchMetrics:super(metrics)
 
   -- try for the optional match...no backtracking if it is a match.
   if optional~match(context, position, target) then do
-      position = context~lastMatch
+      position = context~matchPosition
   end
 
   return self~next~match(context, position, target)
@@ -2044,7 +2048,7 @@ self~getMatchMetrics:super(metrics)
       if \repNode~match(context, current, target) then do
           return .false
       end
-      current = context~lastmatch
+      current = context~matchPosition
   end
 
   return recursiveMatch(context, current, target, min)
@@ -2061,11 +2065,11 @@ self~getMatchMetrics:super(metrics)
   if repNode~match(context, position, target) then do
       -- a pattern that is a zero-length match will cause an infinite loop,
       -- so fail this
-      if position == context~lastMatch then do
+      if position == context~matchPosition then do
           return .false
       end
       -- now recurse on this
-      if self~recursiveMatch(context, context~lastMatch, target) then do
+      if self~recursiveMatch(context, context~matchPosition, target) then do
           return .true
       end
   end
@@ -2086,7 +2090,7 @@ self~getMatchMetrics:super(metrics)
       if \repNode~match(context, current, target) then do
           return .false
       end
-      current = context~lastmatch
+      current = context~matchPosition
   end
   -- we have the minimum number of matches, now proceed trying to avoid checking again
   next = self~next
@@ -2108,11 +2112,11 @@ self~getMatchMetrics:super(metrics)
       end
 
       -- if not moving, this is a failure here
-      if current == context~lastMatch then do
+      if current == context~matchPosition then do
           return .false
       end
       -- step the position and count and check again
-      current = context~lastMatch
+      current = context~matchPosition
       matches = matches + 1
   end
 
@@ -2129,7 +2133,7 @@ self~getMatchMetrics:super(metrics)
       if \repNode~match(context, current, target) then do
           return .false
       end
-      current = context~lastmatch
+      current = context~matchPosition
   end
 
   do i = min + 1 to max
@@ -2137,11 +2141,11 @@ self~getMatchMetrics:super(metrics)
           leave
       end
 
-      if current == context~lastMatch then do
+      if current == context~matchPosition then do
           leave
       end
 
-      current = context~lastMatch
+      current = context~matchPosition
   end
 
   return self~next~match(context, current, target)
@@ -2157,7 +2161,7 @@ self~getMatchMetrics:super(metrics)
   expose ref
   use arg context, position, target
 
-  refGroup = context~getBackRefResult(ref)
+  refGroup = context~getBackReferenceResult(ref)
 
   if \refGroup~matched then do
       return .false
@@ -2229,10 +2233,10 @@ self~getMatchMetrics:super(metrics)
   expose id groupMatch
   use arg context, position, target
 
-  info = context~numberedGroupInfo(id)
+  info = context~getGroupInfo(id)
 
   if groupMatch~matches(context, position, target) then do
-      info~updateMatch(position, context~matchEnd)
+      info~setMatch(target, position, context~matchEnd)
       return self~next~match(context, context~matchEnd, target)
   end
   else do
@@ -2254,7 +2258,7 @@ self~getMatchMetrics:super(metrics)
   info = context~namedGroupInfo(id)
 
   if groupMatch~matches(context, position, target) then do
-      info~updateMatch(position, context~matchEnd)
+      info~setMatch(target, position, context~matchEnd)
       return self~next~match(context, context~matchEnd, target)
   end
   else do
@@ -2301,7 +2305,6 @@ self~getMatchMetrics:super(metrics)
   end
 
   return .false
-
 
 ::class ClassAndNode subclass ClassLogicalNode
 ::method match
@@ -2430,7 +2433,7 @@ self~getMatchMetrics:super(metrics)
 
   -- do the group match and accounting, then forward along.
   if group~match(context, position, target) then do
-      return self~next~match(context, context~lastMatch, target)
+      return self~next~match(context, context~matchPosition, target)
   end
 
   return .false
@@ -2478,7 +2481,7 @@ self~getMatchMetrics:super(metrics)
   return .false
 
 
-::class PositiveLookbehindNode subclass MatchNode
+::class PositiveLookBehindNode subclass MatchNode
 ::method init
   expose group max min
   use arg group, metrics
@@ -2490,6 +2493,9 @@ self~getMatchMetrics:super(metrics)
   expose group max min
   use arg context, position, target
 
+  -- This is the offset from the beginning of the match
+  -- range, which might not be the same as the string beginning
+  -- This will tell us the size of the string before this position
   offset = context~matchOffset(position)
 
   -- we need to have a least the min preceeding us to match
@@ -2617,7 +2623,7 @@ self~getMatchMetrics:super(metrics)
   use arg context, position, target
 
   -- set the end match position
-  context~setMatchEnd(position)
+  context~matchEnd = position
   -- this is always a successful match.  This really just
   -- records the last position of this branch segment.
   return .true
@@ -2722,3 +2728,173 @@ use strict arg start, end, text, groups = .nil
   end
 
   return group
+
+::class MatchContext
+::method init
+  expose text startPosition endPosition matchPosition groups hitEnd
+  use arg text, startPosition = 1, length = (text~length)
+  endPosition = min(text~length, startPosition + length - 1)
+  matchPosition = 0
+  groups = .nil   -- default is not to have groups
+  hitEnd = false  -- indicator of whether a search has reached the end
+
+::method atStart
+  expose startPosition
+  use arg test
+  return test == startPosition
+
+-- tests for whether a position is past the end of the range
+::method checkEnd
+  expose endPosition
+  use arg test
+  return test > endPosition
+
+-- the range positions
+::attribute startPosition
+::attribute endPosition
+
+-- any set match positions
+::attribute matchPosition
+::attribute matchEnd
+
+::attribute hitEnd
+
+::method setMatchPosition
+  expose matchPosition matchEnd
+  use arg matchPosition, matchEnd
+
+::method getBackReferenceResult
+  expose groups
+  use arg id
+
+  if groups == .nil then do
+      raise syntax 93.900 array("Back reference to unknown group" id);
+  end
+
+  groupRef = groups[id]
+  if groupRef == .nil then do
+      raise syntax 93.900 array("Back reference to unknown group" id);
+  end
+
+  return groupRef
+
+-- Create the group reference item for a numbered or named group.
+-- If the group already exists, this is an error
+::method getGroupReference
+  expose groups
+  use arg id
+
+  if groups == .nil then do
+      groups = .directory~new
+  end
+
+  if groups~hasIndex(id) then do
+      raise syntax 93.900 array("Duplicate group identifier" id);
+  end
+
+  groupInfo = .GroupReference~new(id)
+  groups[id] = groupInfo
+  return groupInfo
+
+::method saveGroupStart
+  use arg id, position
+  groupInfo = self~getGroupReference(id)
+  groupInfo~saveStart(position)
+
+::method saveGroupEnd
+  use arg id, position
+  groupInfo = self~getGroupReference(id)
+  groupInfo~saveEnd(position)
+
+::method restoreGroupStart
+  use arg id, position
+  groupInfo = self~getGroupReference(id)
+  groupInfo~restoreStart(position)
+
+::method restoreGroupEnd
+  use arg id, position
+  groupInfo = self~getGroupReference(id)
+  groupInfo~restoreEnd(position)
+
+-- return the offset of the given position.  This will be
+-- the number of characters from the start of the match
+-- range to the given position.
+::method matchOffset
+  expose start
+  use arg position
+
+  return position - start
+
+
+::class GroupReference
+::method init
+  expose id start end text startStack endStack
+  use arg id
+  start = 0
+  end = 0
+  text = .nil
+  startStack = .nil
+  endStack = .nil
+
+::attribute start
+::attribute end
+
+::method matched
+  expose start
+  return start > 0
+
+::method setMatch
+  expose text start end
+  use arg text, start, end
+
+::method clearMatch
+  expose text start end
+  text = .nil
+  start = 0
+  end = 0
+
+::method matchValue
+  expose text start end
+
+  if start > 0 then do
+      return text~substr(start, end - start + 1)
+  end
+
+  return .nil
+
+-- set a new starting position for the group, but save
+-- the previous position in a stack in case it needs restoring
+::method saveStart
+  expose start startStack
+  use arg newStart
+
+  if startStack = .nil then do
+      startStack = .queue~new
+  end
+
+  startStack~push(start)
+  start = newStart
+
+-- set a new end position for the group, but save
+-- the previous position in a stack in case it needs restoring
+::method saveEnd
+  expose end endStack
+  use arg newEnd
+
+  if endStack = .nil then do
+      endStack = .queue~new
+  end
+
+  endStack~push(end)
+  end = newEnd
+
+-- methods for restoring the previous start and end positions
+::method restoreStart
+  expose start startStack
+
+  start = startStack~pop
+
+::method restoreEnd
+  expose end endStack
+
+  end = endStack~pop
