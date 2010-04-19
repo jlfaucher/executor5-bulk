@@ -38,6 +38,7 @@
 ::method compile class
   -- the compiler is configurable, but there is a default
   use strict arg pattern, compiler = (.RegexCompiler~new)
+  return compiler~compile(pattern)
 
 ::method init
   expose pattern root
@@ -157,6 +158,14 @@
   current = 1     -- always start at the beginning
   length = pattern~length
 
+  -- this is the last node that will get control only if all other
+  -- elements match cleanly.  The expression parser hooks this up to the
+  -- end of the expression graph.
+  lastNode = .TerminatorNode~new
+  rootNode = self~parseExpression(lastNode)
+  -- and return a usable pattern for this
+  return .Pattern~new(pattern, rootNode)
+
 -- extract the next character and step the parsing position
 -- Returns .nil if past the end of the pattern
 ::method next
@@ -215,7 +224,7 @@
 
 -- extract a numeric value from the stream.  Terminates
 -- on the first non-numeric character or the EOS.
-::method extractNumber
+::method parseNumber
   number = ""
 
   do forever
@@ -321,12 +330,15 @@
               end
               iterate     -- closure has already been handled
           end
+          -- a start anchor
           when ch == "^" then do
               node = self~parseStartAnchor
           end
+          -- end anchor variants
           when ch == "$" then do
               node = self~parseEndAnchor
           end
+          -- match any character
           when ch == "." then do
               node = self~parseDot
           end
@@ -345,6 +357,7 @@
       end
 
       node = self~processClosure(node)
+      -- now process the chaining
       if firstNode == .nil then do
           firstNode = node
           lastNode = node
@@ -726,7 +739,6 @@
           return
       end
       when ch == "{" then do
-
           min = self~parseNumber
           max = min
           ch = self~next
@@ -772,32 +784,38 @@
       return
   end
 
-
+-- process the closure for a node.  Because a sequence might have
+-- modifiers, we might need to wrap the node sequence in
+-- an enclosing node that handles the modifiers
 ::method parseClosure
   use arg target
 
   ch = self~next
 
   select
+      -- A question modifier, which itself might have a
+      -- modifier to control the operating mode
       when ch == "?" then do
           -- a question repetitor
           ch = self~next
-
+          -- ?? operates in lazy mode
           if ch == "?" then do
               return .LazyQuestionNode~new(target)
           end
+          -- possesive question mode
           else if ch == "+" then do
               return .PossessiveQuestionNode~new(target)
           end
           else do
+              -- no modifier is greedy
               self~previous
               return .GreedyQuestionNode~new(target)
           end
       end
+      -- zero or more occurrences.  This also operates with mode
+      -- modifiers
       when ch == "*" then do
-          -- zero or more occurrences
           ch = self~next
-
 
           if ch == "?" then do
               return .LazyRepetitionNode~new(target, 0, 999999999)
@@ -810,10 +828,10 @@
               return .GreedyRepetitionNode~new(target, 0, 999999999)
           end
       end
+      -- one or more occurrences.  Also with different modes of
+      -- operation
       when ch == "+" then do
-          -- one or more occurrences
           ch = self~next
-
 
           if ch == "?" then do
               return .LazyRepetitionNode~new(target, 1, 999999999)
@@ -826,8 +844,8 @@
               return .GreedyRepetitionNode~new(target, 1, 999999999)
           end
       end
+      -- {min[,max]} range
       when ch == "{" then do
-
           min = self~parseNumber
           max = min
           ch = self~next
@@ -835,10 +853,11 @@
               max = self~parseNumber
               ch = self~next
           end
+          -- must be a closing '}' on this
           if ch \= "}" then do
               raise syntax 36.900 array("Missing closing '}' for repetition count")
           end
-
+          --
           if .nil == min || .nil == max then do
               raise syntax 93.900 array("Invalid repetition count")
           end
@@ -865,6 +884,7 @@
       end
   end
 
+-- parse a [abc] class modifier
 ::method parseClass
   node = self~parseClassSection
 
@@ -875,7 +895,7 @@
 
   return node
 
-
+-- parse out the characters between a class section.
 ::method parseClassSection
   expose current length pattern
 
@@ -985,7 +1005,6 @@
 
       -- processed all of the special chars, we should be looking at class characters.
       -- process this into a node.
-
       node = self~parseClassRange
 
       if negated then do
@@ -1032,7 +1051,7 @@
           end
           else do
               if inRange then do
-                  raise syntax ....
+                  raise syntax 93.900 array("extra '-' in character range")
               end
               inRange = .true
               startRange = characters~right(1)
@@ -1089,7 +1108,7 @@
 
   return .ClassNode~new(characters)
 
-
+-- parse a named property and turn it into an equivalent family class
 ::method parseNamedProperty
   use arg negated
 
@@ -1111,6 +1130,8 @@
       return .ClassNode~new(familyChars)
   end
 
+-- parse out a section of as-is characters that conforms to an atom
+-- specification
 ::method parseAtom
   characters = ""
 
@@ -1158,6 +1179,7 @@
       return self~stringNode(characters)
   end
 
+-- create a node for matching a single character
 ::method singleNode
   use arg char
 
@@ -1168,6 +1190,7 @@
       return .SingleCharNode~new(char)
   end
 
+-- create a node for matching a character string
 ::method stringNode
   use arg string
 
@@ -1178,6 +1201,7 @@
       return .StringNode~new(string)
   end
 
+-- parse out an escaped character
 ::method parseEscapedCharacter private
   ch = self~next
 
@@ -1378,8 +1402,9 @@
   -- we can directly raise a syntax error for reading hex
   raise syntax 93.900 array("Hex digit expected")
 
+-- Start of nodes that implement the various matching algorithms
 
-
+-- base class for all matching nodes
 ::class MatchNode
 ::constant wordChars 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
 ::method init
@@ -1391,6 +1416,9 @@
 ::attribute next
 ::attribute anchored
 
+-- calculate the length of this match, if possible.  The
+-- default implementation assumes the length of this node is zero and
+-- just passes the request down the chain
 ::method getMatchMetrics
   expose next
   use arg metrics
