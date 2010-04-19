@@ -35,6 +35,10 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 ::class Pattern public
+::method compile class
+  -- the compiler is configurable, but there is a default
+  use strict arg pattern, compiler = (.RegexCompiler~new)
+
 ::method init
   expose pattern root
   use arg pattern, root
@@ -100,14 +104,18 @@
 
   registeredClassFamilies[name] = chars
 
-
 ::method init
-  if arg(1, 'e') then do
-      validateOptions(arg(1))
+  use strict arg options = .nil
+  validateOptions(arg(1))
+
+-- validate any options passed to the compiler when created
+::method validateOptions private
+  use arg options
+  if options == .nil then do
+      return
   end
 
-::method validateOptions
-  parse upper arg options
+  options = options~upper
 
   do while options \== ""
       parse var options option options
@@ -143,18 +151,28 @@
       end
   end
 
+::method compile
+  expose pattern current length
+  use strict arg pattern
+  current = 1     -- always start at the beginning
+  length = pattern~length
 
+-- extract the next character and step the parsing position
+-- Returns .nil if past the end of the pattern
 ::method next
   expose pattern current length
-
+  -- .nil triggers the end of the parsing
   if current > length then do
       return .nil
   end
-
+  -- grab the character at the current position and
+  -- step to the next slot
   ch = pattern~subchar(current)
   current = current + 1
   return ch
 
+-- peek at the current parsing position without stepping
+-- the cursor.  Returns .nil if past the end of the pattern.
 ::method peek
   expose pattern current length
 
@@ -165,31 +183,38 @@
   ch = pattern~subchar(current)
   return ch
 
+-- move the cursor to a previous position, ensuring that we
+-- don't move past the beginning
 ::method previous
   expose current length
 
   current = max(current - 1, 1)
 
+-- extract a string from a pattern that is delimited
+-- by a pair of markers
 ::method extractDelimited
   expose pattern current length
   use arg start, end
-
+  -- In theory, we should be at the start delimiter now.  If
+  -- not there, this is an error
   if \pattern~match(current, start) then do
       raise syntax 13.900 array("Delimiter character" start "expected for delimited string")
   end
 
-  startPos = current + 1
-
+  -- step over the delimiter
+  startPos = current + start~length
+  -- and look for the closing delimiter
   endPos = pattern~pos(end, startPos)
   if endPos == 0 then do
       raise syntax 6.900 array("Missing closing delimeter" end)
   end
 
-  current = endPos + 1  -- position past the read position
+  current = endPos + end~length  -- position past the read position
+  -- and return the string between the markers
+  return pattern~substr(startPos, endPos - startPos + 1)
 
-  return pattern~substr(startPos, endPos = startPos + 1)
-
-
+-- extract a numeric value from the stream.  Terminates
+-- on the first non-numeric character or the EOS.
 ::method extractNumber
   number = ""
 
@@ -199,18 +224,24 @@
          leave
      end
      if \ch~datatype("W") then do
+         -- non-numeric character, so backup and quit the loop
          self~previous
          leave
      end
+     -- add to the accumulator
      number = number || ch
   end
 
+  -- nothing valid found, return .nil as the failure value
   if number == '' then do
       return .nil
   end
   return number
 
 
+-- Parse out an expression tree and compile into a directed graph of
+-- match nodes.  This version handles alternative forms.  If not
+-- part of an alternative sequence, it just returns the base sub expression.
 ::method parseExpression
   expose pattern matchNodes current length
 
@@ -246,29 +277,38 @@
       end
   end
 
-
+-- parse out a subexpression.  This also handles any of the modifiers
+-- that might be associated with a single subexpression
 ::method parseSequence
-  use arg previousNode
+  use arg terminator
 
   firstNode = .nil
   lastNode = .nil
 
   do forever
-      ch = self~nextChar
+      ch = self~next
 
       select
           -- this is an end of string, done parsing
           when .nil == ch then do
               leave
           end
-          -- either of these is a terminator for the sequence
+          -- either of these is a terminator for the sequence.
+          -- if this is "|", the caller will accumulate the alternatives.
+          -- if this is ")", then this is the close of a group
           when ch == "|" | ch == ")" then do
+              self~previous     -- make sure to back up and allow the caller to handle
               leave;
           end
+          -- a class of characters
           when ch == "[" then do
               node = self~parseClass
           end
+          -- start of a group.  We'll process and then recurse
           when ch == '(' then do
+              -- parse out the group expression, then chain the
+              -- entire section into our graph.  All subsequent
+              -- bits follow the group sequence.
               groupInto = self~parseGroup
               if groupnode \= .nil then do
                   if firstNode == .nil then do
@@ -290,13 +330,16 @@
           when ch == "." then do
               node = self~parseDot
           end
+          -- various escape characters
           when ch == "\" then do
               node = self~parseEscapes
           end
+          -- these are not expected here
           when ch == "?" | ch == "*" | ch == "+" then do
               raise syntax 13.900 array ("Unexpected modifier character '"||ch||"'" )
           end
           otherwise do
+              -- an atom string that is taken as-is
               node = self~parseAtom
           end
       end
@@ -311,12 +354,15 @@
           lastNode = node
       end
   end
-
+  -- it's possible there is nothing to return.  In that case, just
+  -- return the terminator node we were given
   if firstNode == .nil then do
-      return previousNode
+      return terminator
   end
   else do
-      lastNode~next = previousNode
+      -- put the terminator as the next element of the last node of
+      -- the chain.
+      lastNode~next = terminator
   end
   return firstNode
 
@@ -355,9 +401,9 @@
   end
 
 
-::method parseDot
   -- a match anything character.  The meaning of
   -- "match anything" differs depending on options
+::method parseDot
   if self~dotMatchAll then do
       return .AllDotNode~new
   end
@@ -1501,7 +1547,8 @@
 
   self~getMatchMetrics:super(metrics)
 
-
+-- Generic "dot".  This matches everything but the end of
+-- of data
 ::class AllDotNode subclass matchNode
 ::method match
   use arg context, position, target
@@ -1515,14 +1562,15 @@
 
 ::method getMatchMetrics
   use arg metrics
-
+  -- a dot is always a single character, so easy to manage
   metrics~maxLen = metrics~maxLen + 1
   metrics~minLen = metrics~minLen + 1
 
   self~getMatchMetrics:super(metrics)
 
 
--- like all dot node, but doesn't match lineends
+-- like all dot node, but doesn't match lineends (CRLF sequences,
+-- in this case)
 ::class DotNode subclass AllDotNode
 ::method match
   use arg context, position, target
@@ -1532,16 +1580,17 @@
   end
 
   ch = target~subChar(position)
-  -- if positioned on any linend char, this is a failure
-  if \target~matchChar(position, '0d0a'x) then do
+  -- if positioned on ANY linend char, this is a failure
+  if target~matchChar(position, '0d0a'x) then do
       return .false
   end
 
-  -- always true at this node, so just return the successor result.
+  -- always true at this point, so just return the successor result.
   return self~next~match(context, position + 1, target)
 
 
--- like all dot node, but doesn't match lineends (Unix mode)
+-- like all dot node, but doesn't match lineends (Unix mode, so
+-- this is just linefeeds)
 ::class UnixDotNode subclass AllDotNode
 ::method match
   use arg context, position, target
@@ -1550,23 +1599,15 @@
       return .false
   end
 
-  -- if positioned on any linend char, this is a failure
-  if \target~match(position, '0a'x) then do
+  -- if positioned on a linefeed char, this is a failure
+  if target~match(position, '0a'x) then do
       return .false
   end
 
-  -- always true at this node, so just return the successor result.
+  -- always true at this point, so just return the successor result.
   return self~next~match(context, position + 1, target)
 
-::method getMatchMetrics
-  use arg metrics
-
-  metrics~maxLen = metrics~maxLen + 1
-  metrics~minLen = metrics~minLen + 1
-
-  self~getMatchMetrics:super(metrics)
-
-
+-- inverse match for a single character
 ::class NotSingleChar subclass matchNode
 ::method init
   expose matchChar
@@ -1583,58 +1624,57 @@
       return .false
   end
 
-  if \target~matchChar(position, matchChar), self~next~match(context, position + 1, target) then do
-      return .true
+  -- if we have a match at this position, then this is false
+  if \target~matchChar(position, matchChar) then do
+      return .false
   end
-  return .false
+
+  -- forward down the chain, we're good so far
+  return self~next~match(context, position + 1, target)
 
 ::method getMatchMetrics
   use arg metrics
 
+  -- these are again pretty easy
   metrics~maxLen = metrics~maxLen + 1
   metrics~minLen = metrics~minLen + 1
 
   self~getMatchMetrics:super(metrics)
 
 
+-- match a string of characters
 ::class StringNode subclass matchNode
 ::method init
   expose matchString
   use arg matchString
   self~init:super
 
-
 ::method match
   expose matchString
-
   use arg context, position, target
 
+  -- must have at least the same length as the string available
   if context~checkEnd(position + matchString~length) then do
       return .false
   end
-
+  -- if no match, fail
   if \target~match(position, matchString) then do
       return .false
   end
-
-  return self~next~match(context, position + 1, target)
+  -- continue checking after this position
+  return self~next~match(context, position + matchString~length, target)
 
 ::method getMatchMetrics
   expose matchString
   use arg metrics
-
+  -- always the length of this string
   metrics~maxLen = metrics~maxLen + matchString~length
   metrics~minLen = metrics~minLen + matchString~length
 
   self~getMatchMetrics:super(metrics)
 
-::class CaselessStringNode subclass MatchNode
-::method init
-  expose matchString
-  use arg matchString
-  self~init:super
-
-
+-- a caseless match for a string
+::class CaselessStringNode subclass StringNode
 ::method match
   expose matchString
 
@@ -1650,16 +1690,7 @@
 
   return self~next~match(context, position + 1, target)
 
-::method getMatchMetrics
-  expose matchString
-  use arg metrics
-
-  metrics~maxLen = metrics~maxLen + matchString~length
-  metrics~minLen = metrics~minLen + matchString~length
-
-  self~getMatchMetrics:super(metrics)
-
-
+-- match for a defined set of characters
 ::class ClassNode subclass MatchNode
 
 ::method init
@@ -1670,13 +1701,12 @@
 
 ::method match
   expose characters
-
   use arg context, position, target
 
   if context~checkEnd(position) then do
       return .false
   end
-
+  -- must match at least one of these
   if \target~matchChar(position, characters) then do
       return .false
   end
@@ -1685,13 +1715,13 @@
 
 ::method getMatchMetrics
   use arg metrics
-
+  -- also just a single character match
   metrics~maxLen = metrics~maxLen + 1
   metrics~minLen = metrics~minLen + 1
 
   self~getMatchMetrics:super(metrics)
 
-
+-- an inversion of the class node
 ::class NotClassNode subclass ClassNode
 ::method match
   expose characters
@@ -1707,14 +1737,6 @@
   end
 
   return self~next~match(context, position + 1, target)
-
-::method getMatchMetrics
-  use arg metrics
-
-  metrics~maxLen = metrics~maxLen + 1
-  metrics~minLen = metrics~minLen + 1
-
-  self~getMatchMetrics:super(metrics)
 
 
 ::class ClassIntersectionNode subclass MatchNode
@@ -1739,9 +1761,11 @@
   return self~next~match(context, position + 1, target)
 
 
+-- match on a series of OR expressions
 ::class AlternativeNode subclass MatchNode
 ::method init
   expose alternatives
+  -- these are accumulated during parsing
   alternatives = .array~new
 
   self~init:super
@@ -1751,8 +1775,11 @@
 
   use arg context, position, target
 
+  -- return on the first match
   do alternative over alternatives
       if alternative~match(context, position, target)  then do
+          -- TODO:  Should this return now, or should it forward to
+          -- the next stage?
           return .true
       end
   end
@@ -1787,12 +1814,13 @@
   -- send this along
   self~getMatchMetrics:super(metrics)
 
+-- add an expression to our list of alternatives
 ::method addAlternative
   expose alternatives
 
   use arg newChoice
 
-  alternatives[alternatives~items + 1] = newChoice
+  alternatives~append(newChoice)
 
 
 ::class WordStartNode subclass MatchNode
@@ -1938,11 +1966,15 @@
 
   return .false
 
+-- Base class for the different Question nodes.  The init and
+-- getMatchMetrics are the same, but the matching logic is different
 ::class QuestionNode subclass MatchNode
 ::method init
   expose optional
   use arg optional
   self~init:super
+
+::attribute optional GET
 
 ::method getMatchMetrics
   expose optional
@@ -1960,12 +1992,11 @@ self~getMatchMetrics:super(metrics)
 
 ::class GreedyQuestionNode subclass QuestionNode
 ::method match
-  expose optional
   use arg context, position, target
 
   -- if we match the optional part, and if we match the following part,
   -- this is gold.
-  if optional~match(context, position, target) then do
+  if self~optional~match(context, position, target) then do
       if self~next~match(context, context~matchPosition, target) then do
           return .true
       end
@@ -1977,7 +2008,6 @@ self~getMatchMetrics:super(metrics)
 
 ::class LazyQuestionNode subclass QuestionNode
 ::method match
-  expose optional
   use arg context, position, target
 
   -- first try for a match on the trailing part.  If that matches, we ignore
@@ -1987,7 +2017,7 @@ self~getMatchMetrics:super(metrics)
   end
 
   -- try again, but without the optional section.
-  if \optional~match(context, position, target) then do
+  if \self~optional~match(context, position, target) then do
       return .false
   end
 
@@ -1996,22 +2026,26 @@ self~getMatchMetrics:super(metrics)
 
 ::class PossessiveQuestionNode subclass QuestionNode
 ::method match
-  expose optional
   use arg context, position, target
 
   -- try for the optional match...no backtracking if it is a match.
-  if optional~match(context, position, target) then do
+  if self~optional~match(context, position, target) then do
       position = context~matchPosition
   end
 
   return self~next~match(context, position, target)
 
 
+-- match a repetition of nodes
 ::class RepetitionNode subclass MatchNode
 ::method init
   expose repNode min max
   use arg repNode, min, max
   self~init:super
+
+::attribute repNode GET
+::attribute min GET
+::attribute max GET
 
 
 ::method getMatchMetrics
@@ -2038,24 +2072,23 @@ self~getMatchMetrics:super(metrics)
 
 ::class GreedyRepetitionNode subclass RepetitionNode
 ::method match
-  expose repNode min max
   use arg context, position, target
 
   current = position
+  repNode = self~repNode
 
   -- if we have a minimum specified, we must get at least that, else we fail
-  do i = 1 to min
+  do i = 1 to self~min
       if \repNode~match(context, current, target) then do
           return .false
       end
       current = context~matchPosition
   end
 
-  return recursiveMatch(context, current, target, min)
+  return self~recursiveMatch(context, current, target, repNode, self~min, self~max)
 
 ::method recursiveMatch
-  expose repNode max min
-  use arg context, position, target, matches
+  use arg context, position, target, repNode, matches, max
 
   -- we hit the max count, now try to match the trailing bit
   if matches >= max then do
@@ -2069,7 +2102,7 @@ self~getMatchMetrics:super(metrics)
           return .false
       end
       -- now recurse on this
-      if self~recursiveMatch(context, context~matchPosition, target) then do
+      if self~recursiveMatch(context, context~matchPosition, target, repNode, matches + 1, max) then do
           return .true
       end
   end
@@ -2080,13 +2113,13 @@ self~getMatchMetrics:super(metrics)
 
 ::class LazyRepetitionNode subclass RepetitionNode
 ::method match
-  expose repNode min max
   use arg context, position, target
 
   current = position
+  repNode = self~repNode
 
   -- if we have a minimum specified, we must get at least that, else we fail
-  do i = 1 to min
+  do i = 1 to self~min
       if \repNode~match(context, current, target) then do
           return .false
       end
@@ -2095,7 +2128,8 @@ self~getMatchMetrics:super(metrics)
   -- we have the minimum number of matches, now proceed trying to avoid checking again
   next = self~next
 
-  matches = min
+  matches = self~min
+  max = self~max
 
   do forever
       -- now start checking the following part
@@ -2123,20 +2157,20 @@ self~getMatchMetrics:super(metrics)
 
 ::class PossessiveRepetitionNode subclass RepetitionNode
 ::method match
-  expose repNode min max
   use arg context, position, target
 
   current = position
+  repNode = self~repNode
 
   -- if we have a minimum specified, we must get at least that, else we fail
-  do i = 1 to min
+  do i = 1 to self~min
       if \repNode~match(context, current, target) then do
           return .false
       end
       current = context~matchPosition
   end
 
-  do i = min + 1 to max
+  do i = self~min + 1 to self~max
       if \repNode~match(context, current, target) then do
           leave
       end
