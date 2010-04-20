@@ -427,7 +427,7 @@
       return .DotNode~new
   end
 
-::method parseEscapses
+::method parseEscapes
   -- first check for escaped characters that are really class nodes
   node = self~parseEscapedCharacters
   if node == .nil then do
@@ -1078,7 +1078,7 @@
               return self~parseNamedProperty(version)
           end
           else do
-              ch = self~parseEscapedCharacter
+              ch = self~parseEscapedCharacters
               -- this is some sort of escaped op, probably
               if ch == .nil then do
                   if inRange | characters \= "" then do
@@ -1089,7 +1089,7 @@
                   end
                   else do
                       -- we can process this as a node
-                      return self~parseEscapedOperation
+                      return self~parseEscapedOperations
                   end
               end
           end
@@ -1148,7 +1148,7 @@
               leave
           end
           when ch == '\' then do
-              ch = self~parseEscapedCharacter
+              ch = self~parseEscapedCharacters
               -- this is either an invalid escape char, or an operation
               -- we push the backshad back on, and stop processeing.
               if ch == .nil then do
@@ -1202,7 +1202,7 @@
   end
 
 -- parse out an escaped character
-::method parseEscapedCharacter private
+::method parseEscapedCharacters private
   ch = self~next
 
   select
@@ -1265,7 +1265,7 @@
       end
   end
 
-::method parseEscapedOperation private
+::method parseEscapedOperations private
   ch = self~next
 
   select
@@ -1549,12 +1549,14 @@
 
   return self~next~match(context, position, target)
 
-
+-- match for a single character
 ::class SingleCharNode subclass matchNode
 ::method init
   expose matchChar
   use arg matchChar
   self~init:super
+
+::attribute matchChar
 
 ::method match
   expose matchChar
@@ -1565,7 +1567,11 @@
       return .false
   end
 
-  return target~matchChar(position, matchChar) && self~next~match(context, position + 1, target)
+  if \target~match(position, matchChar) then do
+      return .false
+  end
+
+  return self~next~match(context, position + 1, target)
 
 ::method getMatchMetrics
   use arg metrics
@@ -1574,6 +1580,55 @@
   metrics~minLen = metrics~minLen + 1
 
   self~getMatchMetrics:super(metrics)
+
+-- caseless match for a single character
+::class CaselessSingleCharNode subclass SingleCharNode
+::method match
+  use arg context, position, target
+
+  if context~checkEnd(position) then do
+      return .false
+  end
+
+  if \target~caselessMatch(position, self~matchChar) then do
+      return .false
+  end
+
+  return self~next~match(context, position + 1, target)
+
+-- inverse match for a single character
+::class NotSingleCharNode subclass SingleCharNode
+::method match
+  use arg context, position, target
+
+  if context~checkEnd(position) then do
+      return .false
+  end
+
+  -- if we have a match at this position, then this is false
+  if target~match(position, self~matchChar) then do
+      return .false
+  end
+
+  -- forward down the chain, we're good so far
+  return self~next~match(context, position + 1, target)
+
+-- inverse caseless match for a single character
+::class NotCaselessSingleCharNode subclass SingleCharNode
+::method match
+  use arg context, position, target
+
+  if context~checkEnd(position) then do
+      return .false
+  end
+
+  -- if we have a match at this position, then this is false
+  if target~caselessMatch(position, self~matchChar) then do
+      return .false
+  end
+
+  -- forward down the chain, we're good so far
+  return self~next~match(context, position + 1, target)
 
 -- Generic "dot".  This matches everything but the end of
 -- of data
@@ -1635,41 +1690,6 @@
   -- always true at this point, so just return the successor result.
   return self~next~match(context, position + 1, target)
 
--- inverse match for a single character
-::class NotSingleChar subclass matchNode
-::method init
-  expose matchChar
-  use arg matchChar
-
-  self~init:super
-
-::method match
-  expose matchChar
-
-  use arg context, position, target
-
-  if context~checkEnd(position) then do
-      return .false
-  end
-
-  -- if we have a match at this position, then this is false
-  if \target~matchChar(position, matchChar) then do
-      return .false
-  end
-
-  -- forward down the chain, we're good so far
-  return self~next~match(context, position + 1, target)
-
-::method getMatchMetrics
-  use arg metrics
-
-  -- these are again pretty easy
-  metrics~maxLen = metrics~maxLen + 1
-  metrics~minLen = metrics~minLen + 1
-
-  self~getMatchMetrics:super(metrics)
-
-
 -- match a string of characters
 ::class StringNode subclass matchNode
 ::method init
@@ -1720,7 +1740,6 @@
 
 -- match for a defined set of characters
 ::class ClassNode subclass MatchNode
-
 ::method init
   expose characters
   use arg characters
