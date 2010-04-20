@@ -35,6 +35,15 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 ::class Pattern public
+::constant multiline "MULTILINE"
+::constant singleline "SINGLELINE"
+::constant internetlines "INTERNETLINES"
+::constant unixlines "UNIXLINES"
+::constant caseless  "CASELESS"
+::constant respectcase "RESPECTCASE"
+::constant dotall "DOTALL"
+::constant dotrestricted "DOTRESTRICTED"
+
 ::method compile class
   -- the compiler is configurable, but there is a default
   use strict arg pattern, compiler = (.RegexCompiler~new)
@@ -122,28 +131,28 @@
       parse var options option options
 
       select
-          when option == "MULTILINE" then do
+          when option == .Pattern~MULTILINE then do
               self~multiline = .true
           end
-          when option == "SINGLELINE" then do
+          when option == .Pattern~SINGLELINE then do
               self~multiline = .false
           end
-          when option == "INTERNETLINES" then do
+          when option == .Pattern~INTERNETLINES then do
               self~unixlines = .false
           end
-          when option == "UNIXLINES" then do
+          when option == .Pattern~UNIXLINES then do
               self~unixlines = .true
           end
-          when option == "CASELESS" then do
+          when option == .Pattern~CASELESS then do
               self~caseless = .true
           end
-          when option == "RESPECTCASE" then do
+          when option == .Pattern~RESPECTCASE then do
               self~caseless = .false
           end
-          when option == "DOTALL" then do
+          when option == .Pattern~DOTALL then do
               self~dotall = .true
           end
-          when option == "DOTRESTRICTED" then do
+          when option == .Pattern~DOTRESTRICTED then do
               self~dotall = .false
           end
           otherwise  do
@@ -2979,3 +2988,103 @@ use strict arg start, end, text, groups = .nil
   expose end endStack
 
   end = endStack~pop
+
+
+::class parser public
+::method init
+expose string matchstart matchend sectionstart sectionlength
+use arg string
+
+matchstart = 1;
+matchend = 1;
+sectionstart = 1;
+sectionstart = 1
+sectionlength = string~length
+
+::method matchstart
+expose matchstart
+return matchstart
+
+::method sectionstart
+expose sectionstart
+return sectionstart
+
+::method sectionlength
+expose sectionlength
+return sectionlength
+
+::method section
+expose string sectionstart sectionlength
+return string~substr(sectionstart, sectionlength)
+
+::method sectionwords
+section = self~section
+count = section~words
+wordlist = .array~new(count)
+
+do i = 1 to count
+   wordlist[i] = section~word(i)
+end
+
+return wordlist
+
+::method remainder
+expose string matchend
+return string~substr(matchend)
+
+::method match
+expose string matchstart matchend sectionstart sectionlength
+use arg needle
+
+sectionstart = matchend
+
+matchstart = string~pos(needle, matchend)
+
+if matchstart == 0 then do
+    matchstart = string~length + 1
+    matchend = matchstart
+    sectionlength = matchstart - sectionstart
+    return .false
+end
+else do
+    matchend = matchstart + needle~length
+    sectionlength = matchstart - sectionstart
+    return .true
+end
+
+::method move
+expose string matchstart matchend sectionstart sectionlength
+use arg delta
+
+sectionstart = matchstart
+matchstart = matchstart + delta
+
+self~validateposition
+
+::method moveTo
+expose string matchstart matchend sectionstart sectionlength
+
+sectionstart = matchstart
+use arg matchstart
+
+self~validateposition
+
+::method validateposition private
+expose string matchstart matchend sectionstart sectionlength
+
+if matchstart < 1 then do
+    matchstart = 1
+end
+else if matchstart > string~length then do
+    matchstart = string~length + 1
+end
+
+
+if matchstart <= sectionstart then do
+    sectionlength = string~length - sectionstart + 1
+end
+else do
+    sectionlength = matchstart - sectionstart
+end
+
+matchend = matchstart
