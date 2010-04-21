@@ -17,7 +17,13 @@ Address:
   'address' (environment=Expression|value?='value') (command=Expression)?;
 
 Assignment:
-  target=Name '=' expression=Expression;
+  target=VarName '=' expression=Expression;
+
+VarName:
+  'do'|'adress'|'value'|'call'|'on'|'off'|'name'|'label'|'forever'|'over'|'to'|
+  'by'|'for'|'while'|'until'|'drop'|'exit'|'if'|'then'|'else'|'nop'|'any'|'error'|
+  'failure'|'halt'|'notready'|'user'|'use'|'arg'|'raise'|'syntax'|'get'|'set'|
+  'public'|'private'|Name;
 
 Call:
   'call' ({CallCall} ((name=Expression) args=Arguments))|CallOnOff;
@@ -71,10 +77,10 @@ Arguments returns Arguments:
   {Arguments} (arguments+=Expression (',' arguments+=Expression)*)?;
 
 Raise:
-  'raise' 'syntax' mayor=SYMBOL_NUM ('.' minor=SYMBOL_NUM);
+  'raise' 'syntax' mayor=SYMBOL_NUM ('.' minor=SYMBOL_NUM)?;
 
 Expression:
-  {ExprVar} name=Name|fnCall|Message|ArrayAccess|Negate|Const;
+  {ExprVar} name=VarName|fnCall|Message|ArrayAccess|Negate|Const;
 
 ArrayAccess:
   target=Name '[' index=Expression ']';
@@ -84,7 +90,7 @@ fnCall:
 
 Message:
   target=Name ('~'|discard?='~~') message=Name (':' scope=Name)? (('(' args=Arguments ')'
-  )|'=' value=Expression)?;
+  ) /*|'=' value=Expression */)?;
 
 Negate:
   '\\' expression=Expression;
