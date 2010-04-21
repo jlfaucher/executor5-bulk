@@ -50,14 +50,22 @@
   return compiler~compile(pattern)
 
 ::method init
-  expose pattern root
-  use arg pattern, root
+  expose pattern root groups
+  use arg pattern, root, groups
 
-::attribute pattern get
+::attribute pattern GET
+::attribute groups GET
 
 ::method string
   expose pattern
   return pattern
+
+-- create a parsing context for performing matches and searches
+-- using this pattern.
+::method context
+  expose root groups
+  use strict arg text, start = 1, end = (text~length)
+  return .MatchContext~new(text, start, end, root, groups)
 
 ::method matches
   -- TODO implement matching logic
@@ -2768,35 +2776,13 @@ self~getMatchMetrics:super(metrics)
   metrics~deterministic = .false
   metrics~maxValid = .false
 
-::class Matcher
-::method init
-  expose parentPattern text
-  use strict arg parentPattern, text
-  self~reset    -- reset all field values
-
--- reset the matcher to a clean state
-::method reset
-  expose first last from to
-
-  first = -1
-  last = 0
-  -- set the scan limits based on the string
-  from = 1
-  to = self~testLength
-  return self
-
--- get the length of the text
-::method textLength private
-  expose text
-  return text~length
-
 -- Information about an individual match.  The match
 -- may have embedded groups.  The match information for
 -- the embedded groups can also be retrieved
 ::class MatchResult subclass GroupMatchResult
 ::method init
-expose start end text groups
-use strict arg start, end, text, groups = .nil
+expose start end text groups hitEnd
+use strict arg test, start, end, groups, hiEnd
 -- return a response if the operation matched.
 ::method matched
   expose start
@@ -2822,11 +2808,24 @@ use strict arg start, end, text, groups = .nil
 ::class MatchContext
 ::method init
   expose text startPosition endPosition matchPosition groups hitEnd
-  use arg text, startPosition = 1, length = (text~length)
+  use arg text, startPosition, length, root, groups
+  -- make sure the length is bounded
   endPosition = min(text~length, startPosition + length - 1)
   matchPosition = 0
-  groups = .nil   -- default is not to have groups
   hitEnd = false  -- indicator of whether a search has reached the end
+  -- if we have groups, then do a deep copy of the directory
+  -- to create a working groups list
+  if groups \= .nil then do
+      groups = groups~copy
+      do name over groups
+          groups[name] = groups[name]~copy
+      end
+  end
+
+-- return a result object from the match result
+::method result
+  expose text startPosition endPosition matchPosition matchEnd groups hitEnd
+  return .MatchResult~new(text, matchPosition, matchEnd, groups, hitEnd)
 
 ::method atStart
   expose startPosition
