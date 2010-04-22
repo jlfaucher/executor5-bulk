@@ -10,11 +10,14 @@ File:
   Method)* (directives+=Directives)*;
 
 Instruction:
-  (Address|Assignment|Do|Drop|Exit|If|Nop|Call|Arg|UseArg|Raise|Message|Expression
-  ) Delimiter;
+  (
+  //  Address|
+  Assignment|Do|Drop|Exit|Nop|Call|Arg|UseArg|Raise|MessageInstruction //  |Expression
+)Delimiter | If;
 
-Address:
-  'address' (environment=Expression|value?='value') (command=Expression)?;
+//Address:
+//  'address' (environment=Expression|value?='value') (command=Expression)?;
+
 
 Assignment:
   target=VarName '=' expression=Expression;
@@ -32,13 +35,14 @@ CallOnOff:
   (on?='on'|off?='off') condition=Condition ('name' trap=Name)?;
 
 Do:
-  'do' ('label' label=Name)? repetitor=DoRepetitor? conditional=DoConditional?
-  Delimiter (instrs+=Instruction)+ 'end' endLabel=Name;
+  {Do}'do' ('label' label=Name)? repetitor=DoRepetitor? conditional=DoConditional?
+  Delimiter (instrs+=Instruction)* 'end' endLabel=Name?;
 
 DoRepetitor:
-  {DoForever} 'forever'|{DoTimes} times=Expression|{DoOver} control=Name 'over' over=
+  {DoTimes} times=Expression|{DoOver} control=Name 'over' over=
   Expression|{DoManual} control=Name '=' start=Expression ('to' to=Expression)? ('by' by=
   Expression)? ('for' for=Expression)?;
+
 
 DoConditional:
   ({DoWhile} 'while'|{DoUntil} 'until') condition=Expression;
@@ -53,8 +57,8 @@ Exit:
   {Exit} 'exit' (result=Expression)?;
 
 If:
-  'if' expression=Expression Delimiter? 'then' Delimiter? topInstr=Instruction ('else'
-  Delimiter? bottomInstr=Instruction)?;
+  'if' expression=Expression Delimiter? 'then' Delimiter? topInstr=Instruction
+  ( 'else' Delimiter? bottomInstr=Instruction)?;
 
 Nop:
   {Nop} 'nop';
@@ -80,17 +84,43 @@ Raise:
   'raise' 'syntax' mayor=SYMBOL_NUM ('.' minor=SYMBOL_NUM)?;
 
 Expression:
-  {ExprVar} name=VarName|fnCall|Message|ArrayAccess|Negate|Const;
+  {ExprVar} name=VarName|//  fnCall|
+  MessageTerm //|
+  //  Negate
+|Const //  |BinOp
+; //fnCall:
+//  name=VarName '(' args=Arguments ')';
+//
+//BinOp:
+//  l=BinOpLeft op=( '+' | '-' | '*' | '/' | '**' | '||' | '&' | '&&' ) r=Expression;
+//
+//BinOpLeft:
+//  {ExprVar} name=VarName|fnCall|MessageTerm|Negate|Const;
 
-ArrayAccess:
-  target=Name '[' index=Expression ']';
 
-fnCall:
-  target=Name '(' args=Arguments ')';
+MessageInstruction:
+  message=MessageTerm ('=' value=Expression)?;
 
-Message:
-  target=Name ('~'|discard?='~~') message=Name (':' scope=Name)? (('(' args=Arguments ')'
-  ) /*|'=' value=Expression */)?;
+MessageTerm:
+  receiver=MessageReceiver message+=( MessageTermMessage | MessageTermArray )+;
+
+MessageTermMessage:
+  ('~'|discard?='~~') name=MessageName (':' scope=Symbol)? ('(' args=Arguments ')')?;
+
+MessageTermArray:
+  '[' args=Arguments ']';
+
+MessageReceiver:
+  name=VarName; // TODO
+
+
+MessageName:
+  name=VarName; // TODO
+
+
+Symbol:
+  name=VarName; // TODO
+
 
 Negate:
   '\\' expression=Expression;
@@ -110,12 +140,12 @@ ClassContent:
   Method|Attribute|Constant;
 
 Method:
-  '::method' name=Name (visibility=VISIBILITY)? (class?='class')? Delimiter ('expose' (
-  expose+=Name)+ Delimiter)? (content+=Instruction)*;
+  '::method' name=Name ((visibility=VISIBILITY)? & (class?='class')?) Delimiter (
+  'expose' (expose+=Name)+ Delimiter)? (content+=Instruction)*;
 
 Attribute:
-  (AttributeSet|AttributeGet|AttributeNormal) (visibility=VISIBILITY)? (class?=
-  'class')? Delimiter ('expose' (expose+=Name)+ Delimiter)? (content+=Instruction)*;
+  (AttributeSet|AttributeGet|AttributeNormal) ((visibility=VISIBILITY)? & (class?=
+  'class')?) Delimiter ('expose' (expose+=Name)+ Delimiter)? (content+=Instruction)*;
 
 AttributeSet:
   '::attribute' name=Name 'set';
@@ -156,43 +186,12 @@ terminal SL_COMMENT:
   '--' !('\r' | '\n')*;
 
 Delimiter:
-  (TERM)+;
+  TERM+;
 
-terminal TERM:
-  (NL | ';')+;
-
-terminal NL:
-  ('\r'? '\n'); //terminal METACLASS:
-//  'METACLASS';
-//
-//terminal MIXINCLASS:
-//  'MIXINCLASS';
-//
-//terminal SUBCLASS:
-//  'SUBCLASS';
-//
-//terminal INHERIT:
-//  'INHERIT';
-//
-//terminal DIRECTIVE_CLASS:
-//  '::CLASS';
-//terminal DIRECTIVE_METHOD:
-//  '::METHOD';
-//
-//terminal DIRECTIVE_CONSTANT:
-//  '::CONSTANT';
-//
-//terminal DIRECTIVE_REQUIRES:
-//  '::REQUIRES';
-//
-//terminal DIRECTIVE_ROUTINE:
-//  '::ROUTINE';
-//terminal DIRECTIVE_OPTIONS:
-//  '::OPTIONS';
-
+terminal TERM: ('\r'? '\n' | ';')+;
 
 terminal STRING:
-  ('"' (!'"')* '"') | ("'" (!"'" | "''")* "'");
+  (('"' (!'"')* '"') | ("'" (!"'" | "''")* "'"));
 
 terminal STRING_HEX:
   STRING ('X' | 'x');
@@ -209,144 +208,3 @@ terminal SYMBOL_CLS:
 terminal SYMBOL_NUM:
   '0'..'9'+ //| ('0'..'9')* '.' ('0'..'9')+ (('e' | 'E') ('+' | '-')? ('0'..'9')+)
 ;
-
-terminal OP_PLUS:
-  '+';
-
-terminal OP_MINUS:
-  '-';
-
-terminal OP_SLASH:
-  '/';
-
-terminal OP_PERCENT:
-  '%';
-
-terminal OP_STAR:
-  '*';
-
-terminal OP_PIPE:
-  '|';
-
-terminal OP_ET:
-  '&'; //terminal OP_EQ:
-//  '=';
-
-
-terminal OP_NEG:
-  '¬';
-
-terminal OP_GT:
-  '>';
-
-terminal OP_LT:
-  '<';
-
-terminal OP_GEQ:
-  '>=';
-
-terminal OP_LEQ:
-  '<=';
-
-terminal OP_BSGT:
-  '\\>';
-
-terminal OP_BSLT:
-  '\\<';
-
-terminal OP_BSEQ:
-  '\\=';
-
-terminal OP_GTLT:
-  '><';
-
-terminal OP_LTGT:
-  '<>';
-
-terminal OP_EQ2:
-  '==';
-
-terminal OP_BSEQ2:
-  '\\==';
-
-terminal OP_SLASH2:
-  '//';
-
-terminal OP_AND2:
-  '&&';
-
-terminal OP_PIPE2:
-  '||';
-
-terminal OP_STAR2:
-  '**';
-
-terminal OP_NGT:
-  '¬>';
-
-terminal OP_NLT:
-  '¬<';
-
-terminal OP_NEQ:
-  '¬=';
-
-terminal OP_NEQ2:
-  '¬==';
-
-terminal OP_GT2:
-  '>>';
-
-terminal OP_LT2:
-  '<<';
-
-terminal OP_GT2EQ:
-  '>>=';
-
-terminal OP_BSLT2:
-  '\\<<';
-
-terminal OP_NLT2:
-  '¬<<';
-
-terminal OP_BSGT2:
-  '\\>>';
-
-terminal OP_NGT2:
-  '¬>>';
-
-terminal OP_LT2EQ:
-  '<<=';
-
-terminal OP_PLUSEQ:
-  '+=';
-
-terminal OP_MINUSEQ:
-  '-=';
-
-terminal OP_STAREQ:
-  '*=';
-
-terminal OP_SLASHEQ:
-  '/=';
-
-terminal OP_PERCENTEQ:
-  '%=';
-
-terminal OP_SLAHS2EQ:
-  '//=';
-
-terminal OP_PIPE2EQ:
-  '||=';
-
-terminal OP_ANDEQ:
-  '&=';
-
-terminal OP_PIPEEQ:
-  '|=';
-
-terminal OP_AND2EQ:
-  '&&=';
-
-//terminal COLON:
-//  ':';
-	
