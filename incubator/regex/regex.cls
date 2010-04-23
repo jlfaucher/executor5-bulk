@@ -35,14 +35,6 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 ::class Pattern public
-::constant multiline "MULTILINE"
-::constant singleline "SINGLELINE"
-::constant internetlines "INTERNETLINES"
-::constant unixlines "UNIXLINES"
-::constant caseless  "CASELESS"
-::constant respectcase "RESPECTCASE"
-::constant dotall "DOTALL"
-::constant dotrestricted "DOTRESTRICTED"
 
 ::method compile class
   -- the compiler is configurable, but there is a default
@@ -75,6 +67,7 @@
 
 
 ::class RegexCompiler public
+
 ::method init class
   expose classFamilies registeredClassFamilies
 
@@ -124,7 +117,18 @@
 
 ::method init
   use strict arg options = .nil
-  validateOptions(arg(1))
+  -- set default options
+  self~multiline = .false
+  self~unixlines = .false
+  self~caseless = .false
+  self~dotall = .false
+  self~validateOptions(arg(1))
+
+-- the following CONSTANTs define the valid options; split into two parts for
+-- readability and source line length
+--  NB DO NOT change the order without modifying the code in validateOptions()
+::constant validOptions1 "MULTILINE SINGLELINE INTERNETLINES UNIXLINES"
+::constant validOptions2 "CASELESS RESPECTCASE DOTALL DOTRESTRICTED"
 
 -- validate any options passed to the compiler when created
 ::method validateOptions private
@@ -134,37 +138,47 @@
   end
 
   options = options~upper
+  -- combine the two lists of options
+  validOptions = self~validOptions1 self~validOptions2
 
   do while options \== ""
       parse var options option options
 
       select
-          when option == .Pattern~MULTILINE then do
+          -- option = MULTILINE
+          when validOptions~word(1)~abbrev(option, 1) then do
               self~multiline = .true
           end
-          when option == .Pattern~SINGLELINE then do
+          -- option = SINGLELINE
+          when validOptions~word(2)~abbrev(option, 1) then do
               self~multiline = .false
           end
-          when option == .Pattern~INTERNETLINES then do
+          -- option = INTERNETLINES
+          when validOptions~word(3)~abbrev(option, 1) then do
               self~unixlines = .false
           end
-          when option == .Pattern~UNIXLINES then do
+          -- option = UNIXLINES
+          when validOptions~word(4)~abbrev(option, 1) then do
               self~unixlines = .true
           end
-          when option == .Pattern~CASELESS then do
+          -- option = CASELESS
+          when validOptions~word(5)~abbrev(option, 1) then do
               self~caseless = .true
           end
-          when option == .Pattern~RESPECTCASE then do
+          -- option = RESPECTCASE
+          when validOptions~word(6)~abbrev(option, 1) then do
               self~caseless = .false
           end
-          when option == .Pattern~DOTALL then do
+          -- option = DOTALL
+          when validOptions~word(7)~abbrev(option, 4) then do
               self~dotall = .true
           end
-          when option == .Pattern~DOTRESTRICTED then do
+          -- option = DOTRESTRICTED
+          when validOptions~word(8)~abbrev(option, 4) then do
               self~dotall = .false
           end
           otherwise  do
-              raise syntax 93.915 array("MULTILINE SINGLELINE INTERNETLINES UNIXLINES CASELESS RESPECTCASE DOTALL DOTRESTRICTED", option)
+              raise syntax 93.915 array(validOptions, option)
           end
       end
   end
@@ -665,10 +679,10 @@
   end
 
 -- various option flags
-::method unixlines attribute
-::method caseless attribute
-::method multiline attribute
-::method dotall attribute
+::attribute unixlines
+::attribute caseless
+::attribute multiline
+::attribute dotall
 
 
 ::method parseGroupClosure
