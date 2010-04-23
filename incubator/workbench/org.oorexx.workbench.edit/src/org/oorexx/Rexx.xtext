@@ -13,6 +13,7 @@ Instruction:
   (
   //  Address|
   Assignment|Do|Drop|Exit|Nop|Call|Arg|UseArg|Raise|MessageInstruction //  |Expression
+  | ExpressionFunction
 )Delimiter | If;
 
 //Address:
@@ -20,7 +21,10 @@ Instruction:
 
 
 Assignment:
-  target=VarName '=' expression=Expression;
+  target=VarName op=AssignmentOperator expression=Expression;
+  
+enum AssignmentOperator: ASSIGN='=' | ASSIGNPLUS='+='|ASSIGNMINUS='-='|
+ASSIGNTIMES='*='|ASSIGNDIV='/=';
 
 VarName:
   'do'|'adress'|'value'|'call'|'on'|'off'|'name'|'label'|'forever'|'over'|'to'|
@@ -39,19 +43,23 @@ Do:
   Delimiter (instrs+=Instruction)* 'end' endLabel=Name?;
 
 DoRepetitor:
-  {DoTimes} times=Expression|{DoOver} control=Name 'over' over=
-  Expression|{DoManual} control=Name '=' start=Expression ('to' to=Expression)? ('by' by=
-  Expression)? ('for' for=Expression)?;
+  DoTimes | DoOver | DoManual ;
 
+DoTimes:
+  times=ExpressionSimple;
+DoOver:
+  control=Name 'over' over=ExpressionSimple;
+DoManual:
+  control=VarName '=' start=ExpressionSimple
+  ('to' to=ExpressionSimple)?
+  ('by' by=ExpressionSimple)?
+  ('for' for=ExpressionSimple)?;
 
 DoConditional:
   ({DoWhile} 'while'|{DoUntil} 'until') condition=Expression;
 
 Drop:
-  'drop' var+=DropVar (',' var+=DropVar)*;
-
-DropVar:
-  {DropSymbol} name=Name|{DropExpression} '(' expression=Expression ')';
+  'drop' var+=Expression (',' var+=Expression)*;
 
 Exit:
   {Exit} 'exit' (result=Expression)?;
@@ -83,20 +91,80 @@ Arguments returns Arguments:
 Raise:
   'raise' 'syntax' mayor=SYMBOL_NUM ('.' minor=SYMBOL_NUM)?;
 
-Expression:
-  {ExprVar} name=VarName|//  fnCall|
-  MessageTerm //|
-  //  Negate
-|Const //  |BinOp
-; //fnCall:
-//  name=VarName '(' args=Arguments ')';
-//
-//BinOp:
-//  l=BinOpLeft op=( '+' | '-' | '*' | '/' | '**' | '||' | '&' | '&&' ) r=Expression;
-//
-//BinOpLeft:
-//  {ExprVar} name=VarName|fnCall|MessageTerm|Negate|Const;
+/*
 
+Expression: l=Expression2 (op=ExpressionOp1 r=Expression2)?;
+Expression2 returns Expression: l=Expression3 (op=ExpressionOp2 r=Expression3)?;
+Expression3 returns Expression: l=Expression4 (op=ExpressionOp3 r=Expression4)?;
+Expression4 returns Expression: l=Expression5 (op=ExpressionOp4 r=Expression5)?;
+Expression5 returns Expression: l=Expression6 (op=ExpressionOp5 r=Expression6)?;
+Expression6 returns Expression: l=Expression7 (op=ExpressionOp6 r=Expression7)?;
+Expression7 returns Expression: l=Expression8 (op=ExpressionOp7 r=Expression8)?;
+Expression8 returns Expression: l=Expression9 (op=ExpressionOp8 r=Expression9)?;
+Expression9 returns Expression: l=Expression10 (op=ExpressionOp9 r=Expression10)?;
+Expression10 returns Expression: l=Expression11 (op=ExpressionOp10 r=Expression11)?;
+Expression11 returns Expression: l=Expression12 (op=ExpressionOp11 r=Expression12)?;
+Expression12 returns Expression: l=Expression13 (op=ExpressionOp12 r=Expression13)?;
+Expression13 returns Expression: l=Expression14 (op=ExpressionOp13 r=Expression14)?;
+Expression14 returns Expression: l=Expression15 (op=ExpressionOp14 r=Expression15)?;
+Expression15 returns Expression: l=Expression16 (op=ExpressionOp15 r=Expression16)?;
+Expression16 returns Expression: l=Expression17 (op=ExpressionOp16 r=Expression17)?;
+Expression17 returns Expression: l=Expression18 (op=ExpressionOp17 r=Expression18)?;
+Expression18 returns Expression: Expression19 | op=ExpressionOp18 r=Expression19;
+Expression19 returns Expression: l=ExpressionAtom (op=ExpressionOp19 r=ExpressionAtom)?;
+
+ExpressionOp1: '|' | '&&';
+ExpressionOp2: '&';
+ExpressionOp3: '<=' | '<<=';
+ExpressionOp4: '>=' | '>>=';
+ExpressionOp5: '\\<<';
+ExpressionOp6: '\\>>';
+ExpressionOp7: '\\==';
+ExpressionOp8: '\\<';
+ExpressionOp9: '\\>';
+ExpressionOp10: '<>' | '><';
+ExpressionOp11: '\\=';
+ExpressionOp12: '==' | '<=' | '>=';
+ExpressionOp13: '=' | '<' | '>';
+ExpressionOp14: '||';
+ExpressionOp15: '+' | '-';
+ExpressionOp16: '*' | '/' | '%' | '//';
+ExpressionOp17: '**';
+ExpressionOp18: '+' | '-' | '\\';
+ExpressionOp19: '~' | '~~';
+
+
+ExpressionAtom: ExpressionVar | Const | MessageTerm | ExpressionFunction | ExpressionParen;
+ExpressionVar: name=VarName;
+ExpressionFunction:  name=VarName '(' args=Arguments ')';
+ExpressionParen: '(' expr=Expression ')';
+
+*/
+Expression:
+  (ExpressionCommon tail=ExpressionFollow?)
+//  | ExpressionNested
+;
+
+ExpressionSimple: ExpressionCommon 
+//| ExpressionParen
+;
+
+ExpressionCommon: ExpressionVar|MessageTerm|ExpressionPrefix|Const|ExpressionFunction
+  ;
+ExpressionVar: name=VarName;
+ExpressionFunction:  name=VarName '(' args=Arguments ')';
+ExpressionParen: '(' expr=Expression ')';
+ExpressionPrefix: '\\' expr=Expression;
+
+ExpressionFollow: BinOpExpression;
+
+BinOpExpression:
+   op=BinOpSymbol next=ExpressionSimple;
+
+BinOpSymbol: '+' | '-' | '*' | '/' | '//' |'%'| '**' | '|' | '||' | '&' | '&&'
+| '=' | '==' | '\\=' | '\\=='
+| '<' | '>' | '\\<' | '\\>' | '<>' | '><' | '<=' | '>=' | '>>' | '<<'
+| '<<=' | '>>=' | '\\<<' | '\\>>';
 
 MessageInstruction:
   message=MessageTerm ('=' value=Expression)?;
@@ -122,11 +190,9 @@ Symbol:
   name=VarName; // TODO
 
 
-Negate:
-  '\\' expression=Expression;
 
 Const returns Const:
-  {Const} value=( SYMBOL_NUM | STRING_BOOL | STRING_HEX );
+  {Const} value=( SYMBOL_NUM | STRING_BOOL | STRING_HEX | SYMBOL_CLS );
 
 Directives:
   Class|Options|Routine;
