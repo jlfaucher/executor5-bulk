@@ -59,11 +59,80 @@
   use strict arg text, start = 1, end = (text~length)
   return .MatchContext~new(text, start, end, root, groups)
 
+-- simple one time match operation on a regular expression and
+-- a region within a string.  Returns .true if this is an exact
+-- match for the entire region
 ::method matches
-  -- TODO implement matching logic
+  use strict arg text, start = 1, end = (text~length)
+  -- create a matching context for this
+  context = self~context(text, start, end)
+  -- and just perform a match on this
+  return context~matches
+
+-- simple one time match operation on a regular expression and
+-- a region within a string.  Returns .true if the region starts
+-- with the given pattern
+::method startsWith
+  use strict arg text, start = 1, end = (text~length)
+  -- create a matching context for this
+  context = self~context(text, start, end)
+  -- and just perform a match on this
+  return context~startsWith
+
+-- search a region of a string for a regex value.  Only the
+-- section between the start position and the given length
+-- are searched.  The return value is a MatchResult object with the
+-- full details of the match.
+::method find
+  use strict arg text, start = 1, end = (text~length)
+  -- create a matching context for this
+  context = self~context(text, start, end)
+  -- and just perform a search and return the match position
+  -- value
+  return context~find
 
 ::method split
-  -- TODO implement splitting logic
+  use strict arg text, limit = (-1)
+
+  list = .array~new   -- our set of match results
+  indexPosition = 1   -- split always starts at the beginning
+
+  -- now loop until we no longer match
+  result = self~find(text, indexPosition)
+  -- non-limited is more typical and simpler
+  if limit < 0 then do
+      -- now loop until we no longer match
+      result = self~find(text, indexPosition)
+      do while result~matched
+          list~append(result~prefix)
+          -- advance to the next position.  Note that
+          -- this works correctly even if the match length
+          -- is a null string
+          indexPosition = result~nextMatch
+      end
+  end
+  else do
+      count = 0
+      do while count < limit
+          -- now loop until we no longer match
+          result = self~find(text, indexPosition)
+          if \result~matched then do
+              leave
+          end
+          list~append(result~prefix)
+          -- advance to the next position.  Note that
+          -- this works correctly even if the match length
+          -- is a null string
+          indexPosition = result~nextMatch
+          count += 1
+      end
+  end
+
+  -- append and tail piece, if there is one
+  if indexPosition <= text~length then do
+      list~append(text~substr(indexPosition))
+  end
+  return list
 
 
 ::class RegexCompiler public
@@ -2769,6 +2838,8 @@ self~getMatchMetrics:super(metrics)
 
 
   do i = position for probes
+      -- the test for hitting the end generally turns this on, so ensure it is off
+      context~hitEnd = .false
       if self~next~match(context, i, target) then do
           -- update the match information
           context~setMatchPosition(i, context~matchEnd);
@@ -2776,7 +2847,6 @@ self~getMatchMetrics:super(metrics)
       end
   end
   -- no matches possible
-  context~hitEnd = .true
 
   return .false
 
@@ -2795,8 +2865,8 @@ self~getMatchMetrics:super(metrics)
 -- the embedded groups can also be retrieved
 ::class MatchResult subclass GroupMatchResult
 ::method init
-expose start end text groups hitEnd
-use strict arg test, start, end, groups, hiEnd
+expose regionStart regionEnd start end text groups hitEnd
+use strict arg text, regionStart, regionEnd, start, end, groups, hitEnd
 -- return a response if the operation matched.
 ::method matched
   expose start
@@ -2805,7 +2875,57 @@ use strict arg test, start, end, groups, hiEnd
 -- individual match results
 ::attribute start GET
 ::attribute end GET
+
+-- information about the string region we're matching on
+::attribute regionStart GET
+::attribute regionEnd GET
+::attribute regionLength GET
+  expose regionStart regionEnd
+  return regionEnd - regionStart + 1  -- end position is Rexx-like last character
+
+-- retrieve the length of the match string
+::attribute length GET
+  expose end start
+  return end - start + 1  -- end position is Rexx-like last character
+-- retrieves the match text
 ::attribute text GET
+  expose text start
+  -- return the match text
+  if start == 0 then do
+      return ''
+  end
+  -- extract the text subpiece
+  return text~substr(start, self~length)
+
+-- retrieve the prefix string before the match, up to the start
+-- of the match region
+::attribute prefix GET
+  expose text start
+  -- no match is always a null string
+  if start == 0 then do
+      return ""
+  end
+
+  return text~substr(regionStart, start - regionStart)
+
+-- retrieve any text following the match position, up to the end
+-- of the match region
+::attribute suffix GET
+  expose text start
+  -- no match is always a null string
+  if start == 0 then do
+      return ""
+  end
+
+  return text~substr(regionStart, regionEnd - regionStart + 1)
+
+-- return the position of character after the match position.  If
+-- past the end of the match region, returns regionEnd + 1
+::method nextMatch
+  expose end
+  -- NOTE:  This is the correct result even if the match string
+  -- is zero-length
+  return end + 1
 
 -- retrieve a group.  This is either a numeric id
 -- or a symbolic name
@@ -2814,18 +2934,23 @@ use strict arg test, start, end, groups, hiEnd
   use strict arg id
   group = groups[id]
   if .nil == group then do
-      raise syntax ...  -- this is an error
+      raise syntax 93.900 array("Group" id "not found in regular expression pattern") -- this is an error
   end
 
   return group
 
+-- the current active context for a match operation.  This
+-- provides information to the matching filters and holds any
+-- intermediate state required by the filters.  This also
+-- implements the matching operations.
 ::class MatchContext
 ::method init
-  expose text startPosition endPosition matchPosition groups hitEnd
+  expose text startPosition endPosition matchPosition matchEnd groups hitEnd
   use arg text, startPosition, length, root, groups
   -- make sure the length is bounded
   endPosition = min(text~length, startPosition + length - 1)
   matchPosition = 0
+  matchEnd = 0
   hitEnd = false  -- indicator of whether a search has reached the end
   -- if we have groups, then do a deep copy of the directory
   -- to create a working groups list
@@ -2836,10 +2961,69 @@ use strict arg test, start, end, groups, hiEnd
       end
   end
 
+-- test if the pattern is an exact match for the entire region, from
+-- beginning to end
+::method matches
+  expose text startPosition matchPosition hitEnd matchEndRequired root
+  hitEnd = .false
+  matchEndRequired = .true   -- this must match exactly
+  -- this is the default result, and possibly checked by filters
+  -- that need to examine the starting match position
+  matchPosition = startPosition
+  if root~match(this, startPosition, text) then do
+      return .true  -- good match, give the indicator
+  end
+  else do
+      matchPosition = 0   -- this needs to be cleared
+      return .false       -- no match
+  end
+
+-- test if the pattern is an exact match from the start of the match
+-- region up to the end of the pattern.  This does not need to match
+-- to the end of the region
+::method startsWith
+  expose text startPosition matchPosition hitEnd matchEndRequired root
+  hitEnd = .false
+  matchEndRequired = .false  -- This does not need to match exactly
+  -- this is the default result, and possibly checked by filters
+  -- that need to examine the starting match position
+  matchPosition = startPosition
+  if root~match(this, startPosition, text) then do
+      return .true  -- good match, give the indicator
+  end
+  else do
+      matchPosition = 0   -- this needs to be cleared
+      return .false       -- no match
+  end
+
+-- search the region for the first position with a pattern match.  Returns
+-- a match result object with the match result
+::method find
+  expose text startPosition endPosition matchPosition hitEnd matchEndRequired root
+  -- the start is optional, but defalt to the beginning of the
+  -- region (typical)
+  use strict arg start = (startPosition)
+
+  if startPosition > endPosition then do
+      matchPosition = 0
+      hitEnd = .true  -- sort of true by definition
+      return self~matchResult  -- give a match result object with the info
+  end
+
+  hitEnd = .false
+  matchEndRequired = .false  -- This does not need to match exactly
+  -- this node implements a sliding search search of the pattern.
+  -- Not really part of the pattern tree, but it wrappers it
+  searcher = .SearchNode~new(root)
+  if \searcher~match(this, startPosition, text) then do
+      matchPosition = 0   -- this needs to be cleared
+  end
+  return self~matchResult  -- give a match result object with the info
+
 -- return a result object from the match result
 ::method result
   expose text startPosition endPosition matchPosition matchEnd groups hitEnd
-  return .MatchResult~new(text, matchPosition, matchEnd, groups, hitEnd)
+  return .MatchResult~new(text, startPosition, endPosition, matchPosition, matchEnd, groups, hitEnd)
 
 ::method atStart
   expose startPosition
@@ -2848,9 +3032,14 @@ use strict arg test, start, end, groups, hiEnd
 
 -- tests for whether a position is past the end of the range
 ::method checkEnd
-  expose endPosition
+  expose endPosition hitEnd
   use arg test
-  return test > endPosition
+  if test > endPosition then do
+      -- remember that we've hit the end of the pattern
+      hitEnd = .true
+      return .true
+  end
+  return .false
 
 -- the range positions
 ::attribute startPosition
@@ -2860,7 +3049,13 @@ use strict arg test, start, end, groups, hiEnd
 ::attribute matchPosition
 ::attribute matchEnd
 
+-- indicates we've run out of string before the match
+-- completes
 ::attribute hitEnd
+
+-- indicates whether the pattern must exactly match the end
+-- of the string (e.g., we're doing a match vs. a locate)
+::attribute matchEndRequired
 
 ::method setMatchPosition
   expose matchPosition matchEnd
@@ -3002,7 +3197,8 @@ use strict arg test, start, end, groups, hiEnd
 
   end = endStack~pop
 
-
+-- a general purpose parsing context that includes support for
+-- regular expressions
 ::class parser public
 ::method init
 expose string matchstart matchend sectionstart sectionlength
