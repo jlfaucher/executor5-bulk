@@ -1018,8 +1018,8 @@
   negated = .false
   firstchar = .true
 
-  do forever
-      char = self~next
+  do label loop forever
+      ch = self~next
 
       select
           when ch == .nil then do
@@ -1141,7 +1141,7 @@
       negated = .false
   end
 
-
+-- parse a range of characters for a class
 ::method parseClassRange
   firstchar = .true
   characters = ""
@@ -1156,8 +1156,12 @@
 
   do forever
       ch = self~next
-
+      -- we can terminate on the end of data or the closing bracket
       if ch == .nil then do
+          leave
+      end
+      if ch == ']' then do
+          self~previous  -- push this back
           leave
       end
       else if ch == "-" then do
