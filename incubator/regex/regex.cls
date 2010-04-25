@@ -1790,6 +1790,8 @@
   expose characters
   use arg characters
   self~init:super
+-- the characters we check against
+::attribute characters GET
 
 ::method match
   expose characters
@@ -1816,15 +1818,13 @@
 -- an inversion of the class node
 ::class NotClassNode subclass ClassNode
 ::method match
-  expose characters
-
   use arg context, position, target
 
   if context~checkEnd(position) then do
       return .false
   end
 
-  if target~matchChar(position, characters) then do
+  if target~matchChar(position, self~characters) then do
       return .false
   end
 

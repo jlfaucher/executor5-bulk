@@ -328,6 +328,119 @@ return testResult
   self~assertEquals("xx", r~prefix)
   self~assertEquals("yy", r~suffix)
 
+-- simple classes that are just sequences of characters, with negation
+::method testSimpleNotClass
+  p = .Pattern~compile("[^abc]")
+
+  self~assertFalse(p~matches('a'))
+  self~assertFalse(p~matches('b'))
+  self~assertFalse(p~matches('c'))
+  self~assertTrue(p~matches('e'))
+
+  self~assertFalse(p~startsWith('abc'))
+  self~assertFalse(p~startsWith('bye-bye'))
+  self~assertFalse(p~startsWith('caldera'))
+  self~assertTrue(p~startsWith('estuary'))
+
+  r = p~find('eabc')
+
+  self~assertTrue(r~matched)
+  self~assertEquals(1, r~start)
+  self~assertEquals(2, r~end)
+  self~assertEquals(1, r~length)
+  self~assertEquals("e", r~text)
+  self~assertEquals("", r~prefix)
+  self~assertEquals("abc", r~suffix)
+
+  r = p~find('aebc')
+
+  self~assertTrue(r~matched)
+  self~assertEquals(2, r~start)
+  self~assertEquals(3, r~end)
+  self~assertEquals(1, r~length)
+  self~assertEquals("e", r~text)
+  self~assertEquals("a", r~prefix)
+  self~assertEquals("bc", r~suffix)
+
+  r = p~find('abce')
+
+  self~assertTrue(r~matched)
+  self~assertEquals(4, r~start)
+  self~assertEquals(5, r~end)
+  self~assertEquals(1, r~length)
+  self~assertEquals("e", r~text)
+  self~assertEquals("abc", r~prefix)
+  self~assertEquals("", r~suffix)
+
+  p = .Pattern~compile("a[^abc]c")
+
+  r = p~find('abcaecyy')
+
+  self~assertTrue(r~matched)
+  self~assertEquals(4, r~start)
+  self~assertEquals(7, r~end)
+  self~assertEquals(3, r~length)
+  self~assertEquals("aec", r~text)
+  self~assertEquals("abc", r~prefix)
+  self~assertEquals("yy", r~suffix)
+
+
+-- simple classes that are just sequences of characters, with negation
+::method testRangeNotClass
+  p = .Pattern~compile("[^a-c]")
+
+  self~assertFalse(p~matches('a'))
+  self~assertFalse(p~matches('b'))
+  self~assertFalse(p~matches('c'))
+  self~assertTrue(p~matches('e'))
+
+  self~assertFalse(p~startsWith('abc'))
+  self~assertFalse(p~startsWith('bye-bye'))
+  self~assertFalse(p~startsWith('caldera'))
+  self~assertTrue(p~startsWith('estuary'))
+
+  r = p~find('eabc')
+
+  self~assertTrue(r~matched)
+  self~assertEquals(1, r~start)
+  self~assertEquals(2, r~end)
+  self~assertEquals(1, r~length)
+  self~assertEquals("e", r~text)
+  self~assertEquals("", r~prefix)
+  self~assertEquals("abc", r~suffix)
+
+  r = p~find('aebc')
+
+  self~assertTrue(r~matched)
+  self~assertEquals(2, r~start)
+  self~assertEquals(3, r~end)
+  self~assertEquals(1, r~length)
+  self~assertEquals("e", r~text)
+  self~assertEquals("a", r~prefix)
+  self~assertEquals("bc", r~suffix)
+
+  r = p~find('abce')
+
+  self~assertTrue(r~matched)
+  self~assertEquals(4, r~start)
+  self~assertEquals(5, r~end)
+  self~assertEquals(1, r~length)
+  self~assertEquals("e", r~text)
+  self~assertEquals("abc", r~prefix)
+  self~assertEquals("", r~suffix)
+
+  p = .Pattern~compile("a[^a-c]c")
+
+  r = p~find('abcaecyy')
+
+  self~assertTrue(r~matched)
+  self~assertEquals(4, r~start)
+  self~assertEquals(7, r~end)
+  self~assertEquals(3, r~length)
+  self~assertEquals("aec", r~text)
+  self~assertEquals("abc", r~prefix)
+  self~assertEquals("yy", r~suffix)
+
 -- simple classes that use a range of characters
 ::method testRangeClass
   p = .Pattern~compile("[a-c]")
@@ -383,3 +496,4 @@ return testResult
   self~assertEquals("abc", r~text)
   self~assertEquals("xx", r~prefix)
   self~assertEquals("yy", r~suffix)
+
