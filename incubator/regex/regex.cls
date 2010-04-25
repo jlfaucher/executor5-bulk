@@ -497,7 +497,7 @@
   if \self~multiline then do
       return .BeginTextNode~new
   end
-  else if self~unixLineends then do
+  else if self~unixLines then do
       return .UnixMultilineCaretNode~new
   end
   else do
@@ -507,7 +507,7 @@
 
 ::method parseEndAnchor
   -- an end anchor, which has 4 possibilities
-  if self~unixLinends then do
+  if self~unixLines then do
       if self~multiline then do
           return .UnixMultiLineEndNode~new
       end
@@ -528,10 +528,10 @@
   -- a match anything character.  The meaning of
   -- "match anything" differs depending on options
 ::method parseDot
-  if self~dotMatchAll then do
+  if self~dotAll then do
       return .AllDotNode~new
   end
-  else if self~unixLineends then do
+  else if self~unixLines then do
       return .UnixDotNode~new
   end
   else do
@@ -719,7 +719,7 @@
   head~getMatchMetrics(metrics)
   return metrics
 
-
+-- parse options flags in the expressions
 ::method parseFlag
 
   ch = self~next
@@ -990,7 +990,11 @@
           end
       end
       otherwise do
-          -- no additional closure
+          -- no additional closure. make sure we put the character
+          -- we just borrowed back...but only if it was a real character!
+          if ch \= .nil then do
+              self~previous
+          end
           return target
       end
   end
@@ -1254,7 +1258,7 @@
           end
           -- if this is a non-escaped special char,
           -- backup and finish up this section
-          when "$,^([|)"~pos(ch) > 0 then do
+          when "$.^([|)"~pos(ch) > 0 then do
               self~previous
               leave
           end
@@ -1435,7 +1439,7 @@
       end
       when ch == 'Z' then do
           -- this is like $, but it always is an end of input match, rather than multiline
-          if self~unixLinends then do
+          if self~unixLines then do
               return .UnixLineEndNode~new
           end
           else do
@@ -1688,7 +1692,6 @@
       return .false
   end
 
-  ch = target~subChar(position)
   -- if positioned on ANY linend char, this is a failure
   if target~matchChar(position, '0d0a'x) then do
       return .false
@@ -2930,7 +2933,7 @@ self~init:super(text, regionStart, regionEnd, start, end, hitEnd)
 ::method checkEnd
   expose endPosition hitEnd
   use arg test
-  if test > endPosition then do
+  if test >= endPosition then do
       -- remember that we've hit the end of the pattern
       hitEnd = .true
       return .true
