@@ -179,3 +179,96 @@ return testResult
   self~assertEquals("xyz", r~prefix)
   self~assertEquals("bar", r~suffix)
 
+  -- dot pattern on the end
+  p = .Pattern~compile("fo.")
+  do i = 0 to 255
+      -- handle the special cases
+      if i == 10 | i == 13 then do
+          self~assertFalse(p~matches("fo"||d2c(i)))
+      end
+      else do
+          self~assertTrue(p~matches("fo"||d2c(i)))
+      end
+  end
+
+  self~assertFalse(p~matches("fo"))
+  self~assertFalse(p~matches("foobar"))
+
+  self~assertFalse(p~startsWith("fo"))
+  self~assertTrue(p~startsWith("foo"))
+  self~assertTrue(p~startsWith("foobar"))
+
+  r = p~find("foo")
+  self~assertTrue(r~matched)
+  self~assertEquals(1, r~start)
+  self~assertEquals(4, r~end)
+  self~assertEquals(3, r~length)
+  self~assertEquals("foo", r~text)
+  self~assertEquals("", r~prefix)
+  self~assertEquals("", r~suffix)
+
+  r = p~find("foobar")
+  self~assertTrue(r~matched)
+  self~assertEquals(1, r~start)
+  self~assertEquals(4, r~end)
+  self~assertEquals(3, r~length)
+  self~assertEquals("foo", r~text)
+  self~assertEquals("", r~prefix)
+  self~assertEquals("bar", r~suffix)
+
+  r = p~find("xyzfoobar")
+  self~assertTrue(r~matched)
+  self~assertEquals(4, r~start)
+  self~assertEquals(7, r~end)
+  self~assertEquals(3, r~length)
+  self~assertEquals("foo", r~text)
+  self~assertEquals("xyz", r~prefix)
+  self~assertEquals("bar", r~suffix)
+
+
+  -- dot pattern at the start
+  p = .Pattern~compile(".oo")
+  do i = 0 to 255
+      -- handle the special cases
+      if i == 10 | i == 13 then do
+          self~assertFalse(p~matches(d2c(i)||"oo"))
+      end
+      else do
+          self~assertTrue(p~matches(d2c(i)||"oo"))
+      end
+  end
+
+  self~assertFalse(p~matches("fo"))
+  self~assertFalse(p~matches("foobar"))
+
+  self~assertFalse(p~startsWith("fo"))
+  self~assertTrue(p~startsWith("foo"))
+  self~assertTrue(p~startsWith("foobar"))
+
+  r = p~find("foo")
+  self~assertTrue(r~matched)
+  self~assertEquals(1, r~start)
+  self~assertEquals(4, r~end)
+  self~assertEquals(3, r~length)
+  self~assertEquals("foo", r~text)
+  self~assertEquals("", r~prefix)
+  self~assertEquals("", r~suffix)
+
+  r = p~find("foobar")
+  self~assertTrue(r~matched)
+  self~assertEquals(1, r~start)
+  self~assertEquals(4, r~end)
+  self~assertEquals(3, r~length)
+  self~assertEquals("foo", r~text)
+  self~assertEquals("", r~prefix)
+  self~assertEquals("bar", r~suffix)
+
+  r = p~find("xyzfoobar")
+  self~assertTrue(r~matched)
+  self~assertEquals(4, r~start)
+  self~assertEquals(7, r~end)
+  self~assertEquals(3, r~length)
+  self~assertEquals("foo", r~text)
+  self~assertEquals("xyz", r~prefix)
+  self~assertEquals("bar", r~suffix)
+
