@@ -2860,13 +2860,13 @@ self~getMatchMetrics:super(metrics)
   metrics~deterministic = .false
   metrics~maxValid = .false
 
--- Information about an individual match.  The match
--- may have embedded groups.  The match information for
--- the embedded groups can also be retrieved
-::class MatchResult subclass GroupMatchResult
+-- base class for a match result from a group match.  This is
+-- similar to the MatchResult class, but lacks the ability to request
+-- embedded group values
+::class GroupMatchResult
 ::method init
-expose regionStart regionEnd start end text groups hitEnd
-use strict arg text, regionStart, regionEnd, start, end, groups, hitEnd
+expose regionStart regionEnd start end text hitEnd
+use strict arg text, regionStart, regionEnd, start, end, hitEnd, groups
 -- return a response if the operation matched.
 ::method matched
   expose start
@@ -2926,6 +2926,15 @@ use strict arg text, regionStart, regionEnd, start, end, groups, hitEnd
   -- NOTE:  This is the correct result even if the match string
   -- is zero-length
   return end + 1
+
+-- Information about an individual match.  The match
+-- may have embedded groups.  The match information for
+-- the embedded groups can also be retrieved
+::class MatchResult subclass GroupMatchResult
+::method init
+expose groups
+use strict arg text, regionStart, regionEnd, start, end, hitEnd, groups
+self~init:super(text, regionStart, regionEnd, start, end, hitEnd, groups)
 
 -- retrieve a group.  This is either a numeric id
 -- or a symbolic name
@@ -3023,7 +3032,7 @@ use strict arg text, regionStart, regionEnd, start, end, groups, hitEnd
 -- return a result object from the match result
 ::method result
   expose text startPosition endPosition matchPosition matchEnd groups hitEnd
-  return .MatchResult~new(text, startPosition, endPosition, matchPosition, matchEnd, groups, hitEnd)
+  return .MatchResult~new(text, startPosition, endPosition, matchPosition, matchEnd, hitEnd, groups)
 
 ::method atStart
   expose startPosition
@@ -3134,24 +3143,30 @@ use strict arg text, regionStart, regionEnd, start, end, groups, hitEnd
   startStack = .nil
   endStack = .nil
 
+-- the start and end match positions
 ::attribute start
 ::attribute end
 
+-- indicates whether this match was a success or a failure
 ::method matched
   expose start
   return start > 0
 
+-- set the match values
 ::method setMatch
   expose text start end
   use arg text, start, end
 
+-- clear the match values
 ::method clearMatch
   expose text start end
   text = .nil
   start = 0
   end = 0
 
-::method matchValue
+-- return the text that was matched.  Returns .nil if
+-- this match was not successful
+::method matchText
   expose text start end
 
   if start > 0 then do
@@ -3201,31 +3216,53 @@ use strict arg text, regionStart, regionEnd, start, end, groups, hitEnd
 -- regular expressions
 ::class parser public
 ::method init
-expose string matchstart matchend sectionstart sectionlength
-use arg string
+expose string matchstart matchend sectionstart sectionend compiler matchResult
+use strict arg string, compiler = (.RegexCompiler~new)
 
-matchstart = 1;
-matchend = 1;
-sectionstart = 1;
-sectionstart = 1
-sectionlength = string~length
+matchstart = 1;    -- There is an implicit absolute trigger of 1 at the start
+matchend = 1;      -- All numeric movement triggers have a zero-length size
+sectionstart = 1;  -- The section also starts here
+sectionend = string~length -- and is the length of the string
+matchResult = .nil -- no match result at the start
 
-::method matchstart
-expose matchstart
-return matchstart
+-- return the current match position for the parsing context
+::attribute matchStart GET
+-- The end position of the match position.  Note that this
+-- will be located at matchStart + matchLength.  The sectionStart
+-- and matchEnd will be the same normally.
+::attribute matchEnd GET
+-- The length of the pattern match
+::attribute matchLength GET
+  expose matchStart matchEnd
+  return matchEnd - matchStart
+-- the text for the last section.  All numeric triggers
+-- have zero length.  You can think of them as matching
+-- in the space between matchStart and the previous character.
+::attribute matchText GET
+  expose string matchStart matchEnd
+  return string~substr(matchStart, matchEnd - matchStart)
 
-::method sectionstart
-expose sectionstart
-return sectionstart
-
-::method sectionlength
-expose sectionlength
-return sectionlength
-
+-- this is the current section of the parsed text that is
+-- between the current match position and the previous match
+-- end.  For example, if you were working with the parse template
+-- parse value '1234567890' with '3' x '9'
+-- section startstart would be 4, sectionend would be 8 after the
+-- trigger '9' was applied
+::attribute sectionStart GET
+-- end of the equivalent section (see above).  Note that this will
+-- also be sectionStart + sectionLength.  If the section is a null string,
+-- then start and end will be the same
+::attribute sectionEnd GET
+-- length of the current section
+::attribute sectionLength GET
+  expose sectionStart sectionEnd
+  return sectionEnd - sectionStart
+-- the section text
 ::method section
-expose string sectionstart sectionlength
-return string~substr(sectionstart, sectionlength)
+expose string sectionstart sectionEnd
+return string~substr(sectionstart, sectionEnd - sectionStart)
 
+-- return the current section parsed into blank delimited words
 ::method sectionwords
 section = self~section
 count = section~words
@@ -3237,50 +3274,142 @@ end
 
 return wordlist
 
+-- return the remainder of the string after the last
+-- match position.  Note that if backward movement is
+-- used, the remainder will overlap with the last parsed
+-- section
 ::method remainder
 expose string matchend
 return string~substr(matchend)
 
-::method match
-expose string matchstart matchend sectionstart sectionlength
-use arg needle
+-- locate a needle in the current string, returning an
+-- indicator of whether the string was located.
+-- details of the match can be retrieved from the context.
+::method find
+expose string matchstart matchend sectionstart sectionEnd matchResult
+use strict arg needle
 
-sectionstart = matchend
-
-matchstart = string~pos(needle, matchend)
-
-if matchstart == 0 then do
-    matchstart = string~length + 1
-    matchend = matchstart
-    sectionlength = matchstart - sectionstart
+temp = string~pos(needle, matchend)
+-- NOTE:  this differs from the PARSE instruction.  If the
+-- string is not found, the match positions will be unchanged.
+-- This allows one to attempt a match, detect if it failed, and
+-- maybe try other alternatives without needing to save and
+-- restore the match position
+if temp == 0 then do
     return .false
 end
 else do
+    matchResult = .nil  -- clear the old match result
+    matchStart = temp
+    sectionstart = matchend
     matchend = matchstart + needle~length
-    sectionlength = matchstart - sectionstart
+    sectionEnd = matchstart
     return .true
 end
 
+-- locate a needle in the current string, returning an
+-- indicator of whether the string was located.
+-- details of the match can be retrieved from the context.
+::method caselessFind
+expose string matchstart matchend sectionstart sectionEnd matchEnd matchResult
+use strict arg needle
+
+temp = string~caselessPos(needle, matchend)
+-- NOTE:  this differs from the PARSE instruction.  If the
+-- string is not found, the match positions will be unchanged.
+-- This allows one to attempt a match, detect if it failed, and
+-- maybe try other alternatives without needing to save and
+-- restore the match position
+if temp == 0 then do
+    return .false
+end
+else do
+    matchResult = .nil  -- clear the old match result
+    matchStart = temp
+    sectionstart = matchend
+    matchend = matchstart + needle~length
+    sectionEnd = matchstart
+    return .true
+end
+
+-- locate a needle in the current string, returning an
+-- indicator of whether the string was located.
+-- details of the match can be retrieved from the context.
+-- the needle may be a string, which will be converted into
+-- a regex pattern using the current compiler or a directly
+-- provided pattern
+::method findRegex
+expose string matchstart matchend sectionstart sectionEnd compiler matchResult
+use strict arg needle
+
+-- the regular expression can be specified as a string or a
+-- pattern instance.  If this is a string, then compile it before
+-- using
+if needle~isa(.string) then do
+    needle = compiler~compile(needle)
+end
+
+-- now do a regex search on the string
+result = needle~find(string, matchend, string~length)
+-- NOTE:  this differs from the PARSE instruction.  If the
+-- string is not found, the match positions will be unchanged.
+-- This allows one to attempt a match, detect if it failed, and
+-- maybe try other alternatives without needing to save and
+-- restore the match position
+if \result~matched then do
+    return .false
+end
+else do
+    matchResult = result  -- save the result for retrieval, if needed
+    matchStart = result~start
+    sectionstart = matchend
+    matchend = matchstart + result~length
+    sectionEnd = matchstart
+    return .true
+end
+
+-- return a .MatchResult object that represents the last match
+-- operation.  This will either be a MatchResult returned from a
+-- regex find operation or one constructed from the current parser
+-- state that represents the prior operations
+::attribute matchResult GET
+expose methodResult string matchStart matchEnd
+
+-- if the matchResult is not set, then construct one
+if methodResult == .nil then do
+    methodResult = .MatchResult~new(string, 1, string~length, matchStart, matchEnd, .false, .nil)
+end
+
+return methodResult
+
+-- relative postional movement of the pointer
 ::method move
 expose string matchstart matchend sectionstart sectionlength
-use arg delta
+use strict arg delta
 
+-- the section begins at the start of the movement
 sectionstart = matchstart
 matchstart = matchstart + delta
 
 self~validateposition
 
+-- absolute positional movement
 ::method moveTo
 expose string matchstart matchend sectionstart sectionlength
 
-sectionstart = matchstart
-use arg matchstart
+sectionStart = matchStart
+use arg matchStart
 
 self~validateposition
 
+-- Validate and adjust the positional values after a non-search
+-- parse movement
 ::method validateposition private
-expose string matchstart matchend sectionstart sectionlength
+expose string matchstart matchend sectionstart sectionlength matchResult
 
+matchResult = .nil  -- clear the old match result
+
+-- keep the start within the bounds of the string
 if matchstart < 1 then do
     matchstart = 1
 end
@@ -3288,12 +3417,17 @@ else if matchstart > string~length then do
     matchstart = string~length + 1
 end
 
-
+-- if this moved backwards from the previous, then the
+-- section goes to the end of the string
 if matchstart <= sectionstart then do
-    sectionlength = string~length - sectionstart + 1
+    sectionEnd = string~length + 1
 end
 else do
-    sectionlength = matchstart - sectionstart
+    -- for forward movement, the sectionEnd is the same
+    -- as the matchStart position
+    sectionEnd = matchstart
 end
 
+-- for postional movement, the match string is always
+-- zero-length, so these will be the same
 matchend = matchstart
