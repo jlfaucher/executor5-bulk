@@ -162,9 +162,12 @@
   classFamilies["RexxOperator"] = "+-\/%*|&=<>" || 'aa'x
   classFamilies["RexxSpecial"] = ",;~()[]"
 
+-- retrieve a name class family from the list of registered class families
+-- subclasses are free to override this method to provide additional
+-- class families
 ::method classFamily class
   expose classFamilies registeredClassFamilies
-  use arg name
+  use strict arg name
 
   family = classFamilies[name]
 
@@ -174,9 +177,10 @@
 
   return family
 
+-- register additional class families with a compiler instance
 ::method registerClassFamily class
   expose classFamilies registeredClassFamilies
-  use arg name, chars
+  use strict arg name, chars
 
   if classFamilies~hasIndex(name) then do
       raise syntax 98.900 array("Class family" name "already exists")
@@ -184,6 +188,7 @@
 
   registeredClassFamilies[name] = chars
 
+-- initialize a regex compiler instance
 ::method init
   use strict arg options = .nil
   -- set default options
@@ -252,6 +257,8 @@
       end
   end
 
+-- compile a regex expression using the posix-like
+-- regular expression syntax
 ::method compile
   expose pattern current length
   use strict arg pattern
@@ -1283,11 +1290,14 @@
 ::method singleNode
   use arg char
 
+  -- there's little difference between matching
+  -- a single character vs. matching a character string,
+  -- so must make these string nodes
   if self~caseless then do
-      return .CaselessSingleCharNode~new(char)
+      return .CaselessStringNode~new(char)
   end
   else do
-      return .SingleCharNode~new(char)
+      return .StringNode~new(char)
   end
 
 -- create a node for matching a character string
@@ -1365,6 +1375,7 @@
       end
   end
 
+-- special escaped operations
 ::method parseEscapedOperations private
   ch = self~next
 
@@ -1452,6 +1463,7 @@
 
   end
 
+-- parse out a literal defined by using the \Q and \E delimiters
 ::method parseLiteral private
   current = self~current
   endPosition = -1
@@ -1479,6 +1491,8 @@
   return self~stringNode(self~extract(current, endPosition - current))
 
 
+-- read and validate a octal value in an escaped value, returning the
+-- eqivalent character value
 ::method readOctal private
   ch = self~next
   if ch == .nil then do
@@ -1491,6 +1505,8 @@
   end
   return ch
 
+-- read and validate a hex encoded character in an escaped value, returning
+-- the character equivalent
 ::method readHex private
   ch = self~next
 
@@ -1498,6 +1514,7 @@
       if '1234567890abcdefABCDEF'~pos(ch) > 0 then do
           raise syntax 93.900 array("Invalid hex digit '"ch"'")
       end
+      return ch
   end
   -- we can directly raise a syntax error for reading hex
   raise syntax 93.900 array("Hex digit expected")
@@ -1538,7 +1555,7 @@
   child~getMatchMetrics(submetrics)
   return metrics
 
-
+-- A node that enforces anchoring at the beginning of the text
 ::class BeginTextNode subclass matchNode
 ::method init
   self~init:super
@@ -1555,7 +1572,7 @@
 
   return .false
 
-
+-- A node that enforces anchoring at the end of the text
 ::class EndTextNode subclass matchNode
 ::method match
   use arg context, position, target
@@ -1566,6 +1583,7 @@
   return .false
 
 
+-- A node that enforces a match at the beginning of a word boundary
 ::class WordBoundaryNode subclass MatchNode
 ::method match
   use arg context, position, target
@@ -1587,7 +1605,8 @@
 
   return .false
 
-
+-- the inverse of a wordboundary match.  Matches only if the current
+-- position is NOT on a word boundary
 ::class NotWordBoundaryNode subclass MatchNode
 ::method match
   use arg context, position, target
@@ -1639,96 +1658,18 @@
   return .false
 
 
+-- retrieves the last match information.  Since a match context
+-- only implements a single match, this is the same as the starting
+-- position of the context.
 ::class LastMatchNode subclass MatchNode
 ::method match
   use arg context, position, target
 
-  if position \= context~matchPosition then do
+  if position \= context~regionStart then do
       return .false
   end
 
   return self~next~match(context, position, target)
-
--- match for a single character
-::class SingleCharNode subclass matchNode
-::method init
-  expose matchChar
-  use arg matchChar
-  self~init:super
-
-::attribute matchChar
-
-::method match
-  expose matchChar
-
-  use arg context, position, target
-
-  if context~checkEnd(position) then do
-      return .false
-  end
-
-  if \target~match(position, matchChar) then do
-      return .false
-  end
-
-  return self~next~match(context, position + 1, target)
-
-::method getMatchMetrics
-  use arg metrics
-
-  metrics~maxLen = metrics~maxLen + 1
-  metrics~minLen = metrics~minLen + 1
-
-  self~getMatchMetrics:super(metrics)
-
--- caseless match for a single character
-::class CaselessSingleCharNode subclass SingleCharNode
-::method match
-  use arg context, position, target
-
-  if context~checkEnd(position) then do
-      return .false
-  end
-
-  if \target~caselessMatch(position, self~matchChar) then do
-      return .false
-  end
-
-  return self~next~match(context, position + 1, target)
-
--- inverse match for a single character
-::class NotSingleCharNode subclass SingleCharNode
-::method match
-  use arg context, position, target
-
-  if context~checkEnd(position) then do
-      return .false
-  end
-
-  -- if we have a match at this position, then this is false
-  if target~match(position, self~matchChar) then do
-      return .false
-  end
-
-  -- forward down the chain, we're good so far
-  return self~next~match(context, position + 1, target)
-
--- inverse caseless match for a single character
-::class NotCaselessSingleCharNode subclass SingleCharNode
-::method match
-  use arg context, position, target
-
-  if context~checkEnd(position) then do
-      return .false
-  end
-
-  -- if we have a match at this position, then this is false
-  if target~caselessMatch(position, self~matchChar) then do
-      return .false
-  end
-
-  -- forward down the chain, we're good so far
-  return self~next~match(context, position + 1, target)
 
 -- Generic "dot".  This matches everything but the end of
 -- of data
@@ -1838,13 +1779,13 @@
 
   return self~next~match(context, position + 1, target)
 
+
 -- match for a defined set of characters
 ::class ClassNode subclass MatchNode
 ::method init
   expose characters
   use arg characters
   self~init:super
-
 
 ::method match
   expose characters
@@ -1885,14 +1826,13 @@
 
   return self~next~match(context, position + 1, target)
 
-
+-- the intersection of multiple class node definitions
 ::class ClassIntersectionNode subclass MatchNode
 
 ::method init
   expose subExpressions
   use arg subExpressions
   self~init:super
-
 
 ::method match
   expose subExpressions
@@ -1906,6 +1846,14 @@
   end
 
   return self~next~match(context, position + 1, target)
+
+::method getMatchMetrics
+  use arg metrics
+  -- also just a single character match
+  metrics~maxLen = metrics~maxLen + 1
+  metrics~minLen = metrics~minLen + 1
+
+  self~getMatchMetrics:super(metrics)
 
 
 -- match on a series of OR expressions
@@ -1968,77 +1916,6 @@
   use arg newChoice
 
   alternatives~append(newChoice)
-
-
-::class WordStartNode subclass MatchNode
-::method match
-  use arg context, position, target
-
-  if context~checkEnd(position) then do
-      return .false
-  end
-
-  -- not a alphanumeric at the current position, so cannot be a word start
-  if \target~matchChar(position, self~wordChars) then do
-      return .false
-  end
-
-  -- if this is at the start, then it is a word start
-  if \context~atStart(position - 1) then do
-      return .true
-  end
-
-  -- the previous character must not be a word character
-  if target~matchChar(position - 1, self~wordChars) then do
-      return .false
-  end
-
-  -- this one does not advance the position, it just validates the position
-  return self~next~match(context, position, target)
-
-
-::class WordEndNode subclass MatchNode
-
-::method match
-  expose wordChars
-  use arg context, position, target
-
-  -- if not at the end, make sure this position is not a word char
-  if \context~checkEnd(position) then do
-      if target~matchChar(position, self~wordChars) then do
-          return .false
-      end
-  end
-
-  -- this one does not advance the position, it just validates the position
-  return self~next~match(context, position, target)
-
-
--- check for a lineend in non-unix mode.  This matches on a '\r\n' sequence
--- but NOT the end of the input
-::class LineEndNode subclass MatchNode
-::method match
-  use arg context, position, target
-
-  -- always false if past the end
-  if context~checkEnd(position) then do
-      .false
-  end
-
-  endPosition = context~endPosition - 2
-
-  -- not possibly at the end of the text?
-  if position < endPosition then do
-      return .false
-  end
-
-  if position == endPosition then do
-      if target~match(position, '0d0a'x), self~next~match(context, position, target) then do
-          return .true
-      end
-  end
-
-  return .false
 
 
 -- check for a lineend in non-unix, multiline mode.  This matches on a '\r\n' sequence
@@ -2332,6 +2209,8 @@ self~getMatchMetrics:super(metrics)
   return self~next~match(context, current, target)
 
 
+-- matches the current position for the same string value as
+-- a back reference match
 ::class BackReferenceNode subclass MatchNode
 ::method init
   expose ref
@@ -2344,10 +2223,13 @@ self~getMatchMetrics:super(metrics)
 
   refGroup = context~getBackReferenceResult(ref)
 
+  -- if the back reference did not match, then this is a
+  -- failure here too
   if \refGroup~matched then do
       return .false
   end
 
+  -- this is essentially a string reference now
   matchValue = refGroup~matchString
 
   if \context~checkEnd(position + matchValue~length - 1) then do
@@ -2367,7 +2249,7 @@ self~getMatchMetrics:super(metrics)
   metrics~maxValid = .false
   self~getMatchMetrics:super(metrics)
 
-
+-- same as a back reference, but matching is done caselessly
 ::class CaselessBackReferenceNode subclass MatchNode
 ::method init
   expose ref
@@ -2404,6 +2286,7 @@ self~getMatchMetrics:super(metrics)
   self~getMatchMetrics:super(metrics)
 
 
+-- a normal group node with implicit numbering
 ::class GroupNode subclass MatchNode
 ::method init
   expose id groupMatch
@@ -2416,16 +2299,20 @@ self~getMatchMetrics:super(metrics)
 
   info = context~getGroupInfo(id)
 
+  -- if the pattern inside the group matches, then record
+  -- the match position inside group matches, record this
+  -- in the corresponding group information and continue
   if groupMatch~matches(context, position, target) then do
       info~setMatch(target, position, context~matchEnd)
       return self~next~match(context, context~matchEnd, target)
   end
   else do
+      -- mark the group as non-matching
       info~clearMatch
       return .false
   end
 
-
+-- a group node with an explicit name
 ::class NamedGroupNode subclass MatchNode
 ::method init
   expose id groupMatch
@@ -2447,7 +2334,7 @@ self~getMatchMetrics:super(metrics)
       return .false
   end
 
-
+-- base class for logical operations of class patterns
 ::class ClassLogicalNode subclass MatchNode
 ::method init
   expose leftSide rightSide
@@ -2471,7 +2358,7 @@ self~getMatchMetrics:super(metrics)
 ::attribute leftSide
 ::attribute rightSide
 
-
+-- class logical OR node
 ::class ClassOrNode subclass ClassLogicalNode
 ::method match
   use arg context, position, target
@@ -2487,6 +2374,7 @@ self~getMatchMetrics:super(metrics)
 
   return .false
 
+-- class logical AND
 ::class ClassAndNode subclass ClassLogicalNode
 ::method match
   use arg context, position, target
@@ -2501,6 +2389,7 @@ self~getMatchMetrics:super(metrics)
   return .false
 
 
+-- class Logical & ^ node
 ::class ClassAndNotNode subclass ClassLogicalNode
 ::method match
   use arg context, position, target
@@ -2515,6 +2404,7 @@ self~getMatchMetrics:super(metrics)
   return .false
 
 
+-- base wrapper class for group operations
 ::class Group subclass MatchNode
 ::method init
   expose terminator
@@ -2546,6 +2436,7 @@ self~getMatchMetrics:super(metrics)
   return terminator
 
 
+-- base class for capturing group interactions
 ::class CapturingGroup subclass Group
 ::method init
   expose id
@@ -2576,7 +2467,7 @@ self~getMatchMetrics:super(metrics)
 
   context~restoreGroupEnd(id)
 
-
+-- special terminator for the end of a grouping
 ::class GroupTerminatorNode subclass Node
 ::method init
   expose group
@@ -2810,6 +2701,9 @@ self~getMatchMetrics:super(metrics)
   return .true
 
 
+-- Search nodes are not normally part of the pattern tree.  These
+-- are only instantiated when a find() operation is being done with
+-- a pattern
 ::class SearchNode subclass MatchNode
 ::method init
   expose minLen
@@ -2836,7 +2730,6 @@ self~getMatchMetrics:super(metrics)
       return .false
   end
 
-
   do i = position for probes
       -- the test for hitting the end generally turns this on, so ensure it is off
       context~hitEnd = .false
@@ -2859,6 +2752,7 @@ self~getMatchMetrics:super(metrics)
   -- because we slide, these are never valid
   metrics~deterministic = .false
   metrics~maxValid = .false
+
 
 -- base class for a match result from a group match.  This is
 -- similar to the MatchResult class, but lacks the ability to request
