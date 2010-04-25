@@ -2681,6 +2681,12 @@ self~getMatchMetrics:super(metrics)
 
   -- set the end match position
   context~matchEnd = position
+  -- if we require a match with the end, then only return true
+  -- if our position is at the end
+  if context~matchEndRequired then do
+      return position == context~endPosition
+  end
+
   -- this is always a successful match.  This really just
   -- records the last position of this branch segment.
   return .true

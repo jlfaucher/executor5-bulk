@@ -64,9 +64,12 @@ return testResult
 
   -- now some matching/search tests
   self~assertTrue(p~matches("foo"))
-  self~assertTrue(p~matches("foobar"))
+  self~assertFalse(p~matches("foobar"))
+  self~assertFalse(p~matches("fo"))
+  self~assertFalse(p~matches(" foo"))
   self~assertTrue(p~startsWith("foo"))
   self~assertTrue(p~startsWith("fooBar"))
+  self~assertFalse(p~startsWith(" foo"))
 
   r = p~find("foo")
   self~assertTrue(r~matched)
@@ -77,7 +80,6 @@ return testResult
   self~assertEquals("", r~prefix)
   self~assertEquals("", r~suffix)
 
-
   r = p~find("xxxfooyyy")
   self~assertTrue(r~matched)
   self~assertEquals(4, r~start)
@@ -86,5 +88,14 @@ return testResult
   self~assertEquals("foo", r~text)
   self~assertEquals("xxx", r~prefix)
   self~assertEquals("yyy", r~suffix)
+
+  r = p~find("xyzzy")
+  self~assertFalse(r~matched)
+  self~assertEquals(0, r~start)
+  self~assertEquals(0, r~end)
+  self~assertEquals(0, r~length)
+  self~assertEquals("", r~text)
+  self~assertEquals("", r~prefix)
+  self~assertEquals("xyzzy", r~suffix)
 
 
