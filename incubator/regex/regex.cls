@@ -301,6 +301,16 @@
   ch = pattern~subchar(current)
   return ch
 
+-- process reading of a single character, taking escaping
+-- into account
+::method singleChar
+  ch = self~next
+  -- have an escape character?
+  if ch == '\' then do
+      return self~parseEscapedCharacters
+  end
+  return ch   -- return whatever this is, including .nil
+
 -- move the cursor to a previous position, ensuring that we
 -- don't move past the beginning
 ::method previous
@@ -1018,7 +1028,7 @@
   negated = .false
   firstchar = .true
 
-  do label loop forever
+  do forever
       ch = self~next
 
       select
@@ -1051,7 +1061,6 @@
               else do
                   previousNode = .ClassOrNode~new(previousNode, subNode)
               end
-
           end
           when ch == "&" then do
               ch = self~next
@@ -1112,72 +1121,8 @@
               end
 
           end
-          otherwise do
-              firstchar = .false
-              self~previous
-          end
-      end
-
-      -- processed all of the special chars, we should be looking at class characters.
-      -- process this into a node.
-      node = self~parseClassRange
-
-      if negated then do
-          if previousNode \= .nil then do
-              previousNode = .ClassAndNotNode~new(previousNode, node)
-          end
-          else do
-              previousNode = node
-          end
-      end
-      else do
-          if previousNode \= .nil then do
-              previousNode = .ClassOrNode~new(previousNode, node)
-          end
-          else do
-              previousNode = node
-          end
-      end
-      negated = .false
-  end
-
--- parse a range of characters for a class
-::method parseClassRange
-  firstchar = .true
-  characters = ""
-  inRange = .false
-  startRange = ""
-
-  ch = self~peek
-  if ch == "^" then do
-      negated = .true
-      self~next
-  end
-
-  do forever
-      ch = self~next
-      -- we can terminate on the end of data or the closing bracket
-      if ch == .nil then do
-          leave
-      end
-      if ch == ']' then do
-          self~previous  -- push this back
-          leave
-      end
-      else if ch == "-" then do
-          if characters == "" then do
-              characters = "_"
-          end
-          else do
-              if inRange then do
-                  raise syntax 93.900 array("extra '-' in character range")
-              end
-              inRange = .true
-              startRange = characters~right(1)
-              characters = characters~substr(1, characters~length - 1)
-          end
-      end
-      else if ch == "\\" then do
+/* TODO:  This needs to be worked in.  It was moved from the parse class range method
+          when if ch == "\\" then do
           ch = self~next
           if escaped == "p" || escaped == "P" then do
               -- if this is the beginning of the range, we'll return that node instead.
@@ -1213,19 +1158,86 @@
               end
           end
       end
-      if \inRange then do
-          characters = characters || ch
+ */
+          otherwise do
+              firstchar = .false
+              self~previous
+          end
+      end
+
+      -- processed all of the special chars, we should be looking at class characters.
+      -- process this into a node.
+      node = self~parseClassRange(negated)
+      -- if this is a negation, then this is an AND operation
+      if negated then do
+          if previousNode \= .nil then do
+              previousNode = .ClassAndNode~new(previousNode, node)
+          end
+          else do
+              previousNode = node
+          end
       end
       else do
-          if ch < startRange then do
-              raise syntax 93.900 array("End range character '"ch"' is less than starting character '"startRange"'")
+          -- not negated, so this just adds to the list
+          if previousNode \= .nil then do
+              previousNode = .ClassOrNode~new(previousNode, node)
           end
-          characters = characters || xrange(startRange, ch)
-          inRange = .false
+          else do
+              previousNode = node
+          end
       end
+      negated = .false
   end
 
-  return .ClassNode~new(characters)
+-- parse a range of characters for a class.  This should either
+-- be a set of specifically specified characters (including escaped
+-- characters, or a range in the form "x-z".  The range will be terminated
+-- by any of the meta characters.  We may also encounter a named family
+-- class, in which case we'll return just that piece.  Range negations have
+-- already been processed by our caller
+::method parseClassRange
+  use arg negated    -- determines the type of node we return
+  firstchar = .true
+  characters = ""
+
+  do forever
+      -- read a "single" character, which might actually be an escaped one
+      ch = self~singleChar
+      -- we can terminate on the end of data or the closing bracket
+      if ch == .nil then do
+          leave
+      end
+      -- end of the range or a nested range?
+      -- stop here
+      else if ch == ']' | ch == '[' then do
+          self~previous  -- push this back
+          leave
+      end
+      -- This is a potential range character
+      else do
+          -- this could be followed by a '-' character
+          if self~peek == '-' then do
+              -- skip over that and get the next character
+              self~next
+              endRange = self~singleChar
+              -- special unescaped character?  This is also an error
+              if endRange == .nil | endRange == '[' | endRange == ']' | endRange == '-' then do
+                  raise syntax 93.900 array("missing end character in class range")
+              end
+              -- replace the character with the end range
+              ch = xrange(ch, endRange)
+          end
+      end
+      -- add this to the accumulator
+      characters = characters || ch
+  end
+  -- return the node based on the class modifier
+  if negated then do
+      return .NotClassNode~new(characters)
+  end
+  else do
+      return .ClassNode~new(characters)
+  end
 
 -- parse a named property and turn it into an equivalent family class
 ::method parseNamedProperty
