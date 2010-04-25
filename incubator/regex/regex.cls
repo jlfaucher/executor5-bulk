@@ -34,6 +34,7 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+-- ::options trace i
 ::class Pattern public
 
 ::method compile class
@@ -43,7 +44,7 @@
 
 ::method init
   expose pattern root groups
-  use arg pattern, root, groups
+  use strict arg pattern, root, groups
 
 ::attribute pattern GET
 ::attribute groups GET
@@ -260,10 +261,11 @@
 -- compile a regex expression using the posix-like
 -- regular expression syntax
 ::method compile
-  expose pattern current length
+  expose pattern current length groups
   use strict arg pattern
   current = 1     -- always start at the beginning
   length = pattern~length
+  groups = .nil   -- no group information until we hit the first capturing group
 
   -- this is the last node that will get control only if all other
   -- elements match cleanly.  The expression parser hooks this up to the
@@ -271,7 +273,7 @@
   lastNode = .TerminatorNode~new
   rootNode = self~parseExpression(lastNode)
   -- and return a usable pattern for this
-  return .Pattern~new(pattern, rootNode)
+  return .Pattern~new(pattern, rootNode, groups)
 
 -- extract the next character and step the parsing position
 -- Returns .nil if past the end of the pattern
@@ -367,7 +369,7 @@
 
   do forever
       -- parse a sequence and chain up with the terminator
-      node = parseSequence(terminator)
+      node = self~parseSequence(terminator)
       if alternative \== .nil then do
           alternative~addAlternative(node)
       end
@@ -377,19 +379,20 @@
 
       if ch \== "|" then do
           -- not an alternative....see what we need to return
-          if alternative \== .nil then do
+          if alternative == .nil then do
               return node
           end
           else do
               return alternative
           end
       end
-
-      -- if we've only processed the first node, create an alternative and
-      -- add the node.
-      if alternative == .nil then do
-          alternative = .AlternativeNode~new
-          alternative~addAlternative(node)
+      else do
+          -- if we've only processed the first node, create an alternative and
+          -- add the node.
+          if alternative == .nil then do
+              alternative = .AlternativeNode~new
+              alternative~addAlternative(node)
+          end
       end
   end
 
@@ -459,11 +462,12 @@
           end
           otherwise do
               -- an atom string that is taken as-is
+              self~previous   -- backup so parseAtom will grab the first character
               node = self~parseAtom
           end
       end
 
-      node = self~processClosure(node)
+      node = self~parseClosure(node)
       -- now process the chaining
       if firstNode == .nil then do
           firstNode = node
@@ -691,7 +695,7 @@
       groupInfo~lastNode = group~terminator
   end
 
-  node = parseClosure(groupInfo~firstNode)
+  node = self~parseClosure(groupInfo~firstNode)
   if node \== groupInfo~firstNode then do
       -- this is wrappered in a closure, so terminate the group chain with
       -- a bit that updates the match location, and replace the first and
@@ -1268,37 +1272,18 @@
               -- We have a good character, but it might be followed
               -- by a modifier.  If it is, push it back and terminate
               -- the parsing here.
-              if "*+?{"~pos(self~peek) > 0  then do
+              test = self~peek
+              if test \= .nil, "*+?{"~pos(test) > 0  then do
                   self~previous
                   leave
               end
 
-              characters = characters + ch
+              characters = characters || ch
           end
       end
   end
 
-  -- this is either a single char node, or some sort of string sequence.
-  if characters~length == 1 then do
-      return self~singleNode(characters)
-  end
-  else do
-      return self~stringNode(characters)
-  end
-
--- create a node for matching a single character
-::method singleNode
-  use arg char
-
-  -- there's little difference between matching
-  -- a single character vs. matching a character string,
-  -- so must make these string nodes
-  if self~caseless then do
-      return .CaselessStringNode~new(char)
-  end
-  else do
-      return .StringNode~new(char)
-  end
+  return self~stringNode(characters)
 
 -- create a node for matching a character string
 ::method stringNode
@@ -1553,7 +1538,7 @@
   submetrics~deterministic = .true
 
   child~getMatchMetrics(submetrics)
-  return metrics
+  return submetrics
 
 -- A node that enforces anchoring at the beginning of the text
 ::class BeginTextNode subclass matchNode
@@ -1687,8 +1672,8 @@
 ::method getMatchMetrics
   use arg metrics
   -- a dot is always a single character, so easy to manage
-  metrics~maxLen = metrics~maxLen + 1
-  metrics~minLen = metrics~minLen + 1
+  metrics~maxLength = metrics~maxLength + 1
+  metrics~minLength = metrics~minLength + 1
 
   self~getMatchMetrics:super(metrics)
 
@@ -1743,7 +1728,7 @@
   use arg context, position, target
 
   -- must have at least the same length as the string available
-  if context~checkEnd(position + matchString~length) then do
+  if context~checkEnd(position + matchString~length - 1) then do
       return .false
   end
   -- if no match, fail
@@ -1757,8 +1742,8 @@
   expose matchString
   use arg metrics
   -- always the length of this string
-  metrics~maxLen = metrics~maxLen + matchString~length
-  metrics~minLen = metrics~minLen + matchString~length
+  metrics~maxLength = metrics~maxLength + matchString~length
+  metrics~minLength = metrics~minLength + matchString~length
 
   self~getMatchMetrics:super(metrics)
 
@@ -1804,8 +1789,8 @@
 ::method getMatchMetrics
   use arg metrics
   -- also just a single character match
-  metrics~maxLen = metrics~maxLen + 1
-  metrics~minLen = metrics~minLen + 1
+  metrics~maxLength = metrics~maxLength + 1
+  metrics~minLength = metrics~minLength + 1
 
   self~getMatchMetrics:super(metrics)
 
@@ -1850,8 +1835,8 @@
 ::method getMatchMetrics
   use arg metrics
   -- also just a single character match
-  metrics~maxLen = metrics~maxLen + 1
-  metrics~minLen = metrics~minLen + 1
+  metrics~maxLength = metrics~maxLength + 1
+  metrics~minLength = metrics~minLength + 1
 
   self~getMatchMetrics:super(metrics)
 
@@ -1884,8 +1869,8 @@
 ::method getMatchMetrics
   expose alternatives
 
-  maxLen = 0
-  minLen = 999999999
+  maxLength = 0
+  minLength = 999999999
   deterministic = .true
   maxValid = .true
 
@@ -1893,16 +1878,16 @@
 
   do alternative over alternatives
       -- get our repetition node values as if it was the only thing of interest
-      submetrics = self~getChildMetrics(repNode)
-      maxLen = max(maxLen, subMetrics~maxLen)
-      minLen = min(minLen, subMetrics~minLen)
+      submetrics = self~getChildMatchMetrics(repNode)
+      maxLength = max(maxLength, subMetrics~maxLength)
+      minLength = min(minLength, subMetrics~minLength)
       deterministic = deterministic & submetrics~deterministic
       maxValid = maxValid & submetrics~deterministic
   end
 
 
-  metrics~minLen = metrics~minLen + minLen
-  metrics~maxLen = metrics~maxLen + maxlen
+  metrics~minLength = metrics~minLength + minLen
+  metrics~maxLength = metrics~maxLength + maxlen
 
   metrics~deterministic = metrics~deterministic & deterministic
   metrics~maxValid = metrics~maxValid * maxValid
@@ -2006,9 +1991,9 @@
 
   -- our following match pattern is optional, so we ignore any
   -- additions it makes to the metrics before sending it down the chain.
-  minLen = metrics~minLen
+  minLength = metrics~minLen
   optional~getMatchMetrics(metrics)
-  metrics~minLen = minLen
+  metrics~minLength = minLen
   metrics~deterministic = .false
 
 self~getMatchMetrics:super(metrics)
@@ -2076,9 +2061,9 @@ self~getMatchMetrics:super(metrics)
   expose repNode min max
   use arg metrics
   -- get our repetition node values as if it was the only thing of interest
-  submetrics = self~getChildMetrics(repNode)
+  submetrics = self~getChildMatchMetrics(repNode)
 
-  metrics~minLen = metrics~minLen + (min * submetrics~minLen)
+  metrics~minLength = metrics~minLength + (min * submetrics~minLen)
   metrics~maxLength = metrics~maxLength + (max * submetrics~maxLen)
 
   -- if the max and min are the same, then this is potentially deterministic
@@ -2346,11 +2331,11 @@ self~getMatchMetrics:super(metrics)
   expose leftSide rightSide
   use arg metrics
 
-  leftMetrics = self~getChildMetrics(leftSide)
-  rightMetrics = self~getChildMetrics(rightSide)
+  leftMetrics = self~getChildMatchMetrics(leftSide)
+  rightMetrics = self~getChildMatchMetrics(rightSide)
 
-  metrics~minLen = metrics~minLen + min(leftMetrics~minLen, rightMetrics~minLen)
-  metrics~maxLen = metrics~minLen + max(leftMetrics~maxLen, rightMetrics~maxLen)
+  metrics~minLength = metrics~minLength + min(leftMetrics~minLength, rightMetrics~minLength)
+  metrics~maxLength = metrics~minLength + max(leftMetrics~maxLength, rightMetrics~maxLength)
   metrics~deterministic = metrics~deterministic & leftMetrics~deterministic & rightMetrics~deterministic
 
   self~getMatchMetrics:super(metrics)
@@ -2468,7 +2453,7 @@ self~getMatchMetrics:super(metrics)
   context~restoreGroupEnd(id)
 
 -- special terminator for the end of a grouping
-::class GroupTerminatorNode subclass Node
+::class GroupTerminatorNode subclass MatchNode
 ::method init
   expose group
   use arg group
@@ -2582,7 +2567,7 @@ self~getMatchMetrics:super(metrics)
   possibleMatchs = backPosition - min + 1
 
   -- we need to test the shortest matches first
-  do i = position - minLen by -1 for possibleMatches
+  do i = position - minLength by -1 for possibleMatches
       -- if we have a back match, then time to forward to the next bit
       if group~match(context, i, target) then do
           return self~next~match(context, position, target)
@@ -2621,7 +2606,7 @@ self~getMatchMetrics:super(metrics)
   possibleMatchs = backPosition - min + 1
 
   -- we need to test the shortest matches first
-  do i = position - minLen by -1 for possibleMatches
+  do i = position - minLength by -1 for possibleMatches
       -- if we have a back match, then this is a failure
       if group~match(context, i, target) then do
           return .false
@@ -2706,24 +2691,25 @@ self~getMatchMetrics:super(metrics)
 -- a pattern
 ::class SearchNode subclass MatchNode
 ::method init
-  expose minLen
+  expose minLength
   use arg pattern
+  self~init:super
 
   self~next = pattern  -- this is our search pattern
 
   -- to optimize, we scan the tree to figure out what the minium match
   -- length will be.  This will prevent making unnecessary probes on the
   -- target once matches are no longer possible.
-  metrics self~getChildMetrics(pattern)
+  metrics = self~getChildMatchMetrics(pattern)
 
-  minLen = metrics~minlen
-  self~init:super
+  minLength = metrics~minLength
 
 ::method match
-  expose minLen
+  expose minLength
   use arg context, position, target
-
-  probes = (context~endPosition - position) - minLen
+  -- NB, + 1 is needed because the start position is not
+  -- zero based.  We might have exactly enough for a single test
+  probes = (context~endPosition - position) - minLength + 1
 
   if probes <= 0 then do
       context~hitEnd = .true
@@ -2760,7 +2746,7 @@ self~getMatchMetrics:super(metrics)
 ::class GroupMatchResult
 ::method init
 expose regionStart regionEnd start end text hitEnd
-use strict arg text, regionStart, regionEnd, start, end, hitEnd, groups
+use strict arg text, regionStart, regionEnd, start, end, hitEnd
 -- return a response if the operation matched.
 ::method matched
   expose start
@@ -2780,7 +2766,7 @@ use strict arg text, regionStart, regionEnd, start, end, hitEnd, groups
 -- retrieve the length of the match string
 ::attribute length GET
   expose end start
-  return end - start + 1  -- end position is Rexx-like last character
+  return end - start -- end position is one past the last match character
 -- retrieves the match text
 ::attribute text GET
   expose text start
@@ -2794,7 +2780,7 @@ use strict arg text, regionStart, regionEnd, start, end, hitEnd, groups
 -- retrieve the prefix string before the match, up to the start
 -- of the match region
 ::attribute prefix GET
-  expose text start
+  expose text start regionStart
   -- no match is always a null string
   if start == 0 then do
       return ""
@@ -2805,13 +2791,13 @@ use strict arg text, regionStart, regionEnd, start, end, hitEnd, groups
 -- retrieve any text following the match position, up to the end
 -- of the match region
 ::attribute suffix GET
-  expose text start
-  -- no match is always a null string
+  expose text start end regionStart regionEnd
+  -- no match is always the entire region string
   if start == 0 then do
+  return text~substr(regionStart, regionEnd - regionStart)
       return ""
   end
-
-  return text~substr(regionStart, regionEnd - regionStart + 1)
+  return text~substr(end, regionEnd - end)
 
 -- return the position of character after the match position.  If
 -- past the end of the match region, returns regionEnd + 1
@@ -2828,7 +2814,7 @@ use strict arg text, regionStart, regionEnd, start, end, hitEnd, groups
 ::method init
 expose groups
 use strict arg text, regionStart, regionEnd, start, end, hitEnd, groups
-self~init:super(text, regionStart, regionEnd, start, end, hitEnd, groups)
+self~init:super(text, regionStart, regionEnd, start, end, hitEnd)
 
 -- retrieve a group.  This is either a numeric id
 -- or a symbolic name
@@ -2848,10 +2834,11 @@ self~init:super(text, regionStart, regionEnd, start, end, hitEnd, groups)
 -- implements the matching operations.
 ::class MatchContext
 ::method init
-  expose text startPosition endPosition matchPosition matchEnd groups hitEnd
-  use arg text, startPosition, length, root, groups
-  -- make sure the length is bounded
-  endPosition = min(text~length, startPosition + length - 1)
+  expose text startPosition endPosition matchPosition matchEnd root groups hitEnd
+  use strict arg text, startPosition, length, root, groups
+  -- make sure the length is bounded.  The end position is one
+  -- past the end
+  endPosition = min(text~length + 1, startPosition + length)
   matchPosition = 0
   matchEnd = 0
   hitEnd = false  -- indicator of whether a search has reached the end
@@ -2873,7 +2860,7 @@ self~init:super(text, regionStart, regionEnd, start, end, hitEnd, groups)
   -- this is the default result, and possibly checked by filters
   -- that need to examine the starting match position
   matchPosition = startPosition
-  if root~match(this, startPosition, text) then do
+  if root~match(self, startPosition, text) then do
       return .true  -- good match, give the indicator
   end
   else do
@@ -2891,7 +2878,7 @@ self~init:super(text, regionStart, regionEnd, start, end, hitEnd, groups)
   -- this is the default result, and possibly checked by filters
   -- that need to examine the starting match position
   matchPosition = startPosition
-  if root~match(this, startPosition, text) then do
+  if root~match(self, startPosition, text) then do
       return .true  -- good match, give the indicator
   end
   else do
@@ -2918,10 +2905,10 @@ self~init:super(text, regionStart, regionEnd, start, end, hitEnd, groups)
   -- this node implements a sliding search search of the pattern.
   -- Not really part of the pattern tree, but it wrappers it
   searcher = .SearchNode~new(root)
-  if \searcher~match(this, startPosition, text) then do
+  if \searcher~match(self, startPosition, text) then do
       matchPosition = 0   -- this needs to be cleared
   end
-  return self~matchResult  -- give a match result object with the info
+  return self~result  -- give a match result object with the info
 
 -- return a result object from the match result
 ::method result
