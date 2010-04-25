@@ -1,8 +1,8 @@
 #----------------------------------------------------------------------------
 #
-# Description: Makefile for all the Object Rexx Documentation PDFs & HTML
+# Description: Makefile for the Object Rexx extensions Documents.
 #
-# Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+# Copyright (c) 2010-2010, Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -35,25 +35,67 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Authors:
-#     W. David Ashley <dashley@us.ibm.com>
+# Author(s):
+#      W. David Ashley <dashley@us.ibm.com>
 #
 #----------------------------------------------------------------------------
 
 
-SUBDIRS=oodialog readme rexxpg rexxref rxftp rxmath rxsock reccextensions winextensions
-SUBDIRS_EX=$(SUBDIRS) ootest
+STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl \
+             ../shared/oorexx.print.dsl
+HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
+             ../shared/oorexx.html.dsl
 
-all:
-	for d in $(SUBDIRS); do (cd $$d && make all); done
 
-pdf:
-	for d in $(SUBDIRS); do (cd $$d && make pdf); done
+xml_FILES = rexxextensions.xml \
+     csvstream.xml \
+     ../shared/notices.xml \
+     ../shared/legalstuff.xml \
+     ../shared/gethelp.xml \
+     ../shared/CPLv1.0.xml
 
-html:
-	for d in $(SUBDIRS); do (cd $$d && make html); done
+IMAGE_FILES = oorexx.jpg \
+ 	      docbook-1.png \
+	      new_rexxla.jpg
+
+JADETEXFMT  = ./pdfjadetex.fmt
+HYPERREFCFG = ./hyperref.cfg
+TEXMF       = /usr/share/texmf
+
+export TEXFORMATS=.:
+
+
+all: pdf html
+
+pdf: rexxextensions.pdf
+
+html: rexxextensions-html.zip
+
+rexxextensions.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
+	docbook2pdf -d ../shared/oorexx.print.dsl rexxextensions.xml
+
+book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp
+	docbook2html -d ../shared/oorexx.html.dsl rexxextensions.xml
+
+rexxextensions-html.zip: book1.htm
+	zip rexxextensions-html *.htm *.jpg *.png
+
+$(JADETEXFMT): $(HYPERREFCFG)
+	pdftex -ini \&pdflatex pdfjadetex.ini
+
+genindex.xml: $(HTML_STYLESHEET) $(xml_FILES) svnrev.tmp
+	collateindex.pl -N -o genindex.xml
+	jade -t xml -d ../shared/oorexx.html.dsl -V html-index rexxextensions.xml
+	rm *.htm
+	collateindex.pl -p -g -o genindex.xml HTML.index
+
+svnrev.tmp:
+	svnversion > svnrev.tmp
+
+
 
 
 clean:
-	for d in $(SUBDIRS_EX); do (cd $$d && make clean); done
+	rm -f *.log *.aux *.out *.fmt *.pdf genindex.xml *.htm *.zip \
+           HTML.index *.tmp
 

@@ -10,6 +10,8 @@ The following documents are available in the release:
         Open Object Rexx: RxSock TCP/IP Socket Functions Reference
         Open Object Rexx: RxFtp Class Library Reference
         Open Object Rexx: Windows OODialog Reference
+        Open Object Rexx: Rexx Extensions Reference
+        Open Object Rexx: Windows Extensions Reference
         Open Object Rexx: Release Notes
 
 These documents and the accompanying materials are made available under
