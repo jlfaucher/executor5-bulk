@@ -138,6 +138,8 @@
 
 ::class RegexCompiler public
 
+::constant METACHARACTERS "([{\^-$|]})?*+."
+::constant CLASSMETACHARACTERS "[^-]&"
 ::method init class
   expose classFamilies registeredClassFamilies
 
@@ -317,6 +319,17 @@
   expose current length
 
   current = max(current - 1, 1)
+
+-- test if a character is a metacharacter that needs to be skipped
+::method isMetaCharacter
+  use arg ch
+  return self~METACHARACTERS~pos(ch) > 0
+
+-- test if a character is a metacharacter in the context of parsing
+-- a class range
+::method isClassMetaCharacter
+  use arg ch
+  return self~CLASSMETACHARACTERS~pos(ch) > 0
 
 -- extract a string from a pattern that is delimited
 -- by a pair of markers
@@ -1201,32 +1214,36 @@
   characters = ""
 
   do forever
-      -- read a "single" character, which might actually be an escaped one
-      ch = self~singleChar
+      ch = self~peek   -- just peek at the next character
       -- we can terminate on the end of data or the closing bracket
       if ch == .nil then do
           leave
       end
-      -- end of the range or a nested range?
+      -- is this any of e or a nested range?
       -- stop here
-      else if ch == ']' | ch == '[' then do
-          self~previous  -- push this back
+      else if self~isClassMetaCharacter(ch) then do
+          -- quit now...we only peeked at this character,
+          -- so it's still there
           leave
       end
-      -- This is a potential range character
       else do
-          -- this could be followed by a '-' character
-          if self~peek == '-' then do
-              -- skip over that and get the next character
-              self~next
-              endRange = self~singleChar
-              -- special unescaped character?  This is also an error
-              if endRange == .nil | endRange == '[' | endRange == ']' | endRange == '-' then do
-                  raise syntax 93.900 array("missing end character in class range")
-              end
-              -- replace the character with the end range
-              ch = xrange(ch, endRange)
+          -- This is a potential range character, pull it from
+          -- the queue now.  Need to handle escaped characters
+          -- here too
+          ch = self~singleChar
+      end
+
+      -- this could be followed by a '-' character
+      if self~peek == '-' then do
+          -- skip over that and get the next character
+          self~next
+          endRange = self~singleChar
+          -- special unescaped character?  This is also an error
+          if endRange == .nil | endRange == '[' | endRange == ']' | endRange == '-' then do
+              raise syntax 93.900 array("missing end character in class range")
           end
+          -- replace the character with the end range
+          ch = xrange(ch, endRange)
       end
       -- add this to the accumulator
       characters = characters || ch
@@ -2403,7 +2420,7 @@ self~getMatchMetrics:super(metrics)
 
   if \context~checkEnd(position) then do
       if self~leftSide~match(context, position, target) then
-         if self~rightSide(context, position, target) then do
+         if self~rightSide~match(context, position, target) then do
              return self~next~match(context, context~matchEnd, target)
          end
   end
