@@ -2921,7 +2921,7 @@ self~init:super(text, regionStart, regionEnd, start, end, hitEnd)
   endPosition = min(text~length + 1, startPosition + length)
   matchPosition = 0
   matchEnd = 0
-  hitEnd = false  -- indicator of whether a search has reached the end
+  hitEnd = .false  -- indicator of whether a search has reached the end
   -- if we have groups, then do a deep copy of the directory
   -- to create a working groups list
   if groups \= .nil then do
