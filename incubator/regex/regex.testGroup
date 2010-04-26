@@ -683,3 +683,32 @@ return testResult
   self~assertEquals(2, r~start)
   self~assertEquals(3, r~end)
 
+  -- some subraction.  This is essentially the same pattern
+  -- as the first one, but the intersection is done by exclusion
+  p = .Pattern~compile("[a-z&&[^d-z]]")
+
+  self~assertTrue(p~matches('a'))
+  self~assertTrue(p~matches('b'))
+  self~assertTrue(p~matches('c'))
+  self~assertFalse(p~matches('e'))
+
+  self~assertTrue(p~startsWith('abc'))
+  self~assertTrue(p~startsWith('bye-bye'))
+  self~assertTrue(p~startsWith('causeway'))
+  self~assertFalse(p~startsWith('estuary'))
+
+  r = p~find('abc')
+
+  self~assertTrue(r~matched)
+  self~assertEquals(1, r~start)
+  self~assertEquals(2, r~end)
+
+  r = p~find('ABC')
+
+  self~assertFalse(r~matched)
+
+  r = p~find('xb')
+
+  self~assertTrue(r~matched)
+  self~assertEquals(2, r~start)
+  self~assertEquals(3, r~end)
