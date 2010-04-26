@@ -140,6 +140,7 @@
 
 ::constant METACHARACTERS "([{\^-$|]})?*+."
 ::constant CLASSMETACHARACTERS "[^-]&"
+::constant CLOSURECHARACTERS "*+?{"
 ::method init class
   expose classFamilies registeredClassFamilies
 
@@ -330,6 +331,12 @@
 ::method isClassMetaCharacter
   use arg ch
   return self~CLASSMETACHARACTERS~pos(ch) > 0
+
+-- test if a character is a closure character
+-- a class range
+::method isClosureCharacter
+  use arg ch
+  return self~CLOSURECHARACTERS~pos(ch) > 0
 
 -- extract a string from a pattern that is delimited
 -- by a pair of markers
@@ -923,7 +930,6 @@
 -- an enclosing node that handles the modifiers
 ::method parseClosure
   use arg target
-
   ch = self~next
 
   select
@@ -931,50 +937,53 @@
       -- modifier to control the operating mode
       when ch == "?" then do
           -- a question repetitor
-          ch = self~next
+          ch = self~peek
           -- ?? operates in lazy mode
           if ch == "?" then do
+              self~next
               return .LazyQuestionNode~new(target)
           end
           -- possesive question mode
           else if ch == "+" then do
+              self~next
               return .PossessiveQuestionNode~new(target)
           end
           else do
               -- no modifier is greedy
-              self~previous
               return .GreedyQuestionNode~new(target)
           end
       end
       -- zero or more occurrences.  This also operates with mode
       -- modifiers
       when ch == "*" then do
-          ch = self~next
+          ch = self~peek
 
           if ch == "?" then do
+              self~next
               return .LazyRepetitionNode~new(target, 0, 999999999)
           end
           else if ch == "+" then do
+              self~next
               return .PossessiveRepetitionNode~new(target, 0, 999999999)
           end
           else do
-              self~previous
               return .GreedyRepetitionNode~new(target, 0, 999999999)
           end
       end
       -- one or more occurrences.  Also with different modes of
       -- operation
       when ch == "+" then do
-          ch = self~next
+          ch = self~peek
 
           if ch == "?" then do
+              self~next
               return .LazyRepetitionNode~new(target, 1, 999999999)
           end
           else if ch == "+" then do
+              self~next
               return .PossessiveRepetitionNode~new(target, 1, 999999999)
           end
           else do
-              self~previous
               return .GreedyRepetitionNode~new(target, 1, 999999999)
           end
       end
@@ -999,16 +1008,17 @@
           if max < min then do
               raise syntax 93.900 array("Repetition maximum" max "is less than minimum" min)
           end
-          ch = self~next
+          ch = self~peek
 
           if ch == "?" then do
+              self~next
               return .LazyRepetitionNode~new(target, min, max)
           end
           else if ch == "+" then do
+              self~next
               return .PossessiveRepetitionNode~new(target, min, max)
           end
           else do
-              self~previous
               return .GreedyRepetitionNode~new(target, min, max)
           end
       end
@@ -1289,20 +1299,20 @@
           when ch = .nil then do
               leave
           end
-          -- if this is a non-escaped special char,
-          -- backup and finish up this section
-          when "$.^([|)"~pos(ch) > 0 then do
-              self~previous
-              leave
-          end
           when ch == '\' then do
               ch = self~parseEscapedCharacters
               -- this is either an invalid escape char, or an operation
-              -- we push the backshad back on, and stop processeing.
+              -- we push the char back on, and stop processing.
               if ch == .nil then do
                   self~previous
                   leave
               end
+          end
+          -- if this is a non-escaped special char,
+          -- backup and finish up this section
+          when self~isMetaCharacter(ch) then do
+              self~previous
+              leave
           end
 
           otherwise do
@@ -1310,8 +1320,17 @@
               -- by a modifier.  If it is, push it back and terminate
               -- the parsing here.
               test = self~peek
-              if test \= .nil, "*+?{"~pos(test) > 0  then do
-                  self~previous
+              if test \= .nil, self~isClosureCharacter(test) > 0  then do
+                  -- if there are more than one character here,
+                  -- back up and return what we have.
+                  if characters \== '' then do
+                      self~previous
+                  end
+                  else do
+                      -- otherwise, this single character is the entire atom
+                      -- the closure characters will apply to it
+                      characters = ch
+                  end
                   leave
               end
 
@@ -2102,6 +2121,7 @@ self~getMatchMetrics:super(metrics)
   expose repNode min max
   use arg repNode, min, max
   self~init:super
+  repNode~terminate   -- we need to ensure the chain ends in a terminator
 
 ::attribute repNode GET
 ::attribute min GET
@@ -2114,8 +2134,8 @@ self~getMatchMetrics:super(metrics)
   -- get our repetition node values as if it was the only thing of interest
   submetrics = self~getChildMatchMetrics(repNode)
 
-  metrics~minLength = metrics~minLength + (min * submetrics~minLen)
-  metrics~maxLength = metrics~maxLength + (max * submetrics~maxLen)
+  metrics~minLength = metrics~minLength + (min * submetrics~minLength)
+  metrics~maxLength = metrics~maxLength + (max * submetrics~maxLength)
 
   -- if the max and min are the same, then this is potentially deterministic
   if max == min then do
@@ -2142,13 +2162,20 @@ self~getMatchMetrics:super(metrics)
       if \repNode~match(context, current, target) then do
           return .false
       end
-      current = context~matchPosition
+      current = context~matchEnd
   end
 
   return self~recursiveMatch(context, current, target, repNode, self~min, self~max)
 
 ::method recursiveMatch
   use arg context, position, target, repNode, matches, max
+
+  -- we've already satisfied the minimum, if we're past the end, then
+  -- pass on the terminator
+  if context~checkEnd(position) then do
+  -- try matching the following bit
+      return self~next~match(context, position, target)
+  end
 
   -- we hit the max count, now try to match the trailing bit
   if matches >= max then do
@@ -2158,13 +2185,14 @@ self~getMatchMetrics:super(metrics)
   if repNode~match(context, position, target) then do
       -- a pattern that is a zero-length match will cause an infinite loop,
       -- so fail this
-      if position == context~matchPosition then do
+      if position == context~matchEnd then do
           return .false
       end
       -- now recurse on this
-      if self~recursiveMatch(context, context~matchPosition, target, repNode, matches + 1, max) then do
+      if self~recursiveMatch(context, context~matchEnd, target, repNode, matches + 1, max) then do
           return .true
       end
+      position = context~matchEnd   -- update the position
   end
 
   -- try matching the following bit
