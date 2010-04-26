@@ -108,15 +108,7 @@ return testResult
   -- the default match mode for "." does not recognize
   -- either '0d'x or '0a'x.  We'll invert those.  Tests
   -- for the options overrides is a task for another day.
-  do i = 0 to 255
-      -- handle the special cases
-      if i == 10 | i == 13 then do
-          self~assertFalse(p~matches(d2c(i)))
-      end
-      else do
-          self~assertTrue(p~matches(d2c(i)))
-      end
-  end
+  self~checkExcludedCharacters(p, "0a0d"x)
 
   self~assertFalse(p~matches(""))
   self~assertFalse(p~matches("AB"))
@@ -276,10 +268,8 @@ return testResult
 ::method testSimpleClass
   p = .Pattern~compile("[abc]")
 
-  self~assertTrue(p~matches('a'))
-  self~assertTrue(p~matches('b'))
-  self~assertTrue(p~matches('c'))
-  self~assertFalse(p~matches('e'))
+  -- verify the entire included set
+  self~checkIncludedCharacters(p, "abc")
 
   self~assertTrue(p~startsWith('abc'))
   self~assertTrue(p~startsWith('bye-bye'))
@@ -332,10 +322,8 @@ return testResult
 ::method testSimpleNotClass
   p = .Pattern~compile("[^abc]")
 
-  self~assertFalse(p~matches('a'))
-  self~assertFalse(p~matches('b'))
-  self~assertFalse(p~matches('c'))
-  self~assertTrue(p~matches('e'))
+  -- verify the entire excluded set
+  self~checkExcludedCharacters(p, "abc")
 
   self~assertFalse(p~startsWith('abc'))
   self~assertFalse(p~startsWith('bye-bye'))
@@ -389,10 +377,8 @@ return testResult
 ::method testRangeNotClass
   p = .Pattern~compile("[^a-c]")
 
-  self~assertFalse(p~matches('a'))
-  self~assertFalse(p~matches('b'))
-  self~assertFalse(p~matches('c'))
-  self~assertTrue(p~matches('e'))
+  -- verify the entire excluded set
+  self~checkExcludedCharacters(p, "abc")
 
   self~assertFalse(p~startsWith('abc'))
   self~assertFalse(p~startsWith('bye-bye'))
@@ -445,10 +431,8 @@ return testResult
 ::method testRangeClass
   p = .Pattern~compile("[a-c]")
 
-  self~assertTrue(p~matches('a'))
-  self~assertTrue(p~matches('b'))
-  self~assertTrue(p~matches('c'))
-  self~assertFalse(p~matches('e'))
+  -- verify the entire included set
+  self~checkIncludedCharacters(p, "abc")
 
   self~assertTrue(p~startsWith('abc'))
   self~assertTrue(p~startsWith('bye-bye'))
@@ -501,11 +485,8 @@ return testResult
 ::method testMultipleRangeClass
   p = .Pattern~compile("[a-bA-B]")
 
-  self~assertTrue(p~matches('a'))
-  self~assertTrue(p~matches('b'))
-  self~assertTrue(p~matches('A'))
-  self~assertTrue(p~matches('B'))
-  self~assertFalse(p~matches('e'))
+  -- verify the entire included set
+  self~checkIncludedCharacters(p, "abAB")
 
   self~assertTrue(p~startsWith('abc'))
   self~assertTrue(p~startsWith('bye-bye'))
@@ -579,11 +560,8 @@ return testResult
 ::method testClassUnion
   p = .Pattern~compile("[a-b[A-B]]")
 
-  self~assertTrue(p~matches('a'))
-  self~assertTrue(p~matches('b'))
-  self~assertTrue(p~matches('A'))
-  self~assertTrue(p~matches('B'))
-  self~assertFalse(p~matches('e'))
+  -- verify the entire included set
+  self~checkIncludedCharacters(p, "abAB")
 
   self~assertTrue(p~startsWith('abc'))
   self~assertTrue(p~startsWith('bye-bye'))
@@ -657,10 +635,8 @@ return testResult
 ::method testClassIntersection
   p = .Pattern~compile("[a-z&&[abc]]")
 
-  self~assertTrue(p~matches('a'))
-  self~assertTrue(p~matches('b'))
-  self~assertTrue(p~matches('c'))
-  self~assertFalse(p~matches('e'))
+  -- verify the entire included set
+  self~checkIncludedCharacters(p, "abc")
 
   self~assertTrue(p~startsWith('abc'))
   self~assertTrue(p~startsWith('bye-bye'))
@@ -687,10 +663,8 @@ return testResult
   -- as the first one, but the intersection is done by exclusion
   p = .Pattern~compile("[a-z&&[^d-z]]")
 
-  self~assertTrue(p~matches('a'))
-  self~assertTrue(p~matches('b'))
-  self~assertTrue(p~matches('c'))
-  self~assertFalse(p~matches('e'))
+  -- verify the entire included set
+  self~checkIncludedCharacters(p, "abc")
 
   self~assertTrue(p~startsWith('abc'))
   self~assertTrue(p~startsWith('bye-bye'))
@@ -712,3 +686,74 @@ return testResult
   self~assertTrue(r~matched)
   self~assertEquals(2, r~start)
   self~assertEquals(3, r~end)
+
+
+-- predefined character classes
+::method testPredefinedClasses
+-- NOTE:  We're only going to test the matches
+-- here.  By this point, all of the different
+-- matches/startsWith/find options have been sufficiently
+-- tested that if one works, they should all work correctly.
+
+  -- all digits
+  p = .Pattern~compile("\d")
+  self~checkIncludedCharacters(p, "0123456789")
+
+  -- no digits
+  p = .Pattern~compile("\D")
+  self~checkExcludedCharacters(p, "0123456789")
+
+  -- whitespace
+  p = .Pattern~compile("\s")
+  self~checkIncludedCharacters(p, "20090a0b0c0d"x)
+
+  -- non-whitespace
+  p = .Pattern~compile("\S")
+  self~checkExcludedCharacters(p, "20090a0b0c0d"x)
+
+  -- word character
+  p = .Pattern~compile("\w")
+  self~checkIncludedCharacters(p, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789")
+
+  -- non-word character
+  p = .Pattern~compile("\W")
+  self~checkExcludedCharacters(p, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789")
+
+
+-- utility method to perform tests on character class
+-- tests to ensure they will only match characters
+-- in the given set
+::method checkIncludedCharacters
+  use arg p, includes
+
+  do i = 0 to 255
+      -- handle the special cases
+      ch = d2c(i)
+      -- this is in the target set, this must match
+      if includes~pos(ch) > 0 then do
+          self~assertTrue(p~matches(ch))
+      end
+      else do
+          self~assertFalse(p~matches(ch))
+      end
+  end
+
+-- utility method to perform tests on character class
+-- tests to ensure they will not only match characters
+-- in the given set
+::method checkExcludedCharacters
+  use arg p, excludes
+
+  do i = 0 to 255
+      -- handle the special cases
+      ch = d2c(i)
+      -- this is in the target set, this must match
+      if excludes~pos(ch) > 0 then do
+          self~assertFalse(p~matches(ch))
+      end
+      else do
+          self~assertTrue(p~matches(ch))
+      end
+  end
+
+
