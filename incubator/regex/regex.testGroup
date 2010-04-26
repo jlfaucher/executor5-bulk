@@ -717,7 +717,7 @@ return testResult
   self~checkExcludedCharacters(p, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789")
 
 -- tests of the * pattern modifier
-::method testStartModifier
+::method testStarModifier
   p = .Pattern~compile("a*")     -- zero or more occurrances of a
   self~assertTrue(p~matches(""))  -- null string should match
   self~assertTrue(p~matches("a")) -- single a should match
@@ -725,10 +725,10 @@ return testResult
   self~assertFalse(p~matches("aaaaaaq")) -- the trailing one should not
 
   -- a few starts tests.  These are all true
-  self~assertTrue(p~matches(""))  -- null string should match
-  self~assertTrue(p~matches("a")) -- single a should match
-  self~assertTrue(p~matches("aaaaaa")) -- multiple a's should match
-  self~assertFalse(p~matches("aaaaaaq")) -- the trailing one should not
+  self~assertTrue(p~startsWith(""))  -- null string should match
+  self~assertTrue(p~startsWith("a")) -- single a should match
+  self~assertTrue(p~startsWith("aaaaaa")) -- multiple a's should match
+  self~assertTrue(p~startsWith("aaaaaaq")) -- This should also match
 
   r = p~find("xyzaxyz")
   -- because this matches no characters, this will be a zero length match
@@ -745,6 +745,77 @@ return testResult
   self~assertEquals(1, r~start)
   self~assertEquals(5, r~end)
   self~assertEquals("aaaa", r~text)
+
+  p = .Pattern~compile("ab*c")     -- repetive in the middle
+  self~assertTrue(p~matches("ac"))  -- no b's are fine
+  self~assertTrue(p~matches("abc"))  -- one should be ok two
+  self~assertTrue(p~matches("abbbbbbbbbbbbbbbbbc"))  -- and a whole bunch
+
+-- tests of the + pattern modifier
+::method testPlusModifier
+  p = .Pattern~compile("a+")     -- zero or more occurrances of a
+  self~assertFalse(p~matches(""))  -- null string should not match
+  self~assertTrue(p~matches("a")) -- single a should match
+  self~assertTrue(p~matches("aaaaaa")) -- multiple a's should match
+  self~assertFalse(p~matches("aaaaaaq")) -- the trailing one should not
+
+  -- a few starts tests.  These are all true
+  self~assertFalse(p~startsWith(""))  -- null string not should match
+  self~assertTrue(p~startsWith("a")) -- single a should match
+  self~assertTrue(p~startsWith("aaaaaa")) -- multiple a's should match
+  self~assertTrue(p~startsWith("aaaaaaq")) -- should also match
+
+  r = p~find("xyzaxyz")
+  -- because this must match at least one character, it will locate the a
+  -- in the middle
+  self~assertTrue(r~matched)
+  self~assertEquals(4, r~start)
+  self~assertEquals(5, r~end)
+  self~assertEquals("a", r~text)
+
+  r = p~find("aaaaxyz")
+  -- because this matches all of the a characters at the beginning
+  -- at the beginning
+  self~assertTrue(r~matched)
+  self~assertEquals(1, r~start)
+  self~assertEquals(5, r~end)
+  self~assertEquals("aaaa", r~text)
+
+  p = .Pattern~compile("ab+c")     -- repetitive in the middle
+  self~assertFalse(p~matches("ac"))  -- must have at least one b
+  self~assertTrue(p~matches("abc"))  -- one should be ok too
+  self~assertTrue(p~matches("abbbbbbbbbbbbbbbbbc"))  -- and a whole bunch
+
+-- tests of the ? pattern modifier
+::method testQuestionModifier
+  p = .Pattern~compile("a?")     -- zero or more occurrances of a
+  self~assertTrue(p~matches(""))  -- null string should match
+  self~assertTrue(p~matches("a")) -- single a should match
+  self~assertFalse(p~matches("aa")) -- multiple a's should not
+
+  -- a few startsWith tests.  These are all true
+  self~assertTrue(p~startsWith(""))  -- null string should match
+  self~assertTrue(p~startsWith("a")) -- single a should match
+  self~assertTrue(p~startsWith("aa")) -- multiple a's should match
+
+  r = p~find("xyzaxyz")
+  -- because this can match "nothing", this will be a zero length match at the beginning
+  self~assertTrue(r~matched)
+  self~assertEquals(1, r~start)
+  self~assertEquals(1, r~end)
+  self~assertEquals("", r~text)
+
+  r = p~find("aaaaxyz")
+  -- because this will only match the first a at the beginning
+  self~assertTrue(r~matched)
+  self~assertEquals(1, r~start)
+  self~assertEquals(2, r~end)
+  self~assertEquals("a", r~text)
+
+  p = .Pattern~compile("ab?c")     -- repetitive in the middle
+  self~assertTrue(p~matches("ac"))  -- need not have a b
+  self~assertTrue(p~matches("abc"))  -- one should be ok too
+  self~assertFalse(p~matches("abbbbbbbbbbbbbbbbbc"))  -- only zero or 1 b works
 
 -- utility method to perform tests on character class
 -- tests to ensure they will only match characters

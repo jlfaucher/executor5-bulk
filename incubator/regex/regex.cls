@@ -2052,6 +2052,7 @@
   expose optional
   use arg optional
   self~init:super
+  optional~terminate  -- these needs termination
 
 ::attribute optional GET
 
@@ -2061,9 +2062,9 @@
 
   -- our following match pattern is optional, so we ignore any
   -- additions it makes to the metrics before sending it down the chain.
-  minLength = metrics~minLen
+  minLength = metrics~minLength
   optional~getMatchMetrics(metrics)
-  metrics~minLength = minLen
+  metrics~minLength = minLength
   metrics~deterministic = .false
 
 self~getMatchMetrics:super(metrics)
@@ -2076,7 +2077,7 @@ self~getMatchMetrics:super(metrics)
   -- if we match the optional part, and if we match the following part,
   -- this is gold.
   if self~optional~match(context, position, target) then do
-      if self~next~match(context, context~matchPosition, target) then do
+      if self~next~match(context, context~matchEnd, target) then do
           return .true
       end
   end
@@ -2109,7 +2110,7 @@ self~getMatchMetrics:super(metrics)
 
   -- try for the optional match...no backtracking if it is a match.
   if self~optional~match(context, position, target) then do
-      position = context~matchPosition
+      position = context~matchEnd
   end
 
   return self~next~match(context, position, target)
