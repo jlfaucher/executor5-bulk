@@ -575,3 +575,81 @@ return testResult
   self~assertEquals("aBc", r~prefix)
   self~assertEquals("yy", r~suffix)
 
+-- character class union tests
+::method testClassUnion
+  p = .Pattern~compile("[a-b[A-B]]")
+
+  self~assertTrue(p~matches('a'))
+  self~assertTrue(p~matches('b'))
+  self~assertTrue(p~matches('A'))
+  self~assertTrue(p~matches('B'))
+  self~assertFalse(p~matches('e'))
+
+  self~assertTrue(p~startsWith('abc'))
+  self~assertTrue(p~startsWith('bye-bye'))
+  self~assertTrue(p~startsWith('Abc'))
+  self~assertTrue(p~startsWith('Bye-bye'))
+  self~assertFalse(p~startsWith('estuary'))
+
+  r = p~find('abc')
+
+  self~assertTrue(r~matched)
+  self~assertEquals(1, r~start)
+  self~assertEquals(2, r~end)
+  self~assertEquals(1, r~length)
+  self~assertEquals("a", r~text)
+  self~assertEquals("", r~prefix)
+  self~assertEquals("bc", r~suffix)
+
+  r = p~find('ABC')
+
+  self~assertTrue(r~matched)
+  self~assertEquals(1, r~start)
+  self~assertEquals(2, r~end)
+  self~assertEquals(1, r~length)
+  self~assertEquals("A", r~text)
+  self~assertEquals("", r~prefix)
+  self~assertEquals("BC", r~suffix)
+
+  r = p~find('xb')
+
+  self~assertTrue(r~matched)
+  self~assertEquals(2, r~start)
+  self~assertEquals(3, r~end)
+  self~assertEquals(1, r~length)
+  self~assertEquals("b", r~text)
+  self~assertEquals("x", r~prefix)
+  self~assertEquals("", r~suffix)
+
+  r = p~find('xB')
+
+  self~assertTrue(r~matched)
+  self~assertEquals(2, r~start)
+  self~assertEquals(3, r~end)
+  self~assertEquals(1, r~length)
+  self~assertEquals("B", r~text)
+  self~assertEquals("x", r~prefix)
+  self~assertEquals("", r~suffix)
+
+  r = p~find('xxb')
+
+  self~assertTrue(r~matched)
+  self~assertEquals(3, r~start)
+  self~assertEquals(4, r~end)
+  self~assertEquals(1, r~length)
+  self~assertEquals("b", r~text)
+  self~assertEquals("xx", r~prefix)
+  self~assertEquals("", r~suffix)
+
+  p = .Pattern~compile("a[a-b[C-D]]c")
+
+  r = p~find('aBcabcyy')
+
+  self~assertTrue(r~matched)
+  self~assertEquals(4, r~start)
+  self~assertEquals(7, r~end)
+  self~assertEquals(3, r~length)
+  self~assertEquals("abc", r~text)
+  self~assertEquals("aBc", r~prefix)
+  self~assertEquals("yy", r~suffix)
+

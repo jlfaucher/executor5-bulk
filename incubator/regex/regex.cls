@@ -1560,6 +1560,21 @@
   child~getMatchMetrics(submetrics)
   return submetrics
 
+-- add a .TerminatorNode terminator to a node that will
+-- be used as part of a composite
+::method terminate
+  expose next
+  if next == .nil then do
+      -- this is a branch terminator, which merely records
+      -- the match position and return true if it is reached.
+      self~next = .BranchTerminatorNode~new
+  end
+  else do
+      -- we have a child node, make sure that child has a
+      -- terminator
+      next~terminate
+  end
+
 -- A node that enforces anchoring at the beginning of the text
 ::class BeginTextNode subclass matchNode
 ::method init
@@ -2345,6 +2360,9 @@ self~getMatchMetrics:super(metrics)
   use arg leftSide, rightSide
 
   self~init:super
+  -- ensure these side branches have terminator elements
+  leftSide~terminate
+  rightSide~terminate
 
 ::method getMatchMetrics
   expose leftSide rightSide
@@ -2371,7 +2389,7 @@ self~getMatchMetrics:super(metrics)
       if self~leftSide~match(context, position, target) then do
          return self~next~match(context, context~matchEnd, target)
       end
-      else if self~rightSide(context, position, target) then do
+      else if self~rightSide~match(context, position, target) then do
          return self~next~match(context, context~matchEnd, target)
       end
   end
@@ -2693,7 +2711,8 @@ self~getMatchMetrics:super(metrics)
 
   return self~next~match(context, position, target)
 
-
+-- A terminal node for a full match chain.  This does any
+-- end-of-match processing.
 ::class TerminatorNode subclass MatchNode
 ::method match
   use arg context, position, target
@@ -2706,6 +2725,25 @@ self~getMatchMetrics:super(metrics)
       return position == context~endPosition
   end
 
+  -- this is always a successful match.  This really just
+  -- records the last position of this branch segment.
+  return .true
+
+-- add a .TerminatorNode terminator to a node that will
+-- be used as part of a composite.  This not process
+-- the call, since a terminator node cannot have a
+-- next element
+::method terminate
+
+-- A terminal node for a side branch chain.  This does match
+-- termination for the branch, but does not enforce any data end
+-- match rules
+::class BranchTerminatorNode subclass TerminatorNode
+::method match
+  use arg context, position, target
+
+  -- set the end match position
+  context~matchEnd = position
   -- this is always a successful match.  This really just
   -- records the last position of this branch segment.
   return .true
