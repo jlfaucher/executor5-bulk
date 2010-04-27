@@ -748,8 +748,21 @@ return testResult
 
   p = .Pattern~compile("ab*c")     -- repetive in the middle
   self~assertTrue(p~matches("ac"))  -- no b's are fine
-  self~assertTrue(p~matches("abc"))  -- one should be ok two
+  self~assertTrue(p~matches("abc"))  -- one should be ok too
   self~assertTrue(p~matches("abbbbbbbbbbbbbbbbbc"))  -- and a whole bunch
+
+  -- example from the online tutorial
+
+  p = .Pattern~compile(".*foo")     -- this is a greedy pattern
+  self~assertTrue(p~matches("xfooxxxxxxfoo"))  -- should consume the entire string
+  self~assertTrue(p~startsWith("xfooxxxxxxfoo"))  -- one should be ok too
+  -- this should match the entire string
+  r = p~find("xfooxxxxxxfoo")
+
+  self~assertTrue(r~matched)
+  self~assertEquals(1, r~start)
+  self~assertEquals(14, r~end)
+  self~assertEquals("xfooxxxxxxfoo", r~text)
 
 -- tests of the + pattern modifier
 ::method testPlusModifier

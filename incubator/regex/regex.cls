@@ -813,7 +813,7 @@
           ch = self~next
 
           if ch == "?" then do
-              node = .LazyQuestionNode~new(target)
+              node = .ReluctantQuestionNode~new(target)
           end
           else if ch == "+" then do
               node = .PossessiveQuestionNode~new(target)
@@ -837,7 +837,7 @@
 
 
           if ch == "?" then do
-              node = .LazyRepetitionNode~new(target, 0, 999999999)
+              node = .ReluctantRepetitionNode~new(target, 0, 999999999)
           end
           else if ch == "+" then do
               node = .PossessiveRepetitionNode~new(target, 0, 999999999)
@@ -861,7 +861,7 @@
 
 
           if ch == "?" then do
-              node = .LazyRepetitionNode~new(target, 1, 999999999)
+              node = .ReluctantRepetitionNode~new(target, 1, 999999999)
           end
           else if ch == "+" then do
               node = .PossessiveRepetitionNode~new(target, 1, 999999999)
@@ -901,7 +901,7 @@
           ch = self~next
 
           if ch == "?" then do
-              node = .LazyRepetitionNode~new(target, min, max)
+              node = .ReluctantRepetitionNode~new(target, min, max)
           end
           else if ch == "+" then do
               node = .PossessiveRepetitionNode~new(target, min, max)
@@ -938,10 +938,10 @@
       when ch == "?" then do
           -- a question repetitor
           ch = self~peek
-          -- ?? operates in lazy mode
+          -- ?? operates in reluctant mode
           if ch == "?" then do
               self~next
-              return .LazyQuestionNode~new(target)
+              return .ReluctantQuestionNode~new(target)
           end
           -- possesive question mode
           else if ch == "+" then do
@@ -960,7 +960,7 @@
 
           if ch == "?" then do
               self~next
-              return .LazyRepetitionNode~new(target, 0, 999999999)
+              return .ReluctantRepetitionNode~new(target, 0, 999999999)
           end
           else if ch == "+" then do
               self~next
@@ -977,7 +977,7 @@
 
           if ch == "?" then do
               self~next
-              return .LazyRepetitionNode~new(target, 1, 999999999)
+              return .ReluctantRepetitionNode~new(target, 1, 999999999)
           end
           else if ch == "+" then do
               self~next
@@ -1017,7 +1017,7 @@
 
           if ch == "?" then do
               self~next
-              return .LazyRepetitionNode~new(target, min, max)
+              return .ReluctantRepetitionNode~new(target, min, max)
           end
           else if ch == "+" then do
               self~next
@@ -2091,7 +2091,7 @@ self~getMatchMetrics:super(metrics)
   return self~next~match(context, position, target)
 
 
-::class LazyQuestionNode subclass QuestionNode
+::class ReluctantQuestionNode subclass QuestionNode
 ::method match
   use arg context, position, target
 
@@ -2129,10 +2129,27 @@ self~getMatchMetrics:super(metrics)
   self~init:super
   repNode~terminate   -- we need to ensure the chain ends in a terminator
 
+-- common initial piece for all repetition nodes.  The greedy/possessive/reluctant
+-- parts are implemented in the recursiveMatch method that each subclass
+-- implements
+::method match
+  use arg context, position, target
+  current = position
+  repNode = self~repNode
+
+  -- if we have a minimum specified, we must get at least that, else we fail
+  do i = 1 to self~min
+      if \repNode~match(context, current, target) then do
+          return .false
+      end
+      current = context~matchEnd
+  end
+
+  return self~recursiveMatch(context, current, target, repNode, self~min, self~max)
+
 ::attribute repNode GET
 ::attribute min GET
 ::attribute max GET
-
 
 ::method getMatchMetrics
   expose repNode min max
@@ -2155,127 +2172,130 @@ self~getMatchMetrics:super(metrics)
   -- send this along
   self~getMatchMetrics:super(metrics)
 
-
+-- a Greedy repetition of a pattern.  This will match as
+-- much as possible, but will back off in an attempt to match
+-- any of the following pieces
 ::class GreedyRepetitionNode subclass RepetitionNode
-::method match
-  use arg context, position, target
-
-  current = position
-  repNode = self~repNode
-
-  -- if we have a minimum specified, we must get at least that, else we fail
-  do i = 1 to self~min
-      if \repNode~match(context, current, target) then do
-          return .false
-      end
-      current = context~matchEnd
-  end
-
-  return self~recursiveMatch(context, current, target, repNode, self~min, self~max)
-
+-- implement greedy repetition matching logic
 ::method recursiveMatch
   use arg context, position, target, repNode, matches, max
-
-  -- we've already satisfied the minimum, if we're past the end, then
-  -- pass on the terminator
-  if context~checkEnd(position) then do
-  -- try matching the following bit
-      return self~next~match(context, position, target)
-  end
 
   -- we hit the max count, now try to match the trailing bit
   if matches >= max then do
       return self~next~match(context, position, target)
   end
 
-  if repNode~match(context, position, target) then do
-      -- a pattern that is a zero-length match will cause an infinite loop,
-      -- so fail this
-      if position == context~matchEnd then do
-          return .false
+  -- preserve matches, since that determines how much we can
+  -- back up
+  counter = matches
+
+  -- loop until we don't get a match on our search node
+  loop while repNode~match(context, position, target)
+      matchLength = context~matchEnd - position
+      -- if this is a zero length match, there's no point
+      -- in continuing
+      if matchLength == 0 then do
+          leave
       end
-      -- now recurse on this
-      if self~recursiveMatch(context, context~matchEnd, target, repNode, matches + 1, max) then do
-          return .true
+      -- count this occurrence and move up
+      counter += 1
+      position = context~matchEnd
+      -- now we need to consume as many as possible, up to
+      -- the maximum
+      loop while counter < max
+          -- test again
+          if \repNode~match(context, position, target) then do
+              -- we've eaten our fill, now see what happens
+              -- after this
+              leave
+          end
+          -- we matched, but if this match was a different
+          -- length from our working length, we need to recurse
+          -- to handle backing up
+          if position + matchLength \= context~matchEnd then do
+              if self~recursiveMatch(context, context~matchEnd, counter + 1, max) then do
+                  return .true
+              end
+              -- go handle backing up from here.  The backup position is
+              -- actually the previous match
+              leave
+          end
+          position = context~matchEnd
+          counter += 1
       end
-      position = context~matchEnd   -- update the position
+      -- we can back up for the number of matches we've had
+      -- at this recursion level
+      loop while counter >= matches
+          -- if we hit a spot where our successor can match, we're
+          -- done
+          if self~next~match(context, position, target) then do
+              return .true
+          end
+          -- step back the fixed length and decrement our counter
+          position -= matchLength
+          counter -= 1
+      end
+      return .false   -- backed off as far as we can, but can't fit in the rest
   end
 
-  -- try matching the following bit
+  -- we've matched as much as we can, now check the rest
   return self~next~match(context, position, target)
 
+-- a node that implements reluctant repetition matches
+::class ReluctantRepetitionNode subclass RepetitionNode
+-- the initial part to match the minimum is performed
+-- in the base class.  The reluctant part of the algorithm is
+-- done here
+::method recursiveMatch
+  use arg context, position, target, repNode, matches, max
 
-::class LazyRepetitionNode subclass RepetitionNode
-::method match
-  use arg context, position, target
-
-  current = position
-  repNode = self~repNode
-
-  -- if we have a minimum specified, we must get at least that, else we fail
-  do i = 1 to self~min
-      if \repNode~match(context, current, target) then do
-          return .false
-      end
-      current = context~matchPosition
-  end
-  -- we have the minimum number of matches, now proceed trying to avoid checking again
-  next = self~next
-
-  matches = self~min
-  max = self~max
-
-  do forever
-      -- now start checking the following part
-      if next~match(context, current, target) then do
+  loop forever
+      -- check the successor without consuming any more of the
+      -- string.  If it matches, we're done
+      if self~next~match(context, position, target) then do
           return .true
       end
-      -- had the maximum number of variable matches
+      -- if we've hit the limit and there's no successor match,
+      -- this fails
       if matches >= max then do
           return .false
       end
-
-      if \repNode~match(context, current, target) then do
+      -- (reluctanly), we try to eat one leetle mint...
+      if \repNode~match(context, position, target) then do
+          -- we've eaten our fill, this is a failure
           return .false
       end
-
-      -- if not moving, this is a failure here
-      if current == context~matchPosition then do
+      -- if we hit a zero-length match, there's no moving forward
+      -- from here.  This is also a failure
+      if position == context~matchEnd then do
           return .false
       end
-      -- step the position and count and check again
-      current = context~matchPosition
-      matches = matches + 1
+      -- step forward, and try again
+      position = context~matchEnd
+      matches += 1
   end
 
-
+-- possessive repetition nodes...this sucks up all it can and will
+-- never give anything back
 ::class PossessiveRepetitionNode subclass RepetitionNode
-::method match
-  use arg context, position, target
-
-  current = position
-  repNode = self~repNode
-
-  -- if we have a minimum specified, we must get at least that, else we fail
-  do i = 1 to self~min
-      if \repNode~match(context, current, target) then do
-          return .false
-      end
-      current = context~matchPosition
-  end
-
+-- the initial part to match the minimum is performed
+-- in the base class.  The reluctant part of the algorithm is
+-- done here
+::method recursiveMatch
+  use arg context, position, target, repNode, matches, max
   do i = self~min + 1 to self~max
-      if \repNode~match(context, current, target) then do
+      -- match failure means we've got all we can get
+      if \repNode~match(context, position, target) then do
           leave
       end
-
-      if current == context~matchPosition then do
+      -- a zero-length match also terminates matching
+      if position == context~matchEnd then do
           leave
       end
-
-      current = context~matchPosition
+      -- step over this
+      position = context~matchEnd
   end
-
+  -- and try the next part
   return self~next~match(context, current, target)
 
 
@@ -2372,7 +2392,7 @@ self~getMatchMetrics:super(metrics)
   -- if the pattern inside the group matches, then record
   -- the match position inside group matches, record this
   -- in the corresponding group information and continue
-  if groupMatch~matches(context, position, target) then do
+  if groupMatch~match(context, position, target) then do
       info~setMatch(target, position, context~matchEnd)
       return self~next~match(context, context~matchEnd, target)
   end
@@ -2395,7 +2415,7 @@ self~getMatchMetrics:super(metrics)
 
   info = context~namedGroupInfo(id)
 
-  if groupMatch~matches(context, position, target) then do
+  if groupMatch~match(context, position, target) then do
       info~setMatch(target, position, context~matchEnd)
       return self~next~match(context, context~matchEnd, target)
   end
