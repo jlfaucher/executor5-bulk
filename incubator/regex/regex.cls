@@ -1004,10 +1004,15 @@
           if .nil == min || .nil == max then do
               raise syntax 93.900 array("Invalid repetition count")
           end
+          -- we use the default digits maximum for max if not specified
+          if max = .nil then do
+              max = 999999999
+          end
 
           if max < min then do
-              raise syntax 93.900 array("Repetition maximum" max "is less than minimum" min)
+              raise syntax 93.900 array("Repetition maximum:" max", is less than minimum:" min)
           end
+
           ch = self~peek
 
           if ch == "?" then do
