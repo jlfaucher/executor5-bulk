@@ -817,6 +817,34 @@ return testResult
   self~assertTrue(p~matches("abc"))  -- one should be ok too
   self~assertFalse(p~matches("abbbbbbbbbbbbbbbbbc"))  -- only zero or 1 b works
 
+-- tests of the {n} pattern modifier
+::method testExactCountModifier
+  p = .Pattern~compile("a{3}")     -- exactly 3 occurrances of a
+  self~assertFalse(p~matches(""))  -- null string should not match
+  self~assertFalse(p~matches("a")) -- single a should not match
+  self~assertFalse(p~matches("aa")) -- one less than the required
+  self~assertTrue(p~matches("aaa")) -- The required number
+  self~assertFalse(p~matches("aaaa")) -- One required number
+
+  -- a few startsWith tests.
+  self~assertFalse(p~startsWith(""))  -- null string should not match
+  self~assertFalse(p~startsWith("aa")) -- still not enough
+  self~assertTrue(p~startsWith("aaa")) -- this is ok
+  self~assertTrue(p~startsWith("aaaa")) -- as is this
+
+  r = p~find("xaaxaaaxyz")
+  -- this will only match at the second grouping of a's
+  self~assertTrue(r~matched)
+  self~assertEquals(5, r~start)
+  self~assertEquals(8, r~end)
+  self~assertEquals("aaa", r~text)
+
+  p = .Pattern~compile("ab{2}c")     -- repetitive in the middle
+  self~assertFalse(p~matches("ac"))  -- must have 2 a's
+  self~assertFalse(p~matches("abc"))  -- also bad
+  self~assertTrue(p~matches("abbc"))  -- this is good
+  self~assertFalse(p~matches("abbbc"))  -- overshot the mark
+
 -- utility method to perform tests on character class
 -- tests to ensure they will only match characters
 -- in the given set
