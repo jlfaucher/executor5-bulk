@@ -1001,11 +1001,11 @@
               raise syntax 36.900 array("Missing closing '}' for repetition count")
           end
           --
-          if .nil == min || .nil == max then do
-              raise syntax 93.900 array("Invalid repetition count")
+          if .nil == min then do
+              raise syntax 93.900 array("Invalid repetition count minimum")
           end
           -- we use the default digits maximum for max if not specified
-          if max = .nil then do
+          if max == .nil then do
               max = 999999999
           end
 

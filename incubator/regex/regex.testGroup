@@ -845,6 +845,46 @@ return testResult
   self~assertTrue(p~matches("abbc"))  -- this is good
   self~assertFalse(p~matches("abbbc"))  -- overshot the mark
 
+-- tests of the {n,m} pattern modifier
+::method testMinMaxCountModifier
+  p = .Pattern~compile("a{2,4}")     -- at least 2, no more than 4
+  self~assertFalse(p~matches(""))  -- null string should not match
+  self~assertFalse(p~matches("a")) -- single a should not match
+  self~assertTrue(p~matches("aa")) -- should match
+  self~assertTrue(p~matches("aaa")) -- ditto
+  self~assertTrue(p~matches("aaaa")) -- The limit
+  self~assertFalse(p~matches("aaaaa")) -- nope
+
+  -- a few startsWith tests.
+  self~assertFalse(p~startsWith(""))  -- null string should not match
+  self~assertFalse(p~startsWith("a")) -- single a should not match
+  self~assertTrue(p~startsWith("aa")) -- should match
+  self~assertTrue(p~startsWith("aaa")) -- ditto
+  self~assertTrue(p~startsWith("aaaa")) -- The limit
+  self~assertTrue(p~startsWith("aaaaa")) -- the extra is ignored.
+  self~assertTrue(p~startsWith("aaaa")) -- as is this
+
+  r = p~find("xaxaaaxyz")
+  -- this will only match at the second grouping of a's
+  self~assertTrue(r~matched)
+  self~assertEquals(4, r~start)
+  self~assertEquals(7, r~end)
+  self~assertEquals("aaa", r~text)
+
+  r = p~find("xaxaaaaxyz")
+  -- this should match the full 4 charactes
+  self~assertTrue(r~matched)
+  self~assertEquals(4, r~start)
+  self~assertEquals(8, r~end)
+  self~assertEquals("aaaa", r~text)
+
+  p = .Pattern~compile("ab{2,3}c")     -- repetitive in the middle
+  self~assertFalse(p~matches("ac"))  -- must have 2 a's
+  self~assertFalse(p~matches("abc"))  -- also bad
+  self~assertTrue(p~matches("abbc"))  -- this is good
+  self~assertTrue(p~matches("abbbc"))  -- should also work
+  self~assertFalse(p~matches("abbbbc"))  -- should fail
+
 -- utility method to perform tests on character class
 -- tests to ensure they will only match characters
 -- in the given set
