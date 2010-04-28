@@ -2296,7 +2296,7 @@ self~getMatchMetrics:super(metrics)
       position = context~matchEnd
   end
   -- and try the next part
-  return self~next~match(context, current, target)
+  return self~next~match(context, position, target)
 
 
 -- matches the current position for the same string value as

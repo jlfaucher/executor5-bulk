@@ -764,6 +764,37 @@ return testResult
   self~assertEquals(14, r~end)
   self~assertEquals("xfooxxxxxxfoo", r~text)
 
+  -- example from the online tutorial
+
+  p = .Pattern~compile(".*?foo")     -- this is a reluctant pattern
+  self~assertTrue(p~matches("xfooxxxxxxfoo"))  -- should consume the entire string
+  self~assertTrue(p~startsWith("xfooxxxxxxfoo"))  -- one should be ok too, but it really only matches the beginning
+
+  self~assertFalse(p~matches("xfooxxxxxxfo"))  -- should NOT work because it will not match everything
+  self~assertTrue(p~startsWith("xfooxxxxxxfo"))  -- this is really the same as the first one
+
+  r = p~find("xfooxxxxxxfoo")
+
+  -- this will stop at the first match rather than
+  -- consuming everything.
+  self~assertTrue(r~matched)
+  self~assertEquals(1, r~start)
+  self~assertEquals(5, r~end)
+  self~assertEquals("xfoo", r~text)
+
+  -- example from the online tutorial
+
+  p = .Pattern~compile(".*+foo")     -- this is a possessive pattern
+  -- should not match because the .*? part will consume the entire
+  -- string
+  self~assertFalse(p~matches("xfooxxxxxxfoo"))
+  self~assertFalse(p~startsWith("xfooxxxxxxfoo"))  -- same reason
+  self~assertFalse(p~startsWith("xfooxxxxxxfo"))  -- this is really the same as the first one
+
+  -- this not be found
+  r = p~find("xfooxxxxxxfoo")
+  self~assertFalse(r~matched)
+
 -- tests of the + pattern modifier
 ::method testPlusModifier
   p = .Pattern~compile("a+")     -- zero or more occurrances of a
