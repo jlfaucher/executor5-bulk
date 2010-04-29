@@ -467,13 +467,13 @@ return
 ::constant GDK_OWNER_CHANGE_CLOSE 2
    -- GdkMasks
 ::constant GDK_SHIFT_MASK    1
-::constant GDK_LOCK_MASK	  2
+::constant GDK_LOCK_MASK      2
 ::constant GDK_CONTROL_MASK  4
-::constant GDK_MOD1_MASK	  8
-::constant GDK_MOD2_MASK	  16
-::constant GDK_MOD3_MASK	  32
-::constant GDK_MOD4_MASK	  64
-::constant GDK_MOD5_MASK	  128
+::constant GDK_MOD1_MASK      8
+::constant GDK_MOD2_MASK      16
+::constant GDK_MOD3_MASK      32
+::constant GDK_MOD4_MASK      64
+::constant GDK_MOD5_MASK      128
 ::constant GDK_BUTTON1_MASK  256
 ::constant GDK_BUTTON2_MASK  512
 ::constant GDK_BUTTON3_MASK  1024
@@ -1617,10 +1617,10 @@ return
 ::METHOD get_visibility EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetVisibility"
 ::METHOD set_visibility EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetVisibility"
 ::METHOD 'visibility=' EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetVisibility"
-::METHOD invisile_char EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetInvisibleChar"
-::METHOD get_invisile_char EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetInvisibleChar"
+::METHOD invisible_char EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetInvisibleChar"
+::METHOD get_invisible_char EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetInvisibleChar"
 ::METHOD set_invisible_char EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetInvisibleChar"
-::METHOD 'invisile_char=' EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetInvisibleChar"
+::METHOD 'invisible_char=' EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetInvisibleChar"
 ::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxEntrySignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
