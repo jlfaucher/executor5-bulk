@@ -1,6 +1,6 @@
-/*----------------------------------------------------------Zero or 1.------------------*/
+/*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2010 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -484,8 +484,6 @@ return
 ::constant GTK_ACCEL_LOCKED  2
 ::constant GTK_ACCEL_MASK    7
    -- GdkKeySyms
-/* These are here just for reference as ooRexx will not differentiate
-   between mixed case constants (a real bummer in this case)!
 ::constant GDK_F1 'ffbe'x
 ::constant GDK_F2 'ffbf'x
 ::constant GDK_F3 'ffc0'x
@@ -533,32 +531,6 @@ return
 ::constant GDK_greater '03e'x
 ::constant GDK_question '03f'x
 ::constant GDK_at '040'x
-::constant GDK_A '041'x
-::constant GDK_B '042'x
-::constant GDK_C '043'x
-::constant GDK_D '044'x
-::constant GDK_E '045'x
-::constant GDK_F '046'x
-::constant GDK_G '047'x
-::constant GDK_H '048'x
-::constant GDK_I '049'x
-::constant GDK_J '04a'x
-::constant GDK_K '04b'x
-::constant GDK_L '04c'x
-::constant GDK_M '04d'x
-::constant GDK_N '04e'x
-::constant GDK_O '04f'x
-::constant GDK_P '050'x
-::constant GDK_Q '051'x
-::constant GDK_R '052'x
-::constant GDK_S '053'x
-::constant GDK_T '054'x
-::constant GDK_U '055'x
-::constant GDK_V '056'x
-::constant GDK_W '057'x
-::constant GDK_X '058'x
-::constant GDK_Y '059'x
-::constant GDK_Z '05a'x
 ::constant GDK_bracketleft '05b'x
 ::constant GDK_backslash '05c'x
 ::constant GDK_bracketright '05d'x
@@ -566,37 +538,64 @@ return
 ::constant GDK_underscore '05f'x
 ::constant GDK_grave '060'x
 ::constant GDK_quoteleft '060'x
-::constant GDK_a '061'x
-::constant GDK_b '062'x
-::constant GDK_c '063'x
-::constant GDK_d '064'x
-::constant GDK_e '065'x
-::constant GDK_f '066'x
-::constant GDK_g '067'x
-::constant GDK_h '068'x
-::constant GDK_i '069'x
-::constant GDK_j '06a'x
-::constant GDK_k '06b'x
-::constant GDK_l '06c'x
-::constant GDK_m '06d'x
-::constant GDK_n '06e'x
-::constant GDK_o '06f'x
-::constant GDK_p '070'x
-::constant GDK_q '071'x
-::constant GDK_r '072'x
-::constant GDK_s '073'x
-::constant GDK_t '074'x
-::constant GDK_u '075'x
-::constant GDK_v '076'x
-::constant GDK_w '077'x
-::constant GDK_x '078'x
-::constant GDK_y '079'x
-::constant GDK_z '07a'x
 ::constant GDK_braceleft '07b'x
 ::constant GDK_bar '07c'x
 ::constant GDK_braceright '07d'x
 ::constant GDK_asciitilde '07e'x
-*/
+-- The name of these constants have been slightly altered because ooRexx
+-- does not differntiate between mixed case constants.
+::constant GDK_UA '041'x
+::constant GDK_UB '042'x
+::constant GDK_UC '043'x
+::constant GDK_UD '044'x
+::constant GDK_UE '045'x
+::constant GDK_UF '046'x
+::constant GDK_UG '047'x
+::constant GDK_UH '048'x
+::constant GDK_UI '049'x
+::constant GDK_UJ '04a'x
+::constant GDK_UK '04b'x
+::constant GDK_UL '04c'x
+::constant GDK_UM '04d'x
+::constant GDK_UN '04e'x
+::constant GDK_UO '04f'x
+::constant GDK_UP '050'x
+::constant GDK_UQ '051'x
+::constant GDK_UR '052'x
+::constant GDK_US '053'x
+::constant GDK_UT '054'x
+::constant GDK_UU '055'x
+::constant GDK_UV '056'x
+::constant GDK_UW '057'x
+::constant GDK_UX '058'x
+::constant GDK_UY '059'x
+::constant GDK_UZ '05a'x
+::constant GDK_La '061'x
+::constant GDK_Lb '062'x
+::constant GDK_Lc '063'x
+::constant GDK_Ld '064'x
+::constant GDK_Le '065'x
+::constant GDK_Lf '066'x
+::constant GDK_Lg '067'x
+::constant GDK_Lh '068'x
+::constant GDK_Li '069'x
+::constant GDK_Lj '06a'x
+::constant GDK_Lk '06b'x
+::constant GDK_Ll '06c'x
+::constant GDK_Lm '06d'x
+::constant GDK_Ln '06e'x
+::constant GDK_Lo '06f'x
+::constant GDK_Lp '070'x
+::constant GDK_Lq '071'x
+::constant GDK_Lr '072'x
+::constant GDK_Ls '073'x
+::constant GDK_Lt '074'x
+::constant GDK_Lu '075'x
+::constant GDK_Lv '076'x
+::constant GDK_Lw '077'x
+::constant GDK_Lx '078'x
+::constant GDK_Ly '079'x
+::constant GDK_Lz '07a'x
 
 /*============================================================================*/
 /* Class: GdkEvent                                                            */
