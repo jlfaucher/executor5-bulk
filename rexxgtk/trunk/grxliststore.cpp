@@ -84,12 +84,10 @@ RexxMethod2(int,                       // Return type
         context->RaiseException0(Rexx_Error_System_resources);
         return 0;
     }
-    if (members) {
-        for (int i = 1; i <= members; i++) {
-            context->ObjectToInt32(context->ArrayAt(args, i), (int32_t *)&types[i - 1]);
-        }
-        lstore = (GtkListStore *)gtk_list_store_newv(members, types);
+    for (int i = 1; i <= members; i++) {
+        context->ObjectToInt32(context->ArrayAt(args, i), (int32_t *)&types[i - 1]);
     }
+    lstore = (GtkListStore *)gtk_list_store_newv(members, types);
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(lstore));
