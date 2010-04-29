@@ -48,6 +48,11 @@
 
 ::attribute pattern GET
 ::attribute groups GET
+-- retrieve the number of capturing groups
+-- contained within this pattern.
+::attribute groupCount GET
+  expose groups
+  return groups~items
 
 ::method string
   expose pattern
@@ -264,11 +269,12 @@
 -- compile a regex expression using the posix-like
 -- regular expression syntax
 ::method compile
-  expose pattern current length groups
+  expose pattern current length groups groupCount
   use strict arg pattern
   current = 1     -- always start at the beginning
   length = pattern~length
   groups = .nil   -- no group information until we hit the first capturing group
+  groupCount = 0  -- This is for the group numbering
 
   -- this is the last node that will get control only if all other
   -- elements match cleanly.  The expression parser hooks this up to the
@@ -430,7 +436,6 @@
 -- that might be associated with a single subexpression
 ::method parseSequence
   use arg terminator
-
   firstNode = .nil
   lastNode = .nil
 
@@ -458,16 +463,14 @@
               -- parse out the group expression, then chain the
               -- entire section into our graph.  All subsequent
               -- bits follow the group sequence.
-              groupInto = self~parseGroup
-              if groupnode \= .nil then do
-                  if firstNode == .nil then do
-                      firstNode = groupInto~firstNode
-                  end
-                  else do
-                      tail~next = groupInfo~firstNode
-                  end
-                  tail = groupInto~lastNode
+              groupInfo = self~parseGroup
+              if firstNode == .nil then do
+                  firstNode = groupInfo~firstNode
               end
+              else do
+                  lastNode~next = groupInfo~firstNode
+              end
+              lastNode = groupInfo~lastNode
               iterate     -- closure has already been handled
           end
           -- a start anchor
@@ -581,21 +584,51 @@
 
   return node
 
+-- create a new group item for the pattern's list of numbered capture groups
+::method newGroup
+  expose groupCount
+  groupCount += 1  -- each group gets allocated when first encountered
+  -- we treat all of these as named groups, so just
+  -- allocate one with the counter name
+  self~getGroupReference(groupCount)
+  return groupCount
 
+-- Create the group reference item for a numbered or named group.
+-- If the group already exists, this is an error
+::method getGroupReference
+  expose groups
+  use arg id
+
+  if groups == .nil then do
+      groups = .directory~new
+  end
+
+  -- 0 is a special group name, so it can't be used.
+  if groups~hasIndex(id) | id == '0' then do
+      raise syntax 93.900 array("Duplicate group identifier" id);
+  end
+
+  groupInfo = .GroupReference~new(id)
+  groups[id] = groupInfo
+  return groupInfo
+
+-- parse group information
 ::method parseGroup
+  -- we return a directory of information about this group
   groupInfo = .directory~new
-
-  ch = self~next
+  ch = self~peek
   -- do we have a group qualifier.  These are all non-capturing groups
   if ch == "?" then do
-      ch = self~next
+      self~next -- step over the peeked character
+      ch = self~peek
       select
           when ch == "?" then do
+              self~next -- step over the peeked character
               -- non capture group
-              group = .Group~new
+              group = .GroupEnvelope~new
               -- parse the encapsulated group expression.  This gets
               -- slotted between the group element and the terminator
-              group~next = self~parseExpression(group~terminator)
+              group~next = self~parseSequence(group~terminator)
 
               -- to wire in to the caller, we need to provide a node that
               -- is plugged into the previous node, and a node that will be
@@ -604,8 +637,9 @@
               groupInfo~lastNode = group~terminator
           end
           when ch == ">" then do
+              self~next -- step over the peeked character
               -- an atomic group.  Matching is managed differently
-              group = .Group~new
+              group = .GroupEnvelope~new
               -- parse the encapsulated group expression.  This gets
               -- slotted between the group element and the terminator
               group~next = self~parseExpression(group~terminator)
@@ -617,8 +651,9 @@
               groupInfo~lastNode = wrapper
           end
           when ch == "=" then do
+              self~next -- step over the peeked character
               -- a positive look ahead
-              group = .Group~new
+              group = .GroupEnvelope~new
               -- parse the encapsulated group expression.  This gets
               -- slotted between the group element and the terminator
               group~next = self~parseExpression(group~terminator)
@@ -629,8 +664,9 @@
               groupInfo~lastNode = wrapper
           end
           when ch == "!" then do
+              self~next -- step over the peeked character
               -- a negative look ahead
-              group = .Group~new
+              group = .GroupEnvelope~new
               -- parse the encapsulated group expression.  This gets
               -- slotted between the group element and the terminator
               group~next = self~parseExpression(group~terminator)
@@ -641,6 +677,7 @@
               groupInfo~lastNode = wrapper
           end
           when ch == "<" then do
+              self~next -- step over the peeked character
               -- a look behind.  These are a pain.  We can only
               -- support this if the pattern has a deterministic
               -- max and min.  Before we can decide, we need to
@@ -650,7 +687,7 @@
               -- this is the "=" or "!" qualifier
               ch = self~next
 
-              group = .Group~new
+              group = .GroupEnvelope~new
               -- parse the encapsulated group expression.  This gets
               -- slotted between the group element and the terminator
               group~next = self~parseExpression(group~terminator)
@@ -676,12 +713,14 @@
               groupInfo~lastNode = wrapper
           end
           when ch == "<" then do
+              self~next -- step over the peeked character
               -- named capture group
               self~previous
               referenceName = self~extractDelimited("{", "}")
-
+              -- add this to our reference table
+              self~getGroupReference(referenceName)
               -- a named capturing group
-              group = .CapturingGroup~new(referenceName)
+              group = .CapturingGroupEnvelope~new(referenceName)
               -- parse the encapsulated group expression.  This gets
               -- slotted between the group element and the terminator
               group~next = self~parseExpression(group~terminator)
@@ -691,17 +730,20 @@
               -- the new tail end of the chain.
               groupInfo~firstNode = group
               groupInfo~lastNode = group~terminator
+              -- we need the group id to process the closure
+              groupInfo~id = referenceName
           end
           otherwise do
+              self~next -- step over the peeked character
               -- if .true, this is a closed modifier
               if self~parseFlag then do
                   return .nil
               end
               -- non capture group after the flag value
-              group = .Group~new
+              group = .GroupEnvelope~new
               -- parse the encapsulated group expression.  This gets
               -- slotted between the group element and the terminator
-              group~next = self~parseExpression(group~terminator)
+              group~next = self~parseSequence(group~terminator)
 
               -- to wire in to the caller, we need to provide a node that
               -- is plugged into the previous node, and a node that will be
@@ -712,32 +754,29 @@
       end
   end
   else do
-      -- a negative look ahead
-      group = .CapturingGroup~new(self~nextCapture)
+      -- we're looking at the start of the sequence inside because we peeked
+      -- at the character
+      -- this is a capturing group
+      id = self~newGroup
+      group = .CapturingGroupEnvelope~new(id)
       -- parse the encapsulated group expression.  This gets
       -- slotted between the group element and the terminator
-      group~next = self~parseExpression(group~terminator)
+      group~next = self~parseSequence(group~terminator)
 
       -- to wire in to the caller, we need to provide a node that
       -- is plugged into the previous node, and a node that will be
       -- the new tail end of the chain.
       groupInfo~firstNode = group
       groupInfo~lastNode = group~terminator
+      groupInfo~id = id
   end
-
-  node = self~parseClosure(groupInfo~firstNode)
-  if node \== groupInfo~firstNode then do
-      -- this is wrappered in a closure, so terminate the group chain with
-      -- a bit that updates the match location, and replace the first and
-      -- last bits with the closure node
-      groupInfo~lastNode~next = .TerminatorNode~new
-      groupInfo~firstNode = node
-      groupInfo~lastNode = node
-  end
+  -- we need to process this differently, since there are different
+  -- repetitors needed to handle updating group information
+  self~parseGroupClosure(groupInfo)
   -- return the new chain information.
   return groupInfo
 
-
+-- calculate the match metrics for a given pattern.
 ::method getPatternMetrics
   use arg head
 
@@ -794,7 +833,8 @@
 ::attribute multiline
 ::attribute dotall
 
-
+-- process the closures for a group node.  This handles all of the
+-- repetition count details
 ::method parseGroupClosure
   use arg groupInfo
 
@@ -805,24 +845,25 @@
   -- this will be the piece that's consumed by a potential closure item.
   target = groupInfo~firstNode
 
-  ch = self~next
+  ch = self~peek
 
   select
       when ch == "?" then do
+          self~next
           -- a question repetitor
-          ch = self~next
+          ch = self~peek
 
           if ch == "?" then do
-              node = .ReluctantQuestionNode~new(target)
+              self~next
+              node = .ReluctantGroupQuestionNode~new(target)
           end
           else if ch == "+" then do
-              node = .PossessiveQuestionNode~new(target)
+              self~next
+              node = .PossessiveGroupQuestionNode~new(target)
           end
           else do
-              self~previous
-              node = .GreedyQuestionNode~new(target)
+              node = .GreedyGroupQuestionNode~new(target)
           end
-
           -- stick a terminator after the end of this.  The
           -- question node will handle the repetitions.
           groupInfo~lastNode~next = .TerminatorNode~new
@@ -832,19 +873,20 @@
           return
       end
       when ch == "*" then do
+          self~next
           -- zero or more occurrences
-          ch = self~next
-
+          ch = self~peek
 
           if ch == "?" then do
-              node = .ReluctantRepetitionNode~new(target, 0, 999999999)
+              self~next
+              node = .ReluctantGroupRepetitionNode~new(groupInfo~id, target, 0, 999999999)
           end
           else if ch == "+" then do
-              node = .PossessiveRepetitionNode~new(target, 0, 999999999)
+              self~next
+              node = .PossessiveGroupRepetitionNode~new(groupInfo~id, target, 0, 999999999)
           end
           else do
-              self~previous
-              node = .GreedyRepetitionNode~new(target, 0, 999999999)
+              node = .GreedyGroupRepetitionNode~new(groupInfo~id, target, 0, 999999999)
           end
 
           -- stick a terminator after the end of this.  The
@@ -856,19 +898,20 @@
           return
       end
       when ch == "+" then do
+          self~next
           -- one or more occurrences
-          ch = self~next
-
+          ch = self~peek
 
           if ch == "?" then do
-              node = .ReluctantRepetitionNode~new(target, 1, 999999999)
+              self~next
+              node = .ReluctantGroupRepetitionNode~new(target, 1, 999999999)
           end
           else if ch == "+" then do
-              node = .PossessiveRepetitionNode~new(target, 1, 999999999)
+              self~next
+              node = .PossessiveGroupRepetitionNode~new(target, 1, 999999999)
           end
           else do
-              self~previous
-              node = .GreedyRepetitionNode~new(target, 1, 999999999)
+              node = .GreedyGroupRepetitionNode~new(target, 1, 999999999)
           end
 
           -- stick a terminator after the end of this.  The
@@ -901,29 +944,29 @@
           ch = self~next
 
           if ch == "?" then do
-              node = .ReluctantRepetitionNode~new(target, min, max)
+              node = .ReluctantGroupRepetitionNode~new(target, min, max)
           end
           else if ch == "+" then do
-              node = .PossessiveRepetitionNode~new(target, min, max)
+              node = .PossessiveGroupRepetitionNode~new(target, min, max)
           end
           else do
               self~previous
-              return .GreedyRepetitionNode~new(target, min, max)
+              return .GreedyGroupRepetitionNode~new(target, min, max)
           end
       end
       otherwise do
           -- no additional closure
           return
       end
-
-      -- stick a terminator after the end of this.  The
-      -- question node will handle the repetitions.
-      groupInfo~lastNode~next = .TerminatorNode~new
-      -- this is atomic, and handles both roles
-      groupInfo~firstNode = node
-      groupInfo~lastNode = node
-      return
   end
+
+  -- stick a terminator after the end of this.  The
+  -- question node will handle the repetitions.
+  groupInfo~lastNode~next = .TerminatorNode~new
+  -- this is atomic, and handles both roles
+  groupInfo~firstNode = node
+  groupInfo~lastNode = node
+  return
 
 -- process the closure for a node.  Because a sequence might have
 -- modifiers, we might need to wrap the node sequence in
@@ -1297,7 +1340,6 @@
 -- specification
 ::method parseAtom
   characters = ""
-
   do forever
       ch = self~next
       select
@@ -1798,6 +1840,7 @@
   use arg matchString
   self~init:super
 
+::attribute matchString   -- useful for debugging
 ::method match
   expose matchString
   use arg context, position, target
@@ -2120,6 +2163,112 @@ self~getMatchMetrics:super(metrics)
 
   return self~next~match(context, position, target)
 
+-- Base class for the different Group Question nodes.  The init and
+-- getMatchMetrics are the same, but the matching logic is different
+::class GroupQuestionNode subclass QuestionNode
+::method init
+  expose id
+  use arg id, optional
+  self~init:super(optional)
+
+::method getGroupReference
+  expose id
+  use arg context
+  -- if this is a capturing group, return the
+  -- saved item.  Otherwise, return a dummy to handle
+  -- the save/restore logic
+  if id \= .nil then do
+      return context~getGroupReference(id)
+  end
+  return .GroupReference~new
+
+::attribute optional GET
+
+::method getMatchMetrics
+  expose optional
+  use arg metrics
+
+  -- our following match pattern is optional, so we ignore any
+  -- additions it makes to the metrics before sending it down the chain.
+  minLength = metrics~minLength
+  optional~getMatchMetrics(metrics)
+  metrics~minLength = minLength
+  metrics~deterministic = .false
+
+self~getMatchMetrics:super(metrics)
+
+-- A node that handles the Greedy ? qualifier following a
+-- group.  This implements the ? matching symantics and
+-- updates the group position accordingly
+::class GreedyGroupQuestionNode subclass QuestionNode
+::method match
+  use arg context, position, target
+  info = self~getGroupReference(context)
+
+  -- if we match the optional part, and if we match the following part,
+  -- this is gold.
+  if self~optional~match(context, position, target) then do
+      -- update the group capture information
+      info~setMatch(position, context~matchEnd)
+      if self~next~match(context, context~matchEnd, target) then do
+          return .true
+      end
+  end
+
+  -- we always match, even if it is nothing
+  info~setMatch(position, position)
+
+  -- try again, but without the optional section.
+  return self~next~match(context, position, target)
+
+
+-- A node that handles the Reluctant ? qualifier following a
+-- group.  This implements the ? matching symantics and
+-- updates the group position accordingly
+::class ReluctantGroupQuestionNode subclass QuestionNode
+::method match
+  use arg context, position, target
+
+  info = self~getGroupReference(context)
+  -- we always match, even if it is nothing
+  info~setMatch(position, position)
+
+  -- first try for a match on the trailing part.  If that matches, we ignore
+  -- the optional section
+  if self~next~match(context, position, target) then do
+      return .true
+  end
+
+  -- try again, but with our optional section.
+  if \self~optional~match(context, position, target) then do
+      return .false
+  end
+
+  -- update the group capture information
+  info~setMatch(position, context~matchEnd)
+  -- now try the final part
+  return self~next~match(context, context~matchPosition, target)
+
+-- A node that handles the Possessive ? qualifier following a
+-- group.  This implements the ? matching symantics and
+-- updates the group position accordingly
+::class PossessiveGroupQuestionNode subclass GroupQuestionNode
+::method match
+  use arg context, position, target
+
+  info = self~getGroupReference(context)
+  -- we always match, even if it is nothing
+  info~setMatch(position, position)
+
+  -- try for the optional match...no backtracking if it is a match.
+  if self~optional~match(context, position, target) then do
+      -- update the group capture information
+      info~setMatch(position, context~matchEnd)
+      position = context~matchEnd
+  end
+
+  return self~next~match(context, position, target)
+
 
 -- match a repetition of nodes
 ::class RepetitionNode subclass MatchNode
@@ -2299,6 +2448,214 @@ self~getMatchMetrics:super(metrics)
   return self~next~match(context, position, target)
 
 
+-- Special logic for handling group repetitions
+::class GroupRepetitionNode subclass MatchNode
+::method init
+  expose id repNode min max
+  use arg id, repNode, min, max
+  self~init:super
+  repNode~terminate   -- we need to ensure the chain ends in a terminator
+
+::method getGroupReference
+  expose id
+  use arg context
+  -- if this is a capturing group, return the
+  -- saved item.  Otherwise, return a dummy to handle
+  -- the save/restore logic
+  if id \= .nil then do
+      return context~getGroupReference(id)
+  end
+  return .GroupReference~new
+
+-- common initial piece for all repetition nodes.  The greedy/possessive/reluctant
+-- parts are implemented in the recursiveMatch method that each subclass
+-- implements
+::method match
+  expose id
+  use arg context, position, target
+  repNode = self~repNode
+  info = self~getGroupReference(context)
+  -- save the original state in case we need to back up
+  saved = info~saveMatch
+
+  -- if we have a minimum specified, we must get at least that, else we fail
+  do i = 1 to self~min
+      if \repNode~match(context, position, target) then do
+          -- restore the group state, we failed
+          info~restoreMatch(saved)
+          return .false
+      end
+      -- update the capture info to the current bit
+      info~setMatch(target, position, context~matchEnd)
+      position = context~matchEnd
+  end
+  -- The subclasses handle the match rules after the minimum
+  return self~recursiveMatch(context, info, position, target, repNode, self~min, self~max)
+
+::attribute repNode GET
+::attribute min GET
+::attribute max GET
+
+::method getMatchMetrics
+  expose repNode min max
+  use arg metrics
+  -- get our repetition node values as if it was the only thing of interest
+  submetrics = self~getChildMatchMetrics(repNode)
+
+  metrics~minLength = metrics~minLength + (min * submetrics~minLength)
+  metrics~maxLength = metrics~maxLength + (max * submetrics~maxLength)
+
+  -- if the max and min are the same, then this is potentially deterministic
+  if max == min then do
+      metrics~deterministic = metrics~deterministic & submetrics~deterministic
+  end
+  else do
+      -- no go on the length predictions
+      metrics~determinsitic = .false
+  end
+
+  -- send this along
+  self~getMatchMetrics:super(metrics)
+
+-- a Greedy repetition of a pattern.  This will match as
+-- much as possible, but will back off in an attempt to match
+-- any of the following pieces
+::class GreedyGroupRepetitionNode subclass GroupRepetitionNode
+-- implement greedy repetition matching logic
+::method recursiveMatch
+  use arg context, info, position, target, repNode, matches, max
+
+  -- save the original state in case we need to back up
+  saved = info~saveMatch
+
+  -- preserve matches, since that determines how much we can
+  -- back up
+  counter = matches
+
+  do label match
+      -- if reached the limit already, then quit
+      if counter >= max then do
+          leave;
+      end
+      -- if the first match fails, then quit immediately too
+      if \repNode~match(context, position, target) then do
+          leave
+      end
+      matchLength = context~matchEnd - position
+      -- There are forms of groups that back up, so the length
+      -- can be negative.
+      if matchLength <= 0 then do
+          -- the match positions are reversed.
+          info~setMatch(target, context~matchEnd, position)
+          -- and this is our new position point
+          position = context~matchEnd
+          leave  -- no more matching here
+      end
+      loop forever
+          info~setMatch(target, position, position + matchLength)
+          -- increment the counter now, and check for the max
+          counter += 1
+          if counter >= max then do
+              leave
+          end
+          -- no match, time to quit
+          if \repNode~match(context, position, target) then do
+              leave
+          end
+          -- if the length of the match has changed, then recurse
+          -- for the backups
+          if position + matchLength \= context~matchEnd then do
+              if self~recursiveMatch(context, info, context~matchEnd, counter + 1, max) then do
+                  return .true
+              end
+              -- go handle backing up from here.  The backup position is
+              -- actually the previous match
+              leave
+          end
+      end
+      -- we can back up for the number of matches we've had
+      -- at this recursion level
+      loop while counter >= matches
+          -- if we hit a spot where our successor can match, we're
+          -- done
+          if self~next~match(context, position, target) then do
+              -- update the group capture information
+              info~setMatch(target, position, matchLength)
+              return .true
+          end
+          -- step back the fixed length and decrement our counter
+          position -= matchLength
+          -- update the group match
+          info~setMatch(target, postion, postion + matchLength)
+          counter -= 1
+      end
+  end
+  info~restoreMatch(saved)    -- restore the match position
+  -- we've matched as much as we can, now check the rest
+  return self~next~match(context, position, target)
+
+-- a node that implements reluctant repetition matches
+::class ReluctantGroupRepetitionNode subclass GroupRepetitionNode
+-- the initial part to match the minimum is performed
+-- in the base class.  The reluctant part of the algorithm is
+-- done here
+::method recursiveMatch
+  use arg context, info, position, target, repNode, matches, max
+
+  loop forever
+      -- check the successor without consuming any more of the
+      -- string.  If it matches, we're done
+      if self~next~match(context, position, target) then do
+          return .true
+      end
+      -- if we've hit the limit and there's no successor match,
+      -- this fails
+      if matches >= max then do
+          return .false
+      end
+      -- (reluctanly), we try to eat one leetle mint...
+      if \repNode~match(context, position, target) then do
+          -- we've eaten our fill, this is a failure
+          return .false
+      end
+      -- if we hit a zero-length match, there's no moving forward
+      -- from here.  This is also a failure
+      if position == context~matchEnd then do
+          return .false
+      end
+      -- update the group information
+      info~setMatch(target, position, context~matchEnd)
+      -- step forward, and try again
+      position = context~matchEnd
+      matches += 1
+  end
+
+-- possessive repetition nodes...this sucks up all it can and will
+-- never give anything back
+::class PossessiveGroupRepetitionNode subclass GroupRepetitionNode
+-- the initial part to match the minimum is performed
+-- in the base class.  The reluctant part of the algorithm is
+-- done here
+::method recursiveMatch
+  use arg context, info, position, target, repNode, matches, max
+  do i = self~min + 1 to self~max
+      -- match failure means we've got all we can get
+      if \repNode~match(context, position, target) then do
+          leave
+      end
+      -- update the group information
+      info~setMatch(target, position, context~matchEnd)
+      -- a zero-length match also terminates matching
+      if position == context~matchEnd then do
+          leave
+      end
+      -- step over this
+      position = context~matchEnd
+  end
+  -- and try the next part
+  return self~next~match(context, position, target)
+
+
 -- matches the current position for the same string value as
 -- a back reference match
 ::class BackReferenceNode subclass MatchNode
@@ -2387,7 +2744,7 @@ self~getMatchMetrics:super(metrics)
   expose id groupMatch
   use arg context, position, target
 
-  info = context~getGroupInfo(id)
+  info = context~getGroupReference(id)
 
   -- if the pattern inside the group matches, then record
   -- the match position inside group matches, record this
@@ -2493,75 +2850,118 @@ self~getMatchMetrics:super(metrics)
              return self~next~match(context, context~matchEnd, target)
          end
   end
-
   return .false
 
-
--- base wrapper class for group operations
-::class Group subclass MatchNode
+-- base wrapper class for group operations.  This holds all of
+-- the pieces involved with a group and manages the wrappering
+-- and management of the group
+::class GroupEnvelope subclass MatchNode
 ::method init
   expose terminator
+  -- The terminator handles end of group processing.
   terminator = .GroupTerminator~new(self)
   self~init:super
-
 
 ::method match
   use arg context, position, target
 
-  self~setGroupState(context, position)
-  result = self~next~match(context, position, target)
-  self~restoreGroupState(context)
+  -- our successor is our real node, but if it
+  -- matches, it will go through the GroupTerminator
+  -- node which will poke us to update the group state
 
-::method setGroupStart
-  -- this is a noop in the base class
-
-::method restoreGroupStart
-  -- this is a noop in the base class
-
-::method setGroupEnd
-  -- this is a noop in the base class
-
-::method revertGroupEnd
-  -- this is a noop in the base class
+  -- however, since this is a non-capturing group, we don't
+  -- actually update anything
+  return self~next~match(context, position, target)
 
 ::method terminator
   expose terminator
   return terminator
 
+-- method for the group terminator to make a callback to indicate
+-- a successful match.  This is ignored for non-capturing nodes
+::method setGroupEnd
+  -- nop in the base class
+
+-- The terminator updates the match information before
+-- calling its successor node in case there are back references.
+-- If the successor does not match, it might need to rollback
+-- the match information to a previous value.  This will update the
+-- information, but also return the previous information for saving
+::method updateAndSaveMatch
+  -- nop in the base class
+
+-- this is the reverse of the previous.  Restores the
+-- start and end information using a previous saved state
+::method restorePreviousMatch
+-- nop in the base class
 
 -- base class for capturing group interactions
-::class CapturingGroup subclass Group
+::class CapturingGroupEnvelope subclass GroupEnvelope
 ::method init
   expose id
+  -- capturing groups all have an id.  This is either an
+  -- already allocated numeric or a string name
   use arg id
   self~init:super
 
-::method setGroupStart
-  expose id
-  use arg context, position
+::method match
+  use arg context, position, target
+  -- our successor is our real node, but if it
+  -- matches, it will go through the GroupTerminator
+  -- node which will poke us to update the group state
 
-  context~saveGroupStart(id, position)
+  --save the current postion so we can retrieve it when
+  -- poked by the terminator
+  context~setLocal(self, position)
+  -- perform the match
+  ret =  self~next~match(context, position, target)
+  -- delete the local reference
+  context~removeLocal(self)
+  return ret
 
-::method restoreGroupStart
+-- return the group reference information for a capturing group
+::method getGroupReference
   expose id
   use arg context
+  return context~getGroupReference(id)
 
-  context~restoreGroupStart(id)
-
+-- method for the group terminator to make a callback to indicate
+-- a successful match.  This uses the saved local information for
+-- the position
 ::method setGroupEnd
-  expose id
-  use arg context, position
+  use arg context, target, end
+  -- get the group information
+  info = getGroupReference(context)
+  -- and update with the current match information
+  info~setMatch(target, context~getLocal(self), end)
 
-  context~saveGroupEnd(id, position)
+-- The terminator updates the match information before
+-- calling its successor node in case there are back references.
+-- If the successor does not match, it might need to rollback
+-- the match information to a previous value.  This will update the
+-- information, but also return the previous information for saving
+::method updateAndSaveMatch
+  use arg context, target, end
+  -- get the group information
+  info = self~getGroupReference(context)
+  save = .directory~new
+  save~start = info~start
+  save~end = info~end
+  -- and update with the current match information
+  info~setMatch(target, context~getLocal(self), end)
+  return save
 
-::method revertGroupEnd
-  expose id
-  use arg context
-
-  context~restoreGroupEnd(id)
+-- this is the reverse of the previous.  Restores the
+-- start and end information using a previous saved state
+::method restorePreviousMatch
+  use arg context, save
+  -- get the group information
+  info = self~getGroupReference(context)
+  info~start = save~start
+  info~end = save~end
 
 -- special terminator for the end of a grouping
-::class GroupTerminatorNode subclass MatchNode
+::class GroupTerminator subclass MatchNode
 ::method init
   expose group
   use arg group
@@ -2571,18 +2971,16 @@ self~getMatchMetrics:super(metrics)
   expose group
   use arg context, position, target
 
-  group~setGroupEnd(context, position)
-
-  -- if we're in a good match, then our info is correct.
+  -- this will update the group information and return the
+  -- old information to us in case we need to revert
+  save = group~updateAndSaveMatch(context, target, position)
   if self~next~match(context, position, target) then do
+      -- good match, everything is ok
       return .true
   end
-
-  -- not a match, need to undo the state for back references
-  group~revertGroupEnd(context)
-
+  -- roll the info change back to the prior value
+  -- we did not get a complete and proper match
   return .false
-
 
 -- wrapper around a group to give atomic nature.
 ::class AtomicGroupNode subclass MatchNode
@@ -2590,7 +2988,6 @@ self~getMatchMetrics:super(metrics)
   expose group
   use arg group
   self~init:super
-
 
 ::method match
   expose group
@@ -2879,8 +3276,9 @@ self~getMatchMetrics:super(metrics)
 -- embedded group values
 ::class GroupMatchResult
 ::method init
-expose regionStart regionEnd start end text hitEnd
-use strict arg text, regionStart, regionEnd, start, end, hitEnd
+expose regionStart regionEnd start end regionText
+use strict arg regionText, regionStart, regionEnd, start, end
+
 -- return a response if the operation matched.
 ::method matched
   expose start
@@ -2891,6 +3289,7 @@ use strict arg text, regionStart, regionEnd, start, end, hitEnd
 ::attribute end GET
 
 -- information about the string region we're matching on
+::attribute regionText GET PRIVATE   -- only available internally
 ::attribute regionStart GET
 ::attribute regionEnd GET
 ::attribute regionLength GET
@@ -2903,35 +3302,34 @@ use strict arg text, regionStart, regionEnd, start, end, hitEnd
   return end - start -- end position is one past the last match character
 -- retrieves the match text
 ::attribute text GET
-  expose text start
+  expose regionText start
   -- return the match text
   if start == 0 then do
       return ''
   end
   -- extract the text subpiece
-  return text~substr(start, self~length)
+  return regionText~substr(start, self~length)
 
 -- retrieve the prefix string before the match, up to the start
 -- of the match region
 ::attribute prefix GET
-  expose text start regionStart
+  expose regionText start regionStart
   -- no match is always a null string
   if start == 0 then do
       return ""
   end
 
-  return text~substr(regionStart, start - regionStart)
+  return regionText~substr(regionStart, start - regionStart)
 
 -- retrieve any text following the match position, up to the end
 -- of the match region
 ::attribute suffix GET
-  expose text start end regionStart regionEnd
+  expose regionText start end regionStart regionEnd
   -- no match is always the entire region string
   if start == 0 then do
-  return text~substr(regionStart, regionEnd - regionStart)
-      return ""
+      return regionText~substr(regionStart, regionEnd - regionStart)
   end
-  return text~substr(end, regionEnd - end)
+  return regionText~substr(end, regionEnd - end)
 
 -- return the position of character after the match position.  If
 -- past the end of the match region, returns regionEnd + 1
@@ -2947,20 +3345,25 @@ use strict arg text, regionStart, regionEnd, start, end, hitEnd
 ::class MatchResult subclass GroupMatchResult
 ::method init
 expose groups
-use strict arg text, regionStart, regionEnd, start, end, hitEnd, groups
-self~init:super(text, regionStart, regionEnd, start, end, hitEnd)
+use strict arg regionText, regionStart, regionEnd, start, end, groups
+self~init:super(regionText, regionStart, regionEnd, start, end)
 
 -- retrieve a group.  This is either a numeric id
 -- or a symbolic name
 ::method group
   expose groups
   use strict arg id
+  -- 0 refers to the main group, so we'll return an emulated one
+  if id == "0" then do
+      return .GroupMatchResult~new(self~regionText, self~regionStart, self~regionEnd, self~start, self~end)
+  end
+
   group = groups[id]
   if .nil == group then do
       raise syntax 93.900 array("Group" id "not found in regular expression pattern") -- this is an error
   end
-
-  return group
+  -- this gets wrappered into a result item
+  return .GroupMatchResult~new(self~regionText, self~regionStart, self~regionEnd, group~start, group~end)
 
 -- the current active context for a match operation.  This
 -- provides information to the matching filters and holds any
@@ -2968,7 +3371,7 @@ self~init:super(text, regionStart, regionEnd, start, end, hitEnd)
 -- implements the matching operations.
 ::class MatchContext
 ::method init
-  expose text startPosition endPosition matchPosition matchEnd root groups hitEnd
+  expose text startPosition endPosition matchPosition matchEnd root groups hitEnd locals
   use strict arg text, startPosition, length, root, groups
   -- make sure the length is bounded.  The end position is one
   -- past the end
@@ -2984,6 +3387,36 @@ self~init:super(text, regionStart, regionEnd, start, end, hitEnd)
           groups[name] = groups[name]~copy
       end
   end
+  locals = .table~new   -- this allows patterns to save/retrieve local state
+
+-- Retrieve the group reference item for a given group
+::method getGroupReference
+  expose groups
+  use arg id
+
+  if groups == .nil then do
+      return .nil
+  end
+  -- return the information inherited from the pattern
+  return groups[id]
+
+-- save a local value
+::method setLocal
+  expose locals
+  use arg index, value
+  locals[index] = value
+
+-- retrieve a local value
+::method getLocal
+  expose locals
+  use arg index
+  return locals[index]
+
+-- remove a given local value
+::method removeLocal
+  expose locals
+  use arg index
+  locals~remove(index)
 
 -- test if the pattern is an exact match for the entire region, from
 -- beginning to end
@@ -3046,8 +3479,8 @@ self~init:super(text, regionStart, regionEnd, start, end, hitEnd)
 
 -- return a result object from the match result
 ::method result
-  expose text startPosition endPosition matchPosition matchEnd groups hitEnd
-  return .MatchResult~new(text, startPosition, endPosition, matchPosition, matchEnd, hitEnd, groups)
+  expose text startPosition endPosition matchPosition matchEnd groups
+  return .MatchResult~new(text, startPosition, endPosition, matchPosition, matchEnd, groups)
 
 ::method atStart
   expose startPosition
@@ -3100,44 +3533,6 @@ self~init:super(text, regionStart, regionEnd, start, end, hitEnd)
 
   return groupRef
 
--- Create the group reference item for a numbered or named group.
--- If the group already exists, this is an error
-::method getGroupReference
-  expose groups
-  use arg id
-
-  if groups == .nil then do
-      groups = .directory~new
-  end
-
-  if groups~hasIndex(id) then do
-      raise syntax 93.900 array("Duplicate group identifier" id);
-  end
-
-  groupInfo = .GroupReference~new(id)
-  groups[id] = groupInfo
-  return groupInfo
-
-::method saveGroupStart
-  use arg id, position
-  groupInfo = self~getGroupReference(id)
-  groupInfo~saveStart(position)
-
-::method saveGroupEnd
-  use arg id, position
-  groupInfo = self~getGroupReference(id)
-  groupInfo~saveEnd(position)
-
-::method restoreGroupStart
-  use arg id, position
-  groupInfo = self~getGroupReference(id)
-  groupInfo~restoreStart(position)
-
-::method restoreGroupEnd
-  use arg id, position
-  groupInfo = self~getGroupReference(id)
-  groupInfo~restoreEnd(position)
-
 -- return the offset of the given position.  This will be
 -- the number of characters from the start of the match
 -- range to the given position.
@@ -3147,20 +3542,20 @@ self~init:super(text, regionStart, regionEnd, start, end, hitEnd)
 
   return position - start
 
-
+-- the class for managing group information during a pattern match
 ::class GroupReference
 ::method init
-  expose id start end text startStack endStack
+  expose id start end text
   use arg id
   start = 0
   end = 0
   text = .nil
-  startStack = .nil
-  endStack = .nil
 
 -- the start and end match positions
 ::attribute start
 ::attribute end
+
+::attribute result
 
 -- indicates whether this match was a success or a failure
 ::method matched
@@ -3190,42 +3585,20 @@ self~init:super(text, regionStart, regionEnd, start, end, hitEnd)
 
   return .nil
 
--- set a new starting position for the group, but save
--- the previous position in a stack in case it needs restoring
-::method saveStart
-  expose start startStack
-  use arg newStart
+-- get a copy of the match positions
+::method saveMatch
+  expose start end
+  r = .directory~new
+  r~start = start
+  r~end = end
+  return r
 
-  if startStack = .nil then do
-      startStack = .queue~new
-  end
-
-  startStack~push(start)
-  start = newStart
-
--- set a new end position for the group, but save
--- the previous position in a stack in case it needs restoring
-::method saveEnd
-  expose end endStack
-  use arg newEnd
-
-  if endStack = .nil then do
-      endStack = .queue~new
-  end
-
-  endStack~push(end)
-  end = newEnd
-
--- methods for restoring the previous start and end positions
-::method restoreStart
-  expose start startStack
-
-  start = startStack~pop
-
-::method restoreEnd
-  expose end endStack
-
-  end = endStack~pop
+-- restore the match location from a saved copy
+::method restoreMatch
+  expose start end
+  use arg r
+  start = r~start
+  end = r~end
 
 -- a general purpose parsing context that includes support for
 -- regular expressions
@@ -3261,7 +3634,7 @@ matchResult = .nil -- no match result at the start
 -- between the current match position and the previous match
 -- end.  For example, if you were working with the parse template
 -- parse value '1234567890' with '3' x '9'
--- section startstart would be 4, sectionend would be 8 after the
+-- sectionstart would be 4, sectionend would be 8 after the
 -- trigger '9' was applied
 ::attribute sectionStart GET
 -- end of the equivalent section (see above).  Note that this will
