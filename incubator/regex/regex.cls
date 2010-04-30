@@ -2568,7 +2568,7 @@ self~getMatchMetrics:super(metrics)
           -- step back the fixed length and decrement our counter
           position -= matchLength
           -- update the group match
-          info~setMatch(target, postion, postion + matchLength)
+          info~setMatch(target, position, position + matchLength)
           counter -= 1
       end
   end

@@ -72,28 +72,20 @@ return testResult
   self~assertFalse(p~startsWith(" foo"))
 
   r = p~find("foo")
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(4, r~end)
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "foo"))
   self~assertEquals(3, r~length)
-  self~assertEquals("foo", r~text)
   self~assertEquals("", r~prefix)
   self~assertEquals("", r~suffix)
 
   r = p~find("xxxfooyyy")
-  self~assertTrue(r~matched)
-  self~assertEquals(4, r~start)
-  self~assertEquals(7, r~end)
+  self~assertTrue(self~verifyMatchResult(r, 4, 7, "foo"))
   self~assertEquals(3, r~length)
   self~assertEquals("foo", r~text)
-  self~assertEquals("xxx", r~prefix)
-  self~assertEquals("yyy", r~suffix)
 
   r = p~find("xyzzy")
   self~assertFalse(r~matched)
   self~assertEquals(0, r~start)
   self~assertEquals(0, r~end)
-  self~assertEquals(0, r~length)
   self~assertEquals("", r~text)
   self~assertEquals("", r~prefix)
   self~assertEquals("xyzzy", r~suffix)
@@ -145,28 +137,17 @@ return testResult
 
   r = p~find("foo")
   self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(4, r~end)
-  self~assertEquals(3, r~length)
-  self~assertEquals("foo", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "foo"))
   self~assertEquals("", r~prefix)
   self~assertEquals("", r~suffix)
 
   r = p~find("foobar")
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(4, r~end)
-  self~assertEquals(3, r~length)
-  self~assertEquals("foo", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "foo"))
   self~assertEquals("", r~prefix)
   self~assertEquals("bar", r~suffix)
 
   r = p~find("xyzfoobar")
-  self~assertTrue(r~matched)
-  self~assertEquals(4, r~start)
-  self~assertEquals(7, r~end)
-  self~assertEquals(3, r~length)
-  self~assertEquals("foo", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 4, 7, "foo"))
   self~assertEquals("xyz", r~prefix)
   self~assertEquals("bar", r~suffix)
 
@@ -190,29 +171,18 @@ return testResult
   self~assertTrue(p~startsWith("foobar"))
 
   r = p~find("foo")
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(4, r~end)
-  self~assertEquals(3, r~length)
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "foo"))
   self~assertEquals("foo", r~text)
   self~assertEquals("", r~prefix)
   self~assertEquals("", r~suffix)
 
   r = p~find("foobar")
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(4, r~end)
-  self~assertEquals(3, r~length)
-  self~assertEquals("foo", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "foo"))
   self~assertEquals("", r~prefix)
   self~assertEquals("bar", r~suffix)
 
   r = p~find("xyzfoobar")
-  self~assertTrue(r~matched)
-  self~assertEquals(4, r~start)
-  self~assertEquals(7, r~end)
-  self~assertEquals(3, r~length)
-  self~assertEquals("foo", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 4, 7, "foo"))
   self~assertEquals("xyz", r~prefix)
   self~assertEquals("bar", r~suffix)
 
@@ -237,29 +207,17 @@ return testResult
   self~assertTrue(p~startsWith("foobar"))
 
   r = p~find("foo")
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(4, r~end)
-  self~assertEquals(3, r~length)
-  self~assertEquals("foo", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "foo"))
   self~assertEquals("", r~prefix)
   self~assertEquals("", r~suffix)
 
   r = p~find("foobar")
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(4, r~end)
-  self~assertEquals(3, r~length)
-  self~assertEquals("foo", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "foo"))
   self~assertEquals("", r~prefix)
   self~assertEquals("bar", r~suffix)
 
   r = p~find("xyzfoobar")
-  self~assertTrue(r~matched)
-  self~assertEquals(4, r~start)
-  self~assertEquals(7, r~end)
-  self~assertEquals(3, r~length)
-  self~assertEquals("foo", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 4, 7, "foo"))
   self~assertEquals("xyz", r~prefix)
   self~assertEquals("bar", r~suffix)
 
@@ -276,32 +234,17 @@ return testResult
   self~assertFalse(p~startsWith('estuary'))
 
   r = p~find('abc')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(2, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("a", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 2, "a"))
   self~assertEquals("", r~prefix)
   self~assertEquals("bc", r~suffix)
 
   r = p~find('xbc')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(2, r~start)
-  self~assertEquals(3, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("b", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 2, 3, "b"))
   self~assertEquals("x", r~prefix)
   self~assertEquals("c", r~suffix)
 
   r = p~find('xxc')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(3, r~start)
-  self~assertEquals(4, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("c", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 3, 4, "c"))
   self~assertEquals("xx", r~prefix)
   self~assertEquals("", r~suffix)
 
@@ -330,44 +273,24 @@ return testResult
   self~assertTrue(p~startsWith('estuary'))
 
   r = p~find('eabc')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(2, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("e", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 2, "e"))
   self~assertEquals("", r~prefix)
   self~assertEquals("abc", r~suffix)
 
   r = p~find('aebc')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(2, r~start)
-  self~assertEquals(3, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("e", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 2, 3, "e"))
   self~assertEquals("a", r~prefix)
   self~assertEquals("bc", r~suffix)
 
   r = p~find('abce')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(4, r~start)
-  self~assertEquals(5, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("e", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 4, 5, "e"))
   self~assertEquals("abc", r~prefix)
   self~assertEquals("", r~suffix)
 
   p = .Pattern~compile("a[^abc]c")
 
   r = p~find('abcaecyy')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(4, r~start)
-  self~assertEquals(7, r~end)
-  self~assertEquals(3, r~length)
-  self~assertEquals("aec", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 4, 7, "aec"))
   self~assertEquals("abc", r~prefix)
   self~assertEquals("yy", r~suffix)
 
@@ -385,44 +308,24 @@ return testResult
   self~assertTrue(p~startsWith('estuary'))
 
   r = p~find('eabc')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(2, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("e", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 2, "e"))
   self~assertEquals("", r~prefix)
   self~assertEquals("abc", r~suffix)
 
   r = p~find('aebc')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(2, r~start)
-  self~assertEquals(3, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("e", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 2, 3, "e"))
   self~assertEquals("a", r~prefix)
   self~assertEquals("bc", r~suffix)
 
   r = p~find('abce')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(4, r~start)
-  self~assertEquals(5, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("e", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 4, 5, "e"))
   self~assertEquals("abc", r~prefix)
   self~assertEquals("", r~suffix)
 
   p = .Pattern~compile("a[^a-c]c")
 
   r = p~find('abcaecyy')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(4, r~start)
-  self~assertEquals(7, r~end)
-  self~assertEquals(3, r~length)
-  self~assertEquals("aec", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 4, 7, "aec"))
   self~assertEquals("abc", r~prefix)
   self~assertEquals("yy", r~suffix)
 
@@ -439,44 +342,24 @@ return testResult
   self~assertFalse(p~startsWith('estuary'))
 
   r = p~find('abc')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(2, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("a", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 2, "a"))
   self~assertEquals("", r~prefix)
   self~assertEquals("bc", r~suffix)
 
   r = p~find('xbc')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(2, r~start)
-  self~assertEquals(3, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("b", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 2, 3, "b"))
   self~assertEquals("x", r~prefix)
   self~assertEquals("c", r~suffix)
 
   r = p~find('xxc')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(3, r~start)
-  self~assertEquals(4, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("c", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 3, 4, "c"))
   self~assertEquals("xx", r~prefix)
   self~assertEquals("", r~suffix)
 
   p = .Pattern~compile("a[a-c]c")
 
   r = p~find('xxabcyy')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(3, r~start)
-  self~assertEquals(6, r~end)
-  self~assertEquals(3, r~length)
-  self~assertEquals("abc", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 3, 6, "abc"))
   self~assertEquals("xx", r~prefix)
   self~assertEquals("yy", r~suffix)
 
@@ -494,64 +377,34 @@ return testResult
   self~assertFalse(p~startsWith('estuary'))
 
   r = p~find('abc')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(2, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("a", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 2, "a"))
   self~assertEquals("", r~prefix)
   self~assertEquals("bc", r~suffix)
 
   r = p~find('ABC')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(2, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("A", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 2, "A"))
   self~assertEquals("", r~prefix)
   self~assertEquals("BC", r~suffix)
 
   r = p~find('xb')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(2, r~start)
-  self~assertEquals(3, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("b", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 2, 3, "b"))
   self~assertEquals("x", r~prefix)
   self~assertEquals("", r~suffix)
 
   r = p~find('xB')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(2, r~start)
-  self~assertEquals(3, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("B", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 2, 3, "B"))
   self~assertEquals("x", r~prefix)
   self~assertEquals("", r~suffix)
 
   r = p~find('xxb')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(3, r~start)
-  self~assertEquals(4, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("b", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 3, 4, "b"))
   self~assertEquals("xx", r~prefix)
   self~assertEquals("", r~suffix)
 
   p = .Pattern~compile("a[a-bC-D]c")
 
   r = p~find('aBcabcyy')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(4, r~start)
-  self~assertEquals(7, r~end)
-  self~assertEquals(3, r~length)
-  self~assertEquals("abc", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 4, 7, "abc"))
   self~assertEquals("aBc", r~prefix)
   self~assertEquals("yy", r~suffix)
 -- character class union tests
@@ -568,63 +421,34 @@ return testResult
   self~assertFalse(p~startsWith('estuary'))
 
   r = p~find('abc')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(2, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("a", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 2, "a"))
   self~assertEquals("", r~prefix)
   self~assertEquals("bc", r~suffix)
 
   r = p~find('ABC')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(2, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("A", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 2, "A"))
   self~assertEquals("", r~prefix)
   self~assertEquals("BC", r~suffix)
 
   r = p~find('xb')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(2, r~start)
-  self~assertEquals(3, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("b", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 2, 3, "b"))
   self~assertEquals("x", r~prefix)
   self~assertEquals("", r~suffix)
 
   r = p~find('xB')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(2, r~start)
-  self~assertEquals(3, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("B", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 2, 3, "B"))
   self~assertEquals("x", r~prefix)
   self~assertEquals("", r~suffix)
 
   r = p~find('xxb')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(3, r~start)
-  self~assertEquals(4, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("b", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 3, 4, "b"))
   self~assertEquals("xx", r~prefix)
   self~assertEquals("", r~suffix)
+
   p = .Pattern~compile("a[a-b[C-D]]c")
 
   r = p~find('aBcabcyy')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(4, r~start)
-  self~assertEquals(7, r~end)
-  self~assertEquals(3, r~length)
-  self~assertEquals("abc", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 4, 7, "abc"))
   self~assertEquals("aBc", r~prefix)
   self~assertEquals("yy", r~suffix)
 
@@ -641,20 +465,13 @@ return testResult
   self~assertFalse(p~startsWith('estuary'))
 
   r = p~find('abc')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(2, r~end)
+  self~assertTrue(self~verifyMatchResult(r, 1, 2, "a"))
 
   r = p~find('ABC')
-
   self~assertFalse(r~matched)
 
   r = p~find('xb')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(2, r~start)
-  self~assertEquals(3, r~end)
+  self~assertTrue(self~verifyMatchResult(r, 2, 3, "b"))
 
   -- some subraction.  This is essentially the same pattern
   -- as the first one, but the intersection is done by exclusion
@@ -669,21 +486,13 @@ return testResult
   self~assertFalse(p~startsWith('estuary'))
 
   r = p~find('abc')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(2, r~end)
+  self~assertTrue(self~verifyMatchResult(r, 1, 2, "a"))
 
   r = p~find('ABC')
-
   self~assertFalse(r~matched)
 
   r = p~find('xb')
-
-  self~assertTrue(r~matched)
-  self~assertEquals(2, r~start)
-  self~assertEquals(3, r~end)
-
+  self~assertTrue(self~verifyMatchResult(r, 2, 3, "b"))
 
 -- predefined character classes
 ::method testPredefinedClasses
@@ -733,18 +542,12 @@ return testResult
   r = p~find("xyzaxyz")
   -- because this matches no characters, this will be a zero length match
   -- at the beginning
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(1, r~end)
-  self~assertEquals("", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 1, ""))
 
   r = p~find("aaaaxyz")
   -- because this matches all of the a characters at the beginning
   -- at the beginning
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(5, r~end)
-  self~assertEquals("aaaa", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 5, "aaaa"))
 
   p = .Pattern~compile("ab*c")     -- repetive in the middle
   self~assertTrue(p~matches("ac"))  -- no b's are fine
@@ -758,11 +561,7 @@ return testResult
   self~assertTrue(p~startsWith("xfooxxxxxxfoo"))  -- one should be ok too
   -- this should match the entire string
   r = p~find("xfooxxxxxxfoo")
-
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(14, r~end)
-  self~assertEquals("xfooxxxxxxfoo", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 14, "xfooxxxxxxfoo"))
 
   -- example from the online tutorial
 
@@ -777,10 +576,7 @@ return testResult
 
   -- this will stop at the first match rather than
   -- consuming everything.
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(5, r~end)
-  self~assertEquals("xfoo", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 5, "xfoo"))
 
   -- example from the online tutorial
 
@@ -812,18 +608,12 @@ return testResult
   r = p~find("xyzaxyz")
   -- because this must match at least one character, it will locate the a
   -- in the middle
-  self~assertTrue(r~matched)
-  self~assertEquals(4, r~start)
-  self~assertEquals(5, r~end)
-  self~assertEquals("a", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 4, 5, "a"))
 
   r = p~find("aaaaxyz")
   -- because this matches all of the a characters at the beginning
   -- at the beginning
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(5, r~end)
-  self~assertEquals("aaaa", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 5, "aaaa"))
 
   p = .Pattern~compile("ab+c")     -- repetitive in the middle
   self~assertFalse(p~matches("ac"))  -- must have at least one b
@@ -844,17 +634,11 @@ return testResult
 
   r = p~find("xyzaxyz")
   -- because this can match "nothing", this will be a zero length match at the beginning
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(1, r~end)
-  self~assertEquals("", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 1, ""))
 
   r = p~find("aaaaxyz")
   -- because this will only match the first a at the beginning
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(2, r~end)
-  self~assertEquals("a", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 2, "a"))
 
   p = .Pattern~compile("ab?c")     -- repetitive in the middle
   self~assertTrue(p~matches("ac"))  -- need not have a b
@@ -910,17 +694,11 @@ return testResult
 
   r = p~find("xaxaaaxyz")
   -- this will only match at the second grouping of a's
-  self~assertTrue(r~matched)
-  self~assertEquals(4, r~start)
-  self~assertEquals(7, r~end)
-  self~assertEquals("aaa", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 4, 7, "aaa"))
 
   r = p~find("xaxaaaaxyz")
-  -- this should match the full 4 charactes
-  self~assertTrue(r~matched)
-  self~assertEquals(4, r~start)
-  self~assertEquals(8, r~end)
-  self~assertEquals("aaaa", r~text)
+  -- this should match the full 4 characters
+  self~assertTrue(self~verifyMatchResult(r, 4, 8, "aaaa"))
 
   p = .Pattern~compile("ab{2,3}c")     -- repetitive in the middle
   self~assertFalse(p~matches("ac"))  -- must have 2 a's
@@ -964,17 +742,11 @@ return testResult
 
   r = p~find("xaaxaaaxyz")
   -- this will only match at the second grouping of a's
-  self~assertTrue(r~matched)
-  self~assertEquals(5, r~start)
-  self~assertEquals(8, r~end)
-  self~assertEquals("aaa", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 5, 8, "aaa"))
 
   r = p~find("xaaxaaaaxyz")
-  -- this should match the full 4 charactes
-  self~assertTrue(r~matched)
-  self~assertEquals(5, r~start)
-  self~assertEquals(9, r~end)
-  self~assertEquals("aaaa", r~text)
+  -- this should match the full 4 characters
+  self~assertTrue(self~verifyMatchResult(r, 5, 9, "aaaa"))
 
   p = .Pattern~compile("ab{2,}c")     -- repetitive in the middle
   self~assertFalse(p~matches("ac"))  -- must have 2 a's
@@ -991,17 +763,11 @@ return testResult
   self~assertTrue(p~startsWith("abcabc"))
 
   r = p~find("abcabc")
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(4, r~end)
-  self~assertEquals("abc", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "abc"))
 
   g = r~group(1)   -- we should have group information available
   -- which in this case, should be the same as the main information
-  self~assertTrue(g~matched)
-  self~assertEquals(1, g~start)
-  self~assertEquals(4, g~end)
-  self~assertEquals("abc", g~text)
+  self~assertTrue(self~verifyMatchResult(g, 1, 4, "abc"))
 
   -- now with a repetitor
   p = .Pattern~compile("(abc)*")
@@ -1011,17 +777,78 @@ return testResult
 
   -- this should match everything
   r = p~find("abcabc")
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(7, r~end)
-  self~assertEquals("abcabc", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 7, "abcabc"))
 
   g = r~group(1)   -- we should have group information available
   -- which in this case, it should be the location of the last match
-  self~assertTrue(g~matched)
-  self~assertEquals(4, g~start)
-  self~assertEquals(7, g~end)
-  self~assertEquals("abc", g~text)
+  self~assertTrue(self~verifyMatchResult(g, 4, 7, "abc"))
+
+-- tests of the * pattern modifier
+::method testStarGroupModifier
+  p = .Pattern~compile("(a)*")     -- zero or more occurrances of a
+  self~assertTrue(p~matches(""))  -- null string should match
+  self~assertTrue(p~matches("a")) -- single a should match
+  self~assertTrue(p~matches("aaaaaa")) -- multiple a's should match
+  self~assertFalse(p~matches("aaaaaaq")) -- the trailing one should not
+
+  -- a few starts tests.  These are all true
+  self~assertTrue(p~startsWith(""))  -- null string should match
+  self~assertTrue(p~startsWith("a")) -- single a should match
+  self~assertTrue(p~startsWith("aaaaaa")) -- multiple a's should match
+  self~assertTrue(p~startsWith("aaaaaaq")) -- This should also match
+
+  r = p~find("xyzaxyz")
+  -- because this matches no characters, this will be a zero length match
+  -- at the beginning
+  self~assertTrue(self~verifyMatchResult(r, 1, 1, ""))
+
+  r = p~find("aaaaxyz")
+  -- because this matches all of the a characters at the beginning
+  -- at the beginning
+  self~assertTrue(self~verifyMatchResult(r, 1, 5, "aaaa"))
+
+  p = .Pattern~compile("a(b)*c")     -- repetive in the middle
+  self~assertTrue(p~matches("ac"))  -- no b's are fine
+  self~assertTrue(p~matches("abc"))  -- one should be ok too
+  self~assertTrue(p~matches("abbbbbbbbbbbbbbbbbc"))  -- and a whole bunch
+
+  -- example from the online tutorial
+
+  p = .Pattern~compile("(.)*foo")     -- this is a greedy pattern
+  self~assertTrue(p~matches("xfooxxxxxxfoo"))  -- should consume the entire string
+  self~assertTrue(p~startsWith("xfooxxxxxxfoo"))  -- one should be ok too
+  -- this should match the entire string
+  r = p~find("xfooxxxxxxfoo")
+
+  self~assertTrue(self~verifyMatchResult(r, 1, 14, "xfooxxxxxxfoo"))
+
+  -- example from the online tutorial
+
+  p = .Pattern~compile("(.)*?foo")     -- this is a reluctant pattern
+  self~assertTrue(p~matches("xfooxxxxxxfoo"))  -- should consume the entire string
+  self~assertTrue(p~startsWith("xfooxxxxxxfoo"))  -- one should be ok too, but it really only matches the beginning
+
+  self~assertFalse(p~matches("xfooxxxxxxfo"))  -- should NOT work because it will not match everything
+  self~assertTrue(p~startsWith("xfooxxxxxxfo"))  -- this is really the same as the first one
+
+  r = p~find("xfooxxxxxxfoo")
+
+  -- this will stop at the first match rather than
+  -- consuming everything.
+  self~assertTrue(self~verifyMatchResult(r, 1, 5, "xfoo"))
+
+  -- example from the online tutorial
+
+  p = .Pattern~compile("(.)*+foo")     -- this is a possessive pattern
+  -- should not match because the .*? part will consume the entire
+  -- string
+  self~assertFalse(p~matches("xfooxxxxxxfoo"))
+  self~assertFalse(p~startsWith("xfooxxxxxxfoo"))  -- same reason
+  self~assertFalse(p~startsWith("xfooxxxxxxfo"))  -- this is really the same as the first one
+
+  -- this not be found
+  r = p~find("xfooxxxxxxfoo")
+  self~assertFalse(r~matched)
 
 -- utility method to perform tests on character class
 -- tests to ensure they will not only match characters
@@ -1041,4 +868,15 @@ return testResult
       end
   end
 
+-- utilty method to verify a match result
+::method verifyMatchResult
+  use arg r, start, end, text
+
+  res = r~matched & r~start == start & r~end == end & r~text == text & r~length == text~length
+  -- if this fails, redo the comparisons with trace on to help diagnose the failure
+  if \res then do
+      trace i
+      return r~matched & r~start == start & r~end == end & r~text == text & r~length == text~length
+  end
+  return .true
 
