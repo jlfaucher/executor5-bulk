@@ -770,6 +770,12 @@
       groupInfo~lastNode = group~terminator
       groupInfo~id = id
   end
+  -- we should be positioned at the closing paren now.  Make sure
+  -- it is there
+  ch = self~next
+  if ch \== ')' then do
+      raise syntax 93.900 array("Missing closing ')' for a group")
+  end
   -- we need to process this differently, since there are different
   -- repetitors needed to handle updating group information
   self~parseGroupClosure(groupInfo)
@@ -837,7 +843,6 @@
 -- repetition count details
 ::method parseGroupClosure
   use arg groupInfo
-
   -- we're parsing any closure items that may follow the group itself.
   -- If there are closure items to process, this will end up adjusting the
   -- firstNode/lastNode information in groupInfo
@@ -864,13 +869,6 @@
           else do
               node = .GreedyGroupQuestionNode~new(target)
           end
-          -- stick a terminator after the end of this.  The
-          -- question node will handle the repetitions.
-          groupInfo~lastNode~next = .TerminatorNode~new
-          -- this is atomic, and handles both roles
-          groupInfo~firstNode = node
-          groupInfo~lastNode = node
-          return
       end
       when ch == "*" then do
           self~next
@@ -888,14 +886,6 @@
           else do
               node = .GreedyGroupRepetitionNode~new(groupInfo~id, target, 0, 999999999)
           end
-
-          -- stick a terminator after the end of this.  The
-          -- question node will handle the repetitions.
-          groupInfo~lastNode~next = .TerminatorNode~new
-          -- this is atomic, and handles both roles
-          groupInfo~firstNode = node
-          groupInfo~lastNode = node
-          return
       end
       when ch == "+" then do
           self~next
@@ -913,14 +903,6 @@
           else do
               node = .GreedyGroupRepetitionNode~new(target, 1, 999999999)
           end
-
-          -- stick a terminator after the end of this.  The
-          -- question node will handle the repetitions.
-          groupInfo~lastNode~next = .TerminatorNode~new
-          -- this is atomic, and handles both roles
-          groupInfo~firstNode = node
-          groupInfo~lastNode = node
-          return
       end
       when ch == "{" then do
           min = self~parseNumber
@@ -951,7 +933,7 @@
           end
           else do
               self~previous
-              return .GreedyGroupRepetitionNode~new(target, min, max)
+              node = .GreedyGroupRepetitionNode~new(target, min, max)
           end
       end
       otherwise do
@@ -960,9 +942,9 @@
       end
   end
 
-  -- stick a terminator after the end of this.  The
+  -- stick branch a terminator after the end of this.  The
   -- question node will handle the repetitions.
-  groupInfo~lastNode~next = .TerminatorNode~new
+  groupInfo~lastNode~next = .BranchTerminatorNode~new
   -- this is atomic, and handles both roles
   groupInfo~firstNode = node
   groupInfo~lastNode = node
@@ -2524,7 +2506,6 @@ self~getMatchMetrics:super(metrics)
 -- implement greedy repetition matching logic
 ::method recursiveMatch
   use arg context, info, position, target, repNode, matches, max
-
   -- save the original state in case we need to back up
   saved = info~saveMatch
 
@@ -2539,7 +2520,7 @@ self~getMatchMetrics:super(metrics)
       end
       -- if the first match fails, then quit immediately too
       if \repNode~match(context, position, target) then do
-          leave
+          leave match
       end
       matchLength = context~matchEnd - position
       -- There are forms of groups that back up, so the length
@@ -2549,7 +2530,7 @@ self~getMatchMetrics:super(metrics)
           info~setMatch(target, context~matchEnd, position)
           -- and this is our new position point
           position = context~matchEnd
-          leave  -- no more matching here
+          leave match -- no more matching here
       end
       loop forever
           info~setMatch(target, position, position + matchLength)
@@ -2558,6 +2539,9 @@ self~getMatchMetrics:super(metrics)
           if counter >= max then do
               leave
           end
+          -- step the match position to the end of the last
+          -- successful match
+          position = context~matchEnd
           -- no match, time to quit
           if \repNode~match(context, position, target) then do
               leave
@@ -2579,8 +2563,6 @@ self~getMatchMetrics:super(metrics)
           -- if we hit a spot where our successor can match, we're
           -- done
           if self~next~match(context, position, target) then do
-              -- update the group capture information
-              info~setMatch(target, position, matchLength)
               return .true
           end
           -- step back the fixed length and decrement our counter
@@ -3597,7 +3579,7 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 ::method restoreMatch
   expose start end
   use arg r
-  start = r~start
+  start = r['START']
   end = r~end
 
 -- a general purpose parsing context that includes support for
