@@ -612,6 +612,13 @@
   groups[id] = groupInfo
   return groupInfo
 
+-- test if a given named group has been encountered yet
+-- (used for resolving back references)
+::method haveGroup
+  expose groups
+  use arg id
+  return groups~hasIndex(id)
+
 -- parse group information
 ::method parseGroup
   -- we return a directory of information about this group
@@ -860,14 +867,14 @@
 
           if ch == "?" then do
               self~next
-              node = .ReluctantGroupQuestionNode~new(target)
+              node = .ReluctantGroupQuestionNode~new(groupInfo~id, target)
           end
           else if ch == "+" then do
               self~next
-              node = .PossessiveGroupQuestionNode~new(target)
+              node = .PossessiveGroupQuestionNode~new(groupInfo~id, target)
           end
           else do
-              node = .GreedyGroupQuestionNode~new(target)
+              node = .GreedyGroupQuestionNode~new(groupInfo~id, target)
           end
       end
       when ch == "*" then do
@@ -894,17 +901,18 @@
 
           if ch == "?" then do
               self~next
-              node = .ReluctantGroupRepetitionNode~new(target, 1, 999999999)
+              node = .ReluctantGroupRepetitionNode~new(groupInfo~id, target, 1, 999999999)
           end
           else if ch == "+" then do
               self~next
-              node = .PossessiveGroupRepetitionNode~new(target, 1, 999999999)
+              node = .PossessiveGroupRepetitionNode~new(groupInfo~id, target, 1, 999999999)
           end
           else do
-              node = .GreedyGroupRepetitionNode~new(target, 1, 999999999)
+              node = .GreedyGroupRepetitionNode~new(groupInfo~id, target, 1, 999999999)
           end
       end
       when ch == "{" then do
+          self~next
           min = self~parseNumber
           max = min
           ch = self~next
@@ -915,25 +923,31 @@
           if ch \= "}" then do
               raise syntax 36.900 array("Missing closing '}' for repetition count")
           end
-
-          if .nil == min || .nil == max then do
-              raise syntax 93.900 array("Invalid repetition count")
+          --
+          if .nil == min then do
+              raise syntax 93.900 array("Invalid repetition count minimum")
+          end
+          -- we use the default digits maximum for max if not specified
+          if max == .nil then do
+              max = 999999999
           end
 
           if max < min then do
-              raise syntax 93.900 array("Repetition maximum" max "is less than minimum" min)
+              raise syntax 93.900 array("Repetition maximum:" max", is less than minimum:" min)
           end
-          ch = self~next
+
+          ch = self~peek
 
           if ch == "?" then do
-              node = .ReluctantGroupRepetitionNode~new(target, min, max)
+              self~next
+              node = .ReluctantGroupRepetitionNode~new(groupInfo~id, target, min, max)
           end
           else if ch == "+" then do
-              node = .PossessiveGroupRepetitionNode~new(target, min, max)
+              self~next
+              node = .PossessiveGroupRepetitionNode~new(groupInfo~id, target, min, max)
           end
           else do
-              self~previous
-              node = .GreedyGroupRepetitionNode~new(target, min, max)
+              node = .GreedyGroupRepetitionNode~new(groupInfo~id, target, min, max)
           end
       end
       otherwise do
@@ -2182,7 +2196,7 @@ self~getMatchMetrics:super(metrics)
 -- A node that handles the Greedy ? qualifier following a
 -- group.  This implements the ? matching symantics and
 -- updates the group position accordingly
-::class GreedyGroupQuestionNode subclass QuestionNode
+::class GreedyGroupQuestionNode subclass GroupQuestionNode
 ::method match
   use arg context, position, target
   info = self~getGroupReference(context)
@@ -2516,7 +2530,7 @@ self~getMatchMetrics:super(metrics)
   do label match
       -- if reached the limit already, then quit
       if counter >= max then do
-          leave;
+          leave match
       end
       -- if the first match fails, then quit immediately too
       if \repNode~match(context, position, target) then do
@@ -2649,7 +2663,7 @@ self~getMatchMetrics:super(metrics)
 ::method match
   expose ref
   use arg context, position, target
-
+  -- retrieve the match result for our target back ref
   refGroup = context~getBackReferenceResult(ref)
 
   -- if the back reference did not match, then this is a
@@ -2659,9 +2673,9 @@ self~getMatchMetrics:super(metrics)
   end
 
   -- this is essentially a string reference now
-  matchValue = refGroup~matchString
+  matchValue = refGroup~matchText
 
-  if \context~checkEnd(position + matchValue~length - 1) then do
+  if context~checkEnd(position + matchValue~length - 1) then do
       return .false
   end
 
@@ -3537,8 +3551,6 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 ::attribute start
 ::attribute end
 
-::attribute result
-
 -- indicates whether this match was a success or a failure
 ::method matched
   expose start
@@ -3562,7 +3574,7 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
   expose text start end
 
   if start > 0 then do
-      return text~substr(start, end - start + 1)
+      return text~substr(start, end - start)
   end
 
   return .nil

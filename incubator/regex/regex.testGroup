@@ -768,6 +768,9 @@ return testResult
   g = r~group(1)   -- we should have group information available
   -- which in this case, should be the same as the main information
   self~assertTrue(self~verifyMatchResult(g, 1, 4, "abc"))
+  -- group zero is supposed to be the same as the entire match.  Verify
+  -- we get good information here
+  self~assertTrue(self~verifyMatchResult(r~group(0), r~start, r~end, r~text))
 
   -- now with a repetitor
   p = .Pattern~compile("(abc)*")
@@ -779,9 +782,36 @@ return testResult
   r = p~find("abcabc")
   self~assertTrue(self~verifyMatchResult(r, 1, 7, "abcabc"))
 
-  g = r~group(1)   -- we should have group information available
-  -- which in this case, it should be the location of the last match
-  self~assertTrue(self~verifyMatchResult(g, 4, 7, "abc"))
+  -- test with multiple groups
+  p = .Pattern~compile("((a)(b(c)))")
+  r = p~find("abcabc")
+  -- this should match "abc"
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "abc"))
+  -- now verify each of the groups 0-4
+
+  -- group zero is always the main match
+  self~assertTrue(self~verifyMatchResult(r~group(0), 1, 4, "abc"))
+  -- ((a)(b(c))))
+  self~assertTrue(self~verifyMatchResult(r~group(1), 1, 4, "abc"))
+  -- (a)
+  self~assertTrue(self~verifyMatchResult(r~group(2), 1, 2, "a"))
+  -- (b(c))
+  self~assertTrue(self~verifyMatchResult(r~group(3), 2, 4, "bc"))
+  -- (c)
+  self~assertTrue(self~verifyMatchResult(r~group(4), 3, 4, "c"))
+
+  -- a back match
+  p = .Pattern~compile("(\d\d)\1")
+  self~assertTrue(p~matches("1212"))
+  self~assertFalse(p~matches("12"))
+  self~assertFalse(p~matches("1234"))
+
+
+  -- another back match test.  This matches the
+  -- last repetition of the repeated group
+  p = .Pattern~compile("(\d\d){2}\1")
+  self~assertTrue(p~matches("123434"))
+  self~assertFalse(p~matches("123412"))
 
 -- tests of the * pattern modifier
 ::method testStarGroupModifier
