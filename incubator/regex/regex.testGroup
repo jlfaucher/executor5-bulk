@@ -55,6 +55,55 @@ return testResult
 ::requires "regex.cls"
 
 ::class "regex.testGroup" subclass ooTestCase public
+
+-- utility method to perform tests on character class
+-- tests to ensure they will only match characters
+-- in the given set
+::method checkIncludedCharacters
+  use arg p, includes
+
+  do i = 0 to 255
+      -- handle the special cases
+      ch = d2c(i)
+      -- this is in the target set, this must match
+      if includes~pos(ch) > 0 then do
+          self~assertTrue(p~matches(ch))
+      end
+      else do
+          self~assertFalse(p~matches(ch))
+      end
+  end
+
+-- utility method to perform tests on character class
+-- tests to ensure they will not only match characters
+-- in the given set
+::method checkExcludedCharacters
+  use arg p, excludes
+
+  do i = 0 to 255
+      -- handle the special cases
+      ch = d2c(i)
+      -- this is in the target set, this must match
+      if excludes~pos(ch) > 0 then do
+          self~assertFalse(p~matches(ch))
+      end
+      else do
+          self~assertTrue(p~matches(ch))
+      end
+  end
+
+-- utilty method to verify a match result
+::method verifyMatchResult
+  use arg r, start, end, text
+
+  res = r~matched & r~start == start & r~end == end & r~text == text & r~length == text~length
+  -- if this fails, redo the comparisons with trace on to help diagnose the failure
+  if \res then do
+      trace i
+      return r~matched & r~start == start & r~end == end & r~text == text & r~length == text~length
+  end
+  return .true
+
 -- tests simple string matches
 ::method testAtom
   p = .Pattern~compile("foo")
@@ -707,24 +756,6 @@ return testResult
   self~assertTrue(p~matches("abbbc"))  -- should also work
   self~assertFalse(p~matches("abbbbc"))  -- should fail
 
--- utility method to perform tests on character class
--- tests to ensure they will only match characters
--- in the given set
-::method checkIncludedCharacters
-  use arg p, includes
-
-  do i = 0 to 255
-      -- handle the special cases
-      ch = d2c(i)
-      -- this is in the target set, this must match
-      if includes~pos(ch) > 0 then do
-          self~assertTrue(p~matches(ch))
-      end
-      else do
-          self~assertFalse(p~matches(ch))
-      end
-  end
-
 -- tests of the {n,} pattern modifier
 ::method testAtLeastCountModifier
   p = .Pattern~compile("a{3,}")     -- exactly 3 occurrances of a
@@ -880,33 +911,154 @@ return testResult
   r = p~find("xfooxxxxxxfoo")
   self~assertFalse(r~matched)
 
--- utility method to perform tests on character class
--- tests to ensure they will not only match characters
--- in the given set
-::method checkExcludedCharacters
-  use arg p, excludes
 
-  do i = 0 to 255
-      -- handle the special cases
-      ch = d2c(i)
-      -- this is in the target set, this must match
-      if excludes~pos(ch) > 0 then do
-          self~assertFalse(p~matches(ch))
-      end
-      else do
-          self~assertTrue(p~matches(ch))
-      end
-  end
+-- tests of the + pattern modifier
+::method testPlusGroupModifier
+  p = .Pattern~compile("(a)+")     -- zero or more occurrances of a
+  self~assertFalse(p~matches(""))  -- null string should not match
+  self~assertTrue(p~matches("a")) -- single a should match
+  self~assertTrue(p~matches("aaaaaa")) -- multiple a's should match
+  self~assertFalse(p~matches("aaaaaaq")) -- the trailing one should not
 
--- utilty method to verify a match result
-::method verifyMatchResult
-  use arg r, start, end, text
+  -- a few starts tests.  These are all true
+  self~assertFalse(p~startsWith(""))  -- null string not should match
+  self~assertTrue(p~startsWith("a")) -- single a should match
+  self~assertTrue(p~startsWith("aaaaaa")) -- multiple a's should match
+  self~assertTrue(p~startsWith("aaaaaaq")) -- should also match
 
-  res = r~matched & r~start == start & r~end == end & r~text == text & r~length == text~length
-  -- if this fails, redo the comparisons with trace on to help diagnose the failure
-  if \res then do
-      trace i
-      return r~matched & r~start == start & r~end == end & r~text == text & r~length == text~length
-  end
-  return .true
+  r = p~find("xyzaxyz")
+  -- because this must match at least one character, it will locate the a
+  -- in the middle
+  self~assertTrue(self~verifyMatchResult(r, 4, 5, "a"))
+  self~assertTrue(self~verifyMatchResult(r~group(1), 4, 5, "a"))
 
+  r = p~find("aaaaxyz")
+  -- because this matches all of the a characters at the beginning
+  -- at the beginning
+  self~assertTrue(self~verifyMatchResult(r, 1, 5, "aaaa"))
+  self~assertTrue(self~verifyMatchResult(r~group(1), 4, 5, "a"))
+
+  p = .Pattern~compile("a(b)+c")     -- repetitive in the middle
+  self~assertFalse(p~matches("ac"))  -- must have at least one b
+  self~assertTrue(p~matches("abc"))  -- one should be ok too
+  self~assertTrue(p~matches("abbbbbbbbbbbbbbbbbc"))  -- and a whole bunch
+
+-- tests of the ? pattern modifier
+::method testQuestionGroupModifier
+  p = .Pattern~compile("(a)?")     -- zero or more occurrances of a
+  self~assertTrue(p~matches(""))  -- null string should match
+  self~assertTrue(p~matches("a")) -- single a should match
+  self~assertFalse(p~matches("aa")) -- multiple a's should not
+
+  -- a few startsWith tests.  These are all true
+  self~assertTrue(p~startsWith(""))  -- null string should match
+  self~assertTrue(p~startsWith("a")) -- single a should match
+  self~assertTrue(p~startsWith("aa")) -- multiple a's should match
+
+  r = p~find("xyzaxyz")
+  -- because this can match "nothing", this will be a zero length match at the beginning
+  self~assertTrue(self~verifyMatchResult(r, 1, 1, ""))
+  self~assertTrue(self~verifyMatchResult(r~group(1), 1, 1, ""))
+
+  r = p~find("aaaaxyz")
+  -- because this will only match the first a at the beginning
+  self~assertTrue(self~verifyMatchResult(r, 1, 2, "a"))
+  self~assertTrue(self~verifyMatchResult(r~group(1), 1, 2, "a"))
+
+  p = .Pattern~compile("a(b)?c")     -- repetitive in the middle
+  self~assertTrue(p~matches("ac"))  -- need not have a b
+  self~assertTrue(p~matches("abc"))  -- one should be ok too
+  self~assertFalse(p~matches("abbbbbbbbbbbbbbbbbc"))  -- only zero or 1 b works
+
+-- tests of the {n} pattern modifier
+::method testExactCountGroupModifier
+  p = .Pattern~compile("(a){3}")     -- exactly 3 occurrances of a
+  self~assertFalse(p~matches(""))  -- null string should not match
+  self~assertFalse(p~matches("a")) -- single a should not match
+  self~assertFalse(p~matches("aa")) -- one less than the required
+  self~assertTrue(p~matches("aaa")) -- The required number
+  self~assertFalse(p~matches("aaaa")) -- One required number
+
+  -- a few startsWith tests.
+  self~assertFalse(p~startsWith(""))  -- null string should not match
+  self~assertFalse(p~startsWith("aa")) -- still not enough
+  self~assertTrue(p~startsWith("aaa")) -- this is ok
+  self~assertTrue(p~startsWith("aaaa")) -- as is this
+
+  r = p~find("xaaxaaaxyz")
+  -- this will only match at the second grouping of a's
+  self~assertTrue(self~verifyMatchResult(r, 5, 8, "aaa"))
+  self~assertTrue(self~verifyMatchResult(r~group(1), 7, 8, "a"))
+
+  p = .Pattern~compile("a(b){2}c")     -- repetitive in the middle
+  self~assertFalse(p~matches("ac"))  -- must have 2 a's
+  self~assertFalse(p~matches("abc"))  -- also bad
+  self~assertTrue(p~matches("abbc"))  -- this is good
+  self~assertFalse(p~matches("abbbc"))  -- overshot the mark
+
+-- tests of the {n,m} pattern modifier
+::method testMinMaxCountGroupModifier
+  p = .Pattern~compile("(a){2,4}")     -- at least 2, no more than 4
+  self~assertFalse(p~matches(""))  -- null string should not match
+  self~assertFalse(p~matches("a")) -- single a should not match
+  self~assertTrue(p~matches("aa")) -- should match
+  self~assertTrue(p~matches("aaa")) -- ditto
+  self~assertTrue(p~matches("aaaa")) -- The limit
+  self~assertFalse(p~matches("aaaaa")) -- nope
+
+  -- a few startsWith tests.
+  self~assertFalse(p~startsWith(""))  -- null string should not match
+  self~assertFalse(p~startsWith("a")) -- single a should not match
+  self~assertTrue(p~startsWith("aa")) -- should match
+  self~assertTrue(p~startsWith("aaa")) -- ditto
+  self~assertTrue(p~startsWith("aaaa")) -- The limit
+  self~assertTrue(p~startsWith("aaaaa")) -- the extra is ignored.
+  self~assertTrue(p~startsWith("aaaa")) -- as is this
+
+  r = p~find("xaxaaaxyz")
+  -- this will only match at the second grouping of a's
+  self~assertTrue(self~verifyMatchResult(r, 4, 7, "aaa"))
+  self~assertTrue(self~verifyMatchResult(r~group(1), 6, 7, "a"))
+
+  r = p~find("xaxaaaaxyz")
+  -- this should match the full 4 characters
+  self~assertTrue(self~verifyMatchResult(r, 4, 8, "aaaa"))
+  self~assertTrue(self~verifyMatchResult(r~group(1), 7, 8, "a"))
+
+  p = .Pattern~compile("ab{2,3}c")     -- repetitive in the middle
+  self~assertFalse(p~matches("ac"))  -- must have 2 a's
+  self~assertFalse(p~matches("abc"))  -- also bad
+  self~assertTrue(p~matches("abbc"))  -- this is good
+  self~assertTrue(p~matches("abbbc"))  -- should also work
+  self~assertFalse(p~matches("abbbbc"))  -- should fail
+
+-- tests of the {n,} pattern modifier
+::method testAtLeastCountGroupModifier
+  p = .Pattern~compile("(a){3,}")     -- exactly 3 occurrances of a
+  self~assertFalse(p~matches(""))  -- null string should not match
+  self~assertFalse(p~matches("a")) -- single a should not match
+  self~assertFalse(p~matches("aa")) -- one less than the required
+  self~assertTrue(p~matches("aaa")) -- The required number
+  self~assertTrue(p~matches("aaaa")) -- still good
+
+  -- a few startsWith tests.
+  self~assertFalse(p~startsWith(""))  -- null string should not match
+  self~assertFalse(p~startsWith("aa")) -- still not enough
+  self~assertTrue(p~startsWith("aaa")) -- this is ok
+  self~assertTrue(p~startsWith("aaaa")) -- as is this
+
+  r = p~find("xaaxaaaxyz")
+  -- this will only match at the second grouping of a's
+  self~assertTrue(self~verifyMatchResult(r, 5, 8, "aaa"))
+  self~assertTrue(self~verifyMatchResult(r~group(1), 7, 8, "a"))
+
+  r = p~find("xaaxaaaaxyz")
+  -- this should match the full 4 characters
+  self~assertTrue(self~verifyMatchResult(r, 5, 9, "aaaa"))
+  self~assertTrue(self~verifyMatchResult(r~group(1), 8, 9, "a"))
+
+  p = .Pattern~compile("a(b){2,}c")     -- repetitive in the middle
+  self~assertFalse(p~matches("ac"))  -- must have 2 a's
+  self~assertFalse(p~matches("abc"))  -- also bad
+  self~assertTrue(p~matches("abbc"))  -- this is good
+  self~assertTrue(p~matches("abbbc"))  -- should also work

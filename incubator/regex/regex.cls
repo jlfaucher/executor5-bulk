@@ -2178,16 +2178,13 @@ self~getMatchMetrics:super(metrics)
   end
   return .GroupReference~new
 
-::attribute optional GET
-
 ::method getMatchMetrics
-  expose optional
   use arg metrics
 
   -- our following match pattern is optional, so we ignore any
   -- additions it makes to the metrics before sending it down the chain.
   minLength = metrics~minLength
-  optional~getMatchMetrics(metrics)
+  self~optional~getMatchMetrics(metrics)
   metrics~minLength = minLength
   metrics~deterministic = .false
 
@@ -2205,14 +2202,14 @@ self~getMatchMetrics:super(metrics)
   -- this is gold.
   if self~optional~match(context, position, target) then do
       -- update the group capture information
-      info~setMatch(position, context~matchEnd)
+      info~setMatch(target, position, context~matchEnd)
       if self~next~match(context, context~matchEnd, target) then do
           return .true
       end
   end
 
   -- we always match, even if it is nothing
-  info~setMatch(position, position)
+  info~setMatch(target, position, position)
 
   -- try again, but without the optional section.
   return self~next~match(context, position, target)
@@ -2227,7 +2224,7 @@ self~getMatchMetrics:super(metrics)
 
   info = self~getGroupReference(context)
   -- we always match, even if it is nothing
-  info~setMatch(position, position)
+  info~setMatch(target, position, position)
 
   -- first try for a match on the trailing part.  If that matches, we ignore
   -- the optional section
@@ -2241,7 +2238,7 @@ self~getMatchMetrics:super(metrics)
   end
 
   -- update the group capture information
-  info~setMatch(position, context~matchEnd)
+  info~setMatch(target, position, context~matchEnd)
   -- now try the final part
   return self~next~match(context, context~matchPosition, target)
 
@@ -2254,12 +2251,12 @@ self~getMatchMetrics:super(metrics)
 
   info = self~getGroupReference(context)
   -- we always match, even if it is nothing
-  info~setMatch(position, position)
+  info~setMatch(target, position, position)
 
   -- try for the optional match...no backtracking if it is a match.
   if self~optional~match(context, position, target) then do
       -- update the group capture information
-      info~setMatch(position, context~matchEnd)
+      info~setMatch(target, position, context~matchEnd)
       position = context~matchEnd
   end
 
@@ -2548,14 +2545,15 @@ self~getMatchMetrics:super(metrics)
       end
       loop forever
           info~setMatch(target, position, position + matchLength)
+          -- step the match position to the end of the last
+          -- successful match
+          position = context~matchEnd
+
           -- increment the counter now, and check for the max
           counter += 1
           if counter >= max then do
               leave
           end
-          -- step the match position to the end of the last
-          -- successful match
-          position = context~matchEnd
           -- no match, time to quit
           if \repNode~match(context, position, target) then do
               leave
