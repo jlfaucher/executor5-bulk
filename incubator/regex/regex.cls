@@ -578,6 +578,8 @@
       return .DotNode~new
   end
 
+-- parse the full range of escapes, including the operations.  This
+-- returns a node to handle the escaped character
 ::method parseEscapes
   -- first check for escaped characters that are really class nodes
   node = self~parseEscapedCharacters
@@ -587,6 +589,11 @@
       if node == .nil then do
           raise syntax 13.900 array("Missing character after \ escape character")
       end
+  end
+  else do
+      -- this just parsed a single character, turn it into a
+      -- node
+      return .StringNode~new(node)
   end
 
   return node
@@ -1456,7 +1463,7 @@
       end
       otherwise do
           -- if not one of the reserved characters at this point, we return the escaped char
-          if '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'~pos(ch) == 0 then do
+          if '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<>'~pos(ch) == 0 then do
               return ch
           end
 
@@ -1504,16 +1511,16 @@
           return .BeginTextNode~new
       end
       when ch == 'B' then do
-          return .NotWordBoundary~new
+          return .NotWordBoundaryNode~new
       end
       when ch == 'b' then do
-          return .WordBoundary~new
+          return .WordBoundaryNode~new
       end
       when ch == '<' then do
-          return .BeginWordBoundary~new
+          return .BeginWordBoundaryNode~new
       end
       when ch == '>' then do
-          return .EndWordBoundary~new
+          return .EndWordBoundaryNode~new
       end
       when ch == 'D' then do
           return .NotClassNode~new('0123456789')
@@ -1616,13 +1623,10 @@
 ::class MatchNode
 ::constant wordChars 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
 ::method init
-  expose next anchored
-
+  expose next
   next = .nil
-  anchored = .false    -- most nodes are not anchored
 
 ::attribute next
-::attribute anchored
 
 -- calculate the length of this match, if possible.  The
 -- default implementation assumes the length of this node is zero and
@@ -1662,31 +1666,27 @@
   end
 
 -- A node that enforces anchoring at the beginning of the text
-::class BeginTextNode subclass matchNode
-::method init
-  self~init:super
-  -- these are anchored
-  self~anchored = .true
-
+::class BeginTextNode subclass MatchNode
 ::method match
   use arg context, position, target
 
-  if context~atStart(position), self~next~match(context, position, target) then do
-      context~matchPosition = position
-      return .true
+  -- if not at the beginning, this fails
+  if \context~atStart(position) then do
+      return .false
   end
-
-  return .false
+  -- forward and complete
+  return self~next~match(context, position, target)
 
 -- A node that enforces anchoring at the end of the text
-::class EndTextNode subclass matchNode
+::class EndTextNode subclass MatchNode
 ::method match
   use arg context, position, target
-
-  if context~checkEnd(position), self~next~match(context, position, target) then do
-      return .true
+  -- must be at the end to match
+  if \context~checkEnd(position) then do
+      return .false
   end
-  return .false
+  -- forward and complete
+  return self~next~match(context, position, target)
 
 
 -- A node that enforces a match at the beginning of a word boundary
@@ -1694,19 +1694,39 @@
 ::method match
   use arg context, position, target
 
-  -- if at the start of the range, the character must be a word character
-  if \context~atStart(position) then do
-      if \target~matchChar(position - 1, self~wordChars) then do
-          return self~next~match(context, position, target)
+  -- At the very end (e.g., past the end really), the last character
+  -- must be a word character.  Note that we need to check for a
+  -- null string condition too
+  if context~checkEnd(position) then do
+      -- also at the beginning means this is a
+      -- null string.  No characters to check means not a
+      -- word boundary
+      if context~atStart(position) then do
+          return .false
       end
+      -- not a word character in the previous position?  This fails
+      if \target~matchChar(position - 1, self~wordChars) then do
+          return .false
+      end
+      -- good so far, pass this along
+      return self~next~match(context, position, target)
   end
 
-  -- At the very end (e.g., past the end really), the last character
-  -- must be a word character
-  if \context~checkEnd(position) then do
-      if \target~matchChar(position - 1, self~wordChars) then do
-          return self~next~match(context, position, target)
+  -- if at the start of the range, the character must be a word character
+  -- NB, the at the end check above handled the null string case, so we
+  -- can check the first character unconditionally
+  if context~atStart(position) then do
+      -- not a word character in the current position?  This fails
+      if \target~matchChar(position, self~wordChars) then do
+          return .false
       end
+      -- good so far, pass this along
+      return self~next~match(context, position, target)
+  end
+  -- exclusive OR situation.  Only one of these should be a word character to
+  -- qualify as a boundary
+  if target~matchChar(position, self~wordChars) && target~matchChar(position - 1, self~wordChars) then do
+      return self~next~match(context, position, target)
   end
 
   return .false
@@ -1717,48 +1737,100 @@
 ::method match
   use arg context, position, target
 
-  leftBoundary = .false
-  rightBoundary = .false
-
-  if \context~atStart(position) then do
-      if \target~matchChar(position - 1, self~wordChars) then do
-          leftBouundary = .true
+  -- At the very end (e.g., past the end really), the last character
+  -- must be a word character.  Note that we need to check for a
+  -- null string condition too
+  if context~checkEnd(position) then do
+      -- also at the beginning means this is a
+      -- null string.  No characters to check means not a
+      -- word boundary
+      if context~atStart(position) then do
+          -- a null string is not a word boundary, so this passes
+          return self~next~match(context, position, target)
       end
-  end
-
-  if \context~checkEnd(position) then do
-      if \target~matchChar(position - 1, self~wordChars) then do
-          rightBoundary = .true
+      -- a word character in the previous position?  This fails
+      if target~matchChar(position - 1, self~wordChars) then do
+          return .false
       end
+      -- good so far, pass this along
+      return self~next~match(context, position, target)
   end
 
-  if (\leftBoundary & \rightBoundary), self~next~match(context, position, target) then do
-      return .true
+  -- if at the start of the range, the character must be a word character
+  -- NB, the at the end check above handled the null string case, so we
+  -- can check the first character unconditionally
+  if context~atStart(position) then do
+      -- a word character in the current position?  This fails
+      if target~matchChar(position, self~wordChars) then do
+          return .false
+      end
+      -- good so far, pass this along
+      return self~next~match(context, position, target)
   end
-  return .false
+  -- exclusive OR situation.  If one is a boundary and the other not, this fails
+  -- qualify as a boundary
+  if target~matchChar(position, self~wordChars) && target~matchChar(position - 1, self~wordChars) then do
+      return .false
+  end
+  return self~next~match(context, position, target)
 
-
+-- Test if on the beginning boundary of a word.   To qualify,
+-- the current position must be a word character and the previous
+-- character must NOT be a word character or be the beginning of
+-- the range
 ::class BeginWordBoundaryNode subclass MatchNode
 ::method match
   use arg context, position, target
 
-  if \context~atStart(position) then do
-      if \target~matchChar(position - 1, self~wordChars) then do
-          return self~next~match(context, position, target)
-      end
+  -- At the very end (e.g., past the end really), by definition this
+  -- cannot be a beginning word boundary.
+  if context~checkEnd(position) then do
+      return .false
+  end
+
+  -- if the current character is not a word character, this fails too
+  if \target~matchChar(position, self~wordChars) then do
+      return .false
+  end
+  -- if the position is the start of the range,
+  -- this passes
+  if context~atStart(position) then do
+      return self~next~match(context, position, target)
+  end
+  -- the previous character must NOT be a word character to pass
+  if \target~matchChar(position - 1, self~wordChars) then do
+      return self~next~match(context, position, target)
   end
 
   return .false
 
-
+-- Test if on the ending boundary of a word.   To qualify,
+-- the current position must be the end of the range or,
+-- NOT be a word character and the previous  character must
+-- be a word character.
 ::class EndWordBoundaryNode subclass MatchNode
 ::method match
   use arg context, position, target
 
-  if \context~checkEnd(position) then do
-      if \target~matchChar(position - 1, self~wordChars) then do
-          return self~next~match(context, position, target)
-      end
+  -- At the very beginning?  by definition this
+  -- cannot be a ending word boundary.
+  if context~atStart(position) then do
+      return .false
+  end
+
+  -- if the previous character is not a word character, this fails too
+  if \target~matchChar(position - 1, self~wordChars) then do
+      return .false
+  end
+
+  -- if the position is the end, this passes
+  if context~checkEnd(position) then do
+      return self~next~match(context, position, target)
+  end
+
+  -- the current character MUST NOT be a word character to pass
+  if \target~matchChar(position, self~wordChars) then do
+      return self~next~match(context, position, target)
   end
 
   return .false
@@ -3191,7 +3263,10 @@ self~getMatchMetrics:super(metrics)
   -- no match
   return self~next~match(context, position, target)
 
-
+-- A matcher for beginning of text that works in
+-- multiline mode.  To match, this either must be
+-- the beginning of the line or the first character after
+-- a \r\n sequence
 ::class MultilineCaretNode subclass MatchNode
 ::method match
   use arg context, position, target
@@ -3201,32 +3276,28 @@ self~getMatchMetrics:super(metrics)
       return .false
   end
 
-  start = context~start
-
-  -- if we're at the start position, this matches.  Otherwise,
-  -- we need to see if we're positioned at a lineend
-  if start < position  then do
-      ch = target~substr(position - 1, 1)
-
-      if \target~matchChar(position - 1, "0A0D"x) then do
-          -- not positioned after a lineend, so this is a failure
-          return .false
-          -- TODO:  Obviously, there is a problem here.
-
-          -- if the previous character is a CR character, we need to
-          -- check if we're positioned between the two.  That's also a match
-          -- failure
-          if ch == '0D'x then do
-              if target~match(position, '0A'x) then do
-                  return .false
-              end
-          end
-      end
+  -- if at the real beginning, this is good
+  if context~atStart(postion) then do
+      return self~next~match(context, position, target)
   end
 
+  -- Not enough space to test for a linend?  This also fails ,
+  -- we need to see if we're positioned at a lineend
+  if \context~checkEnd(position - 2) then do
+      return .false
+  end
+  -- must have a CRLF sequence before this to match
+  if \target~match(position - 2, '0d0a'x) then do
+      return false
+  end
+  -- and go finish up
   return self~next~match(context, position, target)
 
 
+-- A matcher for beginning of text that works in
+-- multiline mode.  To match, this either must be
+-- the beginning of the line or the first character after
+-- a \n sequence
 ::class UnixMultilineCaretNode subclass MatchNode
 ::method match
   use arg context, position, target
@@ -3236,18 +3307,18 @@ self~getMatchMetrics:super(metrics)
       return .false
   end
 
-  start = context~start
-
-  -- if we're at the start position, this matches.  Otherwise,
-  -- we need to see if we're positioned at a lineend
-  if start < position  then do
-      if \target~match(position - 1, "0A"x) then do
-          -- not positioned after a lineend, so this is a failure
-          return .false
-      end
+  -- if at the real beginning, this is good
+  if context~atStart(postion) then do
+      return self~next~match(context, position, target)
   end
 
+  -- must have a CRLF sequence before this to match
+  if \target~match(position - 1, '0a'x) then do
+      return false
+  end
+  -- and go finish up
   return self~next~match(context, position, target)
+
 
 -- A terminal node for a full match chain.  This does any
 -- end-of-match processing.
@@ -3552,10 +3623,19 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
   expose text startPosition endPosition matchPosition matchEnd groups
   return .MatchResult~new(text, startPosition, endPosition, matchPosition, matchEnd, groups)
 
+-- check if we're at the start position
 ::method atStart
   expose startPosition
   use arg test
   return test == startPosition
+
+-- test is a position is equal to or greater than the
+-- start position.  Used for checks where the matcher needs
+-- to make tests prior to the current position
+::method checkStart
+  expose startPosition
+  use arg test
+  return test >= startPosition
 
 -- tests for whether a position is past the end of the range
 ::method checkEnd

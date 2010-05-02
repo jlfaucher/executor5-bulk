@@ -1274,3 +1274,30 @@ return testResult
   self~assertFalse(r~matched)
   r = p~find(" dog")
   self~assertFalse(r~matched)
+
+-- test the \b, \B, \<, and \> triggers
+::method testWordBoundary
+  p = .Pattern~compile("\bdog\b")
+  r = p~find("dog")
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
+  r = p~find(" dog ")
+  self~assertTrue(self~verifyMatchResult(r, 2, 5, "dog"))
+
+  -- not word boundary
+  p = .Pattern~compile("\Bdog\B")
+  r = p~find("dog")
+  self~assertFalse(r~matched)
+  r = p~find(" dog ")
+  self~assertFalse(r~matched)
+  r = p~find("adogb")
+  self~assertTrue(self~verifyMatchResult(r, 2, 5, "dog"))
+
+  p = .Pattern~compile("\<dog\>")
+  r = p~find("dog")
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
+  r = p~find(" dog ")
+  self~assertTrue(self~verifyMatchResult(r, 2, 5, "dog"))
+
+
