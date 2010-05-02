@@ -537,20 +537,27 @@
       return .MultilineCaretNode~new
   end
 
-
+-- Handle adding a handler for a $ anchor to the tree.  The operation
+-- depends on the multiLine and unixLines flags.  If not in multiLine,
+-- this will only match on the end of text OR if positioned on the appropriate
+-- linend marker that is at the end of the text.  If in multiline mode,
+-- then this will also recognize interior linend sequences.
 ::method parseEndAnchor
   -- an end anchor, which has 4 possibilities
-  if self~unixLines then do
-      if self~multiline then do
+  -- in multiline mode?  interior linends are recognized
+  if self~multiline then do
+      -- return the version appropriate to the linend style
+      if self~unixlines then do
           return .UnixMultiLineEndNode~new
       end
       else do
-          return .UnixLineEndNode~new
+          return .MultiLineEndNode~new
       end
   end
   else do
-      if self~multiline then do
-          return .MultiLineEndNode~new
+      -- return the version appropriate to the linend style
+      if self~unixlines then do
+          return .UnixLineEndNode~new
       end
       else do
           return .LineEndNode~new
@@ -2017,6 +2024,69 @@
   alternatives~append(newChoice)
 
 
+-- check for a lineend in non-unix mode.  This matches on a '\r\n' sequence
+-- or the END of input, but only if the lineend sequence is at the very end
+::class LineEndNode subclass MatchNode
+::method match
+  use arg context, position, target
+  if context~checkEnd(position) then do
+      -- we hit the end position
+      context~hitEnd = .true
+      -- we still need to forward this along, even if we've hit the
+      -- end position to ensure the terminators get poked.
+      return self~next~match(context, position, target)
+  end
+
+  endPosition = context~endPosition - 2
+
+  -- Current position too early to be a terminal linend?
+  -- this is definitely not a match
+  if position < endPosition then do
+      return .false
+  end
+  -- must be a \r\n sequence here, or this is not a match
+  if \target~match(position, '0d0a'x) then do
+      return .false
+  end
+  -- this still qualifies as hitting the end
+  context~hitEnd = .true
+  -- we still need to forward this along, even if we've hit the
+  -- end position to ensure the terminators get poked.  Make sure we
+  -- step over the linend
+  return self~next~match(context, position + 2, target)
+
+-- check for a lineend in non-unix mode.  This matches on a '\n' character
+-- or the END of input, but only if the lineend character is at the very end
+::class UnixLineEndNode subclass MatchNode
+::method match
+  use arg context, position, target
+  if context~checkEnd(position) then do
+      -- we hit the end position
+      context~hitEnd = .true
+      -- we still need to forward this along, even if we've hit the
+      -- end position to ensure the terminators get poked.
+      return self~next~match(context, position, target)
+  end
+
+  endPosition = context~endPosition - 1
+
+  -- Current position too early to be a terminal linend?
+  -- this is definitely not a match
+  if position < endPosition then do
+      return .false
+  end
+  -- must be a \n character here, or this is not a match
+  if \target~match(position, '0a'x) then do
+      return .false
+  end
+  -- this still qualifies as hitting the end
+  context~hitEnd = .true
+  -- we still need to forward this along, even if we've hit the
+  -- end position to ensure the terminators get poked.  Make sure we
+  -- step over the linend
+  return self~next~match(context, position + 1, target)
+
+
 -- check for a lineend in non-unix, multiline mode.  This matches on a '\r\n' sequence
 -- OR the end of the input
 ::class MultiLineEndNode subclass MatchNode
@@ -2025,6 +2095,10 @@
 
   -- end match, this is true
   if context~checkEnd(position) then do
+      -- we hit the end position
+      context~hitEnd = .true
+      -- we still need to forward this along, even if we've hit the
+      -- end position to ensure the terminators get poked.
       return self~next~match(context, position, target)
   end
 
@@ -2035,33 +2109,19 @@
       return .false
   end
 
-  if target~match(position, '0d0a'x), self~next~match(context, position, target) then do
-      return .true
-  end
-  return .false
-
-
--- check for a lineend in unix mode.  This matches on a '\n' sequence
--- but NOT the end of the input
-::class UnixLineEndNode subclass MatchNode
-::method match
-  use arg context, position, target
-
-  if context~checkEnd(position) then do
+  -- if the current position does not match a linend sequence, this fails
+  if \target~match(position, '0d0a'x) then do
       return .false
   end
-
-  endPosition = context~endPosition - 1
-
-  -- not possibly at the end of the text?
-  if position < endPosition then do
-      return .false
+  -- this still qualifies as hitting the end only if this was
+  -- at the end of the input
+  if position == endPosition then do
+      context~hitEnd = .true
   end
-
-  if target~match(position, '0a'x), self~next~match(context, position, target) then do
-      return .true
-  end
-  return .false
+  -- we still need to forward this along, even if we've hit the
+  -- end position to ensure the terminators get poked.  Make sure we
+  -- step over the linend
+  return self~next~match(context, position + 2, target)
 
 -- check for a lineend in unix mode.  This matches on a '\n' sequence
 -- but NOT the end of the input
@@ -2069,14 +2129,30 @@
 ::method match
   use arg context, position, target
 
+  -- end match, this is true
   if context~checkEnd(position) then do
+      -- we hit the end position
+      context~hitEnd = .true
+      -- we still need to forward this along, even if we've hit the
+      -- end position to ensure the terminators get poked.
       return self~next~match(context, position, target)
   end
 
-  if target~match(position, '0a'x), self~next~match(context, position, target) then do
-      return .true
+  endPosition = context~endPosition - 1
+
+  -- if the current position does not match a linend sequence, this fails
+  if \target~match(position, '0a'x) then do
+      return .false
   end
-  return .false
+  -- this still qualifies as hitting the end only if this was
+  -- at the end of the input
+  if position == endPosition then do
+      context~hitEnd = .true
+  end
+  -- we still need to forward this along, even if we've hit the
+  -- end position to ensure the terminators get poked.  Make sure we
+  -- step over the linend
+  return self~next~match(context, position + 2, target)
 
 -- check for being at the end of the text string.  Does not recognize linend sequences.
 ::class TextEndNode subclass MatchNode
