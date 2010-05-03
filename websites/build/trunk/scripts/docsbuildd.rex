@@ -126,6 +126,8 @@ if \sysisfiledirectory(newdir) then do
    'cp ./rxsock/rxsock-html.zip' newdir
    'cp ./winextensions/winextensions.pdf' newdir
    'cp ./winextensions/winextensions-html.zip' newdir
+   'cp ./rexxextensions/rexxextensions.pdf' newdir
+   'cp ./rexxextensions/rexxextensions-html.zip' newdir
    'cp' buildrpt newdir
    end
 else call log 'This was a duplicate build request.'
