@@ -151,11 +151,15 @@
 ::constant LOWERCASECHARACTERS "abcdefghijklmnopqrstuvwxyz"
 ::constant UPPERCASECHARACTERS "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 ::constant WHITESPACECHARACTERS '20090a0b0c0d'x
-::method init class
-  expose classFamilies registeredClassFamilies
+
+-- Initialize the class families the first time they are used
+::method initClassFamilies private
+  expose classFamilies
+  if classFamilies \= .nil then do
+      return
+  end
 
   classFamilies = .directory~new
-  registeredClassFamilies = .directory~new
 
   classFamilies["Lower"] = self~lowerCaseCharacters
   classFamilies["Upper"] = self~upperCaseCharacters
@@ -174,37 +178,39 @@
 
   classFamilies["RexxSymbol"] = classFamilies["Alnum"] || ".!?_"
   classFamilies["RexxVariableStart"] = classFamilies["Alpha"] || "!?_"
-  classFamilies["RexxOperator"] = "+-\/%*|&=<>" || 'aa'x
+  classFamilies["RexxOperator"] = "+-\/%*|&=<>" || 'aaac'x
   classFamilies["RexxSpecial"] = ",;:~()[]"
 
 -- retrieve a name class family from the list of registered class families
 -- subclasses are free to override this method to provide additional
 -- class families
-::method classFamily class
+::method classFamily
   expose classFamilies registeredClassFamilies
   use strict arg name
+  -- initialize the class families
+  self~initClassFamilies
 
-  family = classFamilies[name]
-
-  if .nil == family then do
-      return registeredClassFamilies[name]
-  end
-
-  return family
+  return classFamilies[name]
 
 -- register additional class families with a compiler instance
-::method registerClassFamily class
-  expose classFamilies registeredClassFamilies
+::method registerClassFamily
+  expose classFamilies
   use strict arg name, chars
+
+  -- initialize the class families
+  self~initClassFamilies
 
   if classFamilies~hasIndex(name) then do
       raise syntax 98.900 array("Class family" name "already exists")
   end
 
-  registeredClassFamilies[name] = chars
+  classFamilies[name] = chars
 
 -- initialize a regex compiler instance
 ::method init
+  expose classFamilies
+  classFamilies = .nil
+
   use strict arg options = .nil
   -- set default options
   self~multiline = .false
@@ -383,7 +389,7 @@
 
   current = endPos + end~length  -- position past the read position
   -- and return the string between the markers
-  return pattern~substr(startPos, endPos - startPos + 1)
+  return pattern~substr(startPos, endPos - startPos)
 
 -- extract a numeric value from the stream.  Terminates
 -- on the first non-numeric character or the EOS.
@@ -1360,7 +1366,7 @@
       familyName = familyName~substr(3)
   end
 
-  familyChars = .Pattern~classFamily(familyName)
+  familyChars = self~classFamily(familyName)
   if familyChars == .nil then do
       raise syntax 93.900 array("Unknown named class family '"familyName"'")
   end
@@ -1656,7 +1662,7 @@
       -- negation of the a named class family
       when ch == 'P' then do
           -- parse out the named property
-          return self~parseNamedFamily(.true)
+          return self~parseNamedClassFamily(.true)
       end
       otherwise  do
           -- back off the character..might be some other type of operation

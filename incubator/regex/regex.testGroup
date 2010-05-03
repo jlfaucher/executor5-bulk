@@ -104,6 +104,19 @@ return testResult
   end
   return .true
 
+-- Perform a test on one of the class family sets
+::method verifyClassFamily
+  use arg name, characters
+
+  p = .Pattern~compile("\p{"||name||"}")
+  self~checkIncludedCharacters(p, characters)
+  p = .Pattern~compile("\P{"||name||"}")
+  self~checkExcludedCharacters(p, characters)
+  p = .Pattern~compile("[\p{"||name||"}]")
+  self~checkIncludedCharacters(p, characters)
+  p = .Pattern~compile("[\P{"||name||"}]")
+  self~checkExcludedCharacters(p, characters)
+
 -- tests simple string matches
 ::method testAtom
   p = .Pattern~compile("foo")
@@ -1439,3 +1452,25 @@ return testResult
      p = .Pattern~compile("\c"||c)
      self~checkIncludedCharacters(p, d2c(i))
   end
+
+-- Named class families.  We need to test these both at the
+-- top level and inside of a class specification
+::method testClassFamilies
+  self~verifyClassFamily("Lower", .RegexCompiler~LowerCaseCharacters)
+  self~verifyClassFamily("Upper", .RegexCompiler~UpperCaseCharacters)
+  self~verifyClassFamily("ASCII", xrange('00'x, '7F'x))
+  self~verifyClassFamily("Alpha", .RegexCompiler~LowerCaseCharacters||.RegexCompiler~UpperCaseCharacters)
+  self~verifyClassFamily("Digit", .RegexCompiler~DigitCharacters)
+  self~verifyClassFamily("Alnum", .RegexCompiler~LowerCaseCharacters||.RegexCompiler~UpperCaseCharacters||.RegexCompiler~DigitCharacters)
+  self~verifyClassFamily("Punct", "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~")
+  self~verifyClassFamily("Graph", "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~"||.RegexCompiler~LowerCaseCharacters||.RegexCompiler~UpperCaseCharacters||.RegexCompiler~DigitCharacters)
+  self~verifyClassFamily("Print", "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~"||.RegexCompiler~LowerCaseCharacters||.RegexCompiler~UpperCaseCharacters||.RegexCompiler~DigitCharacters)
+  self~verifyClassFamily("Blank", "2009"x)
+  self~verifyClassFamily("Cntrl", xrange("00"x, "1F"x) || "7F"x)
+  self~verifyClassFamily("XDigit", "0123456789abcdefABCDEF")
+  self~verifyClassFamily("ODigit", "01234567")
+  self~verifyClassFamily("Space", .RegexCompiler~WhiteSpaceCharacters)
+  self~verifyClassFamily("RexxSymbol", .RegexCompiler~LowerCaseCharacters||.RegexCompiler~UpperCaseCharacters||.RegexCompiler~DigitCharacters||".!?_")
+  self~verifyClassFamily("RexxVariableStart", .RegexCompiler~LowerCaseCharacters||.RegexCompiler~UpperCaseCharacters||"!?_")
+  self~verifyClassFamily("RexxOperator", "+-\/%*|&=<>" || 'aaac'x)
+  self~verifyClassFamily("RexxSpecial", ",;:~()[]")
