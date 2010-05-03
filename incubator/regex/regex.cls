@@ -146,17 +146,22 @@
 ::constant METACHARACTERS "([{\^-$|]})?*+."
 ::constant CLASSMETACHARACTERS "[^-]&"
 ::constant CLOSURECHARACTERS "*+?{"
+::constant WORDCHARACTERS 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
+::constant DIGITCHARACTERS '0123456789'
+::constant LOWERCASECHARACTERS "abcdefghijklmnopqrstuvwxyz"
+::constant UPPERCASECHARACTERS "ABCDEVGHIJKLMNOPQRSTUVWXYZ"
+::constant WHITESPACECHARACTERS '20090a0b0c0d'x
 ::method init class
   expose classFamilies registeredClassFamilies
 
   classFamilies = .directory~new
   registeredClassFamilies = .directory~new
 
-  classFamilies["Lower"] = "abcdefghijklmnopqrstuvwxyz"
-  classFamilies["Upper"] = "ABCDEVGHIJKLMNOPQRSTUVWXYZ"
+  classFamilies["Lower"] = self~lowerCaseCharacters
+  classFamilies["Upper"] = self~upperCaseCharacters
   classFamilies["ASCII"] = xrange('00'x, '7F'x)
   classFamilies["Alpha"] = classFamilies["Lower"] || classFamilies["Upper"]
-  classFamilies["Digit"] = "0123456789"
+  classFamilies["Digit"] = self~digitCharacters
   classFamilies["Alnum"] = classFamilies["Alpha"] || classFamilies["Digit"]
   classFamilies["Punct"] = "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
   classFamilies["Graph"] = classFamilies["Alnum"] || classFamilies["Punct"]
@@ -164,12 +169,13 @@
   classFamilies["Blank"] = " " || '09'x
   classFamilies["Cntrl"] = xrange("00"x, "1F"x) || "7F"x
   classFamilies["XDigit"] = "0123456789abcdefABCDEF"
-  classFamilies["Space"] = ' ' || '09'x || '0a'x || '0d'x || '0c'x || '0b'x
+  classFamilies["ODigit"] = "01234567"
+  classFamilies["Space"] = self~whiteSpaceCharacters
 
   classFamilies["RexxSymbol"] = classFamilies["Alnum"] || ".!?_"
   classFamilies["RexxVariableStart"] = classFamilies["Alpha"] || "!?_"
   classFamilies["RexxOperator"] = "+-\/%*|&=<>" || 'aa'x
-  classFamilies["RexxSpecial"] = ",;~()[]"
+  classFamilies["RexxSpecial"] = ",;:~()[]"
 
 -- retrieve a name class family from the list of registered class families
 -- subclasses are free to override this method to provide additional
@@ -308,6 +314,18 @@
   end
 
   ch = pattern~subchar(current)
+  return ch
+
+-- peek at the next character after current parsing position without stepping
+-- the cursor.  Returns .nil if past the end of the pattern.
+::method peek2
+  expose pattern current length
+
+  if current + 1 > length then do
+      return .nil
+  end
+
+  ch = pattern~subchar(current + 1)
   return ch
 
 -- process reading of a single character, taking escaping
@@ -1092,6 +1110,8 @@
 
 -- parse a [abc] class modifier
 ::method parseClass
+  -- parse the section of the class, which may
+  -- included nested pieces
   node = self~parseClassSection
 
   ch = self~next
@@ -1109,29 +1129,34 @@
   negated = .false
   firstchar = .true
 
+  -- we look until the end of input or until we hit our
+  -- closing delimiter
   do forever
-      ch = self~next
-
+      ch = self~peek -- just taking a peek
       select
+          -- our caller checks for the closing piece, so
+          -- just return what we have and allow them to issue
+          -- the error message
           when ch == .nil then do
-              raise syntax 36.900 array("Missing closing ']' for character class")
+              return previousNode
           end
+          -- negation of the class
           when ch == '^' then do
               if firstChar then do
+                  self~next
                   negated = .true
                   iterate    -- go around and check the next character
               end
-              else do
-                  -- back up for the characcter scan
-                  self~previous
-              end
           end
+          -- this is likely the close of our section, so
+          -- finish up and let the caller determine if this is good
           when ch == ']' then do
               -- we've hit the end of this class spec, time to return.
-              self~previous
               return previousNode
           end
+          -- nested section within a class.  These are OR'd together
           when ch == "[" then do
+              self~next  -- step over the delimiter
               subNode = self~parseClass
 
               -- if we already have a node within the class, we combine this
@@ -1144,18 +1169,21 @@
               end
           end
           when ch == "&" then do
-              ch = self~next
+              self~next   -- step over the first &
+              ch = self~peek
               if ch == "&" then do     -- this is a logical "&&"
                   if prev == .nil then do
                       raise syntax 35.900 array("Missing left term for '&&' operator")
                   end
+                  self~next   -- step over the peeked character
 
                   rightHand = .nil
 
                   do forever
-                      ch = self~next
+                      ch = self~peek  -- peek so we don't ruin undoing a .nil read
                       select
                           when ch == "[" then do
+                              self~next   -- step over the peeked character
                               -- embedded class...recursively parse, and chain up, if necessary
                               node = self~parseClass
                               if rightHand == .nil then do
@@ -1168,11 +1196,10 @@
                           end
                           when ch == "]" | ch == "&" then do
                               -- either the complete end, or a section end.
-                              self~previous
                               leave
                           end
                           otherwise do
-                              self~previous
+                              -- parse out the next section
                               node = self~parseClassSection
                               if rightHand == .nil then do
                                   rightHand = node
@@ -1184,10 +1211,12 @@
                           end
                       end
                   end
-
+                  -- must have both a left term and a right term here
                   if rightHand == .nil then do
                       raise syntax 35.900 array("Missing right term for '&&' operator")
                   end
+                  -- This might be the entire term, or needs to be AND'd with
+                  -- the working chain
                   if previousNode == .nil then do
                       previousNode = rightHand
                   end
@@ -1196,53 +1225,33 @@
                   end
               end
               else do
-                  -- unread both characters...the "&" is just a literal char
-                  self~previous
+                  -- unread the character...the "&" is just a literal char
                   self~previous
               end
-
           end
-/* TODO:  This needs to be worked in.  It was moved from the parse class range method
+          -- possibly a named class family.  Try to process this here
           when if ch == "\\" then do
-          ch = self~next
-          if escaped == "p" || escaped == "P" then do
-              -- if this is the beginning of the range, we'll return that node instead.
-              -- otherwise, we'll process what we have and pick this up later
-              if inRange | characters \== "" then do
-                  -- push back both characters
-                  self~previous
-                  self~previous
-                  leave
-              end
-
-              version = escaped == "P"
-              -- strangely, this could be something like ^\P{ } which is a double negative
-              if negated then do
-                  version = \version
-              end
-              return self~parseNamedProperty(version)
-          end
-          else do
-              ch = self~parseEscapedCharacters
-              -- this is some sort of escaped op, probably
-              if ch == .nil then do
-                  if inRange | characters \= "" then do
-                      -- push back both characters
-                      self~previous
-                      self~previous
-                      leave
+              self~next   -- step over the peeked character
+              -- see if this is one of the special classes
+              subNode = self~parseEscapedClasses
+              -- if we have something special here, add this to the
+              -- group chain
+              if subNode \= .nil then do
+                  -- if we already have a node within the class, we combine this
+                  -- using a logical op
+                  if .nil == previousNode then do
+                      previousNode = subNode
                   end
                   else do
-                      -- we can process this as a node
-                      return self~parseEscapedOperations
+                      previousNode = .ClassOrNode~new(previousNode, subNode)
                   end
               end
+              else do
+                  self~previous  -- handled in the block parsing
+              end
           end
-      end
- */
           otherwise do
-              firstchar = .false
-              self~previous
+              nop  -- nothing extra to do here
           end
       end
 
@@ -1294,11 +1303,24 @@
           -- so it's still there
           leave
       end
+      -- an escape character...this might be a real escaped character or
+      -- a more complex operation.  If it's a character, accept it now, otherwise
+      -- stop parsing here and allow the higher level to handle the escaped
+      -- operation
+      if ch == '\' then do
+          self~next -- step over the escape
+          ch = self~parseEscapedCharacters
+          -- if this doesn't parse into a character, then step back and
+          -- finish up here
+          if ch == .nil then do
+              self~previous
+              leave
+          end
+          -- we have the character for adding to this range
+      end
       else do
-          -- This is a potential range character, pull it from
-          -- the queue now.  Need to handle escaped characters
-          -- here too
-          ch = self~singleChar
+          -- Simple character added to the range
+          ch = self~next
       end
 
       -- this could be followed by a '-' character
@@ -1324,8 +1346,8 @@
       return .ClassNode~new(characters)
   end
 
--- parse a named property and turn it into an equivalent family class
-::method parseNamedProperty
+-- parse a named class family and turn it into an equivalent family class
+::method parseNamedClassFamily
   use arg negated
 
   familyName = self~extractDelimited("{", "}")
@@ -1473,8 +1495,16 @@
       end
   end
 
--- special escaped operations
+-- special escaped operations, including the special character classes
 ::method parseEscapedOperations private
+  -- try for one of the classes first
+  class = self~parseEscapedClasses
+  -- done
+  if class \== .nil then do
+      return class
+  end
+  -- The next category of escape are the different anchor/group indicators.
+  -- These are only allowed at a top-level context
   ch = self~next
 
   select
@@ -1507,47 +1537,34 @@
               return .BackReferenceNode~new(referenceName)
           end
       end
+      -- start of text anchor
       when ch == 'A' then do
           return .BeginTextNode~new
       end
+      -- NOT on a word boundary anchor
       when ch == 'B' then do
           return .NotWordBoundaryNode~new
       end
+      -- ON a word boundary anchor
       when ch == 'b' then do
           return .WordBoundaryNode~new
       end
+      -- Beginning word boundary anchor
       when ch == '<' then do
           return .BeginWordBoundaryNode~new
       end
+      -- End of word boundary anchor
       when ch == '>' then do
           return .EndWordBoundaryNode~new
       end
-      when ch == 'D' then do
-          return .NotClassNode~new('0123456789')
-      end
-      when ch == 'd' then do
-          return .ClassNode~new('0123456789')
-      end
+      -- Last match.  We do iteration a little differently, so this
+      -- really matches the start of the text region we're looking at.
       when ch == 'G' then do
           return .LastMatch~new
       end
-      when ch == 'Q' then do
-          return self~parseLiteral
-      end
-      when ch == 'S' then do
-          return .NotClassNode~new('20090a0b0c0d'x)
-      end
-      when ch == 's' then do
-          return .ClassNode~new('20090a0b0c0d'x)
-      end
-      when ch == 'W' then do
-          return .NotClassNode~new('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_')
-      end
-      when ch == 'w' then do
-          return .ClassNode~new('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_')
-      end
+      -- this is like $, but it always is an end of input or linend
+      -- match, rather than multiline
       when ch == 'Z' then do
-          -- this is like $, but it always is an end of input match, rather than multiline
           if self~unixLines then do
               return .UnixLineEndNode~new
           end
@@ -1555,10 +1572,67 @@
               return .LineEndNode~new
           end
       end
+      -- always match the end of the text
       when ch == 'z' then do
           return .TextEndNode~new
       end
+      otherwise  do
+          self~previous -- revert the read character
+          return .nil -- return the failure indicator
+      end
+  end
 
+-- special escaped character classes, including the named class families
+::method parseEscapedClasses private
+  ch = self~next
+
+  select
+      when .nil == ch then do
+          raise syntax 93.900 array("Missing character after escape")
+      end
+      -- NOT a digit
+      when ch == 'D' then do
+          return .NotClassNode~new(self~DIGITCHARACTERS)
+      end
+      -- Is a digit
+      when ch == 'd' then do
+          return .ClassNode~new(self~DIGITCHARACTERS)
+      end
+      -- quoted literal..return the entire group
+      when ch == 'Q' then do
+          return self~parseLiteral
+      end
+      -- NOT whitespace
+      when ch == 'S' then do
+          return .NotClassNode~new(self~WHITESPACECHARACTERS)
+      end
+      -- is whitespace
+      when ch == 's' then do
+          return .ClassNode~new(self~WHITESPACECHARACTERS)
+      end
+      -- NOT a word character
+      when ch == 'W' then do
+          return .NotClassNode~new(self~WORDCHARACTERS)
+      end
+      -- is a word character
+      when ch == 'w' then do
+          return .ClassNode~new(self~WORDCHARACTERS)
+      end
+      -- named class family
+      when ch == 'p' then do
+          -- parse out the named property
+          return self~parseNamedClassFamily(.false)
+      end
+      -- negation of the a named class family
+      when ch == 'P' then do
+          -- parse out the named property
+          return self~parseNamedFamily(.true)
+      end
+      otherwise  do
+          -- back off the character..might be some other type of operation
+          self~previous
+          return .nil   -- return a failure indicator
+      end
   end
 
 -- parse out a literal defined by using the \Q and \E delimiters
