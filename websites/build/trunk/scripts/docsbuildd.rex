@@ -57,6 +57,7 @@ s = .streamsocket~new(txnserver, txnport)
 retc = s~open()
 if retc <> 'READY:'then do
    call log 'Error' retc 'connecting to' txnserver 'server stream.'
+   call SysFileDelete lockfile
    return
    end
 retc = s~lineout('items' qname)
@@ -68,6 +69,7 @@ if items > 0 then do
    retc = s~open()
    if retc <> 'READY:'then do
       call log 'Error' retc 'opening queue at' txnserver 'server.'
+      call SysFileDelete lockfile
       return
       end
    retc = s~lineout('pull' qname)
