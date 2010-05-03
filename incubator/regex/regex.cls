@@ -149,7 +149,7 @@
 ::constant WORDCHARACTERS 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
 ::constant DIGITCHARACTERS '0123456789'
 ::constant LOWERCASECHARACTERS "abcdefghijklmnopqrstuvwxyz"
-::constant UPPERCASECHARACTERS "ABCDEVGHIJKLMNOPQRSTUVWXYZ"
+::constant UPPERCASECHARACTERS "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 ::constant WHITESPACECHARACTERS '20090a0b0c0d'x
 ::method init class
   expose classFamilies registeredClassFamilies
@@ -599,22 +599,25 @@
 -- parse the full range of escapes, including the operations.  This
 -- returns a node to handle the escaped character
 ::method parseEscapes
-  -- first check for escaped characters that are really class nodes
-  node = self~parseEscapedCharacters
-  if node == .nil then do
-      -- there are more complex operations that are escaped
-      node = self~parseEscapedOperations
-      if node == .nil then do
-          raise syntax 13.900 array("Missing character after \ escape character")
-      end
-  end
-  else do
-      -- this just parsed a single character, turn it into a
-      -- node
-      return .StringNode~new(node)
-  end
+  -- There are overlaps between the excaped operations and the escaped
+  -- characters (\b is both backspace and word boundary, depending on context)
+  -- Allow this override to occur by processing the operations first.  In
+  -- contexts where word boundaries don't apply, this step is skipped.
 
-  return node
+  -- there are more complex operations that are escaped
+  node = self~parseEscapedOperations
+  -- if a recognized operation, return that
+  if node \= .nil then do
+      return node
+  end
+  -- now check for escaped characters that are really class nodes
+  char = self~parseEscapedCharacters
+  if char == .nil then do
+      raise syntax 13.900 array("Invalid character after \ escape character")
+  end
+  -- this just parsed a single character, turn it into a
+  -- node
+  return .StringNode~new(char)
 
 -- create a new group item for the pattern's list of numbered capture groups
 ::method newGroup
@@ -1458,15 +1461,35 @@
 
           raise syntax 93.900 array("Missing octal character")
       end
+      -- alert (bell)
       when ch == 'a' then do
           return '07'x
       end
+      -- backspace (only valid in a class...this is a word boundary elsewhere)
+      when ch == 'b' then do
+          return '08'x
+      end
+      -- control character corresponding to "x".  The
+      -- allowed control charaters are the values a-z or A-Z.  The
+      -- resulting character will be the value '01'x through '1a'x (decimal 26)
+      -- Either upper or lowercase letters are permitted
       when ch == 'c' then do
-          control = self~read
+
+          control = self~next
           if .nil == control then do
               raise syntax 93.900 array("Character expected after \c escape")
           end
-          return bitxor(control, '40'x)
+          -- check and convert the lower case characters
+          ctrl = self~LOWERCASECHARACTERS~pos(control)
+          if ctrl \= 0 then do
+              return d2c(ctrl)
+          end
+          -- now uppercase versions
+          ctrl = self~UPPERCASECHARACTERS~pos(control)
+          if ctrl \= 0 then do
+              return d2c(ctrl)
+          end
+          raise syntax 93.900 array("Invalid \c control character name")
       end
       when ch == 'e' then do
           return '1b'x  -- escape char
@@ -1482,6 +1505,9 @@
       end
       when ch == 't' then do
           return '09'x  -- horizontal tab
+      end
+      when ch == 'v' then do
+          return '0b'x  -- vertical tab
       end
       when ch == 'x' then do -- hex encoded character
           -- hex value

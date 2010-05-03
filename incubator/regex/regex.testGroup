@@ -1391,4 +1391,51 @@ return testResult
   r = p~find(" dog ")
   self~assertTrue(self~verifyMatchResult(r, 2, 5, "dog"))
 
+-- escape characters, both at top-level and inside classes
+::method testEscapes
+  -- horizontal tab character
+  p = .Pattern~compile("\t")
+  self~checkIncludedCharacters(p, "09"x)
 
+  -- vertical tab character
+  p = .Pattern~compile("\v")
+  self~checkIncludedCharacters(p, "0b"x)
+
+  -- escape
+  p = .Pattern~compile("\e")
+  self~checkIncludedCharacters(p, "1b"x)
+
+  -- form feed
+  p = .Pattern~compile("\f")
+  self~checkIncludedCharacters(p, "0c"x)
+
+  -- new line
+  p = .Pattern~compile("\n")
+  self~checkIncludedCharacters(p, "0a"x)
+
+  -- carriage return
+  p = .Pattern~compile("\r")
+  self~checkIncludedCharacters(p, "0d"x)
+
+  -- alert (bell)
+  p = .Pattern~compile("\a")
+  self~checkIncludedCharacters(p, "07"x)
+
+  -- the whole set as a class
+  p = .Pattern~compile("[\a\t\e\f\n\r\v]")
+  self~checkIncludedCharacters(p, "07091b0c0a0b0d"x)
+
+  -- check each of the escaped control characters
+  -- check each combination and make sure it maps back
+  -- to the correct combo
+  do i = 1 to 26
+     c = .RegexCompiler~LowerCaseCharacters~subchar(i)
+     p = .Pattern~compile("\c"||c)
+     self~checkIncludedCharacters(p, d2c(i))
+  end
+  -- both the uppercase and lowercase combinations
+  do i = 1 to 26
+     c = .RegexCompiler~UpperCaseCharacters~subchar(i)
+     p = .Pattern~compile("\c"||c)
+     self~checkIncludedCharacters(p, d2c(i))
+  end
