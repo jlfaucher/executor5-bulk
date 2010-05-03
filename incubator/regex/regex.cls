@@ -2102,8 +2102,6 @@
 ::method match
   use arg context, position, target
   if context~checkEnd(position) then do
-      -- we hit the end position
-      context~hitEnd = .true
       -- we still need to forward this along, even if we've hit the
       -- end position to ensure the terminators get poked.
       return self~next~match(context, position, target)
@@ -2120,12 +2118,11 @@
   if \target~match(position, '0d0a'x) then do
       return .false
   end
-  -- this still qualifies as hitting the end
-  context~hitEnd = .true
   -- we still need to forward this along, even if we've hit the
-  -- end position to ensure the terminators get poked.  Make sure we
-  -- step over the linend
-  return self~next~match(context, position + 2, target)
+  -- end position to ensure the terminators get poked.  NOTE:  We do
+  -- NOT step over the linend here.  The following characters still
+  -- exist, but are not skipped over
+  return self~next~match(context, position, target)
 
 -- check for a lineend in non-unix mode.  This matches on a '\n' character
 -- or the END of input, but only if the lineend character is at the very end
@@ -2133,8 +2130,6 @@
 ::method match
   use arg context, position, target
   if context~checkEnd(position) then do
-      -- we hit the end position
-      context~hitEnd = .true
       -- we still need to forward this along, even if we've hit the
       -- end position to ensure the terminators get poked.
       return self~next~match(context, position, target)
@@ -2151,12 +2146,11 @@
   if \target~match(position, '0a'x) then do
       return .false
   end
-  -- this still qualifies as hitting the end
-  context~hitEnd = .true
   -- we still need to forward this along, even if we've hit the
-  -- end position to ensure the terminators get poked.  Make sure we
-  -- step over the linend
-  return self~next~match(context, position + 1, target)
+  -- end position to ensure the terminators get poked.  NOTE:  We do
+  -- NOT step over the linend here.  The following characters still
+  -- exist, but are not skipped over
+  return self~next~match(context, position, target)
 
 
 -- check for a lineend in non-unix, multiline mode.  This matches on a '\r\n' sequence
@@ -2167,8 +2161,6 @@
 
   -- end match, this is true
   if context~checkEnd(position) then do
-      -- we hit the end position
-      context~hitEnd = .true
       -- we still need to forward this along, even if we've hit the
       -- end position to ensure the terminators get poked.
       return self~next~match(context, position, target)
@@ -2185,15 +2177,11 @@
   if \target~match(position, '0d0a'x) then do
       return .false
   end
-  -- this still qualifies as hitting the end only if this was
-  -- at the end of the input
-  if position == endPosition then do
-      context~hitEnd = .true
-  end
   -- we still need to forward this along, even if we've hit the
-  -- end position to ensure the terminators get poked.  Make sure we
-  -- step over the linend
-  return self~next~match(context, position + 2, target)
+  -- end position to ensure the terminators get poked.  NOTE:  We do
+  -- NOT step over the linend here.  The following characters still
+  -- exist, but are not skipped over
+  return self~next~match(context, position, target)
 
 -- check for a lineend in unix mode.  This matches on a '\n' sequence
 -- but NOT the end of the input
@@ -2203,8 +2191,6 @@
 
   -- end match, this is true
   if context~checkEnd(position) then do
-      -- we hit the end position
-      context~hitEnd = .true
       -- we still need to forward this along, even if we've hit the
       -- end position to ensure the terminators get poked.
       return self~next~match(context, position, target)
@@ -2216,15 +2202,11 @@
   if \target~match(position, '0a'x) then do
       return .false
   end
-  -- this still qualifies as hitting the end only if this was
-  -- at the end of the input
-  if position == endPosition then do
-      context~hitEnd = .true
-  end
   -- we still need to forward this along, even if we've hit the
-  -- end position to ensure the terminators get poked.  Make sure we
-  -- step over the linend
-  return self~next~match(context, position + 2, target)
+  -- end position to ensure the terminators get poked.  NOTE:  We do
+  -- NOT step over the linend here.  The following characters still
+  -- exist, but are not skipped over
+  return self~next~match(context, position, target)
 
 -- check for being at the end of the text string.  Does not recognize linend sequences.
 ::class TextEndNode subclass MatchNode
@@ -3384,13 +3366,10 @@ self~getMatchMetrics:super(metrics)
   probes = (context~endPosition - position) - minLength + 1
 
   if probes <= 0 then do
-      context~hitEnd = .true
       return .false
   end
 
   do i = position for probes
-      -- the test for hitting the end generally turns this on, so ensure it is off
-      context~hitEnd = .false
       if self~next~match(context, i, target) then do
           -- update the match information
           context~setMatchPosition(i, context~matchEnd);
@@ -3512,14 +3491,13 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 -- implements the matching operations.
 ::class MatchContext
 ::method init
-  expose text startPosition endPosition matchPosition matchEnd root groups hitEnd locals
+  expose text startPosition endPosition matchPosition matchEnd root groups locals
   use strict arg text, startPosition, length, root, groups
   -- make sure the length is bounded.  The end position is one
   -- past the end
   endPosition = min(text~length + 1, startPosition + length)
   matchPosition = 0
   matchEnd = 0
-  hitEnd = .false  -- indicator of whether a search has reached the end
   -- if we have groups, then do a deep copy of the directory
   -- to create a working groups list
   if groups \= .nil then do
@@ -3562,8 +3540,7 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 -- test if the pattern is an exact match for the entire region, from
 -- beginning to end
 ::method matches
-  expose text startPosition matchPosition hitEnd matchEndRequired root
-  hitEnd = .false
+  expose text startPosition matchPosition matchEndRequired root
   matchEndRequired = .true   -- this must match exactly
   -- this is the default result, and possibly checked by filters
   -- that need to examine the starting match position
@@ -3580,8 +3557,7 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 -- region up to the end of the pattern.  This does not need to match
 -- to the end of the region
 ::method startsWith
-  expose text startPosition matchPosition hitEnd matchEndRequired root
-  hitEnd = .false
+  expose text startPosition matchPosition matchEndRequired root
   matchEndRequired = .false  -- This does not need to match exactly
   -- this is the default result, and possibly checked by filters
   -- that need to examine the starting match position
@@ -3597,18 +3573,16 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 -- search the region for the first position with a pattern match.  Returns
 -- a match result object with the match result
 ::method find
-  expose text startPosition endPosition matchPosition hitEnd matchEndRequired root
+  expose text startPosition endPosition matchPosition matchEndRequired root
   -- the start is optional, but defalt to the beginning of the
   -- region (typical)
   use strict arg start = (startPosition)
 
   if startPosition > endPosition then do
       matchPosition = 0
-      hitEnd = .true  -- sort of true by definition
       return self~matchResult  -- give a match result object with the info
   end
 
-  hitEnd = .false
   matchEndRequired = .false  -- This does not need to match exactly
   -- this node implements a sliding search search of the pattern.
   -- Not really part of the pattern tree, but it wrappers it
@@ -3639,11 +3613,10 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 
 -- tests for whether a position is past the end of the range
 ::method checkEnd
-  expose endPosition hitEnd
+  expose endPosition
   use arg test
   if test >= endPosition then do
       -- remember that we've hit the end of the pattern
-      hitEnd = .true
       return .true
   end
   return .false
@@ -3655,10 +3628,6 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 -- any set match positions
 ::attribute matchPosition
 ::attribute matchEnd
-
--- indicates we've run out of string before the match
--- completes
-::attribute hitEnd
 
 -- indicates whether the pattern must exactly match the end
 -- of the string (e.g., we're doing a match vs. a locate)

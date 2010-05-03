@@ -1228,23 +1228,39 @@ return testResult
   r = p~find(" dog")
   self~assertFalse(r~matched)
 
+  p = .Pattern~compile("\Adog")
+  self~assertTrue(p~matches("dog"))
+
+  self~assertTrue(p~startsWith("dog"))
+  self~assertTrue(p~startsWith("dog "))
+
+  r = p~find("dog")
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
+
+  r = p~find("dog ")
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
+
+  r = p~find(" dog")
+  self~assertFalse(r~matched)
+
   -- end of line anchor
 
   p = .Pattern~compile("dog$")
   self~assertTrue(p~matches("dog"))
-  -- This will match if there is just linend at the end
-  -- of the text
-  self~assertTrue(p~matches("dog"||"0d0a"x))
+  -- This will not match if there is a linend because the pattern
+  -- does not account for the characters
+  self~assertFalse(p~matches("dog"||"0d0a"x))
 
   self~assertTrue(p~startsWith("dog"))
+  -- however, this WILL work
   self~assertTrue(p~startsWith("dog"||"0d0a"x))
   self~assertFalse(p~startsWith("dog "))
 
   r = p~find("dog")
   self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
-  -- the linend shows up in the match position
+  -- the linend is not included in the match position
   r = p~find("dog"||"0d0a"x)
-  self~assertTrue(self~verifyMatchResult(r, 1, 6, "dog"||"0d0a"x))
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
 
   r = p~find(" dog")
   self~assertTrue(self~verifyMatchResult(r, 2, 5, "dog"))
@@ -1256,6 +1272,58 @@ return testResult
   r = p~find("dog"||"0d0a0"x||" ")
   self~assertFalse(r~matched)
   r = p~find("dog"||"0d0a00d0a"x||" ")
+  self~assertFalse(r~matched)
+
+  -- same as the "unmoded" $
+  p = .Pattern~compile("dog\Z")
+  self~assertTrue(p~matches("dog"))
+  -- This will not match if there is a linend because the pattern
+  -- does not account for the characters
+  self~assertFalse(p~matches("dog"||"0d0a"x))
+
+  self~assertTrue(p~startsWith("dog"))
+  self~assertTrue(p~startsWith("dog"||"0d0a"x))
+  self~assertFalse(p~startsWith("dog "))
+
+  r = p~find("dog")
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
+  -- the linend does not show up in the match position
+  r = p~find("dog"||"0d0a"x)
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
+
+  r = p~find(" dog")
+  self~assertTrue(self~verifyMatchResult(r, 2, 5, "dog"))
+
+  r = p~find("dog ")
+  self~assertFalse(r~matched)
+
+  -- the linends only match if they are in the end position
+  r = p~find("dog"||"0d0a0"x||" ")
+  self~assertFalse(r~matched)
+  r = p~find("dog"||"0d0a00d0a"x||" ")
+  self~assertFalse(r~matched)
+
+  -- matches only the end of text (no linend processing)
+  p = .Pattern~compile("dog\z")
+  self~assertTrue(p~matches("dog"))
+  -- This will match if there is just linend at the end
+  -- of the text
+  self~assertFalse(p~matches("dog"||"0d0a"x))
+
+  self~assertTrue(p~startsWith("dog"))
+  self~assertFalse(p~startsWith("dog"||"0d0a"x))
+  self~assertFalse(p~startsWith("dog "))
+
+  r = p~find("dog")
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
+  -- the linend is not processed
+  r = p~find("dog"||"0d0a"x)
+  self~assertFalse(r~matched)
+
+  r = p~find(" dog")
+  self~assertTrue(self~verifyMatchResult(r, 2, 5, "dog"))
+
+  r = p~find("dog ")
   self~assertFalse(r~matched)
 
   -- combine both start and end
