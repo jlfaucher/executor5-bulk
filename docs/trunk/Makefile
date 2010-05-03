@@ -41,7 +41,7 @@
 #----------------------------------------------------------------------------
 
 
-SUBDIRS=oodialog readme rexxpg rexxref rxftp rxmath rxsock reccextensions winextensions
+SUBDIRS=oodialog readme rexxpg rexxref rxftp rxmath rxsock rexxextensions winextensions
 SUBDIRS_EX=$(SUBDIRS) ootest
 
 all:
