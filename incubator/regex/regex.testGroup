@@ -302,10 +302,7 @@ return testResult
   r = p~find('xxabcyy')
 
   self~assertTrue(r~matched)
-  self~assertEquals(3, r~start)
-  self~assertEquals(6, r~end)
-  self~assertEquals(3, r~length)
-  self~assertEquals("abc", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 3, 6, "abc"))
   self~assertEquals("xx", r~prefix)
   self~assertEquals("yy", r~suffix)
 
@@ -456,6 +453,7 @@ return testResult
   self~assertTrue(self~verifyMatchResult(r, 4, 7, "abc"))
   self~assertEquals("aBc", r~prefix)
   self~assertEquals("yy", r~suffix)
+
 -- character class union tests
 ::method testClassUnion
   p = .Pattern~compile("[a-b[A-B]]")
@@ -554,25 +552,50 @@ return testResult
   p = .Pattern~compile("\d")
   self~checkIncludedCharacters(p, "0123456789")
 
+  -- as part of a class specification
+  p = .Pattern~compile("[a\db]")
+  self~checkIncludedCharacters(p, "ab0123456789")
+
   -- no digits
   p = .Pattern~compile("\D")
   self~checkExcludedCharacters(p, "0123456789")
+
+  -- no digits but 1 and 2 added back in
+  p = .Pattern~compile("[\D12]")
+  self~checkExcludedCharacters(p, "03456789")
 
   -- whitespace
   p = .Pattern~compile("\s")
   self~checkIncludedCharacters(p, "20090a0b0c0d"x)
 
+  -- whitespace + a couple
+  p = .Pattern~compile("[a\sb]")
+  self~checkIncludedCharacters(p, "ab"||"20090a0b0c0d"x)
+
   -- non-whitespace
   p = .Pattern~compile("\S")
   self~checkExcludedCharacters(p, "20090a0b0c0d"x)
+
+  -- non-whitespace + a couple while space
+  p = .Pattern~compile("[ \S\t]" )
+  self~checkExcludedCharacters(p, "0a0b0c0d"x)
 
   -- word character
   p = .Pattern~compile("\w")
   self~checkIncludedCharacters(p, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789")
 
+  -- word character plus a couple
+  p = .Pattern~compile("[ \w\t]")
+  self~checkIncludedCharacters(p, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789 " || "09"x)
+
   -- non-word character
   p = .Pattern~compile("\W")
   self~checkExcludedCharacters(p, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789")
+
+  -- non-word character, plus some added back in
+  p = .Pattern~compile("[a\Wb]")
+  self~checkExcludedCharacters(p, "cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789")
+
 
 -- tests of the * pattern modifier
 ::method testStarModifier

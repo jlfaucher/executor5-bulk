@@ -1229,8 +1229,9 @@
                   self~previous
               end
           end
-          -- possibly a named class family.  Try to process this here
-          when if ch == "\\" then do
+          -- possibly a predefined class or named class family.  This is
+          -- handled here
+          when ch == "\" then do
               self~next   -- step over the peeked character
               -- see if this is one of the special classes
               subNode = self~parseEscapedClasses
@@ -1474,12 +1475,15 @@
           return '0c'x  -- form feed
       end
       when ch == 'n' then do
-          return '0a'x  -- form feed
+          return '0a'x  -- new line
       end
       when ch == 'r' then do
-          return '0d'x  -- form feed
+          return '0d'x  -- carriage return
       end
-      when ch == 'x' then do
+      when ch == 't' then do
+          return '09'x  -- horizontal tab
+      end
+      when ch == 'x' then do -- hex encoded character
           -- hex value
           return x2c(self~readHex || self~readHex)
       end
