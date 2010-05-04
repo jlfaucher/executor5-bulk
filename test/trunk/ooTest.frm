@@ -348,18 +348,18 @@ return 0
   ::method allNames
     return self~class~allNames
 
-  /** testForName()
+  /** getTestForName()
    * Returns the numeric test type constant for the specified name, or .nil if
    * there is no such test type.
    */
-  ::method testForName class
+  ::method getTestForName class
     expose names
     use strict arg name
 
     if names~UNIT == .nil then self~populate
     return names~entry(name~upper)
 
-  ::method testForName
+  ::method getTestForName
     use strict arg name
     return self~class(name)
 
@@ -802,7 +802,7 @@ return 0
     use strict arg problem
 
     if problem~additionalObject~isA(.ooTestCase) then do
-      info = problem~additionalObject~class~testCaseInfo
+      info = problem~additionalObject~class~caseInfo
       if info~hasEntry("test_Case-revsion") then do
         parse value info~entry("test_Case-date") with date time offset junk
         say "  svn:    r" || info~entry("test_Case-revsion") "  Change date:" date time offset
@@ -1138,7 +1138,7 @@ return 0
   ::attribute isAutomatedTest get
   ::attribute isAutomatedTest set private
 
-  -- A directory object that is used to set the TestCaseInfo class attribute of
+  -- A directory object that is used to set the caseInfo class attribute of
   -- each Test class this test group contains.
   ::attribute testInfo get
     expose testInfo
@@ -1364,7 +1364,7 @@ return 0
     if \ isSubClassOf(test, "ooTestCase") then
       raise syntax 88.917 array ("1 'test'", "must be a subclass of the ooTestCase class. Found:" test)
 
-    test~testCaseInfo = self~testInfo
+    test~caseInfo = self~testInfo
     tests[test~ooTestType] = test
     self~currentTypes~put(test~ooTestType)
     self~testCount += 1
@@ -1396,7 +1396,7 @@ return 0
     if \ isSubClassOf(suite, "ooTestSuite") then
       raise syntax 88.917 array ("2 'suite'", "must be a subclass of the ooTestSuite class. Found:" suite)
 
-    test~testCaseInfo = self~testInfo
+    test~caseInfo = self~testInfo
     testsWithSuite[test~ooTestType] = .TestWithSuite~new(test, suite)
     self~currentTypes~put(test~ooTestType)
     self~testCount += 1
@@ -1447,7 +1447,7 @@ return 0
     if \ isSubClassOf(suite, "ooTestSuite") then
       raise syntax 88.917 array ("3 'suite'", "if used, must be a subclass of the ooTestSuite class. Found:" suite)
 
-    test~testCaseInfo = self~testInfo
+    test~caseInfo = self~testInfo
     testCollections[test~ooTestType] = .TestWithSuiteAndNames~new(test, methods, suite)
     self~currentTypes~put(test~ooTestType)
     self~testCount += 1

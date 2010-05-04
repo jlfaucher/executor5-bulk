@@ -674,8 +674,8 @@ return mode
   TestCaseTable[aTestCase]~queue(dateTime": endTest")
   dir=.directory~new~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("endTest") aTestCase~string)
 
-  -- save class' 'testCaseInfo' with test case for later analysis
-  dir~setentry("OOREXXUNIT.class_testCaseInfo", aTestCase~class~testCaseInfo)
+  -- save class' 'caseInfo' with test case for later analysis
+  dir~setentry("OOREXXUNIT.class_testCaseInfo", aTestCase~class~caseInfo)
 
   logQueue~queue(dir)
   fAssertions=fAssertions+aTestCase~assertCount
@@ -724,7 +724,7 @@ return mode
   dir=.directory~new~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("startTest") aTestCase~string)
 
   -- save class' 'testCaseInfo' with test case for later analysis
-  dir~setentry("OOREXXUNIT.class_testCaseInfo", aTestCase~class~testCaseInfo)
+  dir~setentry("OOREXXUNIT.class_testCaseInfo", aTestCase~class~caseInfo)
 
   logQueue~queue(dir)
 
@@ -1466,11 +1466,11 @@ return str
 ::class "TestCase" public inherit "Assert"
 
 ::attribute defaultTestResultClass class
-::attribute TestCaseInfo class
+::attribute caseInfo class
 
 ::method init class
   self~defaultTestResultClass=.TestResult -- set default: use TestResult class
-  self~TestCaseInfo=.directory~new
+  self~caseInfo=.directory~new
   forward class (super)
 
 
@@ -1479,9 +1479,9 @@ return str
   parse arg fName
 
   fCountTestCases=1  -- default: individual test
-  self~TestCaseInfo=.directory~new -- directory to contain information on test
+  self~caseInfo=.directory~new -- directory to contain information on test
 
-  clzTCI=self~class~testCaseInfo    -- get access to clz' 'testCaseInfo' dir
+  clzTCI=self~class~caseInfo    -- get access to clz' 'caseInfo' dir
   s=clzTCI~entry("test_Case-source")
   if .nil<>s then                   -- if source available, memorize fully qualified file name
      self~definedInFile=s
@@ -1491,7 +1491,7 @@ return str
   self~init:super    -- let superclass initialize
 
 
-::method TestCaseInfo attribute                 -- ooRexxUnit only
+::method caseInfo attribute                 -- ooRexxUnit only
 
 
 ::method createResult      -- creates a default TestResult object
@@ -1690,18 +1690,21 @@ exceptionHandler:
     raise syntax 88.914 array ("1 'classObj'", 'Class')
 
   -- Get the test methods names.  By convention this is all methods starting
-  -- with "TEST"
-  testMethodNames = .array~new
+  -- with "TEST".  We use a set because there may be duplicates in the
+  -- class hierarchy
+  testMethodNames = .set~new
 
- -- Only get methods of the receiver class (= testClass)
-  methSupplier = classObj~methods(.nil)
+ -- Get all methods that start with "TEST", even ones from the superclasses
+ -- Some tests might have method overrides that test different variants of
+ -- the base test methods
+  methSupplier = classObj~methods
   do while methSupplier~available -- iterate over supplied methods
      name = methSupplier~index
-     if name~left(4)="TEST" then testMethodNames~append(name)
+     if name~left(4)="TEST" then testMethodNames~put(name)
      methSupplier~next
   end
 
-  return testMethodNames~sort
+  return testMethodNames~makearray~sort
 
 
 ::method addTest
@@ -1820,7 +1823,7 @@ exceptionHandler:
 ::routine makeDirTestInfo public
    use arg aTestCaseClass, arrLines
 
-   tmpDir=aTestCaseClass~TestCaseInfo   -- get directory object to add infos to
+   tmpDir=aTestCaseClass~caseInfo   -- get directory object to add infos to
 
    keyWord=""
    tOut=xrange("A","Z")||xrange("a","z")
