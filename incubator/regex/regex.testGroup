@@ -43,6 +43,7 @@
 
   group = .TestGroup~new(fileSpec)
   group~add(.regex.testGroup)
+  group~add(.regex.mutable.testGroup)
 
   if group~isAutomatedTest then return group
 
@@ -53,8 +54,22 @@ return testResult
 
 ::requires "ooTest.frm"     -- load the ooRexxUnit classes
 ::requires "regex.cls"
+::class "regex.mutable.testGroup" subclass "regex.testGroup" public
+-- method used for test polymorphism.  Depending on the class of the
+-- test group, this will either return a string or a mutablebuffer instance
+-- for match, startswith, and find tests
+::method td
+  use arg d
+  return .mutablebuffer~new(d)   -- this is the mutable buffer form
 
 ::class "regex.testGroup" subclass ooTestCase public
+
+-- method used for test polymorphism.  Depending on the class of the
+-- test group, this will either return a string or a mutablebuffer instance
+-- for match, startswith, and find tests
+::method td
+  use arg d
+  return d   -- this is the string form
 
 -- utility method to perform tests on character class
 -- tests to ensure they will only match characters
@@ -67,10 +82,10 @@ return testResult
       ch = d2c(i)
       -- this is in the target set, this must match
       if includes~pos(ch) > 0 then do
-          self~assertTrue(p~matches(ch))
+          self~assertTrue(p~matches(self~td(ch)))
       end
       else do
-          self~assertFalse(p~matches(ch))
+          self~assertFalse(p~matches(self~td(ch)))
       end
   end
 
@@ -85,10 +100,10 @@ return testResult
       ch = d2c(i)
       -- this is in the target set, this must match
       if excludes~pos(ch) > 0 then do
-          self~assertFalse(p~matches(ch))
+          self~assertFalse(p~matches(self~td(ch)))
       end
       else do
-          self~assertTrue(p~matches(ch))
+          self~assertTrue(p~matches(self~td(ch)))
       end
   end
 
@@ -125,26 +140,25 @@ return testResult
   self~assertEquals("foo", p~string)
 
   -- now some matching/search tests
-  self~assertTrue(p~matches("foo"))
-  self~assertFalse(p~matches("foobar"))
-  self~assertFalse(p~matches("fo"))
-  self~assertFalse(p~matches(" foo"))
-  self~assertTrue(p~startsWith("foo"))
-  self~assertTrue(p~startsWith("fooBar"))
-  self~assertFalse(p~startsWith(" foo"))
+  self~assertTrue(p~matches(self~td("foo")))
+  self~assertFalse(p~matches(self~td("foobar")))
+  self~assertFalse(p~matches(self~td("fo")))
+  self~assertFalse(p~matches(self~td(" foo")))
+  self~assertTrue(p~startsWith(self~td("foo")))
+  self~assertTrue(p~startsWith(self~td("fooBar")))
+  self~assertFalse(p~startsWith(self~td(" foo")))
 
-  r = p~find("foo")
+  r = p~find(self~td("foo"))
   self~assertTrue(self~verifyMatchResult(r, 1, 4, "foo"))
-  self~assertEquals(3, r~length)
   self~assertEquals("", r~prefix)
   self~assertEquals("", r~suffix)
 
-  r = p~find("xxxfooyyy")
+  r = p~find(self~td("xxxfooyyy"))
   self~assertTrue(self~verifyMatchResult(r, 4, 7, "foo"))
   self~assertEquals(3, r~length)
   self~assertEquals("foo", r~text)
 
-  r = p~find("xyzzy")
+  r = p~find(self~td("xyzzy"))
   self~assertFalse(r~matched)
   self~assertEquals(0, r~start)
   self~assertEquals(0, r~end)
