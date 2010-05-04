@@ -1577,6 +1577,25 @@ return testResult
   self~verifyClassFamily("RexxVariableStart", .RegexCompiler~LowerCaseCharacters||.RegexCompiler~UpperCaseCharacters||"!?_")
   self~verifyClassFamily("RexxOperator", "+-\/%*|&=<>" || 'aaac'x)
   self~verifyClassFamily("RexxSpecial", ",;:~()[]")
+  -- all variants with the "Is" prefix
+  self~verifyClassFamily("IsLower", .RegexCompiler~LowerCaseCharacters)
+  self~verifyClassFamily("IsUpper", .RegexCompiler~UpperCaseCharacters)
+  self~verifyClassFamily("IsASCII", xrange('00'x, '7F'x))
+  self~verifyClassFamily("IsAlpha", .RegexCompiler~LowerCaseCharacters||.RegexCompiler~UpperCaseCharacters)
+  self~verifyClassFamily("IsDigit", .RegexCompiler~DigitCharacters)
+  self~verifyClassFamily("IsAlnum", .RegexCompiler~LowerCaseCharacters||.RegexCompiler~UpperCaseCharacters||.RegexCompiler~DigitCharacters)
+  self~verifyClassFamily("IsPunct", "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~")
+  self~verifyClassFamily("IsGraph", "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~"||.RegexCompiler~LowerCaseCharacters||.RegexCompiler~UpperCaseCharacters||.RegexCompiler~DigitCharacters)
+  self~verifyClassFamily("IsPrint", "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~"||.RegexCompiler~LowerCaseCharacters||.RegexCompiler~UpperCaseCharacters||.RegexCompiler~DigitCharacters)
+  self~verifyClassFamily("IsBlank", "2009"x)
+  self~verifyClassFamily("IsCntrl", xrange("00"x, "1F"x) || "7F"x)
+  self~verifyClassFamily("IsXDigit", "0123456789abcdefABCDEF")
+  self~verifyClassFamily("IsODigit", "01234567")
+  self~verifyClassFamily("IsSpace", .RegexCompiler~WhiteSpaceCharacters)
+  self~verifyClassFamily("IsRexxSymbol", .RegexCompiler~LowerCaseCharacters||.RegexCompiler~UpperCaseCharacters||.RegexCompiler~DigitCharacters||".!?_")
+  self~verifyClassFamily("IsRexxVariableStart", .RegexCompiler~LowerCaseCharacters||.RegexCompiler~UpperCaseCharacters||"!?_")
+  self~verifyClassFamily("IsRexxOperator", "+-\/%*|&=<>" || 'aaac'x)
+  self~verifyClassFamily("IsRexxSpecial", ",;:~()[]")
 
 
 -- various named group tests
