@@ -631,22 +631,27 @@
   groupCount += 1  -- each group gets allocated when first encountered
   -- we treat all of these as named groups, so just
   -- allocate one with the counter name
-  self~getGroupReference(groupCount)
+  self~createGroupReference(groupCount)
   return groupCount
 
 -- Create the group reference item for a numbered or named group.
--- If the group already exists, this is an error
+-- A named group can be used in multiple places
 ::method getGroupReference
+  expose groups
+  use arg id
+  -- prevent numeric names from overlapping with the numbered groups
+  if id~datatype('Whole') then do
+      raise syntax 93.900 array("Numeric names cannot be use for named groups; found" id);
+  end
+  return self~createGroupReference(id)
+
+-- create a group reference item in our set of groups
+::method createGroupReference private
   expose groups
   use arg id
 
   if groups == .nil then do
       groups = .directory~new
-  end
-
-  -- 0 is a special group name, so it can't be used.
-  if groups~hasIndex(id) | id == '0' then do
-      raise syntax 93.900 array("Duplicate group identifier" id);
   end
 
   groupInfo = .GroupReference~new(id)
@@ -724,6 +729,10 @@
               groupInfo~firstNode = wrapper
               groupInfo~lastNode = wrapper
           end
+          -- Three possibilities here:
+          -- 1)  (?<=... a "zero-width positive lookbehind"
+          -- 2)  (?<!... a "zero-width negative lookbehind"
+          -- 3)  (?<xxxxx>... a named capture group
           when ch == "<" then do
               self~next -- step over the peeked character
               -- a look behind.  These are a pain.  We can only
@@ -733,53 +742,56 @@
               -- the metrics for the entire expression tree.
 
               -- this is the "=" or "!" qualifier
-              ch = self~next
+              ch = self~peek
 
-              group = .GroupEnvelope~new
-              -- parse the encapsulated group expression.  This gets
-              -- slotted between the group element and the terminator
-              group~next = self~parseExpression(group~terminator)
+              if ch == "=" | ch == "!" then do
+                  self~next -- step over the modifier
+                  group = .GroupEnvelope~new
+                  -- parse the encapsulated group expression.  This gets
+                  -- slotted between the group element and the terminator
+                  group~next = self~parseExpression(group~terminator)
 
-              -- now have the pattern see if it can calculate the length
-              metrics = self~getPatternMetrics(group~next)
+                  -- now have the pattern see if it can calculate the length
+                  metrics = self~getPatternMetrics(group~next)
 
-              if \info.maxValue then do
-                  raise syntax 98.900 array("A look behind group does not have a deterministic maximum length")
-              end
-              -- look behind match
-              if ch == "=" then do
-                  wrapper = .PositiveLookBehind~new(group, metrics)
-              end
-              else if ch == "!" then do
-                  wrapper = .NegativeLookBehind~new(group, metrics)
+                  if \info.maxValue then do
+                      raise syntax 98.900 array("A look behind group does not have a deterministic maximum length")
+                  end
+                  -- look behind match
+                  if ch == "=" then do
+                      wrapper = .PositiveLookBehind~new(group, metrics)
+                  end
+                  else if ch == "!" then do
+                      wrapper = .NegativeLookBehind~new(group, metrics)
+                  end
+                  else do
+                      raise syntax 93.915 array("=!", ch)
+                  end
+                  -- wrappered nodes fill both roles
+                  groupInfo~firstNode = wrapper
+                  groupInfo~lastNode = wrapper
               end
               else do
-                  raise syntax 93.915 array("=!", ch)
-              end
-              -- wrappered nodes fill both roles
-              groupInfo~firstNode = wrapper
-              groupInfo~lastNode = wrapper
-          end
-          when ch == "<" then do
-              self~next -- step over the peeked character
-              -- named capture group
-              self~previous
-              referenceName = self~extractDelimited("{", "}")
-              -- add this to our reference table
-              self~getGroupReference(referenceName)
-              -- a named capturing group
-              group = .CapturingGroupEnvelope~new(referenceName)
-              -- parse the encapsulated group expression.  This gets
-              -- slotted between the group element and the terminator
-              group~next = self~parseExpression(group~terminator)
+                  -- back up for the delimiter parsing
+                  self~previous
+                  -- and parse out the delimited name
+                  referenceName = self~extractDelimited("<", ">")
+                  -- add this to our reference table
+                  self~getGroupReference(referenceName)
+                  -- a named capturing group
+                  group = .CapturingGroupEnvelope~new(referenceName)
+                  -- parse the encapsulated group expression.  This gets
+                  -- slotted between the group element and the terminator
+                  group~next = self~parseExpression(group~terminator)
 
-              -- to wire in to the caller, we need to provide a node that
-              -- is plugged into the previous node, and a node that will be
-              -- the new tail end of the chain.
-              groupInfo~firstNode = group
-              groupInfo~lastNode = group~terminator
-              -- we need the group id to process the closure
-              groupInfo~id = referenceName
+                  -- to wire in to the caller, we need to provide a node that
+                  -- is plugged into the previous node, and a node that will be
+                  -- the new tail end of the chain.
+                  groupInfo~firstNode = group
+                  groupInfo~lastNode = group~terminator
+                  -- we need the group id to process the closure
+                  groupInfo~id = referenceName
+              end
           end
           otherwise do
               self~next -- step over the peeked character
