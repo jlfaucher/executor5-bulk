@@ -1712,7 +1712,8 @@
 
 
 -- read and validate a octal value in an escaped value, returning the
--- eqivalent character value
+-- eqivalent character value.  Since octal escapes are variable length,
+-- we just return .nil rather than raise a syntax error.
 ::method readOctal private
   ch = self~next
   if ch == .nil then do
@@ -1731,7 +1732,7 @@
   ch = self~next
 
   if .nil \= ch then do
-      if '1234567890abcdefABCDEF'~pos(ch) > 0 then do
+      if '1234567890abcdefABCDEF'~pos(ch) == 0 then do
           raise syntax 93.900 array("Invalid hex digit '"ch"'")
       end
       return ch

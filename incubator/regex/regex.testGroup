@@ -1521,6 +1521,22 @@ return testResult
   p = .Pattern~compile("\a")
   self~checkIncludedCharacters(p, "07"x)
 
+  -- hex value
+  p = .Pattern~compile("\x20")
+  self~checkIncludedCharacters(p, "20"x)
+
+  -- one-digit octal value
+  p = .Pattern~compile("\07")
+  self~checkIncludedCharacters(p, "07"x)
+
+  -- two-digit octal value
+  p = .Pattern~compile("\040")
+  self~checkIncludedCharacters(p, "20"x)
+
+  -- three-digit octal value
+  p = .Pattern~compile("\0100")
+  self~checkIncludedCharacters(p, "40"x)
+
   -- the whole set as a class
   p = .Pattern~compile("[\(\[\{\\\^\-\$\|\]\}\)\?\*\+\.\a\t\e\f\n\r\v]")
   self~checkIncludedCharacters(p, "07091b0c0a0b0d"x||"([{\^-$|]})?*+.")
