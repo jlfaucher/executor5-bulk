@@ -1433,6 +1433,66 @@ return testResult
 
 -- escape characters, both at top-level and inside classes
 ::method testEscapes
+  -- escaped backslash character
+  p = .Pattern~compile("\\")
+  self~checkIncludedCharacters(p, "\")
+
+  -- escaped dot character
+  p = .Pattern~compile("\.")
+  self~checkIncludedCharacters(p, ".")
+
+  -- escaped dollar sign
+  p = .Pattern~compile("\$")
+  self~checkIncludedCharacters(p, "$")
+
+  -- escaped caret
+  p = .Pattern~compile("\^")
+  self~checkIncludedCharacters(p, "^")
+
+  -- escaped bracket
+  p = .Pattern~compile("\[")
+  self~checkIncludedCharacters(p, "[")
+
+  -- escaped bracket
+  p = .Pattern~compile("\]")
+  self~checkIncludedCharacters(p, "]")
+
+  -- escaped paren
+  p = .Pattern~compile("\(")
+  self~checkIncludedCharacters(p, "(")
+
+  -- escaped paren
+  p = .Pattern~compile("\)")
+  self~checkIncludedCharacters(p, ")")
+
+  -- escaped paren
+  p = .Pattern~compile("\)")
+  self~checkIncludedCharacters(p, ")")
+
+  -- escaped brace
+  p = .Pattern~compile("\{")
+  self~checkIncludedCharacters(p, "{")
+
+  -- escaped brace
+  p = .Pattern~compile("\}")
+  self~checkIncludedCharacters(p, "}")
+
+  -- escaped star
+  p = .Pattern~compile("\*")
+  self~checkIncludedCharacters(p, "*")
+
+  -- escaped question
+  p = .Pattern~compile("\?")
+  self~checkIncludedCharacters(p, "?")
+
+  -- escaped plus
+  p = .Pattern~compile("\+")
+  self~checkIncludedCharacters(p, "+")
+
+  -- escaped OR
+  p = .Pattern~compile("\|")
+  self~checkIncludedCharacters(p, "|")
+
   -- horizontal tab character
   p = .Pattern~compile("\t")
   self~checkIncludedCharacters(p, "09"x)
@@ -1462,8 +1522,8 @@ return testResult
   self~checkIncludedCharacters(p, "07"x)
 
   -- the whole set as a class
-  p = .Pattern~compile("[\a\t\e\f\n\r\v]")
-  self~checkIncludedCharacters(p, "07091b0c0a0b0d"x)
+  p = .Pattern~compile("[\(\[\{\\\^\-\$\|\]\}\)\?\*\+\.\a\t\e\f\n\r\v]")
+  self~checkIncludedCharacters(p, "07091b0c0a0b0d"x||"([{\^-$|]})?*+.")
 
   -- check each of the escaped control characters
   -- check each combination and make sure it maps back
