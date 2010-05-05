@@ -1681,3 +1681,11 @@ return testResult
   r = self~find(p, "xxxcbaxxx")
   self~assertTrue(self~verifyMatchResult(r, 4, 5, "c"))
 
+  -- test that a trailing "|" means match anything
+  p = .Pattern~compile("(a|b|)xyz")
+
+  self~assertTrue(self~matches(p, "axyz"))
+  self~assertTrue(self~matches(p, "bxyz"))
+  self~assertTrue(self~matches(p, "xyz"))
+  self~assertFalse(self~matches(p, "cxyz"))
+

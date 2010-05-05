@@ -468,9 +468,9 @@
               alternative = .AlternativeNode~new
               -- this now assumes the terminator
               alternative~next = terminator
+              -- add the node to the alternative
+              alternative~addAlternative(node)
           end
-          -- add the node to the alternative
-          alternative~addAlternative(node)
       end
   end
 
@@ -554,9 +554,9 @@
       end
   end
   -- it's possible there is nothing to return.  In that case, just
-  -- return the terminator node we were given
+  -- return .nil to indicate we have nothing here
   if firstNode == .nil then do
-      return terminator
+      return .nil
   end
   else do
       -- put the terminator as the next element of the last node of
@@ -699,7 +699,7 @@
               group = .GroupEnvelope~new
               -- parse the encapsulated group expression.  This gets
               -- slotted between the group element and the terminator
-              group~next = self~parseSequence(group~terminator)
+              group~next = self~parseExpression(group~terminator)
 
               -- to wire in to the caller, we need to provide a node that
               -- is plugged into the previous node, and a node that will be
@@ -812,7 +812,7 @@
               group = .GroupEnvelope~new
               -- parse the encapsulated group expression.  This gets
               -- slotted between the group element and the terminator
-              group~next = self~parseSequence(group~terminator)
+              group~next = self~parseExpression(group~terminator)
 
               -- to wire in to the caller, we need to provide a node that
               -- is plugged into the previous node, and a node that will be
@@ -830,7 +830,7 @@
       group = .CapturingGroupEnvelope~new(id)
       -- parse the encapsulated group expression.  This gets
       -- slotted between the group element and the terminator
-      group~next = self~parseSequence(group~terminator)
+      group~next = self~parseExpression(group~terminator)
 
       -- to wire in to the caller, we need to provide a node that
       -- is plugged into the previous node, and a node that will be
@@ -904,6 +904,27 @@
 ::attribute caseless
 ::attribute multiline
 ::attribute dotall
+
+-- take a snapshot of our option flags for saving
+-- and restoring around groups that alter the flags
+-- just in the local context.  Returns a directory
+-- with the flag settings
+::method saveFlags
+  flags = .directory~new
+  flags~unixlines = self~unixlines
+  flags~caseless = self~caseless
+  flags~multiline = self~multiline
+  flags~dotall = self~dotall
+
+-- restore the flag settings from a previous
+-- saveFlags collection
+::method restoreFlags
+  use arg flags
+
+  self~unixlines = flags~unixlines
+  self~caseless = flags~caseless
+  self~multiline = flags~multiline
+  self~dotall = flags~dotall
 
 -- process the closures for a group node.  This handles all of the
 -- repetition count details
@@ -1783,7 +1804,7 @@
   -- is a normal terminator, then set our successor to be
   -- the branch version.  The latter case generally happens
   -- when a parsed sequence is wrapped in an alteration
-  if next == .nil | next~isa(.TerminatorNode) then do
+  if next == .nil | next~isa(.TerminatorNode) | next~isa(.GroupTerminator) then do
       -- this is a branch terminator, which merely records
       -- the match position and return true if it is reached.
       self~next = .BranchTerminatorNode~new
@@ -2176,9 +2197,7 @@
 
 ::method match
   expose alternatives
-
   use arg context, position, target
-
   -- return on the first match
   do alternative over alternatives
       if alternative~match(context, position, target)  then do
@@ -3074,20 +3093,6 @@ self~getMatchMetrics:super(metrics)
          end
   end
 
-  return .false
-
-
--- class Logical & ^ node
-::class ClassAndNotNode subclass ClassLogicalNode
-::method match
-  use arg context, position, target
-
-  if \context~checkEnd(position) then do
-      if self~leftSide~match(context, position, target) then
-         if \self~rightSide(context, position, target) then do
-             return self~next~match(context, context~matchEnd, target)
-         end
-  end
   return .false
 
 -- base wrapper class for group operations.  This holds all of
