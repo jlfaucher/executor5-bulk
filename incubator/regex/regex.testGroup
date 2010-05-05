@@ -1644,4 +1644,40 @@ return testResult
   self~assertTrue(self~verifyMatchResult(r~group(0), 1, 3, "ab"))
   self~assertTrue(self~verifyMatchResult(r~group("foo"), 2, 3, "b"))
 
+-- variations of "this OR that"
+::method testAlternation
+  p = .Pattern~compile("a|b")
+
+  -- either of these will do
+  self~assertTrue(self~matches(p, "a"))
+  self~assertTrue(self~matches(p, "b"))
+  self~assertFalse(self~matches(p, "c"))
+
+  self~assertTrue(self~startsWith(p, "abc"))
+  self~assertTrue(self~startsWith(p, "bac"))
+
+  r = self~find(p, "xxxabcxxx")
+  self~assertTrue(self~verifyMatchResult(r, 4, 5, "a"))
+  r = self~find(p, "xxxbacxxx")
+  self~assertTrue(self~verifyMatchResult(r, 4, 5, "b"))
+
+
+  p = .Pattern~compile("a|b|c")
+
+  -- either of these will do
+  self~assertTrue(self~matches(p, "a"))
+  self~assertTrue(self~matches(p, "b"))
+  self~assertTrue(self~matches(p, "c"))
+  self~assertFalse(self~matches(p, "d"))
+
+  self~assertTrue(self~startsWith(p, "abc"))
+  self~assertTrue(self~startsWith(p, "bac"))
+  self~assertTrue(self~startsWith(p, "cba"))
+
+  r = self~find(p, "xxxabcxxx")
+  self~assertTrue(self~verifyMatchResult(r, 4, 5, "a"))
+  r = self~find(p, "xxxbacxxx")
+  self~assertTrue(self~verifyMatchResult(r, 4, 5, "b"))
+  r = self~find(p, "xxxcbaxxx")
+  self~assertTrue(self~verifyMatchResult(r, 4, 5, "c"))
 

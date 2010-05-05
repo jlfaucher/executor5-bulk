@@ -426,7 +426,6 @@
   use arg terminator   -- this is the end node that gets plugged into the end of the expression.
 
   alternative = .nil   -- if we have alternatives in this expression, we group them all
-
   do forever
       -- parse a sequence and chain up with the terminator
       node = self~parseSequence(terminator)
@@ -447,12 +446,16 @@
           end
       end
       else do
+          self~next -- step over over the | operator
           -- if we've only processed the first node, create an alternative and
           -- add the node.
           if alternative == .nil then do
               alternative = .AlternativeNode~new
-              alternative~addAlternative(node)
+              -- this now assumes the terminator
+              alternative~next = terminator
           end
+          -- add the node to the alternative
+          alternative~addAlternative(node)
       end
   end
 
@@ -1767,7 +1770,7 @@
   submetrics = .directory~new
   submetrics~maxLength = 0
   submetrics~minLength = 0
-  submetrics~fixedMax = .true
+  submetrics~maxValid = .true
   submetrics~deterministic = .true
 
   child~getMatchMetrics(submetrics)
@@ -1777,7 +1780,11 @@
 -- be used as part of a composite
 ::method terminate
   expose next
-  if next == .nil then do
+  -- if we don't have a successor yet or our successor
+  -- is a normal terminator, then set our successor to be
+  -- the branch version.  The latter case generally happens
+  -- when a parsed sequence is wrapped in an alteration
+  if next == .nil | next~isa(.TerminatorNode) then do
       -- this is a branch terminator, which merely records
       -- the match position and return true if it is reached.
       self~next = .BranchTerminatorNode~new
@@ -2174,16 +2181,17 @@
   -- return on the first match
   do alternative over alternatives
       if alternative~match(context, position, target)  then do
-          -- TODO:  Should this return now, or should it forward to
-          -- the next stage?
-          return .true
+          -- once we get a match, send this along to the next
+          return self~next~match(context, context~matchEnd, target)
       end
   end
 
   return .false
 
+-- calculate match metrics for an alternative node
 ::method getMatchMetrics
   expose alternatives
+  use arg metrics
 
   maxLength = 0
   minLength = 999999999
@@ -2194,28 +2202,28 @@
 
   do alternative over alternatives
       -- get our repetition node values as if it was the only thing of interest
-      submetrics = self~getChildMatchMetrics(repNode)
+      submetrics = self~getChildMatchMetrics(alternative)
       maxLength = max(maxLength, subMetrics~maxLength)
       minLength = min(minLength, subMetrics~minLength)
       deterministic = deterministic & submetrics~deterministic
-      maxValid = maxValid & submetrics~deterministic
+      maxValid = maxValid & submetrics~maxValid
   end
 
 
-  metrics~minLength = metrics~minLength + minLen
-  metrics~maxLength = metrics~maxLength + maxlen
+  metrics~minLength = metrics~minLength + minLength
+  metrics~maxLength = metrics~maxLength + maxLength
 
   metrics~deterministic = metrics~deterministic & deterministic
-  metrics~maxValid = metrics~maxValid * maxValid
+  metrics~maxValid = metrics~maxValid & maxValid
   -- send this along
   self~getMatchMetrics:super(metrics)
 
 -- add an expression to our list of alternatives
 ::method addAlternative
   expose alternatives
-
   use arg newChoice
 
+  newChoice~terminate   -- make sure this has a terminator
   alternatives~append(newChoice)
 
 
@@ -2940,6 +2948,7 @@ self~getMatchMetrics:super(metrics)
 ::method getMatchMetrics
   use arg metrics
 
+  -- the maximum can no longer be trusted
   metrics~maxValid = .false
   self~getMatchMetrics:super(metrics)
 
