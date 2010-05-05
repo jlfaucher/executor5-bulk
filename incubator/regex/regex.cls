@@ -429,6 +429,21 @@
   do forever
       -- parse a sequence and chain up with the terminator
       node = self~parseSequence(terminator)
+      -- if there is no node here, this could be a "dangling"
+      -- "|" on the end of an alternative.  If this is the case,
+      -- (i.e., we've been accumulating alternatives), then add
+      -- a special everything matcher to the end and finish up
+      if node == .nil then do
+          if alternative \= .nil then do
+              -- add a node that will match everything
+              alternative~addAlternative(.EverythingNode~new)
+              return alternative
+          end
+          -- We expected something here and got nothing
+          raise syntax 93.900 array("Invalid regular expression sequence")
+      end
+      -- if we've had at least one choice, then this just gets added to the
+      -- list
       if alternative \== .nil then do
           alternative~addAlternative(node)
       end
@@ -708,26 +723,22 @@
           end
           when ch == "=" then do
               self~next -- step over the peeked character
-              -- a positive look ahead
-              group = .GroupEnvelope~new
-              -- parse the encapsulated group expression.  This gets
-              -- slotted between the group element and the terminator
-              group~next = self~parseExpression(group~terminator)
-
-              wrapper = .PositiveLookAhead~new(group)
+              -- parse the encapsulated group expression, but terminate
+              -- with a branch terminator node.
+              node = self~parseExpression(.BranchTerminator~new)
+              -- this is a special wrapper
+              wrapper = .PositiveLookAhead~new(node)
               -- wrappered nodes fill both roles
               groupInfo~firstNode = wrapper
               groupInfo~lastNode = wrapper
           end
           when ch == "!" then do
               self~next -- step over the peeked character
-              -- a negative look ahead
-              group = .GroupEnvelope~new
-              -- parse the encapsulated group expression.  This gets
-              -- slotted between the group element and the terminator
-              group~next = self~parseExpression(group~terminator)
-
-              wrapper = .NegativeLookAhead~new(group)
+              -- parse the encapsulated group expression, but terminate
+              -- with a branch terminator node.
+              node = self~parseExpression(.BranchTerminator~new)
+              -- this is a special wrapper
+              wrapper = .NegativeLookAhead~new(node)
               -- wrappered nodes fill both roles
               groupInfo~firstNode = wrapper
               groupInfo~lastNode = wrapper
@@ -749,26 +760,21 @@
 
               if ch == "=" | ch == "!" then do
                   self~next -- step over the modifier
-                  group = .GroupEnvelope~new
-                  -- parse the encapsulated group expression.  This gets
-                  -- slotted between the group element and the terminator
-                  group~next = self~parseExpression(group~terminator)
+                  -- parse the encapsulated group expression, but terminate
+                  -- with a branch terminator node.
+                  node = self~parseExpression(.BranchTerminator~new)
 
-                  -- now have the pattern see if it can calculate the length
-                  metrics = self~getPatternMetrics(group~next)
+                  -- gather some metrics.  If there is a deterministic maximum,
+                  -- we can optimize the back search by using it.  Otherwise,
+                  -- we just go back to the beginning
+                  metrics = self~getPatternMetrics(node)
 
-                  if \info.maxValue then do
-                      raise syntax 98.900 array("A look behind group does not have a deterministic maximum length")
-                  end
-                  -- look behind match
+                  -- create the matcher type based on the modifier
                   if ch == "=" then do
-                      wrapper = .PositiveLookBehind~new(group, metrics)
+                      wrapper = .PositiveLookBehind~new(node, metrics)
                   end
                   else if ch == "!" then do
-                      wrapper = .NegativeLookBehind~new(group, metrics)
-                  end
-                  else do
-                      raise syntax 93.915 array("=!", ch)
+                      wrapper = .NegativeLookBehind~new(node, metrics)
                   end
                   -- wrappered nodes fill both roles
                   groupInfo~firstNode = wrapper
@@ -849,11 +855,8 @@
 ::method getPatternMetrics
   use arg head
 
-  metrics = .directory~new
-  metrics~maxLength = 0
-  metrics~minLength = 0
-  metrics~fixedMax = .true
-
+  metrics = .MatchMetrics~new
+  -- forward this to the matching tree
   head~getMatchMetrics(metrics)
   return metrics
 
@@ -1767,11 +1770,7 @@
 ::method getChildMatchMetrics
   use arg child
   -- get our repetition node values as if it was the only thing of interest
-  submetrics = .directory~new
-  submetrics~maxLength = 0
-  submetrics~minLength = 0
-  submetrics~maxValid = .true
-  submetrics~deterministic = .true
+  submetrics = .MatchMetrics~new
 
   child~getMatchMetrics(submetrics)
   return submetrics
@@ -1794,6 +1793,16 @@
       -- terminator
       next~terminate
   end
+
+-- A node that will match anything.  This is typically
+-- used when an alternative is expressed as "this|that|".
+-- The trailing "|" indicates that we always have a match,
+-- even if it is zero-length
+::class EveryThingNode subclass MatchNode
+::method match
+  use arg context, position, target
+  -- we always match, so just send along to the successor
+  return self~next~match(context, position, target)
 
 -- A node that enforces anchoring at the beginning of the text
 ::class BeginTextNode subclass MatchNode
@@ -1981,7 +1990,7 @@
 
 -- Generic "dot".  This matches everything but the end of
 -- of data
-::class AllDotNode subclass matchNode
+::class AllDotNode subclass MatchNode
 ::method match
   use arg context, position, target
 
@@ -1995,9 +2004,7 @@
 ::method getMatchMetrics
   use arg metrics
   -- a dot is always a single character, so easy to manage
-  metrics~maxLength = metrics~maxLength + 1
-  metrics~minLength = metrics~minLength + 1
-
+  metrics~addLength(1)
   self~getMatchMetrics:super(metrics)
 
 
@@ -2065,9 +2072,7 @@
   expose matchString
   use arg metrics
   -- always the length of this string
-  metrics~maxLength = metrics~maxLength + matchString~length
-  metrics~minLength = metrics~minLength + matchString~length
-
+  metrics~addLength(matchString~length)
   self~getMatchMetrics:super(metrics)
 
 -- a caseless match for a string
@@ -2114,9 +2119,7 @@
 ::method getMatchMetrics
   use arg metrics
   -- also just a single character match
-  metrics~maxLength = metrics~maxLength + 1
-  metrics~minLength = metrics~minLength + 1
-
+  metrics~addLength(1)
   self~getMatchMetrics:super(metrics)
 
 -- an inversion of the class node
@@ -2158,9 +2161,7 @@
 ::method getMatchMetrics
   use arg metrics
   -- also just a single character match
-  metrics~maxLength = metrics~maxLength + 1
-  metrics~minLength = metrics~minLength + 1
-
+  metrics~addLength(1)
   self~getMatchMetrics:super(metrics)
 
 
@@ -2196,7 +2197,7 @@
   maxLength = 0
   minLength = 999999999
   deterministic = .true
-  maxValid = .true
+  validMaximum = .true
 
   -- we need to analyze all of the alternative paths.
 
@@ -2206,15 +2207,14 @@
       maxLength = max(maxLength, subMetrics~maxLength)
       minLength = min(minLength, subMetrics~minLength)
       deterministic = deterministic & submetrics~deterministic
-      maxValid = maxValid & submetrics~maxValid
+      validMaximum = validMaximum & submetrics~validMaximum
   end
 
-
-  metrics~minLength = metrics~minLength + minLength
-  metrics~maxLength = metrics~maxLength + maxLength
+  metrics~addMin(minLength)
+  metrics~addMax(maxLength)
 
   metrics~deterministic = metrics~deterministic & deterministic
-  metrics~maxValid = metrics~maxValid & maxValid
+  metrics~validMaximum = metrics~validMaximum & validMaximum
   -- send this along
   self~getMatchMetrics:super(metrics)
 
@@ -2370,11 +2370,12 @@
   minLength = metrics~minLength
   optional~getMatchMetrics(metrics)
   metrics~minLength = minLength
+  -- this is no longer deterministic because it depends on context
   metrics~deterministic = .false
-
 self~getMatchMetrics:super(metrics)
 
-
+-- a question node that implements greedy matching semantics.  It will
+-- match itself first, and back off if it does not find a match.
 ::class GreedyQuestionNode subclass QuestionNode
 ::method match
   use arg context, position, target
@@ -2390,7 +2391,8 @@ self~getMatchMetrics:super(metrics)
   -- try again, but without the optional section.
   return self~next~match(context, position, target)
 
-
+-- reluctant question node.  If the following part matches,
+-- it will not perform it's own match.
 ::class ReluctantQuestionNode subclass QuestionNode
 ::method match
   use arg context, position, target
@@ -2408,7 +2410,8 @@ self~getMatchMetrics:super(metrics)
 
   return self~next~match(context, context~matchPosition, target)
 
-
+-- possessive question node.  If it has a match itself, it will
+-- not back up...EVER!
 ::class PossessiveQuestionNode subclass QuestionNode
 ::method match
   use arg context, position, target
@@ -2447,6 +2450,7 @@ self~getMatchMetrics:super(metrics)
   minLength = metrics~minLength
   self~optional~getMatchMetrics(metrics)
   metrics~minLength = minLength
+  -- also no longer deterministic
   metrics~deterministic = .false
 
 self~getMatchMetrics:super(metrics)
@@ -2560,8 +2564,8 @@ self~getMatchMetrics:super(metrics)
   -- get our repetition node values as if it was the only thing of interest
   submetrics = self~getChildMatchMetrics(repNode)
 
-  metrics~minLength = metrics~minLength + (min * submetrics~minLength)
-  metrics~maxLength = metrics~maxLength + (max * submetrics~maxLength)
+  metrics~addMin(min * submetrics~minLength)
+  metrics~addMax(submetrics~maxLength)
 
   -- if the max and min are the same, then this is potentially deterministic
   if max == min then do
@@ -2569,7 +2573,7 @@ self~getMatchMetrics:super(metrics)
   end
   else do
       -- no go on the length predictions
-      metrics~determinsitic = .false
+      metrics~deterministic = .false
   end
 
   -- send this along
@@ -2756,16 +2760,17 @@ self~getMatchMetrics:super(metrics)
   -- get our repetition node values as if it was the only thing of interest
   submetrics = self~getChildMatchMetrics(repNode)
 
-  metrics~minLength = metrics~minLength + (min * submetrics~minLength)
-  metrics~maxLength = metrics~maxLength + (max * submetrics~maxLength)
+  metrics~addMin(min * submetrics~minLength)
+  metrics~addMax(max * submetrics~maxLength)
 
   -- if the max and min are the same, then this is potentially deterministic
+  -- if the children are deterministic.
   if max == min then do
       metrics~deterministic = metrics~deterministic & submetrics~deterministic
   end
   else do
       -- no go on the length predictions
-      metrics~determinsitic = .false
+      metrics~deterministic = .false
   end
 
   -- send this along
@@ -2919,6 +2924,7 @@ self~getMatchMetrics:super(metrics)
   use arg ref
   self~init:super
 
+-- main matching method for a back reference.
 ::method match
   expose ref
   use arg context, position, target
@@ -2938,56 +2944,33 @@ self~getMatchMetrics:super(metrics)
       return .false
   end
 
-  if \target~match(position, matchValue) then do
+  if \self~submatch(context, position, target, matchValue) then do
       return .false
   end
 
   -- exhausted the max, so now search for the next
   return self~next~match(context, position + matchValue~length, target)
+
+-- simple method for performing the implementation specific
+-- matching for a back reference.  Intended to be overridden
+::method submatch
+  use arg context, position, target, matchValue
+  return target~match(position, matchValue)
 
 ::method getMatchMetrics
   use arg metrics
 
   -- the maximum can no longer be trusted
-  metrics~maxValid = .false
+  metrics~validMaximum = .false
   self~getMatchMetrics:super(metrics)
 
 -- same as a back reference, but matching is done caselessly
 ::class CaselessBackReferenceNode subclass MatchNode
-::method init
-  expose ref
-  use arg ref
-  self~init:super
-
-::method match
-  expose ref
-  use arg context, position, target
-
-  refGroup = context~getBackRefResult(ref)
-
-  if \refGroup~matched then do
-      return .false
-  end
-
-  matchValue = refGroup~matchString
-
-  if \context~checkEnd(position + matchValue~length - 1) then do
-      return .false
-  end
-
-  if \target~caselessMatch(position, matchValue) then do
-      return .false
-  end
-
-  -- exhausted the max, so now search for the next
-  return self~next~match(context, position + matchValue~length, target)
-
-::method getMatchMetrics
-  use arg metrics
-
-  metrics~maxValid = .false
-  self~getMatchMetrics:super(metrics)
-
+-- simple method for performing the implementation specific
+-- matching for a back reference.  Intended to be overridden
+::method submatch
+  use arg context, position, target, matchValue
+  return target~caselessMatch(position, matchValue)
 
 -- a normal group node with implicit numbering
 ::class GroupNode subclass MatchNode
@@ -3055,10 +3038,9 @@ self~getMatchMetrics:super(metrics)
   leftMetrics = self~getChildMatchMetrics(leftSide)
   rightMetrics = self~getChildMatchMetrics(rightSide)
 
-  metrics~minLength = metrics~minLength + min(leftMetrics~minLength, rightMetrics~minLength)
-  metrics~maxLength = metrics~minLength + max(leftMetrics~maxLength, rightMetrics~maxLength)
+  metrics~addMin(min(leftMetrics~minLength, rightMetrics~minLength))
+  metrics~addMax(max(leftMetrics~maxLength, rightMetrics~maxLength))
   metrics~deterministic = metrics~deterministic & leftMetrics~deterministic & rightMetrics~deterministic
-
   self~getMatchMetrics:super(metrics)
 
 ::attribute leftSide
@@ -3257,13 +3239,17 @@ self~getMatchMetrics:super(metrics)
   return .false
 
 
--- wrapper around a group to give atomic nature.
+-- wrapper around a group to perform a positive lookahead.
+-- Positive lookahead means this is true if the group
+-- matches at the current position.
+-- This only checks for a match, but does not consume
+-- any text.  If this matches, the same position
+-- information is passed along to the successor node
 ::class PositiveLookaheadNode subclass MatchNode
 ::method init
   expose group
   use arg group
   self~init:super
-
 
 ::method match
   expose group
@@ -3278,13 +3264,17 @@ self~getMatchMetrics:super(metrics)
   return .false
 
 
--- wrapper around a group to give atomic nature.
+-- wrapper around a group to perform a negative lookahead.
+-- Negative lookahead means this is true if the group
+-- does NOT match at the current position.
+-- This only checks for a match, but does not consume
+-- any text.  If this matches, the same position
+-- information is passed along to the successor node
 ::class NegativeLookaheadNode subclass MatchNode
 ::method init
   expose group
   use arg group
   self~init:super
-
 
 ::method match
   expose group
@@ -3299,16 +3289,30 @@ self~getMatchMetrics:super(metrics)
   return .false
 
 
+-- wrapper around a group to perform a positive lookbehind.
+-- Positive lookbehind means this is true if the group
+-- matches at prior position.
+-- This only checks for a match, but does not consume
+-- any text.  If this matches, the same position
+-- information is passed along to the successor node
 ::class PositiveLookBehindNode subclass MatchNode
 ::method init
-  expose group max min
+  expose group min max
   use arg group, metrics
 
-  max = metrics~maxLen
-  min = metrics~minLen
+  min = metrics~minLength
+  -- if there is a deterministic maximum, then
+  -- use it to optimize the search.  Otherwise, set the
+  -- max to zero, which will force things to check everywhere.
+  if metrics~validMaximum then do
+      max = metrics~maxLength
+  end
+  else do
+      max = 0
+  end
 
 ::method match
-  expose group max min
+  expose group min max
   use arg context, position, target
 
   -- This is the offset from the beginning of the match
@@ -3320,17 +3324,27 @@ self~getMatchMetrics:super(metrics)
   if offset < min then do
       return .false
   end
+  -- offset is position - start, so in a typical case,
+  -- matchOffset will be (position - 1)
+  possibleMatchs = matchOffset - min - max
 
-  maxStart = min(offset, max)
+  return self~backMatch(position, position - min, possibleMatches)
 
-  backPosition = position - maxStart
-
-  possibleMatchs = backPosition - min + 1
+-- backward matching method designed to be overridden by a subclass.
+-- this version performs the positive match
+::method backMatch
+  use arg position, backPosition, possibleMatches
 
   -- we need to test the shortest matches first
-  do i = position - minLength by -1 for possibleMatches
+  do i = backPosition by -1 for possibleMatches
       -- if we have a back match, then time to forward to the next bit
       if group~match(context, i, target) then do
+          -- if we get a match, but the match does not connect
+          -- to the current position, then this really fails
+          if context~matchEnd \= position then do
+              return .false
+          end
+          -- got a match, forward on
           return self~next~match(context, position, target)
       end
   end
@@ -3339,42 +3353,27 @@ self~getMatchMetrics:super(metrics)
   return .false
 
 
-::class NegativeLookBehindNode subclass MatchNode
-::method init
-  expose group max min
-  use arg group, metrics
-
-  max = metrics~maxLen
-  min = metrics~minLen
-
-  self~init:super
-
-::method match
-  expose group max min
-  use arg context, position, target
-
-  offset = context~matchOffset(position)
-
-  -- we need to have a least the min preceeding us to match
-  if offset < min then do
-      return .false
-  end
-
-  maxStart = min(offset, max)
-
-  backPosition = position - maxStart
-
-  possibleMatchs = backPosition - min + 1
+-- wrapper around a group to perform a negative lookbehind.
+-- Negative lookbehind means this is true if the group
+-- does NOT match at prior position.
+-- This only checks for a match, but does not consume
+-- any text.  If this matches, the same position
+-- information is passed along to the successor node
+::class NegativeLookBehindNode subclass PositiveLookBehindNode
+-- backward matching method designed to be overridden by a subclass.
+-- this version performs the positive match
+::method backMatch
+  use arg position, backPosition, possibleMatches
 
   -- we need to test the shortest matches first
-  do i = position - minLength by -1 for possibleMatches
+  do i = backPosition by -1 for possibleMatches
       -- if we have a back match, then this is a failure
       if group~match(context, i, target) then do
           return .false
       end
   end
 
-  -- no match
+  -- no match, then this passes
   return self~next~match(context, position, target)
 
 -- A matcher for beginning of text that works in
@@ -3520,7 +3519,7 @@ self~getMatchMetrics:super(metrics)
 
   -- because we slide, these are never valid
   metrics~deterministic = .false
-  metrics~maxValid = .false
+  metrics~validMaximum = .false
 
 
 -- base class for a match result from a group match.  This is
@@ -4068,3 +4067,38 @@ end
 -- for postional movement, the match string is always
 -- zero-length, so these will be the same
 matchend = matchstart
+
+-- simple class used to accumulate matching metrics
+::class MatchMetrics
+::method init
+  expose minLength maxLength validMaximum deterministic
+
+  minLength = 0
+  maxLength = 0
+  validMaximum = .true  -- indicates the max accumulator is good
+  deterministic = .true  -- indicates whether calculations are even possible
+
+::attribute minLength
+::attribute maxLength
+::attribute validMaximum
+::attribute deterministic
+-- bump both the min and max by the same value
+::method addLength
+  expose minLength maxLength
+  use arg length
+  minLength += length
+  maxLength += length
+
+::method addMin
+  expose minLength
+  use arg length
+  minLength += length
+
+::method addMax
+  expose maxLength
+  use arg length
+  maxLength += length
+
+
+
+
