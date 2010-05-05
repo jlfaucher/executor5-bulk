@@ -3901,10 +3901,9 @@ return 0
   The <emphasis role="italic">connectListBox</emphasis> method uses the resource ID to connect a list box in the
   underlying dialog to a newly created <link linkend="sctUnderstandingDataAttributes">data attribute</link> in the Rexx
   dialog object.
-  The value of the attribute is the number of the
-selected line. Therefore, if the attribute value is 3, the third line is currently
-selected or will be selected, depending on whether you set data to the dialog
-or receive it. See <link linkend="mthConnectEdit">connectEdit</link> for a more detailed description.
+  The value of the attribute is the number of the selected line. Therefore, if the attribute value is 3, the third line
+  is currently selected or will be selected, depending on whether you set data to the dialog or receive it. See <link
+  linkend="mthConnectEdit">connectEdit</link> for a more detailed description.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8307,33 +8306,50 @@ The default is 1.
 ]]>
 </programlisting>
 
-<para>The CombineELwithSB method connects an entry line
-with a scroll bar such that each time the slider of the scroll bar is moved,
-the value of the entry field is changed. This method must be used in a method
-registered with <link linkend="mthConnectEachSBEvent">connectEachSBEvent</link>. </para>
+<para>
+  The CombineELwithSB method connects an entry line with a scroll bar such that each time the slider of the scroll bar
+  is moved, the value of the entry field is changed. This method must be used in a method registered with <link
+  linkend="mthConnectEachSBEvent">connectEachSBEvent</link>.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>elid</term>
-<listitem><para>The ID of the entry line.
-</para></listitem></varlistentry>
-<varlistentry><term>sbid</term>
-<listitem><para>The ID of the scroll bar.
-</para></listitem></varlistentry>
-<varlistentry><term>step</term>
-<listitem><para>The size of one step.  If, for example, step is
-3 and the current position is 4, the next position is 7.
-</para></listitem></varlistentry>
-<varlistentry><term>pos</term>
-<listitem><para>If the step value is zero, this sets the position
-of the scroll bar and entry line. Use it in the method registered for drag.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example continues the example of ConnectScrollBar. In the registered methods an entry line (251) is combined with the
-scroll bar (255).
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>elid</term>
+    <listitem>
+    <para>
+      The ID of the entry line.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>sbid</term>
+    <listitem>
+    <para>
+      The ID of the scroll bar.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>step</term>
+    <listitem>
+    <para>
+      The size of one step.  If, for example, step is 3 and the current position is 4, the next position is 7.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pos</term>
+    <listitem>
+    <para>
+      If the step value is zero, this sets the position of the scroll bar and entry line. Use it in the method
+      registered for drag.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example continues the example of ConnectScrollBar. In the registered methods an entry line (251) is
+    combined with the scroll bar (255).
 
 <programlisting>
 <![CDATA[
@@ -8346,7 +8362,8 @@ use arg wparam, lparam                  /* wparam=position */
 self~CombineELwithSB(251,255,0,wparam)
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -12147,7 +12164,7 @@ WindowBase::<link linkend="mthSendMessage">sendMessage</link>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   <para>
-    This method requires an <link linkend="ovvWindowsMessages">understanding</link> of Windows messages.
+    This method requires an <link linkend="ovvWindowMessages">understanding</link> of Windows messages.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -12245,7 +12262,7 @@ WindowBase::<link linkend="mthSendMessage">sendMessage</link>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   <para>
-    This method requires an <link linkend="ovvWindowsMessages">understanding</link> of Windows messages.
+    This method requires an <link linkend="ovvWindowMessages">understanding</link> of Windows messages.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -12323,7 +12340,7 @@ WindowBase::<link linkend="mthSendMessage">sendMessage</link>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   <para>
-    This method requires an <link linkend="ovvWindowsMessages">understanding</link> of Windows messages.
+    This method requires an <link linkend="ovvWindowMessages">understanding</link> of Windows messages.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -12409,7 +12426,7 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   <para>
-    This method requires an <link linkend="ovvWindowsMessages">understanding</link> of Windows messages.
+    This method requires an <link linkend="ovvWindowMessages">understanding</link> of Windows messages.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>

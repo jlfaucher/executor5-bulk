@@ -125,26 +125,26 @@
 </para>
 </section>
 
-<section id="ovvWindowsMessages"><title>Windows Messags</title>
+<section id="ovvWindowMessages"><title>Window Messages</title>
 <para>
   In the Windows operating system, not surprisingly, most everything is a window. In a nutshell, the Windows operating
   system works by routing and sending <emphasis role="italic">messages</emphasis> to these windows. Each window has a
   <emphasis role="italic">message processing loop</emphasis> where the window waits for a message to arrive, processes
-  it, and then waits for the next message. Each Windows message has an unique whole number ID that gives meaning to the
+  it, and then waits for the next message. Each window message has an unique whole number ID that gives meaning to the
   message. When a message is sent to a window, it is sent with two arguments. The first argument is of a type called
   WPARM and the second is a type called LPARAM. These types are opaque and the value of each is dependent on the
   specific message. Either or both of the arguments may have no meaning for the specific message. The window always
   returns a value, another opaque type called LRESULT, which again may have no meaning for the particular message.
 </para>
 <para>
-  In general, most of what ooDialog does is done by sending Windows message to the operating system windows. This is
-  designed to allow the Rexx programmer to use dialogs without understanding any of the details of Windows messages.
-  However, the ooDialog framework provides a few generic methods that send Windows messages to the underlying operating
+  In general, most of what ooDialog does is done by sending window messages to the operating system windows. This is
+  designed to allow the Rexx programmer to use dialogs without understanding any of the details of window messages.
+  However, the ooDialog framework provides a few generic methods that send window messages to the underlying operating
   system windows. These methods, in contrast to most methods, can not be used by the Rexx programmer without some
-  knowledge of the Windows message being sent. The methods are clearly marked. The programmer would need to consult the
+  knowledge of the window message being sent. The methods are clearly marked. The programmer would need to consult the
   <link linkend="defWindowsDoc">Windows Documentation</link> to understand what both the WPARAM and LPARAM arguments
   must be, and to understand what the LRESULT return, if any, means. In addition, the programmer would need to determine
-  the numeric value of the Windows message ID. This could be done using a <link linkend="defPlatformSDK">Windows
+  the numeric value of the window message ID. This could be done using a <link linkend="defPlatformSDK">Windows
   platform SDK</link>, or perhaps through a Google search.
 </para>
 <para>
@@ -171,10 +171,11 @@
 <para>
   Once the basic set up for an ooDialog program is done, the dialog object basically sits there waiting for an
   <emphasis role="italic">event</emphasis> of interest to happen. When the event happens, the program responds by
-  taking some action. The programmer decides what events are of interest and uses mehtods of the <link
-  linkend="clsEventNotification">EventNotification</link> class to <emphasis role="italic">connect</emphasis> a
-  method in the dialog object to the event notification. These methods are often called <emphasis
-  role="italic">event handlers</emphasis> because the code in the method handles the event.
+  taking some action. The programmer decides what events are of interest and uses methods provided by the ooDialog
+  framework to <emphasis role="italic">connect</emphasis> a method in the dialog object to the event notification. The
+  majority of the event connection methods are part of the <link linkend="clsEventNotification">EventNotification</link>
+  class. These methods are often called <emphasis role="italic">event handlers</emphasis> because the code in the method
+  handles the event.
 </para>
 </section>
 

@@ -68,10 +68,10 @@
 </para>
 <para>
    The system also provides <emphasis role="italic">shortcut menus</emphasis> and the <emphasis
-   role="italic">Window</emphasis> menu.  A shortcut menu is not attached to a menu bar and can appear anywhere on the
+   role="italic">window</emphasis> menu.  A shortcut menu is not attached to a menu bar and can appear anywhere on the
    screen.  Shortcut menus are typically activated by the user right-clicking on a specific portion of the screen and
    the menu items are usually only relevant to what the user clicked on.  For this reason, shortcut menus are often
-   called <emphasis role="italic">contetxt</emphasis> menus.  The Window menu is also knows as the <emphasis
+   called <emphasis role="italic">contetxt</emphasis> menus.  The window menu is also knows as the <emphasis
    role="italic">System</emphasis> menu or the <emphasis role="italic">Control</emphasis> menu.  The  System menu is
    usually managed exclusively by the system.  The user activates the System menu by clicking on the icon in the upper
    left corner of a window, or by right-clicking anywhere on the title bar. Unlike menu bars, child windows can have a
@@ -116,15 +116,73 @@
 </row>
 <row>
 <entry>MenuBar</entry>
-<entry><link linkend="clsMenuBar">MenuBar (Mixin Class)</link></entry>
+<entry><link linkend="clsMenuBar">MenuBar (Mixin Class) The Menu Object</link></entry>
 </row>
 <row>
 <entry>MenuTemplate Class</entry>
-<entry><link linkend="clsMenuTemplate">MenuTemplate (Mixin Class)</link></entry>
+<entry><link linkend="clsMenuTemplate">MenuTemplate (Mixin Class) The Menu Bar Object</link></entry>
 </row>
 </tbody></tgroup>
 </table>
 </para>
+
+<section id="sctMenuCommandEvents"><title>Menu Command Events</title>
+<indexterm><primary>menu object</primary><secondary>command events</secondary></indexterm>
+<para>
+  Menu items that are not separators and do not open a submenu are called menu command items. When a user selects a
+  command item, an <link linkend="ovvEvents">event</link> is generated and the operating system sends a notification to
+  the owner window of the menu. The ooDialog framework provides methods to connect this menu command notification to a
+  method in the Rexx dialog object in a similar manner to connecting dialog control <link
+  linkend="sctConnectingEvents">notifications</link>. The event connection methods are contained within the various menu
+  objects and are similar to the event connection methods of the dialog object.
+</para>
+<para>
+  However, there are some specific details when dealing with menus that should be understood. The menu command event is
+  connected using the resource ID of the menu item, just as dialog control events are connected using the resource ID of
+  the dialog control. Event notifications are always connected to a specific Rexx dialog object, the dialog object that
+  represents the <link linkend="ovvUnderlying">underlying</link> dialog that the notification is expected to be sent to.
+</para>
+<para>
+  A Rexx dialog control object has one, and only one, underlying dialog. But, a Rexx <link linkend="clsMenuBar">menu bar
+  </link> object can be attached to one dialog, then detached and attached to a different dialog. Likewise, the same
+  <link linkend="clsPopupMenu">context</link> menu could be used by any number of different dialogs. Because of this, it
+  may be necessary to connect a menu command item notification to more than one dialog.
+</para>
+<para>
+  For example, the same context menu object could be used by the programmer in several different dialogs. In this case,
+  it is not sufficient to connect each of the menu items once, to one dialog. Rather, the menu items need to be
+  connected to each dialog where the context menu is used. When the programmer <link
+  linkend="mthShowClsPopupMenu">shows</link> the context menu, it will have one and only one owner dialog. When the user
+  selects a menu item, the notification is sent to that owner dialog.
+</para>
+<para>
+  Another example would be a program that shows different dialogs at various times. The dialogs are different, but all
+  have a menu bar that contains the same items. One approach would be to create a single menu bar, that is attached to
+  each dialog when it is shown. The menu items of the menu bar would then need to be connected to each dialog that the
+  menu bar is attached to during the program.
+</para>
+<para>
+  One last point the programmer should be aware of. Both a menu item selection and a <link
+  linkend="clsButton">button</link> click generate the same event notification. Sometimes the action to take when a
+  button is clicked and the action to take when a menu item is selected are the same. In these cases, it is a common
+  practice in Windows programming to use the same resource ID for both the button and the menu item and then use the
+  same event handler for both the button push and the menu item selection. To use this method in ooDialog, the
+  programmer would need to only connect the event once.
+</para>
+<para>
+  E.g., take the case of an OK push button and an Exit menu item. Many times the action to take for both is exactly the
+  same. Here the ooDialog programmer would use the same resource ID of both the button and the menu item. OK buttons
+  normally use the resource ID of <computeroutput>IDOK</computeroutput>, which the ooDialog framework <link
+  linkend="sctStandardEventMethods">automatically</link> connects to the <link linkend="mthOk">OK</link> method. If the
+  programmer also uses the IDOK id for the Exit menu item, then nothing else need be done. Whether the user selects the
+  Exit menu item, or clicks the OK button, the same method in the Rexx dialog object will be invoked.
+</para>
+<para>
+  Notice that, since a button click and a menu item selection generate the same notification, it is not possible to
+  connect a menu item and a button click to separate methods if the they both have the same resource ID.
+</para>
+
+</section>
 
 <section id="clsMenu"><title>The Menu Object</title>
 <indexterm><primary>Menu class</primary></indexterm>
@@ -132,10 +190,10 @@
 <para>
   All the menu classes in ooDialog are similar. Menus have a large number of methods that are common to all types of
   menus. These common methods are contained in the <computeroutput>Menu</computeroutput> class, a mixin class inherited
-  by all menu classes. Although this document treats the menu object in the same way it does the dialog <link
+  by all menu classes. This document treats the menu object in the same way it does the dialog <link
   linkend="chpDialogObject">object</link> and the dialog control<link linkend="chpDialogControlObject">object</link>, as
-  an abstract concept, in this case the abstract menu object and the <computeroutput>Menu</computeroutput> mixin class
-  are essentially the same.
+  an abstract concept. However, in this case the abstract menu object and the <computeroutput>Menu</computeroutput>
+  mixin class are essentially the same.
 </para>
 <para>
   The methods listed in this chapter are all methods of the <computeroutput>Menu</computeroutput> class and all ooDialog
@@ -167,6 +225,10 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
+<entry><link linkend="atrHMenu">hMenu</link></entry>
+<entry>The Windows handle of the menu.</entry>
+</row>
+<row>
 <entry><link linkend="atrWID">wID</link></entry>
 <entry>The resource ID of the menu.</entry>
 </row>
@@ -175,8 +237,24 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
+<entry><link linkend="mthConnectCommandEvent">connectCommandEvent</link></entry>
+<entry>Connects a menu command event notification from a menu to a method in a Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthDestroyClsMenu">destroy</link></entry>
+<entry>Releases the system resources used by the menu.</entry>
+</row>
+<row>
 <entry><link linkend="mthGetCountClsMenu">getCount</link></entry>
 <entry>Returns the number of items in the menu.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetHandle">getHandle</link></entry>
+<entry>Returns the value of the hMenu attribute of the menu.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetID">setID</link></entry>
+<entry>Sets the resource ID of the menu.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -185,18 +263,21 @@
 
 <section id="sctMenuClassMethods"><title>Class Methods</title>
 <indexterm><primary>class methods</primary><secondary>menu object</secondary></indexterm>
+<indexterm><primary>menu object</primary><secondary>class methods</secondary></indexterm>
 
 <section id="mthConnectCommandEventCls"><title>connectCommandEvent</title>
-<indexterm><primary>connectCommandEvent</primary><secondary>menu object class method</secondary></indexterm>
+<indexterm><primary>connectCommandEvent</primary><secondary>menu object</secondary><tertiary>class method</tertiary></indexterm>
+<indexterm><primary>menu object</primary><secondary>connectCommandEvent</secondary><tertiary>class method</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectCommandEvent(--id-,--methodName-,--dlg--+------------+--)-----------><
-                                                   +-,-handles--+
+>>--connectCommandEvent(--id-,--methodName-,--dlg--+--------------+--)---------><
+                                                   +-,-isHandled--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Connects a menu command item event notification with a method in the specified Rexx dialog. The notification is sent
+  to the windows dialog when a command item in a menu is selected by the user.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -250,14 +331,60 @@
 </section>  <!-- End Section: Class Methods -->
 
 <section id="sctMenuAttributes"><title>Attributes</title>
-<indexterm><primary>menu object attributes</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>attributes</secondary></indexterm>
+
+<section id="atrHMenu"><title>hMenu</title>
+<indexterm><primary>hMenu</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>hMenu</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hMenu--------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The Windows <link linkend="defHandle">handle</link> of the menu.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">hMenu get:</emphasis></term>
+  <listitem>
+  <para>
+    The returned handle, if it is not null, can be used in any ooDialog method that takes a menu handle as an argument.
+    The <link linkend="mthGetHandle">getMenuHandle</link>() also returns the value of this attribute.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">hMenu set:</emphasis></term>
+  <listitem>
+  <para>
+    This is a <emphasis role="italic">get</emphasis> only attribute. The programmer can not set the attribute through
+    assignment. I.e.,
+<programlisting>
+<![CDATA[
+  menuObj~hMenu = handle
+]]>
+</programlisting>
+    is not valid.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If a menu is released through the <link linkend="mthDestroyClsMenu">destroy</link>() method, the menu handle will
+    then be null and is no longer valid. The menu handle is a Rexx <computeroutput>Pointer</computeroutput> object and
+    therefore has the methods of that class. Specifically it has the <emphasis role="italic">isNull</emphasis>() method,
+    which can be used to test if the handle is still valid.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Menu::hMenu() [attribute]  -->
 
 <section id="atrWID"><title>wID</title>
 <indexterm><primary>wID</primary></indexterm>
 <indexterm><primary>menu object</primary><secondary>wID</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--wID-----------------------------------------------------><
+>>--wID----------------------------------------------><
 
 ]]>
 </programlisting>
@@ -292,7 +419,7 @@
     when menu is instantiated, for instance see the <computeroutput>BinaryMenuBar</computeroutput> <link
     linkend="mthNewClsBinaryMenuBar">new</link> method or the <computeroutput>PopupMenu</computeroutput> <link
     linkend="mthNewClsPopupMenu">new</link> method. In addition, the <link linkend="mthSetID">setID</link> method can be
-    used to set or change the ID of a submenu.
+    used to set or change the ID of a <emphasis role="italic">submenu</emphasis>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -306,7 +433,7 @@
 <indexterm><primary>menu object</primary><secondary>getCount</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getCount---------------------------------------------------><
+>>--getCount-----------------------------------------><
 
 ]]>
 </programlisting>
@@ -354,12 +481,237 @@ say 'The menu has' count 'items.'
 </variablelist>
 </section>
 
+<section id="mthIsValidMenu"><title>isValidMenu</title>
+<indexterm><primary>isValidMenu</primary>
+<indexterm><primary>menu object</primary><secondary>isValidMenu</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isValidMenu--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Checks if the menu is valid. The menu would not be valid if it has been <link
+  linkend="mthDestroyClsMenu">destroyed</link> or <link linkend="mthReleaseMenuHandle">released</link>. In addition, the
+  menu could no longer be valid for some operating system reason, although this is highly unlikely.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if the menu is valid, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Menu::isValidMenu() -->
+
+<section id="mthReleaseMenuHandle"><title>releaseMenuHandle</title>
+<indexterm><primary>releaseMenuHandle</primary>
+<indexterm><primary>menu object</primary><secondary>releaseMenuHandle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--releaseMenuHandle(--handle--)---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Releases (frees) the operating system resources used by a menu. The menu is specified by its Windows <link
+  linkend="defHandle">handle</link>. To release the operating system resources for an ooDialog
+  <computeroutput>Menu</computeroutput> object, use the <link linkend="mthDestroyClsMenu">destroy</link>() method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>handle [required]</term>
+    <listitem>
+    <para>
+      The handle of the menu to release. The handle must not be null.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true for success, false for failure.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Menu::releaseMenuHandle() -->
+
+<section id="mthDestroyClsMenu"><title>destroy</title>
+<indexterm><primary>destroy</primary><secondary>menu object</secondary>
+<indexterm><primary>menu object</primary><secondary>destroy</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--destroy(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Menu::destroy() -->
+
+<section id="mthGetHandle"><title>getHandle</title>
+<indexterm><primary>getHandle</primary>
+<indexterm><primary>menu object</primary><secondary>getHandle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getHandle----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Menu::getHandle() -->
+
 <section id="mthSetID"><title>setID</title>
 <indexterm><primary>setID</primary></indexterm>
 <indexterm><primary>menu object</primary><secondary>setID</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setID(--+--------+--)-------------------------------------------------><
+>>--setID(--+--------+--)----------------------------><
                   +--type--+
 ]]>
 </programlisting>
@@ -416,7 +768,187 @@ say 'The menu has' count 'items.'
 </variablelist>
 </section>  <!-- End Menu::setID() -->
 
+<section id="mthConnectCommandEvent"><title>connectCommandEvent</title>
+<indexterm><primary>connectCommandEvent</primary><secondary>menu object</secondary><tertiary>instance method</tertiary></indexterm>
+<indexterm><primary>menu object</primary><secondary>connectCommandEvent</secondary><tertiary>instance method</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectCommandEvent(--id--,--methodName--+--------+--)---------------------><
+                                             +-,-dlg--+
+]]>
+</programlisting>
+
+<para>
+  Connects a menu command item event notification with a method in a Rexx dialog. The notification is sent to the
+  Windows dialog when a command item in a menu is selected by the user.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the menu item, may be symbolic or numeric.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>methodName [required]</term>
+    <listitem>
+    <para>
+      The name of the method in the Rexx dialog to connect the notifcation to.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dlg [optional]</term>
+    <listitem>
+    <para>
+      By default, the notification is is connected to the Rexx dialog that the menu is attached or assinged to.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Menu::connectCommandEvent() -->
+
 </section>  <!-- End Menu class -->
+
+<section id="clsMenuBar"><title>The Menu Bar Object</title>
+<indexterm><primary>The Menu Bar Object</primary></indexterm>
+<indexterm><primary>MenuBar class</primary></indexterm>
+<para>
+  A menu bar is often called the top-level menu. It is the bar poisitioned just below the title bar of an application
+  window or a dialog. The menu bar object is used, like the <link linkend="clsMenu">menu</link>, <link
+  linkend="chpDialogObject">dialog</link>, and dialog <link linkend="chpDialogControlObject"></link> objects as an
+  abstract concept to document the ooDialog menu objects that represent menu bars. The <link
+  linkend="clsBinaryMenuBar">BinaryMenuBar</link>, <link linkend="clsUserMenuBar">UserMenuBar</link>, and <link
+  linkend="clsScriptMenuBar">ScriptMenuBar</link> classes.
+</para>
+<para>
+  The menu bar object is implemented through the <computeroutput>MenuBar</computeroutput> mixin classs and all menu bars
+  have the methods of the <computeroutput>MenuBar</computeroutput> class. Similar to the the menu object, the menu bar
+  object is essentially the <computeroutput>MenuBar</computeroutput> mixin class.
+</para>
+
+<section id="sctMethodsMenuBar"><title>Method Table</title>
+<para>
+  The following table lists the class methods, attributes, and instance methods of the menu bar object.
+<table id="tblMethodsMenuBar" frame="all"> <title>MenuBar Object Method Reference</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthAttachTo">attachTo</link></entry>
+<entry>Attaches the menu bar to the specified dialog.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+
+<section id="mthAttachTo"><title>attachTo</title>
+<indexterm><primary>attachTo</primary>
+<indexterm><primary>menubar object</primary><secondary>attachTo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--attachTo(--dlg--)--------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Attaches this menu bar to the specified dialog/  If the dialog already has a menu bar attached to it, this method will
+  replace that menu bar with this menu bar.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>The only argument is:
+  <variablelist>
+    <varlistentry><term>dlg [required]</term>
+    <listitem>
+    <para>
+      The Rexx dialog the menu bar is to be attached to.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      True on success, false for failure.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MenuBar::attachTo() -->
+
+</section>  <!-- End MenuBar class -->
 
 <section id="clsBinaryMenuBar"><title>BinaryMenuBar Class</title>
 <indexterm><primary>BinaryMenuBar class</primary></indexterm>
@@ -425,49 +957,50 @@ say 'The menu has' count 'items.'
 </para>
 <para>
 </para>
-<variablelist>
-  <varlistentry><term>Requires:</term>
-  <listitem>
-    <para>
-      The BinaryMenuBar class requires the class definition file
-      <computeroutput>ooDialog.cls</computeroutput>:
-      <programlisting>
-      <![CDATA[
-      ::requires "ooDialog.cls"
-      ]]>
-      </programlisting>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term>Methods:</term>
-  <listitem>
-    <para>
-      Instances of the BinaryMenuBar class implement the methods listed in the following table:
-    </para>
-    <table id="tblBinaryMenuBarMethods" frame="all">
-    <title>BinaryMenuBar Instance Methods</title>
-    <tgroup cols="2">
-    <thead>
-    <row>
-    <entry>Method...</entry>
-    <entry>...on page</entry>
-    </row>
-    </thead>
-    <tbody>
-    <row>
-    <entry>new (Class method)</entry>
-    <entry><link linkend="mthNewClsBinaryMenuBar">new</link></entry>
-    </row>
-    </tbody></tgroup>
-    </table>
-  </listitem></varlistentry>
-</variablelist>
+
+<section id="sctMethodsBinaryMenuBar"><title>Method Table</title>
+<para>
+  The following table lists the class methods, attributes, and instance methods of the BinaryMenuBar.
+<table id="tblMethodsBinaryMenuBar" frame="all"> <title>5(obj) Method Reference</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsBinaryMenuBar">new</link></entry>
+<entry>Instantiates a new binary menu bar object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthAttachTo">attachTo</link></entry>
+<entry>Attaches the menu bar to the specified dialog.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
 
 <section id="mthNewClsBinaryMenuBar"><title>new (Class)</title>
 <indexterm><primary>new</primary>
 <secondary>BinaryMenuBar class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--x--,--y--)---------------------------------------><
+>>--new(--x--,--y--)---------------------------------><
 
 ]]>
 </programlisting>
@@ -517,15 +1050,15 @@ say 'The menu has' count 'items.'
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
-    </para>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
@@ -538,49 +1071,44 @@ say 'The menu has' count 'items.'
   A ... is ..
 </para>
 <para>
+  More text
 </para>
-<variablelist>
-  <varlistentry><term>Requires:</term>
-  <listitem>
-    <para>
-      The ScriptMenuBar class requires the class definition file <computeroutput>ooDialog.cls</computeroutput>:
-      <programlisting>
-      <![CDATA[
-      ::requires "ooDialog.cls"
-      ]]>
-      </programlisting>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term>Methods:</term>
-  <listitem>
-    <para>
-      Instances of the ScriptMenuBar class implement the methods listed in the following table:
-    </para>
-    <table id="tblScriptMenuBarMethods" frame="all">
-    <title>ScriptMenuBar Instance Methods</title>
-    <tgroup cols="2">
-    <thead>
-    <row>
-    <entry>Method...</entry>
-    <entry>...on page</entry>
-    </row>
-    </thead>
-    <tbody>
-    <row>
-    <entry>new (Class method)</entry>
-    <entry><link linkend="mthNewClsScriptMenuBar">new</link></entry>
-    </row>
-    </tbody></tgroup>
-    </table>
-  </listitem></varlistentry>
-</variablelist>
+
+<section id="sctMethodsScriptMenuBar"><title>Method Table</title>
+<para>
+  The following table lists the class methods and instance methods of the
+  <computeroutput>ScriptMenuBar</computeroutput>.
+<table id="tblMethodsScriptMenuBar" frame="all"> <title>ScriptMenuBar Method Reference</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsScriptMenuBar">new</link></entry>
+<entry>Returns a new <computeroutput>ScriptMenuBar</computeroutput> object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
 
 <section id="mthNewClsScriptMenuBar"><title>new (Class)</title>
-<indexterm><primary>new</primary>
-<secondary>ScriptMenuBar class</secondary></indexterm>
+<indexterm><primary>new</primary><secondary>ScriptMenuBar class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--x--,--y--)---------------------------------------><
+>>--new(--x--,--y--)---------------------------------><
 
 ]]>
 </programlisting>
@@ -591,112 +1119,109 @@ say 'The menu has' count 'items.'
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>x</term>
+    <listitem>
+    <para>
+      xx.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>y</term>
+    <listitem>
+    <para>
+      yyy,
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
+  <para>
+    The possible return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      Success
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      Some error.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
-    </para>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
 
 </section>  <!-- End ScriptMenuBar class -->
 
-<!--
-  Could be chapter, or section
--->
 <section id="clsUserMenuBar"><title>UserMenuBar Class</title>
 <indexterm><primary>UserMenuBar class</primary></indexterm>
 <para>
   A ... is ..
 </para>
 <para>
+  Text
 </para>
-<variablelist>
-  <varlistentry><term>Requires:</term>
-  <listitem>
-    <para>
-      The UserMenuBar class requires the class definition file <computeroutput>ooDialog.cls</computeroutput>:
-      <programlisting>
-      <![CDATA[
-      ::requires "ooDialog.cls"
-      ]]>
-      </programlisting>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term>Methods:</term>
-  <listitem>
-    <para>
-      Instances of the UserMenuBar class implement the methods listed in the following table:
-    </para>
-    <table id="tblUserMenuBarMethods" frame="all">
-    <title>UserMenuBar Instance Methods</title>
-    <tgroup cols="2">
-    <thead>
-    <row>
-    <entry>Method...</entry>
-    <entry>...on page</entry>
-    </row>
-    </thead>
-    <tbody>
-    <row>
-    <entry>new (Class method)</entry>
-    <entry><link linkend="mthNewClsUserMenuBar">new</link></entry>
-    </row>
-    </tbody></tgroup>
-    </table>
-  </listitem></varlistentry>
-</variablelist>
+
+<section id="sctMethodsUserMenuBar"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>UserMenuBar</computeroutput>.
+<table id="tblMethodsUserMenuBar" frame="all"> <title>UserMenuBar Method Reference</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsUserMenuBar">new</link></entry>
+<entry>Returns a new <computeroutput>UserMenuBar</computeroutput>object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthAddPopup">addPopuup</link></entry>
+<entry>Adds a popup menu, a submenu, to the in-memory template.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
 
 <section id="mthNewClsUserMenuBar"><title>new (Class)</title>
 <indexterm><primary>new</primary>
-<secondary>UserMenuBar class</secondary></indexterm>
+<secondary>PopupMenu class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--x--,--y--)---------------------------------------><
+>>--new(--x--,--y--)---------------------------------><
 
 ]]>
 </programlisting>
@@ -707,112 +1232,247 @@ say 'The menu has' count 'items.'
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>x</term>
+    <listitem>
+    <para>
+      xx.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>y</term>
+    <listitem>
+    <para>
+      yyy,
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
+  <para>
+    The possible return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      Success
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      Some error.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthAddPopup"><title>addPopup</title>
+<indexterm><primary>addPopup</primary>
+<indexterm><primary>UserMenuBar</primary><secondary>methods</secondary><tertiary>addPopup</tertiary></indexterm>
+<indexterm><primary>MenuTemplate</primary><secondary>methods</secondary><tertiary>addPopup</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addPopup(--id--,--name--+--------+--+----------+--)----><
+                            +-,-opts-+  +-,-helpID-+
+]]>
+</programlisting>
+
+<para>
+  Adds a popup menu, a submenu, to the in memory template.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
     <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
+      The resource ID for the popup menu, may be numeric or symbolic.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>name [required]</term>
+    <listitem>
+    <para>
+      The text label of the popup menu.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>opts [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces, case is not significant:
+    </para>
+    <para>
+    <simplelist type='vert' columns='3'>
+      <member>DEFAULT      </member>
+      <member>DISABLED     </member>
+      <member>GRAYED       </member>
+      <member>HILITE       </member>
+      <member>MENUBARBREAK </member>
+      <member>MENUBREAK    </member>
+      <member>RIGHTJUSTIFY </member>
+      <member>RIGHTORDER   </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>DEFAULT</term>
+      <listitem>
+      <para>
+        text
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DISABLE</term>
+      <listitem>
+      <para>
+         The
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>GRAYED</term>
+      <listitem>
+      <para>
+         The
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HILITE</term>
+      <listitem>
+      <para>
+         The
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MENUBARBREAK</term>
+      <listitem>
+      <para>
+         The
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MENUBREAK</term>
+      <listitem>
+      <para>
+         T
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RIGHTJUSTIFY</term>
+      <listitem>
+      <para>
+         T
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RIGHTORDER</term>
+      <listitem>
+      <para>
+         T
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>END</term>
+      <listitem>
+      <para>
+         T
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
 
 </section>  <!-- End UserMenuBar class -->
 
-<!--
-  Could be chapter, or section
--->
 <section id="clsPopupMenu"><title>PopupMenu Class</title>
 <indexterm><primary>PopupMenu class</primary></indexterm>
 <para>
   A ... is ..
 </para>
 <para>
+  Text
 </para>
-<variablelist>
-  <varlistentry><term>Requires:</term>
-  <listitem>
-    <para>
-      The PopupMenu class requires the class definition file <computeroutput>ooDialog.cls</computeroutput>:
-      <programlisting>
-      <![CDATA[
-      ::requires "ooDialog.cls"
-      ]]>
-      </programlisting>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term>Methods:</term>
-  <listitem>
-    <para>
-      Instances of the PopupMenu class implement the methods listed in the following table:
-    </para>
-    <table id="tblPopupMenuMethods" frame="all">
-    <title>PopupMenu Instance Methods</title>
-    <tgroup cols="2">
-    <thead>
-    <row>
-    <entry>Method...</entry>
-    <entry>...on page</entry>
-    </row>
-    </thead>
-    <tbody>
-    <row>
-    <entry>new (Class method)</entry>
-    <entry><link linkend="mthNewClsPopupMenu">new</link></entry>
-    </row>
-    </tbody></tgroup>
-    </table>
-  </listitem></varlistentry>
-</variablelist>
+
+<section id="sctMethodsPopupMenu"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>PopupMenu</computeroutput>.
+<table id="tblMethodsPopupMenu" frame="all"> <title>PopupMenu Method Reference</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsPopupMenu">new</link></entry>
+<entry>Returns a new <computeroutput>PopupMenu</computeroutput>object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthAssignTo">assignTo</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthShowClsPopupMenu">show</link></entry>
+<entry>Shows a popup menu as a context menu and returns immediately.</entry>
+</row>
+<row>
+<entry><link linkend="mthTrack">track</link></entry>
+<entry>Shows a popup menu as a context menu and returns when the menu is dismissed</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
 
 <section id="mthNewClsPopupMenu"><title>new (Class)</title>
 <indexterm><primary>new</primary>
 <secondary>PopupMenu class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--x--,--y--)---------------------------------------><
+>>--new(--x--,--y--)---------------------------------><
 
 ]]>
 </programlisting>
@@ -823,336 +1483,576 @@ say 'The menu has' count 'items.'
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>x</term>
-      <listitem>
-        <para>
-          xx.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>x</term>
+    <listitem>
+    <para>
+      xx.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>y</term>
+    <listitem>
+    <para>
+      yyy
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
+  <para>
+    The possible return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>0</term>
-        <listitem>
-          <para>
-            Success
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>-1</term>
-        <listitem>
-          <para>
-            Some error.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+      Success
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      Some error.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
-    </para>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
 
-</section>  <!-- End PopupMenu class -->
-
-<section id="clsMenuBar"><title>MenuBar (Mixin Class)</title>
-<indexterm><primary>MenuBar class</primary></indexterm>
-<para>
-  A ... is ..
-</para>
-<para>
-</para>
-<variablelist>
-  <varlistentry><term>Requires:</term>
-  <listitem>
-    <para>
-      The MenuBar class requires the class definition file <computeroutput>ooDialog.cls</computeroutput>:
-      <programlisting>
-      <![CDATA[
-      ::requires "ooDialog.cls"
-      ]]>
-      </programlisting>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term>Methods:</term>
-  <listitem>
-    <para>
-      Classes that inherit from the MenuBar class will inherit the methods listed in the following
-      table:
-    </para>
-    <table id="tblMenuBarMethods" frame="all">
-    <title>MenuBar Methods</title>
-    <tgroup cols="2">
-    <thead>
-    <row>
-    <entry>Method...</entry>
-    <entry>...on page</entry>
-    </row>
-    </thead>
-    <tbody>
-    <row>
-    <entry>attachTo</entry>
-    <entry><link linkend="mthAttachToClsMenuBar">attachTo</link></entry>
-    </row>
-    </tbody></tgroup>
-    </table>
-  </listitem></varlistentry>
-</variablelist>
-
-<section id="mthAttachToClsMenuBar"><title>attachTo</title>
-<indexterm><primary>attachTo</primary>
-<secondary>MenuBar class</secondary></indexterm>
+<section id="mthConnectContextMenuCls"><title>connectContextMenu (Class)</title>
+<indexterm><primary>connectContextMenu</primary><secondary>PopupMenu class</secondary><tertiary>class method</tertiary></indexterm>
+<indexterm><primary>PopupMenu class</primary><secondary>connectContextMenu</secondary><tertiary>class method</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>--attachTo(--dlg--)--------------------------------------><
-
+>>--connectContextMenu(--dlg--,--methodName--+---------+--+-----------+--)-----><
+                                             +-,-hwnd--+  +-,-handles-+
 ]]>
 </programlisting>
 
 <para>
-  Attaches this menu bar to the specified dialog window.  If the dialog window already has a menu
-  bar attached to it, this method will replace the current menu bar with this menu bar.
+  Connects the context menu <link linkend="ovvEvents">event</link> notification to a method in a Rexx dialog.
 </para>
-<note><title>Note</title>
-<para>
-  <emphasis role="bold">This documents what should be, not what is.</emphasis>
-</para>
-</note>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The context menu event is generated when the user right-mouse clicks on a window. The event can also be generated by
+    the keyboard by using SHIFT-F10 or the VK_APPS key (the Applications key on a Natural keyboard.)
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> on error. The system error code is set this way
+    in addition to what the OS might set:
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    ERROR_WINDOW_NOT_DIALOG (1420) -> The <emphasis role="italic">dlg</emphasis> argument is not a
+    <computeroutput>PlainBaseDialog</computeroutput>, (or subclass of course.)
+  </para>
+  <para>
+    ERROR_NOT_ENOUGH_MEMORY (8) -> The dialog message table is full.
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    If the programmer does not provide a method named <emphasis role="italic">methodName</emphasis> in the Rexx dialog,
+    a syntax condition will be raised if any context menu events happen.
+  </para>
+  <para>
+    The underlying dialog recieves the WM_CONTEXTMENU message as the notification for this event.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The required argument is:
-    <variablelist>
-      <varlistentry><term>dlg</term>
-      <listitem>
-        <para>
-          The ooDialog dialog the menu is to be attached to.
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>dlg [required]</term>
+    <listitem>
+    <para>
+      The Rexx dialog the notification is being connect to.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>methodName [required]</term>
+    <listitem>
+    <para>
+      The method in the Rexx dialog to be invoked when the event happens.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd [optional]</term>
+    <listitem>
+    <para>
+      A window handle to filter the right-clicks on. This can be the window handle of any control in the dialog being
+      connnected, or even the dialog window handle itself. If used, only right-clicks on the specified window will be
+      received. If omitted, all right-clicks on the dialog are received.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>.nil</term>
-        <listitem>
-          <para>
-            Success, and there was no previous menu attached to the dialog.
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>A menu object</term>
-        <listitem>
-          <para>
-            The previous menu object attached to the dialog.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
-    </para>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    In many cases, the <link linkend="mthConnectContextMenu">connectContextMenu</link>() method will be more convenient
+    to use. This class method is provided for times when the menu object itself is not available. For instance, some
+    Windows applications dynamically create a context menu when receiving the event notification and then discard the
+    menu.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
-    </para>
+  <para>
+    In this example the application creates the context menus after receiving the event notification. It needs to
+    connect the event before the menu objects actually exist.
+<programlisting>
+<![CDATA[
+::method initDialog
+  ...
+
+  lvHwnd = self~newListView(IDC_LV_EMPLOYEES)
+  .PopupMenu~connectContextMenu(self, "onListViewContext", lvHwnd)
+
+  .PopupMenu~connectContextMenu(self, "onDialogContext", self~hwnd)
+
+  ...
+
+]]>
+</programlisting>
+  </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End PopupMenu::connectContextMenu()::ClassMehtod -->
 
-</section>  <!-- End MenuBar class -->
+<section id="mthAssignTo"><title>assignTo</title>
+<indexterm><primary>assignTo</primary>
+<indexterm><primary>PopupMenu</primary><secondary>methods</secondary><tertiary>assignTo</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--assignTo(--+--------+--)-------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PopupMenu::assignTo() -->
+
+<section id="mthIsAssigned"><title>isAssigned</title>
+<indexterm><primary>isAssigned</primary>
+<indexterm><primary>PopupuMenu class</primary><secondary>isAssigned</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isAssigned(--+--------+--)-----------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PopupuMenu::isAssigned() -->
+
+<section id="mthShowClsPopupMenu"><title>show</title>
+<indexterm><primary>show</primary><secondary>PopupMenu class</secondary>
+<indexterm><primary>PopupMenu class</primary><secondary>show</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--show(--+--------+--)-----------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PopupMenu::show() -->
+
+<section id="mthTrack"><title>track</title>
+<indexterm><primary>track</primary>
+<indexterm><primary>PopupMenu class</primary><secondary>track</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--track(--+--------+--)----------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PopupMenu::track() -->
+
+<section id="mthConnectContextMenu"><title>connectContextMenu</title>
+<indexterm><primary>connectContextMenu</primary><secondary>PopupMenu class</secondary><tertiary>instance method</tertiary></indexterm>
+<indexterm><primary>PopupMenu class</primary><secondary>connectContextMenu</secondary><tertiary>instance method</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectContextMenu(--methodName--+--------+--+---------+--+-----------+--)--><
+                                     +-,-dlg--+  +-,-hwnd--+  +-,-handles-+
+]]>
+</programlisting>
+
+<para>
+  Connects the context menu <link linkend="ovvEvents">event</link> notification to a method in a Rexx dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The context menu event is generated when the user right-mouse clicks on a window. The event can also be generated by
+    the keyboard by using SHIFT-F10 or the VK_APPS key (the Applications key on a Natural keyboard.)
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> on error. The system error code is set this way
+    in addition to what the OS might set:
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    ERROR_INVALID_FUNCTION (1) -> The dialog argument was omitted and the menu does not have an assigned dialog.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    ERROR_WINDOW_NOT_DIALOG (1420) -> The <emphasis role="italic">dlg</emphasis> argument is not a
+    <computeroutput>PlainBaseDialog</computeroutput>, (or subclass of course.)
+  </para>
+  <para>
+    ERROR_NOT_ENOUGH_MEMORY (8) -> The dialog message table is full.
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    If the programmer does not provide a method named <emphasis role="italic">methodName</emphasis> in the Rexx dialog,
+    a syntax condition will be raised if any context menu events happen.
+  </para>
+  <para>
+    The underlying dialog recieves the WM_CONTEXTMENU message as the notification for this event.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>methodName [required]</term>
+    <listitem>
+    <para>
+      The method in the Rexx dialog to be invoked when the event happens.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dlg [optional]</term>
+    <listitem>
+    <para>
+      By default, the notification is connected to the owner dialog of the menu. However, the programmer can specify any
+      Rexx dialog here to connect the notification to. If the menu does not have an owner dialog then the programmer
+      must specify the Rexx dialog.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd [optional]</term>
+    <listitem>
+    <para>
+      A window handle to filter the right-clicks on. This can be the window handle of any control in the dialog being
+      connnected, or even the dialog window handle itself. If used, only right-clicks on the specified window will be
+      received. If omitted, all right-clicks on the dialog are received.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    NEED TEXT about args sent to the method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In this example the context menu notification is connected to the method, <emphasis
+    role="italic">onContextMenu</emphasis>. All
+<programlisting>
+<![CDATA[
+::method initDialog
+  ...
+
+  lvHwnd = self~newListView(IDC_LV_EMPLOYEES)
+  .PopupMenu~connectContextMenu(self, "onListViewContext", lvHwnd)
+
+  .PopupMenu~connectContextMenu(self, "onDialogContext", self~hwnd)
+
+  ...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PopupMenu::connectContextMenu()::InstanceMethod -->
+
+</section>  <!-- End PopupMenu class -->
 
 <section id="clsMenuTemplate"><title>MenuTemplate (Mixin Class)</title>
 <indexterm><primary>MenuTemplate class</primary></indexterm>
 <para>
-  The MenuTemplate mixin class provides methods to aid in constructing a menu in memory.  It is
-  inherited by the UserMenuBar and the ScriptMenuBar classes to dynamically create a menu.  Note
-  that it is easier and more reliable to use the <link
-  linkend="clsBinaryMenuBar">BinaryMenuBar</link> class to create dynamic menus.
+  The <computeroutput>MenuTemplate</computeroutput> mixin class provides methods to aid in constructing a menu in
+  memory. It is inherited by the <link linkend="clsUserMenuBar">UserMenuBar</link> and the <link
+  linkend="clsScriptMenuBar">ScriptMenuBar</link> classes to dynamically create a menu. Its use by the
+  <computeroutput>ScriptMenuBar</computeroutput> is transparent to the programmer. The
+  <computeroutput>MenuTemplate</computeroutput> methods are listed here, but described in the documentation for the
+  <computeroutput>UserMenuBar</computeroutput>. Essentially, the programmer will only use the
+  <computeroutput>MenuTemplate</computeroutput> methods in the context of the
+  <computeroutput>UserMenuBar</computeroutput>.
 </para>
-<variablelist>
-  <varlistentry><term>Requires:</term>
-  <listitem>
-    <para>
-      The MenuTemplate class requires the class definition file <computeroutput>ooDialog.cls</computeroutput>:
-      <programlisting>
-      <![CDATA[
-      ::requires "ooDialog.cls"
-      ]]>
-      </programlisting>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term>Methods:</term>
-  <listitem>
-    <para>
-      Classes that inherit from the MenuTemplate class will inherit the methods listed in the
-      following table:
-    </para>
-    <table id="tblMenuTemplateMethods" frame="all">
-    <title>MenuTemplate Methods</title>
-    <tgroup cols="2">
-    <thead>
-    <row>
-    <entry>Method...</entry>
-    <entry>...on page</entry>
-    </row>
-    </thead>
-    <tbody>
-    <row>
-    <entry>addPopup</entry>
-    <entry><link linkend="mthAddPopupClsMenuTemplate">new</link></entry>
-    </row>
-    </tbody></tgroup>
-    </table>
-  </listitem></varlistentry>
-</variablelist>
-
-<section id="mthAddPopupClsMenuTemplate"><title>addPopup</title>
-<indexterm><primary>addPopup</primary>
-<secondary>MenuTemplate class</secondary></indexterm>
-<programlisting>
-<![CDATA[
-                     +--0---+  +--""---+  +----0-----+
->>--addPopup(--name--+------+--+-------+--+----------+--)--><
-                     +-,-id-+  +-,-opt-+  +-,-helpID-+
-]]>
-</programlisting>
-
 <para>
-  Description
+  Note that it is much easier and more reliable to use the <link linkend="clsBinaryMenuBar">BinaryMenuBar</link> class
+  to create dynamic menus than to use the <computeroutput>UserMenuBar</computeroutput>.
 </para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>name</term>
-      <listitem>
-        <para>
-          The text label of the popup menu.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>id</term>
-      <listitem>
-        <para>
-          The menu item identifier.  If the ID is not supplied than 0 will be used.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>opt</term>
-      <listitem>
-        <para>
-          A list of 0 or more of the folloiwing keywords, separated by spaces, that specify options
-          for the popup menu.  Some options are not applicable for menus on the menu bar. They only
-          apply to menu items in a submenu that open another submenu.
-          <variablelist>
-            <varlistentry><term>CHECK</term>
-            <listitem>
-              <para>
-                 The
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>GRAY</term>
-            <listitem>
-              <para>
-                 The
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>DISABLE</term>
-            <listitem>
-              <para>
-                 The
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>HILITE</term>
-            <listitem>
-              <para>
-                 The
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>DEFAULT</term>
-            <listitem>
-              <para>
-                 T
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>END</term>
-            <listitem>
-              <para>
-                 T
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>SEPARATOR</term>
-            <listitem>
-              <para>
-                 T
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>RIGHT</term>
-            <listitem>
-              <para>
-                 T
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>RADIO</term>
-            <listitem>
-              <para>
-                 T
-              </para>
-            </listitem></varlistentry>
-          </variablelist>
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      This method always returns 0.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-      This example ...
-      <programlisting>
-      <![CDATA[
-      x = y
-      return 0
-      ]]>
-      </programlisting>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
+
+<section id="sctMethodsMenuTemplate"><title>Method Table</title>
+<para>
+  The following table lists the instance methods of the MenuTemplate.
+<table id="tblMethodsMenuTemplate" frame="all"> <title>MenuTemplate Method Reference</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><link linkend="mthAddPopup">addPopup</link></entry>
+<entry>Adds a popup menu to the in-memory template.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
 </section>
 
 </section>  <!-- End MenuTemplate class -->
