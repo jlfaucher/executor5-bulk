@@ -1714,4 +1714,10 @@ return testResult
   r = self~find(p, "abcdefabc")
   self~assertTrue(self~verifyMatchResult(r, 7, 10, "abc"))
 
+  -- negative look behind
+  p = .Pattern~compile("(?<!def)abc")
+
+  r = self~find(p, "defabcabc")
+  self~assertTrue(self~verifyMatchResult(r, 7, 10, "abc"))
+
 

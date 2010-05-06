@@ -761,8 +761,10 @@
               if ch == "=" | ch == "!" then do
                   self~next -- step over the modifier
                   -- parse the encapsulated group expression, but terminate
-                  -- with a branch terminator node.
-                  node = self~parseExpression(.BranchTerminatorNode~new)
+                  -- with a normal terminator node.  This will perform a
+                  -- and of range check on the matches to ensure the
+                  -- tests will butt up against the current position.
+                  node = self~parseExpression(.TerminatorNode~new)
 
                   -- gather some metrics.  If there is a deterministic maximum,
                   -- we can optimize the back search by using it.  Otherwise,
@@ -1804,7 +1806,7 @@
   -- is a normal terminator, then set our successor to be
   -- the branch version.  The latter case generally happens
   -- when a parsed sequence is wrapped in an alteration
-  if next == .nil | next~isa(.TerminatorNode) | next~isa(.GroupTerminator) then do
+  if next == .nil | next~isa(.TerminatorNode) then do
       -- this is a branch terminator, which merely records
       -- the match position and return true if it is reached.
       self~next = .BranchTerminatorNode~new
@@ -3204,7 +3206,7 @@ self~getMatchMetrics:super(metrics)
   info~end = save~end
 
 -- special terminator for the end of a grouping
-::class GroupTerminator subclass MatchNode
+::class GroupTerminator subclass TerminatorNode
 ::method init
   expose group
   use arg group
@@ -3321,6 +3323,7 @@ self~getMatchMetrics:super(metrics)
 ::method match
   expose group min max
   use arg context, position, target
+
   -- this is how much we back up for the first test
   backPosition = position - min
   -- if not enough room to test this, we fail
@@ -3328,32 +3331,33 @@ self~getMatchMetrics:super(metrics)
       return .false
   end
   -- no set maximum?
-  if max == 0 then do
+  if max == 0 | max > position - context~startPosition then do
       -- test all possible positions
-      possibleMatches = backPosition - context~startPosition + 1
+      startRange = context~startPosition
   end
   else do
       -- we can cap this using the maximum
-      possibleMatches = max - min + 1
+      startRange = position - max
   end
+  -- create a subcontext that restricts the possible match range
+  subContext = context~createSubContext(startRange, position)
+  -- mark this as requiring a complete match from the position to
+  -- the end.  This will ensure this really is butted up against
+  -- the prior position
+  subContext~matchEndRequired = .true
 
-  return self~backMatch(context, target, position, backPosition, possibleMatches)
+  return self~backMatch(context, position, target, subContext, backPosition)
 
 -- backward matching method designed to be overridden by a subclass.
 -- this version performs the positive match
 ::method backMatch
-  use arg context, target, position, backPosition, possibleMatches
+  use arg context, position, target, subContext, backPosition
 
   -- we need to test the shortest matches first
-  do i = backPosition by -1 for possibleMatches
+  do i = backPosition by -1 while subContext~checkStart(i)
       -- if we have a back match, then time to forward to the next bit
-      if self~group~match(context, i, target) then do
-          -- if we get a match, but the match does not connect
-          -- to the current position, then this really fails
-          if context~matchEnd \= position then do
-              return .false
-          end
-          -- got a match, forward on
+      if self~group~match(subContext, i, target) then do
+          -- got a match, forward on using the original context
           return self~next~match(context, position, target)
       end
   end
@@ -3372,12 +3376,12 @@ self~getMatchMetrics:super(metrics)
 -- backward matching method designed to be overridden by a subclass.
 -- this version performs the positive match
 ::method backMatch
-  use arg context, target, position, backPosition, possibleMatches
+  use arg context, position, target, subContext, backPosition
 
   -- we need to test the shortest matches first
-  do i = backPosition by -1 for possibleMatches
+  do i = backPosition by -1 while subContext~checkStart(i)
       -- if we have a back match, then this is a failure
-      if self~group~match(context, i, target) then do
+      if self~group~match(subContext, i, target) then do
           return .false
       end
   end
@@ -3648,6 +3652,17 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
   end
   locals = .table~new   -- this allows patterns to save/retrieve local state
 
+-- create a subcontext of the current context with a different start
+-- and stop range.  Used by lookbehind matchers to restrict the
+-- search range of the filters
+::method createSubContext
+  use arg start, end
+  -- just clone the context and update the bounds
+  copy = self~copy
+  copy~setRange(start, end)
+
+  return copy;
+
 -- Retrieve the group reference item for a given group
 ::method getGroupReference
   expose groups
@@ -3768,6 +3783,11 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 -- any set match positions
 ::attribute matchPosition
 ::attribute matchEnd
+
+-- change the bounds of the search to a restricted range.
+::method setRange private
+  expose startPosition endPosition
+  use arg startPosition, endPosition
 
 -- indicates whether the pattern must exactly match the end
 -- of the string (e.g., we're doing a match vs. a locate)
