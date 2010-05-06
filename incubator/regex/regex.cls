@@ -725,9 +725,9 @@
               self~next -- step over the peeked character
               -- parse the encapsulated group expression, but terminate
               -- with a branch terminator node.
-              node = self~parseExpression(.BranchTerminator~new)
+              node = self~parseExpression(.BranchTerminatorNode~new)
               -- this is a special wrapper
-              wrapper = .PositiveLookAhead~new(node)
+              wrapper = .PositiveLookAheadNode~new(node)
               -- wrappered nodes fill both roles
               groupInfo~firstNode = wrapper
               groupInfo~lastNode = wrapper
@@ -736,9 +736,9 @@
               self~next -- step over the peeked character
               -- parse the encapsulated group expression, but terminate
               -- with a branch terminator node.
-              node = self~parseExpression(.BranchTerminator~new)
+              node = self~parseExpression(.BranchTerminatorNode~new)
               -- this is a special wrapper
-              wrapper = .NegativeLookAhead~new(node)
+              wrapper = .NegativeLookAheadNode~new(node)
               -- wrappered nodes fill both roles
               groupInfo~firstNode = wrapper
               groupInfo~lastNode = wrapper
@@ -762,7 +762,7 @@
                   self~next -- step over the modifier
                   -- parse the encapsulated group expression, but terminate
                   -- with a branch terminator node.
-                  node = self~parseExpression(.BranchTerminator~new)
+                  node = self~parseExpression(.BranchTerminatorNode~new)
 
                   -- gather some metrics.  If there is a deterministic maximum,
                   -- we can optimize the back search by using it.  Otherwise,
@@ -771,10 +771,10 @@
 
                   -- create the matcher type based on the modifier
                   if ch == "=" then do
-                      wrapper = .PositiveLookBehind~new(node, metrics)
+                      wrapper = .PositiveLookBehindNode~new(node, metrics)
                   end
                   else if ch == "!" then do
-                      wrapper = .NegativeLookBehind~new(node, metrics)
+                      wrapper = .NegativeLookBehindNode~new(node, metrics)
                   end
                   -- wrappered nodes fill both roles
                   groupInfo~firstNode = wrapper
@@ -3316,34 +3316,38 @@ self~getMatchMetrics:super(metrics)
       max = 0
   end
 
+::attribute group
+
 ::method match
   expose group min max
   use arg context, position, target
-
-  -- This is the offset from the beginning of the match
-  -- range, which might not be the same as the string beginning
-  -- This will tell us the size of the string before this position
-  offset = context~matchOffset(position)
-
-  -- we need to have a least the min preceeding us to match
-  if offset < min then do
+  -- this is how much we back up for the first test
+  backPosition = position - min
+  -- if not enough room to test this, we fail
+  if \context~checkStart(backPosition) then do
       return .false
   end
-  -- offset is position - start, so in a typical case,
-  -- matchOffset will be (position - 1)
-  possibleMatchs = matchOffset - min - max
+  -- no set maximum?
+  if max == 0 then do
+      -- test all possible positions
+      possibleMatches = backPosition - context~startPosition + 1
+  end
+  else do
+      -- we can cap this using the maximum
+      possibleMatches = max - min + 1
+  end
 
-  return self~backMatch(position, position - min, possibleMatches)
+  return self~backMatch(context, target, position, backPosition, possibleMatches)
 
 -- backward matching method designed to be overridden by a subclass.
 -- this version performs the positive match
 ::method backMatch
-  use arg position, backPosition, possibleMatches
+  use arg context, target, position, backPosition, possibleMatches
 
   -- we need to test the shortest matches first
   do i = backPosition by -1 for possibleMatches
       -- if we have a back match, then time to forward to the next bit
-      if group~match(context, i, target) then do
+      if self~group~match(context, i, target) then do
           -- if we get a match, but the match does not connect
           -- to the current position, then this really fails
           if context~matchEnd \= position then do
@@ -3368,12 +3372,12 @@ self~getMatchMetrics:super(metrics)
 -- backward matching method designed to be overridden by a subclass.
 -- this version performs the positive match
 ::method backMatch
-  use arg position, backPosition, possibleMatches
+  use arg context, target, position, backPosition, possibleMatches
 
   -- we need to test the shortest matches first
   do i = backPosition by -1 for possibleMatches
       -- if we have a back match, then this is a failure
-      if group~match(context, i, target) then do
+      if self~group~match(context, i, target) then do
           return .false
       end
   end
@@ -3792,10 +3796,10 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 -- the number of characters from the start of the match
 -- range to the given position.
 ::method matchOffset
-  expose start
+  expose startPosition
   use arg position
 
-  return position - start
+  return position - startPosition
 
 -- the class for managing group information during a pattern match
 ::class GroupReference
