@@ -1740,3 +1740,9 @@ return testResult
   -- self~assertTrue(self~verifyMatchResult(r~group(2), 2, 4, "bc"))
   -- (c)
   self~assertTrue(self~verifyMatchResult(r~group(3), 3, 4, "c"))
+
+::method testQuoting
+  -- whole bunch of characters normally needing escapes as a single
+  -- quoted string.  This should match exactly
+  p = .Pattern~compile("\Q([{\^-$|]})?*+.\a\t\e\f\n\r\v\E")
+  self~assertTrue(self~matches(p, "([{\^-$|]})?*+.\a\t\e\f\n\r\v"))

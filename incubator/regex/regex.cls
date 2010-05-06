@@ -296,6 +296,15 @@
   -- and return a usable pattern for this
   return .Pattern~new(pattern, rootNode, groups)
 
+-- we occasionally need to retrieve the current position
+::attribute current GET
+-- extract a substring from the parsing context
+::method extract
+  expose pattern
+  use arg start, end
+  say "extracting substring ("start","end"):" pattern~substr(start, end - start)
+  return pattern~substr(start, end - start)
+
 -- extract the next character and step the parsing position
 -- Returns .nil if past the end of the pattern
 ::method next
@@ -1288,6 +1297,16 @@
               -- if we have something special here, add this to the
               -- group chain
               if subNode \= .nil then do
+                  -- sort of a pain, but if this is a quoted string in the
+                  -- class, we need to convert that into a class node
+                  if subNode~isa(.StringNode) then do
+                      if negated then do
+                          subNode = .NotClassNode~new(subNode~matchString)
+                      end
+                      else do
+                          subNode = .ClassNode~new(subNode~matchString)
+                      end
+                  end
                   -- if we already have a node within the class, we combine this
                   -- using a logical op
                   if .nil == previousNode then do
@@ -1726,18 +1745,17 @@
       if ch == '\' then do
           modifier = self~peek
           if .nil == modifier then do
-          endPosition = self~current
-              leave
+              raise syntax 93.900 array("Missing closing \E following \Q")
           end
           if modifier == 'E' then do
-              endPosition = self~current
-              self~next
+              endPosition = self~current - 1
+              self~next  -- step over the closing bit
               leave
           end
       end
   end
 
-  return self~stringNode(self~extract(current, endPosition - current))
+  return self~stringNode(self~extract(current, endPosition))
 
 
 -- read and validate a octal value in an escaped value, returning the
