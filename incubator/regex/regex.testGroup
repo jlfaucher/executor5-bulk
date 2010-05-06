@@ -1741,8 +1741,22 @@ return testResult
   -- (c)
   self~assertTrue(self~verifyMatchResult(r~group(3), 3, 4, "c"))
 
+-- tests of \Q \E string quoting
 ::method testQuoting
   -- whole bunch of characters normally needing escapes as a single
   -- quoted string.  This should match exactly
   p = .Pattern~compile("\Q([{\^-$|]})?*+.\a\t\e\f\n\r\v\E")
   self~assertTrue(self~matches(p, "([{\^-$|]})?*+.\a\t\e\f\n\r\v"))
+
+-- Some simple tests or atomic grouping.
+::method testAtomicGrouping
+  -- example from http://www.regular-expressions.info/atomic.html
+  -- this match should work when applied to "insert"
+  p = .Pattern~compile("\b(?>integer|insert|in)\b")
+  self~assertTrue(self~matches(p, "insert"))
+
+  -- this one will fail because the "in" will match first, which
+  -- will terminate all the rest of the alternative checks.
+  p = .Pattern~compile("\b(?>in|insert|integer)\b")
+  self~assertFalse(self~matches(p, "insert"))
+

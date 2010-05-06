@@ -302,7 +302,6 @@
 ::method extract
   expose pattern
   use arg start, end
-  say "extracting substring ("start","end"):" pattern~substr(start, end - start)
   return pattern~substr(start, end - start)
 
 -- extract the next character and step the parsing position
@@ -3252,6 +3251,10 @@ self~getMatchMetrics:super(metrics)
   expose group
   use arg group
   self~init:super
+  -- The first match that comes out of the group will forward to
+  -- the terminator, which will tell it everything is good.  At
+  -- that point, we unconditionally send this down the chain
+  group~terminate
 
 ::method match
   expose group
@@ -3259,7 +3262,7 @@ self~getMatchMetrics:super(metrics)
 
   -- do the group match and accounting, then forward along.
   if group~match(context, position, target) then do
-      return self~next~match(context, context~matchPosition, target)
+      return self~next~match(context, context~matchEnd, target)
   end
 
   return .false
