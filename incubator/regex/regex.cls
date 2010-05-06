@@ -693,7 +693,7 @@
       self~next -- step over the peeked character
       ch = self~peek
       select
-          when ch == "?" then do
+          when ch == ":" then do
               self~next -- step over the peeked character
               -- non capture group
               group = .GroupEnvelope~new
@@ -3133,7 +3133,8 @@ self~getMatchMetrics:super(metrics)
 -- the match information to a previous value.  This will update the
 -- information, but also return the previous information for saving
 ::method updateAndSaveMatch
-  -- nop in the base class
+  -- nop in the base class, but we need a return value
+  return .true
 
 -- this is the reverse of the previous.  Restores the
 -- start and end information using a previous saved state

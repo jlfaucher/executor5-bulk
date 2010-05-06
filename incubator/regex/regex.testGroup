@@ -1720,4 +1720,23 @@ return testResult
   r = self~find(p, "defabcabc")
   self~assertTrue(self~verifyMatchResult(r, 7, 10, "abc"))
 
+::method testNonCapturingGroup
+  -- test with multiple groups
+  p = .Pattern~compile("((a)(?:b(c)))")
+  r = self~find(p, "abcabc")
+  -- this should match "abc"
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "abc"))
+  -- now verify each of the groups 0-3.  The non-capturing
+  -- group is no longer in the mix
 
+  -- group zero is always the main match
+  self~assertTrue(self~verifyMatchResult(r~group(0), 1, 4, "abc"))
+  -- ((a)(b(c))))
+  self~assertTrue(self~verifyMatchResult(r~group(1), 1, 4, "abc"))
+  -- (a)
+  self~assertTrue(self~verifyMatchResult(r~group(2), 1, 2, "a"))
+  -- (b(c))  Would have been group 3 originally, but since it was
+  -- made non-capturing, the "c" group is now #3
+  -- self~assertTrue(self~verifyMatchResult(r~group(2), 2, 4, "bc"))
+  -- (c)
+  self~assertTrue(self~verifyMatchResult(r~group(3), 3, 4, "c"))
