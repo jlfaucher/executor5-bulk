@@ -1339,12 +1339,8 @@
                   -- sort of a pain, but if this is a quoted string in the
                   -- class, we need to convert that into a class node
                   if subNode~isa(.StringNode) then do
-                      if negated then do
-                          subNode = .NotClassNode~new(subNode~matchString)
-                      end
-                      else do
-                          subNode = .ClassNode~new(subNode~matchString)
-                      end
+                      -- create the appropriate class node
+                      subNode = self~classNode(subNode~matchString, negated)
                   end
                   -- if we already have a node within the class, we combine this
                   -- using a logical op
@@ -1448,12 +1444,7 @@
       characters = characters || ch
   end
   -- return the node based on the class modifier
-  if negated then do
-      return .NotClassNode~new(characters)
-  end
-  else do
-      return .ClassNode~new(characters)
-  end
+  return self~classNode(characters, negated)
 
 -- parse a named class family and turn it into an equivalent family class
 ::method parseNamedClassFamily
@@ -1469,13 +1460,13 @@
   if familyChars == .nil then do
       raise syntax 93.900 array("Unknown named class family '"familyName"'")
   end
-
-  if negated then do
-      return .NotClassNode~new(familyChars)
-  end
-  else do
-      return .ClassNode~new(familyChars)
-  end
+  -- now return the appropriate node type for the match
+  -- NOTE:  Not sure I know how the caseless flag is supposed to be
+  -- applied here.  For example, with the Java implementation,
+  -- (?i)/p{Lower} does not match A.  The other sources of information
+  -- don't really touch on it.  I'm inclined to have it work with case
+  -- insensitive matches, but this is not a strong stance.
+  return self~classNode(familyChars, negated)
 
 -- parse out a section of as-is characters that conforms to an atom
 -- specification
@@ -1538,6 +1529,30 @@
   end
   else do
       return .StringNode~new(string)
+  end
+
+-- create a node for matching a a range of characters.  Which
+-- node gets created depends on whether this is a negation operation
+-- and whether caseless matches are called for.
+::method classNode
+  use arg characters, negated
+  -- if this is a ^ form, then we need the appropriate reverse node
+  if negated then do
+      if self~caselessMode then do
+          return .CaselessNotClassNode~new(characters)
+      end
+      else do
+          return .NotClassNode~new(characters)
+      end
+  end
+  -- normal matching mode, which also has two forms
+  else do
+      if self~caselessMode then do
+          return .CaselessClassNode~new(characters)
+      end
+      else do
+          return .ClassNode~new(characters)
+      end
   end
 
 -- parse out an escaped character
@@ -1727,10 +1742,12 @@
       end
       -- NOT a digit
       when ch == 'D' then do
+          -- no need to handle caseless matches here
           return .NotClassNode~new(self~DIGITCHARACTERS)
       end
       -- Is a digit
       when ch == 'd' then do
+          -- no need to handle caseless matches here
           return .ClassNode~new(self~DIGITCHARACTERS)
       end
       -- quoted literal..return the entire group
@@ -1739,18 +1756,24 @@
       end
       -- NOT whitespace
       when ch == 'S' then do
+          -- no need to handle caseless matches here
           return .NotClassNode~new(self~WHITESPACECHARACTERS)
       end
       -- is whitespace
       when ch == 's' then do
+          -- no need to handle caseless matches here
           return .ClassNode~new(self~WHITESPACECHARACTERS)
       end
       -- NOT a word character
       when ch == 'W' then do
+          -- This includes all of the upper and lower case letters, so no
+          -- caseless considerations to worry about
           return .NotClassNode~new(self~WORDCHARACTERS)
       end
       -- is a word character
       when ch == 'w' then do
+          -- This includes all of the upper and lower case letters, so no
+          -- caseless considerations to worry about
           return .ClassNode~new(self~WORDCHARACTERS)
       end
       -- named class family
@@ -2189,11 +2212,16 @@
       return .false
   end
   -- must match at least one of these
-  if \target~matchChar(position, characters) then do
+  if \self~characterMatch(position, target, characters) then do
       return .false
   end
 
   return self~next~match(context, position + 1, target)
+
+-- apply the appropriate character match operation for a given subclass
+::method characterMatch
+  use arg position, target, characters
+  return target~matchChar(position, characters)
 
 ::method getMatchMetrics
   use arg metrics
@@ -2203,18 +2231,27 @@
 
 -- an inversion of the class node
 ::class NotClassNode subclass ClassNode
-::method match
-  use arg context, position, target
+-- apply the appropriate character match operation for a given subclass
+::method characterMatch
+  use arg position, target, characters
+  -- this must NOT match any of the charactets
+  return \target~matchChar(position, characters)
 
-  if context~checkEnd(position) then do
-      return .false
-  end
+-- caseless match for a defined set of characters
+::class CaselessClassNode subclass ClassNode
+-- apply the appropriate character match operation for a given subclass
+::method characterMatch
+  use arg position, target, characters
+  -- this must match any of the charactets
+  return target~caselessMatchChar(position, characters)
 
-  if target~matchChar(position, self~characters) then do
-      return .false
-  end
-
-  return self~next~match(context, position + 1, target)
+-- caseless match for a defined set of characters
+::class CaselessNotClassNode subclass ClassNode
+-- apply the appropriate character match operation for a given subclass
+::method characterMatch
+  use arg position, target, characters
+  -- this must NOT match any of the charactets
+  return \target~caselessMatchChar(position, characters)
 
 -- the intersection of multiple class node definitions
 ::class ClassIntersectionNode subclass MatchNode

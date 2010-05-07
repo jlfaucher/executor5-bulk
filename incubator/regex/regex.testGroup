@@ -383,10 +383,26 @@ return testResult
 
   r = self~find(p, 'xxabcyy')
 
-  self~assertTrue(r~matched)
   self~assertTrue(self~verifyMatchResult(r, 3, 6, "abc"))
   self~assertEquals("xx", r~prefix)
   self~assertEquals("yy", r~suffix)
+
+  -- case insensitivity tests
+  p = .Pattern~compile("[abc]", .RegexCompiler~new(.RegexCompiler~caseless))
+  self~assertTrue(self~matches(p, "a"))
+  self~assertTrue(self~matches(p, "A"))
+
+  p = .Pattern~compile("[abc]", .RegexCompiler~new(.RegexCompiler~respectcase))
+  self~assertTrue(self~matches(p, "a"))
+  self~assertFalse(self~matches(p, "A"))
+
+  p = .Pattern~compile("(?i)[abc]", .RegexCompiler~new(.RegexCompiler~respectcase))
+  self~assertTrue(self~matches(p, "a"))
+  self~assertTrue(self~matches(p, "A"))
+
+  p = .Pattern~compile("(?-i)[abc]", .RegexCompiler~new(.RegexCompiler~caseless))
+  self~assertTrue(self~matches(p, "a"))
+  self~assertFalse(self~matches(p, "A"))
 
 -- simple classes that are just sequences of characters, with negation
 ::method testSimpleNotClass
@@ -421,6 +437,23 @@ return testResult
   self~assertTrue(self~verifyMatchResult(r, 4, 7, "aec"))
   self~assertEquals("abc", r~prefix)
   self~assertEquals("yy", r~suffix)
+
+  -- case insensitivity tests
+  p = .Pattern~compile("[^abc]", .RegexCompiler~new(.RegexCompiler~caseless))
+  self~assertFalse(self~matches(p, "a"))
+  self~assertFalse(self~matches(p, "A"))
+
+  p = .Pattern~compile("[^abc]", .RegexCompiler~new(.RegexCompiler~respectcase))
+  self~assertFalse(self~matches(p, "a"))
+  self~assertTrue(self~matches(p, "A"))
+
+  p = .Pattern~compile("(?i)[^abc]", .RegexCompiler~new(.RegexCompiler~respectcase))
+  self~assertFalse(self~matches(p, "a"))
+  self~assertFalse(self~matches(p, "A"))
+
+  p = .Pattern~compile("(?-i)[^abc]", .RegexCompiler~new(.RegexCompiler~caseless))
+  self~assertFalse(self~matches(p, "a"))
+  self~assertTrue(self~matches(p, "A"))
 
 
 -- simple classes that are just sequences of characters, with negation
