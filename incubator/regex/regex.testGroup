@@ -352,6 +352,36 @@ return testResult
   self~assertEquals("xyz", r~prefix)
   self~assertEquals("bar", r~suffix)
 
+/*
+  -- tests of various mode flags on dot behavior
+  -- this is the same as the default, so it should not
+  -- recognize the linends
+  p = .Pattern~compile(".", .RegexCompiler~new(.RegexCompiler~dotRestricted))
+  self~checkExcludedCharacters(p, "0a0d"x)
+  -- now dot all mode, which will recognize everything
+  p = .Pattern~compile(".", .RegexCompiler~new(.RegexCompiler~dotAll))
+  self~checkExcludedCharacters(p, "")
+  -- this again is the default
+  p = .Pattern~compile(".", .RegexCompiler~new(.RegexCompiler~internetLines))
+  self~checkExcludedCharacters(p, "0a0d"x)
+  -- unix line mode only recognizes linends as special
+  p = .Pattern~compile(".", .RegexCompiler~new(.RegexCompiler~unixLines))
+  self~checkExcludedCharacters(p, "0a"x)
+
+  -- now via inline override flags
+  p = .Pattern~compile("(?s).", .RegexCompiler~new(.RegexCompiler~dotRestricted))
+  self~checkExcludedCharacters(p, "")
+  -- now dot all mode, which will recognize everything
+  p = .Pattern~compile("(?-s).", .RegexCompiler~new(.RegexCompiler~dotAll))
+  self~checkExcludedCharacters(p, "0a0d"x)
+  -- this again is the default
+  p = .Pattern~compile("(?d).", .RegexCompiler~new(.RegexCompiler~internetLines))
+  self~checkExcludedCharacters(p, "0a"x)
+  -- unix line mode only recognizes linends as special
+  p = .Pattern~compile("(?-d).", .RegexCompiler~new(.RegexCompiler~unixLines))
+  self~checkExcludedCharacters(p, "0a0d"x)
+ */
+
 -- simple classes that are just sequences of characters
 ::method testSimpleClass
   p = .Pattern~compile("[abc]")

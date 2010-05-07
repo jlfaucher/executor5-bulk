@@ -904,22 +904,27 @@
   -- multiple flags can appear in a group
   do forever
       select
+          -- we're using unix linends
           when ch == "d" then do
               self~unixLinesMode = setting
               setting = .true  -- reset for an additional mode flag
           end
+          -- case insensitive matching
           when ch == "i" then do
               self~caselessMode = setting
               setting = .true  -- reset for an additional mode flag
           end
+          -- linends are recognized at other than the end of the data
           when ch == "m" then do
               self~multiLineMode = setting
               setting = .true  -- reset for an additional mode flag
           end
+          -- "single line" mode.
           when ch == "s" then do
               self~dotAllMode = setting
               setting = .true  -- reset for an additional mode flag
           end
+          -- turning a flag off
           when ch == "-" then do
               -- if we're already negated, this is an error.
               if \setting then do
