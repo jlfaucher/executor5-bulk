@@ -3042,7 +3042,7 @@ self~getMatchMetrics:super(metrics)
   self~getMatchMetrics:super(metrics)
 
 -- same as a back reference, but matching is done caselessly
-::class CaselessBackReferenceNode subclass MatchNode
+::class CaselessBackReferenceNode subclass BackReferenceNode
 -- simple method for performing the implementation specific
 -- matching for a back reference.  Intended to be overridden
 ::method submatch

@@ -1096,6 +1096,31 @@ return testResult
   self~assertTrue(self~matches(p, "123434"))
   self~assertFalse(self~matches(p, "123412"))
 
+  -- case insensitivity tests
+  p = .Pattern~compile("(ab)\1", .RegexCompiler~new(.RegexCompiler~caseless))
+  self~assertTrue(self~matches(p, "abab"))
+  self~assertTrue(self~matches(p, "abAB"))
+
+  p = .Pattern~compile("(ab)\1", .RegexCompiler~new(.RegexCompiler~respectcase))
+  self~assertTrue(self~matches(p, "abab"))
+  self~assertFalse(self~matches(p, "abAB"))
+
+  p = .Pattern~compile("(ab)(?i)\1", .RegexCompiler~new(.RegexCompiler~respectcase))
+  self~assertTrue(self~matches(p, "abab"))
+  self~assertTrue(self~matches(p, "abAB"))
+
+  p = .Pattern~compile("(ab)(?-i)\1", .RegexCompiler~new(.RegexCompiler~caseless))
+  self~assertTrue(self~matches(p, "abab"))
+  self~assertFalse(self~matches(p, "abAB"))
+
+  p = .Pattern~compile("(ab)(?i:\1)", .RegexCompiler~new(.RegexCompiler~respectcase))
+  self~assertTrue(self~matches(p, "abab"))
+  self~assertTrue(self~matches(p, "abAB"))
+
+  p = .Pattern~compile("(ab)(?-i:\1)", .RegexCompiler~new(.RegexCompiler~caseless))
+  self~assertTrue(self~matches(p, "abab"))
+  self~assertFalse(self~matches(p, "abAB"))
+
 -- tests of the * pattern modifier
 ::method testStarGroupModifier
   p = .Pattern~compile("(a)*")     -- zero or more occurrances of a
