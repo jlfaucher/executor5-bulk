@@ -179,6 +179,48 @@ return testResult
   self~assertEquals("", r~prefix)
   self~assertEquals("xyzzy", r~suffix)
 
+  -- case insensitivity tests
+  p = .Pattern~compile("foo", .RegexCompiler~new(.RegexCompiler~caseless))
+  self~assertTrue(self~matches(p, "foo"))
+  self~assertTrue(self~matches(p, "fOo"))
+  self~assertTrue(self~matches(p, "FOO"))
+
+  p = .Pattern~compile("foo", .RegexCompiler~new(.RegexCompiler~respectCase))
+  self~assertTrue(self~matches(p, "foo"))
+  self~assertFalse(self~matches(p, "fOo"))
+  self~assertFalse(self~matches(p, "FOO"))
+
+  -- flag override as a standalone group, including tests for mode restore
+  p = .Pattern~compile("(?i)foo", .RegexCompiler~new(.RegexCompiler~respectCase))
+  self~assertTrue(self~matches(p, "foo"))
+  self~assertTrue(self~matches(p, "FOO"))
+
+  p = .Pattern~compile("(?-i)foo", .RegexCompiler~new(.RegexCompiler~caseless))
+  self~assertTrue(self~matches(p, "foo"))
+  self~assertFalse(self~matches(p, "FOO"))
+
+  -- group scope flag save and restore
+  p = .Pattern~compile("((?i)foo)d", .RegexCompiler~new(.RegexCompiler~respectCase))
+  self~assertTrue(self~matches(p, "food"))
+  self~assertTrue(self~matches(p, "FOOd"))
+  self~assertFalse(self~matches(p, "FOOD"))
+
+  p = .Pattern~compile("((?-i)foo)d", .RegexCompiler~new(.RegexCompiler~caseless))
+  self~assertTrue(self~matches(p, "fooD"))
+  self~assertTrue(self~matches(p, "food"))
+  self~assertFalse(self~matches(p, "FOOD"))
+
+  -- and save and restore using the (?f:X) syntax
+  p = .Pattern~compile("(?i:foo)d", .RegexCompiler~new(.RegexCompiler~respectCase))
+  self~assertTrue(self~matches(p, "food"))
+  self~assertTrue(self~matches(p, "FOOd"))
+  self~assertFalse(self~matches(p, "FOOD"))
+
+  p = .Pattern~compile("(?-i:foo)d", .RegexCompiler~new(.RegexCompiler~caseless))
+  self~assertTrue(self~matches(p, "fooD"))
+  self~assertTrue(self~matches(p, "food"))
+  self~assertFalse(self~matches(p, "FOOD"))
+
 -- test various patterns containing "."
 ::method testDot
 
@@ -1759,4 +1801,3 @@ return testResult
   -- will terminate all the rest of the alternative checks.
   p = .Pattern~compile("\b(?>in|insert|integer)\b")
   self~assertFalse(self~matches(p, "insert"))
-

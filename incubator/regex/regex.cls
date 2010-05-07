@@ -152,6 +152,17 @@
 ::constant UPPERCASECHARACTERS "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 ::constant WHITESPACECHARACTERS '20090a0b0c0d'x
 
+-- options constants for the different compiler modes
+::constant multiline "MULTILINE"
+::constant singleline "SINGLELINE"
+::constant internetlines "INTERNETLINES"
+::constant unixlines "UNIXLINES"
+::constant caseless  "CASELESS"
+::constant respectcase "RESPECTCASE"
+::constant dotall "DOTALL"
+::constant dotrestricted "DOTRESTRICTED"
+
+
 -- Initialize the class families the first time they are used
 ::method initClassFamilies private
   expose classFamilies
@@ -213,10 +224,10 @@
 
   use strict arg options = .nil
   -- set default options
-  self~multiline = .false
-  self~unixlines = .false
-  self~caseless = .false
-  self~dotall = .false
+  self~multiLineMode = .false
+  self~unixLinesMode = .false
+  self~caselessMode = .false
+  self~dotAllMode = .false
   self~validateOptions(arg(1))
 
 -- the following CONSTANTs define the valid options; split into two parts for
@@ -242,35 +253,35 @@
       select
           -- option = MULTILINE
           when validOptions~word(1)~abbrev(option, 1) then do
-              self~multiline = .true
+              self~multiLineMode = .true
           end
           -- option = SINGLELINE
           when validOptions~word(2)~abbrev(option, 1) then do
-              self~multiline = .false
+              self~multiLineMode = .false
           end
           -- option = INTERNETLINES
           when validOptions~word(3)~abbrev(option, 1) then do
-              self~unixlines = .false
+              self~unixLinesMode = .false
           end
           -- option = UNIXLINES
           when validOptions~word(4)~abbrev(option, 1) then do
-              self~unixlines = .true
+              self~unixLinesMode = .true
           end
           -- option = CASELESS
           when validOptions~word(5)~abbrev(option, 1) then do
-              self~caseless = .true
+              self~caselessMode = .true
           end
           -- option = RESPECTCASE
           when validOptions~word(6)~abbrev(option, 1) then do
-              self~caseless = .false
+              self~caselessMode = .false
           end
           -- option = DOTALL
           when validOptions~word(7)~abbrev(option, 4) then do
-              self~dotall = .true
+              self~dotAllMode = .true
           end
           -- option = DOTRESTRICTED
           when validOptions~word(8)~abbrev(option, 4) then do
-              self~dotall = .false
+              self~dotAllMode = .false
           end
           otherwise  do
               raise syntax 93.915 array(validOptions, option)
@@ -514,6 +525,12 @@
               -- entire section into our graph.  All subsequent
               -- bits follow the group sequence.
               groupInfo = self~parseGroup
+              -- This could be a standalone flag group.  In that case,
+              -- the compiler mode flags have been processed, but there
+              -- is no node to handle.  Just skip over this and keep parsing
+              if groupInfo == .nil then do
+                  iterate
+              end
               if firstNode == .nil then do
                   firstNode = groupInfo~firstNode
               end
@@ -577,10 +594,10 @@
 ::method parseStartAnchor
   -- if operating in single line mode, this is just
   -- a text beginning
-  if \self~multiline then do
+  if \self~multiLineMode then do
       return .BeginTextNode~new
   end
-  else if self~unixLines then do
+  else if self~unixLinesMode then do
       return .UnixMultilineCaretNode~new
   end
   else do
@@ -595,9 +612,9 @@
 ::method parseEndAnchor
   -- an end anchor, which has 4 possibilities
   -- in multiline mode?  interior linends are recognized
-  if self~multiline then do
+  if self~multiLineMode then do
       -- return the version appropriate to the linend style
-      if self~unixlines then do
+      if self~unixLinesMode then do
           return .UnixMultiLineEndNode~new
       end
       else do
@@ -606,7 +623,7 @@
   end
   else do
       -- return the version appropriate to the linend style
-      if self~unixlines then do
+      if self~unixLinesMode then do
           return .UnixLineEndNode~new
       end
       else do
@@ -618,10 +635,10 @@
   -- a match anything character.  The meaning of
   -- "match anything" differs depending on options
 ::method parseDot
-  if self~dotAll then do
+  if self~dotAllMode then do
       return .AllDotNode~new
   end
-  else if self~unixLines then do
+  else if self~unixLinesMode then do
       return .UnixDotNode~new
   end
   else do
@@ -693,6 +710,10 @@
 
 -- parse group information
 ::method parseGroup
+  -- group specifications can change the mode settings, but the
+  -- scope of the change is limited to the containing group.
+  -- We need to restore these once we're finished parsing the group
+  savedFlags = self~saveFlags
   -- we return a directory of information about this group
   groupInfo = .directory~new
   ch = self~peek
@@ -813,8 +834,11 @@
               end
           end
           otherwise do
-              self~next -- step over the peeked character
-              -- if .true, this is a closed modifier
+              -- if .true, this is a closed modifier.  A
+              -- closed modifier will last for the lifetime
+              -- of its enclosing group.  This set of parens
+              -- is ignored for the purposes of restoring the
+              -- flag settings
               if self~parseFlag then do
                   return .nil
               end
@@ -855,6 +879,8 @@
   if ch \== ')' then do
       raise syntax 93.900 array("Missing closing ')' for a group")
   end
+  -- restore the flags now to the original state
+  self~restoreFlags(savedFlags)
   -- we need to process this differently, since there are different
   -- repetitors needed to handle updating group information
   self~parseGroupClosure(groupInfo)
@@ -872,48 +898,61 @@
 
 -- parse options flags in the expressions
 ::method parseFlag
-
   ch = self~next
   setting = .true
 
-  do 2
+  -- multiple flags can appear in a group
+  do forever
       select
           when ch == "d" then do
-              self~unixlines = setting
-              leave
+              self~unixLinesMode = setting
+              setting = .true  -- reset for an additional mode flag
           end
           when ch == "i" then do
-              self~caseless = setting
-              leave
+              self~caselessMode = setting
+              setting = .true  -- reset for an additional mode flag
           end
-          when ch =="m" then do
-              self~multiline = setting
-              leave
+          when ch == "m" then do
+              self~multiLineMode = setting
+              setting = .true  -- reset for an additional mode flag
           end
           when ch == "s" then do
-              self~dotall = setting
+              self~dotAllMode = setting
+              setting = .true  -- reset for an additional mode flag
           end
           when ch == "-" then do
-              -- this is a mode negation
+              -- if we're already negated, this is an error.
+              if \setting then do
+                  raise syntax 93.915 array("dims", ch)
+                  -- this is a mode negation
+              end
               setting = .false
-              ch = self~next
+          end
+          -- this is the (?f:X) form.  The caller needs to
+          -- process the rest of the group.  Return .false to
+          -- indicate there's more to do.
+          when ch == ':' then do
+              return .false
+          end
+          -- if the flag terminator is the closing paren, then
+          -- this group is a closed flag group.  The return value
+          -- tells the caller there's nothing left in the group to
+          -- process
+          when ch == ')' then do
+              return .true
           end
           otherwise do
               raise syntax 93.915 array("dims-", ch)
           end
       end
-  end
-
-  ch = self~next
-  if ch \== ")" then do
-      raise syntax 36.900 array('Missing closing parentheses for mode flag')
+      ch = self~next  -- step to the next character
   end
 
 -- various option flags
-::attribute unixlines
-::attribute caseless
-::attribute multiline
-::attribute dotall
+::attribute unixLinesMode
+::attribute caselessMode
+::attribute multiLineMode
+::attribute dotAllMode
 
 -- take a snapshot of our option flags for saving
 -- and restoring around groups that alter the flags
@@ -921,20 +960,21 @@
 -- with the flag settings
 ::method saveFlags
   flags = .directory~new
-  flags~unixlines = self~unixlines
-  flags~caseless = self~caseless
-  flags~multiline = self~multiline
-  flags~dotall = self~dotall
+  flags~unixLinesMode = self~unixLinesMode
+  flags~caselessMode = self~caselessMode
+  flags~multiLineMode = self~multiLineMode
+  flags~dotAllMode = self~dotAllMode
+  return flags
 
 -- restore the flag settings from a previous
 -- saveFlags collection
 ::method restoreFlags
   use arg flags
 
-  self~unixlines = flags~unixlines
-  self~caseless = flags~caseless
-  self~multiline = flags~multiline
-  self~dotall = flags~dotall
+  self~unixLinesMode = flags~unixLinesMode
+  self~caselessMode = flags~caselessMode
+  self~multiLineMode = flags~multiLineMode
+  self~dotAllMode = flags~dotAllMode
 
 -- process the closures for a group node.  This handles all of the
 -- repetition count details
@@ -1493,7 +1533,7 @@
 ::method stringNode
   use arg string
 
-  if self~caseless then do
+  if self~caselessMode then do
       return .CaselessStringNode~new(string)
   end
   else do
@@ -1611,7 +1651,7 @@
           if \self~haveGroup(ch) then do
               raise syntax 93.900 array("Unrecognized group back reference" ch)
           end
-          if self~caseless then do
+          if self~caselessMode then do
               return .CaselessBackReferenceNode~new(ch)
           end
           else do
@@ -1625,7 +1665,7 @@
           if \self~haveGroup(referenceName) then do
               raise syntax 93.900 array("Unrecognized group back reference" referenceName)
           end
-          if self~caseless then do
+          if self~caselessMode then do
               return .CaselessBackReferenceNode~new(referenceName)
           end
           else do
@@ -1660,7 +1700,7 @@
       -- this is like $, but it always is an end of input or linend
       -- match, rather than multiline
       when ch == 'Z' then do
-          if self~unixLines then do
+          if self~unixLinesMode then do
               return .UnixLineEndNode~new
           end
           else do
@@ -2118,20 +2158,19 @@
 -- a caseless match for a string
 ::class CaselessStringNode subclass StringNode
 ::method match
-  expose matchString
-
   use arg context, position, target
+  matchString = self~matchString
 
-  if context~checkEnd(position + matchString~length) then do
+  -- must have at least the same length as the string available
+  if context~checkEnd(position + matchString~length - 1) then do
       return .false
   end
 
   if \target~caselessMatch(position, matchString) then do
       return .false
   end
-
-  return self~next~match(context, position + 1, target)
-
+  -- continue checking after this position
+  return self~next~match(context, position + matchString~length, target)
 
 -- match for a defined set of characters
 ::class ClassNode subclass MatchNode
