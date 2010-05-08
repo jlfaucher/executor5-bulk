@@ -186,6 +186,7 @@
   classFamilies["XDigit"] = "0123456789abcdefABCDEF"
   classFamilies["ODigit"] = "01234567"
   classFamilies["Space"] = self~whiteSpaceCharacters
+  classFamilies["Word"] = self~wordCharacters
 
   classFamilies["RexxSymbol"] = classFamilies["Alnum"] || ".!?_"
   classFamilies["RexxVariableStart"] = classFamilies["Alpha"] || "!?_"
@@ -210,11 +211,7 @@
 
   -- initialize the class families
   self~initClassFamilies
-
-  if classFamilies~hasIndex(name) then do
-      raise syntax 98.900 array("Class family" name "already exists")
-  end
-
+  -- allow any class family to be redefined
   classFamilies[name] = chars
 
 -- initialize a regex compiler instance
@@ -1462,6 +1459,12 @@
       familyName = familyName~substr(3)
   end
 
+  return self~createNamedClassFamily(familyName, negated)
+
+-- create a named class family
+::method createNamedClassFamily
+  use arg familyName, negated
+
   familyChars = self~classFamily(familyName)
   if familyChars == .nil then do
       raise syntax 93.900 array("Unknown named class family '"familyName"'")
@@ -1749,12 +1752,12 @@
       -- NOT a digit
       when ch == 'D' then do
           -- no need to handle caseless matches here
-          return .NotClassNode~new(self~DIGITCHARACTERS)
+          return self~createNamedClassFamily("Digit", .true)
       end
       -- Is a digit
       when ch == 'd' then do
           -- no need to handle caseless matches here
-          return .ClassNode~new(self~DIGITCHARACTERS)
+          return self~createNamedClassFamily("Digit", .false)
       end
       -- quoted literal..return the entire group
       when ch == 'Q' then do
@@ -1763,24 +1766,24 @@
       -- NOT whitespace
       when ch == 'S' then do
           -- no need to handle caseless matches here
-          return .NotClassNode~new(self~WHITESPACECHARACTERS)
+          return self~createNamedClassFamily("Space", .true)
       end
       -- is whitespace
       when ch == 's' then do
           -- no need to handle caseless matches here
-          return .ClassNode~new(self~WHITESPACECHARACTERS)
+          return self~createNamedClassFamily("Space", .false)
       end
       -- NOT a word character
       when ch == 'W' then do
           -- This includes all of the upper and lower case letters, so no
           -- caseless considerations to worry about
-          return .NotClassNode~new(self~WORDCHARACTERS)
+          return self~createNamedClassFamily("Word", .true)
       end
       -- is a word character
       when ch == 'w' then do
           -- This includes all of the upper and lower case letters, so no
           -- caseless considerations to worry about
-          return .ClassNode~new(self~WORDCHARACTERS)
+          return self~createNamedClassFamily("Word", .false)
       end
       -- named class family
       when ch == 'p' then do
