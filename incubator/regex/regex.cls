@@ -602,7 +602,7 @@
       return .UnixMultilineCaretNode~new
   end
   else do
-      return .MultilineCaretNode~new
+      return .InternetMultilineCaretNode~new
   end
 
 -- Handle adding a handler for a $ anchor to the tree.  The operation
@@ -619,7 +619,7 @@
           return .UnixMultiLineEndNode~new
       end
       else do
-          return .MultiLineEndNode~new
+          return .InternetMultiLineEndNode~new
       end
   end
   else do
@@ -628,7 +628,7 @@
           return .UnixLineEndNode~new
       end
       else do
-          return .LineEndNode~new
+          return .InternetLineEndNode~new
       end
   end
 
@@ -643,7 +643,7 @@
       return .UnixDotNode~new
   end
   else do
-      return .DotNode~new
+      return .InternetDotNode~new
   end
 
 -- parse the full range of escapes, including the operations.  This
@@ -1725,7 +1725,7 @@
               return .UnixLineEndNode~new
           end
           else do
-              return .LineEndNode~new
+              return .InternetLineEndNode~new
           end
       end
       -- always match the end of the text
@@ -2119,7 +2119,7 @@
 
 -- like all dot node, but doesn't match lineends (CRLF sequences,
 -- in this case)
-::class DotNode subclass AllDotNode
+::class InternetDotNode subclass AllDotNode
 ::method match
   use arg context, position, target
 
@@ -2349,7 +2349,7 @@
 
 -- check for a lineend in non-unix mode.  This matches on a '\r\n' sequence
 -- or the END of input, but only if the lineend sequence is at the very end
-::class LineEndNode subclass MatchNode
+::class InternetLineEndNode subclass MatchNode
 ::method match
   use arg context, position, target
   if context~checkEnd(position) then do
@@ -2406,7 +2406,7 @@
 
 -- check for a lineend in non-unix, multiline mode.  This matches on a '\r\n' sequence
 -- OR the end of the input
-::class MultiLineEndNode subclass MatchNode
+::class InternetMultiLineEndNode subclass MatchNode
 ::method match
   use arg context, position, target
 
@@ -3497,7 +3497,7 @@ self~getMatchMetrics:super(metrics)
 -- multiline mode.  To match, this either must be
 -- the beginning of the line or the first character after
 -- a \r\n sequence
-::class MultilineCaretNode subclass MatchNode
+::class InternetMultilineCaretNode subclass MatchNode
 ::method match
   use arg context, position, target
 
