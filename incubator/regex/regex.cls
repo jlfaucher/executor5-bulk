@@ -590,7 +590,8 @@
   end
   return firstNode
 
-
+-- create an appropriate start anchor (^) based on the
+-- current mode flags
 ::method parseStartAnchor
   -- if operating in single line mode, this is just
   -- a text beginning
@@ -3506,18 +3507,19 @@ self~getMatchMetrics:super(metrics)
   end
 
   -- if at the real beginning, this is good
-  if context~atStart(postion) then do
+  if context~atStart(position) then do
       return self~next~match(context, position, target)
   end
 
   -- Not enough space to test for a linend?  This also fails ,
   -- we need to see if we're positioned at a lineend
-  if \context~checkEnd(position - 2) then do
+  if \context~checkStart(position - 2) then do
       return .false
   end
+
   -- must have a CRLF sequence before this to match
   if \target~match(position - 2, '0d0a'x) then do
-      return false
+      return .false
   end
   -- and go finish up
   return self~next~match(context, position, target)
@@ -3537,13 +3539,13 @@ self~getMatchMetrics:super(metrics)
   end
 
   -- if at the real beginning, this is good
-  if context~atStart(postion) then do
+  if context~atStart(position) then do
       return self~next~match(context, position, target)
   end
 
   -- must have a CRLF sequence before this to match
   if \target~match(position - 1, '0a'x) then do
-      return false
+      return .false
   end
   -- and go finish up
   return self~next~match(context, position, target)

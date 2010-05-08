@@ -1405,7 +1405,7 @@ return testResult
 
 -- tests of the ^ and $ boundary markers
 ::method testBeginEndLine
-  -- beginning of line anchor
+  -- beginning of line anchor (^)
   p = .Pattern~compile("^dog")
   self~assertTrue(self~matches(p, "dog"))
 
@@ -1421,6 +1421,61 @@ return testResult
   r = self~find(p, " dog")
   self~assertFalse(r~matched)
 
+  -- at the beginning of line doesn't count by default
+  r = self~find(p, "0d0a"x||"dog")
+  self~assertFalse(r~matched)
+
+  -- now interactions with the mode flags
+  -- this is the default, which should be the same as the above
+  p = .Pattern~compile("^dog", .RegexCompiler~new(.RegexCompiler~singleLine))
+  r = self~find(p, "0d0a"x||"dog")
+  self~assertFalse(r~matched)
+  -- this should now match, using internet linends
+  p = .Pattern~compile("^dog", .RegexCompiler~new(.RegexCompiler~multiLine))
+  r = self~find(p, "0d0a"x||"dog")
+  self~assertTrue(self~verifyMatchResult(r, 3, 6, "dog"))
+  -- internet lines should not work
+  r = self~find(p, "0a"x||"dog")
+  self~assertFalse(r~matched)
+  -- same as above, but with an explicit option specified
+  p = .Pattern~compile("^dog", .RegexCompiler~new(.RegexCompiler~multiLine .RegexCompiler~internetLines))
+  r = self~find(p, "0d0a"x||"dog")
+  self~assertTrue(self~verifyMatchResult(r, 3, 6, "dog"))
+  -- the same, with unix linends
+  p = .Pattern~compile("^dog", .RegexCompiler~new(.RegexCompiler~multiLine .RegexCompiler~unixLines))
+  r = self~find(p, "0a"x||"dog")
+  self~assertTrue(self~verifyMatchResult(r, 2, 5, "dog"))
+  -- this works, but only indirectly because the 0d is "just data" and is
+  -- ignored.  Only the 0a is significant
+  r = self~find(p, "0d0a"x||"dog")
+  self~assertTrue(self~verifyMatchResult(r, 3, 6, "dog"))
+
+  -- now tests with inline flags
+  p = .Pattern~compile("(?-m)^dog", .RegexCompiler~new(.RegexCompiler~multiLine))
+  r = self~find(p, "0d0a"x||"dog")
+  self~assertFalse(r~matched)
+  -- this should now match, using internet linends
+  p = .Pattern~compile("(?m)^dog", .RegexCompiler~new(.RegexCompiler~singleLine))
+  r = self~find(p, "0d0a"x||"dog")
+  self~assertTrue(self~verifyMatchResult(r, 3, 6, "dog"))
+  -- internet lines should not work
+  r = self~find(p, "0a"x||"dog")
+  self~assertFalse(r~matched)
+  -- same as above, but with an explicit option specified
+  p = .Pattern~compile("(?m-d)^dog", .RegexCompiler~new(.RegexCompiler~singleLine .RegexCompiler~unixLines))
+  r = self~find(p, "0d0a"x||"dog")
+  self~assertTrue(self~verifyMatchResult(r, 3, 6, "dog"))
+
+  -- the same, with unix linends
+  p = .Pattern~compile("(?md)^dog", .RegexCompiler~new(.RegexCompiler~singleLine .RegexCompiler~internetLines))
+  r = self~find(p, "0a"x||"dog")
+  self~assertTrue(self~verifyMatchResult(r, 2, 5, "dog"))
+  -- this works, but only indirectly because the 0d is "just data" and is
+  -- ignored.  Only the 0a is significant
+  r = self~find(p, "0d0a"x||"dog")
+  self~assertTrue(self~verifyMatchResult(r, 3, 6, "dog"))
+
+
   p = .Pattern~compile("\Adog")
   self~assertTrue(self~matches(p, "dog"))
 
@@ -1435,6 +1490,26 @@ return testResult
 
   r = self~find(p, " dog")
   self~assertFalse(r~matched)
+
+  -- The \A anchor only matches the real start of data.  This should not
+  -- change with the various flags
+  p = .Pattern~compile("(?d)\Adog")
+  r = self~find(p, "0a"x||"dog")
+  self~assertFalse(r~matched)
+  r = self~find(p, "0d0a"x||"dog")
+  self~assertFalse(r~matched)
+  p = .Pattern~compile("(?md)\Adog")
+  r = self~find(p, "0a"x||"dog")
+  self~assertFalse(r~matched)
+  r = self~find(p, "0d0a"x||"dog")
+  self~assertFalse(r~matched)
+  p = .Pattern~compile("(?m-d)\Adog")
+  r = self~find(p, "0a"x||"dog")
+  self~assertFalse(r~matched)
+  r = self~find(p, "0d0a"x||"dog")
+  self~assertFalse(r~matched)
+
+
 
   -- end of line anchor
 
