@@ -1509,8 +1509,6 @@ return testResult
   r = self~find(p, "0d0a"x||"dog")
   self~assertFalse(r~matched)
 
-
-
   -- end of line anchor
 
   p = .Pattern~compile("dog$")
@@ -1542,7 +1540,32 @@ return testResult
   r = self~find(p, "dog"||"0d0a00d0a"x||" ")
   self~assertFalse(r~matched)
 
-  -- same as the "unmoded" $
+  -- now mode tests for the end anchors.  The various option/flag
+  -- combinations have been very well tested other places, so this will
+  -- use a smaller set and just test the effect of those flags on the
+  -- anchor patterns
+
+  -- unix mode linends
+  p = .Pattern~compile("(?d)dog$")
+  r = self~find(p, "dog")
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
+  -- the linend is not included in the match position
+  r = self~find(p, "dog"||"0a"x)
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
+  -- this should fail because the '0d'x follows the match string
+  r = self~find(p, "dog"||"0d0a"x)
+  self~assertFalse(r~matched)
+  -- multi line mode
+  p = .Pattern~compile("(?m)dog$")
+  r = self~find(p, "dog"||"0d0a"x||"cat")
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
+  -- multi line mode with unix linends
+  p = .Pattern~compile("(?md)dog$")
+  r = self~find(p, "dog"||"0a"x||"cat")
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
+
+  -- same as the "unmoded" $.  This can handle different
+  -- linends but never in multiline mode
   p = .Pattern~compile("dog\Z")
   self~assertTrue(self~matches(p, "dog"))
   -- This will not match if there is a linend because the pattern
@@ -1569,6 +1592,25 @@ return testResult
   r = self~find(p, "dog"||"0d0a0"x||" ")
   self~assertFalse(r~matched)
   r = self~find(p, "dog"||"0d0a00d0a"x||" ")
+  self~assertFalse(r~matched)
+
+  -- unix mode linends
+  p = .Pattern~compile("(?d)dog\Z")
+  r = self~find(p, "dog")
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
+  -- the linend is not included in the match position
+  r = self~find(p, "dog"||"0a"x)
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "dog"))
+  -- this should fail because the '0d'x follows the match string
+  r = self~find(p, "dog"||"0d0a"x)
+  self~assertFalse(r~matched)
+  -- multi line mode...should not change the result processing
+  p = .Pattern~compile("(?m)dog\Z")
+  r = self~find(p, "dog"||"0d0a"x||"cat")
+  self~assertFalse(r~matched)
+  -- multi line mode with unix linends
+  p = .Pattern~compile("(?md)dog\Z")
+  r = self~find(p, "dog"||"0a"x||"cat")
   self~assertFalse(r~matched)
 
   -- matches only the end of text (no linend processing)
