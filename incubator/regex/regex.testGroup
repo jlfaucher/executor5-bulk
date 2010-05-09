@@ -2006,3 +2006,8 @@ return testResult
   -- will terminate all the rest of the alternative checks.
   p = .Pattern~compile("\b(?>in|insert|integer)\b")
   self~assertFalse(self~matches(p, "insert"))
+
+-- embedded comments in a pattern
+::method testComment
+  p = .Pattern~compile("abc(?# This is a comment)def")
+  self~assertTrue(self~matches(p, "abcdef"))

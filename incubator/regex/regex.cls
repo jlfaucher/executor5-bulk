@@ -522,7 +522,7 @@
               -- entire section into our graph.  All subsequent
               -- bits follow the group sequence.
               groupInfo = self~parseGroup
-              -- This could be a standalone flag group.  In that case,
+              -- This could be a standalone flag group or a comment.  In that case,
               -- the compiler mode flags have been processed, but there
               -- is no node to handle.  Just skip over this and keep parsing
               if groupInfo == .nil then do
@@ -720,6 +720,8 @@
       self~next -- step over the peeked character
       ch = self~peek
       select
+          -- (?: is a non-capturing group.  Just like a normal group,
+          -- but without the capture part
           when ch == ":" then do
               self~next -- step over the peeked character
               -- non capture group
@@ -734,6 +736,8 @@
               groupInfo~firstNode = group
               groupInfo~lastNode = group~terminator
           end
+          -- (?> is an atomic capturing group.  Once it matches,
+          -- it does not give up whatever it matched.
           when ch == ">" then do
               self~next -- step over the peeked character
               -- an atomic group.  Matching is managed differently
@@ -748,6 +752,10 @@
               groupInfo~firstNode = wrapper
               groupInfo~lastNode = wrapper
           end
+          -- positive zero-length lookahead.  This checks that the given
+          -- pattern is at the current position, but it's match is always
+          -- zero-length, so it does not step the position nor does it's
+          -- match position count toward the bounds of the final match
           when ch == "=" then do
               self~next -- step over the peeked character
               -- parse the encapsulated group expression, but terminate
@@ -759,6 +767,8 @@
               groupInfo~firstNode = wrapper
               groupInfo~lastNode = wrapper
           end
+          -- this is a lookbehind.  It checks the data before the current
+          -- position
           when ch == "!" then do
               self~next -- step over the peeked character
               -- parse the encapsulated group expression, but terminate
@@ -830,6 +840,14 @@
                   -- we need the group id to process the closure
                   groupInfo~id = referenceName
               end
+          end
+          -- documentation in a regex...can you imagine that!
+          when ch == '#' then do
+              self~previous  -- step back to the '(' that started the group
+              self~previous
+              -- just swallow the comment group and continue
+              self~extractDelimited('(', ')')
+              return .nil
           end
           otherwise do
               -- if .true, this is a closed modifier.  A
