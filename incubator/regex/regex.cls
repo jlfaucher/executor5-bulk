@@ -841,6 +841,10 @@
                   groupInfo~id = referenceName
               end
           end
+          -- a conditional node.  These are a bit more complex
+          when ch == '(' then do
+              return self~parseConditional
+          end
           -- documentation in a regex...can you imagine that!
           when ch == '#' then do
               self~previous  -- step back to the '(' that started the group
@@ -902,6 +906,124 @@
   self~parseGroupClosure(groupInfo)
   -- return the new chain information.
   return groupInfo
+
+
+-- parse a conditional node in the form "(?(cond)then|else)
+::method parseConditional
+  -- we're positioned at the the ( that starts the conditional now.
+  -- step over that and examine the different options
+  self~next
+  ch = self~peek  -- get the next character and process the different options
+
+  select
+      -- forward lookahead test
+      when ch == "=" then do
+          self~next -- step over the peeked character
+          -- parse the encapsulated group expression, but terminate
+          -- with a branch terminator node.
+          node = self~parseExpression(.BranchTerminatorNode~new)
+          -- this is a special wrapper
+          condition = .PositiveLookAheadNode~new(node)
+      end
+      -- this is a lookbehind.  It checks the data before the current
+      -- position
+      when ch == "!" then do
+          self~next -- step over the peeked character
+          -- parse the encapsulated group expression, but terminate
+          -- with a branch terminator node.
+          node = self~parseExpression(.BranchTerminatorNode~new)
+          -- this is a special wrapper
+          condition = .NegativeLookAheadNode~new(node)
+      end
+      -- Three possibilities here:
+      -- 1)  (?<=... a "zero-width positive lookbehind"
+      -- 2)  (?<!... a "zero-width negative lookbehind"
+      -- 3)  (?<xxxxx>... a named capture group
+      when ch == "<" then do
+          self~next -- step over the peeked character
+          -- a look behind.  These are a pain.  We can only
+          -- support this if the pattern has a deterministic
+          -- max and min.  Before we can decide, we need to
+          -- extract the group expression and then calculate
+          -- the metrics for the entire expression tree.
+
+          -- this is the "=" or "!" qualifier
+          ch = self~peek
+
+          if ch == "=" | ch == "!" then do
+              self~next -- step over the modifier
+              -- parse the encapsulated group expression, but terminate
+              -- with a normal terminator node.  This will perform a
+              -- and of range check on the matches to ensure the
+              -- tests will butt up against the current position.
+              node = self~parseExpression(.TerminatorNode~new)
+
+              -- gather some metrics.  If there is a deterministic maximum,
+              -- we can optimize the back search by using it.  Otherwise,
+              -- we just go back to the beginning
+              metrics = self~getPatternMetrics(node)
+
+              -- create the matcher type based on the modifier
+              if ch == "=" then do
+                  condition = .PositiveLookBehindNode~new(node, metrics)
+              end
+              else if ch == "!" then do
+                  condition = .NegativeLookBehindNode~new(node, metrics)
+              end
+          end
+          else do
+              -- back up for the delimiter parsing
+              self~previous
+              -- and parse out the delimited name
+              referenceName = self~extractDelimited("<", ">")
+              -- a back reference
+              if \self~haveGroup(referenceName) then do
+                  raise syntax 93.900 array("Unrecognized group back reference" ch)
+              end
+              -- a named back reference to previous node
+              condition = .BackReferenceTestNode~new(referenceName)
+          end
+      end
+      -- a back reference test.  This is of the form (?(name)...
+      -- we're looking at the first character, so back up and
+      -- extract the name using the '(' and ')' delimiters
+      otherwise  do
+          self~previous
+          -- and parse out the delimited name
+          referenceName = self~extractDelimited("(", ")")
+          -- a back reference
+          if \self~haveGroup(referenceName) then do
+              raise syntax 93.900 array("Unrecognized group back reference" ch)
+          end
+          -- a named back reference to previous node
+          condition = .BackReferenceTestNode~new(referenceName)
+      end
+  end
+
+  -- ok, we have the conditional part, now parse out the then and optional
+  -- else sections
+
+  -- NOTE:  we need to parse this as an expression, not as a sequence
+  -- because the | is an expression end delimiter
+  thenNode = self~parseExpression(.BranchTerminatorNode~new)
+  ch = self~next
+  -- have the | part?
+  if ch == '|' then do
+      -- now parse out the else section
+      elseNode = self~parseExpression(.BranchTerminatorNode~new)
+      node = .IfThenElseNode~new(condition, thenNode, elseNode)
+      ch = self~next  -- step to the ')' terminator
+  end
+  else do
+      -- simple then node
+      node = .IfThenNode~new(condition, thenNode)
+  end
+
+  if ch \== ')' then do
+      raise syntax 93.900 array("Missing closing ')' for a conditional group")
+  end
+
+  return node
 
 -- calculate the match metrics for a given pattern.
 ::method getPatternMetrics
@@ -2335,27 +2457,20 @@
   expose alternatives
   use arg metrics
 
-  maxLength = 0
-  minLength = 999999999
-  deterministic = .true
-  validMaximum = .true
+  -- create a metrics item for the merge
+  accumulator = .MatchMetrics~new
+  -- set a large minimum for the start
+  accumulator~minLength = 999999999
 
   -- we need to analyze all of the alternative paths.
-
   do alternative over alternatives
       -- get our repetition node values as if it was the only thing of interest
       submetrics = self~getChildMatchMetrics(alternative)
-      maxLength = max(maxLength, subMetrics~maxLength)
-      minLength = min(minLength, subMetrics~minLength)
-      deterministic = deterministic & submetrics~deterministic
-      validMaximum = validMaximum & submetrics~validMaximum
+      -- merge these into our accumulator
+      accumulator~mergeMetrics(submetrics)
   end
-
-  metrics~addMin(minLength)
-  metrics~addMax(maxLength)
-
-  metrics~deterministic = metrics~deterministic & deterministic
-  metrics~validMaximum = metrics~validMaximum & validMaximum
+  -- add these into full set
+  metrics~addMetrics(accumulator)
   -- send this along
   self~getMatchMetrics:super(metrics)
 
@@ -2513,7 +2628,7 @@
   metrics~minLength = minLength
   -- this is no longer deterministic because it depends on context
   metrics~deterministic = .false
-self~getMatchMetrics:super(metrics)
+  self~getMatchMetrics:super(metrics)
 
 -- a question node that implements greedy matching semantics.  It will
 -- match itself first, and back off if it does not find a match.
@@ -2706,7 +2821,7 @@ self~getMatchMetrics:super(metrics)
   submetrics = self~getChildMatchMetrics(repNode)
 
   metrics~addMin(min * submetrics~minLength)
-  metrics~addMax(submetrics~maxLength)
+  metrics~addMax(max * submetrics~maxLength)
 
   -- if the max and min are the same, then this is potentially deterministic
   if max == min then do
@@ -3139,6 +3254,132 @@ self~getMatchMetrics:super(metrics)
       return .false
   end
 
+
+-- A back reference node used in conditionals to test if a
+-- group node had participated in a match operation
+::class BackReferenceTestNode subclass MatchNode
+::method init
+  expose ref
+  use arg ref
+  self~init:super
+
+-- perform the back reference test.  A match here
+-- is just an indicator that the group had participated
+-- in a prior match.  This does not forward to a successor
+-- node
+::method match
+  expose ref
+  -- retrieve the match result for our target back ref
+  refGroup = context~getBackReferenceResult(ref)
+  -- and just return the matched indictor
+  return refGroup~matched
+
+-- support for a (?(cond)then) node
+::class IfThenNode subclass MatchNode
+::method init
+  expose condition thenNode
+  use arg condition, thenNode
+  self~super:init
+  thenNode~terminate   -- make sure the then node is terminated
+  condition~terminate  -- and the condition also
+
+::method match
+  expose condition thenNode
+  use arg context, position, target
+
+  -- if the condition succeeds, then attempt the then portion
+  if condition~match(context, position, target) then do
+      -- the condition is true, so attempt the conditional then part
+      -- using the original match position.  The conditional never
+      -- changes the position
+      if \thenNode~match(context, position, target) then do
+          return .false
+      end
+      -- this succeed, so update the match position before
+      -- forwarding
+      position = context~matchEnd
+  end
+  -- either the condition was false or the then matched, so
+  -- forward along
+  return self~next~match(context, position, target)
+
+-- calculate match metrics for a conditional node
+::method getMatchMetrics
+  expose thenNode
+  use arg metrics
+
+  -- calculate metrics for the then branch
+  submetrics = self~getChildMatchMetrics(thenNode)
+  -- since we don't necessary perform the then match,
+  -- our minimum successful match needs to be zero
+  submetrics~minimum = 0
+  -- we are not deterministic
+  submetrics~deterministic = .false
+  -- and merge into the full set
+  metrics~addMetrics(submetrics)
+  -- send this along
+  self~getMatchMetrics:super(metrics)
+
+-- support for a (?(cond)then) node
+::class IfThenElseNode subclass MatchNode
+::method init
+  expose condition thenNode elseNode
+  use arg condition, thenNode, elseNode
+  self~super:init
+  thenNode~terminate   -- make sure both nodes are terminated
+  elseNode~terminate
+  condition~terminate  -- and the condition also
+
+::method match
+  expose condition thenNode elseNode
+  use arg context, position, target
+
+  -- if the condition succeeds, then attempt the then portion
+  if condition~match(context, position, target) then do
+      -- the condition is true, so attempt the conditional then part
+      -- using the original match position.  The conditional never
+      -- changes the position
+      if \thenNode~match(context, position, target) then do
+          return .false
+      end
+      -- this succeed, so update the match position before
+      -- forwarding
+      position = context~matchEnd
+  end
+  -- if the condition match is false, then take the else branch
+  else do
+      -- the condition is true, so attempt the conditional then part
+      -- using the original match position.  The conditional never
+      -- changes the position
+      if \elseNode~match(context, position, target) then do
+          return .false
+      end
+      -- this succeed, so update the match position before
+      -- forwarding
+      position = context~matchEnd
+  end
+  -- we've had a match on either the then or else branch, so
+  -- forward along
+  return self~next~match(context, position, target)
+
+-- calculate match metrics for a conditional node
+::method getMatchMetrics
+  expose thenNode
+  use arg metrics
+
+  -- calculate metrics for the then branch
+  submetrics = self~getChildMatchMetrics(thenNode)
+  elseMetrics = self~getChildMatchMetrics(elseNode)
+  -- get a merged set from the two branches
+  submetrics~mergeMetrics(elseMetrics)
+  submetrics~minimum = 0
+  -- we are not deterministic
+  submetrics~deterministic = .false
+  -- and merge into the full set
+  metrics~addMetrics(submetrics)
+  -- send this along
+  self~getMatchMetrics:super(metrics)
+
 -- a group node with an explicit name
 ::class NamedGroupNode subclass MatchNode
 ::method init
@@ -3178,10 +3419,10 @@ self~getMatchMetrics:super(metrics)
 
   leftMetrics = self~getChildMatchMetrics(leftSide)
   rightMetrics = self~getChildMatchMetrics(rightSide)
-
-  metrics~addMin(min(leftMetrics~minLength, rightMetrics~minLength))
-  metrics~addMax(max(leftMetrics~maxLength, rightMetrics~maxLength))
-  metrics~deterministic = metrics~deterministic & leftMetrics~deterministic & rightMetrics~deterministic
+  -- merge this set of metrics into a combined result
+  leftMetrics~mergeMetrics(rightMetrics)
+  -- and add to the full metric set
+  metrics~addMetrics(leftMetrics)
   self~getMatchMetrics:super(metrics)
 
 ::attribute leftSide
@@ -3646,20 +3887,18 @@ self~getMatchMetrics:super(metrics)
           return .true
       end
   end
+
   -- no matches possible
-
   return .false
-
 
 ::method getMatchMetrics
   use arg metrics
 
+  -- get the successor metrics, but we need to tweak them
   self~getMatchMetrics:super(metrics)
-
   -- because we slide, these are never valid
   metrics~deterministic = .false
   metrics~validMaximum = .false
-
 
 -- base class for a match result from a group match.  This is
 -- similar to the MatchResult class, but lacks the ability to request
@@ -4254,6 +4493,30 @@ matchend = matchstart
   use arg length
   maxLength += length
 
+-- add a node's metric set to our accumulated set
+::method addMetrics
+  expose deterministic validMaximum
+  use arg other
+  -- add in the minumum and maximum
+  self~addMin(other~minLength)
+  self~addMax(other~maxLength)
 
+  -- or in the various flags
+  deterministic = deterministic & other~deterministic
+  validMaximum = validMaximum & other~validMaximum
+
+-- like addMetrics, but this version will just calculate
+-- the various max and min values between two sets of
+-- metrics
+::method mergeMetrics
+  expose minLength maxLength deterministic validMaximum
+  use arg other
+  -- calculate the new minimum and maximum
+  minLength = min(minLength, other~minLength)
+  maxLength = max(maxLength, other~maxLength)
+
+  -- or in the various flags
+  deterministic = deterministic & other~deterministic
+  validMaximum = validMaximum & other~validMaximum
 
 
