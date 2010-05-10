@@ -843,7 +843,11 @@
           end
           -- a conditional node.  These are a bit more complex
           when ch == '(' then do
-              return self~parseConditional
+              node = self~parseConditional
+              -- add this to the returned group information.  This still
+              -- needs to have closures processed
+              groupInfo~firstNode = node
+              groupInfo~lastNode = node
           end
           -- documentation in a regex...can you imagine that!
           when ch == '#' then do
@@ -1006,23 +1010,18 @@
   -- NOTE:  we need to parse this as an expression, not as a sequence
   -- because the | is an expression end delimiter
   thenNode = self~parseExpression(.BranchTerminatorNode~new)
-  ch = self~next
+  ch = self~peek
   -- have the | part?
   if ch == '|' then do
+      self~next -- step over the |
       -- now parse out the else section
       elseNode = self~parseExpression(.BranchTerminatorNode~new)
       node = .IfThenElseNode~new(condition, thenNode, elseNode)
-      ch = self~next  -- step to the ')' terminator
   end
   else do
       -- simple then node
       node = .IfThenNode~new(condition, thenNode)
   end
-
-  if ch \== ')' then do
-      raise syntax 93.900 array("Missing closing ')' for a conditional group")
-  end
-
   return node
 
 -- calculate the match metrics for a given pattern.
@@ -3269,6 +3268,7 @@ self~getMatchMetrics:super(metrics)
 -- node
 ::method match
   expose ref
+  use arg context, position, target
   -- retrieve the match result for our target back ref
   refGroup = context~getBackReferenceResult(ref)
   -- and just return the matched indictor
@@ -3279,7 +3279,7 @@ self~getMatchMetrics:super(metrics)
 ::method init
   expose condition thenNode
   use arg condition, thenNode
-  self~super:init
+  self~init:super
   thenNode~terminate   -- make sure the then node is terminated
   condition~terminate  -- and the condition also
 
@@ -3312,7 +3312,7 @@ self~getMatchMetrics:super(metrics)
   submetrics = self~getChildMatchMetrics(thenNode)
   -- since we don't necessary perform the then match,
   -- our minimum successful match needs to be zero
-  submetrics~minimum = 0
+  submetrics~minLength = 0
   -- we are not deterministic
   submetrics~deterministic = .false
   -- and merge into the full set
@@ -3372,7 +3372,7 @@ self~getMatchMetrics:super(metrics)
   elseMetrics = self~getChildMatchMetrics(elseNode)
   -- get a merged set from the two branches
   submetrics~mergeMetrics(elseMetrics)
-  submetrics~minimum = 0
+  submetrics~minLength = 0
   -- we are not deterministic
   submetrics~deterministic = .false
   -- and merge into the full set

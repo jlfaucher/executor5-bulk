@@ -2011,3 +2011,19 @@ return testResult
 ::method testComment
   p = .Pattern~compile("abc(?# This is a comment)def")
   self~assertTrue(self~matches(p, "abcdef"))
+
+-- conditional patterns
+::method testConditional
+  p = .Pattern~compile("(abc)?(?(1)def)")
+  -- The def will be found because the abc group matched
+  r = self~find(p, "abcdef")
+  self~assertTrue(self~verifyMatchResult(r, 1, 7, "abcdef"))
+  -- abc did not participate, so this should not match
+  r = self~find(p, "def")
+  self~assertFalse(r~matched)
+  -- * pattern.  The will match twice
+  p = .Pattern~compile("(abc)*(?(1)def)")
+  r = self~find(p, "abcabcdef")
+  self~assertTrue(self~verifyMatchResult(r, 1, 10, "abcabcdef"))
+
+
