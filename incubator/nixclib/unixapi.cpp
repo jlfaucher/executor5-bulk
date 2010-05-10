@@ -409,7 +409,7 @@ RexxRoutine0(RexxObjectPtr,
              SysGettid)
 {
     pthread_t tid = pthread_self();
-    return context->UnsignedInt64ToObject(tid);
+    return context->UnsignedInt64ToObject((uint64_t)tid);
 }
 
 
