@@ -295,6 +295,8 @@
   length = pattern~length
   groups = .nil   -- no group information until we hit the first capturing group
   groupCount = 0  -- This is for the group numbering
+  -- create the group reference item for the main matching context
+  self~createGroupReference(0)
 
   -- this is the last node that will get control only if all other
   -- elements match cleanly.  The expression parser hooks this up to the
@@ -765,7 +767,7 @@
               self~next -- step over the peeked character
               -- parse the encapsulated group expression, but terminate
               -- with a branch terminator node.
-              node = self~parseExpression(.BranchTerminatorNode~new)
+              node = self~parseExpression(.nil)
               -- this is a special wrapper
               wrapper = .PositiveLookAheadNode~new(node)
               -- wrappered nodes fill both roles
@@ -778,7 +780,7 @@
               self~next -- step over the peeked character
               -- parse the encapsulated group expression, but terminate
               -- with a branch terminator node.
-              node = self~parseExpression(.BranchTerminatorNode~new)
+              node = self~parseExpression(.nil)
               -- this is a special wrapper
               wrapper = .NegativeLookAheadNode~new(node)
               -- wrappered nodes fill both roles
@@ -936,7 +938,7 @@
                   self~next -- step over the peeked character
                   -- parse the encapsulated group expression, but terminate
                   -- with a branch terminator node.
-                  node = self~parseExpression(.BranchTerminatorNode~new)
+                  node = self~parseExpression(.nil)
                   -- this is a special wrapper
                   condition = .PositiveLookAheadNode~new(node)
               end
@@ -945,7 +947,7 @@
                   self~next -- step over the peeked character
                   -- parse the encapsulated group expression, but terminate
                   -- with a branch terminator node.
-                  node = self~parseExpression(.BranchTerminatorNode~new)
+                  node = self~parseExpression(.nil)
                   -- this is a special wrapper
                   condition = .NegativeLookAheadNode~new(node)
               end
@@ -969,7 +971,7 @@
                       -- with a normal terminator node.  This will perform a
                       -- and of range check on the matches to ensure the
                       -- tests will butt up against the current position.
-                      node = self~parseExpression(.BranchTerminatorNode~new)
+                      node = self~parseExpression(.nil)
 
                       -- gather some metrics.  If there is a deterministic maximum,
                       -- we can optimize the back search by using it.  Otherwise,
@@ -1020,7 +1022,7 @@
 
   -- NOTE:  we need to parse this as a sequence, not as an expression
   -- because the | is an expression end delimiter
-  thenNode = self~parseSequence(.BranchTerminatorNode~new)
+  thenNode = self~parseSequence(.nil)
   ch = self~peek
   -- have the | part?
   if ch == '|' then do
@@ -1028,7 +1030,7 @@
       -- now parse out the else section.  NOTE: parse sequence
       -- needs to be used because we don't accept alternatives
       -- unless in a group
-      elseNode = self~parseSequence(.BranchTerminatorNode~new)
+      elseNode = self~parseSequence(.nil)
       node = .IfThenElseNode~new(condition, thenNode, elseNode)
   end
   else do
@@ -1241,9 +1243,9 @@
       end
   end
 
-  -- stick branch a terminator after the end of this.  The
+  -- stick branch terminator after the end of this.  The
   -- question node will handle the repetitions.
-  groupInfo~lastNode~next = .BranchTerminatorNode~new
+  groupInfo~lastNode~next = .nil
   -- this is atomic, and handles both roles
   groupInfo~firstNode = node
   groupInfo~lastNode = node
@@ -2021,6 +2023,22 @@
 
 ::attribute next
 
+-- invoke the next handler in the chain
+::method matchNext
+  expose next
+  use arg context, position, target
+  -- if there is not node attached, assume it matches
+  if next == .nil then do
+      -- set the end match position
+      context~matchEnd = position
+      -- this is always a successful match.  This really just
+      -- records the last position of this branch segment.
+      return .true
+  end
+  -- just send this along
+  return next~match(context, position, target)
+
+
 -- calculate the length of this match, if possible.  The
 -- default implementation assumes the length of this node is zero and
 -- just passes the request down the chain
@@ -2048,9 +2066,10 @@
   -- the branch version.  The latter case generally happens
   -- when a parsed sequence is wrapped in an alteration
   if next == .nil | next~isa(.TerminatorNode) then do
-      -- this is a branch terminator, which merely records
-      -- the match position and return true if it is reached.
-      self~next = .BranchTerminatorNode~new
+      -- matchNext handles the .nil like it was a terminator
+      -- terminate is only called for side branches, so we can
+      -- eliminate that extra node
+      self~next = .nil
   end
   else do
       -- we have a child node, make sure that child has a
@@ -2066,7 +2085,7 @@
 ::method match
   use arg context, position, target
   -- we always match, so just send along to the successor
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 -- A node that enforces anchoring at the beginning of the text
 ::class BeginTextNode subclass MatchNode
@@ -2078,7 +2097,7 @@
       return .false
   end
   -- forward and complete
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 -- A node that enforces anchoring at the end of the text
 ::class EndTextNode subclass MatchNode
@@ -2089,7 +2108,7 @@
       return .false
   end
   -- forward and complete
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 
 -- A node that enforces a match at the beginning of a word boundary
@@ -2112,7 +2131,7 @@
           return .false
       end
       -- good so far, pass this along
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
 
   -- if at the start of the range, the character must be a word character
@@ -2124,12 +2143,12 @@
           return .false
       end
       -- good so far, pass this along
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
   -- exclusive OR situation.  Only one of these should be a word character to
   -- qualify as a boundary
   if target~matchChar(position, self~wordChars) && target~matchChar(position - 1, self~wordChars) then do
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
 
   return .false
@@ -2149,14 +2168,14 @@
       -- word boundary
       if context~atStart(position) then do
           -- a null string is not a word boundary, so this passes
-          return self~next~match(context, position, target)
+          return self~matchNext(context, position, target)
       end
       -- a word character in the previous position?  This fails
       if target~matchChar(position - 1, self~wordChars) then do
           return .false
       end
       -- good so far, pass this along
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
 
   -- if at the start of the range, the character must be a word character
@@ -2168,14 +2187,14 @@
           return .false
       end
       -- good so far, pass this along
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
   -- exclusive OR situation.  If one is a boundary and the other not, this fails
   -- qualify as a boundary
   if target~matchChar(position, self~wordChars) && target~matchChar(position - 1, self~wordChars) then do
       return .false
   end
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 -- Test if on the beginning boundary of a word.   To qualify,
 -- the current position must be a word character and the previous
@@ -2198,11 +2217,11 @@
   -- if the position is the start of the range,
   -- this passes
   if context~atStart(position) then do
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
   -- the previous character must NOT be a word character to pass
   if \target~matchChar(position - 1, self~wordChars) then do
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
 
   return .false
@@ -2228,12 +2247,12 @@
 
   -- if the position is the end, this passes
   if context~checkEnd(position) then do
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
 
   -- the current character MUST NOT be a word character to pass
   if \target~matchChar(position, self~wordChars) then do
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
 
   return .false
@@ -2250,7 +2269,7 @@
       return .false
   end
 
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 -- Generic "dot".  This matches everything but the end of
 -- of data
@@ -2263,7 +2282,7 @@
   end
 
   -- always true at this node, so just return the successor result.
-  return self~next~match(context, position + 1, target)
+  return self~matchNext(context, position + 1, target)
 
 ::method getMatchMetrics
   use arg metrics
@@ -2288,7 +2307,7 @@
   end
 
   -- always true at this point, so just return the successor result.
-  return self~next~match(context, position + 1, target)
+  return self~matchNext(context, position + 1, target)
 
 
 -- like all dot node, but doesn't match lineends (Unix mode, so
@@ -2307,7 +2326,7 @@
   end
 
   -- always true at this point, so just return the successor result.
-  return self~next~match(context, position + 1, target)
+  return self~matchNext(context, position + 1, target)
 
 -- match a string of characters
 ::class StringNode subclass matchNode
@@ -2330,7 +2349,7 @@
       return .false
   end
   -- continue checking after this position
-  return self~next~match(context, position + matchString~length, target)
+  return self~matchNext(context, position + matchString~length, target)
 
 ::method getMatchMetrics
   expose matchString
@@ -2354,7 +2373,7 @@
       return .false
   end
   -- continue checking after this position
-  return self~next~match(context, position + matchString~length, target)
+  return self~matchNext(context, position + matchString~length, target)
 
 -- match for a defined set of characters
 ::class ClassNode subclass MatchNode
@@ -2377,7 +2396,7 @@
       return .false
   end
 
-  return self~next~match(context, position + 1, target)
+  return self~matchNext(context, position + 1, target)
 
 -- apply the appropriate character match operation for a given subclass
 ::method characterMatch
@@ -2433,7 +2452,7 @@
       end
   end
 
-  return self~next~match(context, position + 1, target)
+  return self~matchNext(context, position + 1, target)
 
 ::method getMatchMetrics
   use arg metrics
@@ -2458,7 +2477,7 @@
   do alternative over alternatives
       if alternative~match(context, position, target)  then do
           -- once we get a match, send this along to the next
-          return self~next~match(context, context~matchEnd, target)
+          return self~matchNext(context, context~matchEnd, target)
       end
   end
 
@@ -2503,7 +2522,7 @@
   if context~checkEnd(position) then do
       -- we still need to forward this along, even if we've hit the
       -- end position to ensure the terminators get poked.
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
 
   endPosition = context~endPosition - 2
@@ -2521,7 +2540,7 @@
   -- end position to ensure the terminators get poked.  NOTE:  We do
   -- NOT step over the linend here.  The following characters still
   -- exist, but are not skipped over
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 -- check for a lineend in non-unix mode.  This matches on a '\n' character
 -- or the END of input, but only if the lineend character is at the very end
@@ -2531,7 +2550,7 @@
   if context~checkEnd(position) then do
       -- we still need to forward this along, even if we've hit the
       -- end position to ensure the terminators get poked.
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
 
   endPosition = context~endPosition - 1
@@ -2549,7 +2568,7 @@
   -- end position to ensure the terminators get poked.  NOTE:  We do
   -- NOT step over the linend here.  The following characters still
   -- exist, but are not skipped over
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 
 -- check for a lineend in non-unix, multiline mode.  This matches on a '\r\n' sequence
@@ -2562,7 +2581,7 @@
   if context~checkEnd(position) then do
       -- we still need to forward this along, even if we've hit the
       -- end position to ensure the terminators get poked.
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
 
   endPosition = context~endPosition - 2
@@ -2580,7 +2599,7 @@
   -- end position to ensure the terminators get poked.  NOTE:  We do
   -- NOT step over the linend here.  The following characters still
   -- exist, but are not skipped over
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 -- check for a lineend in unix mode.  This matches on a '\n' sequence
 -- but NOT the end of the input
@@ -2592,7 +2611,7 @@
   if context~checkEnd(position) then do
       -- we still need to forward this along, even if we've hit the
       -- end position to ensure the terminators get poked.
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
 
   endPosition = context~endPosition - 1
@@ -2605,7 +2624,7 @@
   -- end position to ensure the terminators get poked.  NOTE:  We do
   -- NOT step over the linend here.  The following characters still
   -- exist, but are not skipped over
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 -- check for being at the end of the text string.  Does not recognize linend sequences.
 ::class TextEndNode subclass MatchNode
@@ -2613,7 +2632,7 @@
   use arg context, position, target
 
   if context~checkEnd(position) then do
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
 
   return .false
@@ -2651,13 +2670,13 @@
   -- if we match the optional part, and if we match the following part,
   -- this is gold.
   if self~optional~match(context, position, target) then do
-      if self~next~match(context, context~matchEnd, target) then do
+      if self~matchNext(context, context~matchEnd, target) then do
           return .true
       end
   end
 
   -- try again, but without the optional section.
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 -- reluctant question node.  If the following part matches,
 -- it will not perform it's own match.
@@ -2667,7 +2686,7 @@
 
   -- first try for a match on the trailing part.  If that matches, we ignore
   -- the optional section
-  if self~next~match(context, position, target) then do
+  if self~matchNext(context, position, target) then do
       return .true
   end
 
@@ -2676,7 +2695,7 @@
       return .false
   end
 
-  return self~next~match(context, context~matchPosition, target)
+  return self~matchNext(context, context~matchPosition, target)
 
 -- possessive question node.  If it has a match itself, it will
 -- not back up...EVER!
@@ -2689,7 +2708,7 @@
       position = context~matchEnd
   end
 
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 -- Base class for the different Group Question nodes.  The init and
 -- getMatchMetrics are the same, but the matching logic is different
@@ -2736,7 +2755,7 @@ self~getMatchMetrics:super(metrics)
   if self~optional~match(context, position, target) then do
       -- update the group capture information
       info~setMatch(target, position, context~matchEnd)
-      if self~next~match(context, context~matchEnd, target) then do
+      if self~matchNext(context, context~matchEnd, target) then do
           return .true
       end
   end
@@ -2748,7 +2767,7 @@ self~getMatchMetrics:super(metrics)
   info~setMatch(target, position, position)
 
   -- try again, but without the optional section.
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 
 -- A node that handles the Reluctant ? qualifier following a
@@ -2764,7 +2783,7 @@ self~getMatchMetrics:super(metrics)
 
   -- first try for a match on the trailing part.  If that matches, we ignore
   -- the optional section
-  if self~next~match(context, position, target) then do
+  if self~matchNext(context, position, target) then do
       info~participated = .false  -- We match if skipped, but do not "participate"
       return .true
   end
@@ -2778,7 +2797,7 @@ self~getMatchMetrics:super(metrics)
   -- update the group capture information
   info~setMatch(target, position, context~matchEnd)
   -- now try the final part
-  return self~next~match(context, context~matchPosition, target)
+  return self~matchNext(context, context~matchPosition, target)
 
 -- A node that handles the Possessive ? qualifier following a
 -- group.  This implements the ? matching symantics and
@@ -2801,7 +2820,7 @@ self~getMatchMetrics:super(metrics)
       info~participated = .false  -- We match if skipped, but do not "participate"
   end
 
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 
 -- match a repetition of nodes
@@ -2865,7 +2884,7 @@ self~getMatchMetrics:super(metrics)
 
   -- we hit the max count, now try to match the trailing bit
   if matches >= max then do
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
 
   -- preserve matches, since that determines how much we can
@@ -2911,7 +2930,7 @@ self~getMatchMetrics:super(metrics)
       loop while counter >= matches
           -- if we hit a spot where our successor can match, we're
           -- done
-          if self~next~match(context, position, target) then do
+          if self~matchNext(context, position, target) then do
               return .true
           end
           -- step back the fixed length and decrement our counter
@@ -2922,7 +2941,7 @@ self~getMatchMetrics:super(metrics)
   end
 
   -- we've matched as much as we can, now check the rest
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 -- a node that implements reluctant repetition matches
 ::class ReluctantRepetitionNode subclass RepetitionNode
@@ -2935,7 +2954,7 @@ self~getMatchMetrics:super(metrics)
   loop forever
       -- check the successor without consuming any more of the
       -- string.  If it matches, we're done
-      if self~next~match(context, position, target) then do
+      if self~matchNext(context, position, target) then do
           return .true
       end
       -- if we've hit the limit and there's no successor match,
@@ -2979,7 +2998,7 @@ self~getMatchMetrics:super(metrics)
       position = context~matchEnd
   end
   -- and try the next part
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 
 -- Special logic for handling group repetitions
@@ -3117,7 +3136,7 @@ self~getMatchMetrics:super(metrics)
       loop while counter >= matches
           -- if we hit a spot where our successor can match, we're
           -- done
-          if self~next~match(context, position, target) then do
+          if self~matchNext(context, position, target) then do
               -- if our match count was zero, then we don't participate
               if counter == 0 then do
                   info~participated = .false
@@ -3137,7 +3156,7 @@ self~getMatchMetrics:super(metrics)
       info~participated = .false
   end
   -- we've matched as much as we can, now check the rest
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 -- a node that implements reluctant repetition matches
 ::class ReluctantGroupRepetitionNode subclass GroupRepetitionNode
@@ -3150,7 +3169,7 @@ self~getMatchMetrics:super(metrics)
   loop forever
       -- check the successor without consuming any more of the
       -- string.  If it matches, we're done
-      if self~next~match(context, position, target) then do
+      if self~matchNext(context, position, target) then do
           -- if our match count was zero, then we don't participate
           if matches == 0 then do
               info~participated = .false
@@ -3206,7 +3225,7 @@ self~getMatchMetrics:super(metrics)
       info~participated = .false
   end
   -- and try the next part
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 
 -- matches the current position for the same string value as
@@ -3242,7 +3261,7 @@ self~getMatchMetrics:super(metrics)
   end
 
   -- exhausted the max, so now search for the next
-  return self~next~match(context, position + matchValue~length, target)
+  return self~matchNext(context, position + matchValue~length, target)
 
 -- simple method for performing the implementation specific
 -- matching for a back reference.  Intended to be overridden
@@ -3283,7 +3302,7 @@ self~getMatchMetrics:super(metrics)
   -- in the corresponding group information and continue
   if groupMatch~match(context, position, target) then do
       info~setMatch(target, position, context~matchEnd)
-      return self~next~match(context, context~matchEnd, target)
+      return self~matchNext(context, context~matchEnd, target)
   end
   else do
       -- mark the group as non-matching
@@ -3343,7 +3362,7 @@ self~getMatchMetrics:super(metrics)
   end
   -- either the condition was false or the then matched, so
   -- forward along
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 -- calculate match metrics for a conditional node
 ::method getMatchMetrics
@@ -3402,7 +3421,7 @@ self~getMatchMetrics:super(metrics)
   end
   -- we've had a match on either the then or else branch, so
   -- forward along
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 -- calculate match metrics for a conditional node
 ::method getMatchMetrics
@@ -3437,7 +3456,7 @@ self~getMatchMetrics:super(metrics)
 
   if groupMatch~match(context, position, target) then do
       info~setMatch(target, position, context~matchEnd)
-      return self~next~match(context, context~matchEnd, target)
+      return self~matchNext(context, context~matchEnd, target)
   end
   else do
       info~clearMatch
@@ -3477,10 +3496,10 @@ self~getMatchMetrics:super(metrics)
 
   if \context~checkEnd(position) then do
       if self~leftSide~match(context, position, target) then do
-         return self~next~match(context, context~matchEnd, target)
+         return self~matchNext(context, context~matchEnd, target)
       end
       else if self~rightSide~match(context, position, target) then do
-         return self~next~match(context, context~matchEnd, target)
+         return self~matchNext(context, context~matchEnd, target)
       end
   end
 
@@ -3494,7 +3513,7 @@ self~getMatchMetrics:super(metrics)
   if \context~checkEnd(position) then do
       if self~leftSide~match(context, position, target) then
          if self~rightSide~match(context, position, target) then do
-             return self~next~match(context, context~matchEnd, target)
+             return self~matchNext(context, context~matchEnd, target)
          end
   end
 
@@ -3519,7 +3538,7 @@ self~getMatchMetrics:super(metrics)
 
   -- however, since this is a non-capturing group, we don't
   -- actually update anything
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 ::method terminator
   expose terminator
@@ -3563,7 +3582,7 @@ self~getMatchMetrics:super(metrics)
   -- poked by the terminator
   context~setLocal(self, position)
   -- perform the match
-  ret =  self~next~match(context, position, target)
+  ret =  self~matchNext(context, position, target)
   -- delete the local reference
   context~removeLocal(self)
   return ret
@@ -3623,7 +3642,7 @@ self~getMatchMetrics:super(metrics)
   -- this will update the group information and return the
   -- old information to us in case we need to revert
   save = group~updateAndSaveMatch(context, target, position)
-  if self~next~match(context, position, target) then do
+  if self~matchNext(context, position, target) then do
       -- good match, everything is ok
       return .true
   end
@@ -3648,7 +3667,7 @@ self~getMatchMetrics:super(metrics)
 
   -- do the group match and accounting, then forward along.
   if group~match(context, position, target) then do
-      return self~next~match(context, context~matchEnd, target)
+      return self~matchNext(context, context~matchEnd, target)
   end
 
   return .false
@@ -3673,7 +3692,7 @@ self~getMatchMetrics:super(metrics)
   -- do the group match and accounting, then forward along.
   -- NOTE:  both of these match the same position
   if group~match(context, position, target) then do
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
 
   return .false
@@ -3698,7 +3717,7 @@ self~getMatchMetrics:super(metrics)
   -- do the group match and accounting, then forward along.
   -- NOTE:  both of these match the same position
   if \group~match(context, position, target) then do
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
 
   return .false
@@ -3767,7 +3786,7 @@ self~getMatchMetrics:super(metrics)
       -- if we have a back match, then time to forward to the next bit
       if self~group~match(subContext, i, target) then do
           -- got a match, forward on using the original context
-          return self~next~match(context, position, target)
+          return self~matchNext(context, position, target)
       end
   end
 
@@ -3796,7 +3815,7 @@ self~getMatchMetrics:super(metrics)
   end
 
   -- no match, then this passes
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 -- A matcher for beginning of text that works in
 -- multiline mode.  To match, this either must be
@@ -3813,7 +3832,7 @@ self~getMatchMetrics:super(metrics)
 
   -- if at the real beginning, this is good
   if context~atStart(position) then do
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
 
   -- Not enough space to test for a linend?  This also fails ,
@@ -3827,7 +3846,7 @@ self~getMatchMetrics:super(metrics)
       return .false
   end
   -- and go finish up
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 
 -- A matcher for beginning of text that works in
@@ -3845,7 +3864,7 @@ self~getMatchMetrics:super(metrics)
 
   -- if at the real beginning, this is good
   if context~atStart(position) then do
-      return self~next~match(context, position, target)
+      return self~matchNext(context, position, target)
   end
 
   -- must have a CRLF sequence before this to match
@@ -3853,7 +3872,7 @@ self~getMatchMetrics:super(metrics)
       return .false
   end
   -- and go finish up
-  return self~next~match(context, position, target)
+  return self~matchNext(context, position, target)
 
 
 -- A terminal node for a full match chain.  This does any
@@ -3879,20 +3898,6 @@ self~getMatchMetrics:super(metrics)
 -- the call, since a terminator node cannot have a
 -- next element
 ::method terminate
-
--- A terminal node for a side branch chain.  This does match
--- termination for the branch, but does not enforce any data end
--- match rules
-::class BranchTerminatorNode subclass TerminatorNode
-::method match
-  use arg context, position, target
-
-  -- set the end match position
-  context~matchEnd = position
-  -- this is always a successful match.  This really just
-  -- records the last position of this branch segment.
-  return .true
-
 
 -- Search nodes are not normally part of the pattern tree.  These
 -- are only instantiated when a find() operation is being done with
@@ -3924,7 +3929,7 @@ self~getMatchMetrics:super(metrics)
   end
 
   do i = position for probes
-      if self~next~match(context, i, target) then do
+      if self~matchNext(context, i, target) then do
           -- update the match information
           context~setMatchPosition(i, context~matchEnd);
           return .true
@@ -4043,7 +4048,7 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 -- implements the matching operations.
 ::class MatchContext
 ::method init
-  expose text startPosition endPosition matchPosition matchEnd root groups locals
+  expose text startPosition endPosition matchPosition matchEnd root groups locals groupStack
   use strict arg text, startPosition, length, root, groups
   -- make sure the length is bounded.  The end position is one
   -- past the end
@@ -4059,6 +4064,9 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
       end
   end
   locals = .table~new   -- this allows patterns to save/retrieve local state
+  groupStack = .queue~new -- create a stack for pushing and popping group usage
+  -- push the main group at the head of the stack (if it exists)
+  groupStack~push(groups[0])
 
 -- create a subcontext of the current context with a different start
 -- and stop range.  Used by lookbehind matchers to restrict the
@@ -4075,12 +4083,21 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 ::method getGroupReference
   expose groups
   use arg id
-
-  if groups == .nil then do
-      return .nil
-  end
   -- return the information inherited from the pattern
   return groups[id]
+
+-- record the entering of a group
+::method enterGroup
+  expose groups groupStack
+  use arg id
+  group = groups[id]
+  groupStack~push(group)
+  return group
+
+-- perform exit clean up for group completion
+::method exitGroup
+   expose groupStack
+   groupStack~pop   -- just pop this group instance off of the stack
 
 -- save a local value
 ::method setLocal
