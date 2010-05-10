@@ -4030,11 +4030,6 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 ::method group
   expose groups
   use strict arg id
-  -- 0 refers to the main group, so we'll return an emulated one
-  if id == '0' then do
-      return .GroupMatchResult~new(self~regionText, self~regionStart, self~regionEnd, self~start, self~end)
-  end
-
   group = groups[id]
   if .nil == group then do
       raise syntax 93.900 array("Group" id "not found in regular expression pattern") -- this is an error
@@ -4048,25 +4043,24 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 -- implements the matching operations.
 ::class MatchContext
 ::method init
-  expose text startPosition endPosition matchPosition matchEnd root groups locals groupStack
+  expose text startPosition endPosition matchPosition matchEnd root groups locals groupStack rootGroup
   use strict arg text, startPosition, length, root, groups
   -- make sure the length is bounded.  The end position is one
   -- past the end
   endPosition = min(text~length + 1, startPosition + length)
   matchPosition = 0
   matchEnd = 0
-  -- if we have groups, then do a deep copy of the directory
+  -- do a deep copy of the groups directory
   -- to create a working groups list
-  if groups \= .nil then do
-      groups = groups~copy
-      do name over groups
-          groups[name] = groups[name]~copy
-      end
+  groups = groups~copy
+  do name over groups
+      groups[name] = groups[name]~copy
   end
   locals = .table~new   -- this allows patterns to save/retrieve local state
   groupStack = .queue~new -- create a stack for pushing and popping group usage
+
   -- push the main group at the head of the stack (if it exists)
-  groupStack~push(groups[0])
+  rootGroup = groups[0]
 
 -- create a subcontext of the current context with a different start
 -- and stop range.  Used by lookbehind matchers to restrict the
@@ -4150,6 +4144,8 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
       return .false       -- no match
   end
 
+  ro
+
 -- search the region for the first position with a pattern match.  Returns
 -- a match result object with the match result
 ::method find
@@ -4174,7 +4170,8 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 
 -- return a result object from the match result
 ::method result
-  expose text startPosition endPosition matchPosition matchEnd groups
+  expose text startPosition endPosition matchPosition matchEnd groups rootGroup
+  rootGroup~setMatch(text, matchPosition, matchEnd)
   return .MatchResult~new(text, startPosition, endPosition, matchPosition, matchEnd, groups)
 
 -- check if we're at the start position
