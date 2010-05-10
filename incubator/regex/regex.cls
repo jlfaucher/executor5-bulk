@@ -143,7 +143,7 @@
 
 ::class RegexCompiler public
 
-::constant METACHARACTERS "([{\^-$|]})?*+."
+::constant METACHARACTERS "([{\^$|]})?*+."
 ::constant CLASSMETACHARACTERS "[^-]&"
 ::constant CLOSURECHARACTERS "*+?{"
 ::constant WORDCHARACTERS 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
@@ -467,7 +467,7 @@
       -- look ahead to see if this is again part of an alternation
       ch = self~peek
 
-      if ch \== "|" then do
+      if ch \== '|' then do
           -- not an alternative....see what we need to return
           if alternative == .nil then do
               return node
@@ -498,7 +498,7 @@
   lastNode = .nil
 
   do forever
-      ch = self~next
+      ch = self~peek
 
       select
           -- this is an end of string, done parsing
@@ -508,16 +508,18 @@
           -- either of these is a terminator for the sequence.
           -- if this is "|", the caller will accumulate the alternatives.
           -- if this is ")", then this is the close of a group
-          when ch == "|" | ch == ")" then do
-              self~previous     -- make sure to back up and allow the caller to handle
+          when ch == '|' | ch == ')' then do
+              -- allow the caller to handle
               leave;
           end
           -- a class of characters
-          when ch == "[" then do
+          when ch == '[' then do
+              self~next
               node = self~parseClass
           end
           -- start of a group.  We'll process and then recurse
           when ch == '(' then do
+              self~next
               -- parse out the group expression, then chain the
               -- entire section into our graph.  All subsequent
               -- bits follow the group sequence.
@@ -538,28 +540,31 @@
               iterate     -- closure has already been handled
           end
           -- a start anchor
-          when ch == "^" then do
+          when ch == '^' then do
+              self~next
               node = self~parseStartAnchor
           end
           -- end anchor variants
-          when ch == "$" then do
+          when ch == '$' then do
+              self~next
               node = self~parseEndAnchor
           end
           -- match any character
-          when ch == "." then do
+          when ch == '.' then do
+              self~next
               node = self~parseDot
           end
           -- various escape characters
-          when ch == "\" then do
+          when ch == '\' then do
+              self~next
               node = self~parseEscapes
           end
           -- these are not expected here
-          when ch == "?" | ch == "*" | ch == "+" then do
+          when ch == '?' | ch == '*' | ch == '+' then do
               raise syntax 13.900 array ("Unexpected modifier character '"||ch||"'" )
           end
           otherwise do
               -- an atom string that is taken as-is
-              self~previous   -- backup so parseAtom will grab the first character
               node = self~parseAtom
           end
       end
@@ -716,13 +721,13 @@
   groupInfo = .directory~new
   ch = self~peek
   -- do we have a group qualifier.  These are all non-capturing groups
-  if ch == "?" then do
+  if ch == '?' then do
       self~next -- step over the peeked character
       ch = self~peek
       select
           -- (?: is a non-capturing group.  Just like a normal group,
           -- but without the capture part
-          when ch == ":" then do
+          when ch == ':' then do
               self~next -- step over the peeked character
               -- non capture group
               group = .GroupEnvelope~new
@@ -738,7 +743,7 @@
           end
           -- (?> is an atomic capturing group.  Once it matches,
           -- it does not give up whatever it matched.
-          when ch == ">" then do
+          when ch == '>' then do
               self~next -- step over the peeked character
               -- an atomic group.  Matching is managed differently
               group = .GroupEnvelope~new
@@ -756,7 +761,7 @@
           -- pattern is at the current position, but it's match is always
           -- zero-length, so it does not step the position nor does it's
           -- match position count toward the bounds of the final match
-          when ch == "=" then do
+          when ch == '=' then do
               self~next -- step over the peeked character
               -- parse the encapsulated group expression, but terminate
               -- with a branch terminator node.
@@ -769,7 +774,7 @@
           end
           -- this is a lookbehind.  It checks the data before the current
           -- position
-          when ch == "!" then do
+          when ch == '!' then do
               self~next -- step over the peeked character
               -- parse the encapsulated group expression, but terminate
               -- with a branch terminator node.
@@ -784,7 +789,7 @@
           -- 1)  (?<=... a "zero-width positive lookbehind"
           -- 2)  (?<!... a "zero-width negative lookbehind"
           -- 3)  (?<xxxxx>... a named capture group
-          when ch == "<" then do
+          when ch == '<' then do
               self~next -- step over the peeked character
               -- a look behind.  These are a pain.  We can only
               -- support this if the pattern has a deterministic
@@ -792,10 +797,10 @@
               -- extract the group expression and then calculate
               -- the metrics for the entire expression tree.
 
-              -- this is the "=" or "!" qualifier
+              -- this is the '=' or '!' qualifier
               ch = self~peek
 
-              if ch == "=" | ch == "!" then do
+              if ch == '=' | ch == '!' then do
                   self~next -- step over the modifier
                   -- parse the encapsulated group expression, but terminate
                   -- with a normal terminator node.  This will perform a
@@ -809,10 +814,10 @@
                   metrics = self~getPatternMetrics(node)
 
                   -- create the matcher type based on the modifier
-                  if ch == "=" then do
+                  if ch == '=' then do
                       wrapper = .PositiveLookBehindNode~new(node, metrics)
                   end
-                  else if ch == "!" then do
+                  else if ch == '!' then do
                       wrapper = .NegativeLookBehindNode~new(node, metrics)
                   end
                   -- wrappered nodes fill both roles
@@ -823,7 +828,7 @@
                   -- back up for the delimiter parsing
                   self~previous
                   -- and parse out the delimited name
-                  referenceName = self~extractDelimited("<", ">")
+                  referenceName = self~extractDelimited('<', '>')
                   -- add this to our reference table
                   self~getGroupReference(referenceName)
                   -- a named capturing group
@@ -918,74 +923,80 @@
   -- step over that and examine the different options
   self~next
   ch = self~peek  -- get the next character and process the different options
-
   select
-      -- forward lookahead test
-      when ch == "=" then do
-          self~next -- step over the peeked character
-          -- parse the encapsulated group expression, but terminate
-          -- with a branch terminator node.
-          node = self~parseExpression(.BranchTerminatorNode~new)
-          -- this is a special wrapper
-          condition = .PositiveLookAheadNode~new(node)
-      end
-      -- this is a lookbehind.  It checks the data before the current
-      -- position
-      when ch == "!" then do
-          self~next -- step over the peeked character
-          -- parse the encapsulated group expression, but terminate
-          -- with a branch terminator node.
-          node = self~parseExpression(.BranchTerminatorNode~new)
-          -- this is a special wrapper
-          condition = .NegativeLookAheadNode~new(node)
-      end
-      -- Three possibilities here:
-      -- 1)  (?<=... a "zero-width positive lookbehind"
-      -- 2)  (?<!... a "zero-width negative lookbehind"
-      -- 3)  (?<xxxxx>... a named capture group
-      when ch == "<" then do
-          self~next -- step over the peeked character
-          -- a look behind.  These are a pain.  We can only
-          -- support this if the pattern has a deterministic
-          -- max and min.  Before we can decide, we need to
-          -- extract the group expression and then calculate
-          -- the metrics for the entire expression tree.
-
-          -- this is the "=" or "!" qualifier
+      -- this is a lookahead or lookbehind construct
+      when ch == '?' then do
+          -- step ahead one character and see which
+          -- flavor this is
+          self~next
           ch = self~peek
-
-          if ch == "=" | ch == "!" then do
-              self~next -- step over the modifier
-              -- parse the encapsulated group expression, but terminate
-              -- with a normal terminator node.  This will perform a
-              -- and of range check on the matches to ensure the
-              -- tests will butt up against the current position.
-              node = self~parseExpression(.TerminatorNode~new)
-
-              -- gather some metrics.  If there is a deterministic maximum,
-              -- we can optimize the back search by using it.  Otherwise,
-              -- we just go back to the beginning
-              metrics = self~getPatternMetrics(node)
-
-              -- create the matcher type based on the modifier
-              if ch == "=" then do
-                  condition = .PositiveLookBehindNode~new(node, metrics)
+          select
+              -- forward lookahead test
+              when ch == '=' then do
+                  self~next -- step over the peeked character
+                  -- parse the encapsulated group expression, but terminate
+                  -- with a branch terminator node.
+                  node = self~parseExpression(.BranchTerminatorNode~new)
+                  -- this is a special wrapper
+                  condition = .PositiveLookAheadNode~new(node)
               end
-              else if ch == "!" then do
-                  condition = .NegativeLookBehindNode~new(node, metrics)
+              -- this is a negative lookahead.
+              when ch == '!' then do
+                  self~next -- step over the peeked character
+                  -- parse the encapsulated group expression, but terminate
+                  -- with a branch terminator node.
+                  node = self~parseExpression(.BranchTerminatorNode~new)
+                  -- this is a special wrapper
+                  condition = .NegativeLookAheadNode~new(node)
+              end
+              -- Three possibilities here:
+              -- 1)  (?<=... a "zero-width positive lookbehind"
+              -- 2)  (?<!... a "zero-width negative lookbehind"
+              when ch == '<' then do
+                  self~next -- step over the peeked character
+                  -- a look behind.  These are a pain.  We can only
+                  -- support this if the pattern has a deterministic
+                  -- max and min.  Before we can decide, we need to
+                  -- extract the group expression and then calculate
+                  -- the metrics for the entire expression tree.
+
+                  -- this is the "=" or "!" qualifier
+                  ch = self~peek
+
+                  if ch == '=' | ch == '!' then do
+                      self~next -- step over the modifier
+                      -- parse the encapsulated group expression, but terminate
+                      -- with a normal terminator node.  This will perform a
+                      -- and of range check on the matches to ensure the
+                      -- tests will butt up against the current position.
+                      node = self~parseExpression(.BranchTerminatorNode~new)
+
+                      -- gather some metrics.  If there is a deterministic maximum,
+                      -- we can optimize the back search by using it.  Otherwise,
+                      -- we just go back to the beginning
+                      metrics = self~getPatternMetrics(node)
+
+                      -- create the matcher type based on the modifier
+                      if ch == '=' then do
+                          condition = .PositiveLookBehindNode~new(node, metrics)
+                      end
+                      else if ch == '!' then do
+                          condition = .NegativeLookBehindNode~new(node, metrics)
+                      end
+                  end
+                  else do
+                      raise syntax 93.900 array("Unknown conditional type '"ch"'")
+                  end
+              end
+              otherwise  do
+                  raise syntax 93.900 array("Unknown conditional type '"ch"'")
               end
           end
-          else do
-              -- back up for the delimiter parsing
-              self~previous
-              -- and parse out the delimited name
-              referenceName = self~extractDelimited("<", ">")
-              -- a back reference
-              if \self~haveGroup(referenceName) then do
-                  raise syntax 93.900 array("Unrecognized group back reference" ch)
-              end
-              -- a named back reference to previous node
-              condition = .BackReferenceTestNode~new(referenceName)
+          -- we should be positioned at the closing paren now.  Make sure
+          -- it is there
+          ch = self~next
+          if ch \== ')' then do
+              raise syntax 93.900 array("Missing closing ')' for a group")
           end
       end
       -- a back reference test.  This is of the form (?(name)...
@@ -994,7 +1005,7 @@
       otherwise  do
           self~previous
           -- and parse out the delimited name
-          referenceName = self~extractDelimited("(", ")")
+          referenceName = self~extractDelimited('(', ')')
           -- a back reference
           if \self~haveGroup(referenceName) then do
               raise syntax 93.900 array("Unrecognized group back reference" ch)
@@ -1007,15 +1018,17 @@
   -- ok, we have the conditional part, now parse out the then and optional
   -- else sections
 
-  -- NOTE:  we need to parse this as an expression, not as a sequence
+  -- NOTE:  we need to parse this as a sequence, not as an expression
   -- because the | is an expression end delimiter
-  thenNode = self~parseExpression(.BranchTerminatorNode~new)
+  thenNode = self~parseSequence(.BranchTerminatorNode~new)
   ch = self~peek
   -- have the | part?
   if ch == '|' then do
       self~next -- step over the |
-      -- now parse out the else section
-      elseNode = self~parseExpression(.BranchTerminatorNode~new)
+      -- now parse out the else section.  NOTE: parse sequence
+      -- needs to be used because we don't accept alternatives
+      -- unless in a group
+      elseNode = self~parseSequence(.BranchTerminatorNode~new)
       node = .IfThenElseNode~new(condition, thenNode, elseNode)
   end
   else do
@@ -1042,27 +1055,27 @@
   do forever
       select
           -- we're using unix linends
-          when ch == "d" then do
+          when ch == 'd' then do
               self~unixLinesMode = setting
               setting = .true  -- reset for an additional mode flag
           end
           -- case insensitive matching
-          when ch == "i" then do
+          when ch == 'i' then do
               self~caselessMode = setting
               setting = .true  -- reset for an additional mode flag
           end
           -- linends are recognized at other than the end of the data
-          when ch == "m" then do
+          when ch == 'm' then do
               self~multiLineMode = setting
               setting = .true  -- reset for an additional mode flag
           end
           -- "single line" mode.
-          when ch == "s" then do
+          when ch == 's' then do
               self~dotAllMode = setting
               setting = .true  -- reset for an additional mode flag
           end
           -- turning a flag off
-          when ch == "-" then do
+          when ch == '-' then do
               -- if we're already negated, this is an error.
               if \setting then do
                   raise syntax 93.915 array("dims", ch)
@@ -1132,16 +1145,16 @@
   ch = self~peek
 
   select
-      when ch == "?" then do
+      when ch == '?' then do
           self~next
           -- a question repetitor
           ch = self~peek
 
-          if ch == "?" then do
+          if ch == '?' then do
               self~next
               node = .ReluctantGroupQuestionNode~new(groupInfo~id, target)
           end
-          else if ch == "+" then do
+          else if ch == '+' then do
               self~next
               node = .PossessiveGroupQuestionNode~new(groupInfo~id, target)
           end
@@ -1149,16 +1162,16 @@
               node = .GreedyGroupQuestionNode~new(groupInfo~id, target)
           end
       end
-      when ch == "*" then do
+      when ch == '*' then do
           self~next
           -- zero or more occurrences
           ch = self~peek
 
-          if ch == "?" then do
+          if ch == '?' then do
               self~next
               node = .ReluctantGroupRepetitionNode~new(groupInfo~id, target, 0, 999999999)
           end
-          else if ch == "+" then do
+          else if ch == '+' then do
               self~next
               node = .PossessiveGroupRepetitionNode~new(groupInfo~id, target, 0, 999999999)
           end
@@ -1166,16 +1179,16 @@
               node = .GreedyGroupRepetitionNode~new(groupInfo~id, target, 0, 999999999)
           end
       end
-      when ch == "+" then do
+      when ch == '+' then do
           self~next
           -- one or more occurrences
           ch = self~peek
 
-          if ch == "?" then do
+          if ch == '?' then do
               self~next
               node = .ReluctantGroupRepetitionNode~new(groupInfo~id, target, 1, 999999999)
           end
-          else if ch == "+" then do
+          else if ch == '+' then do
               self~next
               node = .PossessiveGroupRepetitionNode~new(groupInfo~id, target, 1, 999999999)
           end
@@ -1183,16 +1196,16 @@
               node = .GreedyGroupRepetitionNode~new(groupInfo~id, target, 1, 999999999)
           end
       end
-      when ch == "{" then do
+      when ch == '{' then do
           self~next
           min = self~parseNumber
           max = min
           ch = self~next
-          if ch == "," then do
+          if ch == ',' then do
               max = self~parseNumber
               ch = self~next
           end
-          if ch \= "}" then do
+          if ch \= '}' then do
               raise syntax 36.900 array("Missing closing '}' for repetition count")
           end
           --
@@ -1210,11 +1223,11 @@
 
           ch = self~peek
 
-          if ch == "?" then do
+          if ch == '?' then do
               self~next
               node = .ReluctantGroupRepetitionNode~new(groupInfo~id, target, min, max)
           end
-          else if ch == "+" then do
+          else if ch == '+' then do
               self~next
               node = .PossessiveGroupRepetitionNode~new(groupInfo~id, target, min, max)
           end
@@ -1246,16 +1259,16 @@
   select
       -- A question modifier, which itself might have a
       -- modifier to control the operating mode
-      when ch == "?" then do
+      when ch == '?' then do
           -- a question repetitor
           ch = self~peek
           -- ?? operates in reluctant mode
-          if ch == "?" then do
+          if ch == '?' then do
               self~next
               return .ReluctantQuestionNode~new(target)
           end
           -- possesive question mode
-          else if ch == "+" then do
+          else if ch == '+' then do
               self~next
               return .PossessiveQuestionNode~new(target)
           end
@@ -1266,14 +1279,14 @@
       end
       -- zero or more occurrences.  This also operates with mode
       -- modifiers
-      when ch == "*" then do
+      when ch == '*' then do
           ch = self~peek
 
-          if ch == "?" then do
+          if ch == '?' then do
               self~next
               return .ReluctantRepetitionNode~new(target, 0, 999999999)
           end
-          else if ch == "+" then do
+          else if ch == '+' then do
               self~next
               return .PossessiveRepetitionNode~new(target, 0, 999999999)
           end
@@ -1283,14 +1296,14 @@
       end
       -- one or more occurrences.  Also with different modes of
       -- operation
-      when ch == "+" then do
+      when ch == '+' then do
           ch = self~peek
 
-          if ch == "?" then do
+          if ch == '?' then do
               self~next
               return .ReluctantRepetitionNode~new(target, 1, 999999999)
           end
-          else if ch == "+" then do
+          else if ch == '+' then do
               self~next
               return .PossessiveRepetitionNode~new(target, 1, 999999999)
           end
@@ -1299,16 +1312,16 @@
           end
       end
       -- {min[,max]} range
-      when ch == "{" then do
+      when ch == '{' then do
           min = self~parseNumber
           max = min
           ch = self~next
-          if ch == "," then do
+          if ch == ',' then do
               max = self~parseNumber
               ch = self~next
           end
           -- must be a closing '}' on this
-          if ch \= "}" then do
+          if ch \= '}' then do
               raise syntax 36.900 array("Missing closing '}' for repetition count")
           end
           --
@@ -1326,11 +1339,11 @@
 
           ch = self~peek
 
-          if ch == "?" then do
+          if ch == '?' then do
               self~next
               return .ReluctantRepetitionNode~new(target, min, max)
           end
-          else if ch == "+" then do
+          else if ch == '+' then do
               self~next
               return .PossessiveRepetitionNode~new(target, min, max)
           end
@@ -1355,7 +1368,7 @@
   node = self~parseClassSection
 
   ch = self~next
-  if ch \= "]" then do
+  if ch \= ']' then do
       raise syntax 36.900 array("Missing closing ']' for character class")
   end
 
@@ -1395,7 +1408,7 @@
               return previousNode
           end
           -- nested section within a class.  These are OR'd together
-          when ch == "[" then do
+          when ch == '[' then do
               self~next  -- step over the delimiter
               subNode = self~parseClass
 
@@ -1408,10 +1421,10 @@
                   previousNode = .ClassOrNode~new(previousNode, subNode)
               end
           end
-          when ch == "&" then do
+          when ch == '&' then do
               self~next   -- step over the first &
               ch = self~peek
-              if ch == "&" then do     -- this is a logical "&&"
+              if ch == '&' then do     -- this is a logical "&&"
                   if prev == .nil then do
                       raise syntax 35.900 array("Missing left term for '&&' operator")
                   end
@@ -1422,7 +1435,7 @@
                   do forever
                       ch = self~peek  -- peek so we don't ruin undoing a .nil read
                       select
-                          when ch == "[" then do
+                          when ch == '[' then do
                               self~next   -- step over the peeked character
                               -- embedded class...recursively parse, and chain up, if necessary
                               node = self~parseClass
@@ -1434,7 +1447,7 @@
                                   rightHand = .ClassAndNode~new(rightHand, node);
                               end
                           end
-                          when ch == "]" | ch == "&" then do
+                          when ch == ']' | ch == '&' then do
                               -- either the complete end, or a section end.
                               leave
                           end
@@ -1471,7 +1484,7 @@
           end
           -- possibly a predefined class or named class family.  This is
           -- handled here
-          when ch == "\" then do
+          when ch == '\' then do
               self~next   -- step over the peeked character
               -- see if this is one of the special classes
               subNode = self~parseEscapedClasses
@@ -1592,7 +1605,7 @@
 ::method parseNamedClassFamily
   use arg negated
 
-  familyName = self~extractDelimited("{", "}")
+  familyName = self~extractDelimited('{', '}')
 
   if familyName~match(1, "Is") then do
       familyName = familyName~substr(3)
@@ -1823,7 +1836,7 @@
       end
       when ch == 'k' then do
           -- named back reference
-          referenceName = self~extractDelimited("{", "}")
+          referenceName = self~extractDelimited('{', '}')
 
           if \self~haveGroup(referenceName) then do
               raise syntax 93.900 array("Unrecognized group back reference" referenceName)
@@ -2042,7 +2055,7 @@
   else do
       -- we have a child node, make sure that child has a
       -- terminator
-      next~terminate
+      self~next~terminate
   end
 
 -- A node that will match anything.  This is typically
@@ -2727,6 +2740,9 @@ self~getMatchMetrics:super(metrics)
           return .true
       end
   end
+  else do
+      info~participated = .false  -- We match if not there, but do not "participate"
+  end
 
   -- we always match, even if it is nothing
   info~setMatch(target, position, position)
@@ -2749,11 +2765,13 @@ self~getMatchMetrics:super(metrics)
   -- first try for a match on the trailing part.  If that matches, we ignore
   -- the optional section
   if self~next~match(context, position, target) then do
+      info~participated = .false  -- We match if skipped, but do not "participate"
       return .true
   end
 
   -- try again, but with our optional section.
   if \self~optional~match(context, position, target) then do
+      info~participated = .false  -- We match if skipped, but do not "participate"
       return .false
   end
 
@@ -2778,6 +2796,9 @@ self~getMatchMetrics:super(metrics)
       -- update the group capture information
       info~setMatch(target, position, context~matchEnd)
       position = context~matchEnd
+  end
+  else do
+      info~participated = .false  -- We match if skipped, but do not "participate"
   end
 
   return self~next~match(context, position, target)
@@ -2996,6 +3017,7 @@ self~getMatchMetrics:super(metrics)
       if \repNode~match(context, position, target) then do
           -- restore the group state, we failed
           info~restoreMatch(saved)
+          info~participated = .false  -- We don't participate here either
           return .false
       end
       -- update the capture info to the current bit
@@ -3096,6 +3118,10 @@ self~getMatchMetrics:super(metrics)
           -- if we hit a spot where our successor can match, we're
           -- done
           if self~next~match(context, position, target) then do
+              -- if our match count was zero, then we don't participate
+              if counter == 0 then do
+                  info~participated = .false
+              end
               return .true
           end
           -- step back the fixed length and decrement our counter
@@ -3106,6 +3132,10 @@ self~getMatchMetrics:super(metrics)
       end
   end
   info~restoreMatch(saved)    -- restore the match position
+  -- if our match count was zero, then we don't participate
+  if counter == 0 then do
+      info~participated = .false
+  end
   -- we've matched as much as we can, now check the rest
   return self~next~match(context, position, target)
 
@@ -3121,6 +3151,10 @@ self~getMatchMetrics:super(metrics)
       -- check the successor without consuming any more of the
       -- string.  If it matches, we're done
       if self~next~match(context, position, target) then do
+          -- if our match count was zero, then we don't participate
+          if matches == 0 then do
+              info~participated = .false
+          end
           return .true
       end
       -- if we've hit the limit and there's no successor match,
@@ -3153,7 +3187,7 @@ self~getMatchMetrics:super(metrics)
 -- done here
 ::method recursiveMatch
   use arg context, info, position, target, repNode, matches, max
-  do i = self~min + 1 to self~max
+  do i = matches + 1 to self~max
       -- match failure means we've got all we can get
       if \repNode~match(context, position, target) then do
           leave
@@ -3166,6 +3200,10 @@ self~getMatchMetrics:super(metrics)
       end
       -- step over this
       position = context~matchEnd
+  end
+  -- if our match count was zero, then we don't participate
+  if i == 0 then do
+      info~participated = .false
   end
   -- and try the next part
   return self~next~match(context, position, target)
@@ -3272,7 +3310,11 @@ self~getMatchMetrics:super(metrics)
   -- retrieve the match result for our target back ref
   refGroup = context~getBackReferenceResult(ref)
   -- and just return the matched indictor
-  return refGroup~matched
+  return refGroup~participated
+
+::method terminate
+  -- optimization override.  This node does not require
+  -- a terminator, so turn this into a NOP when called
 
 -- support for a (?(cond)then) node
 ::class IfThenNode subclass MatchNode
@@ -3325,7 +3367,7 @@ self~getMatchMetrics:super(metrics)
 ::method init
   expose condition thenNode elseNode
   use arg condition, thenNode, elseNode
-  self~super:init
+  self~init:super
   thenNode~terminate   -- make sure both nodes are terminated
   elseNode~terminate
   condition~terminate  -- and the condition also
@@ -3672,6 +3714,7 @@ self~getMatchMetrics:super(metrics)
 ::method init
   expose group min max
   use arg group, metrics
+  self~init:super
 
   min = metrics~minLength
   -- if there is a deterministic maximum, then
@@ -3983,7 +4026,7 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
   expose groups
   use strict arg id
   -- 0 refers to the main group, so we'll return an emulated one
-  if id == "0" then do
+  if id == '0' then do
       return .GroupMatchResult~new(self~regionText, self~regionStart, self~regionEnd, self~start, self~end)
   end
 
@@ -4189,15 +4232,17 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 -- the class for managing group information during a pattern match
 ::class GroupReference
 ::method init
-  expose id start end text
+  expose id start end text participated
   use arg id
   start = 0
   end = 0
   text = .nil
+  participated = .true -- participation is different from "matching"
 
 -- the start and end match positions
 ::attribute start
 ::attribute end
+::attribute participated
 
 -- indicates whether this match was a success or a failure
 ::method matched

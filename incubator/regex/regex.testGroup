@@ -2018,12 +2018,68 @@ return testResult
   -- The def will be found because the abc group matched
   r = self~find(p, "abcdef")
   self~assertTrue(self~verifyMatchResult(r, 1, 7, "abcdef"))
-  -- abc did not participate, so this should not match
+  -- abc did not, so the def is never checked.  The else is
+  -- to match nothing, so this should be a zero-length patch at the
+  -- beginning of the string
   r = self~find(p, "def")
-  self~assertFalse(r~matched)
+  self~assertTrue(self~verifyMatchResult(r, 1, 1, ""))
+
   -- * pattern.  The will match twice
   p = .Pattern~compile("(abc)*(?(1)def)")
   r = self~find(p, "abcabcdef")
   self~assertTrue(self~verifyMatchResult(r, 1, 10, "abcabcdef"))
+
+  -- and a repetive one pattern.  The will match twice
+  p = .Pattern~compile("(abc){2}(?(1)def)")
+  r = self~find(p, "abcabcdef")
+  self~assertTrue(self~verifyMatchResult(r, 1, 10, "abcabcdef"))
+
+  -- named group
+  p = .Pattern~compile("(?<foo>abc)?(?(foo)def)")
+  -- The def will be found because the abc group matched
+  r = self~find(p, "abcdef")
+  self~assertTrue(self~verifyMatchResult(r, 1, 7, "abcdef"))
+
+  -- real example from
+  -- http://php.net/manual/en/regexp.reference.conditional.php
+  -- searchs for a set of characters optionally surrounded by
+  -- parens
+  p = .Pattern~compile("(\()?[^()]+(?(1)\))")
+  self~assertTrue(self~matches(p, "abcabcdef"))
+  self~assertTrue(self~matches(p, "(abcabcdef)"))
+  self~assertFalse(self~matches(p, "(abcabcdef"))
+
+  -- another example from the same website.  Uses a lookahead to see if there
+  -- is a letter following the current position.  If there is, then it looks for
+  -- the pattern dd-aaa-ddd, otherwise looks for dd-dd-dd
+  p = .Pattern~compile("(?(?=[^a-z]*[a-z])\d{2}-[a-z]{3}-\d{2}|\d{2}-\d{2}-\d{2})")
+
+  self~assertTrue(self~matches(p, "12-abc-34"))
+  self~assertTrue(self~matches(p, "12-34-56"))
+
+  -- same thing, only using a negative assertion with the conditions reversed
+  p = .Pattern~compile("(?(?![^a-z]*[a-z])\d{2}-\d{2}-\d{2}|\d{2}-[a-z]{3}-\d{2})")
+
+  self~assertTrue(self~matches(p, "12-abc-34"))
+  self~assertTrue(self~matches(p, "12-34-56"))
+
+  -- similar, but uses a lookbehind to see which to use
+  p = .Pattern~compile("(1|2)(?(?<=1)\d{2}-\d{2}-\d{2}|\d{2}-[a-z]{3}-\d{2})")
+
+  self~assertTrue(self~matches(p, "212-abc-34"))
+  self~assertTrue(self~matches(p, "112-34-56"))
+  -- the reverse situation should fail
+  self~assertFalse(self~matches(p, "112-abc-34"))
+  self~assertFalse(self~matches(p, "212-34-56"))
+
+  -- similar, but uses a negative lookbehind to see which to use
+  -- NOTE:  the conditions are swapped
+  p = .Pattern~compile("(1|2)(?(?<!1)\d{2}-\d{2}-\d{2}|\d{2}-[a-z]{3}-\d{2})")
+
+  self~assertTrue(self~matches(p, "112-abc-34"))
+  self~assertTrue(self~matches(p, "212-34-56"))
+  -- the reverse situation should fail
+  self~assertFalse(self~matches(p, "212-abc-34"))
+  self~assertFalse(self~matches(p, "112-34-56"))
 
 
