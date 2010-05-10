@@ -37,11 +37,8 @@
 
 
 # Setup
-# For testing only! Remove for production!
-LINUXFLAGS = -DHAVE_XATTR
-
 ORXLFLAGS = --export-dynamic -shared -nostartfiles -lpthread
-ORXCFLAGS = -fPIC $(LINUXFLAGS)
+ORXCFLAGS = -fPIC
 OBJECTS = unixapi.o
 
 

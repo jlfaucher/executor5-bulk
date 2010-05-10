@@ -408,8 +408,8 @@ RexxRoutine0(RexxObjectPtr,
 RexxRoutine0(RexxObjectPtr,          
              SysGettid)
 {
-    pid_t tid = (pid_t)pthread_self();
-    return context->WholeNumberToObject((wholenumber_t)tid);
+    pthread_t tid = pthread_self();
+    return context->UnsignedInt64ToObject(tid);
 }
 
 
@@ -1062,7 +1062,7 @@ RexxRoutine1(RexxObjectPtr,
 }
 
 
-#ifdef HAVE_XATTR
+#ifdef HAVE_XATTR_H
 /**
  * Method:        SysSetxattr
  *
@@ -1216,7 +1216,7 @@ RexxRoutineEntry orxnixclib_routines[] = {
     REXX_TYPED_ROUTINE(SysGetservbyname, SysGetservbyname),
     REXX_TYPED_ROUTINE(SysGetservbyport, SysGetservbyport),
     REXX_TYPED_ROUTINE(SysWordexp, SysWordexp),
-#ifdef HAVE_XATTR
+#ifdef HAVE_XATTR_H
     REXX_TYPED_ROUTINE(SysSetxattr, SysSetxattr),
     REXX_TYPED_ROUTINE(SysGetxattr, SysGetxattr),
     REXX_TYPED_ROUTINE(SysListxattr, SysListxattr),

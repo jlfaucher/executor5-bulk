@@ -42,6 +42,10 @@
 #ifndef ORXUNIXAPI_H
 #define ORXUNIXAPI_H
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <oorexxapi.h>
 #include <stdlib.h>
 #include <string.h>
@@ -60,7 +64,7 @@
 #include <pthread.h>
 
 // These are the special OS specific cases
-#ifdef HAVE_XATTR
+#ifdef HAVE_XATTR_H
 #include <attr/xattr.h>
 #endif
 
