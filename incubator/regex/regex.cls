@@ -2710,14 +2710,15 @@
 
   return self~matchNext(context, position, target)
 
--- Base class for the different Group Question nodes.  The init and
--- getMatchMetrics are the same, but the matching logic is different
-::class GroupQuestionNode subclass QuestionNode
+-- a mixin used for the different varieties of group nodes to implement
+-- common methods
+::class GroupNodeMixin mixinclass MatchNode
 ::method init
   expose id
-  use arg id, optional
-  self~init:super(optional)
+  use arg id
 
+  -- get the group reference for a question node.  This will also
+  -- set this as the current group in the group context
 ::method getGroupReference
   expose id
   use arg context
@@ -2725,9 +2726,40 @@
   -- saved item.  Otherwise, return a dummy to handle
   -- the save/restore logic
   if id \= .nil then do
-      return context~getGroupReference(id)
+      group = context~getGroupReference(id)
   end
-  return .GroupReference~new
+  else do
+      group = .GroupReference~new
+  end
+  -- make this the current group
+  context~enterGroup(group)
+  return group
+
+-- invoke the next handler in the chain.  This is an
+-- override that will pop the group context before
+-- making a call out to a successor node.
+::method matchNext
+  use arg context, position, target
+  context~exitGroup   -- we're done
+  return self~matchNext:super(context, position, target)
+
+-- invoke the next handler in the chain.  This will pop and
+-- push the group context around the call out
+::method wrappedMatchNext
+  use arg context, position, target
+  info = context~exitGroup   -- we're leaving this context
+  ret = self~matchNext:super(context, position, target)
+  context~enterGroup(info)  -- reset this as the current group
+  return ret
+
+-- Base class for the different Group Question nodes.  The init and
+-- getMatchMetrics are the same, but the matching logic is different
+::class GroupQuestionNode subclass QuestionNode inherit GroupNodeMixin
+::method init
+  expose id
+  use arg id, optional
+  self~init:super(optional)
+  self~init:.GroupNodeMixin(id) -- the mixing manages the id portion
 
 ::method getMatchMetrics
   use arg metrics
@@ -2740,7 +2772,8 @@
   -- also no longer deterministic
   metrics~deterministic = .false
 
-self~getMatchMetrics:super(metrics)
+  self~getMatchMetrics:super(metrics)
+
 
 -- A node that handles the Greedy ? qualifier following a
 -- group.  This implements the ? matching symantics and
@@ -2755,7 +2788,8 @@ self~getMatchMetrics:super(metrics)
   if self~optional~match(context, position, target) then do
       -- update the group capture information
       info~setMatch(target, position, context~matchEnd)
-      if self~matchNext(context, context~matchEnd, target) then do
+      if self~wrappedMatchNext(context, context~matchEnd, target) then do
+          context~exitGroup -- we're done
           return .true
       end
   end
@@ -2783,14 +2817,16 @@ self~getMatchMetrics:super(metrics)
 
   -- first try for a match on the trailing part.  If that matches, we ignore
   -- the optional section
-  if self~matchNext(context, position, target) then do
+  if self~wrappedMatchNext(context, position, target) then do
       info~participated = .false  -- We match if skipped, but do not "participate"
+      context~exitGroup -- we're done
       return .true
   end
 
   -- try again, but with our optional section.
   if \self~optional~match(context, position, target) then do
       info~participated = .false  -- We match if skipped, but do not "participate"
+      context~exitGroup -- we're done
       return .false
   end
 
@@ -3002,23 +3038,13 @@ self~getMatchMetrics:super(metrics)
 
 
 -- Special logic for handling group repetitions
-::class GroupRepetitionNode subclass MatchNode
+::class GroupRepetitionNode subclass MatchNode  inherit GroupNodeMixin
 ::method init
-  expose id repNode min max
+  expose repNode min max
   use arg id, repNode, min, max
   self~init:super
+  self~init:.GroupNodeMixin(id)
   repNode~terminate   -- we need to ensure the chain ends in a terminator
-
-::method getGroupReference
-  expose id
-  use arg context
-  -- if this is a capturing group, return the
-  -- saved item.  Otherwise, return a dummy to handle
-  -- the save/restore logic
-  if id \= .nil then do
-      return context~getGroupReference(id)
-  end
-  return .GroupReference~new
 
 -- common initial piece for all repetition nodes.  The greedy/possessive/reluctant
 -- parts are implemented in the recursiveMatch method that each subclass
@@ -3037,6 +3063,7 @@ self~getMatchMetrics:super(metrics)
           -- restore the group state, we failed
           info~restoreMatch(saved)
           info~participated = .false  -- We don't participate here either
+          context~exitGroup  -- pop the group context
           return .false
       end
       -- update the capture info to the current bit
@@ -3136,11 +3163,12 @@ self~getMatchMetrics:super(metrics)
       loop while counter >= matches
           -- if we hit a spot where our successor can match, we're
           -- done
-          if self~matchNext(context, position, target) then do
+          if self~wrappedMatchNext(context, position, target) then do
               -- if our match count was zero, then we don't participate
               if counter == 0 then do
                   info~participated = .false
               end
+              context~exitGroup
               return .true
           end
           -- step back the fixed length and decrement our counter
@@ -3169,26 +3197,30 @@ self~getMatchMetrics:super(metrics)
   loop forever
       -- check the successor without consuming any more of the
       -- string.  If it matches, we're done
-      if self~matchNext(context, position, target) then do
+      if self~wrappedMatchNext(context, position, target) then do
           -- if our match count was zero, then we don't participate
           if matches == 0 then do
               info~participated = .false
           end
+          context~exitGroup
           return .true
       end
       -- if we've hit the limit and there's no successor match,
       -- this fails
       if matches >= max then do
+          context~exitGroup
           return .false
       end
       -- (reluctanly), we try to eat one leetle mint...
       if \repNode~match(context, position, target) then do
           -- we've eaten our fill, this is a failure
+          context~exitGroup
           return .false
       end
       -- if we hit a zero-length match, there's no moving forward
       -- from here.  This is also a failure
       if position == context~matchEnd then do
+          context~exitGroup
           return .false
       end
       -- update the group information
@@ -4082,16 +4114,14 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 
 -- record the entering of a group
 ::method enterGroup
-  expose groups groupStack
-  use arg id
-  group = groups[id]
+  expose groupStack
+  use arg group
   groupStack~push(group)
-  return group
 
 -- perform exit clean up for group completion
 ::method exitGroup
    expose groupStack
-   groupStack~pop   -- just pop this group instance off of the stack
+   return groupStack~pull   -- just pop this group instance off of the stack
 
 -- save a local value
 ::method setLocal
