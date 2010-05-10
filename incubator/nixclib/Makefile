@@ -39,12 +39,12 @@
 # Setup
 ORXLFLAGS = --export-dynamic -shared -nostartfiles
 ORXCFLAGS = -fPIC
-OBJECTS = nixclib.o
+OBJECTS = unixapi.o
 
 
 # Build the shared library
-libnixclib.so: $(OBJECTS)
-	gcc $(ORXLFLAGS) -lrexx -lrexxapi -o libnixclib.so $(OBJECTS)
+libunixapi.so: $(OBJECTS)
+	gcc $(ORXLFLAGS) -lrexx -lrexxapi -o libunixapi.so $(OBJECTS)
 
 
 # Build the objects
@@ -53,7 +53,7 @@ libnixclib.so: $(OBJECTS)
 	gcc -c $(ORXCFLAGS) $<
 
 # Dependencies
-nixclib.o: nixclib.cpp nixclib.h
+unixapi.o: unixapi.cpp unixapi.h
 
 
 
