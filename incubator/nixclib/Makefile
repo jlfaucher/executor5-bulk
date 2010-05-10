@@ -37,14 +37,17 @@
 
 
 # Setup
-ORXLFLAGS = --export-dynamic -shared -nostartfiles
-ORXCFLAGS = -fPIC
+# For testing only! Remove for production!
+LINUXFLAGS = -DHAVE_XATTR
+
+ORXLFLAGS = --export-dynamic -shared -nostartfiles -lpthread
+ORXCFLAGS = -fPIC $(LINUXFLAGS)
 OBJECTS = unixapi.o
 
 
 # Build the shared library
-libunixapi.so: $(OBJECTS)
-	gcc $(ORXLFLAGS) -lrexx -lrexxapi -o libunixapi.so $(OBJECTS)
+liborxunixapi.so: $(OBJECTS)
+	gcc $(ORXLFLAGS) -lrexx -lrexxapi -o liborxunixapi.so $(OBJECTS)
 
 
 # Build the objects

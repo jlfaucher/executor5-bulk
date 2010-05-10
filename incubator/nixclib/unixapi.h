@@ -39,20 +39,15 @@
 /*----------------------------------------------------------------------------*/
 
 
-#ifndef ORXNIXCLIB_H
-#define ORXNIXCLIB_H
+#ifndef ORXUNIXAPI_H
+#define ORXUNIXAPI_H
 
-
-/*----------------------------------------------------------------------------*/
-/* Definitions                                                                */
-/*----------------------------------------------------------------------------*/
-
+#include <oorexxapi.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/syscall.h>
 #include <sys/utsname.h>
 #include <signal.h>
 #include <unistd.h>
@@ -62,19 +57,23 @@
 #include <netdb.h>
 #include <wordexp.h>
 #include <alloca.h>
+#include <pthread.h>
+
+// These are the special OS specific cases
+#ifdef HAVE_XATTR
 #include <attr/xattr.h>
-#include <oorexxapi.h>
+#endif
+
+
+/*----------------------------------------------------------------------------*/
+/* Definitions                                                                */
+/*----------------------------------------------------------------------------*/
 
 
 /*----------------------------------------------------------------------------*/
 /* Global variables                                                           */
 /*----------------------------------------------------------------------------*/
 
-
-/*----------------------------------------------------------------------------*/
-/* Method Prototypes                                                          */
-/*----------------------------------------------------------------------------*/
-
  
-#endif /* ORXNIXCLIB_H */
+#endif /* ORXUNIXAPI_H */
  

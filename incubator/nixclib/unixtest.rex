@@ -158,5 +158,5 @@ say 'retc =' SysRemovexattr(file, 'user.mime_type')
 
 return
 
-::requires 'nixclib' library
+::requires 'orxunixapi' library
 

@@ -39,7 +39,7 @@
 /*----------------------------------------------------------------------------*/
 
 
-#include "nixclib.h"
+#include "unixapi.h"
 
 
 /*----------------------------------------------------------------------------*/
@@ -95,6 +95,7 @@ RexxRoutine2(int,
     return 0;
 }
 
+
 /**
  * Method:        SysUname
  *
@@ -130,6 +131,7 @@ RexxRoutine1(RexxObjectPtr,
     return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
 }
 
+
 /**
  * Method:        SysSetsid
  *
@@ -145,6 +147,7 @@ RexxRoutine0(RexxObjectPtr,
     pid = setsid();
     return context->WholeNumberToObject((wholenumber_t)pid);
 }
+
 
 /**
  * Method:        SysGetsid
@@ -163,6 +166,7 @@ RexxRoutine1(RexxObjectPtr,
     return context->WholeNumberToObject((wholenumber_t)pid);
 }
 
+
 /**
  * Method:        SysSetuid
  *
@@ -180,6 +184,7 @@ RexxRoutine1(RexxObjectPtr,
     return context->WholeNumberToObject((wholenumber_t)setuid((uid_t)uid));
 }
 
+
 /**
  * Method:        SysGetuid
  *
@@ -193,6 +198,7 @@ RexxRoutine0(RexxObjectPtr,
 
     return context->WholeNumberToObject((wholenumber_t)getuid());
 }
+
 
 /**
  * Method:        SysSeteuid
@@ -211,6 +217,7 @@ RexxRoutine1(RexxObjectPtr,
     return context->WholeNumberToObject((wholenumber_t)seteuid((uid_t)uid));
 }
 
+
 /**
  * Method:        SysGeteuid
  *
@@ -224,6 +231,7 @@ RexxRoutine0(RexxObjectPtr,
 
     return context->WholeNumberToObject((wholenumber_t)geteuid());
 }
+
 
 /**
  * Method:        SysSetgid
@@ -242,6 +250,7 @@ RexxRoutine1(RexxObjectPtr,
     return context->WholeNumberToObject((wholenumber_t)setgid((gid_t)gid));
 }
 
+
 /**
  * Method:        SysGetgid
  *
@@ -255,6 +264,7 @@ RexxRoutine0(RexxObjectPtr,
 
     return context->WholeNumberToObject((wholenumber_t)getgid());
 }
+
 
 /**
  * Method:        SysSetegid
@@ -273,6 +283,7 @@ RexxRoutine1(RexxObjectPtr,
     return context->WholeNumberToObject((wholenumber_t)setegid((gid_t)gid));
 }
 
+
 /**
  * Method:        SysGetegid
  *
@@ -286,6 +297,7 @@ RexxRoutine0(RexxObjectPtr,
 
     return context->WholeNumberToObject((wholenumber_t)getegid());
 }
+
 
 /**
  * Method:        SysSetpgrp
@@ -301,6 +313,7 @@ RexxRoutine0(RexxObjectPtr,
     return context->WholeNumberToObject((wholenumber_t)setpgrp());
 }
 
+
 /**
  * Method:        SysGetpgrp
  *
@@ -314,6 +327,7 @@ RexxRoutine0(RexxObjectPtr,
 
     return context->WholeNumberToObject((wholenumber_t)getpgrp());
 }
+
 
 /**
  * Method:        SysSetpgid
@@ -335,6 +349,7 @@ RexxRoutine2(RexxObjectPtr,
     return context->WholeNumberToObject((wholenumber_t)setpgid((pid_t)pid1, (pid_t)pid2));
 }
 
+
 /**
  * Method:        SysGetpgid
  *
@@ -352,6 +367,7 @@ RexxRoutine1(RexxObjectPtr,
     return context->WholeNumberToObject((wholenumber_t)getpgid((pid_t)pid));
 }
 
+
 /**
  * Method:        SysGetpid
  *
@@ -365,6 +381,7 @@ RexxRoutine0(RexxObjectPtr,
     pid_t pid = getpid();
     return context->WholeNumberToObject((wholenumber_t)pid);
 }
+
 
 /**
  * Method:        SysGetppid
@@ -380,6 +397,7 @@ RexxRoutine0(RexxObjectPtr,
     return context->WholeNumberToObject((wholenumber_t)pid);
 }
 
+
 /**
  * Method:        SysGettid
  *
@@ -390,9 +408,10 @@ RexxRoutine0(RexxObjectPtr,
 RexxRoutine0(RexxObjectPtr,          
              SysGettid)
 {
-    pid_t tid = syscall(SYS_gettid);
+    pid_t tid = (pid_t)pthread_self();
     return context->WholeNumberToObject((wholenumber_t)tid);
 }
+
 
 /**
  * Method:        SysSymlink
@@ -413,6 +432,7 @@ RexxRoutine2(int,
     return symlink(path1, path2);
 }
 
+
 /**
  * Method:        SysLink
  *
@@ -432,6 +452,7 @@ RexxRoutine2(int,
     return link(path1, path2);
 }
 
+
 /**
  * Method:        SysUnlink
  *
@@ -447,6 +468,7 @@ RexxRoutine1(int,
 {
     return unlink(path1);
 }
+
 
 /**
  * Method:        SysChown
@@ -470,6 +492,7 @@ RexxRoutine3(int,
     return chown(path1, (uid_t)uid, (gid_t)gid);
 }
 
+
 /**
  * Method:        SysChroot
  *
@@ -486,6 +509,7 @@ RexxRoutine1(int,
     return chroot(path1);
 }
 
+
 /**
  * Method:        SysUmask
  *
@@ -501,6 +525,7 @@ RexxRoutine1(int,
 {
     return umask((mode_t)nmask);
 }
+
 
 /**
  * Method:        SysGetpwnam
@@ -551,6 +576,7 @@ RexxRoutine2(RexxObjectPtr,
     return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
 }
 
+
 /**
  * Method:        SysGetpwuid
  *
@@ -600,6 +626,7 @@ RexxRoutine2(RexxObjectPtr,
     return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
 }
 
+
 /**
  * Method:        SysGetgrnam
  *
@@ -643,6 +670,7 @@ RexxRoutine2(RexxObjectPtr,
     return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
 }
 
+
 /**
  * Method:        SysGetgrgid
  *
@@ -685,6 +713,7 @@ RexxRoutine2(RexxObjectPtr,
     context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysGetgrnam"));
     return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
 }
+
 
 /**
  * Method:        SysStat
@@ -867,6 +896,7 @@ RexxRoutine2(RexxObjectPtr,
     return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
 }
 
+
 /**
  * Method:        SysAccess
  *
@@ -887,6 +917,7 @@ RexxRoutine2(int,
     return access(file, option);
 }
 
+
 /**
  * Method:        SysEuidaccess
  *
@@ -906,6 +937,7 @@ RexxRoutine2(int,
 
     return euidaccess(file, option);
 }
+
 
 /**
  * Method:        SysGetservbyname
@@ -949,6 +981,7 @@ RexxRoutine3(RexxObjectPtr,
     context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysGetservbyname"));
     return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
 }
+
 
 /**
  * Method:        SysGetservbyport
@@ -996,6 +1029,7 @@ RexxRoutine3(RexxObjectPtr,
     return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
 }
 
+
 /**
  * Method:        SysWordexp
  *
@@ -1027,6 +1061,8 @@ RexxRoutine1(RexxObjectPtr,
     return (RexxObjectPtr)arr;
 }
 
+
+#ifdef HAVE_XATTR
 /**
  * Method:        SysSetxattr
  *
@@ -1048,6 +1084,7 @@ RexxRoutine3(int,
 {
     return setxattr(fname, name, val, strlen(val) + 1, 0);
 }
+
 
 /**
  * Method:        SysGetxattr
@@ -1077,6 +1114,7 @@ RexxRoutine2(RexxObjectPtr,
 
     return (RexxObjectPtr)context->NewStringFromAsciiz(buf);
 }
+
 
 /**
  * Method:        SysListxattr
@@ -1112,6 +1150,7 @@ RexxRoutine1(RexxObjectPtr,
     return (RexxObjectPtr)arr;
 }
 
+
 /**
  * Method:        SysRemovexattr
  *
@@ -1132,6 +1171,7 @@ RexxRoutine2(int,
 
     return removexattr(fname, name);
 }
+#endif
 
 
 // initialize the libvirt library
@@ -1176,10 +1216,12 @@ RexxRoutineEntry orxnixclib_routines[] = {
     REXX_TYPED_ROUTINE(SysGetservbyname, SysGetservbyname),
     REXX_TYPED_ROUTINE(SysGetservbyport, SysGetservbyport),
     REXX_TYPED_ROUTINE(SysWordexp, SysWordexp),
+#ifdef HAVE_XATTR
     REXX_TYPED_ROUTINE(SysSetxattr, SysSetxattr),
     REXX_TYPED_ROUTINE(SysGetxattr, SysGetxattr),
     REXX_TYPED_ROUTINE(SysListxattr, SysListxattr),
     REXX_TYPED_ROUTINE(SysRemovexattr, SysRemovexattr),
+#endif
     REXX_LAST_ROUTINE()
 };
 
