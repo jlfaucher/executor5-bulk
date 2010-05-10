@@ -1,0 +1,77 @@
+
+<section id="utlSysStat"><title>SysStat (Unix only)</title>
+<indexterm><primary>SysStat</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysStat</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysStat(file, option)---------------------------------------><
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns information about a file.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">file</emphasis></term>
+<listitem><para>The path/file name.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">option</emphasis></term>
+<listitem><para>An option specifying the information to return.
+The values are all case insensitive and only the first letter of the option value is checked.
+Allowed values are:
+<variablelist>
+<varlistentry><term>"DEVICE"</term>
+<listitem><para>The file's owning device id.
+</para></listitem></varlistentry>
+<varlistentry><term>"INODE"</term>
+<listitem><para>The inode number.
+</para></listitem></varlistentry>
+<varlistentry><term>"PERMISSIONS"</term>
+<listitem><para>The permissions in a 10 character string similar to that produced by the
+shell command "ls -l".
+</para></listitem></varlistentry>
+<varlistentry><term>"NUMBERLINKS"</term>
+<listitem><para>The number of links to the file.
+</para></listitem></varlistentry>
+<varlistentry><term>"UID"</term>
+<listitem><para>The file's owner numerical user id.
+</para></listitem></varlistentry>
+<varlistentry><term>"GID"</term>
+<listitem><para>The file's numerical group id.
+</para></listitem></varlistentry>
+<varlistentry><term>"REALDEV"</term>
+<listitem><para>The file's real device id (if any).
+</para></listitem></varlistentry>
+<varlistentry><term>"SIZE"</term>
+<listitem><para>The file's size in bytes.
+</para></listitem></varlistentry>
+<varlistentry><term>"ACCESS"</term>
+<listitem><para>The file's last access timestamp in the form YYYY-MM-DD HH:MM:SS.
+</para></listitem></varlistentry>
+<varlistentry><term>"MODIFIED"</term>
+<listitem><para>The file's last modified timestamp in the form YYYY-MM-DD HH:MM:SS.
+</para></listitem></varlistentry>
+<varlistentry><term>"CHANGED"</term>
+<listitem><para>The file's last changed timestamp in the form YYYY-MM-DD HH:MM:SS.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns information specified by the <emphasis>option</emphasis>.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+
+/* the following examples came from a Linux laptop running Fedora 12 */
+
+SysStat("/home/dashley/temp.txt", "n")  -->  1
+SysStat("/home/dashley/temp.txt", "u")  -->  500
+SysStat("/home/dashley/temp.txt", "g")  -->  500
+SysStat("/home/dashley/temp.txt", "s")  -->  427
+SysStat("/home/dashley/temp.txt", "a")  -->  2009-12-02 13:22:16
+
+]]>
+</programlisting>
+</section>
+

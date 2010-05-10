@@ -1,0 +1,57 @@
+
+<section id="utlSysUname"><title>SysUname (Unix only)</title>
+<indexterm><primary>SysUname</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysUname</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysUname(--+----------+--)----------------------------------><
+              +--option--+
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns system information.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">opt</emphasis></term>
+<listitem><para>An option specifying the information to return.
+The values are all case insensitive and only the first letter of the option value is checked.
+Allowed values are:
+<variablelist>
+<varlistentry><term>"SYSTEM"</term>
+<listitem><para>The system name. This is the default option if none is specified.
+</para></listitem></varlistentry>
+<varlistentry><term>"NODE"</term>
+<listitem><para>The system node (or default host) name.
+</para></listitem></varlistentry>
+<varlistentry><term>"RELEASE"</term>
+<listitem><para>The system release name.
+</para></listitem></varlistentry>
+<varlistentry><term>"VERSION"</term>
+<listitem><para>The system version.
+</para></listitem></varlistentry>
+<varlistentry><term>"MACHINE"</term>
+<listitem><para>The system machine type.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns information specified by the <emphasis>option</emphasis>.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+
+/* the following examples came from a Linux laptop running Fedora 12 */
+
+SysUname()      -->  Linux
+SysUname("s")   -->  Linux
+SysUname("n")   -->  bugs.ibm.com
+SysUname("r")   -->  2.6.31.6-166.fc12.i686
+SysUname("v")   -->  #1 SMP Wed Dec 9 11:14:59 EST 2009
+SysUname("m")   -->  i686
+
+]]>
+</programlisting>
+</section>
+

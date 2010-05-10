@@ -1,0 +1,37 @@
+
+<section id="utlSysWordexp"><title>SysWordexp (Unix only)</title>
+<indexterm><primary>SysWordexp</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysWordexp</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysWordexp(exp)---------------------------------------------><
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Performs a shell-like expansion of the input expression and returns the result in an
+array. This function will expand the characters "*", "?" and "~" (the tilde).
+</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">exp</emphasis></term>
+<listitem><para>The expression to expand.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns an array of the expanded results.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+
+/* process an expansion */
+
+arr = SysWordexp("./*.txt"
+do mem over arr
+   say mem
+   end
+
+]]>
+</programlisting>
+</section>
+

@@ -1,0 +1,32 @@
+
+<section id="utlSysSeteuid"><title>SysSeteuid (Unix only)</title>
+<indexterm><primary>SysSeteuid</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysSeteuid</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysSetuid(euid)---------------------------------------------><
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Set the numerical effective user id.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">uid</emphasis></term>
+<listitem><para>The new numerical effective user id.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns zero on success or -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+
+/* set the effective user id to 520 */
+
+call SysSeteuid 520
+
+]]>
+</programlisting>
+</section>
+

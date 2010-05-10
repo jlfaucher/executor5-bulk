@@ -1,0 +1,35 @@
+
+<section id="utlSysSetpgid"><title>SysSetpgid (Unix only)</title>
+<indexterm><primary>SysSetpgid</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysSetpgid</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysSetpgid(pid, pgid)---------------------------------------><
+]]>
+</programlisting>
+
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Set a numerical process id to use the specified process group id.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">pid</emphasis></term>
+<listitem><para>The process id to modify.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">pgid</emphasis></term>
+<listitem><para>The new process group id.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns zero on success and -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+
+/* set process group id */
+
+call SysSetpgid 9321, 520
+
+]]>
+</programlisting>
+</section>
+
