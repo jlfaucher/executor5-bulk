@@ -4121,7 +4121,14 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
   copy = self~copy
   copy~setRange(start, end)
 
-  return copy;
+  return copy
+
+-- create a new context for invoking a nested pattern
+::method createNestedPatternContext
+  expose text startPosition endPosition
+  use arg pattern
+  -- create a context as if this was toplevel
+  return pattern~context(text, startPosition, endPosition - startPosition)
 
 -- Retrieve the group reference item for a given group
 ::method getGroupReference
@@ -4200,26 +4207,48 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
       return .false       -- no match
   end
 
-  ro
 
 -- search the region for the first position with a pattern match.  Returns
 -- a match result object with the match result
 ::method find
-  expose text startPosition endPosition matchPosition matchEndRequired root
+  expose startPosition root
   -- the start is optional, but defalt to the beginning of the
   -- region (typical)
   use strict arg start = (startPosition)
+  -- forward to the common matching routine
 
-  if startPosition > endPosition then do
+  -- this node implements a sliding search search of the pattern.
+  -- Not really part of the pattern tree, but it wrappers it
+  return self~performMatch(start, .SearchNode~new(root))
+
+
+-- match the given (or starting position) for a match.  Returns
+-- a match result object with the match result
+::method match
+  expose startPosition root
+  -- the start is optional, but defalt to the beginning of the
+  -- region (typical)
+  use strict arg start = (startPosition)
+  -- forward to the common matching routine
+  return self~performMatch(start, root)
+
+-- match the given (or starting position) for a match.  Returns
+-- a match result object with the match result
+::method performMatch private
+  expose text endPosition matchPosition matchEndRequired root
+  -- the start is optional, but defalt to the beginning of the
+  -- region (typical)
+  use strict arg start, pattern
+  -- set the initial match position
+  matchPosition = start
+
+  if start > endPosition then do
       matchPosition = 0
       return self~matchResult  -- give a match result object with the info
   end
 
   matchEndRequired = .false  -- This does not need to match exactly
-  -- this node implements a sliding search search of the pattern.
-  -- Not really part of the pattern tree, but it wrappers it
-  searcher = .SearchNode~new(root)
-  if \searcher~match(self, startPosition, text) then do
+  if \pattern~match(self, start, text) then do
       matchPosition = 0   -- this needs to be cleared
   end
   return self~result  -- give a match result object with the info
