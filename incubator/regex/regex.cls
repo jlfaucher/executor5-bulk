@@ -3983,7 +3983,7 @@
 -- base class for a match result from a group match.  This is
 -- similar to the MatchResult class, but lacks the ability to request
 -- embedded group values
-::class GroupMatchResult
+::class BaseMatchResult
 ::method init
 expose regionStart regionEnd start end regionText
 use strict arg regionText, regionStart, regionEnd, start, end
@@ -4048,10 +4048,27 @@ use strict arg regionText, regionStart, regionEnd, start, end
   -- is zero-length
   return end + 1
 
+-- the class for a group result.  This adds in the retrieval
+-- of embedded match results from named pattern references
+::class GroupMatchResult subclass BaseMatchResult
+::method init
+  expose results
+  use strict arg regionText, regionStart, regionEnd, group
+  self~init:super(regionText, regionStart, regionEnd, group~start, group~end)
+  results = group~namedResults
+
+-- retrieve a named result piece.  This is the name used
+-- in the \m{name} element used to invoke the piece
+::method result
+  expose results
+  use strict arg id
+  return results[id]
+
+
 -- Information about an individual match.  The match
 -- may have embedded groups.  The match information for
 -- the embedded groups can also be retrieved
-::class MatchResult subclass GroupMatchResult
+::class MatchResult subclass BaseMatchResult
 ::method init
 expose groups
 use strict arg regionText, regionStart, regionEnd, start, end, groups
@@ -4063,11 +4080,12 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
   expose groups
   use strict arg id
   group = groups[id]
+  -- give a reasonable default rather than raising an error
   if .nil == group then do
-      raise syntax 93.900 array("Group" id "not found in regular expression pattern") -- this is an error
+      return .nil
   end
   -- this gets wrappered into a result item
-  return .GroupMatchResult~new(self~regionText, self~regionStart, self~regionEnd, group~start, group~end)
+  return .GroupMatchResult~new(self~regionText, self~regionStart, self~regionEnd, group)
 
 -- the current active context for a match operation.  This
 -- provides information to the matching filters and holds any
@@ -4122,6 +4140,14 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 ::method exitGroup
    expose groupStack
    return groupStack~pull   -- just pop this group instance off of the stack
+
+-- add a named result object to the currently active group
+::method addResult
+  expose groupStack
+  use arg name, result
+
+  group = groupStack~peek
+  group~addResult(name, result)
 
 -- save a local value
 ::method setLocal
@@ -4276,17 +4302,35 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 -- the class for managing group information during a pattern match
 ::class GroupReference
 ::method init
-  expose id start end text participated
+  expose id start end text participated namedResults
   use arg id
   start = 0
   end = 0
   text = .nil
+  namedResults = .nil  -- This is only used when an embedded pattern is used
   participated = .true -- participation is different from "matching"
 
 -- the start and end match positions
 ::attribute start
 ::attribute end
+-- indicates whether a group participated in a match
 ::attribute participated
+-- the list of results from named patterns used inside this
+-- group.  Returns .nil if none were used (common)
+::attribute namedResults
+
+-- add a named result to this group
+::method addResult
+  exposed namedResults
+  use arg name, result
+  -- we create this lazily, since it's more common
+  -- that a group not have any of these
+  if namedResults == .nil then do
+      namedResults = .directory~new
+  end
+
+  -- add this to the directory table
+  namedResults[name] = result
 
 -- indicates whether this match was a success or a failure
 ::method matched
