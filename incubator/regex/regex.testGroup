@@ -2082,4 +2082,7 @@ return testResult
   self~assertFalse(self~matches(p, "212-abc-34"))
   self~assertFalse(self~matches(p, "112-34-56"))
 
-
+-- email registered pattern
+::method testEmail
+  p = .Pattern~compile("^\m{email}$")
+  self~assertTrue(self~matches(p, "postmaster@oorexx.org"))

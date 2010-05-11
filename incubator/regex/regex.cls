@@ -153,7 +153,7 @@
 ::class RegexCompiler public
 
 ::constant METACHARACTERS "([{\^$|]})?*+."
-::constant CLASSMETACHARACTERS "[^-]&"
+::constant CLASSMETACHARACTERS "[]"
 ::constant CLOSURECHARACTERS "*+?{"
 ::constant WORDCHARACTERS 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
 ::constant DIGITCHARACTERS '0123456789'
@@ -255,7 +255,7 @@
       -- compile this on demand and update
       -- the table so it can be reused
       pattern = self~compile(pattern)
-      namePatterns[name] = pattern
+      namedPatterns[name] = pattern
   end
   return pattern   -- now in pattern form
 
@@ -1436,7 +1436,6 @@
 -- parse out the characters between a class section.
 ::method parseClassSection
   expose current length pattern
-
   previousNode = .nil
   negated = .false
   firstchar = .true
@@ -1646,13 +1645,32 @@
       if self~peek == '-' then do
           -- skip over that and get the next character
           self~next
-          endRange = self~singleChar
-          -- special unescaped character?  This is also an error
-          if endRange == .nil | endRange == '[' | endRange == ']' | endRange == '-' then do
-              raise syntax 93.900 array("missing end character in class range")
+          endRange = self~next
+          -- missing closing class piece?  Return now and allow caller
+          -- to handle
+          if endRange == .nil then do
+              leave
           end
-          -- replace the character with the end range
-          ch = xrange(ch, endRange)
+          -- a '-' at the very end of a range is interpretered as a
+          -- '-' character rather than the range operator.  Also,
+          -- in a '--' sequence, the second '-' is just the character.
+          if \self~isClassMetaCharacter(endRange) then do
+              -- if the endRange character is an escape, then we
+              -- need to process both characters
+              if endRange == '\' then do
+                  self~previous
+                  endRange = self~singleChar
+                  -- if not valid, we have a problem of some sort
+                  if endRange == .nil then do
+                      leave
+                  end
+              end
+              -- replace the character with the end range
+              ch = xrange(ch, endRange)
+          end
+          else do
+              self~previous -- back up and process the closing on the next loop
+          end
       end
       -- add this to the accumulator
       characters = characters || ch
@@ -4070,7 +4088,7 @@
   context~addResult(name, matchResult)
   -- if this matched, then foward along
   if matchResult~matched then do
-      return self~matchNext(context, matchResult~matchEnd, target)
+      return self~matchNext(context, matchResult~end, target)
   end
   -- if it did not match, this is a failure
   return .false
@@ -4214,6 +4232,7 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 
   -- push the main group at the head of the stack (if it exists)
   rootGroup = groups[0]
+  groupStack~push(rootGroup)
 
 -- create a subcontext of the current context with a different start
 -- and stop range.  Used by lookbehind matchers to restrict the
@@ -4453,7 +4472,7 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 
 -- add a named result to this group
 ::method addResult
-  exposed namedResults
+  expose namedResults
   use arg name, result
   -- we create this lazily, since it's more common
   -- that a group not have any of these
