@@ -140,6 +140,15 @@
   end
   return list
 
+-- return a set of match metrics for this pattern instance
+::method matchMetrics
+  expose root
+  use strict arg
+  metrics = .MatchMetrics~new
+  -- forward this to the matching tree
+  root~calculateMatchMetrics(metrics)
+  return metrics
+
 
 ::class RegexCompiler public
 
@@ -172,33 +181,48 @@
 
   classFamilies = .directory~new
 
-  classFamilies["Lower"] = self~lowerCaseCharacters
-  classFamilies["Upper"] = self~upperCaseCharacters
+  classFamilies["LOWER"] = self~lowerCaseCharacters
+  classFamilies["UPPER"] = self~upperCaseCharacters
   classFamilies["ASCII"] = xrange('00'x, '7F'x)
-  classFamilies["Alpha"] = classFamilies["Lower"] || classFamilies["Upper"]
-  classFamilies["Digit"] = self~digitCharacters
-  classFamilies["Alnum"] = classFamilies["Alpha"] || classFamilies["Digit"]
-  classFamilies["Punct"] = "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
-  classFamilies["Graph"] = classFamilies["Alnum"] || classFamilies["Punct"]
-  classFamilies["Print"] = classFamilies["Graph"]
-  classFamilies["Blank"] = " " || '09'x
-  classFamilies["Cntrl"] = xrange("00"x, "1F"x) || "7F"x
-  classFamilies["XDigit"] = "0123456789abcdefABCDEF"
-  classFamilies["ODigit"] = "01234567"
-  classFamilies["Space"] = self~whiteSpaceCharacters
-  classFamilies["Word"] = self~wordCharacters
+  classFamilies["ALPHA"] = classFamilies["LOWER"] || classFamilies["UPPER"]
+  classFamilies["DIGIT"] = self~digitCharacters
+  classFamilies["ALNUM"] = classFamilies["ALPHA"] || classFamilies["DIGIT"]
+  classFamilies["PUNCT"] = "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
+  classFamilies["GRAPH"] = classFamilies["ALNUM"] || classFamilies["PUNCT"]
+  classFamilies["PRINT"] = classFamilies["GRAPH"]
+  classFamilies["BLANK"] = " " || '09'x
+  classFamilies["CNTRL"] = xrange("00"x, "1F"x) || "7F"x
+  classFamilies["XDIGIT"] = "0123456789abcdefABCDEF"
+  classFamilies["ODIGIT"] = "01234567"
+  classFamilies["SPACE"] = self~whiteSpaceCharacters
+  classFamilies["WORD"] = self~wordCharacters
 
-  classFamilies["RexxSymbol"] = classFamilies["Alnum"] || ".!?_"
-  classFamilies["RexxVariableStart"] = classFamilies["Alpha"] || "!?_"
-  classFamilies["RexxOperator"] = "+-\/%*|&=<>" || 'aaac'x
-  classFamilies["RexxSpecial"] = ",;:~()[]"
+  classFamilies["REXXSYMBOL"] = classFamilies["ALNUM"] || ".!?_"
+  classFamilies["REXXVARIABLESTART"] = classFamilies["ALPHA"] || "!?_"
+  classFamilies["REXXOPERATOR"] = "+-\/%*|&=<>" || 'aaac'x
+  classFamilies["REXXSPECIAL"] = ",;:~()[]"
+
+
+-- Initialize the named patterns the first time they are used
+::method initNamedPatterns private
+  expose namedPatterns
+  if namedPatterns \= .nil then do
+      return
+  end
+
+  namedPatterns = .directory~new
+  namedPatterns['TOPLEVELDOMAIN'] = "(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)"
+  namedPatterns['EMAILUSERNAME'] = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*"
+  namedPatterns['INTERNETDOMAIN'] = "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\b"
+  namedPatterns['EMAIL'] = "(?<username>[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*)@(?<domain>(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\b)"
 
 -- retrieve a name class family from the list of registered class families
 -- subclasses are free to override this method to provide additional
 -- class families
 ::method classFamily
-  expose classFamilies registeredClassFamilies
+  expose classFamilies
   use strict arg name
+  name = name~upper -- make sure we always use an uppercase name
   -- initialize the class families
   self~initClassFamilies
 
@@ -208,16 +232,49 @@
 ::method registerClassFamily
   expose classFamilies
   use strict arg name, chars
+  name = name~upper -- make sure we always use an uppercase name
 
   -- initialize the class families
   self~initClassFamilies
   -- allow any class family to be redefined
   classFamilies[name] = chars
 
+-- retrieve a named pattern instance from the list of registered
+-- patterns.  Subclasses are free to override this lookup to provide
+-- additional named patterns
+::method namedPattern
+  expose namedPatterns
+  use strict arg name
+  name = name~upper -- make sure we always use an uppercase name
+  -- initialize the class-provided set
+  self~initNamedPatterns
+
+  pattern = namedPatterns[name]
+  -- still in string symbolic form?
+  if pattern~isa(.String) then do
+      -- compile this on demand and update
+      -- the table so it can be reused
+      pattern = self~compile(pattern)
+      namePatterns[name] = pattern
+  end
+  return pattern   -- now in pattern form
+
+-- register additional named patterns with a compiler instance
+::method registerNamedPatterns
+  expose namedPatterns
+  use strict arg name, pattern
+  name = name~upper -- make sure we always use an uppercase name
+
+  -- initialize the standard pattern set
+  self~initNamedPatterns
+  -- allow any class family to be redefined
+  namedPatterns[name] = pattern
+
 -- initialize a regex compiler instance
 ::method init
-  expose classFamilies
-  classFamilies = .nil
+  expose classFamilies namedPatterns
+  classFamilies = .nil   -- we might not need either of these,
+  namedPatterns = .nil   -- so they are lazily initialized
 
   use strict arg options = .nil
   -- set default options
@@ -1045,7 +1102,7 @@
 
   metrics = .MatchMetrics~new
   -- forward this to the matching tree
-  head~getMatchMetrics(metrics)
+  head~calculateMatchMetrics(metrics)
   return metrics
 
 -- parse options flags in the expressions
@@ -1824,6 +1881,7 @@
       when .nil == ch then do
           raise syntax 93.900 array("Missing character after escape")
       end
+      -- numbered back reference
       when '123456789'~pos(ch) > 0 then do
           -- a back reference
           if \self~haveGroup(ch) then do
@@ -1836,12 +1894,12 @@
               return .BackReferenceNode~new(ch)
           end
       end
+      -- named back reference
       when ch == 'k' then do
-          -- named back reference
           referenceName = self~extractDelimited('{', '}')
 
           if \self~haveGroup(referenceName) then do
-              raise syntax 93.900 array("Unrecognized group back reference" referenceName)
+              raise syntax 93.900 array("Unrecognized group back reference:" referenceName)
           end
           if self~caselessMode then do
               return .CaselessBackReferenceNode~new(referenceName)
@@ -1849,6 +1907,19 @@
           else do
               return .BackReferenceNode~new(referenceName)
           end
+      end
+      -- reference to a registered pattern
+      when ch == 'm' then do
+          -- get the pattern name
+          patternName = self~extractDelimited('{', '}')
+          patternName~upper
+          pattern = self~namedPattern(patternName)
+
+          if pattern == .nil then do
+              raise syntax 93.900 array("Unrecognized pattern reference:" patternName)
+          end
+          -- this handles the indirection
+          return .PatternNode~new(patternName, pattern)
       end
       -- start of text anchor
       when ch == 'A' then do
@@ -1873,7 +1944,7 @@
       -- Last match.  We do iteration a little differently, so this
       -- really matches the start of the text region we're looking at.
       when ch == 'G' then do
-          return .LastMatch~new
+          return .LastMatchNode~new
       end
       -- this is like $, but it always is an end of input or linend
       -- match, rather than multiline
@@ -2042,19 +2113,19 @@
 -- calculate the length of this match, if possible.  The
 -- default implementation assumes the length of this node is zero and
 -- just passes the request down the chain
-::method getMatchMetrics
+::method calculateMatchMetrics
   expose next
   use arg metrics
   if next \== .nil then do
-      next~getMatchMetrics(metrics)
+      next~calculateMatchMetrics(metrics)
   end
 
-::method getChildMatchMetrics
+::method calculateChildMatchMetrics
   use arg child
   -- get our repetition node values as if it was the only thing of interest
   submetrics = .MatchMetrics~new
 
-  child~getMatchMetrics(submetrics)
+  child~calculateMatchMetrics(submetrics)
   return submetrics
 
 -- add a .TerminatorNode terminator to a node that will
@@ -2284,11 +2355,11 @@
   -- always true at this node, so just return the successor result.
   return self~matchNext(context, position + 1, target)
 
-::method getMatchMetrics
+::method calculateMatchMetrics
   use arg metrics
   -- a dot is always a single character, so easy to manage
   metrics~addLength(1)
-  self~getMatchMetrics:super(metrics)
+  self~calculateMatchMetrics:super(metrics)
 
 
 -- like all dot node, but doesn't match lineends (CRLF sequences,
@@ -2351,12 +2422,12 @@
   -- continue checking after this position
   return self~matchNext(context, position + matchString~length, target)
 
-::method getMatchMetrics
+::method calculateMatchMetrics
   expose matchString
   use arg metrics
   -- always the length of this string
   metrics~addLength(matchString~length)
-  self~getMatchMetrics:super(metrics)
+  self~calculateMatchMetrics:super(metrics)
 
 -- a caseless match for a string
 ::class CaselessStringNode subclass StringNode
@@ -2403,11 +2474,11 @@
   use arg position, target, characters
   return target~matchChar(position, characters)
 
-::method getMatchMetrics
+::method calculateMatchMetrics
   use arg metrics
   -- also just a single character match
   metrics~addLength(1)
-  self~getMatchMetrics:super(metrics)
+  self~calculateMatchMetrics:super(metrics)
 
 -- an inversion of the class node
 ::class NotClassNode subclass ClassNode
@@ -2454,11 +2525,11 @@
 
   return self~matchNext(context, position + 1, target)
 
-::method getMatchMetrics
+::method calculateMatchMetrics
   use arg metrics
   -- also just a single character match
   metrics~addLength(1)
-  self~getMatchMetrics:super(metrics)
+  self~calculateMatchMetrics:super(metrics)
 
 
 -- match on a series of OR expressions
@@ -2484,7 +2555,7 @@
   return .false
 
 -- calculate match metrics for an alternative node
-::method getMatchMetrics
+::method calculateMatchMetrics
   expose alternatives
   use arg metrics
 
@@ -2496,14 +2567,14 @@
   -- we need to analyze all of the alternative paths.
   do alternative over alternatives
       -- get our repetition node values as if it was the only thing of interest
-      submetrics = self~getChildMatchMetrics(alternative)
+      submetrics = self~calculateChildMatchMetrics(alternative)
       -- merge these into our accumulator
       accumulator~mergeMetrics(submetrics)
   end
   -- add these into full set
   metrics~addMetrics(accumulator)
   -- send this along
-  self~getMatchMetrics:super(metrics)
+  self~calculateMatchMetrics:super(metrics)
 
 -- add an expression to our list of alternatives
 ::method addAlternative
@@ -2638,7 +2709,7 @@
   return .false
 
 -- Base class for the different Question nodes.  The init and
--- getMatchMetrics are the same, but the matching logic is different
+-- calculateMatchMetrics are the same, but the matching logic is different
 ::class QuestionNode subclass MatchNode
 ::method init
   expose optional
@@ -2648,18 +2719,18 @@
 
 ::attribute optional GET
 
-::method getMatchMetrics
+::method calculateMatchMetrics
   expose optional
   use arg metrics
 
   -- our following match pattern is optional, so we ignore any
   -- additions it makes to the metrics before sending it down the chain.
   minLength = metrics~minLength
-  optional~getMatchMetrics(metrics)
+  optional~calculateMatchMetrics(metrics)
   metrics~minLength = minLength
   -- this is no longer deterministic because it depends on context
   metrics~deterministic = .false
-  self~getMatchMetrics:super(metrics)
+  self~calculateMatchMetrics:super(metrics)
 
 -- a question node that implements greedy matching semantics.  It will
 -- match itself first, and back off if it does not find a match.
@@ -2753,7 +2824,7 @@
   return ret
 
 -- Base class for the different Group Question nodes.  The init and
--- getMatchMetrics are the same, but the matching logic is different
+-- calculateMatchMetrics are the same, but the matching logic is different
 ::class GroupQuestionNode subclass QuestionNode inherit GroupNodeMixin
 ::method init
   expose id
@@ -2761,18 +2832,18 @@
   self~init:super(optional)
   self~init:.GroupNodeMixin(id) -- the mixing manages the id portion
 
-::method getMatchMetrics
+::method calculateMatchMetrics
   use arg metrics
 
   -- our following match pattern is optional, so we ignore any
   -- additions it makes to the metrics before sending it down the chain.
   minLength = metrics~minLength
-  self~optional~getMatchMetrics(metrics)
+  self~optional~calculateMatchMetrics(metrics)
   metrics~minLength = minLength
   -- also no longer deterministic
   metrics~deterministic = .false
 
-  self~getMatchMetrics:super(metrics)
+  self~calculateMatchMetrics:super(metrics)
 
 
 -- A node that handles the Greedy ? qualifier following a
@@ -2889,11 +2960,11 @@
 ::attribute min GET
 ::attribute max GET
 
-::method getMatchMetrics
+::method calculateMatchMetrics
   expose repNode min max
   use arg metrics
   -- get our repetition node values as if it was the only thing of interest
-  submetrics = self~getChildMatchMetrics(repNode)
+  submetrics = self~calculateChildMatchMetrics(repNode)
 
   metrics~addMin(min * submetrics~minLength)
   metrics~addMax(max * submetrics~maxLength)
@@ -2908,7 +2979,7 @@
   end
 
   -- send this along
-  self~getMatchMetrics:super(metrics)
+  self~calculateMatchMetrics:super(metrics)
 
 -- a Greedy repetition of a pattern.  This will match as
 -- much as possible, but will back off in an attempt to match
@@ -3077,11 +3148,11 @@
 ::attribute min GET
 ::attribute max GET
 
-::method getMatchMetrics
+::method calculateMatchMetrics
   expose repNode min max
   use arg metrics
   -- get our repetition node values as if it was the only thing of interest
-  submetrics = self~getChildMatchMetrics(repNode)
+  submetrics = self~calculateChildMatchMetrics(repNode)
 
   metrics~addMin(min * submetrics~minLength)
   metrics~addMax(max * submetrics~maxLength)
@@ -3097,7 +3168,7 @@
   end
 
   -- send this along
-  self~getMatchMetrics:super(metrics)
+  self~calculateMatchMetrics:super(metrics)
 
 -- a Greedy repetition of a pattern.  This will match as
 -- much as possible, but will back off in an attempt to match
@@ -3301,12 +3372,12 @@
   use arg context, position, target, matchValue
   return target~match(position, matchValue)
 
-::method getMatchMetrics
+::method calculateMatchMetrics
   use arg metrics
 
   -- the maximum can no longer be trusted
   metrics~validMaximum = .false
-  self~getMatchMetrics:super(metrics)
+  self~calculateMatchMetrics:super(metrics)
 
 -- same as a back reference, but matching is done caselessly
 ::class CaselessBackReferenceNode subclass BackReferenceNode
@@ -3397,12 +3468,12 @@
   return self~matchNext(context, position, target)
 
 -- calculate match metrics for a conditional node
-::method getMatchMetrics
+::method calculateMatchMetrics
   expose thenNode
   use arg metrics
 
   -- calculate metrics for the then branch
-  submetrics = self~getChildMatchMetrics(thenNode)
+  submetrics = self~calculateChildMatchMetrics(thenNode)
   -- since we don't necessary perform the then match,
   -- our minimum successful match needs to be zero
   submetrics~minLength = 0
@@ -3411,7 +3482,7 @@
   -- and merge into the full set
   metrics~addMetrics(submetrics)
   -- send this along
-  self~getMatchMetrics:super(metrics)
+  self~calculateMatchMetrics:super(metrics)
 
 -- support for a (?(cond)then) node
 ::class IfThenElseNode subclass MatchNode
@@ -3456,13 +3527,13 @@
   return self~matchNext(context, position, target)
 
 -- calculate match metrics for a conditional node
-::method getMatchMetrics
+::method calculateMatchMetrics
   expose thenNode
   use arg metrics
 
   -- calculate metrics for the then branch
-  submetrics = self~getChildMatchMetrics(thenNode)
-  elseMetrics = self~getChildMatchMetrics(elseNode)
+  submetrics = self~calculateChildMatchMetrics(thenNode)
+  elseMetrics = self~calculateChildMatchMetrics(elseNode)
   -- get a merged set from the two branches
   submetrics~mergeMetrics(elseMetrics)
   submetrics~minLength = 0
@@ -3471,7 +3542,7 @@
   -- and merge into the full set
   metrics~addMetrics(submetrics)
   -- send this along
-  self~getMatchMetrics:super(metrics)
+  self~calculateMatchMetrics:super(metrics)
 
 -- a group node with an explicit name
 ::class NamedGroupNode subclass MatchNode
@@ -3506,17 +3577,17 @@
   leftSide~terminate
   rightSide~terminate
 
-::method getMatchMetrics
+::method calculateMatchMetrics
   expose leftSide rightSide
   use arg metrics
 
-  leftMetrics = self~getChildMatchMetrics(leftSide)
-  rightMetrics = self~getChildMatchMetrics(rightSide)
+  leftMetrics = self~calculateChildMatchMetrics(leftSide)
+  rightMetrics = self~calculateChildMatchMetrics(rightSide)
   -- merge this set of metrics into a combined result
   leftMetrics~mergeMetrics(rightMetrics)
   -- and add to the full metric set
   metrics~addMetrics(leftMetrics)
-  self~getMatchMetrics:super(metrics)
+  self~calculateMatchMetrics:super(metrics)
 
 ::attribute leftSide
 ::attribute rightSide
@@ -3945,7 +4016,7 @@
   -- to optimize, we scan the tree to figure out what the minium match
   -- length will be.  This will prevent making unnecessary probes on the
   -- target once matches are no longer possible.
-  metrics = self~getChildMatchMetrics(pattern)
+  metrics = self~calculateChildMatchMetrics(pattern)
 
   minLength = metrics~minLength
 
@@ -3971,14 +4042,46 @@
   -- no matches possible
   return .false
 
-::method getMatchMetrics
+::method calculateMatchMetrics
   use arg metrics
 
   -- get the successor metrics, but we need to tweak them
-  self~getMatchMetrics:super(metrics)
+  self~calculateMatchMetrics:super(metrics)
   -- because we slide, these are never valid
   metrics~deterministic = .false
   metrics~validMaximum = .false
+
+
+-- A node that holds and executes an indirect match to another
+-- pattern
+::class PatternNode subclass MatchNode
+::method init
+  expose name pattern
+  use arg name, pattern
+
+::method match
+  expose name pattern
+  use arg context, position, target
+  -- create a new context to execute this
+  subcontext = context~createNestedPatternContext(pattern)
+  -- attempt a match from the current position
+  matchResult = subcontext~match(position)
+  -- record the result of this with the current group
+  context~addResult(name, matchResult)
+  -- if this matched, then foward along
+  if matchResult~matched then do
+      return self~matchNext(context, matchResult~matchEnd, target)
+  end
+  -- if it did not match, this is a failure
+  return .false
+
+::method calculateMatchMetrics
+  expose pattern
+  use arg metrics
+  -- add in the metrics from the pattern
+  metrics~addMetrics(pattern~matchMetrics)
+  -- get the successor metrics, but we need to tweak them
+  self~calculateMatchMetrics:super(metrics)
 
 -- base class for a match result from a group match.  This is
 -- similar to the MatchResult class, but lacks the ability to request
