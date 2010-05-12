@@ -76,6 +76,17 @@
   return context~matches
 
 -- simple one time match operation on a regular expression and
+-- a region within a string.  Returns a MatchResult item if this
+-- matches at the starting position (but not necessarily the entire
+-- string)
+::method match
+  use strict arg text, start = 1, end = (text~length)
+  -- create a matching context for this
+  context = self~context(text, start, end)
+  -- and just perform a match on this
+  return context~match
+
+-- simple one time match operation on a regular expression and
 -- a region within a string.  Returns .true if the region starts
 -- with the given pattern
 ::method startsWith
@@ -397,16 +408,19 @@
   ch = pattern~subchar(current)
   return ch
 
--- peek at the next character after current parsing position without stepping
--- the cursor.  Returns .nil if past the end of the pattern.
-::method peek2
+-- peek at the next at a given offset from the current parsing position without
+-- moving the cursor.  The offset can be positive or negative.  Returns .nil
+-- if the resulting position is beyond the pattern bounds
+::method peekOffset
   expose pattern current length
+  use arg offset
+  position = current + offset
 
-  if current + 1 > length then do
+  if position > length | position < 1 then do
       return .nil
   end
 
-  ch = pattern~subchar(current + 1)
+  ch = pattern~subchar(position)
   return ch
 
 -- process reading of a single character, taking escaping
@@ -754,7 +768,6 @@
 ::method createGroupReference private
   expose groups
   use arg id
-
   if groups == .nil then do
       groups = .directory~new
   end
@@ -888,6 +901,8 @@
                   self~previous
                   -- and parse out the delimited name
                   referenceName = self~extractDelimited('<', '>')
+                  -- apply Rexx symbol rules to the name and make uppercase
+                  referenceName = referenceName~upper
                   -- add this to our reference table
                   self~getGroupReference(referenceName)
                   -- a named capturing group
@@ -1065,6 +1080,7 @@
           self~previous
           -- and parse out the delimited name
           referenceName = self~extractDelimited('(', ')')
+          referenceName = referenceName~upper
           -- a back reference
           if \self~haveGroup(referenceName) then do
               raise syntax 93.900 array("Unrecognized group back reference" ch)
@@ -1625,7 +1641,7 @@
       -- a more complex operation.  If it's a character, accept it now, otherwise
       -- stop parsing here and allow the higher level to handle the escaped
       -- operation
-      if ch == '\' then do
+      else if ch == '\' then do
           self~next -- step over the escape
           ch = self~parseEscapedCharacters
           -- if this doesn't parse into a character, then step back and
@@ -1635,6 +1651,17 @@
               leave
           end
           -- we have the character for adding to this range
+      end
+      -- if the current position is the sequence '&&', this is
+      -- an interesection.  If it is a single '&', we use the character
+      -- as is
+      else if ch == '&' then do
+          if self~peekOffset(1) == '&' then do
+              -- still positioned at the first '&'.  The
+              -- intersection will be processed at a higher level
+              leave
+          end
+          self~next -- step over the character
       end
       else do
           -- Simple character added to the range
@@ -1915,6 +1942,8 @@
       -- named back reference
       when ch == 'k' then do
           referenceName = self~extractDelimited('{', '}')
+          -- apply Rexx symbol rules to the name and make uppercase
+          referenceName = referenceName~upper
 
           if \self~haveGroup(referenceName) then do
               raise syntax 93.900 array("Unrecognized group back reference:" referenceName)
@@ -1930,7 +1959,7 @@
       when ch == 'm' then do
           -- get the pattern name
           patternName = self~extractDelimited('{', '}')
-          patternName~upper
+          patternName = patternName~upper
           pattern = self~namedPattern(patternName)
 
           if pattern == .nil then do
@@ -4183,8 +4212,9 @@ use strict arg regionText, regionStart, regionEnd, start, end
 ::method result
   expose results
   use strict arg id
+  -- make sure this is uppercase
+  id = id~upper
   return results[id]
-
 
 -- Information about an individual match.  The match
 -- may have embedded groups.  The match information for
@@ -4200,6 +4230,8 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 ::method group
   expose groups
   use strict arg id
+  -- make sure this is uppercase
+  id = id~upper
   group = groups[id]
   -- give a reasonable default rather than raising an error
   if .nil == group then do
@@ -4207,6 +4239,26 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
   end
   -- this gets wrappered into a result item
   return .GroupMatchResult~new(self~regionText, self~regionStart, self~regionEnd, group)
+
+-- retrieve the text for a given group item in a match result
+::method "[]"
+  expose groups
+  -- default is to retrieve the entire group match
+  use strict arg id = "0"
+  -- make sure this is uppercase
+  id = id~upper
+
+  group = groups[id]
+  -- unknown group, return the .nil default
+  if group == .nil then do
+      return .nil
+  end
+  -- return the match text (which will be null if not matched)
+  text = group~matchText
+  if text == .nil then do
+      return ""
+  end
+  return text
 
 -- the current active context for a match operation.  This
 -- provides information to the matching filters and holds any

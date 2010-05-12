@@ -95,10 +95,10 @@ return testResult
       ch = d2c(i)
       -- this is in the target set, this must match
       if includes~pos(ch) > 0 then do
-          self~assertTrue(p~matches(self~td(ch)))
+          self~assertTrue(p~matches(ch), "Checking included character" ch "('"ch~c2x"'x) using pattern" p)
       end
       else do
-          self~assertFalse(p~matches(self~td(ch)))
+          self~assertFalse(p~matches(ch), "Checking excluded character" ch "('"ch~c2x"'x) using pattern" p)
       end
   end
 
@@ -113,10 +113,10 @@ return testResult
       ch = d2c(i)
       -- this is in the target set, this must match
       if excludes~pos(ch) > 0 then do
-          self~assertFalse(p~matches(self~td(ch)))
+          self~assertFalse(p~matches(ch), "Checking excluded character" ch "('"ch~c2x"'x) using pattern" p)
       end
       else do
-          self~assertTrue(p~matches(self~td(ch)))
+          self~assertTrue(p~matches(ch), "Checking included character" ch "('"ch~c2x"'x) using pattern" p)
       end
   end
 
@@ -2086,3 +2086,13 @@ return testResult
 ::method testEmail
   p = .Pattern~compile("^\m{email}$")
   self~assertTrue(self~matches(p, "postmaster@oorexx.org"))
+  r = self~find(p, "postmaster@oorexx.org")
+  self~assertTrue(self~verifyMatchResult(r, 1, "postmaster@oorexx.org"~length + 1, "postmaster@oorexx.org"))
+  re = r~group(0)~result("email")
+  self~assertTrue(self~verifyMatchResult(re, 1, "postmaster@oorexx.org"~length + 1, "postmaster@oorexx.org"))
+  self~assertTrue(self~verifyMatchResult(re~group("username"), 1, "postmaster"~length + 1, "postmaster"))
+  self~assertTrue(self~verifyMatchResult(re~group("domain"), 12, 12 + "oorexx.org"~length, "oorexx.org"))
+
+  -- some tests for the [] method on a match result
+  self~assertEquals("postmaster@oorexx.org", r[])
+  self~assertEquals("postmaster", re["username"])
