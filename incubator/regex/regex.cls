@@ -48,6 +48,7 @@
 
 ::attribute pattern GET
 ::attribute groups GET
+::attribute root GET
 -- retrieve the number of capturing groups
 -- contained within this pattern.
 ::attribute groupCount GET
@@ -58,56 +59,51 @@
   expose pattern
   return pattern
 
--- create a parsing context for performing matches and searches
--- using this pattern.
-::method context
-  expose root groups
-  use strict arg text, start = 1, end = (text~length)
-  return .MatchContext~new(text, start, end, root, groups)
-
 -- simple one time match operation on a regular expression and
 -- a region within a string.  Returns .true if this is an exact
 -- match for the entire region
 ::method matches
   use strict arg text, start = 1, end = (text~length)
   -- create a matching context for this
-  context = self~context(text, start, end)
+  context = .MatchContext~new(text, start, end)
   -- and just perform a match on this
-  return context~matches
+  return context~matches(self)
 
 -- simple one time match operation on a regular expression and
 -- a region within a string.  Returns a MatchResult item if this
 -- matches at the starting position (but not necessarily the entire
 -- string)
 ::method match
-  use strict arg text, start = 1, end = (text~length)
+  use strict arg text, start = 1
   -- create a matching context for this
-  context = self~context(text, start, end)
+  context = .MatchContext~new(text)
   -- and just perform a match on this
-  return context~match
+  return context~match(self, start)
 
 -- simple one time match operation on a regular expression and
 -- a region within a string.  Returns .true if the region starts
 -- with the given pattern
 ::method startsWith
-  use strict arg text, start = 1, end = (text~length)
+  use strict arg text, start = 1
   -- create a matching context for this
-  context = self~context(text, start, end)
+  context = .MatchContext~new(text)
   -- and just perform a match on this
-  return context~startsWith
+  return context~startsWith(self, start)
 
 -- search a region of a string for a regex value.  Only the
 -- section between the start position and the given length
 -- are searched.  The return value is a MatchResult object with the
 -- full details of the match.
 ::method find
-  use strict arg text, start = 1, end = (text~length)
+  use strict arg text, start = 1
   -- create a matching context for this
-  context = self~context(text, start, end)
+  context = .MatchContext~new(text)
   -- and just perform a search and return the match position
   -- value
-  return context~find
+  return context~find(self, start)
 
+-- split a string into an array of segments using a regular expression
+-- as the match position
 ::method split
   use strict arg text, limit = (-1)
 
@@ -4112,7 +4108,7 @@
   -- create a new context to execute this
   subcontext = context~createNestedPatternContext(pattern)
   -- attempt a match from the current position
-  matchResult = subcontext~match(position)
+  matchResult = subcontext~match(pattern, position)
   -- record the result of this with the current group
   context~addResult(name, matchResult)
   -- if this matched, then foward along
@@ -4266,16 +4262,25 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 -- implements the matching operations.
 ::class MatchContext
 ::method init
-  expose text startPosition endPosition matchPosition matchEnd root groups locals groupStack rootGroup
-  use strict arg text, startPosition, length, root, groups
+  expose text startPosition endPosition matchPosition matchEnd
+  use strict arg text, startPosition = 1, length = (text~length)
   -- make sure the length is bounded.  The end position is one
   -- past the end
   endPosition = min(text~length + 1, startPosition + length)
   matchPosition = 0
   matchEnd = 0
+
+-- prepare for a match using a given pattern instance
+::method prepareMatch private
+  expose root groups locals groupStack rootGroup
+  use arg pattern
+
+  -- get the pattern root and a copy of the groups information
+  root = pattern~root
+  groups = pattern~groups~copy
+
   -- do a deep copy of the groups directory
   -- to create a working groups list
-  groups = groups~copy
   do name over groups
       groups[name] = groups[name]~copy
   end
@@ -4285,6 +4290,7 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
   -- push the main group at the head of the stack (if it exists)
   rootGroup = groups[0]
   groupStack~push(rootGroup)
+
 
 -- create a subcontext of the current context with a different start
 -- and stop range.  Used by lookbehind matchers to restrict the
@@ -4302,7 +4308,7 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
   expose text startPosition endPosition
   use arg pattern
   -- create a context as if this was toplevel
-  return pattern~context(text, startPosition, endPosition - startPosition)
+  return self~class~new(text, startPosition, endPosition - startPosition)
 
 -- Retrieve the group reference item for a given group
 ::method getGroupReference
@@ -4352,6 +4358,9 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 -- beginning to end
 ::method matches
   expose text startPosition matchPosition matchEndRequired root
+  use strict arg pattern
+  -- set up the context for matching
+  self~prepareMatch(pattern)
   matchEndRequired = .true   -- this must match exactly
   -- this is the default result, and possibly checked by filters
   -- that need to examine the starting match position
@@ -4369,10 +4378,16 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 -- to the end of the region
 ::method startsWith
   expose text startPosition matchPosition matchEndRequired root
+  use strict arg pattern, start = (startPosition)
+  -- set up the context for matching
+  self~prepareMatch(pattern)
+
   matchEndRequired = .false  -- This does not need to match exactly
+  -- adjust the starting position to the bounds
+  start = max(startPosition, start)
   -- this is the default result, and possibly checked by filters
   -- that need to examine the starting match position
-  matchPosition = startPosition
+  matchPosition = start
   if root~match(self, startPosition, text) then do
       return .true  -- good match, give the indicator
   end
@@ -4388,7 +4403,9 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
   expose startPosition root
   -- the start is optional, but defalt to the beginning of the
   -- region (typical)
-  use strict arg start = (startPosition)
+  use strict arg pattern, start = (startPosition)
+  -- set up the context for matching
+  self~prepareMatch(pattern)
   -- forward to the common matching routine
 
   -- this node implements a sliding search search of the pattern.
@@ -4402,17 +4419,21 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
   expose startPosition root
   -- the start is optional, but defalt to the beginning of the
   -- region (typical)
-  use strict arg start = (startPosition)
+  use strict arg pattern, start = (startPosition)
+  -- set up the context for matching
+  self~prepareMatch(pattern)
   -- forward to the common matching routine
   return self~performMatch(start, root)
 
 -- match the given (or starting position) for a match.  Returns
 -- a match result object with the match result
 ::method performMatch private
-  expose text endPosition matchPosition matchEndRequired root
+  expose text startPosition endPosition matchPosition matchEndRequired root
   -- the start is optional, but defalt to the beginning of the
   -- region (typical)
   use strict arg start, pattern
+  -- adjust the starting position to the bounds
+  start = max(startPosition, start)
   -- set the initial match position
   matchPosition = start
 
