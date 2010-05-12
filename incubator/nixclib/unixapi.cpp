@@ -1190,6 +1190,23 @@ RexxRoutine0(int,
 }
 
 
+/**
+ * Method:        SysGethostname
+ *
+ * Get the machine hostname.
+ *
+ * @return        hostname.
+ */
+RexxRoutine0(RexxObjectPtr,
+             SysGethostname)
+{
+    char hostname[HOST_NAME_MAX];
+
+    gethostname(hostname, HOST_NAME_MAX);
+    return (RexxObjectPtr)context->NewStringFromAsciiz(hostname);
+}
+
+
 // initialize the libvirt library
 static void orxnixclib_loader(RexxThreadContext *context) {
    }
@@ -1239,6 +1256,7 @@ RexxRoutineEntry orxnixclib_routines[] = {
     REXX_TYPED_ROUTINE(SysRemovexattr, SysRemovexattr),
 #endif
     REXX_TYPED_ROUTINE(SysGetsizeofptr, SysGetsizeofptr),
+    REXX_TYPED_ROUTINE(SysGethostname, SysGethostname),
     REXX_LAST_ROUTINE()
 };
 

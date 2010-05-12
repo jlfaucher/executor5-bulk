@@ -5,6 +5,30 @@ These functions can look up a server/service name and return
 information about that server/service.</para>
 
 
+<section id="utlSysGethostname"><title>SysGethostname</title>
+<indexterm><primary>SysGethostname</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysGethostname()--------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns the hostname of the machine.</para>
+<para>This function uses the <filename>gethostname()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* the following examples came from a Linux laptop running Fedora 12 */
+
+SysGethostname()      -->  "wda.holmes4.com"
+]]>
+</programlisting>
+</section>
+
+
 <section id="utlSysGetservbyname"><title>SysGetservbyname</title>
 <indexterm><primary>SysGetservbyname</primary></indexterm>
 <programlisting>

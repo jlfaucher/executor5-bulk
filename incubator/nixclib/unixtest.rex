@@ -159,6 +159,9 @@ say 'retc =' SysRemovexattr(file, 'user.mime_type')
 say 'Calling SysGetsizeofptr'
 say 'Addressing pointer size =' SysGetsizeofptr()
 
+say 'Calling SysGethostname'
+say 'Nostname =' SysGethostname()
+
 return
 
 ::requires 'orxunixapi' library
