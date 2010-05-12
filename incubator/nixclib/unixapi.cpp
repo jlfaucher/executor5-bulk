@@ -1174,6 +1174,22 @@ RexxRoutine2(int,
 #endif
 
 
+/**
+ * Method:        SysGetsizeofptr
+ *
+ * Get the size of the ooRexx application pointers (in bits).
+ *
+ * @return        32 or 64.
+ */
+RexxRoutine0(int,
+             SysGetsizeofptr)
+{
+    
+
+    return sizeof(void *) * 8;
+}
+
+
 // initialize the libvirt library
 static void orxnixclib_loader(RexxThreadContext *context) {
    }
@@ -1222,6 +1238,7 @@ RexxRoutineEntry orxnixclib_routines[] = {
     REXX_TYPED_ROUTINE(SysListxattr, SysListxattr),
     REXX_TYPED_ROUTINE(SysRemovexattr, SysRemovexattr),
 #endif
+    REXX_TYPED_ROUTINE(SysGetsizeofptr, SysGetsizeofptr),
     REXX_LAST_ROUTINE()
 };
 

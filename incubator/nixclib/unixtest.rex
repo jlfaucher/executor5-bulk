@@ -156,6 +156,9 @@ do name over arr
 say 'Calling SysRemovexattr {"'file'", "user.mime_type")'
 say 'retc =' SysRemovexattr(file, 'user.mime_type')
 
+say 'Calling SysGetsizeofptr'
+say 'Addressing pointer size =' SysGetsizeofptr()
+
 return
 
 ::requires 'orxunixapi' library
