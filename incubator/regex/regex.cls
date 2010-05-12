@@ -209,6 +209,7 @@
   classFamilies["REXXOPERATOR"] = "+-\/%*|&=<>" || 'aaac'x
   classFamilies["REXXSPECIAL"] = ",;:~()[]"
 
+  classFamilies["EMAILUSERNAME"] = classFamilies["ALNUM"] || "!#$%&'*+/=?^_`{|}~-"
 
 -- Initialize the named patterns the first time they are used
 ::method initNamedPatterns private
@@ -218,10 +219,10 @@
   end
 
   namedPatterns = .directory~new
-  namedPatterns['TOPLEVELDOMAIN'] = "(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)"
-  namedPatterns['EMAILUSERNAME'] = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*"
-  namedPatterns['INTERNETDOMAIN'] = "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\b"
-  namedPatterns['EMAIL'] = "(?<username>[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*)@(?<domain>(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\b)"
+  namedPatterns['TOPLEVELDOMAIN'] = "(?:\p{Alpha}{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\b"
+  namedPatterns['EMAILUSERNAME'] = "(?:\p{EMAILUSERNAME}+(?:\.\p{EMAILUSERNAME}+)*)"
+  namedPatterns['INTERNETDOMAIN'] = "(?:\p{Alnum}(?:[\p{Alnum}-]*\p{Alnum})?\.)+\m{TopLevelDomain}"
+  namedPatterns['EMAIL'] = "(?<username>\m{EmailUserName})@(?<domain>\m{InternetDomain})"
 
 -- retrieve a name class family from the list of registered class families
 -- subclasses are free to override this method to provide additional
@@ -261,7 +262,11 @@
   if pattern~isa(.String) then do
       -- compile this on demand and update
       -- the table so it can be reused
-      pattern = self~compile(pattern)
+      -- make a copy of the current compiler instance to
+      -- pick up the options, but not mess up the state
+      -- of the pattern currently being compiled
+      patternCompiler = self~copy
+      pattern = patternCompiler~compile(pattern)
       namedPatterns[name] = pattern
   end
   return pattern   -- now in pattern form
@@ -2589,9 +2594,15 @@
   use arg context, position, target
   -- return on the first match
   do alternative over alternatives
+      -- we try each alternative, then the subsequent
+      -- nodes.  We only return true IFF we get a match
+      -- in both places.  This really is a branch point, not
+      -- a "select the one that matches" situation
       if alternative~match(context, position, target)  then do
           -- once we get a match, send this along to the next
-          return self~matchNext(context, context~matchEnd, target)
+          if self~matchNext(context, context~matchEnd, target) then do
+              return .true
+          end
       end
   end
 
