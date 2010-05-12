@@ -209,7 +209,9 @@
   classFamilies["REXXOPERATOR"] = "+-\/%*|&=<>" || 'aaac'x
   classFamilies["REXXSPECIAL"] = ",;:~()[]"
 
-  classFamilies["EMAILUSERNAME"] = classFamilies["ALNUM"] || "!#$%&'*+/=?^_`{|}~-"
+  classFamilies["EMAILUSERNAME"] = classFamilies["ALNUM"] || ".!#$%&'*+/=?^_`{|}~-"
+  classFamilies["URLUSERNAME"] = classFamilies["ALNUM"] || "-._~%!$&'()*+,;="
+  classFamilies["URLVALID]"] = classFamilies["ALNUM"] || "-._~%!$&'()*+,;=:@/?"
 
 -- Initialize the named patterns the first time they are used
 ::method initNamedPatterns private
@@ -219,10 +221,22 @@
   end
 
   namedPatterns = .directory~new
-  namedPatterns['TOPLEVELDOMAIN'] = "(?:\p{Alpha}{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\b"
-  namedPatterns['EMAILUSERNAME'] = "(?:\p{EMAILUSERNAME}+(?:\.\p{EMAILUSERNAME}+)*)"
+  namedPatterns['TOPLEVELDOMAIN'] = "(?:\p{Alpha}{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum|travel)\b"
+  namedPatterns['EMAILUSERNAME'] = "(?:\p{EmailUserName}+(?:\.\p{EmailUserName}+)*)"
   namedPatterns['INTERNETDOMAIN'] = "(?:\p{Alnum}(?:[\p{Alnum}-]*\p{Alnum})?\.)+\m{TopLevelDomain}"
   namedPatterns['EMAIL'] = "(?<username>\m{EmailUserName})@(?<domain>\m{InternetDomain})"
+  namedPatterns['IPV4DIGITS'] = "(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])"
+  namedPatterns['IPV4ADDRESS'] = "\b\m{IPV4Digits}\.\m{IPV4Digits}\.\m{IPV4Digits}\.\m{IPV4Digits}\b"
+  namedPatterns['STANDARDIPV6ADDRESS'] = "(?<![:.\w])(?:\p{Alnum}{1,4}:){7}\p{Alnum}{1,4}(?![:.\w])"
+  namedPatterns['URLPROTOCOL'] = "\p{Alpha}[\p{Alnum}+\-.]*:"
+  namedPatterns['URLUSER'] = "\p{URLUSERNAME}+@"
+  namedPatterns['IPV6HOST'] = "\[[\p{XDigit}:.]+\]"
+  namedPatterns['IPV6FUTUREHOST'] = "\[v[\p{XDigit}][\p{XDigit}\-._~%!$&'()*+,;=:]+\]"
+  namedPatterns['URLPORT'] = ":[0-9]+"
+  namedPatterns['URLPATH'] = "(/[\p{Alnum}\-._~%!$&'()*+,;=:@]+)*/"
+  namedPatterns['URLQUERY'] = "\?[\p{URLValid}]*"
+  namedPatterns['URLFRAGMENT'] = "\#[p{URLValid}]*"
+  namedPatterns['URL'] = "(?<protocol>\m{URLProtocol})(?<user>\m{URLUser})?(?<host>\m{InternetDomain}|\m{IPv6Host}|\m{IPv6FutureHost})(?<port>\m{URLPort})(?<path>\m{URLPath})(?<query>\m{URLQuery})?(?<fragment>\m{URLFragment})?"
 
 -- retrieve a name class family from the list of registered class families
 -- subclasses are free to override this method to provide additional
