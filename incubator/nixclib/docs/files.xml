@@ -35,6 +35,40 @@ retc = SysAccess("/home/dashley/temp.txt", 2)
 </section>
 
 
+<section id="utlSysChmod"><title>SysChmod</title>
+<indexterm><primary>SysChmod</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysChmod(file, mode)----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Sets the mode bits of a file.</para>
+<para>This function uses the <filename>chmod()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">file</emphasis></term>
+<listitem><para>The path/file name to to modify the mode bits.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">mode</emphasis></term>
+<listitem><para>The new and complete list of bits. Note that it is not
+possible to unset bits with this function except through this argument.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns zero on success (all access rights available) or -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* set the mode bits on a file */
+
+retc = SysChmod("/home/dashley/temp.txt", "rwxrwxr-x")
+retc = SysChmod("/home/dashley/temp.txt", "rwSrwsr-x")
+]]>
+</programlisting>
+</section>
+
+
 <section id="utlSysChown"><title>SysChown</title>
 <indexterm><primary>SysChown</primary></indexterm>
 <programlisting>

@@ -1207,6 +1207,144 @@ RexxRoutine0(RexxObjectPtr,
 }
 
 
+/**
+ * Method:        SysChmod
+ *
+ * Change the file permissions.
+ *
+ * @param usr     The user permissions.
+ *
+ * @param grp     The group permissions.
+ *
+ * @param oth     The other permissions.
+ *
+ * @return        Return code from chmod().
+ */
+RexxRoutine2(int,
+             SysChmod,
+             CSTRING, file,
+             CSTRING, mode)
+{
+    mode_t perm = 0;
+
+    // make sure the mode is the correct size
+    if (strlen(mode) != 9) {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysChmod"));
+        return -1;
+    }
+
+    // set usr bits
+    if (mode[0] == 'r') {
+        perm |= S_IRUSR;
+    }
+    else if (mode[0] == '-') {
+    }
+    else {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysChmod"));
+        return -1;
+    }
+    if (mode[1] == 'w') {
+        perm |= S_IWUSR;
+    }
+    else if (mode[1] == '-') {
+    }
+    else {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysChmod"));
+        return -1;
+    }
+    if (mode[2] == 'x') {
+        perm |= S_IXUSR;
+    }
+    else if (mode[2] == 'S') {
+        perm |= S_ISUID;
+    }
+    else if (mode[2] == 's') {
+        perm |= S_IXUSR;
+        perm |= S_ISUID;
+    }
+    else if (mode[2] == '-') {
+    }
+    else {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysChmod"));
+        return -1;
+    }
+
+    // set grp bits
+    if (mode[3] == 'r') {
+        perm |= S_IRGRP;
+    }
+    else if (mode[3] == '-') {
+    }
+    else {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysChmod"));
+        return -1;
+    }
+    if (mode[4] == 'w') {
+        perm |= S_IWGRP;
+    }
+    else if (mode[4] == '-') {
+    }
+    else {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysChmod"));
+        return -1;
+    }
+    if (mode[5] == 'x') {
+        perm |= S_IXGRP;
+    }
+    else if (mode[5] == 'S') {
+        perm |= S_ISGID;
+    }
+    else if (mode[5] == 's') {
+        perm |= S_IXGRP;
+        perm |= S_ISGID;
+    }
+    else if (mode[5] == '-') {
+    }
+    else {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysChmod"));
+        return -1;
+    }
+
+    // set oth bits
+    if (mode[6] == 'r') {
+        perm |= S_IROTH;
+    }
+    else if (mode[6] == '-') {
+    }
+    else {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysChmod"));
+        return -1;
+    }
+    if (mode[7] == 'w') {
+        perm |= S_IWOTH;
+    }
+    else if (mode[7] == '-') {
+    }
+    else {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysChmod"));
+        return -1;
+    }
+    if (mode[8] == 'x') {
+        perm |= S_IXOTH;
+    }
+    else if (mode[8] == 'T') {
+        perm |= S_ISVTX;
+    }
+    else if (mode[8] == 't') {
+        perm |= S_IXOTH;
+        perm |= S_ISVTX;
+    }
+    else if (mode[8] == '-') {
+    }
+    else {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysChmod"));
+        return -1;
+    }
+
+    return chmod(file, perm);
+}
+
+
 // initialize the libvirt library
 static void orxnixclib_loader(RexxThreadContext *context) {
    }
@@ -1257,6 +1395,7 @@ RexxRoutineEntry orxnixclib_routines[] = {
 #endif
     REXX_TYPED_ROUTINE(SysGetsizeofptr, SysGetsizeofptr),
     REXX_TYPED_ROUTINE(SysGethostname, SysGethostname),
+    REXX_TYPED_ROUTINE(SysChmod, SysChmod),
     REXX_LAST_ROUTINE()
 };
 
