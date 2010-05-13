@@ -4159,6 +4159,11 @@
 expose regionStart regionEnd start end regionText
 use strict arg regionText, regionStart, regionEnd, start, end
 
+-- belt and braces...if the start is 0, make sure the end is zero also
+  if start == 0 then do
+      end = 0
+  end
+
 -- return a response if the operation matched.
 ::method matched
   expose start
@@ -4900,5 +4905,74 @@ matchend = matchstart
   -- or in the various flags
   deterministic = deterministic & other~deterministic
   validMaximum = validMaximum & other~validMaximum
+
+-- base class for a string replacement node
+::class ReplacementNode
+-- abstract method that all replacement nodes need to override
+::method getText Abstract
+
+-- A node that returns the current
+::class StringReplacementNode
+::method init
+  expose text
+  use arg text
+
+::method getText
+  expose text
+  return text
+
+-- A node that returns the value of a match group.
+-- if the match group does not exist
+::class GroupReplacementNode
+::method init
+  expose id
+  use arg id
+
+::method getText
+  expose id
+  use arg result
+  group = result~group(id)
+  -- if this is there, return the text
+  if group \= .nil then do
+      return group~text
+  end
+  -- return a null string
+  return ""
+
+-- A node that returns the entire match string
+::class MatchReplacementNode
+::method getText
+  use arg result
+  return result~text
+
+-- A node that returns the prefix of the match string
+::class PrefixReplacementNode
+::method getText
+  use arg result
+  return result~prefix
+
+-- A node that returns the suffix of the match string
+::class SuffixReplacementNode
+::method getText
+  use arg result
+  return result~suffix
+
+-- A node that returns the value of an embedded match
+-- pattern.  Return null if the result does not exist
+::class ResultReplacementNode
+::method init
+  expose id
+  use arg id
+
+::method getText
+  expose id
+  use arg result
+  subresult = result~result(id)
+  -- if this is there, return the text
+  if subresult \= .nil then do
+      return subresult~text
+  end
+  -- return a null string
+  return ""
 
 
