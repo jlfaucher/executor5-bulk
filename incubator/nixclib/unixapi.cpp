@@ -494,6 +494,29 @@ RexxRoutine3(int,
 
 
 /**
+ * Method:        SysLchown
+ *
+ * Change the owner and group of a file.
+ *
+ * @param path1   The file path.
+ *
+ * @param uid     The new userid. 
+ *
+ * @param gid     The new groupid.
+ *
+ * @return        int error code
+ */
+RexxRoutine3(int,          
+             SysLchown,
+             CSTRING, path1,
+             int, uid,
+             int, gid)
+{
+    return lchown(path1, (uid_t)uid, (gid_t)gid);
+}
+
+
+/**
  * Method:        SysChroot
  *
  * Changes the root directory of the calling process.
@@ -1375,6 +1398,7 @@ RexxRoutineEntry orxnixclib_routines[] = {
     REXX_TYPED_ROUTINE(SysLink, SysLink),
     REXX_TYPED_ROUTINE(SysUnlink, SysUnlink),
     REXX_TYPED_ROUTINE(SysChown, SysChown),
+    REXX_TYPED_ROUTINE(SysLchown, SysLchown),
     REXX_TYPED_ROUTINE(SysChroot, SysChroot),
     REXX_TYPED_ROUTINE(SysUmask, SysUmask),
     REXX_TYPED_ROUTINE(SysGetpwnam, SysGetpwnam),

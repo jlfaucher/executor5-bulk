@@ -165,6 +165,41 @@ retc = SysEuidaccess("/home/dashley/temp.txt", 2)
 </section>
 
 
+<section id="utlSysLchown"><title>SysLchown</title>
+<indexterm><primary>SysLchown</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysLchown(srcpath, uid, gid)--------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Change the user and group ownership attributes of a symbolic link.</para>
+<para>This function uses the <filename>lchown()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">srcpath</emphasis></term>
+<listitem><para>The path/filename of the source file to change.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">uid</emphasis></term>
+<listitem><para>The new numerical user id.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">gid</emphasis></term>
+<listitem><para>The new numerical group id.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns zero on success and -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* change the ownership attributes of a symbolic link */
+
+call SysLchown "/home/username/myfile", 501, 530
+]]>
+</programlisting>
+</section>
+
+
 <section id="utlSysLink"><title>SysLink</title>
 <secondary>SysLink</secondary></indexterm>
 <programlisting>
