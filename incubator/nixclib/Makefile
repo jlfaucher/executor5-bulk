@@ -39,12 +39,12 @@
 # Setup
 ORXLFLAGS = --export-dynamic -shared -nostartfiles -lpthread
 ORXCFLAGS = -fPIC
-OBJECTS = unixapi.o
+OBJECTS = rxunixsys.o
 
 
 # Build the shared library
-liborxunixapi.so: $(OBJECTS)
-	gcc $(ORXLFLAGS) -lrexx -lrexxapi -o liborxunixapi.so $(OBJECTS)
+librxunixsys.so: $(OBJECTS)
+	gcc $(ORXLFLAGS) -lrexx -lrexxapi -o librxunixsys.so $(OBJECTS)
 
 
 # Build the objects
@@ -53,7 +53,7 @@ liborxunixapi.so: $(OBJECTS)
 	gcc -c $(ORXCFLAGS) $<
 
 # Dependencies
-unixapi.o: unixapi.cpp unixapi.h
+rxunixsys.o: rxunixsys.cpp rxunixsys.h
 
 
 

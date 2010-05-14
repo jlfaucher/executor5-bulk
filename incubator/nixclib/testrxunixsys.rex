@@ -164,5 +164,5 @@ say 'Nostname =' SysGethostname()
 
 return
 
-::requires 'orxunixapi' library
+::requires 'rxunixsys' library
 
