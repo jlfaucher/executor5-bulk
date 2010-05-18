@@ -62,6 +62,7 @@
 #include <wordexp.h>
 #include <alloca.h>
 #include <pthread.h>
+#include <errno.h>
 
 // These are the special OS specific cases
 #ifdef HAVE_XATTR_H

@@ -28,6 +28,56 @@ mysid = SysGetsid()
 </section>
 
 
+<section id="utlSysGeterrno"><title>SysGeterrno</title>
+<indexterm><primary>SysGeterrno</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysGeterrno()-----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns the errno numeric value.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<para>None</para>para>
+<para>Returns the numeric errno value.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* get the errno */
+
+errno = SysGeterrno()
+]]>
+</programlisting>
+</section>
+
+
+<section id="utlSysGeterrnomsg"><title>SysGeterrnomsg</title>
+<indexterm><primary>SysGeterrnomsg</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysGeterrnomsg(errno)---------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns a short description of the errno value.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">sid</emphasis></term>
+<listitem><para>The numeric errno value.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns a short description of the errno value.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* get the errno message */
+
+say SysGeterrnomsg(26)
+]]>
+</programlisting>
+</section>
+
+
 <section id="utlSysGetsizeofptr"><title>SysGetsizeofptr</title>
 <indexterm><primary>SysGetsizeofptr</primary></indexterm>
 <programlisting>
@@ -67,7 +117,7 @@ C API to perform the action.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">sid</emphasis></term>
-<listitem><para>Thenew numeric session id.
+<listitem><para>The new numeric session id.
 </para></listitem></varlistentry>
 </variablelist>
 <para>Returns the new sid or -1 on an error.</para>
