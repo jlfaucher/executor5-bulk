@@ -37,7 +37,7 @@
 
 
 # Setup
-ORXLFLAGS = --export-dynamic -shared -nostartfiles -lpthread
+ORXLFLAGS = --export-dynamic -shared -nostartfiles -lpthread -lcrypt
 ORXCFLAGS = -fPIC
 OBJECTS = rxunixsys.o
 

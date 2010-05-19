@@ -3,6 +3,38 @@
 <para>This chapter covers the available miscellaneous functions.</para>
 
 
+<section id="utlSysCrypt"><title>SysCrypt</title>
+<indexterm><primary>SysCrypt</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysCrypt(str, salt)-----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns an encrypted version of <emphasis>str</emphasis>.</para>
+<para>This function uses the <filename>crypt()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">str</emphasis></term>
+<listitem><para>The string to be encrypted.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">salt</emphasis></term>
+<listitem><para>The two character encryption salt.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns the current sid or -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* encrypt a string */
+
+encstr = SysCrypt("String to encrypt.", "3A")
+]]>
+</programlisting>
+</section>
+
+
 <section id="utlSysGetsid"><title>SysGetsid</title>
 <indexterm><primary>SysGetsid</primary></indexterm>
 <programlisting>

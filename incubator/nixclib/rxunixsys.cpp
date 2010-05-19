@@ -1537,6 +1537,39 @@ RexxRoutine1(RexxObjectPtr,
 }
 
 
+/**
+ * Method:        SysCrypt
+ *
+ * Encrypt a string.
+ *
+ * @param str     The string to encrypt.
+ *
+ * @param salt    The two character salt.
+ *
+ * @return        Encrypted string.
+ */
+RexxRoutine2(RexxObjectPtr,
+             SysCrypt,   
+             CSTRING, str,
+             CSTRING, salt)
+{
+    char *es;
+
+    if (strlen(str) == 0) {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysCrypt"));
+    }
+    if (strlen(salt) != 2) {
+        context->RaiseException1(40001, (RexxObjectPtr) context->NewStringFromAsciiz("SysCrypt"));
+    }
+
+    es = crypt(str, salt);
+    if (es == NULL) {
+        return (RexxObjectPtr)context->NewStringFromAsciiz("");
+    }
+    return (RexxObjectPtr)context->NewStringFromAsciiz(es);
+}
+
+
 // initialize the libvirt library
 static void orxnixclib_loader(RexxThreadContext *context) {
    }
@@ -1591,6 +1624,7 @@ RexxRoutineEntry orxnixclib_routines[] = {
     REXX_TYPED_ROUTINE(SysChmod, SysChmod),
     REXX_TYPED_ROUTINE(SysGeterrno, SysGeterrno),
     REXX_TYPED_ROUTINE(SysGeterrnomsg, SysGeterrnomsg),
+    REXX_TYPED_ROUTINE(SysCrypt, SysCrypt),
     REXX_LAST_ROUTINE()
 };
 
