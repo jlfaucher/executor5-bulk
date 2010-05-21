@@ -165,6 +165,12 @@ say 'Nostname =' SysGethostname()
 say 'Calling SysCrypt'
 say SysCrypt("EncryptionString", "3A")
 
+say 'Calling SysGetdirlist'
+arr = SysGetdirlist("./")
+do entry over arr
+   say "   "entry
+   end
+
 return
 
 ::requires 'rxunixsys' library
