@@ -61,6 +61,11 @@
 ::method TestLogicalToObject CLASS EXTERNAL       "LIBRARY orxmethod TestLogicalToObject"
 ::method TestDoubleToObject CLASS EXTERNAL        "LIBRARY orxmethod TestDoubleToObject"
 ::method TestObjectToValue  CLASS EXTERNAL        "LIBRARY orxmethod TestObjectToValue"
+::method TestStringGet  CLASS EXTERNAL            "LIBRARY orxmethod TestStringGet"
+::method TestStringLength  CLASS EXTERNAL         "LIBRARY orxmethod TestStringLength"
+::method TestStringUpper  CLASS EXTERNAL          "LIBRARY orxmethod TestStringUpper"
+::method TestStringLower  CLASS EXTERNAL          "LIBRARY orxmethod TestStringLower"
+::method TestIsString  CLASS EXTERNAL             "LIBRARY orxmethod TestIsString"
 
 ::constant ObjectType 11
 ::constant IntType    12

@@ -982,3 +982,20 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testStem04'
   self~expectSyntax('88.900')
   .CONVERSIONTester~TestObjectToValue(.nil, .CONVERSIONTester~StemType)
+
+::method 'testStringLength'
+  self~assertEquals(3, .CONVERSIONTester~TestStringLength("abc"))
+  -- the argument is an integer object, which gets converted
+  -- to a real string when passed as an argument
+  self~assertEquals(2, .CONVERSIONTester~TestStringLength(80+1))
+  -- this one is a number string
+  self~assertEquals(3, .CONVERSIONTester~TestStringLength(1+.1))
+
+::method 'testIsString'
+  -- real string value
+  self~assertTrue(.CONVERSIONTester~TestIsString("abc"))
+  -- the next two are internal numeric types and will return false
+  self~assertFalse(.CONVERSIONTester~TestIsString(80+1))
+  self~assertFalse(.CONVERSIONTester~TestIsString(1+.1))
+
+
