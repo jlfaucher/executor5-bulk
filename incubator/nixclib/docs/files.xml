@@ -165,6 +165,38 @@ retc = SysEuidaccess("/home/dashley/temp.txt", 2)
 </section>
 
 
+<section id="utlSysGetdirlist"><title>SysGetdirlist</title>
+<indexterm><primary>SysGetdirlist</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysGetdirlist(dir)------------------------------------------><
+]]>
+</programlisting>
+<para>Returns an ooRexx array of the file name(s) contained in a subdirectory.</para>
+<para>This function uses the <filename>opendir()</filename>,
+<filename>closedir()</filename> and <filename>readdir()</filename>
+C APIs to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">dir</emphasis></term>
+<listitem><para>The subdirectory to be listed.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns an ooRexx array.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* get the subdirectory entries */
+
+arr = SysGetdirlist("./")
+do entry over arr
+   say entry
+   end
+]]>
+</programlisting>
+</section>
+
+
 <section id="utlSysLchown"><title>SysLchown</title>
 <indexterm><primary>SysLchown</primary></indexterm>
 <programlisting>

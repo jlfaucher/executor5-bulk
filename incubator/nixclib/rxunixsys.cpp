@@ -1607,6 +1607,36 @@ RexxRoutine1(int,
 }
 
 
+/**
+ * Method:        SysGetdirlist
+ *
+ * Return the list of files in a subdirectory.
+ *
+ * @param dir     The subdirectory to use.
+ *
+ * @return        RexxArrayObject.
+ */
+RexxRoutine1(RexxObjectPtr,
+             SysGetdirlist,   
+             CSTRING, dir)
+{
+    RexxArrayObject arr = context->NewArray(5);
+    DIR *dirptr;
+    struct dirent *direntry;
+
+    dirptr = opendir(dir);
+    if (dirptr != NULL) {
+        direntry = readdir(dirptr);                
+        while (direntry != NULL) {
+            context->ArrayAppendString(arr, direntry->d_name, strlen(direntry->d_name));
+            direntry = readdir(dirptr);                
+        }
+        closedir(dirptr);
+    }
+    return (RexxObjectPtr)arr;
+}
+
+
 // initialize the libvirt library
 static void orxnixclib_loader(RexxThreadContext *context) {
    }
@@ -1664,6 +1694,7 @@ RexxRoutineEntry orxnixclib_routines[] = {
     REXX_TYPED_ROUTINE(SysCrypt, SysCrypt),
     REXX_TYPED_ROUTINE(SysMkdir, SysMkdir),
     REXX_TYPED_ROUTINE(SysRmdir, SysRmdir),
+    REXX_TYPED_ROUTINE(SysGetdirlist, SysGetdirlist),
     REXX_LAST_ROUTINE()
 };
 

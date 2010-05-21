@@ -63,6 +63,7 @@
 #include <alloca.h>
 #include <pthread.h>
 #include <errno.h>
+#include <dirent.h>
 
 // These are the special OS specific cases
 #ifdef HAVE_XATTR_H
