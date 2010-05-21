@@ -1570,6 +1570,43 @@ RexxRoutine2(RexxObjectPtr,
 }
 
 
+/**
+ * Method:        SysMkdir
+ *
+ * Create a subdirectory.
+ *
+ * @param dir     The subdirectory to create.
+ *
+ * @param mode    The mode for the new subdirectory.
+ *
+ * @return        0 or -1.
+ */
+RexxRoutine2(int,
+             SysMkdir,   
+             CSTRING, dir,
+             int, mode)
+{
+    return mkdir(dir, mode);
+}
+
+
+/**
+ * Method:        SysRmdir
+ *
+ * Remove a subdirectory.
+ *
+ * @param dir     The subdirectory to remove.
+ *
+ * @return        0 or -1.
+ */
+RexxRoutine1(int,
+             SysRmdir,   
+             CSTRING, dir)
+{
+    return rmdir(dir);
+}
+
+
 // initialize the libvirt library
 static void orxnixclib_loader(RexxThreadContext *context) {
    }
@@ -1625,6 +1662,8 @@ RexxRoutineEntry orxnixclib_routines[] = {
     REXX_TYPED_ROUTINE(SysGeterrno, SysGeterrno),
     REXX_TYPED_ROUTINE(SysGeterrnomsg, SysGeterrnomsg),
     REXX_TYPED_ROUTINE(SysCrypt, SysCrypt),
+    REXX_TYPED_ROUTINE(SysMkdir, SysMkdir),
+    REXX_TYPED_ROUTINE(SysRmdir, SysRmdir),
     REXX_LAST_ROUTINE()
 };
 

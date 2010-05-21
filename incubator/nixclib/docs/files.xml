@@ -232,6 +232,67 @@ call SysLink "/pub", "/home/username/myownpublink"
 </section>
 
 
+<section id="utlSysMkdir"><title>SysMkdir</title>
+<secondary>SysMkdir</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysMkdir(dir, mode)-----------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Create a subdirectory.</para>
+<para>This function uses the <filename>mkdir()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">dir</emphasis></term>
+<listitem><para>The new subdirectory name.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">mode</emphasis></term>
+<listitem><para>The mode (decimal number) for the new subdirectory.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns zero on success and -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* create a new subdir */
+
+retc = SysMkdir("./pub", b2d("111111101")) 
+]]>
+</programlisting>
+</section>
+
+
+<section id="utlSysRmdir"><title>SysRmdir</title>
+<secondary>SysRmdir</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysRmdir(dir)-----------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Remove a subdirectory.</para>
+<para>This function uses the <filename>rmdir()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">dir</emphasis></term>
+<listitem><para>The subdirectory to remove.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns zero on success and -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* remove a subdir */
+
+retc = SysRmdir("./pub") 
+]]>
+</programlisting>
+</section>
+
+
 <section id="utlSysStat"><title>SysStat</title>
 <indexterm><primary>SysStat</primary></indexterm>
 <programlisting>

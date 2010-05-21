@@ -162,6 +162,9 @@ say 'Addressing pointer size =' SysGetsizeofptr()
 say 'Calling SysGethostname'
 say 'Nostname =' SysGethostname()
 
+say 'Calling SysCrypt'
+say SysCrypt("EncryptionString", "3A")
+
 return
 
 ::requires 'rxunixsys' library
