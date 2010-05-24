@@ -37,10 +37,18 @@
 -- ::options trace i
 ::class Pattern public
 
+-- compile a string regex expression into a pattern
 ::method compile class
   -- the compiler is configurable, but there is a default
   use strict arg pattern, compiler = (.RegexCompiler~new)
   return compiler~compile(pattern)
+
+-- compile a string regex expression used as replacement text
+-- into a pattern
+::method compileReplacement class
+  -- the compiler is configurable, but there is a default
+  use strict arg pattern, compiler = (.RegexCompiler~new)
+  return compiler~compileReplacement(pattern)
 
 ::method init
   expose pattern root groups
@@ -156,6 +164,28 @@
   root~calculateMatchMetrics(metrics)
   return metrics
 
+-- perform an inplace replacement in a mutableBuffer
+::method replaceBuffer
+  use arg text, replacement
+
+  -- do the search first.  If not there, then there's
+  -- no need to compile the replacement piece
+  matchResult = self~find(text)
+  if \matchResult~matched then do
+      -- this is a wrappered match result with a 0 replacement length
+      return .ReplacementMatchResult~new(matchResult, 0)
+  end
+
+  -- if the replacement is in string form, then convert into
+  -- a replacer
+  if replacement~isA(.String) then do
+      replacement = self~class~compileReplacement(replacement)
+  end
+
+  -- perform the replacement using the matchResult context
+  replacementLength = replacement~replace(text, matchResult)
+  -- and merge the match result with the replacement metric
+  return .ReplacementMatchResult~new(matchResult, replacementLength)
 
 ::class RegexCompiler public
 
@@ -1092,16 +1122,34 @@
       -- we're looking at the first character, so back up and
       -- extract the name using the '(' and ')' delimiters
       otherwise  do
-          self~previous
-          -- and parse out the delimited name
-          referenceName = self~extractDelimited('(', ')')
-          referenceName = referenceName~upper
-          -- a back reference
-          if \self~haveGroup(referenceName) then do
-              raise syntax 93.900 array("Unrecognized group back reference" ch)
+          -- potentially a compound back reference name?  This requires
+          -- more complicated parsing
+          if ch == '<' then do
+              -- parse out the group name
+              path = .array~new
+              self~parseGroupName(path)
+              -- we can validate the first, the rest are very dynamic
+              if \self~haveGroup(path[1]) then do
+                  raise syntax 93.900 array("Unrecognized group back reference:" path[1])
+              end
+              -- the more typical case of a single level conditional.  This just
+              -- checks on group participation
+              if path~items == 1 then do
+                  -- a named back reference to previous node
+                  condition = .BackReferenceTestNode~new(path[1])
+              end
+              else do
+                  -- a more complex look up
+                  condition = .ResultBackReferenceTestNode~new(path[1])
+              end
           end
-          -- a named back reference to previous node
-          condition = .BackReferenceTestNode~new(referenceName)
+          else do
+              self~previous
+              referenceName = self~extractDelimited('(', ')')
+              referenceName = referenceName~upper -- all names are stored in uppercase
+              -- a named back reference to previous node
+              condition = .BackReferenceTestNode~new(referenceName)
+          end
       end
   end
 
@@ -1948,15 +1996,17 @@
               raise syntax 93.900 array("Unrecognized group back reference" ch)
           end
           if self~caselessMode then do
-              return .CaselessBackReferenceNode~new(ch)
+              return .CaselessGroupBackReferenceNode~new(ch)
           end
           else do
-              return .BackReferenceNode~new(ch)
+              return .GroupBackReferenceNode~new(ch)
           end
       end
       -- named back reference
       when ch == 'k' then do
-          referenceName = self~extractDelimited('{', '}')
+          -- a \k back reference can be complicated
+          return self~parseNamedGroup
+          referenceName = self~extractDelimited('<', '>')
           -- apply Rexx symbol rules to the name and make uppercase
           referenceName = referenceName~upper
 
@@ -1964,10 +2014,10 @@
               raise syntax 93.900 array("Unrecognized group back reference:" referenceName)
           end
           if self~caselessMode then do
-              return .CaselessBackReferenceNode~new(referenceName)
+              return .CaselessGroupBackReferenceNode~new(referenceName)
           end
           else do
-              return .BackReferenceNode~new(referenceName)
+              return .GroupBackReferenceNode~new(referenceName)
           end
       end
       -- reference to a registered pattern
@@ -2025,6 +2075,167 @@
       otherwise  do
           self~previous -- revert the read character
           return .nil -- return the failure indicator
+      end
+  end
+
+-- parse a group back reference.  The back reference is in the
+-- form <group{result<group...>}> for as many levels as are needed.
+-- Thus <group> will return the match value for named group "group".
+-- <group{result}> will return the named result "result" within group
+-- "group", while <group{result<subgroup>}> will return the value of
+-- group "subgroup" within named result "result" of group "group"
+::method parseNamedGroup
+  use arg nested
+  -- create an accumulator, and start parsing the potentially lengthy group name
+  path = .array~new
+  self~parseGroupName
+
+  -- the first level is all we can verify exists at this point
+  if \self~haveGroup(path[1]) then do
+      raise syntax 93.900 array("Unrecognized group back reference:" path[1])
+  end
+
+  -- just a simple group reference?
+  if path~items == 1 then do
+      if self~caselessMode then do
+          return .CaselessGroupBackReferenceNode~new(path[1])
+      end
+      else do
+          return .GroupBackReferenceNode~new(path[1])
+      end
+  end
+  -- more complex path resolution required
+  else do
+      if self~caselessMode then do
+          return .CaselessGroupBackReferenceNode~new(path[1])
+      end
+      else do
+          return .GroupBackReferenceNode~new(path[1])
+      end
+  end
+
+  referenceName = ""  -- the accumulated name
+  loop forever
+      ch = self~next -- get the next character
+      -- end of the group name portion?
+      if ch == '>' then do
+          -- apply Rexx symbol rules to the name and make uppercase
+          referenceName = referenceName~upper
+
+          if \nested then do
+              if \self~haveGroup(referenceName) then do
+                  raise syntax 93.900 array("Unrecognized group back reference:" referenceName)
+              end
+              if self~caselessMode then do
+                  return .CaselessGroupBackReferenceNode~new(referenceName)
+              end
+              else do
+                  return .GroupBackReferenceNode~new(referenceName)
+              end
+          end
+      end
+      -- result reference inside of a group
+      else if ch == '{' then do
+          -- we allow a default here...going right to the
+          -- result means use the 0 group.
+          if referenceName == "" then do
+              referenceName = "0"
+          end
+          -- get the result portion
+          resultNode = self~parseResultName
+          -- now get an appropriate node to handle the group cascade of names
+          if self~caselessMode then do
+              return .CaselessGroupResultBackReferenceNode~new(referenceName, resultNode)
+          end
+          else do
+              return .GroupResultBackReferenceNode~new(referenceName, resultNode)
+          end
+
+      end
+  end
+
+-- parse a the group portion of a resulution path
+::method parseGroupName
+  -- this is the path accumulator array
+  use arg path
+  self~next -- step over the '<' delimiter that started this
+  referenceName = ""  -- the accumulated name
+  loop forever
+      ch = self~next -- get the next character
+      if ch == .nil then do
+              raise syntax 93.900 array("Missing closing '>' on group name")
+      end
+      -- end of the group name portion?
+      else if ch == '>' then do
+          -- an empty reference
+          if referenceName == "" then do
+              referenceName = "0"
+          end
+          -- apply Rexx symbol rules to the name and make uppercase
+          referenceName = referenceName~upper
+          path~append(referenceName)
+          return
+      end
+      -- result reference inside of a group
+      else if ch == '{' then do
+          -- we allow a default here...going right to the
+          -- result means use the 0 group.
+          if referenceName == "" then do
+              referenceName = "0"
+          end
+          -- apply Rexx symbol rules to the name and make uppercase
+          referenceName = referenceName~upper
+          path~append(referenceName)
+          self~previous
+          -- get the result portion
+          self~parseResultName(path)
+          -- perform the delimiter check
+          ch self~next
+          if ch \== '>' then do
+              raise syntax 93.900 array("Missing closing '>' on group name")
+          end
+          return
+      end
+      else do
+          referenceName = referenceName || ch
+      end
+  end
+
+-- parse a the result portion of a resulution path
+::method parseResultName
+  -- this is the path accumulator array
+  use arg path
+  self~next -- step over the '<' delimiter that started this
+  referenceName = ""  -- the accumulated name
+  loop forever
+      ch = self~next -- get the next character
+      if ch == .nil then do
+              raise syntax 93.900 array("Missing closing '}' on result name")
+      end
+      -- end of the result name portion?
+      else if ch == '}' then do
+          -- apply Rexx symbol rules to the name and make uppercase
+          referenceName = referenceName~upper
+          path~append(referenceName)
+          return
+      end
+      -- group reference inside of a result
+      else if ch == '<' then do
+          -- apply Rexx symbol rules to the name and make uppercase
+          referenceName = referenceName~upper
+          path~append(referenceName)
+          self~previous
+          -- get the result portion
+          self~parseGroupName(path)
+          -- perform the delimiter check
+          ch self~next
+          if ch \== '}' then do
+              raise syntax 93.900 array("Missing closing '}' on result name")
+          end
+          return
+      end
+      else do
+          referenceName = referenceName || ch
       end
   end
 
@@ -3398,30 +3609,19 @@
   -- and try the next part
   return self~matchNext(context, position, target)
 
-
--- matches the current position for the same string value as
+-- base class for all nodes that match back references
 -- a back reference match
 ::class BackReferenceNode subclass MatchNode
-::method init
-  expose ref
-  use arg ref
-  self~init:super
-
 -- main matching method for a back reference.
 ::method match
-  expose ref
   use arg context, position, target
-  -- retrieve the match result for our target back ref
-  refGroup = context~getBackReferenceResult(ref)
 
-  -- if the back reference did not match, then this is a
-  -- failure here too
-  if \refGroup~matched then do
+  -- get the match text defined for this type of back reference
+  -- if nothing is there, then this match fails
+  matchValue = self~matchText(context)
+  if matchValue == .nil then do
       return .false
   end
-
-  -- this is essentially a string reference now
-  matchValue = refGroup~matchText
 
   if context~checkEnd(position + matchValue~length - 1) then do
       return .false
@@ -3434,12 +3634,6 @@
   -- exhausted the max, so now search for the next
   return self~matchNext(context, position + matchValue~length, target)
 
--- simple method for performing the implementation specific
--- matching for a back reference.  Intended to be overridden
-::method submatch
-  use arg context, position, target, matchValue
-  return target~match(position, matchValue)
-
 ::method calculateMatchMetrics
   use arg metrics
 
@@ -3447,8 +3641,104 @@
   metrics~validMaximum = .false
   self~calculateMatchMetrics:super(metrics)
 
+
+-- matches the current position for the same string value as
+-- a back reference match
+::class GroupBackReferenceNode subclass BackReferenceNode
+::method init
+  expose ref
+  use arg ref
+  self~init:super
+
+-- resolve the matching text for this back reference.
+-- returns .nil if this cannot be located
+::method matchText
+  expose ref
+  use arg context
+  -- retrieve the match result for our target back ref
+  refGroup = context~getBackReferenceResult(ref)
+
+  -- if the back reference did not match, then this is a
+  -- failure here too
+  if \refGroup~matched then do
+      return .nil
+  end
+  -- return the group's match text
+  return refGroup~matchText
+
+-- simple method for performing the implementation specific
+-- matching for a back reference.  Intended to be overridden
+::method submatch
+  use arg context, position, target, matchValue
+  return target~match(position, matchValue)
+
 -- same as a back reference, but matching is done caselessly
-::class CaselessBackReferenceNode subclass BackReferenceNode
+::class CaselessGroupBackReferenceNode subclass GroupBackReferenceNode
+-- simple method for performing the implementation specific
+-- matching for a back reference.  Intended to be overridden
+::method submatch
+  use arg context, position, target, matchValue
+  return target~caselessMatch(position, matchValue)
+
+-- a back reference node to handle more complex group/result resolution
+::class ResultBackReferenceNode subclass BackReferenceNode
+::method init
+  expose resultPath
+  -- the result path
+  use arg resultPath
+  self~init:super
+
+-- run the resolution path to locate the target result or group.
+-- returns .nil if there is a failure at any point in the matching
+-- process
+::method matchText
+  expose resultPath
+  use arg context
+  -- the first two matches here are a little different, since
+  -- there will a guarantee of 2 names and the first one comes
+  -- from the current matching context.  After that, the
+  -- match results are used for retrieval
+
+  -- retrieve the match result for our target back ref
+  refGroup = context~getBackReferenceResult(resultPath[1])
+  result = refGroup~result(resultPath[2])
+  -- this might not be here, so return .nil for any failure
+  if result == .nil then do
+      return .nil
+  end
+
+  count = resultPath~items
+  -- resolution here is done in pairs, though there could be an odd
+  -- number
+  loop i = 3 by 2 while i < count
+      group = result~group(resultPath[i])
+      if group == .nil then do
+          return .nil
+      end
+      -- if this is the last item, the group value is the
+      -- desired text
+      if i == count then do
+          return group~text
+      end
+
+      -- step to the next result
+      result = group~result(resultPath[i + 1])
+      -- and fail it it is not there
+      if result == .nil then do
+          return .nil
+      end
+  end
+  -- we're after the result text now
+  return result~text
+
+-- simple method for performing the implementation specific
+-- matching for a back reference.  Intended to be overridden
+::method submatch
+  use arg context, position, target, matchValue
+  return target~match(position, matchValue)
+
+-- same as a result back reference, but matching is done caselessly
+::class CaselessResultBackReferenceNode subclass ResultBackReferenceNode
 -- simple method for performing the implementation specific
 -- matching for a back reference.  Intended to be overridden
 ::method submatch
@@ -3501,6 +3791,62 @@
   refGroup = context~getBackReferenceResult(ref)
   -- and just return the matched indictor
   return refGroup~participated
+
+::method terminate
+  -- optimization override.  This node does not require
+  -- a terminator, so turn this into a NOP when called
+
+-- A back reference node used in conditionals to test if a
+-- group result node had participated in a match operation
+::class ResultBackReferenceTestNode subclass MatchNode
+::method init
+  expose resultPath
+  -- the result path
+  use arg resultPath
+  self~init:super
+
+-- run the resolution path to locate the target result or group.
+-- returns .false if there is a failure at any point in the matching
+-- process
+::method match
+  expose resultPath
+  use arg context, position, target
+  -- the first two matches here are a little different, since
+  -- there will a guarantee of 2 names and the first one comes
+  -- from the current matching context.  After that, the
+  -- match results are used for retrieval
+
+  -- retrieve the match result for our target back ref
+  refGroup = context~getBackReferenceResult(resultPath[1])
+  result = refGroup~result(resultPath[2])
+  -- this might not be here, so return .nil for any failure
+  if result == .nil then do
+      return .false
+  end
+
+  count = resultPath~items
+  -- resolution here is done in pairs, though there could be an odd
+  -- number
+  loop i = 3 by 2 while i < count
+      group = result~group(resultPath[i])
+      if group == .nil then do
+          return .false
+      end
+      -- if this is the last item, the group value is the
+      -- desired text
+      if i == count then do
+          return group~participated
+      end
+
+      -- step to the next result
+      result = group~result(resultPath[i + 1])
+      -- and fail it it is not there
+      if result == .nil then do
+          return .false
+      end
+  end
+  -- we're after the result match now
+  return result~matched
 
 ::method terminate
   -- optimization override.  This node does not require
@@ -4266,6 +4612,9 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
   -- this gets wrappered into a result item
   return .GroupMatchResult~new(self~regionText, self~regionStart, self~regionEnd, group)
 
+-- used for creating a MatchReplacementResult
+::attribute groups GET PRIVATE
+
 -- retrieve the text for a given group item in a match result
 ::method "[]"
   expose groups
@@ -4285,6 +4634,17 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
       return ""
   end
   return text
+
+-- a combined match result that includes replacement string information
+::class MatchReplacementResult public subclass MatchResult
+::method init
+  expose resultText replacementLength replacementCount
+  use arg match, resultText, replacementLength, replacementCount
+  self~init:super(match~regionText, match~regionStart, match~regionEnd, match~start, match~end, match~groups)
+
+-- the length of the replacement string
+::attribute replacementLength GET
+::attribute resultText GET
 
 -- the current active context for a match operation.  This
 -- provides information to the matching filters and holds any
@@ -4585,6 +4945,17 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 
   -- add this to the directory table
   namedResults[name] = result
+
+-- retrieve a named result from the group information
+::method result
+  expose namedResults
+  use arg name
+
+  if namedResults == .nil then do
+      return .nil
+  end
+
+  return namedResults[name]
 
 -- indicates whether this match was a success or a failure
 ::method matched
@@ -4976,3 +5347,46 @@ matchend = matchstart
   return ""
 
 
+-- A special type of pattern used for performing string replacements
+::class ReplacementPattern public
+
+::method compile class
+  -- the compiler is configurable, but there is a default
+  use strict arg pattern, compiler = (.RegexCompiler~new)
+  return compiler~compileReplacement(pattern)
+
+::method init
+  expose pattern sections
+  use strict arg pattern, sections
+
+::attribute pattern GET
+::attribute stages GET
+
+::method string
+  expose pattern
+  return pattern
+
+-- perform a replacement operation within a mutable buffer instance
+::method replace
+  expose sections
+  use arg buffer, matchResult
+
+  -- nothing to replace if there is no match
+  if \matchResult~matched then do
+      return 0
+  end
+
+  -- delete the information
+  buffer~delete(matchResult~start, matchResult~length)
+
+  position = matchResult~start  -- replacement starts at the match begining
+  -- insert the text from each of the pieces into the buffer starting
+  -- at the match position
+  do section over sections
+      next = section~getText(matchResult)
+      buffer~insert(next, position)
+      position += next~length
+  end
+
+  -- return the length of the changed string
+  return position - matchResult~start
