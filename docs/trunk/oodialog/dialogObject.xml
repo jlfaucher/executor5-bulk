@@ -11067,9 +11067,9 @@ MyDialog~ClearWindowRect(hwnd)
 </section>
 </section>
 
-<section id="man0018"><title>Bitmap Methods</title>
+<section id="sctBitmapMethods"><title>Bitmap Methods</title>
 <indexterm><primary>bitmap methods</primary></indexterm>
-<para>The methods listed below deal with bitmaps.</para>
+<para>The methods listed in this section deal with using bitmaps.</para>
 
 <section id="mthInstallBitmapButton"><title>installBitmapButton</title>
 <indexterm><primary>installBitmapButton</primary></indexterm>
@@ -11164,7 +11164,7 @@ loaded through a DLL.
       .
       .
       .
-::method InitDialog
+::method initDialog
   self~installBitmapButton(204, "BmpButtonClicked", ,
                            "AddBut_n.bmp", "AddBut_f.bmp", ,
                            "AddBut_s.bmp", "AddBut_d.bmp", "FRAME")
@@ -12504,54 +12504,6 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
 </section>  <!-- End Sending Windows Messages Section -->
 
 
-<section id="debuggingmeth"><title>Debugging Methods</title>
-<indexterm><primary>debugging methods</primary></indexterm>
-<para>
-  The following method(s) can be used to help debug ooDialog programs.  At this time there are very few
-  methods.
-</para>
-
-<section id="dumpdialog"><title>dump</title>
-<indexterm><primary>dump</primary></indexterm>
-<para>
-  The <emphasis role="italic">dump</emphasis>() method displays the internal settings of the dialog
-  administration table.
-</para>
-<para>
-  <emphasis role="bold">Note</emphasis> that this method is of limited use unless one understands the
-  private internal implementation of ooDialog.  In addition, the internal implementation of ooDialog,
-  that is not documented, is subject to change. And in fact some of the implementation is changing.  In
-  particular the dialog administration table is going away.  Once it has been removed completely, this
-  method will producd no output.
-</para>
-<programlisting>
-<![CDATA[
->>--dump(--+-------------+--)---------------------------------><
-           +-dialogadmin-+
-
-]]>
-</programlisting>
-
-<para></para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>dialogadmin</term>
-<listitem><para>
-  A pointer to a particular dialog administration record. If you specify this argument, you get detailed
-  information on this record. If you omit this argument, all administration records (one for each dialog
-  of the active process) are listed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method does not return a value.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-</section>
-
 <section id="deprecatedDialogMethods"><title>Deprecated Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>dialog object methods</secondary></indexterm>
 <para>
@@ -12582,6 +12534,15 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
 </para>
 </section>
 
+<section><title>connectAnimatedButton</title>
+<indexterm><primary>Deprecated</primary><secondary>connectAnimatedButton</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectAnimatedButton</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthInstallAnimatedButton">installAnimatedButton</link>() method.
+</para>
+</section>
+
 <section><title>connectBitmapButton</title>
 <indexterm><primary>Deprecated</primary><secondary>connectBitmapButton</secondary></indexterm>
 <indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectBitmapButton</tertiary></indexterm>
@@ -12608,6 +12569,17 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
+</para>
+</section>
+
+<section><title>dump</title>
+<indexterm><primary>Deprecated</primary><secondary>dump</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>dump</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  It will simply print: &quot;dump() deprecated.&quot; In
+  older versions of ooDialog, the <emphasis role="italic">dump</emphasis>() method would print out information tied to
+  the undocumented internal implementation of ooDialog. Since the internal implementation has changed, this information
+  no longer exists.
 </para>
 </section>
 
