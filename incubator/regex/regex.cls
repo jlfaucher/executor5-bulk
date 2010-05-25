@@ -316,7 +316,7 @@
   return pattern   -- now in pattern form
 
 -- register additional named patterns with a compiler instance
-::method registerNamedPatterns
+::method registerNamedPattern
   expose namedPatterns
   use strict arg name, pattern
   name = name~upper -- make sure we always use an uppercase name
@@ -1140,7 +1140,7 @@
               end
               else do
                   -- a more complex look up
-                  condition = .ResultBackReferenceTestNode~new(path[1])
+                  condition = .ResultBackReferenceTestNode~new(path)
               end
           end
           else do
@@ -2006,19 +2006,6 @@
       when ch == 'k' then do
           -- a \k back reference can be complicated
           return self~parseNamedGroup
-          referenceName = self~extractDelimited('<', '>')
-          -- apply Rexx symbol rules to the name and make uppercase
-          referenceName = referenceName~upper
-
-          if \self~haveGroup(referenceName) then do
-              raise syntax 93.900 array("Unrecognized group back reference:" referenceName)
-          end
-          if self~caselessMode then do
-              return .CaselessGroupBackReferenceNode~new(referenceName)
-          end
-          else do
-              return .GroupBackReferenceNode~new(referenceName)
-          end
       end
       -- reference to a registered pattern
       when ch == 'm' then do
@@ -2085,10 +2072,9 @@
 -- "group", while <group{result<subgroup>}> will return the value of
 -- group "subgroup" within named result "result" of group "group"
 ::method parseNamedGroup
-  use arg nested
   -- create an accumulator, and start parsing the potentially lengthy group name
   path = .array~new
-  self~parseGroupName
+  self~parseGroupName(path)
 
   -- the first level is all we can verify exists at this point
   if \self~haveGroup(path[1]) then do
@@ -2107,10 +2093,10 @@
   -- more complex path resolution required
   else do
       if self~caselessMode then do
-          return .CaselessGroupBackReferenceNode~new(path[1])
+          return .CaselessResultBackReferenceNode~new(path)
       end
       else do
-          return .GroupBackReferenceNode~new(path[1])
+          return .ResultBackReferenceNode~new(path)
       end
   end
 
@@ -2190,7 +2176,7 @@
           -- get the result portion
           self~parseResultName(path)
           -- perform the delimiter check
-          ch self~next
+          ch = self~next
           if ch \== '>' then do
               raise syntax 93.900 array("Missing closing '>' on group name")
           end
@@ -2227,8 +2213,9 @@
           self~previous
           -- get the result portion
           self~parseGroupName(path)
-          -- perform the delimiter check
-          ch self~next
+          -- perform the delimiter check.  We should have
+          -- a } after the close of the group name.
+          ch = self~next
           if ch \== '}' then do
               raise syntax 93.900 array("Missing closing '}' on result name")
           end
@@ -3694,6 +3681,7 @@
 ::method matchText
   expose resultPath
   use arg context
+
   -- the first two matches here are a little different, since
   -- there will a guarantee of 2 names and the first one comes
   -- from the current matching context.  After that, the
