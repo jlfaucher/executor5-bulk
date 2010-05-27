@@ -2026,19 +2026,19 @@
       end
       -- NOT on a word boundary anchor
       when ch == 'B' then do
-          return .NotWordBoundaryNode~new
+          return .NotClassBoundaryNode~new(self~createNamedClassFamily("WORD", .false))
       end
       -- ON a word boundary anchor
       when ch == 'b' then do
-          return .WordBoundaryNode~new
+          return .ClassBoundaryNode~new(self~createNamedClassFamily("WORD", .false))
       end
       -- Beginning word boundary anchor
       when ch == '<' then do
-          return .BeginWordBoundaryNode~new
+          return .BeginClassBoundaryNode~new(self~createNamedClassFamily("WORD", .false))
       end
       -- End of word boundary anchor
       when ch == '>' then do
-          return .EndWordBoundaryNode~new
+          return .EndClassBoundaryNode~new(self~createNamedClassFamily("WORD", .false))
       end
       -- Last match.  We do iteration a little differently, so this
       -- really matches the start of the text region we're looking at.
@@ -2442,13 +2442,21 @@
   return self~matchNext(context, position, target)
 
 
--- A node that enforces a match at the beginning of a word boundary
-::class WordBoundaryNode subclass MatchNode
+-- A node that enforces a match at the beginning of a boundary defined
+-- by a class of characters
+::class ClassBoundaryNode subclass MatchNode
+::method init
+  expose boundaryClass
+  use arg boundaryClass
+  self~init:super
+
+  boundaryClass~terminate
+
 ::method match
   use arg context, position, target
 
   -- At the very end (e.g., past the end really), the last character
-  -- must be a word character.  Note that we need to check for a
+  -- must be of the boundary character.  Note that we need to check for a
   -- null string condition too
   if context~checkEnd(position) then do
       -- also at the beginning means this is a
@@ -2458,35 +2466,43 @@
           return .false
       end
       -- not a word character in the previous position?  This fails
-      if \target~matchChar(position - 1, self~wordChars) then do
+      if \self~checkBoundary(context, position - 1, target) then do
           return .false
       end
       -- good so far, pass this along
       return self~matchNext(context, position, target)
   end
 
-  -- if at the start of the range, the character must be a word character
+  -- if at the start of the range, the character must be of the class character
   -- NB, the at the end check above handled the null string case, so we
   -- can check the first character unconditionally
   if context~atStart(position) then do
-      -- not a word character in the current position?  This fails
-      if \target~matchChar(position, self~wordChars) then do
+      -- not a class character in the current position?  This fails
+      if \self~checkBoundary(context, position, target) then do
           return .false
       end
       -- good so far, pass this along
       return self~matchNext(context, position, target)
   end
-  -- exclusive OR situation.  Only one of these should be a word character to
+  -- exclusive OR situation.  Only one of these should be a class character to
   -- qualify as a boundary
-  if target~matchChar(position, self~wordChars) && target~matchChar(position - 1, self~wordChars) then do
+  if self~checkBoundary(context, position, target) && self~checkBoundary(context, position - 1, target) then do
       return self~matchNext(context, position, target)
   end
 
   return .false
 
--- the inverse of a wordboundary match.  Matches only if the current
--- position is NOT on a word boundary
-::class NotWordBoundaryNode subclass MatchNode
+-- simple method to perform the boundary test.  A negative test
+-- will override this
+::method checkBoundary
+  expose boundaryClass
+  use arg context, position, target
+
+  return boundaryClass~match(context, position, target)
+
+-- the inverse of a  class boundary match.  Matches only if the current
+-- position is NOT on a class boundary
+::class NotClassBoundaryNode subclass ClassBoundaryNode
 ::method match
   use arg context, position, target
 
@@ -2502,7 +2518,7 @@
           return self~matchNext(context, position, target)
       end
       -- a word character in the previous position?  This fails
-      if target~matchChar(position - 1, self~wordChars) then do
+      if self~checkBoundary(context, position - 1, target) then do
           return .false
       end
       -- good so far, pass this along
@@ -2522,16 +2538,18 @@
   end
   -- exclusive OR situation.  If one is a boundary and the other not, this fails
   -- qualify as a boundary
-  if target~matchChar(position, self~wordChars) && target~matchChar(position - 1, self~wordChars) then do
+  if self~checkBoundary(context, position, target) && self~checkBoundary(context, position - 1, target) then do
       return .false
   end
+  -- forward along
   return self~matchNext(context, position, target)
 
--- Test if on the beginning boundary of a word.   To qualify,
--- the current position must be a word character and the previous
--- character must NOT be a word character or be the beginning of
+
+-- Test if on the beginning boundary of a character class.   To qualify,
+-- the current position must be a class character and the previous
+-- character must NOT be a class character or be the beginning of
 -- the range
-::class BeginWordBoundaryNode subclass MatchNode
+::class BeginClassBoundaryNode subclass ClassBoundaryNode
 ::method match
   use arg context, position, target
 
@@ -2541,8 +2559,8 @@
       return .false
   end
 
-  -- if the current character is not a word character, this fails too
-  if \target~matchChar(position, self~wordChars) then do
+  -- if the current character is not a class character, this fails too
+  if \self~checkBoundary(context, position, target) then do
       return .false
   end
   -- if the position is the start of the range,
@@ -2550,18 +2568,18 @@
   if context~atStart(position) then do
       return self~matchNext(context, position, target)
   end
-  -- the previous character must NOT be a word character to pass
-  if \target~matchChar(position - 1, self~wordChars) then do
+  -- the previous character must NOT be a class character to pass
+  if \self~checkBoundary(context, position - 1, target) then do
       return self~matchNext(context, position, target)
   end
 
   return .false
 
--- Test if on the ending boundary of a word.   To qualify,
+-- Test if on the ending boundary of a character class.   To qualify,
 -- the current position must be the end of the range or,
--- NOT be a word character and the previous  character must
--- be a word character.
-::class EndWordBoundaryNode subclass MatchNode
+-- NOT be a class character and the previous character must
+-- be a class character.
+::class EndClassBoundaryNode subclass ClassBoundaryNode
 ::method match
   use arg context, position, target
 
@@ -2571,8 +2589,8 @@
       return .false
   end
 
-  -- if the previous character is not a word character, this fails too
-  if \target~matchChar(position - 1, self~wordChars) then do
+  -- if the previous character is not a class character, this fails too
+  if \self~checkBoundary(context, position - 1, target) then do
       return .false
   end
 
@@ -2582,7 +2600,7 @@
   end
 
   -- the current character MUST NOT be a word character to pass
-  if \target~matchChar(position, self~wordChars) then do
+  if \self~checkBoundary(context, position, target) then do
       return self~matchNext(context, position, target)
   end
 
