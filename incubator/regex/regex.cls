@@ -834,6 +834,8 @@
   -- scope of the change is limited to the containing group.
   -- We need to restore these once we're finished parsing the group
   savedFlags = self~saveFlags
+  -- most groups require closure, but not all
+  closure = .true
   -- we return a directory of information about this group
   groupInfo = .directory~new
   ch = self~peek
@@ -888,6 +890,8 @@
               -- wrappered nodes fill both roles
               groupInfo~firstNode = wrapper
               groupInfo~lastNode = wrapper
+              -- zero length matches do not have closures
+              closure = .false
           end
           -- this is a lookbehind.  It checks the data before the current
           -- position
@@ -901,6 +905,8 @@
               -- wrappered nodes fill both roles
               groupInfo~firstNode = wrapper
               groupInfo~lastNode = wrapper
+              -- zero length matches do not have closures
+              closure = .false
           end
           -- Three possibilities here:
           -- 1)  (?<=... a "zero-width positive lookbehind"
@@ -940,6 +946,8 @@
                   -- wrappered nodes fill both roles
                   groupInfo~firstNode = wrapper
                   groupInfo~lastNode = wrapper
+                  -- zero length matches do not have closures
+                  closure = .false
               end
               else do
                   -- back up for the delimiter parsing
@@ -980,6 +988,46 @@
               -- just swallow the comment group and continue
               self~extractDelimited('(', ')')
               return .nil
+          end
+          -- a boundary defined by a character class
+          when ch == 'b' then do
+              self~next
+              ch = self~peek
+              -- the default type is simple class boundary
+              boundaryType = .ClassBoundaryNode
+              select
+                  -- Not on a class boundary
+                  when ch == '^' then do
+                      boundaryType = .NotClassBoundaryNode
+                      self~next
+                  end
+                  -- beginning of the sequence boundary
+                  when ch == '<' then do
+                      boundaryType = .BeginClassBoundaryNode
+                      self~next
+                  end
+                  when ch == '>' then do
+                      boundaryType = .EndClassBoundaryNode
+                      self~next
+                  end
+                  otherwise do
+                      -- the default type is simple class boundary
+                      boundaryType = .ClassBoundaryNode
+                  end
+              end
+              ch = self~next
+              if ch \= '[' then do
+                  raise syntax 93.900 array("Missing class definition for (?b) boundary match")
+              end
+              -- parse out the class definition
+              node = self~parseClass
+              -- create the boundary checker
+              wrapper = boundaryType~new(node)
+              -- wrappered nodes fill both roles
+              groupInfo~firstNode = wrapper
+              groupInfo~lastNode = wrapper
+              -- zero length matches do not have closures
+              closure = .false
           end
           otherwise do
               -- if .true, this is a closed modifier.  A
@@ -1031,7 +1079,9 @@
   self~restoreFlags(savedFlags)
   -- we need to process this differently, since there are different
   -- repetitors needed to handle updating group information
-  self~parseGroupClosure(groupInfo)
+  if closure then do
+      self~parseGroupClosure(groupInfo)
+  end
   -- return the new chain information.
   return groupInfo
 

@@ -2145,3 +2145,32 @@ return testResult
   -- should match everything
   r = self~find(p, "barbar")
   self~assertTrue(self~verifyMatchResult(r, 1, 7, "barbar"))
+
+-- test various boundary conditions using generalized class definitions
+::method testClassBoundary
+  -- abc ending at a boundary of bc
+  p = .Pattern~compile("abc(?b[bc])")
+  r = self~find(p, "abcd")
+  self~assertTrue(self~verifyMatchResult(r, 1, 4, "abc"))
+  -- not on the correct boundary
+  r = self~find(p, "abcc")
+  self~assertFalse(r~matched)
+  -- bracketed by boundary conditions
+  p = .Pattern~compile("(?b[123])abc(?b[456])")
+  r = self~find(p, "1abc6")
+  self~assertTrue(self~verifyMatchResult(r, 2, 5, "abc"))
+  -- the boundaries are in the match string
+  p = .Pattern~compile("(?b[abc])abc(?b[cde])")
+  r = self~find(p, "1abc6")
+  self~assertTrue(self~verifyMatchResult(r, 2, 5, "abc"))
+  -- negated boundaries
+  p = .Pattern~compile("(?b^[bc])abc(?b^[de])")
+  -- will work because
+  r = self~find(p, "aabcc")
+  self~assertTrue(self~verifyMatchResult(r, 2, 5, "abc"))
+  -- will fail because the boundaries are there
+  r = self~find(p, "babcd")
+  self~assertFalse(r~matched)
+
+
+
