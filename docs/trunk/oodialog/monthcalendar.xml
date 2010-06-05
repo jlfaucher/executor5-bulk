@@ -54,174 +54,265 @@
 <para>
   The MonthCalendar class provides methods xxx
 </para>
+<para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with month calendar controls:
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
-  <listitem>
-  <para>
-  The MonthCalendar class requires the class definition file <computeroutput>oodWin32.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "oodWin32.cls"
-]]>
-</programlisting>
-  </para></listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
-  <listitem>
-    <para>
-      The month calendar class is a subclass of the <link linkend="chpDialogControlObject">DialogControl</link> Class
-      and therefore inherits all methods of that class.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Mixin Class Inherits:</emphasis></term>
-  <listitem>
-    <para>
-      The month calendar class inherits from the following mixin classes, (indirectly through the DialogControl
-      class.)
-    </para>
-    <para>
-      The <link linkend="clsWindowBase">WindowBase</link>
-    </para>
-    <para>
-      The <link linkend="clsWindowExtensions">WindowExtensions</link>
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
-    <para>
-      Use the <link linkend="mthNewMonthCalendar">newMonthCalendar</link>() method to retrieve an object of
-      the month calendar class.
-    </para>
+  <para>
+    Use the <link linkend="mthNewMonthCalendar">newMonthCalendar</link>() method to retrieve an object of
+    the month calendar class.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
-    <para>
-      To dynamically define a month calendar in a <link linkend="clsUserDialog">UserDialog</link> class,
-      use the <link linkend="mthCreateMonthCalendar">createMonthCalendar</link> method.
-    </para>
+  <para>
+    To dynamically define a month calendar to a <link linkend="clsUserDialog">UserDialog</link> use the <link
+    linkend="mthCreateMonthCalendar">createMonthCalendar</link> method.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
-    <para>
-      To recieve notification of month calendar events use the <link
-      linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link>)() method.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Important Methods:</emphasis></term>
-  <listitem>
-    <para>
-      The following table provides links to the documentation for the primary methods and attributes used
-      in working with $(cls_name) objects`. These include all the methods and attributes implemented by
-      the MonthCalendar class, and the methods to connect to event notifications from, get, and dynamically
-      add, MonthCalendar objects:
-    </para>
-    <table id="tblMonthCalendarMethods" frame="all">
-    <title>MonthCalendar Methods and Attributes</title>
-    <tgroup cols="2">
-    <thead>
-    <row>
-    <entry>Method...</entry>
-    <entry>...Documentation</entry>
-    </row>
-    </thead>
-    <tbody>
-    <row>
-    <entry>newMonthCalendar (Instantiate method)</entry>
-    <entry><link linkend="mmtthGetMonthCalendar">createMonthCalendar</link></entry>
-    </row>
-    <row>
-    <entry>createMonthCalendar (Dynamically Define method)</entry>
-    <entry><link linkend="mmtthAddMonthCalendar">createMonthCalendar</link></entry>
-    </row>
-    <row>
-    <entry>connectMonthCalendarEvent (Connect Events method)</entry>
-    <entry><link linkend="mmtthConnectMonthCalendarNotify">connectMonthCalendarEvent</link></entry>
-    </row>
-    <row>
-    <entry>new (Class method)</entry>
-    <entry><link linkend="mthNewClsMonthCalendar">new</link></entry>
-    </row>
-    <row>
-    <entry>attributeName (Attribute)</entry>
-    <entry><link linkend="atrAttributeNameClsMonthCalendar">attributeName</link></entry>
-    </row>
-    <row>
-    <entry>mehtodName</entry>
-    <entry><link linkend="mthMethodNameClsMonthCalendar">methodName</link></entry>
-    </row>
-    </tbody></tgroup>
-    </table>
+  <para>
+    To recieve notification of month calendar events use the <link
+    linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link>)() method.
+  </para>
   </listitem></varlistentry>
 </variablelist>
-
-
-<section id="mmtthConnectMonthCalendarNotify"><title>connectMonthCalendarEvent (Connect Events
-Method)</title>
-<para>
-  To connect event notifications from a month calendar object use the <link
-  linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link>() method of the <link
-  linkend="clsEventNotification"></link> class. The basic syntax is:
-
-<programlisting> <![CDATA[
->>-connectMonthCalendarNotify(--id--,--"event"--+----------------+--)------------><
-                                                +--,-methodName--+
-
-]]>
-</programlisting>
 </para>
-</section>  <!-- End UserDialog::addMonthCalendar() [UserDialog method] -->
 
 
-<section id="mmtthGetMonthCalendar"><title>newMonthCalendar (Instantiate Method)</title>
+<section id="sctMethodsMonthCalendar"><title>Method Table</title>
 <para>
-  A month calendar object is obtained by using the <link
-  linkend="mthNewMonthCalendar">newMonthCalendar</link>() method of the <link linkend="chpDialogObject">dialog
-  object</link>. The syntax is:
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with <computeroutput>MonthCalendar</computeroutput> objects, including the pertinent methods from other classes:
+</para>
+<table id="tblMonthCalendarMethods" frame="all">
+<title>MonthCalendar Methods and Attributes</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...Documentation</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Useful External Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="tmthNewMonthCalendar">newMonthCalendar</link></entry>
+<entry>Obtains a MonthCalendar object that represents a control in a dialog.</entry>
+</row>
+<row>
+<entry><link linkend="tmthCreateMonthCalendar">createMonthCalendar</link></entry>
+<entry>Creates a MontCalendar control in an <link linkend="clsUserDialog">UserDialog</link></entry>
+</row>
+<row>
+<entry><link linkend="tmthConnectMonthCalendarEvent">connectMonthCalendarEvent</link></entry>
+<entry>Connectes MonthCalendar event notifications to a Rexx dialog method.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="atrDate">date</link></entry>
+<entry>The currently selected date in the calendar.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthAddStyle">addStyle</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthRemoveStyleClsMC">removeStyle</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthReplaceStyleClsMC">replaceStyle</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetCalendarBorder">getCalendarBorder</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetCalendarCount">getCalendarCount</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetCALID">getCALID</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetColor">getColor</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetCurrentView">getCurrentView</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetFirstDayOfWeek">getFirstDayOfWeek</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetGridInfo">getGridInfo</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetMaxSelection">getMaxSelection</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetMaxTodayWidth">getMaxTodayWidth</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetMinRect">getMinRect</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetMonthDelta">getMonthDelta</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetMonthRange">getMonthRange</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetRangeClsMC">getRange</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetSelectionRange">getSelectionRange</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetToday">getToday</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthHitTest">hitTest</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetCalendarBorder">setCalendarBorder</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetCALID">setCALID</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetColor">setColor</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetCurrentView">setCurrentView</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetDayState">setDayState</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetDayStateQuick">setDayStateQuick</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetFirstDayOfWeek">setFirstDayOfWeek</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetMaxSelection">setMaxSelection</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetMonthDelta">setMonthDelta</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetRangeClsMC">setRange</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetSelectionRange">setSelectionRange</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetToday">setToday</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSizeRectToMin">sizeRectToMin</link></entry>
+<entry>xx</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="tmthNewMonthCalendar"><title>newMonthCalendar (dialog object method)</title>
+<para>
+  <computeroutput>MonthCalendar</computeroutput> objects can not be instantiated by the programmer from Rexx code using
+  a <emphasis role="italic">new</emphasis>() method. Rather, a month calendar object is obtained by using the <link
+  linkend="mthNewMonthCalendar">newMonthCalendar</link>() method of the <link linkend="chpDialogObject">dialog</link>
+  object. The syntax is:
 <programlisting>
 <![CDATA[
->>-getMonthCalendar(--id--+-------------+--)---------------------><
+>>-newMonthCalendar(--id--+-------------+--)---------------------><
                           +-,--category-+
 
 ]]>
 </programlisting>
 </para>
-</section>  <!-- End PlainBaseDialog::getMonthCalendar() [PlainBaseDialog method] -->
+</section>  <!-- End Dialog::newMonthCalendar() (dialog object method) -->
 
 
-<section id="mmtthAddMonthCalendar"><title>createMonthCalendar (Dynamically Define Method)</title>
+<section id="tmthCreateMonthCalendar"><title>createMonthCalendar (UserDialog method)</title>
 <para>
-  A month calendar object can be added to a <link linkend="clsUserDialog">UserDialog</link> dialog
-  through the <link linkend="mthCreateMonthCalendar"></link>.  See the documentation of that method for
-  complete details if needed.  The basic syntax is:
+  A month calendar object can be added to the template of <link linkend="clsUserDialog">UserDialog</link> through
+  the <link linkend="mthCreateMonthCalendar"></link>. The basic syntax is:
 <programlisting> <![CDATA[
->>-addMonthCalendar(-PUT IN CORRECT SYSNTAX--)-------------------><
-
+>>-createMonthCalendar(-id-,--x-,--y-,--cx-,--cy-+----------+-+-------------+--><
+                                                 +-,--style-+ +-,--attrName-+
 
 ]]>
 </programlisting>
 </para>
-</section>  <!-- End UserDialog::addMonthCalendar() [UserDialog method] -->
+</section>  <!-- End UserDialog::createMonthCalendar() (UserDialog method) -->
 
 
-<section id="mthNewClsMonthCalendar"><title>new (Class method)</title>
-<indexterm><primary>new</primary>
-<secondary>MonthCalendar class</secondary></indexterm>
+<section id="tmthConnectMonthCalendarEvent"><title>connectMonthCalendarEvent (dialog object method)</title>
 <para>
-  The month calendar class is not intended to be instantiated directly by the programmer using the new() method.  Rather
-  the programmer should obtain a new month calendar object by using the <link
-  linkend="mthNewMonthCalendar">newMonthCalendar</link>() method of the <link linkend="chpDialogObject">dialog
-  object</link>.
+  To connect event notifications from a month calendar object use the <link
+  linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link>() method of the <link
+  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
+
+<programlisting> <![CDATA[
+>>-connectMonthCalendarEvent(--id--,--event--+----------------+--)-------------><
+                                             +--,-methodName--+
+
+]]>
+</programlisting>
 </para>
-</section>  <!-- End MonthCalendar::new() [class method] -->
+</section>  <!-- End EventNotification::ConnectMonthCalendarEvent() (dialog object method) -->
 
-
-<section id="atrAttributeNameClsMonthCalendar"><title>attributeName (Attribute)</title>
-<indexterm><primary>attributeName</primary>
-<secondary>MonthCalendar class</secondary></indexterm>
+<section id="atrDate"><title>date (Attribute)</title>
+<indexterm><primary>date</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>date</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--attributName------------------------------------------------><
+>>--date-----------------------------------------------------><
 
->>--attributName-=-varName--------------------------------------><
+>>--date-=-varName-------------------------------------------><
 
 ]]>
 </programlisting>
@@ -232,45 +323,50 @@ Method)</title>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
-    <para>
-      xx
-    </para>
+  <para>
+    xx
+  </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">attributeName get:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">date get:</emphasis></term>
   <listitem>
-    <para>
-      details about get
-    </para>
+  <para>
+    details about get
+  </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">attributeName set:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">date set:</emphasis></term>
   <listitem>
-    <para>
-      details about set
-    </para>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example ...
+  <para>
+    This example ...
 <programlisting>
 <![CDATA[
 
 
 ]]>
 </programlisting>
-    </para>
+  </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End MonthCalendar::attributeName() [class method]  -->
+</section>  <!-- End MonthCalendar::date() [attribute]  -->
 
-
-<section id="mthMethodNameClsMonthCalendar"><title>methodName</title>
-<indexterm><primary>methodName</primary>
-<secondary>MonthCalendar class</secondary></indexterm>
+<section id="mthAddStyleClsMC"><title>addStyle</title>
+<indexterm><primary>addStyle</primary><secondary>MonthCalendar class</secondary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>addStyle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--mehtodName(--+--------+--)-------------------------------------------------><
-                 +--type--+
+>>--addStyle(--+--------+--)---------------------------------------------><
+                  +--type--+
 ]]>
 </programlisting>
 
@@ -280,47 +376,2032 @@ Method)</title>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-    <para>
-      xx
-    </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
     <para>
       xx
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-        <para>
-          xx
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
     </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      xx
-    </para>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example ...
+  <para>
+    This example ...
 <programlisting>
 <![CDATA[
 
 ]]>
 </programlisting>
-    </para>
+  </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End MonthCalendar::methodName() -->
+</section>  <!-- End MonthCalendar::addStyle() -->
 
+<section id="mthRemoveStyleClsMC"><title>removeStyle</title>
+<indexterm><primary>removeStyle</primary><secondary>MonthCalendar class</secondary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>removeStyle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removeStyle(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::removeStyle() -->
+
+<section id="mthReplaceStyleClsMC"><title>replaceStyle</title>
+<indexterm><primary>replaceStyle</primary><secondary>MonthCalendar class</secondary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>replaceStyle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--replaceStyle(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::replaceStyle() -->
+
+<section id="mthGetCalendarBorder"><title>getCalendarBorder</title>
+<indexterm><primary>getCalendarBorder</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>getCalendarBorder</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCalendarBorder(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::getCalendarBorder() -->
+
+
+<section id="mthGetCalendarCount"><title>getCalendarCount</title>
+<indexterm><primary>getCalendarCount</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>getCalendarCount</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCalendarCount(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::getCalendarCount() -->
+
+<section id="mthGetCALID"><title>getCALID</title>
+<indexterm><primary>getCalID</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>getCalID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCalID(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::getCalID() -->
+
+
+<section id="mthGetColor"><title>getColor</title>
+<indexterm><primary>getColor</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>getColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getColor(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::getColor() -->
+
+
+<section id="mthGetCurrentView"><title>getCurrentView</title>
+<indexterm><primary>getCurrentView</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>getCurrentView</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCurrentView(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::getCurrentView() -->
+
+
+<section id="mthGetFirstDayOfWeek"><title>getFirstDayOfWeek</title>
+<indexterm><primary>getFirstDayOfWeek</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>getFirstDayOfWeek</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getFirstDayOfWeek(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::getFirstDayOfWeek() -->
+
+
+<section id="mthGetGridInfo"><title>getGridInfo</title>
+<indexterm><primary>getGridInfo</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>getGridInfo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getGridInfo(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::getGridInfo() -->
+
+
+<section id="mthGetMaxSelection"><title>getMaxSelection</title>
+<indexterm><primary>getMaxSelection</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>getMaxSelection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMaxSelection(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::getMaxSelection() -->
+
+
+<section id="mthGetMaxTodayWidth"><title>getMaxTodayWidth</title>
+<indexterm><primary>getMaxTodayWidth</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>getMaxTodayWidth</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMaxTodayWidth(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::getMaxTodayWidth() -->
+
+
+<section id="mthGetMinRect"><title>getMinRect</title>
+<indexterm><primary>getMinRect</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>getMinRect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMinRect(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::getMinRect() -->
+
+
+<section id="mthGetMonthDelta"><title>getMonthDelta</title>
+<indexterm><primary>getMonthDelta</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>getMonthDelta</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMonthDelta(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::getMonthDelta() -->
+
+
+<section id="mthGetMonthRange"><title>getMonthRange</title>
+<indexterm><primary>getMonthRange</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>getMonthRange</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMonthRange(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::getMonthRange() -->
+
+
+<section id="mthGetRangeClsMC"><title>getRange</title>
+<indexterm><primary>getRange</primary><secondary>MonthCalendar class</secondary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>getRange</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getRange(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::getRange() -->
+
+
+<section id="mthGetSelectionRange"><title>getSelectionRange</title>
+<indexterm><primary>getSelectionRange</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>getSelectionRange</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getSelectionRange(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::getSelectionRange() -->
+
+
+<section id="mthGetToday"><title>getToday</title>
+<indexterm><primary>getToday</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>getToday</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getToday(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::getToday() -->
+
+
+<section id="mthHitTest"><title>hitTest</title>
+<indexterm><primary>hitTest</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>hitTest</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hitTest(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::hitTest() -->
+
+
+<section id="mthSetCalendarBorder"><title>setCalendarBorder</title>
+<indexterm><primary>setCalendarBorder</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>setCalendarBorder</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setCalendarBorder(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::setCalendarBorder() -->
+
+
+<section id="mthSetCALID"><title>setCALID</title>
+<indexterm><primary>setCALID</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>setCALID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setCALID(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::setCALID() -->
+
+
+<section id="mthSetColor"><title>setColor</title>
+<indexterm><primary>setColor</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>setColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setColor(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::setColor() -->
+
+
+<section id="mthSetCurrentView"><title>setCurrentView</title>
+<indexterm><primary>setCurrentView</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>setCurrentView</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setCurrentView(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::setCurrentView() -->
+
+
+<section id="mthSetDayState"><title>setDayState</title>
+<indexterm><primary>setDayState</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>setDayState</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setDayState(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::setDayState() -->
+
+
+<section id="mthSetDayStateQuick"><title>setDayStateQuick</title>
+<indexterm><primary>setDayStateQuick</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>setDayStateQuick</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setDayStateQuick(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::setDayStateQuick() -->
+
+
+<section id="mthSetFirstDayOfWeek"><title>setFirstDayOfWeek</title>
+<indexterm><primary>setFirstDayOfWeek</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>setFirstDayOfWeek</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setFirstDayOfWeek(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::setFirstDayOfWeek() -->
+
+
+<section id="mthSetMaxSelection"><title>setMaxSelection</title>
+<indexterm><primary>setMaxSelection</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>setMaxSelection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setMaxSelection(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::setMaxSelection() -->
+
+
+<section id="mthSetMonthDelta"><title>setMonthDelta</title>
+<indexterm><primary>setMonthDelta</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>setMonthDelta</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setMonthDelta(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::setMonthDelta() -->
+
+
+<section id="mthSetRangeClsMC"><title>setRange</title>
+<indexterm><primary>setRange</primary><secondary>MonthCalendar class</secondary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>setRange</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setRange(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::setRange() -->
+
+
+<section id="mthSetSelectionRange"><title>setSelectionRange</title>
+<indexterm><primary>setSelectionRange</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>setSelectionRange</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setSelectionRange(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::setSelectionRange() -->
+
+
+<section id="mthSetToday"><title>setToday</title>
+<indexterm><primary>setToday</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>setToday</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setToday(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::setToday() -->
+
+
+<section id="mthSizeRectToMin"><title>sizeRectToMin</title>
+<indexterm><primary>sizeRectToMin</primary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>sizeRectToMin</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sizeRectToMin(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::sizeRectToMin() -->
 
 </chapter>  <!-- End MonthCalendar class -->
 

@@ -118,12 +118,12 @@
 <entry>The window handle of the dialog.</entry>
 </row>
 <row>
-<entry><link linkend="wbdoFactorX">factorX</link></entry>
-<entry>The horizontal size of one dialog unit in pixels. (Inaccurate.)</entry>
+<entry><link linkend="wbdoInitCode">initCode</link></entry>
+<entry>Reflects if the object initialization was successful.</entry>
 </row>
 <row>
-<entry><link linkend="wbdoFactorY">factorY</link></entry>
-<entry>The vertical size of one dialog unit in pixels. (Inaccurate.)</entry>
+<entry><link linkend="wbdoHwnd">hwnd</link></entry>
+<entry>The window handle of the dialog.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoSizeX">sizeX</link></entry>
@@ -134,20 +134,20 @@
 <entry>The height of the dialog in dialog units. (Inaccurate.)</entry>
 </row>
 <row>
+<entry><link linkend="wbdoFactorX">factorX</link></entry>
+<entry>The horizontal size of one dialog unit in pixels. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="wbdoFactorY">factorY</link></entry>
+<entry>The vertical size of one dialog unit in pixels. (Inaccurate.)</entry>
+</row>
+<row>
 <entry><link linkend="wbdoPixelCX">pixelCX</link></entry>
 <entry>The width of the dialog in pixels.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoPixelCY">pixelCY</link></entry>
 <entry>The height of the dialog in pixels.</entry>
-</row>
-<row>
-<entry><link linkend="wbdoHwnd">hwnd</link></entry>
-<entry>The window handle of the dialog.</entry>
-</row>
-<row>
-<entry><link linkend="wbdoInitCode">initCode</link></entry>
-<entry>Reflects if the object initialization was successful.</entry>
 </row>
 <row>
 <entry><link linkend="atrFontName">fontName</link></entry>
@@ -214,8 +214,8 @@
 <entry><link linkend="h000425">ChangeListEntry</link></entry>
 </row>
 <row>
-<entry>Clear</entry>
-<entry><link linkend="clear">Clear</link></entry>
+<entry>clear</entry>
+<entry><link linkend="mthClear">clear</link></entry>
 </row>
 <row>
 <entry>ClearButtonRect</entry>
@@ -234,8 +234,8 @@
 <entry><link linkend="h000631">ClearWindowRect</link></entry>
 </row>
 <row>
-<entry>ClientToScreen</entry>
-<entry><link linkend="clienttoscreen">ClientToScreen</link></entry>
+<entry>clientToScreen</entry>
+<entry><link linkend="mthClientToScreen">clientToScreen</link></entry>
 </row>
 <row>
 <entry>CombineELwithSB</entry>
@@ -413,28 +413,28 @@
 <entry><link linkend="h001035">CreatePen</link></entry>
 </row>
 <row>
-<entry>Cursor_AppStarting</entry>
-<entry><link linkend="cursorappstarting">Cursor_AppStarting</link></entry>
+<entry>cursor_appstarting</entry>
+<entry><link linkend="mthCursorAppStarting">cursor_appstarting</link></entry>
 </row>
 <row>
-<entry>Cursor_Arrow</entry>
-<entry><link linkend="cursorarrow">Cursor_Arrow</link></entry>
+<entry>cursor_arrow</entry>
+<entry><link linkend="mthCursorArrow">cursor_arrow</link></entry>
 </row>
 <row>
 <entry>Cursor_Cross</entry>
-<entry><link linkend="cursorcross">Cursor_Cross</link></entry>
+<entry><link linkend="mthCursorCross">Cursor_Cross</link></entry>
 </row>
 <row>
-<entry>Cursor_No</entry>
-<entry><link linkend="cursorno">Cursor_No</link></entry>
+<entry>cursor_no</entry>
+<entry><link linkend="mthCursorNo">cursor_no</link></entry>
 </row>
 <row>
-<entry>CursorPos</entry>
-<entry><link linkend="cursorpos">CursorPos</link></entry>
+<entry>cursorPos</entry>
+<entry><link linkend="mthCursorPos">cursorPos</link></entry>
 </row>
 <row>
-<entry>Cursor_Wait</entry>
-<entry><link linkend="cursorwait">Cursor_Wait</link></entry>
+<entry>cursor_wait</entry>
+<entry><link linkend="mthCursorWait">cursor_wait</link></entry>
 </row>
 <row>
 <entry>DeleteComboEntry</entry>
@@ -457,6 +457,14 @@
 <entry><link linkend="detersb">DetermineSBPosition</link></entry>
 </row>
 <row>
+<entry><link linkend="wbdoSendMessage">sendMessage</link></entry>
+<entry>Sends a Windows message to the underlying dialog and returns its response as a whole number.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoSendMessageHandle">sendMessageHandle</link></entry>
+<entry>Sends a Windows message to the underlying dialog and returns its response as a handle.</entry>
+</row>
+<row>
 <entry><link linkend="wbdoEnable">enable</link></entry>
 <entry>Enables the dialog.</entry>
 </row>
@@ -465,11 +473,11 @@
 <entry>Disables the dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthIsVisible">isVisible</link></entry>
+<entry><link linkend="wbdoIsVisible">isVisible</link></entry>
 <entry>Tests if the dialog is visible.</entry>
 </row>
 <row>
-<entry><link linkend="mthIsEnabled">isEnabled</link></entry>
+<entry><link linkend="wbdoIsEnabled">isEnabled</link></entry>
 <entry>Tests if the dialog is enabled.</entry>
 </row>
 <row>
@@ -546,7 +554,7 @@
 </row>
 <row>
 <entry><link linkend="wbdoSetRect">setRect</link></entry>
-<entry>Moves and resizes the dialog, optionally, only one or the other.</entry>
+<entry>Moves and / or resizes the dialog.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoResizeTo">resizeTo</link></entry>
@@ -558,23 +566,71 @@
 </row>
 <row>
 <entry><link linkend="wbdoGetRealSize">getRealSize</link></entry>
-<entry>Returns the size of the window in pixels as a <computeroutput>Size</computeroutput> object.</entry>
+<entry>Returns the size of the dialog in pixels as a <computeroutput>Size</computeroutput> object.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoGetRealPos">getRealPos</link></entry>
-<entry>Returns the position of the window in pixels as a <computeroutput>Point</computeroutput> object.</entry>
+<entry>Returns the position of the dialog in pixels as a <computeroutput>Point</computeroutput> object.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoWindowRect">windowRect</link></entry>
+<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the dialog in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoClientRect">clientRect</link></entry>
+<entry>
+  Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the dialog's client area in
+  pixels.
+</entry>
+</row>
+<row>
+<entry><link linkend="wbdoClear">clear</link></entry>
+<entry>Clears the client area of the dialog by painting it with the background brush.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoResize">resize</link></entry>
+<entry>Resizes the dialog to the size specified in dialog units <emphasis role="bold">(not accurate.)<</entry>
+</row>
+<row>
+<entry><link linkend="wbdoMove">move</link></entry>
+<entry>Moves the dialog to the position specified in dialog units <emphasis role="bold">(not accurate.)<</entry>
 </row>
 <row>
 <entry><link linkend="wbdoGetSize">getSize</link></entry>
-<entry>Returns the size of the window in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+<entry>Returns the size of the dialog in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="wbdoSendMessage">sendMessage</link></entry>
-<entry>Sends a Windows message to the underlying window and returns its response as a whole number.</entry>
+<entry><link linkend="wbdoGetPos">getPos</link></entry>
+<entry>Returns the position of the dialog in dialog units <emphasis role="bold">(not accurate.)<</entry>
 </row>
 <row>
-<entry><link linkend="wbdoSendMessageHandle">sendMessageHandle</link></entry>
-<entry>Sends a Windows message to the underlying window and returns its response as a handle.</entry>
+<entry><link linkend="wbdoGetRect">getRect</link></entry>
+<entry>Returns the dimesions of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoGetClientRect">getClientRect</link></entry>
+<entry>Returns the dimensions of the dialog's client area.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoForegroundWindow">foregroundWindow</link></entry>
+<entry>Returns the handle of the window in the foreground.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoScreen2client">screen2client</link></entry>
+<entry>Converts a point in screen coordinates to the client-area coordinates of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoClient2screen">client2screen</link></entry>
+<entry>Converts a point in client-area coordinates of the dialog to its screen coordinates.</entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="wbdoScreenToClient">screenToClient</link></entry>
+<entry>Converts screen coordinates to the client-area coordinates of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoClientToScreen">clientToScreen</link></entry>
+<entry>Converts client-area coordinates of the dialog to its screen coordinates.</entry>
 </row>
 <row>
 <entry>DisableItem</entry>
@@ -615,10 +671,6 @@
 <row>
 <entry>DrawPixel</entry>
 <entry><link linkend="h001200">DrawPixel</link></entry>
-</row>
-<row>
-<entry>Dump</entry>
-<entry><link linkend="dumpdialog">Dump</link></entry>
 </row>
 <row>
 <entry>EnableItem</entry>
@@ -665,8 +717,8 @@
 <entry><link linkend="mthFontToDC">FontToDC</link></entry>
 </row>
 <row>
-<entry>ForegroundWindow</entry>
-<entry><link linkend="foregroundwindow">ForegroundWindow</link></entry>
+<entry>foregroundWindow</entry>
+<entry><link linkend="mthForegroundWindow">foregroundWindow</link></entry>
 </row>
 <row>
 <entry>FreeButtonDC</entry>
@@ -712,8 +764,8 @@
 <entry><link linkend="h000703">GetButtonRect</link></entry>
 </row>
 <row>
-<entry>GetClientRect</entry>
-<entry><link linkend="mthGetClientRect">GetClientRect</link></entry>
+<entry>getClientRect</entry>
+<entry><link linkend="mthGetClientRect">getClientRect</link></entry>
 </row>
 <row>
 <entry>GetCheckBox</entry>
@@ -804,16 +856,16 @@
 <entry><link linkend="h001211">GetPixel</link></entry>
 </row>
 <row>
-<entry>GetPos</entry>
-<entry><link linkend="mthGetPos">GetPos</link></entry>
+<entry>getPos</entry>
+<entry><link linkend="mthGetPos">getPos</link></entry>
 </row>
 <row>
 <entry>GetRadioButton</entry>
 <entry><link linkend="h000498">GetRadioButton</link></entry>
 </row>
 <row>
-<entry>GetRect</entry>
-<entry><link linkend="getrect">GetRect</link></entry>
+<entry>getRect</entry>
+<entry><link linkend="mthGetRect">getRect</link></entry>
 </row>
 <row>
 <entry>GetSBPos</entry>
@@ -859,8 +911,8 @@
 <entry><link linkend="mthHasKeyPressConnectionBaseDialog">hasKeyPressConnection</link></entry>
 </row>
 <row>
-<entry>HScrollPos</entry>
-<entry><link linkend="hscrollpos">HScrollPos</link></entry>
+<entry>hScrollPos</entry>
+<entry><link linkend="mthHScrollPos">hScrollPos</link></entry>
 </row>
 <row>
 <entry>Help</entry>
@@ -931,8 +983,8 @@
 <entry><link linkend="h000458">ListDrop</link></entry>
 </row>
 <row>
-<entry>LoadBitmap</entry>
-<entry><link linkend="h000667">LoadBitmap</link></entry>
+<entry>loadBitmap</entry>
+<entry><link linkend="mthLoadBitmap">loadBitmap</link></entry>
 </row>
 <row>
 <entry>LogRect2AbsRect</entry>
@@ -947,8 +999,8 @@
 <entry><link linkend="mthMinimize">Minimize</link></entry>
 </row>
 <row>
-<entry>Move</entry>
-<entry><link linkend="move">Move</link></entry>
+<entry>move</entry>
+<entry><link linkend="mthMove">move</link></entry>
 </row>
 <row>
 <entry>MoveItem</entry>
@@ -1067,12 +1119,12 @@
 <entry><link linkend="releasemousecapture">ReleaseMouseCapture</link></entry>
 </row>
 <row>
-<entry>RemoveBitmap</entry>
-<entry><link linkend="h000676">RemoveBitmap</link></entry>
+<entry>removeBitmap</entry>
+<entry><link linkend=mthRemoveBitmap>removeBitmap</link></entry>
 </row>
 <row>
-<entry>Resize</entry>
-<entry><link linkend="resize">Resize</link></entry>
+<entry>resize</entry>
+<entry><link linkend="mthResize">resize</link></entry>
 </row>
 <row>
 <entry>ResizeItem</entry>
@@ -1083,20 +1135,20 @@
 <entry><link linkend="mthRestore">Restore</link></entry>
 </row>
 <row>
-<entry>RestoreCursorShape</entry>
-<entry><link linkend="restorecursorshape">RestoreCursorShape</link></entry>
+<entry>restoreCursorShape</entry>
+<entry><link linkend="mthRestoreCursorShape">restoreCursorShape</link></entry>
 </row>
 <row>
 <entry>Run</entry>
 <entry><link linkend="h000041">Run</link></entry>
 </row>
 <row>
-<entry>ScreenToClient</entry>
-<entry><link linkend="screentoclient">ScreenToClient</link></entry>
+<entry>screenToClient</entry>
+<entry><link linkend="mthScreenToClient">screenToClient</link></entry>
 </row>
 <row>
-<entry>Scroll</entry>
-<entry><link linkend="scroll">Scroll</link></entry>
+<entry>scroll</entry>
+<entry><link linkend="mthScrollClsWE">scroll</link></entry>
 </row>
 <row>
 <entry>ScrollBitmapFromTo</entry>
@@ -1151,8 +1203,8 @@
 <entry>Sets the text for the specified dialog control</entry>
 </row>
 <row>
-<entry>SetCursorPos</entry>
-<entry><link linkend="setcursorpos">SetCursorPos</link></entry>
+<entry>setCursorPos</entry>
+<entry><link linkend="mthSetCursorPos">setCursorPos</link></entry>
 </row>
 <row>
 <entry>SetCurrentComboIndex</entry>
@@ -1199,12 +1251,12 @@
 <entry><link linkend="mthSetGroup">SetGroup</link></entry>
 </row>
 <row>
-<entry>SetHScrollPos</entry>
-<entry><link linkend="sethscrollpos">SetHScrollPos</link></entry>
+<entry>setHScrollPos</entry>
+<entry><link linkend="mthSetHScrollPos">setHScrollPos</link></entry>
 </row>
 <row>
-<entry>SetVScrollPos</entry>
-<entry><link linkend="setvscrollpos">SetVScrollPos</link></entry>
+<entry>setVScrollPos</entry>
+<entry><link linkend="mthSetVScrollPos">setVScrollPos</link></entry>
 </row>
 <row>
 <entry>SetItemFont</entry>
@@ -1307,8 +1359,8 @@
 <entry><link linkend="mthValidate">validate</link></entry>
 </row>
 <row>
-<entry>VScrollPos</entry>
-<entry><link linkend="vscrollpos">VScrollPos</link></entry>
+<entry>vScrollPos</entry>
+<entry><link linkend="mthVScrollPos">vScrollPos</link></entry>
 </row>
 <row>
 <entry>Write</entry>
@@ -1340,7 +1392,7 @@
 <indexterm><primary>dialog object</primary><secondary>new method</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+---------+--,--id--+-------------+--+----------+--)------------------><
+>>--new(--+---------+--,--id--+-------------+--+----------+--)-----------------><
           +-library-+         +-,--dlgData.-+  +-,--hFile-+
 
 
@@ -1499,7 +1551,7 @@
 <indexterm><primary>setDefaultFont</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--setDefaultFont(--fontName--,--fontSize--)----------------------------------><
+>>--setDefaultFont(--fontName--,--fontSize--)--------><
 
 ]]>
 </programlisting>
@@ -1590,7 +1642,7 @@
 <secondary>PlainBaseDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getFontName----------------------------------------------------><
+>>--getFontName--------------------------------------><
 
 ]]>
 </programlisting>
@@ -1640,7 +1692,7 @@
 <secondary>PlainBaseDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getFontSize----------------------------------------------------><
+>>--getFontSize--------------------------------------><
 
 ]]>
 </programlisting>
@@ -1686,9 +1738,9 @@
 <secondary>constDir</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--constDir---------------------------------------------------><
+>>--constDir-----------------------------------------><
 
->>--constDir[symbol]-=-numericValue----------------------------><
+>>--constDir[symbol]-=-numericValue------------------><
 
 ]]>
 </programlisting>
@@ -1780,9 +1832,9 @@
 
 <programlisting>
 <![CDATA[
->>--autoDetect-----------------------------------------------------><
+>>--autoDetect---------------------------------------><
 
->>--autoDetect-=-onOff---------------------------------------------><
+>>--autoDetect-=-onOff-------------------------------><
 
 ]]>
 </programlisting>
@@ -1835,9 +1887,9 @@
 <secondary>automaticMethods</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--automaticMethods-----------------------------------------------------><
+>>--automaticMethods---------------------------------><
 
->>--automaticMethods-=-varName-------------------------------------------><
+>>--automaticMethods-=-varName-----------------------><
 
 ]]>
 </programlisting>
@@ -1890,9 +1942,9 @@
 <secondary>bkgBitmap</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--bkgBitmap-----------------------------------------------------><
+>>--bkgBitmap----------------------------------------><
 
->>--bkgBitmap-=-varName-------------------------------------------><
+>>--bkgBitmap-=-varName------------------------------><
 
 ]]>
 </programlisting>
@@ -1945,9 +1997,9 @@
 <secondary>bkgBrushBmp</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--bkgBrushBmp-----------------------------------------------------><
+>>--bkgBrushBmp--------------------------------------><
 
->>--bkgBrushBmp-=-varName-------------------------------------------><
+>>--bkgBrushBmp-=-varName----------------------------><
 
 ]]>
 </programlisting>
@@ -2000,9 +2052,9 @@
 <secondary>dlgHandle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--dlgHandle-----------------------------------------------------><
+>>--dlgHandle----------------------------------------><
 
->>--dlgHandle-=-varName-------------------------------------------><
+>>--dlgHandle-=-varName------------------------------><
 
 ]]>
 </programlisting>
@@ -2057,9 +2109,9 @@
 <secondary>fontName</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--fontName----------------------------------------------------><
+>>--fontName-----------------------------------------><
 
->>--fontName=---------------------------------------------------><
+>>--fontName=----------------------------------------><
 
 ]]>
 </programlisting>
@@ -2178,9 +2230,9 @@
 <secondary>PlainBaseDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--fontSize----------------------------------------------------><
+>>--fontSize-----------------------------------------><
 
->>--fontSize=---------------------------------------------------><
+>>--fontSize=----------------------------------------><
 
 ]]>
 </programlisting>
@@ -6655,7 +6707,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newDateTimePicker</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-newDateTimePicker(--id--+------------+--)-------------------><
+>>--newDateTimePicker(--id--+------------+--)------------------><
                            +-,--pageID--+
 
 ]]>
@@ -6800,6 +6852,26 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   basic window methods for the dialog object.
 </para>
 
+<section id="wbdoSendMessage"><title>sendMessage</title>
+<programlisting>
+WindowBase::<link linkend="mthSendMessage">sendMessage</link>
+
+<![CDATA[
+>>--sendMessage(--id--,--msg--,--wParam--,--lParam--)----------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoSendMessageHandle"><title>sendMessageHandle</title>
+<programlisting>
+<link linkend="mthSendMessageHandle">sendMessageHandle</link>
+
+<![CDATA[
+>>--sendMessageHandle(--id--,--msg--,--wParam--,--lParam--)----><
+]]>
+</programlisting>
+</section>
+
 <section id="wbdoEnable"><title>enable</title>
 <programlisting>
 WindowBase::<link linkend="mthEnable">enable</link>
@@ -6815,7 +6887,7 @@ WindowBase::<link linkend="mthEnable">enable</link>
 WindowBass::<link linkend="mthDisable">disable</link>
 
 <![CDATA[
->>-disable-----------------------------------------------------><
+>>--disable----------------------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -7109,12 +7181,153 @@ WindowBase::<link linkend="mthGetSize">getRealPos</link>
 </programlisting>
 </section>
 
+<section id="wbdoWindowRect"><title>windowRect</title>
+<programlisting>
+WindowBase::<link linkend="mthWindowRect">windowRect</link>
+
+<![CDATA[
+>>--windowRect(--+--------+--)-----------------------><
+                 +--hwnd--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoClientRect"><title>clientRect</title>
+<programlisting>
+WindowBase::<link linkend="mthClientRect">clientRect</link>
+
+<![CDATA[
+>>--clientRect(--+--------+--)-----------------------><
+                 +--hwnd--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoClear"><title>clear</title>
+<programlisting>
+WindowBase::<link linkend="mthClear">clear</link>
+
+<![CDATA[
+>>--clear--------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoResize"><title>resize</title>
+<programlisting>
+WindowBase::<link linkend="mthResize">resize</link>
+
+<![CDATA[
+>>--resize(--width--,--height--+-------------+--)----><
+                               +-,-showOpts--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoMove"><title>move</title>
+<programlisting>
+WindowBase::<link linkend="mthMove">move</link>
+
+<![CDATA[
+>>--move(--xPos--,--yPos--+-------------+--)---------><
+                          +-,-showOpts--+
+]]>
+</programlisting>
+</section>
+
 <section id="wbdoGetSize"><title>getSize</title>
 <programlisting>
 WindowBase::<link linkend="mthGetSize">getSize</link>
 
 <![CDATA[
 >>--getSize----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetPos"><title>getPos</title>
+<programlisting>
+WindowBase::<link linkend="mthGetPos">getPos</link>
+
+<![CDATA[
+>>--getPos-------------------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetRect"><title>getRect</title>
+<programlisting>
+WindowBase::<link linkend="mthGetRect">getRect</link>
+
+<![CDATA[
+>>--getRect------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetClientRect"><title>getClientRect</title>
+<programlisting>
+WindowBase::<link linkend="mthGetClientRect">getClientRect</link>
+
+<![CDATA[
+>>--getClientRect(--+------+--)------------------><
+                    +-hwnd-+
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdoForegroundWindow"><title>foregroundWindow</title>
+<programlisting>
+WindowBase::<link linkend="mthForegroundWindow">foregroundWindow</link>
+
+<![CDATA[
+>>--foregroundWindow---------------------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdoScreen2client"><title>screen2client</title>
+<programlisting>
+WindowBase::<link linkend="mthScreen2client">screen2client</link>
+
+<![CDATA[
+>>--screen2client(--point--)-------------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdoClient2screen"><title>client2screen</title>
+<programlisting>
+WindowBase::<link linkend="mthClient2screen">client2screen</link>
+
+<![CDATA[
+>>--client2screen(--point--)-------------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdoScreenToClient"><title>screenToClient</title>
+<programlisting>
+WindowBase::<link linkend="mthScreenToClient">screenToClient</link>
+
+<![CDATA[
+>>--screenToClient(--x--,--y--)----------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdoClientToScreen"><title>clientToScreen</title>
+<programlisting>
+WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
+
+<![CDATA[
+>>--clientToScreen(--x--,--y--)----------------------><
 ]]>
 </programlisting>
 </section>
@@ -8873,52 +9086,6 @@ one of the check boxes instead.
 </variablelist>
 </section>  <!-- End dialog object::pixel2dlgUnit() -->
 
-<section id="mthGetPos"><title>getPos</title>
-<indexterm><primary>GetPos</primary>
-<secondary>DialogControl class</secondary></indexterm>
-<indexterm><primary>GetPos</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getPos-----------------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The getPos method returns the coordinates of the upper left corner a window, either a dialog or a
-  dialog control, in dialog units.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The horizontal and vertical position, separated by a blank.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example dialog control:</emphasis></term>
-<listitem><para>The following example repositions the tree view control FILES to the
-upper left corner of  the window and displays the new position:
-<programlisting>
-<![CDATA[
-obj = MyDialog~newTreeView("FILES")
-if obj = .Nil then return
-obj~Move(1,1)
-parse value obj~getPos with x y
-say "New horizontal position of window is" x "and new vertical position is" y
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example dialog:</emphasis></term>
-<listitem><para>The following example moves the window towards the top left
-of the screen.
-<programlisting>
-<![CDATA[
-parse value self~getPos with px py
-self~Move(px - 10, py - 10)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="h000703"><title>GetButtonRect</title>
 <indexterm><primary>GetButtonRect</primary></indexterm>
 <programlisting>
@@ -10669,7 +10836,7 @@ the viewer dialog is created invisible.  Again, this helps reduce flicker.
 <listitem><para><link linkend="mthGetItem">GetItem</link>: The window handle of
 the edit control is obtained by this method ...
 </para></listitem>
-<listitem><para><link linkend="mthGetClientRect">GetClientRect</link>: ... then
+<listitem><para><link linkend="mthGetClientRect">getClientRect</link>: ... then
 the size of the client area of the viewer dialog is obtained using this method.
 Then ..
 </para></listitem>
@@ -11133,7 +11300,7 @@ invalid for a bitmap loaded from a DLL.
 </para></listitem></varlistentry>
 <varlistentry><term>INMEMORY</term>
 <listitem><para>This option must be used if the named bitmaps are already loaded into
-memory by using the <link linkend="h000667">LoadBitmap</link> method. In this case, bmpNormal, bmpFocused, bmpSelected, and bmpDisabled specify a bitmap handle instead of a file.
+memory by using the <link linkend="mthLoadBitmap">loadBitmap</link> method. In this case, bmpNormal, bmpFocused, bmpSelected, and bmpDisabled specify a bitmap handle instead of a file.
 </para></listitem></varlistentry>
 <varlistentry><term>STRETCH</term>
 <listitem><para>If this option is specified and the extent of the bitmap is smaller
@@ -11585,7 +11752,7 @@ time the button is clicked.
 <varlistentry><term>bmpFrom</term>
 <listitem><para>The ID of the first bitmap in the animation sequence within a binary
 resource. It can also be the name of an array stored in the .local directory
-containing handles of bitmaps to be animated and bmpTo is omitted. See <link linkend="h000667">LoadBitmap</link> for how to get bitmap
+containing handles of bitmaps to be animated and bmpTo is omitted. See <link linkend="mthLoadBitmap">loadBitmap</link> for how to get bitmap
 handles. The array starts at index 1.
 </para></listitem></varlistentry>
 <varlistentry><term>bmpTo</term>
@@ -11625,7 +11792,7 @@ plays a tune each time the animated bitmap hits the right border.
 .Local["My.Bitmaps"] = .array~new(10)
 /* load 10 bitmaps into .local array */
 do i= 1 to 10
-  .Local["My.Bitmaps"][i] = Dialog~LoadBitmap("anibmp"i".bmp")
+  .Local["My.Bitmaps"][i] = Dialog~loadBitmap("anibmp"i".bmp")
   /* you could also use .My.Bitmaps[i] =  ... */
 end
 
@@ -11638,7 +11805,7 @@ Dialog~execute
 
 /* Free the bitmap previously loaded */
 do bmp over .Local["My.Bitmaps"] /* You could also use do bmp over .My.Bitmaps */
-   Dialog~RemoveBitmap(bmp)
+   Dialog~removeBitmap(bmp)
 end
 
 
@@ -12122,26 +12289,6 @@ a button. It is used to move bitmaps within buttons. </para>
 </section>
 
 <section id="sctSendingWindowsMessages"><title>Sending Windows Messages</title>
-
-<section id="wbdoSendMessage"><title>sendMessage</title>
-<programlisting>
-WindowBase::<link linkend="mthSendMessage">sendMessage</link>
-
-<![CDATA[
->>--sendMessage(--id--,--msg--,--wParam--,--lParam--)----------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoSendMessageHandle"><title>sendMessageHandle</title>
-<programlisting>
-<link linkend="mthSendMessageHandle">sendMessageHandle</link>
-
-<![CDATA[
->>--sendMessageHandle(--id--,--msg--,--wParam--,--lParam--)----><
-]]>
-</programlisting>
-</section>
 
 <section id="mthSendMessageToWindow"><title>sendMessageToWindow</title>
 <indexterm><primary>sendMessageToControl</primary></indexterm>

@@ -64,27 +64,27 @@
 </para>
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
-  needed, or are useful, when working with up down controls:
+  needed, or are useful, when working with up-down controls:
 <variablelist>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
     Use the <link linkend="tmthNewUpDown">newUpDown</link>() method of the <link
-    linkend="chpDialogObject">dialog</link> object to retrieve a new up down object.
+    linkend="chpDialogObject">dialog</link> object to retrieve a new up-down object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
     <para>
-      To dynamically define a up down control in a <link linkend="clsUserDialog">UserDialog</link> class, use the <link
+      To dynamically define an up-down control in a <link linkend="clsUserDialog">UserDialog</link> class, use the <link
       linkend="mthCreateUpDown">createUpDown</link> method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
     <para>
-      To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying up down control to a
-      method in the Rexx dialog object use the <link linkend="mthConnectUpDownEvent">connectUpDownEvent</link>)()
+      To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying up-down control to a
+      method in the Rexx dialog object use the <link linkend="mthConnectUpDownEvent">connectUpDownEvent</link>()
       method.
     </para>
   </listitem></varlistentry>
@@ -107,7 +107,7 @@
 </thead>
 <tbody>
 <row>
-<entry align="center"><emphasis role="bold">From Other Classes</emphasis></entry>
+<entry align="center"><emphasis role="bold">Useful External Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
@@ -116,27 +116,63 @@
 </row>
 <row>
 <entry><link linkend="tmthCreateUpDown">createUpDown</link></entry>
-<entry>Creates an up down control in the dialog template of a <link linkend="clsUserDialog">UserDialog</link></entry>
+<entry>Creates an up-down control in the dialog template of a <link linkend="clsUserDialog">UserDialog</link></entry>
 </row>
 <row>
 <entry><link linkend="tmthConnectUpDownEvent">connectUpDownEvent</link></entry>
-<entry>Connects up down event notifications to a method in the Rexx dialog object</entry>
+<entry>Connects up-down event notifications to a method in the Rexx dialog object</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-  <entry><link linkend="mthDeltaPosReply">deltaPosReply </link></entry>
-  <entry>Does a deltaPosReply ...</entry>
+<entry><link linkend="mthDeltaPosReply">deltaPosReply </link></entry>
+<entry>Does a deltaPosReply ...</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-  <entry><link linkend="mthGetBase">getBase</link></entry>
-  <entry>xxx ss ssss xxx</entry>
+<entry><link linkend="mthGetAcceleration">getAcceleration</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetBase">getBase</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetBuddy">getBuddy</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetPosition">getPosition</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetRange">getRange</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetAcceleration">setAcceleration</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetBase">setBase</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetBuddy">setBuddy</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetPosition">setPosition</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetRange">setRange</link></entry>
+<entry>xx</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -145,7 +181,7 @@
 
 <section id="tmthNewUpDown"><title>newUpDown (dialog object method)</title>
 <para>
-  UpDown objects can not be instantiated by the programmer from Rexx code. Rather a up down object is obtained by using
+  UpDown objects can not be instantiated by the programmer from Rexx code. Rather an up-down object is obtained by using
   the <link linkend="mthNewUpDown">newUpDown</link>() method of the dialog <link
   linkend="chpDialogObject">object</link>. The syntax is:
 <programlisting>
@@ -161,8 +197,8 @@
 
 <section id="tmthCreateUpDown"><title>createUpDown (UserDialog method)</title>
 <para>
-  An up down object can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link> dialog
-  through the <link linkend="mthCreateUpDown"></link> method. The basic syntax is:
+  An up-down object can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link> dialog
+  through the <link linkend="mthCreateUpDown">createUpDown</link>() method. The basic syntax is:
 <programlisting> <![CDATA[
 >>--createUpDown(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)---><
                                            +-,-style-+  +-,-attributeName-+
@@ -175,9 +211,9 @@
 
 <section id="tmthConnectUpDownEvent"><title>connectUpDownEvent (dialog object method)</title>
 <para>
-  To connect event notifications from a up down object use the <link
-  linkend="mthConnectUpDownEvent">connectUpDownEvent</link>() method of the <link linkend="chpDialogObject"></link>
-  class. The basic syntax is:
+  To connect event notifications from an up-down object use the <link
+  linkend="mthConnectUpDownEvent">connectUpDownEvent</link>() method of the <link
+  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
 
 <programlisting> <![CDATA[
 >>-connectUpDownEvent(--id--,--event--+----------------+--)------------><
@@ -189,18 +225,72 @@
 </section>  <!-- End connectUpDownEvent() [EventNotification method] -->
 
 
-<section id="mthDeltaPosReply"><title>deltaPosReply (Class method)</title>
+<section id="mthDeltaPosReply"><title>deltaPosReply</title>
 <indexterm><primary>deltaPosReply</primary></indexterm>
 <indexterm><primary>UpDown class</primary><secondary>deltaPosReply</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--deltaPosReply(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
 <para>
-  Need text.
+  xx
 </para>
-</section>  <!-- End UpDown::deltaPosReply() [class method] -->
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UpDown::deltaPosReply() -->
 
 
 <section id="mthGetBase"><title>getBase</title>
-<indexterm><primary>getBase</primary>
-<secondary>UpDown class</secondary></indexterm>
+<indexterm><primary>getBase</primary></indexterm>
+<indexterm><primary>UpDown class</primary><secondary>getBase</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getBase----------------------------------------------------><
@@ -259,6 +349,565 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End UpDown::getBase() -->
+
+<section id="mthSetBase"><title>setBase</title>
+<indexterm><primary>setBase</primary></indexterm>
+<indexterm><primary>UpDown class</primary><secondary>setBase</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setBase(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UpDown::setBase() -->
+
+<section id="mthGetBuddy"><title>getBuddy</title>
+<indexterm><primary>getBuddy</primary></indexterm>
+<indexterm><primary>UpDown class</primary><secondary>getBuddy</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getBuddy(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UpDown::getBuddy() -->
+
+<section id="mthSetBuddy"><title>setBuddy</title>
+<indexterm><primary>setBuddy</primary></indexterm>
+<indexterm><primary>UpDown class</primary><secondary>setBuddy</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setBuddy(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UpDown::setBuddy() -->
+
+<section id="mthGetPosition"><title>getPosition</title>
+<indexterm><primary>getPosition</primary></indexterm>
+<indexterm><primary>UpDown class</primary><secondary>getPosition</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getPosition(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UpDown::getPosition() -->
+
+<section id="mthSetPosition"><title>setPosition</title>
+<indexterm><primary>setPosition</primary></indexterm>
+<indexterm><primary>UpDown class</primary><secondary>setPosition</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setPosition(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UpDown::setPosition() -->
+
+<section id="mthGetRange"><title>getRange</title>
+<indexterm><primary>getRange</primary></indexterm>
+<indexterm><primary>UpDown class</primary><secondary>getRange</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getRange(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UpDown::getRange() -->
+
+<section id="mthSetRange"><title>setRange</title>
+<indexterm><primary>setRange</primary></indexterm>
+<indexterm><primary>UpDown class</primary><secondary>setRange</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setRange(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UpDown::setRange() -->
+
+<section id="mthGetAcceleration"><title>getAcceleration</title>
+<indexterm><primary>getAcceleration</primary></indexterm>
+<indexterm><primary>UpDown class</primary><secondary>getAcceleration</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getAcceleration(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UpDown::getAcceleration() -->
+
+<section id="mthSetAcceleration"><title>setAcceleration</title>
+<indexterm><primary>setAcceleration</primary></indexterm>
+<indexterm><primary>UpDown class</primary><secondary>setAcceleration</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setAcceleration(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UpDown::setAcceleration() -->
 
 </chapter>  <!-- End UpDown class -->
 

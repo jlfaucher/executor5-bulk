@@ -731,7 +731,7 @@ button~style="DEFPUSHBUTTON"
 
 
 <section id="mthGetIdealSize"><title>getIdealSize</title>
-<indexterm><primary>getIdealSize</primary></indexterm>
+<indexterm><primary>getIdealSize</primary><secondary>Button class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getIdealSize---------------------------------><
@@ -1385,8 +1385,8 @@ option is not valid for a bitmap loaded from a dynamic-link library.</para>
 </listitem></varlistentry>
 <varlistentry><term>INMEMORY</term>
 <listitem><para>This option must be used if the named bitmaps are already loaded into
-memory by using the LoadBitmap method (see
-<link linkend="h000667">LoadBitmap</link>).
+memory by using the loadBitmap method (see
+<link linkend="mthLoadBitmap">loadBitmap</link>).
 In this case, you must specify a bitmap handle instead of a file name or ID.
 </para></listitem></varlistentry>
 <varlistentry><term>STRETCH</term>
@@ -1480,12 +1480,12 @@ and separated by a blank.
 </variablelist>
 </section>
 
-<section id="scrollbc"><title>Scroll</title>
-<indexterm><primary>Scroll</primary>
+<section id="scrollbc"><title>scroll</title>
+<indexterm><primary>scroll</primary>
 <secondary>ButtonControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~Scroll(--xPos--,--yPos--,--left--,--top--,--right--,--bottom--)-><
+>>-aButtonControl~scroll(--xPos--,--yPos--,--left--,--top--,--right--,--bottom--)-><
 
 
 ]]>
@@ -1715,7 +1715,7 @@ to display a single image of the bitmap.
 <variablelist>
 <varlistentry><term>bmpHandle</term>
 <listitem><para>A handle to the bitmap loaded with
-<link linkend="h000667">LoadBitmap</link>.
+<link linkend="mthLoadBitmap">loadBitmap</link>.
 </para></listitem></varlistentry>
 <varlistentry><term>width, height</term>
 <listitem><para>The extensions of the bitmap.
@@ -2509,7 +2509,7 @@ stored in a stem variable: </para>
 <varlistentry><term>sprite.from</term>
 <listitem><para>Array of in-memory bitmap handles, or a bitmap resource ID in a DLL,
 or the name of an array in the .local directory containing handles to bitmaps
-loaded with <link linkend="h000667">LoadBitmap</link>.
+loaded with <link linkend="mthLoadBitmap">loadBitmap</link>.
 The array has to start with 1 and continue in increments by 1.
 </para></listitem></varlistentry>
 <varlistentry><term>sprite.to</term>
@@ -2655,7 +2655,7 @@ self~setPos(newx,newy)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
-<varlistentry><term>GetPos</term>
+<varlistentry><term>getPos</term>
 <listitem><para>Retrieve the current position into a stem:
 <programlisting>
 <![CDATA[

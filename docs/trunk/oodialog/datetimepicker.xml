@@ -67,40 +67,14 @@
   xx
 </para>
 <para>
-  The DateTimePicker class provides methods to get and set the date and time in the DTP control, along with methods to
-  manipulate the control.
+  The <computeroutput>DateTimePicker</computeroutput> class provides methods to get and set the date and time in the
+  underlying DTP control, along with methods to manipulate the control. It is a concrete subclass of the dialog control <link
+  linkend="chpDialogControlObject">object</link> and therefore has all methods of the of the dialog control object.
 </para>
+<para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with up-down controls:
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
-  <listitem>
-  <para>
-  The DateTimePicker class requires the class definition file <computeroutput>ooDialog.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "ooDialog.cls"
-]]>
-</programlisting>
-  </para></listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
-  <listitem>
-  <para>
-    The date and time picker class is a subclass of the <link linkend="chpDialogControlObject">DialogControl</link> class
-    and therefore inherits all methods of that class.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Mixin Class Inherits:</emphasis></term>
-  <listitem>
-  <para>
-    The date and time picker class inherits from the following mixin classes, (indirectly through the DialogControl
-    class.)
-  </para>
-  <para>
-    The <link linkend="clsWindowBase">WindowBase</link>
-  </para>
-  <para>
-    The <link linkend="clsWindowExtensions">WindowExtensions</link>
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
@@ -111,8 +85,8 @@
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically add a date and time picker to a <link linkend="clsUserDialog">UserDialog</link>, use the
-    <link linkend="mthCreateDateTimePicker">createDateTimePicker</link>() method.
+    To dynamically add a date and time picker to a <link linkend="clsUserDialog">UserDialog</link> use the <link
+    linkend="mthCreateDateTimePicker">createDateTimePicker</link>() method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
@@ -122,50 +96,115 @@
     linkend="mthConnectDateTimePickerEvent">connectDateTimePickerEvent</link>)() method.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Important Methods:</emphasis></term>
-  <listitem>
-  <para>
-    The following table provides links to the documentation for the primary methods and attributes used in working with
-    date and time picker objects. These include all the methods and attributes implemented by the DateTimePicker class,
-    and the methods to connect to event notifications from the DTP, get a date and time picker object, and dynamically
-    create a date and time picker control in a dialog:
-  </para>
-  <table id="tblDateTimePickerMethods" frame="all">
-  <title>DateTimePicker Methods and Attributes</title>
-  <tgroup cols="2">
-  <thead>
-  <row>
-  <entry>Method...</entry>
-  <entry>...Documentation</entry>
-  </row>
-  </thead>
-  <tbody>
-  <row>
-    <entry><link linkend="dtpMthNewClsDateTimePicker">newDateTimePicker</link></entry>
-    <entry>Gets a DateTimePicker object that represents a control in a dialog</entry> </row>
-  <row>
-    <entry><link linkend="tmthCreateDateTimePicker">createDateTimePicker</link></entry>
-    <entry>Creates a DateTimePicker control in an <link linkend="clsUserDialog">UserDialog</link></entry>
-  </row>
-  <row>
-    <entry><link linkend="tmthConnectDateTimePickerEvent">connectDateTimePickerEvent</link></entry>
-    <entry>Connectes DateTimePicker events to a dialog method</entry>
-  </row>
-  <row>
-    <entry><link linkend="mthCloseMonthCal">closeMonthCal</link></entry>
-    <entry>Close the drop down month calendar if it is dropped down</entry>
-  </row>
-  </tbody></tgroup> </table>
-  </listitem></varlistentry>
 </variablelist>
+</para>
 
-
-<section id="dtpMthNewClsDateTimePicker"><title>newDateTimePicker [Dialog method]</title>
+<section id="sctMethodsDateTimePicker"><title>Method Table</title>
 <para>
-  DateTimePicker objects can not be instantiated by the programmer from Rexx code using a <emphasis
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with DateTimePicker objects, including the pertinent methods from other classes:
+</para>
+<table id="tblDateTimePickerMethods" frame="all">
+<title>DateTimePicker Methods and Attributes</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method...</entry>
+<entry>...Documentation</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Useful External Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="tmthNewDateTimePicker">newDateTimePicker</link></entry>
+<entry>Obtains a DateTimePicker object that represents a control in a dialog.</entry>
+</row>
+<row>
+<entry><link linkend="tmthCreateDateTimePicker">createDateTimePicker</link></entry>
+<entry>Creates a DateTimePicker control in an <link linkend="clsUserDialog">UserDialog</link>.</entry>
+</row>
+<row>
+<entry><link linkend="tmthConnectDateTimePickerEvent">connectDateTimePickerEvent</link></entry>
+<entry>Connectes DateTimePicker event notifications to a Rexx dialog method.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthCloseMonthCal">closeMonthCal</link></entry>
+<entry>Close the drop down month calendar if it is dropped down</entry>
+</row>
+<row>
+<entry><link linkend="mthGetDateTime">getDateTime</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetIdealSizeClsDTP">getIdealSize</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetInfo">getInfo</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetMonthCal">getMontCal</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetMonthCalColor">getMontCalColor</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetMonthCalFont">getMontCalFont</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetMonthCalStyle">getMontCalStyle</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetRangeClsDTP">getRange</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetDateTime">setDateTime</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetFormat">setFormat</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetMonthCalColor">setMonthCalColor</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetMonthCalFont">setMonthCalFont</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetMonthCalStyle">setMonthCalStyle</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthSetRangeClsDTP">setRange</link></entry>
+<entry>xx</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="tmthNewDateTimePicker"><title>newDateTimePicker (dialog object method)</title>
+<para>
+  <computeroutput>DateTimePicker</computeroutput> objects can not be instantiated by the programmer from Rexx code using a <emphasis
   role="italic">new</emphasis>() method. Rather, a date and time picker object is obtained by using the <link
-  linkend="mthNewDateTimePicker">newDateTimePicker</link>() method of the <link
-  linkend="chpDialogObject">dialog</link>.  The syntax is:
+  linkend="mthNewDateTimePicker">newDateTimePicker</link>() method of the <link linkend="chpDialogObject">dialog</link>
+  object. The syntax is:
 <programlisting>
 <![CDATA[
 >>-newDateTimePicker(--id--+-------------+--)---------------------><
@@ -174,13 +213,14 @@
 ]]>
 </programlisting>
 </para>
-</section>  <!-- End Dialog::newDateTimePicker() [Dialog method] -->
+</section>  <!-- End Dialog::newDateTimePicker() (dialog object method) -->
 
 
-<section id="tmthCreateDateTimePicker"><title>createDateTimePicker [UserDialog method]</title>
+<section id="tmthCreateDateTimePicker"><title>createDateTimePicker (UserDialog method)</title>
 <para>
-  A date and time picker control can be added to a <link linkend="clsUserDialog">UserDialog</link> dialog
-  through the <link linkend="mthCreateDateTimePicker">createDateTimePicker</link>() method. The basic syntax is:
+  A date and time picker control can be added to the dialog template of a <link
+  linkend="clsUserDialog">UserDialog</link> through the <link
+  linkend="mthCreateDateTimePicker">createDateTimePicker</link>() method. The basic syntax is:
 <programlisting> <![CDATA[
 >>-createDateTimePicker(-id-,--x-,--y-,--cx-,--cy-+----------+-+-------------+--><
                                                   +-,--style-+ +-,--attrName-+
@@ -188,14 +228,14 @@
 ]]>
 </programlisting>
 </para>
-</section>  <!-- End UserDialog::createDateTimePicker() [UserDialog method] -->
+</section>  <!-- End UserDialog::createDateTimePicker() (UserDialog method) -->
 
 
-<section id="tmthConnectDateTimePickerEvent"><title>connectDateTimePickerEvent [EventNotification method]</title>
+<section id="tmthConnectDateTimePickerEvent"><title>connectDateTimePickerEvent (dialog object method)</title>
 <para>
   To connect event notifications from a DTP control use the <link
   linkend="mthConnectDateTimePickerEvent">connectDateTimePickerEvent</link>() method of the <link
-  linkend="clsEventNotification"></link> class. The basic syntax is:
+  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
 
 <programlisting> <![CDATA[
 >>-connectDateTimePickerEvent(--id--,--event--+----------------+--)------------><
@@ -204,7 +244,7 @@
 ]]>
 </programlisting>
 </para>
-</section>  <!-- End EventNotification::connectDateTimePickerEvent() [EventNotification method] -->
+</section>  <!-- End EventNotification::connectDateTimePickerEvent() (dialog object method) -->
 
 
 <section id="mthCloseMonthCal"><title>closeMonthCal</title>
@@ -248,6 +288,321 @@
   </para></listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DateTimePicker::closeMonthCal() -->
+
+<section id="mthGetDateTime"><title>getDateTime</title>
+<indexterm><primary>getDateTime</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>getDateTime</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getDateTime(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::getDateTime() -->
+
+<section id="mthGetInfo"><title>getInfo</title>
+<indexterm><primary>getInfo</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>getInfo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getInfo(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::getInfo() -->
+
+<section id="mthGetIdealSizeClsDTP"><title>getIdealSize</title>
+<indexterm><primary>getIdealSize</primary><secondary>>DateTimePicker class</secondary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>getIdealSize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getIdealSize(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::getIdealSize() -->
+
+<section id="mthGetMonthCal"><title>getMonthCal</title>
+<indexterm><primary>getMonthCal</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>getMonthCal</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMonthCal(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::getMonthCal() -->
+
+<section id="mthGetMonthCalColor"><title>getMonthCalColor</title>
+<indexterm><primary>getMonthCalColor</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>getMonthCalColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMonthCalColor(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::getMonthCalColor() -->
+
 
 <section id="mthGetMonthCalFont"><title>getMonthCalFont</title>
 <indexterm><primary>getMonthCalFont</primary></indexterm>
@@ -311,6 +666,322 @@
 </variablelist>
 </section>  <!-- End DateTimePicker::getMonthCalFont() -->
 
+<section id="mthGetMonthCalStyle"><title>getMonthCalStyle</title>
+<indexterm><primary>getMonthCalStyle</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>getMonthCalStyle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMonthCalStyle(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::getMonthCalStyle() -->
+
+<section id="mthGetRangeClsDTP"><title>getRange</title>
+<indexterm><primary>getRange</primary><secondary>DateTimePicker class</secondary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>getRange</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getRange(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::getRange() -->
+
+<section id="mthSetDateTime"><title>setDateTime</title>
+<indexterm><primary>setDateTime</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>setDateTime</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setDateTime(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::setDateTime() -->
+
+<section id="mthSetFormat"><title>setFormat</title>
+<indexterm><primary>setFormat</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>setFormat</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setFormat(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::setFormat() -->
+
+<section id="mthSetMonthCalColor"><title>setMonthCalColor</title>
+<indexterm><primary>setMonthCalColor</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>setMonthCalColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setMonthCalColor(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::setMonthCalColor() -->
+
+
 <section id="mthSetMonthCalFont"><title>setMonthCalFont</title>
 <indexterm><primary>setMonthCalFont</primary></indexterm>
 <indexterm><primary>DateTimePicker</primary><secondary>setMonthCalFont</secondary></indexterm>
@@ -372,6 +1043,132 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DateTimePicker::setMonthCalFont() -->
+
+<section id="mthSetMonthCalStyle"><title>setMonthCalStyle</title>
+<indexterm><primary>setMonthCalStyle</primary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>setMonthCalStyle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setMonthCalStyle(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::setMonthCalStyle() -->
+
+<section id="mthSetRangeClsDTP"><title>setRange</title>
+<indexterm><primary>setRange</primary><secondary>DateTimePicker class</secondary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>setRange</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setRange(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::setRange() -->
 
 </chapter>  <!-- End DateTimePicker class -->
 
