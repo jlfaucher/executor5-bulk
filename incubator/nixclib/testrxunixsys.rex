@@ -171,6 +171,10 @@ do entry over arr
    say "   "entry
    end
 
+say 'Calling SysGettzname'
+say 'The system time zone name is' SysGettzname1()
+say 'The system alternate time zone name is' SysGettzname2()
+
 return
 
 ::requires 'rxunixsys' library

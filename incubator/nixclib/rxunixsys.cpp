@@ -1637,6 +1637,36 @@ RexxRoutine1(RexxObjectPtr,
 }
 
 
+/**
+ * Method:        SysGettzname1
+ *
+ * Return the timezone name.
+ *
+ * @return        RexxStringObject.
+ */
+RexxRoutine0(RexxObjectPtr,
+             SysGettzname1)   
+{
+
+    return (RexxObjectPtr)context->NewStringFromAsciiz(tzname[0]);
+}
+
+
+/**
+ * Method:        SysGettzname2
+ *
+ * Return the altername timezone name.
+ *
+ * @return        RexxStringObject.
+ */
+RexxRoutine0(RexxObjectPtr,
+             SysGettzname2)   
+{
+
+    return (RexxObjectPtr)context->NewStringFromAsciiz(tzname[1]);
+}
+
+
 // initialize the libvirt library
 static void orxnixclib_loader(RexxThreadContext *context) {
    }
@@ -1695,6 +1725,8 @@ RexxRoutineEntry orxnixclib_routines[] = {
     REXX_TYPED_ROUTINE(SysMkdir, SysMkdir),
     REXX_TYPED_ROUTINE(SysRmdir, SysRmdir),
     REXX_TYPED_ROUTINE(SysGetdirlist, SysGetdirlist),
+    REXX_TYPED_ROUTINE(SysGettzname1, SysGettzname1),
+    REXX_TYPED_ROUTINE(SysGettzname2, SysGettzname2),
     REXX_LAST_ROUTINE()
 };
 
