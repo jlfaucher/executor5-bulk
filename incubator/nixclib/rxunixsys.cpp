@@ -1648,6 +1648,7 @@ RexxRoutine0(RexxObjectPtr,
              SysGettzname1)   
 {
 
+    tzset();
     return (RexxObjectPtr)context->NewStringFromAsciiz(tzname[0]);
 }
 
@@ -1663,6 +1664,7 @@ RexxRoutine0(RexxObjectPtr,
              SysGettzname2)   
 {
 
+    tzset();
     return (RexxObjectPtr)context->NewStringFromAsciiz(tzname[1]);
 }
 

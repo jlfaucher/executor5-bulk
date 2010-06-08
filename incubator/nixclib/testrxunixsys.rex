@@ -174,6 +174,7 @@ do entry over arr
 say 'Calling SysGettzname'
 say 'The system time zone name is' SysGettzname1()
 say 'The system alternate time zone name is' SysGettzname2()
+say 'The system environment time zone name is' value('TZ',, 'ENVIRONMENT')
 
 return
 
