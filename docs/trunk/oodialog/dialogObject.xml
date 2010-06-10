@@ -669,10 +669,6 @@
 <entry>Connects the move event notification to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>ConnectMultiListBox</entry>
-<entry><link linkend="mthConnectMultiListBox">ConnectMultiListBox</link></entry>
-</row>
-<row>
 <entry><link linkend="mthConnectPosChanged">connectPosChanged</link></entry>
 <entry>Connects the position has changed event notification to a method in the Rexx dialog.</entry>
 </row>
@@ -851,8 +847,8 @@
 <entry><link linkend="mthGetClientRect">getClientRect</link></entry>
 </row>
 <row>
-<entry>GetCheckBox</entry>
-<entry><link linkend="h000490">GetCheckBox</link></entry>
+<entry>getCheckBoxData</entry>
+<entry><link linkend="mthGetCheckBoxData">getCheckBoxData</link></entry>
 </row>
 <row>
 <entry>GetComboEntry</entry>
@@ -863,8 +859,8 @@
 <entry><link linkend="h000336">GetComboItems</link></entry>
 </row>
 <row>
-<entry>GetComboLine</entry>
-<entry><link linkend="h000482">GetComboLine</link></entry>
+<entry>getComboBoxData</entry>
+<entry><link linkend="mthGetComboBoxData">getComboBoxData</link></entry>
 </row>
 <row>
 <entry>GetControlID</entry>
@@ -915,10 +911,6 @@
 <entry><link linkend="h000409">GetListItems</link></entry>
 </row>
 <row>
-<entry>GetListLine</entry>
-<entry><link linkend="h000474">GetListLine</link></entry>
-</row>
-<row>
 <entry>GetListWidth</entry>
 <entry><link linkend="getlistwidth">GetListWidth</link></entry>
 </row>
@@ -927,16 +919,16 @@
 <entry><link linkend="getmousecapture">GetMouseCapture</link></entry>
 </row>
 <row>
-<entry>GetMultiList</entry>
-<entry><link linkend="h000506">GetMultiList</link></entry>
+<entry>getListBoxData</entry>
+<entry><link linkend="mthGetListBoxData">getListBoxData</link></entry>
 </row>
 <row>
 <entry>getPos</entry>
 <entry><link linkend="mthGetPos">getPos</link></entry>
 </row>
 <row>
-<entry>GetRadioButton</entry>
-<entry><link linkend="h000498">GetRadioButton</link></entry>
+<entry>getRadioButtonData</entry>
+<entry><link linkend="mthGetRadioButtonData">getRadioButtonData</link></entry>
 </row>
 <row>
 <entry>getRect</entry>
@@ -1218,12 +1210,12 @@
 <entry>Sets the state of a dialog control using the value of a data attribute of the Rexx dialog.</entry>
 </row>
 <row>
-<entry>SetCheckBox</entry>
-<entry><link linkend="h000557">SetCheckBox</link></entry>
+<entry>setCheckBoxData</entry>
+<entry><link linkend="mthSetCheckBoxData">setCheckBoxData</link></entry>
 </row>
 <row>
-<entry>SetComboLine</entry>
-<entry><link linkend="h000548">SetComboLine</link></entry>
+<entry>setComboBoxData</entry>
+<entry><link linkend="mthSetComboBoxData">setComboBoxData</link></entry>
 </row>
 <row>
 <entry><link linkend="mthSetControlText">setControlText</link></entry>
@@ -1278,8 +1270,8 @@
 <entry><link linkend="setlistitemheight">SetListItemHeight</link></entry>
 </row>
 <row>
-<entry>SetListLine</entry>
-<entry><link linkend="h000539">SetListLine</link></entry>
+<entry>setListBoxData</entry>
+<entry><link linkend="mthSetListBoxData">setListBoxData</link></entry>
 </row>
 <row>
 <entry>SetListWidth</entry>
@@ -1290,12 +1282,8 @@
 <entry><link linkend="h000435">SetListTabulators</link></entry>
 </row>
 <row>
-<entry>SetMultiList</entry>
-<entry><link linkend="h000575">SetMultiList</link></entry>
-</row>
-<row>
-<entry>SetRadioButton</entry>
-<entry><link linkend="h000566">SetRadioButton</link></entry>
+<entry>setRadioButtonData</entry>
+<entry><link linkend="mthSetRadioButtonData">setRadioButtonData</link></entry>
 </row>
 <row>
 <entry>SetSBPos</entry>
@@ -2376,954 +2364,14 @@ WindowBase::<link linkend="atrPixelCY">pixelCY</link>
 </section>  <!-- End Attributes Section -->
 
 
-<section id="sctWindowBaseDO"><title>Basic Window Methods</title>
-<indexterm><primary>dialog object</primary><secondary>basic window methods</secondary></indexterm>
-<para>
-  Recall that in the Windows graphical user interface, everything is a window. The <link
-  linkend="clsWindowBase">WindowBase</link> class is a mixin class that contains methods common to all windows. Since a
-  dialog is a window, it inherits the <emphasis role="italic">WindowBase</emphasis> class. This section lists all the
-  basic window methods for the dialog object.
-</para>
+<!-- <section id="sctWindowBaseDO"><title>Basic Window Methods</title>  START -->
+&windowBaseDO;
+<!-- <section id="sctWindowBaseDO"><title>Basic Window Methods</title>  END   -->
 
-<section id="wbdoSendMessage"><title>sendMessage</title>
-<programlisting>
-WindowBase::<link linkend="mthSendMessage">sendMessage</link>
 
-<![CDATA[
->>--sendMessage(--id--,--msg--,--wParam--,--lParam--)----------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoSendMessageHandle"><title>sendMessageHandle</title>
-<programlisting>
-<link linkend="mthSendMessageHandle">sendMessageHandle</link>
-
-<![CDATA[
->>--sendMessageHandle(--id--,--msg--,--wParam--,--lParam--)----><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoEnable"><title>enable</title>
-<programlisting>
-WindowBase::<link linkend="mthEnable">enable</link>
-
-<![CDATA[
->>--enable-----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoDisable"><title>disable</title>
-<programlisting>
-WindowBass::<link linkend="mthDisable">disable</link>
-
-<![CDATA[
->>--disable----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoIsVisible"><title>isVisible</title>
-<programlisting>
-WindowBase::<link linkend="mthIsVisible">isVisible</link>
-
-<![CDATA[
->>--isVisible--------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoIsEnabled"><title>isEnabled</title>
-<programlisting>
-WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
-
-<![CDATA[
->>--isEnabled--------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoHide"><title>hide</title>
-<programlisting>
-WindowBase::<link linkend="mthHide">hide</link>
-
-<![CDATA[
->>--hide-------------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoShowFast"><title>showFast</title>
-<programlisting>
-WindowBase::<link linkend="mthShowFast">showFast</link>
-
-<![CDATA[
->>--showFast---------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoHideFast"><title>hideFast</title>
-<programlisting>
-WindowBase::<link linkend="mthHideFast">hideFast</link>
-
-<![CDATA[
->>--hideFast---------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoDisplay"><title>display</title>
-<programlisting>
-WindowBase::<link linkend="mthDisplay">display</link>
-
-<![CDATA[
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoUpdate"><title>update</title>
-<programlisting>
-WindowBase::<link linkend="mthUpdate">update</link>
-
-<![CDATA[
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoDraw"><title>draw</title>
-<programlisting>
-WindowBase::<link linkend="mthDraw">draw</link>
-
-<![CDATA[
->>--draw-------------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoRedrawClient"><title>redrawClient</title>
-<programlisting>
-WindowBase::<link linkend="mthRedrawClient">redrawClient</link>
-
-<![CDATA[
->>--redrawClient(--+------------+--)---------------------------><
-                   +--eraseBkg--+
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoRedraw"><title>redraw</title>
-<programlisting>
-WindowBase::<link linkend="mthRedraw">redraw</link>
-
-<![CDATA[
->>--redraw-----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoGetID"><title>getID</title>
-<programlisting>
-WindowBase::<link linkend="mthGetID">getID</link>
-
-<![CDATA[
->>--getID------------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoGetStyleRaw"><title>getStyleRaw</title>
-<programlisting>
-WindowBase::<link linkend="mthGetStyleRaw">getStyleRaw</link>
-
-<![CDATA[
->>--getStyleRaw------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoGetExStyleRaw"><title>getExStyleRaw</title>
-<programlisting>
-WindowBase::<link linkend="mthGetExStyleRaw">getExStyleRaw</link>
-
-<![CDATA[
->>--getExStyleRaw----------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoSetText"><title>setText</title>
-<programlisting>
-WindowBase::<link linkend="mthSetText">setText</link>
-
-<![CDATA[
->>--setText(--newText--)---------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoGetText"><title>getText</title>
-<programlisting>
-WindowBase::<link linkend="mthGetText">getText</link>
-
-<![CDATA[
->>--getText----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoTitleEquals"><title>title=</title>
-<programlisting>
-WindowBase::<link linkend="mthTitleEquals">title=</link>
-
-<![CDATA[
->>--title-=--newText-------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoSetTitle"><title>setTitle</title>
-<programlisting>
-WindowBase::<link linkend="mthSetTitle">setTitle</link>
-
-<![CDATA[
->>--setTitle(--newText--)--------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoTitle"><title>title</title>
-<programlisting>
-WindowBase::<link linkend="mthTitle">title</link>
-
-<![CDATA[
->>--title------------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoGetTextSizePx"><title>getTextSizePx</title>
-<programlisting>
-WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
-
-<![CDATA[
->>--getTextSizePx(-text--)-------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoGetTextSizeScreen"><title>getTextSizeScreen</title>
-<programlisting>
-WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
-
-<![CDATA[
->>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
-                             +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoSetRect"><title>setRect</title>
-<programlisting>
-WindowBase::<link linkend="mthSetRect">setRect</link>
-
-<![CDATA[
-Form 1:
-
->>--setRect(--rectangle--+------------+--)-------------------------------------><
-                         +-,-showOpts-+
-
-Form 2:
-
->>--setRect(--point--,--size--+------------+--)--------------------------------><
-                              +-,-showOpts-+
-
-Form 3:
-
->>--setRect(--x-,--y-,--cx-,--cy--+------------+--)----------------------------><
-                                  +-,-showOpts-+
-
-Generic form:
-
->>--setRect(--ptSizeRectangle--+------------+--)-------------------------------><
-                               +-,-showOpts-+
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoResizeTo"><title>resizeTo</title>
-<programlisting>
-WindowBase::<link linkend="mthResizeTo">resizeTo</link>
-
-<![CDATA[
-Form 1:
-
->>--resizeTo(--size--)-----------------------------------------><
-
-Form 2:
-
->>--resizeTo(--cx,--cy--)--------------------------------------><
-
-Generic form:
-
->>--resizeTo(--newSize--)--------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoMoveTo"><title>moveTo</title>
-<programlisting>
-WindowBase::<link linkend="mthMoveTo">moveTo</link>
-
-<![CDATA[
-Form 1:
-
->>--moveTo(--point--+--------------+--)------------------------><
-                    +--,-showOpts--+
-Form 2:
-
->>--moveTo(--x,--y--+--------------+--)------------------------><
-                    +--,-showOpts--+
-Generic form:
-
->>--moveTo(--newPos--+--------------+--)-----------------------><
-                     +--,-showOpts--+
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoGetRealSize"><title>getRealSize</title>
-<programlisting>
-WindowBase::<link linkend="mthGetRealSize">getRealSize</link>
-
-<![CDATA[
->>--getRealSize------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoGetRealPos"><title>getRealPos</title>
-<programlisting>
-WindowBase::<link linkend="mthGetSize">getRealPos</link>
-
-<![CDATA[
->>--getRealPos-------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoWindowRect"><title>windowRect</title>
-<programlisting>
-WindowBase::<link linkend="mthWindowRect">windowRect</link>
-
-<![CDATA[
->>--windowRect(--+--------+--)-----------------------><
-                 +--hwnd--+
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoClientRect"><title>clientRect</title>
-<programlisting>
-WindowBase::<link linkend="mthClientRect">clientRect</link>
-
-<![CDATA[
->>--clientRect(--+--------+--)-----------------------><
-                 +--hwnd--+
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoClear"><title>clear</title>
-<programlisting>
-WindowBase::<link linkend="mthClear">clear</link>
-
-<![CDATA[
->>--clear--------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoResize"><title>resize</title>
-<programlisting>
-WindowBase::<link linkend="mthResize">resize</link>
-
-<![CDATA[
->>--resize(--width--,--height--+-------------+--)----><
-                               +-,-showOpts--+
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoMove"><title>move</title>
-<programlisting>
-WindowBase::<link linkend="mthMove">move</link>
-
-<![CDATA[
->>--move(--xPos--,--yPos--+-------------+--)---------><
-                          +-,-showOpts--+
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoGetSize"><title>getSize</title>
-<programlisting>
-WindowBase::<link linkend="mthGetSize">getSize</link>
-
-<![CDATA[
->>--getSize----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoGetPos"><title>getPos</title>
-<programlisting>
-WindowBase::<link linkend="mthGetPos">getPos</link>
-
-<![CDATA[
->>--getPos-------------------------------------------><
-
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoGetRect"><title>getRect</title>
-<programlisting>
-WindowBase::<link linkend="mthGetRect">getRect</link>
-
-<![CDATA[
->>--getRect------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbdoGetClientRect"><title>getClientRect</title>
-<programlisting>
-WindowBase::<link linkend="mthGetClientRect">getClientRect</link>
-
-<![CDATA[
->>--getClientRect(--+------+--)------------------><
-                    +-hwnd-+
-]]>
-</programlisting>
-</section>
-
-
-<section id="wbdoForegroundWindow"><title>foregroundWindow</title>
-<programlisting>
-WindowBase::<link linkend="mthForegroundWindow">foregroundWindow</link>
-
-<![CDATA[
->>--foregroundWindow---------------------------------><
-]]>
-</programlisting>
-</section>
-
-
-<section id="wbdoScreen2client"><title>screen2client</title>
-<programlisting>
-WindowBase::<link linkend="mthScreen2client">screen2client</link>
-
-<![CDATA[
->>--screen2client(--point--)-------------------------><
-]]>
-</programlisting>
-</section>
-
-
-<section id="wbdoClient2screen"><title>client2screen</title>
-<programlisting>
-WindowBase::<link linkend="mthClient2screen">client2screen</link>
-
-<![CDATA[
->>--client2screen(--point--)-------------------------><
-]]>
-</programlisting>
-</section>
-
-
-<section id="wbdoScreenToClient"><title>screenToClient</title>
-<programlisting>
-WindowBase::<link linkend="mthScreenToClient">screenToClient</link>
-
-<![CDATA[
->>--screenToClient(--x--,--y--)----------------------><
-]]>
-</programlisting>
-</section>
-
-
-<section id="wbdoClientToScreen"><title>clientToScreen</title>
-<programlisting>
-WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
-
-<![CDATA[
->>--clientToScreen(--x--,--y--)----------------------><
-]]>
-</programlisting>
-</section>
-
-
-</section> <!-- END Section Basic Window Methods  -->
-
-
-<section id="sctWindowExtensionsDO"><title>Extended Window Methods</title>
-<indexterm><primary>dialog object</primary><secondary>extended window methods</secondary></indexterm>
-<para>
-  The methods implemented by <link linkend="clsWindowExtensions">WindowExtensions</link> class are listed in this
-  section. The class name, <emphasis role="italic">WindowExtensions</emphasis> would seem to imply that the methods were
-  common to all windows. However, the methods of this class are really just extensions to the original ooDialog
-  framework, and many of the methods are not window specific methods.
-</para>
-
-<section id="wedoGetFont"><title>getFont</title>
-<programlisting>
-WindowExtensions::<link linkend="mthGetFont">getFont</link>
-
-<![CDATA[
->>--getFont----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoSetFont"><title>setFont</title>
-<programlisting>
-WindowExtensions::<link linkend="mthSetFont">setFont</link>
-
-<![CDATA[
->>--setFont(--fontHandle--+---------+--)-------------------------><
-                          +-,redraw-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoCreateFontEx"><title>createFontEx</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCreateFontEx">createFontEx</link>
-
-<![CDATA[
->>--createFontEx(--fontName-+--------------+--+---------------+--)-------------><
-                            +-,-pointSize--+  +-,-additional--+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoCreateFont"><title>createFont</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCreateFont">createFont</link>
-
-<![CDATA[
->>--createFont(--+----------+-+------------+-+---------+-+-------------+--)----><
-                 +-fontName-+ +-,-fontSize-+ +-,-style-+ +-,-fontWidth-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoDeleteFont"><title>deleteFont </title>
-<programlisting>
-WindowExtensions::<link linkend="mthDeleteFont">deleteFont </link>
-
-<![CDATA[
->>--deleteFont(--hFont--)----------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoScrollClsWE"><title>scroll</title>
-<programlisting>
-WindowExtensions::<link linkend="mthScrollClsWE">scroll</link>
-
-<![CDATA[
->>--scroll(--cx--,--cy--)----------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoHScrollPos"><title>hScrollPos</title>
-<programlisting>
-WindowExtensions::<link linkend="mthHScrollPos">hScrollPos</link>
-
-<![CDATA[
->>--hScrollPos---------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoSetHScrollPos"><title>setHScrollPos</title>
-<programlisting>
-WindowExtensions::<link linkend="mthSetHScrollPos">setHScrollPos</link>
-
-<![CDATA[
->>--setHScrollPos(--position--+-----------+--)-------><
-                              +-,-redraw--+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoVScrollPos"><title>vScrollPos</title>
-<programlisting>
-WindowExtensions::<link linkend="mthVScrollPos">vScrollPos</link>
-
-<![CDATA[
->>--vScrollPos---------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoSetVScrollPos"><title>setVScrollPos</title>
-<programlisting>
-WindowExtensions::<link linkend="mthSetVScrollPos">setVScrollPos</link>
-
-<![CDATA[
->>--setVScrollPos(--position--+-----------+--)-------><
-                              +-,-redraw--+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoLoadBitmap"><title>loadBitmap</title>
-<programlisting>
-WindowExtensions::<link linkend="mthLoadBitmap">loadBitmap</link>
-
-<![CDATA[
->>--loadBitmap(--bmpFilename--+------------+--)------><
-                              +-,-loadOpt--+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoRemoveBitmap"><title>removeBitmap</title>
-<programlisting>
-WindowExtensions::<link linkend="mthRemoveBitmap">removeBitmap</link>
-
-<![CDATA[
->>--removeBitmap(--hBitmap--)------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoSetCursorPos"><title>setCursorPos</title>
-<programlisting>
-WindowExtensions::<link linkend="mthSetCursorPos">setCursorPos</link>
-
-<![CDATA[
->>--setCursorPos(--x--,--y--)------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoGetCursorPos"><title>getCursorPos</title>
-<programlisting>
-WindowExtensions::<link linkend="mthGetCursorPos">getCursorPos</link>
-
-<![CDATA[
->>--getCursorPos-------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoRestoreCursorShape"><title>restoreCursorShape</title>
-<programlisting>
-WindowExtensions::<link linkend="mthRestoreCursorShape">restoreCursorShape</link>
-
-<![CDATA[
->>--restoreCursorShape(--+--------------+--)---------><
-                         +-cursorHandle-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoCursorArrow"><title>cursorArrow</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCursorArrow">cursor_arrow</link>
-
-<![CDATA[
->>--cursor_arrow-------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoCursorAppStarting"><title>cursor_appstarting</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCursorAppStarting">cursor_appstarting</link>
-
-<![CDATA[
->>--cursor_appstarting-------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoCursorCross"><title>cursor_cross</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCursorCross">cursor_cross</link>
-
-<![CDATA[
->>--cursor_cross-------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoCursorNo"><title>cursor_no</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCursorNo">cursor_no</link>
-
-<![CDATA[
->>--cursor_no----------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoCursorWait"><title>cursor_wait</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCursorWait">cursor_wait</link>
-
-<![CDATA[
->>--cursor_wait--------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoCursorPos"><title>cursorPos</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCursorPos">cursorPos</link>
-
-<![CDATA[
->>--cursorPos----------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoWrite"><title>write</title>
-<programlisting>
-WindowExtensions::<link linkend="mthWrite">write</link>
-
-<![CDATA[
->>--write(-x-,-y-,-text-+---------+-+---------+-+--+-----+-+------+-+------+-)---><
-                        +-,-fName-+ +-,-fSize-+ +-,-opts-+ +-,-fg-+ +-,-bk-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoWriteDirect"><title>writeDirect</title>
-<programlisting>
-WindowExtensions::<link linkend="mthWriteDirect">writeDirect</link>
-
-<![CDATA[
->>--writeDirect(--dc--,--xPos--,--yPos--,--text--)---><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoCreateBrush"><title>createBrush</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCreateBrush">createBrush</link>
-
-<![CDATA[
->>--createBrush(--+---------+--+------------------+--)-------------------------><
-                  +--color--+  +-,-brushSpecifier-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoCreatePen"><title>createPen</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCreatePen">createPen</link>
-
-<![CDATA[
->>--createPen(--+-------+--+----------+--+----------+--)-----------------------><
-                +-width-+  +-,-style--+  +-,-color--+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoDeleteObject"><title>deleteObject</title>
-<programlisting>
-WindowExtensions::<link linkend="mthDeleteObject">deleteObject</link>
-
-<![CDATA[
->>--deleteObject(--obj--)----------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoGetDC"><title>getDC</title>
-<programlisting>
-WindowExtensions::<link linkend="mthGetDC">getDC</link>
-
-<![CDATA[
->>--getDC--------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoFreeDC"><title>freeDC</title>
-<programlisting>
-WindowExtensions::<link linkend="mthFreeDC">freeDC</link>
-
-<![CDATA[
->>--freeDC(--dc--)-----------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoObjectToDC"><title>objectToDC</title>
-<programlisting>
-WindowExtensions::<link linkend="mthObjectToDC">objectToDC</link>
-
-<![CDATA[
->>--objectToDC(--dc--,--obj--)-----------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoFontToDC"><title>fontToDC</title>
-<programlisting>
-WindowExtensions::<link linkend="mthFontToDC">fontToDC</link>
-
-<![CDATA[
->>--fontToDC(--dc--,--hFont--)-----------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoRectangle"><title>rectangle</title>
-<programlisting>
-WindowExtensions::<link linkend="mthRectangle">rectangle</link>
-
-<![CDATA[
->>--rectangle(--dc--,--x--,--y--,--x2--,--y2--+-----------+--)-----------------><
-                                              +-,-keyWord-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoDrawLine"><title>drawLine</title>
-<programlisting>
-WindowExtensions::<link linkend="mthDrawLine">drawLine</link>
-
-<![CDATA[
->>--drawLine(--dc--,--+-------+--,--+-------+--,--toX--,--toY--)-><
-                      +-fromX-+     +-fromY-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoDrawPixel"><title>drawPixel</title>
-<programlisting>
-WindowExtensions::<link linkend="mthDrawPixel">drawPixel</link>
-
-<![CDATA[
->>--drawPixel(--dc--,--x--,--y--,--color--)----------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoGetPixel"><title>getPixel</title>
-<programlisting>
-WindowExtensions::<link linkend="mthGetPixel">getPixel</link>
-
-<![CDATA[
->>--getPixel(--dc--,--x--,--y--)---------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoFillDrawing"><title>fillDrawing</title>
-<programlisting>
-WindowExtensions::<link linkend="mthFillDrawing">fillDrawing</link>
-
-<![CDATA[
->>--fillDrawing(--dc--,--x--,--y--,--color--)----><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoDrawArc"><title>drawArc</title>
-<programlisting>
-WindowExtensions::<link linkend="mthDrawArc">drawArc</link>
-
-<![CDATA[
->>--drawArc(--dc-,-x-,-y-,-x2-,-y2--+-------+--+-------+--+-------+--+-------+--)---><
-                                    +-,-r1x-+  +-,-r1y-+  +-,-r2x-+  +-,-r2y-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoDrawPie"><title>drawPie</title>
-<programlisting>
-WindowExtensions::<link linkend="mthDrawPie">drawPie</link>
-
-<![CDATA[
->>--drawPie(--dc-,-x-,-y-,-x2-,-y2--+-------+--+-------+--+-------+--+-------+--)---><
-                                    +-,-r1x-+  +-,-r1y-+  +-,-r2x-+  +-,-r2y-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoDrawAngleArc"><title>drawAngleArc</title>
-<programlisting>
-WindowExtensions::<link linkend="mthDrawAngleArc">drawAngleArc</link>
-
-<![CDATA[
->>--drawAngleArc(-dc-,-xs-,-ys-,-x-,-y-,-radius-,-startangle-,-sweepangle-)----><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoGetArcDirection"><title>getArcDirection</title>
-<programlisting>
-WindowExtensions::<link linkend="mthGetArcDirection">getArcDirection</link>
-
-<![CDATA[
->>--getArcDirection(--dc--)--------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoSetArcDirection"><title>setArcDirection</title>
-<programlisting>
-WindowExtensions::<link linkend="mthSetArcDirection">setArcDirection</link>
-
-<![CDATA[
->>--setArcDirection(--dc--+--------------+--)--------><
-                          +-,-direction--+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoFontColor"><title>fontColor</title>
-<programlisting>
-WindowExtensions::<link linkend="mthFontColor">fontColor</link>
-
-<![CDATA[
->>--fontColor(--color--,--dc--)----------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoTransparentText"><title>transparentText</title>
-<programlisting>
-WindowExtensions::<link linkend="mthTransparentText">transparentText</link>
-
-<![CDATA[
->>--transparentText(--dc--)--------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoOpaqueText"><title>opaqueText</title>
-<programlisting>
-WindowExtensions::<link linkend="mthOpaqueText">opaqueText</link>
-
-<![CDATA[
->>--opaqueText(--dc--)-------------------------------><
-]]>
-</programlisting>
-</section>
-
-</section> <!-- END Section Extended Window Methods  -->
+<!-- <section id="sctWindowExtensionsDO"><title>Extended Window Methods</title>  START -->
+&windowExtensionsDO;
+<!-- <section id="sctWindowExtensionsDO"><title>Extended Window Methods</title>  END   -->
 
 
 <section id="sctDataAttributes"><title>Data Attribute Methods</title>
@@ -3340,8 +2388,9 @@ WindowExtensions::<link linkend="mthOpaqueText">opaqueText</link>
   to create a connection between the underlying dialog control and an attribute of the Rexx dialog object, methods for
   <emphasis role="bold">getting</emphasis> and <emphasis role="bold">setting</emphasis> the <emphasis
   role="bold">data</emphasis>, and methods to deal with <emphasis role="bold">automatic data detection</emphasis>. The
-  data attribute is used to reflect the value associated with the underlying dialog control. For instance, the value of
-  an <link linkend="clsEdit">edit</link> control could be thought of as the text of the control.
+  data attribute is used to reflect the <emphasis role="bold">value</emphasis> associated with the underlying dialog
+  control. For instance, the value of an <link linkend="clsEdit">edit</link> control could be thought of as the text of
+  the control.
 </para>
 <para>
   In order to better understand the data attribute methods, it is userful to first discuss this concept in general.
@@ -3756,7 +2805,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 <indexterm><primary>dialog object</primary><secondary>initAutoDetection</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-initAutoDetection-------------------------------------------><
+>>-initAutoDetection---------------------------------><
 
 ]]>
 </programlisting>
@@ -3798,7 +2847,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 <indexterm><primary>dialog object</primary><secondary>noAutoDetection</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--noAutoDetection--------------------------------------------><
+>>--noAutoDetection----------------------------------><
 
 ]]>
 </programlisting>
@@ -3814,7 +2863,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 <indexterm><primary>dialog object</primary><secondary>autoDetection</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--autoDetection----------------------------------------------><
+>>--autoDetection------------------------------------><
 
 ]]>
 </programlisting>
@@ -3840,7 +2889,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 <indexterm><primary>dialog object</primary><secondary>connectRadioButton</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectRadioButton(--id--+-------------------+-------------><
+>>--connectRadioButton(--id--+-------------------+---><
                              +-,--attributeName--+
 
 ]]>
@@ -3926,7 +2975,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 <indexterm><primary>dialog object</primary><secondary>connectCheckBox</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connctChectBox(--id--+-------------------+--)--------------><
+>>--connctChectBox(--id--+-------------------+--)----><
                          +-,--attributeName--+
 
 ]]>
@@ -4012,7 +3061,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 <indexterm><primary>dialog object</primary><secondary>connectEdit</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectEdit(--id--+------------------+--)------------------><
+>>--connectEdit(--id--+------------------+--)--------><
                       +-,--attributeName-+
 
 ]]>
@@ -4140,7 +3189,7 @@ return 0
 <indexterm><primary>dialog object</primary><secondary>connectComboBox</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectComboBox(--id--+------------------+-----------------><
+>>--connectComboBox(--id--+------------------+-------><
                           +-,-attributeName--+
 
 ]]>
@@ -4226,7 +3275,7 @@ return 0
 <indexterm><primary>dialog object</primary><secondary>connectListBox</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectListBox(--id--+-------------------+--)--------------><
+>>--connectListBox(--id--+-------------------+--)----><
                          +-,--attributeName--+
 
 ]]>
@@ -4672,6 +3721,7 @@ say MyDialog~FileName
 
 <section id="mthConnectListView"><title>connectListView</title>
 <indexterm><primary>connectListView</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectListView</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--connectListView(--id--+------------------+--)----><
@@ -4707,6 +3757,7 @@ MyDialog~Customers="1 14 29"
 
 <section id="mthConnectTrackBar"><title>connectTrackBar</title>
 <indexterm><primary>connectTrackBar</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectTrackBar</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--connectTrackBar(--id--+------------------+--)----><
@@ -4724,6 +3775,7 @@ the numerical position of the slider. For further information, refer to
 
 <section id="mthConnectTab"><title>connectTab</title>
 <indexterm><primary>connectTab</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectTab</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--connectTab(--id--+------------------+--)---------><
@@ -4930,75 +3982,12 @@ the text of the active tab. For further information, refer to
 
 </section>  <!-- End Connect Attribute Methods Section -->
 
-<section id="mthConnectSeparator"><title>connectSeparator</title>
-<indexterm><primary>connectSeparator</primary></indexterm>
-<indexterm><primary>dialog object class</primary><secondary>connectSeparator</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--connectSeparator(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End dialog object::connectSeparator() -->
-
 <section id="mthGetData"><title>getData</title>
 <indexterm><primary>getData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~GetData-----------------------------------------><
-
+>>--getData------------------------------------------><
 
 ]]>
 </programlisting>
@@ -5006,9 +3995,28 @@ the text of the active tab. For further information, refer to
 <para>
   The <emphasis role="italic">getData</emphasis> method receives <link
   linkend="sctUnderstandingDataAttributes">data</link> from the underlying Windows dialog and copies it to the
-  associated dialog object data attributes.
+  associated Rexx dialog data attributes.
 </para>
 <variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem>
+<para>
+  There are no arguments for this method.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+<para>
+  0 on success or 1 on error.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Details</emphasis></term>
+<listitem>
+<para>
+  This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+  the underlying dialog does not exist.
+</para>
+</listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example continues the <link linkend="mthSetData">setData</link> example:
 
@@ -5039,34 +4047,56 @@ say MyDialog~LISTBOX_DAYS
 
 <section id="mthSetData"><title>setData</title>
 <indexterm><primary>setData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~SetData-----------------------------------------><
-
+>>--setData------------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-The setData method transfers the values of the dialog object <link linkend="sctUnderstandingDataAttributes">data
-  attributes</link> to the underlying dialog controls.
+  The <emphasis role="italic">setData</emphasis> method transfers the values of the dialog object <link
+  linkend="sctUnderstandingDataAttributes">data</link> attributes to the underlying dialog controls.
 </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem>
+<para>
+  This method takes no arguments.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+<para>
+  0 on success, otherwise 1.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+<listitem>
 <para>
   <emphasis role="bold">Note</emphasis> that this method transfers the data for every connected attribute. This may not
   always be desirable. For instance the focused node of a tree-view control may be changed. For finely grained control
   of which values are transfered the programmer should use the <link linkend="mthSetControlData">setControlData</link>() or <link
-  linkend="mthSetDataAttribute">setAttribute</link>() methods. Both of these methods transfer the value of a single object attribute
-  that is specified by the programmer.
+  linkend="mthSetDataAttribute">setDataAttribute</link>() methods. Both of these methods transfer the value of a single
+  object attribute that is specified by the programmer.
 </para>
-<variablelist>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Details</emphasis></term>
+<listitem>
+<para>
+  This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+  the underlying dialog does not exist.
+</para>
+</listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem>
-  <para>
-    Dialog items with ID 102, 201 and 203 are connected to the attributes
-    <computeroutput>ENTRYLINE_1</computeroutput>, <computeroutput>DATA201</computeroutput>, and
-    <computeroutput>LISTBOX_DAYS</computeroutput>. Attribute <computeroutput>DATA201</computeroutput> is
-    generated by the connectCheckBox method. Then the attributes are initialized with some values. This
-    does not change the dialog window, unless you run the setData method.
+<para>
+  Dialog items with ID 102, 201 and 203 are connected to the attributes
+  <computeroutput>ENTRYLINE_1</computeroutput>, <computeroutput>DATA201</computeroutput>, and
+  <computeroutput>LISTBOX_DAYS</computeroutput>. Attribute <computeroutput>DATA201</computeroutput> is
+  generated by the connectCheckBox method. Then the attributes are initialized with some values. This
+  does not change the dialog window, unless you run the setData method.
 <programlisting>
 <![CDATA[
      .
@@ -5133,7 +4163,7 @@ MyDialog~setData
 <indexterm><primary>dialog object</primary><secondary>setDataStem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setDataStem(--dataStem.--)---------------------------------><
+>>--setDataStem(--dataStem.--)-----------------------><
 
 ]]>
 </programlisting>
@@ -5158,9 +4188,11 @@ MyDialog~setData
   <listitem>
     <variablelist>
     <varlistentry><term>dataStem.</term>
-    <listitem><para>
+    <listitem>
+    <para>
       A stem variable containing the values used to set a dialog control's state. Remember the trailing period.
-    </para></listitem></varlistentry>
+    </para>
+    </listitem></varlistentry>
     </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -5184,374 +4216,6 @@ self~setDataStem(dlgStem.)
 </variablelist>
 </section>
 
-<section id="mthGetEditData"><title>getEditData</title>
-<indexterm><primary>getEditData</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~getEditData(--id--)----------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The getEditData method returns the value of the
-given entry line. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the entry line.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthSetEditData"><title>setEditData</title>
-<indexterm><primary>setEditData</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~setEditData(--id--,--aString--)----------------><
-
-
-]]>
-</programlisting>
-
-<para>The setEditData method puts the value of a string
-into an entry line. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the entry line.
-</para></listitem></varlistentry>
-<varlistentry><term>aString</term>
-<listitem><para>The value to be assigned to the entry line.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>Assume that three methods are connected to push buttons. The SetToDefault
-method overrides the value in the Windows dialog entry line 234 with the
-value 256 but does not change its associated attribute. Using setEditData
-has the same effect as a change to the entry line made by the user. The associated
-attribute in the Object Rexx object (<computeroutput>DATA234</computeroutput>) still has the original
-value. Thus it is possible to undo the changes or confirm them.
-
-<programlisting>
-<![CDATA[
-::method SetToDefault
-   self~setEditData(234, "256")
-
-::method AcceptValues
-   self~getDataAttribute(DATA234)
-
-::method UndoChanges
-   self~setDataAttribute(DATA234)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000474"><title>GetListLine</title>
-<indexterm><primary>GetListLine</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~GetListLine(--id--)-----------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetListLine method returns the value of the
-currently selected list item. If you need the index of the item, use the <link linkend="h000417">GetCurrentListIndex</link> method. If no item is selected, a null string
-is returned. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the list box.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000539"><title>SetListLine</title>
-<indexterm><primary>SetListLine</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~SetListLine(--id--,--aString--)-----------------><
-
-
-]]>
-</programlisting>
-
-<para>The SetListLine method assigns the value of a string
-to the list box. Thus the item with the value of <emphasis role="italic">aString</emphasis> becomes
-selected. The first item is selected if the string is not found in the list
-box. This method does not apply to a multiple selection list box (see <link linkend="h000575">SetMultiList</link>). </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the list box.
-</para></listitem></varlistentry>
-<varlistentry><term>aString</term>
-<listitem><para>The value of the item to be selected.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example selects item &quot;New York&quot; in list box 232:
-
-<programlisting>
-<![CDATA[
-MyBaseDialog~SetListLine(232, "New York")
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000506"><title>GetMultiList</title>
-<indexterm><primary>GetMultiList</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~GetMultiList(--id--)----------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetMultiList method can be applied
-to a multiple-selection list box. It returns a string containing the indexes
-of up to 1000 selected items. The numbers are separated by blanks. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the multiple-selection list box.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example shows how to handle a multiple-selection list
-box. It parses the returned string as long as it contains an index.
-
-<programlisting>
-<![CDATA[
-selLines = MyDialog~GetMultiList(555)
-do until selLines = ""
-   parse var selLines aLine selLines
-   say aLine
-end
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000575"><title>SetMultiList</title>
-<indexterm><primary>SetMultiList</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~SetMultiList(--id--,--data--)-------------------><
-
-
-]]>
-</programlisting>
-
-<para>The SetMultiList method selects one or more lines
-in a multiple-selection list box. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the multiple-selection list box.
-</para></listitem></varlistentry>
-<varlistentry><term>data</term>
-<listitem><para>The indexes (separated by blanks) of the lines to be selected.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example selects the lines 2, 5, and 6 of list box 345:
-
-<programlisting>
-<![CDATA[
-MyDialog~SetMultiList(345, "2 5 6")
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000482"><title>GetComboLine</title>
-<indexterm><primary>GetComboLine</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~GetComboLine(--id--)----------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetComboLine method returns the value of the
-currently selected list item of a combo box. If you need the index of the
-item, use the <link linkend="h000344">GetCurrentComboIndex</link> method. If no item is selected,
-a null string is returned. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the combo box.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000548"><title>SetComboLine</title>
-<indexterm><primary>SetComboLine</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~SetComboLine(--id--,--aString--)----------------><
-
-
-]]>
-</programlisting>
-
-<para>The SetComboLine method assigns a string to the
-given combo box. Thus the item with the value of <emphasis role="italic">aString</emphasis> becomes
-selected. If <emphasis role="italic">aString</emphasis> is not found in the
-combo box, then the first item is selected. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the combo box.
-</para></listitem></varlistentry>
-<varlistentry><term>aString</term>
-<listitem><para>The value of the item to be selected.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000498"><title>GetRadioButton</title>
-<indexterm><primary>GetRadioButton</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~GetRadioButton(--id--)--------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetRadioButton method returns 1 if the radio
-button is selected, 0 if it is not selected. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the radio button.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000566"><title>SetRadioButton</title>
-<indexterm><primary>SetRadioButton</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~SetRadioButton(--id--,--data--)-----------------><
-
-
-]]>
-</programlisting>
-
-<para>The SetRadioButton method marks the radio button
-if the given data value is 1, and removes the mark if the value is 0. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the radio button.
-</para></listitem></varlistentry>
-<varlistentry><term>data</term>
-<listitem><para>1 to select the button or 0 to deselect it.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000490"><title>GetCheckBox</title>
-<indexterm><primary>GetCheckBox</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~GetCheckBox(--id--)-----------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetCheckBox method returns the value of a check
-box: 1 if the check box is selected (has a check mark), 0 if it is not selected. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the check box.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000557"><title>SetCheckBox</title>
-<indexterm><primary>SetCheckBox</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~SetCheckBox(--id--,--data--)--------------------><
-
-
-]]>
-</programlisting>
-
-<para>The SetCheckBox method puts a check mark in the
-check box if the given data value is 1 and removes the check mark if the value
-is 0. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the check box.
-</para></listitem></varlistentry>
-<varlistentry><term>data</term>
-<listitem><para>The value 1 to check the box or 0 to remove the check mark.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="mthGetControlData"><title>getControlData</title>
 <indexterm><primary>getControlData</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>getControlData</secondary></indexterm>
@@ -5570,6 +4234,8 @@ is 0. </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    The arguments are:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
@@ -5578,6 +4244,7 @@ is 0. </para>
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return Value:</emphasis></term>
   <listitem>
@@ -5598,7 +4265,7 @@ is 0. </para>
   <para>
     It appears that the original intent of this method was to be used for controls such as tree views, list views, tabs,
     etc.. When these controls were added to ooDialog, no corresponding getTreeViewData(), getProgressBarData(), etc.,
-    methods were implemented. The generic <emphasis role="italic">setControlData</emphasis>() method works for all
+    methods were implemented. The generic <emphasis role="italic">getControlData</emphasis>() method works for all
     connected controls, but it works best if the programmer knows the type of control.
   </para>
   <para>
@@ -5610,74 +4277,270 @@ is 0. </para>
 </variablelist>
 </section>
 
-<section id="mthSetControlData"><title>setControlData</title>
-<indexterm><primary>setControlData</primary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>setControlData</secondary></indexterm>
+<section id="mthGetCheckBoxData"><title>getCheckBoxData</title>
+<indexterm><primary>getCheckBoxData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getCheckBoxData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setControlData(--id--,--dataString--)----------------------><
+>>--getCheckBoxData(--id--)--------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">setControlData</emphasis> method sets the <link
-  linkend="sctUnderstandingDataAttributes">data</link> of a dialog contol. You do not have to know what kind of control
-  it is. The dialog control <emphasis role="bold">should</emphasis> have been previously connected to a data attribute.
+  The <emphasis role="italic">getCheckBoxData</emphasis> method gets the <link
+  linkend="sctUnderstandingDataAttributes">data</link> of a a check box.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the check box. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a check box is considered to be whether it is checked or not. If the
+    check box is checked the return is 1 and if unchecked the return is 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The check box <emphasis role="bold">should</emphasis> have been previously connected to a data attribute. If it
+    hasn't, or if the resource ID is not the ID of a check box, the results are unpredictable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetRadioButtonData"><title>getRadioButtonData</title>
+<indexterm><primary>getRadioButtonData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getRadioButtonData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getRadioButtonData(--id--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getRadioButtonData</emphasis> method gets the <link
+  linkend="sctUnderstandingDataAttributes">data</link> of a a radio button.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the radio button. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a radio button is considered to be whether it is checked or not. If
+    it is checked the return is 1 and if unchecked the return is 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The radio button <emphasis role="bold">should</emphasis> have been previously connected to a data attribute. If it
+    hasn't, or if the resource ID is not the ID of a radio button, the results are unpredictable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetEditData"><title>getEditData</title>
+<indexterm><primary>getEditData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getEditData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~getEditData(--id--)----------------------------><
+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getEditData</emphasis> method gets the <link
+  linkend="sctUnderstandingDataAttributes">data</link> of an edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the dialog control. May be numeric or symbolic.
+      The resource ID of the edit control. May be numeric or symbolic.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>dataString [required]</term>
-    <listitem>
-    <para>
-      The data that is assigned to the control. The format <emphasis role="bold">should</emphasis> match the type of
-      the control.
-    </para>
-    </listitem></varlistentry>
-  </variablelist> </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">data</emphasis> of an edit control is considered to the text entered in the control.
+    This method returns the text in the edit control, which may be the empty string if the user has not entered any
+    text.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    If the control has not been previously connected to a data attribute, the implementation of this method assumes the
-    control is an edit control and sets the text of the control to <emphasis role="italic">dataString</emphasis>. Since
-    all windows can have their text set, this is okay. However the outcome is dependent on the type of control. Setting
-    the text of a check box will change its label, setting the text of a tree view control will do nothing. The method
-    is intended to only be used with controls connected to a data attribute.
+    The edit control <emphasis role="bold">should</emphasis> have been previously connected to a data attribute. If it
+    hasn't, or if the resource ID is not the ID of a edit control, the results are unpredictable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetListBoxData"><title>getListBoxData</title>
+<indexterm><primary>getListBoxData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getListBoxData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getListBoxData(--id--)---------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getListBoxData</emphasis> method gets the <link
+  linkend="sctUnderstandingDataAttributes">data</link> of a list box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the list box. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    For a single-selection list box, the <emphasis role="italic">data</emphasis> of the list box is considered to be the
+    text of the selected item. The text of the selected item is returned.
   </para>
   <para>
-    Likewise, if the format of <emphasis role="italic">dataString</emphasis> does not match the type of control, the
-    results are unpredictable. It appears that the original intent of this method was to be used for controls such as
-    tree views, list views, tabs, etc.. When these controls were added to ooDialog, no corresponding setTreeViewData(),
-    setTabData(), etc., methods were implemented. The generic <emphasis role="italic">setControlData</emphasis>() method
-    works for all connected controls, but it works best if the programmer knows the type of control.
+    However, for a multi-selection list box, the <emphasis role="italic">data</emphasis> is considered to be the indexe
+    numbers of the selected items. The selected indexes are returned in a string with the indexes separated by spaces.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The list box <emphasis role="bold">should</emphasis> have been previously connected to a data attribute. If it
+    hasn't, or if the resource ID is not the ID of a list box, the results are unpredictable.
   </para>
   <para>
-    A better method to use, if the programmer is insistent on thinking in terms of data attributes, is probably to use
-    the <link linkend="mthDataEquals">data=</link> method of the dialog control <link
-    linkend="chpDialogControlObject">object</link>.
+     For a multi-selection list box, the string is restricted to 1500 indexes.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example sets dialog control with resource ID of 123 to the (string) data &quot;1 2 3&quot;. This is
-    meaningful if the control is an edit control, or if it is a list box that contains the line &quot;1 2 3&quot;.
-    However, for other controls it is probably meaningless.
+    The following example shows how to handle a multiple-selection list box. It parses the returned string as long as it
+    contains an index.
 
 <programlisting>
 <![CDATA[
-MyDialog~setControlData(123, "1 2 3")
+selLines = MyDialog~getListBoxData(555)
+do until selLines = ""
+   parse var selLines aLine selLines
+   say aLine
+end
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthGetComboBoxData"><title>getComboBoxData</title>
+<indexterm><primary>getComboBoxData</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getComboBoxData(--id--)--------------------------><
+
 ]]>
 </programlisting>
 
+<para>
+  The <emphasis role="italic">getComboBoxData</emphasis> method gets the <link
+  linkend="sctUnderstandingDataAttributes">data</link> of a combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the combo box. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a combo box is considered to be the text of the selection field in
+    the <link linkend="clsComboBox">combo box</link>. The current text in the selection field is returned, which may be
+    the empty string if there is no text in the selection field.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The combo box <emphasis role="bold">should</emphasis> have been previously connected to a data attribute. If it
+    hasn't, or if the resource ID is not the ID of a combo box, the results are unpredictable.
+  </para>
+  <para>
+     For drop down list combo boxes, the text is the selection field is the same as the text of the current selection.
+     The text returned may still be the empty string if there is no current selection.
+  </para>
+  <para>
+     However, for simple and drop down combo boxes things are not so simple. The text in the selection field could be
+     text the user typed in and there may be no current selection. Or, for these types of combo boxes, there might be a
+     current selection, but the user may have edited the text in the selection field so that it no longer matches the
+     text of the current selection.
+  </para>
+  <para>
+     To get the index of the current selection, use the <link linkend="h000344">GetCurrentComboIndex</link> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -5726,12 +4589,343 @@ MyDialog~setControlData(123, "1 2 3")
 </variablelist>
 </section>
 
+
+<section id="mthSetControlData"><title>setControlData</title>
+<indexterm><primary>setControlData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setControlData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setControlData(--id--,--dataString--)------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">setControlData</emphasis> method sets the <link
+  linkend="sctUnderstandingDataAttributes">data</link> of a dialog contol. The programmer does not have to know what
+  kind of control it is.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dataString [required]</term>
+    <listitem>
+    <para>
+      The data that is assigned to the control. The format <emphasis role="bold">should</emphasis> match the type of
+      the control.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      An error occurred.
+    </para>
+    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The dialog control <emphasis role="bold">should</emphasis> have been previously connected to a data attribute. If
+    the control has not been previously connected to a data attribute, the implementation of this method assumes the
+    control is an edit control and sets the text of the control to <emphasis role="italic">dataString</emphasis>. Since
+    all windows can have their text set, this is okay. However the outcome is dependent on the type of control. Setting
+    the text of a check box will change its label, setting the text of a tree view control will do nothing. The method
+    is intended to only be used with controls connected to a data attribute.
+  </para>
+  <para>
+    Likewise, if the format of <emphasis role="italic">dataString</emphasis> does not match the type of control, the
+    results are unpredictable. It appears that the original intent of this method was to be used for controls such as
+    tree views, list views, tabs, etc.. When these controls were added to ooDialog, no corresponding setTreeViewData(),
+    setTabData(), etc., methods were implemented. The generic <emphasis role="italic">setControlData</emphasis>() method
+    works for all connected controls, but it works best if the programmer knows the type of control.
+  </para>
+  <para>
+    A better method to use, if the programmer is insistent on thinking in terms of data attributes, is probably to use
+    the <link linkend="mthDataEquals">data=</link> method of the dialog control <link
+    linkend="chpDialogControlObject">object</link>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example sets dialog control with resource ID of 123 to the (string) data &quot;1 2 3&quot;. This is
+    meaningful if the control is an edit control, or if it is a list box that contains the line &quot;1 2 3&quot;.
+    However, for other controls it is probably meaningless.
+
+<programlisting>
+<![CDATA[
+MyDialog~setControlData(123, "1 2 3")
+]]>
+</programlisting>
+
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetCheckBoxData"><title>setCheckBoxData</title>
+<indexterm><primary>setCheckBoxData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setCheckBoxData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setCheckBoxData(--id--,--data--)-----------------><
+
+]]>
+</programlisting>
+
+<para>The setCheckBoxData method puts a check mark in the
+check box if the given data value is 1 and removes the check mark if the value
+is 0. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the check box.
+</para></listitem></varlistentry>
+<varlistentry><term>data</term>
+<listitem><para>The value 1 to check the box or 0 to remove the check mark.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetRadioButtonData"><title>setRadioButtonData</title>
+<indexterm><primary>setRadioButtonData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setRadioButtonData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setRadioButtonData(--id--,--data--)--------------><
+
+]]>
+</programlisting>
+
+<para>The setRadioButtonData method marks the radio button
+if the given data value is 1, and removes the mark if the value is 0. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the radio button.
+</para></listitem></varlistentry>
+<varlistentry><term>data</term>
+<listitem><para>1 to select the button or 0 to deselect it.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetEditData"><title>setEditData</title>
+<indexterm><primary>setEditData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setEditData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setEditData(--id--,--aString--)------------------><
+
+]]>
+</programlisting>
+
+<para>The setEditData method puts the value of a string
+into an entry line. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the entry line.
+</para></listitem></varlistentry>
+<varlistentry><term>aString</term>
+<listitem><para>The value to be assigned to the entry line.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>Assume that three methods are connected to push buttons. The SetToDefault
+method overrides the value in the Windows dialog entry line 234 with the
+value 256 but does not change its associated attribute. Using setEditData
+has the same effect as a change to the entry line made by the user. The associated
+attribute in the Object Rexx object (<computeroutput>DATA234</computeroutput>) still has the original
+value. Thus it is possible to undo the changes or confirm them.
+
+<programlisting>
+<![CDATA[
+::method SetToDefault
+   self~setEditData(234, "256")
+
+::method AcceptValues
+   self~getDataAttribute(DATA234)
+
+::method UndoChanges
+   self~setDataAttribute(DATA234)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetListBoxData"><title>setListBoxData</title>
+<indexterm><primary>setListBoxData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setListBoxData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setListBoxData(--id--,--dataString--)------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">setListBoxData</emphasis> method sets the <link
+  linkend="sctUnderstandingDataAttributes">data</link> of the underly list box to the value specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the list box. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dataString [required]</term>
+    <listitem>
+    <para>
+      The data that is assigned to the list box. For a single-selection list box, the string should be the text of the
+      item to be selected. For a multi-selection list box this should be the index number, or numbers, of the item(s) to
+      be selected. Separate multiple indexs by spaces.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      An error occurred.
+    </para>
+    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The list box <emphasis role="bold">should</emphasis> have been previously connected to a data attribute. If not
+    previously connected, or if the resource ID is not the ID of a list box, the results are unpredicatable.
+  </para>
+  <para>
+    For a single-selection list box, the list box is searched for an item whose text matches <emphasis
+    role="italic">dataString</emphasis>. The search is case-insensitive. If no match is found, the first item is
+    selected.
+  </para>
+  </listitem></varlistentry>
+
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example is for a single-selection list box. It selects the item whose text is &quot;New York&quot;,
+    case insensitive, in the list box with a resource ID of 232:
+
+<programlisting>
+<![CDATA[
+
+  MyBaseDialog~setListBoxData(232, "New York")
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example selects items 2, 5, and 6 of the multi-selection list box with a resource ID of 345:
+
+<programlisting>
+<![CDATA[
+  MyDialog~setListBoxData(345, "2 5 6")
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetComboBoxData"><title>setComboBoxData</title>
+<indexterm><primary>setComboBoxData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setComboBoxData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setComboBoxData(--id--,--aString--)--------------><
+
+]]>
+</programlisting>
+
+<para>The setComboBoxData method assigns a string to the
+given combo box. Thus the item with the value of <emphasis role="italic">aString</emphasis> becomes
+selected. If <emphasis role="italic">aString</emphasis> is not found in the
+combo box, then the first item is selected. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the combo box.
+</para></listitem></varlistentry>
+<varlistentry><term>aString</term>
+<listitem><para>The value of the item to be selected.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="mthSetDataAttribute"><title>setDataAttribute</title>
 <indexterm><primary>setDataAttribute</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>setDataAttribute</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setDataAttribute(--attributeName--)-----------------><
+>>--setDataAttribute(--attributeName--)--------------><
 
 ]]>
 </programlisting>
@@ -8161,7 +7355,7 @@ items in the combo box. </para>
 </programlisting>
 
 <para>The GetCurrentComboIndex method returns the index
-of the currently selected item within the list. See <link linkend="h000482">GetComboLine</link> for
+of the currently selected item within the list. See <link linkend="mthGetComboBoxData">getComboBoxData</link> for
 information on how to retrieve the selected combo box item. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8212,7 +7406,7 @@ each time the selected item within the combo box changes.</para>
 
 <para>The SetCurrentComboIndex method selects the item
 with the given index within the list. If called without an index, all items
-in the list are deselected. See <link linkend="h000548">SetComboLine</link> for information on
+in the list are deselected. See <link linkend="mthSetComboBoxData">setComboBoxData</link> for information on
 how to select a combo box item using a data value. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8416,7 +7610,7 @@ width of a list box, in dialog units. </para>
 <para>The SetListWidth method sets the scrollable width
 of a list box, in dialog units. If the scrollable width is greater than the
 width of the list box and the &quot;HSCROLL&quot; (WS_HSCROLL in the resource
-script) style is defined for the list box (see <link linkend="mthAddListBox">addListBox</link>), a
+script) style is defined for the list box (see <link linkend="mthCreateListbox">createListBox</link>), a
 horizontal scroll bar is displayed. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8729,9 +7923,11 @@ the individual list box items.</para>
 ]]>
 </programlisting>
 
-<para>The GetCurrentListIndex method returns the index
-of the currently selected list box item, or 0 if no item is selected. See <link linkend="h000474">GetListLine</link> for information on how to retrieve the selected list box
-item. </para>
+<para>
+  The GetCurrentListIndex method returns the index of the currently selected list box item, or 0 if no item is selected.
+  To retrieve the text of the selected list box item use the <link linkend="mthGetListBoxData">getListBoxData</link>()
+  method.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -8757,7 +7953,7 @@ item. </para>
 
 <para>The SetCurrentListIndex selects the item with the
 given index in the list. If called without an index, all items in the list
-are deselected. See <link linkend="h000539">SetListLine</link> for information on how to select
+are deselected. See <link linkend="mthSetListBoxData">setListBoxData</link> for information on how to select
 a list box item using a data value. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -13204,6 +12400,126 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
   This method is <link linkend="ovvDeprecated">deprecated</link>. It does nothing.
 </para>
 </section>
+
+
+<section><title>connectEntryLine</title>
+<indexterm><primary>Deprecated</primary><secondary>connectEntryLine</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectEntryLine</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectEdit">connectEdit</link>() method.
+</para>
+</section>
+
+<section><title>connectMultiListBox</title>
+<indexterm><primary>Deprecated</primary><secondary>connectMultiListBox</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectMultiListBox</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectListBox">connectListBox</link>() method.
+</para>
+</section>
+
+<section><title>connectTreeControl</title>
+<indexterm><primary>Deprecated</primary><secondary>connectTreeControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectTreeControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTreeView">connectTreeView</link>() method.
+</para>
+</section>
+
+<section><title>connectListControl</title>
+<indexterm><primary>Deprecated</primary><secondary>connectListControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectListControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectListView">connectListView</link>() method.
+</para>
+</section>
+
+<section><title>connectSliderControl</title>
+<indexterm><primary>Deprecated</primary><secondary>connectSliderControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectSliderControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTrackBar">connectTrackBar</link>() method.
+</para>
+</section>
+
+<section><title>connectTabControl</title>
+<indexterm><primary>Deprecated</primary><secondary>connectTabControl</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectTabControl</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTab">connectTab</link>() method.
+</para>
+</section>
+
+<section><title>getEntryLine</title>
+<indexterm><primary>Deprecated</primary><secondary>getEntryLine</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getEntryLine</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetEditData">getEditData</link>() method.
+</para>
+</section>
+
+<section><title>getListLine</title>
+<indexterm><primary>Deprecated</primary><secondary>getListLine</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getListLine</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetListBoxData">getListBoxData</link>() method.
+</para>
+</section>
+
+<section><title>getComboLine</title>
+<indexterm><primary>Deprecated</primary><secondary>getComboLine</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getComboLine</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetComboBoxData">getComboBoxData</link>() method.
+</para>
+</section>
+
+<section><title>getCheckBox</title>
+<indexterm><primary>Deprecated</primary><secondary>getCheckBox</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getCheckBox</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetCheckBoxData">getCheckBoxData</link>() method.
+</para>
+</section>
+
+<section><title>getRadioButton</title>
+<indexterm><primary>Deprecated</primary><secondary>getRadioButton</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getRadioButton</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetRadioButtonData">getRadioButtonData</link>() method.
+</para>
+</section>
+
+<section><title>getMultiList</title>
+<indexterm><primary>Deprecated</primary><secondary>getMultiList</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getMultiList</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetListBoxData">getListBoxData</link>() method.
+</para>
+</section>
+
+<section><title>getValue</title>
+<indexterm><primary>Deprecated</primary><secondary>getValue</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getValue</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetControlData">getControlData</link>() method.
+</para>
+</section>
+
+
 
 <section><title>connectAnimatedButton</title>
 <indexterm><primary>Deprecated</primary><secondary>connectAnimatedButton</secondary></indexterm>

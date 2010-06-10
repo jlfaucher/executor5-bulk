@@ -77,7 +77,9 @@ xml_FILES = baseClasses.xml \
 	     userdialog.xml \
 	     utilityclasses.xml \
 	     windowBase.xml \
+	     windowBaseDO.xml \
 	     windowExtensions.xml \
+	     windowExtensionsDO.xml \
 	     ../shared/notices.xml \
 	     ../shared/legalstuff.xml \
 	     ../shared/gethelp.xml \
