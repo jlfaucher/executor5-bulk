@@ -653,11 +653,11 @@ xPixels = xDialogUnits * self~FactorX
 "0x0"
 
 -- Incorrect:
-" 0xffff"
-"0XFZFF"
-"000012ab"
-"0xFFFF0000aaaa99991"
-"00x0"
+" 0xffff"              -- leading space
+"0XFZFF"               -- Z is not a hexidecimal symbol
+"000012ab"             -- second character must be x
+"0x0123456789ABCDEF1"  -- 17 characters
+"00x0"                 -- second character must be x, not 0
 
 ]]>
 </programlisting>
