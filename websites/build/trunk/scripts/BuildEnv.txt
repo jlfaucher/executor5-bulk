@@ -1,0 +1,44 @@
+                 KVM Environment Documentation
+
+
+Naming KVM Images
+=================
+
+A KVM image name should take the following form:
+
+    osname-arch-type-number.img
+
+osname - The operating system name. Valid examples are
+             fedora13     
+	     winxpsp3
+	     ubuntu501
+arch - The architecture of the operating system. Valid examples are:
+	     i386
+	     x86_64
+type - The type of image. Valid examples are:
+	     base - basic clonable image with no additional software installed.
+	     orxbuild - base + everything needed to build ooRexx.
+number - A numeric number which designate duplicate images. For instance, you
+         may want multible ooRexx build images of the same osname, arch and
+         type. This gives each image a unique name.
+
+Notes:
+
+1. All parts of the image name should be in LOWER case.
+
+Valid Example Names:
+
+fedora13-i386-base-1.img
+winxpsp3-i386-base-1.img
+ubuntu501-i386-base-1.img
+fedora12-x86_64-orxbuild-2.img
+
+
+
+
+
+
+
+
+
+
