@@ -91,7 +91,7 @@ return
 
 ::method build_docs
 use strict arg
-call log 'Starting build.'
+self~log('Starting build.')
 buildrpt = './docs-buildrpt.txt'
 savedir = directory()
 -- create temp dir and checkout the source
@@ -105,6 +105,7 @@ svnver = self~getsvnrevision()
 newdir = self~targetdir'/'svnver
 if \sysisfiledirectory(newdir) then do
    -- build the docs
+   self~log('Building SVN revision' svnver'.')
    'make all 2>&1 | tee -a' buildrpt
    -- copy the results to the host
    'mkdir' newdir
@@ -128,11 +129,11 @@ if \sysisfiledirectory(newdir) then do
    'cp ./winextensions/winextensions-html.zip' newdir
    'cp' buildrpt newdir
    end
-else call log 'This was a duplicate build request.'
+else self~log('This was a duplicate build request.')
 -- remove everything
 call directory savedir
 'rm -rf' tempdir
-call log 'Finished build.'
+self~log('Finished build.')
 -- shutdown the system
 -- 'sudo shutdown -h now'
 return
@@ -157,7 +158,7 @@ return svnver
 /* log                                                                        */
 /*----------------------------------------------------------------------------*/
 
-::routine log
+::method log
 -- log messages
 use strict arg msg
 use strict arg msg
