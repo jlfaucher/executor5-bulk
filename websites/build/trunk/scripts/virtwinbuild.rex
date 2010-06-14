@@ -83,14 +83,9 @@ call log 'Finished build.'
 return
 
 
-getline: procedure
-use arg filename
-strm = .stream~new(filename)
-retc = strm~open('read')
-if retc <> 'READY:' then return ''
-line = strm~lineIn()
-retc = strm~close()
-return line
+/*----------------------------------------------------------------------------*/
+/* getsvnrevision                                                             */
+/*----------------------------------------------------------------------------*/
 
 getsvnrevision: procedure
 'svn info > svntemp'
@@ -104,6 +99,11 @@ parse var revline . svnver .
 if svnver = '' then svnver = 'unknown'
 -- say 'The SVN Revision is' svnver
 return svnver
+
+
+/*----------------------------------------------------------------------------*/
+/* setlatestdocs                                                              */
+/*----------------------------------------------------------------------------*/
 
 setlatestdocs:
 -- Do not use SysFileTree here! RXAPI may not be running!
@@ -130,7 +130,7 @@ return
 /* log                                                                        */
 /*----------------------------------------------------------------------------*/
 
-::routine log
+log:
 -- log messages
 use strict arg msg
 strm = .stream~new(hostbuilds'\status\' || builddate || '-' || osname)
