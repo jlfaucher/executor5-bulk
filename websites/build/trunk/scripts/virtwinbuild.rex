@@ -48,15 +48,14 @@
 -- initialization
 hostbuilds = 's:'
 builddir = 'c:\buildtemp'
-osname = 'winxpsp3-i386-orxbuild-1'
+osname = 'winxpsp3-i386-orxbuild'
+targetdir = hostbuilds'\interpreter-main'
 builddate = date('S')
 
 -- make sure our temp dir is empty
 'rmdir /S /Q' builddir
 
 call log 'Starting build.'
-call status hostbuilds, builddate, osname date('S') time('N') 'Starting build.'
-say 'Performing SVN checkout'
 -- create temp dir and checkout the source
 'md' builddir
 'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/' builddir
@@ -66,23 +65,21 @@ call value 'SRC_DRV', 'c:', 'ENVIRONMENT'
 call value 'SRC_DIR', '\buildtemp', 'ENVIRONMENT'
 call setlatestdocs
 svnver = getsvnrevision()
-say 'Building ooRexx'
+call log 'Building ooRexx'
 'makeorx.bat BOTH PACKAGE'
 -- copy the results to the host
-say 'Copying build output files to the server'
-newdir = hostbuilds'\interpreter-main\'svnver
+call log 'Copying build output files to the server'
+newdir = targetdir'\'svnver
+'md' newdir
+newdir = newdir'\'osname
 'md' newdir
 'copy ooRexx*.exe' newdir
 'copy Win32Rel\Win32Rel.log' newdir'\Win32RelLog.txt'
 'copy Win32Dbg\Win32Dbg.log' newdir'\Win32DbgLog.txt'
 -- remove everything
-say 'Cleanup'
 call directory 'c:\'
 'rmdir /S /Q' builddir
 call log 'Finished build.'
-call status hostbuilds, builddate, osname date('S') time('N') 'Finished build.'
--- shut down the system
--- 'shutdown -s'
 return
 
 
@@ -105,7 +102,7 @@ retc = strm~close()
 revline = lines[5]
 parse var revline . svnver .
 if svnver = '' then svnver = 'unknown'
-say 'The SVN Revision is' svnver
+-- say 'The SVN Revision is' svnver
 return svnver
 
 setlatestdocs:
@@ -125,7 +122,7 @@ if docdir <> '' then do
    call value 'DOC_LOCATION', hostbuilds'\docs\'docdir, 'ENVIRONMENT'
    end
 'del dirlist.txt'
-say 'The doc_location is' hostbuilds'\docs\'docdir
+-- say 'The doc_location is' hostbuilds'\docs\'docdir
 return
 
 
@@ -136,23 +133,10 @@ return
 ::routine log
 -- log messages
 use strict arg msg
-strm = .stream~new('c:\BuildWinEXEi386.log')
+strm = .stream~new(hostbuilds'\status\' || builddate || '-' || osname)
 strm~open('write append')
 msg = date('S') time('N') msg
 say msg
-strm~lineout(msg)
-strm~close()
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* status                                                                     */
-/*----------------------------------------------------------------------------*/
-
-::routine status
-use strict arg hostbuilds, builddate, msg
-strm = .stream~new(hostbuilds'\status\' || builddate)
-strm~open('write append')
 strm~lineout(msg)
 strm~close()
 return
