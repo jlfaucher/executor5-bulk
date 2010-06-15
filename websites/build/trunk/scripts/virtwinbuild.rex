@@ -51,10 +51,32 @@ builddir = 'c:\buildtemp'
 osname = 'winxpsp3-i386
 targetdir = hostbuilds'\interpreter-main'
 builddate = date('S')
+startbuildtime = 165  -- 2:45 AM
 
 -- make sure our temp dir is empty
 'rmdir /S /Q' builddir
 
+-- see if we just do one build only
+cmdline = arg(1)~strip()
+if cmdline = '--immediate' then do
+   call dobuild
+   return
+   end
+
+-- wait until the specified time
+do forever
+   if time('M') = startbuildtime then call dobuild
+   'sleep 50'
+   say 'Current time is' time('C')
+   end
+return
+
+
+/*----------------------------------------------------------------------------*/
+/* dobuild                                                                    */
+/*----------------------------------------------------------------------------*/
+
+dobuild:
 call log 'Starting build.'
 -- create temp dir and checkout the source
 'md' builddir
@@ -65,17 +87,26 @@ call value 'SRC_DRV', 'c:', 'ENVIRONMENT'
 call value 'SRC_DIR', '\buildtemp', 'ENVIRONMENT'
 call setlatestdocs
 svnver = getsvnrevision()
-call log 'Building ooRexx'
-'makeorx.bat BOTH PACKAGE'
--- copy the results to the host
-call log 'Copying build output files to the server'
-newdir = targetdir'\'svnver
-'md' newdir
-newdir = newdir'\'osname
-'md' newdir
-'copy ooRexx*.exe' newdir
-'copy Win32Rel\Win32Rel.log' newdir'\Win32RelLog.txt'
-'copy Win32Dbg\Win32Dbg.log' newdir'\Win32DbgLog.txt'
+if checkbuild(targetdir'\'snvver'\'osname) = .false then do
+   call log 'Building ooRexx'
+   'makeorx.bat BOTH PACKAGE'
+   -- copy the results to the host
+   call log 'Copying build output files to the server'
+   newdir = targetdir'\'svnver
+   'md' newdir
+   newdir = newdir'\'osname
+   'md' newdir
+   'copy ooRexx*.exe' newdir
+   'copy Win32Rel\Win32Rel.log' newdir'\Win32RelLog.txt'
+   'copy Win32Dbg\Win32Dbg.log' newdir'\Win32DbgLog.txt'
+   -- check build success
+   if \checkbuild(newdir) then do
+      call log 'Build was bad, no output files produced'
+      end
+   end
+else do
+   call log 'This was a duplicate build request for SVN revision' svnver'.'
+   end
 -- remove everything
 call directory 'c:\'
 'rmdir /S /Q' builddir
@@ -142,8 +173,23 @@ strm~close()
 return
 
 
+/*----------------------------------------------------------------------------*/
+/* checkbuild                                                                 */
+/*----------------------------------------------------------------------------*/
 
-
-
-
+checkbuild: procedure
+-- check fo good build
+use strict arg newdir
+'dir' newdir'\ooRexx*.exe > checkexists'
+strm = .stream~new('checkexists')
+retc = strm~open('read')
+if retc <> 'READY:' then return 'unknown'
+lines = strm~arrayIn()
+retc = strm~close()
+count = 0
+do line over lines
+   if line~pos('ooRexx') > 0 & line~pos('.exe') > 0 then count += 1
+   end
+if count < 2 then return .false -- bad build
+return .true  -- good build
 

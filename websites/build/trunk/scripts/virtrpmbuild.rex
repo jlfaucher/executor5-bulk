@@ -141,20 +141,48 @@ if \sysisfiledirectory(newdir) then do
    'make rpm 2>&1 | tee -a' buildrpt
    -- copy the results to the host
    'mkdir -p' newdir
-   if SysIsFileDirectory('./rpm/RPMS/i386') then ,
-    'cp ./rpm/RPMS/i386/ooRexx*.rpm' newdir
-   else if SysIsFileDirectory('./rpm/RPMS/i486') then ,
-    'cp ./rpm/RPMS/i486/ooRexx*.rpm' newdir
-   else if SysIsFileDirectory('./rpm/RPMS/i586') then ,
-    'cp ./rpm/RPMS/i586/ooRexx*.rpm' newdir
-   else if SysIsFileDirectory('./rpm/RPMS/i686') then ,
-    'cp ./rpm/RPMS/i686/ooRexx*.rpm' newdir
-   else if SysIsFileDirectory('./rpm/RPMS/x86_64') then ,
-    'cp ./rpm/RPMS/x86_64/ooRexx*.rpm' newdir
-   else if SysIsFileDirectory('./rpm/RPMS/s390x') then ,
-    'cp ./rpm/RPMS/s390x/ooRexx*.rpm' newdir
-   else if SysIsFileDirectory('./rpm/RPMS/s390') then ,
-    'cp ./rpm/RPMS/s390/ooRexx*.rpm' newdir
+   if SysIsFileDirectory('./rpm/RPMS/i386') then do
+      'cp ./rpm/RPMS/i386/ooRexx*.rpm' newdir
+      if \self~checkbuild('i386', newdir) then do
+         self~log('Build was bad, no output files produced.')
+         end
+      end
+   else if SysIsFileDirectory('./rpm/RPMS/i486') then do
+      'cp ./rpm/RPMS/i486/ooRexx*.rpm' newdir
+      if \self~checkbuild('i486', newdir) then do
+         self~log('Build was bad, no output files produced.')
+         end
+      end
+   else if SysIsFileDirectory('./rpm/RPMS/i586') then do
+      'cp ./rpm/RPMS/i586/ooRexx*.rpm' newdir
+      if \self~checkbuild('i586', newdir) then do
+         self~log('Build was bad, no output files produced.')
+         end
+      end
+   else if SysIsFileDirectory('./rpm/RPMS/i686') then do
+      'cp ./rpm/RPMS/i686/ooRexx*.rpm' newdir
+      if \self~checkbuild('i686', newdir) then do
+         self~log('Build was bad, no output files produced.')
+         end
+      end
+   else if SysIsFileDirectory('./rpm/RPMS/x86_64') then do
+      'cp ./rpm/RPMS/x86_64/ooRexx*.rpm' newdir
+      if \self~checkbuild('x84_64', newdir) then do
+         self~log('Build was bad, no output files produced.')
+         end
+      end
+   else if SysIsFileDirectory('./rpm/RPMS/s390x') then do
+      'cp ./rpm/RPMS/s390x/ooRexx*.rpm' newdir
+      if \self~checkbuild('s390x', newdir) then do
+         self~log('Build was bad, no output files produced.')
+         end
+      end
+   else if SysIsFileDirectory('./rpm/RPMS/s390') then do
+      'cp ./rpm/RPMS/s390/ooRexx*.rpm' newdir
+      if \self~checkbuild('s390', newdir) then do
+         self~log('Build was bad, no output files produced.')
+         end
+      end
    else nop -- it must not be a supported rpm type
    'cp' buildrpt newdir
    end
@@ -168,4 +196,15 @@ self~log('Finished build.')
 -- shutdown the system
 -- 'sudo shutdown -h now'
 return
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: checkbuild                                                         */
+/*----------------------------------------------------------------------------*/
+
+::method checkbuild
+use strict arg arch, newdir
+call SysFileTree newdir'/ooRexx*'arch'*.rpm', 'files.', 'F'
+if files.0 = 0 then return .false  -- bad build
+return .true  -- good build
 

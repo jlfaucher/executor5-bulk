@@ -141,6 +141,9 @@ if sysisfiledirectory(newdir) = 0 then do
    -- copy the results to the host
    'mkdir -p' newdir
    'cp ../oorexx*.deb' newdir
+   if \self~checkbuild(newdir) then do
+      self~log('Build was bad, no output files produced.')
+      end
    'cp' buildrpt newdir
    end
 else self~log('This was a duplicate build request for SVN revision' svnver'.')
@@ -151,4 +154,15 @@ self~log('Finished build.')
 -- shutdown the system
 -- 'sudo shutdown -h now'
 return
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: checkbuild                                                         */
+/*----------------------------------------------------------------------------*/
+
+::method checkbuild
+use strict arg newdir
+call SysFileTree newdir'/oorexx*.deb', 'files.', 'F'
+if files.0 = 0 then return .false  -- bad build
+return .true  -- good build
 
