@@ -87,9 +87,8 @@ call value 'SRC_DRV', 'c:', 'ENVIRONMENT'
 call value 'SRC_DIR', '\buildtemp', 'ENVIRONMENT'
 call setlatestdocs
 svnver = getsvnrevision()
-if checkbuild(targetdir'\'snvver'\'osname) = .false then do
+if checkbuild(targetdir'\'svnver'\'osname) = .false then do
    call log 'Building ooRexx'
-   return
    'makeorx.bat BOTH PACKAGE'
    -- copy the results to the host
    call log 'Copying build output files to the server'
@@ -181,7 +180,6 @@ return
 checkbuild: procedure
 -- check fo good build
 use strict arg newdir
-say 'dir' newdir'\ooRexx*.exe > checkexists'
 'dir' newdir'\ooRexx*.exe > checkexists'
 strm = .stream~new('checkexists')
 retc = strm~open('read')
