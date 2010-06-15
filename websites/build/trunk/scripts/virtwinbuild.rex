@@ -48,7 +48,7 @@
 -- initialization
 hostbuilds = 's:'
 builddir = 'c:\buildtemp'
-osname = 'winxpsp3-i386
+osname = 'winxpsp3-i386'
 targetdir = hostbuilds'\interpreter-main'
 builddate = date('S')
 startbuildtime = 165  -- 2:45 AM
