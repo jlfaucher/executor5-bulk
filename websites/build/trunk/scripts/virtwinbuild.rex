@@ -50,7 +50,6 @@ hostbuilds = 's:'
 builddir = 'c:\buildtemp'
 osname = 'winxpsp3-i386'
 targetdir = hostbuilds'\interpreter-main'
-builddate = date('S')
 startbuildtime = 165  -- 2:45 AM
 
 -- make sure our temp dir is empty
@@ -77,6 +76,7 @@ return
 /*----------------------------------------------------------------------------*/
 
 dobuild:
+builddate = date('S')  -- do this first!!!!
 call log 'Starting build.'
 -- create temp dir and checkout the source
 'md' builddir
