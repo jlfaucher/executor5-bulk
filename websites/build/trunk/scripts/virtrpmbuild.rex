@@ -167,7 +167,7 @@ if \sysisfiledirectory(newdir) then do
       end
    else if SysIsFileDirectory('./rpm/RPMS/x86_64') then do
       'cp ./rpm/RPMS/x86_64/ooRexx*.rpm' newdir
-      if \self~checkbuild('x84_64', newdir) then do
+      if \self~checkbuild('x86_64', newdir) then do
          self~log('Build was bad, no output files produced.')
          end
       end
