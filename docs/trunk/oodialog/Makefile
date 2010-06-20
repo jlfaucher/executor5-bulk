@@ -51,6 +51,7 @@ xml_FILES = baseClasses.xml \
 	     buttoncontrols.xml \
 	     categorydialog.xml \
 	     comboboxc.xml \
+	     dataAttributes.xml \
 	     datetimepicker.xml \
 	     dialogControlObject.xml \
 	     dialogObject.xml \
