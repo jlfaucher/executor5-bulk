@@ -64,9 +64,9 @@ call directory build~homedir
 build~build_rpm()
    
 -- Cleanup   
-'scp' self~homedir'/BuildRPM.log' 'dashley@build.oorexx.org:/home/dashley/website/trunk/builds/status/' ||,
+'scp' build~homedir'/BuildRPM.log' 'dashley@build.oorexx.org:/home/dashley/website/trunk/builds/status/' ||,
  date('S') || self~osname
-call SysFileDelete(self~homedir'/BuildRPM.log')
+call SysFileDelete build~homedir'/BuildRPM.log'
 return
 
 
@@ -136,6 +136,7 @@ svnver = self~getsvnrevision()
 newdir = self~targetdir'/'svnver'/'self~osname
 if self~targetexists('dashley', 'build.oorexx.org', newdir) = .false then do
    -- build the rpm
+   self~log('Building SVN revision' svnver'.')
    './bootstrap 2>&1 | tee -a' buildrpt
    './configure 2>&1 | tee -a' buildrpt
    'make rpm 2>&1 | tee -a' buildrpt
@@ -158,6 +159,9 @@ if self~targetexists('dashley', 'build.oorexx.org', newdir) = .false then do
    else nop -- it must not be a supported rpm type
    'scp' buildrpt 'dashley@build.oorexx.org:'newdir
    end
+else do
+   self~log('This was a duplicate build request for SVN revision' svnver'.')
+   end
 -- remove everything
 call directory savedir
 'rm -rf' self~builddir
@@ -170,7 +174,7 @@ return
 
 ::method targetexists
 use strict arg userid, host, target
-tempf = '/var/orxbuild.tmp'
+tempf = '/tmp/orxbuild.tmp'
 'ssh' userid'@'host '"ls -l' target'" >' tempf
 strm = .stream~new(tempf)
 strm~open('read')
