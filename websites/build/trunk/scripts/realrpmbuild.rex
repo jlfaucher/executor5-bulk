@@ -54,7 +54,7 @@ osname = 'SLES11-s390x'
 build = .build~new()
 build~homedir = '/home/'userid()  -- always do first!
 -- build~builddir = build~homedir'/buildorx'
-build~builddir = '/data1/buildorx'  -- value for oorexx.osdl.marist.edu
+build~builddir = '/data/buildorx'  -- value for oorexx.osdl.marist.edu
 build~targetdir = '/home/dashley/website/trunk/docroot/builds/interpreter-main'
 build~osname = osname
 
