@@ -43,11 +43,10 @@
 
 -- platform specific variables!
 -- osname = 'fedora13-i386'
--- osname = 'fedora13-i386'
 -- osname = 'fedora13-x86_64'
 -- osname = 'opensuse11-i386'
 -- osname = 'opensuse11-x86_64'
-osname = 'SLES11-s390x'
+osname = 'SLES10-s390x'
 -- osname = 'winxpsp3-i386'
 
 -- Initialization
