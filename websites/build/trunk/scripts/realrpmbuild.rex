@@ -65,7 +65,7 @@ build~build_rpm()
    
 -- Cleanup   
 'scp' build~homedir'/BuildRPM.log' 'dashley@build.oorexx.org:/home/dashley/website/trunk/builds/status/' ||,
- date('S') || self~osname
+ date('S') || build~osname
 call SysFileDelete build~homedir'/BuildRPM.log'
 return
 
