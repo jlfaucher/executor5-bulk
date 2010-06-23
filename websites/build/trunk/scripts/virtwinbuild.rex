@@ -87,7 +87,7 @@ call value 'SRC_DRV', 'c:', 'ENVIRONMENT'
 call value 'SRC_DIR', '\buildtemp', 'ENVIRONMENT'
 call setlatestdocs
 svnver = getsvnrevision()
-if datatype(svnver, 'W') then do
+if \datatype(svnver, 'W') then do
    call log 'Subversion checkout failed.'
    return
    end

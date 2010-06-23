@@ -130,7 +130,7 @@ buildrpt = osname'.buildrpt.txt'
 'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/ ./temp'
 call directory './temp'
 svnver = self~getsvnrevision()
-if datatype(svnver, 'W') then do
+if \datatype(svnver, 'W') then do
    self~log('Subversion checkout failed.')
    return
    end

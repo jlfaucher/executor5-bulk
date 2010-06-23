@@ -131,7 +131,7 @@ savedir = directory()
 call directory self~builddir
 -- see if we have already built this revision
 svnver = self~getsvnrevision()
-if datatype(svnver, 'W') then do
+if \datatype(svnver, 'W') then do
    self~log('Subversion checkout failed.')
    return
    end
