@@ -79,8 +79,10 @@ xml_FILES = baseClasses.xml \
 	     utilityclasses.xml \
 	     windowBase.xml \
 	     windowBaseDO.xml \
+	     windowBaseDCO.xml \
 	     windowExtensions.xml \
 	     windowExtensionsDO.xml \
+	     windowExtensionsDCO.xml \
 	     ../shared/notices.xml \
 	     ../shared/legalstuff.xml \
 	     ../shared/gethelp.xml \

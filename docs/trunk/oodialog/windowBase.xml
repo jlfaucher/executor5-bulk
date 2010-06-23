@@ -2215,6 +2215,7 @@ Generic form:
       omitted, the window is made visible, moved to the position specified by the x, y coordinates and resized to the
       width and height specified by the width and height portion of the point / size rectangle
     </para>
+    <para>
     <simplelist type='vert' columns='3'>
       <member>NOSIZE    </member>
       <member>NOMOVE    </member>
@@ -2222,6 +2223,7 @@ Generic form:
       <member>SHOWWINDOW</member>
       <member>NOREDRAW  </member>
     </simplelist>
+    </para>
     <variablelist>
       <varlistentry><term>NOSIZE</term>
       <listitem>
@@ -2379,11 +2381,13 @@ Generic form:
     A list of 0 or one of the following keywords separated by spaces. Case is not significant. If the window is visible,
     this argument can, and probably should be, omitted. Combining the arguments makes little sense.
   </para>
+  <para>
   <simplelist type='vert' columns='3'>
     <member>HIDEWINDOW</member>
     <member>SHOWWINDOW</member>
     <member>NOREDRAW  </member>
   </simplelist>
+  </para>
   <variablelist>
     <varlistentry><term>HIDEWINDOW</term>
     <listitem>
@@ -2626,9 +2630,9 @@ Generic form:
 </programlisting>
 
 <para>
-  The <emphasis role="italic">setWindowPos</emphasis> method is used to change properties of this window related to
-  size, position, visibility, and relation to other windows. Windows are ordered according to their appearance on the
-  screen. The topmost window receives the highest rank and is the first window in the Z order.
+  The <emphasis role="italic">setWindowPos</emphasis> method is used to change the size, position, visiblity, and Z
+  order of this window. Windows are ordered according to their appearance on the screen. The topmost window receives
+  the highest rank and is the first window in the Z order.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2650,12 +2654,14 @@ Generic form:
       The handle of a window that is to precede this window in the Z-order. This argument must be a valid window
       handle, or one of the following keywords. In addition, 0 is accepted.  0 is exactly equivalent to the TOP keyword.
     </para>
+    <para>
     <simplelist type='vert' columns='3'>
       <member>BOTTOM    </member>
       <member>NOTTOPMOST</member>
       <member>TOP       </member>
       <member>TOPMOST   </member>
     </simplelist>
+    </para>
     <variablelist>
       <varlistentry><term>BOTTOM</term>
       <listitem>
@@ -2712,6 +2718,7 @@ Generic form:
       omitted, the window is made visible, moved to the position specified by the x, y coordinates and resized to the
       width and height specified by the width and height portion of the point / size rectangle
     </para>
+    <para>
     <simplelist type='vert' columns='3'>
       <member>ASYNCWINDOWPOS</member>
       <member>DEFERERASE    </member>
@@ -2729,6 +2736,7 @@ Generic form:
       <member>NOZORDER      </member>
       <member>SHOWWINDOW    </member>
     </simplelist>
+    </para>
     <variablelist>
       <varlistentry><term>ASYNCWINDOWPOS</term>
       <listitem>
@@ -2950,12 +2958,14 @@ Generic form:
       The handle of a window that is to precede this window in the Z-order. This argument must be a valid window
       handle, or one of the following keywords. In addition, 0 is accepted.  0 is exactly equivalent to the TOP keyword.
     </para>
+    <para>
     <simplelist type='vert' columns='3'>
       <member>BOTTOM    </member>
       <member>NOTTOPMOST</member>
       <member>TOP       </member>
       <member>TOPMOST   </member>
     </simplelist>
+    </para>
     <variablelist>
       <varlistentry><term>BOTTOM</term>
       <listitem>
@@ -3000,6 +3010,7 @@ Generic form:
       omitted, the window is made visible and resized to the width and height specified. The NOMOVE keyword is
       automatically added to the options and does not need to be specified.
     </para>
+    <para>
     <simplelist type='vert' columns='3'>
       <member>ASYNCWINDOWPOS</member>
       <member>DEFERERASE    </member>
@@ -3016,6 +3027,7 @@ Generic form:
       <member>NOZORDER      </member>
       <member>SHOWWINDOW    </member>
     </simplelist>
+    </para>
     <variablelist>
       <varlistentry><term>ASYNCWINDOWPOS</term>
       <listitem>
@@ -3218,12 +3230,14 @@ Generic form:
       The handle of a window that is to precede this window in the Z-order. This argument must be a valid window
       handle, or one of the following keywords. In addition, 0 is accepted.  0 is exactly equivalent to the TOP keyword.
     </para>
+    <para>
     <simplelist type='vert' columns='3'>
       <member>BOTTOM    </member>
       <member>NOTTOPMOST</member>
       <member>TOP       </member>
       <member>TOPMOST   </member>
     </simplelist>
+    </para>
     <variablelist>
       <varlistentry><term>BOTTOM</term>
       <listitem>
@@ -3268,6 +3282,7 @@ Generic form:
       omitted, the window is made visible and moved to the x and y co-ordinates specified. The NOSIZE keyword is
       automatically added to the options and does not need to be specified.
     </para>
+    <para>
     <simplelist type='vert' columns='3'>
       <member>ASYNCWINDOWPOS</member>
       <member>DEFERERASE    </member>
@@ -3284,6 +3299,7 @@ Generic form:
       <member>NOZORDER      </member>
       <member>SHOWWINDOW    </member>
     </simplelist>
+    </para>
     <variablelist>
       <varlistentry><term>ASYNCWINDOWPOS</term>
       <listitem>

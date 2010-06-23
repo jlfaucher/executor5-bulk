@@ -271,6 +271,18 @@
 <entry>Moves the dialog to the position specified in pixels.</entry>
 </row>
 <row>
+<entry><link linkend="wbdoSetWindowPos">setWindowPos</link></entry>
+<entry>Changes the size, position, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoSizeWindow">sizeWindow</link></entry>
+<entry>Changes the size, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoMoveWindow">moveWindow</link></entry>
+<entry>Changes the position, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
 <entry><link linkend="wbdoGetRealSize">getRealSize</link></entry>
 <entry>Returns the size of the dialog in pixels as a <computeroutput>Size</computeroutput> object.</entry>
 </row>
@@ -1166,10 +1178,6 @@
 <entry><link linkend="mthRestore">Restore</link></entry>
 </row>
 <row>
-<entry>Run</entry>
-<entry><link linkend="h000041">Run</link></entry>
-</row>
-<row>
 <entry>screenToClient</entry>
 <entry><link linkend="mthScreenToClient">screenToClient</link></entry>
 </row>
@@ -1371,9 +1379,8 @@
 <indexterm><primary>dialog object</primary><secondary>new method</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+---------+--,--id--+-------------+--+----------+--)-----------------><
-          +-library-+         +-,--dlgData.-+  +-,--hFile-+
-
+>>--new(--library--,--id--+-------------+--+----------+--)---------------------><
+                          +-,--dlgData.-+  +-,--hFile-+
 
 ]]>
 </programlisting>
@@ -4039,33 +4046,6 @@ called from outside the class.
   lb~add("and this one the second")
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000041"><title>run</title>
-<indexterm><primary>run</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~Run---------------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>
-  The Run method dispatches messages from the Windows dialog until the user terminates the dialog by one of the
-  following actions:
-</para>
-<itemizedlist>
-<listitem><para>Press the OK button (the push button with ID 1)</para></listitem>
-<listitem><para>Press the Cancel button (the push button with ID 2)</para></listitem>
-<listitem><para>Press the Enter key (if OK or Cancel is the default button)</para></listitem>
-<listitem><para>Press the Esc key</para></listitem></itemizedlist>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>Run is a protected method. You cannot call this method directly; it
-is called by <link linkend="mthExecute">execute</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -10234,6 +10214,25 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>. It does nothing and always returns the empty string.
 </para>
+</section>
+
+<section><title>run</title>
+<indexterm><primary>Deprecated</primary><secondary>run</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>run</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. It does nothing except sit in a loop burning up CPU.
+</para>
+<para>
+  Although this method was documented previously, it is the author's opion that it was intended for internal use only.
+  Unfortunately, earlier versions of ooDialog documented a number of internal use only methods, which was a mistake.
+  Internal use only methods should not be documented.
+</para>
+<para>
+  The earlier documentation did say: <emphasis role="italic">run is a protected method. You cannot call this method
+  directly.</emphasis> In the author's opinion, this was poorly worded and what was meant to be said is: <emphasis
+  role="italic">run is an internal use only method. Do not call this method directly.</emphasis>
+</para>
+
 </section>
 
 <section><title>setMenuItemRadio</title>

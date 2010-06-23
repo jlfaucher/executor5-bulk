@@ -42,16 +42,18 @@
     #########################################################################
 -->
 
-<section id="sctWindowBaseDO"><title>Basic Window Methods</title>
-<indexterm><primary>dialog object</primary><secondary>basic window methods</secondary></indexterm>
+<section id="sctWindowBaseDCO"><title>Basic Window Methods</title>
+<indexterm><primary>dialog control object</primary><secondary>basic window methods</secondary></indexterm>
 <para>
   Recall that in the Windows graphical user interface, everything is a window. The <link
   linkend="clsWindowBase">WindowBase</link> class is a mixin class that contains methods common to all windows. Since a
-  dialog is a window, it inherits the <emphasis role="italic">WindowBase</emphasis> class. This section lists all the
-  basic window methods for the dialog object.
+  dialog control is a window, it inherits the <emphasis role="italic">WindowBase</emphasis> class, the same as the <link
+  linkend="chpDialogObject"></link> dialog object does. All <emphasis role="italic">WindowBase</emphasis> methods are
+  common to both dialogs and dialog controls. This section lists all the basic window methods for the dialog control
+  object.
 </para>
 
-<section id="wbdoSendMessage"><title>sendMessage</title>
+<section id="wbdcoSendMessage"><title>sendMessage</title>
 <programlisting>
 WindowBase::<link linkend="mthSendMessage">sendMessage</link>
 
@@ -61,7 +63,7 @@ WindowBase::<link linkend="mthSendMessage">sendMessage</link>
 </programlisting>
 </section>
 
-<section id="wbdoSendMessageHandle"><title>sendMessageHandle</title>
+<section id="wbdcoSendMessageHandle"><title>sendMessageHandle</title>
 <programlisting>
 <link linkend="mthSendMessageHandle">sendMessageHandle</link>
 
@@ -71,7 +73,7 @@ WindowBase::<link linkend="mthSendMessage">sendMessage</link>
 </programlisting>
 </section>
 
-<section id="wbdoEnable"><title>enable</title>
+<section id="wbdcoEnable"><title>enable</title>
 <programlisting>
 WindowBase::<link linkend="mthEnable">enable</link>
 
@@ -81,9 +83,9 @@ WindowBase::<link linkend="mthEnable">enable</link>
 </programlisting>
 </section>
 
-<section id="wbdoDisable"><title>disable</title>
+<section id="wbdcoDisable"><title>disable</title>
 <programlisting>
-WindowBass::<link linkend="mthDisable">disable</link>
+WindowBase::<link linkend="mthDisable">disable</link>
 
 <![CDATA[
 >>--disable----------------------------------------------------><
@@ -91,7 +93,7 @@ WindowBass::<link linkend="mthDisable">disable</link>
 </programlisting>
 </section>
 
-<section id="wbdoIsVisible"><title>isVisible</title>
+<section id="wbdcoIsVisible"><title>isVisible</title>
 <programlisting>
 WindowBase::<link linkend="mthIsVisible">isVisible</link>
 
@@ -101,7 +103,7 @@ WindowBase::<link linkend="mthIsVisible">isVisible</link>
 </programlisting>
 </section>
 
-<section id="wbdoIsEnabled"><title>isEnabled</title>
+<section id="wbdcoIsEnabled"><title>isEnabled</title>
 <programlisting>
 WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
 
@@ -111,7 +113,18 @@ WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
 </programlisting>
 </section>
 
-<section id="wbdoHide"><title>hide</title>
+<section id="wbdcoShow"><title>show</title>
+<programlisting>
+WindowBase::<link linkend="mthShowClsWindowBase">show</link>
+
+<![CDATA[
+>>--show-------------------------------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoHide"><title>hide</title>
 <programlisting>
 WindowBase::<link linkend="mthHide">hide</link>
 
@@ -121,7 +134,7 @@ WindowBase::<link linkend="mthHide">hide</link>
 </programlisting>
 </section>
 
-<section id="wbdoShowFast"><title>showFast</title>
+<section id="wbdcoShowFast"><title>showFast</title>
 <programlisting>
 WindowBase::<link linkend="mthShowFast">showFast</link>
 
@@ -131,7 +144,7 @@ WindowBase::<link linkend="mthShowFast">showFast</link>
 </programlisting>
 </section>
 
-<section id="wbdoHideFast"><title>hideFast</title>
+<section id="wbdcoHideFast"><title>hideFast</title>
 <programlisting>
 WindowBase::<link linkend="mthHideFast">hideFast</link>
 
@@ -141,7 +154,7 @@ WindowBase::<link linkend="mthHideFast">hideFast</link>
 </programlisting>
 </section>
 
-<section id="wbdoDisplay"><title>display</title>
+<section id="wbdcoDisplay"><title>display</title>
 <programlisting>
 WindowBase::<link linkend="mthDisplay">display</link>
 
@@ -150,7 +163,7 @@ WindowBase::<link linkend="mthDisplay">display</link>
 </programlisting>
 </section>
 
-<section id="wbdoUpdate"><title>update</title>
+<section id="wbdcoUpdate"><title>update</title>
 <programlisting>
 WindowBase::<link linkend="mthUpdate">update</link>
 
@@ -159,7 +172,7 @@ WindowBase::<link linkend="mthUpdate">update</link>
 </programlisting>
 </section>
 
-<section id="wbdoDraw"><title>draw</title>
+<section id="wbdcoDraw"><title>draw</title>
 <programlisting>
 WindowBase::<link linkend="mthDraw">draw</link>
 
@@ -169,7 +182,7 @@ WindowBase::<link linkend="mthDraw">draw</link>
 </programlisting>
 </section>
 
-<section id="wbdoRedrawClient"><title>redrawClient</title>
+<section id="wbdcoRedrawClient"><title>redrawClient</title>
 <programlisting>
 WindowBase::<link linkend="mthRedrawClient">redrawClient</link>
 
@@ -180,7 +193,7 @@ WindowBase::<link linkend="mthRedrawClient">redrawClient</link>
 </programlisting>
 </section>
 
-<section id="wbdoRedraw"><title>redraw</title>
+<section id="wbdcoRedraw"><title>redraw</title>
 <programlisting>
 WindowBase::<link linkend="mthRedraw">redraw</link>
 
@@ -190,7 +203,7 @@ WindowBase::<link linkend="mthRedraw">redraw</link>
 </programlisting>
 </section>
 
-<section id="wbdoGetID"><title>getID</title>
+<section id="wbdcoGetID"><title>getID</title>
 <programlisting>
 WindowBase::<link linkend="mthGetID">getID</link>
 
@@ -200,7 +213,7 @@ WindowBase::<link linkend="mthGetID">getID</link>
 </programlisting>
 </section>
 
-<section id="wbdoGetStyleRaw"><title>getStyleRaw</title>
+<section id="wbdcoGetStyleRaw"><title>getStyleRaw</title>
 <programlisting>
 WindowBase::<link linkend="mthGetStyleRaw">getStyleRaw</link>
 
@@ -210,7 +223,7 @@ WindowBase::<link linkend="mthGetStyleRaw">getStyleRaw</link>
 </programlisting>
 </section>
 
-<section id="wbdoGetExStyleRaw"><title>getExStyleRaw</title>
+<section id="wbdcoGetExStyleRaw"><title>getExStyleRaw</title>
 <programlisting>
 WindowBase::<link linkend="mthGetExStyleRaw">getExStyleRaw</link>
 
@@ -220,7 +233,7 @@ WindowBase::<link linkend="mthGetExStyleRaw">getExStyleRaw</link>
 </programlisting>
 </section>
 
-<section id="wbdoSetText"><title>setText</title>
+<section id="wbdcoSetText"><title>setText</title>
 <programlisting>
 WindowBase::<link linkend="mthSetText">setText</link>
 
@@ -230,7 +243,7 @@ WindowBase::<link linkend="mthSetText">setText</link>
 </programlisting>
 </section>
 
-<section id="wbdoGetText"><title>getText</title>
+<section id="wbdcoGetText"><title>getText</title>
 <programlisting>
 WindowBase::<link linkend="mthGetText">getText</link>
 
@@ -240,7 +253,7 @@ WindowBase::<link linkend="mthGetText">getText</link>
 </programlisting>
 </section>
 
-<section id="wbdoTitleEquals"><title>title=</title>
+<section id="wbdcoTitleEquals"><title>title=</title>
 <programlisting>
 WindowBase::<link linkend="mthTitleEquals">title=</link>
 
@@ -250,7 +263,7 @@ WindowBase::<link linkend="mthTitleEquals">title=</link>
 </programlisting>
 </section>
 
-<section id="wbdoSetTitle"><title>setTitle</title>
+<section id="wbdcoSetTitle"><title>setTitle</title>
 <programlisting>
 WindowBase::<link linkend="mthSetTitle">setTitle</link>
 
@@ -260,7 +273,7 @@ WindowBase::<link linkend="mthSetTitle">setTitle</link>
 </programlisting>
 </section>
 
-<section id="wbdoTitle"><title>title</title>
+<section id="wbdcoTitle"><title>title</title>
 <programlisting>
 WindowBase::<link linkend="mthTitle">title</link>
 
@@ -270,7 +283,7 @@ WindowBase::<link linkend="mthTitle">title</link>
 </programlisting>
 </section>
 
-<section id="wbdoGetTextSizePx"><title>getTextSizePx</title>
+<section id="wbdcoGetTextSizePx"><title>getTextSizePx</title>
 <programlisting>
 WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
 
@@ -280,7 +293,7 @@ WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
 </programlisting>
 </section>
 
-<section id="wbdoGetTextSizeScreen"><title>getTextSizeScreen</title>
+<section id="wbdcoGetTextSizeScreen"><title>getTextSizeScreen</title>
 <programlisting>
 WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
 
@@ -291,7 +304,7 @@ WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
 </programlisting>
 </section>
 
-<section id="wbdoSetRect"><title>setRect</title>
+<section id="wbdcoSetRect"><title>setRect</title>
 <programlisting>
 WindowBase::<link linkend="mthSetRect">setRect</link>
 
@@ -319,7 +332,7 @@ Generic form:
 </programlisting>
 </section>
 
-<section id="wbdoResizeTo"><title>resizeTo</title>
+<section id="wbdcoResizeTo"><title>resizeTo</title>
 <programlisting>
 WindowBase::<link linkend="mthResizeTo">resizeTo</link>
 
@@ -339,7 +352,7 @@ Generic form:
 </programlisting>
 </section>
 
-<section id="wbdoMoveTo"><title>moveTo</title>
+<section id="wbdcoMoveTo"><title>moveTo</title>
 <programlisting>
 WindowBase::<link linkend="mthMoveTo">moveTo</link>
 
@@ -360,7 +373,7 @@ Generic form:
 </programlisting>
 </section>
 
-<section id="wbdoSetWindowPos"><title>setWindowPos</title>
+<section id="wbdcoSetWindowPos"><title>setWindowPos</title>
 <programlisting>
 WindowBase::<link linkend="mthSetWindowPos">setWindowPos</link>
 
@@ -389,7 +402,7 @@ Generic form:
 </programlisting>
 </section>
 
-<section id="wbdoSizeWindow"><title>sizeWindow</title>
+<section id="wbdcoSizeWindow"><title>sizeWindow</title>
 <programlisting>
 WindowBase::<link linkend="mthSizeWindow">sizeWindow</link>
 
@@ -412,7 +425,7 @@ Generic form:
 </programlisting>
 </section>
 
-<section id="wbdoMoveWindow"><title>moveWindow</title>
+<section id="wbdcoMoveWindow"><title>moveWindow</title>
 <programlisting>
 WindowBase::<link linkend="mthMoveWindow">moveWindow</link>
 
@@ -433,7 +446,7 @@ Generic form:
 </programlisting>
 </section>
 
-<section id="wbdoGetRealSize"><title>getRealSize</title>
+<section id="wbdcoGetRealSize"><title>getRealSize</title>
 <programlisting>
 WindowBase::<link linkend="mthGetRealSize">getRealSize</link>
 
@@ -443,7 +456,7 @@ WindowBase::<link linkend="mthGetRealSize">getRealSize</link>
 </programlisting>
 </section>
 
-<section id="wbdoGetRealPos"><title>getRealPos</title>
+<section id="wbdcoGetRealPos"><title>getRealPos</title>
 <programlisting>
 WindowBase::<link linkend="mthGetSize">getRealPos</link>
 
@@ -453,7 +466,7 @@ WindowBase::<link linkend="mthGetSize">getRealPos</link>
 </programlisting>
 </section>
 
-<section id="wbdoWindowRect"><title>windowRect</title>
+<section id="wbdcoWindowRect"><title>windowRect</title>
 <programlisting>
 WindowBase::<link linkend="mthWindowRect">windowRect</link>
 
@@ -464,7 +477,7 @@ WindowBase::<link linkend="mthWindowRect">windowRect</link>
 </programlisting>
 </section>
 
-<section id="wbdoClientRect"><title>clientRect</title>
+<section id="wbdcoClientRect"><title>clientRect</title>
 <programlisting>
 WindowBase::<link linkend="mthClientRect">clientRect</link>
 
@@ -475,7 +488,7 @@ WindowBase::<link linkend="mthClientRect">clientRect</link>
 </programlisting>
 </section>
 
-<section id="wbdoClear"><title>clear</title>
+<section id="wbdcoClear"><title>clear</title>
 <programlisting>
 WindowBase::<link linkend="mthClear">clear</link>
 
@@ -485,7 +498,7 @@ WindowBase::<link linkend="mthClear">clear</link>
 </programlisting>
 </section>
 
-<section id="wbdoResize"><title>resize</title>
+<section id="wbdcoResize"><title>resize</title>
 <programlisting>
 WindowBase::<link linkend="mthResize">resize</link>
 
@@ -496,7 +509,7 @@ WindowBase::<link linkend="mthResize">resize</link>
 </programlisting>
 </section>
 
-<section id="wbdoMove"><title>move</title>
+<section id="wbdcoMove"><title>move</title>
 <programlisting>
 WindowBase::<link linkend="mthMove">move</link>
 
@@ -507,7 +520,7 @@ WindowBase::<link linkend="mthMove">move</link>
 </programlisting>
 </section>
 
-<section id="wbdoGetSize"><title>getSize</title>
+<section id="wbdcoGetSize"><title>getSize</title>
 <programlisting>
 WindowBase::<link linkend="mthGetSize">getSize</link>
 
@@ -517,7 +530,7 @@ WindowBase::<link linkend="mthGetSize">getSize</link>
 </programlisting>
 </section>
 
-<section id="wbdoGetPos"><title>getPos</title>
+<section id="wbdcoGetPos"><title>getPos</title>
 <programlisting>
 WindowBase::<link linkend="mthGetPos">getPos</link>
 
@@ -528,7 +541,7 @@ WindowBase::<link linkend="mthGetPos">getPos</link>
 </programlisting>
 </section>
 
-<section id="wbdoGetRect"><title>getRect</title>
+<section id="wbdcoGetRect"><title>getRect</title>
 <programlisting>
 WindowBase::<link linkend="mthGetRect">getRect</link>
 
@@ -538,7 +551,7 @@ WindowBase::<link linkend="mthGetRect">getRect</link>
 </programlisting>
 </section>
 
-<section id="wbdoGetClientRect"><title>getClientRect</title>
+<section id="wbdcoGetClientRect"><title>getClientRect</title>
 <programlisting>
 WindowBase::<link linkend="mthGetClientRect">getClientRect</link>
 
@@ -550,7 +563,7 @@ WindowBase::<link linkend="mthGetClientRect">getClientRect</link>
 </section>
 
 
-<section id="wbdoForegroundWindow"><title>foregroundWindow</title>
+<section id="wbdcoForegroundWindow"><title>foregroundWindow</title>
 <programlisting>
 WindowBase::<link linkend="mthForegroundWindow">foregroundWindow</link>
 
@@ -561,7 +574,7 @@ WindowBase::<link linkend="mthForegroundWindow">foregroundWindow</link>
 </section>
 
 
-<section id="wbdoScreen2client"><title>screen2client</title>
+<section id="wbdcoScreen2client"><title>screen2client</title>
 <programlisting>
 WindowBase::<link linkend="mthScreen2client">screen2client</link>
 
@@ -572,7 +585,7 @@ WindowBase::<link linkend="mthScreen2client">screen2client</link>
 </section>
 
 
-<section id="wbdoClient2screen"><title>client2screen</title>
+<section id="wbdcoClient2screen"><title>client2screen</title>
 <programlisting>
 WindowBase::<link linkend="mthClient2screen">client2screen</link>
 
@@ -583,7 +596,7 @@ WindowBase::<link linkend="mthClient2screen">client2screen</link>
 </section>
 
 
-<section id="wbdoScreenToClient"><title>screenToClient</title>
+<section id="wbdcoScreenToClient"><title>screenToClient</title>
 <programlisting>
 WindowBase::<link linkend="mthScreenToClient">screenToClient</link>
 
@@ -594,7 +607,7 @@ WindowBase::<link linkend="mthScreenToClient">screenToClient</link>
 </section>
 
 
-<section id="wbdoClientToScreen"><title>clientToScreen</title>
+<section id="wbdcoClientToScreen"><title>clientToScreen</title>
 <programlisting>
 WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 
