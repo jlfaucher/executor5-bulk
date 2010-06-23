@@ -56,6 +56,7 @@ build~homedir = '/home/'userid()  -- always do first!
 build~builddir = '/data/buildorx'  -- value for oorexx.osdl.marist.edu
 build~targetdir = '/home/dashley/website/trunk/docroot/builds/interpreter-main'
 build~osname = osname
+build~builddate = date('S')
 
 -- Set our home directory
 call directory build~homedir
@@ -64,8 +65,9 @@ call directory build~homedir
 build~build_rpm()
    
 -- Cleanup   
-'scp' build~homedir'/BuildRPM.log' 'dashley@build.oorexx.org:/home/dashley/website/trunk/builds/status/' ||,
- date('S') || build~osname
+'scp' build~homedir'/BuildRPM.log' ,
+ 'dashley@build.oorexx.org:/home/dashley/website/trunk/docroot/builds/status/' ||,
+ build~builddate() || '-' || build~osname
 call SysFileDelete build~homedir'/BuildRPM.log'
 return
 
@@ -87,6 +89,7 @@ return
 ::attribute targetdir
 ::attribute builddir      -- the temp build dir
 ::attribute osname
+::attribute builddate
 
 /*----------------------------------------------------------------------------*/
 /* Method: log                                                                */
