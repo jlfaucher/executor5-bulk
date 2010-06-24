@@ -65,10 +65,10 @@ call directory build~homedir
 build~build_rpm()
    
 -- Cleanup   
-'scp' build~homedir'/BuildRPM.log' ,
+'scp' build~homedir() || '/BuildRPM.log' ,
  'dashley@build.oorexx.org:/home/dashley/website/trunk/docroot/builds/status/' ||,
  build~builddate() || '-' || build~osname
-call SysFileDelete build~homedir'/BuildRPM.log'
+call SysFileDelete build~homedir() || '/BuildRPM.log'
 return
 
 
@@ -98,7 +98,7 @@ return
 ::method log
 -- log messages
 use strict arg msg
-strm = .stream~new(self~homedir'/BuildRPM.log')
+strm = .stream~new(self~homedir() || '/BuildRPM.log')
 strm~open('write append')
 msg = date('S') time('N') msg
 say msg
