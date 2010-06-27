@@ -154,6 +154,7 @@ else self~log('This was a duplicate build request for SVN revision' svnver'.')
 -- remove everything
 call directory savedir
 'rm -rf' self~builddir()
+'rm oorexx*.deb'
 self~log('Finished build.')
 -- shutdown the system
 -- 'sudo shutdown -h now'
