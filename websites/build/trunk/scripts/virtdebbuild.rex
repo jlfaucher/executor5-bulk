@@ -128,8 +128,8 @@ savedir = directory()
 buildrpt = self~osname'.buildrpt.txt'
 -- create temp dir and checkout the source
 'mkdir' self~builddir()
-'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/ ./temp'
-call directory './temp'
+call directory self~builddir()
+'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/ ./'
 svnver = self~getsvnrevision()
 if \datatype(svnver, 'W') then do
    self~log('Subversion checkout failed.')
