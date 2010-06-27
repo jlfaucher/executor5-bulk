@@ -44,7 +44,8 @@
 -- platform specific variables!
 -- osname = 'fedora13-i386'
 -- osname = 'fedora13-x86_64'
-osname = 'ubuntu56-i386'
+osname = 'ubuntu1004-i386'
+-- osname = 'ubuntu1004-x86_64'
 -- osname = 'opensuse11-i386'
 -- osname = 'opensuse11-x86_64'
 -- osname = 'SLES10-s390x'
