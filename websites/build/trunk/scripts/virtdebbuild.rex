@@ -121,10 +121,10 @@ return svnver
 /*----------------------------------------------------------------------------*/
 
 ::method build_deb
-use strict arg osname
+use strict arg
 self~log('Starting build.')
 savedir = directory()
-buildrpt = osname'.buildrpt.txt'
+buildrpt = self~osname'.buildrpt.txt'
 -- create temp dir and checkout the source
 'mkdir' self~builddir()
 'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/ ./temp'
@@ -134,7 +134,7 @@ if \datatype(svnver, 'W') then do
    self~log('Subversion checkout failed.')
    return
    end
-newdir = self~targetdir'/'svnver'/'osname
+newdir = self~targetdir'/'svnver'/'self~osname
 if sysisfiledirectory(newdir) = 0 then do
    -- build the deb
    self~log('Building SVN revision' svnver'.')
