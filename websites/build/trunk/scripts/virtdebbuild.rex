@@ -143,12 +143,14 @@ if sysisfiledirectory(newdir) = 0 then do
    './configure --disable-static 2>&1 | tee -a' buildrpt
    'make deb 2>&1 | tee -a' buildrpt
    -- copy the results to the host
-   'mkdir -p' newdir
-   'cp ../oorexx*.deb' newdir
+   -- Note that the files are owned on the build server by dashley (userid 500)
+   -- so we have to prefix all write commands with 'sudosetuid 500'
+   'sudo setuid 500 mkdir -p' newdir
+   'sudo setuid 500 cp ../oorexx*.deb' newdir
    if \self~checkbuild(newdir) then do
       self~log('Build was bad, no output files produced.')
       end
-   'cp' buildrpt newdir
+   'sudo setuid 500 cp' buildrpt newdir
    end
 else self~log('This was a duplicate build request for SVN revision' svnver'.')
 -- remove everything
