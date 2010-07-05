@@ -64,6 +64,12 @@ call directory build~homedir
 
 -- Do the build
 build~build_deb()
+
+-- Cleanup
+'sudo setuid 500 scp' build~homedir() || '/BuildRPM.log' ,
+ 'dashley@build.oorexx.org:/home/dashley/website/trunk/docroot/builds/status/' ||,
+ build~builddate() || '-' || build~osname
+call SysFileDelete build~homedir() || '/BuildRPM.log'
 return
 
 
@@ -94,10 +100,10 @@ return
 ::method log
 -- log messages
 use strict arg msg
+strm = .stream~new(self~homedir() || '/BuildRPM.log')
+strm~open('write append')
 msg = date('S') time('N') msg
 say msg
-strm = .stream~new('/imports/builds/status/' || self~builddate() || '-' || self~osname)
-strm~open('write append')
 strm~lineout(msg)
 strm~close()
 return
