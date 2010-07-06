@@ -66,8 +66,8 @@ call directory build~homedir
 build~build_deb()
 
 -- Cleanup
-'sudo setuid 500 scp' build~homedir() || '/BuildRPM.log' ,
- 'dashley@build.oorexx.org:/home/dashley/website/trunk/docroot/builds/status/' ||,
+'sudo setuid 500 cp' build~homedir() || '/BuildRPM.log' ,
+ '/imports/builds/status/' ||,
  build~builddate() || '-' || build~osname
 call SysFileDelete build~homedir() || '/BuildRPM.log'
 return
