@@ -66,9 +66,9 @@ call directory build~homedir
 build~build_deb()
 
 -- Cleanup
+   'chmod o+r' build~homedir() || '/BuildRPM.log'
 'sudo setuid 500 cp' build~homedir() || '/BuildRPM.log' ,
- '/imports/builds/status/' ||,
- build~builddate() || '-' || build~osname
+ '/imports/builds/status/' || build~builddate() || '-' || build~osname
 call SysFileDelete build~homedir() || '/BuildRPM.log'
 return
 
@@ -152,10 +152,12 @@ if sysisfiledirectory(newdir) = 0 then do
    -- Note that the files are owned on the build server by dashley (userid 500)
    -- so we have to prefix all write commands with 'sudosetuid 500'
    'sudo setuid 500 mkdir -p' newdir
+   'chmod o+r ../oorexx*.deb'
    'sudo setuid 500 cp ../oorexx*.deb' newdir
    if \self~checkbuild(newdir) then do
       self~log('Build was bad, no output files produced.')
       end
+   'chmod o+r' buildrpt
    'sudo setuid 500 cp' buildrpt newdir
    end
 else self~log('This was a duplicate build request for SVN revision' svnver'.')
