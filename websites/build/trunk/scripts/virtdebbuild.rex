@@ -58,6 +58,7 @@ build~builddir = build~homedir'/buildorx'
 build~targetdir = '/imports/builds/interpreter-main'
 build~osname = osname
 build~builddate = date('S')
+build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
 
 -- Set our home directory
 call directory build~homedir
@@ -66,10 +67,9 @@ call directory build~homedir
 build~build_deb()
 
 -- Cleanup
-   'chmod o+r' build~homedir() || '/BuildRPM.log'
-'sudo setuid 500 cp' build~homedir() || '/BuildRPM.log' ,
- '/imports/builds/status/' || build~builddate() || '-' || build~osname
-call SysFileDelete build~homedir() || '/BuildRPM.log'
+'chmod o+r' build~statusfile()
+'sudo setuid 500 cp' build~statusfile() '/imports/builds/status'
+call SysFileDelete build~statusfile()
 return
 
 
@@ -92,6 +92,7 @@ return
 ::attribute builddir      -- the temp build dir
 ::attribute osname
 ::attribute builddate
+::attribute statusfile
 
 /*----------------------------------------------------------------------------*/
 /* Method: log                                                                */
@@ -100,7 +101,7 @@ return
 ::method log
 -- log messages
 use strict arg msg
-strm = .stream~new(self~homedir() || '/BuildRPM.log')
+strm = .stream~new(self~statusfile())
 strm~open('write append')
 msg = date('S') time('N') msg
 say msg

@@ -92,7 +92,7 @@ if \datatype(svnver, 'W') then do
    return
    end
 if checkbuild(targetdir'\'svnver'\'osname) = .false then do
-   call log 'Building ooRexx'
+   call log 'Building SVN revision' svnver'.'
    'makeorx.bat BOTH PACKAGE'
    -- copy the results to the host
    call log 'Copying build output files to the server'

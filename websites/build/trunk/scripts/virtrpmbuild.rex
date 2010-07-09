@@ -56,7 +56,7 @@ build~builddir = build~homedir'/buildorx'
 build~targetdir = '/imports/builds/interpreter-main'
 build~osname = osname
 build~builddate = date('S')
-
+build~statusfile = '/imports/builds/status/' || build~builddate() || '-' || build~osname
 -- Set our home directory
 call directory build~homedir
 
@@ -85,6 +85,7 @@ return
 ::attribute builddir      -- the temp build dir
 ::attribute osname
 ::attribute builddate
+::attribute statusfile
 
 /*----------------------------------------------------------------------------*/
 /* Method: log                                                                */
@@ -95,7 +96,7 @@ return
 use strict arg msg
 msg = date('S') time('N') msg
 say msg
-strm = .stream~new('/imports/builds/status/' || self~builddate() || '-' || self~osname)
+strm = .stream~new(self~statusfile)
 strm~open('write append')
 strm~lineout(msg)
 strm~close()
