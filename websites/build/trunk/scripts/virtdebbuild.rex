@@ -151,13 +151,8 @@ if sysisfiledirectory(newdir) = 0 then do
    './configure --disable-static 2>&1 | tee -a' buildrpt
    'make deb 2>&1 | tee -a' buildrpt
    -- copy the results to the host
-   -- Note that the files are owned on the build server by dashley (userid 500)
-   -- so we have to prefix all write commands with 'sudosetuid 500'
    'ssh dashley@192.168.0.104 "mkdir -p' newdir'"'
    'scp ../oorexx*.deb dashley@192.168.0.104:'newdir
-   if \self~checkbuild(newdir) then do
-      self~log('Build was bad, no output files produced.')
-      end
    'scp' buildrpt 'dashley@192.168.0.104:'newdir
    end
 else self~log('This was a duplicate build request for SVN revision' svnver'.')
@@ -166,18 +161,5 @@ call directory savedir
 'rm -rf' self~builddir()
 'rm oorexx*.deb'
 self~log('Finished build.')
--- shutdown the system
--- 'sudo shutdown -h now'
 return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: checkbuild                                                         */
-/*----------------------------------------------------------------------------*/
-
-::method checkbuild
-use strict arg newdir
-call SysFileTree newdir'/oorexx*.deb', 'files.', 'F'
-if files.0 = 0 then return .false  -- bad build
-return .true  -- good build
 
