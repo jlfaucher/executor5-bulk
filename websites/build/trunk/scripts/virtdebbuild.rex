@@ -55,11 +55,10 @@ osname = 'ubuntu1004-i386'
 build = .build~new()
 build~homedir = '/home/'userid()  -- always do first!
 build~builddir = build~homedir'/buildorx'
-build~targetdir = '/imports/builds/interpreter-main'
+build~targetdir = '/home/dashley/website/trunk/docroot/builds/interpreter-main'
 build~osname = osname
 build~builddate = date('S')
 build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
-call value 'SUDO_ASKPASS', '~/saypassword.rex', 'ENVIRONMENT'
 
 -- Set our home directory
 call directory build~homedir
@@ -68,9 +67,10 @@ call directory build~homedir
 build~build_deb()
 
 -- Cleanup
-'chmod o+r' build~statusfile()
-'sudo -A setuid 500 cp' build~statusfile() '/imports/builds/status'
-call SysFileDelete build~statusfile()
+'scp' build~statusfile()' ,
+ 'dashley@192.168.0.104:/home/dashley/website/trunk/docroot/builds/status/' ||,
+ build~builddate() || '-' || build~osname
+call SysFileDelete build~homedir() || '/BuildRPM.log'
 return
 
 
@@ -153,14 +153,12 @@ if sysisfiledirectory(newdir) = 0 then do
    -- copy the results to the host
    -- Note that the files are owned on the build server by dashley (userid 500)
    -- so we have to prefix all write commands with 'sudosetuid 500'
-   'sudo -A setuid 500 mkdir -p' newdir
-   'chmod o+r ../oorexx*.deb'
-   'sudo -A setuid 500 cp ../oorexx*.deb' newdir
+   'ssh dashley@192.168.0.104 "mkdir -p' newdir'"'
+   'scp ../oorexx*.deb dashley@192.168.0.104:'newdir
    if \self~checkbuild(newdir) then do
       self~log('Build was bad, no output files produced.')
       end
-   'chmod o+r' buildrpt
-   'sudo -A setuid 500 cp' buildrpt newdir
+   'scp' buildrpt 'dashley@192.168.0.104:'newdir
    end
 else self~log('This was a duplicate build request for SVN revision' svnver'.')
 -- remove everything
