@@ -67,7 +67,7 @@ call directory build~homedir
 build~build_deb()
 
 -- Cleanup
-'scp' build~statusfile()' ,
+'scp' build~statusfile() ,
  'dashley@192.168.0.104:/home/dashley/website/trunk/docroot/builds/status/' ||,
  build~builddate() || '-' || build~osname
 call SysFileDelete build~homedir() || '/BuildRPM.log'
