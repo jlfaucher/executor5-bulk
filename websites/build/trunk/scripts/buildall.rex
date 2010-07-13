@@ -41,16 +41,50 @@
 /*----------------------------------------------------------------------------*/
 
 
-call directory '/home/dashley'
+-- build the list of builddomains with their attributes
+buildarr = .array~new()
+buildarr~append(.builddomain~new('fedora13-i386',   '/home/'userid()'/fedora13-i386'))
+buildarr~append(.builddomain~new('fedora13-x86_64', '/home/'userid()'/fedora13-x86_64'))
+buildarr~append(.builddomain~new('ubuntu1004-i386', '/home/'userid()'/ubuntu1004-i386'))
 
-call './virtbuild.rex' 'fedora13.i386.orxbuild.1'
-call './virtbuild.rex' 'fedora13.x86_64.orxbuild.1'
-call './virtbuild.rex' 'fedora13.i386.orxbuild.2'      -- docs build
-call './virtbuild.rex' 'opensuse11.i386.orxbuild.1'
-call './virtbuild.rex' 'opensuse11.x86_64.orxbuild.1'
-call './virtbuild.rex' 'ubuntu56.i386.orxbuild.1'
-call './virtbuild.rex' 'winxpsp3.i386.orxbuild.1'
-call './realbuild.rex' '?.?.?.?'                       -- opensuse zlinux build
+buildarr~append(.builddomain~new('sles10-s390x',    '/home/'userid()'/sles10-s390x', .false))
+
+-- do the docs build first
+kvmmach = .kvmdomain~new(sys~osname())
+if kvmmach~status() = 'shutoff' then kvnmach~startup()
+do until kvmmach~status = 'running'
+   call SysSleep 10
+   end
+-- get the ip address and perform the build
+arr = file_arrayin(sys~addrfile)
+ipaddr = arr[1]~strip()
+'ssh dashley@'ipaddr '"/home/dashley/orxbuild.rex"'
+kvmmach~shutdown()
+
+-- do all the virtual builds
+do sys over buildarr
+   if sys~virt() = .false then iterate
+   -- make sure the domain is running
+   kvmmach = .kvmdomain~new(sys~osname())
+   if kvmmach~status() = 'shutoff' then kvnmach~startup()
+   do until kvmmach~status = 'running'
+      call SysSleep 10
+      end
+   -- get the ip address and perform the build
+   arr = file_arrayin(sys~addrfile)
+   ipaddr = arr[1]~strip()
+   'ssh dashley@'ipaddr '"/home/dashley/orxbuild.rex"'
+   kvmmach~shutdown()
+   end
+
+-- do all the real builds
+do sys over buildarr
+   if sys~virt() = .true then iterate
+   -- get the ip address and perform the build
+   arr = file_arrayin(sys~addrfile)
+   ipaddr = arr[1]~strip()
+   'ssh dashley@'ipaddr '"/home/dashley/orxbuild.rex"'
+   end
 
 -- send an email that the builds are done
 mime1 = .mimepart~new
@@ -80,4 +114,41 @@ return
 
 
 ::requires 'smtpmail.cls'
+::requires 'kvmdomain.cls'
+
+
+/*----------------------------------------------------------------------------*/
+/* Class: builddomain                                                         */
+/*----------------------------------------------------------------------------*/
+
+::class builddomain public
+
+::attribute osname
+::attribute addr
+::attribute addrfile
+::attribute virt
+
+::method init
+expose osname addrfile
+use strict arg osname, addrfile, virt = .true
+return
+
+::method get_ipaddr
+arr = file_arrayin(self~addrfile())
+ln = arr[2]
+parse var ln . 'inet addr:' ipaddr .
+return ipaddr
+
+
+/*----------------------------------------------------------------------------*/
+/* Routine: file_arrayin                                                      */
+/*----------------------------------------------------------------------------*/
+
+::routine file_arrayin
+use strict arg file
+strm = .stream~new(file)
+strm~open('read')
+arr = strm~arrayin()
+strm~close()
+return arr
 
