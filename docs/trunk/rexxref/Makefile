@@ -257,14 +257,14 @@ pdf: rexxref.pdf
 
 html: rexxref-html.zip
 
-rexxref.pdf: $(PDF_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
+rexxref.pdf: $(PDF_IMAGE_FILES) $(HTML_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
 	docbook2pdf -d ../shared/oorexx.print.dsl rexxref.xml
 
-book1.htm: $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp
+book1.htm: $(PDF_IMAGE_FILES) $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp
 	docbook2html -d ../shared/oorexx.html.dsl rexxref.xml
 
 rexxref-html.zip: book1.htm
-	zip rexxref-html *.htm *.jpg *.png
+	zip rexxref-html *.htm *.jpg *.png $(PDF_IMAGE_FILES)
 
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini

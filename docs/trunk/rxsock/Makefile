@@ -94,14 +94,14 @@ pdf: rxsock.pdf
 
 html: rxsock-html.zip
 
-rxsock.pdf: $(PDF_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
+rxsock.pdf: $(PDF_IMAGE_FILES) $(HTML_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
 	docbook2pdf -d ../shared/oorexx.print.dsl rxsock.xml
 
-book1.htm: $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp
+book1.htm: $(PDF_IMAGE_FILES) $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp
 	docbook2html -d ../shared/oorexx.html.dsl rxsock.xml
 
 rxsock-html.zip: book1.htm
-	zip rxsock-html *.htm *.jpg *.png
+	zip rxsock-html *.htm *.jpg *.png $(PDF_IMAGE_FILES) 
 
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini

@@ -135,14 +135,14 @@ pdf: oodialog.pdf
 
 html: oodialog-html.zip
 
-oodialog.pdf: $(PDF_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
+oodialog.pdf: $(PDF_IMAGE_FILES) $(HTML_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
 	docbook2pdf -d ../shared/oorexx.print.dsl oodialog.xml
 
-book1.htm: $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp
+book1.htm:  $(PDF_IMAGE_FILES) $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp
 	docbook2html -d ../shared/oorexx.html.dsl oodialog.xml
 
 oodialog-html.zip: book1.htm
-	zip oodialog-html *.htm *.jpg *.png
+	zip oodialog-html *.htm *.jpg *.png  $(PDF_IMAGE_FILES)
 
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
