@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Description: This is the build daemon for any rpm-based KVM guest OS.      */
+/* Description: This is the build script for any rpm-based KVM guest OS.      */
 /*                                                                            */
 /* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
@@ -42,10 +42,8 @@
 
 
 -- platform specific variables!
--- osname = 'fedora13-i386'
+osname = 'fedora13-i386'
 -- osname = 'fedora13-x86_64'
-osname = 'ubuntu1004-i386'
--- osname = 'ubuntu1004-x86_64'
 -- osname = 'opensuse11-i386'
 -- osname = 'opensuse11-x86_64'
 -- osname = 'SLES10-s390x'
@@ -55,24 +53,18 @@ osname = 'ubuntu1004-i386'
 build = .build~new()
 build~homedir = '/home/'userid()  -- always do first!
 build~builddir = build~homedir'/buildorx'
-build~targetdir = '/home/dashley/website/trunk/docroot/builds/interpreter-main'
+build~targetdir = '/imports/builds/interpreter-main'
 build~osname = osname
 build~builddate = date('S')
-build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
-
+build~statusfile = '/imports/builds/status/' || build~builddate() || '-' || build~osname
 -- Set our home directory
 call directory build~homedir
 
 -- Do the build
-build~build_deb()
-
--- Cleanup
-'scp' build~statusfile() ,
- 'dashley@192.168.0.104:/home/dashley/website/trunk/docroot/builds/status/' ||,
- build~builddate() || '-' || build~osname
-call SysFileDelete build~homedir() || '/BuildRPM.log'
+build~build_rpm()
+   
+-- Cleanup   
 return
-
 
 
 /*----------------------------------------------------------------------------*/
@@ -102,10 +94,10 @@ return
 ::method log
 -- log messages
 use strict arg msg
-strm = .stream~new(self~statusfile())
-strm~open('write append')
 msg = date('S') time('N') msg
 say msg
+strm = .stream~new(self~statusfile)
+strm~open('write append')
 strm~lineout(msg)
 strm~close()
 return
@@ -126,18 +118,19 @@ if svnver = '' then svnver = 'unknown'
 return svnver
 
 /*----------------------------------------------------------------------------*/
-/* build_deb                                                                  */
+/* Method: build_rpm                                                          */
 /*----------------------------------------------------------------------------*/
 
-::method build_deb
-use strict arg
+::method build_rpm
 self~log('Starting build.')
-savedir = directory()
 buildrpt = self~osname'.buildrpt.txt'
+savedir = directory()
 -- create temp dir and checkout the source
-'mkdir' self~builddir()
-call directory self~builddir()
-'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/ ./'
+'rm -rf' self~builddir  -- make sure the subdir is erased
+'mkdir' self~builddir
+'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/' self~builddir
+call directory self~builddir
+-- see if we have already built this revision
 svnver = self~getsvnrevision()
 if \datatype(svnver, 'W') then do
    self~log('Subversion checkout failed.')
@@ -145,21 +138,77 @@ if \datatype(svnver, 'W') then do
    end
 newdir = self~targetdir'/'svnver'/'self~osname
 if sysisfiledirectory(newdir) = 0 then do
-   -- build the deb
+   -- build the rpm
    self~log('Building SVN revision' svnver'.')
    './bootstrap 2>&1 | tee -a' buildrpt
-   './configure --disable-static 2>&1 | tee -a' buildrpt
-   'make deb 2>&1 | tee -a' buildrpt
+   './configure 2>&1 | tee -a' buildrpt
+   'make rpm 2>&1 | tee -a' buildrpt
    -- copy the results to the host
-   'ssh dashley@192.168.0.104 "mkdir -p' newdir'"'
-   'scp ../oorexx*.deb dashley@192.168.0.104:'newdir
-   'scp' buildrpt 'dashley@192.168.0.104:'newdir
+   'mkdir -p' newdir
+   if SysIsFileDirectory('./rpm/RPMS/i386') then do
+      'cp ./rpm/RPMS/i386/ooRexx*.rpm' newdir
+      if \self~checkbuild('i386', newdir) then do
+         self~log('Build was bad, no output files produced.')
+         end
+      end
+   else if SysIsFileDirectory('./rpm/RPMS/i486') then do
+      'cp ./rpm/RPMS/i486/ooRexx*.rpm' newdir
+      if \self~checkbuild('i486', newdir) then do
+         self~log('Build was bad, no output files produced.')
+         end
+      end
+   else if SysIsFileDirectory('./rpm/RPMS/i586') then do
+      'cp ./rpm/RPMS/i586/ooRexx*.rpm' newdir
+      if \self~checkbuild('i586', newdir) then do
+         self~log('Build was bad, no output files produced.')
+         end
+      end
+   else if SysIsFileDirectory('./rpm/RPMS/i686') then do
+      'cp ./rpm/RPMS/i686/ooRexx*.rpm' newdir
+      if \self~checkbuild('i686', newdir) then do
+         self~log('Build was bad, no output files produced.')
+         end
+      end
+   else if SysIsFileDirectory('./rpm/RPMS/x86_64') then do
+      'cp ./rpm/RPMS/x86_64/ooRexx*.rpm' newdir
+      if \self~checkbuild('x86_64', newdir) then do
+         self~log('Build was bad, no output files produced.')
+         end
+      end
+   else if SysIsFileDirectory('./rpm/RPMS/s390x') then do
+      'cp ./rpm/RPMS/s390x/ooRexx*.rpm' newdir
+      if \self~checkbuild('s390x', newdir) then do
+         self~log('Build was bad, no output files produced.')
+         end
+      end
+   else if SysIsFileDirectory('./rpm/RPMS/s390') then do
+      'cp ./rpm/RPMS/s390/ooRexx*.rpm' newdir
+      if \self~checkbuild('s390', newdir) then do
+         self~log('Build was bad, no output files produced.')
+         end
+      end
+   else nop -- it must not be a supported rpm type
+   'cp' buildrpt newdir
    end
-else self~log('This was a duplicate build request for SVN revision' svnver'.')
+else do
+   self~log('This was a duplicate build request for SVN revision' svnver'.')
+   end
 -- remove everything
 call directory savedir
-'rm -rf' self~builddir()
-'rm oorexx*.deb'
+'rm -rf' self~builddir
 self~log('Finished build.')
+-- shutdown the system
+-- 'sudo shutdown -h now'
 return
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: checkbuild                                                         */
+/*----------------------------------------------------------------------------*/
+
+::method checkbuild
+use strict arg arch, newdir
+call SysFileTree newdir'/ooRexx*'arch'*.rpm', 'files.', 'F'
+if files.0 = 0 then return .false  -- bad build
+return .true  -- good build
 
