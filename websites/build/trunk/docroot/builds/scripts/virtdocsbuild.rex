@@ -115,7 +115,7 @@ if \datatype(svnver, 'W') then do
    return
    end
 newdir = self~targetdir'/'svnver
-if \sysisfiledirectory(newdir) then do
+if self~targetexists('dashley', 'build.oorexx.org', newdir) = .false then do
    -- build the docs
    self~log('Building SVN revision' svnver'.')
    'make all 2>&1 | tee -a' buildrpt
@@ -181,4 +181,21 @@ strm~open('write append')
 strm~lineout(msg)
 strm~close()
 return
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: targetexist                                                        */
+/*----------------------------------------------------------------------------*/
+
+::method targetexists
+use strict arg userid, host, target
+tempf = '/tmp/orxbuild.tmp'
+'ssh' userid'@'host '"ls -l' target'" >' tempf
+strm = .stream~new(tempf)
+strm~open('read')
+arr = strm~arrayin()
+strm~close()
+if arr~items() = 0 then return .false
+if arr[1]~pos('cannot access') > 0 then return .false
+return .true
 
