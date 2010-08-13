@@ -151,45 +151,24 @@ if self~targetexists('dashley', 'build.oorexx.org', newdir) = .false then do
    'ssh dashley@build.oorexx.org "mkdir -p' newdir'"'
    if SysIsFileDirectory('./rpm/RPMS/i386') then do
       'scp ./rpm/RPMS/i386/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-      if \self~checkbuild('i386', newdir) then do
-         self~log('Build was bad, no output files produced.')
-         end
       end
    else if SysIsFileDirectory('./rpm/RPMS/i486') then do
       'scp ./rpm/RPMS/i486/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-      if \self~checkbuild('i486', newdir) then do
-         self~log('Build was bad, no output files produced.')
-         end
       end
    else if SysIsFileDirectory('./rpm/RPMS/i586') then do
       'scp ./rpm/RPMS/i586/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-      if \self~checkbuild('i586', newdir) then do
-         self~log('Build was bad, no output files produced.')
-         end
       end
    else if SysIsFileDirectory('./rpm/RPMS/i686') then do
       'scp ./rpm/RPMS/i686/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-      if \self~checkbuild('i686', newdir) then do
-         self~log('Build was bad, no output files produced.')
-         end
       end
    else if SysIsFileDirectory('./rpm/RPMS/x86_64') then do
       'scp ./rpm/RPMS/x86_64/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-      if \self~checkbuild('x86_64', newdir) then do
-         self~log('Build was bad, no output files produced.')
-         end
       end
    else if SysIsFileDirectory('./rpm/RPMS/s390x') then do
       'scp ./rpm/RPMS/s390x/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-      if \self~checkbuild('s390x', newdir) then do
-         self~log('Build was bad, no output files produced.')
-         end
       end
    else if SysIsFileDirectory('./rpm/RPMS/s390') then do
       'scp ./rpm/RPMS/s390/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-      if \self~checkbuild('s390', newdir) then do
-         self~log('Build was bad, no output files produced.')
-         end
       end
    else nop -- it must not be a supported rpm type
    'scp' buildrpt 'dashley@build.oorexx.org:'newdir
@@ -204,17 +183,6 @@ self~log('Finished build.')
 -- shutdown the system
 -- 'sudo shutdown -h now'
 return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: checkbuild                                                         */
-/*----------------------------------------------------------------------------*/
-
-::method checkbuild
-use strict arg arch, newdir
-call SysFileTree newdir'/ooRexx*'arch'*.rpm', 'files.', 'F'
-if files.0 = 0 then return .false  -- bad build
-return .true  -- good build
 
 
 /*----------------------------------------------------------------------------*/
