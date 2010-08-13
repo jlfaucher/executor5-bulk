@@ -54,15 +54,22 @@ osname = 'fedora13-docs'
 build = .build~new()
 build~homedir = '/home/'userid()  -- always do first!
 build~builddir = build~homedir'/buildorx'
-build~targetdir = '/imports/builds/docs'
+build~targetdir = '/pub/www/build/docroot/builds/docs'
 build~osname = osname
 build~builddate = date('S')
+build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
 
 -- Set our home directory
 call directory build~homedir
 
 -- Do the build
 build~build_docs()
+   
+-- Cleanup   
+'scp' build~statusfile() ,
+ 'dashley@build.oorexx.org:/home/dashley/website/trunk/docroot/builds/status/' ||,
+ build~builddate() || '-' || build~osname
+call SysFileDelete build~statusfile
 return
 
 
@@ -84,6 +91,7 @@ return
 ::attribute builddir      -- the temp build dir
 ::attribute osname
 ::attribute builddate
+::attribute statusfile
 
 /*----------------------------------------------------------------------------*/
 /* build_docs                                                                 */
@@ -112,26 +120,26 @@ if \sysisfiledirectory(newdir) then do
    self~log('Building SVN revision' svnver'.')
    'make all 2>&1 | tee -a' buildrpt
    -- copy the results to the host
-   'mkdir' newdir
-   'cp ./oodialog/oodialog.pdf' newdir
-   'cp ./oodialog/oodialog-html.zip' newdir
-   'cp ./readme/readme.pdf' newdir
-   'cp ./readme/readme.html' newdir
-   'cp ./rexxpg/rexxpg.pdf' newdir
-   'cp ./rexxpg/rexxpg-html.zip' newdir
-   'cp ./rexxref/rexxref.pdf' newdir
-   'cp ./rexxref/rexxref-html.zip' newdir
-   'cp ./rxftp/rxftp.pdf' newdir
-   'cp ./rxftp/rxftp-html.zip' newdir
-   'cp ./rxmath/rxmath.pdf' newdir
-   'cp ./rxmath/rxmath-html.zip' newdir
-   'cp ./rxsock/rxsock.pdf' newdir
-   'cp ./rxsock/rxsock-html.zip' newdir
-   'cp ./rexxextensions/rexxextensions.pdf' newdir
-   'cp ./rexxextensions/rexxextensions-html.zip' newdir
-   'cp ./winextensions/winextensions.pdf' newdir
-   'cp ./winextensions/winextensions-html.zip' newdir
-   'cp' buildrpt newdir
+   'ssh dashley@build.oorexx.org "mkdir' newdir'"'
+   'cp ./oodialog/oodialog.pdf dashley@build.oorexx.org:'newdir
+   'cp ./oodialog/oodialog-html.zip dashley@build.oorexx.org:'newdir
+   'cp ./readme/readme.pdf dashley@build.oorexx.org:'newdir
+   'cp ./readme/readme.html dashley@build.oorexx.org:'newdir
+   'cp ./rexxpg/rexxpg.pdf dashley@build.oorexx.org:'newdir
+   'cp ./rexxpg/rexxpg-html.zip dashley@build.oorexx.org:'newdir
+   'cp ./rexxref/rexxref.pdf dashley@build.oorexx.org:'newdir
+   'cp ./rexxref/rexxref-html.zip dashley@build.oorexx.org:'newdir
+   'cp ./rxftp/rxftp.pdf dashley@build.oorexx.org:'newdir
+   'cp ./rxftp/rxftp-html.zip dashley@build.oorexx.org:'newdir
+   'cp ./rxmath/rxmath.pdf dashley@build.oorexx.org:'newdir
+   'cp ./rxmath/rxmath-html.zip dashley@build.oorexx.org:'newdir
+   'cp ./rxsock/rxsock.pdf dashley@build.oorexx.org:'newdir
+   'cp ./rxsock/rxsock-html.zip dashley@build.oorexx.org:'newdir
+   'cp ./rexxextensions/rexxextensions.pdf dashley@build.oorexx.org:'newdir
+   'cp ./rexxextensions/rexxextensions-html.zip dashley@build.oorexx.org:'newdir
+   'cp ./winextensions/winextensions.pdf dashley@build.oorexx.org:'newdir
+   'cp ./winextensions/winextensions-html.zip dashley@build.oorexx.org:'newdir
+   'scp' buildrpt 'dashley@build.oorexx.org:'newdir
    end
 else self~log('This was a duplicate build request.')
 -- remove everything
@@ -168,7 +176,7 @@ use strict arg msg
 use strict arg msg
 msg = date('S') time('N') msg
 say msg
-strm = .stream~new('/imports/builds/status/' || self~builddate() || '-' || self~osname)
+strm = .stream~new(self~statusfile)
 strm~open('write append')
 strm~lineout(msg)
 strm~close()

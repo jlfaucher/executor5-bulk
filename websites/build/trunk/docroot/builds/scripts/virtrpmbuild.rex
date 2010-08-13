@@ -53,10 +53,10 @@ osname = 'fedora13-i386'
 build = .build~new()
 build~homedir = '/home/'userid()  -- always do first!
 build~builddir = build~homedir'/buildorx'
-build~targetdir = '/imports/builds/interpreter-main'
+build~targetdir = '/pub/www/build/docroot/builds/interpreter-main'
 build~osname = osname
 build~builddate = date('S')
-build~statusfile = '/imports/builds/status/' || build~builddate() || '-' || build~osname
+build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
 -- Set our home directory
 call directory build~homedir
 
@@ -64,6 +64,10 @@ call directory build~homedir
 build~build_rpm()
    
 -- Cleanup   
+'scp' build~statusfile() ,
+ 'dashley@build.oorexx.org:/home/dashley/website/trunk/docroot/builds/status/' ||,
+ build~builddate() || '-' || build~osname
+call SysFileDelete build~statusfile
 return
 
 
@@ -137,58 +141,58 @@ if \datatype(svnver, 'W') then do
    return
    end
 newdir = self~targetdir'/'svnver'/'self~osname
-if sysisfiledirectory(newdir) = 0 then do
+if self~targetexists('dashley', 'build.oorexx.org', newdir) = .false then do
    -- build the rpm
    self~log('Building SVN revision' svnver'.')
    './bootstrap 2>&1 | tee -a' buildrpt
    './configure 2>&1 | tee -a' buildrpt
    'make rpm 2>&1 | tee -a' buildrpt
    -- copy the results to the host
-   'mkdir -p' newdir
+   'ssh dashley@build.oorexx.org "mkdir -p' newdir'"'
    if SysIsFileDirectory('./rpm/RPMS/i386') then do
-      'cp ./rpm/RPMS/i386/ooRexx*.rpm' newdir
+      'scp ./rpm/RPMS/i386/ooRexx*.rpm dashley@build.oorexx.org:'newdir
       if \self~checkbuild('i386', newdir) then do
          self~log('Build was bad, no output files produced.')
          end
       end
    else if SysIsFileDirectory('./rpm/RPMS/i486') then do
-      'cp ./rpm/RPMS/i486/ooRexx*.rpm' newdir
+      'scp ./rpm/RPMS/i486/ooRexx*.rpm dashley@build.oorexx.org:'newdir
       if \self~checkbuild('i486', newdir) then do
          self~log('Build was bad, no output files produced.')
          end
       end
    else if SysIsFileDirectory('./rpm/RPMS/i586') then do
-      'cp ./rpm/RPMS/i586/ooRexx*.rpm' newdir
+      'scp ./rpm/RPMS/i586/ooRexx*.rpm dashley@build.oorexx.org:'newdir
       if \self~checkbuild('i586', newdir) then do
          self~log('Build was bad, no output files produced.')
          end
       end
    else if SysIsFileDirectory('./rpm/RPMS/i686') then do
-      'cp ./rpm/RPMS/i686/ooRexx*.rpm' newdir
+      'scp ./rpm/RPMS/i686/ooRexx*.rpm dashley@build.oorexx.org:'newdir
       if \self~checkbuild('i686', newdir) then do
          self~log('Build was bad, no output files produced.')
          end
       end
    else if SysIsFileDirectory('./rpm/RPMS/x86_64') then do
-      'cp ./rpm/RPMS/x86_64/ooRexx*.rpm' newdir
+      'scp ./rpm/RPMS/x86_64/ooRexx*.rpm dashley@build.oorexx.org:'newdir
       if \self~checkbuild('x86_64', newdir) then do
          self~log('Build was bad, no output files produced.')
          end
       end
    else if SysIsFileDirectory('./rpm/RPMS/s390x') then do
-      'cp ./rpm/RPMS/s390x/ooRexx*.rpm' newdir
+      'scp ./rpm/RPMS/s390x/ooRexx*.rpm dashley@build.oorexx.org:'newdir
       if \self~checkbuild('s390x', newdir) then do
          self~log('Build was bad, no output files produced.')
          end
       end
    else if SysIsFileDirectory('./rpm/RPMS/s390') then do
-      'cp ./rpm/RPMS/s390/ooRexx*.rpm' newdir
+      'scp ./rpm/RPMS/s390/ooRexx*.rpm dashley@build.oorexx.org:'newdir
       if \self~checkbuild('s390', newdir) then do
          self~log('Build was bad, no output files produced.')
          end
       end
    else nop -- it must not be a supported rpm type
-   'cp' buildrpt newdir
+   'scp' buildrpt 'dashley@build.oorexx.org:'newdir
    end
 else do
    self~log('This was a duplicate build request for SVN revision' svnver'.')
@@ -211,4 +215,21 @@ use strict arg arch, newdir
 call SysFileTree newdir'/ooRexx*'arch'*.rpm', 'files.', 'F'
 if files.0 = 0 then return .false  -- bad build
 return .true  -- good build
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: targetexist                                                        */
+/*----------------------------------------------------------------------------*/
+
+::method targetexists
+use strict arg userid, host, target
+tempf = '/tmp/orxbuild.tmp'
+'ssh' userid'@'host '"ls -l' target'" >' tempf
+strm = .stream~new(tempf)
+strm~open('read')
+arr = strm~arrayin()
+strm~close()
+if arr~items() = 0 then return .false
+if arr[1]~pos('cannot access') > 0 then return .false
+return .true
 

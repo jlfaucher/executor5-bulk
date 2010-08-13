@@ -54,7 +54,7 @@ build = .build~new()
 build~homedir = '/home/'userid()  -- always do first!
 -- build~builddir = build~homedir'/buildorx'
 build~builddir = '/data/buildorx'  -- value for oorexx.osdl.marist.edu
-build~targetdir = '/home/dashley/website/trunk/docroot/builds/interpreter-main'
+build~targetdir = '/pub/www/build/docroot/builds/interpreter-main'
 build~osname = osname
 build~builddate = date('S')
 build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
@@ -69,7 +69,7 @@ build~build_rpm()
 'scp' build~statusfile()' ,
  'dashley@build.oorexx.org:/home/dashley/website/trunk/docroot/builds/status/' ||,
  build~builddate() || '-' || build~osname
-call SysFileDelete build~homedir() || '/BuildRPM.log'
+call SysFileDelete build~statusfile
 return
 
 
@@ -100,7 +100,7 @@ return
 ::method log
 -- log messages
 use strict arg msg
-strm = .stream~new(self~homedir() || '/BuildRPM.log')
+strm = .stream~new(self~statusfile)
 strm~open('write append')
 msg = date('S') time('N') msg
 say msg

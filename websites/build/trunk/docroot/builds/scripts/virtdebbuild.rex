@@ -55,7 +55,7 @@ osname = 'ubuntu1004-i386'
 build = .build~new()
 build~homedir = '/home/'userid()  -- always do first!
 build~builddir = build~homedir'/buildorx'
-build~targetdir = '/home/dashley/website/trunk/docroot/builds/interpreter-main'
+build~targetdir = '/pub/www/build/docroot/builds/interpreter-main'
 build~osname = osname
 build~builddate = date('S')
 build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
@@ -68,9 +68,9 @@ build~build_deb()
 
 -- Cleanup
 'scp' build~statusfile() ,
- 'dashley@192.168.0.104:/home/dashley/website/trunk/docroot/builds/status/' ||,
+ 'dashley@build.oorexx.org:/home/dashley/website/trunk/docroot/builds/status/' ||,
  build~builddate() || '-' || build~osname
-call SysFileDelete build~homedir() || '/BuildRPM.log'
+call SysFileDelete build~statusfile
 return
 
 
@@ -144,16 +144,16 @@ if \datatype(svnver, 'W') then do
    return
    end
 newdir = self~targetdir'/'svnver'/'self~osname
-if \sysisfiledirectory(newdir) then do
+if self~targetexists('dashley', 'build.oorexx.org', newdir) = .false then do
    -- build the deb
    self~log('Building SVN revision' svnver'.')
    './bootstrap 2>&1 | tee -a' buildrpt
    './configure --disable-static 2>&1 | tee -a' buildrpt
    'make deb 2>&1 | tee -a' buildrpt
    -- copy the results to the host
-   'ssh dashley@192.168.0.104 "mkdir -p' newdir'"'
-   'scp ../oorexx*.deb dashley@192.168.0.104:'newdir
-   'scp' buildrpt 'dashley@192.168.0.104:'newdir
+   'ssh dashley@build.oorexx.org "mkdir -p' newdir'"'
+   'scp ../oorexx*.deb dashley@build.oorexx.org:'newdir
+   'scp' buildrpt 'dashley@build.oorexx.org:'newdir
    end
 else self~log('This was a duplicate build request for SVN revision' svnver'.')
 -- remove everything
@@ -162,4 +162,20 @@ call directory savedir
 'rm oorexx*.deb'
 self~log('Finished build.')
 return
+
+/*----------------------------------------------------------------------------*/
+/* Method: targetexist                                                        */
+/*----------------------------------------------------------------------------*/
+
+::method targetexists
+use strict arg userid, host, target
+tempf = '/tmp/orxbuild.tmp'
+'ssh' userid'@'host '"ls -l' target'" >' tempf
+strm = .stream~new(tempf)
+strm~open('read')
+arr = strm~arrayin()
+strm~close()
+if arr~items() = 0 then return .false
+if arr[1]~pos('cannot access') > 0 then return .false
+return .true
 
