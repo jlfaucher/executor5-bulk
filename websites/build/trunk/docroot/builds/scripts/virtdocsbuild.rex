@@ -121,24 +121,24 @@ if \sysisfiledirectory(newdir) then do
    'make all 2>&1 | tee -a' buildrpt
    -- copy the results to the host
    'ssh dashley@build.oorexx.org "mkdir' newdir'"'
-   'cp ./oodialog/oodialog.pdf dashley@build.oorexx.org:'newdir
-   'cp ./oodialog/oodialog-html.zip dashley@build.oorexx.org:'newdir
-   'cp ./readme/readme.pdf dashley@build.oorexx.org:'newdir
-   'cp ./readme/readme.html dashley@build.oorexx.org:'newdir
-   'cp ./rexxpg/rexxpg.pdf dashley@build.oorexx.org:'newdir
-   'cp ./rexxpg/rexxpg-html.zip dashley@build.oorexx.org:'newdir
-   'cp ./rexxref/rexxref.pdf dashley@build.oorexx.org:'newdir
-   'cp ./rexxref/rexxref-html.zip dashley@build.oorexx.org:'newdir
-   'cp ./rxftp/rxftp.pdf dashley@build.oorexx.org:'newdir
-   'cp ./rxftp/rxftp-html.zip dashley@build.oorexx.org:'newdir
-   'cp ./rxmath/rxmath.pdf dashley@build.oorexx.org:'newdir
-   'cp ./rxmath/rxmath-html.zip dashley@build.oorexx.org:'newdir
-   'cp ./rxsock/rxsock.pdf dashley@build.oorexx.org:'newdir
-   'cp ./rxsock/rxsock-html.zip dashley@build.oorexx.org:'newdir
-   'cp ./rexxextensions/rexxextensions.pdf dashley@build.oorexx.org:'newdir
-   'cp ./rexxextensions/rexxextensions-html.zip dashley@build.oorexx.org:'newdir
-   'cp ./winextensions/winextensions.pdf dashley@build.oorexx.org:'newdir
-   'cp ./winextensions/winextensions-html.zip dashley@build.oorexx.org:'newdir
+   'scp ./oodialog/oodialog.pdf dashley@build.oorexx.org:'newdir
+   'scp ./oodialog/oodialog-html.zip dashley@build.oorexx.org:'newdir
+   'scp ./readme/readme.pdf dashley@build.oorexx.org:'newdir
+   'scp ./readme/readme.html dashley@build.oorexx.org:'newdir
+   'scp ./rexxpg/rexxpg.pdf dashley@build.oorexx.org:'newdir
+   'scp ./rexxpg/rexxpg-html.zip dashley@build.oorexx.org:'newdir
+   'scp ./rexxref/rexxref.pdf dashley@build.oorexx.org:'newdir
+   'scp ./rexxref/rexxref-html.zip dashley@build.oorexx.org:'newdir
+   'scp ./rxftp/rxftp.pdf dashley@build.oorexx.org:'newdir
+   'scp ./rxftp/rxftp-html.zip dashley@build.oorexx.org:'newdir
+   'scp ./rxmath/rxmath.pdf dashley@build.oorexx.org:'newdir
+   'scp ./rxmath/rxmath-html.zip dashley@build.oorexx.org:'newdir
+   'scp ./rxsock/rxsock.pdf dashley@build.oorexx.org:'newdir
+   'scp ./rxsock/rxsock-html.zip dashley@build.oorexx.org:'newdir
+   'scp ./rexxextensions/rexxextensions.pdf dashley@build.oorexx.org:'newdir
+   'scp ./rexxextensions/rexxextensions-html.zip dashley@build.oorexx.org:'newdir
+   'scp ./winextensions/winextensions.pdf dashley@build.oorexx.org:'newdir
+   'scp ./winextensions/winextensions-html.zip dashley@build.oorexx.org:'newdir
    'scp' buildrpt 'dashley@build.oorexx.org:'newdir
    end
 else self~log('This was a duplicate build request.')
