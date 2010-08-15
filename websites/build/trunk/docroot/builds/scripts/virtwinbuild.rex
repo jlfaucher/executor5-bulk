@@ -46,10 +46,10 @@
 
 
 -- initialization
-hostbuilds = 's:'
+hostbuilds = 'p:'
 builddir = 'c:\buildtemp'
 osname = 'winxpsp3-i386'
-targetdir = hostbuilds'\interpreter-main'
+targetdir = hostbuilds'\www\build\docroot\builds\interpreter-main'
 startbuildtime = 165  -- 2:45 AM
 
 -- make sure our temp dir is empty
@@ -142,22 +142,19 @@ return svnver
 
 setlatestdocs:
 -- Do not use SysFileTree here! RXAPI may not be running!
-'dir /aD /oN' hostbuilds'\docs > dirlist.txt'
+'dir /aD /oN' hostbuilds'\www\build\docroot\builds\docs > dirlist.txt'
 strm = .stream~new('dirlist.txt')
 retc = strm~open('read')
 if retc <> 'READY:' then return 'unknown'
 lines = strm~arrayIn()
 retc = strm~close()
 dirline = lines[lines~items() - 2]
-parse var dirline . . . . docdir .  -- this only works for WinXP
-if docdir = '' then do
-   parse var dirline . . . docdir . -- this works for Win2k
-   end
+parse var dirline . . . . docdir .
 if docdir <> '' then do
-   call value 'DOC_LOCATION', hostbuilds'\docs\'docdir, 'ENVIRONMENT'
+   call value 'DOC_LOCATION', hostbuilds'\www\build\docroot\builds\docs\'docdir, 'ENVIRONMENT'
    end
 'del dirlist.txt'
--- say 'The doc_location is' hostbuilds'\docs\'docdir
+-- say 'The doc_location is' hostbuilds'\www\build\docroot\builds\docs\'docdir
 return
 
 
