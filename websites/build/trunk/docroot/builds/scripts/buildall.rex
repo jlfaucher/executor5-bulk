@@ -41,103 +41,62 @@
 /*----------------------------------------------------------------------------*/
 
 
--- build the list of builddomains with their attributes
+-- initialization
+machines = 'orxbuildmachines.txt'
+
+-- get the contentst of the input file and create the build array
+arr = file_arrayin(machines)
 buildarr = .array~new()
-buildarr~append(.builddomain~new('fedora13-i386',   '/home/'userid()'/fedora13-i386'))
-buildarr~append(.builddomain~new('fedora13-x86_64', '/home/'userid()'/fedora13-x86_64'))
-buildarr~append(.builddomain~new('ubuntu1004-i386', '/home/'userid()'/ubuntu1004-i386'))
-
-buildarr~append(.builddomain~new('sles10-s390x',    '/home/'userid()'/sles10-s390x', .false))
-
--- do the docs build first
-kvmmach = .kvmdomain~new(sys~osname())
-if kvmmach~status() = 'shutoff' then kvnmach~startup()
-do until kvmmach~status = 'running'
-   call SysSleep 10
+do machine over machines
+   if machine~strip() = '' then iterate
+   if machine~strip()~substr 1, 1) = '#' then iterate
+   if machine~strip()~substr 1, 2) = '--' then iterate
+   parse var machine osname addr userid cmd virt_flag .
+   buildarr~append(.buildmachine~new(osname, addr, userid, cmd, virt_flag))
    end
--- get the ip address and perform the build
-arr = file_arrayin(sys~addrfile)
-ipaddr = arr[1]~strip()
-'ssh dashley@'ipaddr '"/home/dashley/orxbuild.rex"'
-kvmmach~shutdown()
 
 -- do all the virtual builds
-do sys over buildarr
-   if sys~virt() = .false then iterate
-   -- make sure the domain is running
-   kvmmach = .kvmdomain~new(sys~osname())
-   if kvmmach~status() = 'shutoff' then kvnmach~startup()
-   do until kvmmach~status = 'running'
-      call SysSleep 10
-      end
-   -- get the ip address and perform the build
-   arr = file_arrayin(sys~addrfile)
-   ipaddr = arr[1]~strip()
-   'ssh dashley@'ipaddr '"/home/dashley/orxbuild.rex"'
-   kvmmach~shutdown()
+do machine over buildarr
+   machine~do_build()
    end
-
--- do all the real builds
-do sys over buildarr
-   if sys~virt() = .true then iterate
-   -- get the ip address and perform the build
-   arr = file_arrayin(sys~addrfile)
-   ipaddr = arr[1]~strip()
-   'ssh dashley@'ipaddr '"/home/dashley/orxbuild.rex"'
-   end
-
--- send an email that the builds are done
-mime1 = .mimepart~new
-mime1~addContent('The nightly builds of ooRexx are complete at' date('s') time()'.')
-msg = .smtpmsg~new
-msg~From = 'donotreply@build.oorexx.org'
-msg~addRecipient('david.ashley.ibm@gmail.com')
-msg~Subject = 'Nightly builds of ooRexx are complete'
-msg~Content = mime1
-smtpconx = .smtp~new
-retc = smtpconx~connect('127.0.0.1', 'dashley', 'wda123aa')
-if retc = -1 then do
-   do rsp over smtpconx~cmdresponse
-      say rsp
-      end
-   return
-   end
-retc = smtpconx~send(msg)
-if retc = -1 then do
-   do rsp over smtpconx~cmdresponse
-      say rsp
-      end
-   return
-   end
-retc = smtpconx~logoff
 return
 
 
-::requires 'smtpmail.cls'
 ::requires 'kvmdomain.cls'
 
 
 /*----------------------------------------------------------------------------*/
-/* Class: builddomain                                                         */
+/* Class: buildmachine                                                        */
 /*----------------------------------------------------------------------------*/
 
-::class builddomain public
+::class buildmachine public
 
 ::attribute osname
 ::attribute addr
-::attribute addrfile
-::attribute virt
+::attribute userid
+::attribute cmd
+::attribute virt_flag
 
 ::method init
-expose osname addrfile
-use strict arg osname, addrfile, virt = .true
+expose osname addr userid cmd virt_flag
+use strict arg osname, addr, userid, cmd, virt_flag = .true
 return
 
-::method get_ipaddr
-arr = file_arrayin(self~addrfile())
-ln = arr[2]
-parse var ln . 'inet addr:' ipaddr .
-return ipaddr
+::method do_build
+expose osname addr userid virt_flag
+if virt_flag = .true then do
+   -- start the domain
+   domain = .kvmdomain~new(osname)
+   retc = domain~startup()
+   if retc <> 0 then return
+   call SysSleep 90  -- allow some time for the domain to fully start
+   end
+'ssh' userid'@'addr '"'cmd'"'
+if virt_flag = .true then do
+   'ssh' userid'@'addr '"shutdown now"'
+   call SysSleep 90  -- allow some time for the domain to fully stop
+   end
+return
 
 
 /*----------------------------------------------------------------------------*/
