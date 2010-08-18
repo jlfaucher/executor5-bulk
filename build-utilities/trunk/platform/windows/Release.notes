@@ -1,18 +1,20 @@
-                          Release Notes for 1.1.0
+                          Release Notes for 1.2.0
                           =======================
 
 This is the binary release of the ooRexx build-utilities package for
-Windows.  It contains executables to assist in the Windows build process of
-ooRexx.
+Windows.  It contains executables and dynamic link libraries to assist in
+the Windows build process of ooRexx.
 
-The "killer" application in this release has been updated to kill 64-bit
-applications on Windows 64-bit systems.  This is the only changed from the
-1.0.0 release.
+All binaries have been rebuilt and the ooRexxProcess.dll has been added to
+this release.  This DLL is a NSIS plugin that is required for the
+packaging step of the Windows ooRexx build.  This is the only change from
+the 1.2.0 release.
 
-Two files are available, a regular .zip file and a self-extracting zip file:
+Two files are available, a regular .zip file and a self-extracting zip
+file:
 
-  ooRexx-build-utils-1.1.0-windows.zip
-  ooRexx-build-utils-1.1.0-windows.exe
+  ooRexx-build-utils-1.2.0-windows.zip
+  ooRexx-build-utils-1.2.0-windows.exe
 
 Installation
 ============
@@ -23,16 +25,63 @@ the path.
 Contents
 ========
 
-Two executables are included in this release.
+Two executables are and one dynamic link library are included in this
+release.
+
+ooRexxProcess.dll
+-----------------
+
+ooRexxProcess is a NSIS plugin.  The Windows ooRexx installation package is
+created using the NSIS system.  oorexx.nsi the NSIS script used to create
+the installation package requires the ooRexxProcess plugin.
+
+If you intend to build the Windows ooRexx installation package from
+source, you must use this DLL because its functions are used in
+oorexx.nsi.  To use the plugin, copy the DLL to the Plugins subdirectory
+of your NSIS installation directory.
+
+The plugin can be used in any NSIS script.  It has two functions,
+findProcess and killProcess.
+
+Usage (in NSIS script):
+
+  ooRexxProcess::findProcess <processName>
+  Pop <varName>
+
+  ooRexxProcess::killProcess <processName>
+  Pop <varName>
+
+Returns a numeric value, 0 for success.
+
+Example (in NSIS script):
+
+  ooRexxProcess::killProcess "rxapi"
+  Pop $0
+
+  ; $0 now contains 0 for success, 1 if no rxapi process was found.
+
+Return codes:
+
+ 0  Success.
+ 1  The specified process was not found.
+ 2  No process name was passed to the function.
+ 3  The process was found, everything worked, but termination failed.
+ 4  Creating the process list failed.
+ 5  The Process32First() API failed.
+ 6  The LookupPrivilegeValue() API failed.
+ 7  The OpenProcess() API, for our process, failed.
+ 8  The OpenProcessToken() API failed.
+ 9  The OpenProcess() API, for the specified process, failed.
+10  The AdjuctTokenPrivileges() API failed.
 
 stouch.exe
 ----------
 
 stouch is a simple 'touch' program.  It updates the last access and
 modification times of each fileName arg on the command line to the current
-time.  Wildcards are accepted.  There are no options to specify the time or
-date to use when touching the files.  The current date and time is always
-used.
+time.  Wildcards are accepted.  There are no options to specify the time
+or date to use when touching the files.  The current date and time is
+always used.
 
 stouch is used by the touchheaders.bat file in the ooRexx source tree.
 
@@ -42,7 +91,7 @@ E:\interpreter>stouch kernel\messages\RexxErrorCodes.h
 
 E:\interpreter>stouch kernel\messages\*.h
 
-Note that the 1.1.0 release of stouch is exactly the same as the 1.0.0
+Note that the 1.2.0 release of stouch is exactly the same as the 1.1.0
 release.
 
 killer.exe
@@ -50,7 +99,8 @@ killer.exe
 
 killer is a simple process killer that acts like kill.exe or taskkill.exe.
 It kills the process specified on the command line.  The process is
-specified by image name, (not by process ID.)
+specified by image name, (not by process ID.) It works on both 32-bit and
+64-bit Windows.
 
 killer is used in the Windows build process to kill rxapi.exe.
 
@@ -60,9 +110,8 @@ E:\killer rxapi.exe
 
 E:\killer rxapi
 
-Note that the 1.1.0 release of killer is updated to work with the 64-bit
-build of ooRexx.  The 1.0.0 version will not kill 64-bit executables on
-Windows.
+Note that the 1.2.0 release of killer is exactly the same as the 1.1.0
+release.
 
 Source
 ======

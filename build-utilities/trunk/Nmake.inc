@@ -56,16 +56,20 @@
 # MSVC8_64 =
 
 
-WINDIR = $(TOPDIR)\platform\windows
-SRCDIR = $(WINDIR)
-BINDIR = $(WINDIR)\bin
-OBJDIR = $(WINDIR)\obj
-ASMDIR = $(WINDIR)\asm_src
+WINDIR    = $(TOPDIR)\platform\windows
+SRCDIR    = $(WINDIR)
+BINDIR    = $(WINDIR)\bin
+OBJDIR    = $(WINDIR)\obj
+ASMDIR    = $(WINDIR)\asm_src
+PLUGINDIR = $(WINDIR)\ooRexxProcess
 
+# To build the NSIS plugin, ooRexxProcess, you must set the directory to the
+# NSIS plugin library and header files.
+NSIS_API_DIR = C:\Tools\NSIS\Examples\Plugin\nsis
 
 # Default ooRexx top level build directory.  Change this to point to the correct
 # directory, or define on the command line to Nmake.
-ooRexx_SRCDIR = ..\interpreter
+ooRexx_SRCDIR = ..\main
 
 # CC, CPP, CXX are predefined for MSVC, but nothing is predefined for the linker
 # or lib utility, etc..
