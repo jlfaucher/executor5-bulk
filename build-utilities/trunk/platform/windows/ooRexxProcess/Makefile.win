@@ -37,10 +37,14 @@
 
 !include $(TOPDIR)\Nmake.inc
 
-LIB = $(LIB);$(NSIS_API_DIR)
-INCLUDE = $(INCLUDE);$(NSIS_API_DIR)
+!if [if NOT exist $(NSIS_HOME_DIR) exit 1]
+!error You must set a correct NSIS_HOME_DIR in Nmake.inc
+!endif
 
-VCDEFS = /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "ooRexxProcess_EXPORTS" /D "NSISCALL=__stdcall" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS"
+LIB = $(LIB);$(NSIS_HOME_DIR)\Examples\Plugin\nsis
+INCLUDE = $(INCLUDE);$(NSIS_HOME_DIR)\Examples\Plugin\nsis
+
+VCDEFS = /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "ooRexxProcess_EXPORTS" /D "NSISCALL=__stdcall" /D "_WINDLL" /D "_MBCS"
 
 CFLAGS = $(CFLAGS) $(VCDEFS) /O1 /I "."  /GF /EHsc /MD /GS- /Gy /TP
 
@@ -48,10 +52,28 @@ LDFLAGS = /MANIFEST:NO /OUT:$(BINDIR)\ooRexxProcess.dll /INCREMENTAL:NO /DLL /NO
 
 EXLIBS = pluginapi.lib shlwapi.lib kernel32.lib user32.lib comdlg32.lib advapi32.lib shell32.lib
 
-all: $(BINDIR) $(OBJDIR) $(BINDIR)\ooRexxProcess.dll
+all : $(BINDIR) $(OBJDIR) $(BINDIR)\ooRexxProcess.dll $(BINDIR)\testProcess.exe
+
+$(BINDIR) :
+    @if not exist $(BINDIR) md $(BINDIR)
+
+$(OBJDIR) :
+    @if not exist $(OBJDIR) md $(OBJDIR)
 
 $(OBJDIR)\ooRexxProcess.obj : ooRexxProcess.cpp ooRexxProcess.hpp
     $(CC) $(CFLAGS) ooRexxProcess.cpp
 
 $(BINDIR)\ooRexxProcess.dll : $(BINDIR) $(OBJDIR) $(OBJDIR)\ooRexxProcess.obj
     $(LD) $(LDFLAGS) $(OBJDIR)\ooRexxProcess.obj $(EXLIBS)
+
+$(BINDIR)\testProcess.exe : testProcess.nsi
+    @makensis testProcess.nsi
+    @copy testProcess.exe $(BINDIR)
+    @del testProcess.exe 1>nul 2>&1
+
+clean :
+    @if exist $(OBJDIR) del $(OBJDIR)\ooRexxProcess.obj 1>nul 2>&1
+    @if exist $(BINDIR) del $(BINDIR)\ooRexxProcess.* 1>nul 2>&1
+    @del testProcess.exe 1>nul 2>&1
+
+

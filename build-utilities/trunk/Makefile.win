@@ -45,7 +45,7 @@ TOPDIR = $(MAKEDIR)
 EXE_FILES = $(BINDIR)\stouch.exe $(BINDIR)\killer.exe
 
 
-all : $(OBJDIR) $(BINDIR) $(EXE_FILES) ooRexxProcess_Plugin
+all : $(OBJDIR) $(BINDIR) $(EXE_FILES)
 
 touchheaders : $(BINDIR)\stouch.exe $(ooRexx_SRCDIR)
     $(BINDIR)\stouch $(ooRexx_SRCDIR)\interpreter\messages\RexxErrorCodes.h
@@ -63,8 +63,11 @@ touchheaders : $(BINDIR)\stouch.exe $(ooRexx_SRCDIR)
 clean :
     @if exist $(OBJDIR) del $(OBJDIR)\*.obj 1>nul 2>&1
     @if exist $(BINDIR) del $(BINDIR)\*.exe 1>nul 2>&1
+    @if exist $(BINDIR) del $(BINDIR)\*.dll 1>nul 2>&1
+    @if exist $(BINDIR) del $(BINDIR)\*.exp 1>nul 2>&1
+    @if exist $(BINDIR) del $(BINDIR)\*.lib 1>nul 2>&1
 
-    @echo clean: deleted all *.obj and *.exe files
+    @echo clean: deleted all obj, dll, and exe files
 
 distclean : clean
     @if exist $(OBJDIR) rd /q /s $(OBJDIR)
@@ -72,6 +75,10 @@ distclean : clean
 
     cd $(ASMDIR)
     $(MAKE) /nologo /F Makefile.win TOPDIR=$(TOPDIR) clean
+    cd $(TOPDIR)
+
+    cd $(PLUGINDIR)
+    nmake /nologo /F Makefile.win TOPDIR=$(TOPDIR) clean
     cd $(TOPDIR)
 
     @echo distclean: removed build destination directories
