@@ -40,18 +40,13 @@
 LIB = $(LIB);$(NSIS_API_DIR)
 INCLUDE = $(INCLUDE);$(NSIS_API_DIR)
 
-VC_ARGS_NOT_NEEDED =  /c /W3 /nologo  /FD /Fo".\Release/" /Fp".\Release/ooRexxProcess.pch"  /Fd".\Release/"
-
 VCDEFS = /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "ooRexxProcess_EXPORTS" /D "NSISCALL=__stdcall" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS"
 
 CFLAGS = $(CFLAGS) $(VCDEFS) /O1 /I "."  /GF /EHsc /MD /GS- /Gy /TP
 
-VCLD_ARGS_NOT_NEEDED = /NOLOGO /MANIFEST /MANIFESTFILE:".\Release\ooRexxProcess.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'"
-CONTINUED = /PDB:".\Release/ooRexxProcess.pdb"
-
 LDFLAGS = /MANIFEST:NO /OUT:$(BINDIR)\ooRexxProcess.dll /INCREMENTAL:NO /DLL /NODEFAULTLIB /NODEFAULTLIB:"libc.lib" /ENTRY:"DllMain" /DYNAMICBASE:NO /IMPLIB:$(BINDIR)\ooRexxProcess.lib /MACHINE:X86
 
-EXLIBS = pluginapi.lib odbc32.lib odbccp32.lib shlwapi.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
+EXLIBS = pluginapi.lib shlwapi.lib kernel32.lib user32.lib comdlg32.lib advapi32.lib shell32.lib
 
 all: $(BINDIR) $(OBJDIR) $(BINDIR)\ooRexxProcess.dll
 

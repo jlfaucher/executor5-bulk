@@ -98,7 +98,6 @@ BEGIN_EXTERN_C()
 void __declspec(dllexport) findProcess(HWND hwndParent, int string_size, char *variables, stack_t **stacktop,
                                        extra_parameters *extra)
 {
-    char buf[1024];
     char processName[BUFFER_SIZE];
 
     EXDLL_INIT();
