@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Description: This is the build script for the docs KVM guest.              */
+/* Description: This is the build script for the docs build machine.          */
 /*                                                                            */
 /* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
@@ -54,7 +54,7 @@ osname = 'fedora13-docs'
 build = .build~new()
 build~homedir = '/home/'userid()  -- always do first!
 build~builddir = build~homedir'/buildorx'
-build~targetdir = '/home/dashley/website/trunk/docroot/builds/docs'
+build~targetdir = '/pub/www/build/docroot/builds/docs'
 build~osname = osname
 build~builddate = date('S')
 build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
@@ -67,7 +67,7 @@ build~build_docs()
    
 -- Cleanup   
 'scp' build~statusfile() ,
- 'dashley@build.oorexx.org:/home/dashley/website/trunk/docroot/builds/status/' ||,
+ 'dashley@build.oorexx.org:/pub/www/build/docroot/builds/status/' ||,
  build~builddate() || '-' || build~osname
 call SysFileDelete build~statusfile
 return

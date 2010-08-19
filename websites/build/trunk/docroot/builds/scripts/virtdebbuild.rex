@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Description: This is the build daemon for any rpm-based KVM guest OS.      */
+/* Description: This is the build daemon for any deb-based build machine.     */
 /*                                                                            */
 /* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
@@ -55,7 +55,7 @@ osname = 'ubuntu1004-i386'
 build = .build~new()
 build~homedir = '/home/'userid()  -- always do first!
 build~builddir = build~homedir'/buildorx'
-build~targetdir = '/home/dashley/website/trunk/docroot/builds/interpreter-main'
+build~targetdir = '/pub/www/build/docroot/builds/interpreter-main'
 build~osname = osname
 build~builddate = date('S')
 build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
@@ -68,7 +68,7 @@ build~build_deb()
 
 -- Cleanup
 'scp' build~statusfile() ,
- 'dashley@build.oorexx.org:/home/dashley/website/trunk/docroot/builds/status/' ||,
+ 'dashley@build.oorexx.org:/pub/www/build/docroot/builds/status/' ||,
  build~builddate() || '-' || build~osname
 call SysFileDelete build~statusfile
 return

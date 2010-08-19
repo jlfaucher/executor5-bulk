@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Description: This is the build script for any rpm-based KVM guest OS.      */
+/* Description: This is the build script for any rpm-based build machine.     */
 /*                                                                            */
 /* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
@@ -52,12 +52,15 @@ osname = 'fedora13-i386'
 -- Initialization
 build = .build~new()
 build~homedir = '/home/'userid()  -- always do first!
+
 build~builddir = build~homedir'/buildorx'
-build~targetdir = '/home/dashley/website/trunk/docroot/builds/interpreter-main'
+-- build~builddir = '/data/buildorx'  -- value for oorexx.osdl.marist.edu
+
+build~targetdir = '/pub/www/build/docroot/builds/interpreter-main'
 build~osname = osname
 build~builddate = date('S')
 build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
--- Set our home directory
+-- Move to our home directory
 call directory build~homedir
 
 -- Do the build
@@ -65,7 +68,7 @@ build~build_rpm()
    
 -- Cleanup   
 'scp' build~statusfile() ,
- 'dashley@build.oorexx.org:/home/dashley/website/trunk/docroot/builds/status/' ||,
+ 'dashley@build.oorexx.org:/pub/www/build/docroot/builds/status/' ||,
  build~builddate() || '-' || build~osname
 call SysFileDelete build~statusfile
 return
@@ -149,27 +152,20 @@ if self~targetexists('dashley', 'build.oorexx.org', newdir) = .false then do
    'make rpm 2>&1 | tee -a' buildrpt
    -- copy the results to the host
    'ssh dashley@build.oorexx.org "mkdir -p' newdir'"'
-   if SysIsFileDirectory('./rpm/RPMS/i386') then do
-      'scp ./rpm/RPMS/i386/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-      end
-   else if SysIsFileDirectory('./rpm/RPMS/i486') then do
-      'scp ./rpm/RPMS/i486/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-      end
-   else if SysIsFileDirectory('./rpm/RPMS/i586') then do
-      'scp ./rpm/RPMS/i586/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-      end
-   else if SysIsFileDirectory('./rpm/RPMS/i686') then do
-      'scp ./rpm/RPMS/i686/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-      end
-   else if SysIsFileDirectory('./rpm/RPMS/x86_64') then do
-      'scp ./rpm/RPMS/x86_64/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-      end
-   else if SysIsFileDirectory('./rpm/RPMS/s390x') then do
-      'scp ./rpm/RPMS/s390x/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-      end
-   else if SysIsFileDirectory('./rpm/RPMS/s390') then do
-      'scp ./rpm/RPMS/s390/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-      end
+   if SysIsFileDirectory('./rpm/RPMS/i386') then ,
+    'scp ./rpm/RPMS/i386/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+   else if SysIsFileDirectory('./rpm/RPMS/i486') then ,
+    'scp ./rpm/RPMS/i486/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+   else if SysIsFileDirectory('./rpm/RPMS/i586') then ,
+    'scp ./rpm/RPMS/i586/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+   else if SysIsFileDirectory('./rpm/RPMS/i686') then ,
+    'scp ./rpm/RPMS/i686/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+   else if SysIsFileDirectory('./rpm/RPMS/x86_64') then ,
+    'scp ./rpm/RPMS/x86_64/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+   else if SysIsFileDirectory('./rpm/RPMS/s390x') then ,
+    'scp ./rpm/RPMS/s390x/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+   else if SysIsFileDirectory('./rpm/RPMS/s390') then ,
+    'scp ./rpm/RPMS/s390/ooRexx*.rpm dashley@build.oorexx.org:'newdir
    else nop -- it must not be a supported rpm type
    'scp' buildrpt 'dashley@build.oorexx.org:'newdir
    end
@@ -180,8 +176,6 @@ else do
 call directory savedir
 'rm -rf' self~builddir
 self~log('Finished build.')
--- shutdown the system
--- 'sudo shutdown -h now'
 return
 
 

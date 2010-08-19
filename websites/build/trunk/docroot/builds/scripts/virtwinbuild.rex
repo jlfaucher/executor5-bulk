@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Description: This is the build script for the Windows KVM guest OS.        */
+/* Description: This is the build script for the Windows XP build machine.    */
 /*                                                                            */
 /* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
@@ -165,7 +165,7 @@ return
 log:
 -- log messages
 use strict arg msg
-strm = .stream~new(hostbuilds'\status\' || builddate || '-' || osname)
+strm = .stream~new(hostbuilds'\www\build\docroot\builds\status\' || builddate || '-' || osname)
 strm~open('write append')
 msg = date('S') time('N') msg
 say msg
