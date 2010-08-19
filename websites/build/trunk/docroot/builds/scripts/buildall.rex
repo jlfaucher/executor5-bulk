@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Description: Do an ooRexx build on a virtual machine.                      */
+/* Description: Build ooRexx on all build machines.                           */
 /*                                                                            */
 /* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
