@@ -58,6 +58,7 @@ build~targetdir = '/pub/www/build/docroot/builds/docs'
 build~osname = osname
 build~builddate = date('S')
 build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
+build~lockfile = '/tmp/ooRexxDocsBuild.lock'
 
 -- Set our home directory
 call directory build~homedir
@@ -70,6 +71,7 @@ build~build_docs()
  'dashley@build.oorexx.org:/pub/www/build/docroot/builds/status/' ||,
  build~builddate() || '-' || build~osname
 call SysFileDelete build~statusfile
+call SysFileDelete build~lockfile
 return
 
 
@@ -92,6 +94,7 @@ return
 ::attribute osname
 ::attribute builddate
 ::attribute statusfile
+::attribute lockfile
 
 /*----------------------------------------------------------------------------*/
 /* build_docs                                                                 */
@@ -99,6 +102,10 @@ return
 
 ::method build_docs
 use strict arg
+do while stream(self~lockfile, 'c', 'query exists') <> ''
+   'sleep 50'
+   end
+'touch' self~lockfile
 self~log('Starting build.')
 buildrpt = './docs-buildrpt.txt'
 savedir = directory()
@@ -146,8 +153,7 @@ else self~log('This was a duplicate build request.')
 call directory savedir
 'rm -rf' tempdir
 self~log('Finished build.')
--- shutdown the system
--- 'sudo shutdown -h now'
+'rm' self~lockfile
 return
 
 /*----------------------------------------------------------------------------*/

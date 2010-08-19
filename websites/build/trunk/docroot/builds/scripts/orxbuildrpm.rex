@@ -60,6 +60,8 @@ build~targetdir = '/pub/www/build/docroot/builds/interpreter-main'
 build~osname = osname
 build~builddate = date('S')
 build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
+build~lockfile = '/tmp/ooRexxBuild.lock'
+
 -- Move to our home directory
 call directory build~homedir
 
@@ -71,6 +73,7 @@ build~build_rpm()
  'dashley@build.oorexx.org:/pub/www/build/docroot/builds/status/' ||,
  build~builddate() || '-' || build~osname
 call SysFileDelete build~statusfile
+call SysFileDelete build~lockfile
 return
 
 
@@ -93,42 +96,17 @@ return
 ::attribute osname
 ::attribute builddate
 ::attribute statusfile
-
-/*----------------------------------------------------------------------------*/
-/* Method: log                                                                */
-/*----------------------------------------------------------------------------*/
-
-::method log
--- log messages
-use strict arg msg
-msg = date('S') time('N') msg
-say msg
-strm = .stream~new(self~statusfile)
-strm~open('write append')
-strm~lineout(msg)
-strm~close()
-return
-
-/*----------------------------------------------------------------------------*/
-/* Method: getsvnrevision                                                     */
-/*----------------------------------------------------------------------------*/
-
-::method getsvnrevision
-verlocal = './temp.ver'
-'svnversion >' verlocal
-strm = .stream~new(verlocal)
-retc = strm~open('read')
-if retc <> 'READY:' then return ''
-svnver = strm~lineIn()
-retc = strm~close()
-if svnver = '' then svnver = 'unknown'
-return svnver
+::attribute lockfile
 
 /*----------------------------------------------------------------------------*/
 /* Method: build_rpm                                                          */
 /*----------------------------------------------------------------------------*/
 
 ::method build_rpm
+do while stream(self~lockfile, 'c', 'query exists') <> ''
+   'sleep 50'
+   end
+'touch' self~lockfile
 self~log('Starting build.')
 buildrpt = self~osname'.buildrpt.txt'
 savedir = directory()
@@ -176,6 +154,7 @@ else do
 call directory savedir
 'rm -rf' self~builddir
 self~log('Finished build.')
+'rm' self~lockfile
 return
 
 
@@ -194,4 +173,34 @@ strm~close()
 if arr~items() = 0 then return .false
 if arr[1]~pos('cannot access') > 0 then return .false
 return .true
+
+/*----------------------------------------------------------------------------*/
+/* Method: log                                                                */
+/*----------------------------------------------------------------------------*/
+
+::method log
+-- log messages
+use strict arg msg
+msg = date('S') time('N') msg
+say msg
+strm = .stream~new(self~statusfile)
+strm~open('write append')
+strm~lineout(msg)
+strm~close()
+return
+
+/*----------------------------------------------------------------------------*/
+/* Method: getsvnrevision                                                     */
+/*----------------------------------------------------------------------------*/
+
+::method getsvnrevision
+verlocal = './temp.ver'
+'svnversion >' verlocal
+strm = .stream~new(verlocal)
+retc = strm~open('read')
+if retc <> 'READY:' then return ''
+svnver = strm~lineIn()
+retc = strm~close()
+if svnver = '' then svnver = 'unknown'
+return svnver
 

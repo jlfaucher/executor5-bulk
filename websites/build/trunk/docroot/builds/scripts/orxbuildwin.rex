@@ -51,6 +51,7 @@ builddir = 'c:\buildtemp'
 osname = 'winxpsp3-i386'
 targetdir = hostbuilds'\www\build\docroot\builds\interpreter-main'
 startbuildtime = 165  -- 2:45 AM
+lockfile = 'c:\ooRexxBuild.lock'
 
 -- make sure our temp dir is empty
 'rmdir /S /Q' builddir
@@ -77,6 +78,11 @@ return
 
 dobuild:
 builddate = date('S')  -- do this first!!!!
+do while stream(lockfile, 'c', 'query exists') <> ''
+   'sleep 50'
+   end
+call lineout lockfile, ''
+call lineout lockfile
 call log 'Starting build.'
 -- create temp dir and checkout the source
 'md' builddir
@@ -115,6 +121,7 @@ else do
 call directory 'c:\'
 'rmdir /S /Q' builddir
 call log 'Finished build.'
+'del' lockfile
 return
 
 
