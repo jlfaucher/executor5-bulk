@@ -156,7 +156,7 @@ if retc <> 'READY:' then return 'unknown'
 lines = strm~arrayIn()
 retc = strm~close()
 dirline = lines[lines~items() - 2]
-parse var dirline . . . . docdir .
+parse var dirline . . . docdir .
 if docdir <> '' then do
    call value 'DOC_LOCATION', hostbuilds'\www\build\docroot\builds\docs\'docdir, 'ENVIRONMENT'
    end
