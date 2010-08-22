@@ -39,8 +39,12 @@
     parse source . . fileSpec;
 
     group = .TestGroup~new(fileSpec)
+    group~markNoTests("The rxunixsys extension has not been integrated in the ooRexx distribution at this time")
+
+    /* TODO uncomment the below, add code to only load package on Unixes
     group~add(.SysUnix.testGroup)
---    group~restrictOS("LINUX")
+    group~restrictOS("LINUX")
+    */
 
     if group~isAutomatedTest then return group
 
