@@ -65,6 +65,7 @@ $(OBJDIR)\ooRexxProcess.obj : ooRexxProcess.cpp ooRexxProcess.hpp
 
 $(BINDIR)\ooRexxProcess.dll : $(BINDIR) $(OBJDIR) $(OBJDIR)\ooRexxProcess.obj
     $(LD) $(LDFLAGS) $(OBJDIR)\ooRexxProcess.obj $(EXLIBS)
+    @copy $(BINDIR)\ooRexxProcess.dll $(NSIS_HOME_DIR)\Plugins
 
 $(BINDIR)\testProcess.exe : testProcess.nsi
     @makensis testProcess.nsi
