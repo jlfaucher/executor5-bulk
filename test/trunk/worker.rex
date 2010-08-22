@@ -882,7 +882,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
           leave
         end
 
-        testType = .ooTestTypes~testForName(t)
+        testType = .ooTestTypes~getTestForName(t)
         if testType == .nil then do
           self~addErrorMsg("The" displayName "option must be followed by valid test types")
           self~addErrorMsg(" " t "is not a valid test type.")
