@@ -186,7 +186,7 @@ return
 /*----------------------------------------------------------------------------*/
 
 checkbuild: procedure
--- check fo good build
+-- check for good build
 use strict arg newdir
 'dir' newdir'\ooRexx*.exe > checkexists'
 strm = .stream~new('checkexists')
