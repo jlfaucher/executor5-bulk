@@ -20,7 +20,7 @@ C API to perform the action.</para>
 <listitem><para>The path/file name to check access permissions.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">mode</emphasis></term>
-<listitem><para>The access permissions to check on the file. Must be a decilam number.
+<listitem><para>The access permissions to check on the file. Must be a decimal number.
 </para></listitem></varlistentry>
 </variablelist>
 <para>Returns zero on success (all access rights available) or -1 on an error.</para>
@@ -46,6 +46,8 @@ retc = SysAccess("/home/dashley/temp.txt", 2)
 <para>Sets the mode bits of a file.</para>
 <para>This function uses the <filename>chmod()</filename>
 C API to perform the action.</para>
+<para>You must be the owner of the file or root in order for this function
+to be successful.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">file</emphasis></term>
@@ -54,6 +56,7 @@ C API to perform the action.</para>
 <varlistentry><term><emphasis role="italic">mode</emphasis></term>
 <listitem><para>The new and complete list of bits. Note that it is not
 possible to unset bits with this function except through this argument.
+This parameter must be a decimal number.
 </para></listitem></varlistentry>
 </variablelist>
 <para>Returns zero on success (all access rights available) or -1 on an error.</para>
@@ -80,6 +83,8 @@ retc = SysChmod("/home/dashley/temp.txt", "rwSrwsr-x")
 <para>Change the user and group ownership attributes of a file.</para>
 <para>This function uses the <filename>chown()</filename>
 C API to perform the action.</para>
+<para>You must be the owner of the file or root in order for this function
+to be successful.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">srcpath</emphasis></term>
@@ -118,7 +123,7 @@ C API to perform the action.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">srcpath</emphasis></term>
-<listitem><para>The path/filename of the source file to change.
+<listitem><para>The new root subdirectory base path.
 </para></listitem></varlistentry>
 </variablelist>
 <para>Returns zero on success and -1 on an error.</para>
@@ -150,7 +155,7 @@ C API to perform the action.</para>
 <listitem><para>The path/file name to check access permissions.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">mode</emphasis></term>
-<listitem><para>The access permissions to check on the file. Must be a decilam number.
+<listitem><para>The access permissions to check on the file. Must be a decimal number.
 </para></listitem></varlistentry>
 </variablelist>
 <para>Returns zero on success (all access rights available) or -1 on an error.</para>

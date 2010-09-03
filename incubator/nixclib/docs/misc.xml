@@ -23,7 +23,7 @@ C API to perform the action.</para>
 <listitem><para>The two character encryption salt.
 </para></listitem></varlistentry>
 </variablelist>
-<para>Returns the current sid or -1 on an error.</para>
+<para>Returns the encrypted string or a zero-length string on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
 <![CDATA[
@@ -94,11 +94,12 @@ errno = SysGeterrno()
 <para>Returns a short description of the errno value.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
-<varlistentry><term><emphasis role="italic">sid</emphasis></term>
+<varlistentry><term><emphasis role="italic">errno</emphasis></term>
 <listitem><para>The numeric errno value.
 </para></listitem></varlistentry>
 </variablelist>
-<para>Returns a short description of the errno value.</para>
+<para>Returns a short description of the errno value.
+If the message is not available it returns the strimg "Unknown".</section>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
 <![CDATA[
@@ -123,7 +124,7 @@ say SysGeterrnomsg(26)
 C macro to perform the action.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <para>None</para>para>
-<para>Returns 32 o 64 in most cases.</para>
+<para>Returns 32 or 64 in most cases.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
 <![CDATA[
@@ -183,7 +184,7 @@ C API to perform the action.</para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">signum</emphasis></term>
 <listitem><para>The signal number to change. This is an integer and cooresponds to the
-setof system signal numbers. The following is a list of valid values:
+set of system signal numbers. The following is a partial list of valid values:
 <programlisting>
 SIGHUP	   1 Hangup (POSIX)
 SIGINT	   2 Terminal interrupt (ANSI)
@@ -217,7 +218,7 @@ SIGIO	  29 I/O now possible (4.2 BSD)
 SIGPWR	  30 Power failure restart (System V)
 </programlisting>
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">opt</emphasis></term>
+<varlistentry><term><emphasis role="italic">option</emphasis></term>
 <listitem><para>An option specifying the signal action.
 The values are all case insensitive and only the first letter of the option value is checked.
 Allowed values are:
