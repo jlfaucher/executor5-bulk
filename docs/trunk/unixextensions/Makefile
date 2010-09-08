@@ -1,6 +1,6 @@
 #----------------------------------------------------------------------------
 #
-# Description: Makefile for the Object Rexx Reference Documents.
+# Description: Makefile for the Object Rexx Unix Extensions Documents.
 #
 # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
 #
@@ -47,15 +47,14 @@ STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl \
 HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
 	                ../shared/oorexx.html.dsl
 
-xml_FILES = winprogmanager.xml \
-		   clipboard.xml \
-		   winregistry.xml \
-		   wineventlog.xml \
-		   windowmanager.xml \
-		   windowobj.xml \
-		   menuobj.xml \
-		   winole.xml \
-		   wsheng.xml \
+xml_FILES = unixextensions.xml \
+		   files.xml \
+		   misc.xml \
+		   namelookup.xml \
+		   preface.xml \
+		   process.xml \
+		   usergrps.xml \
+		   xattr.xml \
 	           ../shared/legalstuff.xml \
 	           ../shared/notices.xml \
 	           ../shared/gethelp.xml \
@@ -72,25 +71,25 @@ export TEXFORMATS=.:
 
 all: pdf html
 
-pdf: winextensions.pdf
+pdf: unixextensions.pdf
 
-html: winextensions-html.zip
+html: unixextensions-html.zip
 
-winextensions.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
-	docbook2pdf -d ../shared/oorexx.print.dsl winextensions.xml
+unixextensions.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
+	docbook2pdf -d ../shared/oorexx.print.dsl unixextensions.xml
 
 book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp
-	docbook2html -d ../shared/oorexx.html.dsl winextensions.xml
+	docbook2html -d ../shared/oorexx.html.dsl unixextensions.xml
 
-winextensions-html.zip: book1.htm
-	zip winextensions-html *.htm *.jpg *.png
+unixextensions-html.zip: book1.htm
+	zip unixextensions-html *.htm *.jpg *.png
 
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
 
 genindex.xml: $(HTML_STYLESHEET) $(xml_FILES) svnrev.tmp
 	collateindex.pl -N -o genindex.xml
-	jade -t xml -d ../shared/oorexx.html.dsl -V html-index winextensions.xml
+	jade -t xml -d ../shared/oorexx.html.dsl -V html-index unixextensions.xml
 	rm *.htm
 	collateindex.pl -p -g -o genindex.xml HTML.index
 
