@@ -146,6 +146,8 @@ if self~targetexists('dashley', 'build.oorexx.org', newdir) = .false then do
    'scp ./rexxextensions/rexxextensions-html.zip dashley@build.oorexx.org:'newdir
    'scp ./winextensions/winextensions.pdf dashley@build.oorexx.org:'newdir
    'scp ./winextensions/winextensions-html.zip dashley@build.oorexx.org:'newdir
+   'scp ./winextensions/unixextensions.pdf dashley@build.oorexx.org:'newdir
+   'scp ./winextensions/unixextensions-html.zip dashley@build.oorexx.org:'newdir
    'scp' buildrpt 'dashley@build.oorexx.org:'newdir
    end
 else self~log('This was a duplicate build request.')
