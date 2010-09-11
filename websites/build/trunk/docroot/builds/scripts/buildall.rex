@@ -51,7 +51,7 @@ do line over arr
    if line~strip() = '' then iterate
    if line~strip()~substr(1, 1) = '#' then iterate
    if line~strip()~substr(1, 2) = '--' then iterate
-   parse var machine osname addr userid cmd virt_flag .
+   parse var line osname addr userid cmd virt_flag .
    buildarr~append(.buildmachine~new(osname, addr, userid, cmd, virt_flag))
    end
 
@@ -83,7 +83,7 @@ use strict arg osname, addr, userid, cmd, virt_flag = .true
 return
 
 ::method do_build
-expose osname addr userid virt_flag
+expose osname addr userid cmd virt_flag
 if virt_flag = .true then do
    -- start the domain
    domain = .kvmdomain~new(osname)
@@ -91,9 +91,9 @@ if virt_flag = .true then do
    if retc <> 0 then return
    call SysSleep 90  -- allow some time for the domain to fully start
    end
-'ssh' userid'@'addr '"'cmd'"'
+say 'ssh' userid'@'addr '"'cmd'"'
 if virt_flag = .true then do
-   'ssh' userid'@'addr '"shutdown now"'
+   retc = domain~shutdown()
    call SysSleep 90  -- allow some time for the domain to fully stop
    end
 return
