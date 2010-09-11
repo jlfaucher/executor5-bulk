@@ -91,7 +91,7 @@ if virt_flag = .true then do
    if retc <> 0 then return
    call SysSleep 90  -- allow some time for the domain to fully start
    end
-say 'ssh' userid'@'addr '"'cmd'"'
+'ssh' userid'@'addr '"'cmd'"'
 if virt_flag = .true then do
    retc = domain~shutdown()
    call SysSleep 90  -- allow some time for the domain to fully stop
