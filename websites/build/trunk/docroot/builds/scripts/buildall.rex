@@ -47,10 +47,10 @@ machines = 'orxbuildmachines.txt'
 -- get the contentst of the input file and create the build array
 arr = file_arrayin(machines)
 buildarr = .array~new()
-do machine over machines
-   if machine~strip() = '' then iterate
-   if machine~strip()~substr(1, 1) = '#' then iterate
-   if machine~strip()~substr(1, 2) = '--' then iterate
+do arr over line
+   if line~strip() = '' then iterate
+   if line~strip()~substr(1, 1) = '#' then iterate
+   if line~strip()~substr(1, 2) = '--' then iterate
    parse var machine osname addr userid cmd virt_flag .
    buildarr~append(.buildmachine~new(osname, addr, userid, cmd, virt_flag))
    end
