@@ -47,7 +47,7 @@ machines = 'orxbuildmachines.txt'
 -- get the contentst of the input file and create the build array
 arr = file_arrayin(machines)
 buildarr = .array~new()
-do arr over line
+do line over arr
    if line~strip() = '' then iterate
    if line~strip()~substr(1, 1) = '#' then iterate
    if line~strip()~substr(1, 2) = '--' then iterate
