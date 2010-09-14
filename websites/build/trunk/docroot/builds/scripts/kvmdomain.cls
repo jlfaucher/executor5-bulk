@@ -56,7 +56,8 @@ return
 use strict arg
 domainid = self~name2id()
 if domainid <> '-' then return -1
-self~docmd('virsh start' self~domainname)
+if userid() = 'root' then self~docmd('virsh start' self~domainname)
+else self~docmd('sudo virsh start' self~domainname)
 domainid = self~name2id()
 if domainid = '-' then return -1
 return 0
@@ -66,7 +67,8 @@ return 0
 use strict arg wait = .false
 domainid = self~name2id()
 if domainid = '-' then return 0
-self~docmd('virsh shutdown' self~domainname)
+if userid() = 'root' then self~docmd('virsh shutdown' self~domainname)
+else self~docmd('sudo virsh shutdown' self~domainname)
 if wait = .true then do i = 1 to 10
    call SysSleep 5
    domainid = self~name2id()
@@ -79,13 +81,15 @@ return 0
 use strict arg
 domainid = self~name2id()
 if domainid = '-' then return 0
-self~docmd('virsh reboot' self~domainname)
+if userid() = 'root' then self~docmd('virsh reboot' self~domainname)
+else self~docmd('sudo virsh reboot' self~domainname)
 return 0
 
 ::method status
 -- return the status of a domain
 use strict arg
-status = self~doCmd('virsh list --all', , self~domainname)
+if userid() = 'root' then status = self~doCmd('virsh list --all', , self~domainname)
+else status = self~doCmd('sudo virsh list --all', , self~domainname)
 if status = .nil then return 'unknown'
 parse var status . . status
 return status~strip()
@@ -94,7 +98,8 @@ return status~strip()
 -- if the domain is running converts a domain name to a domainid,
 -- otherwise it returns .nil
 use strict arg
-id = self~doCmd('virsh domid' self~domainname, 1)
+if userid() = 'root' then id = self~doCmd('virsh domid' self~domainname, 1)
+else  id = self~doCmd('sudo virsh domid' self~domainname, 1)
 if id = .nil then return id
 return id~strip()
 
