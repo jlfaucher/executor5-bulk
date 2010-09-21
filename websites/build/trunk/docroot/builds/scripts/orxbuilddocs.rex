@@ -56,9 +56,10 @@ build~homedir = '/home/'userid()  -- always do first!
 build~builddir = build~homedir'/buildorx'
 build~targetdir = '/pub/www/build/docroot/builds/docs'
 build~osname = osname
-build~builddate = date('S')
+build~builddate = date('S') || '-' || right(time('S'), 5, '0')
 build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
 build~lockfile = '/tmp/ooRexxDocsBuild.lock'
+build~email = arg(1)~strip()
 
 -- Set our home directory
 call directory build~homedir
@@ -70,6 +71,7 @@ build~build_docs()
 'scp' build~statusfile() ,
  'dashley@build.oorexx.org:/pub/www/build/docroot/builds/status/' ||,
  build~builddate() || '-' || build~osname
+build~email_result()
 call SysFileDelete build~statusfile
 call SysFileDelete build~lockfile
 return
@@ -95,6 +97,7 @@ return
 ::attribute builddate
 ::attribute statusfile
 ::attribute lockfile
+::attribute email
 
 /*----------------------------------------------------------------------------*/
 /* build_docs                                                                 */
@@ -149,6 +152,7 @@ if self~targetexists('dashley', 'build.oorexx.org', newdir) = .false then do
    'scp ./unixextensions/unixextensions.pdf dashley@build.oorexx.org:'newdir
    'scp ./unixextensions/unixextensions-html.zip dashley@build.oorexx.org:'newdir
    'scp' buildrpt 'dashley@build.oorexx.org:'newdir
+   self~log('The build is located at http://build.oorexx.org/builds/docs/'svnver'/')
    end
 else self~log('This was a duplicate build request.')
 -- remove everything
@@ -206,4 +210,28 @@ strm~close()
 if arr~items() = 0 then return .false
 if arr[1]~pos('cannot access') > 0 then return .false
 return .true
+
+/*----------------------------------------------------------------------------*/
+/* Method: email_result                                                       */
+/*----------------------------------------------------------------------------*/
+
+::method email_result
+if self~email() = ''  then return
+tmpemail = .stream~new('tmpemail.txt')
+tmpemail~open('write replace')
+tmpemail~lineout('This email is from a service machine. DO NOT REPLY!')
+tmpemail~lineout('')
+statstrm = .stream(self~statusfile())
+statstrm~open(read)
+arr = statstrm~arrayin()
+statstrm~close()
+do line over ayy
+   tmpemail~lineout(line)
+   end
+tmpemail~lineout('')
+tmpemail~lineout('This email is from a service machine. DO NOT REPLY!')
+tmpstrm~close()
+'mailx -s "Your ooRexx Build Is Ready" -r buildmachine@build.oorexx.org' self~email() '< tmpemail.txt'
+call SysFileDelete 'tmpemail.txt'
+return
 

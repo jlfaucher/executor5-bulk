@@ -58,9 +58,12 @@ build~builddir = build~homedir'/buildorx'
 
 build~targetdir = '/pub/www/build/docroot/builds/interpreter-main'
 build~osname = osname
-build~builddate = date('S')
+build~builddate = date('S') || '-' || right(time('S'), 5, '0')
 build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
 build~lockfile = '/tmp/ooRexxBuild.lock'
+
+-- get the command line arguments
+call parse_cmd_line arg(1)~strip(), build
 
 -- Move to our home directory
 call directory build~homedir
@@ -72,6 +75,7 @@ build~build_rpm()
 'scp' build~statusfile() ,
  'dashley@build.oorexx.org:/pub/www/build/docroot/builds/status/' ||,
  build~builddate() || '-' || build~osname
+build~email_result()
 call SysFileDelete build~statusfile
 call SysFileDelete build~lockfile
 return
@@ -97,6 +101,8 @@ return
 ::attribute builddate
 ::attribute statusfile
 ::attribute lockfile
+::attribute src
+::attribute email
 
 /*----------------------------------------------------------------------------*/
 /* Method: build_rpm                                                          */
@@ -113,7 +119,7 @@ savedir = directory()
 -- create temp dir and checkout the source
 'rm -rf' self~builddir  -- make sure the subdir is erased
 'mkdir' self~builddir
-'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/' self~builddir
+'svn co' self~src() self~builddir
 call directory self~builddir
 -- see if we have already built this revision
 svnver = self~getsvnrevision()
@@ -122,7 +128,7 @@ if \datatype(svnver, 'W') then do
    return
    end
 newdir = self~targetdir'/'svnver'/'self~osname
-if self~targetexists('dashley', 'build.oorexx.org', newdir) = .false then do
+if self~targetexists('dashley', 'build.oorexx.org', newdir) = .false | self~src <> 'trunk' then do
    -- build the rpm
    self~log('Building SVN revision' svnver'.')
    './bootstrap 2>&1 | tee -a' buildrpt
@@ -130,22 +136,23 @@ if self~targetexists('dashley', 'build.oorexx.org', newdir) = .false then do
    'make rpm 2>&1 | tee -a' buildrpt
    -- copy the results to the host
    'ssh dashley@build.oorexx.org "mkdir -p' newdir'"'
-   if SysIsFileDirectory('./rpm/RPMS/i386') then ,
-    'scp ./rpm/RPMS/i386/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-   else if SysIsFileDirectory('./rpm/RPMS/i486') then ,
-    'scp ./rpm/RPMS/i486/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-   else if SysIsFileDirectory('./rpm/RPMS/i586') then ,
-    'scp ./rpm/RPMS/i586/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-   else if SysIsFileDirectory('./rpm/RPMS/i686') then ,
-    'scp ./rpm/RPMS/i686/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-   else if SysIsFileDirectory('./rpm/RPMS/x86_64') then ,
-    'scp ./rpm/RPMS/x86_64/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-   else if SysIsFileDirectory('./rpm/RPMS/s390x') then ,
-    'scp ./rpm/RPMS/s390x/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-   else if SysIsFileDirectory('./rpm/RPMS/s390') then ,
-    'scp ./rpm/RPMS/s390/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+   if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/i386') then ,
+    'scp ~/rpmbuild/RPMS/i386/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+   else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/i486') then ,
+    'scp ~/rpmbuild/RPMS/i486/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+   else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/i586') then ,
+    'scp ~/rpmbuild/RPMS/i586/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+   else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/i686') then ,
+    'scp ~/rpmbuild/RPMS/i686/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+   else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/x86_64') then ,
+    'scp ~/rpmbuild/RPMS/x86_64/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+   else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/s390x') then ,
+    'scp ~/rpmbuild/RPMS/s390x/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+   else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/s390') then ,
+    'scp ~/rpmbuild/RPMS/s390/ooRexx*.rpm dashley@build.oorexx.org:'newdir
    else nop -- it must not be a supported rpm type
    'scp' buildrpt 'dashley@build.oorexx.org:'newdir
+   self~log('The build is located at http://build.oorexx.org/builds/interpreter-main/'svnver'/'self~osname)
    end
 else do
    self~log('This was a duplicate build request for SVN revision' svnver'.')
@@ -203,4 +210,46 @@ svnver = strm~lineIn()
 retc = strm~close()
 if svnver = '' then svnver = 'unknown'
 return svnver
+
+/*----------------------------------------------------------------------------*/
+/* Method: email_result                                                       */
+/*----------------------------------------------------------------------------*/
+
+::method email_result
+if self~email() = ''  then return
+tmpemail = .stream~new('tmpemail.txt')
+tmpemail~open('write replace')
+tmpemail~lineout('This email is from a service machine. DO NOT REPLY!')
+tmpemail~lineout('')
+statstrm = .stream~new(self~statusfile())
+statstrm~open(read)
+arr = statstrm~arrayin()
+statstrm~close()
+do line over arr
+   tmpemail~lineout(line)
+   end
+tmpemail~lineout('')
+tmpemail~lineout('This email is from a service machine. DO NOT REPLY!')
+tmpemail~close()
+'mailx -s "Your ooRexx Build Is Ready" -r build@build.oorexx.org' self~email() '< tmpemail.txt'
+call SysFileDelete 'tmpemail.txt'
+return
+
+/*----------------------------------------------------------------------------*/
+/* Routine: parse_cmd_line                                                    */
+/*----------------------------------------------------------------------------*/
+
+::routine parse_cmd_line
+use strict arg cmdline, build
+argc = cmdline~words()
+if argc > 0 then build~src = cmdline~word(1)
+else build~src = 'trunk'
+select
+   when build~src = 'branch' then build~src = 'http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/branches/4.1.0/trunk/'
+   otherwise build~src = 'http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/'
+   end
+if argc > 1 then build~email = cmdline~word(2)
+else build~email = ''
+-- just ignore everything else on the cmdline
+return
 

@@ -57,9 +57,12 @@ build~homedir = '/home/'userid()  -- always do first!
 build~builddir = build~homedir'/buildorx'
 build~targetdir = '/pub/www/build/docroot/builds/interpreter-main'
 build~osname = osname
-build~builddate = date('S')
+build~builddate = date('S') || '-' || right(time('S'), 5, '0')
 build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
 build~lockfile = '/tmp/ooRexxBuild.lock'
+
+-- get the command line arguments
+call parse_cmd_line arg(1)~strip(), build
 
 -- Set our home directory
 call directory build~homedir
@@ -71,6 +74,7 @@ build~build_deb()
 'scp' build~statusfile() ,
  'dashley@build.oorexx.org:/pub/www/build/docroot/builds/status/' ||,
  build~builddate() || '-' || build~osname
+build~email_result()
 call SysFileDelete build~statusfile
 call SysFileDelete build~lockfile
 return
@@ -97,6 +101,8 @@ return
 ::attribute builddate
 ::attribute statusfile
 ::attribute lockfile
+::attribute src
+::attribute email
 
 /*----------------------------------------------------------------------------*/
 /* build_deb                                                                  */
@@ -114,7 +120,7 @@ buildrpt = self~osname'.buildrpt.txt'
 -- create temp dir and checkout the source
 'mkdir' self~builddir()
 call directory self~builddir()
-'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/ ./'
+'svn co' self~src() self~builddir
 svnver = self~getsvnrevision()
 if \datatype(svnver, 'W') then do
    self~log('Subversion checkout failed.')
@@ -131,6 +137,7 @@ if self~targetexists('dashley', 'build.oorexx.org', newdir) = .false then do
    'ssh dashley@build.oorexx.org "mkdir -p' newdir'"'
    'scp ../oorexx*.deb dashley@build.oorexx.org:'newdir
    'scp' buildrpt 'dashley@build.oorexx.org:'newdir
+   self~log('The build is located at http://build.oorexx.org/builds/interpreter-main/'svnver'/'self~osname)
    end
 else self~log('This was a duplicate build request for SVN revision' svnver'.')
 -- remove everything
@@ -186,4 +193,46 @@ svnver = strm~lineIn()
 retc = strm~close()
 if svnver = '' then svnver = 'unknown'
 return svnver
+
+/*----------------------------------------------------------------------------*/
+/* Method: email_result                                                       */
+/*----------------------------------------------------------------------------*/
+
+::method email_result
+if self~email() = ''  then return
+tmpemail = .stream~new('tmpemail.txt')
+tmpemail~open('write replace')
+tmpemail~lineout('This email is from a service machine. DO NOT REPLY!')
+tmpemail~lineout('')
+statstrm = .stream~new(self~statusfile())
+statstrm~open(read)
+arr = statstrm~arrayin()
+statstrm~close()
+do line over arr
+   tmpemail~lineout(line)
+   end
+tmpemail~lineout('')
+tmpemail~lineout('This email is from a service machine. DO NOT REPLY!')
+tmpemail~close()
+'mailx -s "Your ooRexx Build Is Ready" -r build@build.oorexx.org' self~email() '< tmpemail.txt'
+call SysFileDelete 'tmpemail.txt'
+return
+
+/*----------------------------------------------------------------------------*/
+/* Routine: parse_cmd_line                                                    */
+/*----------------------------------------------------------------------------*/
+
+::routine parse_cmd_line
+use strict arg cmdline, build
+argc = cmdline~words()
+if argc > 0 then build~src = cmdline~word(1)
+else build~src = 'trunk'
+select
+   when build~src = 'branch' then build~src = 'http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/branches/4.1.0/trunk/'
+   otherwise build~src = 'http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/'
+   end
+if argc > 1 then build~email = cmdline~word(2)
+else build~email = ''
+-- just ignore everything else on the cmdline
+return
 
