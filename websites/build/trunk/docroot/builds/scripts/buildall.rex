@@ -55,9 +55,11 @@ do line over arr
    buildarr~append(.buildmachine~new(osname, addr, userid, cmd, virt_flag))
    end
 
+cmdargs = arg(1)~strip()
+
 -- do all the virtual builds
 do machine over buildarr
-   machine~do_build()
+   machine~do_build(cmdargs)
    end
 return
 
@@ -83,6 +85,7 @@ use strict arg osname, addr, userid, cmd, virt_flag = .true
 return
 
 ::method do_build
+use strict arg cmdargs
 expose osname addr userid cmd virt_flag
 if virt_flag = .true then do
    -- start the domain
@@ -91,7 +94,9 @@ if virt_flag = .true then do
    if retc <> 0 then return
    call SysSleep 90  -- allow some time for the domain to fully start
    end
-'ssh' userid'@'addr '"'cmd'"'
+if cmdargs = '' then cmdline = cmd
+else cmdline = cmd cmdargs
+'ssh' userid'@'addr '"'cmdline'"'
 if virt_flag = .true then do
    retc = domain~shutdown()
    call SysSleep 90  -- allow some time for the domain to fully stop
