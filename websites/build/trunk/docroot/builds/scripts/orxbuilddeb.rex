@@ -57,7 +57,7 @@ build~homedir = '/home/'userid()  -- always do first!
 build~builddir = build~homedir'/buildorx'
 build~targetdir = '/pub/www/build/docroot/builds/interpreter-main'
 build~osname = osname
-build~builddate = date('S') || '-' || right(time('S'), 5, '0')
+build~builddate = date('S') || '-' || changestr(':', time(), '')
 build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
 build~lockfile = '/tmp/ooRexxBuild.lock'
 
