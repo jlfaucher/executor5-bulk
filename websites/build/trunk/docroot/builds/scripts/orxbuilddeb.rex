@@ -127,19 +127,16 @@ if \datatype(svnver, 'W') then do
    return
    end
 newdir = self~targetdir'/'svnver'/'self~osname
-if self~targetexists('dashley', 'build.oorexx.org', newdir) = .false then do
-   -- build the deb
-   self~log('Building SVN revision' svnver'.')
-   './bootstrap 2>&1 | tee -a' buildrpt
-   './configure --disable-static 2>&1 | tee -a' buildrpt
-   'make deb 2>&1 | tee -a' buildrpt
-   -- copy the results to the host
-   'ssh dashley@build.oorexx.org "mkdir -p' newdir'"'
-   'scp ../oorexx*.deb dashley@build.oorexx.org:'newdir
-   'scp' buildrpt 'dashley@build.oorexx.org:'newdir
-   self~log('The build is located at http://build.oorexx.org/builds/interpreter-main/'svnver'/'self~osname)
-   end
-else self~log('This was a duplicate build request for SVN revision' svnver'.')
+-- build the deb
+self~log('Building SVN revision' svnver'.')
+'./bootstrap 2>&1 | tee -a' buildrpt
+'./configure --disable-static 2>&1 | tee -a' buildrpt
+'make deb 2>&1 | tee -a' buildrpt
+-- copy the results to the host
+'ssh dashley@build.oorexx.org "mkdir -p' newdir'"'
+'scp ../oorexx*.deb dashley@build.oorexx.org:'newdir
+'scp' buildrpt 'dashley@build.oorexx.org:'newdir
+self~log('The build is located at http://build.oorexx.org/builds/interpreter-main/'svnver'/'self~osname)
 -- remove everything
 call directory savedir
 'rm -rf' self~builddir()

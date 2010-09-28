@@ -128,35 +128,30 @@ if \datatype(svnver, 'W') then do
    return
    end
 newdir = self~targetdir'/'svnver'/'self~osname
-if self~targetexists('dashley', 'build.oorexx.org', newdir) = .false | self~src <> 'trunk' then do
-   -- build the rpm
-   self~log('Building SVN revision' svnver'.')
-   './bootstrap 2>&1 | tee -a' buildrpt
-   './configure 2>&1 | tee -a' buildrpt
-   'make rpm 2>&1 | tee -a' buildrpt
-   -- copy the results to the host
-   'ssh dashley@build.oorexx.org "mkdir -p' newdir'"'
-   if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/i386') then ,
-    'scp ~/rpmbuild/RPMS/i386/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-   else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/i486') then ,
-    'scp ~/rpmbuild/RPMS/i486/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-   else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/i586') then ,
-    'scp ~/rpmbuild/RPMS/i586/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-   else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/i686') then ,
-    'scp ~/rpmbuild/RPMS/i686/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-   else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/x86_64') then ,
-    'scp ~/rpmbuild/RPMS/x86_64/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-   else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/s390x') then ,
-    'scp ~/rpmbuild/RPMS/s390x/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-   else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/s390') then ,
-    'scp ~/rpmbuild/RPMS/s390/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-   else nop -- it must not be a supported rpm type
-   'scp' buildrpt 'dashley@build.oorexx.org:'newdir
-   self~log('The build is located at http://build.oorexx.org/builds/interpreter-main/'svnver'/'self~osname)
-   end
-else do
-   self~log('This was a duplicate build request for SVN revision' svnver'.')
-   end
+-- build the rpm
+self~log('Building SVN revision' svnver'.')
+'./bootstrap 2>&1 | tee -a' buildrpt
+'./configure 2>&1 | tee -a' buildrpt
+'make rpm 2>&1 | tee -a' buildrpt
+-- copy the results to the host
+'ssh dashley@build.oorexx.org "mkdir -p' newdir'"'
+if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/i386') then ,
+ 'scp ~/rpmbuild/RPMS/i386/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/i486') then ,
+ 'scp ~/rpmbuild/RPMS/i486/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/i586') then ,
+ 'scp ~/rpmbuild/RPMS/i586/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/i686') then ,
+ 'scp ~/rpmbuild/RPMS/i686/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/x86_64') then ,
+ 'scp ~/rpmbuild/RPMS/x86_64/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/s390x') then ,
+ 'scp ~/rpmbuild/RPMS/s390x/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/s390') then ,
+ 'scp ~/rpmbuild/RPMS/s390/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+else nop -- it must not be a supported rpm type
+'scp' buildrpt 'dashley@build.oorexx.org:'newdir
+self~log('The build is located at http://build.oorexx.org/builds/interpreter-main/'svnver'/'self~osname)
 -- remove everything
 call directory savedir
 'rm -rf' self~builddir

@@ -85,8 +85,8 @@ use strict arg osname, addr, userid, cmd, virt_flag = .true
 return
 
 ::method do_build
-use strict arg cmdargs
 expose osname addr userid cmd virt_flag
+use strict arg cmdargs
 if virt_flag = .true then do
    -- start the domain
    domain = .kvmdomain~new(osname)
