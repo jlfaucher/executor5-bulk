@@ -60,5 +60,5 @@ liborxvirt_la_CXXFLAGS = -I$(top_srcdir)
 # Extra libraries/flags for liborxvirt.so (maybe)
 #
 liborxvirt_la_LIBADD =
-liborxvirt_la_LDFLAGS = -shared -lvirt -lrexx -lrexxapi
+liborxvirt_la_LDFLAGS = -shared -L/usr/lib/ooRexx -lvirt -lrexx -lrexxapi
 

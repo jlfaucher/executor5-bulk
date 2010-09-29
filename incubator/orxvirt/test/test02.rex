@@ -41,8 +41,6 @@
 /*----------------------------------------------------------------------------*/
 
 
-call OrxVirtInitialize
-
 -- assume we are running as root
 connx = .virtconnx~new()
 if connx~connected() = 0 then do

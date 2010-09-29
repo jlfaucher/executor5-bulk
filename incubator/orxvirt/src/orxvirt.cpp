@@ -69,22 +69,14 @@
 /* Private Functions                                                          */
 /*----------------------------------------------------------------------------*/
 
+static void orxvirt_loader(RexxThreadContext *context) {
+    virInitialize();
+   }
+
 
 /*----------------------------------------------------------------------------*/
 /* Public Functions                                                           */
 /*----------------------------------------------------------------------------*/
-
-/**
- * Function:  OrxVirInitialize
- *
- * Initialize the library.
- *
- * @return        Zero.
- */
-RexxRoutine0(int, OrxVirtInitialize)
-{
-    return virInitialize();
-}
 
 
 /*----------------------------------------------------------------------------*/
@@ -95,12 +87,6 @@ RexxRoutine0(int, OrxVirtInitialize)
 /*----------------------------------------------------------------------------*/
 /* ooRexx Package Stubs                                                       */
 /*----------------------------------------------------------------------------*/
-
-// build the actual function entry list
-RexxRoutineEntry orxvirt_routines[] = {
-    REXX_TYPED_ROUTINE(OrxVirtInitialize, OrxVirtInitialize),
-    REXX_LAST_ROUTINE()
-};
 
 
 // build the actual method entry list
@@ -128,9 +114,9 @@ RexxPackageEntry orxvirt_package_entry = {
     REXX_INTERPRETER_4_0_0,              // anything after 4.0.0 will work
     "OrxVirt",                           // name of the package
     "4.1.0",                             // package information
-    NULL,                                // no load functions
+    orxvirt_loader,                      // load functions
     NULL,                                // no unload functions
-    orxvirt_routines,                    // the exported routines
+    NULL,                                // the exported routines
     orxvirt_methods                      // the exported methods
 };
 
