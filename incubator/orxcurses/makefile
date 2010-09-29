@@ -46,7 +46,7 @@ OBJECTS = orxncurses.o
 
 # Build the shared library
 liborxncurses.so: $(OBJECTS)
-	gcc $(ORXLFLAGS) -lrexx -lrexxapi -lncurses -o liborxncurses.so $(OBJECTS)
+	gcc $(ORXLFLAGS) -L/usr/lib/ooRexx -lrexx -lrexxapi -lncurses -o liborxncurses.so $(OBJECTS)
 
 
 # Build the objects
