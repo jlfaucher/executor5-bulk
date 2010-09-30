@@ -41,22 +41,12 @@
 /*----------------------------------------------------------------------------*/
 
 
--- platform specific variables!
--- osname = 'fedora13-i386'
--- osname = 'fedora13-x86_64'
-osname = 'ubuntu1004-i386'
--- osname = 'ubuntu1004-x86_64'
--- osname = 'opensuse11-i386'
--- osname = 'opensuse11-x86_64'
--- osname = 'SLES10-s390x'
--- osname = 'winxpsp3-i386'
-
 -- Initialization
 build = .build~new()
 build~homedir = '/home/'userid()  -- always do first!
+call localize(build, build~homedir()'/orxbuildlocal.txt')
 build~builddir = build~homedir'/buildorx'
 build~targetdir = '/pub/www/build/docroot/builds/interpreter-main'
-build~osname = osname
 build~builddate = date('S') || '-' || changestr(':', time(), '')
 build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
 build~lockfile = '/tmp/ooRexxBuild.lock'
@@ -102,6 +92,7 @@ return
 ::attribute statusfile
 ::attribute lockfile
 ::attribute src
+::attribute location      -- the build type ie. branch4.1.0
 ::attribute email
 
 /*----------------------------------------------------------------------------*/
@@ -116,7 +107,7 @@ do while stream(self~lockfile, 'c', 'query exists') <> ''
 'touch' self~lockfile
 self~log('Starting build.')
 savedir = directory()
-buildrpt = self~osname'.buildrpt.txt'
+buildrpt = self~osname()'.'self~location()'.buildrpt.txt'
 -- create temp dir and checkout the source
 'mkdir' self~builddir()
 call directory self~builddir()
@@ -222,14 +213,35 @@ return
 ::routine parse_cmd_line
 use strict arg cmdline, build
 argc = cmdline~words()
-if argc > 0 then build~src = cmdline~word(1)
-else build~src = 'trunk'
+if argc > 0 then build~location = cmdline~word(1)
+else build~location = 'trunk'
 select
-   when build~src = 'branch' then build~src = 'http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/branches/4.1.0/trunk/'
-   otherwise build~src = 'http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/'
+   when build~location = 'branch' then do
+      build~src = 'http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/branches/4.1.0/trunk/'
+      build~location = 'branch4.1.0'
+      end
+   otherwise do
+      build~src = 'http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/'
+      end
    end
 if argc > 1 then build~email = cmdline~word(2)
 else build~email = ''
 -- just ignore everything else on the cmdline
+return
+
+/*----------------------------------------------------------------------------*/
+/* Routine: localize                                                          */
+/*----------------------------------------------------------------------------*/
+
+::routine localize
+-- set the osname and possibly other build object attributes
+use strict arg ifile
+strm = .stream~new(ifile)
+strm~open('read')
+arr = strm~arrayin()
+strm~close()
+do line over arr
+   interpret line
+   end
 return
 

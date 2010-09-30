@@ -41,16 +41,8 @@
 /*----------------------------------------------------------------------------*/
 
 
--- platform specific variables!
--- osname = 'fedora13-i386'
-osname = 'fedora13-docs'
--- osname = 'fedora13-x86_64'
--- osname = 'opensuse11-i386'
--- osname = 'opensuse11-x86_64'
--- osname = 'SLES11-s390x'
--- osname = 'winxpsp3-i386'
-
 -- Initialization
+osname = 'fedora13-docs'
 build = .build~new()
 build~homedir = '/home/'userid()  -- always do first!
 build~builddir = build~homedir'/buildorx'
