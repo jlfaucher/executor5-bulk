@@ -208,12 +208,12 @@ return .true
 /*----------------------------------------------------------------------------*/
 
 ::method email_result
-if self~email() = ''  then return
+if self~email()~pos('@') = 0 then return
 tmpemail = .stream~new('tmpemail.txt')
 tmpemail~open('write replace')
 tmpemail~lineout('This email is from a service machine. DO NOT REPLY!')
 tmpemail~lineout('')
-statstrm = .stream(self~statusfile())
+statstrm = .stream~new(self~statusfile())
 statstrm~open(read)
 arr = statstrm~arrayin()
 statstrm~close()
