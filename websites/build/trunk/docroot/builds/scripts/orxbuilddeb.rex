@@ -44,7 +44,7 @@
 -- Initialization
 build = .build~new()
 build~homedir = '/home/'userid()  -- always do first!
-call localize(build, build~homedir()'/orxbuildlocal.txt')
+call localize build, build~homedir()'/orxbuildlocal.txt'
 build~builddir = build~homedir'/buildorx'
 build~targetdir = '/pub/www/build/docroot/builds/interpreter-main'
 build~builddate = date('S') || '-' || changestr(':', time(), '')
