@@ -235,7 +235,7 @@ return
 
 ::routine localize
 -- set the osname and possibly other build object attributes
-use strict arg ifile
+use strict arg build, ifile
 strm = .stream~new(ifile)
 strm~open('read')
 arr = strm~arrayin()
