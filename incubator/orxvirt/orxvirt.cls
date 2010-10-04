@@ -131,5 +131,7 @@ return
 ::method active EXTERNAL "LIBRARY orxvirt OrxVirt_DomainIsActive"
 ::method reboot EXTERNAL "LIBRARY orxvirt OrxVirt_DomainReboot"
 ::method shutdown EXTERNAL "LIBRARY orxvirt OrxVirt_DomainShutdown"
+::method suspend EXTERNAL "LIBRARY orxvirt OrxVirt_DomainSuspend"
+::method resume EXTERNAL "LIBRARY orxvirt OrxVirt_DomainResume"
 
 

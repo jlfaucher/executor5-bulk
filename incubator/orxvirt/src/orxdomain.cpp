@@ -254,3 +254,41 @@ RexxMethod1(uint64_t,                  // Return type
     return (uint64_t) virDomainGetID(domain);
 }
 
+
+/**
+ * Method:  OrxVirt_DomainSuspend
+ *
+ * Suspend a domain.
+ *
+ * @return        Status code (-1, 0)
+ **/
+RexxMethod1(uint64_t,                  // Return type
+            OrxVirt_DomainSuspend,     // Object_method name
+            CSELF, self)
+{
+    virDomainPtr domain = (virDomainPtr) self;
+    if (domain == NULL) {
+        return -1;
+    }
+    return (uint64_t) virDomainSuspend(domain);
+}
+
+
+/**
+ * Method:  OrxVirt_DomainResume
+ *
+ * Resume a domain.
+ *
+ * @return        Status code (-1, 0)
+ **/
+RexxMethod1(uint64_t,                  // Return type
+            OrxVirt_DomainResume,      // Object_method name
+            CSELF, self)
+{
+    virDomainPtr domain = (virDomainPtr) self;
+    if (domain == NULL) {
+        return -1;
+    }
+    return (uint64_t) virDomainResume(domain);
+}
+
