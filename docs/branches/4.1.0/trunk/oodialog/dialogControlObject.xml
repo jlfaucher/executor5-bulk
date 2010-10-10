@@ -1,0 +1,2356 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="chpDialogControlObject"><title>The Dialog Control Object</title>
+<indexterm><primary>dialog control object</primary></indexterm>
+<indexterm><primary>DialogControl class</primary></indexterm>
+<para>
+  This chapter discussses the <emphasis role="italic">dialog control object</emphasis> is a fashion similar to the <link
+  linkend="chpDialogObject">dialog object</link>. It lists the methods that are common to all dialog controls. In the
+  graphical user interface (GUI) for the Windows operating system both dialogs and dialog controls are windows.
+  Therefore, many of the methods of a dialog control object are the same as the methods of the dialog object. These are
+  the methods that are common to all windows, whether they are dialog windows or dialog control windows.
+</para>
+<para id="paraDialogControlStyles">
+  In the Windows GUI all windows are created with a set of <emphasis role="italic">window styles</emphasis>.  Dialog
+  control windows are created using styles that are common to all windows, (for example the visible style,) and styles
+  specific to the dialog control itself, (for example the multi-line style of the <link linkend="clsEdit">Edit</link>
+  control class.)  In general the styles of a control fall into three categories: Styles that can only be set when the
+  control is created and then can not be changed afterwards. Styles that can be changed after control creation by
+  sending messages to the control. And, styles that can be changed after the control is created by accessing the control
+  window directly.
+</para>
+<para>
+  The ooDialog programmer chooses the window styles for dialog controls when he defines the dialog, either by using a
+  resource editor for dialogs defined with resource scripts or binary compiled resources, or by using the one of the
+  <link linkend="sctCreateMethods">create...</link> methods for a user dialog. After the dialog control has been
+  created, the individual dialog control classes provide methods to change those styles that can be changed, either by
+  sending the proper message to the control or by accessing the control window directly.
+</para>
+
+<section id="sctMethodsDlgContorlObject"><title>Method Table</title>
+<para>
+  The following table lists the class methods, attributes, and instance methods that all dialog controls have in
+  common:
+
+<table id="tblDialogControlObject" frame="all">
+<title>Dialog Control Object Method Reference</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Dialog Control Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbdcoFactorX">factorX</link></entry>
+<entry>The horizontal size of one dialog unit in pixels. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoFactorY">factorY</link></entry>
+<entry>The vertical size of one dialog unit in pixels. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoHwnd">hwnd</link></entry>
+<entry>The window handle of the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoInitCode">initCode</link></entry>
+<entry>Meaningless for a dialog control, it is always 0.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSizeX">sizeX</link></entry>
+<entry>The width of the dialog control in dialog units. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSizeY">sizeY</link></entry>
+<entry>The height of the dialog control in dialog units. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoPixelCX">pixelCX</link></entry>
+<entry>The width of the dialog control in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoPixelCY">pixelCY</link></entry>
+<entry>The height of the dialog control in pixels.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSendMessage">sendMessage</link></entry>
+<entry>Sends a Windows message to the underlying control and returns its response as a whole number.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSendMessageHandle">sendMessageHandle</link></entry>
+<entry>Sends a Windows message to the underlying control and returns its response as a handle.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoEnable">enable</link></entry>
+<entry>Enables the control</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoDisable">disable</link></entry>
+<entry>Disables the control</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoIsVisible">isVisible</link></entry>
+<entry>Tests if the control is visible.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoIsEnabled">isEnabled</link></entry>
+<entry>Tests if the control is enabled.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoShow">show</link></entry>
+<entry>Makes the control visible if it was hidden and repaints it.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoHide">hide</link></entry>
+<entry>Makes the control invisible and repaints it.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoShowfast">showFast</link></entry>
+<entry>Marks the control as visible.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoHideFast">hideFast</link></entry>
+<entry>Marks the control as invisible</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoDisplay">display</link></entry>
+<entry>Shows or hides the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoUpdate">update</link></entry>
+<entry>Invalidates the entire client area of the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoDraw">draw</link></entry>
+<entry>Redraws the entire client area of the control immediately.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoRedrawClient">redrawClient</link></entry>
+<entry>Redraws the entire client area of the control immediately.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoRedraw">redraw</link></entry>
+<entry>Redraws the entire control window and all its child windows immediately.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetID">getID</link></entry>
+<entry>Retrieves the identification number of the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetStyleRaw">getStyleRaw</link></entry>
+<entry>Retrieves the numeric value of the control's style flags.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetExStyleRaw">getExStyleRaw</link></entry>
+<entry>Retrieves the numeric value of the control's extended style flags.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSetText">setText</link></entry>
+<entry>Sets the text of the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetText">getText</link></entry>
+<entry>Gets the text of the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoTitleEquals">title=</link></entry>
+<entry>Sets the text of the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSetTitle">setTitle</link></entry>
+<entry>Sets the text of the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoTitle">title</link></entry>
+<entry>Gets the text of the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetTextSizePx">getTextSizePx</link></entry>
+<entry>Calculates the size needed for a string in pixels <emphasis role="bold">(preferred method.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetTextSizeScreen">getTextSizeScreen</link></entry>
+<entry>Calculates the size needed for a string in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSetRect">setRect</link></entry>
+<entry>Moves and / or resizes the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoResizeTo">resizeTo</link></entry>
+<entry>Resizes the control to the size specified in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoMoveTo">moveTo</link></entry>
+<entry>Moves the control to the position specified in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSetWindowPos">setWindowPos</link></entry>
+<entry>Changes the size, position, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSizeWindow">sizeWindow</link></entry>
+<entry>Changes the size, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoMoveWindow">moveWindow</link></entry>
+<entry>Changes the position, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetRealSize">getRealSize</link></entry>
+<entry>Returns the size of the control in pixels as a <computeroutput>Size</computeroutput> object.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetRealPos">getRealPos</link></entry>
+<entry>Returns the position of the control in pixels as a <computeroutput>Point</computeroutput> object.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoWindowRect">windowRect</link></entry>
+<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the control in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoClientRect">clientRect</link></entry>
+<entry>
+  Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the control's client area in
+  pixels.
+</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoClear">clear</link></entry>
+<entry>Clears the client area of the control by painting it with the background brush.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoResize">resize</link></entry>
+<entry>Resizes the control to the size specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbdcoMove">move</link></entry>
+<entry>Moves the control to the position specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetSize">getSize</link></entry>
+<entry>Returns the size of the control in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetPos">getPos</link></entry>
+<entry>Returns the position of the control in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetRect">getRect</link></entry>
+<entry>Returns the dimesions of the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetClientRect">getClientRect</link></entry>
+<entry>Returns the dimensions of the control's client area.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoForegroundWindow">foregroundWindow</link></entry>
+<entry>Returns the handle of the window in the foreground.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoScreen2client">screen2client</link></entry>
+<entry>Converts a point in screen coordinates to the client-area coordinates of the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoClient2screen">client2screen</link></entry>
+<entry>Converts a point in client-area coordinates of the control to its screen coordinates.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoScreenToClient">screenToClient</link></entry>
+<entry>Converts screen coordinates to the client-area coordinates of the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoClientToScreen">clientToScreen</link></entry>
+<entry>Converts client-area coordinates of the control to its screen coordinates.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoGetFont">getFont</link></entry>
+<entry>Returns the font used by the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoSetFont">setFont</link></entry>
+<entry>Sets a new font to be used by the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCreateFontEx">createFontEx</link></entry>
+<entry>Retrieves a handle to a logical font from the system font manager</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCreateFont">createFont</link></entry>
+<entry>Returns a handle to a logical font, the implementation is <emphasis role="bold">incorrect</emphasis>.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoDeleteFont">deleteFont</link></entry>
+<entry>Deletes a font returned from <emphasis role="italic">createFontEx</emphasis> or <emphasis role="italic">createFont</emphasis>.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoScrollClsWE">scroll</link></entry>
+<entry>Scrolls the contents of the dialog control's client area by the amount specified.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoHScrollPos">hScrollPos</link></entry>
+<entry>Returns the position of the horizontal scroll bar in the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoSetHScrollPos">setHScrollPos</link></entry>
+<entry>Sets the thumb position of the horizontal scroll bar contained in the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoVScrollPos">vScrollPos</link></entry>
+<entry>Returns the position of the vertical scroll bar in the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoSetVScrollPos">setVScrollPos</link></entry>
+<entry>Sets the thumb position of the vertical scroll bar contained in the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoLoadBitmap">loadBitmap</link></entry>
+<entry>Loads a bitmap from a file into memory and returns the handle to the bitmap.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoRemoveBitmap">removeBitmap</link></entry>
+<entry>Frees an in-memory bitmap that was loaded through the <emphasis role="italic">loadBitmap</emphasis> method.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoSetCursorPos">setCursorPos</link></entry>
+<entry>Moves the mouse cursor to the specified position.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoGetCursorPos">getCursorPos</link></entry>
+<entry>Retrieves the current cursor position in pixels as a <computeroutput>Point</computeroutput> object.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoRestoreCursorShape">restoreCursorShape</link></entry>
+<entry>Restores the shape of the mouse cursor.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCursorArrow">cursor_arrow</link></entry>
+<entry>Sets the shape of the mouse cursor to the standard arrow.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCursorAppStarting">cursor_appstarting</link></entry>
+<entry>Sets the shape of the mouse cursor to the standard arrow with a small hourglass.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCursorCross">cursor_cross</link></entry>
+<entry>Sets the shape of the mouse cursor to a crosshair.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCursorNo">cursor_no</link></entry>
+<entry>Sets the shape of the mouse cursor to a slashed circle.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCursorWait">cursor_wait</link></entry>
+<entry>Sets the shape of the mouse cursor to an hourglass.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCursorPos">cursorPos</link></entry>
+<entry>Retrieves the current cursor position in pixels as a string.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoWrite">write</link></entry>
+<entry>Writes text in a dialog control using the given font, style, and color at the position specified.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoWriteDirect">writeDirect</link></entry>
+<entry>Writes text in a dialog control at the position specified using a device context.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCreateBrush">createBrush</link></entry>
+<entry>Creates a logical brush that has the specified style, color, and pattern.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCreatePen">createPen</link></entry>
+<entry>Creates a logical pen that has the specified style, width, and color.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoDeleteObject">deleteObject</link></entry>
+<entry>Deletes a graphic object,</entry>
+</row>
+<row>
+<entry><link linkend="wedcoGetDC">getDC</link></entry>
+<entry>Returns the handle to the display device context of a dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoFreeDC">freeDC</link></entry>
+<entry>Releases a device context.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoObjectToDC">objectToDC</link></entry>
+<entry>Loads a graphic object into a device context.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoFontToDC">fontToDC</link></entry>
+<entry>Loads a font into a device context and returns the handle of the previous font.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoRectangle">rectangle</link></entry>
+<entry>Draws a rectangle within the given device context.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoDrawLine">drawLine</link></entry>
+<entry>Draws a line within the device context using the active pen.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoDrawPixel">drawPixel</link></entry>
+<entry>Draws a pixel within the device context.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoGetPixel">getPixel</link></entry>
+<entry>Returns the color number of a pixel within the device context.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoFillDrawing">fillDrawing</link></entry>
+<entry>Fills in an outline figure within the device context using the active brush.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoDrawArc">drawArc</link></entry>
+<entry>Draws a circle or ellipse withi the given device context using the active pen.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoDrawPie">drawPie</link></entry>
+<entry>Draws and fills a pie of a circle or ellipse within the given device context using the active brush and pen.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoDrawAngleArc">drawAngleArc</link></entry>
+<entry>Draws a partial circle (arc) and a line connecting the start drawing point with the start of the arc.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoGetArcDirection">getArcDirection</link></entry>
+<entry>Returns the current drawing direction.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoSetArcDirection">setArcDirection</link></entry>
+<entry>Sets the current drawing direction.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoFontColor">fontColor</link></entry>
+<entry>Sets the font color for a device context.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoTransparentText">transparentText</link></entry>
+<entry>Sets the text drawing mode in a device context to transparent, (background is not changed.)</entry>
+</row>
+<row>
+<entry><link linkend="wedcoOpaqueText">opaqueText</link></entry>
+<entry>Sets the text drawing mode in a device context to opaque, (background is redrawn with the current brush.)</entry>
+</row>
+
+
+<row>
+<entry>AssignFocus</entry>
+<entry><link linkend="assignfocus">AssignFocus</link></entry>
+</row>
+<row>
+<entry>CaptureMouse</entry>
+<entry><link linkend="capturemouse">CaptureMouse</link></entry>
+</row>
+<row>
+<entry>clear</entry>
+<entry><link linkend="mthClear">clear</link></entry>
+</row>
+<row>
+<entry>ClearRect</entry>
+<entry><link linkend="clearrect">ClearRect</link></entry>
+</row>
+<row>
+<entry>clientToScreen</entry>
+<entry><link linkend="mthClientToScreen">clientToScreen</link></entry>
+</row>
+<row>
+<entry>connectFKeyPress</entry>
+<entry><link linkend="mthConnectFKeyPressDialogControl">connectFKeyPress</link></entry>
+</row>
+<row>
+<entry>connectKeyPress</entry>
+<entry><link linkend="mthConnectKeyPressDialogControl">connectKeyPress</link></entry>
+</row>
+<row>
+<entry>disconnectKeyPress</entry>
+<entry><link linkend="mthDisconnectKeyPressDialogControl">disconnectKeyPress</link></entry>
+</row>
+<row>
+<entry>drawAngleArc</entry>
+<entry><link linkend="mthDrawAngleArc">drawAngleArc</link></entry>
+</row>
+<row>
+<entry>drawArc</entry>
+<entry><link linkend="mthDrawArc">drawArc</link></entry>
+</row>
+<row>
+<entry>drawLine</entry>
+<entry><link linkend="mthDrawLine">drawLine</link></entry>
+</row>
+<row>
+<entry>drawPie</entry>
+<entry><link linkend="mthDrawPie">drawPie</link></entry>
+</row>
+<row>
+<entry>drawPixel</entry>
+<entry><link linkend="mthDrawPixel">drawPixel</link></entry>
+</row>
+<row>
+<entry>fillDrawing</entry>
+<entry><link linkend="mthFillDrawing">fillDrawing</link></entry>
+</row>
+<row>
+<entry>fontColor</entry>
+<entry><link linkend="mthFontColor">fontColor</link></entry>
+</row>
+<row>
+<entry>fontToDC</entry>
+<entry><link linkend="mthFontToDC">fontToDC</link></entry>
+</row>
+<row>
+<entry>foregroundWindow</entry>
+<entry><link linkend="mthForegroundWindow">foregroundWindow</link></entry>
+</row>
+<row>
+<entry>freeDC</entry>
+<entry><link linkend="mthFreeDC">freeDC</link></entry>
+</row>
+<row>
+<entry>getArcDirection</entry>
+<entry><link linkend="mthGetArcDirection">getArcDirection</link></entry>
+</row>
+<row>
+<entry>getClientRect</entry>
+<entry><link linkend="mthGetClientRect">getClientRect</link></entry>
+</row>
+<row>
+<entry>getDC</entry>
+<entry><link linkend="mthGetDC">getDC</link></entry>
+</row>
+<row>
+<entry>GetFocus</entry>
+<entry><link linkend="getfocus">GetFocus</link></entry>
+</row>
+<row>
+<entry>GetMouseCapture</entry>
+<entry><link linkend="getmousecapture">GetMouseCapture</link></entry>
+</row>
+<row>
+<entry>getPixel</entry>
+<entry><link linkend="mthGetPixel">getPixel</link></entry>
+</row>
+<row>
+<entry>getPos</entry>
+<entry><link linkend="mthGetPos">getPos</link></entry>
+</row>
+<row>
+<entry>getRect</entry>
+<entry><link linkend="mthGetRect">getRect</link></entry>
+</row>
+<row>
+<entry>Group</entry>
+<entry><link linkend="mthGroup">Group</link></entry>
+</row>
+<row>
+<entry>hasKeyPressConnection</entry>
+<entry><link linkend="mthHasKeyPressConnectionDialogControl">hasKeyPressConnection</link></entry>
+</row>
+<row>
+<entry>hScrollPos</entry>
+<entry><link linkend="mthHScrollPos">hScrollPos</link></entry>
+</row>
+<row>
+<entry>isMouseButtonDown</entry>
+<entry><link linkend="ismousebuttondown">isMouseButtonDown</link></entry>
+</row>
+<row>
+<entry>loadBitmap</entry>
+<entry><link linkend="mthLoadBitmap">loadBitmap</link></entry>
+</row>
+<row>
+<entry>move</entry>
+<entry><link linkend="mthMove">move</link></entry>
+</row>
+<row>
+<entry>objectToDC</entry>
+<entry><link linkend="mthObjectToDC">objectToDC</link></entry>
+</row>
+<row>
+<entry>opaqueText</entry>
+<entry><link linkend="mthOpaqueText">opaqueText</link></entry>
+</row>
+<row>
+<entry>rectangle</entry>
+<entry><link linkend="mthRectangle">rectangle</link></entry>
+</row>
+<row>
+<entry>RedrawRect</entry>
+<entry><link linkend="redrawrect">RedrawRect</link></entry>
+</row>
+<row>
+<entry>ReleaseMouseCapture</entry>
+<entry><link linkend="releasemousecapture">ReleaseMouseCapture</link></entry>
+</row>
+<row>
+<entry>removeBitmap</entry>
+<entry><link linkend="mthRemoveBitmap">removeBitmap</link></entry>
+</row>
+<row>
+<entry>resize</entry>
+<entry><link linkend="mthResize">resize</link></entry>
+</row>
+<row>
+<entry>restoreCursorShape</entry>
+<entry><link linkend="mthRestoreCursorShape">restoreCursorShape</link></entry>
+</row>
+<row>
+<entry>screenToClient</entry>
+<entry><link linkend="mthScreenToClient">screenToClient</link></entry>
+</row>
+<row>
+<entry>scroll</entry>
+<entry><link linkend="mthScrollClsWE">scroll</link></entry>
+</row>
+<row>
+<entry>setArcDirection</entry>
+<entry><link linkend="mthSetArcDirection">setArcDirection</link></entry>
+</row>
+<row>
+<entry>SetColor</entry>
+<entry><link linkend="setcolor">SetColor</link></entry>
+</row>
+<row>
+<entry>setCursorPos</entry>
+<entry><link linkend="mthSetCursorPos">setCursorPos</link></entry>
+</row>
+<row>
+<entry>SetFocus</entry>
+<entry><link linkend="setfocus">SetFocus</link></entry>
+</row>
+<row>
+<entry>SetFocusToWindow</entry>
+<entry><link linkend="setfocustowindow">SetFocusToWindow</link></entry>
+</row>
+<row>
+<entry>SetForegroundWindow</entry>
+<entry><link linkend="setforegroundwindow">SetForegroundWindow</link></entry>
+</row>
+<row>
+<entry>setHScrollPos</entry>
+<entry><link linkend="mthSetHScrollPos">setHScrollPos</link></entry>
+</row>
+<row>
+<entry>setVScrollPos</entry>
+<entry><link linkend="mthSetVScrollPos">setVScrollPos</link></entry>
+</row>
+<row>
+<entry>TabStop</entry>
+<entry><link linkend="mthTabStop">TabStop</link></entry>
+</row>
+<row>
+<entry>TabToNext</entry>
+<entry><link linkend="tabtonext">TabToNext</link></entry>
+</row>
+<row>
+<entry>TabToPrevious</entry>
+<entry><link linkend="tabtoprevious">TabToPrevious</link></entry>
+</row>
+<row>
+<entry>transparentText</entry>
+<entry><link linkend="mthTransparentText">transparentText</link></entry>
+</row>
+<row>
+<entry><link linkend="mthData">data</link></entry>
+<entry>Retrievs the data (value) of the underlying control's state.</entry>
+</row>
+<row>
+<entry><link linkend="mthDataEquals">data=</link></entry>
+<entry>Sets the state of the underlying dialog control to the data (value) specified.</entry>
+</row>
+<row>
+<entry>vScrollPos</entry>
+<entry><link linkend="mthVScrollPos">vScrollPos</link></entry>
+</row>
+<row>
+<entry>write</entry>
+<entry><link linkend="mthWrite">write</link></entry>
+</row>
+<row>
+<entry>WriteToButton</entry>
+<entry><link linkend="h000852">WriteToButton</link></entry>
+</row>
+<row>
+<entry>WriteToWindow</entry>
+<entry><link linkend="h000826">WriteToWindow</link></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+
+</section>
+
+
+<section id="sctDialogControlAttributes"><title>Attributes</title>
+<indexterm><primary>dialog control object</primary><secondary>attributes</secondary></indexterm>
+<para>
+  This section describes the attributes of the dialog control object.
+</para>
+
+<section id="wbdcoInitCode"><title>initCode (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrInitCode">initCode</link>
+
+<![CDATA[
+>>--initCode-----------------------------------------------------><
+
+>>--initCode-=-code----------------------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoHwnd"><title>hwnd</title>
+<programlisting>
+WindowBase::<link linkend="atrHwnd">hwnd</link>
+
+<![CDATA[
+>>--hwnd-----------------------------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoSizeX"><title>sizeX (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrSizeX">sizeX</link>
+
+<![CDATA[
+>>--sizeX-----------------------------------------------------><
+
+>>--sizeX-=-dialogUnits---------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoSizeY"><title>sizeY (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrSizeY">sizeY</link>
+
+<![CDATA[
+>>--sizeY-----------------------------------------------------><
+
+>>--sizeY-=-dialogUnits---------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoFactorX"><title>factorX (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrFactorX">factorX</link>
+
+<![CDATA[
+>>--factorX-----------------------------------------------------><
+
+>>--factorX-=-ratio---------------------------------------------><
+]]>
+
+</programlisting>
+</section>
+
+<section id="wbdcoFactorY"><title>factorY (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrFactorY">factorY</link>
+
+<![CDATA[
+>>--factorY-----------------------------------------------------><
+
+>>--factorY-=-ratio---------------------------------------------><
+]]>
+
+</programlisting>
+</section>
+
+<section id="wbdcoPixelCX"><title>pixelCX (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrPixelCX">pixelCX</link>
+
+<![CDATA[
+>>--pixelCX-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdcoPixelCY"><title>pixelCY (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrPixelCY">pixelCY</link>
+
+<![CDATA[
+>>--pixelCY-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+</section>  <!-- End Attributes Section -->
+
+
+<!-- <section id="sctWindowBaseDCO"><title>Basic Window Methods</title>  START -->
+&windowBaseDCO;
+<!-- <section id="sctWindowBaseDCO"><title>Basic Window Methods</title>  END   -->
+
+
+<!-- <section id="sctWindowExtensionsDCO"><title>Extended Window Methods</title>  START -->
+&windowExtensionsDCO;
+<!-- <section id="sctWindowExtensionsDCO"><title>Extended Window Methods</title>  END   -->
+
+
+<section id="appmodmeth"><title>Appearance and Behavior Methods</title>
+<indexterm><primary>enable methods</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<indexterm><primary>disable methods</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<indexterm><primary>hide methods</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<indexterm><primary>show methods</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<para>The following methods deal with the appearance or the behavior of the
+dialog control. The list contains methods to get or change the size, position,
+visibility, behavior, etc., of dialog controls.
+</para>
+
+<section id="mthGroup"><title>Group</title>
+<indexterm><primary>SetGroup</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~Group(--+-----------+--)---------------------><
+                          +-wantStyle-+
+
+]]>
+</programlisting>
+
+<para>Add or remove the <link linkend="wsgroup">group style</link> for this
+control.  The group style controls how the user can navigate through the dialog
+using the keyboard.  For most dialogs this does not change while the dialog is
+executing.  However, in some dialogs the programmer may want to change
+the navigation depending on the options the user selects.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is
+<variablelist>
+<varlistentry><term>wantStyle</term>
+<listitem><para>A boolean (.true or .false) to indicate whether the control
+should have or not have the group style.  True (the default) indicates the
+control should have the group style and false indicates the control should
+not have the style.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>Negative values indicate the function failed, non-negative
+values indicate success.
+<variablelist>
+<varlistentry><term>-4 or less</term>
+<listitem><para>The value is the negated Operating System Error code.
+The absolute value of the return can be used to look up the error reason in the
+Windows documentation.
+</para></listitem></varlistentry>
+<varlistentry><term>-3</term>
+<listitem><para>The optional argument to the method is not a boolean.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>There is an (internal) problem with the dialog or the dialog
+handle.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>There is an (internal) problem with the resource ID of the
+control.
+</para></listitem></varlistentry>
+<varlistentry><term>0 or greater</term>
+<listitem><para>The window style of the dialog control prior to adding or
+removing the group style.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthTabStop"><title>TabStop</title>
+<indexterm><primary>tabStop</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~TabStop(--+-----------+--)--------------------><
+                            +-wantStyle-+
+
+]]>
+</programlisting>
+
+<para>Add or remove the <link linkend="wstabstop">tab stop style</link> for the
+control.  When  a control has the tabstop style, the user can set the focus to
+the control by using the tab key.  When a control does not have this style, the
+tab key will skip over the control.  Adding or removing this style during the
+execution of a dialog allows the programmer to alter how the user navigates
+through the dialog controls.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>wantStyle</term>
+<listitem><para>A boolean (.true or .false) to indicate whether the control
+should have or not have the tabstop style.  True (the default) indicates the
+control should have the tabstop style and false indicates the control should
+not have the style.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>Negative values indicate the function failed, non-negative
+values indicate success.
+<variablelist>
+<varlistentry><term>-4 or less</term>
+<listitem><para>The value is the negated Operating System Error code.
+The absolute value of the return can be used to look up the error reason in the
+Windows documentation.
+</para></listitem></varlistentry>
+<varlistentry><term>-3</term>
+<listitem><para>The second argument to the method is not a boolean.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>There is an (internal) problem with the dialog or the dialog
+handle.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>There is an (internal) problem with the resource ID of the
+control.
+</para></listitem></varlistentry>
+<varlistentry><term>0 or greater</term>
+<listitem><para>The window style of the dialog control prior to adding or
+removing the tabstop style.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setforegroundwindow"><title>SetForegroundWindow</title>
+<indexterm><primary>SetForegroundWindow</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~SetForegroundWindow(--hwnd--)---------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SetForegroundWindow method changes the foreground window to the window
+specified.  The new window must be a top-level window or a dialog window.  You
+can not make a dialog control window the foreground window.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hwnd</term>
+<listitem><para>The handle to the window that is to become the foreground window.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the previous foreground window, or 0 if this method
+failed.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example makes another dialog the foreground window and
+returns the window handle of the current foreground window to the caller, or
+returns -1 if there was an error:
+<programlisting>
+<![CDATA[
+::method switchToReportDlg
+  expose reportDlg
+  currentHwnd = self~setForeGroundwindow(reportDlg~dlgHandle)
+  if currentHwnd == 0 then return -1  -- Report an error
+  return currentHwnd
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="assignfocus"><title>AssignFocus</title>
+<indexterm><primary>AssignFocus</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~AssignFocus----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The AssignFocus method sets the input focus to
+the associated dialog control.</para>
+</section>
+
+<section id="getfocus"><title>GetFocus</title>
+<indexterm><primary>GetFocus</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~GetFocus-------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetFocus method returns the handle to the dialog control that currently
+has the input focus.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the dialog control that has the input focus, or 0
+if this method failed.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setfocus"><title>SetFocus</title>
+<indexterm><primary>SetFocus</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~SetFocus(--hwnd--)---------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SetFocus method sets the input focus to a dialog control and returns
+the handle of the control that previously had the focus.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hwnd</term>
+<listitem><para>The handle to the dialog control that is to receive the input
+focus.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The method failed.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>The focus was changed, but the control with the previous focus
+could not be determined.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>The handle to the control with the previous focus.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setfocustowindow"><title>SetFocusToWindow</title>
+<indexterm><primary>SetFocusToWindow</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~SetFocusToWindow(--hwnd--)-------------------><
+
+
+]]>
+</programlisting>
+
+<para>The SetFocusToWindow method moves the input focus to another top-level
+window or dialog.  This has the effect of bringing that window to the
+foreground.  This method returns a handle to the dialog
+<emphasis role="italic">control</emphasis> that previously had the
+input focus.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hwnd</term>
+<listitem><para>The handle to the top-level window or dialog that is to
+receive the input focus.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>-1</term>
+<listitem><para>The method failed.
+</para></listitem></varlistentry>
+<varlistentry><term>0</term>
+<listitem><para>The focus was changed, but the control with the previous focus
+could not be determined.
+</para></listitem></varlistentry>
+<varlistentry><term>Other</term>
+<listitem><para>The handle to the control with the previous focus.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="setcolor"><title>SetColor</title>
+<indexterm><primary>SetColor</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~SetColor(--background--,--foreground--)------><
+
+
+]]>
+</programlisting>
+
+<para>The SetColor method sets the background and foreground
+colors of the dialog control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>background</term>
+<listitem><para>The color number of the background color.
+</para></listitem></varlistentry>
+<varlistentry><term>foreground</term>
+<listitem><para>The color number of the foreground color.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The color has been assigned.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The selected color was already assigned.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example sets the background color of list box FILES to
+blue:
+<programlisting>
+<![CDATA[
+MyDialog~newListBox("FILES")~SetColor(4, 15)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>
+
+<section id="miscDialogControl"><title>Miscellaneous Dialog Control Methods</title>
+<indexterm><primary>Miscellaneous Methods</primary></indexterm>
+<para>
+  The following methods are general purpose dialog control methods.
+</para>
+
+<section id="mthData"><title>data</title>
+<indexterm><primary>data method</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>data method</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--data-------------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">data</emphasis> method retrieves the current <link
+  linkend="sctUnderstandingDataAttributes">data</link> of the dialog control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The current data of the dialog control as a string. Exactly what this string represents is dependent on the type of
+    the control. The <link linkend="sctDataAttributes">Data Attribute Methods</link> section of this reference has a
+    detailed discussion on data attributes and the meaning of the <emphasis role="italic">data</emphasis> of a dialog
+    control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method was really intended to be used on controls that have previously been connected to a data attribute.
+    But, since the dialog control object, itself, knows which type of control it is, the method works whether the
+    control is connected or not. However, the abstraction of viewing a dialog control's state as data, represented by a
+    single string, is restrictive and somewhat out of date. It is more flexible, and often easier, to use the methods of
+    the specific dialog control object to determine the control's state.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthDataEquals"><title>data=</title>
+<indexterm><primary>data=</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>data=</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--data-=--newData--------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the <link linkend="sctUnderstandingDataAttributes">data</link> of the dialog control to the new value specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>newData</term>
+    <listitem>
+    <para>
+      A string used to set the data of the dialog control. The exact format of this string is dependent on the type of
+      the control. The <link linkend="sctDataAttributes">Data Attribute Methods</link> section of this reference has a
+      detailed discussion on data attributes and the meaning of the <emphasis role="italic">data</emphasis> of a dialog
+      control.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method was really intended to be used on controls that have previously been connected to a data attribute.
+    But, since the dialog control object, itself, knows which type of control it is, the method works whether the
+    control is connected or not. However, the abstraction of viewing a dialog control's state as data, represented by a
+    single string, is restrictive and somewhat out of date. It is more flexible, and often easier, to use the methods of
+    the specific dialog control object to set the control's state.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example unchecks the check box with the symbolic resource id of IDC_CHK_RESTART and checks the check
+    box with the symbolic resource id of IDC_CHK_VERIFY:
+
+<programlisting>
+<![CDATA[
+MyDialog~newCheckBox(IDC_CHK_RESTART)~data = 1
+MyDialog~newCheckBox(IDC_CHK_VERIFY)~data = 0
+]]>
+</programlisting>
+    The same thing can be accomplished in this manner:
+
+<programlisting>
+<![CDATA[
+MyDialog~newCheckBox(IDC_CHK_RESTART)~check
+MyDialog~newCheckBox(IDC_CHK_VERIFY)~unCheck
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthGetTextSizeDlgClsDialogControl"><title>getTextSizeDlg</title>
+<indexterm><primary>getTextSizeDlg</primary>
+<secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary>
+<secondary>getTextSizeDlg</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary>
+<secondary>getTextSizeDlg</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getTextSizeDlg(--text--+-------------+--+-------------+--+---------+--)----><
+                           +-,-fontname--+  +-,-fontSize--+  +-,-hwnd--+
+]]>
+</programlisting>
+
+<para>
+  Calculates the size, (width and height,) in <link linkend="defDialogUnit">dialog units</link> for a given string.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> this method replaces the deprecated <link
+  linkend="deprecatedDialogControl">deprecated</link> <emphasis role="italic">getTextSize</emphasis> method of the
+  dialog control object. The convoluted arguments to this method are needed to retain backwards compatibility with that
+  method. Preferably, the <link linkend="mthGetTextSizeDu">getTextSizeDu</link>() method, or the <link
+  linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>() method of the dialog object, should be used
+  rather than this method if at all possible.
+</para>
+<para>
+  In general, dialog units are only of value in laying out the dialog controls before the underlying dialog is
+  created.  Once the underlying dialog is created, it makes more sense to work with pixels. In addition, dialog units
+  are tied directly to the actual font used by a specific dialog.  Therefore, the optional arguments do not make much
+  sense. Since the dialog object directly knows which font it is using, and the dialog control does not, it does not
+  make much sense for this method to be a method of a dialog control in the first place.
+</para>
+<para>
+  The ooDialog programmer is therefore <emphasis role="bold">strongly</emphasis> encouraged to use either the <emphasis
+  role="italic">getTextSizeDu</emphasis> or <emphasis role="italic">getTextSizeDlg</emphasis> methods of the dialog
+  object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>text</term>
+      <listitem>
+        <para>
+          The string whose size is desired.  If none of the optional arguments are specified then the font of the
+          dialog that owns the control is used to calculate the size.
+        </para>
+        <para>
+          However, there are some exceptions to this if the method is invoked <emphasis
+          role="italic">after</emphasis> the underlying dialog is created.
+          <orderedlist>
+            <listitem>
+            <para>
+              If this method is invoked through a dialog control object, then the size is calculated
+              using the dialog control font.  This usage is deprecated and the ooDialog programmer is
+              <emphasis role="bold">strongly</emphasis> encouraged to not use this method in this manner.
+            </para>
+            </listitem>
+            <listitem>
+            <para>
+              If the fourth, optional, hwnd argument is used, then the font of that window is used to
+              calculate the size. Again, the ooDialog programmer is <emphasis
+              role="bold">strongly</emphasis> encouraged to not use this method in this manner.
+            </para>
+            </listitem>
+          </orderedlist>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fontName</term>
+      <listitem>
+        <para>
+          Optional. The name of the font to use to calculate the size needed for the string.  Use this argument when the
+          string will be displayed in a font <emphasis role="bold">different</emphasis> than the dialog font.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fontSize</term>
+      <listitem>
+        <para>
+          Optional. The size of the font named by the fontName argument. If this argument is omitted then the default
+          font size is used. (Currently the default size is 8.) This argument is ignored completely when the fontName
+          argument is omitted.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>hwnd</term>
+      <listitem>
+        <para>
+          Optional. A valid window handle. The font of this window is used to calculate the text size.
+          This argument is always ignored when the fontName argument is specified.  As per the notes
+          above the ooDialog programmer is encouraged not to use this argument.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The size needed for the string is returned in a <link linkend="clsSize">Size</link> object.  The
+      size is specified in dialog units.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::getTextSizeDlg() -->
+
+</section>
+
+<section id="eventDialogControl"><title>Connect Event Methods</title>
+<indexterm><primary>connect event methods</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<para>The following methods connect dialog control events to methods the
+programmer defines in the parent dialog class.
+</para>
+
+<section id="mthConnectKeyPressDialogControl"><title>connectKeyPress</title>
+<indexterm><primary>connectKeyPress</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~connectKeyPress(--msgToRaise--,--keys--+-----------+--)----><
+                                                         +-,-filter--+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>connectKeyPress</computeroutput> method connects a key
+down event, when the control has the keyboard focus, with a programmer defined
+method in the parent dialog of the control.  The underlying Windows dialog must
+exist before this method can be invoked.
+</para>
+<note><title>Note</title><para>
+This method is only available on systems running Windows XP or later.  On
+earlier versions of Windows, the method will fail and return -4.
+</para></note>
+<para>The arguments, return values, and behavior of this method are the same as
+those for the <computeroutput>connectKeyPress</computeroutput> method of the
+<computeroutput>BaseDialog</computeroutput>.  However, the method of the
+<computeroutput>BaseDialog</computeroutput> connects any key down event when the
+dialog is the active window and this method of the <computeroutput>
+DialogControl</computeroutput> only connects the key down events when the
+specific control has the focus.  See the <link
+linkend="mthConnectKeyPressBaseDialog">connectKeyPress</link> method of the
+<computeroutput>BaseDialog</computeroutput> for a detailed description of
+the arguments, return values, and behavior.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>msgToRaise</term>
+<listitem><para>The method to be invoked for the key down event.
+</para></listitem></varlistentry>
+<varlistentry><term>keys</term>
+<listitem><para>The key, or list of keys, whose key down event will invoke the
+method specified by <computeroutput>msgToRaise</computeroutput>.
+</para></listitem></varlistentry>
+<varlistentry><term>filter</term>
+<listitem><para>An optional filter to be applied to the key down event.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The underlying mechanism in the Windows API failed.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>A problem with one of the arguments.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>An (internal) problem with the dialog window.
+</para></listitem></varlistentry>
+<varlistentry><term>-3</term>
+<listitem><para>An (internal) problem with the dialog administration.
+</para></listitem></varlistentry>
+<varlistentry><term>-4</term>
+<listitem><para>This method is not supported by this version of Windows.
+Windows XP or later is required.
+</para></listitem></varlistentry>
+<varlistentry><term>-5</term>
+<listitem><para>Memory allocation error in the underlying Windows API.
+</para></listitem></varlistentry>
+<varlistentry><term>-6</term>
+<listitem><para>The maximum number of connections has been reached.
+</para></listitem></varlistentry>
+<varlistentry><term>-7</term>
+<listitem><para>The <computeroutput>msgToRaise</computeroutput> method is
+already connected to a key down event for this dialog control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry id="keyDownEventDialogControl"><term><emphasis role="bold">Event
+Method Arguments
+</emphasis></term>
+<listitem><para>The ooDialog method connected to the key press event will
+receive the following five arguments in the order listed:
+<variablelist>
+<varlistentry><term>keyCode</term>
+<listitem><para>The numeric code of the key pressed.
+</para></listitem></varlistentry>
+<varlistentry><term>shift</term>
+<listitem><para>True if a shift key was down at the time of the event and false
+if the shift key was not down.
+</para></listitem></varlistentry>
+<varlistentry><term>control</term>
+<listitem><para>True if a control key was down at the time of the key press,
+false if it was not.
+</para></listitem></varlistentry>
+<varlistentry><term>alt</term>
+<listitem><para>True if an alt key was down at the time of the key press, false
+if it was not.
+</para></listitem></varlistentry>
+<varlistentry><term>extraInfo</term>
+<listitem><para>This argument is a string containing keywords.  It supplies
+extra information about the keyboard state at the time of a key press event.
+The string will contain some combination of these keywords
+<variablelist>
+<varlistentry><term>numOn</term>
+<listitem><para>Num Lock was on at the time of the key press event.
+</para></listitem></varlistentry>
+<varlistentry><term>numOff</term>
+<listitem><para>Num Lock was off.
+</para></listitem></varlistentry>
+<varlistentry><term>capsOn</term>
+<listitem><para>Caps Lock was on at the time of the key press event.
+</para></listitem></varlistentry>
+<varlistentry><term>capsOff</term>
+<listitem><para>Caps Lock was off.
+</para></listitem></varlistentry>
+<varlistentry><term>scrollOn</term>
+<listitem><para>Scroll Lock was on at the time of the key press event.
+</para></listitem></varlistentry>
+<varlistentry><term>scrollOff</term>
+<listitem><para>Scroll Lock was off.
+</para></listitem></varlistentry>
+<varlistentry><term>lShift</term>
+<listitem><para>The left shift key was down at the time of the key press event.
+</para></listitem></varlistentry>
+<varlistentry><term>rShift</term>
+<listitem><para>The right shift key was down.
+</para></listitem></varlistentry>
+<varlistentry><term>lControl</term>
+<listitem><para>The left control key was down at the time of the key press
+event.
+</para></listitem></varlistentry>
+<varlistentry><term>rControl</term>
+<listitem><para>The right control key was down.
+</para></listitem></varlistentry>
+<varlistentry><term>lAlt</term>
+<listitem><para>The left alt key was down at the time of the key press event.
+</para></listitem></varlistentry>
+<varlistentry><term>rAlt</term>
+<listitem><para>The right alt key was down.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example could be from an application that supplies
+extended editing abilities for a multi-line edit control.  When the edit
+control has the focus the user can use Alt-D to delete the current word, Ctrl-D
+to delete the current line, and Shift-Alt-D delete the current paragraph:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose editControl
+
+  editControl = self~newEdit(IDC_EDTIT)
+  ...
+
+  -- Capture the D key press when either the Alt or Control keys are
+  -- also pressed.
+  editControl~connectKeyPress(onDPress, self~vCode('D'), "ALT CONTROL")
+  ...
+
+::method onDPress
+  expose editControl
+  use arg key, shift, control, alt, info
+
+  -- Determine which of the key press combinations this is and take
+  -- appropriate action if it is a combination we are interested in.
+
+  isAltD = \ shift & \ control & alt
+  isCtrlD = \ shift & control & \ alt
+  isShiftAltD = shift & \ control & alt
+
+  if isAltD then self~deleteWord(editControl)
+  if isCtrlD the self~deleteLine(editControl)
+  if isShiftAltD then self~deleteParagraph(editControl)
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthConnectFKeyPressDialogControl"><title>connectFKeyPress</title>
+<indexterm><primary>connectFKeyPress</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~connectFKeyPress(--msgToRaise--)-------------><
+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>connectFKeyPress</computeroutput> method is a
+convenience method that connects all F key down events, when the control has the
+keyboard focus, with a programmer defined method in the parent dialog of the
+control. (This is for the standard function keys, F2 through F24.)  The
+underlying Windows dialog must exist before this method can be invoked.
+</para>
+<note><title>Note</title><para>
+This method is only available on systems running Windows XP or later.  On
+earlier versions of Windows, the method will fail and return -4.
+</para></note>
+<para>The arguments, return values, and behavior of this method are the same as
+those for the <computeroutput>connectFKeyPress</computeroutput> method of the
+<computeroutput>BaseDialog</computeroutput>.  However, the method of the
+<computeroutput>BaseDialog</computeroutput> class connects any F key down event
+when the dialog is the active window and this method of the <computeroutput>
+DialogControl</computeroutput> class only connects the F key down events when
+the specific control has the focus.  See the <link
+linkend="mthConnectFKeyPressBaseDialog">connectFKeyPress</link> method of the
+<computeroutput>BaseDialog</computeroutput> for a more detailed description of
+the arguments, return values, and behavior.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The required argument is:
+<variablelist>
+<varlistentry><term>msgToRaise</term>
+<listitem><para>The method to be invoked for the key down event.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The underlying mechanism in the Windows API failed.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>A problem with one of the arguments.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>An (internal) problem with the dialog window.
+</para></listitem></varlistentry>
+<varlistentry><term>-3</term>
+<listitem><para>An (internal) problem with the dialog administration.
+</para></listitem></varlistentry>
+<varlistentry><term>-4</term>
+<listitem><para>This method is not supported by this version of Windows.
+Windows XP or later is required.
+</para></listitem></varlistentry>
+<varlistentry><term>-5</term>
+<listitem><para>Memory allocation error in the underlying Windows API.
+</para></listitem></varlistentry>
+<varlistentry><term>-6</term>
+<listitem><para>The maximum number of connections has been reached.
+</para></listitem></varlistentry>
+<varlistentry><term>-7</term>
+<listitem><para>The <computeroutput>msgToRaise</computeroutput> method is
+already connected to a key down event for this dialog control.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Event Method Arguments
+</emphasis></term>
+<listitem><para>The ooDialog method connected to the F key down event receives
+five arguments.  This arguments are described in detail in the <link
+linkend="keyDownEventDialogControl">connectKeyPress</link> method of the
+<computeroutput>DialogControl</computeroutput>.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example connects the F key down events for an edit
+control. The application determines which F key was pressed and takes
+appropriate action.  For this application, the F3 key is the search key.
+<programlisting> <![CDATA[
+
+::method initDialog
+  expose editControl searchToken
+
+  editControl = self~newEdit(IDC_EDIT)
+  editControl~connectFKeyPress(onFKey)
+  ...
+  lastSearchToken = ""
+  ...
+
+::method onFKey
+  expose editControl searchToken
+  use arg key
+
+  select
+    when self~keyName(key) == 'F2' then do
+      ...
+    end
+    when self~keyName(key) == 'F3' then do
+      description = "What word would you like to search for?"
+      searchToken = inputBox(description, "Search", searchToken)
+
+      if searchToken <> "" then
+        self~findAndHighlight(searchToken, editControl)
+    end
+    when self~keyName(key) == 'F4' then do
+      ...
+    end
+    ...
+  end
+  ...
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthDisconnectKeyPressDialogControl"><title>disconnectKeyPress</title>
+<indexterm><primary>disconnectKeyPress</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~disconnectKeyPress(--+--------------+--)-----><
+                                       +--methodName--+
+
+]]>
+</programlisting>
+
+<para>The <computeroutput>disconnectKeyPress</computeroutput> method disconnects
+a previously connected method with a key down event.  If no method name is
+specified than all key down event connections are removed.  Otherwise, only the
+key down events connected to the specific method are removed.
+</para>
+<note><title>Note</title><para>
+This method is only available on systems running Windows XP or later.  On
+earlier versions of Windows, the method will fail and return -4.
+</para></note>
+<para>The arguments, return values, and behavior of this method are the same as
+those for the <computeroutput>DisonnectKeyPress</computeroutput> method of the
+<computeroutput>BaseDialog</computeroutput>.  However, this method only works
+for connections made using the <computeroutput>DialogControl's</computeroutput>
+<link linkend="mthConnectKeyPressDialogControl"> connectKeyPress</link> method.
+It can not work with a connection made though the
+<computeroutput>BaseDialog's</computeroutput> method. See the
+<link linkend="mthDisconnectKeyPressBaseDialog"> disconnectKeyPress</link>
+method of the <computeroutput>BaseDialog</computeroutput> for a more detailed
+description of the behavior of this method.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The single optional argument is:
+<variablelist>
+<varlistentry><term>methodName</term>
+<listitem><para>If <computeroutput>methodName</computeroutput> is specified,
+only the key down events connected to that method are disconnected.  If the
+argument is omitted, then all key down events for the dialog control will be
+disconnected.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The return values are:
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Success.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The underlying mechanism in the Windows API that captures the
+key down events failed to disconnect.
+</para></listitem></varlistentry>
+<varlistentry><term>-1</term>
+<listitem><para>The specified <computeroutput>methodName</computeroutput> is not
+connected to any key down events for this control.
+</para></listitem></varlistentry>
+<varlistentry><term>-2</term>
+<listitem><para>The underlying mechanism in the Windows API that captures the
+key down events was never installed.
+</para></listitem></varlistentry>
+<varlistentry><term>-4</term>
+<listitem><para>This method is not supported by this version of Windows.
+Windows XP or later is required.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example could come from a dialog where the user
+can enable or disable the user of hot keys when she is working within an edit
+control.  When the user presses the disable hot keys button, the dialog disables
+the hot keys for the edit control by removing the key press connections.
+<programlisting>
+<![CDATA[
+
+::method defineDialog
+
+  ...
+  self~createPushButton(IDC_PB_DISABLE, 60, 135, 65, 15, , "Disable Hot Keys", onDisable)
+  ...
+
+method onDisable
+  editControl = self~newEdit(IDC_EDIT)
+  editControl~disconnectKeyPress
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthHasKeyPressConnectionDialogControl"><title>hasKeyPressConnection</title>
+<indexterm><primary>hasKeyPressConnection</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~hasKeyPressConnection(--+--------------+--)-----><
+                                          +--methodName--+
+
+]]>
+</programlisting>
+
+<para>This method is used to query if a connection to a key down event already
+exists.
+</para>
+<note><title>Note</title><para>
+This method is only available on systems running Windows XP or later.  On
+earlier versions of Windows, the method will fail and return -4.
+</para></note>
+<para>The arguments, return values, and behavior of this method are the same as
+those for the <computeroutput>hasKeyPressConnection</computeroutput> method of
+the <computeroutput>BaseDialog</computeroutput>. However, this method only works
+for connections made using the <computeroutput>DialogControl's</computeroutput>
+<link linkend="mthConnectKeyPressDialogControl"> connectKeyPress</link> method.
+It can not work with a connection made though the
+<computeroutput>BaseDialog's</computeroutput> method.  The <link
+linkend="mthHasKeyPressConnectionBaseDialog"> hasKeyPressConnection</link>
+method of the <computeroutput>BaseDialog</computeroutput> may provide some
+additional insight into the behavior of this method.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The single optional argument is:
+<variablelist>
+<varlistentry><term>methodName</term>
+<listitem><para>When this argument is not used,
+<computeroutput>hasKeyPressConnection</computeroutput> queries if any key down
+event for the dialog control is connected to a method.  When
+<computeroutput>methodName</computeroutput> is specified, the query checks for a
+connection to the specified method.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The returned value is always <computeroutput>true
+</computeroutput> or <computeroutput>false</computeroutput>.
+<variablelist>
+<varlistentry><term>true</term>
+<listitem><para>A connection exists.
+</para></listitem></varlistentry>
+<varlistentry><term>false</term>
+<listitem><para>No connection exists.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example is from an application where the user can
+enable the use of hot keys when an edit control has the focus, or not.  The
+reset push button is used in the application to reset the state of the dialog.
+One of the things done when the state is reset to check or uncheck a check box
+that shows whether hot keys are currently enabled or not.
+<programlisting>
+<![CDATA[
+
+::method defineDialog
+
+  ...
+  self~createCheckBox(IDC_CHECK_FKEYSENABlED, 30, 60, , , , "Hot Keys Enabled")
+  ...
+  self~createPushButton(IDC_PB_RESET, 60, 135, 45, 15, , "Reset", onReset)
+  ...
+
+::method onReset
+
+  ...
+  editControl = self~newEdit(IDC_EDIT)
+
+  if editControl~hasKeyPressConnection then
+    self~newCheckBox(IDC_CHECK_FKEYSENABlED)~check
+  else
+    self~newCheckBox(IDC_CHECK_FKEYSENABlED)~uncheck
+  ...
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+
+
+</section>
+
+</section>
+
+<section id="drawmeth"><title>Draw Methods</title>
+<indexterm><primary>draw methods</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<para>The following methods are used to draw, redraw, and clear a dialog or dialog
+control.</para>
+
+<section id="clearrect"><title>ClearRect</title>
+<indexterm><primary>ClearRect</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~ClearRect(--left--,--top--,--right--,--bottom--)-><
+
+
+]]>
+</programlisting>
+
+<para>The ClearRect method draws the dialog or dialog
+control using the background brush.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>left,top</term>
+<listitem><para>The upper left corner of the rectangle, in screen pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>right,bottom</term>
+<listitem><para>The lower right corner of the rectangle, in screen pixels.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Drawing was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>Drawing failed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="redrawrect"><title>RedrawRect</title>
+<indexterm><primary>RedrawRect</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~RedrawRect(--left--,--top--,--right--,--bottom-->
+
+>--+-----------+--)----------------------------------------------><
+   +-,erasebkg-+
+
+
+]]>
+</programlisting>
+
+<para>The RedrawRect method immediately redraws the rectangle
+of the client area of the associated dialog. You can specify whether the background
+of the dialog is to be erased before redrawing.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>left,top</term>
+<listitem><para>The upper left corner of the rectangle relative to the client area,
+in screen pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>right,bottom</term>
+<listitem><para>The lower right corner of the rectangle relative to the client area,
+in screen pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>erasebkg</term>
+<listitem><para>If this argument is 1 or &quot;Y&quot;, the background of the dialog is
+erased before repainting.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Redrawing was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>Redrawing failed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>
+
+
+<section id="mousecursormeth"><title>Mouse and Cursor Methods</title>
+<indexterm><primary>mouse and cursor methods</primary></indexterm>
+<para>The following methods are used to position and shape the mouse cursor and
+to capture the mouse.</para>
+
+<section id="getmousecapture"><title>GetMouseCapture</title>
+<indexterm><primary>GetMouseCapture</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~GetMouseCapture------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The GetMouseCapture method retrieves the dialog
+or dialog control that captured the mouse. This dialog or dialog control receives
+the entire mouse input regardless of whether the mouse cursor is within the
+borders of the dialog or dialog control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the dialog or dialog control that captures the mouse,
+or 0 if the mouse is not captured.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="capturemouse"><title>CaptureMouse</title>
+<indexterm><primary>CaptureMouse</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~CaptureMouse---------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The CaptureMouse method captures the mouse. This
+means that the associated dialog or dialog control receives the entire mouse
+input regardless of whether the mouse cursor is within the borders of the
+dialog or dialog control.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The handle to the dialog or dialog control that previously captured
+the mouse, or 0 if the mouse was not captured before.
+</para></listitem></varlistentry>
+</variablelist>
+
+<note><title>Note</title><para>
+If you change the cursor shape while the mouse is being captured,
+this change is ignored.
+</para></note>
+</section>
+
+<section id="releasemousecapture"><title>ReleaseMouseCapture</title>
+<indexterm><primary>ReleaseMouseCapture</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~ReleaseMouseCapture--------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The ReleaseMouseCapture method releases the mouse
+capture from a dialog or dialog control and restores normal mouse input processing.
+This means that the mouse input is then received by another dialog or dialog
+control that captured the mouse.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The mouse capture was released.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>Releasing the mouse capture failed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="ismousebuttondown"><title>IsMouseButtonDown</title>
+<indexterm><primary>IsMouseButtonDown</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~IsMouseButtonDown(--"--+-LEFT---+--"--)------><
+                                         +-MIDDLE-+
+                                         +-RIGHT--+
+
+
+]]>
+</programlisting>
+
+<para>The IsMouseButtonDown method retrieves information
+on whether a mouse button is pressed.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>button</term>
+<listitem><para>The location of the mouse button you are interested in.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The button is not being pressed.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The button is being pressed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+
+<section id="dcmeth"><title>Device Context Methods</title>
+<indexterm><primary>device context methods</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<para>The following methods are used to retrieve and release a device context
+(DC).</para>
+<para>A device context (DC) is associated with a dialog or dialog control, and
+is a drawing area managed by a dialog or dialog control. It stores information
+about graphic objects (such as bitmaps, lines, and pixels that are displayed)
+and the tools (such as pens, brushes, and fonts) that are used to display
+them.</para>
+
+</section>
+
+<section id="textmeth"><title>Text Methods</title>
+<indexterm><primary>text methods</primary>
+<secondary>DialogControl class</secondary></indexterm>
+<para>The following methods are used to display text dynamically in a window
+area and to modify the state of a device context. See <link linkend="h001062">GetWindowDC</link>, <link linkend="mthGetDC">getDC</link>, and <link linkend="h001077">GetButtonDC</link> for information on how to retrieve
+a device context.</para>
+
+<section id="h000826"><title>WriteToWindow</title>
+<indexterm><primary>WriteToWindow</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~WriteToWindow(--hwnd--,--xPos--,--yPos--,--text-->
+
+>--+--------------------------------------+--------------------->
+   |    +-"SYSTEM"-+                      |
+   +-,--+----------+--+-----------------+-+
+        +-fontName-+  |    +-10-------+ |
+                      +-,--+----------+-+
+                           +-fontSize-+
+
+>--+--------------------------------------------------------------------------+--)-><
+   +-+----------------------------------------------------------------------+-+
+     +-+------------------------------------------------------------------+-+
+       |       +-----------------+                                        |
+       |       V +-OPAQUE------+ |                                        |
+       +-,--"----+-THIN--------+-+--"--+--------------------------------+-+
+                 +-EXTRALIGHT--+       +-,--+---------+--+------------+-+
+                 +-LIGHT-------+            +-fgColor-+  +-,--bkColor-+
+                 +-MEDIUM------+
+                 +-SEMIBOLD----+
+                 +-EXTRABOLD---+
+                 +-BOLD--------+
+                 +-HEAVY-------+
+                 +-UNDERLINE---+
+                 +-ITALIC------+
+                 +-STRIKEOUT---+
+                 +-TRANSPARENT-+
+                 +-CLIENT------+
+
+
+]]>
+</programlisting>
+
+<para>The WriteToWindow method enables you to write text
+to a dialog or dialog control in the given font and size to the given position. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>hwnd</term>
+<listitem><para>The handle of the dialog or dialog control. See <link linkend="h000086">Get</link> for
+how to get a valid handle.
+</para></listitem></varlistentry>
+<varlistentry><term>xPos, yPos</term>
+<listitem><para>The starting position of the text, in pixels.
+</para></listitem></varlistentry>
+<varlistentry><term>text</term>
+<listitem><para>The string you want to write to the dialog or dialog control.
+</para></listitem></varlistentry>
+<varlistentry><term>fontName</term>
+<listitem><para>The name of a font. If omitted, the SYSTEM font is used.
+</para></listitem></varlistentry>
+<varlistentry><term>fontSize</term>
+<listitem><para>The size of the font. If omitted, the standard size (10) is used.
+</para></listitem></varlistentry>
+<varlistentry><term>fontStyle</term>
+<listitem><para>One or more of the keywords listed in the syntax diagram, separated
+by blanks:
+<variablelist>
+<varlistentry><term>TRANSPARENT</term>
+<listitem><para>This style writes the text without clearing the background.
+</para></listitem></varlistentry>
+<varlistentry><term>OPAQUE</term>
+<listitem><para>This style, which is the default, clears the background with the given
+background color, or with white if the background color is omitted, before
+writing the text.
+</para></listitem></varlistentry>
+<varlistentry><term>CLIENT</term>
+<listitem><para>The device context of the dialog's client area is used instead of
+the device context of the entire dialog.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This example writes the string "Hello world!" to the dialog window using
+a 24pt Arial font in bold and italic style:
+
+<programlisting>
+<![CDATA[
+hwnd=MyDialog~Get
+MyDialog~WriteToWindow(hwnd, 23, 15, "Hello world!", ,
+                       "Arial", 24, "BOLD ITALIC")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="h000852"><title>WriteToButton</title>
+<indexterm><primary>WriteToButton</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~WriteToButton(--id--,--xPos--,--yPos--,--text-->
+
+>--+--------------------------------------+--------------------->
+   |    +-"SYSTEM"-+                      |
+   +-,--+----------+--+-----------------+-+
+        +-fontName-+  |    +-10-------+ |
+                      +-,--+----------+-+
+                           +-fontSize-+
+
+>--+--------------------------------------------------------------------------+--)-><
+   +-+----------------------------------------------------------------------+-+
+     +-+------------------------------------------------------------------+-+
+       |       +-----------------+                                        |
+       |       V +-OPAQUE------+ |                                        |
+       +-,--"----+-THIN--------+-+--"--+--------------------------------+-+
+                 +-EXTRALIGHT--+       +-,--+---------+--+------------+-+
+                 +-LIGHT-------+            +-fgColor-+  +-,--bkColor-+
+                 +-MEDIUM------+
+                 +-SEMIBOLD----+
+                 +-EXTRABOLD---+
+                 +-BOLD--------+
+                 +-HEAVY-------+
+                 +-UNDERLINE---+
+                 +-ITALIC------+
+                 +-STRIKEOUT---+
+                 +-TRANSPARENT-+
+                 +-CLIENT------+
+
+
+]]>
+</programlisting>
+
+<para>The WriteToButton method enables you to write text
+to a button in the given font and size to the given position. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:</para>
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of a button.
+</para></listitem></varlistentry>
+</variablelist>
+<para>See <link linkend="h000826">WriteToWindow</link> for a description
+of the other arguments.</para>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>
+
+<section id="man0023"><title>Graphic Drawing Methods</title>
+<indexterm><primary>graphic drawing methods</primary></indexterm>
+<para>The following methods are used to draw rectangles, lines, pixels, and arcs
+in a device context. See <link linkend="h001062">GetWindowDC</link>, <link linkend="mthGetDC">getDC</link>, and <link linkend="h001077">GetButtonDC</link> for how to retrieve a device context. A pen and a brush can
+be activated using <link linkend="mthObjectToDC">objectToDC</link> before invoking the
+drawing methods.</para>
+
+<note><title>Note</title><para>
+Because the pixel values include the title bar in a dialog
+it is easier to define a button filling the window, and then draw on the button.
+</para></note>
+
+</section>
+
+<section id="deprecatedDialogControl"><title>Deprecated Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>dialog control object methods</secondary></indexterm>
+<para>
+  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  role="italic">DialogControl</emphasis> class and how to replace those methods in ooDialog programs.
+</para>
+
+<section><title>assignWindow</title>
+<indexterm><primary>Deprecated</primary><secondary>dialog control object</secondary><tertiary>assignWindow</tertiary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>assignWindow</secondary><tertiary>dialog control object</tertiary></indexterm>
+<para>
+  This method is deprecated and always returns 0, <emphasis role="italic">the assignment failed</emphasis>. To work with
+  a dialog or dialog control object, construct the proper ooDialog object. This ensures that the object has the correct
+  methods. To control a window not owned by your program use the <emphasis role="italic">find</emphasis>() method of the
+  <emphasis role="italic">WindowsManger</emphasis> class. The <emphasis role="italic">WindowsManager</emphasis>is part
+  of the <emphasis role="italic">WinSystm.cls</emphasis> package. In certain cases it may be desirable to invoke a
+  method common to all windows when only the window <link linkend="defHandle">handle</link> is known.  For these cases
+  use a <link linkend="clsWindow">Window</link> object.
+</para>
+</section>
+
+<section><title>getTextSize</title>
+<indexterm><primary>Deprecated</primary><secondary>dialog control object</secondary><tertiary>getTextSize</tertiary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>getTextSize</secondary><tertiary>dialog control object</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Replace this method with, preferably, the <link
+  linkend="mthGetTextSizeDu">getTextSizeDu</link>() method, or the <link
+  linkend="mthGetTextSizeDlgClsDialogControl">getTextSizeDlg</link>() method if absolutely necessary.
+</para>
+<para>
+  This method never worked correctly, the previous documentation for this method was incorrect and /
+  or misleading. That has been fixed in the <emphasis role="italic">getTextSizeDlg</emphasis>() method.
+</para>
+</section>
+
+<section><title>processMessage</title>
+<indexterm><primary>Deprecated</primary><secondary>processMessage</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>processMessage</tertiary></indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="wbdcoSendMessage">sendMessage</link>() method.
+</para>
+</section>
+
+
+</section>
+
+</chapter>

@@ -1,0 +1,1105 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="chapOverview"><title>Brief Overview</title>
+<indexterm><primary>overview</primary></indexterm>
+<para>
+  ooDialog is a <emphasis role="italic">framework</emphasis> that aids ooRexx programmers in adding graphical elements
+  to their Rexx progamms. The framework provides the base infrastructure, through a number of classes, that the
+  programmer builds on to quickly produce Windows dialogs. This book is a reference to the ooDialog classes, methods,
+  and utilities that make up the base infrastructure.
+</para>
+<para>
+  In general, the ooDialog framework simply provides the Rexx programmer with an interface to the Windows API, and
+  primarily to the part of the API that deals with dialogs and dialog controls. In almost all cases, the behavior of the
+  dialog and its controls is dictated by the Windows API. ooDialog has very little control of this. While this document
+  strives to be complete enough that a Rexx programmer, knowing very little of the Windows API, can effectively write
+  graphical programs in Rexx, it can never be as comprehensive as the actual Microsoft documentation. Therefore, the
+  Rexx programmer that needs, or desires, to go beyond the basic dialog and dialog behavior, will benefit greatly by
+  consulting the <link linkend="defWindowsDoc">MSDN Library</link>.
+</para>
+
+<section id="sctGettingStarted"><title>Gettting Started</title>
+<para>
+  This document should be divided into two parts - a tutorial and a reference. In the original documentation
+  accompanying IBM's Object Rexx, the documentation <emphasis role="bold">was</emphasis> in two parts. Unfortunately,
+  the tutorial portion mostly described how to use the <link linkend="ovvResourceWorkshop">IBM Resource Workshop</link>.
+  Because the tutorial section was primarily directed towards using the Resource Workshop, it does not make much sense
+  in the current context.
+</para>
+<para>
+  This book is primarily a reference that describes the classes and methods in detail. There is no tutorial. The
+  tutorial portion needs to be written (or re-written depending on your point of view.) There is little other
+  documentation for the newcomer on how to get started using ooDialog. Until that type of documentation can be written,
+  the sample ooDialog programs that accompany the ooRexx distribution are probably the best source of help in getting
+  started.  However, there are also numerous snippets of example code in this book.  In addition the <link
+  linkend="helpGettingHelp">getting help </link> section of this rerfence lists a number of resources for the
+  programmer with questions about ooDialog.
+</para>
+</section>
+
+<section id="sctGeneralOODialog"><title>Common Concepts</title>
+<para>
+  Many concepts and behaviors in ooDialog, and statements about ooDialog are general in nature. This section gathers up
+  this information in one place.  Rather than repeating this information in every method or class description to which
+  it applies, the author will assume that the reader understands that the information is always applicable unless
+  specifically stated otherwise.
+</para>
+
+<section id="ovvNumbers"><title>Numbers in ooDialog:</title>
+<para>
+  Numbers in ooDialog are <emphasis role="bold">always</emphasis> whole numbers, unless specifically stated otherwise.
+  Except in very rare cases, the Windows API that ooDialog provides access to, only deals with whole numbers. Pixels,
+  positions, sizes of fonts, coordinates on the screen, etc., are all expressed as whole numbers only. Numerical
+  arguments to methods in ooDialog must always be whole numbers, unless the documentation specifically notes that the
+  method accepts fractional numbers for the argument.
+</para>
+</section>
+
+<section id="ovvUnderlying"><title>Underlying Dialog Creation</title>
+<para>
+  The dialog and dialog control objects in ooDialog represent the dialogs and controls users see on their screens.
+  This documentation often refers to the underlying dialog or the underlying control.  These statements refer to the
+  dialog or control created by the operating system, the objects the user sees on the screen. The operating system
+  controls what these underlying objects can, and can not, do. One thing that it is sometimes difficult for the Rexx
+  programmer to grasp is that ooDialog can not alter the behavior or appearance of these objects in ways not allowed
+  by the operating system. The Windows API provides a broad number of ways to customize the appearance and behavior
+  of dialogs and controls.  But, ooDialog and the Rexx programmer are restricted to those customizations provided
+  by the operating system.
+</para>
+<para>
+  Another concept that is often hard to grasp is that many of the methods of the ooDialog dialog and control
+  objects can only be used after the underlying Windows dialog has been created.  In general this means in the <link
+  linkend="mthInitDialog">initDialog</link>() method or later in the life cycle of the dialog. In particular, the
+  <link linkend="mthDefineDialog">defineDialog</link>() method of the <link
+  linkend="clsUserDialog">UserDialog</link> class executes before the underlying dialog is created. Therefore, any
+  method that requires the underlying dialog to have been created can not work in the <emphasis
+  role="italic">defineDialog</emphasis> method. In earlier versions of ooDialog, in general, if the programmer
+  invoked a method requiring that the underlying dialog was created, the error was simply ignored. But, the method
+  had no effect.
+</para>
+<para>
+  From the 4.0.0 release of ooRexx and on, the goal in ooDialog is to raise a syntax condition when a method
+  requiring the underlying dialog is invoked and the underlying dialog does not exist. This goal is being
+  implemented over time and may not yet be completed.
+</para>
+</section>
+
+<section id="ovvWindowMessages"><title>Window Messages</title>
+<para>
+  In the Windows operating system, not surprisingly, most everything is a window. In a nutshell, the Windows operating
+  system works by routing and sending <emphasis role="italic">messages</emphasis> to these windows. Each window has a
+  <emphasis role="italic">message processing loop</emphasis> where the window waits for a message to arrive, processes
+  it, and then waits for the next message. Each window message has an unique whole number ID that gives meaning to the
+  message. When a message is sent to a window, it is sent with two arguments. The first argument is of a type called
+  WPARM and the second is a type called LPARAM. These types are opaque and the value of each is dependent on the
+  specific message. Either or both of the arguments may have no meaning for the specific message. The window always
+  returns a value, another opaque type called LRESULT, which again may have no meaning for the particular message.
+</para>
+<para>
+  In general, most of what ooDialog does is done by sending window messages to the operating system windows. This is
+  designed to allow the Rexx programmer to use dialogs without understanding any of the details of window messages.
+  However, the ooDialog framework provides a few generic methods that send window messages to the underlying operating
+  system windows. These methods, in contrast to most methods, can not be used by the Rexx programmer without some
+  knowledge of the window message being sent. The methods are clearly marked. The programmer would need to consult the
+  <link linkend="defWindowsDoc">Windows Documentation</link> to understand what both the WPARAM and LPARAM arguments
+  must be, and to understand what the LRESULT return, if any, means. In addition, the programmer would need to determine
+  the numeric value of the window message ID. This could be done using a <link linkend="defPlatformSDK">Windows
+  platform SDK</link>, or perhaps through a Google search.
+</para>
+<para>
+  These generic send messages methods allow Rexx programmers to send any message to any of the underlying windows in
+  their programs. The caveat is that the programmers will have to research the meaning of the messages, their arguments,
+  and their return values themselves.
+</para>
+
+</section>
+
+<section id="ovvEvents"><title>Events</title>
+<para>
+  The ooDialog framework facilitates the use of a type of programming often called <emphasis role="italic">event
+  driven programming</emphasis>. In event driven programming, the program usually does some initial set up and then
+  sits in some type of loop waiting to be signaled that an event just happend.  The Windows graphical windowing
+  system is designed to be programmed this way. The Windows operating system uses <emphasis
+  role="italic">messages</emphasis> to notify each window in the system of events specific to that window. Typically
+  events are generated by the user. For instance, clicking a button, typing a key, moving the mouse, all generate
+  events. The operating system notifies the window with the input focus of those events by sending messages to the
+  window. Note that some events are generated by the operating system itself. For instance, when the user moves a
+  window that uncovers a portion of a window beneath it, the operating system will send a message to the underlying
+  window notifying it that it needs to redraw the uncovered portion.
+</para>
+<para>
+  Once the basic set up for an ooDialog program is done, the dialog object basically sits there waiting for an
+  <emphasis role="italic">event</emphasis> of interest to happen. When the event happens, the program responds by
+  taking some action. The programmer decides what events are of interest and uses methods provided by the ooDialog
+  framework to <emphasis role="italic">connect</emphasis> a method in the dialog object to the event notification. The
+  majority of the event connection methods are part of the <link linkend="clsEventNotification">EventNotification</link>
+  class. These methods are often called <emphasis role="italic">event handlers</emphasis> because the code in the method
+  handles the event.
+</para>
+</section>
+
+<section id="ovvComctl32"><title>Required Common Control Library (Comctl32) Version</title>
+<para>
+  The dialog control windows used in dialogs, List-Views, Edit, Tree-Views, etc., are supplied by Microsoft in the
+  common controls library. This is a DLL with the name comctl32.dll.  Every version of Windows is supplied with a common
+  controls library.  However, Microsoft has updated the library a number of times to provide enhanced functionality and
+  improved features
+</para>
+<para>
+  Each new version of the library is backwards compatible with previous versions, but will contain features not
+  available in older versions.  For instance, some of the List-View <link linkend="listControlExtendedStyles">
+  extended styles</link> are only available with a 6.0, or later, version of the common controls library.  ooDialog can
+  only provide the features available in the version of the common controls libray on the system ooDialog is running
+  on.
+</para>
+<para>
+  Therefore, an ooDialog program running on a Windows 2000 machine will not have available some of the features that are
+  available when ooDialog is running on a XP service pack two system.  The DlgUtil class provides a method, <link
+  linkend="mthComCtl32Version">comCtl32Version</link> that allows the programmer to determine the exact version of the
+  common controls library that ooDialog is using.  In the documentation for the ooDialog dialog control classes,
+  features that are not available in all versions of the common control library are noted.  The minimum version of the
+  library that is needed is listed.  In general, at this time, all features of ooDialog are avaialable on Windows XP
+  or later.  This may change in the future as Vista has common control features not available on XP.
+</para>
+</section>
+
+<section id="ovvRequiredWindows"><title>Required Windows Version</title>
+<para>
+  The required Windows version is similar to the <link linkend="ovvComctl32">required ComCtl32</link> library version.
+  Later versions of the Windows operating system have dialog and dialog control features not available in earlier
+  versions of the operating system.
+</para>
+<para>
+  For instance, the <link linkend="clsMonthCalendar">MonthCalendar</link> class has a number of methods that are only
+  available on Vista or later. ooDialog can only use the features available on the system on which it is executing. If
+  a method is invoked that is not available on the current operating system, a syntax conditions is raised. Any
+  method not available on all the Windows versions which ooRexx supports, have the minimum required Windows version
+  noted in their documentation.
+</para>
+<para>
+   The <link linkend="clsOS">OS</link> class supplies methods that allow the programmer to determine exactly which
+   operating system version the program is currently executing on. For programs that need to run on all versions of
+   Windows, the programmer must either avoid using methods not available on all versions, or test for the current
+   version and provide an alternative code path dependent on that version.  The <link
+   linkend="mthIsAtLeastVista">isAtLeastVista</link>() method of the <emphasis role="italic">OS</emphasis> class
+   provides an example of this.
+</para>
+</section>
+
+<section id="ovvUndocumented"><title>Undocumented Items</title>
+<para>
+  ooRexx is open source and anyone can peruse the source to see all functions, classes, and methods of the ooDialog
+  framework. Any of these items that are undocumented should not be used by the Rexx programmer. If the programmer does
+  use any undocumented features in the framework, he does so at his own risk. The framework strives to be backwards
+  compatible, but only for documented features. Undocumented features in the framework are intended for internal use
+  only and are subject to change, or even removal from the framework.
+</para>
+<para>
+  In addition, previous versions of the ooDialog documentation, documented some features, but added some form of the
+  caveat: <emphasis role="italic">for internal use</emphasis>. The prudent programmer would not use any feature
+  docuemented for internal use. These features are also subject to change.
+</para>
+</section>
+
+<section id="ovvInaccurate"><title>factorX / factorY</title>
+<para>
+  The <emphasis role="italic">factorX</emphasis> and <emphasis role="italic">factorY</emphasis> attributes of the
+  <link linkend="chpDialogObject">dialog object</link> were intended to provide a way to convert between <link
+  linkend="defPixel">pixels</link> and <link linkend="defDialogUnit">dialog units</link>, and vice versa. Although their
+  values may have been correct when ooDialog was <link linkend="sctHistory">originally designed</link>, in almost all
+  cases the values are now incorrect. The method used to calculate the ratio between dialog units and pixels is no
+  longer correct.
+</para>
+<para>
+  Unfortunately, many of the methods in the ooDialog framework use <emphasis role="italic">factorX</emphasis> and
+  <emphasis role="italic">factorY</emphasis> to convert to between pixels and dialog units. This in turn makes all of
+  those methods inaccurate. These methods are all marked as being inaccurate. There is almost always no reason to
+  convert back to dialog units from pixels. Once the underlying dialog has been created, pixels should be used. Each
+  inaccurate method in the framework has a corresponding method that uses pixels instead of dialog units.
+</para>
+</section>
+
+<section id="ovvDialogTemplate"><title>Dialog Template</title>
+<para>
+  The <link linkend="ovvUnderlying">underlying</link> dialog seen by the user is created by the operating system from a
+  dialog template in memory. The template describes the size and position of the dialog and all of its controls. The
+  template also contains modifiers that control the style, behavior, and attributes of the dialog and its controls. To
+  make designing dialogs easier, Windows supports the concept of a textual representation of the dialog template. The
+  textual representation can then be translated by software tools to the binary form of the template needed by the
+  operating system.
+</para>
+<para>
+  ooDialog uses three basic constructs that allow the Rexx programmer to supply the dialog template. The programmer can
+  use a binary resource, a resource script, or create the template dynamically in the program code. A binary (compiled)
+  dialog template is stored in a DLL, (usually a .dll file.) The programmer subclasses a <link
+  linkend="clsResDialog">ResDialog</link> to use a binary resource. Resource scripts, (usually a .rc file) supply the
+  dialog template in a text file. The programmer subclasses a <link linkend="clsRcDialog">RcDialog</link> to create a
+  dialog from a resource script. To create a dialog template dynamically in the program code, the programmer subclasses
+  a <link linkend="clsUserDialog">UserDialog</link> and then uses the <link linkend="sctCreateMethods">create</link>
+  methods of that class to create the dialog template. The <emphasis role="italic">UserDialog</emphasis> translates the
+  program statements into the in-memory dialog template required by the operating system. The <emphasis
+  role="italic">RcDialog</emphasis> parses the resource script and converts the resource script statements into an
+  in-memory dialog template by invoking the proper methods of its superclass, the <emphasis
+  role="italic">UserDialog</emphasis>.
+</para> </section>
+
+<section id="ovvResourceWorkshop"><title>IBM Resource Workshop</title>
+<para>
+  The IBM Resource Workshop was a visual resource editor included with IBM Object Rexx. A visual resource editor
+  provides a WYSIWYG (what you see is what you get) environment to design dialogs. It manages the size and positioning
+  of a dialog and its controls. The user can drag and drop controls where they are wanted and use the mouse to size the
+  dialog and controls. The Resource Workshop could not be contributed to the open source community and is therefore
+  not a part of the Open Object Rexx project.
+</para>
+<para><emphasis role="bold">Note</emphasis>, there is <emphasis role="bold">no loss</emphasis> of functionality in
+  ooDialog because of the absence of the Resource Workshop.  The Windows resource format is well understood and there
+  are any number of free or inexpensive resource editors that do a better job of designing dialogs than the Resource
+  Workshop did.  (The Resource Workshop was a 16-bit application with limited capacity for the newer features in the
+  Windows user interface.) ooDialog works fine with dialogs designed by any modern resource editor.
+</para>
+</section>
+
+<section id="ovvDeprecated"><title>Deprecated</title>
+<para>
+  PROVIDE TEXT
+</para>
+</section>
+
+</section> <!-- End: Throughout ooDialog -->
+
+
+<section id="sctTermDefs"><title>Definition of Terms</title>
+<para>
+  A collection of definitions and explanations for terms used in the ooDialog documentation. These terms may not be
+  familiar to the average Rexx programmer.
+</para>
+
+<section id="defResourceScript"><title>Resource Script</title>
+<para>
+  Resource script files are plain text files usually produced by a resource editor.  The files generally have a file
+  extension of &quot;.rc&quot;, but an extension of &quot;.dlg&quot; is used by some resource editors. The text of a
+  resource script defines a dialog <link linkend="ovvDialogTemplate">template</link>. The format of the text is defined
+  by Microsoft and public knowledge. The format is easily parsable by computer and is used by resource compilers to
+  produce a compiled (binary) file containing the dialog template(s) defined in the script file. The ooDialog framework
+  can parse a resource script file and dynamically produce a dialog template in memory. This is the basis of how a <link
+  linkend="clsRcDialog">RcDialog</link> works.
+</para>
+</section>
+
+<section id="defResourceId"><title>Resource ID</title>
+<para>
+  The identification number of a dialog resource. There ares everal different types of dialog resources, menus, dialog
+  controls, and bitmaps, to name a few. You assign IDs when you create the resource definition for your dialog.  An ID
+  can be either numerical (for example, 1) or symbolic (for example, "IDOK").
+</para>
+<para>
+  IDs must be unique for each resource of the same type.  Although two resources of different types may have the same
+  ID, when using symbolic IDs with ooDialog, when using the ooDialog framework it is advisable to give all resources
+  unique numerical IDs.
+</para>
+</section>
+
+<section id="defSymbolicId"><title>Symbolic ID</title>
+<para>
+  Defining a symbolic name for each numeric resource ID is often useful in programs that work with resource IDs.  The
+  symbolic name is then used where ever a numeric resource ID is needed.  Symbolic names are easier to remember than
+  numeric IDs and can make the code easier to understand.
+</para>
+<para>
+  The mechanism ooDialog provides for using symbolic IDs is the <link linkend="atrConstDir">constDir</link> attribute of
+  the dialog classes.  This is a directory object where the indexes are symbolic IDs and the item at each index is the
+  numerical value of the ID.
+</para>
+<para id="paraReservedIDs">
+  Some generic <link linkend="chapResources">resources</link> are bound to the oodialog.dll.  They can be used in any
+  ooDialog program and are accessed using the <link linkend="clsResourceImage">.ResourceImage</link> class. Programmers
+  should always use their symbolic ID rather than their numeric ID in case the numeric value changes in future versions.
+  To allow for future expansion, the ooDialog programmer should consider the resource IDs of 1 through 50 as reserved
+  for ooDialog. Programmers can avoid conflicts by using IDs greater than 50 for resource IDs they assign
+  in their programs.
+</para>
+<para>
+  The symbolic IDs in the following table are pre-defined by ooDialog and placed in the
+  <computeroutput>constDir</computeroutput> when an instance of a dialog class is created.  All symbolic names after
+  IDC_STATIC in the table refer to resources bound to oodialog.dll for general use by the ooDialog programmer.
+</para>
+<table id="oodsymbolicids" frame="all">
+<title>Symbolic IDs Used by ooDialog</title>
+<tgroup cols="3">
+<thead>
+<row>
+<entry>Numeric ID or Symbol</entry>
+<entry>Symbolic ID</entry>
+<entry>ResourceType</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>1</entry>
+<entry>IDOK</entry>
+<entry>Button Control</entry>
+</row>
+<row>
+<entry>2</entry>
+<entry>IDCANCEL</entry>
+<entry>Button Control</entry>
+</row>
+<row>
+<entry>9</entry>
+<entry>IDHELP</entry>
+<entry>Button Control</entry>
+</row>
+<row>
+<entry>-1</entry>
+<entry>IDC_STATIC</entry>
+<entry>Static Control</entry>
+</row>
+<row>
+<entry>IDI_DLG_OODIALOG</entry>
+<entry>IDI_DLG_OODIALOG</entry>
+<entry>Icon</entry>
+</row>
+<row>
+<entry>IDI_DLG_APPICON</entry>
+<entry>IDI_DLG_APPICON</entry>
+<entry>Icon</entry>
+</row>
+<row>
+<entry>IDI_DLG_APPICON2</entry>
+<entry>IDI_DLG_APPICON2</entry>
+<entry>Icon</entry>
+</row>
+<row>
+<entry>IDI_DLG_OOREXX</entry>
+<entry>IDI_DLG_OOREXX</entry>
+<entry>Icon</entry>
+</row>
+<row>
+<entry>IDI_DLG_DEFAULT</entry>
+<entry>IDI_DLG_DEFAULT</entry>
+<entry>Icon</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+
+<section id="defPoundDefine"><title>#define Statement</title>
+<para>
+  Define statements are often used in the C and C++ languages to define symbolic names for numerical values.  Because of
+  this, it is common in Windows programs with dialogs to define symbolic names for resource IDs.  Most Windows resource
+  editors use symbolic IDs, (some to a limited degree, others exclusively.)  Often the define statements are put in a
+  header file so they are available both to the resource compiler and to the program code.  The defines take the form
+  of: <computeroutput>#define symbolicName numericValue </computeroutput> as in this example:
+</para>
+<programlisting>
+<![CDATA[
+
+#define   ID_PUSHBUTTON1  413
+#define   ID_EDIT1        511
+#define   ID_LISTBOX1     602
+
+]]>
+</programlisting>
+<para>
+  When ooDialog parses a resource script or a header file and finds a define statement, it will add the symbolic ID to
+  the <link linkend="atrConstDir">constDir</link> directory object of the dialog.  Resource scripts are used by subclasses
+  of the <computeroutput>UserDialog</computeroutput> (see the <link linkend="mthLoad">load</link> method.)  All the
+  ooDialog dialog classes accept a header file as an optional parameter when a new instance of a dialog object is
+  created.  (See for example the <computeroutput>new</computeroutput> method in the <link
+  linkend="mthNewDialogObject">dialog object</link> or the <link linkend="mthNewClsUserDialog">UserDialog</link>.) Symbolic IDs
+  added to the <computeroutput>constDir</computeroutput> can be used in any method of the ooDialog classes where a
+  resource ID is needed.
+</para>
+</section>
+
+<section id="defHeaderFile"><title>Header File</title>
+<para>
+  A common practice when programming applications in Windows that use dialogs and dialog resources is to place symbolic
+  defines in a separate file.  These files often have a .h extension and are usually called header files.  Windows
+  resource editors often manage a header file for the symbolic IDs automatically. (For instance Microsoft's dialog
+  editor creates, writes, and reads the resource ID header file completely on its own. The user does not need to take
+  any action other than including the file in her program.)
+</para>
+</section>
+
+<section id="defDialogUnit"><title>Dialog Unit</title>
+<para>
+  Dialog box templates contain measurements that define the size and position of the dialog box and its controls. These
+  measurements are device independent. This allows a single template to be used to create the same dialog box for all
+  types of display devices. Using device independent measurements allows a dialog box to have the same proportions and
+  appearance on all screens despite differing resolutions and aspect ratios between screens.
+</para>
+<para>
+  These measurements are called dialog template units, often shortened to just dialog units in this documentation.
+</para>
+<para>
+  The following paragraph in italics, which has been the sole documentation of dialog units in the ooDialog
+  documentation prior to version 4.0.0, is unfortunately incorrect.  The value of a dialog unit is dependent on the font
+  actually used in the dialog, not on the system font. The statements below were probably true in very early versions of
+  Windows when every dialog used system 8 pt font. Today it is highly unusual for a dialog to use system 8 pt font. The
+  factorX and factorY values are calculated incorrectly. These values are only correct if the dialog is using system 8
+  pt font and are incorrect for a dialog using any other font.
+</para>
+<para>
+  <emphasis role="italic">There is a horizontal and a vertical dialog base unit to convert width and height of dialog
+  boxes and controls from dialog units to pixels and vice versa. The value of these base units depend on the screen
+  resolution and the active system font; they are stored in attributes of the UserDialog class.</emphasis>
+<programlisting>
+<![CDATA[
+xPixels = xDialogUnits * self~FactorX
+]]>
+</programlisting>
+  <emphasis role="bold">Note</emphasis> that in the above line of code <computeroutput>xPixles</computeroutput> will not
+  be <link linkend="ovvInaccurate">accurate</link>.
+</para>
+</section>
+
+<section id="defDialogIcon"><title>Dialog Icon</title>
+<para>
+  The term <emphasis role="italic">dialog icon</emphasis> is used in this documentation to refer to the icon that is
+  displayed in the left hand corner of the title bar of a dialog. In Windows this is often called the <emphasis
+  role="italic">application</emphasis> icon.  The dialog icon is also used for the Task Bar display and in the AltTab
+  task switcher application.
+</para>
+<para>
+  The dialog icon for a specific dialog can be set when the dialog is run using one of the execute methods.  See the
+  <link linkend="mthExecute">execute</link> or <link linkend="mthPopup">popup</link> methods for example.  ooDialog provides
+  four pre-defined icons for use in dialogs.  Custom icons can be used by including the icon in a binary (compiled)
+  resource, a resource script, or by using the <link linkend="mthAddIconResource">addIconResource</link> method of the
+  UserDialog.  The following table shows the symbolic IDs of the pre-defined icons.  The symbolic ID should always be
+  used in case the numeric value is changed in the future. In addition, the programmer should avoid using numeric IDs
+  <link linkend="paraReservedIDs">reserved</link> by ooDialog. The  IDI_DLG_DEFAULT is a fifth symbolic
+  ID that represents the default dialog icon. This ID can always be used where a dialog icon ID is
+  needed.
+</para>
+<table frame="all">
+<title>ooDialog Supplied Icons</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Description</entry>
+<entry>Symbolic ID</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>The default, the letters OOD</entry>
+<entry>IDI_DLG_OODIALOG</entry>
+</row>
+<row>
+<entry>Dialog box image</entry>
+<entry>IDI_DLG_APPICON</entry>
+</row>
+<row>
+<entry>Fancier dialog box image</entry>
+<entry>IDI_DLG_APPICON2</entry>
+</row>
+<row>
+<entry>The ooRexx image</entry>
+<entry>IDI_DLG_OOREXX</entry>
+</row>
+<row>
+<entry>IDI_DLG_DEFAULT</entry>
+<entry>IDI_DLG_DEFAULT</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+
+<section id="defClientArea"><title>Client / Nonclient Area</title>
+<para>
+  The <emphasis role="italic">client area</emphasis> is the part of a window where, normally, an application displays
+  its output. The title bar, menu bar, window menu, minimize and maximize buttons, sizing border, and scroll bars are
+  referred to collectively as the window's <emphasis role="italic">nonclient</emphasis> area. The operating system
+  manages most aspects of the nonclient area. The application manages the appearance and behavior of its client area.
+</para>
+<para>
+  For dialogs, the client area is the area where the dialog draws its controls. For dialog controls, the client area is
+  where the control draws itself. The nonclient area would be the border of the control, if it has one.
+</para>
+</section>
+
+<section id="defModalModeless"><title>Modal and Modeless Dialogs</title>
+<para>
+  Dialogs are executed in two basic ways. A <emphasis role="italic">modal</emphasis> dialog blocks keyboard and mouse
+  input to all other windows started by the program. The user can not switch to another window in the program without
+  closing the modal dialog. In ooDialog this essentially is all other dialogs started by the program. A <emphasis
+  role="italic">modeless</emphasis> dialog operates independently of the other dialogs in the program. The user can
+  switch away from a modeless dialog and work with any of the other dialogs in the program.
+</para>
+</section>
+
+<section id="defHandle"><title>handle</title>
+<para>
+  A unique reference to a Windows object assigned by the system. It can be a reference to a dialog, a particular dialog
+  control, a window, or a graphic object (pen, brush, font). Handles are required for certain methods. A handle is an
+  opaque type, the Rexx programmer need not be aware of the specific format of a handle. The ooDialog framework provides
+  methods that return handles and methods for retrieving handles from the operating system. When a method requires a
+  handle as an argument, the Rexx programmer needs to obtain the handle from one of those provided methods.
+</para>
+</section>
+
+<section id="defDeviceContext"><title>Device Context</title>
+<para>
+  Stores information about the graphic objects that are displayed, such as bitmaps, lines, and pixels, and the tools
+  used to display them, such as pens, brushes, and fonts. A device context can be acquired for a dialog or a dialog
+  control. It must be explicitly freed when the text or graphic operations are completed.
+</para>
+</section>
+
+<section id="defPixel"><title>Pixel</title>
+<para>
+  Individual addressable point on the monitor (screen or display.) Pixels are whole numbers. Ancient VGA screens
+  supported 640 by 480 pixels, SVGA screens supported higher resolutions, such as 800 by 600, 1024 by 768, and up.
+  Modern displays support much higher resolutions. 1600 by 1200 is common and displays with 2560x1600 are available.
+  Pixel values start at the top left corner of the main display, with that corner being (0,0). Prior to dual monitor
+  capabilities, pixel values were always non-negative. On a dual monitor system that is no longer true, depending on the
+  virtual position of the secondary monitor. If it is to the left or above the primary monitor negative pixel values are
+  possible.
+</para>
+</section>
+
+<section id="defColor"><title>Color</title>
+<para>
+  Each color supported by the Windows operating system is assigned a number. Sample color indexes are 0 (black), 1 (dark
+  red), 2 (dark green), 3 (dark yellow), 4 (dark blue), 5 (purple), 6 (blue grey), 7 (light grey), 8 (pale green), 9
+  (light blue), 10 (white), 11 (grey), 12 (dark grey), 13 (red), 14 (light green), 15 (yellow), 16 (blue), 17 (pink), 18
+  (turquoise).
+</para>
+</section>
+
+<section id="defColorPalette"><title>Color Palette</title>
+<para>
+  An array that contains color values identifying the colors that can currently be displayed or drawn on the output
+  device.
+</para>
+<para>
+  Color palettes are used by devices that can generate many colors but can only display or draw a subset of them at a
+  time. For such devices, Windows maintains a system palette to track and manage the current colors of the device.
+</para>
+<para>
+  Applications do not have direct access to this system palette. Instead, Windows associates a default palette with each
+  device context. Applications can use the colors in the default palette.
+</para>
+<para>
+  The default palette is an array of color values identifying the colors that can be used with a device context by
+  default. Windows associates the default palette with a context whenever an application creates a context for a device
+  that supports color palettes. The default palette ensures that colors are available for use by an application without
+  any further action. The default palette typically has 20 entries (colors), but the exact number of entries can vary
+  from device to device.  The colors in the default palette depend on the device. Display devices, for example, often
+  use the 16 standard colors of the VGA display and 4 other colors defined by Windows.
+</para>
+</section>
+
+<section id="defConventionalHex"><title>Conventional Hexadecimal Format</title>
+<para>
+  There are a number of methods in the ooDialog framework that have an argument that can be in numeric format, a whole
+  number, or in a <emphasis role="italic">conventional hexadecimal</emphasis> format. For the purposes of this
+  documentation this hexadecimal format is defined to be a Rexx string that begins with &quot;0x&quot; followed by a
+  maximum of 16 characters, which are only characters that represent hexadecimal numbers. I.e., &quot;0&quot; through
+  &quot;F&quot;. The following is meant to clarify this:
+</para>
+<programlisting>
+<![CDATA[
+
+-- Acceptable:
+"0xffff"
+"0XFFFF"
+"0x000012aB"
+"0xFFFF0000aaaa9999"
+"0x0"
+
+-- Incorrect:
+" 0xffff"              -- leading space
+"0XFZFF"               -- Z is not a hexidecimal symbol
+"000012ab"             -- second character must be x
+"0x0123456789ABCDEF1"  -- 17 characters
+"00x0"                 -- second character must be x, not 0
+
+]]>
+</programlisting>
+</section>
+
+<section id="defSystemErrorCode"><title>System Error Code</title>
+<para>
+  The term <emphasis role="italic">system error code</emphasis> refers to an error code set by the Windows operating
+  system when an API fails. ooDialog provides an interface to the Windows APIs and when an error is detected many of
+  the ooDialog methods have some means of conveying the system error code to the programmer. The ooDialog programmer can
+  look up the meaning of a system error code in the <link linkend="defWindowsDoc">MSDN library</link> to understand
+  better the cause of a failure.
+</para>
+<para>
+  ooDialog provides the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> environment entry as a means for the
+  Rexx programmer to determine the value of the system error code after a method has executed. Note that not all of the
+  Windows APIs set the system error code. And, likewise, not all of the ooDialog methods set the
+  <computeroutput>.SystemErrorCode</computeroutput>.
+</para>
+</section>
+
+<section id="defWindowsDoc"><title>Windows Documentation</title>
+<para>
+  The term <emphasis role="italic">Windows documentation</emphasis> is used throughout the ooDialog reference to refer
+  to the Windows Operating System documentation provided by Microsoft.  The documentation is called the <emphasis
+  role="bold">MSDN Library</emphasis>.  The library is provided online for anyone to access. In addition, since May
+  2006, Microsoft has also provided free of charge the ISO images of the library installation program.  Anyone can
+  download the ISOs, burn them to a CD and install the library locally on their system.
+</para>
+<para>
+  It is not necessary for the ooDialog programmer to know or understand the underlying Windows API that ooDialog is
+  built on.  However, as programmers write more sophisticated ooDialog applications, it may prove helpful to look up
+  certain details in the MSDN Library. The information below is provided to help the ooDialog programmer locate the
+  MSDN Library, if they would like to. All things on the Internet change. The URLs listed here are accurate at the time
+  of this writing.
+</para>
+<para>
+  The online MSDN Library is currently located at:
+</para>
+<para>
+  http://msdn2.microsoft.com/en-us/library/default.aspx.
+</para>
+<para>
+  Directions to the downloadable ISO images of the MSDN Library have been posted on this blog entry:
+</para>
+<para>
+  http://blogs.msdn.com/robcaron/archive/2006/07/26/678897.aspx
+</para>
+<para>
+  A Google search using: <computeroutput>"Rob Caron" General Downloads MSDN Library</computeroutput> should also turn up
+  the blog entry.
+</para>
+</section>
+
+<section id="defPlatformSDK"><title>Windows Platform SDK</title>
+<para>
+  The <emphasis role="italic">Windows Platform SDK</emphasis> is provided free of charge by Microsoft.  The SDK is not
+  needed to write ooDialog programs.  However, combining the use of the documentation in the MSDN Library with the SDK
+  allows very sophisticated ooDialog programs to be written.  In general, the ooDialog framework takes care of the
+  low-level details needed to work with the Windows API.  However, there are a few generic ooDialog methods
+  that provide direct access to the Windows API.
+</para>
+<para>
+  As an example, the <link linkend="mthAddUserMsg">addUsermessage</link> method allows the programmer to connect any
+  Windows message sent to a dialog to a method in his ooDialog class.  To use this method, the programmer would go to
+  the MSDN library to look up details on the message and message parameters he is interested in.  He would then use the
+  Platform SDK to determine the numeric value of the Windows message and possibly the numeric values of its parameters.
+</para>
+<para>
+  This link provides some good information on the Platform SDK in general and also points the reader to where to get a
+  SDK.
+</para>
+<para>
+  http://en.wikipedia.org/wiki/Platform_SDK
+</para>
+<para>
+  Again, note that it is not at all necessary to obtain, or understand details concerning, the Platform SDK.  This
+  information is provided for those programmers that have reached the point where they think a method like
+  <computeroutput>addUserMessage</computeroutput> might help them and need some direction as to how to go about using
+  it.
+</para>
+</section>
+
+</section> <!-- End: Definition of Terms -->
+
+<section id="sctHistory"><title>History</title>
+<para>
+  PROVIDE TEXT
+</para>
+<para>
+  Historically, the reason for providing the simpler PlainUserDialog class was to have a smaller package
+  that required less system resources for ordinary user interfaces like the standard dialogs.  That
+  reason is probably not as valid in modern times as it was when ooDialog was being developed to run on
+  Windows 3.1.
+</para>
+</section>
+
+<section id="sctCurrentRelease"><title>Current Release</title>
+<para>
+  The version of ooDialog packaged with the ooRexx 4.1.0 release has a lot of new and different things in it. All
+  ooDialog users should take a close look at these changes.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Documentation Revision</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="termMethodNameUnification"><term><emphasis role="bold">Unification of Method Names</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Simplification of Requires Statement</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="sctOODialogFuture"><title>Future</title>
+<indexterm><primary>future directions</primary></indexterm>
+<para>
+  ooDialog is now open source, being developed by committers who volunter their time.  It is no longer
+  developed by IBM. ooRexx 4.0.0 has introduced a greatly improved native API for extenal packages.
+  ooDialog is being converted to use the new API.
+</para>
+<para>
+  What are the implications of these facts?
+</para>
+<itemizedlist>
+<listitem>
+  <para>
+    Bug fixes and the addition of new features can only be done at the pace of the committers free
+    time.
+  </para>
+</listitem>
+<listitem>
+  <para>
+    Users of ooDialog can directly influence the future direction of ooDialog through participation in
+    the project. Primarily by filing bug reports, opening requests for features, and discussing on the
+    <link linkend="helpUsersList">users</link> or <link linkend="helpDevelList">developers</link> list
+    what they would like to see, or not see.
+  </para>
+</listitem>
+<listitem>
+  <para>
+    The new API will make it easier to add new features that are more robust. This should allow
+    ooDialog to add the newer GUI elements of Windows XP and Vista in a reasonable time frame.
+  </para>
+</listitem>
+<listitem>
+  <para>
+    The new API makes some change in behavior of ooDialog methods unavoidable.
+  </para>
+</listitem>
+</itemizedlist>
+<para>
+  The purpose of this section is to briefly expand upon the implications above and outline the direction
+  ooDialog is currently taking. The point of this is to make users aware of what to look for in version
+  4.0.0 and to allow them to influence the direction taken, if they choose to.
+</para>
+<variablelist>
+<varlistentry><term>New Native API</term>
+<listitem>
+  <para>
+    ooRexx 4.0.0 introduced a new native API for use in extending the ooRexx interpreter. This API is
+    object-orientated and gives external packages more access to features of the interpreter. One
+    important aspect of the new API is that not everything passed back and forth between the interpreter
+    and the external plackage (the ooDialog framework in this case) needs to be a string. This allows the
+    external packages to make better use of object-orientated design.
+  </para>
+  <para>
+    All new function added to ooDialog will use the new API. Existing function will be converted to take
+    full advantage of the new API. This conversion has started, but will take place over time. It is
+    expected that some of the original design that is not optimal due to the restrictions of the older
+    API will be phased out. Alongside of that, some design that, in hindsight, seems incorrect will also
+    be phased out.
+  </para>
+</listitem></varlistentry>
+<varlistentry><term>New Classes</term>
+<listitem>
+  <para>
+    In the past, the ooDialog framework made heavy use of two basic objects, a dialog and a dialog
+    control. Every method and every functionality was added to a dialog and to a dialog control. This had
+    the tendency to produce large monolithic class structures and in many ways negates some of the value
+    of using classes.
+  </para>
+  <para>
+    In ooDialog 4.0.0 the process of introducing new, smaller, classes to handle related function began.
+    In addition, some effort started to factor out of the dialog or dialog control object function or
+    behavior that is not really part of a dialog or control object. One example of this is the matter of
+    bitmaps, icons, etc.. Bitmaps and icons are images. The data and methods to work with bitmaps or
+    other images are better suited to an image object than a dialog object.
+  </para>
+  <para>
+    The future evolution of ooDialog will be to add new smaller objects that better model the function
+    the programmer needs to produce sophisticated Windows dialogs. These classes may be introduced
+    slowly, with just the basic function introduced in one release and the functionality expanded in
+    later releases. For instance, in ooDialog 4.0.0 the <link linkend="clsRect">Rect</link> and <link
+    linkend="clsPoint">Point</link> classes were introduced without a lot of functionality. One common
+    behavior of rectangles and points is to ask the rectangle if it contains this point. The two classes
+    formed the basis to add that behavior in a later release.
+  </para>
+</listitem></varlistentry>
+<varlistentry><term>Objects as Arguments and Return Values</term>
+<listitem>
+  <para>
+    The 4.0.0 native API makes passing objects as arguments to external packages much easier. And, the
+    flip side of this is returning objects from external packages. The older API forced everything to be
+    a string. ooDialog will migrate towards using more objects as arguments to, and return values from,
+    methods implemented externally. Ultimately, this will make things easier on the programmer, allow
+    better access to the underlying capabilities of the operating system, and produce more readable code.
+  </para>
+  <para>
+    For example, take the task of repositioning a dialog control on a dialog. The operating system
+    provides a means to get the current rectangle of any window on the screen, it provides a means to map
+    that rectangle on the screen to the client area of any other window, and it provides a means to move
+    any window from one position to another. Using the <link linkend="clsRect">Rect</link> class
+    mentioned above and some pseudo code, a future version of ooDialog might handle this task like
+    this:
+<programlisting>
+<![CDATA[
+  rectangle = dlgControl~getWindowRect
+  rectangle~mapToClient(dlg)
+
+  -- Shift the control left 10 pixels and up 5 pixels
+  rectangle~offset(10, -5)
+  dlg~moveControl(dlgControl, rectangle)
+]]>
+</programlisting>
+  </para>
+  <para>
+    Another example using the <link linkend="clsSize">Size</link> class:
+<programlisting>
+<![CDATA[
+  size = button~getIdealSize
+  button~setSize(size)
+
+  -- The above could also be written:
+  button~setSize(button~getIdealSize)
+
+]]>
+</programlisting>
+  </para>
+</listitem></varlistentry>
+<varlistentry><term>Syntax errors</term>
+<listitem>
+  <para>
+    In the past, ooDialog never raised any error conditions. This, in the author's opionion, lead to a
+    lot of user confusion. Things simply did not work and the user had no idea why. Quite often it was
+    merely a matter of using the wrong arguments. Going forward, ooDialog will begin making better use of
+    the Rexx facility of raising error conditions when things are not right.
+  </para>
+  <para>
+    Part of this will be the direct result of converting to the 4.0.0 API and will be unavoidable. In
+    many situations the API automatically raises syntax errors when arguments are not correct. As an
+    example, take the <computeroutput>createFont</computeroutput>() method. One argument to the
+    createFont method is the size of the font. In the Windows operating system font sizes are whole
+    numbers. If a programmer passes in, say 10.89, for a font size, when createFont is converted to use
+    the 4.0.0 API this will raise a syntax error.
+  </para>
+  <para>
+    All new methods added to the ooDialog framework will raise syntax errors for incorrect aruguments and
+    / or unrecoverable errors. Methods converted to use the 4.0.0 API will always raise syntax errors in
+    situations similar to the above. This change will help ooDialog programmers write more robust,
+    correct programs.
+  </para>
+</listitem></varlistentry>
+<varlistentry><term>Deprecated methods</term>
+<listitem>
+  <para>
+    Starting in ooDialog 4.0.0, methods began being marked as <emphasis
+    role="italic">deprecated</emphasis> in the documentation. The documentation for deprecated methods
+    points the programmer to the replacement for the deprecated methods. There are a number of reasons
+    for marking methods as deprecated, among which are incorrect implementation, duplication, sub-optimal
+    implementation, a desire to move to the cleaner 4.0.0 API, and a strong desire by the maintainers of
+    ooDialog to remove the excess baggage of the past.
+  </para>
+  <para>
+    The ooDialog programmer is <emphasis role="bold"><emphasis
+    role="italic">strongly</emphasis></emphasis> encouraged to take note of the deprecated methods. To
+    definitely not use depracted method in new code, and to migrate deprecated methods in existing code
+    to their replacements.
+  </para>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="reference"><title>ooDialog Class Reference</title>
+<para>
+  The classes provided by ooDialog form a hierarchy as shown in <link linkend="fig52">The Hierarchy of ooDialog
+  Classes</link>.
+</para>
+
+<figure id="fig52"><title>The Hierarchy of ooDialog Classes</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="rxou0s12.jpg" scale="40">
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="rxou0s24.jpg" scale="40">
+</imageobject>
+</mediaobject>
+</figure>
+
+<para>The classes are: </para>
+<variablelist>
+<varlistentry><term>PlainBaseDialog, BaseDialog</term>
+<listitem><para>Base methods regardless of whether the dialog is implemented as a binary
+resource, a script, or dynamically. PlainBaseDialog provides limited functionality.
+</para></listitem></varlistentry>
+<varlistentry><term>PlainUserDialog</term>
+<listitem><para>Subclass of PlainBaseDialog used to create a dialog with all its control
+elements or to execute a dialog stored in a resource script (.RC). This class
+has limited functionality.
+</para></listitem></varlistentry>
+<varlistentry><term>DynamicDialog, DialogExtensions, WindowBase, WindowExtensions</term>
+<listitem><para>Internal mixin classes used to extend PlainBaseDialog, PlainUserDialog,
+BaseDialog, UserDialog, and DialogControl. The methods provided by these classes
+are not listed separately but are listed in BaseDialog or UserDialog.
+</para></listitem></varlistentry>
+<varlistentry><term>UserDialog</term>
+<listitem><para>Subclass of BaseDialog used to create a dialog with all its control
+elements, such as push buttons, check boxes, radio buttons, entry lines, and
+list boxes.
+</para></listitem></varlistentry>
+<varlistentry><term>ResDialog</term>
+<listitem><para>Subclass of BaseDialog for dialogs within a binary (compiled) resource
+file (.DLL).
+</para></listitem></varlistentry>
+<varlistentry><term>CategoryDialog</term>
+<listitem><para>Subclass of UserDialog used to create a dialog with several pages that
+overlay each other.
+</para></listitem></varlistentry>
+<varlistentry><term>TimedMessage</term>
+<listitem><para>Class to show a message window for a defined duration.
+</para></listitem></varlistentry>
+<varlistentry><term>InputBox</term>
+<listitem><para>Class to dynamically define a dialog with a message, one entry line,
+and two push buttons (OK, Cancel).
+</para></listitem></varlistentry>
+<varlistentry><term>PasswordBox</term>
+<listitem><para>Similar to InputBox, but keystrokes in the entry line are shown as asterisks
+(*).
+</para></listitem></varlistentry>
+<varlistentry><term>IntegerBox</term>
+<listitem><para>Similar to InputBox, but only numeric data can be entered in the entry
+line.
+</para></listitem></varlistentry>
+<varlistentry><term>MultiInputBox</term>
+<listitem><para>Similar to InputBox, but with multiple entry lines.
+</para></listitem></varlistentry>
+<varlistentry><term>ListChoice</term>
+<listitem><para>Class to dynamically define a dialog with a list box, where one line
+can be selected and returned to the caller.
+</para></listitem></varlistentry>
+<varlistentry><term>MultiListChoice</term>
+<listitem><para>Similar to ListChoice, but more than one line can be selected and returned
+to the caller.
+</para></listitem></varlistentry>
+<varlistentry><term>CheckList</term>
+<listitem><para>Class to dynamically define a dialog with a group of check boxes, which
+can be selected and returned to the caller.
+</para></listitem></varlistentry>
+<varlistentry><term>SingleSelection</term>
+<listitem><para>Class to dynamically define a dialog with a group of radio buttons,
+where one can be selected and returned.
+</para></listitem></varlistentry>
+<varlistentry><term>Dialog</term>
+<listitem><para>Subclass of UserDialog for simple dialogs. You can change the default
+dialog style from UserDialog to ResDialog.
+</para></listitem></varlistentry>
+<varlistentry><term>AnimatedButton</term>
+<listitem><para>Class to implement an animated button within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>DialogControl</term>
+<listitem><para>Class to implement methods that are common to all dialogs and dialog
+controls.
+</para></listitem></varlistentry>
+<varlistentry><term>TreeControl</term>
+<listitem><para>Class to implement a tree to display the list of items in a dialog in
+a hierarchy.
+</para></listitem></varlistentry>
+<varlistentry><term>ListControl</term>
+<listitem><para>Class to implement a list view to display the items in a dialog as a
+collection.
+</para></listitem></varlistentry>
+<varlistentry><term>ProgressBar</term>
+<listitem><para>Class to implement a progress indicator within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>SliderControl</term>
+<listitem><para>Class to implement a slider or trackbar within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>TabControl</term>
+<listitem><para>Class to implement tabs, which can be compared to dividers in a notebook
+or labels in a file cabinet.
+</para></listitem></varlistentry>
+<varlistentry><term>StaticControl</term>
+<listitem><para>Class to query and modify static controls, such as static text, group
+boxes, and frames.
+</para></listitem></varlistentry>
+<varlistentry><term>EditControl</term>
+<listitem><para>Class to query and modify edit controls, which are also called entry
+lines.
+</para></listitem></varlistentry>
+<varlistentry><term>ButtonControl</term>
+<listitem><para>Class to implement push buttons within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>RadioButtonControl</term>
+<listitem><para>Class to implement radio buttons within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>CheckBoxControl</term>
+<listitem><para>Class to implement check boxes within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>ListBoxControl</term>
+<listitem><para>Class to implement list boxes within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>ComboBoxControl</term>
+<listitem><para>Class to implement a combo box, which combines a list box with an edit
+control.
+</para></listitem></varlistentry>
+<varlistentry><term>ScrollBarControl</term>
+<listitem><para>Class to implement a scroll bar within a dialog.
+</para></listitem></varlistentry>
+<varlistentry><term>PropertySheetControl</term>
+<listitem><para>Class to implement a property sheet, which is similar to a category
+dialog that spreads its dialog items over several pages (categories), where
+the individual pages are controlled by a tab control instead of radio buttons
+or combo box lists.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+</chapter>

@@ -1,0 +1,5618 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<chapter id="chpMenus"><title>Menus</title>
+<indexterm><primary>Menus</primary></indexterm>
+
+<para>
+  Menus are lists of items that specify options for an application.  Groups of related options are usually placed in
+  submenus. Clicking a menu item either opens a submenu or causes the application to carry out a command.
+</para>
+<para>
+  Menus are arranged as a hierarchy. A <emphasis role="italic">menu bar</emphasis> is the top of the hiearchy for menus
+  attached to an application window.  The menu bar will contain a list of <emphasis role="italic">menus</emphasis>, and
+  menus can contain <emphasis role="italic">submenus</emphasis>.  Menu bars are often called <emphasis
+  role="italic">top-level</emphasis> menus, while the menus and submenus are also known as
+  <emphasis role="italic">pop-up</emphasis> menus.
+</para>
+<para>
+  A menu <emphasis role="italic">item</emphasis> either carries out a command, opens a submenu, or is special type of
+  menu item called a <emphasis role="italic">separator</emphasis>.  Menu items that do not open a submenu are called
+  <emphasis role="italic">command</emphasis> items or simply commands. Menu items that open a submenu are sometimes
+  called <emphasis role="italic">menu names</emphasis>. Separators appear as a horizontal line. They are used to divide
+  a menu into groups of related items. A separator cannot be used in a menu bar, and the user cannot select a separator.
+</para>
+<para>
+  Only top-level windows can have menu bars. Child windows can not have a menu bar. If the window has a title bar the
+  system positions a menu bar underneath it. All menus must have an owner window.
+</para>
+<para>
+   The system also provides <emphasis role="italic">shortcut menus</emphasis> and the <emphasis
+   role="italic">window</emphasis> menu.  A shortcut menu is not attached to a menu bar and can appear anywhere on the
+   screen.  Shortcut menus are typically activated by the user right-clicking on a specific portion of the screen and
+   the menu items are usually only relevant to what the user clicked on.  For this reason, shortcut menus are often
+   called <emphasis role="italic">contetxt</emphasis> menus.  The window menu is also knows as the <emphasis
+   role="italic">System</emphasis> menu or the <emphasis role="italic">Control</emphasis> menu.  The  System menu is
+   usually managed exclusively by the system.  The user activates the System menu by clicking on the icon in the upper
+   left corner of a window, or by right-clicking anywhere on the title bar. Unlike menu bars, child windows can have a
+   System menu.  It is unusual for a top-level window to not have a System menu.
+</para>
+<para>
+  The menu related classes in the following table are described in this chapter.  The primary classes that the ooDialog
+  programmer will use are the <computeroutput>BinaryMenuBar, UserMenuBar, ScriptMenuBar</computeroutput>, and
+  <computeroutput>PopupMenu</computeroutput>. The other classes are mixin classes that implement the functionality
+  common to all types of menus. The binary, user, and script menu bar classes all have the same essential functionality.
+  They just differ in how they are initially created.  The popup menu class is similar to the menu bar classes, it just
+  does not have any methods that are only relevant to a menu bar.
+<table id="tblMenuClasses" frame="all">
+<title>ooDialog Menu Classes</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Class</entry>
+<entry>Link to Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><link linkend="clsBinaryMenuBar">BinaryMenuBar</link></entry>
+<entry>A menu bar created from a menu resource, or created as an empty menu bar.</entry>
+</row>
+<row>
+<entry><link linkend="clsMenu">Menu (Mixin Class) The Menu Object</link></entry>
+<entry>The basis for the menu object.</entry>
+</row>
+<row>
+<entry><link linkend="clsMenuBar">MenuBar (Mixin Class) The Menu Bar Object</link></entry>
+<entry>The basis for the menu bar object.</entry>
+</row>
+<row>
+<entry><link linkend="clsPopupMenu">PopupMenu</link></entry>
+<entry>A menu or a shortcut menu, also known as a submenu or a context menu.</entry>
+</row>
+<row>
+<entry><link linkend="clsScriptMenuBar">ScriptMenuBar</link></entry>
+<entry>A menu bar created from a resource script file.</entry>
+</row>
+<row>
+<entry><link linkend="clsSystemMenu">SystemMenu</link></entry>
+<entry>A system menu, also known as the window menu or the control menu.</entry>
+</row>
+<row>
+<entry><link linkend="clsUserMenuBar">UserMenuBar</link></entry>
+<entry>
+  A menu bar created by the programmer in a fashion similar to a <link linkend="clsUserDialog">UserDialog</link>.
+</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+
+<section id="sctMenuItemIDs"><title>Menu Item IDs</title>
+<para>
+  Each menu item in a menu can be uniquely identified. This documentation generically refers to a menu item <emphasis
+  role="italic">ID</emphasis>, but there are really two ways of identifying a menu item.
+</para>
+
+<variablelist>
+  <varlistentry id="entMenuItemIdentifier"><term><emphasis role="bold">Menu-Item Identifier</emphasis></term>
+  <listitem>
+  <para>
+    Each menu item has a unique, non-negative, integer assigned to it by the programmer, called a menu-item identifier.
+    These numbers are essentially the same as any other resource <link linkend="defResourceID">ID</link> used in
+    ooDialog. The Rexx programmer can use numeric or <link linkend="defSymbolicID">symbolic</link> IDs for menu-item
+    identifier's, in the same way as for other resource IDs.
+  </para>
+  <para>
+    All menus assign menu-item identifiers to command items and submenus. ooDialog uses what the Windows operating
+    system calls <emphasis role="italic">extended</emphasis> menus. Extended menus also assign identifiers to
+    separators. Identifiers are used for menu command <link linkend="sctMenuCommandEvents">events</link>. In addition, a
+    menu item can be specified using its identifier in method invocations. For example, to <link
+    linkend="mthEnableClsMenu">enable</link> or <link linkend="mthDisableClsMenu">disable</link> a menu item.
+  </para>
+  <para>
+    Identifiers allow the programmer to specify any menu item anywhere in the menu hiearchy. The <link
+    linkend="mthGetIDClsMenu">getID</link>() method can be used to retrieve the identifier of the menu item at a
+    specified position
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Menu-Item Position</emphasis></term>
+  <listitem>
+  <para>
+    In addition to having a unique identifier, each menu item in a menu bar or menu has a unique position value.
+    Although the operating system uses zero-based position numbering, ooDialog uses one-based position numbering to
+    conform to general Rexx practice. The leftmost item in a menu bar, or the top item in a menu, has position one. The
+    position value is incremented for subsequent menu items. A position value is assigned to all items in a menu,
+    including separators.
+  </para>
+  <para>
+    Position values can be used in method invocations that require specifying a menu item. Note that since the top item
+    in a menu, or the leftmost menu item in a menu bar, always has a position of one, it is not possible to uniquely
+    specify any menu item in a menu hiearchy. Rather, you can only use a position to specify an item in a specific
+    submenu.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+<para>
+  Except in a few methods where it simply does not make any sense, all menu methods that require specifying a menu item
+  accept either a menu item identifier or a menu item position. The menu item specifier is refered to as the menu item
+  ID. Since both identifiers and positions are numbers, the programmer needs to specify which is bing used. However, by
+  default, the ID is assumed to be an indetifier. Therefore, the programmer only need indicate when the ID is a position
+  ID.
+</para>
+</section>
+
+<section id="sctMenuCommandEvents"><title>Menu Command Events</title>
+<indexterm><primary>menu object</primary><secondary>command events</secondary></indexterm>
+<para>
+  Menu items that are not separators and do not open a submenu are called menu command items. When a user selects a
+  command item, an <link linkend="ovvEvents">event</link> is generated and the operating system sends a notification to
+  the owner window of the menu. The ooDialog framework provides methods to connect this menu command notification to a
+  method in the Rexx dialog object in a similar manner to connecting dialog control <link
+  linkend="sctConnectingEvents">notifications</link>. The event connection methods are contained within the various menu
+  objects and are similar to the event connection methods of the dialog object.
+</para>
+<para>
+  However, there are some specific details when dealing with menus that should be understood. The menu command event is
+  connected using the menu item <link linkend="sctMenuItemIDs">identifier</link> of the command item, just as dialog
+  control events are connected using the resource ID of the dialog control. Event notifications are always connected to
+  a specific Rexx dialog object, the dialog object that represents the <link linkend="ovvUnderlying">underlying</link>
+  dialog that the notification is expected to be sent to.
+</para>
+<para>
+  A Rexx dialog control object has one, and only one, underlying dialog. But, a Rexx <link linkend="clsMenuBar">menu bar
+  </link> object can be attached to one dialog, then detached and attached to a different dialog. Likewise, the same
+  <link linkend="clsPopupMenu">context</link> menu could be used by any number of different dialogs. Because of this, it
+  may be necessary to connect a menu command item notification to more than one dialog.
+</para>
+<para>
+  For example, the same context menu object could be used by the programmer in several different dialogs. In this case,
+  it is not sufficient to connect each of the menu items once, to one dialog. Rather, the menu items need to be
+  connected to each dialog where the context menu is used. When the programmer <link
+  linkend="mthShowClsPopupMenu">shows</link> the context menu, it will have one and only one owner dialog. When the user
+  selects a menu item, the notification is sent to that owner dialog.
+</para>
+<para>
+  Another example would be a program that shows different dialogs at various times. The dialogs are different, but all
+  have a menu bar that contains the same items. One approach would be to create a single menu bar, that is attached to
+  each dialog when it is shown. The menu items of the menu bar would then need to be connected to each dialog that the
+  menu bar is attached to during the program.
+</para>
+<para>
+  One last point the programmer should be aware of. Both a menu item selection and a <link
+  linkend="clsButton">button</link> click generate the same event notification. Sometimes the action to take when a
+  button is clicked and the action to take when a menu item is selected are the same. In these cases, it is a common
+  practice in Windows programming to use the same resource ID for both the button and the menu item and then use the
+  same event handler for both the button push and the menu item selection. To use this method in ooDialog, the
+  programmer would need to only connect the event once.
+</para>
+<para>
+  E.g., take the case of an OK push button and an Exit menu item. Many times the action to take for both is exactly the
+  same. Here the ooDialog programmer would use the same resource ID for both the button and the menu item. OK buttons
+  normally use the resource ID of <computeroutput>IDOK</computeroutput>, which the ooDialog framework <link
+  linkend="sctStandardEventMethods">automatically</link> connects to the <link linkend="mthOk">OK</link> method. If the
+  programmer also uses the IDOK id for the Exit menu item, then nothing else need be done. Whether the user selects the
+  Exit menu item, or clicks the OK button, the same method in the Rexx dialog object will be invoked.
+</para>
+<para>
+  Notice that, since a button click and a menu item selection generate the same notification, it is not possible to
+  connect a menu item and a button click to separate methods if the they both have the same resource ID.
+</para>
+
+</section>
+
+<section id="clsMenu"><title>The Menu Object</title>
+<indexterm><primary>Menu class</primary></indexterm>
+<indexterm><primary>The Menu Object</primary></indexterm>
+<indexterm><primary>menu object</primary></indexterm>
+<para>
+  All the menu classes in ooDialog are similar. Menus have a large number of methods that are common to all types of
+  menus. These common methods are contained in the <computeroutput>Menu</computeroutput> class, a mixin class inherited
+  by all menu classes. This document treats the menu object in the same way it does the dialog <link
+  linkend="chpDialogObject">object</link> and the dialog control<link linkend="chpDialogControlObject">object</link>, as
+  an abstract concept. However, in this case the abstract menu object and the <computeroutput>Menu</computeroutput>
+  mixin class are essentially the same.
+</para>
+<para>
+  The methods listed in this chapter are all methods of the <computeroutput>Menu</computeroutput> class and all ooDialog
+  menus have these methods.
+</para>
+
+<section id="sctMethodsMenuObject"><title>Method Table</title>
+<para>
+  The following table lists the class methods, attributes, and instance methods that all menus have in common:
+<table id="tblMethodsMenuObject" frame="all"> <title>Menu Object Method Reference</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Menu Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthConnectCommandEventCls">connectCommandEvent</link></entry>
+<entry>Connects a menu command event notification from a menu to a method in a Rexx dialog.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="atrHMenu">hMenu</link></entry>
+<entry>The Windows handle of the menu.</entry>
+</row>
+<row>
+<entry><link linkend="atrWID">wID</link></entry>
+<entry>The resource ID of the menu.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthCheckClsMenu">check</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthCheckRadioButton">checkRadioButton</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectAllCommandEvents">connectAllCommandEvents</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectCommandEvent">connectCommandEvent</link></entry>
+<entry>Connects a menu command event notification from a menu to a method in a Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectMenuEvent">connectMenuEvent</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectSomeCommandEvents">connectSomeCommandEvents</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthDeletePopup">deletePopup</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthDestroyClsMenu">destroy</link></entry>
+<entry>Releases the system resources used by the menu.</entry>
+</row>
+<row>
+<entry><link linkend="mthDisableClsMenu">disable</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthEnableClsMenu">enable</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetAutoConnectStatus">getAutoConnectStatus</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetCountClsMenu">getCount</link></entry>
+<entry>Returns the number of items in the menu.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetHandle">getHandle</link></entry>
+<entry>Returns the value of the hMenu attribute of the menu.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetHelpID">getHelpID</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetIDClsMenu">getID</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetItemState">getItemState</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetMaxHeight">getMaxHeight</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetMenuHandle">getMenuHandle</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetPopup"></link>getPopup</entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetTextClsMenu">getText</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetType">getType</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGray">gray</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthHilite">hilite</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthInsertItem">insertItem</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthInsertPopup">insertPopup</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthInsertSeparator">insertSeparator</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsChecked">isChecked</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsCommandItem">isCommandItem</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsDisabled">isDisabled</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsEnabledClsMenu">isEnabled</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsGrayed">isGrayed</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsPopup">isPopup</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsSeparator">isSeparator</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsValidItemID">isValidItemID</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsValidMenu">isValidMenu</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsValidMenuHandle">isValidMenuHandle</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthItemTextToMethodName">itemTextToMethodName</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthReleaseMenuHandle">releaseMenuHandle</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthRemoveItem">removeItem</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthRemovePopup">removePopup</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthRemoveSeparator">removeSeparator</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetAutoConnection">setAutoConnection</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetHelpID">setHelpID</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetID">setID</link></entry>
+<entry>Sets the resource ID of the menu.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetMaxHeight">setMaxHeight</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetTextClsMenu">setText</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthUncheckClsMenu">uncheck</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthUnhilite">unhilite</link></entry>
+<entry>.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="sctMenuClassMethods"><title>Class Methods</title>
+<indexterm><primary>class methods</primary><secondary>menu object</secondary></indexterm>
+<indexterm><primary>menu object</primary><secondary>class methods</secondary></indexterm>
+
+<section id="mthConnectCommandEventCls"><title>connectCommandEvent</title>
+<indexterm><primary>connectCommandEvent</primary><secondary>menu object</secondary><tertiary>class method</tertiary></indexterm>
+<indexterm><primary>menu object</primary><secondary>connectCommandEvent</secondary><tertiary>class method</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectCommandEvent(--id-,--methodName-,--dlg--+--------------+--)---------><
+                                                   +-,-isHandled--+
+]]>
+</programlisting>
+
+<para>
+  Connects a menu command item event notification with a method in the specified Rexx dialog. The notification is sent
+  to the windows dialog when a command item in a menu is selected by the user.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Menu::connectCommandEvent() -->
+
+</section>  <!-- End Section: Class Methods -->
+
+<section id="sctMenuAttributes"><title>Attributes</title>
+<indexterm><primary>menu object</primary><secondary>attributes</secondary></indexterm>
+
+<section id="atrHMenu"><title>hMenu</title>
+<indexterm><primary>hMenu</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>hMenu</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hMenu--------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The Windows <link linkend="defHandle">handle</link> of the menu.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">hMenu get:</emphasis></term>
+  <listitem>
+  <para>
+    The returned handle, if it is not null, can be used in any ooDialog method that takes a menu handle as an argument.
+    The <link linkend="mthGetHandle">getMenuHandle</link>() also returns the value of this attribute.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">hMenu set:</emphasis></term>
+  <listitem>
+  <para>
+    This is a <emphasis role="italic">get</emphasis> only attribute. The programmer can not set the attribute through
+    assignment. I.e.,
+<programlisting>
+<![CDATA[
+  menuObj~hMenu = handle
+]]>
+</programlisting>
+    is not valid.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If a menu is released through the <link linkend="mthDestroyClsMenu">destroy</link>() method, the menu handle will
+    then be null and is no longer valid. The menu handle is a Rexx <computeroutput>Pointer</computeroutput> object and
+    therefore has the methods of that class. Specifically it has the <emphasis role="italic">isNull</emphasis>() method,
+    which can be used to test if the handle is still valid.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Menu::hMenu() [attribute]  -->
+
+<section id="atrWID"><title>wID</title>
+<indexterm><primary>wID</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>wID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--wID----------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The resource ID of this menu.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">wID get:</emphasis></term>
+  <listitem>
+  <para>
+    The resource ID may be -1 if the ID was not set when the menu was created.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">wID set:</emphasis></term>
+  <listitem>
+  <para>
+    This is a <emphasis role="italic">get</emphasis> only attribute. The programmer can not set the attribute through
+    assignment. I.e.,
+<programlisting>
+<![CDATA[
+  menuObj~wID = 110
+]]>
+</programlisting>
+    is not valid.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Although the programmer can not set the <emphasis role="italic">wID</emphasis> attribute directly, it can be set
+    when menu is instantiated, for instance see the <computeroutput>BinaryMenuBar</computeroutput> <link
+    linkend="mthNewClsBinaryMenuBar">new</link> method or the <computeroutput>PopupMenu</computeroutput> <link
+    linkend="mthNewClsPopupMenu">new</link> method. In addition, the <link linkend="mthSetID">setID</link> method can be
+    used to set or change the ID of a <emphasis role="italic">submenu</emphasis>.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Menu::wID() [attribute]  -->
+
+
+</section>  <!-- End Section: Attributes -->
+
+<section id="mthGetCountClsMenu"><title>getCount</title>
+<indexterm><primary>getCount</primary><secondary>Menu class</secondary></indexterm>
+<indexterm><primary>menu object</primary><secondary>getCount</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCount-----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines the number of menu items in this menu.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The number of menu items in the menu, or -1 on error.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The number of items in a menu will include the separator and submenu items, but not the count of items in the
+    submeneus. In other words, it is not a recursive count, just a count of the single menu.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+<programlisting>
+<![CDATA[
+  count = menuObj~count
+  if count \== -1 then do
+    say 'The menu has' count 'items.'
+  end
+  else do
+    say 'Error getting count of menu items:'
+    say '  Error Code:' .SystemErrorCode SysGetErrortext(.SystemErrorCode)
+  end
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthIsValidMenu"><title>isValidMenu</title>
+<indexterm><primary>isValidMenu</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>isValidMenu</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isValidMenu--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Checks if the menu is valid. The menu would not be valid if it has been <link
+  linkend="mthDestroyClsMenu">destroyed</link> or <link linkend="mthReleaseMenuHandle">released</link>. In addition, the
+  menu could no longer be valid for some operating system reason, although this is highly unlikely.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if the menu is valid, otherwise false.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Menu::isValidMenu() -->
+
+<section id="mthIsValidMenuHandle"><title>isValidMenuHandle</title>
+<indexterm><primary>isValidMenuHandle</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>isValidMenuHandle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isValidMenuHandle(--handle--)--------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Given a handle, determines if the handle is a menu handle and, if it is, if the menu is still valid.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>handle</term>
+    <listitem>
+    <para>
+      The handle to check if it is a valid menu handle.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True if <emphasis role="italic">handle</emphasis> is the handle of a valid menu, otherwise false.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::isValidMenuHandle() -->
+
+<section id="mthIsValidItemID"><title>isValidItemID</title>
+<indexterm><primary>isValidItemID</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>isValidItemID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isValidItemID(--id--+---------------+--)---------><
+                        +-,-byPosition--+
+]]>
+</programlisting>
+
+<para>
+  Determines if a specific menu item <link linkend="sctMenuItemIDs">ID</link> is valid for this menu.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The menu item ID to check.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If the item ID is a resource ID or a positional ID. The default is false, a resource ID. Use true if the ID is a
+      positional ID.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True if the id is valid for the menu, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::isValidItemID() -->
+
+<section id="mthIsPopup"><title>isPopup</title>
+<indexterm><primary>isPopup</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>isPopup</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isPopup(--+--------+--)---------------------------------------------><
+              +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::isPopup() -->
+
+<section id="mthIsCommandItem"><title>isCommandItem</title>
+<indexterm><primary>isCommandItem</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>isCommandItem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isCommandItem(--+--------+--)---------------------------------------------><
+                    +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::isCommandItem() -->
+
+<section id="mthIsSeparator"><title>isSeparator</title>
+<indexterm><primary>isSeparator</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>isSeparator</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isSeparator(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::isSeparator() -->
+
+<section id="mthGetHandle"><title>getHandle</title>
+<indexterm><primary>getHandle</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>getHandle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getHandle----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Menu::getHandle() -->
+
+<section id="mthGetMenuHandle"><title>getMenuHandle</title>
+<indexterm><primary>getMenuHandle</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>getMenuHandle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMenuHandle(--+--------+--)---------------------------------------------><
+                    +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::getMenuHandle() -->
+
+<section id="mthReleaseMenuHandle"><title>releaseMenuHandle</title>
+<indexterm><primary>releaseMenuHandle</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>releaseMenuHandle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--releaseMenuHandle(--handle--)---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Releases (frees) the operating system resources used by a menu. The menu is specified by its Windows <link
+  linkend="defHandle">handle</link>. To release the operating system resources for an ooDialog
+  <computeroutput>Menu</computeroutput> object, use the <link linkend="mthDestroyClsMenu">destroy</link>() method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>handle [required]</term>
+    <listitem>
+    <para>
+      The handle of the menu to release. The handle must not be null.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true for success, false for failure.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Menu::releaseMenuHandle() -->
+
+<section id="mthDestroyClsMenu"><title>destroy</title>
+<indexterm><primary>destroy</primary><secondary>menu object</secondary></indexterm>
+<indexterm><primary>menu object</primary><secondary>destroy</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--destroy(--+--------+--)---------------------------------------------><
+              +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Menu::destroy() -->
+
+<section id="mthGetPopup"><title>getPopup</title>
+<indexterm><primary>getPopup</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>getPopup</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getPopup(--+--------+--)---------------------------------------------><
+               +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::getPopup() -->
+
+<section id="mthInsertPopup"><title>insertPopup</title>
+<indexterm><primary>insertPopup</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>insertPopup</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--insertPopup(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::insertPopup() -->
+
+<section id="mthInsertItem"><title>insertItem</title>
+<indexterm><primary>insertItem</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>insertItem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--insertItem(--+--------+--)---------------------------------------------><
+                 +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::insertItem() -->
+
+<section id="mthInsertSeparator"><title>insertSeparator</title>
+<indexterm><primary>insertSeparator</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>insertSeparator</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--insertSeparator(--+--------+--)---------------------------------------------><
+                      +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::insertSeparator() -->
+
+<section id="mthRemovePopup"><title>removePopup</title>
+<indexterm><primary>removePopup</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>removePopup</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removePopup(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::removePopup() -->
+
+<section id="mthRemoveItem"><title>removeItem</title>
+<indexterm><primary>removeItem</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>removeItem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removeItem(--+--------+--)---------------------------------------------><
+                 +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::removeItem() -->
+
+<section id="mthRemoveSeparator"><title>removeSeparator</title>
+<indexterm><primary>removeSeparator</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>removeSeparator</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removeSeparator(--+--------+--)---------------------------------------------><
+                      +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::removeSeparator() -->
+
+<section id="mthDeletePopup"><title>deletePopup</title>
+<indexterm><primary>deletePopup</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>deletePopup</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--deletePopup(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::deletePopup() -->
+
+<section id="mthIsEnabledClsMenu"><title>isEnabled</title>
+<indexterm><primary>isEnabled</primary><secondary>menu object</secondary></indexterm>
+<indexterm><primary>menu object</primary><secondary>isEnabled</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isEnabled(--+--------+--)---------------------------------------------><
+                +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::isEnabled() -->
+
+<section id="mthIsDisabled"><title>isDisabled</title>
+<indexterm><primary>isDisabled</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>isDisabled</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isDisabled(--+--------+--)---------------------------------------------><
+                 +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::isDisabled() -->
+
+<section id="mthIsGrayed"><title>isGrayed</title>
+<indexterm><primary>isGrayed</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>isGrayed</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isGrayed(--+--------+--)---------------------------------------------><
+               +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::isGrayed() -->
+
+<section id="mthIsChecked"><title>isChecked</title>
+<indexterm><primary>isChecked</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>isChecked</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isChecked----------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::isChecked() -->
+
+<section id="mthEnableClsMenu"><title>enable</title>
+<indexterm><primary>enable</primary><secondary>menu object</secondary></indexterm>
+<indexterm><primary>menu object</primary><secondary>enable</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--enable(--+--------+--)---------------------------------------------><
+             +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::enable() -->
+
+<section id="mthDisableClsMenu"><title>disable</title>
+<indexterm><primary>disable</primary><secondary>menu object</secondary></indexterm>
+<indexterm><primary>menu object</primary><secondary>disable</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--disable(--+--------+--)---------------------------------------------><
+              +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::disable() -->
+
+<section id="mthGray"><title>gray</title>
+<indexterm><primary>gray</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>gray</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--gray(--+--------+--)---------------------------------------------><
+           +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::gray() -->
+
+<section id="mthCheckClsMenu"><title>check</title>
+<indexterm><primary>check</primary><secondary>menu object</secondary></indexterm>
+<indexterm><primary>menu object</primary><secondary>check</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--check(--+--------+--)---------------------------------------------><
+            +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::check() -->
+
+<section id="mthUncheckClsMenu"><title>uncheck</title>
+<indexterm><primary>uncheck</primary><secondary>menu object</secondary></indexterm>
+<indexterm><primary>menu object</primary><secondary>uncheck</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--uncheck(--+--------+--)---------------------------------------------><
+              +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::uncheck() -->
+
+<section id="mthCheckRadioButton"><title>checkRadioButton</title>
+<indexterm><primary>checkRadioButton</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>checkRadioButton</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--checkRadioButton(--+--------+--)---------------------------------------------><
+                       +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::checkRadioButton() -->
+
+<section id="mthHilite"><title>hilite</title>
+<indexterm><primary>hilite</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>hilite</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hilite(--+--------+--)---------------------------------------------><
+             +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::hilite() -->
+
+<section id="mthUnhilite"><title>unhilite</title>
+<indexterm><primary>unhilite</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>unhilite</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--unhilite(--+--------+--)---------------------------------------------><
+               +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::unhilite() -->
+
+<section id="mthGetItemState"><title>getItemState</title>
+<indexterm><primary>getItemState</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>getItemState</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getItemState(--+--------+--)---------------------------------------------><
+                   +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::getItemState() -->
+
+<section id="mthGetType"><title>getType</title>
+<indexterm><primary>getType</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>getType</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getType(--+--------+--)---------------------------------------------><
+              +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::getType() -->
+
+<section id="mthGetTextClsMenu"><title>getText</title>
+<indexterm><primary>getText</primary><secondary>menu object</secondary></indexterm>
+<indexterm><primary>menu object</primary><secondary>getText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getText(--+--------+--)---------------------------------------------><
+              +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::getText() -->
+
+<section id="mthSetTextClsMenu"><title>setText</title>
+<indexterm><primary>setText</primary><secondary>menu object</secondary></indexterm>
+<indexterm><primary>menu object</primary><secondary>setText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setText(--+--------+--)---------------------------------------------><
+              +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::setText() -->
+
+<section id="mthGetIDClsMenu"><title>getID</title>
+<indexterm><primary>getID</primary><secondary>menu object</secondary></indexterm>
+<indexterm><primary>menu object</primary><secondary>getID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getID(--+--------+--)---------------------------------------------><
+            +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::getID() -->
+
+<section id="mthSetID"><title>setID</title>
+<indexterm><primary>setID</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>setID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setID(--+--------+--)----------------------------><
+            +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Menu::setID() -->
+
+<section id="mthSetHelpID"><title>setHelpID</title>
+<indexterm><primary>setHelpID</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>setHelpID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setHelpID(--+--------+--)---------------------------------------------><
+                +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::setHelpID() -->
+
+<section id="mthGetHelpID"><title>getHelpID</title>
+<indexterm><primary>getHelpID</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>getHelpID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getHelpID(--+--------+--)---------------------------------------------><
+                +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::getHelpID() -->
+
+<section id="mthSetMaxHeight"><title>setMaxHeight</title>
+<indexterm><primary>setMaxHeight</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>setMaxHeight</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setMaxHeight(--+--------+--)---------------------------------------------><
+                   +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::setMaxHeight() -->
+
+<section id="mthGetMaxHeight"><title>getMaxHeight</title>
+<indexterm><primary>getMaxHeight</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>getMaxHeight</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getMaxHeight(--+--------+--)---------------------------------------------><
+                   +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::getMaxHeight() -->
+
+<section id="mthItemTextToMethodName"><title>itemTextToMethodName</title>
+<indexterm><primary>itemTextToMethodName</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>itemTextToMethodName</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--itemTextToMethodName(--+--------+--)---------------------------------------------><
+                           +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::itemTextToMethodName() -->
+
+<section id="mthSetAutoConnection"><title>setAutoConnection</title>
+<indexterm><primary>setAutoConnection</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>setAutoConnection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setAutoConnection(--+--------+--)---------------------------------------------><
+                        +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::setAutoConnection() -->
+
+<section id="mthGetAutoConnectStatus"><title>getAutoConnectStatus</title>
+<indexterm><primary>getAutoConnectStatus</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>getAutoConnectStatus</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getAutoConnectStatus(--+--------+--)---------------------------------------------><
+                           +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::getAutoConnectStatus() -->
+
+<section id="mthConnectCommandEvent"><title>connectCommandEvent</title>
+<indexterm><primary>connectCommandEvent</primary><secondary>menu object</secondary><tertiary>instance method</tertiary></indexterm>
+<indexterm><primary>menu object</primary><secondary>connectCommandEvent</secondary><tertiary>instance method</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectCommandEvent(--id--,--methodName--+--------+--)---------------------><
+                                             +-,-dlg--+
+]]>
+</programlisting>
+
+<para>
+  Connects a menu command item event notification with a method in a Rexx dialog. The notification is sent to the
+  Windows dialog when a command item in a menu is selected by the user.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the menu item, may be symbolic or numeric.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>methodName [required]</term>
+    <listitem>
+    <para>
+      The name of the method in the Rexx dialog to connect the notifcation to.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dlg [optional]</term>
+    <listitem>
+    <para>
+      A Rexx dialog to connect the notification to. By default, the notification is is connected to the Rexx dialog that
+      the menu is <link linkend="mthAttachTo">attached</link> or <link linkend="mthAssignTo">assinged</link> to.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Menu::connectCommandEvent() -->
+
+<section id="mthConnectAllCommandEvents"><title>connectAllCommandEvents</title>
+<indexterm><primary>connectAllCommandEvents</primary><secondary>menu object</secondary></indexterm>
+<indexterm><primary>menu object</primary><secondary>connectAllCommandEvents</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectAllCommandEvents(--+--------+--)---------------------------------------------><
+                              +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::connectAllCommandEvents() -->
+
+<section id="mthConnectSomeCommandEvents"><title>connectSomeCommandEvents</title>
+<indexterm><primary>connectSomeCommandEvents</primary><secondary>menu object</secondary></indexterm>
+<indexterm><primary>menu object</primary><secondary>connectSomeCommandEvents</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectSomeCommandEvents(--+--------+--)---------------------------------------------><
+                               +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::connectSomeCommandEvents() -->
+
+<section id="mthConnectMenuEvent"><title>connectMenuEvent</title>
+<indexterm><primary>connectMenuEvent</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>connectMenuEvent</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectMenuEvent(--+--------+--)---------------------------------------------><
+                       +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::connectMenuEvent() -->
+
+</section>  <!-- End Menu class -->
+
+
+<section id="clsMenuBar"><title>The Menu Bar Object</title>
+<indexterm><primary>MenuBar class</primary></indexterm>
+<indexterm><primary>The MenuBar Object</primary></indexterm>
+<indexterm><primary>menu bar object</primary></indexterm>
+<para>
+  A menu bar is often called the top-level menu. It is the bar poisitioned just below the title bar of an application
+  window or a dialog. The menu bar object is used, like the <link linkend="clsMenu">menu</link>, <link
+  linkend="chpDialogObject">dialog</link>, and dialog <link linkend="chpDialogControlObject"></link> objects as an
+  abstract concept to document the ooDialog menu objects that represent menu bars. The <link
+  linkend="clsBinaryMenuBar">BinaryMenuBar</link>, <link linkend="clsUserMenuBar">UserMenuBar</link>, and <link
+  linkend="clsScriptMenuBar">ScriptMenuBar</link> classes.
+</para>
+<para>
+  The menu bar object is implemented through the <computeroutput>MenuBar</computeroutput> mixin classs and all menu bars
+  have the methods of the <computeroutput>MenuBar</computeroutput> class. Similar to the the menu object, the menu bar
+  object is essentially the <computeroutput>MenuBar</computeroutput> mixin class.
+</para>
+
+<section id="sctMethodsMenuBar"><title>Method Table</title>
+<para>
+  The following table lists the class methods, attributes, and instance methods of the menu bar object.
+<table id="tblMethodsMenuBar" frame="all"> <title>MenuBar Object Method Reference</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><link linkend="mthAttachTo">attachTo</link></entry>
+<entry>Attaches the menu bar to the specified dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsAttached">isAttached</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthDetach">detach</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthReplace">replace</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthRedrawClsMenu">redraw</link></entry>
+<entry>.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthAttachTo"><title>attachTo</title>
+<indexterm><primary>attachTo</primary></indexterm>
+<indexterm><primary>menu bar object</primary><secondary>attachTo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--attachTo(--dlg--)--------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Attaches this menu bar to the specified dialog/  If the dialog already has a menu bar attached to it, this method will
+  replace that menu bar with this menu bar.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>The only argument is:
+  <variablelist>
+    <varlistentry><term>dlg [required]</term>
+    <listitem>
+    <para>
+      The Rexx dialog the menu bar is to be attached to.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      True on success, false for failure.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MenuBar::attachTo() -->
+
+<section id="mthIsAttached"><title>isAttached</title>
+<indexterm><primary>isAttached</primary></indexterm>
+<indexterm><primary>menu bar object</primary><secondary>isAttached</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isAttached(--+--------+--)---------------------------------------------><
+                 +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu  bar object::isAttached() -->
+
+<section id="mthDetach"><title>detach</title>
+<indexterm><primary>detach</primary></indexterm>
+<indexterm><primary>menu bar object</primary><secondary>detach</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--detach(--+--------+--)---------------------------------------------><
+             +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu bar object::detach() -->
+
+<section id="mthReplace"><title>replace</title>
+<indexterm><primary>replace</primary></indexterm>
+<indexterm><primary>menu bar object</primary><secondary>replace</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--replace(--+--------+--)---------------------------------------------><
+              +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu bar Object::replace() -->
+
+<section id="mthRedrawClsMenu"><title>redraw</title>
+<indexterm><primary>redraw</primary><secondary>menu bar object</secondary></indexterm>
+<indexterm><primary>menu bar object</primary><secondary>redraw</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--redraw(--+--------+--)---------------------------------------------><
+             +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu bar object::redraw() -->
+
+</section>  <!-- End MenuBar class -->
+
+<section id="clsBinaryMenuBar"><title>BinaryMenuBar Class</title>
+<indexterm><primary>BinaryMenuBar class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+</para>
+
+<section id="sctMethodsBinaryMenuBar"><title>Method Table</title>
+<para>
+  The following table lists the class methods, attributes, and instance methods of the BinaryMenuBar.
+<table id="tblMethodsBinaryMenuBar" frame="all"> <title>Method Reference</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><link linkend="mthNewClsBinaryMenuBar">new (Class)</link></entry>
+<entry>Instantiates a new binary menu bar object.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+
+<section id="mthNewClsBinaryMenuBar"><title>new (Class)</title>
+<indexterm><primary>new</primary><secondary>BinaryMenuBar class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+--------+--)---------------------------------------------><
+          +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End BinaryMenuBar::new() -->
+
+</section>  <!-- End BinaryMenuBar class -->
+
+<section id="clsScriptMenuBar"><title>ScriptMenuBar Class</title>
+<indexterm><primary>ScriptMenuBar class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+  More text
+</para>
+
+<section id="sctMethodsScriptMenuBar"><title>Method Table</title>
+<para>
+  The following table lists the class methods and instance methods of the
+  <computeroutput>ScriptMenuBar</computeroutput>.
+<table id="tblMethodsScriptMenuBar" frame="all"> <title>ScriptMenuBar Method Reference</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><link linkend="mthNewClsScriptMenuBar">new (Class)</link></entry>
+<entry>Returns a new <computeroutput>ScriptMenuBar</computeroutput> object.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsScriptMenuBar"><title>new (Class)</title>
+<indexterm><primary>new</primary><secondary>ScriptMenuBar class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--x--,--y--)---------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>x</term>
+    <listitem>
+    <para>
+      xx.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>y</term>
+    <listitem>
+    <para>
+      yyy,
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      Some error.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>  <!-- End ScriptMenuBar class -->
+
+<section id="clsUserMenuBar"><title>UserMenuBar Class</title>
+<indexterm><primary>UserMenuBar class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+  Text
+</para>
+
+<section id="sctMethodsUserMenuBar"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>UserMenuBar</computeroutput>.
+<table id="tblMethodsUserMenuBar" frame="all"> <title>UserMenuBar Method Reference</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><link linkend="mthNewClsUserMenuBar">new (Class)</link></entry>
+<entry>Returns a new <computeroutput>UserMenuBar</computeroutput>object.</entry>
+</row>
+<row>
+<entry><link linkend="mthAddItem">addItem</link></entry>
+<entry>Adds a command menu item to the menu template.</entry>
+</row>
+<row>
+<entry><link linkend="mthAddPopup">addPopuup</link></entry>
+<entry>Adds a popup menu, a submenu, to the menu template.</entry>
+</row>
+<row>
+<entry><link linkend="mthAddSeparator">addSeparator</link></entry>
+<entry>Adds a separator menu item to the menu template.</entry>
+</row>
+<row>
+<entry><link linkend="mthComplete">complete</link></entry>
+<entry>Converts the menu template to a menu.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsComplete">isComplete</link></entry>
+<entry>Tests if the menu template has been finished and converted to a menu.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsUserMenuBar"><title>new (Class)</title>
+<indexterm><primary>new</primary><secondary>UserMenuBar class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--x--,--y--)---------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>x</term>
+    <listitem>
+    <para>
+      xx.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>y</term>
+    <listitem>
+    <para>
+      yyy,
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      Some error.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthAddItem"><title>addItem</title>
+<indexterm><primary>addItem</primary></indexterm>
+<indexterm><primary>UserMenuBar class</primary><secondary>addItem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addItem(--+--------+--)---------------------------------------------><
+              +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UserMenuBar::addItem() -->
+
+<section id="mthAddPopup"><title>addPopup</title>
+<indexterm><primary>addPopup</primary></indexterm>
+<indexterm><primary>UserMenuBar class</primary><secondary>addPopup</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addPopup(--id--,--name--+--------+--+----------+--)----><
+                            +-,-opts-+  +-,-helpID-+
+]]>
+</programlisting>
+
+<para>
+  Adds a popup menu, a submenu, to the in-memory template.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID for the popup menu, may be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>name [required]</term>
+    <listitem>
+    <para>
+      The text label of the popup menu.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>opts [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces, case is not significant:
+    </para>
+    <para>
+    <simplelist type='vert' columns='3'>
+      <member>DEFAULT      </member>
+      <member>DISABLED     </member>
+      <member>GRAYED       </member>
+      <member>HILITE       </member>
+      <member>MENUBARBREAK </member>
+      <member>MENUBREAK    </member>
+      <member>RIGHTJUSTIFY </member>
+      <member>RIGHTORDER   </member>
+      <member>END          </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>DEFAULT</term>
+      <listitem>
+      <para>
+        text
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DISABLE</term>
+      <listitem>
+      <para>
+         The
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>GRAYED</term>
+      <listitem>
+      <para>
+         The
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HILITE</term>
+      <listitem>
+      <para>
+         The
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MENUBARBREAK</term>
+      <listitem>
+      <para>
+         The
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MENUBREAK</term>
+      <listitem>
+      <para>
+         T
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RIGHTJUSTIFY</term>
+      <listitem>
+      <para>
+         T
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RIGHTORDER</term>
+      <listitem>
+      <para>
+         T
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>END</term>
+      <listitem>
+      <para>
+         T
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthAddSeparator"><title>addSeparator</title>
+<indexterm><primary>addSeparator</primary></indexterm>
+<indexterm><primary>UserMenuBar class</primary><secondary>addSeparator</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addSeparator(--+--------+--)---------------------------------------------><
+                   +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UserMenuBar::addSeparator() -->
+
+<section id="mthComplete"><title>complete</title>
+<indexterm><primary>complete</primary></indexterm>
+<indexterm><primary>UserMenuBar class</primary><secondary>complete</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--complete(--+--------+--)---------------------------------------------><
+               +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UserMenuBar::complete() -->
+
+<section id="mthIsComplete"><title>isComplete</title>
+<indexterm><primary>isComplete</primary></indexterm>
+<indexterm><primary>UserMenuBar class</primary><secondary>isComplete</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isComplete(--+--------+--)---------------------------------------------><
+                 +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UserMenuBar::isComplete() -->
+
+</section>  <!-- End UserMenuBar class -->
+
+<section id="clsPopupMenu"><title>PopupMenu Class</title>
+<indexterm><primary>PopupMenu class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+  Text
+</para>
+
+<section id="sctMethodsPopupMenu"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>PopupMenu</computeroutput>.
+<table id="tblMethodsPopupMenu" frame="all"> <title>PopupMenu Method Reference</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthConnectContextMenuCls">connectContextMenu</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsPopupMenu">new</link></entry>
+<entry>Returns a new <computeroutput>PopupMenu</computeroutput>object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthAssignTo">assignTo</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectContextMenu">connectContextMenu</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsAssigned">isAssigned</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthShowClsPopupMenu">show</link></entry>
+<entry>Shows a popup menu as a context menu and returns immediately.</entry>
+</row>
+<row>
+<entry><link linkend="mthTrack">track</link></entry>
+<entry>Shows a popup menu as a context menu and returns when the menu is dismissed</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsPopupMenu"><title>new (Class)</title>
+<indexterm><primary>new</primary><secondary>PopupMenu class</secondary></indexterm>
+<indexterm><primary>PopupMenu class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--x--,--y--)---------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Description
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>x</term>
+    <listitem>
+    <para>
+      xx.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>y</term>
+    <listitem>
+    <para>
+      yyy
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      Some error.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+x = y
+return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthConnectContextMenuCls"><title>connectContextMenu (Class)</title>
+<indexterm><primary>connectContextMenu</primary><secondary>PopupMenu class</secondary><tertiary>class method</tertiary></indexterm>
+<indexterm><primary>PopupMenu class</primary><secondary>connectContextMenu</secondary><tertiary>class method</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectContextMenu(--dlg--,--methodName--+---------+--+-----------+--)-----><
+                                             +-,-hwnd--+  +-,-handles-+
+]]>
+</programlisting>
+
+<para>
+  Connects the context menu <link linkend="ovvEvents">event</link> notification to a method in a Rexx dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The context menu event is generated when the user right-mouse clicks on a window. The event can also be generated by
+    the keyboard by using SHIFT-F10 or the VK_APPS key (the Applications key on a Natural keyboard.)
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> on error. The system error code is set this way
+    in addition to what the OS might set:
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    ERROR_WINDOW_NOT_DIALOG (1420) -> The <emphasis role="italic">dlg</emphasis> argument is not a
+    <computeroutput>PlainBaseDialog</computeroutput>, (or subclass of course.)
+  </para>
+  <para>
+    ERROR_NOT_ENOUGH_MEMORY (8) -> The dialog message table is full.
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    If the programmer does not provide a method named <emphasis role="italic">methodName</emphasis> in the Rexx dialog,
+    a syntax condition will be raised if any context menu events happen.
+  </para>
+  <para>
+    The underlying dialog recieves the WM_CONTEXTMENU message as the notification for this event.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>dlg [required]</term>
+    <listitem>
+    <para>
+      The Rexx dialog the notification is being connect to.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>methodName [required]</term>
+    <listitem>
+    <para>
+      The method in the Rexx dialog to be invoked when the event happens.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd [optional]</term>
+    <listitem>
+    <para>
+      A window handle to filter the right-clicks on. This can be the window handle of any control in the dialog being
+      connnected, or even the dialog window handle itself. If used, only right-clicks on the specified window will be
+      received. If omitted, all right-clicks on the dialog are received.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    In many cases, the <link linkend="mthConnectContextMenu">connectContextMenu</link>() method will be more convenient
+    to use. This class method is provided for times when the menu object itself is not available. For instance, some
+    Windows applications dynamically create a context menu when receiving the event notification and then discard the
+    menu.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In this example the application creates the context menus after receiving the event notification. It needs to
+    connect the event before the menu objects actually exist.
+<programlisting>
+<![CDATA[
+::method initDialog
+  ...
+
+  lvHwnd = self~newListView(IDC_LV_EMPLOYEES)
+  .PopupMenu~connectContextMenu(self, "onListViewContext", lvHwnd)
+
+  .PopupMenu~connectContextMenu(self, "onDialogContext", self~hwnd)
+
+  ...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PopupMenu::connectContextMenu()::ClassMehtod -->
+
+<section id="mthAssignTo"><title>assignTo</title>
+<indexterm><primary>assignTo</primary></indexterm>
+<indexterm><primary>PopupMenu class</primary><secondary>assignTo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--assignTo(--+--------+--)-------------------------><
+               +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PopupMenu::assignTo() -->
+
+<section id="mthIsAssigned"><title>isAssigned</title>
+<indexterm><primary>isAssigned</primary></indexterm>
+<indexterm><primary>PopupMenu class</primary><secondary>isAssigned</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isAssigned(--+--------+--)-----------------------><
+                 +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PopupMenu::isAssigned() -->
+
+<section id="mthShowClsPopupMenu"><title>show</title>
+<indexterm><primary>show</primary><secondary>PopupMenu class</secondary></indexterm>
+<indexterm><primary>PopupMenu class</primary><secondary>show</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--show(--+--------+--)-----------------------------><
+           +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PopupMenu::show() -->
+
+<section id="mthTrack"><title>track</title>
+<indexterm><primary>track</primary></indexterm>
+<indexterm><primary>PopupMenu class</primary><secondary>track</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--track(--+--------+--)----------------------------><
+            +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PopupMenu::track() -->
+
+<section id="mthConnectContextMenu"><title>connectContextMenu</title>
+<indexterm><primary>connectContextMenu</primary><secondary>PopupMenu class</secondary><tertiary>instance method</tertiary></indexterm>
+<indexterm><primary>PopupMenu class</primary><secondary>connectContextMenu</secondary><tertiary>instance method</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectContextMenu(--methodName--+--------+--+---------+--+-----------+--)--><
+                                     +-,-dlg--+  +-,-hwnd--+  +-,-handles-+
+]]>
+</programlisting>
+
+<para>
+  Connects the context menu <link linkend="ovvEvents">event</link> notification to a method in a Rexx dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The context menu event is generated when the user right-mouse clicks on a window. The event can also be generated by
+    the keyboard by using SHIFT-F10 or the VK_APPS key (the Applications key on a Natural keyboard.)
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> on error. The system error code is set this way
+    in addition to what the OS might set:
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    ERROR_INVALID_FUNCTION (1) -> The dialog argument was omitted and the menu does not have an assigned dialog.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    ERROR_WINDOW_NOT_DIALOG (1420) -> The <emphasis role="italic">dlg</emphasis> argument is not a
+    <computeroutput>PlainBaseDialog</computeroutput>, (or subclass of course.)
+  </para>
+  <para>
+    ERROR_NOT_ENOUGH_MEMORY (8) -> The dialog message table is full.
+  </para>
+  </listitem>
+  </itemizedlist>
+  <para>
+    If the programmer does not provide a method named <emphasis role="italic">methodName</emphasis> in the Rexx dialog,
+    a syntax condition will be raised if any context menu events happen.
+  </para>
+  <para>
+    The underlying dialog recieves the WM_CONTEXTMENU message as the notification for this event.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>methodName [required]</term>
+    <listitem>
+    <para>
+      The method in the Rexx dialog to be invoked when the event happens.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dlg [optional]</term>
+    <listitem>
+    <para>
+      By default, the notification is connected to the owner dialog of the menu. However, the programmer can specify any
+      Rexx dialog here to connect the notification to. If the menu does not have an owner dialog then the programmer
+      must specify the Rexx dialog.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd [optional]</term>
+    <listitem>
+    <para>
+      A window handle to filter the right-clicks on. This can be the window handle of any control in the dialog being
+      connnected, or even the dialog window handle itself. If used, only right-clicks on the specified window will be
+      received. If omitted, all right-clicks on the dialog are received.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    NEED TEXT about args sent to the method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In this example the context menu notification is connected to the method, <emphasis
+    role="italic">onContextMenu</emphasis>. All
+<programlisting>
+<![CDATA[
+::method initDialog
+  ...
+
+  lvHwnd = self~newListView(IDC_LV_EMPLOYEES)
+  .PopupMenu~connectContextMenu(self, "onListViewContext", lvHwnd)
+
+  .PopupMenu~connectContextMenu(self, "onDialogContext", self~hwnd)
+
+  ...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PopupMenu::connectContextMenu()::InstanceMethod -->
+
+</section>  <!-- End PopupMenu class -->
+
+<section id="clsSystemMenu"><title>SystemMenu Class</title>
+<indexterm><primary>SystemMenu class</primary></indexterm>
+<para>
+  A ... is ..
+</para>
+<para>
+</para>
+
+<section id="sctMethodsSystemMenu"><title>Method Table</title>
+<para>
+  The following table lists the class methods, attributes, and instance methods of the SystemMenu.
+<table id="tblMethodsSystemMenu" frame="all"> <title>Method Reference</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><link linkend="mthNewClsSystemMenu">new (Class)</link></entry>
+<entry>Instantiates and returns a new system menu object.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectAllCommandEventsClsSystemMenu">connectAllCommandEvents</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectCommandEventClsSystemMenu">connectCommandEvent</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectSomeCommandEventsClsSystemMenu">connectSomeCommandEvents</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthRevert">revert</link></entry>
+<entry>.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+
+<section id="mthNewClsSystemMenu"><title>new (Class)</title>
+<indexterm><primary>new</primary><secondary>SystemMenu class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+--------+--)---------------------------------------------><
+          +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SystemMenu::new() -->
+
+<section id="mthRevert"><title>revert</title>
+<indexterm><primary>revert</primary></indexterm>
+<indexterm><primary>SystemMenu class</primary><secondary>revert</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--revert(--+--------+--)---------------------------------------------><
+             +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SystemMenu::revert() -->
+
+<section id="mthConnectCommandEventClsSystemMenu"><title>connectCommandEvent</title>
+<indexterm><primary>connectCommandEvent</primary><secondary>SystemMenu class</secondary></indexterm>
+<indexterm><primary>SystemMenu class</primary><secondary>connectCommandEvent</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectCommandEvent(--+--------+--)---------------------------------------------><
+                          +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SystemMenu::connectCommandEvent() -->
+
+<section id="mthConnectAllCommandEventsClsSystemMenu"><title>connectAllCommandEvents</title>
+<indexterm><primary>connectAllCommandEvents</primary><secondary>SystemMenu class</secondary></indexterm>
+<indexterm><primary>SystemMenu class</primary><secondary>connectAllCommandEvents</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectAllCommandEvents(--+--------+--)---------------------------------------------><
+                              +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SystemMenu::connectAllCommandEvents() -->
+
+<section id="mthConnectSomeCommandEventsClsSystemMenu"><title>connectSomeCommandEvents</title>
+<indexterm><primary>connectSomeCommandEvents</primary><secondary>SystemMenu class</secondary></indexterm>
+<indexterm><primary>SystemMenu class</primary><secondary>connectSomeCommandEvents</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectSomeCommandEvents(--+--------+--)---------------------------------------------><
+                               +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SystemMenu::connectSomeCommandEvents() -->
+
+</section>  <!-- End SystemMenu class -->
+
+</chapter>
