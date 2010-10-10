@@ -47,46 +47,44 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
              ../shared/oorexx.html.dsl
 
 
-SGML_FILES = advcntlc.sgml \
-	     basedialog.sgml \
-	     windowBaseCommon.sgml \
-	     windowExtensionsCommon.sgml \
-	     buttoncontrols.sgml \
-	     categorydialog.sgml \
-	     comboboxc.sgml \
-	     dialogcontrolc.sgml \
-	     editcontrolc.sgml \
-	     listboxc.sgml \
-	     listcontrolc.sgml \
-	     mesextcl.sgml \
-	     utilityclasses.sgml \
-	     oodialog.sgml \
-	     plainuserdialogc.sgml \
-	     preface.sgml \
-	     progressbarc.sgml \
-	     propertysheetc.sgml \
-	     overview.sgml \
-	     resdialog.sgml \
-	     scrollbarc.sgml \
-	     slidercontrolc.sgml \
-	     standarddialog.sgml \
-	     staticcontrolc.sgml \
-	     resources.sgml \
-	     tabcontrolc.sgml \
-	     treecontrolc.sgml \
-	     userdialog.sgml \
-	     ../shared/notices.sgml \
-	     ../shared/legalstuff.sgml \
-	     ../shared/gethelp.sgml \
-	     ../shared/CPLv1.0.sgml
-#	     menus.sgml \                remove for 4.0.0 release
-#	     dialogcontrolCommon.sgml \  not complete yet
+xml_FILES = baseClasses.xml \
+	     basedialog.xml \
+	     windowBaseCommon.xml \
+	     windowExtensionsCommon.xml \
+	     buttoncontrols.xml \
+	     categorydialog.xml \
+	     comboboxc.xml \
+	     dialogcontrolc.xml \
+	     editcontrolc.xml \
+	     listboxc.xml \
+	     listcontrolc.xml \
+	     mesextcl.xml \
+	     utilityclasses.xml \
+	     oodialog.xml \
+	     plainuserdialogc.xml \
+	     preface.xml \
+	     progressbarc.xml \
+	     propertysheetc.xml \
+	     overview.xml \
+	     resdialog.xml \
+	     scrollbarc.xml \
+	     slidercontrolc.xml \
+	     standarddialog.xml \
+	     staticcontrolc.xml \
+	     resources.xml \
+	     tabcontrolc.xml \
+	     treecontrolc.xml \
+	     userdialog.xml \
+	     ../shared/notices.xml \
+	     ../shared/legalstuff.xml \
+	     ../shared/gethelp.xml \
+	     ../shared/CPLv1.0.xml
 # the following files are not used & are here only for historical reasons
-#	     conceptoverv.sgml \
-#	     graphui.sgml \
-#	     tokenizescripts.sgml \
-#	     tutresworkshop.sgml \
-#	     usingdialog.sgml \
+#	     conceptoverv.xml \
+#	     graphui.xml \
+#	     tokenizescripts.xml \
+#	     tutresworkshop.xml \
+#	     usingdialog.xml \
 
 
 
@@ -113,11 +111,11 @@ pdf: oodialog.pdf
 
 html: oodialog-html.zip
 
-oodialog.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.sgml svnrev.tmp
-	docbook2pdf -d ../shared/oorexx.print.dsl oodialog.sgml
+oodialog.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
+	docbook2pdf -d ../shared/oorexx.print.dsl oodialog.xml
 
-book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.sgml svnrev.tmp
-	docbook2html -d ../shared/oorexx.html.dsl oodialog.sgml
+book1.htm: $(IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp
+	docbook2html -d ../shared/oorexx.html.dsl oodialog.xml
 
 oodialog-html.zip: book1.htm
 	zip oodialog-html *.htm *.jpg *.png
@@ -125,16 +123,16 @@ oodialog-html.zip: book1.htm
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
 
-genindex.sgml: $(HTML_STYLESHEET) $(SGML_FILES) svnrev.tmp
-	collateindex.pl -N -o genindex.sgml
-	jade -t sgml -d ../shared/oorexx.html.dsl -V html-index oodialog.sgml
+genindex.xml: $(HTML_STYLESHEET) $(xml_FILES) svnrev.tmp
+	collateindex.pl -N -o genindex.xml
+	jade -t xml -d ../shared/oorexx.html.dsl -V html-index oodialog.xml
 	rm *.htm
-	collateindex.pl -p -g -o genindex.sgml HTML.index
+	collateindex.pl -p -g -o genindex.xml HTML.index
 
 svnrev.tmp:
 	svnversion > svnrev.tmp
 
 
 clean:
-	rm -f *.log *.aux *.out *.fmt *.pdf genindex.sgml *.htm *.zip HTML.index *.tmp
+	rm -f *.log *.aux *.out *.fmt oodialog.pdf genindex.xml *.htm *.zip HTML.index *.tmp
 
