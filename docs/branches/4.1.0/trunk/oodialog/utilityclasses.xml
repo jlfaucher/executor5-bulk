@@ -2107,6 +2107,14 @@ self~addButton(1,b~x,b~y(-15),b~w,15,"OK","OK","Default")
   DlgArea and DlgAreaU classes are used together, the they provide a convenient
   way to create resizable dialogs.
 </para>
+<para>
+  <emphasis role="bold">Note:</emphasis> The DlgAreaU class uses the <emphasis role="italic">.Object</emphasis> class's
+  <emphasis role="italic">source</emphasis> class method to parse the source code of the dialog's <link
+  linkend="h100029">defineDialog</link> method.  This source is not available if the <emphasis
+  role="italic">rexxc</emphasis> program is used to tokenize the source code. Therefore, <emphasis
+  role="italic">DlgAreaU</emphasis> class will <emphasis role="bold">not</emphasis> work if <emphasis
+  role="italic">rexxc</emphasis> is used to tokenize the source code.
+</para>
 <para>To use objects of the DlgAreaU class include this line in your code:
 </para>
 <programlisting>
