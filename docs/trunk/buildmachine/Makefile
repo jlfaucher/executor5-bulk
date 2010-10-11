@@ -41,18 +41,19 @@
 #----------------------------------------------------------------------------
 
 
-STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl
-HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl
+STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl \
+             ../shared/oorexx.print.dsl
+HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
+             ../shared/oorexx.html.dsl
 
 xml_FILES = ooRexxBuild.xml \
        admin.xml \
        guestos.xml \
        releases.xml \
-       vmware.xml \
-       oorexx.dsl \
-       notices.xml \
-       legalstuff.xml \
-       CPLv1.0.xml
+       kvm.xml \
+       ../shared/notices.xml \
+       ../shared/legalstuff.xml \
+       ../shared/CPLv1.0.xml
 
 IMAGE_FILES = docbook-1.png \
               oorexx.jpg
@@ -68,17 +69,20 @@ all: pdf
 
 pdf: ooRexxBuild.pdf
 
-ooRexxBuild.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml
-	docbook2pdf -d oorexx.dsl ooRexxBuild.xml
+ooRexxBuild.pdf: $(IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
+	docbook2pdf -d ../shared/oorexx.print.dsl ooRexxBuild.xml
 
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
 
-genindex.xml: $(HTML_STYLESHEET) $(xml_FILES)
+genindex.xml: $(HTML_STYLESHEET) $(xml_FILES) svnrev.tmp
 	collateindex.pl -N -o genindex.xml
-	jade -t xml -d $(HTML_STYLESHEET) -V html-index ooRexxBuild.xml
+	jade -t xml -d ../shared/oorexx.html.dsl -V html-index ooRexxBuild.xml
 	rm *.htm
 	collateindex.pl -p -g -o genindex.xml HTML.index
+
+svnrev.tmp:
+	svnversion > svnrev.tmp
 
 
 
