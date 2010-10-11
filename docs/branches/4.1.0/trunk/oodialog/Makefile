@@ -47,7 +47,7 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
              ../shared/oorexx.html.dsl
 
 
-xml_FILES = baseClasses.xml \
+xml_FILES = advcntlc.xml \
 	     basedialog.xml \
 	     windowBaseCommon.xml \
 	     windowExtensionsCommon.xml \
