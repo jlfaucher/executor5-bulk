@@ -921,8 +921,13 @@ incorrect.
 <computeroutput>ConnectListViewNotify</computeroutput> events:
 <variablelist>
 <varlistentry><term>CLICK</term>
-<listitem><para>The method invoked for the left mouse click event recieves four
-arguments.
+<listitem>
+  <para>
+    The Rexx method mapped to the CLICK event is invoked when the user clicks anywhere on the list view, except the
+    column headers in report view.  The user can click on a list view item, or on the background of the list view.  When
+    the click is on the background, both the <emphasis role="italic">itemIndex</emphasis> and the <emphasis
+    role="italic">columnIndex</emphasis> arguments will be -1.  The method invoked for the left mouse click event
+    recieves four arguments.
 <programlisting>
 <![CDATA[
 ::method onClick
@@ -935,13 +940,19 @@ use arg id, itemIndex, columnIndex, keyState
 <listitem><para>The resource ID of the list view control whose item was clicked.
 </para></listitem></varlistentry>
 <varlistentry><term>itemIndex</term>
-<listitem><para>The index of the item that was clicked.
-</para></listitem></varlistentry>
+<listitem>
+<para>
+  The zero-based index of the item that was clicked or -1 if the click was not on an item.  In report view, this is
+  more often thought of as the row.
+</para>
+</listitem></varlistentry>
 <varlistentry><term>columnIndex</term>
-<listitem><para>The index of the subitem that was clicked.  This will be the
-column clicked on if the list view is in report view.  In other views it will be
-0.
-</para></listitem></varlistentry>
+<listitem>
+<para>
+  The zero-based index of the subitem that was clicked, or -1 if the click was not on an item.  This will be the column
+  clicked on if the list view is in report view.  In other views it will be 0.
+</para>
+</listitem></varlistentry>
 <varlistentry><term>keyState</term>
 <listitem><para>This argument reports the state of the shift, control, and alt
 keys at the time of the mouse click.  The argument is a string of keywords
