@@ -2492,7 +2492,7 @@ given file specification, identified by one of the following option strings:
 <variablelist>
 <varlistentry><term>Drive</term>
 <listitem><para>The drive letter of the given filespec.  Only available on
-Windows
+Windows. On Unix, it returns a null string (&quot;&quot;).
 </para></listitem></varlistentry>
 <varlistentry><term>Path</term>
 <listitem><para>The directory path of the given
@@ -2513,8 +2513,8 @@ this returns the same result as the Path option.
 <emphasis role="italic">filespec</emphasis> file name.
 </para></listitem></varlistentry>
 </variablelist>
-<para>If <emphasis role="italic">filespec</emphasis> the requested information,
-then the FILESPEC function returns a null string (&quot;&quot;).
+<para>If <emphasis role="italic">filespec</emphasis> cannot find the requested
+information, then the FILESPEC function returns a null string (&quot;&quot;).
 </para>
 
 <note><title>Note</title>
