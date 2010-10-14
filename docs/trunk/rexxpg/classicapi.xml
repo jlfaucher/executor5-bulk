@@ -853,7 +853,7 @@ as routine ISPCIR in the ISPCIR dynamic-link library.</para>
 <secondary>exit example</secondary></indexterm>
 <programlisting>
 <![CDATA[
-WORKAREARECORD  *user_info[2];       /* saved user information     */
+const char  *user_info[2];       /* saved user information     */
 
 user_info[0] = global_workarea;      /* save global work area for  */
 user_info[1] = NULL;                 /* re-entrance                */
@@ -1015,8 +1015,8 @@ RexxReturnCode REXXENTRY Edit_Commands(
   unsigned short *Flags,      /* pointer too short for return of flags    */
   PRXSTRING       Retstr)     /* pointer to RXSTRING for RC return        */
 {
-  WORKAREARECORD  *user_info[2];       /* saved user information     */
-  WORKAREARECORD   global_workarea;    /* application data anchor    */
+  char            *user_info[2];       /* saved user information     */
+  char            *global_workarea;    /* application data anchor    */
   unsigned short   query_flag;         /* flag for handler query     */
 
 
@@ -1600,8 +1600,8 @@ typedef struct {
 <![CDATA[
 ...
 {
-WORKAREARECORD  *user_info[2];         /* saved user information     */
-RXSYSEXIT exit_list[2];                /* system exit list           */
+const char *user_info[2];              /* saved user information     */
+RXSYSEXIT   exit_list[2];              /* system exit list           */
 
   user_info[0] = global_workarea;      /* save global work area for  */
   user_info[1] = NULL;                 /* re-entrance                */
@@ -1634,8 +1634,8 @@ int REXXENTRY Init_exit(
      int   Subfunction,   /* code defining the exit subfunction */
      PEXIT ParmBlock)     /* function dependent control block   */
 {
-  WORKAREARECORD  *user_info[2];       /* saved user information     */
-  WORKAREARECORD   global_workarea;    /* application data anchor    */
+  char            *user_info[2];       /* saved user information     */
+  char            *global_workarea;    /* application data anchor    */
   unsigned short   query_flag;         /* flag for handler query     */
 
 ]]>
@@ -2475,7 +2475,7 @@ has been properly registered.</para>
 <secondary>registration example</secondary></indexterm>
 <programlisting>
 <![CDATA[
-WORKAREARECORD  *user_info[2];       /* saved user information     */
+const char      *user_info[2];       /* saved user information     */
 
 user_info[0] = global_workarea;      /* save global work area for  */
 user_info[1] = NULL;                 /* re-entrance                */
@@ -2632,8 +2632,8 @@ int REXXENTRY Edit_IO_Exit(
   int       SubCode     /* Minor exit code                          */
   PEXIT     Parms)      /* Exit-specific parameters                 */
 {
-  WORKAREARECORD  *user_info[2];       /* saved user information     */
-  WORKAREARECORD   global_workarea;    /* application data anchor    */
+  char            *user_info[2];       /* saved user information     */
+  char            *global_workarea;    /* application data anchor    */
   unsigned short   query_flag;         /* flag for handler query     */
 
 
