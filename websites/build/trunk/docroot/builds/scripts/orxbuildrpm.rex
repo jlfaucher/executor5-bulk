@@ -42,20 +42,7 @@
 
 
 -- Initialization
-build = .build~new()
-build~homedir = '/home/'userid()  -- always do first!
-call localize build, build~homedir()'/orxbuildlocal.txt'
-
-build~builddir = build~homedir'/buildorx'
--- build~builddir = '/data/buildorx'  -- value for oorexx.osdl.marist.edu
-
-build~targetdir = '/pub/www/build/docroot/builds/interpreter-main'
-build~builddate = date('S') || '-' || changestr(':', time(), '')
-build~statusfile = build~homedir() || '/' || build~builddate() || '-' || build~osname
-build~lockfile = '/tmp/ooRexxBuild.lock'
-
--- get the command line arguments
-call parse_cmd_line arg(1)~strip(), build
+build = .build~new('./orxbuild.local.properties', arg(1)~strip())
 
 -- Move to our home directory
 call directory build~homedir
@@ -78,8 +65,6 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::class build public
-::method init
-return
 
 /*----------------------------------------------------------------------------*/
 /* Attributes:                                                                */
@@ -110,14 +95,15 @@ self~log('Starting build.')
 buildrpt = self~osname()'.'self~location()'.buildrpt.txt'
 savedir = directory()
 -- create temp dir and checkout the source
-'rm -rf' self~builddir  -- make sure the subdir is erased
-'mkdir' self~builddir
-'svn co' self~src() self~builddir
-call directory self~builddir
--- see if we have already built this revision
+'rm -rf' self~builddir()  -- make sure the subdir is erased
+'mkdir' self~builddir()
+'svn co' self~src() self~builddir()
+call directory self~builddir()
 svnver = self~getsvnrevision()
-if \datatype(svnver, 'W') then do
+if svnver = 'unknown' then do
    self~log('Subversion checkout failed.')
+   'rm -rf' self~builddir
+   'rm' self~lockfile
    return
    end
 newdir = self~targetdir'/'svnver'/'self~osname
@@ -147,27 +133,9 @@ else nop -- it must not be a supported rpm type
 self~log('The build is located at http://build.oorexx.org/builds/interpreter-main/'svnver'/'self~osname)
 -- remove everything
 call directory savedir
-'rm -rf' self~builddir
 self~log('Finished build.')
 'rm' self~lockfile
 return
-
-
-/*----------------------------------------------------------------------------*/
-/* Method: targetexist                                                        */
-/*----------------------------------------------------------------------------*/
-
-::method targetexists
-use strict arg userid, host, target
-tempf = '/tmp/orxbuild.tmp'
-'ssh' userid'@'host '"ls -l' target'" >' tempf
-strm = .stream~new(tempf)
-strm~open('read')
-arr = strm~arrayin()
-strm~close()
-if arr~items() = 0 then return .false
-if arr[1]~pos('cannot access') > 0 then return .false
-return .true
 
 /*----------------------------------------------------------------------------*/
 /* Method: log                                                                */
@@ -224,41 +192,35 @@ call SysFileDelete 'tmpemail.txt'
 return
 
 /*----------------------------------------------------------------------------*/
-/* Routine: parse_cmd_line                                                    */
+/* Method: init                                                               */
 /*----------------------------------------------------------------------------*/
 
-::routine parse_cmd_line
-use strict arg cmdline, build
+::method init
+use strict arg propfile, cmdline
+-- get the saved properties/attributes
+prop = .properties~load(propfile)
+self~osname = prop['osname']
+self~homedir = prop['homedir']
+self~builddir = prop['builddir']
+self~targetdir = prop['targetdir']
+self~lockfile = prop['lockfile']
+-- get the unsaves attributes
+self~builddate = date('S') || '-' || changestr(':', time(), '')
+self~statusfile = self~homedir() || '/' || self~builddate() || '-' || self~osname
+-- get the comman line options
 argc = cmdline~words()
-if argc > 0 then build~location = cmdline~word(1)
-else build~location = 'trunk'
+if argc > 0 then self~location = cmdline~word(1)
+else self~location = 'trunk'
 select
-   when build~location = 'branch' then do
-      build~src = 'http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/branches/4.1.0/trunk/'
-      build~location = 'branch4.1.0'
+   when self~location = 'branch' then do
+      self~src = prop['branchsrc']
+      self~location = 'branch4.1.0'
       end
    otherwise do
-      build~src = 'http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/'
+      self~src = prop['trunksrc']
       end
    end
-if argc > 1 then build~email = cmdline~word(2)
-else build~email = ''
--- just ignore everything else on the cmdline
-return
-
-/*----------------------------------------------------------------------------*/
-/* Routine: localize                                                          */
-/*----------------------------------------------------------------------------*/
-
-::routine localize
--- set the osname and possibly other build object attributes
-use strict arg build, ifile
-strm = .stream~new(ifile)
-strm~open('read')
-arr = strm~arrayin()
-strm~close()
-do line over arr
-   interpret line
-   end
+if argc > 1 then self~email = cmdline~word(2)
+else self~email = ''
 return
 
