@@ -310,11 +310,14 @@ queue.</para></listitem></varlistentry>
 <listitem><para>removes all lines from a Rexx queue.
 </para></listitem></varlistentry>
 </variablelist>
-<para>RXQUEUE takes output lines from another program and places them on a Rexx
-queue. A Rexx procedure can use RXQUEUE to capture operating system command and
-program output for processing. RXQUEUE can direct output
-to any Rexx queue, either FIFO (first in, first out) or LIFO (last in, first
-out).</para>
+<para>
+  RXQUEUE takes output lines from another program and places them on a Rexx queue. There is currently a limit of 65472
+  characters for a single line. If a line contains more characters than the limit, those characters are discarded.
+</para>
+<para>
+  A Rexx procedure can use RXQUEUE to capture operating system command and program output for processing. RXQUEUE can
+  direct output to any Rexx queue, either FIFO (first in, first out) or LIFO (last in, first out).
+</para>
 <para>RXQUEUE uses the environment variable RXQUEUE for the default queue name.
 When RXQUEUE does not have a value, RXQUEUE uses SESSION for the queue name.
 </para>
