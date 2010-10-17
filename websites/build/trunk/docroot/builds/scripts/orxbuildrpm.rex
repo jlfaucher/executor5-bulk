@@ -130,6 +130,7 @@ else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/s390') then ,
  'scp ~/rpmbuild/RPMS/s390/ooRexx*.rpm dashley@build.oorexx.org:'newdir
 else nop -- it must not be a supported rpm type
 'scp' buildrpt 'dashley@build.oorexx.org:'newdir
+'ssh dashley@build.oorexx.org "chown -R dashley:users 'self~targetdir'"'
 self~log('The build is located at http://build.oorexx.org/builds/interpreter-main/'svnver'/'self~osname)
 -- remove everything
 call directory savedir

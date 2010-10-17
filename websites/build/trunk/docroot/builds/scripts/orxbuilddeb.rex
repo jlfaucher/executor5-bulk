@@ -118,6 +118,7 @@ self~log('Building SVN revision' svnver'.')
 'ssh dashley@build.oorexx.org "mkdir -p' newdir'"'
 'scp ../oorexx*.deb dashley@build.oorexx.org:'newdir
 'scp' buildrpt 'dashley@build.oorexx.org:'newdir
+'ssh dashley@build.oorexx.org "chown -R dashley:users 'self~targetdir'"'
 self~log('The build is located at http://build.oorexx.org/builds/interpreter-main/'svnver'/'self~osname)
 -- remove everything
 call directory savedir
