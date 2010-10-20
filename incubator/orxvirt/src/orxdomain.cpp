@@ -152,9 +152,6 @@ RexxMethod1(int,                       // Return type
             CSELF, self)
 {
     virDomainPtr domain = (virDomainPtr) self;
-    if (domain == NULL) {
-        return -1;
-    }
     return virDomainCreate(domain);
 }
 
@@ -171,9 +168,6 @@ RexxMethod1(int,                       // Return type
             CSELF, self)
 {
     virDomainPtr domain = (virDomainPtr) self;
-    if (domain == NULL) {
-        return -1;
-    }
     return virDomainIsActive(domain);
 }
 
@@ -190,9 +184,6 @@ RexxMethod1(int,                       // Return type
             CSELF, self)
 {
     virDomainPtr domain = (virDomainPtr) self;
-    if (domain == NULL) {
-        return -1;
-    }
     return virDomainReboot(domain, 0);
 }
 
@@ -209,9 +200,6 @@ RexxMethod1(int,                       // Return type
             CSELF, self)
 {
     virDomainPtr domain = (virDomainPtr) self;
-    if (domain == NULL) {
-        return -1;
-    }
     return virDomainShutdown(domain);
 }
 
@@ -228,10 +216,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
             CSELF, self)
 {
     virDomainPtr domain = (virDomainPtr) self;
-    if (domain == NULL) {
-        return (RexxObjectPtr) context->String("");
-    }
-    const char * name = virDomainGetName(domain);
+    const char *name = virDomainGetName(domain);
     return (RexxObjectPtr) context->String(name);
 }
 
@@ -248,9 +233,6 @@ RexxMethod1(uint64_t,                  // Return type
             CSELF, self)
 {
     virDomainPtr domain = (virDomainPtr) self;
-    if (domain == NULL) {
-        return -1;
-    }
     return (uint64_t) virDomainGetID(domain);
 }
 
@@ -267,9 +249,6 @@ RexxMethod1(uint64_t,                  // Return type
             CSELF, self)
 {
     virDomainPtr domain = (virDomainPtr) self;
-    if (domain == NULL) {
-        return -1;
-    }
     return (uint64_t) virDomainSuspend(domain);
 }
 
@@ -286,9 +265,58 @@ RexxMethod1(uint64_t,                  // Return type
             CSELF, self)
 {
     virDomainPtr domain = (virDomainPtr) self;
-    if (domain == NULL) {
-        return -1;
-    }
     return (uint64_t) virDomainResume(domain);
+}
+
+
+/**
+ * Method:  OrxVirt_DomainGetInfo
+ *
+ * Get info about a domain.
+ *
+ * @return        The domain info object
+ **/
+RexxMethod2(RexxObjectPtr,             // Return type
+            OrxVirt_DomainGetInfo,     // Object_method name
+            RexxObjectPtr, rxinfo,
+            CSELF, self)
+{
+    virDomainPtr domain = (virDomainPtr) self;
+    virDomainInfo info;
+    if (rxinfo == NULL) {
+        return context->Nil();
+    }
+    uint64_t retc = (uint64_t) virDomainGetInfo(domain, &info);
+    switch (info.state) {
+         VIR_DOMAIN_RUNNING:
+             context->SendMessage1(rxinfo, "state=", context->String("RUNNING"));
+             break;
+         VIR_DOMAIN_BLOCKED:
+             context->SendMessage1(rxinfo, "state=", context->String("BLOCKED"));
+             break;
+         VIR_DOMAIN_PAUSED:
+             context->SendMessage1(rxinfo, "state=", context->String("PAUSED"));
+             break;
+         VIR_DOMAIN_SHUTDOWN:
+             context->SendMessage1(rxinfo, "state=", context->String("SHUTDOWN"));
+             break;
+         VIR_DOMAIN_SHUTOFF:
+             context->SendMessage1(rxinfo, "state=", context->String("SHUTOFF"));
+             break;
+         VIR_DOMAIN_CRASHED:
+             context->SendMessage1(rxinfo, "state=", context->String("CRASHED"));
+             break;
+         default:
+             context->SendMessage1(rxinfo, "state=", context->String("NOSTATE"));
+    }
+    context->SendMessage1(rxinfo, "maxmem=",
+                          context->WholeNumber((wholenumber_t)info.maxMem));
+    context->SendMessage1(rxinfo, "memory=",
+                          context->WholeNumber((wholenumber_t)info.memory));
+    context->SendMessage1(rxinfo, "nrvirtcpu=",
+                          context->WholeNumber((wholenumber_t)info.nrVirtCpu));
+    context->SendMessage1(rxinfo, "cpuTime=",
+                          context->UnsignedInt64((uint64_t)info.nrVirtCpu));
+    return rxinfo;
 }
 

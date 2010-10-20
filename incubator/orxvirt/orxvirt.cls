@@ -133,5 +133,23 @@ return
 ::method shutdown EXTERNAL "LIBRARY orxvirt OrxVirt_DomainShutdown"
 ::method suspend EXTERNAL "LIBRARY orxvirt OrxVirt_DomainSuspend"
 ::method resume EXTERNAL "LIBRARY orxvirt OrxVirt_DomainResume"
+::method getinfo
+info = .virtdomaininfo~new()
+self~getinfo_private(info)
+return info
+::method getinfo_private EXTERNAL "LIBRARY orxvirt OrxVirt_DomainGetInfo"
 
+
+/*----------------------------------------------------------------------------*/
+/* Class: VirtDomainInfo                                                      */
+/*----------------------------------------------------------------------------*/
+
+::class virtdomaininfo public
+
+::attribute state -- possible values: NOSTATE, RUNNING, BLOCKED, PAUSED, SHUTDOWN,
+                  --                  SHUTOFF, CRASHED
+::attribute maxmem
+::attribute memory
+::attribute nrvirtcpu
+::attribute cputime
 
