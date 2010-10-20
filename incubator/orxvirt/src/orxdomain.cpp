@@ -320,3 +320,22 @@ RexxMethod2(RexxObjectPtr,             // Return type
     return rxinfo;
 }
 
+
+/**
+ * Method:  OrxVirt_DomainGetXMLDesc
+ *
+ * Get the XML description of a domain.
+ *
+ * @param flags   XML flags.
+ *
+ * @return        XML text.
+ **/
+RexxMethod2(RexxObjectPtr,             // Return type
+            OrxVirt_DomainGetXMLDesc,  // Object_method name
+            int, flags,
+            CSELF, self)
+{
+    virDomainPtr domain = (virDomainPtr) self;
+    return (RexxObjectPtr) context->String(virDomainGetXMLDesc(domain, flags));
+}
+
