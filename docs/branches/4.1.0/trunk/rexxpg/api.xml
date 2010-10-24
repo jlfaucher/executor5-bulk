@@ -176,7 +176,7 @@ if (RexxCreateInterpreter(&amp;instance, &amp;threadContext, options)) {
 }
 </programlisting>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">instance</emphasis></entry>
     <entry><para>The returned RexxInstance interface vector.  The interface
     vector provides access to APIs that apply to the global interpreter environment.</para></entry>
@@ -414,7 +414,7 @@ the language (including strings and numbers) are represented by object instances
 The ooRexx APIs use a number of opaque types that represent instances
 of Rexx built-in objects.  The defined object types are:
 </para>
-<informaltable frame="none" colsep="0" rowsep="0">
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*">
 <colspec colnum="2" colwidth="3*">
@@ -485,7 +485,7 @@ give behavior consistent with the Rexx built-in methods and functions.
 <para>In addition to a full set of standard numeric types, there are two special types
 provided that implement the standard Rexx rules for numbers used internally by Rexx.
 These types are:</para>
-<informaltable frame="none" colsep="0" rowsep="0">
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*">
 <colspec colnum="2" colwidth="4*">
@@ -516,7 +516,7 @@ to '1' (true) and zero will become '0' (false).
 <para>A subset of the integer numeric types are of differing sizes depending on the
 addressing mode of the system you are compiling on.  These types will be either 32-bits
 or 64-bits.  The variable size types are: </para>
-<informaltable frame="none" colsep="0" rowsep="0">
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*">
 <colspec colnum="2" colwidth="4*">
@@ -538,7 +538,7 @@ Use an uintptr_t type if you wish to return a pointer value as a Rexx number.
 </tgroup>
 </informaltable>
 <para>The remainder of the numeric types have fixed sizes regardless of the addressing mode.</para>
-<informaltable frame="none" colsep="0" rowsep="0">
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*">
 <colspec colnum="2" colwidth="4*">
@@ -2823,7 +2823,7 @@ RexxObjectPtr RexxEntry TestCommandHandler(RexxExitContext *context,
      RexxStringObject address, RexxStringObject command)
 </programlisting>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">context</emphasis></entry>
     <entry><para>A <link linkend="exitcontext">RexxExitContext</link> interface vector for the handler call.
     The RexxExitContext provides access to runtime services appropriate to a command handler.  For example, the
@@ -2922,7 +2922,7 @@ RexxObjectPtr obj1, obj2, obj3, obj4;
 It create a new one-dimension Array with the specified objects.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj1</emphasis></entry>
     <entry><para>The first object to be added.</para></entry>
     </row>
@@ -2979,7 +2979,7 @@ size_t n;
 <para>Append an Object to the end of an Array.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
     <entry><para>The target Array object.</para></entry>
     </row>
@@ -3031,7 +3031,7 @@ size_t n, len;
 a String object created from a pointer and length.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
     <entry><para>The target Array object.</para></entry>
     </row>
@@ -3085,7 +3085,7 @@ size_t idx;
 <para>Retrieve an object from a specified Array index.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
     <entry><para>The source Array object.</para></entry>
     </row>
@@ -3136,7 +3136,7 @@ size_t sz;
 <para>Returns number of dimensions of an Array.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
     <entry><para>The target Array object.</para></entry>
     </row>
@@ -3183,7 +3183,7 @@ size_t sz;
 <para>Returns number of elements in an Array.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
     <entry><para>The source Array object.</para></entry>
     </row>
@@ -3230,7 +3230,7 @@ RexxObjectPtr obj1, obj2, obj3, obj4;
 <para>Create a new one-dimension Array with the specified objects.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj1</emphasis></entry>
     <entry><para>The first object to be added.</para></entry>
     </row>
@@ -3286,7 +3286,7 @@ RexxObjectPtr obj1, obj2, obj3;
 <para>Create a new one-dimension Array with the specified objects.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj1</emphasis></entry>
     <entry><para>The first object to be added.</para></entry>
     </row>
@@ -3339,7 +3339,7 @@ RexxObjectPtr obj1, obj2;
 <para>Create a new one-dimension Array with the specified objects..
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj1</emphasis></entry>
     <entry><para>The first object to be added.</para></entry>
     </row>
@@ -3389,7 +3389,7 @@ RexxObjectPtr obj;
 <para>Create a new one-dimension Array with the specified object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be added.</para></entry>
     </row>
@@ -3437,7 +3437,7 @@ size_t idx;
 <para>Replace/add an Object to an Array.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
     <entry><para>The target Array object.</para></entry>
     </row>
@@ -3490,7 +3490,7 @@ size_t sz;
 <para>Returns the size of an Array.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
     <entry><para>The source Array object.</para></entry>
     </row>
@@ -3531,7 +3531,7 @@ RexxThreadContext *tc
 <emphasis role="italic">context</emphasis> pointer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">tc</emphasis></entry>
     <entry><para>Pointer to a RexxThreadContext pointer used to return a RexxThreadContext for the attached thread.</para></entry>
     </row>
@@ -3581,7 +3581,7 @@ POINTER str;
 <para>Returns a pointer to a Buffer object's data area.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source Buffer object.</para></entry>
     </row>
@@ -3628,7 +3628,7 @@ size_t sz;
 <para>Return the length of a Buffer object's data area.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source Buffer object.</para></entry>
     </row>
@@ -3675,7 +3675,7 @@ POINTER str;
 <para>Returns a pointer to a RexxBufferString object's data area.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source object.</para></entry>
     </row>
@@ -3726,7 +3726,7 @@ size_t sz;
 <para>Return the length of a RexxBufferStringObject instance.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source RexxBufferStringObject.</para></entry>
     </row>
@@ -3774,7 +3774,7 @@ RexxArrayObject arr;
 <para>Returns the result object of the routine.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>The ASCII-Z path/name of the Rexx program to call.</para></entry>
     </row>
@@ -3830,7 +3830,7 @@ RexxArrayObject arr;
 <para>Returns the result object of the routine.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The routine object to call.</para></entry>
     </row>
@@ -3975,7 +3975,7 @@ The first converts an Object into a C ASCII-Z string.
 The second converts C ASCII-Z string into a String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source object for the conversion.</para></entry>
     </row>
@@ -4026,7 +4026,7 @@ RexxCondition cond;
 <para>Decodes the condition information into a RexxCondition structure.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">dir</emphasis></entry>
     <entry><para>The source Directory object containing the condition information.</para></entry>
     </row>
@@ -4115,7 +4115,7 @@ CSTRING str;
 <para>Return the object at the specified index.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">dirobj</emphasis></entry>
     <entry><para>The source Directory object.</para></entry>
     </row>
@@ -4167,7 +4167,7 @@ CSTRING str;
 <para>Replace/add an Object at the specified Directory index.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">dirobj</emphasis></entry>
     <entry><para>The source Directory object.</para></entry>
     </row>
@@ -4221,7 +4221,7 @@ CSTRING str;
 <para>Removes and returns the object at the specified Directory index.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">dirobj</emphasis></entry>
     <entry><para>The source Directory object.</para></entry>
     </row>
@@ -4278,7 +4278,7 @@ The first form converts C double value to an Object.
 The second form converts an Object to a C double value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>For the first method form, the double value to be converted.
        For the second method form, the target of the conversion.</para></entry>
@@ -4332,7 +4332,7 @@ double n;
 <para>Converts C double value to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The double value to be converted.</para></entry>
     </row>
@@ -4380,7 +4380,7 @@ double n;
 <para>Converts C double value to an Object with a specific precision.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The double value to be converted.</para></entry>
     </row>
@@ -4425,7 +4425,7 @@ CSTRING name;
 <para>Drops a Rexx variable in the current routine's caller variable context.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>The name of the Rexx variable.</para></entry>
     </row>
@@ -4465,7 +4465,7 @@ CSTRING str;
 <para>Drops an instance variable in the current method's scope.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">str</emphasis></entry>
     <entry><para>The name of the object variable.</para></entry>
     </row>
@@ -4512,7 +4512,7 @@ size_t n;
 <para>Drops an element of the Stem object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
     <entry><para>The target Stem object.</para></entry>
     </row>
@@ -4562,7 +4562,7 @@ CSTRING name;
 <para>Drops an element of the Stem object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
     <entry><para>The target Stem object.</para></entry>
     </row>
@@ -4654,7 +4654,7 @@ CSTRING name;
 <para>Locates a Class object in the current thread context.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>An ASCII-Z string containing the name of the class.</para></entry>
     </row>
@@ -4695,7 +4695,7 @@ RexxClassObject obj;
 <para>Locate a Class object in the current Method or Routine Package context.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>The class name to be located.</para></entry>
     </row>
@@ -4743,7 +4743,7 @@ CSTRING name;
 <para>Locate a class object in a given Package object's context.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">pkg</emphasis></entry>
     <entry><para>The Package object used to resolve the class.</para></entry>
     </row>
@@ -4795,7 +4795,7 @@ size_t len;
 given length and returns a reference to the completed String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The working RexxBufferStringObject.</para></entry>
     </row>
@@ -4842,7 +4842,7 @@ RexxArrayObject arr;
 equivalent to using a FORWARD CONTINUE instruction from Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to receive the message.  If NULL, the object
     that is the target of the current method call is used.
@@ -4949,7 +4949,7 @@ RexxDirectoryObject obj;
 Each assigned Stem tail element will be an entry in the Directory.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
     <entry><para>The source Stem object.</para></entry>
     </row>
@@ -5034,7 +5034,7 @@ size_t n;
 is equivalent to calling Arg(n) from within Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The argument number (1-based).</para></entry>
     </row>
@@ -5313,7 +5313,7 @@ The value returned for a stem variable will be the corresponding Stem object.
 Compound variable values can be retrieved from the corresponding Stem values.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>The name of the Rexx variable.</para></entry>
     </row>
@@ -5517,7 +5517,7 @@ RexxPackageObject pkg;
 <para>Returns the Package object associated with the specified Method instance.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source Method object..</para></entry>
     </row>
@@ -5561,7 +5561,7 @@ The value returned for a stem variable will be the corresponding Stem object.
 Compound variable values can be retrieved from the corresponding Stem values.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">str</emphasis></entry>
     <entry><para>The name of the object variable.</para></entry>
     </row>
@@ -5609,7 +5609,7 @@ RexxPackageObject pkg;
 <para>Returns a Directory object containing the Package public and private classes, indexed by class name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The package object to query.</para></entry>
     </row>
@@ -5658,7 +5658,7 @@ This is equivalent to
 using the .methods environment symbol from Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The package routine object to query.</para></entry>
     </row>
@@ -5705,7 +5705,7 @@ RexxPackageObject pkg;
 <para>Returns a Directory object containing the Package public classes, indexed by class name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The package object to query.</para></entry>
     </row>
@@ -5752,7 +5752,7 @@ RexxPackageObject pkg;
 <para>Returns a Directory object containing the Package public routines, indexed by routine name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The package object to query.</para></entry>
     </row>
@@ -5799,7 +5799,7 @@ RexxPackageObject pkg;
 <para>Returns a Directory object containing the Package public and private routines, indexed by routine name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The package routine object to query.</para></entry>
     </row>
@@ -5918,7 +5918,7 @@ RexxPackageObject pkg;
 <para>Returns Routine object's associated Package object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The routine object to query.</para></entry>
     </row>
@@ -6040,7 +6040,7 @@ size_t n;
 <para>Retrieves an element of a Stem object using a numeric index.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
     <entry><para>The source Stem object.</para></entry>
     </row>
@@ -6092,7 +6092,7 @@ CSTRING name;
 <para>Retrieves an element of a Stem object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
     <entry><para>The source Stem object.</para></entry>
     </row>
@@ -6147,7 +6147,7 @@ CSTRING name;
 <para>Retrieves the base name value of a Stem object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
     <entry><para>The source Stem object.</para></entry>
     </row>
@@ -6302,7 +6302,7 @@ CSTRING name;
 <para>Tests if an object supports the specified method name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The target object.</para></entry>
     </row>
@@ -6395,7 +6395,7 @@ The first form converts a C 32-bit integer <emphasis role="italic">n</emphasis> 
 The second form converts an Object to a C 32-bit integer, returning it in <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>For the first form, the value to be converted.  For the second form, the converted result.</para></entry>
     </row>
@@ -6448,7 +6448,7 @@ int32_t n;
 <para>Convert a C 32-bit integer <emphasis role="italic">n</emphasis> to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The integer to be converted.</para></entry>
     </row>
@@ -6500,7 +6500,7 @@ The first form converts a C 64-bit integer <emphasis role="italic">n</emphasis> 
 The second form converts an Object to a C 64-bit integer and returns in <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>For the first form, the integer to be converted.  For the second form, the converted integer.</para></entry>
     </row>
@@ -6553,7 +6553,7 @@ int64_t n;
 <para>Convert the C 64-bit integer <emphasis role="italic">n</emphasis> to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The integer to be converted.</para></entry>
     </row>
@@ -6657,7 +6657,7 @@ The second form converts an Object to a C signed integer and returns it in
 <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>For the first form, the value to be converted.
        For the second form, the conversion result.</para></entry>
@@ -6711,7 +6711,7 @@ intptr_t n;
 <para>Convert the C signed integer <emphasis role="italic">n</emphasis> to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The signed integer to be converted.</para></entry>
     </row>
@@ -6760,7 +6760,7 @@ A true result indicates
 the RexxObjectPtr value may be safely cast to a RexxArrayObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be tested.</para></entry>
     </row>
@@ -6809,7 +6809,7 @@ A true result indicates
 the RexxObjectPtr value may be safely cast to a RexxBufferObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be tested.</para></entry>
     </row>
@@ -6858,7 +6858,7 @@ A true result indicates
 the RexxObjectPtr value may be safely cast to a RexxDirectoryObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be tested.</para></entry>
     </row>
@@ -6906,7 +6906,7 @@ logical_t flag;
 <para>Tests if an Object is an instance of the specified class.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The Object to be tested.</para></entry>
     </row>
@@ -6958,7 +6958,7 @@ A true result indicates
 the RexxObjectPtr value may be safely cast to a RexxMethodObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be tested.</para></entry>
     </row>
@@ -7007,7 +7007,7 @@ logical_t flag;
 This method combines the operations of the FindClass() and IsInstanceOf() methods in a single call.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be tested.</para></entry>
     </row>
@@ -7061,7 +7061,7 @@ A true result indicates
 the RexxObjectPtr value may be safely cast to a RexxPointerObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be tested.</para></entry>
     </row>
@@ -7110,7 +7110,7 @@ A true result indicates
 the RexxObjectPtr value may be safely cast to a RexxPointerObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be tested.</para></entry>
     </row>
@@ -7159,7 +7159,7 @@ A true result indicates
 the RexxObjectPtr value may be safely cast to a RexxStemObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be tested.</para></entry>
     </row>
@@ -7208,7 +7208,7 @@ A true result indicates
 the RexxObjectPtr value may be safely cast to a RexxStringObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be tested.</para></entry>
     </row>
@@ -7307,7 +7307,7 @@ logical_t success;
 <para>Loads an external library with the given name and adds it to the global Rexx environment.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>The ASCII-Z path/name of the library package, in format required
     by the ::REQUIRES LIBRARY directive.</para></entry>
@@ -7357,7 +7357,7 @@ RexxPackageObject pkg;
 <para>Returns the Package object loaded from the specified file path/name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>The ASCII-Z path/name of the Rexx package source file.</para></entry>
     </row>
@@ -7409,7 +7409,7 @@ RexxPackageObject pkg;
 <para>Returns the loaded package object  from the specified file path/name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>The ASCII-Z name assigned to the package.</para></entry>
     </row>
@@ -7470,7 +7470,7 @@ The first form converts an Object to a C logical value (0 or 1).
 The second form converts a C logical value to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be converted.</para></entry>
     </row>
@@ -7524,7 +7524,7 @@ logical_t flag, n;
 <para>Converts a C logical value to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The logical_t value to be converted..</para></entry>
     </row>
@@ -7571,7 +7571,7 @@ size_t len;
 <para>Create an Array object of the specified size.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">d</emphasis></entry>
     <entry><para>The size of the Array.</para></entry>
     </row>
@@ -7618,7 +7618,7 @@ size_t len;
 <para>Create a Buffer object with a specific data size.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">len</emphasis></entry>
     <entry><para>The maximum length of the buffer.</para></entry>
     </row>
@@ -7668,7 +7668,7 @@ must use <link linkend="mthFinishBufferString">FinishBufferString()</link> to
 transform this into a completed String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">len</emphasis></entry>
     <entry><para>The maximum length of the final String object.</para></entry>
     </row>
@@ -7758,7 +7758,7 @@ size_t sz;
 <para>Create a new Method object from an in-memory buffer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>ASCII-Z name of the method.</para></entry>
     </row>
@@ -7815,7 +7815,7 @@ POINTER p;
 <para>Create a new Pointer object from a C pointer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">p</emphasis></entry>
     <entry><para>The source C pointer.</para></entry>
     </row>
@@ -7863,7 +7863,7 @@ size_t sz;
 <para>Create a new Routine object from an in-memory buffer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>ASCII-Z name of the routine.</para></entry>
     </row>
@@ -7920,7 +7920,7 @@ CSTRING str;
 <para>Create an new Stem object with the specified base name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">str</emphasis></entry>
     <entry><para>The base name for the new Stem object.</para></entry>
     </row>
@@ -7970,7 +7970,7 @@ size_t len;
 <para>There are two forms of this method. Both create a new String object from program data.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">str</emphasis></entry>
     <entry><para>For the first form, a pointer to a null-terminated ASCII-Z string.
     For the second form, a pointer to a data buffer containing the string data.
@@ -8022,7 +8022,7 @@ RexxArrayObject arr1, arr2;
 <para>This method returns a Supplier object based on the supplied argument Arrays.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">arr1</emphasis></entry>
     <entry><para>The Array of supplier items.</para></entry>
     </row>
@@ -8161,7 +8161,7 @@ of either the Pointer or the Buffer class, the corresponding POINTER value will 
 Objects that rely on CSELF values typically set the variable CSELF inside an INIT method for the class.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source object.</para></entry>
     </row>
@@ -8209,7 +8209,7 @@ logical_t flag;
 <para>Converts an Object to a C double value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source object for the conversion.</para></entry>
     </row>
@@ -8262,7 +8262,7 @@ logical_t flag;
 <para>Convert an Object into a 32-bit integer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to convert.</para></entry>
     </row>
@@ -8315,7 +8315,7 @@ logical_t flag;
 <para>Convert an Object into a 64-bit integer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be converted.</para></entry>
     </row>
@@ -8368,7 +8368,7 @@ logical_t flag;
 <para>Convert an Object to an intptr_t value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to convert.</para></entry>
     </row>
@@ -8420,7 +8420,7 @@ logical_t flag, n;
 <para>Converts an Object to a C logical value (0 or 1).
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to convert.</para></entry>
     </row>
@@ -8472,7 +8472,7 @@ RexxStringObject str;
 <para>Convert an Object to a String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source object for the conversion.</para></entry>
     </row>
@@ -8520,7 +8520,7 @@ logical_t flag;
 <para>Convert an Object to a stringsize_t number value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to convert.</para></entry>
     </row>
@@ -8572,7 +8572,7 @@ CSTRING str;
 <para>Convert an Object to a C ASCII-Z string.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source object for the conversion.</para></entry>
     </row>
@@ -8620,7 +8620,7 @@ logical_t flag;
 <para>Convert an Object to an uintptr_t value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to convert.</para></entry>
     </row>
@@ -8673,7 +8673,7 @@ logical_t flag;
 <para>Convert an Object to an uint32_t value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to convert.</para></entry>
     </row>
@@ -8726,7 +8726,7 @@ logical_t flag;
 <para>Convert an Object to an uint64_t value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to convert.</para></entry>
     </row>
@@ -8781,7 +8781,7 @@ more appropriate to use more targeted routines such as ObjectToWholeNumber(). Ob
 of conversions to types such as int8_t for which there are no specific conversion APIs.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to be converted.</para></entry>
     </row>
@@ -8837,7 +8837,7 @@ logical_t flag;
 <para>Convert an Object to a whole number value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to convert.</para></entry>
     </row>
@@ -8889,7 +8889,7 @@ POINTER p;
 <para>Return the wrappered C pointer value from a RexxPointerObject.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source RexxPointerObject.</para></entry>
     </row>
@@ -8941,7 +8941,7 @@ This is similar to using the RAISE instruction to raise a condition from
 Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">str</emphasis></entry>
     <entry><para>The condition name.</para></entry>
     </row>
@@ -9000,7 +9000,7 @@ This is similar to using the RAISE instruction to raise a SYNTAX condition from
 Rexx code.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The exception condition number.  There are #defines for the
     recognized condition errors in the oorexxerrors.h include file.
@@ -9051,7 +9051,7 @@ size_t n;
 <para>Raise an exception condition with no message substitution values.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The exception condition number.</para></entry>
     </row>
@@ -9098,7 +9098,7 @@ RexxObjectPtr obj;
 <para>Raise an exception condition with a single message substitution value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The exception condition number.</para></entry>
     </row>
@@ -9148,7 +9148,7 @@ RexxObjectPtr obj1, obj2;
 <para>Raise an exception condition with two message substitution values.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The exception condition number.</para></entry>
     </row>
@@ -9202,7 +9202,7 @@ logical_t success;
 processed as if it is loaded from an external library, but without requiring the library packaging.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>The ASCII-Z path/name of the library package, in format required
     by the ::REQUIRES LIBRARY directive.</para></entry>
@@ -9257,7 +9257,7 @@ garbage collection protection from the object reference.  Once released,
 <emphasis role="italic">ref</emphasis> should no longer be used for object operations.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">ref</emphasis></entry>
     <entry><para>A global Rexx object reference.</para></entry>
     </row>
@@ -9305,7 +9305,7 @@ Once released,
 <emphasis role="italic">ref</emphasis> should no longer be used for object operations.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">ref</emphasis></entry>
     <entry><para>The local Rexx object reference.</para></entry>
     </row>
@@ -9355,7 +9355,7 @@ from garbage collection until the global reference is released with
 <link linkend="mthReleaseGlobalReference">ReleaseGlobalReference()</link>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The Rexx object to be protected.</para></entry>
     </row>
@@ -9403,7 +9403,7 @@ from the caller's variable context.  The Stem object value of the referenced
 stem variable is returned as a result.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source object to be resolved to a Stem object.</para></entry>
     </row>
@@ -9450,7 +9450,7 @@ RexxArrayObject arr;
 <para>Send a message to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to receive the message.</para></entry>
     </row>
@@ -9509,7 +9509,7 @@ RexxObjectPtr obj, ret;
 This is a short cut method when no arguments are needed by the receiving object method.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to receive the message.</para></entry>
     </row>
@@ -9565,7 +9565,7 @@ RexxObjectPtr obj, ret, arg1;
 This is a short cut method when only one argument is needed by the receiving object method.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to receive the message.</para></entry>
     </row>
@@ -9624,7 +9624,7 @@ RexxObjectPtr obj, ret, arg1, arg2;
 This is a short cut method when only two arguments are needed by the receiving object method.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The object to receive the message.</para></entry>
     </row>
@@ -9686,7 +9686,7 @@ with a stem variable and using <link linkend="mthSetStemElement">SetStemElement(
 to set the associated compound variable.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">name</emphasis></entry>
     <entry><para>The name of the Rexx variable.</para></entry>
     </row>
@@ -9799,7 +9799,7 @@ RexxObjectPtr obj;
 Only simple and stem variables may be set using this API.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">str</emphasis></entry>
     <entry><para>The name of the object variable.</para></entry>
     </row>
@@ -9851,7 +9851,7 @@ size_t n;
 This method uses a numeric index as the element name.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
     <entry><para>The target Stem object.</para></entry>
     </row>
@@ -9905,7 +9905,7 @@ CSTRING name;
 <para>Sets an element of the Stem object. If the element exists it is replaced.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
     <entry><para>The target Stem object.</para></entry>
     </row>
@@ -9951,7 +9951,7 @@ logical_t flag;
 <para>Sets the interactive trace state for the current thread.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">flag</emphasis></entry>
     <entry><para>New state for interactive trace.</para></entry>
     </row>
@@ -9992,7 +9992,7 @@ logical_t flag;
 all active threads for the interpreter instance.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">flag</emphasis></entry>
     <entry><para>The new trace state.</para></entry>
     </row>
@@ -10042,7 +10042,7 @@ size_t len;
 <para>There are two forms of this method. Both create a new String object from a C string.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">str</emphasis></entry>
     <entry><para>The ASCII-Z string to be converted.</para></entry>
     </row>
@@ -10092,7 +10092,7 @@ CSTRING str;
 <para>Returns a read-only pointer to the String object's string data.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source String object for the data.</para></entry>
     </row>
@@ -10140,7 +10140,7 @@ size_t c, len1, len2;
 <para>Copies all or part of the String object to a C string buffer.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source String object.</para></entry>
     </row>
@@ -10199,7 +10199,7 @@ size_t sz;
 <para>Return the length a String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>The source String object.</para></entry>
     </row>
@@ -10245,7 +10245,7 @@ RexxObjectPtr srcobj, newobj;
 <para>Convert a String object to lower case, returning a new String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">srcobj</emphasis></entry>
     <entry><para>The source String object to be converted to lower case.</para></entry>
     </row>
@@ -10298,7 +10298,7 @@ The second converts an Object to a stringsize_t value and returns it in
 <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>For the first form, the stringsize_t value to be converted.
        For the second form, the target of the conversion.</para></entry>
@@ -10352,7 +10352,7 @@ size_t sz;
 <para>Convert a stringsize_t value to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sz</emphasis></entry>
     <entry><para>The stringsize_t value to be converted.</para></entry>
     </row>
@@ -10398,7 +10398,7 @@ RexxObjectPtr srcobj, newobj;
 <para>Convert a String object upper case, returning a new String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">srcobj</emphasis></entry>
     <entry><para>The source String object.</para></entry>
     </row>
@@ -10445,7 +10445,7 @@ logical_t flag;
 <para>Returns 1 if there is another supplier item available.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
     <entry><para>The source supplier object.</para></entry>
     </row>
@@ -10492,7 +10492,7 @@ RexxObjectPtr obj;
 <para>Return the current supplier object index value.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
     <entry><para>The source supplier object.</para></entry>
     </row>
@@ -10539,7 +10539,7 @@ RexxObjectPtr obj;
 <para>Return the current supplier item object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
     <entry><para>The source supplier object.</para></entry>
     </row>
@@ -10585,7 +10585,7 @@ RexxSupplierObjectPtr sobj;
 <para>Advance a Supplier object to the next enumeration position.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">sobj</emphasis></entry>
     <entry><para>The source supplier object.</para></entry>
     </row>
@@ -10717,7 +10717,7 @@ The second converts an Object to a uintptr_t value and returns it in
 <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>For the first form, the uintptr_t value to be converted.
     For the second form, the target of the conversion.</para></entry>
@@ -10771,7 +10771,7 @@ uintptr_t n;
 <para>Convert a uintptr_t value <emphasis role="italic">n</emphasis> to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The uintptr_t value to be converted.</para></entry>
     </row>
@@ -10824,7 +10824,7 @@ The second converts an Object to a uint32_t value and returns it in
 <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>For the first form, the uint32_t value to be converted.
        For the second form, the target of the conversion.</para></entry>
@@ -10878,7 +10878,7 @@ uint32_t n;
 <para>Convert a C 32-bit unsigned integer <emphasis role="italic">n</emphasis> to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The uint32_t value to be converted.</para></entry>
     </row>
@@ -10931,7 +10931,7 @@ The second converts an Object to a uint64_t value and returns it in
 <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>For the first form, the uint64_t value to be converted.
        For the second form, the target of the conversion.</para></entry>
@@ -10985,7 +10985,7 @@ uint64_t n;
 <para>Convert a C 64-bit unsigned integer <emphasis role="italic">n</emphasis> to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The uint64_t value to be converted.</para></entry>
     </row>
@@ -11030,7 +11030,7 @@ ValueDescriptor desc[3];
 <para>Converts an array of ValueDescriptor structs to an Array of objects.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">desc</emphasis></entry>
     <entry><para>A C pointer to the ValueDescriptor struct array to be converted.  The end of the
     array is marked by a ValueDescriptor struct with all fields set to zero.
@@ -11082,7 +11082,7 @@ ValueToObject() is capable of converting to types such as int8_t for which
 there are no specific conversion APIs.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">desc</emphasis></entry>
     <entry><para>A C pointer to the ValueDescriptor struct describing the source value.</para></entry>
     </row>
@@ -11135,7 +11135,7 @@ The second form converts an Object to a wholenumber_t value and returns it in
 <emphasis role="italic">n</emphasis>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>For the first form, the wholenumber_t value to be converted.
        For the second form, the target of the conversion.</para></entry>
@@ -11189,7 +11189,7 @@ wholenumber_t n;
 <para>Convert a C wholenumber_t value to an Object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*"><colspec colnum="2" colwidth="5*"><tbody>
     <row><entry><emphasis role="italic">n</emphasis></entry>
     <entry><para>The C whole number to be converted.</para></entry>
     </row>
