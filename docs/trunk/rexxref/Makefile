@@ -125,6 +125,7 @@ HTML_IMAGE_FILES = ooRexxObjectClass.png \
               ooRexxRexxQueueClass.png \
               ooRexxDateTimeClass.png \
               ooRexxTimeSpanClass.png \
+              ooRexxFileClass.png \
               ooRexxClasses1.png \
               ooRexxClasses2.png \
               ooRexxClasses3.png \
@@ -206,6 +207,7 @@ PDF_IMAGE_FILES = ooRexxObjectClass.pdf \
               ooRexxRexxQueueClass.pdf \
               ooRexxDateTimeClass.pdf \
               ooRexxTimeSpanClass.pdf \
+              ooRexxFileClass.pdf \
               ooRexxClasses1.pdf \
               ooRexxClasses2.pdf \
               ooRexxClasses3.pdf \
