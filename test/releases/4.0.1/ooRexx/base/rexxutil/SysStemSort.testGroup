@@ -61,12 +61,6 @@ return testResult
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "SysStemSort.testGroup" public subclass ooTestCase
 
-::method test_YYY
-  self~assertTrue(.true)
-
-::method test_XXX
-  self~assertSame('dog', 'dog')
-
 ::method test_already_sorted
 
   -- Set up the stem with already sorted values.  Recall that 10 sorts before
@@ -110,6 +104,62 @@ return testResult
   ret = SysStemSort(s.)
 
   -- This tests that the return is equal to 0
+  self~assertTrue(ret == 0)
+
+  -- This tests the stem values are in the expected order
+  do i = 1 to s.0
+    self~assertSame(e.i, s.i)
+  end
+
+::method test_bad_direction_arg
+
+  e.1 = 'a'
+  e.2 = 'b'
+
+  s.0 = 2
+  s.1 = 'b'
+  s.2 = 'a'
+
+  self~expectSyntax(40.1)
+
+  ret = SysStemSort(s., 'F')
+  self~assertTrue(ret == 0)
+
+::method test_too_many
+
+  e.1 = 'a'
+  e.2 = 'b'
+  e.2 = 'c'
+  e.2 = 'd'
+
+  s.0 = 4
+  s.1 = 'b'
+  s.2 = 'a'
+
+  self~expectSyntax(40.1)
+  ret = SysStemSort(s., 'A')
+  self~assertTrue(ret == 0)
+
+::method test_descending_simple
+
+  -- Expected values
+  e.1 = 'f'
+  e.2 = 'e'
+  e.3 = 'd'
+  e.4 = 'c'
+  e.5 = 'b'
+  e.6 = 'a'
+
+  -- Values to sort
+  s.1 = 'c'
+  s.2 = 'b'
+  s.3 = 'e'
+  s.4 = 'a'
+  s.5 = 'd'
+  s.6 = 'f'
+  s.0 = 6
+
+  ret = SysStemSort(s., 'D')
   self~assertTrue(ret == 0)
 
   -- This tests the stem values are in the expected order
