@@ -5861,7 +5861,7 @@ The Buffer class new method will raise an error if invoked.</para>
 <indexterm><primary>class</primary>
 <secondary>File class</secondary></indexterm>
 
-<para>todo : class description
+<para>The File class provides services which are common to all the filesystems supported by ooRexx. A File object represents a path to a file or directory. The path can be relative or absolute. 
 </para>
 <figure><title>The File class and methods</title>
 <mediaobject>
@@ -5900,7 +5900,9 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns .true ("1") if the file system is case-sensitive. Otherwise returns .false ("0").
+</para>
+<para>This query method is available as both instance and class method.
 </para>
 </section>
 
@@ -5916,8 +5918,21 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns the file system root elements, as an array of string. 
+On Windows, each of the drives is a root element (Ex : "C:\"). 
+On Unix, there is just one root ("/").
 </para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+say .File~listRoots~toString
+/* Possible output on Windows : /*
+C:\
+D:\
+E:\
+R:\
+]]>
+</programlisting>
 </section>
 
 <section id="clsmthFilePathSeparator"><title>pathSeparator (Class Method)</title>
@@ -5932,7 +5947,9 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns the separator used for file search paths (";" on Windows, ":" on Unix).
+</para>
+<para>This query method is available as both instance and class method.
 </para>
 </section>
 
@@ -5948,8 +5965,16 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns the file name separator used by the file system ("\" on Windows, "/" on Unix).
 </para>
+<para>This query method is available as both instance and class method.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+file = .File~new("dir" || .File~separator || "file")  --> "dir/file" on Unix, "dir\file" on Windows
+]]>
+</programlisting>
 </section>
 
 <section id="mthFileAbsoluteFile"><title>absoluteFile</title>
@@ -5964,8 +5989,25 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns the fully qualifed path as a new instance of File.
 </para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* On Windows */
+'cd c:\program files\oorexx'
+say .File~new("my file")~absoluteFile~class        --> The File class
+say .File~new("my file")~absoluteFile              --> c:\program files\oorexx\my file
+say .File~new("..\my file")~absoluteFile           --> c:\program files\my file
+say .File~new("..\..\my file")~absoluteFile        --> c:\my file
+say .File~new("..\..\my dir\my file")~absoluteFile --> c:\my dir\my file
+
+/* On Linux */
+'cd /opt/ooRexx'
+say .File~new("my file")~absoluteFile              --> /opt/ooRexx/my file
+say .File~new("../my file")~absoluteFile           --> /opt/my file
+]]>
+</programlisting>
 </section>
 
 <section id="mthFileAbsolutePath"><title>absolutePath</title>
@@ -5980,8 +6022,25 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns the fully qualifed path as a string.
 </para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* On Windows */
+'cd c:\program files\oorexx'
+say .File~new("my file")~absolutePath~class        --> The String class
+say .File~new("my file")~absolutePath              --> c:\program files\oorexx\my file
+say .File~new("..\my file")~absolutePath           --> c:\program files\my file
+say .File~new("..\..\my file")~absolutePath        --> c:\my file
+say .File~new("..\..\my dir\my file")~absolutePath --> c:\my dir\my file
+
+/* On Linux */
+'cd /opt/ooRexx'
+say .File~new("my file")~absolutePath              --> /opt/ooRexx/my file
+say .File~new("../my file")~absolutePath           --> /opt/my file
+]]>
+</programlisting>
 </section>
 
 <section id="mthFileCanRead"><title>canRead</title>
@@ -5996,7 +6055,7 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns .true ("1") if the file exists and is readable. Otherwise returns .false ("0").
 </para>
 </section>
 
@@ -6012,7 +6071,7 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns .true ("1") if the file exists and is writable. Otherwise returns .false ("0").
 </para>
 </section>
 
@@ -6028,8 +6087,22 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Performs a sorting comparison of the target File object to the <emphasis role="italic">other</emphasis> File object.
+The comparison is made on the absolute paths (strings) of both File objects.
+If the filesystem is case-sensitive then the paths comparison is case-sensitive, otherwise the comparison is caseless.
+If the two paths are equal , 0 is returned. If the target path is larger, 1 is returned. -1 if the
+<emphasis role="italic">other</emphasis> argument is the larger path.
 </para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+file1 = .File~new("dir" || .File~separator || "file")
+file2 = .File~new("DIR" || .File~separator || "FILE")
+'cd' .File~listRoots[1]
+file1~compareTo(file2)    --> 0 on Windows (both Files denotes the same path)
+file1~compareTo(file2)    --> 1 on Unix ("/dir/file" is greater than "/DIR/FILE")
+]]>
+</programlisting>
 </section>
 
 <section id="mthFileDelete"><title>delete</title>
@@ -6044,7 +6117,8 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Deletes the file or directory denoted by the absolute path of the target File object.
+Returns .true ("1") if the deletion was successful, otherwise returns .false ("0").
 </para>
 </section>
 
@@ -6060,7 +6134,8 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns .true ("1") if the file or directory (denoted by the absolute path of the target File object) exists.
+Otherwise returns .false ("0").
 </para>
 </section>
 
@@ -6076,7 +6151,8 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns a string value that is used as a hash value for MapCollection such as Table, Relation, Set, Bag,
+and Directory.
 </para>
 </section>
 
@@ -6093,8 +6169,36 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Initializes a new File instance with the path <emphasis role="italic">path</emphasis>
+(after normalization).
 </para>
+<para>If specified, <emphasis role="italic">dir</emphasis> is a parent path that is prepended
+to <emphasis role="italic">path</emphasis>. If <emphasis role="italic">dir</emphasis> is a File
+object then the absolute path of <emphasis role="italic">dir</emphasis> is prepended, otherwise
+<emphasis role="italic">dir</emphasis> is prepended as-is (after normalization).
+The normalization consists in adjusting the separators to the platform's convention and removing
+the final separator (if any).
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* Windows */
+file = .File~new("file")                     --> file
+file = .File~new("c:\program files\")        --> c:\program files
+file = .File~new("file", "c:/program files") --> c:\program files\file
+'cd c:\program files\oorexx'
+samples = .File~new("samples")               --> samples
+file = .File~new("file", "samples")          --> samples\file
+file = .File~new("file", samples)            --> c:\program files\oorexx\samples\file
+
+/* Unix */
+file = .File~new("/opt/ooRexx/")             --> /opt/ooRexx
+'cd /opt/ooRexx'
+samples = .File~new("samples")               --> samples
+file = .File~new("file", "samples")          --> samples/file
+file = .File~new("file", samples)            --> /opt/ooRexx/samples/file
+]]>
+</programlisting>
 </section>
 
 <section id="mthFileIsCaseSensitive"><title>isCaseSensitive</title>
@@ -6109,7 +6213,9 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns .true ("1") if the file system is case-sensitive. Otherwise returns .false ("0").
+</para>
+<para>This query method is available as both instance and class method.
 </para>
 </section>
 
@@ -6125,7 +6231,8 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns .true ("1") if the absolute path of the target File object references a directory.
+Otherwise returns .false ("0").
 </para>
 </section>
 
@@ -6141,7 +6248,8 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns .true ("1") if the absolute path of the target File object references a file.
+Otherwise returns .false ("0").
 </para>
 </section>
 
@@ -6157,8 +6265,23 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns .true ("1") if the absolute path of the target File object references an existing file or
+directory which is hidden. Otherwise returns .false ("0").
 </para>
+<para>On Windows, a file or directory is hidden when its attribute FILE_ATTRIBUTE_HIDDEN is set.
+</para>
+<para>On Unix, a file or directory is hidden when its name starts with a period character (".") or when one of its parent
+directories has a name starting with a period character.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* Unix, when file exists */
+say .File~new("/tmp/file")~isHidden             --> 0
+say .File~new("/tmp/.file")~isHidden            --> 1
+say .File~new("/tmp/.dir/file")~isHidden        --> 1
+]]>
+</programlisting>
 </section>
 
 <section id="mthFileLastModified"><title>lastModified</title>
@@ -6349,7 +6472,9 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns the separator used for file search paths (";" on Windows, ":" on Unix).
+</para>
+<para>This query method is available as both instance and class method.
 </para>
 </section>
 
@@ -6381,7 +6506,9 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns the file name separator used by the file system ("\" on Windows, "/" on Unix).
+</para>
+<para>This query method is available as both instance and class method.
 </para>
 </section>
 
