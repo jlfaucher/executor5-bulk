@@ -5989,7 +5989,7 @@ file = .File~new("dir" || .File~separator || "file")  --> "dir/file" on Unix, "d
 ]]>
 </programlisting>
 
-<para>Returns the fully qualifed path as a new instance of File.
+<para>Returns the fully qualified path as a new instance of File.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <programlisting>
@@ -6022,7 +6022,7 @@ say .File~new("../my file")~absoluteFile           --> /opt/my file
 ]]>
 </programlisting>
 
-<para>Returns the fully qualifed path as a string.
+<para>Returns the fully qualified path as a string.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <programlisting>
@@ -6296,8 +6296,18 @@ say .File~new("/tmp/.dir/file")~isHidden        --> 1
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns the last modified date of the file/directory denoted by the absolute
+path of the receiver object. The result is a DateTime object, or .nil in case of error.
 </para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* On Windows */
+say .File~new("C:\Program Files")~lastModified~class    --> The DateTime class
+say .File~new("C:\Program Files")~lastModified          --> 2010-11-01T19:14:49.000000
+say .File~new("dummy")~lastModified                     --> The NIL object
+]]>
+</programlisting>
 </section>
 
 <section id="mthFileLastModifiedEquals"><title>lastModified=</title>
@@ -6308,12 +6318,28 @@ say .File~new("/tmp/.dir/file")~isHidden        --> 1
 <tertiary>of File class</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>-lastModified=date-------------------------------------------><
+>>-lastModified=(date)-----------------------------------------><
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Sets the last modified date of the file/directory denoted by the absolute path of the receiver object.
 </para>
+<para>The <emphasis role="italic">date</emphasis> parameter is a DateTime object. 
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* Implementation of : touch -c -f -r referenceFile file */
+parse arg referenceFilePath filePath .
+file = .File~new(filePath)
+if \ file~exists then return 1 -- KO
+referenceFile = .File~new(referenceFilePath)
+referenceDate = referenceFile~lastModified
+if referenceDate == .nil then return 1 -- KO
+file~lastModified = referenceDate
+return 0 -- OK
+]]>
+</programlisting>
 </section>
 
 <section id="mthFileLength"><title>length</title>
@@ -6328,7 +6354,8 @@ say .File~new("/tmp/.dir/file")~isHidden        --> 1
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns the size in bytes of the file/directory denoted by the absolute
+path of the receiver object.
 </para>
 </section>
 
