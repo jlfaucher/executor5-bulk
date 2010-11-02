@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*
-  SVN Revision: $Rev: 3047 $
-  Change Date:  $Date: 2008-08-22 19:56:58 -0700 (Fri, 22 Aug 2008) $
+  SVN Revision: $Rev$
+  Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
