@@ -5863,6 +5863,10 @@ The Buffer class new method will raise an error if invoked.</para>
 
 <para>The File class provides services which are common to all the filesystems supported by ooRexx. A File object represents a path to a file or directory. The path can be relative or absolute. 
 </para>
+<para>
+If you create a File object with a relative path, the absolute path will be calculated using the current default directory.
+This absolute path is memorized on the File object, and will not change if you change of default directory.
+</para>
 <figure><title>The File class and methods</title>
 <mediaobject>
 <imageobject>
@@ -5972,7 +5976,8 @@ R:\
 <para><emphasis role="bold">Examples:</emphasis></para>
 <programlisting>
 <![CDATA[
-file = .File~new("dir" || .File~separator || "file")  --> "dir/file" on Unix, "dir\file" on Windows
+file = .File~new("dir1" || .File~separator || "dir2" || .File~separator || "file")  
+-- "dir1/dir2/file" on Unix, "dir1\dir2\file" on Windows
 ]]>
 </programlisting>
 </section>
@@ -5996,16 +6001,16 @@ file = .File~new("dir" || .File~separator || "file")  --> "dir/file" on Unix, "d
 <![CDATA[
 /* On Windows */
 'cd c:\program files\oorexx'
-say .File~new("my file")~absoluteFile~class        --> The File class
-say .File~new("my file")~absoluteFile              --> c:\program files\oorexx\my file
-say .File~new("..\my file")~absoluteFile           --> c:\program files\my file
-say .File~new("..\..\my file")~absoluteFile        --> c:\my file
-say .File~new("..\..\my dir\my file")~absoluteFile --> c:\my dir\my file
+say .File~new("my file")~absoluteFile~class        -- The File class
+say .File~new("my file")~absoluteFile              -- c:\program files\oorexx\my file
+say .File~new("..\my file")~absoluteFile           -- c:\program files\my file
+say .File~new("..\..\my file")~absoluteFile        -- c:\my file
+say .File~new("..\..\my dir\my file")~absoluteFile -- c:\my dir\my file
 
 /* On Linux */
 'cd /opt/ooRexx'
-say .File~new("my file")~absoluteFile              --> /opt/ooRexx/my file
-say .File~new("../my file")~absoluteFile           --> /opt/my file
+say .File~new("my file")~absoluteFile              -- /opt/ooRexx/my file
+say .File~new("../my file")~absoluteFile           -- /opt/my file
 ]]>
 </programlisting>
 </section>
@@ -6029,16 +6034,16 @@ say .File~new("../my file")~absoluteFile           --> /opt/my file
 <![CDATA[
 /* On Windows */
 'cd c:\program files\oorexx'
-say .File~new("my file")~absolutePath~class        --> The String class
-say .File~new("my file")~absolutePath              --> c:\program files\oorexx\my file
-say .File~new("..\my file")~absolutePath           --> c:\program files\my file
-say .File~new("..\..\my file")~absolutePath        --> c:\my file
-say .File~new("..\..\my dir\my file")~absolutePath --> c:\my dir\my file
+say .File~new("my file")~absolutePath~class        -- The String class
+say .File~new("my file")~absolutePath              -- c:\program files\oorexx\my file
+say .File~new("..\my file")~absolutePath           -- c:\program files\my file
+say .File~new("..\..\my file")~absolutePath        -- c:\my file
+say .File~new("..\..\my dir\my file")~absolutePath -- c:\my dir\my file
 
 /* On Linux */
 'cd /opt/ooRexx'
-say .File~new("my file")~absolutePath              --> /opt/ooRexx/my file
-say .File~new("../my file")~absolutePath           --> /opt/my file
+say .File~new("my file")~absolutePath              -- /opt/ooRexx/my file
+say .File~new("../my file")~absolutePath           -- /opt/my file
 ]]>
 </programlisting>
 </section>
@@ -6096,11 +6101,11 @@ If the two paths are equal , 0 is returned. If the target path is larger, 1 is r
 <para><emphasis role="bold">Examples:</emphasis></para>
 <programlisting>
 <![CDATA[
-file1 = .File~new("dir" || .File~separator || "file")
-file2 = .File~new("DIR" || .File~separator || "FILE")
+file1 = .File~new("file", "dir")
+file2 = .File~new("FILE", "DIR")
 'cd' .File~listRoots[1]
-file1~compareTo(file2)    --> 0 on Windows (both Files denotes the same path)
-file1~compareTo(file2)    --> 1 on Unix ("/dir/file" is greater than "/DIR/FILE")
+file1~compareTo(file2)    -- 0 on Windows (both Files denote the same path)
+file1~compareTo(file2)    -- 1 on Unix ("/dir/file" is greater than "/DIR/FILE")
 ]]>
 </programlisting>
 </section>
@@ -6118,7 +6123,9 @@ file1~compareTo(file2)    --> 1 on Unix ("/dir/file" is greater than "/DIR/FILE"
 </programlisting>
 
 <para>Deletes the file or directory denoted by the absolute path of the target File object.
-Returns .true ("1") if the deletion was successful, otherwise returns .false ("0").
+Only empty directories can be deleted.
+</para>
+<para>Returns .true ("1") if the deletion was successful, otherwise returns .false ("0").
 </para>
 </section>
 
@@ -6183,20 +6190,20 @@ the final separator (if any).
 <programlisting>
 <![CDATA[
 /* Windows */
-file = .File~new("file")                     --> file
-file = .File~new("c:\program files\")        --> c:\program files
-file = .File~new("file", "c:/program files") --> c:\program files\file
+file = .File~new("file")                     -- file
+file = .File~new("c:\program files\")        -- c:\program files
+file = .File~new("file", "c:/program files") -- c:\program files\file
 'cd c:\program files\oorexx'
-samples = .File~new("samples")               --> samples
-file = .File~new("file", "samples")          --> samples\file
-file = .File~new("file", samples)            --> c:\program files\oorexx\samples\file
+samples = .File~new("samples")               -- samples
+file = .File~new("file", "samples")          -- samples\file
+file = .File~new("file", samples)            -- c:\program files\oorexx\samples\file
 
 /* Unix */
-file = .File~new("/opt/ooRexx/")             --> /opt/ooRexx
+file = .File~new("/opt/ooRexx/")             -- /opt/ooRexx
 'cd /opt/ooRexx'
-samples = .File~new("samples")               --> samples
-file = .File~new("file", "samples")          --> samples/file
-file = .File~new("file", samples)            --> /opt/ooRexx/samples/file
+samples = .File~new("samples")               -- samples
+file = .File~new("file", "samples")          -- samples/file
+file = .File~new("file", samples)            -- /opt/ooRexx/samples/file
 ]]>
 </programlisting>
 </section>
@@ -6277,15 +6284,15 @@ directories has a name starting with a period character.
 <programlisting>
 <![CDATA[
 /* Unix, when file exists */
-say .File~new("/tmp/file")~isHidden             --> 0
-say .File~new("/tmp/.file")~isHidden            --> 1
-say .File~new("/tmp/.dir/file")~isHidden        --> 1
+say .File~new("/tmp/file")~isHidden             -- 0
+say .File~new("/tmp/.file")~isHidden            -- 1
+say .File~new("/tmp/.dir/file")~isHidden        -- 1
 ]]>
 </programlisting>
 </section>
 
-<section id="mthFileLastModified"><title>lastModified</title>
-<indexterm><primary>lastModified method</primary>
+<section id="mthFileLastModified"><title>lastModified (Attribute)</title>
+<indexterm><primary>lastModified attribute</primary>
 <secondary>of File class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>lastModified method</secondary>
@@ -6293,53 +6300,51 @@ say .File~new("/tmp/.dir/file")~isHidden        --> 1
 <programlisting>
 <![CDATA[
 >>-lastModified------------------------------------------------><
+
+>>-lastModified=date-------------------------------------------><
 ]]>
 </programlisting>
 
-<para>Returns the last modified date of the file/directory denoted by the absolute
-path of the receiver object. The result is a DateTime object, or .nil in case of error.
-</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
-<programlisting>
-<![CDATA[
-/* On Windows */
-say .File~new("C:\Program Files")~lastModified~class    --> The DateTime class
-say .File~new("C:\Program Files")~lastModified          --> 2010-11-01T19:14:49.000000
-say .File~new("dummy")~lastModified                     --> The NIL object
-]]>
-</programlisting>
-</section>
-
-<section id="mthFileLastModifiedEquals"><title>lastModified=</title>
-<indexterm><primary>lastModified= method</primary>
-<secondary>of File class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>lastModified= method</secondary>
-<tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-lastModified=(date)-----------------------------------------><
-]]>
-</programlisting>
-
-<para>Sets the last modified date of the file/directory denoted by the absolute path of the receiver object.
-</para>
-<para>The <emphasis role="italic">date</emphasis> parameter is a DateTime object. 
-</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
-<programlisting>
-<![CDATA[
-/* Implementation of : touch -c -f -r referenceFile file */
-parse arg referenceFilePath filePath .
-file = .File~new(filePath)
-if \ file~exists then return 1 -- KO
-referenceFile = .File~new(referenceFilePath)
-referenceDate = referenceFile~lastModified
-if referenceDate == .nil then return 1 -- KO
-file~lastModified = referenceDate
-return 0 -- OK
-]]>
-</programlisting>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">lastModified get:</emphasis></term>
+  <listitem>
+    <para>Returns the last modified date of the file/directory denoted by the absolute
+    path of the receiver object. The result is a DateTime object, or .nil in case of error.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">lastModified set:</emphasis></term>
+  <listitem>
+    <para>Sets the last modified date of the file/directory denoted by the absolute path of the receiver object.
+    </para>
+    <para>The <emphasis role="italic">date</emphasis> parameter is a DateTime object. 
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Examples:</emphasis></term>
+  <listitem>
+    <programlisting>
+    <![CDATA[
+    /* On Windows */
+    say .File~new("C:\Program Files")~lastModified~class    -- The DateTime class
+    say .File~new("C:\Program Files")~lastModified          -- 2010-11-01T19:14:49.000000
+    say .File~new("dummy")~lastModified                     -- The NIL object
+    
+    /* A possible implementation of : touch -c -m -r referenceFile file
+       -c, --no-create             do not create any files
+       -m                          change only the modification time
+       -r, --reference=FILE        use this file's time instead of current time
+    */
+    parse arg referenceFilePath filePath .
+    file = .File~new(filePath)
+    if \ file~exists then return 0 -- OK, not an error
+    referenceFile = .File~new(referenceFilePath)
+    referenceDate = referenceFile~lastModified
+    if referenceDate == .nil then return 1 -- KO
+    file~lastModified = referenceDate
+    return 0 -- OK
+    ]]>
+    </programlisting>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="mthFileLength"><title>length</title>
@@ -6371,8 +6376,29 @@ path of the receiver object.
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns an array of files/directories names which are immediate childrens of the directory
+denoted by the absolute path of the receiver object.
+The order in which the names are returned is dependent on the file system (not necessarily alphabetic order).
+The special names "." and ".." are not returned. 
 </para>
+<para>The result is an array of strings. 
+If the receiver object is not a directory then the result is .nil.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+names = .File~new("c:\program files\oorexx\samples")~list
+say names -- an Array
+say names~toString
+/* Possible output */
+api
+ccreply.rex
+complex.rex
+drives.rex
+factor.rex
+(etc...)
+]]>
+</programlisting>
 </section>
 
 <section id="mthFileListFiles"><title>listFiles</title>
@@ -6387,8 +6413,45 @@ path of the receiver object.
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns an array of files/directories which are immediate childrens of the directory
+denoted by the absolute path of the receiver object. 
+The order in which the names are returned is dependent on the file system (not necessarily alphabetic order).
+The special names "." and ".." are not returned. 
 </para>
+<para>The result is an array of File objects. 
+If the receiver object is not a directory then the result is .nil.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+do file over deepListFiles("c:\program files\oorexx\samples")
+    say file
+end
+
+-- Depth first iteration
+::routine deepListFiles
+use strict arg directory, accumulator=(.List~new)
+files = .File~new(directory)~listFiles
+if files == .nil then return accumulator
+do file over files
+    accumulator~append(file)
+    if file~isDirectory then call deepListFiles file~absolutePath, accumulator
+end
+return accumulator
+
+/* Possible output */
+c:\program files\oorexx\samples\api
+c:\program files\oorexx\samples\api\callrxnt
+c:\program files\oorexx\samples\api\callrxnt\backward.fnc
+c:\program files\oorexx\samples\api\callrxnt\callrxnt.c
+c:\program files\oorexx\samples\api\callrxnt\callrxnt.exe
+c:\program files\oorexx\samples\api\callrxnt\callrxnt.ico
+c:\program files\oorexx\samples\api\callrxnt\callrxnt.mak
+c:\program files\oorexx\samples\api\callrxwn
+c:\program files\oorexx\samples\api\callrxwn\backward.fnc
+(etc...)
+]]>
+</programlisting>
 </section>
 
 <section id="mthFileMakeDir"><title>makeDir</title>
@@ -6403,7 +6466,12 @@ path of the receiver object.
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Makes just the directory represented by the last <link linkend="mthFileName">name</link>
+portion of the receiver object's absolute path. Does not create any parent directories,
+which must all exist for a successful creation of the leaf directory.
+</para>
+<para>Returns .true ("1") if the creation was successful, otherwise returns .false ("0").
+If the directory already exists then the result is .false.
 </para>
 </section>
 
@@ -6419,7 +6487,11 @@ path of the receiver object.
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Creates the entire directory hierarchy represented by the absolute path
+of the receiver object.
+</para>
+<para>Returns .true ("1") if the creation was successful, otherwise returns .false ("0").
+If the directory already exists then the result is .false.
 </para>
 </section>
 
@@ -6435,8 +6507,23 @@ path of the receiver object.
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns the name portion of the receiver object's absolute path.
+This is everything after the last path separator. On Windows, the file's
+extension is part of the name.
 </para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* On Windows */
+say .File~new("c:\program files\oorexx\rexx.exe")~name   -- rexx.exe
+say .File~new("c:\")~name                                -- empty string
+say .File~new("c:")~name                                 -- empty string
+
+/* On Unix */
+say .File~new("/opt/ooRexx/bin/rexx.img")~name           -- rexx.img
+say .File~new("/")~name                                  -- empty string
+]]>
+</programlisting>
 </section>
 
 <section id="mthFileParent"><title>parent</title>
@@ -6451,8 +6538,23 @@ path of the receiver object.
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns the parent directory portion of the receiver object's absolute path.
+If no separator is found or the absolute path ends with a separator 
+(which means this is a root path) then returns .nil.
 </para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* On Windows */
+say .File~new("c:\program files\oorexx\rexx.exe")~parent   -- c:\program files\oorexx
+say .File~new("c:\")~parent                                -- The NIL object
+say .File~new("c:")~parent                                 -- The NIL object
+
+/* On Unix */
+say .File~new("/opt/ooRexx/bin/rexx.img")~parent           -- /opt/ooRexx/bin
+say .File~new("/")~parent                                  -- The NIL object
+]]>
+</programlisting>
 </section>
 
 <section id="mthFileParentFile"><title>parentFile</title>
@@ -6467,7 +6569,10 @@ path of the receiver object.
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns the <link linkend="mthFileParent">parent</link> directory
+portion as a File object.
+If no separator is found or the absolute path ends with a separator 
+(which means this is a root path) then returns .nil.
 </para>
 </section>
 
@@ -6483,7 +6588,9 @@ path of the receiver object.
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns the original path (after normalization) used to create the File object.
+The normalization consists in adjusting the separators to the platform's convention and removing
+the final separator (if any).
 </para>
 </section>
 
@@ -6517,7 +6624,14 @@ path of the receiver object.
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Changes the name of the file/directory denoted by the absolute path of the target object.
+The new name is <emphasis role="italic">dest</emphasis>.
+</para>
+<para>Returns .true ("1") if the renaming was successful, otherwise returns .false ("0").
+</para>
+<para>On Windows, this method calls <function>MoveFile</function> to perform the action.
+</para>
+<para>On Unix, this method calls <function>rename</function> to perform the action.
 </para>
 </section>
 
@@ -6551,7 +6665,9 @@ path of the receiver object.
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Sets the read-only flag of the file/directory denoted by the absolute path of the target object.
+</para>
+<para>Returns .true ("1") if the attribute was set, otherwise returns .false ("0").
 </para>
 </section>
 
@@ -6567,7 +6683,7 @@ path of the receiver object.
 ]]>
 </programlisting>
 
-<para>todo.
+<para>Returns a string that indicates the path used to create the File object.
 </para>
 </section>
 
