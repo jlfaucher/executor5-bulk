@@ -5856,5 +5856,838 @@ The Buffer class new method will raise an error if invoked.</para>
 </section>
 </section>
 
+<section id="clsFile"><title>The File Class</title>
+<indexterm><primary>File class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>File class</secondary></indexterm>
+
+<para>The File class provides services which are common to all the filesystems supported by ooRexx. A File object represents a path to a file or directory. The path can be relative or absolute. 
+</para>
+<para>
+If you create a File object with a relative path, the absolute path will be calculated using the current default directory.
+This absolute path is memorized on the File object, and will not change if you change of default directory.
+</para>
+<figure><title>The File class and methods</title>
+<mediaobject>
+<imageobject>
+<!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+<imagedata fileref="ooRexxFileClass">
+</imageobject>
+</mediaobject>
+</figure>
+<note><title>Note</title>
+<para>The File class also has available class methods that its
+metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+
+<section><title>Inherited Methods</title>
+
+&objclsmthods;
+
+<para>Methods inherited from the
+<link linkend="clsComparable">Comparable class</link>.</para>
+<itemizedlist>
+<listitem><para><link linkend="mthComparableCompareTo">compareTo</link></para></listitem>
+</itemizedlist>
+
+&orderclsmthods;
+</section>
+
+<section id="clsmthFileIsCaseSensitive"><title>isCaseSensitive (Class Method)</title>
+<indexterm><primary>isCaseSensitive method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isCaseSensitive method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isCaseSensitive---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the file system is case-sensitive. Otherwise returns .false ("0").
+</para>
+<para>This query method is available as both instance and class method.
+</para>
+</section>
+
+<section id="clsmthFileListRoots"><title>listRoots (Class Method)</title>
+<indexterm><primary>listRoots method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>listRoots method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-listRoots---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the file system root elements, as an array of string. 
+On Windows, each of the drives is a root element (Ex : "C:\"). 
+On Unix, there is just one root ("/").
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+say .File~listRoots~toString
+/* Possible output on Windows : /*
+C:\
+D:\
+E:\
+R:\
+]]>
+</programlisting>
+</section>
+
+<section id="clsmthFilePathSeparator"><title>pathSeparator (Class Method)</title>
+<indexterm><primary>pathSeparator method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>pathSeparator method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-pathSeparator-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the separator used for file search paths (";" on Windows, ":" on Unix).
+</para>
+<para>This query method is available as both instance and class method.
+</para>
+</section>
+
+<section id="clsmthFileSeparator"><title>separator (Class Method)</title>
+<indexterm><primary>separator method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>separator method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-separator---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the file name separator used by the file system ("\" on Windows, "/" on Unix).
+</para>
+<para>This query method is available as both instance and class method.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+file = .File~new("dir1" || .File~separator || "dir2" || .File~separator || "file")  
+-- "dir1/dir2/file" on Unix, "dir1\dir2\file" on Windows
+]]>
+</programlisting>
+</section>
+
+<section id="mthFileAbsoluteFile"><title>absoluteFile</title>
+<indexterm><primary>absoluteFile method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>absoluteFile method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-absoluteFile------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the fully qualified path as a new instance of File.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* On Windows */
+'cd c:\program files\oorexx'
+say .File~new("my file")~absoluteFile~class        -- The File class
+say .File~new("my file")~absoluteFile              -- c:\program files\oorexx\my file
+say .File~new("..\my file")~absoluteFile           -- c:\program files\my file
+say .File~new("..\..\my file")~absoluteFile        -- c:\my file
+say .File~new("..\..\my dir\my file")~absoluteFile -- c:\my dir\my file
+
+/* On Linux */
+'cd /opt/ooRexx'
+say .File~new("my file")~absoluteFile              -- /opt/ooRexx/my file
+say .File~new("../my file")~absoluteFile           -- /opt/my file
+]]>
+</programlisting>
+</section>
+
+<section id="mthFileAbsolutePath"><title>absolutePath</title>
+<indexterm><primary>absolutePath method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>absolutePath method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-absolutePath------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the fully qualified path as a string.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* On Windows */
+'cd c:\program files\oorexx'
+say .File~new("my file")~absolutePath~class        -- The String class
+say .File~new("my file")~absolutePath              -- c:\program files\oorexx\my file
+say .File~new("..\my file")~absolutePath           -- c:\program files\my file
+say .File~new("..\..\my file")~absolutePath        -- c:\my file
+say .File~new("..\..\my dir\my file")~absolutePath -- c:\my dir\my file
+
+/* On Linux */
+'cd /opt/ooRexx'
+say .File~new("my file")~absolutePath              -- /opt/ooRexx/my file
+say .File~new("../my file")~absolutePath           -- /opt/my file
+]]>
+</programlisting>
+</section>
+
+<section id="mthFileCanRead"><title>canRead</title>
+<indexterm><primary>canRead method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>canRead method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-canRead-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the file exists and is readable. Otherwise returns .false ("0").
+</para>
+</section>
+
+<section id="mthFileCanWrite"><title>canWrite</title>
+<indexterm><primary>canWrite method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>canWrite method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-canWrite----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the file exists and is writable. Otherwise returns .false ("0").
+</para>
+</section>
+
+<section id="mthFileCompareTo"><title>compareTo</title>
+<indexterm><primary>compareTo method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>compareTo method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-compareTo(other)--------------------------------------------><
+]]>
+</programlisting>
+
+<para>Performs a sorting comparison of the target File object to the <emphasis role="italic">other</emphasis> File object.
+The comparison is made on the absolute paths (strings) of both File objects.
+If the filesystem is case-sensitive then the paths comparison is case-sensitive, otherwise the comparison is caseless.
+If the two paths are equal , 0 is returned. If the target path is larger, 1 is returned. -1 if the
+<emphasis role="italic">other</emphasis> argument is the larger path.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+file1 = .File~new("file", "dir")
+file2 = .File~new("FILE", "DIR")
+'cd' .File~listRoots[1]
+file1~compareTo(file2)    -- 0 on Windows (both Files denote the same path)
+file1~compareTo(file2)    -- 1 on Unix ("/dir/file" is greater than "/DIR/FILE")
+]]>
+</programlisting>
+</section>
+
+<section id="mthFileDelete"><title>delete</title>
+<indexterm><primary>delete method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>delete method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-delete------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Deletes the file or directory denoted by the absolute path of the target File object.
+Only empty directories can be deleted.
+</para>
+<para>Returns .true ("1") if the deletion was successful, otherwise returns .false ("0").
+</para>
+</section>
+
+<section id="mthFileExists"><title>exists</title>
+<indexterm><primary>exists method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>exists method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-exists------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the file or directory (denoted by the absolute path of the target File object) exists.
+Otherwise returns .false ("0").
+</para>
+</section>
+
+<section id="mthFileHashCode"><title>hashCode</title>
+<indexterm><primary>hashCode method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hashCode method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-hashCode----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a string value that is used as a hash value for MapCollection such as Table, Relation, Set, Bag,
+and Directory.
+</para>
+</section>
+
+<section id="mthFileInit"><title>init</title>
+<indexterm><primary>init method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>init method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-init(path-+------+-)----------------------------------------><
+             +-,dir-+
+]]>
+</programlisting>
+
+<para>Initializes a new File instance with the path <emphasis role="italic">path</emphasis>
+(after normalization).
+</para>
+<para>If specified, <emphasis role="italic">dir</emphasis> is a parent path that is prepended
+to <emphasis role="italic">path</emphasis>. If <emphasis role="italic">dir</emphasis> is a File
+object then the absolute path of <emphasis role="italic">dir</emphasis> is prepended, otherwise
+<emphasis role="italic">dir</emphasis> is prepended as-is (after normalization).
+The normalization consists in adjusting the separators to the platform's convention and removing
+the final separator (if any).
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* Windows */
+file = .File~new("file")                     -- file
+file = .File~new("c:\program files\")        -- c:\program files
+file = .File~new("file", "c:/program files") -- c:\program files\file
+'cd c:\program files\oorexx'
+samples = .File~new("samples")               -- samples
+file = .File~new("file", "samples")          -- samples\file
+file = .File~new("file", samples)            -- c:\program files\oorexx\samples\file
+
+/* Unix */
+file = .File~new("/opt/ooRexx/")             -- /opt/ooRexx
+'cd /opt/ooRexx'
+samples = .File~new("samples")               -- samples
+file = .File~new("file", "samples")          -- samples/file
+file = .File~new("file", samples)            -- /opt/ooRexx/samples/file
+]]>
+</programlisting>
+</section>
+
+<section id="mthFileIsCaseSensitive"><title>isCaseSensitive</title>
+<indexterm><primary>isCaseSensitive method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isCaseSensitive method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isCaseSensitive---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the file system is case-sensitive. Otherwise returns .false ("0").
+</para>
+<para>This query method is available as both instance and class method.
+</para>
+</section>
+
+<section id="mthFileIsDirectory"><title>isDirectory</title>
+<indexterm><primary>isDirectory method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isDirectory method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isDirectory---------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the absolute path of the target File object references a directory.
+Otherwise returns .false ("0").
+</para>
+</section>
+
+<section id="mthFileIsFile"><title>isFile</title>
+<indexterm><primary>isFile method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isFile method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isFile------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the absolute path of the target File object references a file.
+Otherwise returns .false ("0").
+</para>
+</section>
+
+<section id="mthFileIsHidden"><title>isHidden</title>
+<indexterm><primary>isHidden method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isHidden method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-isHidden----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns .true ("1") if the absolute path of the target File object references an existing file or
+directory which is hidden. Otherwise returns .false ("0").
+</para>
+<para>On Windows, a file or directory is hidden when its attribute FILE_ATTRIBUTE_HIDDEN is set.
+</para>
+<para>On Unix, a file or directory is hidden when its name starts with a period character (".") or when one of its parent
+directories has a name starting with a period character.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* Unix, when file exists */
+say .File~new("/tmp/file")~isHidden             -- 0
+say .File~new("/tmp/.file")~isHidden            -- 1
+say .File~new("/tmp/.dir/file")~isHidden        -- 1
+]]>
+</programlisting>
+</section>
+
+<section id="mthFileLastModified"><title>lastModified (Attribute)</title>
+<indexterm><primary>lastModified attribute</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>lastModified method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-lastModified------------------------------------------------><
+
+>>-lastModified=date-------------------------------------------><
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">lastModified get:</emphasis></term>
+  <listitem>
+    <para>Returns the last modified date of the file/directory denoted by the absolute
+    path of the receiver object. The result is a DateTime object, or .nil in case of error.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">lastModified set:</emphasis></term>
+  <listitem>
+    <para>Sets the last modified date of the file/directory denoted by the absolute path of the receiver object.
+    </para>
+    <para>The <emphasis role="italic">date</emphasis> parameter is a DateTime object. 
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Examples:</emphasis></term>
+  <listitem>
+    <programlisting>
+    <![CDATA[
+    /* On Windows */
+    say .File~new("C:\Program Files")~lastModified~class    -- The DateTime class
+    say .File~new("C:\Program Files")~lastModified          -- 2010-11-01T19:14:49.000000
+    say .File~new("dummy")~lastModified                     -- The NIL object
+    
+    /* A possible implementation of : touch -c -m -r referenceFile file
+       -c, --no-create             do not create any files
+       -m                          change only the modification time
+       -r, --reference=FILE        use this file's time instead of current time
+    */
+    parse arg referenceFilePath filePath .
+    file = .File~new(filePath)
+    if \ file~exists then return 0 -- OK, not an error
+    referenceFile = .File~new(referenceFilePath)
+    referenceDate = referenceFile~lastModified
+    if referenceDate == .nil then return 1 -- KO
+    file~lastModified = referenceDate
+    return 0 -- OK
+    ]]>
+    </programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthFileLength"><title>length</title>
+<indexterm><primary>length method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>length method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-length------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the size in bytes of the file/directory denoted by the absolute
+path of the receiver object.
+</para>
+</section>
+
+<section id="mthFileList"><title>list</title>
+<indexterm><primary>list method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>list method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-list--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns an array of files/directories names which are immediate childrens of the directory
+denoted by the absolute path of the receiver object.
+The order in which the names are returned is dependent on the file system (not necessarily alphabetic order).
+The special names "." and ".." are not returned. 
+</para>
+<para>The result is an array of strings. 
+If the receiver object is not a directory then the result is .nil.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+names = .File~new("c:\program files\oorexx\samples")~list
+say names -- an Array
+say names~toString
+/* Possible output */
+api
+ccreply.rex
+complex.rex
+drives.rex
+factor.rex
+(etc...)
+]]>
+</programlisting>
+</section>
+
+<section id="mthFileListFiles"><title>listFiles</title>
+<indexterm><primary>listFiles method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>listFiles method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-listFiles---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns an array of files/directories which are immediate childrens of the directory
+denoted by the absolute path of the receiver object. 
+The order in which the names are returned is dependent on the file system (not necessarily alphabetic order).
+The special names "." and ".." are not returned. 
+</para>
+<para>The result is an array of File objects. 
+If the receiver object is not a directory then the result is .nil.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+do file over deepListFiles("c:\program files\oorexx\samples")
+    say file
+end
+
+-- Depth first iteration
+::routine deepListFiles
+use strict arg directory, accumulator=(.List~new)
+files = .File~new(directory)~listFiles
+if files == .nil then return accumulator
+do file over files
+    accumulator~append(file)
+    if file~isDirectory then call deepListFiles file~absolutePath, accumulator
+end
+return accumulator
+
+/* Possible output */
+c:\program files\oorexx\samples\api
+c:\program files\oorexx\samples\api\callrxnt
+c:\program files\oorexx\samples\api\callrxnt\backward.fnc
+c:\program files\oorexx\samples\api\callrxnt\callrxnt.c
+c:\program files\oorexx\samples\api\callrxnt\callrxnt.exe
+c:\program files\oorexx\samples\api\callrxnt\callrxnt.ico
+c:\program files\oorexx\samples\api\callrxnt\callrxnt.mak
+c:\program files\oorexx\samples\api\callrxwn
+c:\program files\oorexx\samples\api\callrxwn\backward.fnc
+(etc...)
+]]>
+</programlisting>
+</section>
+
+<section id="mthFileMakeDir"><title>makeDir</title>
+<indexterm><primary>makeDir method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeDir method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-makeDir-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Makes just the directory represented by the last <link linkend="mthFileName">name</link>
+portion of the receiver object's absolute path. Does not create any parent directories,
+which must all exist for a successful creation of the leaf directory.
+</para>
+<para>Returns .true ("1") if the creation was successful, otherwise returns .false ("0").
+If the directory already exists then the result is .false.
+</para>
+</section>
+
+<section id="mthFileMakeDirs"><title>makeDirs</title>
+<indexterm><primary>makeDirs method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeDirs method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-makeDirs----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Creates the entire directory hierarchy represented by the absolute path
+of the receiver object.
+</para>
+<para>Returns .true ("1") if the creation was successful, otherwise returns .false ("0").
+If the directory already exists then the result is .false.
+</para>
+</section>
+
+<section id="mthFileName"><title>name</title>
+<indexterm><primary>name method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>name method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-name--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the name portion of the receiver object's absolute path.
+This is everything after the last path separator. On Windows, the file's
+extension is part of the name.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* On Windows */
+say .File~new("c:\program files\oorexx\rexx.exe")~name   -- rexx.exe
+say .File~new("c:\")~name                                -- empty string
+say .File~new("c:")~name                                 -- empty string
+
+/* On Unix */
+say .File~new("/opt/ooRexx/bin/rexx.img")~name           -- rexx.img
+say .File~new("/")~name                                  -- empty string
+]]>
+</programlisting>
+</section>
+
+<section id="mthFileParent"><title>parent</title>
+<indexterm><primary>parent method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>parent method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-parent------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the parent directory portion of the receiver object's absolute path.
+If no separator is found or the absolute path ends with a separator 
+(which means this is a root path) then returns .nil.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* On Windows */
+say .File~new("c:\program files\oorexx\rexx.exe")~parent   -- c:\program files\oorexx
+say .File~new("c:\")~parent                                -- The NIL object
+say .File~new("c:")~parent                                 -- The NIL object
+
+/* On Unix */
+say .File~new("/opt/ooRexx/bin/rexx.img")~parent           -- /opt/ooRexx/bin
+say .File~new("/")~parent                                  -- The NIL object
+]]>
+</programlisting>
+</section>
+
+<section id="mthFileParentFile"><title>parentFile</title>
+<indexterm><primary>parentFile method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>parentFile method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-parentFile--------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the <link linkend="mthFileParent">parent</link> directory
+portion as a File object.
+If no separator is found or the absolute path ends with a separator 
+(which means this is a root path) then returns .nil.
+</para>
+</section>
+
+<section id="mthFilePath"><title>path</title>
+<indexterm><primary>path method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>path method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-path--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the original path (after normalization) used to create the File object.
+The normalization consists in adjusting the separators to the platform's convention and removing
+the final separator (if any).
+</para>
+</section>
+
+<section id="mthFilePathSeparator"><title>pathSeparator</title>
+<indexterm><primary>pathSeparator method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>pathSeparator method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-pathSeparator-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the separator used for file search paths (";" on Windows, ":" on Unix).
+</para>
+<para>This query method is available as both instance and class method.
+</para>
+</section>
+
+<section id="mthFileRenameTo"><title>renameTo</title>
+<indexterm><primary>renameTo method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>renameTo method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-renameTo(dest)----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Changes the name of the file/directory denoted by the absolute path of the target object.
+The new name is <emphasis role="italic">dest</emphasis>.
+</para>
+<para>Returns .true ("1") if the renaming was successful, otherwise returns .false ("0").
+</para>
+<para>On Windows, this method calls <function>MoveFile</function> to perform the action.
+</para>
+<para>On Unix, this method calls <function>rename</function> to perform the action.
+</para>
+</section>
+
+<section id="mthFileSeparator"><title>separator</title>
+<indexterm><primary>separator method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>separator method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-separator---------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the file name separator used by the file system ("\" on Windows, "/" on Unix).
+</para>
+<para>This query method is available as both instance and class method.
+</para>
+</section>
+
+<section id="mthFileSetReadOnly"><title>setReadOnly</title>
+<indexterm><primary>setReadOnly method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>setReadOnly method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-setReadOnly-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Sets the read-only flag of the file/directory denoted by the absolute path of the target object.
+</para>
+<para>Returns .true ("1") if the attribute was set, otherwise returns .false ("0").
+</para>
+</section>
+
+<section id="mthFileString"><title>string</title>
+<indexterm><primary>string method</primary>
+<secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>string method</secondary>
+<tertiary>of File class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-string------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns a string that indicates the path used to create the File object.
+</para>
+</section>
+
+</section>
+
 </section>
 
