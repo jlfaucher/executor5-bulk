@@ -1606,6 +1606,14 @@ testSeq: procedure
   a2=.array~of(1,2)
   self~assertTrue(testSeq(a1, a2))
 
+  -- the mergesort algorithm uses an insersion sort for partitions with fewer than
+  -- 8 items, so we need to throw in a few longer variations
+
+  a=.array~of('y', 'o', 'i', 'x', 'u', 'q', 'e', 'l', 'p', 'b', 'g', 't', 'd', 'c', 'z', 'm', 'h', 'v', 'j', 'r', 'a', 'n', 'f', 'w', 'k', 's')
+  a1=a~sort
+  a2=.array~of('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z')
+  self~assertTrue(testSeq(a1, a2))
+
   return
 
 
@@ -1649,6 +1657,14 @@ testSeq: procedure
   a=.array~of(2,1)
   a1=a~stableSort
   a2=.array~of(1,2)
+  self~assertTrue(testSeq(a1, a2))
+
+  -- the mergesort algorithm uses an insersion sort for partitions with fewer than
+  -- 8 items, so we need to throw in a few longer variations
+
+  a=.array~of('y', 'o', 'i', 'x', 'u', 'q', 'e', 'l', 'p', 'b', 'g', 't', 'd', 'c', 'z', 'm', 'h', 'v', 'j', 'r', 'a', 'n', 'f', 'w', 'k', 's')
+  a1=a~stableSort
+  a2=.array~of('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z')
   self~assertTrue(testSeq(a1, a2))
 
   return
@@ -1701,6 +1717,14 @@ testSeq: procedure
   a2=.array~of(2,1)
   self~assertTrue(testSeq(a1, a2))
 
+  -- the mergesort algorithm uses an insersion sort for partitions with fewer than
+  -- 8 items, so we need to throw in a few longer variations
+
+  a=.array~of('y', 'o', 'i', 'x', 'u', 'q', 'e', 'l', 'p', 'b', 'g', 't', 'd', 'c', 'z', 'm', 'h', 'v', 'j', 'r', 'a', 'n', 'f', 'w', 'k', 's')
+  a1=a~sortWith(c)
+  a2=.array~of('z', 'y', 'x', 'w', 'v', 'u', 't', 's', 'r', 'q', 'p', 'o', 'n', 'm', 'l', 'k', 'j', 'i', 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a')
+  self~assertTrue(testSeq(a1, a2))
+
   return
 
 
@@ -1750,6 +1774,14 @@ testSeq: procedure
   a=.array~of(2,1)
   a1=a~stableSortWith(c)
   a2=.array~of(2,1)
+  self~assertTrue(testSeq(a1, a2))
+
+  -- the mergesort algorithm uses an insersion sort for partitions with fewer than
+  -- 8 items, so we need to throw in a few longer variations
+
+  a=.array~of('y', 'o', 'i', 'x', 'u', 'q', 'e', 'l', 'p', 'b', 'g', 't', 'd', 'c', 'z', 'm', 'h', 'v', 'j', 'r', 'a', 'n', 'f', 'w', 'k', 's')
+  a1=a~stableSortWith(c)
+  a2=.array~of('z', 'y', 'x', 'w', 'v', 'u', 't', 's', 'r', 'q', 'p', 'o', 'n', 'm', 'l', 'k', 'j', 'i', 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a')
   self~assertTrue(testSeq(a1, a2))
 
   return
