@@ -96,11 +96,13 @@ SET MKASM=1
 SET BLDRELEASE=1
 GOTO STARTBUILD
 
-REM  If we are building BOTH, we need to reset the log name and API output
-REM  directory.  We just set them unconditionally.
+REM  If we are building BOTH, we need to reset the log name and the output
+REM  directories.  We just set them unconditionally.
 :BLDDEBUG
 set OR_OUTDIR=%SRC_DRV%%SRC_DIR%\Win32Dbg
-set OR_OUTDIR_API=%SRC_DRV%%SRC_DIR%\Win32Dbg\api
+set OR_OUTDIR_API=%OR_OUTDIR%\api
+set OR_OUTDIR_OOD410=%OR_OUTDIR%\oodialog410
+set OR_OUTDIR_OOD420=%OR_OUTDIR%\oodialog420
 set OR_ERRLOG=%OR_OUTDIR%\Win32Dbg.log
 
 if %USELOGFILE% EQU 1 (
@@ -497,9 +499,13 @@ set MKDEBUG=0
 IF %DOPACKAGE% == 1 SET PACKAGE_REL=1
 set OR_OUTDIR=%SRC_DRV%%SRC_DIR%\Win32Rel
 set OR_OUTDIR_API=%OR_OUTDIR%\api
+set OR_OUTDIR_OOD410=%OR_OUTDIR%\oodialog410
+set OR_OUTDIR_OOD420=%OR_OUTDIR%\oodialog420
 set OR_ERRLOG=%OR_OUTDIR%\Win32Rel.log
 if not exist %OR_OUTDIR% md %OR_OUTDIR%
 if not exist %OR_OUTDIR_API% md %OR_OUTDIR_API%
+if not exist %OR_OUTDIR_OOD410% md %OR_OUTDIR_OOD410%
+if not exist %OR_OUTDIR_OOD420% md %OR_OUTDIR_OOD420%
 GOTO BUILD_CHECK_DONE
 
 
@@ -514,18 +520,21 @@ set MKDEBUG=1
 IF %DOPACKAGE% == 1 SET PACKAGE_DBG=1
 set OR_OUTDIR=%SRC_DRV%%SRC_DIR%\Win32Dbg
 set OR_OUTDIR_API=%OR_OUTDIR%\api
+set OR_OUTDIR_OOD410=%OR_OUTDIR%\oodialog410
+set OR_OUTDIR_OOD420=%OR_OUTDIR%\oodialog420
 set OR_ERRLOG=%OR_OUTDIR%\Win32Dbg.log
 if not exist %OR_OUTDIR% md %OR_OUTDIR%
 if not exist %OR_OUTDIR_API% md %OR_OUTDIR_API%
+if not exist %OR_OUTDIR_OOD410% md %OR_OUTDIR_OOD410%
+if not exist %OR_OUTDIR_OOD420% md %OR_OUTDIR_OOD420%
 GOTO BUILD_CHECK_DONE
 
 
 REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 REM  :DOBOTH
 REM    Sets the variables to do both non-debug and debug builds.  We will create
-REM    all output directories if needed.  The log name and API out directory
-REM    will first be used in the non-debug build.  Then corrected in the debug
-REM    build.
+REM    all output directories if needed.  The log name and out directories will
+REM    first be used in the non-debug build.  Then corrected in the debug build.
 REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 :DO_BOTH
 set MKNODEBUG=1
@@ -536,11 +545,15 @@ IF %DOPACKAGE% == 1 (
 )
 set OR_OUTDIR=%SRC_DRV%%SRC_DIR%\Win32Rel
 set OR_OUTDIR_API=%OR_OUTDIR%\api
+set OR_OUTDIR_OOD410=%OR_OUTDIR%\oodialog410
+set OR_OUTDIR_OOD420=%OR_OUTDIR%\oodialog420
 set OR_ERRLOG=%SRC_DRV%%SRC_DIR%\Win32Rel\Win32Rel.log
 if not exist %OR_OUTDIR% md %OR_OUTDIR%
 if not exist %OR_OUTDIR_API% md %OR_OUTDIR_API%
 if not exist %SRC_DRV%%SRC_DIR%\Win32Dbg md %SRC_DRV%%SRC_DIR%\Win32Dbg
 if not exist %SRC_DRV%%SRC_DIR%\Win32Dbg\api md %SRC_DRV%%SRC_DIR%\Win32Dbg\api
+if not exist %SRC_DRV%%SRC_DIR%\Win32Dbg\oodialog410 md %SRC_DRV%%SRC_DIR%\Win32Dbg\oodialog410
+if not exist %SRC_DRV%%SRC_DIR%\Win32Dbg\oodialog420 md %SRC_DRV%%SRC_DIR%\Win32Dbg\oodialog420
 GOTO BUILD_CHECK_DONE
 
 

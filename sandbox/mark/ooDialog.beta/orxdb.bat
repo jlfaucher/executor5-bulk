@@ -42,17 +42,7 @@ IF %MKASM%x == x GOTO HELP_MKASM
 IF %OR_ERRLOG%x == x GOTO HELP_LOG
 
 REM
-REM set up the directories for the generated files
-REM
-REM set OR_OUTDIR=O:\TESTDIR
-if (%1)==(1) goto release
-set OR_OUTDIR=%SRC_DRV%%SRC_DIR%\Win32Dbg
-goto cont
-:release
-set OR_OUTDIR=%SRC_DRV%%SRC_DIR%\Win32Rel
-:cont
-REM
-REM set up the directories for the source files
+REM set up the varialbles for the source file direcotories
 REM
 set OR_REXXUTILSRC=%SRC_DRV%%SRC_DIR%\rexutils
 set XPLATFORM=%OR_REXXUTILSRC%\windows
@@ -66,13 +56,17 @@ set OR_INTERPRETER_SRC=%SRC_DRV%%SRC_DIR%\interpreter
 set OR_MESSAGESRC=%SRC_DRV%%SRC_DIR%\interpreter\messages
 set OR_WINKERNELSRC=%SRC_DRV%%SRC_DIR%\platform\windows
 set OR_REXXAPISRC=%SRC_DRV%%SRC_DIR%\rexxapi
-set OR_OODIALOGSRC=%SRC_DRV%%SRC_DIR%\extensions\platform\windows\oodialog
+
+set OR_OODIALOGSRC_410=%SRC_DRV%%SRC_DIR%\extensions\platform\windows\oodialog.4.1.0
+set OR_OODIALOGSRC_420=%SRC_DRV%%SRC_DIR%\extensions\platform\windows\oodialog.4.2.0
+set OR_OODIALOGSAMPLES410=%SRC_DRV%%SRC_DIR%\samples\windows\oodialog.4.1.0
+set OR_OODIALOGSAMPLES420=%SRC_DRV%%SRC_DIR%\samples\windows\oodialog.4.2.0
+
 set OR_OLEOBJECTSRC=%SRC_DRV%%SRC_DIR%\extensions\platform\windows\ole
 set OR_ORXSCRIPTSRC=%SRC_DRV%%SRC_DIR%\extensions\platform\windows\orxscrpt
 set OR_REGEXPSRC=%SRC_DRV%%SRC_DIR%\extensions\rxregexp
 set OR_SAMPLESRC=%SRC_DRV%%SRC_DIR%\samples
 set OR_APISAMPLESRC=%SRC_DRV%%SRC_DIR%\samples\windows\api
-set OR_OODIALOGSAMPLES=%SRC_DRV%%SRC_DIR%\samples\windows\oodialog
 set OR_UTILITIES=%SRC_DRV%%SRC_DIR%\utilities
 set OR_EXTENSIONS=%SRC_DRV%%SRC_DIR%\extensions
 set OR_HOSTEMUSRC=%OR_EXTENSIONS%\hostemu
@@ -101,7 +95,7 @@ set OR_INTERPRETERINCL=-I%INTERPRETER%\ -I%INTERPRETER_CLASSES%\ -I%CLASSES_SUPP
 REM
 REM set up the directory search orders for the source include files
 REM
-set OR_ORYXINCL=-I%OR_LIBSRC%\ -I%OR_COMMONSRC%\ -I%OR_COMMONPLATFORMSRC%\ -I%OR_APISRC%\ -I%OR_APIWINSRC%\ %OR_INTERPRETERINCL% -I%OR_WINKERNELSRC%\ -I%XPLATFORM% -I%OR_OODIALOGSRC%\ -I%OR_ORYXFSRC%\ -I%OR_OLEOBJECTSRC%\ -I%OR_ORXSCRIPTSRC%\ -I%OR_MESSAGESRC%\ -I%OR_HOSTEMUSRC%\
+set OR_ORYXINCL=-I%OR_LIBSRC%\ -I%OR_COMMONSRC%\ -I%OR_COMMONPLATFORMSRC%\ -I%OR_APISRC%\ -I%OR_APIWINSRC%\ %OR_INTERPRETERINCL% -I%OR_WINKERNELSRC%\ -I%XPLATFORM% -I%OR_ORYXFSRC%\ -I%OR_OLEOBJECTSRC%\ -I%OR_ORXSCRIPTSRC%\ -I%OR_MESSAGESRC%\ -I%OR_HOSTEMUSRC%\
 set OR_ORYXRCINCL=-I%INTERPRETER_MESSAGES%
 REM
 REM set up the search order for the dependency list
@@ -120,9 +114,7 @@ set CPLUSPLUS=1
 set NOCRTDLL=1
 set REXXDEBUG=0
 
-REM create output directory
-if not exist %OR_OUTDIR% md %OR_OUTDIR%
-
+REM create output ASM directory if needed
 IF NOT %MKASM%==1 GOTO :build
 if not exist %OR_OUTDIR%\ASM md %OR_OUTDIR%\ASM
 

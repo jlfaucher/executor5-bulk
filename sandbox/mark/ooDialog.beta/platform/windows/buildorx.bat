@@ -169,17 +169,24 @@ if ERRORLEVEL 1 goto error
 
 REM *** oodialog
 REM
-@ECHO Building OODIALOG..
-CD  %OR_OODIALOGSRC%
-IF %USELOGFILE% equ 1 ( NMAKE /F OODIALOG.MAK >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F OODIALOG.MAK )
+@ECHO Building ooDialog, both versions ...
+CD  %OR_OODIALOGSRC_410%
+IF %USELOGFILE% equ 1 ( NMAKE /F oodialog.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F oodialog.mak )
 if ERRORLEVEL 1 goto error
 
+CD  %OR_OODIALOGSRC_420%
+IF %USELOGFILE% equ 1 ( NMAKE /F oodialog.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F oodialog.mak )
+if ERRORLEVEL 1 goto error
 
-ECHO Building OODIALOG classes
+ECHO Building ooDialog classes, both versions ...
 CD %OR_OUTDIR%
-IF %USELOGFILE% equ 1 ( REXX %OR_OODIALOGSRC%\M_OODCLS.REX >>%OR_ERRLOG% 2>&1 ) else ( REXX %OR_OODIALOGSRC%\M_OODCLS.REX )
+IF %USELOGFILE% equ 1 ( REXX %OR_OODIALOGSRC_410%\M_OODCLS.REX >>%OR_ERRLOG% 2>&1 ) else ( REXX %OR_OODIALOGSRC_410%\M_OODCLS.REX )
 if ERRORLEVEL 1 goto error
+move ood*cls %OR_OUTDIR_OOD410%
 
+IF %USELOGFILE% equ 1 ( REXX %OR_OODIALOGSRC_420%\build_ooDialog_cls.rex >>%OR_ERRLOG% 2>&1 ) else ( REXX %OR_OODIALOGSRC_420%\build_ooDialog_cls.rex )
+if ERRORLEVEL 1 goto error
+move ood*cls %OR_OUTDIR_OOD420%
 
 CD %SRC_DIR%
 
@@ -221,7 +228,11 @@ IF %USELOGFILE% equ 1 ( NMAKE /F rexxapi3.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE 
 if ERRORLEVEL 1 goto error
 
 @ECHO Building OODialog Samples..
-CD  %OR_OODIALOGSAMPLES%\res
+CD  %OR_OODIALOGSAMPLES410%\res
+IF %USELOGFILE% equ 1 ( NMAKE /F res.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F res.mak )
+if ERRORLEVEL 1 goto error
+
+CD  %OR_OODIALOGSAMPLES420%\res
 IF %USELOGFILE% equ 1 ( NMAKE /F res.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F res.mak )
 if ERRORLEVEL 1 goto error
 
