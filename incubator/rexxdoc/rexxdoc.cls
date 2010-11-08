@@ -83,7 +83,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   has = .directory~new
   node = .nil
 
-/** Call this method to start parsing a file. 
+/** Call this method to start parsing a file.
 */
 ::METHOD Parse
   expose file state options tree source parent
@@ -114,12 +114,12 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
     -- check options if - and , at the end of line are to be evaluated
     if options~evaluate.continuation then
       -- only evaluate line continuation outside rxdoc sections
-      if (\state~equals("RXDOC")) & lastChar~equals(",") | ((lastChar~equals("-")) & \ (lastChars~equals("--")))  then do 
+      if (\state~equals("RXDOC")) & lastChar~equals(",") | ((lastChar~equals("-")) & \ (lastChars~equals("--")))  then do
         append = .true
         -- cut the last character
         prefix = line~left(line~length-1)||" "
       end
-      else if append then do 
+      else if append then do
         append = .false
         prefix = ""
       end
@@ -519,7 +519,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
     self~parser~parseState("Missing name for constant")
   sourceConstant = .SourceConstant~new(name, source, doc, target, self~state)
   sourceConstant~setValue(value)
-  
+
 ::METHOD getObject
   expose sourceConstant
   return sourceConstant
@@ -623,7 +623,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   return sourceRoutine
 ::METHOD parse
   expose name sourceRoutine
-  use strict arg line, source rxdoc, parent
+  use strict arg line, source, rxdoc, parent
   parse var line . name visibility
   sourceRoutine = .SourceRoutine~new(name,source,rxdoc,parent, self~state)
   visibility = visibility~strip
@@ -649,7 +649,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   doc = .nil
   parent = .nil
   source = .nil
-  use strict arg name source doc parent state
+  use strict arg name, source, doc, parent, state
 
 ::ATTRIBUTE Name Get
 ::ATTRIBUTE Source Get
@@ -671,7 +671,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   methods = .set~new
   routines = .set~new
   requires = .set~new
-  
+
   if arg() = 1 then use strict arg name
   else forward class (super)
 
@@ -862,7 +862,7 @@ if .environment~FileParser = .nil then .environment~FileParser = .FileParser
   forward class (super)
 
 ::METHOD setAccess
-  expose access; use arg access  
+  expose access; use arg access
 ::METHOD getAccess
   expose access; return access
 ::METHOD resolve
