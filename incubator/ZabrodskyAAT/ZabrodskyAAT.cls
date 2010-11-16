@@ -1,5 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
+/* Copyright © 2000-2001 Vladimir Zabrodsky, Czech Republic                   */
 /* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
