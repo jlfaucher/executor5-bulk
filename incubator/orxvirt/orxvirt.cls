@@ -104,6 +104,10 @@ return major'.'minor'.'rel
 
 ::class virtdomain public
 
+::constant VIR_DOMAIN_XML_SECURE      1  -- dump security sensitive information too
+::constant VIR_DOMAIN_XML_INACTIVE    2  -- dump inactive domain information
+::constant VIR_DOMAIN_XML_UPDATE_CPU  4  -- update guest CPU requirements according to host CPU
+
 ::attribute connx
 ::attribute id
 ::attribute name
@@ -137,7 +141,9 @@ return
 info = .virtdomaininfo~new()
 self~getinfo_private(info)
 return info
-::method getinfo_private EXTERNAL "LIBRARY orxvirt OrxVirt_DomainGetInfo"
+::method getinfo_private EXTERNAL "LIBRARY orxvirt OrxVirt_DomainGetInfo" private
+::method getxmldesc EXTERNAL "LIBRARY orxvirt OrxVirt_DomainGetXMLDesc"
+::method getostype EXTERNAL "LIBRARY orxvirt OrxVirt_DomainGetOSType"
 
 
 /*----------------------------------------------------------------------------*/

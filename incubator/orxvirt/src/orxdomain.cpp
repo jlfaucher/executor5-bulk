@@ -339,3 +339,22 @@ RexxMethod2(RexxObjectPtr,             // Return type
     return (RexxObjectPtr) context->String(virDomainGetXMLDesc(domain, flags));
 }
 
+
+/**
+ * Method:  OrxVirt_DomainGetOSType
+ *
+ * Get the OS description.
+ *
+ * @return        OS string.
+ **/
+RexxMethod1(RexxObjectPtr,             // Return type
+            OrxVirt_DomainGetOSType,   // Object_method name
+            CSELF, self)
+{
+    virDomainPtr domain = (virDomainPtr) self;
+    char *ostype = virDomainGetOSType(domain);
+    RexxObjectPtr rxostype = (RexxObjectPtr) context->String(ostype);
+    free(ostype);
+    return rxostype;
+}
+
