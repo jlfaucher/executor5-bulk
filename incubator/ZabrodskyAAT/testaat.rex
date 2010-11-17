@@ -85,11 +85,6 @@ else say 'GENSUB was in error.'
 say
 return
 
-error:
-say 'GENSUB argument error.'
-say
-return
-
 
 ::routine test_permutation
 say 'Testing PERMUTATION.'
@@ -111,11 +106,6 @@ else say 'PERMUTATION was in error.'
 say
 return
 
-error:
-say 'PERMUTATION argument error.'
-say
-return
-
 
 ::routine test_fact
 say 'Testing FACT.'
@@ -129,11 +119,6 @@ else do
    say 'expected' ta
    say 'actual  ' ra
    end
-say
-return
-
-error:
-say 'FACT argument error.'
 say
 return
 
@@ -153,11 +138,6 @@ else do
 say
 return
 
-error:
-say 'STIRLING argument error.'
-say
-return
-
 
 ::routine test_fib
 say 'Testing FIB.'
@@ -165,11 +145,6 @@ numeric digits 32
 signal on error
 ra = .ZabrodskyAAT~fib(10000, digits())
 -- say ra
-say
-return
-
-error:
-say 'FIB argument error.'
 say
 return
 
@@ -183,11 +158,6 @@ ra = .ZabrodskyAAT~general_fib(10000, 2100, digits())
 say
 return
 
-error:
-say 'GENERAL_FIB argument error.'
-say
-return
-
 
 ::routine test_ncomb
 say 'Testing NCOMB.'
@@ -195,11 +165,6 @@ numeric digits 32
 signal on error
 ra = .ZabrodskyAAT~ncomb(6, 4)
 -- say ra
-say
-return
-
-error:
-say 'NCOMB argument error.'
 say
 return
 
@@ -219,11 +184,6 @@ else do
 say
 return
 
-error:
-say 'PRIMES argument error.'
-say
-return
-
 
 ::routine test_r2d
 say 'Testing R2D.'
@@ -236,11 +196,6 @@ else do
    say 'expected 2010'
    say 'actual  ' ra
    end
-say
-return
-
-error:
-say 'D2R argument error.'
 say
 return
 
@@ -259,11 +214,6 @@ else do
 say
 return
 
-error:
-say 'D2R argument error.'
-say
-return
-
 
 ::routine test_heron
 say 'Testing HERON.'
@@ -276,11 +226,6 @@ else do
    say 'expected' 3.122883283121545
    say 'actual  ' ra
    end
-say
-return
-
-error:
-say 'HERON argument error.'
 say
 return
 
@@ -300,11 +245,6 @@ else do
 say
 return
 
-error:
-say 'EXP argument error.'
-say
-return
-
 
 ::routine test_floor
 say 'Testing FLOOR.'
@@ -320,11 +260,6 @@ else do
 say
 return
 
-error:
-say 'FLOOR argument error.'
-say
-return
-
 
 ::routine test_ceiling
 say 'Testing FLOOR.'
@@ -337,11 +272,6 @@ else do
    say 'expected' 3
    say 'actual  ' ra
    end
-say
-return
-
-error:
-say 'CEILING argument error.'
 say
 return
 
@@ -375,11 +305,6 @@ if ok then say 'MOD succeded.'
 say
 return
 
-error:
-say 'CEILING argument error.'
-say
-return
-
 
 ::routine test_ln
 say 'Testing LN.'
@@ -393,11 +318,6 @@ else do
    say 'expected 2.99573227'
    say 'actual  ' ra
    end
-say
-return
-
-error:
-say 'LN argument error.'
 say
 return
 
@@ -417,11 +337,6 @@ else do
 say
 return
 
-error:
-say 'SIN argument error.'
-say
-return
-
 
 ::routine test_cos
 say 'Testing COS.'
@@ -438,12 +353,6 @@ else do
 say
 return
 
-error:
-say 'COS argument error.'
-say
-return                 556
-ra = .
-
 
 ::routine test_sqrt
 say 'Testing SQRT.'
@@ -457,11 +366,6 @@ else do
    say 'expected 4.53387252'
    say 'actual  ' ra
    end
-say
-return
-
-error:
-say 'SQRT argument error.'
 say
 return
 
@@ -481,11 +385,6 @@ else do
 say
 return
 
-error:
-say 'POWER argument error.'
-say
-return
-
 
 ::routine test_repower
 say 'Testing REPOWER.'
@@ -499,11 +398,6 @@ else do
    say 'expected 134.847568065927901213498'
    say 'actual  ' ra
    end
-say
-return
-
-error:
-say 'REPOWER argument error.'
 say
 return
 
