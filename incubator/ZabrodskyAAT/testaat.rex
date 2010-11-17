@@ -38,25 +38,26 @@
 
 
 say
--- call test_gensub
--- call test_permutation
--- call test_fact  -- this gives an error, a single digit is incorrect
--- call test_stirling  -- this gives an error, values do not match
--- call test_fib
--- call test_general_fib
--- call test_ncomb
--- call test_primes
--- call test_r2d
--- call test_d2r
--- call test_exp
--- call test_floor
--- call test_ceiling
--- call test_mod
--- call test_ln
--- call test_sin
--- call test_cos
--- call test_sqrt
--- call test_power
+call test_gensub
+call test_permutation
+call test_fact
+call test_stirling
+call test_fib
+call test_general_fib
+call test_ncomb
+call test_primes
+call test_r2d
+call test_d2r
+call test_heron
+call test_exp
+call test_floor
+call test_ceiling
+call test_mod
+call test_ln
+call test_sin
+call test_cos
+call test_sqrt
+call test_power
 call test_repower
 return
 
@@ -260,6 +261,26 @@ return
 
 error:
 say 'D2R argument error.'
+say
+return
+
+
+::routine test_heron
+say 'Testing HERON.'
+signal on error
+numeric digits 16
+ra = .ZabrodskyAAT~heron(2, 4.5, 6.1, digits())
+if ra = 3.122883283121545 then say 'HERON succeeded.'
+else do
+   say 'HERON was in error.'
+   say 'expected' 3.122883283121545
+   say 'actual  ' ra
+   end
+say
+return
+
+error:
+say 'HERON argument error.'
 say
 return
 

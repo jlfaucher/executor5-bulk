@@ -59,10 +59,10 @@
 use strict arg N, K
 A = .array~new(K)
 Z = .array~new(K)
-if \N~datatype('W') then raise error 93.907 array(1, N) RETURN (Z)
-if \K~datatype('W') then raise error 93.907 array(2, K) RETURN (Z)
-if N < 0 then raise error 93.906 array(1, N) RETURN (Z)
-if K > N then raise error 93.908 array(1, K, N) RETURN (Z)
+if \N~datatype('W') then raise error 93.905 array(1, N) RETURN ('') -- must be a whole number
+if \K~datatype('W') then raise error 93.905 array(2, K) RETURN ('') -- must be a whole number
+if N < 0 then raise error 93.906 array(1, N) RETURN ('') -- must be zero or a positive whole number
+if K > N then raise error 93.908 array(1, K, N) RETURN ('') --  must not exceed limit
 do J = 1 to K
    A[J] = J
    end
@@ -89,8 +89,8 @@ return Z
 ::method permutation class
 use strict arg N
 Z = .array~new()
-if \N~datatype('W') then raise error 88.903 array(1, N) RETURN (Z)
-if N < 2 then raise error 88.906 array(1, 2, N) RETURN (Z)
+if \N~datatype('W') then raise error 93.905 array(1, N) RETURN ('') -- must be a whole number
+if N < 2 then raise error 93.900 array('Argument 1 must be greater than 1.') RETURN (Z)
 C. = 1
 Pr. = 1
 do J = 1 to N
@@ -132,10 +132,11 @@ return Permutation
 /*----------------------------------------------------------------------------*/
 ::method fact class
 use strict arg N, P = 9
-if \N~datatype('W') then raise error 88.903 array(1, N) RETURN (Z)
-if \P~datatype('W') then raise error 88.903 array(2, P) RETURN (Z)
-if N <= 0 then raise error 88.907 array(1, N) RETURN (Z)
-if P > 9 then numeric digits P
+if \N~datatype('W') then raise error 93.905 array(1, N) RETURN ('') -- must be a whole number
+if \P~datatype('W') then raise error 93.905 array(2, P) RETURN ('') -- must be a whole number
+if N < 0 then raise error 93.906 array(1, N) RETURN ('') -- must be zero or a positive whole number
+if P < 0 then raise error 93.906 array(2, P) RETURN ('') -- must be zero or a positive whole number
+numeric digits P
 F = 1
 do J = 2 to N
    F = F * J
@@ -148,12 +149,13 @@ return F
 /*----------------------------------------------------------------------------*/
 ::method stirling class
 use strict arg N, P, Q = 9
-if \N~datatype('W') then raise error 88.903 array(1, N) RETURN (-1)
-if \P~datatype('W') then raise error 88.903 array(2, P) RETURN (-1)
-if N <= 0 then raise error 88.907 array(1, N) RETURN (Z)
-if Q > 9 then numeric digits Q
-Pi = self~PI(P)
-E = self~E(P)
+if \N~datatype('W') then raise error 93.905 array(1, N) RETURN ('') -- must be a whole number
+if \P~datatype('W') then raise error 93.905 array(2, P) RETURN ('') -- must be a whole number
+if N <= 0 then raise error 93.906 array(1, N) RETURN ('') -- must be zero or a positive whole number
+if P <= 0 then raise error 93.906 array(2, P) RETURN ('') -- must be zero or a positive whole number
+numeric digits Q
+Pi = self~PI()
+E = self~E()
 Sqrt2pin = self~SQRT(2 * Pi * N, P)
 return Sqrt2pin * (N / E)**N * (1 + 1 / (12 * N))
 
@@ -163,9 +165,10 @@ return Sqrt2pin * (N / E)**N * (1 + 1 / (12 * N))
 /*----------------------------------------------------------------------------*/
 ::method fib class
 use strict arg N, P = 9
-if \N~datatype('W') then raise error 88.903 array(1, N) RETURN (-1)
+if \N~datatype('W') then raise error 93.905 array(1, N) RETURN ('') -- must be a whole number
+if \P~datatype('W') then raise error 93.905 array(2, P) RETURN ('') -- must be a whole number
 if N = 0 | N = 1 then return N
-if P > 9 then numeric digits P
+numeric digits P
 A = 0
 B = 1
 do N - 1
@@ -179,10 +182,11 @@ return B
 /*----------------------------------------------------------------------------*/
 ::method general_fib class
 use strict arg N, P, Q = 9
-if \N~datatype('W') then raise error 88.903 array(1, N) RETURN ('')
-if \P~datatype('W') then raise error 88.903 array(2, P) RETURN ('')
+if \N~datatype('W') then raise error 93.905 array(1, N) RETURN ('') -- must be a whole number
+if \P~datatype('W') then raise error 93.905 array(2, P) RETURN ('') -- must be a whole number
+if \Q~datatype('W') then raise error 93.905 array(3, Q) RETURN ('') -- must be a whole number
 if N = 1 then return 1
-if Q > 9 then numeric digits Q
+numeric digits Q
 Sqrt5 = self~SQRT(5, P)
 C = (1 + Sqrt5) / 2
 return FORMAT(C ** N / Sqrt5,,0) 
@@ -193,9 +197,9 @@ return FORMAT(C ** N / Sqrt5,,0)
 /*----------------------------------------------------------------------------*/
 ::method ncomb class
 use strict arg N, K
-if \N~datatype('W') then raise error 88.903 array(1, N) RETURN ('')
-if \K~datatype('W') then raise error 88.903 array(2, K) RETURN ('')
-if N < 0 then raise error 88.907 array(1, N) RETURN ('')
+if \N~datatype('W') then raise error 93.905 array(1, N) RETURN ('') -- must be a whole number
+if \K~datatype('W') then raise error 93.905 array(2, K) RETURN ('') -- must be a whole number
+if N < 0 then raise error 93.906 array(1, N) RETURN ('') -- must be zero or a positive whole number
 if K < 0 | N < K then return 0
 if K = N then return 1
 if K > N - K then K = N - K
@@ -211,10 +215,11 @@ return Nom / self~FACT(K)
 /*----------------------------------------------------------------------------*/
 ::method primes class
 use strict arg K, Q = 9
-if \K~datatype('W') then raise error 88.903 array(1, K) RETURN ('')
-if K < 0 then raise error 88.907 array(1, K) RETURN ('')
+if \K~datatype('W') then raise error 93.905 array(1, K) RETURN ('') -- must be a whole number
+if \Q~datatype('W') then raise error 93.905 array(2, Q) RETURN ('') -- must be a whole number
+if K <= 0 then raise error 93.907 array(1, K) RETURN ('') -- must be a positive whole number
 P = .array~new()
-if Q > 9 then numeric digits Q
+numeric digits Q
 P[1] = 2
 N = 3
 do J = 2 to K
@@ -258,8 +263,9 @@ return Decimal + Ddigit
 /*----------------------------------------------------------------------------*/
 ::method d2r class
 use strict arg Decimal
-if Decimal < 1 then raise error 88.907 array(1, Decimal) RETURN ('')
-if Decimal > 3999 then raise error 88.908 array(1, 3999, Decimal) RETURN ('')
+if \Decimal~datatype('W') then raise error 93.905 array(1, Decimal) RETURN ('') -- must be a whole number
+if Decimal <= 0 then raise error 93.907 array(1, K) RETURN ('') -- must be a positive whole number
+if Decimal > 3999 then raise error 93.908 array(1, 3999, Decimal) RETURN ('')
 parse value RIGHT(FORMAT(Decimal, , 0), 4, 0),
   with A +1 B +1 C +1 D
 parse value "1 1 1 1 3 4 4 4 4 7",
@@ -278,6 +284,13 @@ return SUBSTR(R, X.A + 21, Y.A) || SUBSTR(R, X.B + 14, Y.B),
 /*----------------------------------------------------------------------------*/
 ::method heron class
 use strict arg X, Y, Z, P = 9
+if \X~datatype('N') then raise error 93.904 array(1, X) RETURN ('') -- must be a number
+if \Y~datatype('N') then raise error 93.904 array(2, Y) RETURN ('') -- must be a number
+if \Z~datatype('N') then raise error 93.904 array(3, Z) RETURN ('') -- must be a number
+if \P~datatype('W') then raise error 93.905 array(4, P) RETURN ('') -- must be a whole number
+if X <= 0 then raise error 93.900 array('Argument 1 must be greater than zero.') RETURN ('')
+if Y <= 0 then raise error 93.900 array('Argument 2 must be greater than zero.') RETURN ('')
+if Z <= 0 then raise error 93.900 array('Argument 3 must be greater than zero.') RETURN ('')
 numeric digits P
 S = (X + Y + Z) / 2
 return self~SQRT(S * (S - X) * (S - Y) * (S - Z), P) 
@@ -287,6 +300,7 @@ return self~SQRT(S * (S - X) * (S - Y) * (S - Z), P)
 /* Routine: e                                                                 */
 /*----------------------------------------------------------------------------*/
 ::method e class
+use strict arg
 return self~econst()
 
 
@@ -310,9 +324,9 @@ return V
 /*----------------------------------------------------------------------------*/
 ::method exp class
 use strict arg X, P = 9
-if \X~datatype('N') then raise error 88.904 array(1, X) RETURN ('')
-if \P~datatype('W') then raise error 88.907 array(2, P) RETURN ('')
-if P > 9 then numeric digits P
+if \X~datatype('N') then raise error 93.904 array(1, X) RETURN ('') -- must be a number
+if \P~datatype('W') then raise error 93.905 array(2, P) RETURN ('') -- must be a whole number
+numeric digits P
 Y = X % 1
 if ABS(X - Y) > 0.5 then Y = Y + SIGN(X)
 X = X - Y
@@ -332,7 +346,7 @@ return (self~ECONST() ** Y) * Sum
 /*----------------------------------------------------------------------------*/
 ::method floor class
 use strict arg F
-if \F~datatype('N') then raise error 88.904 array(1, F) RETURN ('')
+if \F~datatype('N') then raise error 93.904 array(1, F) RETURN ('') -- must be a number
 return TRUNC(F) - (F < 0) * (F <> TRUNC(F))
  
 
@@ -341,7 +355,7 @@ return TRUNC(F) - (F < 0) * (F <> TRUNC(F))
 /*----------------------------------------------------------------------------*/
 ::method ceiling class
 use strict arg C
-if \C~datatype('N') then raise error 88.904 array(1, C) RETURN ('')
+if \C~datatype('N') then raise error 93.904 array(1, C) RETURN ('') -- must be a number
 return TRUNC(C) + (C > 0) * (C <> TRUNC(C)) 
  
 
@@ -350,8 +364,8 @@ return TRUNC(C) + (C > 0) * (C <> TRUNC(C))
 /*----------------------------------------------------------------------------*/
 ::method mod class
 use strict arg X, Y
-if \X~datatype('N') then raise error 88.904 array(1, X) RETURN ('')
-if \Y~datatype('N') then raise error 88.904 array(2, Y) RETURN ('')
+if \X~datatype('N') then raise error 93.904 array(1, X) RETURN ('') -- must be a number
+if \Y~datatype('N') then raise error 93.904 array(2, Y) RETURN ('') -- must be a number
 if Y = 0 then return X
 return X - Y * self~FLOOR(X/Y)
  
@@ -361,8 +375,8 @@ return X - Y * self~FLOOR(X/Y)
 /*----------------------------------------------------------------------------*/
 ::method ln class
 use strict arg X, P = 9
-if \X~datatype('N') then raise error 88.904 array(1, X) RETURN ('')
-if \P~datatype('W') then raise error 88.907 array(2, P) RETURN ('')
+if \X~datatype('N') then raise error 93.904 array(1, X) RETURN ('') -- must be a number
+if \P~datatype('W') then raise error 93.905 array(2, P) RETURN ('') -- must be a whole number
 numeric digits P
 if X < 1 then return - self~LN(1 / X, P)
 do M = 0 until (2 ** M) > X
@@ -421,8 +435,8 @@ return V
 /*----------------------------------------------------------------------------*/
 ::method sin class
 use strict arg X, P = 9
-if \X~datatype('N') then raise error 88.904 array(1, X) RETURN ('')
-if \P~datatype('W') then raise error 88.907 array(2, P) RETURN ('')
+if \X~datatype('N') then raise error 93.904 array(1, X) RETURN ('') -- must be a number
+if \P~datatype('W') then raise error 93.905 array(2, P) RETURN ('') -- must be a whole number
 numeric digits P
 Pi = self~PICONST()
 Signum = 1
@@ -455,8 +469,8 @@ do J = 3 by 2
 /*----------------------------------------------------------------------------*/
 ::method cos class
 use strict arg X, P = 9
-if \X~datatype('N') then raise error 88.904 array(1, X) RETURN ('')
-if \P~datatype('W') then raise error 88.907 array(2, P) RETURN ('')
+if \X~datatype('N') then raise error 93.904 array(1, X) RETURN ('') -- must be a number
+if \P~datatype('W') then raise error 93.905 array(2, P) RETURN ('') -- must be a whole number
 numeric digits P
 Pi = self~PICONST()
 Signum = 1
@@ -489,9 +503,9 @@ do J = 2 by 2
 /*----------------------------------------------------------------------------*/
 ::method sqrt class
 use strict arg N, P = 9
-if \N~datatype('N') then raise error 88.904 array(1, N) RETURN ('')
-if \P~datatype('W') then raise error 88.907 array(2, P) RETURN ('')
-if N < 0 then raise error 88.906 array(1, N) RETURN ('')
+if \N~datatype('N') then raise error 93.904 array(1, N) RETURN ('') -- must be a number
+if \P~datatype('W') then raise error 93.905 array(2, P) RETURN ('') -- must be a whole number
+if N < 0 then raise error 93.906 array(1, N) RETURN ('') -- must be zero or a positive whole number
 numeric digits P
 parse value FORMAT(N,,,,0) with N "E" Exp
 if Exp = "" then Exp = 0
@@ -516,9 +530,9 @@ do forever
 /*----------------------------------------------------------------------------*/
 ::method power class
 use strict arg X, Z, P = 9
-if \X~datatype('N') then raise error 88.904 array(1, X) RETURN ('')
-if \Z~datatype('N') then raise error 88.904 array(2, Z) RETURN ('')
-if \P~datatype('W') then raise error 88.907 array(3, P) RETURN ('')
+if \X~datatype('N') then raise error 93.904 array(1, X) RETURN ('') -- must be a number
+if \Z~datatype('N') then raise error 93.904 array(2, Z) RETURN ('') -- must be a number
+if \P~datatype('W') then raise error 93.905 array(3, P) RETURN ('') -- must be a whole number
 numeric digits P
 if Z < 0 then raise error 88.906 array(1, Z) RETURN ('')
 Pwr = 1
@@ -535,9 +549,9 @@ do forever
 /*----------------------------------------------------------------------------*/
 ::method repower class
 use strict arg X, Z, P = 9
-if \X~datatype('N') then raise error 88.904 array(1, X) RETURN ('')
-if \Z~datatype('W') then raise error 88.905 array(2, Z) RETURN ('')
-if \P~datatype('W') then raise error 88.907 array(3, P) RETURN ('')
+if \X~datatype('N') then raise error 93.904 array(1, X) RETURN ('') -- must be a number
+if \Z~datatype('W') then raise error 93.905 array(2, Z) RETURN ('') -- must be a whole number
+if \P~datatype('W') then raise error 93.905 array(3, P) RETURN ('') -- must be a whole number
 P = P + 4
 numeric digits P
 if DATATYPE(Z, "W")
