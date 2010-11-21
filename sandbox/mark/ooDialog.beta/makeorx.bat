@@ -133,10 +133,13 @@ REM Check if we are building the installer package.
 IF %DOPACKAGE% == 0 GOTO ENV_VARS_CLEANUP
 
 IF %MAJOR_NUM%x == x GOTO SET_FAILED
-SET NODOTS=%MAJOR_NUM%%MINOR_NUM%%LVL_NUM%_%BLD_NUM%
+SET NODOTS=%MAJOR_NUM%%MINOR_NUM%%LVL_NUM%
 SET DOTVER=/DVERSION=%MAJOR_NUM%.%MINOR_NUM%.%LVL_NUM%.%BLD_NUM%
+SET OODDOTVER=/DVERSION=%MAJOR_NUM%.2.%LVL_NUM%.%BLD_NUM%
+SET SHORTDOTVER=/DSHORTVERSION=%MAJOR_NUM%.%MINOR_NUM%.%LVL_NUM%
 SET NODOTVER=/DNODOTVER=%NODOTS%
 SET SRCDIR=/DSRCDIR=%SRC_DRV%%SRC_DIR%
+SET SWITCHEXE=/DEXEFILE=switchOODialog
 if %CPU% == X86 (
   SET CPUNAME=x86_32
 ) else (
@@ -149,12 +152,29 @@ IF %PACKAGE_DBG% == 0 GOTO PACKAGE_RELEASE
 
 SET BINDIR=/DBINDIR=%SRC_DRV%%SRC_DIR%\Win32Dbg
 cd platform\windows\install
-makensis %DOTVER% %NODOTVER% %SRCDIR% %BINDIR% %CPUDEF% oorexx.nsi
+
+REM  Make the ooRexx installer.
+makensis %DOTVER% %NODOTVER% %SHORTDOTVER% %SRCDIR% %BINDIR% %CPUDEF% oorexx.nsi
+
+REM  Make switchOODialog and the ooDialog installer.  switchOODialog must be
+REM  built first
+makensis %OODDOTVER% %NODOTVER% %SRCDIR% %BINDIR% switchOODialog.nsi
+makensis %OODDOTVER% %NODOTVER% %SRCDIR% %SWITCHEXE% %CPUDEF% ooDialogBeta.nsi
 
 REM  Rename the deug package so it is not overwritten if the release package
-REM  is created.
-ren ooRexx%NODOTS%-%CPUNAME%.exe ooRexx%NODOTS%-%CPUNAME%-debug.exe
-move ooRexx%NODOTS%-%CPUNAME%-debug.exe ..\..\..\
+REM  is created.  The NSIS scripts names the package:
+REM    "${SHORTNAME}-${VERSION}.${CPU}.exe"
+ren ooRexx-%MAJOR_NUM%.%MINOR_NUM%.%LVL_NUM%.%BLD_NUM%.%CPUNAME%.exe ooRexx-%MAJOR_NUM%.%MINOR_NUM%.%LVL_NUM%.%BLD_NUM%.%CPUNAME%-debug.exe
+
+move ooRexx-%MAJOR_NUM%.%MINOR_NUM%.%LVL_NUM%.%BLD_NUM%.%CPUNAME%-debug.exe ..\..\..\
+
+REM  Do the same thing with the ooDialog beta package.  The NSIS scripts names
+REM  the package:
+REM    "ooDialog-${VERSION}-${CPU}.exe"
+ren ooDialog-%MAJOR_NUM%.2.%LVL_NUM%.%BLD_NUM%-%CPUNAME%.exe ooDialog-%MAJOR_NUM%.2.%LVL_NUM%.%BLD_NUM%-%CPUNAME%-debug.exe
+
+move ooDialog-%MAJOR_NUM%.2.%LVL_NUM%.%BLD_NUM%-%CPUNAME%-debug.exe ..\..\..\
+
 cd ..\..\..\
 
 REM  If not making the release version skip to environment variables clean up.
@@ -163,8 +183,17 @@ IF %PACKAGE_REL% == 0 GOTO ENV_VARS_CLEANUP
 :PACKAGE_RELEASE
 SET BINDIR=/DBINDIR=%SRC_DRV%%SRC_DIR%\Win32Rel
 cd platform\windows\install
-makensis %DOTVER% %NODOTVER% %SRCDIR% %BINDIR% %CPUDEF% oorexx.nsi
-move ooRexx%NODOTS%-%CPUNAME%.exe ..\..\..\
+
+REM  Make the ooRexx installer.
+makensis %DOTVER% %NODOTVER% %SHORTDOTVER% %SRCDIR% %BINDIR% %CPUDEF% oorexx.nsi
+
+REM  Make switchOODialog and the ooDialog installer.  switchOODialog must be
+REM  built first
+makensis %OODDOTVER% %NODOTVER% %SRCDIR% %BINDIR% switchOODialog.nsi
+makensis %OODDOTVER% %NODOTVER% %SRCDIR% %SWITCHEXE% %CPUDEF% ooDialogBeta.nsi
+
+move ooRexx-%MAJOR_NUM%.%MINOR_NUM%.%LVL_NUM%.%BLD_NUM%.%CPUNAME%.exe ..\..\..\
+move ooDialog-%MAJOR_NUM%.2.%LVL_NUM%.%BLD_NUM%-%CPUNAME%.exe ..\..\..\
 cd ..\..\..\
 
 :ENV_VARS_CLEANUP
@@ -177,7 +206,9 @@ SET LVL_NUM=
 SET BLD_NUM=
 SET NODOTS=
 SET DOTVER=
+SET SHORTDOTVER=
 SET NODOTVER=
+SET SWITCHEXE=
 SET SRCDIR=
 SET BINDIR=
 SET CPUNAME=

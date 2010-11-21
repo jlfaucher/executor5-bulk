@@ -38,19 +38,19 @@
 /**
  *  ooDialogBeta.nsi
  *
- *  This is a basic NSIS install program, used to install switchOODialog.
+ *  This is a basic NSIS install program, used to install ooDialog 4.2.0 beta.
  *
- *  switchOODialog is the executable used to switch between versions of ooDialog
- *
+ *  It also installs switchOODialog.  switchOODialog is an executable used to
+ *  switch between the 4.2.0 and 4.1.0 versions of ooDialog.
  *
  *  Run as:
- *    makensis /DVERSION=x.x /DNODOTVER=xx /DEXEFILE=xxx /DCPU=xxx ooDialogBeta.nsi
+ *    makensis /DVERSION=x.x.x.x /DNODOTVER=xxx /DSRCDIR=y /DEXEFILE=xxx /DCPU=xxx ooDialogBeta.nsi
  *  eg
- *    makensis /DVERSION=4.2.0 /DNODOTVER=420 /DEXEFILE=switchOODialog /DCPU=x86_64 ooDialogBeta.nsi
+ *    makensis /DVERSION=4.2.0.6367 /DNODOTVER=420 /DSRCDIR=C:\work\wc\main.4.1.0.ooDialog /DEXEFILE=switchOODialog /DCPU=x86_32 ooDialogBeta.nsi
+ *
  *  Note:
  *    ooDialogBeta.nsi must be in the current directory.
  */
-
 
 
 ;===============================================================================
@@ -85,6 +85,7 @@
   Name "ooDialog Beta ${VERSION}"
   OutFile "ooDialog-${VERSION}-${CPU}.exe"
   ShowInstdetails show
+  ShowUninstDetails show
   SetOverwrite on
   SetPluginUnload alwaysoff
   RequestExecutionLevel admin
@@ -106,7 +107,6 @@
   !define MUI_ABORTWARNING
 
   !define MUI_UNINSTALLER
-  !define MUI_UNCONFIRMPAGE
   !define MUI_UNFINISHPAGE_NOAUTOCLOSE
 
 ;--------------------------------
@@ -116,14 +116,14 @@
    * installation directory.  This makes the uninstall location equivalent to
    * the install location.
    */
-  Var RegVal_installedLocation      ; location of uninstall program found in registry
-  Var RegVal_installedVersion       ; Version / level of uninstaller program.  This only exists at 410 or greater
+  Var RegVal_installedLocation      ; location of ooRexx uninstall program found in registry
+  Var RegVal_installedVersion       ; Version / level of ooRexx uninstaller program.  This only exists at 410 or greater
   Var IsAdminUser                   ; is the installer being run by an admin:           true / false
   Var SwitchOODialogQualifiedName   ; The fully qualified switchOODialog file name.
 
-  Var RegVal_startMenuFolder
-  Var RegVal_ourUninstallLocation
-  Var RegVal_ourUninstallString
+  Var RegVal_startMenuFolder        ; location of, possible, alternate start menu folder
+  Var RegVal_ourUninstallLocation   ; location of ooDialog beta uninstall program
+  Var RegVal_ourUninstallString     ; ooDialog beta uninstall program
 
 ;--------------------------------
 ;Pages
@@ -133,6 +133,9 @@
   !insertmacro MUI_PAGE_INSTFILES
   !insertmacro MUI_PAGE_FINISH
 
+  !insertmacro MUI_UNPAGE_WELCOME
+  !insertmacro MUI_UNPAGE_INSTFILES
+  !insertmacro MUI_UNPAGE_FINISH
 ;--------------------------------
 ;Languages
 
@@ -148,12 +151,14 @@ Section  doInstall
   DetailPrint "********** Installing Switch ooDialog program **********"
   DetailPrint ""
 
+  ; If found, we silently uninstall any existing switch ooDialog.
   ${If} $RegVal_ourUninstallString != ""
     DetailPrint "Found old ooDialog beta, cleaning up."
     ExecWait '$RegVal_ourUninstallString /S _?=$RegVal_ourUninstallLocation' $0
     DetailPrint ""
   ${Endif}
 
+  ; Only 1 file is installed.
   SetOutPath "$INSTDIR"
   File "${InstallFile}"
 
@@ -182,11 +187,13 @@ Section  doInstall
   ; Then on uninstall, we check for a recorded name and delete that folder.
   ${If} ${FileExists} "$SMPROGRAMS\${REXXLONGNAME}"
     DetailPrint "Creating Switch ooDialog short cut in ${REXXLONGNAME} Start Menu folder"
-    CreateShortCut "$SMPROGRAMS\${REXXLONGNAME}\Switch ooDialog.lnk" "${InstallFile}"
+    CreateShortCut "$SMPROGRAMS\${REXXLONGNAME}\Switch ooDialog.lnk" '"$SwitchOODialogQualifiedName"'   ; Need to double quote.
+    CreateShortCut "$SMPROGRAMS\${REXXLONGNAME}\Uninstall ${LONGNAME}.lnk" "$INSTDIR\${UNINSTALLER}" "" "$INSTDIR\${UNINSTALLER}" 0
   ${Else}
     DetailPrint "Creating Switch ooDialog short cut in ${LONGNAME} Start Menu folder"
     CreateDirectory "$SMPROGRAMS\${LONGNAME}"
-    CreateShortCut "$SMPROGRAMS\${LONGNAME}\Switch ooDialog.lnk" "${InstallFile}"
+    CreateShortCut "$SMPROGRAMS\${LONGNAME}\Switch ooDialog.lnk" '"$SwitchOODialogQualifiedName"'   ; Need to double quote.
+    CreateShortCut "$SMPROGRAMS\${REXXLONGNAME}\Uninstall ${LONGNAME}.lnk" "$INSTDIR\${UNINSTALLER}" "" "$INSTDIR\${UNINSTALLER}" 0
     WriteRegStr HKLM "Software\${SHORTNAME}" "StartMenuFolder" "$SMPROGRAMS\${LONGNAME}"
   ${Endif}
 
@@ -209,8 +216,6 @@ SectionEnd
  * ooRexx needs to be at least 4.1.0.  Since 4.1.0 was the first version where
  * the UninstallVersion was used, we only need to check if that registry entry
  * is the empty string or not.
- *
- *
  */
 Function .onInit
 
@@ -230,7 +235,7 @@ Function .onInit
       version 4.1.0, must be installed prior to the$\n\
       installation of ${LONGNAME}.$\n$\n\
       The installer is aborting."
-      Quit
+      Abort
   ${endif}
 
   StrCpy $INSTDIR $RegVal_installedLocation
@@ -264,6 +269,7 @@ Section "Uninstall"
   DetailPrint "Removing Start Menu items."
   ${If} $RegVal_startMenuFolder == ""
     Delete "$SMPROGRAMS\${REXXLONGNAME}\Switch ooDialog.lnk"
+    Delete "$SMPROGRAMS\${REXXLONGNAME}\Uninstall ${LONGNAME}.lnk"
   ${Else}
     RMDir /r $RegVal_startMenuFolder
   ${Endif}

@@ -43,6 +43,10 @@
 all:  $(OR_OUTDIR_OOD420)\oodialog.dll
 
 !include "$(OR_LIBSRC)\ORXWIN32.MAK"
+
+# Change the ooRexx version definition for this ooDialog.
+VER_DEF = -DORX_VER=$(ORX_MAJOR) -DORX_REL=2 -DORX_MOD=$(ORX_MOD_LVL) -DOOREXX_BLD=$(ORX_BLD_LVL) -DOOREXX_COPY_YEAR=\"$(ORX_COPY_YEAR)\"
+
 C=cl
 OPTIONS= $(cflags_common) $(cflags_dll) $(OR_ORYXINCL)
 OR_LIB=$(OR_OUTDIR)
