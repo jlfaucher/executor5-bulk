@@ -39,6 +39,8 @@
  *  Helper program to produce a list of ooDialog example files only in 4.1.0
  *  and only in 4.2.0.
  *
+ *  Does the same thing for 3.2.0 and 4.1.0.
+ *
  *  Requires a working ooRexx and the GnuWin32 tools, which and grep.  These
  *  tools are available from the GnuWin32 project on SourceForge.
  */
@@ -52,6 +54,7 @@ end
 
 curDir = directory("..\..\..\samples\windows")
 
+-- The differences between 4.1.0 and 4.2.0
 f1 = "oodialog.4.1.0"
 f2 = "oodialog.4.2.0"
 toFile = "> ..\..\platform\windows\install\onlyIn410.files 2>&1"
@@ -60,5 +63,16 @@ toFile = "> ..\..\platform\windows\install\onlyIn410.files 2>&1"
 
 toFile = "> ..\..\platform\windows\install\onlyIn420.files 2>&1"
 'diff -rq -x .svn' f1 f2 '| grep "Only in" | grep "4\.2\.0"' toFile
+
+
+-- The differences between 3.2.0 and 4.1.0
+f1 = "oodialog.3.2.0"
+f2 = "oodialog.4.1.0"
+toFile = "> ..\..\platform\windows\install\onlyIn320_410.files 2>&1"
+
+'diff -rq -x .svn' f1 f2 '| grep "Only in" | grep "3\.2\.0"' toFile
+
+toFile = "> ..\..\platform\windows\install\onlyIn410_320.files 2>&1"
+'diff -rq -x .svn' f1 f2 '| grep "Only in" | grep "4\.1\.0"' toFile
 
 j = directory(curDir)

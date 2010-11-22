@@ -169,21 +169,34 @@ if ERRORLEVEL 1 goto error
 
 REM *** oodialog
 REM
-@ECHO Building ooDialog, both versions ...
+@ECHO Building ooDialog 3.2.0 ...
+CD  %OR_OODIALOGSRC_320%
+IF %USELOGFILE% equ 1 ( NMAKE /F oodialog.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F oodialog.mak )
+if ERRORLEVEL 1 goto error
+
+@ECHO Building ooDialog 4.1.0 ...
 CD  %OR_OODIALOGSRC_410%
 IF %USELOGFILE% equ 1 ( NMAKE /F oodialog.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F oodialog.mak )
 if ERRORLEVEL 1 goto error
 
+@ECHO Building ooDialog 4.2.0 ...
 CD  %OR_OODIALOGSRC_420%
 IF %USELOGFILE% equ 1 ( NMAKE /F oodialog.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F oodialog.mak )
 if ERRORLEVEL 1 goto error
 
-ECHO Building ooDialog classes, both versions ...
+ECHO Building ooDialog 3.2.0 classes ...
+CD %OR_OUTDIR%
+IF %USELOGFILE% equ 1 ( REXX %OR_OODIALOGSRC_320%\M_OODCLS.REX >>%OR_ERRLOG% 2>&1 ) else ( REXX %OR_OODIALOGSRC_320%\M_OODCLS.REX )
+if ERRORLEVEL 1 goto error
+move ood*cls %OR_OUTDIR_OOD320%
+
+ECHO Building ooDialog 4.1.0 classes ...
 CD %OR_OUTDIR%
 IF %USELOGFILE% equ 1 ( REXX %OR_OODIALOGSRC_410%\M_OODCLS.REX >>%OR_ERRLOG% 2>&1 ) else ( REXX %OR_OODIALOGSRC_410%\M_OODCLS.REX )
 if ERRORLEVEL 1 goto error
 move ood*cls %OR_OUTDIR_OOD410%
 
+ECHO Building ooDialog 4.2.0 classes ...
 IF %USELOGFILE% equ 1 ( REXX %OR_OODIALOGSRC_420%\build_ooDialog_cls.rex >>%OR_ERRLOG% 2>&1 ) else ( REXX %OR_OODIALOGSRC_420%\build_ooDialog_cls.rex )
 if ERRORLEVEL 1 goto error
 move ood*cls %OR_OUTDIR_OOD420%
@@ -227,11 +240,17 @@ CD  %OR_APISAMPLESRC%\wpipe\wpipe3
 IF %USELOGFILE% equ 1 ( NMAKE /F rexxapi3.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F rexxapi3.mak )
 if ERRORLEVEL 1 goto error
 
-@ECHO Building OODialog Samples..
+@ECHO Building ooDialog 3.2.0 Samples ...
+CD  %OR_OODIALOGSAMPLES320%\res
+IF %USELOGFILE% equ 1 ( NMAKE /F res.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F res.mak )
+if ERRORLEVEL 1 goto error
+
+@ECHO Building ooDialog 4.1.0 Samples ...
 CD  %OR_OODIALOGSAMPLES410%\res
 IF %USELOGFILE% equ 1 ( NMAKE /F res.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F res.mak )
 if ERRORLEVEL 1 goto error
 
+@ECHO Building ooDialog 4.2.0 Samples ...
 CD  %OR_OODIALOGSAMPLES420%\res
 IF %USELOGFILE% equ 1 ( NMAKE /F res.mak >>%OR_ERRLOG% 2>&1 ) else ( NMAKE /F res.mak )
 if ERRORLEVEL 1 goto error

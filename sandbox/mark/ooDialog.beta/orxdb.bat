@@ -57,8 +57,10 @@ set OR_MESSAGESRC=%SRC_DRV%%SRC_DIR%\interpreter\messages
 set OR_WINKERNELSRC=%SRC_DRV%%SRC_DIR%\platform\windows
 set OR_REXXAPISRC=%SRC_DRV%%SRC_DIR%\rexxapi
 
+set OR_OODIALOGSRC_320=%SRC_DRV%%SRC_DIR%\extensions\platform\windows\oodialog.3.2.0
 set OR_OODIALOGSRC_410=%SRC_DRV%%SRC_DIR%\extensions\platform\windows\oodialog.4.1.0
 set OR_OODIALOGSRC_420=%SRC_DRV%%SRC_DIR%\extensions\platform\windows\oodialog.4.2.0
+set OR_OODIALOGSAMPLES320=%SRC_DRV%%SRC_DIR%\samples\windows\oodialog.3.2.0
 set OR_OODIALOGSAMPLES410=%SRC_DRV%%SRC_DIR%\samples\windows\oodialog.4.1.0
 set OR_OODIALOGSAMPLES420=%SRC_DRV%%SRC_DIR%\samples\windows\oodialog.4.2.0
 
