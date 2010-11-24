@@ -63,7 +63,7 @@
   !define LONGNAME       "ooDialog ${VERSION} (beta)"  ; Our long name
   !define SHORTNAME      "ooDialogSwitch"              ; Our short name
   !define InstallFile    "${EXEFILE}.exe"              ; The switch ooDialog executable
-  !define DISPLAYICON    "$INSTDIR\ooDialog.dll,0"     ; Use the ooDialog icon.
+  !define DISPLAYICON    "$INSTDIR\ooDialog.dll,2"     ; Use the ooDialog icon, the OOD icon
   !define REXXSHORTNAME  "ooRexx"                      ; From ooRexx installer.
   !define REXXLONGNAME   "Open Object Rexx"            ; From ooRexx installer
   !define UNINSTALLER    "uninstall_${EXEFILE}.exe"
