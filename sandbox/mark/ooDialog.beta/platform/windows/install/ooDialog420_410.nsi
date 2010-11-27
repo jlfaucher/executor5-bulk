@@ -62,7 +62,8 @@
 
   !define LONGNAME       "ooDialog ${VERSION} (beta)"  ; Our long name
   !define SHORTNAME      "ooDialogSwitch"              ; Our short name
-  !define InstallFile    "${EXEFILE}.exe"              ; The switch ooDialog executable
+  !define InstallFile    "${EXEFILE}.exe"              ; The switch ooDialog executable renamed on install
+  !define SourceFile     "${EXEFILE}420_410.exe"       ; The switch ooDialog output file name.
   !define DISPLAYICON    "$INSTDIR\ooDialog.dll,2"     ; Use the ooDialog icon, the OOD icon
   !define REXXSHORTNAME  "ooRexx"                      ; From ooRexx installer.
   !define REXXLONGNAME   "Open Object Rexx"            ; From ooRexx installer
@@ -160,7 +161,7 @@ Section  doInstall
 
   ; Only 1 file is installed.
   SetOutPath "$INSTDIR"
-  File "${InstallFile}"
+  File /oname=${InstallFile} "${SourceFile}"
 
   ; Write the uninstall keys.
   DetailPrint "Writing uninstall keys."

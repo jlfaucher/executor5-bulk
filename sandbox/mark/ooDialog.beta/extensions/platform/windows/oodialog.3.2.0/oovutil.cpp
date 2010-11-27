@@ -472,10 +472,10 @@ INT DelDialog(DIALOGADMIN * aDlg)
      */
     if ( aDlg->DidChangeIcon )
     {
-        hIconBig = (HICON)SetClassLongPtr(aDlg->TheDlg, GCL_HICON, (LONG_PTR)aDlg->SysMenuIcon);
+        hIconBig = (HICON)SetClassLongPtr(aDlg->TheDlg, GCLP_HICON, (LONG_PTR)aDlg->SysMenuIcon);
         if ( aDlg->TitleBarIcon )
         {
-            hIconSmall = (HICON)SetClassLongPtr(aDlg->TheDlg, GCL_HICONSM, (LONG_PTR)aDlg->TitleBarIcon);
+            hIconSmall = (HICON)SetClassLongPtr(aDlg->TheDlg, GCLP_HICONSM, (LONG_PTR)aDlg->TitleBarIcon);
         }
 
         if ( ! aDlg->SharedIcon )
@@ -483,7 +483,7 @@ INT DelDialog(DIALOGADMIN * aDlg)
             DestroyIcon(hIconBig);
             if ( ! hIconSmall )
             {
-                hIconSmall = (HICON)GetClassLongPtr(aDlg->TheDlg, GCL_HICONSM);
+                hIconSmall = (HICON)GetClassLongPtr(aDlg->TheDlg, GCLP_HICONSM);
             }
         }
         else
@@ -749,8 +749,8 @@ size_t RexxEntry StartDialog(const char *funcname, size_t argc, CONSTRXSTRING *a
 
             if ( GetDialogIcons(dlgAdm, atoi(argv[5].strptr), FALSE, (PHANDLE)&hBig, (PHANDLE)&hSmall) )
             {
-                dlgAdm->SysMenuIcon = (HICON)SetClassLongPtr(dlgAdm->TheDlg, GCL_HICON, (LONG_PTR)hBig);
-                dlgAdm->TitleBarIcon = (HICON)SetClassLongPtr(dlgAdm->TheDlg, GCL_HICONSM, (LONG_PTR)hSmall);
+                dlgAdm->SysMenuIcon = (HICON)SetClassLongPtr(dlgAdm->TheDlg, GCLP_HICON, (LONG_PTR)hBig);
+                dlgAdm->TitleBarIcon = (HICON)SetClassLongPtr(dlgAdm->TheDlg, GCLP_HICONSM, (LONG_PTR)hSmall);
                 dlgAdm->DidChangeIcon = TRUE;
 
                 SendMessage(dlgAdm->TheDlg, WM_SETICON, ICON_SMALL, (LPARAM)hSmall);

@@ -771,7 +771,7 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
        HWND ew = TreeView_GetEditControl(h);
        if (ew)
        {
-           WNDPROC oldProc = (WNDPROC)SetWindowLongPtr(ew, GWL_WNDPROC, (LONG_PTR)CatchReturnSubProc);
+           WNDPROC oldProc = (WNDPROC)SetWindowLongPtr(ew, GWLP_WNDPROC, (LONG_PTR)CatchReturnSubProc);
            if (oldProc != (WNDPROC)CatchReturnSubProc) lpOldEditProc = oldProc;
            RETPTR(oldProc)
        }
@@ -783,7 +783,7 @@ size_t RexxEntry HandleTreeCtrl(const char *funcname, size_t argc, CONSTRXSTRING
        HWND ew = TreeView_GetEditControl(h);
        if (ew)
        {
-           SetWindowLongPtr(ew, GWL_WNDPROC, (LONG_PTR)lpOldEditProc);
+           SetWindowLongPtr(ew, GWLP_WNDPROC, (LONG_PTR)lpOldEditProc);
            RETC(0)
        }
        RETVAL(-1)
@@ -1256,11 +1256,11 @@ size_t RexxEntry HandleControlEx(const char *funcname, size_t argc, CONSTRXSTRIN
     {
         if ( argc == 3 )
         {
-            RETVAL(GetWindowLong(hCtrl, GWL_USERDATA));
+            RETVAL(GetWindowLong(hCtrl, GWLP_USERDATA));
         }
         else if ( argc == 4 )
         {
-            RETVAL(SetWindowLong(hCtrl, GWL_USERDATA, atol(argv[3].strptr)));
+            RETVAL(SetWindowLong(hCtrl, GWLP_USERDATA, atol(argv[3].strptr)));
         }
         else RETERR
     }
@@ -1768,7 +1768,7 @@ size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING
            HWND ew = ListView_GetEditControl(h);
            if (ew)
            {
-               WNDPROC oldProc = (WNDPROC)SetWindowLongPtr(ew, GWL_WNDPROC, (LONG_PTR)CatchReturnSubProc);
+               WNDPROC oldProc = (WNDPROC)SetWindowLongPtr(ew, GWLP_WNDPROC, (LONG_PTR)CatchReturnSubProc);
                if (oldProc != (WNDPROC)CatchReturnSubProc) lpOldEditProc = oldProc;
                RETPTR(oldProc)
            }
@@ -1780,7 +1780,7 @@ size_t RexxEntry HandleListCtrl(const char *funcname, size_t argc, CONSTRXSTRING
            HWND ew = ListView_GetEditControl(h);
            if (ew)
            {
-               SetWindowLongPtr(ew, GWL_WNDPROC, (LONG_PTR)lpOldEditProc);
+               SetWindowLongPtr(ew, GWLP_WNDPROC, (LONG_PTR)lpOldEditProc);
                RETC(0)
            }
            RETVAL(-1)

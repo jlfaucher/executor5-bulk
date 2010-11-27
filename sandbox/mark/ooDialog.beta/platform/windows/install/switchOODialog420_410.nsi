@@ -104,7 +104,7 @@
 ;General
 
   Name "Switch ooDialog"
-  OutFile "switchOODialog.exe"
+  OutFile "switchOODialog420_410.exe"
   ShowInstdetails show
   SetOverwrite on
   SetPluginUnload alwaysoff
@@ -126,6 +126,7 @@
   Var ForceVersion               ; Allows the user to force what ooDialog version is in effect.
   Var CurrentVersion             ; The current ooDialog version, read from the registry
   Var NewVersion                 ; The version of ooDialog to switch to.
+  Var Message                    ; Used to hold a string.
 
 ;--------------------------------
 ; Languages
@@ -446,17 +447,20 @@ Function .onInit
   ReadRegStr $CurrentVersion HKLM "Software\${SHORTNAME}" "CurrentVersion"
 
   /* Check if the user just wants to know the ooDialog version in effect. */
+  ClearErrors
   ${GetOptions} "$CMDLINE" "/I"  $R0
   ${IfNot} ${Errors}
-    ${If} $CurrentVersion == 410
-      MessageBox MB_OK "Current version of ooDialog in use: 4.1.0"
-    ${Else}
-      MessageBox MB_OK "Current version of ooDialog in use: 4.2.0"
-    ${EndIf}
-    Abort
+    Call DisplayInfo
+  ${Endif}
+
+  ClearErrors
+  ${GetOptions} "$CMDLINE" "/?"  $R0
+  ${IfNot} ${Errors}
+    Call DisplayInfo
   ${Endif}
 
   /* Check if the user is forcing the current version to something specific. */
+  ClearErrors
   ${GetOptions} "$CMDLINE" "/F="  $R0
   StrCpy $ForceVersion $R0
 
@@ -572,6 +576,36 @@ Function CheckForProblems
       Abort
   ${EndIf}
 
+FunctionEnd
+
+/** DisplayInfo
+ *
+ * Puts up a message box to show information on the switchDialog program.
+ * Called when the /I arg is used.
+ */
+Function DisplayInfo
+
+  StrCpy $Message \
+       "Switches the active version of ooDialog.  Syntax:$\n$\n\
+        switchOODialog [param]$\n$\n\
+        With no argument switches the active ooDialog to the opposite.$\n\
+        Valid arguments are:$\n$\n\
+        /V		Switch ooDialog 'Visibly'.$\n$\n\
+        /F=key		Force the active version to 'key'.$\n$\n\
+        /I		Show this information.$\n$\n\
+        /?		Same as /I.$\n$\n\
+        'key' must be 420 or 410."
+
+  ${If} $CurrentVersion == 410
+    MessageBox MB_OK "Switch ooDialog  4.2.0 <<-->> 4.1.0$\n\
+                      Active version of ooDialog: 4.1.0$\n$\n$\n$Message"
+
+  ${Else}
+    MessageBox MB_OK "Switch ooDialog  4.2.0 <<-->> 4.1.0$\n\
+                      Active version of ooDialog: 4.2.0$\n$\n$\n$Message"
+  ${EndIf}
+
+  Abort
 FunctionEnd
 
 /** PrintSwitchInfo()

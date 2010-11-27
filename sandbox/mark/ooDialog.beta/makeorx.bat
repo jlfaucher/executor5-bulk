@@ -159,21 +159,25 @@ makensis %DOTVER% %NODOTVER% %SHORTDOTVER% %SRCDIR% %BINDIR% %CPUDEF% oorexx.nsi
 
 REM  Make switchOODialog and the ooDialog installer.  switchOODialog must be
 REM  built first
-makensis %OODDOTVER% %NODOTVER% %SRCDIR% %BINDIR% switchOODialog.nsi
-makensis %OODDOTVER% %NODOTVER% %SRCDIR% %SWITCHEXE% %CPUDEF% ooDialogBeta.nsi
+makensis %OODDOTVER% %NODOTVER% %SRCDIR% %BINDIR% switchOODialog420_410.nsi
+makensis %OODDOTVER% %NODOTVER% %SRCDIR% %SWITCHEXE% %CPUDEF% ooDialog420_410.nsi
 
 REM  Rename the deug package so it is not overwritten if the release package
 REM  is created.  The NSIS scripts names the package:
 REM    "${SHORTNAME}-${VERSION}.${CPU}.exe"
+echo Renaming the ooRexx installer
 ren ooRexx-%MAJOR_NUM%.%MINOR_NUM%.%LVL_NUM%.%BLD_NUM%.%CPUNAME%.exe ooRexx-%MAJOR_NUM%.%MINOR_NUM%.%LVL_NUM%.%BLD_NUM%.%CPUNAME%-debug.exe
 
+echo Moving the ooRexx installer
 move ooRexx-%MAJOR_NUM%.%MINOR_NUM%.%LVL_NUM%.%BLD_NUM%.%CPUNAME%-debug.exe ..\..\..\
 
 REM  Do the same thing with the ooDialog beta package.  The NSIS scripts names
 REM  the package:
 REM    "ooDialog-${VERSION}-${CPU}.exe"
+echo Renaming the switchOODialog installer
 ren ooDialog-%MAJOR_NUM%.2.%LVL_NUM%.%BLD_NUM%-%CPUNAME%.exe ooDialog-%MAJOR_NUM%.2.%LVL_NUM%.%BLD_NUM%-%CPUNAME%-debug.exe
 
+echo Moving the switchOODialog installer
 move ooDialog-%MAJOR_NUM%.2.%LVL_NUM%.%BLD_NUM%-%CPUNAME%-debug.exe ..\..\..\
 
 cd ..\..\..\
