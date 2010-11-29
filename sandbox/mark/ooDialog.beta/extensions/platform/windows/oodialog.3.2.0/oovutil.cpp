@@ -1920,13 +1920,13 @@ size_t RexxEntry DumpAdmin(const char *funcname, size_t argc, CONSTRXSTRING *arg
        {
            itoa(dlgAdm->BmpTab[i].buttonID, data, (dlgAdm->BmpTab[i].Loaded ? 16: 10));
            if (!SetRexxStem(buffer, i+1, "ID", data))  { RETERR; }
-           itoa((LONG)dlgAdm->BmpTab[i].bitmapID, data, (dlgAdm->BmpTab[i].Loaded ? 16: 10));
+           pointer2string(data, (void *)dlgAdm->BmpTab[i].bitmapID);
            if (!SetRexxStem(buffer, i+1, "Normal", data))  { RETERR; }
-           itoa((LONG)dlgAdm->BmpTab[i].bmpFocusID, data, (dlgAdm->BmpTab[i].Loaded ? 16: 10));
+           pointer2string(data, (void *)dlgAdm->BmpTab[i].bmpFocusID);
            if (!SetRexxStem(buffer, i+1, "Focused", data))  { RETERR; }
-           itoa((LONG)dlgAdm->BmpTab[i].bmpSelectID, data, (dlgAdm->BmpTab[i].Loaded ? 16: 10));
+           pointer2string(data, (void *)dlgAdm->BmpTab[i].bmpSelectID);
            if (!SetRexxStem(buffer, i+1, "Selected", data))  { RETERR; }
-           itoa((LONG)dlgAdm->BmpTab[i].bmpDisableID, data, (dlgAdm->BmpTab[i].Loaded ? 16: 10));
+           pointer2string(data, (void *)dlgAdm->BmpTab[i].bmpDisableID);
            if (!SetRexxStem(buffer, i+1, "Disabled", data))  { RETERR; }
        }
        itoa(dlgAdm->MT_size, data, 10);
@@ -1934,7 +1934,7 @@ size_t RexxEntry DumpAdmin(const char *funcname, size_t argc, CONSTRXSTRING *arg
        sprintf(buffer, "%s.%s", argv[0].strptr, "MsgTab");
        for (i=0; i<dlgAdm->MT_size; i++)
        {
-           pointer2string(data, (void *)dlgAdm->MsgTab[i].msg);
+           ultoa(dlgAdm->MsgTab[i].msg, data, 16);
            if (!SetRexxStem(buffer, i+1, "msg", data))  { RETERR; }
            pointer2string(data, (void *)dlgAdm->MsgTab[i].wParam);
            if (!SetRexxStem(buffer, i+1, "param1", data))  { RETERR; }
