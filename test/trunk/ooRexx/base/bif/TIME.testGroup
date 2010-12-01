@@ -1787,9 +1787,9 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    self~assertSame(cb3a, cb3b)
    self~assertSame(cb4a, cb4b)
 
-   self~assertTrue(cb2a>='1')
-   self~assertTrue(cb3a>='5')
-   self~assertTrue(cb4a>='7')
+   self~assertTrue(cb2a>='1', 'cb2a should be greater than or equal to 1, cb2a is:' cb2a)
+   self~assertTrue(cb3a>='5', 'cb3a should be greater than or equal to 5, cb3a is:' cb3a)
+   self~assertTrue(cb4a>='7', 'cb4a should be greater than or equal to 7, cb4a is:' cb4a)
    return
 
    SUB1:
@@ -1824,11 +1824,11 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    self~assertSame(cb5a, cb5b)
    self~assertSame(cb6a, cb6b)
 
-   self~assertTrue(cb5a>='1')
-   self~assertTrue(cb6a>='5')
-   self~assertTrue(cb2a>='1')
-   self~assertTrue(cb3a>='5')
-   self~assertTrue(cb4a>='13')
+   self~assertTrue(cb5a>='1', 'cb5a should be greater than or equal to 1, cb5a is:' cb5a)
+   self~assertTrue(cb6a>='5', 'cb6a should be greater than or equal to 5, cb6a is:' cb6a)
+   self~assertTrue(cb2a>='1', 'cb2a should be greater than or equal to 1, cb2a is:' cb2a)
+   self~assertTrue(cb3a>='5', 'cb3a should be greater than or equal to 5, cb3a is:' cb3a)
+   self~assertTrue(cb4a>='13', 'cb4a should be greater than or equal to 13, cb4a is:' cb4a)
    return
 
    SUB1:
@@ -1870,8 +1870,8 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    self~assertSame(cb4a, cb4b)
 
    self~assertSame(cb2a, '0')
-   self~assertTrue(cb3a>='5')
-   self~assertTrue(cb4a>='7')
+   self~assertTrue(cb3a>='5', 'cb3a should be greater than or equal to 5, cb3a is:' cb3a)
+   self~assertTrue(cb4a>='7', 'cb4a should be greater than or equal to 7, cb4a is:' cb4a)
 
 
 ::method "test_5"
@@ -1902,11 +1902,11 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    self~assertSame(cb5a, cb5b)
    self~assertSame(cb6a, cb6b)
 
-   self~assertSame(cb5a, '0')
-   self~assertTrue(cb6a>='5')
-   self~assertSame(cb2a, '0')
-   self~assertTrue(cb3a>='5')
-   self~assertTrue(cb4a>='13')
+   self~assertSame(cb5a, '0', 'cb5a should be 0, cb5a is:' cb5a)
+   self~assertTrue(cb6a>='5', 'cb6a should be greater than or equal to 5, cb6a is:' cb6a)
+   self~assertSame(cb2a, '0', 'cb2a should be 0, cb2a is:' cb2a)
+   self~assertTrue(cb3a>='5', 'cb3a should be greater than or equal to 5, cb3a is:' cb3a)
+   self~assertTrue(cb4a>='13', 'cb4a should be greater than or equal to 13, cb4a is:' cb4a)
 
 
 ::method "test_8"
@@ -1930,9 +1930,9 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    self~assertSame(cb3a, cb3b)
    self~assertSame(cb4a, cb4b)
 
-   self~assertTrue(cb2a>='1')
-   self~assertTrue(cb3a>='5')
-   self~assertTrue(cb4a>='7')
+   self~assertTrue(cb2a>='1', 'cb2a should be greater than or equal to 1, cb2a is:' cb2a)
+   self~assertTrue(cb3a>='5', 'cb3a should be greater than or equal to 5, cb3a is:' cb3a)
+   self~assertTrue(cb4a>='7', 'cb4a should be greater than or equal to 7, cb4a is:' cb4a)
 
    SUB1:
    cb2=TIME('r')||'*'||TIME('R')
@@ -1978,11 +1978,11 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    self~assertSame(cb5a, cb5b)
    self~assertSame(cb6a, cb6b)
 
-   self~assertTrue(cb5a>='1')
-   self~assertTrue(cb6a>='5')
-   self~assertTrue(cb2a>='1')
-   self~assertTrue(cb3a>='5')
-   self~assertTrue(cb4a>='13')
+   self~assertTrue(cb5a>='1', 'cb5a should be greater than or equal to 1, cb5a is:' cb5a)
+   self~assertTrue(cb6a>='5', 'cb6a should be greater than or equal to 5, cb6a is:' cb6a)
+   self~assertTrue(cb2a>='1', 'cb2a should be greater than or equal to 1, cb2a is:' cb2a)
+   self~assertTrue(cb3a>='5', 'cb3a should be greater than or equal to 5, cb3a is:' cb3a)
+   self~assertTrue(cb4a>='13', 'cb4a should be greater than or equal to 13, cb4a is:' cb4a)
 
    SUB1:
    cb2=TIME('r')||'*'||TIME('R')
@@ -2034,8 +2034,8 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    self~assertSame(cb4a, cb4b)
 
    self~assertSame(cb2a, '0')
-   self~assertTrue(cb3a>='5')
-   self~assertTrue(cb4a>='7')
+   self~assertTrue(cb3a>='5', 'cb3a should be greater than or equal to 5, cb3a is:' cb3a)
+   self~assertTrue(cb4a>='7', 'cb4a should be greater than or equal to 7, cb4a is:' cb4a)
 
 
 ::method "test_11"
@@ -2066,11 +2066,11 @@ self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
    self~assertSame(cb5a, cb5b)
    self~assertSame(cb6a, cb6b)
 
-   self~assertSame(cb5a, '0')
-   self~assertTRUE(cb6a>='5')
-   self~assertSame(cb2a, '0')
-   self~assertTRUE(cb3a>='5')
-   self~assertTRUE(cb4a>='13')
+   self~assertSame(cb5a, '0', 'cb5a should be 0, cb5a is:' cb5a)
+   self~assertTrue(cb6a>='5', 'cb6a should be greater than or equal to 5, cb6a is:' cb6a)
+   self~assertSame(cb2a, '0', 'cb2a should be 0, cb2a is:' cb2a)
+   self~assertTrue(cb3a>='5', 'cb3a should be greater than or equal to 5, cb3a is:' cb3a)
+   self~assertTrue(cb4a>='13', 'cb4a should be greater than or equal to 13, cb4a is:' cb4a)
 
 
 
