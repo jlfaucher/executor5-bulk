@@ -107,24 +107,33 @@ return testResult
 ::method test_005
    -- test client and server
    srvr = .server~new(self, self~host, self~port)
+   -- give the server a chance to get initialized
    call syssleep(1)
    call client self, self~host, self~port, 'stop'
+   -- sleep here so that the server has a chance to clean up the server socket
+   call syssleep(1)
    return
 
 ::method test_006
    -- test client and server (small message)
    srvr = .server~new(self, self~host, self~port)
+   -- give the server a chance to get initialized
    call syssleep(1)
    call client self, self~host, self~port, 'This is test 006'
    call client self, self~host, self~port, 'stop'
+   -- sleep here so that the server has a chance to clean up the server socket
+   call syssleep(1)
    return
 
 ::method test_007
    -- test client and server (large message)
    srvr = .server~new(self, self~host, self~port)
+   -- give the server a chance to get initialized
    call syssleep(1)
    call client self, self~host, self~port, 'This is test 007 '~copies(1000)
    call client self, self~host, self~port, 'stop'
+   -- sleep here so that the server has a chance to clean up the server socket
+   call syssleep(1)
    return
 
 
