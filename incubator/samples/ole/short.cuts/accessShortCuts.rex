@@ -35,7 +35,17 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/* accessShortCuts.rex   Rexx program using the OLEObject.  */
+/** accessShortCuts.rex   Rexx program using the OLEObject.
+ *
+ * Demonstrates how to access the properties of a short cut object in Windows.
+ *
+ * The WindowsProgramManager class in ooRexx can be used to create Windows short
+ * cuts.  But, there is no way with that class to access the properties of an
+ * existing short cut.
+ *
+ * However, it is possible to access a short cut's properties in an ooRexx
+ * program by use OLE, which is done through the OLEObject class in ooRexx.
+ */
 
   shell = .OleObject~new("Shell.Application")
 
