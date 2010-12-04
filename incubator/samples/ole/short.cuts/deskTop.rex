@@ -1,50 +1,76 @@
-
-
-
-
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                          */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
 
   shell = .OleObject~new("Shell.Application")
 
   ssfPROGRAMS = 2
-  folder = shell~NameSpace(ssfPROGRAMS)
-  folder~newFolder("My Own Group")
+  programsFolder = shell~NameSpace(ssfPROGRAMS)
+  programsFolder~newFolder("My Own Group")
 
-  z = deleteItem(folder, "My Own Group")
-  z = deleteItem(folder, "My twn Group")
-  return 0
   -- The parseName method returns the FolderItem object in a folder for the
   -- specified name.  If the folder contains an item with the name.  We use
   -- the method to get the folder item we just created.
-  groupFolderItem = folder~parseName("My Own Group")
+  groupFolderItem = programsFolder~parseName("My Own Group")
 
-  -- But
+  -- But, a FolderItem object is not a Folder object.  To get the folder itself
+  -- you need to use the 'getFolder' method of the FolderItem.
   groupFolder = groupFolderItem~getFolder
-  gfItemTest = groupFolder~self
-  say groupFolderItem~name
-  say groupFolder~title
-  say groupFolderItem~path
-
-  say 'gfItemTest path:' gfItemTest~path
 
   z = showFolder(groupFolder)
-
-
 
   j = SysSleep(3)
   say 'Going to close folder'
   j = closeFolder(groupFolder, shell)
 
-  say 'Going to sleep 3 then delete.'
+  say 'Going to sleep 3 seconds then reopen the folder.'
   j = SysSleep(3)
+  z = showFolder(groupFolder)
 
-  fso = .OleObject~new("Scripting.FileSystemObject")
-  fso~deleteFolder(groupFolderItem~path, .true)
+  say 'Going to sleep 3 seconds then close and delete the folder.'
+  j = SysSleep(3)
+  z = closeFolder(groupFolder, shell)
+  z = deleteItem(programsFolder, "My Own Group")
 
 
-::requires 'oleUtils.rex'
-
+-- Shows (opens in an explorer window) a folder.
 ::routine showFolder
   use strict arg folder
+
+  openVerb = .nil
 
   -- We need the FolderItem object of the folder.  We can get this through
   -- the 'self' method.
@@ -59,10 +85,16 @@
     end
   end
 
-  openVerb~doIt
+  if openVerb <> .nil then do
+    openVerb~doIt
+    return 0
+  end
+  else do
+    say "Some error happened in showFolder()"
+    return 1
+  end
 
-  return 0
-
+-- Closes the explorer window showing the specified folder.
 ::routine closeFolder
   use strict arg folder, shell
 
@@ -84,15 +116,23 @@
     groupWindow~quit
     return 0
   end
-  else do
-    say "Could not find open folder:" folder~title
-    return 1
-  end
 
--- Deletes an item in a folder using the item's name
+  say "Could not find open folder:" folder~title
+  return 1
+
+-- Deletes an item in a folder using the item's name.  If the item is a folder,
+-- then the folder and all its contents are deleted.
 ::routine deleteItem
   use strict arg folder, itemName
 
   folderItem = folder~parseName(itemName)
-  say "folder item:" folderItem
-  return 0
+
+  if folderItem <> .nil then do
+    fso = .OleObject~new("Scripting.FileSystemObject")
+    fso~deleteFolder(folderItem~path, .true)
+    return 0
+  end
+
+  say "Could not find item:" itemName 'in folder:' folder~title
+  return 1
+
