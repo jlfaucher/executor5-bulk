@@ -35,21 +35,55 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/* createShortCut.rex  Example of how to create a short cut using oleObject.  */
+/** shortCutIcons.rex   Rexx program using the OLEObject.
+ *
+ * Displays the short cut icon information for all the short cuts found on the
+ * desk top.
+ *
+ * Icons are contained in the resource section of an executable file (a .exe or
+ * a .dll file.)  Any number of icons can be bound to the resource section.  The
+ * individual icon is accessed by its index.
+ */
 
+  shell = .OleObject~new("Shell.Application")
 
-  wshShell = .OleObject~new("WScript.Shell")
-  deskTopLocation = wshShell~specialFolders("DeskTop")
+  -- Get the desk top folder
+  ssfDESKTOP = 0
+  folder = shell~NameSpace(ssfDesktop)
 
-  shortCut = wshShell~createShortcut(deskTopLocation || "\A rexxpaws Short Cut.lnk")
+  -- Find all the short cuts in the desk top by examining each item in the desk
+  -- top.
+  shortCuts = .array~new
+  items = folder~items
+  do item over folder~items
+    -- If the folder item is a link, save it.
+    if item~isLink then shortCuts~append(item)
+  end
 
-  shortCut~targetPath = "C:\home\Interpreters\Rexx\ooRexx\rexxpaws.exe"
-  shortCut~arguments = "-v"
-  shortCut~windowStyle = 1
-  shortCut~hotkey = "CTRL+SHIFT+F"
-  --shortCut~iconLocation = "C:\home\Interpreters\Rexx\ooRexx\rexx.exe, 0"
-  shortCut~description = "My First Test Shortcut"
-  shortCut~workingDirectory = deskTopLocation
+  -- Get the icon information for each short cut we found.
+  do shortCut over shortCuts
+    -- Need to get the shell link object.
+    shellLink = shortCut~getLink
 
-  shortCut~Save
+    -- The getIconLocation() method of a shell link object gets the file that
+    -- contains the icon and the icon index in that file.  The return from the
+    -- method is the icon index.  The icon file is returned in the argument to
+    -- the function.  We use an oleVariant to capture the returned icon file.
+    path = .oleVariant~new("", , "OUT")
+    index = shellLink~getIconLocation(path)
+    iconFile = path~!varValue_
+
+    -- Now display the icon information.  Note this: if the short cut was
+    -- created without assigning an icon, the Shell will use as a default the
+    -- icon at index 0 of the short cut target.  In this case, the icon file
+    -- returned by getIconLocation() will be the empty string.
+    if iconFile == "" then iconFile = shellLink~path
+
+    say "Found short cut:" shortCut~name
+    say '  File containing icon:' iconFile
+    say '  At index:            ' index
+    say
+  end
+
+  return 0
 

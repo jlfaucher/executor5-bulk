@@ -35,6 +35,12 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+/** deskTop.rex
+ *
+ * Demonstrates using the OleObject class to perform the same functionality as
+ * the WindowsProgramManager class.
+ */
+
   shell = .OleObject~new("Shell.Application")
 
   ssfPROGRAMS = 2
@@ -50,7 +56,7 @@
   -- you need to use the 'getFolder' method of the FolderItem.
   groupFolder = groupFolderItem~getFolder
 
-  z = showFolder(groupFolder)
+  z = showFolder(groupFolder, .true)
 
   j = SysSleep(3)
   say 'Going to close folder'
@@ -68,7 +74,7 @@
 
 -- Shows (opens in an explorer window) a folder.
 ::routine showFolder
-  use strict arg folder
+  use strict arg folder, maximized = .false
 
   openVerb = .nil
 
@@ -87,12 +93,58 @@
 
   if openVerb <> .nil then do
     openVerb~doIt
+    if maximized then do
+      shell = .OleObject~new("Shell.Application")
+      return maximizeFolder(folder, shell)
+    end
+
     return 0
   end
   else do
     say "Some error happened in showFolder()"
     return 1
   end
+
+::routine maximizeFolder
+  use strict arg folder, shell
+
+  window = .nil
+  windows = shell~windows
+
+  do w over windows
+    if w~fullName~caselessPos("explorer.exe") <> 0 then do
+      if w~locationName = folder~title then do
+        say 'w max fullName:    ' w~fullName
+        say 'w max locationName:' w~locationName
+        window = w
+        leave
+      end
+    end
+  end
+
+  if window <> .nil then do
+    --j = displayKnownMethods(w, .true)
+
+    window~top = 0
+    window~left = 0
+    window~width = 1288
+    window~height = 972
+    /*hwnd = window~hwnd
+    say 'hwnd:' hwnd
+    windowObject = .WindowObject~new(hwnd)
+    ret = windowObject~maximize
+    say 'maximize ret:' ret*/
+    --windowObject~minimize
+    --sysMenu = windowObject~systemMenu
+    --sysMenu~processItem(sysMenu~idOf(4))
+    --window~fullScreen = .true
+    pull
+    return 0
+  end
+
+  say "Could not find open folder:" folder~title
+  return 1
+
 
 -- Closes the explorer window showing the specified folder.
 ::routine closeFolder
@@ -136,3 +188,6 @@
   say "Could not find item:" itemName 'in folder:' folder~title
   return 1
 
+
+::requires 'OleUtils.rex'
+::requires 'winsystm.cls'

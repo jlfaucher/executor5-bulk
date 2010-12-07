@@ -44,41 +44,68 @@
  * existing short cut.
  *
  * However, it is possible to access a short cut's properties in an ooRexx
- * program by use OLE, which is done through the OLEObject class in ooRexx.
+ * program by using OLE, which is done through the OLEObject class in ooRexx.
  */
 
   shell = .OleObject~new("Shell.Application")
 
+  -- Get the Internet Explorer short cut from the Start menu.  This short cut
+  -- is created when Windows is installed.  We should find it, unless the user
+  -- has deleted it.
   ssfPROGRAMS = 2
   folder = shell~NameSpace(ssfPROGRAMS)
   folderItem = folder~ParseName("Internet Explorer.lnk")
 
-  -- The shell link is the short cut object.  The properties of the short cut
-  -- are those printed out.
-  shellLink = folderItem~GetLink
-  say 'shellLink:' shellLink 'name:' folderItem~name
-  say '  working directory:' shellLink~workingDirectory
-  say '  path:             ' shellLink~path
-  say '  target:           ' shellLink~target~name
-  say '  arguments:        ' shellLink~arguments
-  say '  description:      ' shellLink~description
-  say '  hot key:          ' shellLink~hotKey
-  say '  show command:     ' shellLink~showCommand
-  say
+  if folderItem <> .nil then do
+    -- The shell link is the short cut object.  The properties of the short cut
+    -- are those printed out.
+    shellLink = folderItem~GetLink
+    say 'shellLink:' shellLink 'name:' folderItem~name
+    say '  working directory:' shellLink~workingDirectory
+    say '  path:             ' shellLink~path
+    say '  target:           ' shellLink~target~name
+    say '  arguments:        ' shellLink~arguments
+    say '  description:      ' shellLink~description
+    say '  hot key:          ' shellLink~hotKey
+    say '  show command:     ' shellLink~showCommand
+    say
+  end
+  else do
+    say "Could not locate the Internet Explorer item in the Start Menu."
+  end
 
-  folder = shell~nameSpace(directory())
-  folderItem = folder~parseName("Right Command Prompt.lnk")
-  shortCut = folderItem~getLink
-  say 'ShellLink:' shortCut 'name:' folderItem~name
-  say '  working directory:' shortCut~workingDirectory
-  say '  path:             ' shortCut~path
-  say '  target:           ' shortCut~target~name
-  say '  arguments:        ' shortCut~arguments
-  say '  description:      ' shortCut~description
-  say '  hot key:          ' shortCut~hotKey
-  say '  show command:     ' shortCut~showCommand
-  say
+  -- Grab a short cut from the Desk Top.
+  ssfDESKTOP = 0
+  folder = shell~NameSpace(ssfDesktop)
 
+  shortCut = .nil
+  do item over folder~items
+    -- If the folder item is a link, get the shell link object, (the
+    -- short cut object,) and save it.
+    if item~isLink then do
+      shortCut = item~getLink
+      name = item~name
+      leave
+    end
+  end
+
+  if shortCut <> .nil then do
+    say 'ShellLink:' shortCut 'name:' name
+    say '  working directory:' shortCut~workingDirectory
+    say '  path:             ' shortCut~path
+    say '  target:           ' shortCut~target~name
+    say '  arguments:        ' shortCut~arguments
+    say '  description:      ' shortCut~description
+    say '  hot key:          ' shortCut~hotKey
+    say '  show command:     ' shortCut~showCommand
+    say
+  end
+  else do
+    say "Could not locate any short cuts on the Desk Top."
+  end
+
+  -- Get the Try Rexx, the GUI version, short cut from the Start Menu.  ooRexx
+  -- creates this short cut during the install.
   ssfCOMMONPROGRAMS = 23
   folder = shell~nameSpace(ssfCOMMONPROGRAMS)
   folderItems = folder~items
