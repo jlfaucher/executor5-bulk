@@ -38,18 +38,21 @@
 /**
  *  ooDialogBeta.nsi
  *
- *  This is a basic NSIS install program, used to install ooDialog 4.2.0 beta.
+ *  This is a basic NSIS install program, used to install:
  *
- *  It also installs switchOODialog.  switchOODialog is an executable used to
- *  switch between the 4.2.0 and 4.1.0 versions of ooDialog.
+ *    switch ooDialog 420<<->>410
+ *
+ *  Once installed, the executable: switchOODialog allows the user to switch
+ *  between the 4.2.0 and 4.1.0 versions of ooDialog in their ooRexx
+ *  installation.
  *
  *  Run as:
- *    makensis /DVERSION=x.x.x.x /DNODOTVER=xxx /DSRCDIR=y /DEXEFILE=xxx /DCPU=xxx ooDialogBeta.nsi
+ *    makensis /DVERSION=x.x.x.x /DNODOTVER=xxx /DSRCDIR=y /DEXEFILE=xxx /DCPU=xxx ooDialog420_410.nsi
  *  eg
- *    makensis /DVERSION=4.2.0.6367 /DNODOTVER=420 /DSRCDIR=C:\work\wc\main.4.1.0.ooDialog /DEXEFILE=switchOODialog /DCPU=x86_32 ooDialogBeta.nsi
+ *    makensis /DVERSION=4.2.0.6367 /DNODOTVER=420 /DSRCDIR=C:\work\wc\main.4.1.0.ooDialog /DEXEFILE=switchOODialog /DCPU=x86_32 ooDialog420_410.nsi
  *
  *  Note:
- *    ooDialogBeta.nsi must be in the current directory.
+ *    ooDialog420_410.nsi must be in the current directory.
  */
 
 
@@ -60,13 +63,13 @@
 ;--------------------------------
 ; Defines
 
-  !define LONGNAME       "ooDialog ${VERSION} (beta)"  ; Our long name
-  !define SHORTNAME      "ooDialogSwitch"              ; Our short name
-  !define InstallFile    "${EXEFILE}.exe"              ; The switch ooDialog executable renamed on install
-  !define SourceFile     "${EXEFILE}420_410.exe"       ; The switch ooDialog output file name.
-  !define DISPLAYICON    "$INSTDIR\ooDialog.dll,2"     ; Use the ooDialog icon, the OOD icon
-  !define REXXSHORTNAME  "ooRexx"                      ; From ooRexx installer.
-  !define REXXLONGNAME   "Open Object Rexx"            ; From ooRexx installer
+  !define LONGNAME       "Switch ooDialog 420(beta)_410 ${VERSION}"  ; Our long name
+  !define SHORTNAME      "Switch_ooDialog"                           ; Our short name
+  !define InstallFile    "${EXEFILE}.exe"                            ; The switch ooDialog executable renamed on install
+  !define SourceFile     "${EXEFILE}420_410.exe"                     ; The switch ooDialog output file name.
+  !define DISPLAYICON    "$INSTDIR\ooDialog.dll,2"                   ; Use the ooDialog icon, the OOD icon
+  !define REXXSHORTNAME  "ooRexx"                                    ; From ooRexx installer.
+  !define REXXLONGNAME   "Open Object Rexx"                          ; From ooRexx installer
   !define UNINSTALLER    "uninstall_${EXEFILE}.exe"
 
 
@@ -83,8 +86,8 @@
 ;--------------------------------
 ;General
 
-  Name "ooDialog Beta ${VERSION}"
-  OutFile "ooDialog-${VERSION}-${CPU}.exe"
+  Name "Switch ooDialog ${VERSION}"
+  OutFile "switch_ooDialog420_410-${VERSION}-${CPU}.exe"
   ShowInstdetails show
   ShowUninstDetails show
   SetOverwrite on
@@ -154,7 +157,7 @@ Section  doInstall
 
   ; If found, we silently uninstall any existing switch ooDialog.
   ${If} $RegVal_ourUninstallString != ""
-    DetailPrint "Found old ooDialog beta, cleaning up."
+    DetailPrint "Found old Switch ooDialog, cleaning up."
     ExecWait '$RegVal_ourUninstallString /S _?=$RegVal_ourUninstallLocation' $0
     DetailPrint ""
   ${Endif}

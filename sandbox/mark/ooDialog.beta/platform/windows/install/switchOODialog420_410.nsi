@@ -81,8 +81,8 @@
 ;--------------------------------
 ; Defines
 
-  !define SHORTNAME      "ooDialogSwitch"              ; Must be in sync with the ooDialogBeta SHORTNAME
-  !define LONGNAME       "ooDialog ${VERSION} (beta)"
+  !define SHORTNAME      "Switch_ooDialog"                    ; Must be in sync with the switch ooDialog SHORTNAME
+  !define LONGNAME       "Switch ooDialog ${VERSION} (beta)"  ; Does not have to be in sync
 
   !Define BinDir410 "${BINDIR}\oodialog410"
   !Define BinDir420 "${BINDIR}\oodialog420"
