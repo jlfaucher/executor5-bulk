@@ -45,6 +45,9 @@
  *
  * However, it is possible to access a short cut's properties in an ooRexx
  * program by using OLE, which is done through the OLEObject class in ooRexx.
+ *
+ * See the createShortCut.rex program for a way to create short cuts using
+ * OLEObject.
  */
 
   shell = .OleObject~new("Shell.Application")

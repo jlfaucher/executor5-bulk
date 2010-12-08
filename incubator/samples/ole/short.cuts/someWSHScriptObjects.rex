@@ -35,52 +35,66 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/** createShortCut.rex
+/** someWSHScriptObjects.rex
  *
- * Example of how to create a short cut using OLEObject.
+ * Even with WSH disabled, the oleObject can access many of the WSH objects.
  *
- * Surprising, I do not see any way to create a short cut using the Shell
- * object: shell = .OleObject~new("Shell.Application").  Fortunately, we can get
- * the WScript.Shell object which does have a createShortCut() method.
+ * This program is really just some notes on which objects are available, how to
+ * instantiate them, and what properties and methods they contain.
  */
 
   -- Get the WScript Shell object.
   wshShell = .OleObject~new("WScript.Shell")
+  say 'wshShell:' wshShell
+  j = displayKnownMethods(wshShell, .true)
 
-  -- We will create the short cut on the desk top.
-  deskTopLocation = wshShell~specialFolders("DeskTop")
+  -- Get the WScript Controller object
+  wshController = .OleObject~new("WSHController")
+  say 'wshController:' wshController
+  j = displayKnownMethods(wshController, .true)
 
-  -- Create a short cut object using the file name of the short cut we want.
-  -- Note that this does not, yet, create an actual file.  The short cut is in
-  -- memory only.
-  shortCut = wshShell~createShortcut(deskTopLocation || "\An ooDialog Samples Short Cut.lnk")
+  -- Get the WScript Network object
+  wshNetwork = .OleObject~new("WScript.Network")
+  say 'wshNetwork:' wshNetwork
+  j = displayKnownMethods(wshNetwork, .true)
 
-  -- We need to locate the ooRexx installation first.
-  ooRexxInstallDir = getOORexxInstallation(wshShell)
-  if ooRexxInstallDir == "" then do
-    say "Could not locate the directory ooRexx is installed in.  Will have to quit."
-    return 9
-  end
+  -- Get the WScript Environment object(s)
+  wshSysEnv = wshShell~environment("System")
+  wshUserEnv = wshShell~environment("User")
+  wshVolatileEnv = wshShell~environment("Volatile")
+  wshProcessEnv = wshShell~environment("Process")
 
-  -- Assign the short cut properties.
-  shortCut~targetPath = ooRexxInstallDir || "\rexxhide.exe"
-  shortCut~arguments = ooRexxInstallDir || "\samples\oodialog\sample.rex"
-  shortCut~windowStyle = 1
-  shortCut~hotkey = "CTRL+SHIFT+F"
-  shortCut~iconLocation = ooRexxInstallDir || "\rexx.exe, 0"
-  shortCut~description = "Test ooDialog Sample Shortcut"
-  shortCut~workingDirectory = ooRexxInstallDir || "\samples\oodialog"
+  say 'wshSysEnv:     ' wshSysEnv
+  say 'wshUserEnv:    ' wshSysEnv
+  say 'wshVolatileEnv:' wshSysEnv
+  say 'wshProcessEnv: ' wshSysEnv
 
-  -- Saving the short cut object is what actually creates short cut file.
-  shortCut~Save
+  j = displayKnownMethods(wshSysEnv, .true)
+  j = displayKnownMethods(wshUserEnv, .true)
+  j = displayKnownMethods(wshVolatileEnv, .true)
+  j = displayKnownMethods(wshProcessEnv, .true)
+
+
+  -- WshRemote Object can be obtained from the WSHControler object.
+  -- WshRemoteError Object can be obtained from the WshRemote object.
+  -- WshScriptExec Object can be obtained from the WSHShell~exec() method.
+
+  -- Get a WshShortcut Object
+  wshShortCut = wshShell~createShortcut("C:\temp.lnk")
+  say 'wshShortCut:' wshShortCut
+  j = displayKnownMethods(wshShortCut, .true)
+
+  -- Get a WshSpecialFolders Object
+  wshSpecialFolders = wshShell~specialFolders
+  say 'wshSpecialFolders:' wshSpecialFolders
+  j = displayKnownMethods(wshSpecialFolders, .true)
+
+  -- Get a WshUrlShortcut Object
+  wshUrlShortCut = wshShell~createShortcut("C:\temp.url")
+  say 'wshUrlShortCut:' wshUrlShortCut
+  j = displayKnownMethods(wshUrlShortCut, .true)
+
 
   return 0
-
-
- ::routine getOORexxInstallation
-   use strict arg shell
-
-   wshSysEnv = shell~environment("SYSTEM")
-   return wshSysEnv~item("REXX_HOME")
 
 ::requires 'OleUtils.rex'

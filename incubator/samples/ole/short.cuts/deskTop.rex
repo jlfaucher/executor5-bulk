@@ -39,7 +39,12 @@
  *
  * Demonstrates using the OleObject class to perform the same functionality as
  * the WindowsProgramManager class.
+ *
+ * In particular, this example replicates the WindowsProgramManager desktop.rex
+ * example without using the WindowsProgramManager class.
  */
+
+  say "Creating program group and items"
 
   shell = .OleObject~new("Shell.Application")
 
@@ -48,7 +53,7 @@
   programsFolder~newFolder("My Own Group")
 
   -- The parseName method returns the FolderItem object in a folder for the
-  -- specified name.  If the folder contains an item with the name.  We use
+  -- specified name, if the folder contains an item with the name.  We use
   -- the method to get the folder item we just created.
   groupFolderItem = programsFolder~parseName("My Own Group")
 
@@ -56,25 +61,43 @@
   -- you need to use the 'getFolder' method of the FolderItem.
   groupFolder = groupFolderItem~getFolder
 
-  z = showFolder(groupFolder, .true)
+  z = createNotePadSC(groupFolderItem)
+  z = createCalcSC(groupFolderItem)
+  z = createWriteSC(groupFolderItem)
 
-  j = SysSleep(3)
-  say 'Going to close folder'
-  j = closeFolder(groupFolder, shell)
-
-  say 'Going to sleep 3 seconds then reopen the folder.'
-  j = SysSleep(3)
+  say "Displaying program group.  In addition, you can go to:"
+  say "  Start Menu -> Programs and see the program group: My Own Group"
   z = showFolder(groupFolder)
 
-  say 'Going to sleep 3 seconds then close and delete the folder.'
-  j = SysSleep(3)
+  z = SysSleep(3)
+  say "Hit enter to continue ..."
+  pull
+
+  say 'Going to close program group'
+  j = closeFolder(groupFolder, shell)
+
+  say 'Going to sleep 3 seconds then reopen the program group.'
+  z = SysSleep(3)
+  z = showFolder(groupFolder)
+
+  say "Hit enter to delete the My own write short cut ..."
+  pull
+  say "It may take several seconds for the short cut to actually disappear ..."
+
+  z = deleteItem(groupFolder, "My own write.lnk")
+  z = showFolder(groupFolder)
+  z = SysSleep(3)
+
+  say 'Hit enter to close and delete the program group.'
+  pull
   z = closeFolder(groupFolder, shell)
   z = deleteItem(programsFolder, "My Own Group")
 
+  return 0
 
 -- Shows (opens in an explorer window) a folder.
 ::routine showFolder
-  use strict arg folder, maximized = .false
+  use strict arg folder
 
   openVerb = .nil
 
@@ -84,66 +107,19 @@
 
   verbs = folderItem~verbs
   do verb over verbs
-    say verb~name
     if verb~name~caselessPos("Open") \= 0 then do
       openVerb = verb
-      leave
     end
   end
 
   if openVerb <> .nil then do
     openVerb~doIt
-    if maximized then do
-      shell = .OleObject~new("Shell.Application")
-      return maximizeFolder(folder, shell)
-    end
-
     return 0
   end
   else do
     say "Some error happened in showFolder()"
     return 1
   end
-
-::routine maximizeFolder
-  use strict arg folder, shell
-
-  window = .nil
-  windows = shell~windows
-
-  do w over windows
-    if w~fullName~caselessPos("explorer.exe") <> 0 then do
-      if w~locationName = folder~title then do
-        say 'w max fullName:    ' w~fullName
-        say 'w max locationName:' w~locationName
-        window = w
-        leave
-      end
-    end
-  end
-
-  if window <> .nil then do
-    --j = displayKnownMethods(w, .true)
-
-    window~top = 0
-    window~left = 0
-    window~width = 1288
-    window~height = 972
-    /*hwnd = window~hwnd
-    say 'hwnd:' hwnd
-    windowObject = .WindowObject~new(hwnd)
-    ret = windowObject~maximize
-    say 'maximize ret:' ret*/
-    --windowObject~minimize
-    --sysMenu = windowObject~systemMenu
-    --sysMenu~processItem(sysMenu~idOf(4))
-    --window~fullScreen = .true
-    pull
-    return 0
-  end
-
-  say "Could not find open folder:" folder~title
-  return 1
 
 
 -- Closes the explorer window showing the specified folder.
@@ -156,8 +132,6 @@
   do w over windows
     if w~fullName~caselessPos("explorer.exe") <> 0 then do
       if w~locationName = folder~title then do
-        say 'w fullName:    ' w~fullName
-        say 'w locationName:' w~locationName
         groupWindow = w
         leave
       end
@@ -181,7 +155,14 @@
 
   if folderItem <> .nil then do
     fso = .OleObject~new("Scripting.FileSystemObject")
-    fso~deleteFolder(folderItem~path, .true)
+
+    if folderItem~isFolder then do
+      fso~deleteFolder(folderItem~path, .true)
+    end
+    else do
+      fso~deleteFile(folderItem~path, .true)
+    end
+
     return 0
   end
 
@@ -189,5 +170,62 @@
   return 1
 
 
-::requires 'OleUtils.rex'
-::requires 'winsystm.cls'
+::routine createNotePadSC
+  use strict arg folderItem
+
+  -- We need a WScript Shell object to create short cuts.
+  wshShell = .OleObject~new("WScript.Shell")
+
+  -- Create a short cut object using the file name of the short cut we want.
+  -- Note that this does not, yet, create an actual file.  The short cut is in
+  -- memory only.
+  shortCut = wshShell~createShortcut(folderItem~path || "\My own notepad.lnk")
+
+  -- Assign the short cut properties.
+  shortCut~targetPath = "notepad.exe"
+  shortCut~iconLocation = "NOTEPAD.EXE, 0"
+
+  -- Saving the short cut object is what actually creates short cut file.
+  shortCut~Save
+
+  return 0
+
+::routine createCalcSC
+  use strict arg folderitem
+
+  -- We need a WScript Shell object to create short cuts.
+  wshShell = .OleObject~new("WScript.Shell")
+
+  -- Create a short cut object using the file name of the short cut we want.
+  -- Note that this does not, yet, create an actual file.  The short cut is in
+  -- memory only.
+  shortCut = wshShell~createShortcut(folderItem~path || "\My own calculator.lnk")
+
+  -- Assign the short cut properties.
+  shortCut~targetPath = "calc.exe"
+  --shortCut~iconLocation = "NOTEPAD.EXE, 0"
+
+  -- Saving the short cut object is what actually creates short cut file.
+  shortCut~Save
+
+  return 0
+
+::routine createWriteSC
+  use strict arg folderitem
+
+  -- We need a WScript Shell object to create short cuts.
+  wshShell = .OleObject~new("WScript.Shell")
+
+  -- Create a short cut object using the file name of the short cut we want.
+  -- Note that this does not, yet, create an actual file.  The short cut is in
+  -- memory only.
+  shortCut = wshShell~createShortcut(folderItem~path || "\My own write.lnk")
+
+  -- Assign the short cut properties.
+  shortCut~targetPath = "write.exe"
+  shortCut~workingDirectory = "C:\"
+
+  -- Saving the short cut object is what actually creates short cut file.
+  shortCut~Save
+
+  return 0
