@@ -66,8 +66,7 @@
                 'light blue','white','grey','dark grey','red','light green',,
                 'yellow','blue','pink','turquoise')
    self~init:super()
-   self~InitCode = self~createcenter(200,235,"OODialog Color Drawing Demonstration",,,"System", 8)
-   if \ self~createcenter(200,235,"OODialog Color Drawing Demonstration",,,"System", 8) then
+   if self~createcenter(200,235,"OODialog Color Drawing Demonstration",,,"System", 8) = 0 then
       self~initCode = 1
 
 ::method DefineDialog
