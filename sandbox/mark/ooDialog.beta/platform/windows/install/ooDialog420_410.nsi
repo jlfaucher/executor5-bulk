@@ -192,12 +192,14 @@ Section  doInstall
   ${If} ${FileExists} "$SMPROGRAMS\${REXXLONGNAME}"
     DetailPrint "Creating Switch ooDialog short cut in ${REXXLONGNAME} Start Menu folder"
     CreateShortCut "$SMPROGRAMS\${REXXLONGNAME}\Switch ooDialog.lnk" '"$SwitchOODialogQualifiedName"'   ; Need to double quote.
+    CreateShortCut "$SMPROGRAMS\${REXXLONGNAME}\Switch ooDialog Info.lnk" '"$SwitchOODialogQualifiedName"' "/I"   ; Need to double quote.
     CreateShortCut "$SMPROGRAMS\${REXXLONGNAME}\Uninstall ${LONGNAME}.lnk" "$INSTDIR\${UNINSTALLER}" "" "$INSTDIR\${UNINSTALLER}" 0
   ${Else}
     DetailPrint "Creating Switch ooDialog short cut in ${LONGNAME} Start Menu folder"
     CreateDirectory "$SMPROGRAMS\${LONGNAME}"
     CreateShortCut "$SMPROGRAMS\${LONGNAME}\Switch ooDialog.lnk" '"$SwitchOODialogQualifiedName"'   ; Need to double quote.
-    CreateShortCut "$SMPROGRAMS\${REXXLONGNAME}\Uninstall ${LONGNAME}.lnk" "$INSTDIR\${UNINSTALLER}" "" "$INSTDIR\${UNINSTALLER}" 0
+    CreateShortCut "$SMPROGRAMS\${LONGNAME}\Switch ooDialog Info.lnk" '"$SwitchOODialogQualifiedName"' "/I"   ; Need to double quote.
+    CreateShortCut "$SMPROGRAMS\${LONGNAME}\Uninstall ${LONGNAME}.lnk" "$INSTDIR\${UNINSTALLER}" "" "$INSTDIR\${UNINSTALLER}" 0
     WriteRegStr HKLM "Software\${SHORTNAME}" "StartMenuFolder" "$SMPROGRAMS\${LONGNAME}"
   ${Endif}
 
@@ -273,6 +275,7 @@ Section "Uninstall"
   DetailPrint "Removing Start Menu items."
   ${If} $RegVal_startMenuFolder == ""
     Delete "$SMPROGRAMS\${REXXLONGNAME}\Switch ooDialog.lnk"
+    Delete "$SMPROGRAMS\${REXXLONGNAME}\Switch ooDialog Info.lnk"
     Delete "$SMPROGRAMS\${REXXLONGNAME}\Uninstall ${LONGNAME}.lnk"
   ${Else}
     RMDir /r $RegVal_startMenuFolder
