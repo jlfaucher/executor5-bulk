@@ -165,6 +165,10 @@ Section  doSwitch
     File "${BinDir420}\oodWin32.cls"
     DetailPrint ""
 
+    DetailPrint "********** ooDialog 4.2.0 ooRexxTry **********"
+    File "${SamplesDir420}\ooRexxTry\ooRexxTry.rex"
+    DetailPrint ""
+
     DetailPrint "********** ooDialog 4.2.0 Documentation **********"
     ; Set the installation directory:
     SetOutPath $INSTDIR\doc
@@ -303,6 +307,10 @@ Section  doSwitch
     File "${BinDir410}\OODIALOG.CLS"
     File "${BinDir410}\OODPLAIN.CLS"
     File "${BinDir410}\OODWIN32.CLS"
+    DetailPrint ""
+
+    DetailPrint "********** ooDialog 4.1.0 ooRexxTry **********"
+    File "${SamplesDir410}\ooRexxTry\ooRexxTry.rex"
     DetailPrint ""
 
     DetailPrint "********** ooDialog 4.1.0 Documentation **********"
