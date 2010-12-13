@@ -79,6 +79,7 @@
   !include "MUI2.nsh"
   !include "Library.nsh"
   !include "LogicLib.nsh"
+  !include "WinVer.nsh"
   !include "FileFunc.nsh"
   !include "WordFunc.nsh"
   !include "admin.nsh"
@@ -193,6 +194,15 @@ Section  doInstall
     DetailPrint "Creating Switch ooDialog short cut in ${REXXLONGNAME} Start Menu folder"
     CreateShortCut "$SMPROGRAMS\${REXXLONGNAME}\Switch ooDialog.lnk" '"$SwitchOODialogQualifiedName"'   ; Need to double quote.
     CreateShortCut "$SMPROGRAMS\${REXXLONGNAME}\Switch ooDialog Info.lnk" '"$SwitchOODialogQualifiedName"' "/I"   ; Need to double quote.
+
+    ${If} ${AtLeastWinVista}
+      ShellLink::SetRunAsAdministrator "$SMPROGRAMS\${REXXLONGNAME}\Switch ooDialog.lnk"
+      Pop $0
+
+      ShellLink::SetRunAsAdministrator "$SMPROGRAMS\${REXXLONGNAME}\Switch ooDialog Info.lnk"
+      Pop $0
+    ${EndIf}
+
     CreateShortCut "$SMPROGRAMS\${REXXLONGNAME}\Uninstall ${LONGNAME}.lnk" "$INSTDIR\${UNINSTALLER}" "" "$INSTDIR\${UNINSTALLER}" 0
   ${Else}
     DetailPrint "Creating Switch ooDialog short cut in ${LONGNAME} Start Menu folder"
@@ -200,6 +210,15 @@ Section  doInstall
     CreateShortCut "$SMPROGRAMS\${LONGNAME}\Switch ooDialog.lnk" '"$SwitchOODialogQualifiedName"'   ; Need to double quote.
     CreateShortCut "$SMPROGRAMS\${LONGNAME}\Switch ooDialog Info.lnk" '"$SwitchOODialogQualifiedName"' "/I"   ; Need to double quote.
     CreateShortCut "$SMPROGRAMS\${LONGNAME}\Uninstall ${LONGNAME}.lnk" "$INSTDIR\${UNINSTALLER}" "" "$INSTDIR\${UNINSTALLER}" 0
+
+    ${If} ${AtLeastWinVista}
+      ShellLink::SetRunAsAdministrator "$SMPROGRAMS\${LONGNAME}\Switch ooDialog.lnk"
+      Pop $0
+
+      ShellLink::SetRunAsAdministrator "$SMPROGRAMS\${LONGNAME}\Switch ooDialog Info.lnk"
+      Pop $0
+    ${EndIf}
+
     WriteRegStr HKLM "Software\${SHORTNAME}" "StartMenuFolder" "$SMPROGRAMS\${LONGNAME}"
   ${Endif}
 
