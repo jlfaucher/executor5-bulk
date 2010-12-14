@@ -747,34 +747,163 @@ xPixels = xDialogUnits * self~FactorX
 <para>
   ooDialog is a Windows only extension to Open Object Rexx and appeared in the first version of IBM's Object Rexx for
   Windows. Object REXX for Windows NT &amp; 95 Interpreter Edition V1.0 was announced very early in 1997. It included
-  ooDialog and could run on Windows 95 and Windows NT 3.5. However, comments within the code and sections of code
-  itself in ooDialog, indicate that at one point ooDialog could run on Windows 3.0 and 3.1.
+  ooDialog and could run on Windows 95 and Windows NT 3.5. However, comments within the code and sections of code itself
+  in ooDialog, indicate that at one point ooDialog could run on Windows 3.0 and 3.1.
 </para>
 <para>
-  Object REXX for Windows V2R1 was announced March 2001.  In November 2004, IBM announced it was contributing the source
-  code for Object Rexx to RexxLA, and the ooRexx project was born.  The first release of ooRexx 3.0 was aroun
+  IBM announced and released several successive versions of Object Rexx for Windows over the following years. For
+  instance, Object REXX for Windows V2R1 was announced March 2001.  In May 2004, IBM announced its intention to
+  contribute the source code for Object Rexx to RexxLA, and the ooRexx project was born. It took the best part of a year
+  to work out the details and for the ooRexx developers to get the first version of ooRexx built and relased. ooRexx
+  3.0, the first ooRexx release, took place on March 25th 2005.
 </para>
 <para>
-  Historically, the reason for providing the simpler PlainUserDialog class was to have a smaller package
-  that required less system resources for ordinary user interfaces like the standard dialogs.  That
-  reason is probably not as valid in modern times as it was when ooDialog was being developed to run on
-  Windows 3.1.
+  From that point, the ooRexx team began regularly releasing new versions of ooRexx, up through the realease of ooRexx
+  3.2.0 on November 5, 2007. After the release of 3.2.0, the ooRexx team concentrated on refactoring the intepreter and
+  on adding a new set of native APIs used to write extensions to the ooRexx interpreter.  The new APIs allowed the
+  passing ooRexx objects to the routines and methods used in extensions.  Previously, only strings could be passed to
+  external libraries. The refactored ooRexx interpreter and the new native APIs were introduced in ooRexx 4.0.0,
+  released in August 2009.
 </para>
+<para>
+  Up until that release in the middle of 2009, ooDialog remained virtually unchanged. The evolution of the Windows
+  operating system had passed it by. ooDialog was designed for Windows 3.1, or at the latest Windows 95. It still
+  referred to dialog controls such as the list-view as "new" controls. Despite the fact that the list-view control had
+  been in use for over a decade. Some controls were considered "advanced" in ooDialog, while in Windows itself they were
+  considered old news.
+</para>
+<para>
+  Much of the design of ooDialog was based on constraints that existed in Windows 3.1 and Windows 95 that no longer
+  existed in modern operating systems. For instance, the reason for having three separate ooDialog class files,
+  <computeroutput>OODPLAIN.CLS, OODIALOG.CLS, and OODWIN32.CLS</computeroutput>, and for providing the simpler
+  <computeroutput>PlainUserDialog</computeroutput> class was to have a smaller package that required less system
+  resources for ordinary user interfaces like the standard dialogs.  That reason is not as valid in modern times as it
+  was when ooDialog was being developed to run on Windows 3.1. Many of the programming techniques in the ooDialog
+  implementation were also outdated. The conversion of dialog units to pixels and vice versa in ooDialog is a good
+  example. While the technique must have worked in very early versions of Windows, it is completely wrong in Windows XP
+  and later.
+</para>
+<para>
+  The release of the new C++ native APIs in ooRexx 4.0.0 allowed much richer extensions to the Rexx interpreter to be
+  written. Extensions could be implemented that had access to the actual objects instantiated within the
+  interpreter. During the release of ooRexx 4.0.0, the internal work was started to convert ooDialog to use the C++
+  APIs. This work lead to the complete refactoring of the ooDialog code, and the effort to bring ooDialog up to the
+  level of Windows Vista and Windows 7 got started. New dialog controls were added along with new dialog objects and
+  methods. However, this work was done in the internal development source tree and was not ready for the 4.0.0, 4.0.1,
+  and 4.1.0 releases of ooRexx. Although ooDialog in those releases had some improvements and enhancements, they were
+  minor.
+</para>
+<para>
+  ooRexx 4.1.0 was released in December 2010. At that time, the internal work to convert ooDialog to the C++ APIs and
+  the refactoring of the ooDialog source code was complete, but the refactored ooDialog was not ready for release,
+  primarily because the documentation was not complete. The ooDialog distributed with ooRexx 4.1.0 was essentially the
+  same as the ooDialog distributed with ooRexx 4.0.0, with bug fixes and some small enhancements.
+</para>
+<para>
+  When the work of getting ooRexx 4.1.0 was finished, some observations about ooDialog were made. One was that previosly
+  no real versioning of ooDialog was done. The second was that each of the ooDialogs shipped with ooRexx 4.0.0, 4.0.1,
+  and 4.1.0 only required an ooRexx 4.0.0 interpreter to work, while the refactored ooDialog in the internal development
+  source tree required an ooRexx 4.1.0 interpreter. The third observation was that, since ooDialog is an extension to
+  the Rexx interpreter, there is no reason why it could not be distributed independently of the ooRexx interpreter.
+  Finally, it had been observed from some comments made in bugs opened up against ooDialog, that there were a few people
+  who seemed to prefer to remain with an ooDialog that was designed for Windows 95, in essence an ooDialog unchanged
+  from the ooDialog shipped with ooRexx 3.2.0.
+</para>
+<para>
+  This lead to the decision to define a more formal versioning scheme for ooDialog and also to implement a means to
+  distribute ooDialog independently of the ooRexx distribution. The version string of ooDialog had already been defined
+  to be the version string of the ooRexx interpreter ooDialog was built under. A second part of the ooDialog version was
+  to be the ooDialog level. This is similiar to the language level of the Rexx intepreter. The initial ooDialog levels
+  are listed in this table:
+</para>
+<table id="oodialogLevels" frame="all" pgwide='1'>
+<title>ooDialog Levels</title>
+<tgroup cols="3">
+<colspec align='left' colwidth='1*'>
+<colspec align='left' colwidth='1*'>
+<colspec align='left' colwidth='6*'>
+<thead>
+<row>
+<entry>Level</entry>
+<entry>Required Interpreter</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>3.2.0</entry>
+<entry>4.0.0</entry>
+<entry>ooDialog implementation uses Rexx classic external routines.</entry>
+</row>
+<row>
+<entry>4.1.0</entry>
+<entry>4.0.0</entry>
+<entry>ooDialog as shipped with ooRexx 4.0.0 with all bug fixes through ooRexx 4.1.0.</entry>
+</row>
+<row>
+<entry>4.2.0</entry>
+<entry>4.1.0</entry>
+<entry>Refactored ooDialog completely implemented with the C++ native API.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Level 3.2.0</emphasis></term>
+  <listitem>
+  <para>
+    The ooDialog code at level 3.2.0 is frozen. Since the implementing code uses the classic external routines and the
+    code itself is unchanged from the ooDialog shipped with ooRexx 3.2.0, ooDialog programs should behave
+    exactly as they did under the ooDialog shipped with ooRexx 3.2.0. No fixes, enhancements, or changes will be made to
+    the code.
+  </para>
+  <para>
+    It is available as a separate download from SourceForge using the <emphasis role="italic">Switch ooDialog</emphasis>
+    technology for users who would like to replace their installed ooDialog with a 3.2.0 level ooDialog. It requires
+    that the installed ooRexx is 4.0.0 or later. Although the code is frozen, if a user can demonstrate an ooDialog
+    program behaves differently using a 3.2.0 level ooDialog that it did under an actual ooRexx 3.2.0 installation, a
+    fix will be considered.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Level 4.1.0</emphasis></term>
+  <listitem>
+  <para>
+    ooDialog at level 4.1.0 is the ooDialog shipped with ooRexx 4.1.0. This ooDialog contains all the bug fixes and
+    enhancements that were included in that distribution. It is also provided as a separate download on SourceForge and
+    also requires the installed ooRexx be 4.0.0 or later. This code is frozen, no chages will be made to the code. Bugs
+    found in this code will be fixed in upcoming releases of ooDialog.
+  </para>
+  <para>
+    It allows users that have not upgraded their ooRexx from 4.0.0 or 4.0.1 to pick up the bug fixes in ooDialog
+    included in the ooRexx 4.1.0 distribution. However, its primary purpose is for users who may be unhappy with the
+    future direction of ooDialog. It will provide a way for users to upgrade to future versions of ooRexx and yet
+    retain an unchanged ooDialog.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Level 4.2.0</emphasis></term>
+  <listitem>
+  <para>
+    This is the actively maintained ooDialog level. The level will be incremented in the future as circumstances
+    dictate. It requires an installed ooRexx of 4.1.0 or later. New versions of ooDialog at the 4.2.0 level will be
+    released as they become ready. It is availabe as a separate download from SourceForge and will also be the
+    ooDialog level shipped with future versions of ooRexx, (versions past ooRexx 4.1.0.)
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
 </section>
 
 <section id="sctCurrentRelease"><title>Current Release</title>
 <para>
-  The version of ooDialog packaged with the ooRexx 4.1.0 release has a lot of new and different things in it. All
-  ooDialog users should take a close look at these changes.
+  The current release of ooDialog is the 4.2.0 level ooDialog. It is the first major enhancement of ooDialog in over a
+  decade. This ooDialog has a lot of new and different things in it. In addition to the new dialog classes, new dialog
+  control classes, new methods on existing classes, it includes design changes intended to simplify areas of ooDialog
+  that seem to have been confusing in the past. Enhancements have been made that fix areas of ooDialog that have always
+  been broken. All ooDialog users should take a close look at these changes.
 </para>
 
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Documentation Revision</emphasis></term>
-  <listitem>
-  <para>
-    xxx and xxx sss.
-  </para>
-  </listitem></varlistentry>
   <varlistentry id="termMethodNameUnification"><term><emphasis role="bold">Unification of Method Names</emphasis></term>
   <listitem>
   <para>
@@ -787,176 +916,104 @@ xPixels = xDialogUnits * self~FactorX
     xxx and xxx sss.
   </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Simplification of Inherited Classes</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">True Call Backs from the Windows Message Loop</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Correct Conversion of Dialog Units to Pixels</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Dialog Classes</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Dialog Control Classes</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Methods on Existing Classes</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">New Classes</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Use of Objects as Arguments and Return Values</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Raising of Syntax Conditions</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Completely New Example Programs</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Updating of Existing Example Programs</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Revision of the Documentation</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Deprecated Classes and Mehtods</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Backwards Compatibility</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
 <section id="sctOODialogFuture"><title>Future</title>
 <indexterm><primary>future directions</primary></indexterm>
 <para>
-  ooDialog is now open source, being developed by committers who volunter their time.  It is no longer
-  developed by IBM. ooRexx 4.0.0 has introduced a greatly improved native API for extenal packages.
-  ooDialog is being converted to use the new API.
+  xxx and xxx sss.
 </para>
 <para>
-  What are the implications of these facts?
+  xxx and xxx sss.
 </para>
-<itemizedlist>
-<listitem>
-  <para>
-    Bug fixes and the addition of new features can only be done at the pace of the committers free
-    time.
-  </para>
-</listitem>
-<listitem>
-  <para>
-    Users of ooDialog can directly influence the future direction of ooDialog through participation in
-    the project. Primarily by filing bug reports, opening requests for features, and discussing on the
-    <link linkend="helpUsersList">users</link> or <link linkend="helpDevelList">developers</link> list
-    what they would like to see, or not see.
-  </para>
-</listitem>
-<listitem>
-  <para>
-    The new API will make it easier to add new features that are more robust. This should allow
-    ooDialog to add the newer GUI elements of Windows XP and Vista in a reasonable time frame.
-  </para>
-</listitem>
-<listitem>
-  <para>
-    The new API makes some change in behavior of ooDialog methods unavoidable.
-  </para>
-</listitem>
-</itemizedlist>
 <para>
-  The purpose of this section is to briefly expand upon the implications above and outline the direction
-  ooDialog is currently taking. The point of this is to make users aware of what to look for in version
-  4.0.0 and to allow them to influence the direction taken, if they choose to.
+  xxx and xxx sss.
 </para>
-<variablelist>
-<varlistentry><term>New Native API</term>
-<listitem>
-  <para>
-    ooRexx 4.0.0 introduced a new native API for use in extending the ooRexx interpreter. This API is
-    object-orientated and gives external packages more access to features of the interpreter. One
-    important aspect of the new API is that not everything passed back and forth between the interpreter
-    and the external plackage (the ooDialog framework in this case) needs to be a string. This allows the
-    external packages to make better use of object-orientated design.
-  </para>
-  <para>
-    All new function added to ooDialog will use the new API. Existing function will be converted to take
-    full advantage of the new API. This conversion has started, but will take place over time. It is
-    expected that some of the original design that is not optimal due to the restrictions of the older
-    API will be phased out. Alongside of that, some design that, in hindsight, seems incorrect will also
-    be phased out.
-  </para>
-</listitem></varlistentry>
-<varlistentry><term>New Classes</term>
-<listitem>
-  <para>
-    In the past, the ooDialog framework made heavy use of two basic objects, a dialog and a dialog
-    control. Every method and every functionality was added to a dialog and to a dialog control. This had
-    the tendency to produce large monolithic class structures and in many ways negates some of the value
-    of using classes.
-  </para>
-  <para>
-    In ooDialog 4.0.0 the process of introducing new, smaller, classes to handle related function began.
-    In addition, some effort started to factor out of the dialog or dialog control object function or
-    behavior that is not really part of a dialog or control object. One example of this is the matter of
-    bitmaps, icons, etc.. Bitmaps and icons are images. The data and methods to work with bitmaps or
-    other images are better suited to an image object than a dialog object.
-  </para>
-  <para>
-    The future evolution of ooDialog will be to add new smaller objects that better model the function
-    the programmer needs to produce sophisticated Windows dialogs. These classes may be introduced
-    slowly, with just the basic function introduced in one release and the functionality expanded in
-    later releases. For instance, in ooDialog 4.0.0 the <link linkend="clsRect">Rect</link> and <link
-    linkend="clsPoint">Point</link> classes were introduced without a lot of functionality. One common
-    behavior of rectangles and points is to ask the rectangle if it contains this point. The two classes
-    formed the basis to add that behavior in a later release.
-  </para>
-</listitem></varlistentry>
-<varlistentry><term>Objects as Arguments and Return Values</term>
-<listitem>
-  <para>
-    The 4.0.0 native API makes passing objects as arguments to external packages much easier. And, the
-    flip side of this is returning objects from external packages. The older API forced everything to be
-    a string. ooDialog will migrate towards using more objects as arguments to, and return values from,
-    methods implemented externally. Ultimately, this will make things easier on the programmer, allow
-    better access to the underlying capabilities of the operating system, and produce more readable code.
-  </para>
-  <para>
-    For example, take the task of repositioning a dialog control on a dialog. The operating system
-    provides a means to get the current rectangle of any window on the screen, it provides a means to map
-    that rectangle on the screen to the client area of any other window, and it provides a means to move
-    any window from one position to another. Using the <link linkend="clsRect">Rect</link> class
-    mentioned above and some pseudo code, a future version of ooDialog might handle this task like
-    this:
-<programlisting>
-<![CDATA[
-  rectangle = dlgControl~getWindowRect
-  rectangle~mapToClient(dlg)
-
-  -- Shift the control left 10 pixels and up 5 pixels
-  rectangle~offset(10, -5)
-  dlg~moveControl(dlgControl, rectangle)
-]]>
-</programlisting>
-  </para>
-  <para>
-    Another example using the <link linkend="clsSize">Size</link> class:
-<programlisting>
-<![CDATA[
-  size = button~getIdealSize
-  button~setSize(size)
-
-  -- The above could also be written:
-  button~setSize(button~getIdealSize)
-
-]]>
-</programlisting>
-  </para>
-</listitem></varlistentry>
-<varlistentry><term>Syntax errors</term>
-<listitem>
-  <para>
-    In the past, ooDialog never raised any error conditions. This, in the author's opionion, lead to a
-    lot of user confusion. Things simply did not work and the user had no idea why. Quite often it was
-    merely a matter of using the wrong arguments. Going forward, ooDialog will begin making better use of
-    the Rexx facility of raising error conditions when things are not right.
-  </para>
-  <para>
-    Part of this will be the direct result of converting to the 4.0.0 API and will be unavoidable. In
-    many situations the API automatically raises syntax errors when arguments are not correct. As an
-    example, take the <computeroutput>createFont</computeroutput>() method. One argument to the
-    createFont method is the size of the font. In the Windows operating system font sizes are whole
-    numbers. If a programmer passes in, say 10.89, for a font size, when createFont is converted to use
-    the 4.0.0 API this will raise a syntax error.
-  </para>
-  <para>
-    All new methods added to the ooDialog framework will raise syntax errors for incorrect aruguments and
-    / or unrecoverable errors. Methods converted to use the 4.0.0 API will always raise syntax errors in
-    situations similar to the above. This change will help ooDialog programmers write more robust,
-    correct programs.
-  </para>
-</listitem></varlistentry>
-<varlistentry><term>Deprecated methods</term>
-<listitem>
-  <para>
-    Starting in ooDialog 4.0.0, methods began being marked as <emphasis
-    role="italic">deprecated</emphasis> in the documentation. The documentation for deprecated methods
-    points the programmer to the replacement for the deprecated methods. There are a number of reasons
-    for marking methods as deprecated, among which are incorrect implementation, duplication, sub-optimal
-    implementation, a desire to move to the cleaner 4.0.0 API, and a strong desire by the maintainers of
-    ooDialog to remove the excess baggage of the past.
-  </para>
-  <para>
-    The ooDialog programmer is <emphasis role="bold"><emphasis
-    role="italic">strongly</emphasis></emphasis> encouraged to take note of the deprecated methods. To
-    definitely not use depracted method in new code, and to migrate deprecated methods in existing code
-    to their replacements.
-  </para>
-</listitem></varlistentry>
-</variablelist>
 </section>
 
 
