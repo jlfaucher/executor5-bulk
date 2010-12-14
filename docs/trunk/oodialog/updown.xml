@@ -51,7 +51,7 @@
   To the user, the up-down control with its buddy window often look like a single control. The programmer can specify
   that an up-down control automatically position itself next to its buddy window and that it automatically set the
   caption of the buddy window to its current position. For example, an up-down control with an edit control can be used
-  to prompt the user for numeric input. Sometimes up-down control with its buddy window being an edit control is
+  to prompt the user for numeric input. Sometimes and up-down control with its buddy window being an edit control is
   referred to as a spinner control.
 </para>
 <para>
@@ -59,7 +59,7 @@
 </para>
 <para>
   The <computeroutput>UpDown</computeroutput> class provides methods to work with and manipulate the underlying Windows
-  UpDown dialog control which it represents. It is a concrete subclass of the dialog control <link
+  Up-down dialog control which it represents. It is a concrete subclass of the dialog control <link
   linkend="chpDialogControlObject">object</link> and therefore has all methods of the of the dialog control object.
 </para>
 <para>
@@ -70,23 +70,23 @@
   <listitem>
   <para>
     Use the <link linkend="tmthNewUpDown">newUpDown</link>() method of the <link
-    linkend="chpDialogObject">dialog</link> object to retrieve a new up-down object.
+    linkend="chpDialogObject">dialog</link> object to retrieve a new UpDown object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
-    <para>
-      To dynamically define an up-down control in a <link linkend="clsUserDialog">UserDialog</link> class, use the <link
-      linkend="mthCreateUpDown">createUpDown</link> method.
-    </para>
+  <para>
+    To dynamically define an up-down control in a <link linkend="clsUserDialog">UserDialog</link> class, use the <link
+    linkend="mthCreateUpDown">createUpDown</link> method.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
-    <para>
-      To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying up-down control to a
-      method in the Rexx dialog object use the <link linkend="mthConnectUpDownEvent">connectUpDownEvent</link>()
-      method.
-    </para>
+  <para>
+    To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying up-down control to a
+    method in the Rexx dialog object use the <link linkend="mthConnectUpDownEvent">connectUpDownEvent</link>()
+    method.
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </para>
@@ -181,7 +181,7 @@
 
 <section id="tmthNewUpDown"><title>newUpDown (dialog object method)</title>
 <para>
-  UpDown objects can not be instantiated by the programmer from Rexx code. Rather an up-down object is obtained by using
+  UpDown objects can not be instantiated by the programmer from Rexx code. Rather an UpDown object is obtained by using
   the <link linkend="mthNewUpDown">newUpDown</link>() method of the dialog <link
   linkend="chpDialogObject">object</link>. The syntax is:
 <programlisting>
@@ -197,7 +197,7 @@
 
 <section id="tmthCreateUpDown"><title>createUpDown (UserDialog method)</title>
 <para>
-  An up-down object can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link> dialog
+  An UpDown object can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link> dialog
   through the <link linkend="mthCreateUpDown">createUpDown</link>() method. The basic syntax is:
 <programlisting> <![CDATA[
 >>--createUpDown(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)---><
@@ -239,15 +239,6 @@
   xx
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -272,7 +263,17 @@
   <listitem>
   <para>
     Additional comments.
-  </para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -302,15 +303,6 @@
   xx
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -335,7 +327,17 @@
   <listitem>
   <para>
     Additional comments.
-  </para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -364,15 +366,6 @@
   xx
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -397,7 +390,17 @@
   <listitem>
   <para>
     Additional comments.
-  </para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -426,15 +429,6 @@
   xx
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -459,7 +453,17 @@
   <listitem>
   <para>
     Additional comments.
-  </para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -488,15 +492,6 @@
   xx
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -521,7 +516,17 @@
   <listitem>
   <para>
     Additional comments.
-  </para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -550,15 +555,6 @@
   xx
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -583,7 +579,17 @@
   <listitem>
   <para>
     Additional comments.
-  </para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -612,15 +618,6 @@
   xx
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -645,7 +642,17 @@
   <listitem>
   <para>
     Additional comments.
-  </para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -674,15 +681,6 @@
   xx
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -707,6 +705,15 @@
   <listitem>
   <para>
     Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -737,15 +744,6 @@
   xx
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -770,7 +768,17 @@
   <listitem>
   <para>
     Additional comments.
-  </para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -799,15 +807,6 @@
   xx
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -832,7 +831,17 @@
   <listitem>
   <para>
     Additional comments.
-  </para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -861,15 +870,6 @@
   xx
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -894,7 +894,17 @@
   <listitem>
   <para>
     Additional comments.
-  </para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
