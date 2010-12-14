@@ -24,13 +24,15 @@ by the operating system dependant ooRexx local variable .endofline.
 <secondary>Methods</secondary></indexterm>
 <title>Methods The csvStream Class defines</title>
 <simplelist type="vert" columns="1">
-   <member>CLOSE</member>
+   <member>CLOSE (overrides stream class method)</member>
    <member>CSVLINEIN</member>
    <member>CSVLINEOUT</member>
    <member>GETHEADERS</member>
-   <member>INIT (overrides stream class method)</member>
-   <member>OPEN</member>
    <member>SETHEADERS</member>
+   <member>INIT (overrides stream class method)</member>
+   <member>OPEN (overrides stream class method)</member>
+   <member>STATE (overrides stream class method)</member>
+   <member>DESCRIPTION (overrides stream class method)</member>
 </simplelist>
 </section>
 
@@ -122,10 +124,6 @@ successful, or an appropriate error message. If you have tried to close an unope
 CLOSE method returns a null string (""). If you specified headersExist when you created this instance 
 then the headers will be updated to the stream at this point if they have been changed.
 </para>
-<note><para>
-Whereas the stream class can be closed implicitly (for example by using Lineout with no 
-parameters) the csvStream class must be closed explicitly. 
-</para></note>
 </section>
 
 <section>
@@ -150,7 +148,18 @@ Two other attributes exist after performing a CSVLineIn
 </para>
 <para>
 <emphasis>Values</emphasis> is a Table Object mapping field data onto field-names. This is only available if headersExist is 
-specified as .true on the init method.
+specified on the init method.
+</para>
+<para>
+<emphasis>Badly formed CSV data.</emphasis>
+Where the data read in by CSVLineIn is not well formed CSV data the results are unpredictable.    
+The class can detect some errors in the incoming data, and where such an error is detected the 
+STATE method will return ERROR and the DESCRIPTION method will give extra error information.
+Where the provenance of the data is outside your control it would be well to check the STATE after every 
+CSVLineIn.  Subsequent calls to CSVLineIn may be able to recover and return subsequent rows from the file 
+but this should not be expected to be the norm.  Subsequent calls to CSVLineIn after an error will not
+return the STATE to READY.  It will remain at ERROR until the Stream class resets it (ie: when you close
+the CSVStream)
 </para>
 </section>
 
@@ -166,7 +175,7 @@ specified as .true on the init method.
 <para>
 Writes a row of CSV data to a stream. Note that a row of data may be stored in more than one logical 
 line of the stream. If the stream was instantiated with headersExist as .true then the collection-object 
-may be a table or stem object mapping headers onto CSV fields. Otherwise the collection-object must 
+may be a directory, table or stem object mapping headers onto CSV fields. Otherwise the collection-object must 
 be an array or a collection with a makeArray method and the nth element of the collection will be 
 placed in the nth field of the CSV file. Any occurrences of the Nil Object are stored as null strings in 
 the file.
