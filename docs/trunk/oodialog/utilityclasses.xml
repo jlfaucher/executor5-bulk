@@ -245,48 +245,67 @@ System error code: 2
 <indexterm><primary>version</primary></indexterm>
 <programlisting>
 <![CDATA[
-                      +-Full----+
->>-.DlgUtil~version(--+---------+-)------------------------><
-                      +-Short---+
+
+>>-.DlgUtil~version(--+---------+-)--------------><
+                      +-format--+
 ]]>
 </programlisting>
 
-<para>Returns the ooDialog version string.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>There are no arguments for this method.
-<variablelist>
-<varlistentry><term>format</term>
-<listitem>
 <para>
-  A keyword indicating the format of the returned version string.  Only the first letter is
-  needed and case is not significant.  Any unrecognized keyword is ignored and the default
-  format is used.  The format for each keyword is as follows:
+  Returns the ooDialog version string.
 </para>
 <variablelist>
-<varlistentry><term>Full</term>
-<listitem>
-<para>
-  A string specifying the version of ooDialog.  This is the default. The string has the format:
-  <computeroutput>ooDialog Version x.x.x.SS (an ooRexx Windows Extension) </computeroutput> where
-  x.x.x is the ooRexx interpreter version and SS is the Subversion revision number of the build.
-  The actual version string might look like: <computeroutput>ooDialog Version 4.0.0.3734 (an ooRexx
-  Windows Extension)</computeroutput>
-</para></listitem></varlistentry>
-<varlistentry><term>Short</term>
-<listitem><para>Only the x.x.x.SS part of the full version string is returned.
-</para></listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem>
-<para>
-  A string in one of the formats specified above.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single arguemnt is:
+    <variablelist>
+    <varlistentry><term>format</term>
+    <listitem>
+    <para>
+      A keyword indicating the format of the returned version string.  Only the first letter is needed and case is not
+      significant.  Any unrecognized keyword is ignored and the default format is used.  The format for each keyword is
+      as follows:
+    </para>
+    <variablelist>
+      <varlistentry><term>Full</term>
+      <listitem>
+      <para>
+        A string specifying the version of the ooRexx interpreter that ooDialog was built with.  This is the default.
+        The string has the format: <computeroutput>ooDialog Version x.x.x.SS (an ooRexx Windows Extension)
+        </computeroutput> where x.x.x is the ooRexx interpreter version and SS is the Subversion revision number of the
+        build. The actual version string might look like: <computeroutput>ooDialog Version 4.0.0.3734 (an ooRexx Windows
+        Extension)</computeroutput>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>Short</term>
+      <listitem>
+      <para>
+        Only the x.x.x.SS part of the full version string is returned. Using the above example, the string would look
+        like <computeroutput>4.0.0.3734</computeroutput> .
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>Level</term>
+      <listitem>
+      <para>
+        The ooDialog <link linkend="tblOODialogLevels">level</link>. Continuing with the same example the level would be
+        <computeroutput>4.1.0</computeroutput>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A string in one of the formats specified above.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
 <programlisting>
 <![CDATA[
 v = .DlgUtil~version
@@ -297,10 +316,11 @@ if .DlgUtil~version("SHORT") < 4.1.0.0000 then do
   say 'Too bad, you are still running ooRexx 4.0.0'
 end
 else do
-  say 'Great you have upgraded past ooRexx 4.1.0'
+  if .DlgUtil~version("LEVEL") < 4.2.0 then
+    say 'You should really get a 4.2.0 ooDialog, it is much improved.'
 end
 
-::requires 'oodPlain.cls'
+::requires 'ooDialog.cls'
 
 /* On the screen you might see:
 
@@ -311,7 +331,8 @@ Too bad, you are still running ooRexx 4.0.0
 */
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -3348,7 +3369,7 @@ s=.dlgArea~new(u~x       ,u~y("90%"),u~w("70%"),u~hr      )
 b=.dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      )
 
 /* entry line coterminous with area e margins                                */
-self~addEntryLine(12,"text",e~x,e~y,e~w,e~h,"multiline")
+self~createEdit(12, e~x, e~y, e~w, e~h, "multiline", "text")
 
 /* Status Area Coterminous with area s margins                               */
 self~createStaticText(11, s~x, s~y, s~w, s~h, , "Status info appears here")
@@ -3701,7 +3722,7 @@ e=.dlgArea~new(u~x       ,u~y       ,u~w("70%"),u~h("90%"))   /* edit   area */
 s=.dlgArea~new(u~x       ,u~y("90%"),u~w("70%"),u~hr      )   /* status area */
 b=.dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      )   /* button area */
 
-self~addEntryLine(12,"text",e~x,e~y,e~w,e~h,"multiline")
+self~createEdit(12, e~x, e~y, e~w, e~h, "multiline", "text")
 self~createStaticText(11, s~x, s~y, s~w, s~h, , "Status info appears here")
 
 self~addButton(13,b~x,b~y("00%"),b~w,b~h("9%"),"Button" 0,"Button"||0)

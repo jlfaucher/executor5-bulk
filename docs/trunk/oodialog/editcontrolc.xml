@@ -41,95 +41,145 @@
     #
     #########################################################################
 -->
+
 <chapter id="clsEdit"><title>Edit Controls</title>
-<indexterm><primary>EditControl class</primary></indexterm>
-<para>The EditControl class provides methods to query and modify edit controls,
-which are also called entry lines in the ooDialog documentation. It inherits all
-methods of the DialogControl class (see page <link
-linkend="chpDialogControlObject">DialogControl Class</link>).
+<indexterm><primary>Edit class</primary></indexterm>
+<para>
+  An edit control is a rectangular window that allows the user to enter and edit text using the keyboard. Edit controls
+  have two line styles, single-line and multiline.
 </para>
-<para>Use the newEdit method (see page <link
-linkend="mthNewEdit">newEdit</link>) to retrieve an object of the
-EditControl class.
+<para>
+  When the edit control has the focus it displays a blinking line called the caret that marks the insertion point in the
+  control. The insertion point can be changed using the keyboard or the mouse. Text can be selected, also using the
+  keyboard or mouse.
 </para>
+<para>
+  The <computeroutput>Edit</computeroutput> class provides methods to work with and manipulate the underlying
+  Windows edit dialog control which it represents. It is a concrete subclass of the dialog control <link
+  linkend="chpDialogControlObject">object</link> and therefore has all methods of the of the dialog control object.
+</para>
+<para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with edit controls:
 <variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para>The EditControl class requires the class definition
-file <computeroutput>oodwin32.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "oodwin32.cls"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>Methods:</term>
-<listitem><para>Instances of the EditControl class implement the methods listed
-in the following EditControl Instance Methods table.
-<table id="t000022" frame="all">
-<title>EditControl Instance Methods</title>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+  <para>
+    Use the <link linkend="tmthNewEdit">newEdit</link>() method of the <link
+    linkend="chpDialogObject">dialog</link> object to retrieve a new Edit object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+  <para>
+    To dynamically define an edit in a <link linkend="clsUserDialog">UserDialog</link> class, use the <link
+    linkend="mthCreateEdit">createEdit</link> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+  <para>
+    To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying edit control to
+    a method in the Rexx dialog object use the <link linkend="mthConnectEditEvent">connectEditEvent</link>()
+    method.
+  </para> </listitem></varlistentry>
+</variablelist> </para>
+
+<section id="sctMethodsEdit"><title>Method Table</title>
+<para>
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with Edit objects, including the pertinent methods from other classes:
+</para>
+<table id="tblEditMethods" frame="all">
+<title>Important Edit Methods</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...on page</entry>
+<entry>Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>AddStyle</entry>
-<entry><link linkend="mthAddStyle">AddStyle</link></entry>
+<entry align="center"><emphasis role="bold">Useful External Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>EnsureCaretVisibility</entry>
-<entry><link linkend="ensurecaretvisibility">EnsureCaretVisibility</link></entry>
+<entry><link linkend="tmthNewEdit">newEdit</link></entry>
+<entry>Returns an <computeroutput>Edit</computeroutput> object for the control with the specified ID.</entry>
 </row>
 <row>
-<entry>FirstVisibleLine</entry>
-<entry><link linkend="firstvisibleline">FirstVisibleLine</link></entry>
+<entry><link linkend="tmthCreateEdit">createEdit</link></entry>
+<entry>Creates an edit control in the dialog template of a <link linkend="clsUserDialog">UserDialog</link></entry>
 </row>
 <row>
-<entry>GetLine</entry>
-<entry><link linkend="getline">GetLine</link></entry>
+<entry><link linkend="tmthConnectEditEvent">connectEditEvent</link></entry>
+<entry>Connects edit event notifications to a method in the Rexx dialog object</entry>
 </row>
 <row>
-<entry>GetStyle</entry>
-<entry><link linkend="mthGetStyle">GetStyle</link></entry>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>HideBalloon</entry>
-<entry><link linkend="mthHideBalloon">HideBalloon</link></entry>
+<entry><link linkend="atrPasswordchar">passwordChar</link></entry>
+<entry>Set or get the password character for password edit control.</entry>
 </row>
 <row>
-<entry>IsModified</entry>
-<entry><link linkend="ismodified">IsModified</link></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>LineFromIndex</entry>
-<entry><link linkend="linefromindex">LineFromIndex</link></entry>
+<entry>addStyle</entry>
+<entry><link linkend="mthAddStyle">addStyle</link></entry>
 </row>
 <row>
-<entry>LineIndex</entry>
-<entry><link linkend="lineindex">LineIndex</link></entry>
+<entry>ensureCaretVisibility</entry>
+<entry><link linkend="mthEnsureCaretVisibility">ensureCaretVisibility</link></entry>
 </row>
 <row>
-<entry>LineLength</entry>
-<entry><link linkend="linelength">LineLength</link></entry>
+<entry>firstVisibleLine</entry>
+<entry><link linkend="mthFirstVisibleLine">firstVisibleLine</link></entry>
 </row>
 <row>
-<entry>LineScroll</entry>
-<entry><link linkend="linescroll">LineScroll</link></entry>
+<entry>getLine</entry>
+<entry><link linkend="mthGetLine">getLine</link></entry>
 </row>
 <row>
-<entry>Lines</entry>
-<entry><link linkend="lines">Lines</link></entry>
+<entry>getStyle</entry>
+<entry><link linkend="mthGetStyle">getStyle</link></entry>
 </row>
 <row>
-<entry>Margins</entry>
-<entry><link linkend="margins">Margins</link></entry>
+<entry>hideBalloon</entry>
+<entry><link linkend="mthHideBalloon">hideBalloon</link></entry>
 </row>
 <row>
-<entry>PasswordChar</entry>
-<entry><link linkend="passwordchar">PasswordChar</link></entry>
+<entry>isModified</entry>
+<entry><link linkend="mthIsModified">isModified</link></entry>
+</row>
+<row>
+<entry>lineFromIndex</entry>
+<entry><link linkend="mthLineFromIndex">lineFromIndex</link></entry>
+</row>
+<row>
+<entry>lineIndex</entry>
+<entry><link linkend="mthLineIndex">lineIndex</link></entry>
+</row>
+<row>
+<entry>lineLength</entry>
+<entry><link linkend="mthLineLength">lineLength</link></entry>
+</row>
+<row>
+<entry>lineScroll</entry>
+<entry><link linkend="mthLineScroll">lineScroll</link></entry>
+</row>
+<row>
+<entry>lines</entry>
+<entry><link linkend="mthLines">lines</link></entry>
+</row>
+<row>
+<entry>margins</entry>
+<entry><link linkend="mthMargins">margins</link></entry>
 </row>
 <row>
 <entry>PasswordChar=</entry>
@@ -191,7 +241,56 @@ in the following EditControl Instance Methods table.
 <entry>tabStops=</entry>
 <entry><link linkend="mthTabStopsEquals">tabStops=</link></entry>
 </row>
-</tbody></tgroup> </table> </para></listitem></varlistentry> </variablelist>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="tmthNewEdit"><title>newEdit (dialog object method)</title>
+<para>
+  Edit objects can not be instantiated by the programmer from Rexx code. Rather an Edit object is obtained
+  by using the <link linkend="mthNewEdit">newEdit</link>() method of the dialog <link
+  linkend="chpDialogObject">object</link>. The syntax is:
+<programlisting>
+<![CDATA[
+>>-newEdit(--id--)---------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End newEdit() [PlainBaseDialog method] -->
+
+
+<section id="tmthCreateEdit"><title>createEdit (UserDialog method)</title>
+<para>
+  An edit control can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link>
+  dialog through the <link linkend="mthCreateEdit">createEdit</link>() method. The basic syntax is:
+<programlisting> <![CDATA[
+>>--createEdit(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)---><
+                                           +-,-style-+  +-,-attributeName-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createEdit() [UserDialog method] -->
+
+
+<section id="tmthConnectEditEvent"><title>connectEditEvent (dialog object method)</title>
+<para>
+  To connect event notifications from an edit control use the <link
+  linkend="mthConnectEditEvent">connectEditEvent</link>() method of the <link
+  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
+
+<programlisting> <![CDATA[
+>>-connectEditEvent(--id--,--event--+----------------+--)------------><
+                                      +--,-methodName--+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End connectEditEvent() [EventNotification method] -->
+
+
 
 <section id="selected"><title>Selected</title>
 <indexterm><primary>Selected</primary>
@@ -232,12 +331,56 @@ edit~Select(1,0)
 </variablelist>
 </section>
 
+<section id="atrPasswordChar"><title>passwordChar (Attribute)</title>
+<indexterm><primary>passwordChar</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>passwordChar</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--passwordChar-----------------------------------------------------><
+
+>>--passwordChar-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">passwordChar</emphasis> attribute reflects the password character for a password edit
+  control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">passwordChar get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the current password character for the edit control, if it is set, otherwise the empty string.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">passwordChar set:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the password character for the edit control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The password character only has meaning if the edit control has the PASSWORD style, otherwise it is ignored.
+    Multiline edit controls don't support the PASSWORD style or getting and setting the password character.
+  </para>
+  <para>
+    When the operating system creates the underlying edit control, if it has the PASSWORD style, it sets the password
+    character to the default. This is an astrisk for earlier versions of <link linkend="ovvComctl32">Comctl32</link>, a
+    solid circle for Comctl32 version 6.0 and later.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::passwordChar() [attribute]  -->
+
 <section id="select"><title>Select</title>
 <indexterm><primary>Select</primary>
 <secondary>EditControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~Select(--start--,--end--)---------------------><
+>>-anEditControl~select(--start--,--end--)---------------------><
 
 
 ]]>
@@ -328,17 +471,17 @@ edit~ScrollCommand("DOWN",3)
 </variablelist>
 </section>
 
-<section id="linescroll"><title>LineScroll</title>
-<indexterm><primary>LineScroll</primary></indexterm>
+<section id="mthLineScroll"><title>lineScroll</title>
+<indexterm><primary>lineScroll</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~LineScroll(--sChars--,--sLines--)-------------><
+>>-anEditControl~lineScroll(--sChars--,--sLines--)-------------><
 
 
 ]]>
 </programlisting>
 
-<para>The LineScroll method scrolls the text in a multiline
+<para>The lineScroll method scrolls the text in a multiline
 edit control vertically or horizontally by the specified number of characters
 and lines.</para>
 <variablelist>
@@ -371,22 +514,22 @@ edit~scroll(50, 35)
 <note><title>Note</title><para>
 The edit control does not scroll vertically past the last
 line of text. If the current line, plus the number of lines specified by <emphasis role="italic">sLines</emphasis>, exceeds the total number of lines in the edit control, the last
-line of the edit control is scrolled to the top. The LineScroll message can,
+line of the edit control is scrolled to the top. The lineScroll message can,
 however, be used to scroll horizontally past the last character of a line.
 </para></note>
 </section>
 
-<section id="ensurecaretvisibility"><title>EnsureCaretVisibility</title>
-<indexterm><primary>EnsureCaretVisibility</primary></indexterm>
+<section id="mthEnsureCaretVisibility"><title>ensureCaretVisibility</title>
+<indexterm><primary>ensureCaretVisibility</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~EnsureCaretVisibility-------------------------><
+>>-anEditControl~ensureCaretVisibility-------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The EnsureCaretVisibility method scrolls the edit
+<para>The ensureCaretVisibility method scrolls the edit
 control until the caret (cursor) is visible.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -395,17 +538,17 @@ control until the caret (cursor) is visible.</para>
 </variablelist>
 </section>
 
-<section id="firstvisibleline"><title>FirstVisibleLine</title>
-<indexterm><primary>FirstVisibleLine</primary></indexterm>
+<section id="mthFirstVisibleLine"><title>firstVisibleLine</title>
+<indexterm><primary>firstVisibleLine</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~FirstVisibleLine------------------------------><
+>>-anEditControl~firstVisibleLine------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The FirstVisibleLine method retrieves the one-based
+<para>The firstVisibleLine method retrieves the one-based
 line number of the first line visible in a multiline edit control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -417,17 +560,17 @@ line number of the first line visible in a multiline edit control.</para>
 </variablelist>
 </section>
 
-<section id="ismodified"><title>IsModified</title>
-<indexterm><primary>IsModified</primary></indexterm>
+<section id="mthIsModified"><title>isModified</title>
+<indexterm><primary>isModified</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~IsModified------------------------------------><
+>>--isModified-----------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The IsModified method retrieves information on
+<para>The isModified method retrieves information on
 whether the edit control has been modified.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -446,7 +589,7 @@ whether the edit control has been modified.</para>
   <para>
 <programlisting>
 <![CDATA[
-if edit~IsModified = 1 then MyDialog~Save
+if edit~isModified = 1 then MyDialog~Save
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -498,39 +641,39 @@ contents in a file and clears the modified flag.
 </variablelist>
 </section>
 
-<section id="lines"><title>Lines</title>
-<indexterm><primary>Lines</primary></indexterm>
+<section id="mthLines"><title>lines</title>
+<indexterm><primary>lines</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~Lines-----------------------------------------><
+>>-anEditControl~lines-----------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Lines method retrieves the number of text lines
+<para>The lines method retrieves the number of text lines
 of a multiline edit control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The number of text lines.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>For an example, refer to <link linkend="lineindex">LineIndex</link>.
+<listitem><para>For an example, refer to <link linkend="mthLineIndex">lineIndex</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="lineindex"><title>LineIndex</title>
-<indexterm><primary>LineIndex</primary></indexterm>
+<section id="mthLineIndex"><title>lineIndex</title>
+<indexterm><primary>lineIndex</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~LineIndex(--line--)---------------------------><
+>>-anEditControl~lineIndex(--line--)---------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The LineIndex method retrieves the one-based character
+<para>The lineIndex method retrieves the one-based character
 index of the beginning of the <emphasis role="italic">line</emphasis> in the associated edit control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -562,8 +705,8 @@ text = "It is easy to learn and easy to use." || '0d0a'x || -
 edit~setText(text)
 
 say "Number of lines:" edit~lines
-say "Line 2 begins at index" edit~LineIndex(2)
-say "Length of 3rd line:" edit~LineLength(3)
+say "Line 2 begins at index" edit~lineIndex(2)
+say "Length of 3rd line:" edit~lineLength(3)
 
 Result: Number of lines: 3
         Line 2 begins at index 39
@@ -574,17 +717,17 @@ Result: Number of lines: 3
 </variablelist>
 </section>
 
-<section id="linefromindex"><title>LineFromIndex</title>
-<indexterm><primary>LineFromIndex</primary></indexterm>
+<section id="mthLineFromIndex"><title>lineFromIndex</title>
+<indexterm><primary>lineFromIndex</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~LineFromIndex(--index--)----------------------><
+>>-anEditControl~lineFromIndex(--index--)----------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The LineFromIndex method retrieves the one-based
+<para>The lineFromIndex method retrieves the one-based
 line number that contains the character index <emphasis role="italic">index</emphasis>.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -611,7 +754,7 @@ if edit == .Nil then return
 
 "It is easy to learn and easy to use." || 13~d2c || 10~d2c ||,
 "Have fun with it!"
-say "Character 55 is contained in line" edit~LineFromIndex(55)
+say "Character 55 is contained in line" edit~lineFromIndex(55)
 
 Result: Character 55 is contained in line 2
 ]]>
@@ -620,17 +763,17 @@ Result: Character 55 is contained in line 2
 </variablelist>
 </section>
 
-<section id="linelength"><title>LineLength</title>
-<indexterm><primary>LineLength</primary></indexterm>
+<section id="mthLineLength"><title>lineLength</title>
+<indexterm><primary>lineLength</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~LineLength(--line--)--------------------------><
+>>-anEditControl~lineLength(--line--)--------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The LineLength method retrieves the number of characters
+<para>The lineLength method retrieves the number of characters
 contained in the <emphasis role="italic">line</emphasis> in the associated edit control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -646,23 +789,23 @@ Line numbers are incremented by 1, starting with 1.
 <listitem><para>The length of the given line.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>For an example, refer to <link linkend="lineindex">LineIndex</link>.
+<listitem><para>For an example, refer to <link linkend="mthLineIndex">lineIndex</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="getline"><title>GetLine</title>
-<indexterm><primary>GetLine</primary></indexterm>
+<section id="mthGetLine"><title>getLine</title>
+<indexterm><primary>getLine</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~GetLine--(--line--+--------------+--)---------><
+>>-anEditControl~getLine--(--line--+--------------+--)---------><
                                    +-,--maxLength-+
 
 
 ]]>
 </programlisting>
 
-<para>The GetLine method retrieves the text string contained
+<para>The getLine method retrieves the text string contained
 in the specified line.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -690,8 +833,8 @@ TODO FIX THIS TRUNCATION THING.
 <![CDATA[
 edit = MyDialog~newEdit("EDITOR")
 if edit == .Nil then return
-do i = 1 to edit~Lines
-   lines.i = edit~GetLine(i, 1024)
+do i = 1 to edit~lines
+   lines.i = edit~getLine(i, 1024)
 end
 ]]>
 </programlisting>
@@ -767,69 +910,6 @@ characters that the associated edit control can contain.</para>
 </variablelist>
 </section>
 
-<section id="passwordcharset"><title>PasswordChar=</title>
-<indexterm><primary>PasswordChar=</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anEditControl~PasswordChar=--char---------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The PasswordChar= method sets the character that
-is displayed in an edit control for which the PASSWORD or ES_PASSWORD flag
-is set.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>char</term>
-<listitem><para>The character that is displayed for the typed characters.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example ensures that if the PASSWORD style was chosen
-for the edit control, the dollar sign ($) is displayed
-for each character typed in the edit control:
-<programlisting>
-<![CDATA[
-edit = MyDialog~newEdit("TEXT")
-if edit == .Nil then return
-edit~PasswordChar = "$"
-say "The new password character is" edit~PasswordChar
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="passwordchar"><title>PasswordChar</title>
-<indexterm><primary>PasswordChar</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anEditControl~PasswordChar----------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The PasswordChar method retrieves the character
-that is displayed in an edit control for which the PASSWORD option or ES_PASSWORD
-style was set.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The character that is displayed instead of the characters contained
-in the edit control. If the edit control is no password field or no password
-character was set, an empty string is returned.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>For an example, refer to <link linkend="passwordcharset">PasswordChar=</link>.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="setreadonly"><title>SetReadOnly</title>
 <indexterm><primary>SetReadOnly</primary></indexterm>
 <programlisting>
@@ -895,7 +975,7 @@ the left indent is 10 screen pixels and on the right there is a spacing of
 edit = MyDialog~newEdit("TEXT")
 if edit == .Nil then return
 edit~SetMargins(10, 5)
-     parse value edit~Margins with left right
+     parse value edit~margins with left right
      say "The new left margin is" left" and the new right margin is" right
 ]]>
 </programlisting>
@@ -903,17 +983,17 @@ edit~SetMargins(10, 5)
 </variablelist>
 </section>
 
-<section id="margins"><title>Margins</title>
-<indexterm><primary>Margins</primary></indexterm>
+<section id="mthMargins"><title>margins</title>
+<indexterm><primary>margins</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~Margins---------------------------------------><
+>>-anEditControl~margins---------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Margins method retrieves the left and right
+<para>The margins method retrieves the left and right
 margins of the associated edit control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -1112,7 +1192,7 @@ to the control.
 </para>
 <para>The balloon is displayed for 10 seconds and then goes away.  The
 programmer can also dismiss the balloon sooner using the <link
-linkend="mthHideBalloon">HideBalloon</link> method.  Typically balloon windows
+linkend="mthHideBalloon">hideBalloon</link> method.  Typically balloon windows
 are used to convey information to the user without having to put up a message
 box that the user then needs to dismiss manually.
 </para>
@@ -1207,7 +1287,7 @@ ballon tip is hidden by the program.
   ...
 
   self~createStaticText(200, 10, 125, 150, 10, , "Enter product ID:")
-  self~addEntryLine(IDC_ENTRYLINE, "cEntry", 10, 135, 150, 10, "AUTOSCROLLH")
+  self~createEdit(IDC_ENTRYLINE, 10, 135, 150, 10, "AUTOSCROLLH", "cEntry")
 
   ...
 
@@ -1259,11 +1339,11 @@ ballon tip is hidden by the program.
 
 </section>
 
-<section id="mthHideBalloon"><title>HideBalloon</title>
+<section id="mthHideBalloon"><title>hideBalloon</title>
 <indexterm><primary>ShowBalloon</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~HideBalloon-----------------------------------><
+>>-anEditControl~hideBalloon-----------------------------------><
 
 ]]>
 </programlisting>
@@ -1319,14 +1399,14 @@ ShowBalloon</link> example.
 
 </section>
 
-<section id="mthAddStyle"><title>AddStyle</title>
-<indexterm><primary>AddStyle</primary>
+<section id="mthAddStyle"><title>addStyle</title>
+<indexterm><primary>addStyle</primary>
 <secondary>EditControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                               +----------------+
                               V                |
->>-anEditControl~AddStyle(--"---+-UPPER------+-+--"--)---------><
+>>-anEditControl~addStyle(--"---+-UPPER------+-+--"--)---------><
                                 +-LOWER------+
                                 +-NUMBER-----+
                                 +-WANTRETURN-+
@@ -1454,7 +1534,7 @@ control has been created.
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The style argument can be one or more of the style keywords.
 (Each keyword is separated by a blank.)  See the <link linkend="argsAddStyle">
-argument list</link> for the <computeroutput>AddStyle</computeroutput> method
+argument list</link> for the <computeroutput>addStyle</computeroutput> method
 for detals on the keywords.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -1526,7 +1606,7 @@ directly after the edit control has been created.
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The two arguments can be one or more of the style keywords.
 (Each keyword is separated by a blank.)  See the <link linkend="argsAddStyle">
-argument list</link> for the <computeroutput>AddStyle</computeroutput> method
+argument list</link> for the <computeroutput>addStyle</computeroutput> method
 for detals on the keywords.
 <variablelist>
 <varlistentry><term>remove</term>
@@ -1579,66 +1659,71 @@ editControl~replaceStyle("NUMBER TAB", "UPPER GROUP")
 
 </section>
 
-<section id="mthGetStyle"><title>GetStyle</title>
-<indexterm><primary>GetStyle</primary>
-<secondary>EditControl class</secondary></indexterm>
+<section id="mthGetStyle"><title>getStyle</title>
+<indexterm><primary>getStyle</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>getStyle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~GetStyle----------------------------------------------------><
+>>--getStyle-------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>Returns the edit control's current style as a blank delimited list of
-style keywords.
+<para>
+  Returns the edit control's current style as a blank delimited list of style keywords.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The method takes no arguments.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>A string consisting of blank delimited style keywords.  The
-possible keywords are: VISIBLE HIDDEN TAB NOTAB DISABLED ENABLED GROUP HSCROLL
-VSCROLL PASSWORD MULTILINE AUTOSCROLLH AUTOSCROLLV READONLY WANTRETURN
-KEEPSELECTION UPPER LOWER NUMBER OEM RIGHT CENTER LEFT.  The meaning of these
-style keywords is documented in the <link linkend="mthAddEntryLine">
-addEntryLine </link> method.
-</para>
-<para>In addition, if there is an internal error, it is possible that a negative
-error code might be returned.  These error codes are documented here, but it is
-unlikely that the ooDialog programmer would ever see them.
-<variablelist>
-<varlistentry><term>-3 or less</term>
-<listitem><para>The value is the negated Operating System Error code.
-The absolute value of the return can be used to look up the error reason in the
-Windows documentation.
-</para></listitem></varlistentry>
-<varlistentry><term>-2</term>
-<listitem><para>There is an (internal) problem with the dialog or the dialog
-handle.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>There is an (internal) problem with the resource ID or window
-handle of the edit control.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example could be from a fictitious application
-that changes the style of an edit control back and forth between accepting
-numbers only and accepting all characters based on the options the user has
-selected.
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A string consisting of blank delimited style keywords.  The possible keywords are: VISIBLE HIDDEN TAB NOTAB DISABLED
+    ENABLED GROUP HSCROLL VSCROLL PASSWORD MULTILINE AUTOSCROLLH AUTOSCROLLV READONLY WANTRETURN KEEPSELECTION UPPER
+    LOWER NUMBER OEM RIGHT CENTER LEFT.  The meaning of these style keywords is documented in the <link
+    linkend="mthCreateEdit">createEdit</link> method.
+  </para>
+  <para>
+    It is possible, but very unlikely, that a negative number is returned. See the remarks section below
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If an operating system error occurs, this method returns the negated value of the system error code. However, this
+    method also sets <computeroutput>.SystemErrorCode</computeroutput> in that case. The negative number return is a
+    hold over from earlier versions of ooDialog before <computeroutput>.SystemErrorCode</computeroutput> was introduced.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
 <programlisting>
 <![CDATA[
-editControl = dlg~newEdit(IDC_ENTRYLINE)
-if .nil == editControl then return
-style = editControl~getStyle
-if style~wordPos("NUMBER") <> 0 then
-  editControl~removeStyle("NUMBER")
-...
+
+  editControl = dlg~newEdit(IDC_EDIT)
+  if editControl == .nil  then return
+
+  style = editControl~getStyle
+  if style~wordPos("NUMBER") <> 0 then
+    editControl~removeStyle("NUMBER")
+  ...
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Edit::getStyle() -->
+
 </chapter>

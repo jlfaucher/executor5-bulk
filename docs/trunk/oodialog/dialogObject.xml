@@ -8027,7 +8027,7 @@ still minimized, then this method restores it to its normal position.
 ::method defineDialog
 
   self~createStaticText(IDC_ST_TYPE, 10, 25, 150, 10, "", " Enter the name of a file to view:")
-  self~addEntryLine(IDC_ENTRYLINE, , 10, 35, 150, 10, "AUTOSCROLLH")
+  self~createEdit(IDC_ENTRYLINE, 10, 35, 150, 10, "AUTOSCROLLH")
 
   -- When the view button is pushed, another dialog will show the file.
   self~createPushButton(IDC_PB_VIEW, 10, 55, 35, 15, "DEFAULT GROUP", "View File", onView)
@@ -8070,7 +8070,7 @@ still minimized, then this method restores it to its normal position.
 
   wasMinimized = .false
   style = "VSCROLL HSCROLL MULTILINE READONLY"
-  self~addEntryLine(IDC_MULTILINE, "cEntry", 0, 0, 170, 180, style)
+  self~createEdit(IDC_MULTILINE, 0, 0, 170, 180, style, "cEntry")
   self~connectResize("onSize")
 
 ::method initDialog
