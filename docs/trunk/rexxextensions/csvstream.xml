@@ -388,6 +388,8 @@ do while csv~chars > 0                  /* New record           */
    end                                  /* field 2: go          */
 end                                     /*======================*/
 csv~close
+
+::requires 'csvstream.cls'
 </programlisting>
 <para>
 Files with headers:
@@ -413,7 +415,37 @@ Do while csv~chars > 0                  /* new record           */
    End                                  /* action: go           */
 End                                     /*======================*/
 csv~close
+
+::requires 'csvstream.cls'
 </programlisting>
+<para>
+Example with error checking 
+</para>
+<programlisting>
+csv = .csvStream~new('c:\BadData.csv')
+
+csv~open('read')
+if csv~state = 'READY'
+then do              
+   do while csv~chars > 0             
+      dataArr = csv~CSVLineIn
+      if csv~state = 'ERROR'
+      then do
+         say 'BAD DATA IN CSV FILE -' csv~description
+         leave
+      end
+      say 'New record'                
+      do I = 1 to dataArr~last        
+      say 'field' I':' dataArr[I]     
+      end                             
+   end
+   csv~close
+end
+else say 'COULD NOT OPEN CSV FILE -' csv~description                                
+
+::requires 'csvstream.cls'
+</programlisting>
+<para>
 </section>
 </chapter>
 
