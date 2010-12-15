@@ -182,36 +182,32 @@
 <entry><link linkend="mthMargins">margins</link></entry>
 </row>
 <row>
-<entry>PasswordChar=</entry>
-<entry><link linkend="passwordcharset">PasswordChar=</link></entry>
+<entry>removeStyle</entry>
+<entry><link linkend="mthRemoveStyle">removeStyle</link></entry>
 </row>
 <row>
-<entry>RemoveStyle</entry>
-<entry><link linkend="mthRemoveStyle">RemoveStyle</link></entry>
+<entry>replaceStyle</entry>
+<entry><link linkend="mthReplaceStyle">replaceStyle</link></entry>
 </row>
 <row>
-<entry>ReplaceStyle</entry>
-<entry><link linkend="mthReplaceStyle">ReplaceStyle</link></entry>
+<entry>replaceSelText</entry>
+<entry><link linkend="mthReplaceSelText">replaceSelText</link></entry>
 </row>
 <row>
-<entry>ReplaceSelText</entry>
-<entry><link linkend="replaceseltext">ReplaceSelText</link></entry>
+<entry>scrollCommand</entry>
+<entry><link linkend="mthScrollCommand">scrollCommand</link></entry>
 </row>
 <row>
-<entry>ScrollCommand</entry>
-<entry><link linkend="scrollcommand">ScrollCommand</link></entry>
+<entry>select</entry>
+<entry><link linkend="mthSelectClsEdit">select</link></entry>
 </row>
 <row>
-<entry>Select</entry>
-<entry><link linkend="select">Select</link></entry>
+<entry>selected</entry>
+<entry><link linkend="mthSelectedClsEdit">selected</link></entry>
 </row>
 <row>
-<entry>Selected</entry>
-<entry><link linkend="selected">Selected</link></entry>
-</row>
-<row>
-<entry>SetCue</entry>
-<entry><link linkend="mthSetCue">SetCue</link></entry>
+<entry>setCue</entry>
+<entry><link linkend="mthSetCue">setCue</link></entry>
 </row>
 <row>
 <entry>SetLimit</entry>
@@ -292,8 +288,8 @@
 
 
 
-<section id="selected"><title>Selected</title>
-<indexterm><primary>Selected</primary>
+<section id="mthSelectedClsEdit"><title>selected</title>
+<indexterm><primary>selected</primary>
 <secondary>EditControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -303,7 +299,7 @@
 ]]>
 </programlisting>
 
-<para>The Selected method retrieves the indexes of the
+<para>The selected method retrieves the indexes of the
 starting and ending character of the text selected. If the starting index
 equals the ending index, no text is selected and the index specifies the current
 cursor position. If the ending index is 0 and the starting index is 1, the
@@ -321,10 +317,10 @@ the edit control.
 <![CDATA[
 edit = MyDialog~newEdit("NAME")
 if edit == .Nil then return
-parse value edit~Selected with start end
+parse value edit~selected with start end
 say "Starting index of selection is" start
 say "Ending index of selection is" end
-edit~Select(1,0)
+edit~select(1,0)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -375,8 +371,8 @@ edit~Select(1,0)
 </variablelist>
 </section>  <!-- End Edit::passwordChar() [attribute]  -->
 
-<section id="select"><title>Select</title>
-<indexterm><primary>Select</primary>
+<section id="mthSelectClsEdit"><title>select</title>
+<indexterm><primary>select</primary>
 <secondary>EditControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -386,7 +382,7 @@ edit~Select(1,0)
 ]]>
 </programlisting>
 
-<para>The Select method selects the text or sets the
+<para>The select method selects the text or sets the
 cursor position for the associated edit control. If the starting index equals
 the ending index, no text is selected and the cursor is set to the character
 at the specified index. If the ending index is 0 and the starting index is
@@ -405,17 +401,17 @@ set.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="selected">Selected</link>.
+<listitem><para>See <link linkend="mthSelectedClsEdit">selected</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="scrollcommand"><title>ScrollCommand</title>
-<indexterm><primary>ScrollCommand</primary></indexterm>
+<section id="mthScrollCommand"><title>scrollCommand</title>
+<indexterm><primary>scrollCommand</primary></indexterm>
 <programlisting>
 <![CDATA[
                                     +-UP--------+
->>-anEditControl~ScrollCommand(--"--+-----------+--"--+----------------+--)-><
+>>-anEditControl~scrollCommand(--"--+-----------+--"--+----------------+--)-><
                                     +-LEFT------+     +-,--repetitions-+
                                     +-DOWN------+
                                     +-RIGHT-----+
@@ -428,7 +424,7 @@ set.
 ]]>
 </programlisting>
 
-<para>The ScrollCommand method scrolls the associated
+<para>The scrollCommand method scrolls the associated
 edit control in a given direction.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -464,7 +460,7 @@ is omitted, the scroll command is issued once.
 <![CDATA[
 edit = MyDialog~newEdit("NAME")
 if edit == .Nil then return
-edit~ScrollCommand("DOWN",3)
+edit~scrollCommand("DOWN",3)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -847,17 +843,17 @@ text string.
 </para></note>
 </section>
 
-<section id="replaceseltext"><title>ReplaceSelText</title>
-<indexterm><primary>ReplaceSelText</primary></indexterm>
+<section id="mthReplaceSelText"><title>replaceSelText</title>
+<indexterm><primary>replaceSelText</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~ReplaceSelText(--text--)----------------------><
+>>-anEditControl~replaceSelText(--text--)----------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The ReplaceSelText method replaces the selected
+<para>The replaceSelText method replaces the selected
 text in the associated edit control with a new one.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -875,8 +871,8 @@ text in the associated edit control with a new one.</para>
 edit = self~newEdit("TEXT")
 if edit == .nil then return
 edit~setText("Object Rexx is a hybrid language.")
-edit~Select(17,25)
-    edit~ReplaceSelText("n interpreted")
+edit~select(17,25)
+    edit~replaceSelText("n interpreted")
     say edit~getText
 
 Result: Object Rexx is an interpreted language.
@@ -1005,11 +1001,11 @@ margins of the associated edit control.</para>
 </variablelist>
 </section>
 
-<section id="mthSetCue"><title>SetCue</title>
-<indexterm><primary>ShowBalloon</primary></indexterm>
+<section id="mthSetCue"><title>setCue</title>
+<indexterm><primary>setCue</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~SetCue(--text--)------------------------------><
+>>--setCue(--text--)-----------------------------><
 
 ]]>
 </programlisting>
@@ -1507,14 +1503,14 @@ editControl~addStyle("NUMBER TAB GROUP")
 
 </section>
 
-<section id="mthRemoveStyle"><title>RemoveStyle</title>
-<indexterm><primary>RemoveStyle</primary>
+<section id="mthRemoveStyle"><title>removeStyle</title>
+<indexterm><primary>removeStyle</primary>
 <secondary>EditControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                  +----------------+
                                  V                |
->>-anEditControl~RemoveStyle(--"---+-UPPER------+-+--"--)------><
+>>-anEditControl~removeStyle(--"---+-UPPER------+-+--"--)------><
                                    +-LOWER------+
                                    +-NUMBER-----+
                                    +-WANTRETURN-+
@@ -1579,14 +1575,14 @@ editControl~removeStyle("LOWER GROUP")
 
 </section>
 
-<section id="mthReplaceStyle"><title>ReplaceStyle</title>
-<indexterm><primary>ReplaceStyle</primary>
+<section id="mthReplaceStyle"><title>replaceStyle</title>
+<indexterm><primary>replaceStyle</primary>
 <secondary>EditControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                 +---------------+     +---------------+
                                 V               |     V               |
->>-anEditControl~ReplaceStyle(-"--+-UPPER-----+-+-",-"--+-UPPER-----+-+-"-)--><
+>>-anEditControl~replaceStyle(-"--+-UPPER-----+-+-",-"--+-UPPER-----+-+-"-)--><
                                   +-LOWER-----+         +-LOWER-----+
                                   +-NUMBER----+         +-NUMBER----+
                                   +-WANTRETURN+         +-WANTRETURN+

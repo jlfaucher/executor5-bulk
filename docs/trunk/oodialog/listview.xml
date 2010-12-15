@@ -344,8 +344,8 @@ the methods listed in the
 <entry><link linkend="mthRemoveExtendedStyle">RemoveExtendedStyle</link></entry>
 </row>
 <row>
-<entry>RemoveStyle</entry>
-<entry><link linkend="removestyle">RemoveStyle</link></entry>
+<entry>removeStyle</entry>
+<entry><link linkend="removestyle">removeStyle</link></entry>
 </row>
 <row>
 <entry>RemoveSmallImages <emphasis role="bold">Deprecated</emphasis></entry>
@@ -356,8 +356,8 @@ the methods listed in the
 <entry><link linkend="mthReplaceExtendedStyle">ReplaceExtendedStyle</link></entry>
 </row>
 <row>
-<entry>ReplaceStyle</entry>
-<entry><link linkend="replacestyle">ReplaceStyle</link></entry>
+<entry>replaceStyle</entry>
+<entry><link linkend="replacestyle">replaceStyle</link></entry>
 </row>
 <row>
 <entry>RestoreEditClass</entry>
@@ -368,12 +368,12 @@ the methods listed in the
 <entry><link linkend="scrolllc">scroll</link></entry>
 </row>
 <row>
-<entry>Select</entry>
-<entry><link linkend="selectlc">Select</link></entry>
+<entry>select</entry>
+<entry><link linkend="selectlc">select</link></entry>
 </row>
 <row>
-<entry>Selected</entry>
-<entry><link linkend="selectedlc">Selected</link></entry>
+<entry>selected</entry>
+<entry><link linkend="selectedlc">selected</link></entry>
 </row>
 <row>
 <entry>SelectedItems</entry>
@@ -498,14 +498,14 @@ contain subitems as specified by the application.
 <section id="listcontrolmeth"><title>Methods of the ListControl Class</title>
 <para>The following sections describe the individual methods.</para>
 
-<section id="replacestyle"><title>ReplaceStyle</title>
-<indexterm><primary>ReplaceStyle</primary>
+<section id="replacestyle"><title>replaceStyle</title>
+<indexterm><primary>replaceStyle</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                                +-------------------+
                                                V                   |
->>-aListControl~ReplaceStyle(--oldStyle--,--"----+-ICON----------+-+--"--)-><
+>>-aListControl~replaceStyle(--oldStyle--,--"----+-ICON----------+-+--"--)-><
                                                  +-SMALLICON-----+
                                                  +-LIST----------+
                                                  +-REPORT--------+
@@ -533,7 +533,7 @@ contain subitems as specified by the application.
 ]]>
 </programlisting>
 
-<para>The ReplaceStyle method removes a window style
+<para>The replaceStyle method removes a window style
 of a list view control and sets new styles.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -668,14 +668,14 @@ styles, refer to <link linkend="mthAddListControl">AddListControl</link>.
 </variablelist>
 </section>
 
-<section id="removestyle"><title>RemoveStyle</title>
-<indexterm><primary>RemoveStyle</primary>
+<section id="removestyle"><title>removeStyle</title>
+<indexterm><primary>removeStyle</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                  +-------------------+
                                  V                   |
->>-aListControl~RemoveStyle(--"----+-ICON----------+-+--"--)---><
+>>-aListControl~removeStyle(--"----+-ICON----------+-+--"--)---><
                                    +-SMALLICON-----+
                                    +-LIST----------+
                                    +-REPORT--------+
@@ -703,7 +703,7 @@ styles, refer to <link linkend="mthAddListControl">AddListControl</link>.
 ]]>
 </programlisting>
 
-<para>The RemoveStyle method removes one or more window
+<para>The removeStyle method removes one or more window
 styles of a list view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2949,7 +2949,7 @@ control.</para>
 <![CDATA[
 ::method DeleteSelectedItem
   curList = self~newListView(102)
-  curList~Delete(curList~Selected)
+  curList~Delete(curList~selected)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -3252,18 +3252,18 @@ and on the system colors used for a selection.
 </variablelist>
 </section>
 
-<section id="selectlc"><title>Select</title>
-<indexterm><primary>Select</primary>
+<section id="selectlc"><title>select</title>
+<indexterm><primary>select</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~Select(--item--)-------------------------------><
+>>-aListControl~select(--item--)-------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Select method selects an item.</para>
+<para>The select method selects an item.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -3327,8 +3327,8 @@ and on the system colors used for a selection.
 </variablelist>
 </section>
 
-<section id="selectedlc"><title>Selected</title>
-<indexterm><primary>Selected</primary>
+<section id="selectedlc"><title>selected</title>
+<indexterm><primary>selected</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3338,7 +3338,7 @@ and on the system colors used for a selection.
 ]]>
 </programlisting>
 
-<para>The Selected method returns the number of the selected
+<para>The selected method returns the number of the selected
 item.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>

@@ -199,12 +199,12 @@ the methods listed in the
 <entry><link linkend="root">Root</link></entry>
 </row>
 <row>
-<entry>Select</entry>
-<entry><link linkend="selecttrc">Select</link></entry>
+<entry>select</entry>
+<entry><link linkend="selecttrc">select</link></entry>
 </row>
 <row>
-<entry>Selected</entry>
-<entry><link linkend="selectedtrc">Selected</link></entry>
+<entry>selected</entry>
+<entry><link linkend="selectedtrc">selected</link></entry>
 </row>
 <row>
 <entry>SetImages <emphasis role="bold">(deprecated)</emphasis></entry>
@@ -712,7 +712,7 @@ to parent items.
 <![CDATA[
 ::method Info
   curTree = self~newTreeView("IDC_TREE")
-  itemInfo. = curTree~ItemInfo(curTree~Selected)
+  itemInfo. = curTree~ItemInfo(curTree~selected)
   say itemInfo.!TEXT
   say itemInfo.!CHILDREN
   say itemInfo.!IMAGE
@@ -849,7 +849,7 @@ specified or is 0, or 0 in all other cases.
 <![CDATA[
 ::method Parent
   curTree = self~newTreeView("IDC_TREE")
-  itemInfo. = curTree~ItemInfo(curTree~Parent(curTree~Selected))
+  itemInfo. = curTree~ItemInfo(curTree~Parent(curTree~selected))
   say ItemInfo.!Text
 ]]>
 </programlisting>
@@ -889,7 +889,7 @@ retrieved.
 <![CDATA[
 ::method Child
   curTree = self~newTreeView("IDC_TREE")
-  itemInfo. = curTree~ItemInfo(curTree~Child(curTree~Selected))
+  itemInfo. = curTree~ItemInfo(curTree~Child(curTree~selected))
   say ItemInfo.!Text
 ]]>
 </programlisting>
@@ -897,8 +897,8 @@ retrieved.
 </variablelist>
 </section>
 
-<section id="selectedtrc"><title>Selected</title>
-<indexterm><primary>Selected</primary>
+<section id="selectedtrc"><title>selected</title>
+<indexterm><primary>selected</primary>
 <secondary>TreeControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -908,7 +908,7 @@ retrieved.
 ]]>
 </programlisting>
 
-<para>The Selected method retrieves the currently selected
+<para>The selected method retrieves the currently selected
 item.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -920,7 +920,7 @@ item.</para>
 <![CDATA[
 ::method SelectedName
   curTree = self~newTreeView("IDC_TREE")
-  itemInfo. = curTree~ItemInfo(curTree~Selected)
+  itemInfo. = curTree~ItemInfo(curTree~selected)
   say ItemInfo.!Text
 ]]>
 </programlisting>
@@ -1012,7 +1012,7 @@ siblings:
 <![CDATA[
 ::method SiblingNames
   curTree = self~newTreeView("IDC_TREE")
-  nextItem = curTree~Selected
+  nextItem = curTree~selected
   do while nextItem \= 0
     itemInfo. = curTree~ItemInfo(nextItem)
     say ItemInfo.!Text
@@ -1157,7 +1157,7 @@ if any:
 <![CDATA[
 ::method IDC_PB_DELETE
   curTree = self~newTreeView("IDC_TREE")
-  curTree~Delete(curTree~Selected)
+  curTree~Delete(curTree~selected)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -1233,7 +1233,7 @@ items associated with the specified parent item.</para>
 <![CDATA[
 ::method CollapseSelected
   curTree = self~newTreeView("IDC_TREE")
-  curTree~Collapse(curTree~Selected)
+  curTree~Collapse(curTree~selected)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -1284,7 +1284,7 @@ all its child items:
 <![CDATA[
 ::method CollapseSelectedAndReset
   curTree = self~newTreeView("IDC_TREE")
-  curTree~CollapseAndReset(curTree~Selected)
+  curTree~CollapseAndReset(curTree~selected)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -1332,7 +1332,7 @@ associated with the specified parent item.</para>
 <![CDATA[
 ::method ExpandSelected
   curTree = self~newTreeView("IDC_TREE")
-  curTree~Expand(curTree~Selected)
+  curTree~Expand(curTree~selected)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -1382,7 +1382,7 @@ collapsing a selected item:
 <![CDATA[
 ::method ToggleSelected
   curTree = self~newTreeView("IDC_TREE")
-  curTree~Toggle(curTree~Selected)
+  curTree~Toggle(curTree~selected)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -1580,18 +1580,18 @@ to correct the problem occurring when Esc or the Enter key is pressed in an
 active edit item.</para>
 </section>
 
-<section id="selecttrc"><title>Select</title>
-<indexterm><primary>Select</primary>
+<section id="selecttrc"><title>select</title>
+<indexterm><primary>select</primary>
 <secondary>TreeControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~Select(--hItem--)------------------------------><
+>>-aTreeControl~select(--hItem--)------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Select method selects a specific item.</para>
+<para>The select method selects a specific item.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:

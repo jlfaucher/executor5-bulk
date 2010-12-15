@@ -2262,8 +2262,8 @@ it to 0 when a nonnumeric value was entered:
   ec = self~newEdit("AMOUNT")
   if ec~GetText~Space(0) \= "" & ec~GetText~DataType("N") = 0 then do
     ec~SetModified(0)
-    ec~Select
-    ec~ReplaceSelText("0")
+    ec~select
+    ec~replaceSelText("0")
    end
 ]]>
 </programlisting>
@@ -2350,7 +2350,7 @@ incorrect.
 
 ::method SelectionChanged
   li = self~newListBox("MYLIST")
-  say "New selection is:" li~Selected
+  say "New selection is:" li~selected
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -3032,7 +3032,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   ::method ColumnAction
     use arg id, column
     lc = self~newListView("EMPLOYEES")
-    lc~ReplaceStyle("REPORT", "SMALLICON EDIT SINGLESEL ASCENDING")
+    lc~replaceStyle("REPORT", "SMALLICON EDIT SINGLESEL ASCENDING")
     if column > 0 then ...
   ]]>
   </programlisting>
@@ -3509,7 +3509,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 
   ::method NewTreeSelection
     tc = self~newTreeView("FileTree")
-    info. = tc~ItemInfo(tc~Selected)
+    info. = tc~ItemInfo(tc~selected)
     say "New selection is:" info.!text
   ]]>
   </programlisting>
