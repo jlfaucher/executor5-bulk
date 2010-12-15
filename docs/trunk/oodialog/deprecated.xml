@@ -1,0 +1,100 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference XML file.
+    #
+    # Copyright (c) 2010-2010, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #
+    #########################################################################
+-->
+<appendix id="apxDeprecated"><title>Deprecated Classes and Methods</title>
+<indexterm><primary>Deprecated Classes and Methods</primary></indexterm>
+<para>
+  Why depreated
+</para>
+<para>
+  xx
+</para>
+<para>
+  xx
+</para>
+
+
+<section id="deprecatedBaseClasses"><title>Deprecated Base Classes</title>
+<indexterm><primary>Deprecated</primary><secondary>base and mixin classes</secondary></indexterm>
+<para>
+  All <link linkend="ovvDeprecated">deprecated</link> base and mixin classes are listed in this section. In general, the
+  deprecated classes are simply not needed anymore, and the programmer need do nothing to replace them.
+</para>
+
+<section><title>AdvancedControls Mixin Class</title>
+<indexterm><primary>Deprecated</primary><secondary>AdvancedControls Mixin Class</secondary></indexterm>
+<para>
+  This class is <link linkend="ovvDeprecated">deprecated</link>. The ooDialog framework <link
+  linkend="sctHistory">no longer</link> makes a distinction between some types of dialog controls, and how to use the
+  controls. I.e., the programmer no longer needs to inherit a special class to use some of the dialog controls. All the
+  methods of the AdvancedControls have been moved into the appropriate dialog class. Therefore the programmer does not
+  need to do anything to use any dialog control in any dialog. In new code simply omit inheriting AdvancedControls. In
+  old code, <emphasis role="italic">inherit AdvancedContorls</emphasis> can be deleted from any dialog class declaration
+  and the program will behave the same.
+</para>
+</section>
+
+<section><title>MessageExtensions Mixin Class</title>
+<indexterm><primary>Deprecated</primary><secondary>MessageExtensions Mixin Class</secondary></indexterm>
+<para>
+  This class is <link linkend="ovvDeprecated">deprecated</link>. The MessageExtensions class has been renamed to the
+  <link linkend="clsEventNotification">EventNotification</link> class. In addition, the EventNotification class is
+  inherited by the <link linkend="chpDialogObject">dialog object</link> so that the programmer need do nothing special
+  to use event notifications in any dialog. In new code simply omit inheriting MessageExtensions. In old code, <emphasis
+  role="italic">inherit MessageExtensions</emphasis> can be deleted from any dialog class declaration and the program
+  will behave the same.
+</para>
+</section>
+
+<section><title>PlainUserDialog Class</title>
+<indexterm><primary>Deprecated</primary><secondary>PlainUserDialog Class</secondary></indexterm>
+<para>
+  This class is <link linkend="ovvDeprecated">deprecated</link>. The ooDialog framework <link
+  linkend="sctHistory">no longer</link> makes a distinction between a plain user dialog and an <link
+  linkend="clsUserDialog">user dialog</link>. Directly subclass the <emphasis role="italic">Userdialog</emphasis>
+  instead of the <emphasis role="italic">PlainUserDialog</emphasis>.
+</para>
+</section>
+
+</section>
+
+
+</chapter>
