@@ -67,7 +67,9 @@
 #define WM_USER_CONTEXT_MENU        WM_USER + 0x0609
 
 #define OODDLL "oodialog.dll"
-#define DLLVER 2130
+#define OOD_LVL_MAJOR               4
+#define OOD_LVL_MINOR               2
+#define OOD_LVL_BIT                 0
 
 #define MSG_TERMINATE "1DLGDELETED1"
 
