@@ -2261,7 +2261,7 @@ it to 0 when a nonnumeric value was entered:
 ::method OnChange
   ec = self~newEdit("AMOUNT")
   if ec~GetText~Space(0) \= "" & ec~GetText~DataType("N") = 0 then do
-    ec~SetModified(0)
+    ec~setModified(.false)
     ec~select
     ec~replaceSelText("0")
    end
