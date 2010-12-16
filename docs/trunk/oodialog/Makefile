@@ -88,7 +88,8 @@ xml_FILES = baseClasses.xml \
 	     ../shared/gethelp.xml \
 	     ../shared/CPLv1.0.xml
 # The following files are not used, but the names are saved for reference. They
-# are retained in the svn repository in r6478, or earlier.
+# are retained in the svn repository in r6479, or earlier. They were removed
+# with commit 6480.
 #	     categorydialog.xml \
 #	     propertysheetc.xml \
 #
