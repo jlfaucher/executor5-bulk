@@ -87,8 +87,8 @@ xml_FILES = baseClasses.xml \
 	     ../shared/legalstuff.xml \
 	     ../shared/gethelp.xml \
 	     ../shared/CPLv1.0.xml
-# The following files are not used, but are saved for reference. I.e., they are
-# still retained in the source tree.
+# The following files are not used, but the names are saved for reference. They
+# are retained in the svn repository in r6478, or earlier.
 #	     categorydialog.xml \
 #	     propertysheetc.xml \
 #
