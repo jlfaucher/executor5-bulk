@@ -49,10 +49,10 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
 
 xml_FILES = baseClasses.xml \
 	     buttoncontrols.xml \
-	     categorydialog.xml \
 	     comboboxc.xml \
 	     dataAttributes.xml \
 	     datetimepicker.xml \
+	     deprecated.xml \
 	     dialogControlObject.xml \
 	     dialogObject.xml \
 	     editcontrolc.xml \
@@ -65,7 +65,7 @@ xml_FILES = baseClasses.xml \
 	     overview.xml \
 	     preface.xml \
 	     progressbarc.xml \
-	     propertysheetc.xml \
+       propertySheetDialogs.xml \
 	     resdialog.xml \
 	     resources.xml \
 	     scrollbarc.xml \
@@ -87,7 +87,14 @@ xml_FILES = baseClasses.xml \
 	     ../shared/legalstuff.xml \
 	     ../shared/gethelp.xml \
 	     ../shared/CPLv1.0.xml
-# the following files are not used & are here only for historical reasons
+# The following files are not used, but are saved for reference. I.e., they are
+# still retained in the source tree.
+#	     categorydialog.xml \
+#	     propertysheetc.xml \
+#
+# The following files are not used & are here only for historical reasons. They
+# are no longer in the current svn source tree.  They should still exist in the
+# old CVS repository, but that has not been verified.
 #	     conceptoverv.sgml \
 #	     graphui.sgml \
 #	     tokenizescripts.sgml \

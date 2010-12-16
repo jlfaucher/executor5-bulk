@@ -557,52 +557,6 @@
 </programlisting>
 </section>
 
-
-
-</section>
-
-<section id="deprecatedBaseClasses"><title>Deprecated Base Classes</title>
-<indexterm><primary>Deprecated</primary><secondary>base and mixin classes</secondary></indexterm>
-<para>
-  All <link linkend="ovvDeprecated">deprecated</link> base and mixin classes are listed in this section. In general, the
-  deprecated classes are simply not needed anymore, and the programmer need do nothing to replace them.
-</para>
-
-<section><title>AdvancedControls Mixin Class</title>
-<indexterm><primary>Deprecated</primary><secondary>AdvancedControls Mixin Class</secondary></indexterm>
-<para>
-  This class is <link linkend="ovvDeprecated">deprecated</link>. The ooDialog framework <link
-  linkend="sctHistory">no longer</link> makes a distinction between some types of dialog controls, and how to use the
-  controls. I.e., the programmer no longer needs to inherit a special class to use some of the dialog controls. All the
-  methods of the AdvancedControls have been moved into the appropriate dialog class. Therefore the programmer does not
-  need to do anything to use any dialog control in any dialog. In new code simply omit inheriting AdvancedControls. In
-  old code, <emphasis role="italic">inherit AdvancedContorls</emphasis> can be deleted from any dialog class declaration
-  and the program will behave the same.
-</para>
-</section>
-
-<section><title>MessageExtensions Mixin Class</title>
-<indexterm><primary>Deprecated</primary><secondary>MessageExtensions Mixin Class</secondary></indexterm>
-<para>
-  This class is <link linkend="ovvDeprecated">deprecated</link>. The MessageExtensions class has been renamed to the
-  <link linkend="clsEventNotification">EventNotification</link> class. In addition, the EventNotification class is
-  inherited by the <link linkend="chpDialogObject">dialog object</link> so that the programmer need do nothing special
-  to use event notifications in any dialog. In new code simply omit inheriting MessageExtensions. In old code, <emphasis
-  role="italic">inherit MessageExtensions</emphasis> can be deleted from any dialog class declaration and the program
-  will behave the same.
-</para>
-</section>
-
-<section><title>PlainUserDialog Class</title>
-<indexterm><primary>Deprecated</primary><secondary>PlainUserDialog Class</secondary></indexterm>
-<para>
-  This class is <link linkend="ovvDeprecated">deprecated</link>. The ooDialog framework <link
-  linkend="sctHistory">no longer</link> makes a distinction between a plain user dialog and an <link
-  linkend="clsUserDialog">user dialog</link>. Directly subclass the <emphasis role="italic">Userdialog</emphasis>
-  instead of the <emphasis role="italic">PlainUserDialog</emphasis>.
-</para>
-</section>
-
 </section>
 
 </chapter>

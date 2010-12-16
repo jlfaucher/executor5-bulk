@@ -2680,15 +2680,14 @@ WindowBase::<link linkend="atrPixelCY">pixelCY</link>
 
 <programlisting>
 <![CDATA[
-controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
+controlObject = dialogObject~new[ControlName](resourceID)
 
 ]]>
 </programlisting>
-  where <emphasis role="italic">[ControlName]</emphasis> is the name Microsoft uses for the control and <emphasis
-  role="italic">categoryPageID</emphasis> is optional. <emphasis role="italic">categoryPageID</emphasis> is the page
-  number the control is on in a <computeroutput>CategoryDialog</computeroutput>, or one of its subclasses. Dialog
-  control objects can only be instantiated after the <link linkend="ovvUnderlying">underlying</link> dialog has been
-  created. For any error, all the methods return the <emphasis role="italic">.nil</emphasis> object.
+  where <emphasis role="italic">[ControlName]</emphasis> is the name Microsoft uses for the control. <emphasis
+  role="italic">resourceID</emphasis> is the resource <link linkend="defResourceId">ID</link> assigned to the dialog
+  control. Dialog control objects can only be instantiated after the <link linkend="ovvUnderlying">underlying</link>
+  dialog has been created. For any error, all the methods return the <emphasis role="italic">.nil</emphasis> object.
 </para>
 
 <section id="mthNewStatic"><title>newStatic</title>
@@ -2696,8 +2695,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newStatic</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newStatic(--id--+------------+--)--------------------------><
-                    +-,--pageID--+
+>>--newStatic(--id--)----------------------------><
 
 ]]>
 </programlisting>
@@ -2711,19 +2709,12 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource ID of the static dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pageID [optional]</term>
-    <listitem>
-    <para>
-      The page number in the <link linkend="clsCategoryDialog">CategoryDialog</link> containing the requested dialog
-      control. If this argument is specified for a non-category dialog, this method will most likely fail.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2774,8 +2765,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newPushButton</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newPushButton(--id--+------------+--)----------------------><
-                        +-,--pageID--+
+>>--newPushButton(--id--)------------------------><
 
 ]]>
 </programlisting>
@@ -2789,20 +2779,13 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource ID of the push button dialog control. May be numeric or <link
       linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pageID [optional]</term>
-    <listitem>
-    <para>
-      The page number in the <link linkend="clsCategoryDialog">CategoryDialog</link> containing the requested dialog
-      control. If this argument is specified for a non-category dialog, this method will most likely fail.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2841,8 +2824,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newRadioButton</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newRadioButton(--id--+------------+--)---------------------><
-                         +-,--pageID--+
+>>--newRadioButton(--id--)-----------------------><
 
 ]]>
 </programlisting>
@@ -2856,19 +2838,12 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource ID of the radio button dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pageID [optional]</term>
-    <listitem>
-    <para>
-      The page number in the <link linkend="clsCategoryDialog">CategoryDialog</link> containing the requested dialog
-      control. If this argument is specified for a non-category dialog, this method will most likely fail.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2907,8 +2882,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newCheckBox</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newCheckBox(--id--+------------+--)------------------------><
-                      +-,--pageID--+
+>>--newCheckBox(--id--)--------------------------><
 
 ]]>
 </programlisting>
@@ -2922,19 +2896,12 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource ID of the check box dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pageID [optional]</term>
-    <listitem>
-    <para>
-      The page number in the <link linkend="clsCategoryDialog">CategoryDialog</link> containing the requested dialog
-      control. If this argument is specified for a non-category dialog, this method will most likely fail.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2976,8 +2943,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newGroupBox</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newGroupBox(--id--+------------+--)------------------------><
-                      +-,--pageID--+
+>>--newGroupBox(--id--)--------------------------><
 
 ]]>
 </programlisting>
@@ -2991,19 +2957,12 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource ID of the group box dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pageID [optional]</term>
-    <listitem>
-    <para>
-      The page number in the <link linkend="clsCategoryDialog">CategoryDialog</link> containing the requested dialog
-      control. If this argument is specified for a non-category dialog, this method will most likely fail.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3055,8 +3014,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newEdit</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newEdit(--id--+------------+--)----------------------------><
-                  +-,--pageID--+
+>>--newEdit(--id--)------------------------------><
 
 ]]>
 </programlisting>
@@ -3070,19 +3028,12 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource ID of the edit dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pageID [optional]</term>
-    <listitem>
-    <para>
-      The page number in the <link linkend="clsCategoryDialog">CategoryDialog</link> containing the requested dialog
-      control. If this argument is specified for a non-category dialog, this method will most likely fail.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3121,8 +3072,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newComboBox</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newComboBox(--id--+------------+--)------------------------><
-                      +-,--pageID--+
+>>--newComboBox(--id--)--------------------------><
 
 ]]>
 </programlisting>
@@ -3136,19 +3086,12 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource ID of the combo box dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pageID [optional]</term>
-    <listitem>
-    <para>
-      The page number in the <link linkend="clsCategoryDialog">CategoryDialog</link> containing the requested dialog
-      control. If this argument is specified for a non-category dialog, this method will most likely fail.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3205,8 +3148,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newListBox</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newListBox(--id--+------------+--)-------------------------><
-                     +-,--pageID--+
+>>--newListBox(--id--)---------------------------><
 
 ]]>
 </programlisting>
@@ -3220,19 +3162,12 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource ID of the list box dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pageID [optional]</term>
-    <listitem>
-    <para>
-      The page number in the <link linkend="clsCategoryDialog">CategoryDialog</link> containing the requested dialog
-      control. If this argument is specified for a non-category dialog, this method will most likely fail.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3279,8 +3214,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newScrollBar</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newScrollBar(--id--+------------+--)-----------------------><
-                       +-,--pageID--+
+>>--newScrollBar(--id--)-------------------------><
 
 ]]>
 </programlisting>
@@ -3294,19 +3228,12 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource ID of the scroll bar dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pageID [optional]</term>
-    <listitem>
-    <para>
-      The page number in the <link linkend="clsCategoryDialog">CategoryDialog</link> containing the requested dialog
-      control. If this argument is specified for a non-category dialog, this method will most likely fail.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3346,8 +3273,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newTrackBar</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newTrackBar(--id--+------------+--)------------------------><
-                      +-,--pageID--+
+>>--newTrackBar(--id--)--------------------------><
 
 ]]>
 </programlisting>
@@ -3362,19 +3288,12 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource ID of the track bar dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pageID [optional]</term>
-    <listitem>
-    <para>
-      The page number in the <link linkend="clsCategoryDialog">CategoryDialog</link> containing the requested dialog
-      control. If this argument is specified for a non-category dialog, this method will most likely fail.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3434,8 +3353,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newProgressBar</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newProgressBar(--id--+------------+--)---------------------><
-                         +-,--pageID--+
+>>--newProgressBar(--id--)-----------------------><
 
 ]]>
 </programlisting>
@@ -3449,19 +3367,12 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource ID of the progress bar dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pageID [optional]</term>
-    <listitem>
-    <para>
-      The page number in the <link linkend="clsCategoryDialog">CategoryDialog</link> containing the requested dialog
-      control. If this argument is specified for a non-category dialog, this method will most likely fail.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3506,8 +3417,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newListView</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newListView(--id--+------------+--)------------------------><
-                      +-,--pageID--+
+>>--newListView(--id--)--------------------------><
 
 ]]>
 </programlisting>
@@ -3521,19 +3431,12 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource ID of the list view dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pageID [optional]</term>
-    <listitem>
-    <para>
-      The page number in the <link linkend="clsCategoryDialog">CategoryDialog</link> containing the requested dialog
-      control. If this argument is specified for a non-category dialog, this method will most likely fail.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3573,8 +3476,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newTreeView</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newTreeView(--id--+------------+--)------------------------><
-                      +-,--pageID--+
+>>--newTreeView(--id--)--------------------------><
 
 ]]>
 </programlisting>
@@ -3588,19 +3490,12 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource ID of the tree view dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pageID [optional]</term>
-    <listitem>
-    <para>
-      The page number in the <link linkend="clsCategoryDialog">CategoryDialog</link> containing the requested dialog
-      control. If this argument is specified for a non-category dialog, this method will most likely fail.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3648,8 +3543,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newTab</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newTab(--id--+------------+--)-----------------------------><
-                 +-,--pageID--+
+>>--newTab(--id--)-------------------------------><
 
 ]]>
 </programlisting>
@@ -3663,19 +3557,12 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource ID of the tab dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pageID [optional]</term>
-    <listitem>
-    <para>
-      The page number in the <link linkend="clsCategoryDialog">CategoryDialog</link> containing the requested dialog
-      control. If this argument is specified for a non-category dialog, this method will most likely fail.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3712,8 +3599,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newMonthCalendar</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newMonthCalendar(--id--+------------+--)-------------------><
-                           +-,--pageID--+
+>>--newMonthCalendar(--id--)---------------------><
 
 ]]>
 </programlisting>
@@ -3727,19 +3613,12 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   <variablelist>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource ID of the month calendar dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pageID [optional]</term>
-    <listitem>
-    <para>
-      The page number in the <link linkend="clsCategoryDialog">CategoryDialog</link> containing the requested dialog
-      control. If this argument is specified for a non-category dialog, this method will most likely fail.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3790,8 +3669,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newDateTimePicker</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newDateTimePicker(--id--+------------+--)------------------><
-                            +-,--pageID--+
+>>--newDateTimePicker(--id--)--------------------><
 
 ]]>
 </programlisting>
@@ -3810,14 +3688,6 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
     <para>
       The <link linkend="defResourceId">resource ID</link> of the date and time picker. This may be <link
       linkend="defSymbolicId">symbolic</link> or numeric.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>category [optional]</term>
-    <listitem>
-    <para>
-      The number of the page containing the control in a <link linkend="clsCategoryDialog">category dialog</link>, if
-      appropriate. Specifying this argument in a dialog that is not a category dialog will likely cause the method to
-      fail.
     </para>
     </listitem></varlistentry>
   </variablelist> </para></listitem></varlistentry>
@@ -3861,8 +3731,7 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
 <indexterm><primary>dialog object</primary><secondary>newUpDown</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--newUpDown(--id--+------------+--)--------------------------><
-                    +-,--pageID--+
+>>--newUpDown(--id--)----------------------------><
 
 ]]>
 </programlisting>
@@ -3882,13 +3751,6 @@ controlObject = dialogObject~new[ControlName](resourceID, categoryPageID)
     <listitem>
     <para>
       The resource ID of the up down dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pageID [optional]</term>
-    <listitem>
-    <para>
-      The page number in the <link linkend="clsCategoryDialog">CategoryDialog</link> containing the requested dialog
-      control. If this argument is specified for a non-category dialog, this method will most likely fail.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -6431,10 +6293,9 @@ used.
   Calculates the size, (width and height,) in <link linkend="defDialogUnit">dialog units</link> for a given string.
 </para>
 <para>
-  <emphasis role="bold">Note:</emphasis> this method replaces the deprecated <link
-  linkend="deprecatedDialogMethods">deprecated</link> <emphasis role="italic">getTextSize</emphasis> method of the
-  dialog object. The convoluted arguments to this method are needed to retain backwards compatibility with that method.
-  The <link linkend="mthGetTextSizeDu">getTextSizeDu</link>() method should be used if at all possible.
+  <emphasis role="bold">Note:</emphasis> The convoluted arguments to this method are needed to retain backwards
+  compatibility with older versions of ooDialog. The recommendation is to not use this method, if at all possible. The
+  <link linkend="mthGetTextSizeDu">getTextSizeDu</link>() method should be used in all cases where it is feasible.
 </para>
 <para>
   In general, dialog units are only of value in laying out the dialog controls before the underlying dialog is
@@ -9300,9 +9161,9 @@ a button. It is used to move bitmaps within buttons. </para>
 <indexterm><primary>dialog object</primary>
 <secondary>menu methods</secondary></indexterm>
 <para>
-  Prior to ooDialog version 4.1.0, menus were really only minimally supported, through a few methods of the dialog
-  class.  In ooDialog 4.1.0 true <link linkend="chpMenus">menu</link> objects were introduced.  Therefore the menu
-  methods of the dialog, other than <link linkend="mthGetMenuBar">getMenuBar</link>() and <link
+  Prior to ooDialog level 4.2.0, menus were really only minimally supported, through a few methods of the dialog class.
+  In ooDialog 4.2.0 true <link linkend="chpMenus">menu</link> objects were introduced.  Therefore the menu methods of
+  the dialog object, other than <link linkend="mthGetMenuBar">getMenuBar</link>() and <link
   linkend="mthHasMenuBar">hasMenuBar</link>(), are deprecated.  Use the methods of the menu classes directly to work
   with menus. The listing of the <link linkend="deprecatedDialogMethods">deprecated dialog methods</link> documents all
   the method to use to replace each deprecated method.
@@ -9749,519 +9610,5 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
 </section>  <!-- End Sending Windows Messages Section -->
 
 
-<section id="deprecatedDialogMethods"><title>Deprecated Methods</title>
-<indexterm><primary>Deprecated</primary><secondary>dialog object methods</secondary></indexterm>
-<para>
-  <link linkend="ovvDeprecated">Deprecated</link> dialog methods and their replacement methods are listed in this
-  section.
-</para>
-
-<section><title>absRect2LogRect</title>
-<indexterm><primary>Deprecated</primary><secondary>absRect2LogRect</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>absRect2LogRect</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link> because it is incorrectly implemented and <link
-  linkend="ovvInaccurate">inaccurate</link>. Replace this method with the <link
-  linkend="mthPixel2dlgUnit">pixel2dlgUnit</link>() method.
-</para>
-</section>
-
-<section><title>assignWindow</title>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>assignWindow</tertiary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>assignWindow</secondary><tertiary>dialog object</tertiary></indexterm>
-<para>
-  This method is deprecated and always returns 0, <emphasis role="italic">the assignment failed</emphasis>. To work with
-  a dialog or dialog control object, construct the proper ooDialog object. This ensures that the object has the correct
-  methods. To control a window not owned by your program use the <emphasis role="italic">find</emphasis>() method of the
-  <emphasis role="italic">WindowsManger</emphasis> class. The <emphasis role="italic">WindowsManager</emphasis>is part
-  of the <emphasis role="italic">WinSystm.cls</emphasis> package. In certain cases it may be desirable to invoke a
-  method common to all windows when only the window <link linkend="defHandle">handle</link> is known.  For these cases
-  use a <link linkend="clsWindow">Window</link> object.
-</para>
-</section>
-
-<section><title>checkMenuItem</title>
-<indexterm><primary>Deprecated</primary><secondary>checkMenuItem</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>checkMenuItem</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
-  object methods directly.
-</para>
-</section>
-
-<section><title>clearMessages</title>
-<indexterm><primary>Deprecated</primary><secondary>clearMessages</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>clearMessages</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. It does nothing.
-</para>
-</section>
-
-
-<section><title>connectEntryLine</title>
-<indexterm><primary>Deprecated</primary><secondary>connectEntryLine</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectEntryLine</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectEdit">connectEdit</link>() method.
-</para>
-</section>
-
-<section><title>connectMultiListBox</title>
-<indexterm><primary>Deprecated</primary><secondary>connectMultiListBox</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectMultiListBox</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectListBox">connectListBox</link>() method.
-</para>
-</section>
-
-<section><title>connectTreeControl</title>
-<indexterm><primary>Deprecated</primary><secondary>connectTreeControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectTreeControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectTreeView">connectTreeView</link>() method.
-</para>
-</section>
-
-<section><title>connectListControl</title>
-<indexterm><primary>Deprecated</primary><secondary>connectListControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectListControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectListView">connectListView</link>() method.
-</para>
-</section>
-
-<section><title>connectSliderControl</title>
-<indexterm><primary>Deprecated</primary><secondary>connectSliderControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectSliderControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectTrackBar">connectTrackBar</link>() method.
-</para>
-</section>
-
-<section><title>connectTabControl</title>
-<indexterm><primary>Deprecated</primary><secondary>connectTabControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectTabControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectTab">connectTab</link>() method.
-</para>
-</section>
-
-<section><title>getEntryLine</title>
-<indexterm><primary>Deprecated</primary><secondary>getEntryLine</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getEntryLine</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthGetEditData">getEditData</link>() method.
-</para>
-</section>
-
-<section><title>getListLine</title>
-<indexterm><primary>Deprecated</primary><secondary>getListLine</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getListLine</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthGetListBoxData">getListBoxData</link>() method.
-</para>
-</section>
-
-<section><title>getComboLine</title>
-<indexterm><primary>Deprecated</primary><secondary>getComboLine</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getComboLine</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthGetComboBoxData">getComboBoxData</link>() method.
-</para>
-</section>
-
-<section><title>getCheckBox</title>
-<indexterm><primary>Deprecated</primary><secondary>getCheckBox</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getCheckBox</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthGetCheckBoxData">getCheckBoxData</link>() method.
-</para>
-</section>
-
-<section><title>getRadioButton</title>
-<indexterm><primary>Deprecated</primary><secondary>getRadioButton</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getRadioButton</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthGetRadioButtonData">getRadioButtonData</link>() method.
-</para>
-</section>
-
-<section><title>getMultiList</title>
-<indexterm><primary>Deprecated</primary><secondary>getMultiList</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getMultiList</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthGetListBoxData">getListBoxData</link>() method.
-</para>
-</section>
-
-<section><title>getValue</title>
-<indexterm><primary>Deprecated</primary><secondary>getValue</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getValue</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthGetControlData">getControlData</link>() method.
-</para>
-</section>
-
-
-
-<section><title>connectAnimatedButton</title>
-<indexterm><primary>Deprecated</primary><secondary>connectAnimatedButton</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectAnimatedButton</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthInstallAnimatedButton">installAnimatedButton</link>() method.
-</para>
-</section>
-
-<section><title>connectBitmapButton</title>
-<indexterm><primary>Deprecated</primary><secondary>connectBitmapButton</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>connectBitmapButton</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthInstallBitmapButton">installBitmapButton</link>() method.
-</para>
-</section>
-
-<section><title>deInstall</title>
-<indexterm><primary>Deprecated</primary><secondary>deInstall</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>deInstall</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  It does nothing and always returns 0. In older
-  versions of ooDialog, the <emphasis role="italic">deInstall</emphasis>() method was used to deregister the
-  external functions with the API manager. This mechanism is no longer needed using the modern APIs introduced in
-  ooRexx 4.0.0.
-</para>
-</section>
-
-<section><title>disableMenuItem</title>
-<indexterm><primary>Deprecated</primary><secondary>disableMenuItem</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>disableMenuItem</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
-  object methods directly.
-</para>
-</section>
-
-<section><title>dump</title>
-<indexterm><primary>Deprecated</primary><secondary>dump</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>dump</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  It will simply print: &quot;dump() deprecated.&quot; In
-  older versions of ooDialog, the <emphasis role="italic">dump</emphasis>() method would print out information tied to
-  the undocumented internal implementation of ooDialog. Since the internal implementation has changed, this information
-  no longer exists.
-</para>
-</section>
-
-<section><title>enableMenuItem</title>
-<indexterm><primary>Deprecated</primary><secondary>enableMenuItem</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>enableMenuItem</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
-  object methods directly.
-</para>
-</section>
-
-<section><title>getButtonControl</title>
-<indexterm><primary>Deprecated</primary><secondary>getButtonControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getButtonControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewPushButton">newPushButton</link>() method.
-</para>
-</section>
-
-<section><title>getCheckControl</title>
-<indexterm><primary>Deprecated</primary><secondary>getCheckControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getCheckControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewCheckBox">newCheckBox</link>() method.
-</para>
-</section>
-
-<section><title>getComboBox</title>
-<indexterm><primary>Deprecated</primary><secondary>getComboBox</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getComboBox</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewComboBox">newComboBox</link>() method.
-</para>
-</section>
-
-<section><title>getEditControl</title>
-<indexterm><primary>Deprecated</primary><secondary>getEditControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getEditControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewEdit">newEdit</link>() method.
-</para>
-</section>
-
-<section><title>getGroupBox</title>
-<indexterm><primary>Deprecated</primary><secondary>getGroupBox</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getGroupBox</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewGroupBox">newGroupBox</link>() method.
-</para>
-</section>
-
-<section><title>getListBox</title>
-<indexterm><primary>Deprecated</primary><secondary>getListBox</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getListBox</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewListBox">newListBox</link>() method.
-</para>
-</section>
-
-<section><title>getListControl</title>
-<indexterm><primary>Deprecated</primary><secondary>getListControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getListControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewListView">newListView</link>() method.
-</para>
-</section>
-
-<section><title>getProgressBar</title>
-<indexterm><primary>Deprecated</primary><secondary>getProgressBar</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getProgressBar</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewProgressBar">newProgressBar</link>() method.
-</para>
-</section>
-
-<section><title>getRadioControl</title>
-<indexterm><primary>Deprecated</primary><secondary>getRadioControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getRadioControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewRadioButton">newRadioButton</link>() method.
-</para>
-</section>
-
-<section><title>getScrollBar</title>
-<indexterm><primary>Deprecated</primary><secondary>getScrollBar</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getScrollBar</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewScrollBar">newScrollBar</link>() method.
-</para>
-</section>
-
-<section><title>getSliderControl</title>
-<indexterm><primary>Deprecated</primary><secondary>getSliderControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getSliderControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewTrackBar">newTrackBar</link>() method.
-</para>
-</section>
-
-<section><title>getStaticControl</title>
-<indexterm><primary>Deprecated</primary><secondary>getStaticControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getStaticControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewStatic">newStatic</link>() method.
-</para>
-</section>
-
-<section><title>getTabControl</title>
-<indexterm><primary>Deprecated</primary><secondary>getTabControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getTabControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewTab">newTab</link>() method.
-</para>
-</section>
-
-<section><title>getTreeControl</title>
-<indexterm><primary>Deprecated</primary><secondary>getTreeControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getTreeControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewTreeView">newTreeView</link>() method.
-</para>
-</section>
-
-<section><title>getTextSize</title>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getTextSize</tertiary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>getTextSize</secondary><tertiary>dialog object</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Replace this method with, preferably, the <link
-  linkend="mthGetTextSizeDu">getTextSizeDu</link>() method, or the <link
-  linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>() method if absolutely necessary.
-</para>
-<para>
-  This method never worked correctly, the previous documentation for this method was incorrect and /
-  or misleading. That has been fixed in the <emphasis role="italic">getTextSizeDu</emphasis>() and <emphasis
-  role="italic">getTextSizeDlg</emphasis>() methods.
-</para>
-</section>
-
-<section><title>getStaticControl</title>
-<indexterm><primary>Deprecated</primary><secondary>getStaticControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getStaticControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewStatic">newStatic</link>() method.
-</para>
-</section>
-
-<section><title>getButtonControl</title>
-<indexterm><primary>Deprecated</primary><secondary>getButtonControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getButtonControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewPushButton">newPushButton</link>() method.
-</para>
-</section>
-
-<section><title>getRadioControl</title>
-<indexterm><primary>Deprecated</primary><secondary>getRadioControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getRadioControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewRadioButton">newRadioButton</link>() method.
-</para>
-</section>
-
-<section><title>getCheckControl</title>
-<indexterm><primary>Deprecated</primary><secondary>getCheckControl</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getCheckControl</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthNewCheckBox">newCheckBox</link>() method.
-</para>
-</section>
-
-<section><title>getMenuItemState</title>
-<indexterm><primary>Deprecated</primary><secondary>getMenuItemState</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getMenuItemState</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
-  object methods directly.
-</para>
-</section>
-
-<section><title>getSystemMetrics</title>
-<indexterm><primary>Deprecated</primary><secondary>getSystemMetrics</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>getSystemMetrics</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method the functionally equivalent <link
-  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the <emphasis
-  role="italic">.DlgUtil</emphasis>class.
-</para>
-</section>
-
-<section><title>grayMenuItem</title>
-<indexterm><primary>Deprecated</primary><secondary>grayMenuItem</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>grayMenuItem</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
-  object methods directly.
-</para>
-</section>
-
-<section><title>handleMessages</title>
-<indexterm><primary>Deprecated</primary><secondary>handleMessages</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>handleMessages</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. It sleeps for 10 miliseconds and returns.
-</para>
-</section>
-
-<section><title>itemText</title>
-<indexterm><primary>Deprecated</primary><secondary>itemText</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>itemText</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthSetControlText">setControlText</link>() method. <emphasis role="bold">Note</emphasis> that this method has
-  always been present in ooDialog, but was never previously documented.
-</para>
-</section>
-
-<section><title>logRect2AbsRect</title>
-<indexterm><primary>Deprecated</primary><secondary>logRect2AbsRect</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>logRect2AbsRect</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link> because it is incorrectly implemented and <link
-  linkend="ovvInaccurate">inaccurate</link>. Replace this method with the <link
-  linkend="mthDlgUnit2pixel">dlgUnit2pixel</link>() method.
-</para>
-</section>
-
-<section><title>peekDialogMessage</title>
-<indexterm><primary>Deprecated</primary><secondary>peekDialogMessage</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>peekDialogMessage</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. It does nothing and always returns the empty string.
-</para>
-</section>
-
-<section><title>run</title>
-<indexterm><primary>Deprecated</primary><secondary>run</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>run</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. It does nothing except sit in a loop burning up CPU.
-</para>
-<para>
-  Although this method was documented previously, it is the author's opion that it was intended for internal use only.
-  Unfortunately, earlier versions of ooDialog documented a number of internal use only methods, which was a mistake.
-  Internal use only methods should not be documented.
-</para>
-<para>
-  The earlier documentation did say: <emphasis role="italic">run is a protected method. You cannot call this method
-  directly.</emphasis> In the author's opinion, this was poorly worded and what was meant to be said is: <emphasis
-  role="italic">run is an internal use only method. Do not call this method directly.</emphasis>
-</para>
-
-</section>
-
-<section><title>setMenuItemRadio</title>
-<indexterm><primary>Deprecated</primary><secondary>setMenuItemRadio</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>setMenuItemRadio</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
-  object methods directly.
-</para>
-</section>
-
-<section><title>setStaticText</title>
-<indexterm><primary>Deprecated</primary><secondary>setStaticText</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>setStaticText</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthSetControlText">setControlText</link>() method.
-</para>
-</section>
-
-<section><title>uncheckMenuItem</title>
-<indexterm><primary>Deprecated</primary><secondary>uncheckMenuItem</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>dialog object</secondary><tertiary>uncheckMenuItem</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
-  object methods directly.
-</para>
-</section>
-
-</section>
 
 </chapter>

@@ -40,7 +40,7 @@
     #########################################################################
 -->
 <appendix id="apxDeprecated"><title>Deprecated Classes and Methods</title>
-<indexterm><primary>Deprecated Classes and Methods</primary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>classes and methods</secondary></indexterm>
 <para>
   Why depreated
 </para>
@@ -50,6 +50,414 @@
 <para>
   xx
 </para>
+
+
+<section id="deprecatedDialogMethods"><title>Deprecated Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>dialog object methods</secondary></indexterm>
+<para>
+  <link linkend="ovvDeprecated">Deprecated</link> dialog methods and their replacement methods are listed in this
+  section.
+</para>
+
+<section><title>absRect2LogRect</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link> because it is incorrectly implemented and <link
+  linkend="ovvInaccurate">inaccurate</link>. Replace this method with the <link
+  linkend="mthPixel2dlgUnit">pixel2dlgUnit</link>() method.
+</para>
+</section>
+
+<section><title>assignWindow</title>
+<para>
+  This method is deprecated and always returns 0, <emphasis role="italic">the assignment failed</emphasis>. To work with
+  a dialog or dialog control object, construct the proper ooDialog object. This ensures that the object has the correct
+  methods. To control a window not owned by your program use the <emphasis role="italic">find</emphasis>() method of the
+  <emphasis role="italic">WindowsManger</emphasis> class. The <emphasis role="italic">WindowsManager</emphasis>is part
+  of the <emphasis role="italic">WinSystm.cls</emphasis> package. In certain cases it may be desirable to invoke a
+  method common to all windows when only the window <link linkend="defHandle">handle</link> is known.  For these cases
+  use a <link linkend="clsWindow">Window</link> object.
+</para>
+</section>
+
+<section><title>checkMenuItem</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>clearMessages</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. It does nothing.
+</para>
+</section>
+
+
+<section><title>connectEntryLine</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectEdit">connectEdit</link>() method.
+</para>
+</section>
+
+<section><title>connectMultiListBox</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectListBox">connectListBox</link>() method.
+</para>
+</section>
+
+<section><title>connectTreeControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTreeView">connectTreeView</link>() method.
+</para>
+</section>
+
+<section><title>connectListControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectListView">connectListView</link>() method.
+</para>
+</section>
+
+<section><title>connectSliderControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTrackBar">connectTrackBar</link>() method.
+</para>
+</section>
+
+<section><title>connectTabControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTab">connectTab</link>() method.
+</para>
+</section>
+
+<section><title>getEntryLine</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetEditData">getEditData</link>() method.
+</para>
+</section>
+
+<section><title>getListLine</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetListBoxData">getListBoxData</link>() method.
+</para>
+</section>
+
+<section><title>getComboLine</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetComboBoxData">getComboBoxData</link>() method.
+</para>
+</section>
+
+<section><title>getCheckBox</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetCheckBoxData">getCheckBoxData</link>() method.
+</para>
+</section>
+
+<section><title>getRadioButton</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetRadioButtonData">getRadioButtonData</link>() method.
+</para>
+</section>
+
+<section><title>getMultiList</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetListBoxData">getListBoxData</link>() method.
+</para>
+</section>
+
+<section><title>getValue</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetControlData">getControlData</link>() method.
+</para>
+</section>
+
+<section><title>connectAnimatedButton</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthInstallAnimatedButton">installAnimatedButton</link>() method.
+</para>
+</section>
+
+<section><title>connectBitmapButton</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthInstallBitmapButton">installBitmapButton</link>() method.
+</para>
+</section>
+
+<section><title>deInstall</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  It does nothing and always returns 0. In older
+  versions of ooDialog, the <emphasis role="italic">deInstall</emphasis>() method was used to deregister the
+  external functions with the API manager. This mechanism is no longer needed using the modern APIs introduced in
+  ooRexx 4.0.0.
+</para>
+</section>
+
+<section><title>disableMenuItem</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>dump</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  It will simply print: &quot;dump() deprecated.&quot; In
+  older versions of ooDialog, the <emphasis role="italic">dump</emphasis>() method would print out information tied to
+  the undocumented internal implementation of ooDialog. Since the internal implementation has changed, this information
+  no longer exists.
+</para>
+</section>
+
+<section><title>enableMenuItem</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>getButtonControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewPushButton">newPushButton</link>() method.
+</para>
+</section>
+
+<section><title>getCheckControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewCheckBox">newCheckBox</link>() method.
+</para>
+</section>
+
+<section><title>getComboBox</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewComboBox">newComboBox</link>() method.
+</para>
+</section>
+
+<section><title>getEditControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewEdit">newEdit</link>() method.
+</para>
+</section>
+
+<section><title>getGroupBox</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewGroupBox">newGroupBox</link>() method.
+</para>
+</section>
+
+<section><title>getListBox</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewListBox">newListBox</link>() method.
+</para>
+</section>
+
+<section><title>getListControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewListView">newListView</link>() method.
+</para>
+</section>
+
+<section><title>getProgressBar</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewProgressBar">newProgressBar</link>() method.
+</para>
+</section>
+
+<section><title>getRadioControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewRadioButton">newRadioButton</link>() method.
+</para>
+</section>
+
+<section><title>getScrollBar</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewScrollBar">newScrollBar</link>() method.
+</para>
+</section>
+
+<section><title>getSliderControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewTrackBar">newTrackBar</link>() method.
+</para>
+</section>
+
+<section><title>getStaticControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewStatic">newStatic</link>() method.
+</para>
+</section>
+
+<section><title>getTabControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewTab">newTab</link>() method.
+</para>
+</section>
+
+<section><title>getTreeControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewTreeView">newTreeView</link>() method.
+</para>
+</section>
+
+<section><title>getTextSize</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Replace this method with, preferably, the <link
+  linkend="mthGetTextSizeDu">getTextSizeDu</link>() method, or the <link
+  linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>() method if absolutely necessary.
+</para>
+<para>
+  This method never worked correctly, the previous documentation for this method was incorrect and /
+  or misleading. That has been fixed in the <emphasis role="italic">getTextSizeDu</emphasis>() and <emphasis
+  role="italic">getTextSizeDlg</emphasis>() methods.
+</para>
+</section>
+
+<section><title>getStaticControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewStatic">newStatic</link>() method.
+</para>
+</section>
+
+<section><title>getButtonControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewPushButton">newPushButton</link>() method.
+</para>
+</section>
+
+<section><title>getRadioControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewRadioButton">newRadioButton</link>() method.
+</para>
+</section>
+
+<section><title>getCheckControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthNewCheckBox">newCheckBox</link>() method.
+</para>
+</section>
+
+<section><title>getMenuItemState</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>getSystemMetrics</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method the functionally equivalent <link
+  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the <emphasis
+  role="italic">.DlgUtil</emphasis>class.
+</para>
+</section>
+
+<section><title>grayMenuItem</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>handleMessages</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. It sleeps for 10 miliseconds and returns.
+</para>
+</section>
+
+<section><title>itemText</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthSetControlText">setControlText</link>() method. <emphasis role="bold">Note</emphasis> that this method has
+  always been present in ooDialog, but was never previously documented.
+</para>
+</section>
+
+<section><title>logRect2AbsRect</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link> because it is incorrectly implemented and <link
+  linkend="ovvInaccurate">inaccurate</link>. Replace this method with the <link
+  linkend="mthDlgUnit2pixel">dlgUnit2pixel</link>() method.
+</para>
+</section>
+
+<section><title>peekDialogMessage</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. It does nothing and always returns the empty string.
+</para>
+</section>
+
+<section><title>run</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. It does nothing except sit in a loop burning up CPU.
+</para>
+<para>
+  Although this method was documented previously, it is the author's opion that it was intended for internal use only.
+  Unfortunately, earlier versions of ooDialog documented a number of internal use only methods, which was a mistake.
+  Internal use only methods should not be documented.
+</para>
+<para>
+  The earlier documentation did say: <emphasis role="italic">run is a protected method. You cannot call this method
+  directly.</emphasis> In the author's opinion, this was poorly worded and what was meant to be said is: <emphasis
+  role="italic">run is an internal use only method. Do not call this method directly.</emphasis>
+</para>
+
+</section>
+
+<section><title>setMenuItemRadio</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>setStaticText</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthSetControlText">setControlText</link>() method.
+</para>
+</section>
+
+<section><title>uncheckMenuItem</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  object methods directly.
+</para>
+</section>
+
+</section>
 
 
 <section id="deprecatedBaseClasses"><title>Deprecated Base Classes</title>
@@ -97,4 +505,4 @@
 </section>
 
 
-</chapter>
+</appendix>
