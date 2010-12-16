@@ -505,4 +505,46 @@
 </section>
 
 
+<section id="deprecatedDialogControl"><title>Deprecated Dialog Control Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>dialog control object methods</secondary></indexterm>
+<para>
+  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  role="italic">DialogControl</emphasis> class and how to replace those methods in ooDialog programs.
+</para>
+
+<section><title>assignWindow</title>
+<para>
+  This method is deprecated and always returns 0, <emphasis role="italic">the assignment failed</emphasis>. To work with
+  a dialog or dialog control object, construct the proper ooDialog object. This ensures that the object has the correct
+  methods. To control a window not owned by your program use the <emphasis role="italic">find</emphasis>() method of the
+  <emphasis role="italic">WindowsManger</emphasis> class. The <emphasis role="italic">WindowsManager</emphasis>is part
+  of the <emphasis role="italic">WinSystm.cls</emphasis> package. In certain cases it may be desirable to invoke a
+  method common to all windows when only the window <link linkend="defHandle">handle</link> is known.  For these cases
+  use a <link linkend="clsWindow">Window</link> object.
+</para>
+</section>
+
+<section><title>getTextSize</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Replace this method with the <link
+  linkend="mthGetTextSizeDu">getTextSizeDu</link>() method. The <link
+  linkend="mthGetTextSizeDlgClsDialogControl">getTextSizeDlg</link>() method could also be used, if absolutely
+  necessary. However, that is not recommended.
+</para>
+<para>
+  This method never worked correctly, the previous documentation for this method was incorrect and /
+  or misleading. That has been fixed in the <emphasis role="italic">getTextSizeDlgDu</emphasis>() method.
+</para>
+</section>
+
+<section><title>processMessage</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="wbdcoSendMessage">sendMessage</link>() method.
+</para>
+</section>
+
+
+</section>
+
 </appendix>
