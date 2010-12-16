@@ -52,7 +52,70 @@
 </para>
 
 
-<section id="deprecatedDialogMethods"><title>Deprecated Methods</title>
+<section id="deprecatedBaseClasses"><title>Deprecated Classes</title>
+<indexterm><primary>Deprecated</primary><secondary>classes and mixin classes</secondary></indexterm>
+<para>
+  All <link linkend="ovvDeprecated">deprecated</link> base and mixin classes are listed in this section. In general, the
+  deprecated classes are simply not needed anymore, and the programmer need do nothing to replace them.
+</para>
+
+<section><title>AdvancedControls Mixin Class</title>
+<indexterm><primary>Deprecated</primary><secondary>AdvancedControls Mixin Class</secondary></indexterm>
+<para>
+  This class is <link linkend="ovvDeprecated">deprecated</link>. The ooDialog framework <link
+  linkend="sctHistory">no longer</link> makes a distinction between some types of dialog controls, and how to use the
+  controls. I.e., the programmer no longer needs to inherit a special class to use some of the dialog controls. All the
+  methods of the AdvancedControls have been moved into the appropriate dialog class. Therefore the programmer does not
+  need to do anything to use any dialog control in any dialog. In new code simply omit inheriting AdvancedControls. In
+  old code, <emphasis role="italic">inherit AdvancedContorls</emphasis> can be deleted from any dialog class declaration
+  and the program will behave the same.
+</para>
+</section>
+
+<section><title>MessageExtensions Mixin Class</title>
+<indexterm><primary>Deprecated</primary><secondary>MessageExtensions Mixin Class</secondary></indexterm>
+<para>
+  This class is <link linkend="ovvDeprecated">deprecated</link>. The MessageExtensions class has been renamed to the
+  <link linkend="clsEventNotification">EventNotification</link> class. In addition, the EventNotification class is
+  inherited by the <link linkend="chpDialogObject">dialog object</link> so that the programmer need do nothing special
+  to use event notifications in any dialog. In new code simply omit inheriting MessageExtensions. In old code, <emphasis
+  role="italic">inherit MessageExtensions</emphasis> can be deleted from any dialog class declaration and the program
+  will behave the same.
+</para>
+</section>
+
+<section><title>PlainUserDialog Class</title>
+<indexterm><primary>Deprecated</primary><secondary>PlainUserDialog Class</secondary></indexterm>
+<para>
+  This class is <link linkend="ovvDeprecated">deprecated</link>. The ooDialog framework <link
+  linkend="sctHistory">no longer</link> makes a distinction between a plain user dialog and an <link
+  linkend="clsUserDialog">user dialog</link>. Directly subclass the <emphasis role="italic">Userdialog</emphasis>
+  instead of the <emphasis role="italic">PlainUserDialog</emphasis>.
+</para>
+</section>
+
+<section><title>CategoryDialog Class</title>
+<indexterm><primary>Deprecated</primary><secondary>CategoryDialog Class</secondary></indexterm>
+<para>
+  This class is <link linkend="ovvDeprecated">deprecated</link>. The <computeroutput>CategoryDialog</computeroutput>
+  class was never documented well, was confusing to most users, was buggy, and was difficult to debug.  TODO need links
+  to PropertySheetDialog.
+</para>
+</section>
+
+<section><title>PropertySheet Class</title>
+<indexterm><primary>Deprecated</primary><secondary>PropertySheet Class</secondary></indexterm>
+<para>
+  This class is <link linkend="ovvDeprecated">deprecated</link>. The <computeroutput>ProppertySheet</computeroutput>
+  class was never documented well, was confusing to most users, was buggy, and was difficult to debug.  TODO need links
+  to PropertySheetDialog.
+</para>
+</section>
+
+</section>
+
+
+<section id="deprecatedDialogMethods"><title>Deprecated Dialog Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>dialog object methods</secondary></indexterm>
 <para>
   <link linkend="ovvDeprecated">Deprecated</link> dialog methods and their replacement methods are listed in this
@@ -460,45 +523,221 @@
 </section>
 
 
-<section id="deprecatedBaseClasses"><title>Deprecated Base Classes</title>
-<indexterm><primary>Deprecated</primary><secondary>base and mixin classes</secondary></indexterm>
+<section id="deprecatedUserDialogMethods"><title>Deprecated UserDialog Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>UserDialog methods</secondary></indexterm>
 <para>
-  All <link linkend="ovvDeprecated">deprecated</link> base and mixin classes are listed in this section. In general, the
-  deprecated classes are simply not needed anymore, and the programmer need do nothing to replace them.
+  <link linkend="ovvDeprecated">Deprecated</link> <computeroutput>UserDialog</computeroutput> methods and their
+  replacement methods are listed in this section.
 </para>
 
-<section><title>AdvancedControls Mixin Class</title>
-<indexterm><primary>Deprecated</primary><secondary>AdvancedControls Mixin Class</secondary></indexterm>
+<section><title>createMenu</title>
 <para>
-  This class is <link linkend="ovvDeprecated">deprecated</link>. The ooDialog framework <link
-  linkend="sctHistory">no longer</link> makes a distinction between some types of dialog controls, and how to use the
-  controls. I.e., the programmer no longer needs to inherit a special class to use some of the dialog controls. All the
-  methods of the AdvancedControls have been moved into the appropriate dialog class. Therefore the programmer does not
-  need to do anything to use any dialog control in any dialog. In new code simply omit inheriting AdvancedControls. In
-  old code, <emphasis role="italic">inherit AdvancedContorls</emphasis> can be deleted from any dialog class declaration
-  and the program will behave the same.
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  object methods directly.
 </para>
 </section>
 
-<section><title>MessageExtensions Mixin Class</title>
-<indexterm><primary>Deprecated</primary><secondary>MessageExtensions Mixin Class</secondary></indexterm>
+<section><title>addPopupMenu</title>
 <para>
-  This class is <link linkend="ovvDeprecated">deprecated</link>. The MessageExtensions class has been renamed to the
-  <link linkend="clsEventNotification">EventNotification</link> class. In addition, the EventNotification class is
-  inherited by the <link linkend="chpDialogObject">dialog object</link> so that the programmer need do nothing special
-  to use event notifications in any dialog. In new code simply omit inheriting MessageExtensions. In old code, <emphasis
-  role="italic">inherit MessageExtensions</emphasis> can be deleted from any dialog class declaration and the program
-  will behave the same.
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  object methods directly.
 </para>
 </section>
 
-<section><title>PlainUserDialog Class</title>
-<indexterm><primary>Deprecated</primary><secondary>PlainUserDialog Class</secondary></indexterm>
+<section><title>addMenuItem</title>
 <para>
-  This class is <link linkend="ovvDeprecated">deprecated</link>. The ooDialog framework <link
-  linkend="sctHistory">no longer</link> makes a distinction between a plain user dialog and an <link
-  linkend="clsUserDialog">user dialog</link>. Directly subclass the <emphasis role="italic">Userdialog</emphasis>
-  instead of the <emphasis role="italic">PlainUserDialog</emphasis>.
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>addMenuSeparator</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>setMenu</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>loadMenu</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  object methods directly.
+</para>
+</section>
+
+</section>  <!-- End Deprecated UserDialog Methods Section -->
+
+
+<section id="deprecatedEventNotification"><title>Deprecated Event Notification Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>MessageExtensions methods</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification methods</secondary></indexterm>
+<para>
+  Earlier versions of ooDialog used a confusing array of method names with the word <emphasis
+  role="italic">connect</emphasis> in them. After the release of ooRexx 4.0.0, an effort was made to unify the method
+  names in ooDialog. The methods listed in this section are all <link linkend="ovvDeprecated">deprecated</link>. They
+  all forward to the method that has taken their place. You can remove this level of indirection in your programs by
+  replacing all of the deprecated methods.
+</para>
+
+<section><title>connectButton</title>
+</indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method using the <link
+  linkend="mthConnectButtonEvent">connectButtonEvent</link>() method in this maner:
+<programlisting>
+<![CDATA[
+  -- Change the following code:
+  self~connectButton(IDC_PB_REFRESH, onRefresh)
+
+  -- To this code:
+  self~connectListButtonEvent(IDC_PB_REFRESH, "CLICKED", onRefresh)
+]]>
+</programlisting>
+</para>
+</section>
+
+<section><title>connectButtonNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectComboBoxNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectComboBoxEvent">connectComboBoxEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectCommonNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectNotifyEvent">connectNotifyEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectCommandEvents">connectCommandEvents</link>() method.
+</para>
+</section>
+
+<section><title>connectEditNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectEditEvent">connectEditEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectList</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method by using the <link
+  linkend="mthConnectListViewEvent">connectListBoxEvent</link>() method in this manner:
+<programlisting>
+<![CDATA[
+  -- Change the following code:
+  self~connectList(IDC_LISTBOX, onList)
+
+  -- To this code:
+  self~connectListBoxEvent(IDC_LISTBOX, "SELCHANGE", onList)
+]]>
+</programlisting>
+</para>
+</section>
+
+<section><title>connectListBoxNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectListBoxEvent">connectListBoxEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectListLeftDoubleClick</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method by using the <link
+  linkend="mthConnectListViewEvent">connectListBoxEvent</link>() method in this manner:
+<programlisting>
+<![CDATA[
+  -- Change the following code:
+  self~connectListLeftDoubleClick(IDC_LISTBOX, onDoubleClick)
+
+  -- To this code:
+  self~connectListBoxEvent(IDC_LISTBOX, "DLBCLK", onDoubleClick)
+]]>
+</programlisting>
+</para>
+</section>
+
+<section><title>connectListNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectListViewEvent">connectListViewEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectListViewNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectListViewEvent">connectListViewEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectMenuItem</title>
+</indexterm>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpMenus">menu</link> object
+  methods directly.
+</para>
+</section>
+
+<section><title>connectScrollBar</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectEachSBEvent">connectEachSBEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectScrollBarNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectSliderNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTrackBarEvent">connectTrackBarEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectStaticNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectStaticEvent">connectStaticEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectTabNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTabEvent">connectTabEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectTreeNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>() method.
 </para>
 </section>
 
@@ -544,7 +783,206 @@
 </para>
 </section>
 
+</section>
+
+
+
+
+
+
+<section id="deprecatedTreeView"><title>Deprecated TreeView Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>tree-view methods</secondary></indexterm>
+<para>
+  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  role="italic">TreeView</emphasis> class and how to replace those methods in ooDialog programs.
+</para>
+
+<section><title>setSmallImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsListControl">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para>
+</section>
+
+<section><title>setImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsListControl">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para>
+</section>
+
+<section><title>removeSmallImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsListControl">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para>
+</section>
+
+<section><title>removeImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsListControl">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para>
+</section>
 
 </section>
+
+
+<section id="deprecatedExternalFunctions"><title>Deprecated External Functions</title>
+<indexterm><primary>Deprecated</primary><secondary>external functions</secondary></indexterm>
+
+<para>
+  <emphasis role="bold">Do not directly use any of the ooDialog external functions.</emphasis>
+</para>
+<para>
+  The ooDialog documentation prior to ooDialog 4.0.0 documented ten external functions as <emphasis
+  role="italic">callable functions that can be used in your Object Rexx programs</emphasis>. It then
+  mentioned in passing that the <link linkend="sctPublicRoutines">Public Routines</link> were a more
+  convenient way to use these functions. It was noted that the external routines were registered
+  automatically when the first dialog was initialized, but if the programmer wanted to use the external
+  routines when no dialog was created, he could register the individual functions using
+  <computeroutput>RxFuncAdd</computeroutput>.
+</para>
+<para>
+  The 3.2.0 documentation expounded on that a little and also mentioned that there were other external
+  functions, noting that it would be difficult for ooDialog programmers to use these other functions
+  unless they were experienced C programmers. In hindsight that was a mistake. Each of the external
+  functions has a matching public routine. No mention of the external functions should have been made.
+  Instead, only the public routines should have been documented.
+</para>
+<para>
+  The reason for this is simple, the external functions are being removed. Prior to 4.0.0, ooDialog was
+  implemented using the original external naitve API. This API was useful, but somewhat limiting.
+  Particularly when used with the object-orientated paradigm. ooRexx 4.0.0 introduces a new native API
+  that is much more robust and flexible. Using this new API makes writing exernal packages like ooDialog
+  much easier.
+</para>
+<para>
+  ooDialog is in the process of being converted to use this new API. <emphasis
+  role="italic"><emphasis role="bold">All</emphasis> of the external functions will be
+  removed.</emphasis> If your programs directly uses any of the undocumented external functions, at some
+  point in future they will not work with a new release of ooDialog.
+</para>
+<para>
+  The documented external functions will be available as <emphasis role="bold">deprecated</emphasis>
+  functions, with the possibility of their removal in the future. However, they will simply map to the
+  corresponding public routine. The programmer can remove this extra level of indirection by calling the
+  public routine directly. It would be nice if ooDialog did not have to drag along this baggage forever
+  into the future.
+</para>
+<para>
+  It is no longer necessary to use RxFuncAdd(). Doing so is a nop. Likewise, registering InstMMFuncs()
+  and calling it does nothing. The ooDialog programmer should remove any references to RxFuncAdd (when
+  used to register any ooDialog external function,) and InstMMFuncs in their code as the opportunity
+  arises.
+</para>
+
+<section><title>infoMessage</title>
+<para>
+  This function is <link linkend="ovvDeprecated">deprecated</link>. Use the public routine <link
+  linkend="rtnInfoDialog">infoDialog</link>.
+</para>
+</section>
+
+<section><title>errorMessage</title>
+<para>
+  This function is <link linkend="ovvDeprecated">deprecated</link>. Use the public routine <link
+  linkend="rtnErrorDialog">errorDialog</link>.
+</para>
+</section>
+
+<section><title>yesNoMessage</title>
+<para>
+  This function is <link linkend="ovvDeprecated">deprecated</link>. Use the public routine <link
+  linkend="rtnAskDialog">askDialog</link>.
+</para>
+</section>
+
+<section><title>getScreenSize</title>
+<para>
+  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>. Use the
+  public routine <link linkend="rtnScreenSize">screenSize</link>. Do not use this method in new code. Try to migrate
+  existing code to screenSize. This function may not exist in future versions of ooDialog.
+</para>
+</section>
+
+<section><title>getSysMetrics</title>
+<para>
+  This function is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the .DlgUtil class.  Do not
+  use this function in new code. Try to migrate existing code to to the
+  <computeroutput>.DlgUtil~getSystemMetrics()</computeroutput> method.  This function may not exist in
+  future versions of ooDialog.
+</para>
+</section>
+
+<section><title>playSoundFile</title>
+<para>
+  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>. Use the public routine
+  <link linkend="rtnPlay">Play</link>. Do not use this function in new code. Try to migrate existing code to Play. This
+  function may not exist in future versions of ooDialog.
+</para>
+</section>
+
+<section><title>PlaySoundFileInLoop</title>
+<para>
+  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>. Use the public routine
+  <link linkend="rtnPlay">Play</link>. Do not use this function in new code. Try to migrate existing code to Play. This
+  function may not exist in future versions of ooDialog.
+</para>
+</section>
+
+<section><title>StopSoundFile</title>
+<para>
+  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>. Use the public routine
+  <link linkend="rtnPlay">Play</link>. Do not use this function in new code. Try to migrate existing code to Play. This
+  function may not exist in future versions of ooDialog.
+</para> </section>
+
+<section><title>getFileNameWindow</title>
+<para>
+  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>. Use the public routine
+  <link linkend="rtnFileNameDialog">FileNameDialog</link>. Do not use this function in new code. Try to migrate existing
+  code to FileNameDialog. This function may not exist in future versions of ooDialog.
+</para> </section>
+
+<section><title>sleepMS</title>
+<para>
+  This fucntion is <link linkend="ovvDeprecated">deprecated</link>. Use the public routine <link
+  linkend="rtnMSSleep">msSleep</link>.
+</para>
+</section>
+
+<section><title>winTimer</title>
+<para>
+  This function is <link linkend="ovvDeprecated">deprecated</link>. There is no replacement for this function.
+</para>
+<para>
+  The implementation of this function is poor. It uses 100% of the CPU while waiting. It should be possible to provide
+  this functionality without consuming all the CPU. A future version of ooDialog may provide a proper implementation for
+  the functionality of waiting on a repeating timer.
+</para>
+</section>
+
+<section><title>SystemMetrics Routine</title>
+<para>
+  This routine is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the .DlgUtil class.  Do not use this
+  routine in new code. Try to migrate existing code to to the
+  <computeroutput>.DlgUtil~getSystemMetrics()</computeroutput> method. This routine may not exist in future versions of
+  ooDialog.
+</para>
+</section>
+
+</section>
+
 
 </appendix>
