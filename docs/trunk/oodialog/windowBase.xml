@@ -4092,15 +4092,58 @@ to the current foreground window.</para>
 <indexterm><primary>dialog control object</primary><secondary>screen2client</secondary></indexterm>
 <programlisting>
 <![CDATA[
+Form 1:
+
 >>--screen2client(--point--)-------------------------><
+
+Form 2:
+
+>>--screen2client(--rect--)--------------------------><
+
+Generic form:
+
+>>--screen2client(--obj--)---------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Converts the screen coordinates of the specified point(s) on the screen to <link
+  linkend="defClientArea">client-area</link> coordinates of this window.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument specifies the screen coordinates to be converted. It must be either a
+    <computeroutput>.Point</computeroutput> or a <computeroutput>.Rect</computeroutput> object.  A
+    <computeroutput>.Rect</computeroutput> can be used to specify two points. Point one is taken to be the
+    <computeroutput>left</computeroutput> and <computeroutput>top</computeroutput> attributes and point two is taken to
+    bbe the <computeroutput>right</computeroutput> and <computeroutput>bottom</computeroutput> attributes.
+  <variablelist>
+    <varlistentry><term>obj [required in/out]</term>
+    <listitem>
+    <para>
+      The point(s) to be converted.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True on success, false on failure.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method uses the screen coordinates given in the <emphasis role="italic">obj</emphasis> argument to compute
+    client-area coordinates. It then replaces the screen coordinates with the client coordinates. The new coordinates
+    are relative to the upper-left corner of this window's client area. Coordinates are expressed in pixels.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
@@ -4110,39 +4153,21 @@ to the current foreground window.</para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example gets the position of a tab control in screen coordinates and converts the position to its position in
+    the client area of the dialog:
 <programlisting>
 <![CDATA[
 
+  tabControl = self~newTab(IDC_TAB)
+  r = tabControl~windowRect
+
+  p = .Point~new(r~left, r~top)
+  self~screen2client(p)
+
+  say "The tab control is positioned at: ("p~x"," p~y") in the dialog's client area."
 ]]>
 </programlisting>
   </para>
@@ -4158,13 +4183,24 @@ to the current foreground window.</para>
 <indexterm><primary>dialog control object</primary><secondary>client2screen</secondary></indexterm>
 <programlisting>
 <![CDATA[
+Form 1:
+
 >>--client2screen(--point--)-------------------------><
+
+Form 2:
+
+>>--client2screen(--rect--)--------------------------><
+
+Generic form:
+
+>>--client2screen(--obj--)---------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Converts the <link linkend="defClientArea">client-area</link> coordinates of the specified point(s) in this window to
+  its screen coordinates.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -4179,12 +4215,16 @@ to the current foreground window.</para>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single argument specifies the client-area coordinates to be converted. It must be either a
+    <computeroutput>.Point</computeroutput> or a <computeroutput>.Rect</computeroutput> object.  A
+    <computeroutput>.Rect</computeroutput> can be used to specify two points. Point one is taken to be the
+    <computeroutput>left</computeroutput> and <computeroutput>top</computeroutput> attributes. Point two is taken to be
+    the <computeroutput>right</computeroutput> and <computeroutput>bottom</computeroutput> attributes.
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>obj [required in/out]</term>
     <listitem>
     <para>
-      xx
+      On entry, the point(s) to be converted. On return, the converted points.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4193,24 +4233,25 @@ to the current foreground window.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, false on failure.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
+    This method uses the client-area coordinates given in the <emphasis role="italic">obj</emphasis> argument to compute
+    screen coordinates. It then replaces the client-area coordinates in the object with the screen coordinates. The new
+    coordinates are relative to the upper-left corner of screen. Coordinates are expressed in pixels.
     Additional comments.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4229,26 +4270,44 @@ to the current foreground window.</para>
 ]]>
 </programlisting>
 
-<para>OLD METHOD RETURNS COORDINATES AS A STRING
-  The ScreenToClient method maps the coordinates
-relative to the upper left corner of the screen, to a location within the
-client area relative to the upper left corner of the dialog's client area.</para>
+<para>
+  The <emphasis role="italic">screenToClient</emphasis> method maps the screen coordinates specified to the <link
+  linkend="defClientArea">client-area</link> of this window.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>The horizontal position, in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>The vertical position, in screen pixels.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The horizontal and vertical positions of the specified location relative
-to the upper left corner of the client area, separated by a blank.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+    <varlistentry><term>x [required]</term>
+    <listitem>
+    <para>
+      The horizontal position, in screen pixels.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>y [required]</term>
+    <listitem>
+    <para>
+      The vertical position, in screen pixels.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The client-area coordinates of the specified screen location, separated by a blank.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This old ooDialog method returns the coordinates as a single string that needs to be parsed. This is often not that
+    convenient.  The <link linkend="mthScreen2client">screen2client</link> method is often easier to use.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -4265,26 +4324,44 @@ to the upper left corner of the client area, separated by a blank.
 ]]>
 </programlisting>
 
-<para>OLD METHOD RETURNS COORDINATES AS A STRING
-  The ClientToScreen method maps the coordinates
-relative to the dialog's client area to the coordinates relative to the
-upper left corner of the screen.</para>
+<para>
+  The <emphasis role="italic">clientToScreen</emphasis> method maps the specified <link
+  linkend="defClientArea">client-area</link> coordinates of this window to screen coordinates.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>The horizontal position in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>The vertical position in screen pixels.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The horizontal and vertical positions of the specified location relative
-to the location (0,0) of the screen, separated by a blank.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+    <varlistentry><term>x [required]</term>
+    <listitem>
+    <para>
+      The x position of the point in the client-area, expressed in pixels.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>y [required]</term>
+    <listitem>
+    <para>
+      The y position of the point int the client-area of the window, expressed in pixels.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The screen coordinates of the specified point, separated by a blank.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This old ooDialog method returns the coordinates as a single string that needs to be parsed. This is often not that
+    convenient. The <link linkend="mthClient2screen">client2screen</link> method is often easier to use.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
