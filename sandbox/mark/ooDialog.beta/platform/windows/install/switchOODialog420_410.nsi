@@ -674,9 +674,11 @@ Function RemoveFiles
     Delete $INSTDIR\samples\oodialog\PropertySheetDemo.rex
     Delete $INSTDIR\samples\oodialog\rc\PropertySheetDemo.h
     Delete $INSTDIR\samples\oodialog\rc\PropertySheetDemo.rc
+    Delete $INSTDIR\samples\oodialog\rc\TabDemo.h
     Delete $INSTDIR\samples\oodialog\rc\ticketWizard.h
     Delete $INSTDIR\samples\oodialog\rc\ticketWizard.rc
     RMDir /r $INSTDIR\samples\oodialog\simple
+    Delete $INSTDIR\samples\oodialog\TabDemo.rex
     Delete $INSTDIR\samples\oodialog\ticketWizard.rex
   ${Endif}
 
