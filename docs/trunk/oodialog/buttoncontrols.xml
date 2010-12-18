@@ -2064,35 +2064,6 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 </para>
 </section>
 
-<section id="deprecatedRadiobuttonMethods"><title>Deprecated Methods</title>
-<indexterm><primary>Deprecated</primary><secondary>radio button methods</secondary></indexterm>
-<para>
-  <link linkend="ovvDeprecated">Deprecated</link> readio button methods and their replacement methods are listed in this
-  section.
-</para>
-
-<section><title>isChecked</title>
-<indexterm><primary>Deprecated</primary><secondary>RadioButton class</secondary><tertiary>isChecked</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthGetCheckStateClsRadioButton">getCheckState</link>() method for radio buttons, and the overridden <link
-  linkend="mthGetCheckStateClsCheckBox">getCheckState</link>() method for check boxes. This method was poorly named and
-  in some circumstances produced inconsistent results.
-</para>
-</section>
-
-<section><title>indeterminate</title>
-<indexterm><primary>Deprecated</primary><secondary>RadioButton class</secondary><tertiary>indeterminate</tertiary></indexterm>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthSetIndeterminate">setIndeterminate</link>() method of the <link linkend="clsCheckBox">CheckBox</link>
-  class. Radio buttons can not be set to indeterminate. Using this method with a radio button sets it to the checked
-  state, not the indeterminate state. In addition, this method was poorly named. One can check a button, but one does
-  not indeterminate a check box.
-</para>
-</section>
-
-</section>
 </section>
 
 <section id="clsCheckBox"><title>Check Boxes</title>

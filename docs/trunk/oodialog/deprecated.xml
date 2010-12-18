@@ -742,7 +742,7 @@
 </section>
 
 
-<section id="deprecatedDialogControl"><title>Deprecated Dialog Control Methods</title>
+<section id="deprecatedDialogControl"><title>Deprecated DialogControl Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>dialog control object methods</secondary></indexterm>
 <para>
   The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
@@ -781,12 +781,80 @@
 </para>
 </section>
 
+</section>  <!-- End Deprecated DialogControl Methods Section -->
+
+
+<section id="deprecatedDialogControls"><title>Deprecated Methods of Dialog Controls</title>
+<indexterm><primary>Deprecated</primary><secondary>dialog controls methods</secondary></indexterm>
+
+<section id="deprecatedRadiobuttonMethods"><title>Deprecated Radio Button Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>radio button methods</secondary></indexterm>
+
+<section><title>isChecked</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetCheckStateClsRadioButton">getCheckState</link>() method for radio buttons, and the overridden <link
+  linkend="mthGetCheckStateClsCheckBox">getCheckState</link>() method for check boxes. This method was poorly named and
+  in some circumstances produced inconsistent results.
+</para>
 </section>
 
+<section><title>indeterminate</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthSetIndeterminate">setIndeterminate</link>() method of the <link linkend="clsCheckBox">CheckBox</link>
+  class. Radio buttons can not be set to indeterminate. Using this method with a radio button sets it to the checked
+  state, not the indeterminate state. In addition, this method was poorly named. One can check a button, but one does
+  not indeterminate a check box.
+</para>
+</section>
+
+</section>  <!-- End Deprecated Radio Button Methods Section -->
+
+<section id="deprecatedProgressBar"><title>Deprecated ProgressBar Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>progress bar control methods</secondary></indexterm>
+
+<section id="mthSetRangePBC"><title>setRange</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Use <link linkend="mthSetFullRangePBC">setFullRange</link>().
+</para>
+</section>
+
+<section><title>getRange</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Use <link linkend="mthGetFullRangePBC">getFullRange</link>().
+</para>
+</section>
+
+</section>  <!-- End Deprecated ProgressBar Methods Section -->
 
 
+<section id="deprecatedTab"><title>Deprecated Tab Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>tab control methods</secondary></indexterm>
+<para>
+  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  role="italic">Tab</emphasis> class and how to replace those methods in ooDialog programs.
+</para>
 
+<section><title>setImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsTabControl">setImageList()</link> method. Do not use this method in new code. Try to
+  migrate existing code to to the <computeroutput>setImageList()</computeroutput> method. This method may not exist in
+  future versions of ooDialog.
+</para>
+</section>
 
+<section><title>removeImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsTabControl">setImageList()</link> method.  Do not use this method in new code. Try to
+  migrate existing code to to the <computeroutput>setImageList()</computeroutput> method. This method may not exist in
+  future versions of ooDialog.
+</para>
+</section>
+
+</section>  <!-- End Deprecated Tab Methods Section -->
 
 <section id="deprecatedTreeView"><title>Deprecated TreeView Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>tree-view methods</secondary></indexterm>
@@ -831,8 +899,9 @@
 </para>
 </section>
 
-</section>
+</section>  <!-- End Deprecated TreeView Methods Section -->
 
+</section>  <!-- End Deprecated Dialog Controls Methods Section -->
 
 <section id="deprecatedExternalFunctions"><title>Deprecated External Functions</title>
 <indexterm><primary>Deprecated</primary><secondary>external functions</secondary></indexterm>
@@ -980,7 +1049,7 @@
 </para>
 </section>
 
-</section>
+</section>  <!-- End Deprecated External Functions Section -->
 
 
 </appendix>
