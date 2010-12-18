@@ -48,30 +48,30 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
 
 
 xml_FILES = baseClasses.xml \
-	     buttoncontrols.xml \
-	     comboboxc.xml \
+	     button.xml \
+	     combobox.xml \
 	     dataAttributes.xml \
 	     datetimepicker.xml \
 	     deprecated.xml \
 	     dialogControlObject.xml \
 	     dialogObject.xml \
-	     editcontrolc.xml \
+	     edit.xml \
 	     eventNotification.xml \
-	     listboxc.xml \
+	     listbox.xml \
 	     listview.xml \
 	     menus.xml \
 	     monthcalendar.xml \
 	     oodialog.xml \
 	     overview.xml \
 	     preface.xml \
-	     progressbarc.xml \
+	     progressbar.xml \
        propertySheetDialogs.xml \
 	     resdialog.xml \
 	     resources.xml \
-	     scrollbarc.xml \
+	     scrollbar.xml \
 	     standarddialog.xml \
-	     staticcontrolc.xml \
-	     tabcontrolc.xml \
+	     static.xml \
+	     tab.xml \
 	     trackbar.xml \
 	     treeview.xml \
 	     updown.xml \
