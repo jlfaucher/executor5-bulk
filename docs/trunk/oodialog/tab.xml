@@ -49,11 +49,19 @@
   page for that tab is displayed. Individual pages can contain their own set of dialog controls or information.
 </para>
 <para>
-  A tab control contains the tabs and a dispaly area. There is a special type of tab control with tabs that look
-  like buttons. Clicking a button immediately performs a command instead of displaying a page. As usual in Windows
-  controls, there are a number of different styles for the tab control.  For instance, by default a tab control will
-  only display one row of tabs. However, there is the MULTILINE style.  A tab control with this style will use multiple
-  rows to display the tabs, so that all tabs are visible at once.
+  A tab control consists of the tabs and a display area. The tabs occupy a row (or rows) along the edge of the display
+  area. Each tab consists of a label and an icon. Tabs can be added and removed. Tabs are identified by their index. In
+  ooDialog, the indexes are zero-based rather than one-based as is normal in Rexx. Because of backwards compatibility,
+  this can not be changed.
+</para>
+<para>
+  There is a special type of tab control with tabs that look like buttons. Clicking a button immediately performs a
+  command instead of displaying a page.
+</para>
+<para>
+  As usual in Windows controls, there are a number of different styles for the tab control.  For instance, by default a
+  tab control will only display one row of tabs. However, there is the MULTILINE style.  A tab control with this style
+  will use multiple rows to display the tabs, so that all tabs are visible at once.
 </para>
 <para>
   The <computeroutput>Tab</computeroutput> class provides methods to work with and manipulate the underlying
@@ -274,7 +282,7 @@
   linkend="chpDialogObject">dialog</link> object. The basic syntax is:
 
 <programlisting> <![CDATA[
->>-connectTabEvent(--id--,--event--+----------------+--)------------><
+>>-connectTabEvent(--id--,--event--+----------------+--)----------------------><
                                    +--,-methodName--+
 
 ]]>
@@ -283,109 +291,142 @@
 </section>  <!-- End connectTabEvent() [EventNotification method] -->
 
 <section id="mthInsertTab"><title>insert</title>
-<indexterm><primary>insert</primary>
-<secondary>TabControl class</secondary></indexterm>
+<indexterm><primary>insert</primary><secondary>Tab class</secondary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>insert</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~insert(--+-----+--,--text--,--icon--,--numValue--)-><
-                        +-tab-+
-
+>>--insert(--+-----+--+--------+--+--------+--+------------+--)---------------><
+             +-tab-+  +-,-text-+  +-,-icon-+  +-,-userData-+
 
 ]]>
 </programlisting>
 
-<para>The insert method inserts a new tab in a tab control.</para>
+<para>
+  Inserts a new tab in a tab control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>tab</term>
-<listitem><para>The number of the tab. If you omit this argument, the number of the
-last tab is increased by 1, starting with 0.
-</para></listitem></varlistentry>
-<varlistentry><term>text</term>
-<listitem><para>The label text for the inserted tab.
-</para></listitem></varlistentry>
-<varlistentry><term>icon</term>
-<listitem><para>The index of the icon in the image list of the tab control, set with the <link
-linkend="mthSetImageListClsTabControl">setImageList</link>() method.
-</para></listitem></varlistentry>
-<varlistentry><term>numValue</term>
-<listitem><para>An integer value stored together with the tab to save
-information.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The number of the new tab, or -1 for all other cases.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example inserts three tabs in a tab control
-with the specified text and a specific item:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>tab [opitonal]</term>
+      <listitem>
+      <para>
+        The index of the tab to insert. If you omit this argument, the index of the last tab added to the control, plus
+        one, is used for the index. If the argument is omitted, and no tab has yet been added to the tab control, the
+        index of zero is ued.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text [optiona]</term>
+      <listitem>
+      <para>
+        The label text for the inserted tab. If omitted, the empty string is used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>icon [optional]</term>
+      <listitem>
+      <para>
+        The index of the icon in the image list of the tab control to use with the tab. The image list for the control
+        is set with the <link linkend="mthSetImageListClsTabControl">setImageList</link>() method. If this argument is
+        omitted, no icon is used for the tab.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>userData [optiona]</term>
+      <listitem>
+      <para>
+        Any object the programmer wants to store with the tab.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The index of the insert tab, or -1 for any error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example inserts three tabs in a tab control with the specified label and index in the image list for
+    an icon for the tab:
 <programlisting>
 <![CDATA[
-::method InitDialog
-  InitDlgRet = self~InitDialog:super
-  curTab = self~newTab("ID_TAB")
-  if curTab \= .Nil then do
-    curTab~setImageList(imageList)
-    curTab~insert(,"First Tab",0)
-    curTab~insert(,"Second Tab",1)
-    curTab~insert(,"Third Tab",2)
+::method initDialog
+
+  tab = self~newTab("IDC_TAB")
+  if tab \= .Nil then do
+    tab~setImageList(imageList)
+    tab~insert(, "First Tab", 0)
+    tab~insert(, "Second Tab", 1)
+    tab~insert(, "Third Tab", 2)
   end
-return InitDlgRet
+
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
 <section id="mthModifyTab"><title>modify</title>
 <indexterm><primary>modify</primary>
-<secondary>TabControl class</secondary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>modify</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~modify(--tab--,--text--,--icon--,--numValue--)--><
-
+>>--modify(--index--+--------+--+--------+--+------------+--)-----------------><
+                    +-,-text-+  +-,-icon-+  +-,-userData-+
 
 ]]>
 </programlisting>
 
-<para>The modify method sets some or all of the attributes
-of a tab.</para>
+<para>
+  The <emphasis role="italic">modify</emphasis> method sets some, or all, of the attributes of a tab. It can be used to
+  change the value of any attribute that has already been set.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>tab</term>
-<listitem><para>The number of the tab.
-</para></listitem></varlistentry>
-<varlistentry><term>text</term>
-<listitem><para>The label text for the tab.
-</para></listitem></varlistentry>
-<varlistentry><term>icon</term>
-<listitem><para>The index of the icon in the image list of the tab control, set with
-the <link linkend="mthSetImageListClsTabControl">setImageList</link>() method.
-</para></listitem></varlistentry>
-<varlistentry><term>numValue</term>
-<listitem><para>An integer value stored together with the tab to save information.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The attributes were set.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>You did not specify <emphasis role="italic">tab</emphasis>.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>In all other cases.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>index [required]</term>
+      <listitem>
+      <para>
+        The index of the tab to modify.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text [optiona]</term>
+      <listitem>
+      <para>
+        The new label text for the inserted tab.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>icon [optional]</term>
+      <listitem>
+      <para>
+        The new index of the icon in the image list of the tab control to use with the tab. The image list for the
+        control is set with the <link linkend="mthSetImageListClsTabControl">setImageList</link>() method.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>userData [optiona]</term>
+      <listitem>
+      <para>
+        The new object the programmer wants to store with the tab. There is no restriction on this argument, it can be
+        any object.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    0 for success and 1 for any error, or if all the optional arguments are omitted.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -394,41 +435,69 @@ the <link linkend="mthSetImageListClsTabControl">setImageList</link>() method.
 <indexterm><primary>Tab class</primary><secondary>addSequence</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addSequence(--text1--,--text2--,--text3--,--...--)--------------><
-
-
+>>--addSequnce(--text1--+---------------------+--)----------------------------><
+                        +--,-...--+-----------+
+                                  +--,-textN--+
 ]]>
 </programlisting>
 
-<para>The addSequence method inserts a sequence of tabs
-in a tab control for which you can only specify the label text. The number
-of the tab inserted last is increased by 1.</para>
+<para>
+  The <emphasis role="italic">addSequence</emphasis> method inserts a sequence of one through N tabs in a tab control.
+  The sequence of tabs starts immediately after the last added tab, or at index 0 if there are no tabs in the tab
+  control.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>text</term>
-<listitem><para>The label text for the inserted tab.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The number of the tab inserted last, or -1 for all other cases.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example inserts three tabs in a tab control:</para>
+  <listitem>
+  <para>
+    The only, repeating, argument is:
+    <variablelist>
+    <varlistentry><term>text</term>
+    <listitem>
+    <para>
+      The label text for the inserted tab(s).
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The index of the tab inserted last, or -1 for any error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The argument <emphasis role="italic">text</emphasis> can repeat any number of times. For each argument one tab is
+    inserted into the tab control. However, in the sequence 1 though N arguments, no argument can be omitted. If no
+    arguments are used, -1 is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example inserts three tabs in a tab control:
+  </para>
 <programlisting>
 <![CDATA[
-::method InitDialog
-  InitDlgRet = self~InitDialog:super
-  curTab = self~newTab("ID_TAB")
-  if curTab \= .Nil then do
-    curTab~addSequence("First Tab","Second Tab","Third Tab")
+::method initDialog
+
+  tab = self~newTab("IDC_TAB")
+  if tab \= .nil then do
+    tab~addSequence("First Tab", "Second Tab", "Third Tab")
   end
-return InitDlgRet
+
 ]]>
 </programlisting>
-</listitem></varlistentry>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -437,58 +506,107 @@ return InitDlgRet
 <indexterm><primary>Tab class</primary><secondary>addFullSeq</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~addFullSeq(--text_1--,--icon_1--,--numValue_1--,--text_2-->
-
->--,--icon_2--,--numValue_2--,--...--)----------------------------------><
+>>--addFullSeq(--text1--,-+-------+-,-+-------+-+--------------------------+--)--><
+                          +-icon1-+   +-user1-+ +-,-...-+-----------+-+----+
+                                                        +--,-textN--+ +-..-+
 
 
 ]]>
 </programlisting>
 
-<para>The addFullSeq method inserts a sequence of tabs
-in a tab control for which you can specify the number, label text, and integer
-value.</para>
+<para>
+  The <emphasis role="italic">addFullSeq</emphasis> method inserts a sequence of 1 through N tabs into a tab control.
+  For each inserted tab, an optional icon index and user object can be specified.
+value.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>text</term>
-<listitem><para>The label text for the inserted tab.
-</para></listitem></varlistentry>
-<varlistentry><term>icon</term>
-<listitem><para>The index of the icon in the image list of the tab control, set with
-the <link linkend="mthSetImageListClsTabControl">setImageList</link>() method.
-</para></listitem></varlistentry>
-<varlistentry><term>numValue</term>
-<listitem><para>An integer value stored together with the tab to save information.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The number of the tab inserted last, or -1 for all other cases.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example adds a sequence of tabs and sets their text and
-icon:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>The label text for the inserted tab.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>icon1 [optional]</term>
+    <listitem>
+    <para>The index of the icon in the image list of the tab control, set with the <link
+    linkend="mthSetImageListClsTabControl">setImageList</link>() method.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>user1 [optional]</term>
+    <listitem>
+    <para>
+      Any object the programmer wants stored together with the tab. This can be used to save information to be
+      associated with each tab.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The index of the tab inserted last, or -1 for any error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The argument <emphasis role="italic">text</emphasis> can repeat any number of times. A single comma can used to
+    signal that the icond index and / or user data argument is omitted for a tab. For each text argument one tab is
+    inserted into the tab control. However, in the sequence 1 though N arguments, the text argument can not be omitted.
+    Another way of saying that is, if two commas follow the text argument, the third argument is required.  This is
+    acceptable:
+
 <programlisting>
 <![CDATA[
-::method InitDialog
-  InitDlgRet = self~InitDialog:super
-  curTab = self~newTab("ID_TAB")
-  if curTab \= .Nil then do
-    curTab~setImageList(imageList)
-    curTab~addFullSeq("s11", 0, , "s12", 1, , "s13", 2, , "s14", 3)
-  end
-return InitDlgRet
+  tabControl~addSequence(myText, , , myText2, ,)
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+    But this is not, and will raise a syntax error:
+
+<programlisting>
+<![CDATA[
+  tabControl~addSequence("Label One", , , "Label Two", , , )
+]]>
+</programlisting>
+    If no arguments are used, -1 is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example adds a sequence of tabs and sets their label and icon index, but omits any user data for each
+    tab:
+<programlisting>
+<![CDATA[
+::method initDialog
+
+  tab = self~newTab("IDC_TAB")
+  if tab \= .nil then do
+    tab~setImageList(imageList)
+    tab~addFullSeq("s11", 0, , "s12", 1, , "s13", 2, , "s14", 3)
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
 <section id="mthItemsTab"><title>items</title>
-<indexterm><primary>items</primary>
-<secondary>TabControl class</secondary></indexterm>
+<indexterm><primary>items</primary><secondary>Tab class</secondary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>items</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTabControl~Items-------------------------------------------><
