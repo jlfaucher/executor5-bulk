@@ -107,12 +107,12 @@ methods listed in the
 <entry><link linkend="closedropdown">CloseDropDown</link></entry>
 </row>
 <row>
-<entry>Delete</entry>
-<entry><link linkend="deletecb">Delete</link></entry>
+<entry>delete</entry>
+<entry><link linkend="deletecb">delete</link></entry>
 </row>
 <row>
-<entry>DeleteAll</entry>
-<entry><link linkend="deleteallcb">DeleteAll</link></entry>
+<entry>deleteAll</entry>
+<entry><link linkend="deleteallcb">deleteAll</link></entry>
 </row>
 <row>
 <entry>editSelection</entry>
@@ -127,20 +127,20 @@ methods listed in the
 <entry><link linkend="gettextcb">GetText</link></entry>
 </row>
 <row>
-<entry>Insert</entry>
-<entry><link linkend="insertcb">Insert</link></entry>
+<entry>insert</entry>
+<entry><link linkend="insertcb">insert</link></entry>
 </row>
 <row>
 <entry>IsDropDownOpen</entry>
 <entry><link linkend="isdropdownopen">IsDropDownOpen</link></entry>
 </row>
 <row>
-<entry>Items</entry>
-<entry><link linkend="itemscb">Items</link></entry>
+<entry>items</entry>
+<entry><link linkend="itemscb">items</link></entry>
 </row>
 <row>
-<entry>Modify</entry>
-<entry><link linkend="modifycb">Modify</link></entry>
+<entry>modify</entry>
+<entry><link linkend="modifycb">modify</link></entry>
 </row>
 <row>
 <entry>OpenDropDown</entry>
@@ -151,16 +151,16 @@ methods listed in the
 <entry><link linkend="selectcb">select</link></entry>
 </row>
 <row>
-<entry>SelectIndex</entry>
-<entry><link linkend="selectindexcb">SelectIndex</link></entry>
+<entry>selectIndex</entry>
+<entry><link linkend="selectindexcb">selectIndex</link></entry>
 </row>
 <row>
 <entry>selected</entry>
 <entry><link linkend="selectedcb">selected</link></entry>
 </row>
 <row>
-<entry>SelectedIndex</entry>
-<entry><link linkend="selectedindexcb">SelectedIndex</link></entry>
+<entry>selectedIndex</entry>
+<entry><link linkend="selectedindexcb">selectedIndex</link></entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -197,19 +197,19 @@ been added, or 0 or a value less than 0 to indicate an error.
 </variablelist>
 </section>
 
-<section id="insertcb"><title>Insert</title>
-<indexterm><primary>Insert</primary>
+<section id="insertcb"><title>insert</title>
+<indexterm><primary>insert</primary>
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~Insert(--+-------+--,--listEntry--)---------------><
+>>-aComboBox~insert(--+-------+--,--listEntry--)---------------><
                       +-index-+
 
 
 ]]>
 </programlisting>
 
-<para>The Insert method inserts a new item into the list
+<para>The insert method inserts a new item into the list
 of the combo box after the specified item.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -232,18 +232,18 @@ been added, or 0 or a value less than 0 to indicate an error.
 </variablelist>
 </section>
 
-<section id="deletecb"><title>Delete</title>
-<indexterm><primary>Delete</primary>
+<section id="deletecb"><title>delete</title>
+<indexterm><primary>delete</primary>
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~Delete(--index--)---------------------------------><
+>>-aComboBox~delete(--index--)---------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Delete method removes a list item from the
+<para>The delete method removes a list item from the
 associated combo box.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -261,8 +261,8 @@ list. If this argument is omitted, the currently selected item is deleted.
 </variablelist>
 </section>
 
-<section id="deleteallcb"><title>DeleteAll</title>
-<indexterm><primary>DeleteAll</primary>
+<section id="deleteallcb"><title>deleteAll</title>
+<indexterm><primary>deleteAll</primary>
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -272,7 +272,7 @@ list. If this argument is omitted, the currently selected item is deleted.
 ]]>
 </programlisting>
 
-<para>The DeleteAll method removes all list items from
+<para>The deleteAll method removes all list items from
 the associated combo box.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -332,8 +332,8 @@ or 0 if not found.
 </variablelist>
 </section>
 
-<section id="selectedindexcb"><title>SelectedIndex</title>
-<indexterm><primary>SelectedIndex</primary>
+<section id="selectedindexcb"><title>selectedIndex</title>
+<indexterm><primary>selectedIndex</primary>
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -343,7 +343,7 @@ or 0 if not found.
 ]]>
 </programlisting>
 
-<para>The SelectedIndex method retrieves the index of
+<para>The selectedIndex method retrieves the index of
 the currently selected entry of the combo box list. This entry is highlighted
 and surrounded by a dotted border.</para>
 <variablelist>
@@ -375,18 +375,18 @@ none is selected.
 </variablelist>
 </section>
 
-<section id="selectindexcb"><title>SelectIndex</title>
-<indexterm><primary>SelectIndex</primary>
+<section id="selectindexcb"><title>selectIndex</title>
+<indexterm><primary>selectIndex</primary>
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~SelectIndex(--index--)----------------------------><
+>>-aComboBox~selectIndex(--index--)----------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The SelectIndex method selects the list entry at
+<para>The selectIndex method selects the list entry at
 the specified position. The currently selected list item in the combo box
 is highlighted and surrounded by a dotted border.</para>
 <variablelist>
@@ -434,8 +434,8 @@ the specified text.</para>
 </variablelist>
 </section>
 
-<section id="itemscb"><title>Items</title>
-<indexterm><primary>Items</primary>
+<section id="itemscb"><title>items</title>
+<indexterm><primary>items</primary>
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -445,7 +445,7 @@ the specified text.</para>
 ]]>
 </programlisting>
 
-<para>The Items method retrieves the number of items
+<para>The items method retrieves the number of items
 in the combo box.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -485,18 +485,18 @@ item or an error occurred.
 </variablelist>
 </section>
 
-<section id="modifycb"><title>Modify</title>
-<indexterm><primary>Modify</primary>
+<section id="modifycb"><title>modify</title>
+<indexterm><primary>modify</primary>
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~Modify(--index--,--newText--)---------------------><
+>>-aComboBox~modify(--index--,--newText--)---------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Modify method changes the text of the list
+<para>The modify method changes the text of the list
 item at the specified position in the combo box.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>

@@ -86,12 +86,12 @@ methods listed in the
 <entry><link linkend="columnwidth">ColumnWidth</link></entry>
 </row>
 <row>
-<entry>Delete</entry>
-<entry><link linkend="delete">Delete</link></entry>
+<entry>delete</entry>
+<entry><link linkend="delete">delete</link></entry>
 </row>
 <row>
-<entry>DeleteAll</entry>
-<entry><link linkend="deleteall">DeleteAll</link></entry>
+<entry>deleteAll</entry>
+<entry><link linkend="deleteall">deleteAll</link></entry>
 </row>
 <row>
 <entry>DeSelectIndex</entry>
@@ -114,8 +114,8 @@ methods listed in the
 <entry><link linkend="gettext">GetText</link></entry>
 </row>
 <row>
-<entry>Insert</entry>
-<entry><link linkend="insert">Insert</link></entry>
+<entry>insert</entry>
+<entry><link linkend="insert">insert</link></entry>
 </row>
 <row>
 <entry>ItemHeight</entry>
@@ -126,16 +126,16 @@ methods listed in the
 <entry><link linkend="itemheightnew">ItemHeight=</link></entry>
 </row>
 <row>
-<entry>Items</entry>
-<entry><link linkend="items">Items</link></entry>
+<entry>items</entry>
+<entry><link linkend="items">items</link></entry>
 </row>
 <row>
 <entry>MakeFirstVisible</entry>
 <entry><link linkend="makefirstvisible">MakeFirstVisible</link></entry>
 </row>
 <row>
-<entry>Modify</entry>
-<entry><link linkend="modify">Modify</link></entry>
+<entry>modify</entry>
+<entry><link linkend="modify">modify</link></entry>
 </row>
 <row>
 <entry>select</entry>
@@ -146,8 +146,8 @@ methods listed in the
 <entry><link linkend="selectedlib">selected</link></entry>
 </row>
 <row>
-<entry>SelectedIndex</entry>
-<entry><link linkend="selectedindex">SelectedIndex</link></entry>
+<entry>selectedIndex</entry>
+<entry><link linkend="selectedindex">selectedIndex</link></entry>
 </row>
 <row>
 <entry>SelectedIndexes</entry>
@@ -158,8 +158,8 @@ methods listed in the
 <entry><link linkend="selecteditems">SelectedItems</link></entry>
 </row>
 <row>
-<entry>SelectIndex</entry>
-<entry><link linkend="selectindex">SelectIndex</link></entry>
+<entry>selectIndex</entry>
+<entry><link linkend="selectindex">selectIndex</link></entry>
 </row>
 <row>
 <entry>SelectRange</entry>
@@ -211,19 +211,19 @@ been added, or 0 or a value less than 0 to indicate an error.
 </variablelist>
 </section>
 
-<section id="insert"><title>Insert</title>
-<indexterm><primary>Insert</primary>
+<section id="insert"><title>insert</title>
+<indexterm><primary>insert</primary>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~Insert(--+-------+--,--listEntry--)----------------><
+>>-aListBox~insert(--+-------+--,--listEntry--)----------------><
                      +-index-+
 
 
 ]]>
 </programlisting>
 
-<para>The Insert method inserts a new item into the list
+<para>The insert method inserts a new item into the list
 after the specified item.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -246,19 +246,19 @@ been added, or 0 or a value less than 0 to indicate an error.
 </variablelist>
 </section>
 
-<section id="delete"><title>Delete</title>
-<indexterm><primary>Delete</primary>
+<section id="delete"><title>delete</title>
+<indexterm><primary>delete</primary>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~Delete(--+-------+--)------------------------------><
+>>-aListBox~delete(--+-------+--)------------------------------><
                      +-index-+
 
 
 ]]>
 </programlisting>
 
-<para>The Delete method removes a list item from the
+<para>The delete method removes a list item from the
 associated list box.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -276,8 +276,8 @@ list. If this argument is omitted, the currently selected item is deleted.
 </variablelist>
 </section>
 
-<section id="deleteall"><title>DeleteAll</title>
-<indexterm><primary>DeleteAll</primary>
+<section id="deleteall"><title>deleteAll</title>
+<indexterm><primary>deleteAll</primary>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -287,7 +287,7 @@ list. If this argument is omitted, the currently selected item is deleted.
 ]]>
 </programlisting>
 
-<para>The DeleteAll method removes all list items from
+<para>The deleteAll method removes all list items from
 the associated list box.</para>
 </section>
 
@@ -332,8 +332,8 @@ or 0 if not found.
 </variablelist>
 </section>
 
-<section id="selectedindex"><title>SelectedIndex</title>
-<indexterm><primary>SelectedIndex</primary>
+<section id="selectedindex"><title>selectedIndex</title>
+<indexterm><primary>selectedIndex</primary>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -343,7 +343,7 @@ or 0 if not found.
 ]]>
 </programlisting>
 
-<para>The SelectedIndex method retrieves the
+<para>The selectedIndex method retrieves the
 index of the currently selected list entry. This entry is highlighted and
 surrounded by a dotted border. To get the selected items for a multiple selection
 listbox, use getListBoxData; see <link linkend="mthGetListBoxData">getListBoxData</link>.</para>
@@ -376,18 +376,18 @@ none is selected.
 </variablelist>
 </section>
 
-<section id="selectindex"><title>SelectIndex</title>
-<indexterm><primary>SelectIndex</primary>
+<section id="selectindex"><title>selectIndex</title>
+<indexterm><primary>selectIndex</primary>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~SelectIndex(--index--)-----------------------------><
+>>-aListBox~selectIndex(--index--)-----------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The SelectIndex method selects the list
+<para>The selectIndex method selects the list
 entry at the specified position. The currently selected list item is highlighted
 and surrounded by a dotted border. To select multiple items of a multiple
 selection listbox, use the <link linkend="mthSetListBoxData">setListBoxData</link>() method.
@@ -561,8 +561,8 @@ lb~DeselectRange(,6)
 </variablelist>
 </section>
 
-<section id="items"><title>Items</title>
-<indexterm><primary>Items</primary>
+<section id="items"><title>items</title>
+<indexterm><primary>items</primary>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -572,7 +572,7 @@ lb~DeselectRange(,6)
 ]]>
 </programlisting>
 
-<para>The Items method retrieves the number of items
+<para>The items method retrieves the number of items
 in the list box.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -723,19 +723,19 @@ if the <emphasis role="italic">index</emphasis> does not refer to an item or an 
 </variablelist>
 </section>
 
-<section id="modify"><title>Modify</title>
-<indexterm><primary>Modify</primary>
+<section id="modify"><title>modify</title>
+<indexterm><primary>modify</primary>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~Modify(--+-------+--,--newText--)------------------><
+>>-aListBox~modify(--+-------+--,--newText--)------------------><
                      +-index-+
 
 
 ]]>
 </programlisting>
 
-<para>The Modify method changes the text of the list
+<para>The modify method changes the text of the list
 item at the specified position in the list box.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>

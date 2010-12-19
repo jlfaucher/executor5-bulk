@@ -91,12 +91,12 @@ the methods listed in the
 <entry><link linkend="collapseandreset">CollapseAndReset</link></entry>
 </row>
 <row>
-<entry>Delete</entry>
-<entry><link linkend="deletetrc">Delete</link></entry>
+<entry>delete</entry>
+<entry><link linkend="deletetrc">delete</link></entry>
 </row>
 <row>
-<entry>DeleteAll</entry>
-<entry><link linkend="deletealltrc">DeleteAll</link></entry>
+<entry>deleteAll</entry>
+<entry><link linkend="deletealltrc">deleteAll</link></entry>
 </row>
 <row>
 <entry>DropHighlight</entry>
@@ -139,28 +139,28 @@ the methods listed in the
 <entry><link linkend="indentnew">Indent=</link></entry>
 </row>
 <row>
-<entry>Insert</entry>
-<entry><link linkend="inserttrc">Insert</link></entry>
+<entry>insert</entry>
+<entry><link linkend="inserttrc">insert</link></entry>
 </row>
 <row>
 <entry>IsAncestor</entry>
 <entry><link linkend="isancestor">IsAncestor</link></entry>
 </row>
 <row>
-<entry>ItemInfo</entry>
-<entry><link linkend="iteminfotrc">ItemInfo</link></entry>
+<entry>itemInfo</entry>
+<entry><link linkend="iteminfotrc">itemInfo</link></entry>
 </row>
 <row>
-<entry>Items</entry>
-<entry><link linkend="itemstrc">Items</link></entry>
+<entry>items</entry>
+<entry><link linkend="itemstrc">items</link></entry>
 </row>
 <row>
 <entry>MakeFirstVisible</entry>
 <entry><link linkend="makefirstvisibletrc">MakeFirstVisible</link></entry>
 </row>
 <row>
-<entry>Modify</entry>
-<entry><link linkend="modifytrc">Modify</link></entry>
+<entry>modify</entry>
+<entry><link linkend="modifytrc">modify</link></entry>
 </row>
 <row>
 <entry>MoveItem</entry>
@@ -227,13 +227,13 @@ the methods listed in the
 <para>The following sections describe the individual methods of the TreeControl
 class.</para>
 
-<section id="inserttrc"><title>Insert</title>
-<indexterm><primary>Insert</primary>
+<section id="inserttrc"><title>insert</title>
+<indexterm><primary>insert</primary>
 <secondary>TreeControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                     +-"LAST"--+     +-""---+     +-0-----+
->>-aTreeControl~Insert(--parent--,--+-after---+--,--+------+--,--+-------+--,-->
+>>-aTreeControl~insert(--parent--,--+-after---+--,--+------+--,--+-------+--,-->
                                     +-"FIRST"-+     +-text-+     +-image-+
                                     +-"SORT"--+
 
@@ -248,7 +248,7 @@ class.</para>
 ]]>
 </programlisting>
 
-<para>The Insert method inserts a new item in a tree
+<para>The insert method inserts a new item in a tree
 view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -330,13 +330,13 @@ is expanded. The text strings for the items are loaded from a file.
   use arg tree, item
   itemFile = "root6.inp"
   curTree = self~newTreeView("IDC_TREE")
-  itemInfo. = curTree~ItemInfo(item)
+  itemInfo. = curTree~itemInfo(item)
 
   if itemInfo.!TEXT = "Root 6" & \itemInfo.!STATE~POS("EXPANDED") then
   do
     do while lines(itemFile)
       line = linein(itemFile)
-      command = "curTree~Insert(item, ,"||line||")"
+      command = "curTree~insert(item, ,"||line||")"
       interpret command
     end
     curTree~Expand(item)
@@ -484,13 +484,13 @@ end
 </variablelist>
 </section>
 
-<section id="modifytrc"><title>Modify</title>
-<indexterm><primary>Modify</primary>
+<section id="modifytrc"><title>modify</title>
+<indexterm><primary>modify</primary>
 <secondary>TreeControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                    +-""---+     +-0-----+
->>-aTreeControl~Modify(--hItem--,--+------+--,--+-------+--,--+----------+--,-->
+>>-aTreeControl~modify(--hItem--,--+------+--,--+-------+--,--+----------+--,-->
                                    +-text-+     +-image-+     +-selImage-+
 
                                          +-"0"-+
@@ -514,7 +514,7 @@ end
 ]]>
 </programlisting>
 
-<para>The Modify method sets some or all attributes of
+<para>The modify method sets some or all attributes of
 an item of a tree view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -615,25 +615,25 @@ when it is selected:</para>
 <![CDATA[
 ::method OnSelChanging_IDC_TREE
   curTree = self~newTreeView("IDC_TREE")
-  curTree~Modify(curTree~selected, , , ,"BOLD")
+  curTree~modify(curTree~selected, , , ,"BOLD")
 ]]>
 </programlisting>
 </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="iteminfotrc"><title>ItemInfo</title>
-<indexterm><primary>ItemInfo</primary>
+<section id="iteminfotrc"><title>itemInfo</title>
+<indexterm><primary>itemInfo</primary>
 <secondary>TreeControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~ItemInfo(--hItem--)----------------------------><
+>>-aTreeControl~itemInfo(--hItem--)----------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The ItemInfo method retrieves some or all attributes
+<para>The itemInfo method retrieves some or all attributes
 of an item of a tree view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -704,7 +704,7 @@ to parent items.
 <![CDATA[
 ::method Info
   curTree = self~newTreeView("IDC_TREE")
-  itemInfo. = curTree~ItemInfo(curTree~selected)
+  itemInfo. = curTree~itemInfo(curTree~selected)
   say itemInfo.!TEXT
   say itemInfo.!CHILDREN
   say itemInfo.!IMAGE
@@ -715,8 +715,8 @@ to parent items.
 </variablelist>
 </section>
 
-<section id="itemstrc"><title>Items</title>
-<indexterm><primary>Items</primary>
+<section id="itemstrc"><title>items</title>
+<indexterm><primary>items</primary>
 <secondary>TreeControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -726,7 +726,7 @@ to parent items.
 ]]>
 </programlisting>
 
-<para>The Items method retrieves the number of items
+<para>The items method retrieves the number of items
 in a tree view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -738,7 +738,7 @@ in a tree view control.</para>
 <![CDATA[
 ::method Count
   curTree = self~newTreeView("IDC_TREE")
-  say curTree~Items
+  say curTree~items
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -801,7 +801,7 @@ item of the tree view control.</para>
 <![CDATA[
 ::method RootName
   curTree = self~newTreeView("IDC_TREE")
-  itemInfo. = curTree~ItemInfo(curTree~Root)
+  itemInfo. = curTree~itemInfo(curTree~Root)
   say ItemInfo.!Text
 ]]>
 </programlisting>
@@ -841,7 +841,7 @@ specified or is 0, or 0 in all other cases.
 <![CDATA[
 ::method Parent
   curTree = self~newTreeView("IDC_TREE")
-  itemInfo. = curTree~ItemInfo(curTree~Parent(curTree~selected))
+  itemInfo. = curTree~itemInfo(curTree~Parent(curTree~selected))
   say ItemInfo.!Text
 ]]>
 </programlisting>
@@ -881,7 +881,7 @@ retrieved.
 <![CDATA[
 ::method Child
   curTree = self~newTreeView("IDC_TREE")
-  itemInfo. = curTree~ItemInfo(curTree~Child(curTree~selected))
+  itemInfo. = curTree~itemInfo(curTree~Child(curTree~selected))
   say ItemInfo.!Text
 ]]>
 </programlisting>
@@ -912,7 +912,7 @@ item.</para>
 <![CDATA[
 ::method SelectedName
   curTree = self~newTreeView("IDC_TREE")
-  itemInfo. = curTree~ItemInfo(curTree~selected)
+  itemInfo. = curTree~itemInfo(curTree~selected)
   say ItemInfo.!Text
 ]]>
 </programlisting>
@@ -963,7 +963,7 @@ item in the client window of a tree view control.</para>
 <![CDATA[
 ::method FirstVisibleName
   curTree = self~newTreeView("IDC_TREE")
-  itemInfo. = curTree~ItemInfo(curTree~FirstVisible)
+  itemInfo. = curTree~itemInfo(curTree~FirstVisible)
   say ItemInfo.!Text
 ]]>
 </programlisting>
@@ -1006,7 +1006,7 @@ siblings:
   curTree = self~newTreeView("IDC_TREE")
   nextItem = curTree~selected
   do while nextItem \= 0
-    itemInfo. = curTree~ItemInfo(nextItem)
+    itemInfo. = curTree~itemInfo(nextItem)
     say ItemInfo.!Text
     nextItem = curTree~Next(nextItem)
   end
@@ -1105,18 +1105,18 @@ in all other cases.
 </variablelist>
 </section>
 
-<section id="deletetrc"><title>Delete</title>
-<indexterm><primary>Delete</primary>
+<section id="deletetrc"><title>delete</title>
+<indexterm><primary>delete</primary>
 <secondary>TreeControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~Delete(--hItem--)------------------------------><
+>>-aTreeControl~delete(--hItem--)------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Delete method removes an item from a tree view
+<para>The delete method removes an item from a tree view
 control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1149,15 +1149,15 @@ if any:
 <![CDATA[
 ::method IDC_PB_DELETE
   curTree = self~newTreeView("IDC_TREE")
-  curTree~Delete(curTree~selected)
+  curTree~delete(curTree~selected)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="deletealltrc"><title>DeleteAll</title>
-<indexterm><primary>DeleteAll</primary>
+<section id="deletealltrc"><title>deleteAll</title>
+<indexterm><primary>deleteAll</primary>
 <secondary>TreeControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1167,7 +1167,7 @@ if any:
 ]]>
 </programlisting>
 
-<para>The DeleteAll method removes all items from a tree
+<para>The deleteAll method removes all items from a tree
 view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>

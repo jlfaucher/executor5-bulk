@@ -168,12 +168,12 @@ the methods listed in the
 <entry><link linkend="columnwidth">ColumnWidth</link></entry>
 </row>
 <row>
-<entry>Delete</entry>
-<entry><link linkend="deletelc">Delete</link></entry>
+<entry>delete</entry>
+<entry><link linkend="deletelc">delete</link></entry>
 </row>
 <row>
-<entry>DeleteAll</entry>
-<entry><link linkend="deletealllc">DeleteAll</link></entry>
+<entry>deleteAll</entry>
+<entry><link linkend="deletealllc">deleteAll</link></entry>
 </row>
 <row>
 <entry>DeleteColumn</entry>
@@ -216,12 +216,12 @@ the methods listed in the
 <entry><link linkend="firstvisible">FirstVisible</link></entry>
 </row>
 <row>
-<entry>Focus</entry>
-<entry><link linkend="focus">Focus</link></entry>
+<entry>focus</entry>
+<entry><link linkend="focus">focus</link></entry>
 </row>
 <row>
-<entry>Focused</entry>
-<entry><link linkend="focused">Focused</link></entry>
+<entry>focused</entry>
+<entry><link linkend="focused">focused</link></entry>
 </row>
 <row>
 <entry>GetCheck</entry>
@@ -264,8 +264,8 @@ the methods listed in the
 <entry><link linkend="mthIsCheckedClsListControl">IsChecked</link></entry>
 </row>
 <row>
-<entry>ItemInfo</entry>
-<entry><link linkend="iteminfo">ItemInfo</link></entry>
+<entry>itemInfo</entry>
+<entry><link linkend="iteminfo">itemInfo</link></entry>
 </row>
 <row>
 <entry>ItemPos</entry>
@@ -280,16 +280,16 @@ the methods listed in the
 <entry><link linkend="itemtext">ItemText</link></entry>
 </row>
 <row>
-<entry>Items</entry>
-<entry><link linkend="itemslc">Items</link></entry>
+<entry>items</entry>
+<entry><link linkend="itemslc">items</link></entry>
 </row>
 <row>
 <entry>ItemsPerPage</entry>
 <entry><link linkend="itemsperpage">ItemsPerPage</link></entry>
 </row>
 <row>
-<entry>Last</entry>
-<entry><link linkend="last">Last</link></entry>
+<entry>last</entry>
+<entry><link linkend="last">last</link></entry>
 </row>
 <row>
 <entry>LastSelected</entry>
@@ -2891,18 +2891,18 @@ and on the system colors used for a selection.
 </variablelist>
 </section>
 
-<section id="deletelc"><title>Delete</title>
-<indexterm><primary>Delete</primary>
+<section id="deletelc"><title>delete</title>
+<indexterm><primary>delete</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~Delete(--item--)-------------------------------><
+>>-aListControl~delete(--item--)-------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Delete method removes an item from a list view
+<para>The delete method removes an item from a list view
 control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2933,15 +2933,15 @@ control.</para>
 <![CDATA[
 ::method DeleteSelectedItem
   curList = self~newListView(102)
-  curList~Delete(curList~selected)
+  curList~delete(curList~selected)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="deletealllc"><title>DeleteAll</title>
-<indexterm><primary>DeleteAll</primary>
+<section id="deletealllc"><title>deleteAll</title>
+<indexterm><primary>deleteAll</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2951,7 +2951,7 @@ control.</para>
 ]]>
 </programlisting>
 
-<para>The DeleteAll method removes all items from a list
+<para>The deleteAll method removes all items from a list
 view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -2971,8 +2971,8 @@ view control.</para>
 </variablelist>
 </section>
 
-<section id="itemslc"><title>Items</title>
-<indexterm><primary>Items</primary>
+<section id="itemslc"><title>items</title>
+<indexterm><primary>items</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2982,7 +2982,7 @@ view control.</para>
 ]]>
 </programlisting>
 
-<para>The Items method retrieves the number of items
+<para>The items method retrieves the number of items
 in a list view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -2991,8 +2991,8 @@ in a list view control.</para>
 </variablelist>
 </section>
 
-<section id="last"><title>Last</title>
-<indexterm><primary>Last</primary>
+<section id="last"><title>last</title>
+<indexterm><primary>last</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3002,7 +3002,7 @@ in a list view control.</para>
 ]]>
 </programlisting>
 
-<para>The Last method retrieves the number of the last
+<para>The last method retrieves the number of the last
 item in a list view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -3066,13 +3066,13 @@ of selected items in a list view control.</para>
 </variablelist>
 </section>
 
-<section id="iteminfo"><title>ItemInfo</title>
-<indexterm><primary>ItemInfo</primary>
+<section id="iteminfo"><title>itemInfo</title>
+<indexterm><primary>itemInfo</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                     +-0------+
->>-aListControl~ItemInfo(--item--,--+--------+--)--------------><
+>>-aListControl~itemInfo(--item--,--+--------+--)--------------><
                                     +-column-+
 
 
@@ -3080,7 +3080,7 @@ of selected items in a list view control.</para>
 </programlisting>
 
 <para>
-  The ItemInfo method retrieves the attributes of a list view item.
+  The itemInfo method retrieves the attributes of a list view item.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3350,8 +3350,8 @@ item selected last.</para>
 </variablelist>
 </section>
 
-<section id="focused"><title>Focused</title>
-<indexterm><primary>Focused</primary>
+<section id="focused"><title>focused</title>
+<indexterm><primary>focused</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3361,7 +3361,7 @@ item selected last.</para>
 ]]>
 </programlisting>
 
-<para>The Focused method retrieves the number of the
+<para>The focused method retrieves the number of the
 item that has currently the focus.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -3370,18 +3370,18 @@ item that has currently the focus.</para>
 </variablelist>
 </section>
 
-<section id="focus"><title>Focus</title>
-<indexterm><primary>Focus</primary>
+<section id="focus"><title>focus</title>
+<indexterm><primary>focus</primary>
 <secondary>ListControl class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~Focus(--item--)--------------------------------><
+>>-aListControl~focus(--item--)--------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Focus method assigns the focus to the specified
+<para>The focus method assigns the focus to the specified
 item, which is then surrounded by the standard focus rectangle. Although more
 than one item can be selected, only one item can have the focus.</para>
 <variablelist>

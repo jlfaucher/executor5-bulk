@@ -247,8 +247,8 @@
 <entry><link linkend="addslidercontrol">AddSliderControl</link></entry>
 </row>
 <row>
-<entry>AddTabControl</entry>
-<entry><link linkend="addtabcontrol">AddTabControl</link></entry>
+<entry>createTab</entry>
+<entry><link linkend="mthCreateTab">createTab</link></entry>
 </row>
 <row>
 <entry>AddTreeControl</entry>
@@ -8954,135 +8954,223 @@ MyDialog~sizeY-30, "VERTICAL BOTH AUTOTICKS")
 </variablelist>
 </section>
 
-<section id="addtabcontrol"><title>AddTabControl</title>
-<indexterm><primary>AddTabControl</primary></indexterm>
+<section id="mthCreateTab"><title>createTab</title>
+<indexterm><primary>createTab</primary></indexterm>
+<indexterm><primary>UserDialog</primary><secondary>createTab</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-anAdvancedControl~AddTabControl(--id--,--+---------------+--,--x-->
-                                            +-attributeName-+
-
->--,--y--,--cx--,--cy--+------------------------------+--)----------><
-                       |       +-----------------+    |
-                       |       V                 |    |
-                       +-,--"----+-ALIGNRIGHT--+-+--"-+
-                                 +-BUTTONS-----+
-                                 +-FIXED-------+
-                                 +-FOCUSNEVER--+
-                                 +-FOCUSONDOWN-+
-                                 +-ICONLEFT----+
-                                 +-LABELLEFT---+
-                                 +-MULTILINE---+
-                                 +-GROUP-------+
-                                 +-HIDDEN------+
-                                 +-NOTAB-------+
-                                 +-NOBORDER----+
-
-
+>>--createTab(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)---><
+                                        +-,-style-+  +-,-attributeName-+
 ]]>
 </programlisting>
 
-<para>The AddTabControl method adds a tab control to
-the dialog and connects it with a data attribute. For further information
-on tab controls, refer to <link linkend="clsTab">TabControl Class</link>.</para>
+<para>
+  Creates a <link linkend="clsTab">tab</link> control in the dialog template and specifies the resource ID, position,
+  size, style, and data attribute name for the control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>A unique identifier assigned to the control. You need the ID to refer
-to this control in other methods.
-</para></listitem></varlistentry>
-<varlistentry><term>attributeName</term>
-<listitem><para>The name of the data attribute associated with the dialog item. See
-<link linkend="mthConnectTreeview">connectTreeView</link>
-to get information on what happens when this argument is omitted.
-</para></listitem></varlistentry>
-<varlistentry><term>x, y</term>
-<listitem><para>The position of the upper left corner of the control relative to the
-dialog, in dialog units.
-</para></listitem></varlistentry>
-<varlistentry><term>cx, xy</term>
-<listitem><para>The width and height of the dialog item, in dialog units.
-</para></listitem></varlistentry>
-<varlistentry><term>options</term>
-<listitem><para>This argument determines the behavior and style of the dialog item and
-can be one or more of the following:
-<variablelist>
-<varlistentry><term>ALIGNRIGHT</term>
-<listitem><para>Right-justifies tabs. By default, tabs are left-justified within a row.
-</para></listitem></varlistentry>
-<varlistentry><term>BUTTONS</term>
-<listitem><para>Modifies the appearance of the tabs to look like buttons.
-</para></listitem></varlistentry>
-<varlistentry><term>FIXED</term>
-<listitem><para>Makes all tabs equal in width. You cannot use this option with the ALIGNRIGHT
-option.
-</para></listitem></varlistentry>
-<varlistentry><term>FOCUSNEVER</term>
-<listitem><para>A tab never receives the input focus.
-</para></listitem></varlistentry>
-<varlistentry><term>FOCUSONDOWN</term>
-<listitem><para>A tab receives the input focus when clicked (typically with option BUTTONS).
-</para></listitem></varlistentry>
-<varlistentry><term>ICONLEFT</term>
-<listitem><para>Forces the icon to the left, but leaves the tab label centered. By default,
-the control centers the icon and label, with the icon being to the left of
-the label.
-</para></listitem></varlistentry>
-<varlistentry><term>LABELLEFT</term>
-<listitem><para>Left-aligns both the icon and the label.
-</para></listitem></varlistentry>
-<varlistentry><term>MULTILINE</term>
-<listitem><para>Causes a tab control to display several rows of tabs, enabling all tabs
-to be displayed at the same time.
-</para></listitem></varlistentry>
-<varlistentry><term>GROUP</term>
-<listitem><para>Specifies the first control of a group of control in which the user
-can move from one control to the next with the arrow keys.
-</para></listitem></varlistentry>
-<varlistentry><term>HIDDEN</term>
-<listitem><para>The control is initially hidden.
-</para></listitem></varlistentry>
-<varlistentry><term>NOTAB</term>
-<listitem><para>The tab key cannot be used to move to this control.
-</para></listitem></varlistentry>
-<varlistentry><term>NOBORDER</term>
-<listitem><para>No border is drawn around the control.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource <link linkend="idArgument">ID</link> for the tab control. May be numeric or <link
+      linkend="defSymbolicID">symbolic</link>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>x, y, cx, cy [required]</term>
+    <listitem>
+    <para>
+      The  control <link linkend="paraControlCoordinates">coordinates</link>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+      separated by spaces:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>ALIGNRIGHT  </member>
+        <member>BUTTONS     </member>
+        <member>CLIPSIBLINGS</member>
+        <member>FIXED       </member>
+        <member>FOCUSNEVER  </member>
+        <member>FOCUSONDOWN </member>
+        <member>ICONLEFT    </member>
+        <member>LABELLEFT   </member>
+        <member>MULTILINE   </member>
+        <member>HIDDEN      </member>
+        <member>DISABLED    </member>
+        <member>GROUP       </member>
+        <member>BORDER      </member>
+        <member>TAB         </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>ALIGNRIGHT</term>
+        <listitem>
+        <para>
+          The width of each tab is increased, only when needed, so that each row of tabs fills the entire width of the
+          tab control. This style is ignored unless the MULTILINE style is also specified.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BUTTONS</term>
+        <listitem>
+        <para>
+          Makes the tabs look like buttons. The tabs should serve the same function as button controls. Clicking a tab
+          should carry out a command instead of displaying a page. Because the display area in a button tab control is
+          typically not used, no border is drawn around it.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>CLIPSIBLINGS</term>
+        <listitem>
+        <para>
+          This is a general window style rather than a specific tab control style. Child windows are clipped relative to
+          each other. This effects how the operating system draws the window. Microsoft explains it in this way: when a
+          child window receives a paint message, the CLIPSIBLINGS style clips all other overlapped child windows out of
+          the region of the child window to be updated. When a window does not have the CLIPSIBLINGS and child windows
+          overlap, when drawing is done within the client area of a child window, it is possible that the drawing will
+          take place within the client area of one of the other overlapped windows.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>FIXED</term>
+        <listitem>
+        <para>
+          All tabs are the same width. This style cannot be combined with the ALIGNRIGHT style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>FOCUSNEVER</term>
+        <listitem>
+        <para>
+          When clicking a tab, it does not receive the input focus.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>FOCUSONDOWN</term>
+        <listitem>
+        <para>
+          When clicking a tab, it does receive the input focus.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ICONLEFT</term>
+        <listitem>
+        <para>
+          Icons are aligned with the left edge of each fixed-width tab. This style can only be used with the FIXED
+          style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>LABELLEFT</term>
+        <listitem>
+        <para>
+          The label is displayed immediately to the right of the icon instead of being centered. This style can only be
+          used with the FIXED style, and it implies the ICONLEFT style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MULTILINE</term>
+        <listitem>
+        <para>
+          Tabs are displayed in multiple rows when there are more tabs than can be displayed in a single row. In ths way
+          all tabs are visisble.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HIDDEN</term>
+        <listitem>
+        <para>
+          The control has the <link linkend="wsvisible">not visible</link> window style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DISABLED</term>
+        <listitem>
+        <para>
+          The has the <link linkend="wsdisabled">not enabled</link> window style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>GROUP</term>
+        <listitem>
+        <para>
+          The control has <link linkend="wsgroup">group</link> control style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BORDER</term>
+        <listitem>
+        <para>
+          Create the control with the <link linkend="wsborder">border</link> window style. By default tab controls are
+          created without the border sytle.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTTAB</term>
+        <listitem>
+        <para>
+          Create the control without the <link linkend="wstabstop">tabstop</link> control style. By default the control
+          is created with the tabstop style.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>attributeName [optional]</term>
+    <listitem>
+    <para>
+      The name of the data <link linkend="sctUnderstandingDataAttributes">attribute</link> associated with the dialog
+      control. If you omit this argument then the name of the data attribute is constructed <link
+      linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">auto
+      detection</link> is off, this argument is ignored.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
   <para>
     The possible return values are:
     <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        The dialog template has either not been started or is complete.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        A symbolic ID was used, but it could not be resolved correctly.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>0</term>
+      <listitem>
       <para>
         Success.
       </para>
-    </listitem></varlistentry>
-    <varlistentry><term>less than 0</term>
-    <listitem>
+      </listitem></varlistentry>
+      <varlistentry><term>1</term>
+      <listitem>
       <para>
-        Error with the in-memory dialog template or with the resource ID.
+        The control was added to the dialog template but the data attribute could not be connected because the maximum
+        number of data connections has been reached.
       </para>
-    </listitem></varlistentry>
+      </listitem></varlistentry>
     </variablelist>
-  </para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example creates a tab control with ID PAGES and multiline
-capability. Its data (the selected tab) is associated with attribute CURRENTPAGE.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      The following example creates a tab control within the in-memory dialog template. Its resource id is the numeric
+      value of the <link linkend="defSymbolicID">symbolic</link> id: IDC_TAB. If needed, ultiple rows of tabs are
+      displayed so tat all tabs are visible at once. All tabs have the same width. Its data (the selected tab) is
+      associated with data attribute CURRENTPAGE.
 <programlisting>
 <![CDATA[
-MyDialog~AddTabControl("PAGES","CURRENTPAGE", 10, 120, 200, 20, ,
-"MULTILINE FIXED")
+
+self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
+
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
