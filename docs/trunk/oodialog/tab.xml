@@ -438,6 +438,7 @@
 >>--addSequnce(--text1--+---------------------+--)----------------------------><
                         +--,-...--+-----------+
                                   +--,-textN--+
+
 ]]>
 </programlisting>
 
@@ -509,7 +510,6 @@
 >>--addFullSeq(--text1--,-+-------+-,-+-------+-+--------------------------+--)--><
                           +-icon1-+   +-user1-+ +-,-...-+-----------+-+----+
                                                         +--,-textN--+ +-..-+
-
 
 ]]>
 </programlisting>
@@ -609,8 +609,7 @@ value.
 <indexterm><primary>Tab class</primary><secondary>items</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~Items-------------------------------------------><
-
+>>--items----------------------------------------><
 
 ]]>
 </programlisting>
@@ -638,10 +637,10 @@ a tab control.</para>
 
 <section id="mthRows"><title>rows</title>
 <indexterm><primary>rows</primary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>rows</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~Rows--------------------------------------------><
-
+>>--rows-----------------------------------------><
 
 ]]>
 </programlisting>
@@ -657,12 +656,11 @@ have several rows of tabs.</para>
 </section>
 
 <section id="mthIteminfoTab"><title>itemInfo</title>
-<indexterm><primary>itemInfo</primary>
-<secondary>TabControl class</secondary></indexterm>
+<indexterm><primary>itemInfo</primary><secondary>Tab class</secondary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>itemInfo</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~itemInfo(--tab--)-------------------------------><
-
+>>--itemInfo(--index--)--------------------------><
 
 ]]>
 </programlisting>
@@ -713,12 +711,11 @@ if the tab does not have an image.
 </section>
 
 <section id="mthDeleteTab"><title>delete</title>
-<indexterm><primary>delete</primary>
-<secondary>TabControl class</secondary></indexterm>
+<indexterm><primary>delete</primary><secondary>Tab class</secondary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>delete</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~delete(--tab--)---------------------------------><
-
+>>--delete(--index--)----------------------------><
 
 ]]>
 </programlisting>
@@ -752,12 +749,11 @@ or there is no tab available.
 </section>
 
 <section id="mthDeleteAllTab"><title>deleteAll</title>
-<indexterm><primary>deleteAll</primary>
-<secondary>TabControl class</secondary></indexterm>
+<indexterm><primary>deleteAll</primary><secondary>Tab class</secondary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>deleteAll</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~DeleteAll---------------------------------------><
-
+>>--deleteAll------------------------------------><
 
 ]]>
 </programlisting>
@@ -780,32 +776,34 @@ control.</para>
 </section>
 
 <section id="mthLastTab"><title>last</title>
-<indexterm><primary>last</primary>
-<secondary>TabControl class</secondary></indexterm>
+<indexterm><primary>last</primary><secondary>Tab class</secondary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>last</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~Last--------------------------------------------><
-
+>>--last-----------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>The last method retrieves the number of the last
-tab in a tab control.</para>
+<para>
+  Retrieves the index of the last tab in a tab control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The number of the last tab, or 0 in all other cases.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The index of the last tab.  -1 is returned if there are no tabs or for any error.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
 <section id="mthSelectedTab"><title>selected</title>
-<indexterm><primary>selected</primary>
-<secondary>TabControl class</secondary></indexterm>
+<indexterm><primary>selected</primary><secondary>Tab class</secondary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>selected</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~Selected----------------------------------------><
-
+>>--selected-------------------------------------><
 
 ]]>
 </programlisting>
@@ -820,12 +818,11 @@ the currently selected tab.</para>
 </section>
 
 <section id="mthSelectedIndexTab"><title>selectedIndex</title>
-<indexterm><primary>selectedIndex</primary>
-<secondary>TabControl class</secondary></indexterm>
+<indexterm><primary>selectedIndex</primary><secondary>Tab class</secondary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>selectedIndex</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~SelectedIndex-----------------------------------><
-
+>>--selectedIndex--------------------------------><
 
 ]]>
 </programlisting>
@@ -840,12 +837,11 @@ the currently selected tab.</para>
 </section>
 
 <section id="mthSelectTab"><title>select</title>
-<indexterm><primary>select</primary>
-<secondary>TabControl class</secondary></indexterm>
+<indexterm><primary>select</primary><secondary>Tab class</secondary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>select</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~select(--text--)--------------------------------><
-
+>>--select(--text--)-----------------------------><
 
 ]]>
 </programlisting>
@@ -867,42 +863,101 @@ label text.</para>
 </variablelist>
 </section>
 
+
 <section id="mthSelectIndexTab"><title>selectIndex</title>
-<indexterm><primary>selectIndex</primary>
-<secondary>TabControl class</secondary></indexterm>
+<indexterm><primary>selectIndex</primary><secondary>Tab class</secondary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>selectIndex</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~selectIndex(--tab--)----------------------------><
-
+>>--selectIndex(--index--)-----------------------><
 
 ]]>
 </programlisting>
 
-<para>The selectIndex method selects the specified tab
-in a tab control.</para>
+<para>
+  Selects a tab in the tab control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>tab</term>
-<listitem><para>The number of the tab to be selected.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The number of the previously selected tab, or -1 in all other
-cases.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthFocusTab"><title>focus</title>
-<indexterm><primary>focus</primary>
-<secondary>TabControl class</secondary></indexterm>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>index [required]</term>
+    <listitem>
+    <para>
+      The index of the tab to be selected.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The index of the previously selected tab on success, or -1 for any error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The tab control does not send a <link linkend="mthConnectTabEvent">SELCHANGING</link> or SELCHANGE event
+    <link linkend="ovvEvents">notification</link> when a tab is selected using this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example allows the user to push a button to go to the next or previous tabs. Note that the <emphasis
+    role="italic">onNewTab</emphasis> method is connected to the SELCHANGE event. Since the tab control does not
+    generate the SELCHAGE event when the <emphasis role="italic">selectIndex</emphasis> method is invoked, the program
+    just calls the <emphasis role="italic">onNewTab</emphasis> method directly.
 <programlisting>
 <![CDATA[
->>-aTabControl~focus(--tab--)----------------------------------><
 
+::method defineDialog
+
+  self~createTab(IDC_TAB, 10, 5, 305, 265)
+
+  self~createPushButton(IDC_PB_PREVIOUS, 10, 278, 60, 14, , "Previous Control", onPrevious)
+  self~createPushButton(IDC_PB_NEXT, 80, 278, 60, 14, , "Next Control", onNext)
+
+  self~connectTabEvent(IDC_TAB, SELCHANGE, onNewTab)
+
+  ...
+
+::method onNext
+  expose tabControl
+
+  tabControl~selectIndex(tabControl~selectedIndex + 1)
+  self~onNewTab
+
+
+::method onPrevious
+  expose tabControl
+
+  tabControl~selectIndex(tabControl~selectedIndex - 1)
+  self~onNewTab
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Tab::selectIndex() -->
+
+<section id="mthFocusTab"><title>focus</title>
+<indexterm><primary>focus</primary><secondary>Tab class</secondary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>focus</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--focus(--index--)-----------------------------><
 
 ]]>
 </programlisting>
@@ -913,8 +968,8 @@ tab in a tab control.</para>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
 <variablelist>
-<varlistentry><term>tab</term>
-<listitem><para>The number of the tab to receive the focus.
+<varlistentry><term>index</term>
+<listitem><para>The index of the tab to receive the focus.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -925,12 +980,11 @@ tab in a tab control.</para>
 </section>
 
 <section id="mthFocusedTab"><title>focused</title>
-<indexterm><primary>focused</primary>
-<secondary>TabControl class</secondary></indexterm>
+<indexterm><primary>focused</primary><secondary>Tab class</secondary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>focused</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~Focused-----------------------------------------><
-
+>>--focused--------------------------------------><
 
 ]]>
 </programlisting>
@@ -945,61 +999,59 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
 </section>
 
 <section id="mthSetImageListClsTabControl"><title>setImageList</title>
-<indexterm><primary>setImageList</primary>
-<secondary>TabControl class</secondary></indexterm>
+<indexterm><primary>setImageList</primary><secondary>Tab class</secondary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>setImageList</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setImageList(--newImageList--)---------------------------------------------><
+>>--setImageList(--newImageList--)---------------><
 ]]>
 </programlisting>
 
 <para>
-  Assigns, or removes, an image list for the tab control. Using <computeroutput>.nil</computeroutput>
-  for the first argument removes the current image list. Each tab can have an icon associated with it,
-  which is specified by an index in the image list for the tab control.
+  Assigns, or removes, an image list for the tab control. Using <computeroutput>.nil</computeroutput> for the first
+  argument removes the current image list. Each tab can have an icon associated with it, which is specified by an index
+  in the image list for the tab control.
 </para>
 <para>
-  Destroying a tab control does not destroy an image list that is associated with it. The programmer must
-  destroy the image list separately, if desired. This is useful if the programmer wants to assign the
-  same image list to multiple tab controls. In essence, the ownership of the image list remains with the
-  programmer. The <link linkend="clsImageList">ImageList</link> and <link linkend="clsImage">Image</link>
-  classes are used to manage image lists and images in ooDialog. The documentation on both classes
-  discusses when and why the programmer may want to release image lists. The Image class documentation
-  has the most detail on this subject.
+  Destroying a tab control does not destroy an image list that is associated with it. The programmer must destroy the
+  image list separately, if desired. This is useful if the programmer wants to assign the same image list to multiple
+  tab controls. In essence, the ownership of the image list remains with the programmer. The <link
+  linkend="clsImageList">ImageList</link> and <link linkend="clsImage">Image</link> classes are used to manage image
+  lists and images in ooDialog. The documentation on both classes discusses when and why the programmer may want to
+  release image lists. The Image class documentation has the most detail on this subject.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The single required argument is
+    <para>The single argument is
     <variablelist>
-      <varlistentry><term>newImageList</term>
+      <varlistentry><term>newImageList [required]</term>
       <listitem>
-        <para>
-          The <link linkend="clsImageList">image list</link> to assign to the tab control. If this
-          argument is <computeroutput>.nil</computeroutput> the existing image list, if any, is removed.
-        </para>
+      <para>
+        The <link linkend="clsImageList">image list</link> to assign to the tab control. If this argument is
+        <computeroutput>.nil</computeroutput> the existing image list, if any, is removed.
+      </para>
       </listitem></varlistentry>
     </variablelist>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The existing image list is returned, if there is one. Otherwise,
-      <computeroutput>.nil</computeroutput> is returned.
-    </para>
+  <para>
+    The existing image list is returned, if there is one. Otherwise, <computeroutput>.nil</computeroutput> is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example creates an image list from a bitmap file that is a series of 16x16 bitmaps, each one a
-      colored letter. The image list is then assigned to the tab control.
+  <para>
+    This example creates an image list from a bitmap file that is a series of 16x16 bitmaps, each one a
+    colored letter. The image list is then assigned to the tab control.
 <programlisting>
 <![CDATA[
 
@@ -1032,17 +1084,18 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
 
 ]]>
 </programlisting>
-    </para>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End TabControl::setImageList() -->
 
 <section id="mthGetImageListTab"><title>getImageList</title>
-<indexterm><primary>getImageList</primary>
-<secondary>TabControl class</secondary></indexterm>
+<indexterm><primary>getImageList</primary><secondary>Tab class</secondary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>getImageList</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getImageList----------------------------------------------------><
+>>--getImageList---------------------------------><
+
 ]]>
 </programlisting>
 
@@ -1052,22 +1105,22 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      There are no arguments to this method.
-    </para>
-    </listitem></varlistentry>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      This method returns the current <link linkend="clsImageList">image list</link>, if there is one.
-      <computeroutput>.nil</computeroutput> is returned if there is no current image list.
-    </para>
+  <para>
+    This method returns the current <link linkend="clsImageList">image list</link>, if there is one.
+    <computeroutput>.nil</computeroutput> is returned if there is no current image list.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example gets the current image list from the tab control when the dialog is closed and
-      releases it as it is no longer userd.
+  <para>
+    This example gets the current image list from the tab control when the dialog is closed and releases it as it is no
+    longer userd.
 <programlisting>
 <![CDATA[
 
@@ -1087,17 +1140,17 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
 
 ]]>
 </programlisting>
-    </para>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End TabControl::getImageList() -->
 
 <section id="mthSetPadding"><title>setPadding</title>
 <indexterm><primary>setPadding</primary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>setPadding</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~setPadding(--padX--,--padY--)-------------------><
-
+>>--setPadding(--padX--,--padY--)----------------><
 
 ]]>
 </programlisting>
@@ -1187,10 +1240,10 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
 
 <section id="mthSetSize"><title>setSize</title>
 <indexterm><primary>setSize</primary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>setSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~setSize(--width--,--height--)-------------------><
-
+>>--setSize(--width--,--height--)----------------><
 
 ]]>
 </programlisting>
@@ -1280,9 +1333,10 @@ tabs in a fixed-width or owner-drawn tab control.</para>
 
 <section id="mthPosRectangle"><title>posRectangle</title>
 <indexterm><primary>posRectangle</primary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>posRectangle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~posRectangle(--tab--)---------------------------><
+>>--posRectangle(--index--)----------------------><
 
 
 ]]>
@@ -1294,8 +1348,8 @@ around a tab in a tab control.</para>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
 <variablelist>
-<varlistentry><term>tab</term>
-<listitem><para>The number of the tab.
+<varlistentry><term>index</term>
+<listitem><para>The index of the tab.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1440,10 +1494,10 @@ The coordinates are separated by blanks and are in the following order:
 
 <section id="mthAdjustToRectangle"><title>adjustToRectangle</title>
 <indexterm><primary>adjustToRectangle</primary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>adjustToRectangle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~adjustToRectangle(--left--,--top--,--right--,--bottom--)-><
-
+>>--adjustToRectangle(--left--,--top--,--right--,--bottom--)-><
 
 ]]>
 </programlisting>
@@ -1483,10 +1537,10 @@ string. The coordinates are separated by blanks and are in the following order:
 
 <section id="mthRequiredWindowSize"><title>requiredWindowSize</title>
 <indexterm><primary>requiredWindowSize</primary></indexterm>
+<indexterm><primary>Tab class</primary><secondary>requiredWindowSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTabControl~requiredWindowSize(--left--,--top--,--right--,--bottom--)-><
-
+>>--requiredWindowSize(--left--,--top--,--right--,--bottom--)-><
 
 ]]>
 </programlisting>
