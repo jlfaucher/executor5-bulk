@@ -763,8 +763,8 @@
 <entry><link linkend="detersb">DetermineSBPosition</link></entry>
 </row>
 <row>
-<entry>DisableItem</entry>
-<entry><link linkend="h001229">DisableItem</link></entry>
+<entry><link linkend="mthDisableControl">disableControl</link></entry>
+<entry>Disables the dialog control with the specified ID.</entry>
 </row>
 <row>
 <entry>disconnectKeyPress</entry>
@@ -5899,7 +5899,7 @@ one of the check boxes instead.
 
 ::method defineDialog
 
-  self~addGroupBox(10, 20, 130, 90, "Check Needed Groceries", "", IDC_GB_LIST);
+  self~createGroupbox(IDC_GB_LIST, 10, 20, 130, 90, , "Check Needed Groceries");
   self~createCheckBox(IDC_CB_MILK, , 30, 35, , , "Milk", "GROUP");
   self~createCheckBox(IDC_CB_BREAD, , 30, 55, , , "Bread", "NOTAB");
   self~createCheckBox(IDC_CB_FRUIT, , 30, 75, , , "Fruit", "NOTAB");
@@ -5917,7 +5917,8 @@ one of the check boxes instead.
 
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+</para>
+</listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -6673,7 +6674,7 @@ Viewer</link> example.)
   fileName = editCntrl~getText
   viewDlg = .Viewer~new( , "fileView.h", self, fileName)
   if viewDlg~initCode = 0 then do
-    self~disableItem(IDC_PB_VIEW)
+    self~disableControl(IDC_PB_VIEW)
 
     viewDlg~create(30, 30, 170, 180, "Viewer", "MAXIMIZEBOX MINIMIZEBOX")
     viewDlg~popUpAsChild(self, "HIDE", , IDI_DLG_APPICON)
@@ -7141,30 +7142,59 @@ item. </para>
 </variablelist>
 </section>
 
-<section id="h001229"><title>DisableItem</title>
-<indexterm><primary>DisableItem</primary></indexterm>
+<section id="mthDisableControl"><title>disableControl</title>
+<indexterm><primary>disableControl</primary></indexterm>
+<indexterm><primary>dialog object class</primary><secondary>disableControl</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~DisableItem(--id--)----------------------------><
-
+>>--disableControl(--id--)-----------------------><
 
 ]]>
 </programlisting>
 
-<para>The DisableItem method disables the given dialog
-item. A disabled dialog item is usually indicated by a gray instead of a black
-title or text; it cannot be changed by the user. </para>
+<para>
+  Disables the control with the specified id.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the item
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource <link linkend="defResourceId">id</link> of the control to be disabled. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True if the control was previously disabled, or false if the control was not previously disabled. Note that this is
+    not the same as success or failure.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a control is disabled it receives no keyboard or mouse input. The user can not interact with it. The operating
+    system draws the control with a visual style that indicates to the user that the control is disabled.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End dialog object::disableControl() -->
 
 <section id="mthHideItem"><title>HideItem</title>
 <indexterm><primary>HideItem</primary></indexterm>
@@ -7784,7 +7814,7 @@ method is overridden and the text of the read-only multi-line edit control is
 set to the contents of the file.  In both dialogs, this method is used to get
 and save a reference to the edit control of the dialog.
 </para></listitem>
-<listitem><para><link linkend="h001229">DisableItem</link>: When the user clicks
+<listitem><para><link linkend="mthDisableControl">disableControl</link>: When the user clicks
 the &quot;View File&quot; button, the button is disabled until the user is
 finished viewing the file.  When a button is disabled it can not be clicked by
 the user.
@@ -7903,7 +7933,7 @@ still minimized, then this method restores it to its normal position.
   fileName = editCntrl~getText
   viewDlg = .Viewer~new( , "fileView.h", self, fileName)
   if viewDlg~initCode = 0 then do
-    self~disableItem(IDC_PB_VIEW)
+    self~disableControl(IDC_PB_VIEW)
 
     viewDlg~create(30, 30, 170, 180, "Viewer", "MAXIMIZEBOX MINIMIZEBOX")
     viewDlg~popUpAsChild(self, "HIDE", , IDI_DLG_APPICON)

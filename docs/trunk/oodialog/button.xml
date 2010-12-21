@@ -80,7 +80,7 @@
 <tbody>
 <row>
 <entry>Push Button</entry>
-<entry><link linkend="clsButton">ButtonControl Class</link></entry>
+<entry><link linkend="clsButton">Button Class</link></entry>
 </row>
 <row>
 <entry>Check Box Button</entry>
@@ -97,19 +97,19 @@
 <row>
 <entry>Owner Drawn Button</entry>
 <entry><link linkend="anibut">AnimatedButton Class</link>,
-<link linkend="clsButton">ButtonControl Class</link></entry>
+<link linkend="clsButton">Button Class</link></entry>
 </row>
 </tbody></tgroup>
 </table>
 </para>
 
 <section id="clsButton"><title>Push Buttons</title>
-<indexterm><primary>ButtonControl class</primary></indexterm>
+<indexterm><primary>Button class</primary></indexterm>
 <indexterm><primary>Push buttons</primary></indexterm>
 <para>
-  Push buttons are rectangular controls containing a label (a text string,) an icon, or a bitmap defined
-  by the programmer. The label or image  indicates what the button does when it is pushed or clicked. A
-  push button is either standard or default.
+  Push buttons are rectangular controls containing a label (a text string,) and an image defined by the programmer. The
+  label or image indicates what the button does when it is pushed or clicked. A push button is either standard or
+  default.
 </para>
 <para>
   Standard push  buttons usually start an operation. The button will receive the keyboard focus when the
@@ -119,65 +119,51 @@
   matter which control currently has the input focus.
 </para>
 <para>
-  The <computeroutput>ButtonControl</computeroutput> class provides methods to query and modify all types of button
+  The <computeroutput>Button</computeroutput> class provides methods to query and modify all types of button
   controls, including push buttons. It is the superclass of both the <link linkend="clsRadiobutton">RadioButton</link>
-  and <link linkend="clsCheckbox">CheckBox</link> classes. In addition, the class has methods that allow the Rexx
-  programmer to partially implement owner drawn buttons using bitmaps.
+  and <link linkend="clsCheckbox">CheckBox</link> classes. The class also has methods that allow the Rexx programmer to
+  partially implement owner drawn buttons using bitmaps.
 </para>
+<para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with push buttons:
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
-  <listitem>
-    <para>
-      The button control class is a subclass of the <link linkend="chpDialogControlObject">DialogControl</link>
-      class and therefore inherits all methods of that class.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Mixin Class Inherits:</emphasis></term>
-  <listitem>
-    <para>
-      The button control class inherits from the following mixin classes, (indirectly through the
-      DialogControl class.)
-    </para>
-    <para>
-      The <link linkend="clsWindowBase">WindowBase</link>
-    </para>
-    <para>
-      The <link linkend="clsWindowExtensions">WindowExtensions</link>
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
-    <para>
-      Use the <link linkend="mthNewPushButton">newPushButton</link>() method to retrieve an object of
-      the button control class.
-    </para>
+  <para>
+    Use the <link linkend="tmthNewPushButton">newPushButton</link>() method of the <link
+    linkend="chpDialogObject">dialog</link> object to retrieve a new <computeroutput>Button</computeroutput> object.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
-    <para>
-      To dynamically define a button control in a <link linkend="clsUserDialog">UserDialog</link> class,
-      use one of the create button control methods described in the <link linkend="sctCreateButtonControls">Create
-      Button Controls</link> section. That section also describes methods for creating radio buttons, check boxes,
-      etc..
-    </para>
+  <para>
+    To dynamically define a push button control in a <link linkend="clsUserDialog">UserDialog</link> class, use the
+    <link linkend="mthCreatePushButton">createPushButton</link> method. There are also a number of methods that create
+    groups of push buttons. These methods are described  described in the <link linkend="sctCreateButtonControls">Create
+    Button Controls</link> section. That section also describes methods for creating radio buttons, check boxes, etc..
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
-    <para>
-      Use the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method to recieve notifications of
-      button events.
-    </para>
-  </listitem></varlistentry>
+  <para>
+    To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying push button to a method
+    in the Rexx dialog object use the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
+  </para>
+</listitem></varlistentry>
 </variablelist>
+</para>
 
-<section id="sctMethodsButtonControl"><title>Method Table</title>
+<section id="sctMethodsButton"><title>Method Table</title>
 
 <para>
-  The <computeroutput>ButtonControl</computeroutput> class implements the class and instance methods listed in the following table.
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with Button objects, including the pertinent methods from other classes:
 </para>
-<table id="t000023" frame="all">
-<title>ButtonControl Instance Methods</title>
+<table id="tblButtonMethods" frame="all">
+<title>Button Methods</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
 <entry>Method</entry>
@@ -185,6 +171,30 @@
 </row>
 </thead>
 <tbody>
+<row>
+<entry align="center"><emphasis role="bold">Useful</emphasis></entry>
+<entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="tmthNewPushButton">newUpDown</link></entry>
+<entry>Returns an <computeroutput>Button</computeroutput> object for the control with the specified ID.</entry>
+</row>
+<row>
+<entry><link linkend="tmthCreatePushButton">createPushButton</link></entry>
+<entry>Creates an up-down control in the dialog template of a <link linkend="clsUserDialog">UserDialog</link></entry>
+</row>
+<row>
+<entry><link linkend="tmthConnectButtonEvent">connectButtonEvent</link></entry>
+<entry>Connects button event notifications to a method in the Rexx dialog object</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
 <row>
 <entry>changeBitmap</entry>
 <entry><link linkend="changebitmap">changeBitmap</link></entry>
@@ -277,8 +287,54 @@
 </table>
 </section>
 
+<section id="tmthNewPushButton"><title>newPushButton (dialog object method)</title>
+<para>
+  Push button objects can not be instantiated by the programmer from Rexx code. Rather a push button object is obtained
+  by using the <link linkend="mthNewPushButton">newPushButton</link>() method of the dialog <link
+  linkend="chpDialogObject">object</link>. The syntax is:
+<programlisting>
+<![CDATA[
+>>-newPushButton(--id--)-----------------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End newPushButton() [PlainBaseDialog method] -->
+
+
+<section id="tmthCreatePushButton"><title>createPushButton (UserDialog method)</title>
+<para>
+  A push button object can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link> dialog
+  through the <link linkend="mthCreatePushButton">createPushButton</link>() method. The basic syntax is:
+<programlisting>
+<![CDATA[
+>>--createPushButton(-id-,-x-,-y-,-cx-,-cy-,-+---------+-+-------+-+-------+-)-><
+                                             +-,-style-+ +-,-txt-+ +-,-mth-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createPushButton() [UserDialog method] -->
+
+
+<section id="tmthConnectButtonEvent"><title>connectButtonEvent (dialog object method)</title>
+<para>
+  To connect event notifications from a button object use the <link
+  linkend="mthConnectButtonEvent">connectButtonEvent</link>() method of the <link
+  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
+
+<programlisting> <![CDATA[
+>>-connectButtonEvent(--id--,--event--+----------------+--)------------><
+                                      +--,-methodName--+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End connectButtonEvent() [EventNotification method] -->
+
+
 <section id="mthPush"><title>push</title>
-<indexterm><primary>push</primary><secondary>ButtonControl class</secondary></indexterm>
+<indexterm><primary>push</primary><secondary>Button class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--push---------------------------------------><
@@ -323,7 +379,7 @@ return .true
 
 <section id="mthClick"><title>click</title>
 <indexterm><primary>click</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<secondary>Button class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--click----------------------------------------><
@@ -511,7 +567,7 @@ one of the ooDialog methods that move the focus: <link linkend="tabtonext">TabTo
 
 <section id="stylenew"><title>style=</title>
 <indexterm><primary>style=</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<secondary>Button class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--style=--newStyle-----------------------------><
@@ -859,7 +915,7 @@ say '  Bottom:' margins~bottom
 
 <section id="mthSetTextMargin"><title>setTextMargin</title>
 <indexterm><primary>setTextMargin</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<secondary>Button class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--setTextMargin(--margins--)-------------------><
@@ -918,7 +974,7 @@ self~newPushButton(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 
 <section id="mthGetImageList"><title>getImageList</title>
 <indexterm><primary>getImageList</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<secondary>Button class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getImageList---------------------------------><
@@ -1219,7 +1275,7 @@ return 0
 
 <section id="mthGetImage"><title>getImage</title>
 <indexterm><primary>getImage</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<secondary>Button class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getImage----------------------------------------------------><
@@ -1266,7 +1322,7 @@ return 0
 
 <section id="mthSetImage"><title>setImage</title>
 <indexterm><primary>setImage</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<secondary>Button class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--setImage(-newImage-)----------------------------------------><
@@ -1416,7 +1472,7 @@ button~ChangeBitmap("AddBut_n.bmp", "AddBut_f.bmp", "AddBut_s.bmp", ,
 
 <section id="displacebitmap"><title>DisplaceBitmap</title>
 <indexterm><primary>DisplaceBitmap</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<secondary>Button class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aButtonControl~DisplaceBitmap(--x--,--y--)------------------><
@@ -1458,7 +1514,7 @@ button~DisplacementBitmap(244, dx+4, dy-3)
 
 <section id="getbmpdisplacement"><title>GetBmpDisplacement</title>
 <indexterm><primary>GetBmpDisplacement</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<secondary>Button class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aButtonControl~GetBmpDisplacement---------------------------><
@@ -1482,7 +1538,7 @@ and separated by a blank.
 
 <section id="scrollbc"><title>scroll</title>
 <indexterm><primary>scroll</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<secondary>Button class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aButtonControl~scroll(--xPos--,--yPos--,--left--,--top--,--right--,--bottom--)-><
@@ -1511,7 +1567,7 @@ color. It is used to move bitmaps within bitmap buttons.</para>
 
 <section id="scrolltextbc"><title>ScrollText</title>
 <indexterm><primary>ScrollText</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<secondary>Button class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                                          +-10-------+
@@ -1601,7 +1657,7 @@ button~ScrollText("Hello world!", "Arial", 36, "BOLD ITALIC", 2, 3, 15, 4)
 
 <section id="getbitmapsizex"><title>GetBitmapSizeX</title>
 <indexterm><primary>GetBitmapSizeX</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<secondary>Button class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aButtonControl~GetBitmapSizeX-------------------------------><
@@ -1621,7 +1677,7 @@ the bitmap that is set for the associated button.</para>
 
 <section id="getbitmapsizey"><title>GetBitmapSizeY</title>
 <indexterm><primary>GetBitmapSizeY</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<secondary>Button class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aButtonControl~GetBitmapSizeY-------------------------------><
@@ -1641,7 +1697,7 @@ of the bitmap that is set for the associated button.</para>
 
 <section id="drawbitmap"><title>DrawBitmap</title>
 <indexterm><primary>DrawBitmap</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<secondary>Button class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                +-0----+     +-0----+     +-0----+
@@ -1738,7 +1794,7 @@ The default is 10.
 
 <section id="scrollbitmapfromto"><title>ScrollBitmapFromTo</title>
 <indexterm><primary>ScrollBitmapFromTo</primary>
-<secondary>ButtonControl class</secondary></indexterm>
+<secondary>Button class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aButtonControl~ScrollBitmapFromTo(--fromX--,--fromY--,--toX--,--toY--,-->
@@ -1768,63 +1824,48 @@ within the associated bitmap button from one position to another.</para>
 <para>
   The RadioButton class provides methods to query and modify radio button controls.
 </para>
+<para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with radio button controls:
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
-  <listitem>
-    <para>
-      The radio button class is a direct subclass of the <link
-      linkend="clsButton">ButtonControl</link> class, and therefore an indirect subclass of the
-      <link linkend="chpDialogControlObject">DialogControl class</link> class. Thus it inherits all the methods
-      of both classes.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Mixin Class Inherits:</emphasis></term>
-  <listitem>
-    <para>
-      The radio button class inherits from the following mixin classes, (indirectly through the
-      DialogControl class.)
-    </para>
-    <para>
-      The <link linkend="clsWindowBase">WindowBase</link>
-    </para>
-    <para>
-      The <link linkend="clsWindowExtensions">WindowExtensions</link>
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
-    <para>
-      Use the <link linkend="mthNewRadioButton">newRadioButton</link>() method to retrieve an object of
-      the radio button class.
-    </para>
+  <para>
+    Use the <link linkend="tmthNewRadioButton">newRadioButton</link>() method of the <link
+    linkend="chpDialogObject">dialog</link> object to retrieve a new <computeroutput>RadioButton</computeroutput>
+    object.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
-    <para>
-      To dynamically define a radio button in a <link linkend="clsUserDialog">UserDialog</link> class,
-      use one of the create btton control methods described in the <link linkend="sctCreateButtonControls">Create Button
-      Controls</link> section. That section also describes methods for creating push buttons, check boxes,
-      etc.. All the methods to create radio buttons begin with: <emphasis role="italic">createRadio</emphasis>.
-    </para>
+  <para>
+    To dynamically define a radio button in a <link linkend="clsUserDialog">UserDialog</link> class, use the
+    <link linkend="mthCreateRadioButton">createRadioButton</link> method. There are also a number of methods that create
+    groups of radio buttons. These methods are described  described in the <link
+    linkend="sctCreateButtonControls">Create Button Controls</link> section. That section also describes methods for
+    creating push buttons, check boxes, etc..
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
-    <para>
-      A radio button, is a button, and the programmer uses the same method to recieve notifications of
-      of events as with a ButtonControl: <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
-    </para>
+  <para>
+    To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying radio button control to a
+    method in the Rexx dialog object use the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
+  </para>
   </listitem></varlistentry>
 </variablelist>
+</para>
 
 <section id="sctMethodsRadioButton"><title>Method Table</title>
 
 <para>
-  The <computeroutput>RadioButton</computeroutput> class implements the class and instance methods listed in the
-  following table:
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with RadioButton objects, including the pertinent methods from other classes.
 </para>
-<table id="t000024" frame="all">
+<table id="tblRadioButtonMethods" frame="all">
 <title>RadioButton Class and Instance Methods</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
 <entry>Method</entry>
@@ -1833,8 +1874,32 @@ within the associated bitmap button from one position to another.</para>
 </thead>
 <tbody>
 <row>
-<entry>checkInGroup (Class)</entry>
+<entry align="center"><emphasis role="bold">Useful</emphasis></entry>
+<entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="tmthNewRadioButton">newUpDown</link></entry>
+<entry>Returns an <computeroutput>RadionButton</computeroutput> object for the control with the specified ID.</entry>
+</row>
+<row>
+<entry><link linkend="tmthCreateRadioButton">createRadiobutton</link></entry>
+<entry>Creates a radio button in the dialog template of a <link linkend="clsUserDialog">UserDialog</link></entry>
+</row>
+<row>
+<entry><link linkend="tmthConnectButtonEvent">connectButtonEvent</link></entry>
+<entry>Connects button event notifications to a method in the Rexx dialog object</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry>checkInGroup</entry>
 <entry><link linkend="mthCheckInGroupCls">checkInGroup</link></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
 <entry>check</entry>
@@ -1856,6 +1921,36 @@ within the associated bitmap button from one position to another.</para>
 </table>
 
 </section>
+
+<section id="tmthNewRadioButton"><title>newRadioButton (dialog object method)</title>
+<para>
+  Radio button objects can not be instantiated by the programmer from Rexx code. Rather a radio button object is
+  obtained by using the <link linkend="mthNewRadioButton">newRadioButton</link>() method of the dialog <link
+  linkend="chpDialogObject">object</link>. The syntax is:
+<programlisting>
+<![CDATA[
+>>-newRadioButton(--id--)-----------------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End newRadioButton() [PlainBaseDialog method] -->
+
+
+<section id="tmthCreateRadioButton"><title>createRadioButton (UserDialog method)</title>
+<para>
+  A radio button object can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link> dialog
+  through the <link linkend="mthCreateRadioButton">createRadioButton</link>() method. The basic syntax is:
+<programlisting>
+<![CDATA[
+>>--createRadioButton(-id-,-x-,-y-,-cx-,-cy-,-+-----+-+-------+-+-------+-+-----+-)-><
+                                              +-,-s-+ +-,-txt-+ +-,-mth-+ +-,-o-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createPushButton() [UserDialog method] -->
+
 
 <section id="mthcheckInGroupCls"><title>checkInGroup (Class)</title>
 <indexterm><primary>checkInGroup</primary></indexterm>
@@ -2095,7 +2190,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
     <para>
       The check box class is a direct subclass of the <link linkend="clsRadioButton">RadioButton</link>
       class, and therefore an indirect subclass of the <link
-      linkend="clsButton">ButtonControl</link> class and the <link
+      linkend="clsButton">Button</link> class and the <link
       linkend="chpDialogControlObject">DialogControl class</link> class. It inherits all the methods of all
       three classes.
     </para>
@@ -2324,7 +2419,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
     <para>
       Although the group box is a button, since it does not have a state, can not be selected, does not
       send notifications, etc., it does not inherit from the <link
-      linkend="clsButton">ButtonControl</link> class. A group box does not share behaviour or
+      linkend="clsButton">Button</link> class. A group box does not share behaviour or
       characteristics with the other button classes. Therefore, the group box class is a direct subclass
       of the <link linkend="chpDialogControlObject">DialogControl</link> class. It therefore inherits all
       methods of that class.
@@ -2354,7 +2449,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   <listitem>
     <para>
       To dynamically define a group box in a <link linkend="clsUserDialog">UserDialog</link> class, use
-      the <link linkend="mthAddGroupBox">addGroupBox</link>() method.
+      the <link linkend="mthCreateGroupBox">createGroupbox</link>() method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>

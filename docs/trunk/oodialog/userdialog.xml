@@ -120,8 +120,8 @@
 <entry>Adds the file name for an icon resource to the dialog.</entry>
 </row>
 <row>
-<entry>addBitmapButton</entry>
-<entry><link linkend="mthAddBitmapButton">addBitmapButton</link></entry>
+<entry>createBitmapButton</entry>
+<entry><link linkend="mthCreateBitmapButton">createBitmapButton</link></entry>
 </row>
 <row>
 <entry>createPushButton</entry>
@@ -216,8 +216,8 @@
 <entry><link linkend="mthCreateEdit">createEdit</link></entry>
 </row>
 <row>
-<entry>addGroupBox</entry>
-<entry><link linkend="mthAddGroupBox">addGroupBox</link></entry>
+<entry>createGroupbox</entry>
+<entry><link linkend="mthCreateGroupBox">createGroupbox</link></entry>
 </row>
 <row>
 <entry>addInput</entry>
@@ -276,16 +276,16 @@
 <entry><link linkend="mthAddPasswordLine">addPasswordLine</link></entry>
 </row>
 <row>
-<entry>addRadioButton</entry>
-<entry><link linkend="mthAddRadioButton">addRadioButton</link></entry>
+<entry><link linkend="mthCreateRadioButton">addRadioButton</link></entry>
+<entry>createRadioButton</entry>
 </row>
 <row>
-<entry>addRadioGroup</entry>
-<entry><link linkend="mthAddRadioGroup">addRadioGroup</link></entry>
+<entry>createRadioButtonGroup</entry>
+<entry><link linkend="mthCreateRadioButtonGroup">createRadioButtonGroup</link></entry>
 </row>
 <row>
-<entry>addRadioStem</entry>
-<entry><link linkend="mthAddRadioStem">addRadioStem</link></entry>
+<entry>createRadioButtonStem</entry>
+<entry><link linkend="mthCreateRadioButtonStem">createRadioButtonStem</link></entry>
 </row>
 <row>
 <entry>addScrollBar</entry>
@@ -1097,7 +1097,7 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
     </listitem>
     <listitem>
     <para>
-      The icon can be loaded into memory by using the <link linkend="mthUserIcon">useIcon</link>() method of the <link
+      The icon can be loaded into memory by using the <link linkend="mthUserIcon">userIcon</link>() method of the <link
       linkend="clsImage">Image</link> class.
     </para>
     </listitem>
@@ -1151,13 +1151,14 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
 </para>
 <para>
   During the <link linkend="termMethodNameUnification">effort</link> to unify the method names in ooDialog, all the
-  create... methods were renamed and also had their argument order made consistent. The create... methods all follow
-  these general guidelines
+  add... methods were renamed to create... methods. Where needed, some of these methods had their argument order changed
+  so that the order was consistent for all the create... methods. The create... methods all follow these general
+  guidelines
   <itemizedlist>
   <listitem>
   <para>
     The names of the methods all have the format <computeroutput>create[ControlName]</computeroutput> for a single
-    control or <computeroutput>create[GroupIndicator]</computeroutput> for a group of controls where
+    control or <computeroutput>create[ControlName][GroupIndicator]</computeroutput> for a group of controls where
     <computeroutput>[ControlName]</computeroutput> is the name of the individual control and
     <computeroutput>[GroupIndicator]</computeroutput> hints at what the group of controls is and how the controls are
     passed to the method.
@@ -1257,7 +1258,7 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
   <para>
     All controls can have their enabled style changed during program execution by using the <link
     linkend="mthDisable">disable</link> or <link linkend="mthEnable">enable</link> methods. (Or any of the related
-    methods like <link linkend="h001229">DisableItem</link>, <link linkend="h001221">EnableItem</link>, etc..)
+    methods like <link linkend="mthDisableControl">disableControl</link>, <link linkend="h001221">EnableItem</link>, etc..)
   </para></listitem>
   </varlistentry>
   <varlistentry><term id="wsborder"><emphasis role="bold">BORDER, NOBORDER</emphasis></term>
@@ -3552,280 +3553,52 @@ return 0
   linkend="chapButtonControls">button controls</link> for more information.
 </para>
 
-<section id="mthAddGroupBox"><title>addGroupBox</title>
-<indexterm><primary>addGroupBox</primary></indexterm>
+<section id="mthCreateGroupBox"><title>createGroupbox</title>
+<indexterm><primary>createGroupbox</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-dlg~addGroupBox(--x-,-y-,-cx-,-cy--+---------+-+-----------+-+--------+--)-----><
-                                      +-,-text--+ +-,--style--+ +-,--id--+
+>>--createGroupbox(-+------+-,-x-,-y-,-cx-,-cy--+---------+-+--------+-)-------><
+                    +--id--+                    +-,-style-+ +-,-text-+
 ]]>
 </programlisting>
 
 <para>
-  The addGroupBox method adds a group box to the dialog. A group box is a button control, not a
-  static control. A group box can have a frame and a label
+  The <emphasis role="italic">createGroupbox</emphasis> method adds a <link linkend="clsGroupBox">group box</link> to
+  the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      This method takes the following arguments.
-    </para>
-    <variablelist>
-      <varlistentry><term>x, y, cx, cy</term>
-      <listitem>
-        <para>
-          The  control <link linkend="paraControlCoordinates">coordinates</link>
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>text</term>
-      <listitem>
-        <para>
-          The text for the group box label
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>style</term>
-      <listitem>
-        <para>
-          A list of 0 or more <link linkend="paraStyleExplanation">style</link> keywords separated by
-          spaces:
-          <variablelist>
-            <varlistentry><term>RIGHT</term>
-            <listitem>
-              <para>
-                Normally the text is aligned to the upper left of the group box frame.  This style
-                aligns the text to the upper right of the frame
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>HIDDEN</term>
-            <listitem>
-              <para>
-                The <link linkend="wsvisible">not visible</link> window style.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>DISABLED</term>
-            <listitem>
-              <para>
-                The <link linkend="wsdisabled">not enabled</link> window style.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>BORDER</term>
-            <listitem>
-              <para>
-                The <link linkend="wsborder">border</link> window style.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>GROUP</term>
-            <listitem>
-              <para>
-                The <link linkend="wsgroup">group</link> control style.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>TAB</term>
-            <listitem>
-              <para>
-                The <link linkend="wstabstop">tabstop</link> control style.
-              </para>
-            </listitem></varlistentry>
-          </variablelist>
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>id</term>
-      <listitem>
-        <para>
-          The resource <link linkend="idArgument">ID</link> for the group box.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-      <listitem>
-        <para>
-          The possible return values are:
-          <variablelist>
-          <varlistentry><term>0</term>
-          <listitem>
-            <para>
-              Success.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>less than 0</term>
-          <listitem>
-            <para>
-              Error with the in-memory dialog template or with the resource ID.
-            </para>
-          </listitem></varlistentry>
-          </variablelist>
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthCreatePushButton"><title>createPushButton</title>
-<indexterm><primary>createPushButton</primary></indexterm>
-<programlisting>
-<![CDATA[
-
->>--createPushButton(-id-,-x-,-y-,-cx-,-cy-,-+-------+-+-----------+-+--------+-)-><
-                                             +-,-txt-+ +-,-mthName-+ +-,-opts-+
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">createPushButton</emphasis> method adds a push <link linkend="clsButton">button</link> to
-  the dialog template and optionally connects it with a method that is invoked whenever the button is clicked.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem><para>The arguments are:
+  <para>
+    This method takes the following arguments.
+  </para>
   <variablelist>
-    <varlistentry><term>id [required]</term>
+    <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      The resource <link linkend="idArgument">ID</link> for the button.
+      The resource <link linkend="idArgument">ID</link> for the group box. If omitted, -1 is used for the resource id.
+      Group boxes normally are give -1 for their resource id because there is usually no need for the programmer to
+      interact with a group box. However, if the programmer wants to modify something in the underlying group box, say
+      to change its size, change its text, etc., then a positive resource id is needed.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y, cx, cy [required]</term>
     <listitem>
     <para>
-      The  control <link linkend="paraControlCoordinates">coordinates</link>
+      The  control <link linkend="paraControlCoordinates">coordinates</link>.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>txt [optional]</term>
+    <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
-      Optional. The text for the label of the button.  The default is the empty string.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mthName [optional]</term>
-    <listitem>
-    <para>
-      Optional. The name of a method of the dialog class that is to be invoked each time the button is
-      clicked.  This serves the same purpose as the <link
-      linkend="mthConnectButtonEvent">connectButtonEvent</link>() method for the CLICKED event.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>opts [otpional]</term>
-    <listitem>
-    <para>
-      A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-      separated by spaces:
-    </para>
-    <para>
-      <simplelist type='vert' columns='3'>
-        <member>DEFAULT  </member>
-        <member>OWNER    </member>
-        <member>BITMAP   </member>
-        <member>ICON     </member>
-        <member>LEFT     </member>
-        <member>RIGHT    </member>
-        <member>HCENTER  </member>
-        <member>TOP      </member>
-        <member>BOTTOM   </member>
-        <member>VCENTER  </member>
-        <member>MULTILINE</member>
-        <member>NOTIFY   </member>
-        <member>FLAT     </member>
-        <member>HIDDEN   </member>
-        <member>DISABLED </member>
-        <member>BORDER   </member>
-        <member>GROUP    </member>
-        <member>NOTAB    </member>
-      </simplelist>
+      A list of 0 or more <link linkend="paraStyleExplanation">style</link> keywords separated by
+      spaces:
       <variablelist>
-        <varlistentry><term>DEFAULT</term>
-        <listitem>
-        <para>
-          The button becomes the default button in the dialog.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>OWNER</term>
-        <listitem>
-        <para>
-          The programmer is completely responsible for drawing the button when the dialog receives
-          the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
-          implement in ooDialog.  A simpler approach for an owner drawn button is to use an image
-          list with the button.  See the <link
-          linkend="mthSetImageList">setImageList</link>() method.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>ICON</term>
-        <listitem>
-        <para>
-          The button displays an icon image.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>BITMAP</term>
-        <listitem>
-        <para>
-          The button displays a bitmap image.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>LEFT</term>
-        <listitem>
-        <para>
-          Left justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
-          the text is centered in the button rectangle.
-        </para>
-        </listitem></varlistentry>
         <varlistentry><term>RIGHT</term>
         <listitem>
         <para>
-          Right justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
-          the text is centered in the button rectangle.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>HCENTER</term>
-        <listitem>
-        <para>
-          The button has its text centered horizontally in the button rectangle.  This is the default
-          if neither LEFT nor RIGHT are specified.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>TOP</term>
-        <listitem>
-        <para>
-          The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
-          specified the text is vertically centered in the button rectangle.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>BOTTOM</term>
-        <listitem>
-        <para>
-          The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
-          specified the text is vertically centered in the button rectangle.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>VCENTER</term>
-        <listitem>
-        <para>
-          The text is vertically centered in the button rectanble.  This is the default if neither
-          TOP nor BOTTOM are specified.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>MULTILINE</term>
-        <listitem>
-        <para>
-          If the text for the label of the button is longer than the width of the button rectangle,
-          the operating system will word wrap the text producing more than one line.  The height of
-          the button rectangle has to be sufficient to display the extra line(s) or the text is
-          clipped.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>NOTIFY</term>
-        <listitem>
-        <para>
-          Enables the button to send notifications for the gained focus,lost focus, and double click
-          events.  This is only necessary when the <link
-          linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
-          the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>FLAT</term>
-        <listitem>
-        <para>
-          The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
-          text inside the rectangle.
+          Normally the text is aligned to the upper left of the group box frame.  This style aligns the text to the
+          upper right of the frame
         </para>
         </listitem></varlistentry>
         <varlistentry><term>HIDDEN</term>
@@ -3852,17 +3625,251 @@ return 0
           The <link linkend="wsgroup">group</link> control style.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>NOTAB</term>
+        <varlistentry><term>TAB</term>
         <listitem>
         <para>
-          The no <link linkend="wstabstop">tabstop</link> control style.
+          The <link linkend="wstabstop">tabstop</link> control style.
         </para>
         </listitem></varlistentry>
       </variablelist>
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>text [optional]</term>
+    <listitem>
+    <para>
+      The text for the group box label.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
-  </para></listitem></varlistentry>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than 0</term>
+      <listitem>
+      <para>
+        Error with the in-memory dialog template or with the resource ID.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthCreatePushButton"><title>createPushButton</title>
+<indexterm><primary>createPushButton</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--createPushButton(-id-,-x-,-y-,-cx-,-cy-,-+---------+-+-------+-+-------+-)-><
+                                             +-,-style-+ +-,-txt-+ +-,-mth-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">createPushButton</emphasis> method adds a push <link linkend="clsButton">button</link> to
+  the dialog template and optionally connects it with a method that is invoked whenever the button is clicked.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource <link linkend="idArgument">ID</link> for the button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y, cx, cy [required]</term>
+      <listitem>
+      <para>
+        The  control <link linkend="paraControlCoordinates">coordinates</link>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style [otpional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+        separated by spaces:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>DEFAULT  </member>
+          <member>OWNER    </member>
+          <member>BITMAP   </member>
+          <member>ICON     </member>
+          <member>LEFT     </member>
+          <member>RIGHT    </member>
+          <member>HCENTER  </member>
+          <member>TOP      </member>
+          <member>BOTTOM   </member>
+          <member>VCENTER  </member>
+          <member>MULTILINE</member>
+          <member>NOTIFY   </member>
+          <member>FLAT     </member>
+          <member>HIDDEN   </member>
+          <member>DISABLED </member>
+          <member>BORDER   </member>
+          <member>GROUP    </member>
+          <member>NOTAB    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>DEFAULT</term>
+          <listitem>
+          <para>
+            The button becomes the default button in the dialog.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>OWNER</term>
+          <listitem>
+          <para>
+            The programmer is completely responsible for drawing the button when the dialog receives
+            the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
+            implement in ooDialog.  A simpler approach for an owner drawn button is to use an image
+            list with the button.  See the <link
+            linkend="mthSetImageList">setImageList</link>() method.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ICON</term>
+          <listitem>
+          <para>
+            The button displays an icon image.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BITMAP</term>
+          <listitem>
+          <para>
+            The button displays a bitmap image.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LEFT</term>
+          <listitem>
+          <para>
+            Left justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
+            the text is centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RIGHT</term>
+          <listitem>
+          <para>
+            Right justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
+            the text is centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HCENTER</term>
+          <listitem>
+          <para>
+            The button has its text centered horizontally in the button rectangle.  This is the default
+            if neither LEFT nor RIGHT are specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TOP</term>
+          <listitem>
+          <para>
+            The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
+            specified the text is vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BOTTOM</term>
+          <listitem>
+          <para>
+            The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
+            specified the text is vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VCENTER</term>
+          <listitem>
+          <para>
+            The text is vertically centered in the button rectanble.  This is the default if neither
+            TOP nor BOTTOM are specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MULTILINE</term>
+          <listitem>
+          <para>
+            If the text for the label of the button is longer than the width of the button rectangle,
+            the operating system will word wrap the text producing more than one line.  The height of
+            the button rectangle has to be sufficient to display the extra line(s) or the text is
+            clipped.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTIFY</term>
+          <listitem>
+          <para>
+            Enables the button to send notifications for the gained focus,lost focus, and double click
+            events.  This is only necessary when the <link
+            linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
+            the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FLAT</term>
+          <listitem>
+          <para>
+            The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
+            text inside the rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            The <link linkend="wsvisible">not visible</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+          <para>
+            The <link linkend="wsdisabled">not enabled</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BORDER</term>
+          <listitem>
+          <para>
+            The <link linkend="wsborder">border</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+          <para>
+            The <link linkend="wsgroup">group</link> control style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+          <para>
+            The no <link linkend="wstabstop">tabstop</link> control style.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>txt [optional]</term>
+      <listitem>
+      <para>
+        The text for the label of the button.  The default is the empty string.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>mth [optional]</term>
+      <listitem>
+      <para>
+        The name of a method of the Rexx dialog that is to be invoked each time the button is clicked.  This serves the
+        same purpose as the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method for the CLICKED
+        event.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
@@ -3886,10 +3893,10 @@ return 0
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example creates a push button entitled "Get new Info" at position x=100, y=80 and
-    size width=40, height=15. The button's ID is 555, and if the button is clicked, the getInfo message
-    is sent to the dialog object.  The button is created without the tabstop style.  If the user
-    navigates the dialog using the keyboard, the tab key will skip over the button.
+    The following example creates a push button with a label of "Get new Info" at position x=100, y=80 and
+    size width=40, height=15. The button's ID is 555, and if the button is clicked, the <emphasis
+    role="italic">getInfo</emphasis> method in the Rexx dialog is invoked. The button is created without the tabstop
+    style.  If the user navigates the dialog using the keyboard, the tab key will skip over the button.
 <programlisting>
 <![CDATA[
 MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&Get new Info", "getInfo")
@@ -3901,248 +3908,260 @@ MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&Get new Info", "getIn
 </variablelist>
 </section>
 
-<section id="mthAddBitmapButton"><title>addBitmapButton</title>
-<indexterm><primary>addBitmapButton</primary></indexterm>
+<section id="mthCreateBitmapButton"><title>createBitmapButton</title>
+<indexterm><primary>createBitmapButton</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-addBitmapButton(--id-,-x-,-y--+------+-+------+-+--------+--+-----------+-,-normal-->
-                                 +-,-cx-+ +-,-cy-+ +-,-text-+  +-,-msgName-+
+>>-addBitmapButton(-id-,-x-,-y-+------+-+------+-+----------+-+--------+------->
+                               +-,-cx-+ +-,-cy-+ +-,-style--+ +-,-text-+
 
->--+------------+--+-------------+--+-------------+--+----------+---------------------><
-   +-,-focused--+  +-,-selected--+  +-,-disabled--+  +-,-style--+
+>--+------------+-,-normal-+------------+--+-------------+--+-------------+----><
+   +-,-methName-+          +-,-focused--+  +-,-selected--+  +-,-disabled--+
 ]]>
 </programlisting>
 <para>
-  The addBitmapButton method adds a push button with a bitmap (instead of plain text) to the dialog. You
-  can provide four different bitmaps representing the four states of a button.  The bitmap push button is
-  an owner-drawn button, where ooDialog internally handles the drawing of the button.
+  The <emphasis role="italic">createBitmapButton</emphasis> method adds a bitmap push button to the dialog template A
+  bitmap push button uses a bitmap instead of plain text for the face of the button. You can provide four different
+  bitmaps representing the four states of a button.  The bitmap push button is an owner-drawn button, where ooDialog
+  internally handles the drawing of the button.
 </para>
-<note><title>Note</title><para>
-  On Windows XP and later, using an <link linkend="mthSetImageList">image</link> list with the button
-  will produce a better overall appearance in the dialog. Using an image list gives the button the same
-  look and feel as other buttons on the system. The buttons produced using this method and the <link
-  linkend="mthInstallBitmapButton">installBitmapButton</link>() have the look and feel of Windows 98
-  buttons.  When an image list is used with a button, the other button styles, such as the NOTIFY style
-  can still be used. Whereas with the bitmap button the other button styles can not be used.  The image
-  list button supports all the features of the bitmap button, and more.
-</para></note>
 <para>
-  The bitmaps can be specified by either a file name or a bitmap handle. You can retrieve a bitmap handle
-  by loading a bitmap stored in a file into memory, using the method <link
-  linkend="mthLoadBitmap">loadBitmap</link>). If you pass a bitmap handle to the method, you must use the
-  INMEMORY option.
+  <emphasis role="bold">Note:</emphasis> On Windows XP and later, using an <link linkend="mthSetImageList">image</link>
+  list with the button will produce a better overall appearance in the dialog. Using an image list gives the button the
+  same look and feel as other buttons on the system. The buttons produced using the <emphasis
+  role="italic">createBitmapButton</emphasis> method and the <link
+  linkend="mthInstallBitmapButton">installBitmapButton</link>() have the look and feel of Windows 98 buttons.  When an
+  image list is used with a button, the other button styles, such as the NOTIFY style can still be used. Whereas with
+  the bitmap button the other button styles can not be used.  The image list button supports all the features of the
+  bitmap button, and more.
+</para>
+<para>
+  The bitmap arguments can be specified by either a file name, a bitmap handle, or the numeric resource ID of a bitmap
+  in the resource DLL of a <link linkend="clsResDialog">ResDialog</link>. You can retrieve a bitmap handle by loading a
+  bitmap stored in a file into memory, using the <link linkend="mthLoadBitmap">loadBitmap</link> method. If you pass a
+  bitmap handle to the method, you must use the INMEMORY option. If you use a resource ID for the bitmaps, the
+  underlying dialog must have already been created.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
     <para>
-      The arguments are:
+      The resource <link linkend="idArgument">ID</link> for the control.
     </para>
-    <variablelist>
-      <varlistentry><term>id</term>
-      <listitem>
-        <para>
-          The resource <link linkend="idArgument">ID</link> for the control.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>x, y, cx, cy</term>
-      <listitem>
-        <para>
-          The  control <link linkend="paraControlCoordinates">coordinates</link>
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>text</term>
-      <listitem>
-        <para>
-          The text label for the button.  Although the user will not see this text, (they see the bitmap
-          instead,) the text is still associated with the button and can be retrieved by the programmer
-          using the <link linkend="mthGetText">getText</link> method.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>msgToRaise</term>
-      <listitem>
-        <para>
-          The name of a method of the dialog class that is to be invoked each time the button is clicked.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>bmpNormal</term>
-      <listitem>
-        <para>
-          A bitmap that is displayed when the button is in the normal state.  I.e., it is not focused,
-          not selected, and not disabled.  This argument must be specified.  If any of the other three
-          bitmap arguments are omitted, this bitmap will be used in its place.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>focused</term>
-      <listitem>
-        <para>
-          A bitmap that is displayed if the button is focused. When a button is focused it receives the
-          keyboard input and can be clicked by using the Enter or Space keys.  Normally the focused
-          button is surrounded by a dashed frame.  If this argument is omitted, the
-          <computeroutput>normal</computeroutput> bitmap is displayed for the focused state.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>selected</term>
-      <listitem>
-        <para>
-          A bitmap that is displayed while the button is clicked and held down.  If this argument is
-          omitted, the <computeroutput>normal</computeroutput> bitmap is displayed for the selected
-          state.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>disabled</term>
-      <listitem>
-        <para>
-          A bitmap that is displayed if the button is disabled.  If this argument is omitted, the
-          <computeroutput>normal</computeroutput> bitmap is displayed for the disabled state.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>style</term>
-      <listitem>
-        <note><title>Note</title><para>
-          The 3.2.0 ooDialog documentation incorrectly stated you could use the NOTIFY style keyword.  Do
-          not do this. Owner-drawn buttons should not use any other button styles than owner-drawn. The
-          result of using the NOTIFY style will be less than satisfactory. An <link
-          linkend="mthSetImageList">image</link> list button allows the use of the NOTIFY style and will
-          give a better overall look to the dialog.  Using an image list button should be the preferred
-          method for non-text buttons
-        </para></note>
-        <para>
-          The last argument can be 0 or more of the following keywords:
-        </para>
-        <para>
-          <simplelist type='vert' columns='3'>
-          <member>DEFAULT  </member>
-          <member>FRAME    </member>
-          <member>USEPAL   </member>
-          <member>INMEMORY </member>
-          <member>STRETCH  </member>
-          <member>HIDDEN   </member>
-          <member>DISABLED </member>
-          <member>BORDER   </member>
-          <member>GROUP    </member>
-          <member>TAP      </member>
-          <member>NOTAB    </member>
-          </simplelist>
-        <variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term>x, y [required]</term>
+    <listitem>
+    <para>
+      The  control's position <link linkend="paraControlCoordinates">coordinates</link>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>cx, cy [optional]</term>
+    <listitem>
+    <para>
+      The  control's width and height <link linkend="paraControlCoordinates">coordinates</link>. If omitted the button
+      will be created with 0 width and height. The programmer would be responsible for resizing the button after the
+      underlying dialog is created. This makes sense when the programmer wants to size the button to match the exact
+      size of the loaded bitmap(s).
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style [optional]</term>
+    <listitem>
+    <para>
+      <emphasis role="bold">Note:</emphasis> The 3.2.0 ooDialog documentation incorrectly stated you could use the
+      NOTIFY style keyword. Do not do this. Owner-drawn buttons should not use any other button styles than OWNER or
+      DEFAUALT, and the OWNER style is automatically added by the ooDialog framework. The result of using the
+      NOTIFY style will be less than satisfactory. A button that uses an <link linkend="mthSetImageList">image
+      list</link> allows the use of the NOTIFY style and will give a better overall look to the dialog.  Using a button
+      with an image list should be the preferred method for non-text buttons.
+    </para>
+    <para>
+      The <emphasis role="italic">style</emphasis> argument can be 0 or more of the following keywords:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+      <member>DEFAULT  </member>
+      <member>FRAME    </member>
+      <member>USEPAL   </member>
+      <member>INMEMORY </member>
+      <member>STRETCH  </member>
+      <member>HIDDEN   </member>
+      <member>DISABLED </member>
+      <member>BORDER   </member>
+      <member>GROUP    </member>
+      <member>TAP      </member>
+      <member>NOTAB    </member>
+      </simplelist>
+      <variablelist>
         <varlistentry><term>DEFAULT</term>
         <listitem>
-          <para>
-            The button becomes the default button in the dialog.
-          </para>
+        <para>
+          The button becomes the default button in the dialog.
+        </para>
         </listitem></varlistentry>
         <varlistentry><term>FRAME</term>
         <listitem>
-          <para>
-            The button is drawn with a 3D frame. Internally, ooDialog draws the button. However, the
-            technique used is now out of date. This gives your bitmap the same appearance as buttons in
-            Windows 98. To have your buttons match the Window XP and Vista styles use an <link
-            linkend="mthSetImageList">image</link> list with the button as described in the opening
-            comments above.
-        </para></listitem></varlistentry>
+        <para>
+          The button is drawn with a 3D frame. Internally, ooDialog draws the button. However, the technique used is
+          now out of date. This gives your bitmap the same appearance as buttons in Windows 98. To have your buttons
+          match the Window XP and Vista styles use an <link linkend="mthSetImageList">image</link> list with the button
+          as described in the opening comments above.
+        </para>
+        </listitem></varlistentry>
         <varlistentry><term>USEPAL</term>
         <listitem>
-          <para>
-            The color palette of the bitmap is loaded and used. This argument should be specified for
-            just one of the dialog buttons, because only one color palette can be active at any time.
-          </para>
+        <para>
+          The color palette of the bitmap is loaded and used. This argument should be specified for just one of the dialog
+          buttons, because only one color palette can be active at any time.
+        </para>
         </listitem></varlistentry>
         <varlistentry><term>INMEMORY</term>
         <listitem>
-          <para>
-            Specifies that the bitmap is already loaded into memory. If you switch often between
-            different bitmaps within one button, the loading of all bitmaps into memory increases
-            performance.
-          </para>
+        <para>
+          Specifies that the bitmap is already loaded into memory. If you switch often between different bitmaps within one
+          button, the loading of all bitmaps into memory increases performance.
+        </para>
         </listitem></varlistentry>
         <varlistentry><term>STRETCH</term>
         <listitem>
-          <para>
-            If this option is specified and the extent of the bitmap is smaller than the extent of the
-            button rectangle, the bitmap is adapted to match the extent of the button.
-          </para>
+        <para>
+          If this option is specified and the extent of the bitmap is smaller than the extent of the button rectangle, the
+          bitmap is adapted to match the extent of the button.
+        </para>
         </listitem></varlistentry>
-          <varlistentry><term>HIDDEN</term>
-          <listitem>
-            <para>
-              The not <link linkend="wsvisible">visible</link> window style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DISABLED</term>
-          <listitem>
-            <para>
-              The not <link linkend="wsborder">enabled</link> window style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>BORDER</term>
-          <listitem>
-            <para>
-              The <link linkend="wsborder">border</link> window style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>GROUP</term>
-          <listitem>
-            <para>
-              The <link linkend="wsborder">group</link> control style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOTAB</term>
-          <listitem>
-            <para>
-              The no <link linkend="wsborder">tabstop</link> control style. By default the button is
-              created with the tabstop style except in these conditions: the bmpFocused is omitted, and
-              the bmpSelected is omitted, and the FRAME style keyword is not used.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>TAB</term>
-          <listitem>
-            <para>
-              The <link linkend="wsborder">tabstop</link> control style. The button is normally created
-              with the tabstop style and this keyword is not necessary.  However, if the bmpFocused
-              argument is omitted, and the bmpSelected argument is omitted, and the FRAME style keyword
-              is not used, the button is created without the tabstop style.  In this case only, it is
-              necessary to use the TAB keyword to change the default behavior.
-            </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </para></listitem></varlistentry>
-    </variablelist>
+        <varlistentry><term>HIDDEN</term>
+        <listitem>
+        <para>
+          The not <link linkend="wsvisible">visible</link> window style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DISABLED</term>
+        <listitem>
+        <para>
+          The not <link linkend="wsborder">enabled</link> window style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BORDER</term>
+        <listitem>
+        <para>
+          The <link linkend="wsborder">border</link> window style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>GROUP</term>
+        <listitem>
+        <para>
+          The <link linkend="wsborder">group</link> control style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTAB</term>
+        <listitem>
+        <para>
+          The no <link linkend="wsborder">tabstop</link> control style. By default the button is created with the
+          tabstop style except in these conditions: the bmpFocused is omitted, and the bmpSelected is omitted, and the
+          FRAME style keyword is not used.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TAB</term>
+        <listitem>
+        <para>
+          The <link linkend="wsborder">tabstop</link> control style. The button is normally created with the tabstop
+          style and this keyword is not necessary.  However, if the bmpFocused argument is omitted, and the bmpSelected
+          argument is omitted, and the FRAME style keyword is not used, the button is created without the tabstop style.
+          In this case only, it is necessary to use the TAB keyword to change the default behavior.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text [optional]</term>
+    <listitem>
+    <para>
+      The text label for the button.  Although the user will not see this text, (they see the bitmap instead,) the text
+      is still associated with the button and can be retrieved by the programmer using the <link
+      linkend="mthGetText">getText</link> method.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>methName [optional]</term>
+    <listitem>
+    <para>
+      The name of a method in the Rexx dialog class that is to be invoked each time the button is clicked. This serves
+      the same purpose as the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method for the CLICKED
+      event. If this argument is omitted, then no method is associated with the CLICKED event.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>bmpNormal [required]</term>
+    <listitem>
+    <para>
+      A bitmap that is displayed when the button is in the normal state.  I.e., it is not focused, not selected, and not
+      disabled.  This argument must be specified.  If any of the other three bitmap arguments are omitted, this bitmap
+      will be used in its place.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>focused [optional]</term>
+    <listitem>
+    <para>
+      A bitmap that is displayed if the button is focused. When a button is focused it receives the keyboard input and
+      can be clicked by using the Enter or Space keys.  Normally the focused button is surrounded by a dashed frame.  If
+      this argument is omitted, the <computeroutput>normal</computeroutput> bitmap is displayed for the focused state.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>selected [optional]</term>
+    <listitem>
+    <para>
+      A bitmap that is displayed while the button is clicked and held down.  If this argument is omitted, the
+      <computeroutput>normal</computeroutput> bitmap is displayed for the selected state.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>disabled [optional]</term>
+    <listitem>
+    <para>
+      A bitmap that is displayed if the button is disabled.  If this argument is omitted, the
+      <computeroutput>normal</computeroutput> bitmap is displayed for the disabled state.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The possible return values are:
-      <variablelist>
+  <para>
+    The possible return values are:
+    <variablelist>
       <varlistentry><term>0</term>
       <listitem>
-        <para>
-          Success.
-        </para>
+      <para>
+        Success.
+      </para>
       </listitem></varlistentry>
       <varlistentry><term>less than 0</term>
       <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
+      <para>
+        Error with the in-memory dialog template or with the resource ID.
+      </para>
       </listitem></varlistentry>
-      </variablelist>
-    </para>
+    </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      The following example defines a button with ID 601. The bitmap in the
-      <computeroutput>Button1.bmp</computeroutput> file is displayed for the push button instead of a black
-      text on a grey background. If the button is disabled (by using the DisableItem method, see page <link
-      linkend="h001229">DisableItem</link>), the bitmap is exchanged and Button1D.bmp is shown instead. If
-      the button is clicked, the BmpPushed message is sent.
+  <para>
+    The following example defines a button with ID 601. The bitmap in the <computeroutput>Button1.bmp</computeroutput>
+    file is displayed for the push button in the normal state. If the button is disabled by using the <link
+    linkend="mthDisableControl">disableControl</link>) method, the <computeroutput>Button1D.bmp</computeroutput> is
+    shown. The <emphasis role="italic">onBmpPushed</emphasis> method in the Rexx dialog is connected to the CLICKED
+    event. When the button is clicked, the <emphasis role="italic">onBmpPushed</emphasis> method is invoked.
+
 <programlisting>
 <![CDATA[
-MyDialog~addBitmapButton(601, 20, 317, 80, 30, , "BmpPushed", ,
-                         "Button1.bmp", , ,"Button1D.bmp","FRAME USEPAL")
+self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
+                        "Button1.bmp", , , "Button1D.bmp")
 ]]>
 </programlisting>
-    </para>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
@@ -4234,7 +4253,7 @@ MyDialog~addBitmapButton(601, 20, 317, 80, 30, , "BmpPushed", ,
                   The programmer is completely responsible for drawing the button when the dialog receives
                   the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
                   implement in ooDialog.  A simpler approach for an owner drawn button is to use a bitmap
-                  button.  See the <link linkend="mthAddBitmapButton">addBitmapButton</link> method.
+                  button.  See the <link linkend="mthCreateBitmapButton">createBitmapButton</link> method.
                 </para>
               </listitem></varlistentry>
               <varlistentry><term>ICON</term>
@@ -4567,246 +4586,238 @@ MyDialog~addButtonGroup(20, 235, , ,               -
 </variablelist>
 </section>
 
-<section id="mthAddRadioButton"><title>addRadioButton</title>
+<section id="mthCreateRadioButton"><title>createRadioButton</title>
 <indexterm><primary>addRadioButton</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addRadioButton(-id-+--------+-,-x-,-y--+------+--+------+-,-text-+---------+-)--><
-                       +-,-name-+          +-,-cx-+  +-,-cy-+        +-,-style-+
+>>--createRadioButton(-id-,-x-,-y-,-cx-,-cy-,-+-----+-+-------+-+--------+--)-><
+                                              +-,-s-+ +-,-txt-+ +-,-attr-+
 ]]>
 </programlisting>
 
 <para>
-  The addRadioButton method adds a radio button to the dialog. The radio button is created as an
-  automatic radio button. There is no way using this method to create a standard radio button.  See the
-  <link linkend="clsRadioButton">RadioButton</link> class for more information on radio buttons.
+  The <emphasis role="italic">createRadionButton</emphasis> method adds a radio button to the dialog template. The radio
+  button is created as an automatic <link linkend="clsRadioButton">radio button</link>. There is no way using this
+  method to create a standard radio button.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      The arguments are:
-      <variablelist>
-        <varlistentry><term>id</term>
-        <listitem>
-          <para>
-            The resource <link linkend="idArgument">ID</link> for the control.
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>name</term>
-        <listitem>
-          <para>
-            The name of the data attribute associated with the dialog item. Using this argument performs
-            the same function as the <link linkend="mthConnectRadioButton">connectRadioButton</link>()
-            method. The <link linkend="mthConnectEdit">connectEdit</link>() documentation has a
-            good description of the concept of the data attribute.
-          </para>
-          <para>
-            If you omitt this argument then the data attribute is constructed automatically and named by
-            concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA || id</computeroutput>.
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>x, y, cx, cy</term>
-        <listitem>
-          <para>
-            The  control <link linkend="paraControlCoordinates">coordinates</link>. If either cx or cy are
-            omitted, then the size for the radio button is calculated internally using its label. (The
-            text argument.)
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>text</term>
-        <listitem>
-          <para>
-            The text that is displayed next to the radio button
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>style</term>
-        <listitem>
-          <para>
-            A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-            separated by spaces:
-          </para>
-          <para>
-            <simplelist type='vert' columns='3'>
-              <member>OWNER    </member>
-              <member>BITMAP   </member>
-              <member>ICON     </member>
-              <member>LEFT     </member>
-              <member>RIGHT    </member>
-              <member>HCENTER  </member>
-              <member>TOP      </member>
-              <member>BOTTOM   </member>
-              <member>VCENTER  </member>
-              <member>MULTILINE</member>
-              <member>NOTIFY   </member>
-              <member>PUSHLIKE </member>
-              <member>FLAT     </member>
-              <member>HIDDEN   </member>
-              <member>DISABLED </member>
-              <member>BORDER   </member>
-              <member>GROUP    </member>
-              <member>NOTAB    </member>
-            </simplelist>
-            <variablelist>
-              <varlistentry><term>OWNER</term>
-              <listitem>
-                <para>
-                  The programmer is completely responsible for drawing the button when the dialog receives
-                  the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
-                  implement in ooDialog. For a radio button, the difficulty would probably make this
-                  impractical.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>ICON</term>
-              <listitem>
-                <para>
-                  The button displays an icon image.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BITMAP</term>
-              <listitem>
-                <para>
-                  The button displays a bitmap image.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>LEFT</term>
-              <listitem>
-                <para>
-                  Left justifies the text to the right of the radio button.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>RIGHT</term>
-              <listitem>
-                <para>
-                  Right justifies the text to the right side of the radio button.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>HCENTER</term>
-              <listitem>
-                <para>
-                  The text is centered horizontally to the right of the radio button.  This is the
-                  default if neither LEFT nor RIGHT are specified.
-              </para></listitem></varlistentry>
-              <varlistentry><term>TOP</term>
-              <listitem>
-                <para>
-                  The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
-                  specified the text is vertically centered in the button rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BOTTOM</term>
-              <listitem>
-                <para>
-                  The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
-                  specified the text is vertically centered in the button rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>VCENTER</term>
-              <listitem>
-                <para>
-                  The text is vertically centered in the button rectanble.  This is the default if neither
-                  TOP nor BOTTOM are specified.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>MULTILINE</term>
-              <listitem>
-                <para>
-                  If the text for the label of the button is longer than the width of the button rectangle,
-                  the operating system will word wrap the text producing more than one line.  The height of
-                  the button rectangle has to be sufficient to display the extra line(s) or the text is
-                  clipped.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOTIFY</term>
-              <listitem>
-                <para>
-                  Enables the button to send notifications for the gained focus,lost focus, and double click
-                  events.  This is only necessary when the <link
-                  linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
-                  the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
-                  buttons and owner-drawn buttons will recieve the DBLCLICK event.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>PUSHLIKE</term>
-              <listitem>
-                <para>
-                  Makes the button look and act like a push button. The button looks raised when it isn't
-                  pushed or checked, and sunken when it is pushed or checked. The button is drawn with a
-                  flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
-                  rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>FLAT</term>
-              <listitem>
-                <para>
-                  The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
-                  text inside the rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>HIDDEN</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsvisible">not visible</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>DISABLED</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsdisabled">not enabled</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BORDER</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsborder">border</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>GROUP</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsgroup">group</link> control style. For the auto radio buttons to
-                  work, the first radio button should be given the group style. None of the other radio
-                  buttons should have the group style. The first control that has the group style then
-                  ends the group.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOTAB</term>
-              <listitem>
-                <para>
-                  The no <link linkend="wstabstop">tabstop</link> control style.
-                </para>
-              </listitem></varlistentry>
-            </variablelist>
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource <link linkend="idArgument">ID</link> for the control.
       </para>
-    </listitem></varlistentry>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y, cx, cy</term>
+      <listitem>
+      <para>
+        The  control <link linkend="paraControlCoordinates">coordinates</link>. If either cx or cy are
+        omitted, then the size for the radio button is calculated internally using its label. (The
+        text argument.)
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>s</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords separated by
+        spaces:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>OWNER    </member>
+          <member>BITMAP   </member>
+          <member>ICON     </member>
+          <member>LEFT     </member>
+          <member>RIGHT    </member>
+          <member>HCENTER  </member>
+          <member>TOP      </member>
+          <member>BOTTOM   </member>
+          <member>VCENTER  </member>
+          <member>MULTILINE</member>
+          <member>NOTIFY   </member>
+          <member>PUSHLIKE </member>
+          <member>FLAT     </member>
+          <member>HIDDEN   </member>
+          <member>DISABLED </member>
+          <member>BORDER   </member>
+          <member>GROUP    </member>
+          <member>NOTAB    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>OWNER</term>
+          <listitem>
+          <para>
+            The programmer is completely responsible for drawing the button when the dialog receives the WM_DRAWITEM
+            message.  Currently this would be difficult (but not impossible) to implement in ooDialog. For a radio
+            button, the difficulty would probably make this impractical.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ICON</term>
+          <listitem>
+          <para>
+            The button displays an icon image.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BITMAP</term>
+          <listitem>
+          <para>
+            The button displays a bitmap image.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LEFT</term>
+          <listitem>
+          <para>
+            Left justifies the text to the right of the radio button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RIGHT</term>
+          <listitem>
+          <para>
+            Right justifies the text to the right side of the radio button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HCENTER</term>
+          <listitem>
+          <para>
+            The text is centered horizontally to the right of the radio button.  This is the default if neither LEFT nor
+            RIGHT are specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TOP</term>
+          <listitem>
+          <para>
+            The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are specified the text is
+            vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BOTTOM</term>
+          <listitem>
+          <para>
+            The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are specified the text
+            is vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VCENTER</term>
+          <listitem>
+          <para>
+            The text is vertically centered in the button rectanble.  This is the default if neither TOP nor BOTTOM are
+            specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MULTILINE</term>
+          <listitem>
+          <para>
+            If the text for the label of the button is longer than the width of the button rectangle, the operating
+            system will word wrap the text producing more than one line.  The height of the button rectangle has to be
+            sufficient to display the extra line(s) or the text is clipped.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTIFY</term>
+          <listitem>
+          <para>
+            Enables the button to send notifications for the gained focus, lost focus, and double click events.  This is
+            only necessary when the <link linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and
+            only for the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio buttons and
+            owner-drawn buttons will recieve the DBLCLICK event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PUSHLIKE</term>
+          <listitem>
+          <para>
+            Makes the button look and act like a push button. The button looks raised when it isn't pushed or checked,
+            and sunken when it is pushed or checked. The button is drawn with a flat appearance, i.e., it is drawn as a
+            flat rectangle the label text inside the rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FLAT</term>
+          <listitem>
+          <para>
+            The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
+            rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            The contorl has the <link linkend="wsvisible">not visible</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+          <para>
+            The control has the <link linkend="wsdisabled">not enabled</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BORDER</term>
+          <listitem>
+          <para>
+            The control has the <link linkend="wsborder">border</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+          <para>
+            The control has the <link linkend="wsgroup">group</link> style. For the auto radio buttons to work, the
+            first radio button should be given the group style. None of the other radio buttons should have the group
+            style. The first control that has the group style then ends the group.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+          <para>
+            The cotrol does not have the <link linkend="wstabstop">tabstop</link> style.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>txt</term>
+      <listitem>
+      <para>
+        The text for the label that is displayed next to the radio button
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>attr [optional]</term>
+      <listitem>
+      <para>
+        The name of the data <link linkend="sctUnderstandingDataAttributes">attribute</link> associated with the radio
+        button. If you omit this argument then the name of the data attribute is constructed <link
+        linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">auto
+        detection</link> is off, this argument is ignored.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-        <para>
-          Success.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>less than 0</term>
-      <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
-      </listitem></varlistentry>
-      </variablelist>
+      Success.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+    <para>
+      Error with the in-memory dialog template or with the resource ID.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      The following example defines seven radio buttons with IDs 501 through 507:
-    </para>
+  <para>
+    The following example defines seven radio buttons with IDs 501 through 507:
+  </para>
 <programlisting>
 <![CDATA[
 RText.1="Monday"
@@ -4818,21 +4829,21 @@ RText.6="Saturday"
 RText.7="Sunday"
 
 do i=1 to 7
- MyDialog~addRadioButton(500+i, , 20, i*15+13, 40, 14, RText.i)
+ MyDialog~createRadioButton(500+i, 20, i*15+13, 40, 14, , RText.i)
 end
 ]]>
 </programlisting>
-    <note><title>Note</title><para>
-      There are also methods that create a whole group automatically (see the <link
-      linkend="mthAddRadioGroup">addRadioGroup</link> method below and <link
-      linkend="mthAddRadioStem">addRadioStem</link>).
-    </para></note>
+  <para>
+    <emphasis role="bold">Note:</emphasis> that there are also methods that create a whole group of radio buttons
+    automatically. Such as the <link linkend="mthCreateRadioButtonGroup">createRadioButtonGroup</link> and <link
+    linkend="mthCreateRadioButtonStem">createRadioButtonStem</link> methods.
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthAddRadioGroup"><title>addRadioGroup</title>
-<indexterm><primary>addRadioGroup</primary></indexterm>
+<section id="mthCreateRadioButtonGroup"><title>createRadioButtonGroup</title>
+<indexterm><primary>createRadioButtonGroup</primary></indexterm>
 <programlisting>
 <![CDATA[
                                         +------+
@@ -4843,218 +4854,212 @@ end
 </programlisting>
 
 <para>
-  Creates a complete group of auto radiobuttons.
+  Creates a complete group of auto radio buttons.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      The arguments are:
-      <variablelist>
-        <varlistentry><term>id1</term>
-        <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id1</term>
+      <listitem>
+      <para>
+        The resource <link linkend="idArgument">ID</link> for the first radio button. This id is increased by 1 for each
+        additional radio button and then assigned to the control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y, cx</term>
+      <listitem>
+      <para>
+        The control <link linkend="paraControlCoordinates">coordinates</link>.  x and y name the position of the first
+        radio button control. The other radio buttons are positioned automatically. cx specifies the length of the radio
+        button plus text. If omitted, the space needed is calculated.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text</term>
+      <listitem>
+      <para>
+        The text string for each radio button. Single words have to be separated by blank spaces. This argument
+        determines the number of radio buttons in total. Note that this prevents using more than one word for the label
+        of any radio button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords separated by
+        spaces. Each radio button in the group is given the style specified by this option.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>OWNER    </member>
+          <member>BITMAP   </member>
+          <member>ICON     </member>
+          <member>LEFT     </member>
+          <member>RIGHT    </member>
+          <member>HCENTER  </member>
+          <member>TOP      </member>
+          <member>BOTTOM   </member>
+          <member>VCENTER  </member>
+          <member>MULTILINE</member>
+          <member>NOTIFY   </member>
+          <member>PUSHLIKE </member>
+          <member>FLAT     </member>
+          <member>HIDDEN   </member>
+          <member>DISABLED </member>
+          <member>NOBORDER </member>
+          <member>GROUP    </member>
+          <member>NOTAB    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>OWNER</term>
+          <listitem>
           <para>
-            The resource <link linkend="idArgument">ID</link> for the first radio button. This id is
-            increased by 1 for each additional radio button and then assigned to the control.
+            The programmer is completely responsible for drawing the button when the dialog receives the WM_DRAWITEM
+            message.  Currently this would be difficult (but not impossible) to implement in ooDialog. For a radio
+            button, the difficulty would probably make this impractical.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>x, y, cx</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>ICON</term>
+          <listitem>
           <para>
-            The control <link linkend="paraControlCoordinates">coordinates</link>.  x and y name the
-            position of the first radio button control. The other radio buttons are positioned
-            automatically. cx specifies the length of the radio button plus text. If omitted, the space
-            needed is calculated.
+            The button displays an icon image.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>text</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>BITMAP</term>
+          <listitem>
           <para>
-            The text string for each radio button. Single words have to be separated by blank spaces.
-            This argument determines the number of radio buttons in total. Note that this prevents using
-            more than one word for the label of any radio button.
+            The button displays a bitmap image.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>style</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>LEFT</term>
+          <listitem>
           <para>
-            A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-            separated by spaces. Each radio button in the group is given the style specified by this
-            option.
+            Left justifies the text to the right of the radio button.
           </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RIGHT</term>
+          <listitem>
           <para>
-            <simplelist type='vert' columns='3'>
-              <member>OWNER    </member>
-              <member>BITMAP   </member>
-              <member>ICON     </member>
-              <member>LEFT     </member>
-              <member>RIGHT    </member>
-              <member>HCENTER  </member>
-              <member>TOP      </member>
-              <member>BOTTOM   </member>
-              <member>VCENTER  </member>
-              <member>MULTILINE</member>
-              <member>NOTIFY   </member>
-              <member>PUSHLIKE </member>
-              <member>FLAT     </member>
-              <member>HIDDEN   </member>
-              <member>DISABLED </member>
-              <member>NOBORDER </member>
-              <member>GROUP    </member>
-              <member>NOTAB    </member>
-            </simplelist>
-            <variablelist>
-              <varlistentry><term>OWNER</term>
-              <listitem>
-                <para>
-                  The programmer is completely responsible for drawing the button when the dialog receives
-                  the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
-                  implement in ooDialog. For a radio button, the difficulty would probably make this
-                  impractical.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>ICON</term>
-              <listitem>
-                <para>
-                  The button displays an icon image.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BITMAP</term>
-              <listitem>
-                <para>
-                  The button displays a bitmap image.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>LEFT</term>
-              <listitem>
-                <para>
-                  Left justifies the text to the right of the radio button.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>RIGHT</term>
-              <listitem>
-                <para>
-                  Right justifies the text to the right side of the radio button.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>HCENTER</term>
-              <listitem>
-                <para>
-                  The text is centered horizontally to the right of the radio button.  This is the
-                  default if neither LEFT nor RIGHT are specified.
-              </para></listitem></varlistentry>
-              <varlistentry><term>TOP</term>
-              <listitem>
-                <para>
-                  The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
-                  specified the text is vertically centered in the button rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BOTTOM</term>
-              <listitem>
-                <para>
-                  The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
-                  specified the text is vertically centered in the button rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>VCENTER</term>
-              <listitem>
-                <para>
-                  The text is vertically centered in the button rectanble.  This is the default if neither
-                  TOP nor BOTTOM are specified.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>MULTILINE</term>
-              <listitem>
-                <para>
-                  If the text for the label of the button is longer than the width of the button rectangle,
-                  the operating system will word wrap the text producing more than one line.  The height of
-                  the button rectangle has to be sufficient to display the extra line(s) or the text is
-                  clipped.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOTIFY</term>
-              <listitem>
-                <para>
-                  Enables the button to send notifications for the gained focus,lost focus, and double click
-                  events.  This is only necessary when the <link
-                  linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
-                  the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
-                  buttons and owner-drawn buttons will recieve the DBLCLICK event.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>PUSHLIKE</term>
-              <listitem>
-                <para>
-                  Makes the button look and act like a push button. The button looks raised when it isn't
-                  pushed or checked, and sunken when it is pushed or checked. The button is drawn with a
-                  flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
-                  rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>FLAT</term>
-              <listitem>
-                <para>
-                  The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
-                  text inside the rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>HIDDEN</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsvisible">not visible</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>DISABLED</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsdisabled">not enabled</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOBORDER</term>
-              <listitem>
-                <para>
-                  Use this keyword to specify that a <link linkend="clsGroupBox">group box</link> is not
-                  added around the radio button group.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>GROUP</term>
-              <listitem>
-                <para>
-                  Do not use this keyword with this method. The group style is added correctly
-                  internally.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOTAB</term>
-              <listitem>
-                <para>
-                  The no <link linkend="wstabstop">tabstop</link> control style.
-                </para>
-              </listitem></varlistentry>
-            </variablelist>
+            Right justifies the text to the right side of the radio button.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>idstat</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>HCENTER</term>
+          <listitem>
           <para>
-            This argument is used to set the resource <link linkend="idArgument">ID</link> for the <link
-            linkend="clsGroupBox">group box</link>, if one is used. The argument is ignored if the
-            NOBORDER style is used.
+            The text is centered horizontally to the right of the radio button.  This is the default if neither LEFT nor
+            RIGHT are specified.
           </para>
-        </listitem></varlistentry>
-      </variablelist>
-    </para></listitem></varlistentry>
+          </listitem></varlistentry>
+          <varlistentry><term>TOP</term>
+          <listitem>
+          <para>
+            The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are specified the text is
+            vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BOTTOM</term>
+          <listitem>
+          <para>
+            The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are specified the text
+            is vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VCENTER</term>
+          <listitem>
+          <para>
+            The text is vertically centered in the button rectanble.  This is the default if neither TOP nor BOTTOM are
+            specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MULTILINE</term>
+          <listitem>
+          <para>
+            If the text for the label of the button is longer than the width of the button rectangle, the operating
+            system will word wrap the text producing more than one line.  The height of the button rectangle has to be
+            sufficient to display the extra line(s) or the text is clipped.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTIFY</term>
+          <listitem>
+          <para>
+            Enables the button to send notifications for the gained focus,lost focus, and double click events.  This is
+            only necessary when the <link linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and
+            only for the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio buttons and
+            owner-drawn buttons will recieve the DBLCLICK event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PUSHLIKE</term>
+          <listitem>
+          <para>
+            Makes the button look and act like a push button. The button looks raised when it isn't pushed or checked,
+            and sunken when it is pushed or checked. The button is drawn with a flat appearance, i.e., it is drawn as a
+            flat rectangle the label text inside the rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FLAT</term>
+          <listitem>
+          <para>
+            The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
+            rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            The <link linkend="wsvisible">not visible</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+          <para>
+            The <link linkend="wsdisabled">not enabled</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOBORDER</term>
+          <listitem>
+          <para>
+            Use this keyword to specify that a <link linkend="clsGroupBox">group box</link> is not
+            added around the radio button group.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+          <para>
+            Do not use this keyword with this method. The group style is added correctly internally.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+            <para>
+              The no <link linkend="wstabstop">tabstop</link> control style.
+            </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>idstat</term>
+      <listitem>
+      <para>
+        This argument is used to set the resource <link linkend="idArgument">ID</link> for the <link
+        linkend="clsGroupBox">group box</link>, if one is used. The argument is ignored if the NOBORDER style is used.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      The following example adds a group of three radio buttons with IDs 301, 302, and 303 to the dialog
-      (see <link linkend="fig53">Sample Radio Button Group</link>):
-    </para>
+  <para>
+    The following example adds a group of three radio buttons with IDs 301, 302, and 303 to the dialog
+    (see <link linkend="fig53">Sample Radio Button Group</link>):
+  </para>
 <programlisting>
 <![CDATA[
 MyDialog = .UserDialog~new
-MyDialog~Create(100,100,80,60,"Radio Button Group")
-MyDialog~addRadioGroup(301, 23, 18, ,"Fast Medium Slow")
+MyDialog~create(100, 100, 80, 60, "Radio Button Group")
+MyDialog~createRadioButtonGroup(301, 23, 18, ,"Fast Medium Slow")
 MyDialog~fast = 1
 MyDialog~execute
 ]]>
@@ -5072,244 +5077,248 @@ MyDialog~execute
 </variablelist>
 </section>
 
-<section id="mthAddRadioStem"><title>addRadioStem</title>
-<indexterm><primary>addRadioStem</primary></indexterm>
+<section id="mthCreateRadioButtonStem"><title>createRadioButtonStem</title>
+<indexterm><primary>createRadioButtonStem</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addRadioStem(id1,-x-,-y-+------+-,-text.-,-max--+---------+-+----------+-)---><
-                            +-,-cx-+                +-,-style-+ +-,-idStat-+
+>>--createRadioButtonStem(id,-x-,-y-+------+-,-txt.-,-m--+-------+-+--------+-)--><
+                                    +-,-cx-+             +-,-s-+ +-,-idStat-+
 ]]>
 </programlisting>
 
 <para>
-  The addRadioStem method adds a group of radio button controls to the dialog. It is very similar to the
-  <link linkend="mthAddRadioGroup">addRadioGroup</link>() method.  It simply uses a stem to specify the
-  text label for each radio button. Notice that this will allow the labels to consist of more than one
-  word, which removes the restriction of the addRadioGroup() method that labels must be a single word.
+  The <emphasis role="italic">createRadioButtonStem</emphasis> method adds a group of radio button controls to the
+  dialog. It is very similar to the <link linkend="mthCreateRadioButtonGroup">createRadioButtonGroup</link>() method.
+  It simply uses a stem to specify the text label for each radio button. Notice that this will allow the labels to
+  consist of more than one word. This removes the restriction of the
+  <computeroutput>createRadioButtonGroup</computeroutput> method that labels must be a single word.
 </para>
-<note><title>Note</title><para>
-  The documentation prior to version 4.0.0 listed a font name and a font size argument. These arguments
-  do nothing and are ignored in ooDialog 4.0.0 and later.
-</para></note>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      The arguments are:
-      <variablelist>
-        <varlistentry><term>id1</term>
-        <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource <link linkend="idArgument">ID</link> for the first radio button. This id is increased by 1 for each
+        additional radio button and then assigned to the control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y [required]</term>
+      <listitem>
+      <para>
+        The control position <link linkend="paraControlCoordinates">coordinates</link>.  x and y name the position of
+        the first radio button control. The other radio buttons are positioned automatically.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>cx [optional]</term>
+      <listitem>
+      <para>
+        The control width <link linkend="paraControlCoordinates">coordinate</link>. cx specifies the length of the radio
+        button plus text. If omitted, the space needed is calculated.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>txt. [required]</term>
+      <listitem>
+      <para>
+        A stem containing the text label for each radio button. The stem indexes shoud start at 1 and continue
+        consecutively, with each succeding number containing the the label for the next radion button. This argument
+        determines the number of radio buttons in total.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>m</term>
+      <listitem>
+      <para>
+        A number specifying the maximum radio buttons to put in a column. The programmer can use this to balance the
+        look of the group by placing the buttons in more than 1 column. For instance, if there are 8 radio buttons and
+        the max argument is 4 then the result will have 4 radio buttons in 2 side-by-side columns.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>s</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords separated by
+        spaces. Each radio button in the group is given the style specified by this option.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>OWNER    </member>
+          <member>BITMAP   </member>
+          <member>ICON     </member>
+          <member>LEFT     </member>
+          <member>RIGHT    </member>
+          <member>HCENTER  </member>
+          <member>TOP      </member>
+          <member>BOTTOM   </member>
+          <member>VCENTER  </member>
+          <member>MULTILINE</member>
+          <member>NOTIFY   </member>
+          <member>PUSHLIKE </member>
+          <member>FLAT     </member>
+          <member>HIDDEN   </member>
+          <member>DISABLED </member>
+          <member>NOBORDER </member>
+          <member>GROUP    </member>
+          <member>NOTAB    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>OWNER</term>
+          <listitem>
           <para>
-            The resource <link linkend="idArgument">ID</link> for the first radio button. This id is
-            increased by 1 for each additional radio button and then assigned to the control.
+            The programmer is completely responsible for drawing the button when the dialog receives the WM_DRAWITEM
+            message.  Currently this would be difficult (but not impossible) to implement in ooDialog. For a radio
+            button, the difficulty would probably make this impractical.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>x, y, cx</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>ICON</term>
+          <listitem>
           <para>
-            The control <link linkend="paraControlCoordinates">coordinates</link>.  x and y name the
-            position of the first radio button control. The other radio buttons are positioned
-            automatically. cx specifies the length of the radio button plus text. If omitted, the space
-            needed is calculated.
+            The button displays an icon image.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>text.</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>BITMAP</term>
+          <listitem>
           <para>
-            A stem containing the text label for each radio button. The stem indexes shoud start at 1 and
-            continue consecutively, with each succeding number containing the the label for the next
-            radion button. This argument determines the number of radio buttons in total.
+            The button displays a bitmap image.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>max</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>LEFT</term>
+          <listitem>
           <para>
-            A number specifying the maximum radio buttons to put in a column. The programmer can use this
-            to balance the look of the group by placing the buttons in more than 1 column. For instance,
-            if there are 8 radio buttons and the max argument is 4 then the result will have 4 radio
-            buttons in 2 side-by-side columns.
+            Left justifies the text to the right of the radio button.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>style</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>RIGHT</term>
+          <listitem>
           <para>
-            A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-            separated by spaces. Each radio button in the group is given the style specified by this
-            option.
+            Right justifies the text to the right side of the radio button.
           </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HCENTER</term>
+          <listitem>
           <para>
-            <simplelist type='vert' columns='3'>
-              <member>OWNER    </member>
-              <member>BITMAP   </member>
-              <member>ICON     </member>
-              <member>LEFT     </member>
-              <member>RIGHT    </member>
-              <member>HCENTER  </member>
-              <member>TOP      </member>
-              <member>BOTTOM   </member>
-              <member>VCENTER  </member>
-              <member>MULTILINE</member>
-              <member>NOTIFY   </member>
-              <member>PUSHLIKE </member>
-              <member>FLAT     </member>
-              <member>HIDDEN   </member>
-              <member>DISABLED </member>
-              <member>NOBORDER </member>
-              <member>GROUP    </member>
-              <member>NOTAB    </member>
-            </simplelist>
-            <variablelist>
-              <varlistentry><term>OWNER</term>
-              <listitem>
-                <para>
-                  The programmer is completely responsible for drawing the button when the dialog receives
-                  the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
-                  implement in ooDialog. For a radio button, the difficulty would probably make this
-                  impractical.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>ICON</term>
-              <listitem>
-                <para>
-                  The button displays an icon image.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BITMAP</term>
-              <listitem>
-                <para>
-                  The button displays a bitmap image.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>LEFT</term>
-              <listitem>
-                <para>
-                  Left justifies the text to the right of the radio button.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>RIGHT</term>
-              <listitem>
-                <para>
-                  Right justifies the text to the right side of the radio button.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>HCENTER</term>
-              <listitem>
-                <para>
-                  The text is centered horizontally to the right of the radio button.  This is the
-                  default if neither LEFT nor RIGHT are specified.
-              </para></listitem></varlistentry>
-              <varlistentry><term>TOP</term>
-              <listitem>
-                <para>
-                  The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
-                  specified the text is vertically centered in the button rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BOTTOM</term>
-              <listitem>
-                <para>
-                  The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
-                  specified the text is vertically centered in the button rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>VCENTER</term>
-              <listitem>
-                <para>
-                  The text is vertically centered in the button rectanble.  This is the default if neither
-                  TOP nor BOTTOM are specified.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>MULTILINE</term>
-              <listitem>
-                <para>
-                  If the text for the label of the button is longer than the width of the button rectangle,
-                  the operating system will word wrap the text producing more than one line.  The height of
-                  the button rectangle has to be sufficient to display the extra line(s) or the text is
-                  clipped.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOTIFY</term>
-              <listitem>
-                <para>
-                  Enables the button to send notifications for the gained focus,lost focus, and double click
-                  events.  This is only necessary when the <link
-                  linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
-                  the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
-                  buttons and owner-drawn buttons will recieve the DBLCLICK event.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>PUSHLIKE</term>
-              <listitem>
-                <para>
-                  Makes the button look and act like a push button. The button looks raised when it isn't
-                  pushed or checked, and sunken when it is pushed or checked. The button is drawn with a
-                  flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
-                  rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>FLAT</term>
-              <listitem>
-                <para>
-                  The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
-                  text inside the rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>HIDDEN</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsvisible">not visible</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>DISABLED</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsdisabled">not enabled</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOBORDER</term>
-              <listitem>
-                <para>
-                  Use this keyword to specify that a <link linkend="clsGroupBox">group box</link> is not
-                  added around the radio button group.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>GROUP</term>
-              <listitem>
-                <para>
-                  Do not use this keyword with this method. The group style is added correctly
-                  internally.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOTAB</term>
-              <listitem>
-                <para>
-                  The no <link linkend="wstabstop">tabstop</link> control style.
-                </para>
-              </listitem></varlistentry>
-            </variablelist>
+            The text is centered horizontally to the right of the radio button.  This is the default if neither LEFT nor
+            RIGHT are specified.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>idstat</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>TOP</term>
+          <listitem>
           <para>
-            This argument is used to set the resource <link linkend="idArgument">ID</link> for the <link
-            linkend="clsGroupBox">group box</link>, if one is used. The argument is ignored if the
-            NOBORDER style is used.
+            The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are specified the text is
+            vertically centered in the button rectangle.
           </para>
-        </listitem></varlistentry>
-      </variablelist>
-    </para></listitem></varlistentry>
+          </listitem></varlistentry>
+          <varlistentry><term>BOTTOM</term>
+          <listitem>
+          <para>
+            The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are specified the text
+            is vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VCENTER</term>
+          <listitem>
+          <para>
+            The text is vertically centered in the button rectanble.  This is the default if neither TOP nor BOTTOM are
+            specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MULTILINE</term>
+          <listitem>
+          <para>
+            If the text for the label of the button is longer than the width of the button rectangle, the operating
+            system will word wrap the text producing more than one line.  The height of the button rectangle has to be
+            sufficient to display the extra line(s) or the text is clipped.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTIFY</term>
+          <listitem>
+          <para>
+            Enables the button to send notifications for the gained focus,lost focus, and double click events.  This is
+            only necessary when the <link linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and
+            only for the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio buttons and
+            owner-drawn buttons will recieve the DBLCLICK event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PUSHLIKE</term>
+          <listitem>
+          <para>
+            Makes the button look and act like a push button. The button looks raised when it isn't pushed or checked,
+            and sunken when it is pushed or checked. The button is drawn with a flat appearance, i.e., it is drawn as a
+            flat rectangle the label text inside the rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FLAT</term>
+          <listitem>
+          <para>
+            The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
+            rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            The <link linkend="wsvisible">not visible</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+          <para>
+            The <link linkend="wsdisabled">not enabled</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOBORDER</term>
+          <listitem>
+          <para>
+            Use this keyword to specify that a <link linkend="clsGroupBox">group box</link> is not added around the
+            radio button group.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+          <para>
+            Do not use this keyword with this method. The group style is added correctly internally.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+          <para>
+            The no <link linkend="wstabstop">tabstop</link> control style.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>idstat</term>
+      <listitem>
+      <para>
+        This argument is used to set the resource <link linkend="idArgument">ID</link> for the <link
+        linkend="clsGroupBox">group box</link>, if one is used. The argument is ignored if the NOBORDER style is used.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    The documentation prior to version 4.0.0 listed a font name and a font size argument. These arguments do nothing and
+    are ignored in ooDialog 4.0.0 and later.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      The following example is complete. It can be cut and pasted into a file and run as is. It adds a
-      group of four radio buttons with IDs 304, 305, 306, and 307, in a group with two buttons each in
-      two columns. The group box for the group is give a resource ID of 300.  In initDialog(), the group
-      box is then given a label and the first radio button is checked.
-    </para>
+  <para>
+    The following example is complete. It can be cut and pasted into a file and run as is. It adds a group of four radio
+    buttons with IDs 304, 305, 306, and 307, in a group with two buttons each in two columns. The group box for the
+    group is give a resource ID of 300.  In initDialog(), the group box is then given a label and the first radio button
+    is checked.
+  </para>
+
 <programlisting>
 <![CDATA[
-/* Simple test of add ... */
+/* Simple test of create ... */
 
   dlg = .SimpleRB~new
 
@@ -5318,9 +5327,9 @@ MyDialog~execute
     dlg~execute("SHOWTOP")
   end
 
-::requires "oodWin32.cls"
+::requires "ooDialog.cls"
 
-::class 'SimpleRB' subclass UserDialog inherit AdvancedControls
+::class 'SimpleRB' subclass UserDialog
 
 ::method defineDialog
 
@@ -5328,7 +5337,7 @@ MyDialog~execute
   labels.2 = 'Middle class'
   labels.3 = 'Business class'
   labels.4 = 'Lower class'
-  self~addRadioStem(304, 10, 13, ,labels., 2, "LEFTTEXT", 300)
+  self~createRadioButtonStem(304, 10, 13, ,labels., 2, "LEFTTEXT", 300)
 
   self~createPushButton(IDOK, 10, 60, 50, 14, "DEFAULT GROUP", "OK")
   self~createPushButton(IDCANCEL, 65, 60, 50, 14, , "Cancel")
@@ -5641,7 +5650,7 @@ MyDialog~execute
 
 <para>
   The addCheckGroup method creates a group of check boxes. This method believes the same as the <link
-  linkend="mthAddRadioGroup">addRadioGroup</link>() method.
+  linkend="mthCreateRadioButtonGroup">createRadioButtonGroup</link>() method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5893,7 +5902,7 @@ MyDialog~objectrexx = 1
   The addCheckBoxStem method creates a group of check box controls. Unlike the <link
   linkend="mthAddCheckGroup">addCheckGroup</link> method you pass the titles of the check boxes in a stem
   variable instead of using a string. Therefore you can use labels that include blanks. This method is
-  similar to the <link linkend="mthAddRadioStem">addRadioStem</link>() method, but for check boxes.
+  similar to the <link linkend="mthCreateRadioButtonStem">createRadioButtonStem</link>() method, but for check boxes.
 </para>
 <note><title>Note</title><para>
   The documentation prior to version 4.0.0 listed a font name and a font size argument. These arguments
@@ -6403,6 +6412,15 @@ MyDialog~objectrexx = 1
       </para>
       </listitem></varlistentry>
     </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term>attrName [optional]</term>
+    <listitem>
+    <para>
+      The name of the data <link linkend="sctUnderstandingDataAttributes">attribute</link> associated with the edit
+      control. If you omit this argument then the name of the data attribute is constructed <link
+      linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">auto
+      detection</link> is off, this argument is ignored.
+    </para>
     </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
