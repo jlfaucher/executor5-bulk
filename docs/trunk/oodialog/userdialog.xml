@@ -128,8 +128,8 @@
 <entry><link linkend="mthCreatePushButton">createPushButton</link></entry>
 </row>
 <row>
-<entry>addButtonGroup</entry>
-<entry><link linkend="mthAddButtonGroup">addButtonGroup</link></entry>
+<entry>createPushButtonGroup</entry>
+<entry><link linkend="mthCreatePushButtonGroup">createPushButtonGroup</link></entry>
 </row>
 <row>
 <entry><link linkend="mthCreateBlackFrame">createBlackFrame</link></entry>
@@ -196,12 +196,12 @@
 <entry>Creates a white static rectangle control in the dialog template.</entry>
 </row>
 <row>
-<entry>addCheckBoxStem</entry>
-<entry><link linkend="mthAddCheckBoxStem">addCheckBoxStem</link></entry>
+<entry>createCheckBoxStem</entry>
+<entry><link linkend="mthCreateCheckBoxStem">createCheckBoxStem</link></entry>
 </row>
 <row>
-<entry>addCheckGroup</entry>
-<entry><link linkend="mthAddCheckGroup">addCheckGroup</link></entry>
+<entry>createCheckBoxGroup</entry>
+<entry><link linkend="mthCreateCheckBoxGroup">createCheckBoxGroup</link></entry>
 </row>
 <row>
 <entry>addComboBox</entry>
@@ -256,20 +256,20 @@
 <entry><link linkend="addtreecontrol">AddTreeControl</link></entry>
 </row>
 <row>
-<entry>addOkCancelLeftBottom</entry>
-<entry><link linkend="mthAddOkCancelLeftBottom">addOkCancelLeftBottom</link></entry>
+<entry>createOkCancelLeftBottom</entry>
+<entry><link linkend="mthCreateOkCancelLeftBottom">createOkCancelLeftBottom</link></entry>
 </row>
 <row>
-<entry>addOkCancelLeftTop</entry>
-<entry><link linkend="mthAddOkCancelLeftTop">addOkCancelLeftTop</link></entry>
+<entry>createOkCancelLeftTop</entry>
+<entry><link linkend="mthCreateOkCancelLeftTop">createOkCancelLeftTop</link></entry>
 </row>
 <row>
-<entry>addOkCancelRightBottom</entry>
-<entry><link linkend="mthAddOkCancelRightBottom">addOkCancelRightBottom</link></entry>
+<entry>createOkCancelRightBottom</entry>
+<entry><link linkend="mthCreateOkCancelRightBottom">createOkCancelRightBottom</link></entry>
 </row>
 <row>
-<entry>addOkCancelRightTop</entry>
-<entry><link linkend="mthAddOkCancelRightTop">addOkCancelRightTop</link></entry>
+<entry>createOkCancelRightTop</entry>
+<entry><link linkend="mthCreateOkCancelRightTop">createOkCancelRightTop</link></entry>
 </row>
 <row>
 <entry>addPasswordLine</entry>
@@ -3420,8 +3420,8 @@ return 0
 </programlisting>
 
 <para>
-  The <emphasis role="italic">createEtchedVertical</emphasis>() method adds an etched vertical <link
-  linkend="figFramesRects">line</link> static control to the dialog.
+  The <emphasis role="italic">createEtchedVertical</emphasis>() method creates an etched vertical <link
+  linkend="figFramesRects">line</link> static control in the dialog template.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3563,8 +3563,8 @@ return 0
 </programlisting>
 
 <para>
-  The <emphasis role="italic">createGroupbox</emphasis> method adds a <link linkend="clsGroupBox">group box</link> to
-  the dialog.
+  The <emphasis role="italic">createGroupbox</emphasis> method creates a <link linkend="clsGroupBox">group box</link> in
+  the dialog template.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3676,8 +3676,8 @@ return 0
 </programlisting>
 
 <para>
-  The <emphasis role="italic">createPushButton</emphasis> method adds a push <link linkend="clsButton">button</link> to
-  the dialog template and optionally connects it with a method that is invoked whenever the button is clicked.
+  The <emphasis role="italic">createPushButton</emphasis> method creates a push <link linkend="clsButton">button</link>
+  in the dialog template and optionally connects it with a method that is invoked whenever the button is clicked.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3912,16 +3912,16 @@ MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&Get new Info", "getIn
 <indexterm><primary>createBitmapButton</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-addBitmapButton(-id-,-x-,-y-+------+-+------+-+----------+-+--------+------->
-                               +-,-cx-+ +-,-cy-+ +-,-style--+ +-,-text-+
+>>-createBitmapButton(-id-,-x-,-y-+------+-+------+-+----------+-+--------+---->
+                                  +-,-cx-+ +-,-cy-+ +-,-style--+ +-,-text-+
 
 >--+------------+-,-normal-+------------+--+-------------+--+-------------+----><
    +-,-methName-+          +-,-focused--+  +-,-selected--+  +-,-disabled--+
 ]]>
 </programlisting>
 <para>
-  The <emphasis role="italic">createBitmapButton</emphasis> method adds a bitmap push button to the dialog template A
-  bitmap push button uses a bitmap instead of plain text for the face of the button. You can provide four different
+  The <emphasis role="italic">createBitmapButton</emphasis> method creates a bitmap push button in the dialog template.
+  A bitmap push button uses a bitmap instead of plain text for the face of the button. You can provide four different
   bitmaps representing the four states of a button.  The bitmap push button is an owner-drawn button, where ooDialog
   internally handles the drawing of the button.
 </para>
@@ -4166,242 +4166,255 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
 </variablelist>
 </section>
 
-<section id="mthAddButtonGroup"><title>addButtonGroup</title>
-<indexterm><primary>addButtonGroup</primary></indexterm>
+<section id="mthCreatePushButtonGroup"><title>createPushButtonGroup</title>
+<indexterm><primary>createPushButtonGroup</primary></indexterm>
 <programlisting>
 <![CDATA[
-                                             +---------------+
-                                             V               |
->>-addButtonGroup(-x-,-y-+------+-+------+-,--txt- -id- -msg-+--+-------+-+--------+-)-><
-                         +-,-cx-+ +-,-cy-+                      +-,-row-+ +-,-opts-+
+                                                +----------------+
+                                                V                |
+>>-createPushButtonGroup(-x-,-y-+------+-+------+-,-txt- -id- -m-+--+-----+-+-----+-)-><
+                                +-,-cx-+ +-,-cy-+                   +-,-r-+ +-,-o-+
 ]]>
 </programlisting>
 
 <para>
-  Use the addButtonGroup method to add more than one push button at once to the dialog. The buttons are
-  arranged in a row or in a column.
+  Use the <emphasis role="italic">createPushButtonGroup</emphasis> method to create more than one push button in the
+  dialog template at one time. The buttons are arranged in a row or in a column.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      The arguments are:
-      <variablelist>
-        <varlistentry><term>x, y, cx, cy</term>
-        <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>x, y [required]</term>
+      <listitem>
+      <para>
+        The <link linkend="paraControlCoordinates">coordinates</link> of the position of the upper left corner of the
+        button group.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>cx, cy [optional]</term>
+      <listitem>
+      <para>
+        The width and height <link linkend="paraControlCoordinates">coordinates</link> of a single button. Both cx and
+        cy are optional. The default for cx is 40 and for cy 12.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>txt ID m [required]</term>
+      <listitem>
+      <para>
+        A single string containing three words (separated by blanks) for each button. The first word is the text that is
+        displayed on the button. The second is the resource <link linkend="idArgument">ID</link> of the button, and the
+        third is the name of a method in the Rexx dialog object that is connected to the button clicked <link
+        linkend="ovvEvents">event</link>. The fourth to sixth words are for the next button, and so forth. The <emphasis
+        role="italic">txt id m</emphasis> triplet can repeat any number of times and determines how many buttons are
+        created, one button for each triplet.
+      </para>
+      <para>
+        <emphasis role="bold">Note:</emphasis> Currently symbolic IDs are not supported for the resource ID of the
+        buttons.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>r [optional]</term>
+      <listitem>
+      <para>
+        This is a flag to switch between horizontal or vertical placement of the buttons. If <emphasis
+        role="italic">r</emphasis> is true, the buttons are placed in a row, or horizontal. If <emphasis
+        role="italic">r</emphasis> is false, the buttons are placed in a column, or vertically.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>o [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords separated by
+        spaces. Each button is given the same set of styles, except for the DEFAULT style. If the style arg contains the
+        DEFAULT keywork, it is only given to the first button:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>DEFAULT  </member>
+          <member>OWNER    </member>
+          <member>BITMAP   </member>
+          <member>ICON     </member>
+          <member>LEFT     </member>
+          <member>RIGHT    </member>
+          <member>HCENTER  </member>
+          <member>TOP      </member>
+          <member>BOTTOM   </member>
+          <member>VCENTER  </member>
+          <member>MULTILINE</member>
+          <member>NOTIFY   </member>
+          <member>FLAT     </member>
+          <member>HIDDEN   </member>
+          <member>DISABLED </member>
+          <member>BORDER   </member>
+          <member>GROUP    </member>
+          <member>NOTAB    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>DEFAULT</term>
+          <listitem>
           <para>
-            The <link linkend="paraControlCoordinates">control</link> coordinates. In this case x and y are
-            the position of the entire group. cx and cy are the size of a single button and both are
-            optional. The default for cx is 40 and for cy 12.
+            The button becomes the default button in the dialog.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>txt ID msg</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>OWNER</term>
+          <listitem>
           <para>
-            These arguments are interpreted as one string containing three words (separated by blanks)
-            for each button. The first word is the text that is displayed on the button. The second is
-            the resource <link linkend="idArgument">ID</link> of the button, and the third is the
-            name of a message that is sent to the object whenever the button is clicked. The fourth to
-            sixth words are for the next button, and so forth.
+            The programmer is completely responsible for drawing the button when the dialog receives the WM_DRAWITEM
+            message.  Currently this would be difficult (but not impossible) to implement in ooDialog.  A simpler
+            approach for an owner drawn button is to use a bitmap button.  See the <link
+            linkend="mthCreateBitmapButton">createBitmapButton</link> method.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>row</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>ICON</term>
+          <listitem>
           <para>
-            This is a flag to switch between horizontal or vertical placement of the buttons. If row is
-            true, the buttons are placed horizontal, if row is false the buttons are placed vertically.
+            The button displays an icon image.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>opts</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>BITMAP</term>
+          <listitem>
           <para>
-            A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-            separated by spaces. Each button is given the same set of styles, except for the DEFAULT
-            style. This is only given to the first button:
+            The button displays a bitmap image.
           </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LEFT</term>
+          <listitem>
           <para>
-            <simplelist type='vert' columns='3'>
-              <member>DEFAULT  </member>
-              <member>OWNER    </member>
-              <member>BITMAP   </member>
-              <member>ICON     </member>
-              <member>LEFT     </member>
-              <member>RIGHT    </member>
-              <member>HCENTER  </member>
-              <member>TOP      </member>
-              <member>BOTTOM   </member>
-              <member>VCENTER  </member>
-              <member>MULTILINE</member>
-              <member>NOTIFY   </member>
-              <member>FLAT     </member>
-              <member>HIDDEN   </member>
-              <member>DISABLED </member>
-              <member>BORDER   </member>
-              <member>GROUP    </member>
-              <member>NOTAB    </member>
-            </simplelist>
-            <variablelist>
-              <varlistentry><term>DEFAULT</term>
-              <listitem>
-                <para>
-                  The button becomes the default button in the dialog.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>OWNER</term>
-              <listitem>
-                <para>
-                  The programmer is completely responsible for drawing the button when the dialog receives
-                  the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
-                  implement in ooDialog.  A simpler approach for an owner drawn button is to use a bitmap
-                  button.  See the <link linkend="mthCreateBitmapButton">createBitmapButton</link> method.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>ICON</term>
-              <listitem>
-                <para>
-                  The button displays an icon image.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BITMAP</term>
-              <listitem>
-                <para>
-                  The button displays a bitmap image.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>LEFT</term>
-              <listitem>
-                <para>
-                  Left justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
-                  the text is centered in the button rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>RIGHT</term>
-              <listitem>
-                <para>
-                  Right justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
-                  the text is centered in the button rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>HCENTER</term>
-              <listitem>
-                <para>
-                  The button has its text centered horizontally in the button rectangle.  This is the default
-                  if neither LEFT nor RIGHT are specified.
-              </para></listitem></varlistentry>
-              <varlistentry><term>TOP</term>
-              <listitem>
-                <para>
-                  The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
-                  specified the text is vertically centered in the button rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BOTTOM</term>
-              <listitem>
-                <para>
-                  The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
-                  specified the text is vertically centered in the button rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>VCENTER</term>
-              <listitem>
-                <para>
-                  The text is vertically centered in the button rectanble.  This is the default if neither
-                  TOP nor BOTTOM are specified.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>MULTILINE</term>
-              <listitem>
-                <para>
-                  If the text for the label of the button is longer than the width of the button rectangle,
-                  the operating system will word wrap the text producing more than one line.  The height of
-                  the button rectangle has to be sufficient to display the extra line(s) or the text is
-                  clipped.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOTIFY</term>
-              <listitem>
-                <para>
-                  Enables the button to send notifications for the gained focus,lost focus, and double click
-                  events.  This is only necessary when the <link
-                  linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
-                  the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
-                  buttons and owner-drawn buttons will recieve the DBLCLK event.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>FLAT</term>
-              <listitem>
-                <para>
-                  The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
-                  text inside the rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>HIDDEN</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsvisible">not visible</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>DISABLED</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsdisabled">not enabled</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BORDER</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsborder">border</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>GROUP</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsgroup">group</link> control style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOTAB</term>
-              <listitem>
-                <para>
-                  The no <link linkend="wstabstop">tabstop</link> control style.
-                </para>
-              </listitem></varlistentry>
-            </variablelist>
+            Left justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified the text is
+            centered in the button rectangle.
           </para>
-        </listitem></varlistentry>
-      </variablelist>
-    </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RIGHT</term>
+          <listitem>
+          <para>
+            Right justifies the text in the button rectangle.  If neither LEFT nor RIGHT are specified
+            the text is centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HCENTER</term>
+          <listitem>
+          <para>
+            The button has its text centered horizontally in the button rectangle.  This is the default if neither
+            LEFT nor RIGHT are specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TOP</term>
+          <listitem>
+          <para>
+            The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are specified the text is
+            vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BOTTOM</term>
+          <listitem>
+          <para>
+            The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are specified the text
+            is vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VCENTER</term>
+          <listitem>
+          <para>
+            The text is vertically centered in the button rectanble.  This is the default if neither TOP nor BOTTOM are
+            specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MULTILINE</term>
+          <listitem>
+          <para>
+            If the text for the label of the button is longer than the width of the button rectangle, the operating
+            system will word wrap the text producing more than one line.  The height of the button rectangle has to be
+            sufficient to display the extra line(s) or the text is clipped.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTIFY</term>
+          <listitem>
+          <para>
+            Enables the button to send notifications for the gained focus,lost focus, and double click events.  This is
+            only necessary when the <link linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and
+            only for the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
+            buttons and owner-drawn buttons will recieve the DBLCLK event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FLAT</term>
+          <listitem>
+          <para>
+            The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
+            rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            The <link linkend="wsvisible">not visible</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+          <para>
+            The <link linkend="wsdisabled">not enabled</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BORDER</term>
+          <listitem>
+          <para>
+            The <link linkend="wsborder">border</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+          <para>
+            The <link linkend="wsgroup">group</link> control style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+          <para>
+            The no <link linkend="wstabstop">tabstop</link> control style.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-        <para>
-          Success.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>less than 0</term>
-      <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
-      </listitem></varlistentry>
-      </variablelist>
+      Success.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+    <para>
+      Error with the in-memory dialog template or with the resource ID.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      The following example creates three buttons (Add, Delete, and Update):
+  <para>
+    The following example creates three buttons (Add, Delete, and Update.) The buttons are placed in a column alongside
+    the right edge of the dialog.  The upper left corner of the button group is at 20, 235.
   </para>
+
 <programlisting>
 <![CDATA[
-MyDialog~addButtonGroup(20, 235, , ,               -
-                        "&Add 301 AddItem "        -
-                        "&Delete 302 DeleteItem "  -
-                        "&Update 303 UpdateItem")
+self~createPushButtonGroup(20, 235, , ,              -
+                          "&Add 301 AddItem "        -
+                          "&Delete 302 DeleteItem "  -
+                          "&Update 303 UpdateItem")
 ]]>
 </programlisting>
   </listitem></varlistentry>
@@ -4409,46 +4422,47 @@ MyDialog~addButtonGroup(20, 235, , ,               -
 
 </section>
 
-<section id="mthAddOkCancelRightBottom"><title>addOkCancelRightBottom</title>
-<indexterm><primary>addOkCancelRightBottom</primary></indexterm>
+<section id="mthCreateOkCancelRightBottom"><title>createOkCancelRightBottom</title>
+<indexterm><primary>createOkCancelRightBottom</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addOkCancelRightBottom-----------------------><
+>>--createOkCancelRightBottom--------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  The addOkCancelRightBottom method adds an OK and a Cancel push button horizontally to the lower-right
-  edge of the dialog.
+  The <emphasis role="italic">createOkCancelRightBottom</emphasis> method creates an OK and a Cancel push button group
+  in the dialog template. The group is placed in a row at the lower-right edge of the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-        <para>
-          Success.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>less than 0</term>
-      <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
-      </listitem></varlistentry>
-      </variablelist>
+      Success.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+    <para>
+      Error with the in-memory dialog template or with the resource ID.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      The following example adds the push buttons to the bottom of the dialog. It also overrides the
-      standard OK and Cancel methods.
-    </para>
+  <para>
+    The following example adds the push buttons to the bottom of the dialog. It also overrides the standard OK and
+    Cancel methods.
+  </para>
+
   <programlisting>
 <![CDATA[
 ::class MyClass subclass UserDialog
@@ -4457,7 +4471,7 @@ MyDialog~addButtonGroup(20, 235, , ,               -
       .
       .
       .
-   self~addOkCancelRightBottom
+   self~createOkCancelRightBottom
 
 ::method OK
    ret = MessageBox("Are you sure?", "Please confirm", "OK")
@@ -4473,18 +4487,18 @@ MyDialog~addButtonGroup(20, 235, , ,               -
 
 </section>
 
-<section id="mthAddOkCancelLeftBottom"><title>addOkCancelLeftBottom</title>
-<indexterm><primary>addOkCancelLeftBottom</primary></indexterm>
+<section id="mthCreateOkCancelLeftBottom"><title>createOkCancelLeftBottom</title>
+<indexterm><primary>createOkCancelLeftBottom</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addOkCancelLeftBottom------------------------><
+>>--createOkCancelLeftBottom---------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  The addOkCancelLeftBottom method adds an OK and a Cancel push button horizontally to the lower-left
-  edge of the dialog.
+  The <emphasis role="italic">createOkCancelLeftBottom</emphasis> method adds an OK and a Cancel push button group to
+  the dialog template. The group is placed in a row at the lower-left edge of the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -4494,15 +4508,15 @@ MyDialog~addButtonGroup(20, 235, , ,               -
       <variablelist>
       <varlistentry><term>0</term>
       <listitem>
-        <para>
-          Success.
-        </para>
+      <para>
+        Success.
+      </para>
       </listitem></varlistentry>
       <varlistentry><term>less than 0</term>
       <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
+      <para>
+        Error with the in-memory dialog template or with the resource ID.
+      </para>
       </listitem></varlistentry>
       </variablelist>
     </para>
@@ -4510,78 +4524,78 @@ MyDialog~addButtonGroup(20, 235, , ,               -
 </variablelist>
 </section>
 
-<section id="mthAddOkCancelRightTop"><title>addOkCancelRightTop</title>
-<indexterm><primary>addOkCancelRightTop</primary></indexterm>
+<section id="mthCreateOkCancelRightTop"><title>createOkCancelRightTop</title>
+<indexterm><primary>createOkCancelRightTop</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addOkCancelRightTop--------------------------><
+>>--createOkCancelRightTop-----------------------><
 
 
 ]]>
 </programlisting>
 
 <para>
-  The addOkCancelRightTop method adds an OK and a Cancel push button vertically to the upper-right edge
-  of the dialog.
+  The <emphasis role="italic">createOkCancelRightTop</emphasis> method creates an OK and a Cancel push button in the
+  dialog template. The group is placed in a column at the upper-right edge of the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-        <para>
-          Success.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>less than 0</term>
-      <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
-      </listitem></varlistentry>
-      </variablelist>
+      Success.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+    <para>
+      Error with the in-memory dialog template or with the resource ID.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthAddOkCancelLeftTop"><title>addOkCancelLeftTop</title>
-<indexterm><primary>addOkCancelLeftTop</primary></indexterm>
+<section id="mthCreateOkCancelLeftTop"><title>createOkCancelLeftTop</title>
+<indexterm><primary>createOkCancelLeftTop</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addOkCancelLeftTop---------------------------><
+>>--createOkCancelLeftTop------------------------><
 
 
 ]]>
 </programlisting>
 
 <para>
-  The addOkCancelLeftTop method adds an OK and a Cancel push button vertically to the upper-left edge of
-  the dialog.
+  The <emphasis role="italic">createOkCancelLeftTop</emphasis> method creates an OK and a Cancel push button group in
+  the dialog template. The group is placed in a columnt at the upper-left edge of the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-        <para>
-          Success.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>less than 0</term>
-      <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
-      </listitem></varlistentry>
-      </variablelist>
+      Success.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+    <para>
+      Error with the in-memory dialog template or with the resource ID.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
@@ -5629,250 +5643,252 @@ MyDialog~execute
   <listitem>
   <para>
     There are also two methods that create a whole group of check boxes automatically, the <link
-    linkend="mthAddCheckGroup">addCheckGroup</link>() and <link linkend="mthAddCheckBoxStem">addCheckBoxStem</link>()
+    linkend="mthCreateCheckBoxGroup">createCheckBoxGroup</link>() and <link linkend="mthCreateCheckBoxStem">createCheckBoxStem</link>()
     methods.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthAddCheckGroup"><title>addCheckGroup</title>
-<indexterm><primary>addCheckGroup</primary></indexterm>
+<section id="mthCreateCheckBoxGroup"><title>createCheckBoxGroup</title>
+<indexterm><primary>createCheckBoxGroup</primary></indexterm>
 <programlisting>
 <![CDATA[
-                                        +------+
-                                        V      |
->>--addCheckGroup(id1,-x-,-y-+------+-,---text-+--+---------+-+----------+-)---><
-                             +-,-cx-+             +-,-style-+ +-,-idStat-+
+                                             +-----+
+                                             V     |
+>>--createCheckBoxGroup(id,-x-,-y-+------+-,---txt-+--+---------+-+----------+-)--><
+                                  +-,-cx-+            +-,-style-+ +-,-idStat-+
 
 ]]>
 </programlisting>
 
 <para>
-  The addCheckGroup method creates a group of check boxes. This method believes the same as the <link
+  The <emphasis role="italic">createCheckBoxGroup</emphasis> method creates a group of check boxes in the dialog
+  template. This method behaves the same as the <link
   linkend="mthCreateRadioButtonGroup">createRadioButtonGroup</link>() method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      The arguments are:
-      <variablelist>
-        <varlistentry><term>id1</term>
-        <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource <link linkend="idArgument">ID</link> for the first check box. This id is increased by 1 for each
+        additional check box and then assigned to the control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y [required]</term>
+      <listitem>
+      <para>
+        The position <link linkend="paraControlCoordinates">coordinates</link> of the group of check boxes.  x and y
+        name the position of the first check box control. The other check boxes are positioned automatically.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>cx [optional]</term>
+      <listitem>
+      <para>
+        The width <link linkend="paraControlCoordinates">coordinate</link> of as single check box, plus its text. If
+        omitted, the space needed for the check box and its text is calculated by the ooDialog framework.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>txt [required]</term>
+      <listitem>
+      <para>
+        A single string that specifies the text for the label of each check box. The string consists of single words
+        separated by blank spaces. This argument determines the number of check boxes in total. Each single word is the
+        label for one check box. Note that this prevents using more than one word for the label of any check box.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+        separated by spaces. Each check box in the group is given the style specified by this option.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>3STATE   </member>
+          <member>OWNER    </member>
+          <member>BITMAP   </member>
+          <member>ICON     </member>
+          <member>LEFT     </member>
+          <member>RIGHT    </member>
+          <member>HCENTER  </member>
+          <member>TOP      </member>
+          <member>BOTTOM   </member>
+          <member>VCENTER  </member>
+          <member>MULTILINE</member>
+          <member>NOTIFY   </member>
+          <member>PUSHLIKE </member>
+          <member>FLAT     </member>
+          <member>HIDDEN   </member>
+          <member>DISABLED </member>
+          <member>NOBORDER </member>
+          <member>GROUP    </member>
+          <member>NOTAB    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>3STATE</term>
+          <listitem>
           <para>
-            The resource <link linkend="idArgument">ID</link> for the first check box. This id is
-            increased by 1 for each additional check box and then assigned to the control.
+            A three-state check box is created. All check box controls have two states, checked and cleared (not
+            checked.) A three-state check box also has an indeterminate state. This is represented by a grayed box
+            inside the check box. The programmer can use methods of the <link linkend="clsCheckbox">CheckBox</link>
+            class to determine which of the 3 states a check box is in.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>x, y, cx</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>OWNER</term>
+          <listitem>
           <para>
-            The control <link linkend="paraControlCoordinates">coordinates</link>.  x and y name the
-            position of the first check box control. The other check boxes are positioned automatically.
-            cx specifies the length of the check box plus text. If omitted, the space needed is
-            calculated.
+            The programmer is completely responsible for drawing the button when the dialog receives the WM_DRAWITEM
+            message.  Currently this would be difficult (but not impossible) to implement in ooDialog. For a check box,
+            the difficulty would probably make this impractical.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>text</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>ICON</term>
+          <listitem>
           <para>
-            The text string for each check box. Single words have to be separated by blank spaces. This
-            argument determines the number of check boxes in total. Note that this prevents using more
-            than one word for the label of any check box.
+            The button displays an icon image.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>style</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>BITMAP</term>
+          <listitem>
           <para>
-            A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-            separated by spaces. Each check box in the group is given the style specified by this option.
+            The button displays a bitmap image.
           </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LEFT</term>
+          <listitem>
           <para>
-            <simplelist type='vert' columns='3'>
-              <member>3STATE   </member>
-              <member>OWNER    </member>
-              <member>BITMAP   </member>
-              <member>ICON     </member>
-              <member>LEFT     </member>
-              <member>RIGHT    </member>
-              <member>HCENTER  </member>
-              <member>TOP      </member>
-              <member>BOTTOM   </member>
-              <member>VCENTER  </member>
-              <member>MULTILINE</member>
-              <member>NOTIFY   </member>
-              <member>PUSHLIKE </member>
-              <member>FLAT     </member>
-              <member>HIDDEN   </member>
-              <member>DISABLED </member>
-              <member>NOBORDER </member>
-              <member>GROUP    </member>
-              <member>NOTAB    </member>
-            </simplelist>
-            <variablelist>
-              <varlistentry><term>3STATE</term>
-              <listitem>
-                <para>
-                  A three-state check box is created. All check box controls have two states, checked and
-                  cleared (not checked.) A three-state check box also has an indeterminate state. This is
-                  represented by a grayed box inside the check box. The programmer can use methods of the
-                  <link linkend="clsCheckbox">CheckBox</link> class to determine which of the 3 states a
-                  check box is in.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>OWNER</term>
-              <listitem>
-                <para>
-                  The programmer is completely responsible for drawing the button when the dialog receives
-                  the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
-                  implement in ooDialog. For a check box, the difficulty would probably make this
-                  impractical.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>ICON</term>
-              <listitem>
-                <para>
-                  The button displays an icon image.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BITMAP</term>
-              <listitem>
-                <para>
-                  The button displays a bitmap image.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>LEFT</term>
-              <listitem>
-                <para>
-                  Left justifies the text to the right of the check box.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>RIGHT</term>
-              <listitem>
-                <para>
-                  Right justifies the text to the right side of the check box.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>HCENTER</term>
-              <listitem>
-                <para>
-                  The text is centered horizontally to the right of the check box. This is the default if
-                  neither LEFT nor RIGHT are specified.
-              </para></listitem></varlistentry>
-              <varlistentry><term>TOP</term>
-              <listitem>
-                <para>
-                  The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
-                  specified the text is vertically centered in the button rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BOTTOM</term>
-              <listitem>
-                <para>
-                  The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
-                  specified the text is vertically centered in the button rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>VCENTER</term>
-              <listitem>
-                <para>
-                  The text is vertically centered in the button rectanble.  This is the default if neither
-                  TOP nor BOTTOM are specified.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>MULTILINE</term>
-              <listitem>
-                <para>
-                  If the text for the label of the button is longer than the width of the button rectangle,
-                  the operating system will word wrap the text producing more than one line.  The height of
-                  the button rectangle has to be sufficient to display the extra line(s) or the text is
-                  clipped.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOTIFY</term>
-              <listitem>
-                <para>
-                  Enables the button to send notifications for the gained focus,lost focus, and double click
-                  events.  This is only necessary when the <link
-                  linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
-                  the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
-                  buttons and owner-drawn buttons will recieve the DBLCLICK event.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>PUSHLIKE</term>
-              <listitem>
-                <para>
-                  Makes the button look and act like a push button. The button looks raised when it isn't
-                  pushed or checked, and sunken when it is pushed or checked. The button is drawn with a
-                  flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
-                  rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>FLAT</term>
-              <listitem>
-                <para>
-                  The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
-                  text inside the rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>HIDDEN</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsvisible">not visible</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>DISABLED</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsdisabled">not enabled</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOBORDER</term>
-              <listitem>
-                <para>
-                  Use this keyword to specify that a <link linkend="clsGroupBox">group box</link> is not
-                  added around the check box group.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>GROUP</term>
-              <listitem>
-                <para>
-                  Do not use this keyword with this method. The group style is added correctly
-                  internally.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOTAB</term>
-              <listitem>
-                <para>
-                  The no <link linkend="wstabstop">tabstop</link> control style.
-                </para>
-              </listitem></varlistentry>
-            </variablelist>
+            Left justifies the text to the right of the check box.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>idstat</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>RIGHT</term>
+          <listitem>
           <para>
-            This argument is used to set the resource <link linkend="idArgument">ID</link> for the <link
-            linkend="clsGroupBox">group box</link>, if one is used. The argument is ignored if the
-            NOBORDER style is used.
+            Right justifies the text to the right side of the check box.
           </para>
-        </listitem></varlistentry>
-      </variablelist>
-    </para></listitem></varlistentry>
+          </listitem></varlistentry>
+          <varlistentry><term>HCENTER</term>
+          <listitem>
+          <para>
+            The text is centered horizontally to the right of the check box. This is the default if neither LEFT nor
+            RIGHT are specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TOP</term>
+          <listitem>
+          <para>
+            The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are specified the text is
+            vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BOTTOM</term>
+          <listitem>
+          <para>
+            The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are specified the text
+            is vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VCENTER</term>
+          <listitem>
+          <para>
+            The text is vertically centered in the button rectanble.  This is the default if neither TOP nor BOTTOM are
+            specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MULTILINE</term>
+          <listitem>
+          <para>
+            If the text for the label of the button is longer than the width of the button rectangle, the operating
+            system will word wrap the text producing more than one line.  The height of the button rectangle has to be
+            sufficient to display the extra line(s) or the text is clipped.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTIFY</term>
+          <listitem>
+          <para>
+            Enables the button to send notifications for the gained focus,lost focus, and double click events.  This is
+            only necessary when the <link linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and
+            only for the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio buttons and
+            owner-drawn buttons will recieve the DBLCLICK event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PUSHLIKE</term>
+          <listitem>
+          <para>
+            Makes the button look and act like a push button. The button looks raised when it isn't pushed or checked,
+            and sunken when it is pushed or checked. The button is drawn with a flat appearance, i.e., it is drawn as a
+            flat rectangle the label text inside the rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FLAT</term>
+          <listitem>
+          <para>
+            The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
+            rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            The <link linkend="wsvisible">not visible</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+          <para>
+            The <link linkend="wsdisabled">not enabled</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOBORDER</term>
+          <listitem>
+          <para>
+            Use this keyword to specify that a <link linkend="clsGroupBox">group box</link> is not
+            added around the check box group.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+          <para>
+            Do not use this keyword with this method. The group style is added correctly
+            internally.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+          <para>
+            The no <link linkend="wstabstop">tabstop</link> control style.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>idstat [opitonal]</term>
+      <listitem>
+      <para>
+        This argument is used to set the resource <link linkend="idArgument">ID</link> for the <link
+        linkend="clsGroupBox">group box</link>, if one is used. The argument is ignored if the NOBORDER style is used.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
 
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      The following example adds a group of four check boxes to the dialog. Two check boxes are
-      preselected (see <link linkend="fig54">Sample Check Box Group</link>):
-    </para>
+  <para>
+    The following example adds a group of four check boxes to the dialog. Two check boxes are
+    preselected (see <link linkend="fig54">Sample Check Box Group</link>):
+  </para>
 <programlisting>
 <![CDATA[
-MyDialog~addCheckGroup(401, 23, 18, ,"Smalltalk C++ ObjectRexx OO-COBOL")
-MyDialog~smalltalk = 1
-MyDialog~objectrexx = 1
+self~createCheckBoxGroup(401, 23, 18, ,"Smalltalk C++ ObjectRexx OO-COBOL")
+self~smalltalk = 1
+self~objectrexx = 1
 ]]>
 </programlisting>
 
@@ -5889,256 +5905,257 @@ MyDialog~objectrexx = 1
 
 </section>
 
-<section id="mthAddCheckBoxStem"><title>addCheckBoxStem</title>
-<indexterm><primary>addCheckBoxStem</primary></indexterm>
+<section id="mthCreateCheckBoxStem"><title>createCheckBoxStem</title>
+<indexterm><primary>createCheckBoxStem</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addCheckBoxStem(id1,-x-,-y-+------+-,-text.-,-max--+---------+-+----------+-)---><
-                               +-,-cx-+                +-,-style-+ +-,-idStat-+
+>>-createCheckBoxStem(id,-x-,-y-+------+-,-txt.-+-------+-+---------+-+----------+-)-><
+                                +-,-cx-+        +-,-max-+ +-,-style-+ +-,-idStat-+
 ]]>
 </programlisting>
 
 <para>
-  The addCheckBoxStem method creates a group of check box controls. Unlike the <link
-  linkend="mthAddCheckGroup">addCheckGroup</link> method you pass the titles of the check boxes in a stem
-  variable instead of using a string. Therefore you can use labels that include blanks. This method is
-  similar to the <link linkend="mthCreateRadioButtonStem">createRadioButtonStem</link>() method, but for check boxes.
+  The <emphasis role="italic">createCheckBoxStem</emphasis> method creates a group of check box controls. Unlike the <link
+  linkend="mthCreateCheckBoxGroup">createCheckBoxGroup</link> method, you pass the text for the labels of the check
+  boxes in a stem variable, instead of using a string. This allows you to use labels that include blanks. This method is
+  similar to the <link linkend="mthCreateRadioButtonStem">createRadioButtonStem</link>() method, but is used for check
+  boxes.
 </para>
-<note><title>Note</title><para>
-  The documentation prior to version 4.0.0 listed a font name and a font size argument. These arguments
-  do nothing and are ignored in ooDialog 4.0.0 and later.
-</para></note>
+<para>
+  <emphasis role="bold">Note:</emphasis> The documentation prior to version 4.0.0 listed a font name and a font size
+  argument. These arguments do nothing and are ignored in ooDialog 4.0.0 and later.
+</para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      The arguments are:
-      <variablelist>
-        <varlistentry><term>id1</term>
-        <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource <link linkend="idArgument">ID</link> for the first check box This id is increased by 1 for each
+        additional check box and then assigned to the control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y [required]</term>
+      <listitem>
+      <para>
+        The position <link linkend="paraControlCoordinates">coordinates</link> for the check box group. The group is
+        positioned so that the upper left corner of the group is at the x, y coordinates specified.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>cx [optional]</term>
+      <listitem>
+      <para>
+        The width <link linkend="paraControlCoordinates">coordinate</link> for a single check box plus its label.
+        If omitted, the proper width is calculated by the ooDialog framework.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>txt. [required]</term>
+      <listitem>
+      <para>
+        A stem containing the text for the label of each check box. The stem indexes shoud start at 1 and continue
+        consecutively, with each succeding number containing the the label for the next check box. This argument
+        determines the number of check boxes in total.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>max [optional]</term>
+      <listitem>
+      <para>
+        A number specifying the maximum check boxes to put in a column. The programmer can use this to balance the look
+        of the group by placing the check boxe in more than 1 column. For instance, if there are 8 check boxes and the
+        max argument is 4 then the result will have 4 check boxes in 2 side-by-side columns. Likewise if max is 3 and
+        there are 9 check boxes, then this methods will create 3 columns of 3 check boxes. If this argument is omitted,
+        all the check boxes are placed in a single column.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+        separated by spaces. Each check box in the group is given the style specified by this option.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>3STATE   </member>
+          <member>OWNER    </member>
+          <member>BITMAP   </member>
+          <member>ICON     </member>
+          <member>LEFT     </member>
+          <member>RIGHT    </member>
+          <member>HCENTER  </member>
+          <member>TOP      </member>
+          <member>BOTTOM   </member>
+          <member>VCENTER  </member>
+          <member>MULTILINE</member>
+          <member>NOTIFY   </member>
+          <member>PUSHLIKE </member>
+          <member>FLAT     </member>
+          <member>HIDDEN   </member>
+          <member>DISABLED </member>
+          <member>NOBORDER </member>
+          <member>GROUP    </member>
+          <member>NOTAB    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>3STATE</term>
+          <listitem>
           <para>
-            The resource <link linkend="idArgument">ID</link> for the first check box This id is
-            increased by 1 for each additional check box and then assigned to the control.
+            A three-state check box is created. All check box controls have two states, checked and cleared (not
+            checked.) A three-state check box also has an indeterminate state. This is represented by a grayed box
+            inside the check box. The programmer can use methods of the <link linkend="clsCheckbox">CheckBox</link>
+            class to determine which of the 3 states a check box is in.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>x, y, cx</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>OWNER</term>
+          <listitem>
           <para>
-            The control <link linkend="paraControlCoordinates">coordinates</link>.  x and y name the
-            position of the first check box control. The other check boxes are positioned automatically.
-            cx specifies the length of the check plus text. If omitted, the space needed is
-            calculated.
+            The programmer is completely responsible for drawing the button when the dialog receives the WM_DRAWITEM
+            message.  Currently this would be difficult (but not impossible) to implement in ooDialog. For a check box,
+            the difficulty would probably make this impractical.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>text.</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>ICON</term>
+          <listitem>
           <para>
-            A stem containing the text label for each check box. The stem indexes shoud start at 1 and
-            continue consecutively, with each succeding number containing the the label for the next
-            check box. This argument determines the number of check boxes in total.
+            The button displays an icon image.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>max</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>BITMAP</term>
+          <listitem>
           <para>
-            A number specifying the maximum check boxes to put in a column. The programmer can use this
-            to balance the look of the group by placing the check boxe in more than 1 column. For
-            instance, if there are 8 check boxes and the max argument is 4 then the result will have 4
-            check boxes in 2 side-by-side columns. Likewise if max is 3 and there are 9 check boxes, then
-            this methods will create 3 columns of 3 check boxes.
+            The button displays a bitmap image.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>style</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>LEFT</term>
+          <listitem>
           <para>
-            A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-            separated by spaces. Each check box in the group is given the style specified by this option.
+            Left justifies the text to the right of the check box.
           </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RIGHT</term>
+          <listitem>
           <para>
-            <simplelist type='vert' columns='3'>
-              <member>3STATE   </member>
-              <member>OWNER    </member>
-              <member>BITMAP   </member>
-              <member>ICON     </member>
-              <member>LEFT     </member>
-              <member>RIGHT    </member>
-              <member>HCENTER  </member>
-              <member>TOP      </member>
-              <member>BOTTOM   </member>
-              <member>VCENTER  </member>
-              <member>MULTILINE</member>
-              <member>NOTIFY   </member>
-              <member>PUSHLIKE </member>
-              <member>FLAT     </member>
-              <member>HIDDEN   </member>
-              <member>DISABLED </member>
-              <member>NOBORDER </member>
-              <member>GROUP    </member>
-              <member>NOTAB    </member>
-            </simplelist>
-            <variablelist>
-              <varlistentry><term>3STATE</term>
-              <listitem>
-                <para>
-                  A three-state check box is created. All check box controls have two states, checked and
-                  cleared (not checked.) A three-state check box also has an indeterminate state. This is
-                  represented by a grayed box inside the check box. The programmer can use methods of the
-                  <link linkend="clsCheckbox">CheckBox</link> class to determine which of the 3 states a
-                  check box is in.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>OWNER</term>
-              <listitem>
-                <para>
-                  The programmer is completely responsible for drawing the button when the dialog receives
-                  the WM_DRAWITEM message.  Currently this would be difficult (but not impossible) to
-                  implement in ooDialog. For a check box, the difficulty would probably make this
-                  impractical.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>ICON</term>
-              <listitem>
-                <para>
-                  The button displays an icon image.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BITMAP</term>
-              <listitem>
-                <para>
-                  The button displays a bitmap image.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>LEFT</term>
-              <listitem>
-                <para>
-                  Left justifies the text to the right of the check box.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>RIGHT</term>
-              <listitem>
-                <para>
-                  Right justifies the text to the right side of the check box.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>HCENTER</term>
-              <listitem>
-                <para>
-                  The text is centered horizontally to the right of the check box. This is the default if
-                  neither LEFT nor RIGHT are specified.
-              </para></listitem></varlistentry>
-              <varlistentry><term>TOP</term>
-              <listitem>
-                <para>
-                  The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are
-                  specified the text is vertically centered in the button rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>BOTTOM</term>
-              <listitem>
-                <para>
-                  The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are
-                  specified the text is vertically centered in the button rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>VCENTER</term>
-              <listitem>
-                <para>
-                  The text is vertically centered in the button rectanble.  This is the default if neither
-                  TOP nor BOTTOM are specified.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>MULTILINE</term>
-              <listitem>
-                <para>
-                  If the text for the label of the button is longer than the width of the button rectangle,
-                  the operating system will word wrap the text producing more than one line.  The height of
-                  the button rectangle has to be sufficient to display the extra line(s) or the text is
-                  clipped.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOTIFY</term>
-              <listitem>
-                <para>
-                  Enables the button to send notifications for the gained focus,lost focus, and double click
-                  events.  This is only necessary when the <link
-                  linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and only for
-                  the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
-                  buttons and owner-drawn buttons will recieve the DBLCLICK event.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>PUSHLIKE</term>
-              <listitem>
-                <para>
-                  Makes the button look and act like a push button. The button looks raised when it isn't
-                  pushed or checked, and sunken when it is pushed or checked. The button is drawn with a
-                  flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
-                  rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>FLAT</term>
-              <listitem>
-                <para>
-                  The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label
-                  text inside the rectangle.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>HIDDEN</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsvisible">not visible</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>DISABLED</term>
-              <listitem>
-                <para>
-                  The <link linkend="wsdisabled">not enabled</link> window style.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOBORDER</term>
-              <listitem>
-                <para>
-                  Use this keyword to specify that a <link linkend="clsGroupBox">group box</link> is not
-                  added around the check box group.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>GROUP</term>
-              <listitem>
-                <para>
-                  Do not use this keyword with this method. The group style is added correctly
-                  internally.
-                </para>
-              </listitem></varlistentry>
-              <varlistentry><term>NOTAB</term>
-              <listitem>
-                <para>
-                  The no <link linkend="wstabstop">tabstop</link> control style.
-                </para>
-              </listitem></varlistentry>
-            </variablelist>
+            Right justifies the text to the right side of the check box.
           </para>
-        </listitem></varlistentry>
-        <varlistentry><term>idstat</term>
-        <listitem>
+          </listitem></varlistentry>
+          <varlistentry><term>HCENTER</term>
+          <listitem>
           <para>
-            This argument is used to set the resource <link linkend="idArgument">ID</link> for the <link
-            linkend="clsGroupBox">group box</link>, if one is used. The argument is ignored if the
-            NOBORDER style is used.
+            The text is centered horizontally to the right of the check box. This is the default if neither LEFT nor
+            RIGHT are specified.
           </para>
-        </listitem></varlistentry>
-      </variablelist>
-    </para></listitem></varlistentry>
+          </listitem></varlistentry>
+          <varlistentry><term>TOP</term>
+          <listitem>
+          <para>
+            The text is aligned at the top of the button rectangle.  If neither TOP nor BOTTOM are specified the text is
+            vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BOTTOM</term>
+          <listitem>
+          <para>
+            The text is aligned at the bottom of the button rectangle.  If neither TOP nor BOTTOM are specified the text
+            is vertically centered in the button rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VCENTER</term>
+          <listitem>
+          <para>
+            The text is vertically centered in the button rectanble.  This is the default if neither TOP nor BOTTOM are
+            specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MULTILINE</term>
+          <listitem>
+          <para>
+            If the text for the label of the button is longer than the width of the button rectangle, the operating
+            system will word wrap the text producing more than one line.  The height of the button rectangle has to be
+            sufficient to display the extra line(s) or the text is clipped.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTIFY</term>
+          <listitem>
+          <para>
+            Enables the button to send notifications for the gained focus,lost focus, and double click events.  This is
+            only necessary when the <link linkend="mthConnectButtonEvent">connectButtonEvent</link> method is used, and
+            only for the GOTFOCUS, LOSTFOCUS, or DBLCLK keywords of that method. Note that only radio
+            buttons and owner-drawn buttons will recieve the DBLCLICK event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PUSHLIKE</term>
+          <listitem>
+          <para>
+            Makes the button look and act like a push button. The button looks raised when it isn't pushed or checked,
+            and sunken when it is pushed or checked. The button is drawn with a flat appearance, i.e., it is drawn as a
+            flat rectangle the label text inside the rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FLAT</term>
+          <listitem>
+          <para>
+            The button is drawn with a flat appearance, i.e., it is drawn as a flat rectangle the label text inside the
+            rectangle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            The <link linkend="wsvisible">not visible</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+          <para>
+            The <link linkend="wsdisabled">not enabled</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOBORDER</term>
+          <listitem>
+          <para>
+            Use this keyword to specify that a <link linkend="clsGroupBox">group box</link> is not added around the
+            check box group.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+          <para>
+            Do not use this keyword with this method. The group style is added correctly internally.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTAB</term>
+          <listitem>
+          <para>
+            The no <link linkend="wstabstop">tabstop</link> control style.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>idStat [optional]</term>
+      <listitem>
+      <para>
+        This argument is used to set the resource <link linkend="idArgument">ID</link> for the <link
+        linkend="clsGroupBox">group box</link>, if one is used. The argument is ignored if the
+        NOBORDER style is used.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      The following example is complete. It can be cut and pasted into a file and run as is. It adds a
-      group of six check boxes with consecutive IDs of 304 through 309. They are placed in a group with
-      two check boxes each in three columns. The group box for the group is give a resource ID of 300.
-      In initDialog(), the group box is then given a label and the first and fifth check boxes are
-      checked.
-    </para>
+  <para>
+    The following example is complete. It can be cut and pasted into a file and run as is. It adds a group of six check
+    boxes with consecutive IDs of 304 through 309. They are placed in a group with two check boxes each in three
+    columns. The group box for the group is give a resource ID of 300. In initDialog(), the group box is then given a
+    label and the first and fifth check boxes are checked.
+  </para>
 <programlisting>
 <![CDATA[
-/* Simple test of add ... */
+/* Simple test of create ... methods */
 
   dlg = .SimpleCB~new
 
@@ -6147,9 +6164,9 @@ MyDialog~objectrexx = 1
     dlg~execute("SHOWTOP")
   end
 
-::requires "oodWin32.cls"
+::requires "ooDialog.cls"
 
-::class 'SimpleCB' subclass UserDialog inherit AdvancedControls
+::class 'SimpleCB' subclass UserDialog
 
 ::method defineDialog
 
@@ -6159,14 +6176,14 @@ MyDialog~objectrexx = 1
   labels.4 = 'Lower class'
   labels.5 = 'Classless'
   labels.6 = 'Class clown'
-  self~addCheckBoxStem(304, 10, 13, ,labels., 2, "LEFTTEXT RIGHT", 300)
+  self~createCheckBoxStem(304, 10, 13, ,labels., 2, "LEFTTEXT RIGHT", 300)
 
   self~createPushButton(IDOK, 10, 60, 50, 14, "DEFAULT GROUP", "OK")
   self~createPushButton(IDCANCEL, 65, 60, 50, 14, , "Cancel")
 
 ::method initDialog
   self~newGroupBox(300)~style = "LEFT"
-  self~newGroupBox(300)~setTitle("Class Warfare")
+  self~newGroupBox(300)~setText("Class Warfare")
   self~newCheckBox(304)~check
   self~newCheckBox(308)~check
 
