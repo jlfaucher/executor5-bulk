@@ -95,7 +95,7 @@
 <table id="tUserDialogClass" frame="all">
 <title>UserDialog Method Reference</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in">
+<colspec colwidth="1.75in">
 <thead>
 <row>
 <entry>Dialog Method</entry>
@@ -120,16 +120,12 @@
 <entry>Adds the file name for an icon resource to the dialog.</entry>
 </row>
 <row>
-<entry>createBitmapButton</entry>
+<entry><link linkend="mthCreate">create</link></entry>
+<entry>Begins the creation of the in-memory Windows dialog template by specifying the general details for the dialog itself.</entry>
+</row>
+<row>
 <entry><link linkend="mthCreateBitmapButton">createBitmapButton</link></entry>
-</row>
-<row>
-<entry>createPushButton</entry>
-<entry><link linkend="mthCreatePushButton">createPushButton</link></entry>
-</row>
-<row>
-<entry>createPushButtonGroup</entry>
-<entry><link linkend="mthCreatePushButtonGroup">createPushButtonGroup</link></entry>
+<entry>Creates a bitmap push button in the dialog template.</entry>
 </row>
 <row>
 <entry><link linkend="mthCreateBlackFrame">createBlackFrame</link></entry>
@@ -140,16 +136,40 @@
 <entry>Creates a static black rectangle control in the dialog template.</entry>
 </row>
 <row>
+<entry><link linkend="mthCreateCenter">createCenter</link></entry>
+<entry>Begins the creation of an in-memory dialog template for a dialog that will be centered in the user's screen.</entry>
+</row>
+<row>
 <entry><link linkend="mthCreateCheckBox">createCheckBox</link></entry>
 <entry>Creates a check box control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateCheckBoxGroup">createCheckBoxGroup</link></entry>
+<entry>Creates a group of check box controls in the dialog template using a single string to specify the check box labels.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateCheckBoxStem">createCheckBoxStem</link></entry>
+<entry>Creates a group of check box controls in the dialog template using a stem to specify the check box labels.</entry>
 </row>
 <row>
 <entry><link linkend="mthCreateDateTimePicker">createDateTimePicker</link></entry>
 <entry>Creates a date time picker control in the dialog template.</entry>
 </row>
 <row>
-<entry><link linkend="mthCreateMonthCalendar">createMonthCalendar</link></entry>
-<entry>Creates a month calendar control in the dialog template.</entry>
+<entry><link linkend="mthCreateEdit">createEdit</link></entry>
+<entry>Creates an edit control in the dialog template</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateEditInput">createEditInput</link></entry>
+<entry>Creates an edit control and a static text control (for the label) in the dialog template, in one step.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateEditInputGroup">createEditInputGroup</link></entry>
+<entry>createEditInputGroup</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateEditInputStem">createEditInputStem</link></entry>
+<entry>createEditInputStem</entry>
 </row>
 <row>
 <entry><link linkend="mthCreateEtchedFrame">createEtchedFrame</link></entry>
@@ -172,16 +192,72 @@
 <entry>Creates a static gray rectangle control in the dialog template.</entry>
 </row>
 <row>
+<entry><link linkend="mthCreateGroupBox">createGroupbox</link></entry>
+<entry>Creates a group box in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateListbox">createListBox</link></entry>
+<entry>createListBox</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateMonthCalendar">createMonthCalendar</link></entry>
+<entry>Creates a month calendar control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateOkCancelRightBottom">createOkCancelRightBottom</link></entry>
+<entry>createOkCancelRightBottom</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateOkCancelRightTop">createOkCancelRightTop</link></entry>
+<entry>createOkCancelRightTop</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateOkCancelLeftBottom">createOkCancelLeftBottom</link></entry>
+<entry>createOkCancelLeftBottom</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateOkCancelLeftTop">createOkCancelLeftTop</link></entry>
+<entry>createOkCancelLeftTop</entry>
+</row>
+<row>
+<entry><link linkend="mthCreatePasswordEdit">createPasswordEdit</link></entry>
+<entry>createPasswordEdit</entry>
+</row>
+<row>
+<entry><link linkend="mthCreatePushButton">createPushButton</link></entry>
+<entry>Creates a push button in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreatePushButtonGroup">createPushButtonGroup</link></entry>
+<entry>Creates any number of push buttons in the dialog template at one time.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateRadioButton">createRadioButton</link></entry>
+<entry>createRadioButton</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateRadioButtonGroup">createRadioButtonGroup</link></entry>
+<entry>createRadioButtonGroup</entry>
+</row>
+<row>
+<entry>createRadioButtonStem</entry>
+<entry><link linkend="mthCreateRadioButtonStem">createRadioButtonStem</link></entry>
+</row>
+<row>
 <entry><link linkend="mthCreateStatic">createStatic</link></entry>
 <entry>Creates a static control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateStaticImage">createStaticImage</link></entry>
+<entry>Creates a static image control in the dialog template.</entry>
 </row>
 <row>
 <entry><link linkend="mthCreateStaticText">createStaticText</link></entry>
 <entry>Creates a static text control in the dialog template.</entry>
 </row>
 <row>
-<entry><link linkend="mthCreateStaticImage">createStaticImage</link></entry>
-<entry>Creates a static image control in the dialog template.</entry>
+<entry><link linkend="mthCreateTab">createTab</link></entry>
+<entry>createTab</entry>
 </row>
 <row>
 <entry><link linkend="mthCreateUpDown">createUpDown</link></entry>
@@ -196,126 +272,57 @@
 <entry>Creates a white static rectangle control in the dialog template.</entry>
 </row>
 <row>
-<entry>createCheckBoxStem</entry>
-<entry><link linkend="mthCreateCheckBoxStem">createCheckBoxStem</link></entry>
-</row>
-<row>
-<entry>createCheckBoxGroup</entry>
-<entry><link linkend="mthCreateCheckBoxGroup">createCheckBoxGroup</link></entry>
-</row>
-<row>
-<entry>addComboBox</entry>
-<entry><link linkend="mthAddComboBox">addComboBox</link></entry>
-</row>
-<row>
-<entry>addComboInput</entry>
-<entry><link linkend="mthAddComboInput">addComboInput</link></entry>
-</row>
-<row>
-<entry>createEdit</entry>
-<entry><link linkend="mthCreateEdit">createEdit</link></entry>
-</row>
-<row>
-<entry>createGroupbox</entry>
-<entry><link linkend="mthCreateGroupBox">createGroupbox</link></entry>
-</row>
-<row>
-<entry>addInput</entry>
-<entry><link linkend="mthAddInput">addInput</link></entry>
-</row>
-<row>
-<entry>addInputGroup</entry>
-<entry><link linkend="mthAddInputGroup">addInputGroup</link></entry>
-</row>
-<row>
-<entry>addInputStem</entry>
-<entry><link linkend="mthAddInputStem">addInputStem</link></entry>
-</row>
-<row>
-<entry>createListBox</entry>
-<entry><link linkend="mthCreateListbox">createListBox</link></entry>
-</row>
-<row>
-<entry>AddListControl</entry>
-<entry><link linkend="mthAddListControl">AddListControl</link></entry>
-</row>
-<row>
-<entry>addProgressBar</entry>
-<entry><link linkend="mthAddProgressBar">addProgressBar</link></entry>
-</row>
-<row>
-<entry>AddSliderControl</entry>
-<entry><link linkend="addslidercontrol">AddSliderControl</link></entry>
-</row>
-<row>
-<entry>createTab</entry>
-<entry><link linkend="mthCreateTab">createTab</link></entry>
-</row>
-<row>
-<entry>AddTreeControl</entry>
-<entry><link linkend="addtreecontrol">AddTreeControl</link></entry>
-</row>
-<row>
-<entry>createOkCancelLeftBottom</entry>
-<entry><link linkend="mthCreateOkCancelLeftBottom">createOkCancelLeftBottom</link></entry>
-</row>
-<row>
-<entry>createOkCancelLeftTop</entry>
-<entry><link linkend="mthCreateOkCancelLeftTop">createOkCancelLeftTop</link></entry>
-</row>
-<row>
-<entry>createOkCancelRightBottom</entry>
-<entry><link linkend="mthCreateOkCancelRightBottom">createOkCancelRightBottom</link></entry>
-</row>
-<row>
-<entry>createOkCancelRightTop</entry>
-<entry><link linkend="mthCreateOkCancelRightTop">createOkCancelRightTop</link></entry>
-</row>
-<row>
-<entry>addPasswordLine</entry>
-<entry><link linkend="mthAddPasswordLine">addPasswordLine</link></entry>
-</row>
-<row>
-<entry><link linkend="mthCreateRadioButton">addRadioButton</link></entry>
-<entry>createRadioButton</entry>
-</row>
-<row>
-<entry>createRadioButtonGroup</entry>
-<entry><link linkend="mthCreateRadioButtonGroup">createRadioButtonGroup</link></entry>
-</row>
-<row>
-<entry>createRadioButtonStem</entry>
-<entry><link linkend="mthCreateRadioButtonStem">createRadioButtonStem</link></entry>
-</row>
-<row>
-<entry>addScrollBar</entry>
-<entry><link linkend="mthAddScrollBar">addScrollBar</link></entry>
-</row>
-<row>
-<entry>create</entry>
-<entry><link linkend="mthCreate">create</link></entry>
-</row>
-<row>
-<entry>CreateCenter</entry>
-<entry><link linkend="mthCreateCenter">CreateCenter</link></entry>
-</row>
-<row>
-<entry>defineDialog</entry>
 <entry><link linkend="mthDefineDialog">defineDialog</link></entry>
+<entry>
+  The programmer uses this method to dynamically create the dialog controls in the dialog template by using the appropriate
+  create ... methods.
+</entry>
 </row>
 <row>
-<entry>load</entry>
 <entry><link linkend="mthLoad">load</link></entry>
+<entry>Creates the in-memory dialog template by reading the dialog template from a resource script file.</entry>
 </row>
 <row>
-<entry>loadFrame</entry>
 <entry><link linkend="mthLoadFrame">loadFrame</link></entry>
+<entry>Starts the in-memory Windows dialog template by reading a dialog template from a resource script file.</entry>
 </row>
 <row>
-<entry>loaditems</entry>
 <entry><link linkend="mthLoadItems">loaditems</link></entry>
+<entry>
+  Creates the dialog controls in the dialog template, and finishes the dialog template, by reading a dialog template
+  from a resource script file.
+</entry>
 </row>
-</tbody></tgroup>
+<row>
+<entry><link linkend="mthAddComboBox">addComboBox</link></entry>
+<entry>addComboBox</entry>
+</row>
+<row>
+<entry><link linkend="mthAddComboInput">addComboInput</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthAddListControl">AddListControl</link></entry>
+<entry>AddListControl</entry>
+</row>
+<row>
+<entry><link linkend="mthAddProgressBar">addProgressBar</link></entry>
+<entry>addProgressBar</entry>
+</row>
+<row>
+<entry><link linkend="addslidercontrol">AddSliderControl</link></entry>
+<entry>AddSliderControl</entry>
+</row>
+<row>
+<entry><link linkend="addtreecontrol">AddTreeControl</link></entry>
+<entry>AddTreeControl</entry>
+</row>
+<row>
+<entry><link linkend="mthAddScrollBar">addScrollBar</link></entry>
+<entry>addScrollBar</entry>
+</row>
+</tbody>
+</tgroup>
 </table>
 </para>
 
@@ -6220,32 +6227,26 @@ self~objectrexx = 1
     The arguments are:
   </para>
   <variablelist>
-    <varlistentry><term>id</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource <link linkend="idArgument">ID</link> for the control.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>name</term>
+    <varlistentry><term>x, y, cx [required]</term>
     <listitem>
     <para>
-      The name of the data attribute associated with the dialog item. Using this argument performs the
-      same function as the <link linkend="mthConnectEdit">connectEdit</link>() method. The
-      documentation connectEdit() has a good description of the concept of the data attribute.
-    </para>
-    <para>
-      If you omitt this argument then the data attribute is constructed automatically and named by
-      concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA || id</computeroutput>.
+      The control position and width <link linkend="paraControlCoordinates">coordinates</link>.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>x, y, cx, cy</term>
+    <varlistentry><term>cy [optional]</term>
     <listitem>
     <para>
-      The  control <link linkend="paraControlCoordinates">coordinates</link>. If cy is omitted, then the
-      height is calculated to fit the height of the dialog font.
+      The height <link linkend="paraControlCoordinates">coordinate</link> for the control. If omitted, then the height
+      is calculated automatically to fit the height of the dialog font.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>style</term>
+    <varlistentry><term>style [optional]</term>
     <listitem>
     <para>
       A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
@@ -6344,14 +6345,13 @@ self~objectrexx = 1
         Selected text in an edit control keeps its highlight when the focus is shifted away from the control.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>PASSWORD</term>
+      <varlistentry id="styleEditPASSWORD"><term>PASSWORD</term>
       <listitem>
       <para>
         Characters typed into the edit control are masked.  Rather than displaying the character typed, the edit control
         displays the mask character.  Prior to Windows XP the default mask character was the asterisk.  In Windows XP
-        the default mask character is a black circle. The default password character can be changed by using through the
-        <link linkend="atrPasswordChar">passwordChar</link> attribute of the <link linkend="clsEdit">Edit</link>
-        control.
+        the default mask character is a black circle. The default password character can be changed through the <link
+        linkend="atrPasswordChar">passwordChar</link> attribute of the <link linkend="clsEdit">Edit</link> control.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>CENTER</term>
@@ -6479,548 +6479,544 @@ dlg~createEdit(201, 12, 14, 150, ,"AUTOSCROLLH", "FIRSTNAME")
 </programlisting>
 </section>
 
-<section id="mthAddPasswordLine"><title>addPasswordLine</title>
-<indexterm><primary>addPasswordLine</primary></indexterm>
+<section id="mthCreatePasswordEdit"><title>createPasswordEdit</title>
+<indexterm><primary>createPasswordEdit</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addPasswordLine(-id---+--------+--,--x--,--y--,--cx-,--+------+--+---------+-)--><
-                          +-,-name-+                       +-,-cy-+  +-,-style-+
+>>--createPasswordEdit(-id-,-x-,-y-,-cx--+------+--+---------+-+--------+--)---><
+                                         +-,-cy-+  +-,-style-+ +-,-attr-+
 ]]>
 </programlisting>
 
 <para>
-  The addPasswordLine method adds a password edit control that does not echo the characters entered but
-  displays the password character instead. This method is a convenience method and is used exactly like
-  the <link linkend="mthCreateEdit">addEntryLin()</link> method.  It simple specifies the PASSWORD
-  style for the programmer.
+  The <emphasis role="italic">createPasswordEdit</emphasis> method creates an edit edit control in the dialog
+  template with the PASSWORD style.
+</para>
+<para>
+  When an edit control has the <link linkend="styleEditPASSWORD">PASSWORD</link> style id does not echo the characters
+  typed but displays the password character instead. This method is a convenience method and is used exactly like the
+  <link linkend="mthCreateEdit">createEdit</link> method.  It simple specifies the PASSWORD style automatically for the
+  programmer.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
     <para>
-      The arguments are:
+      The resource <link linkend="idArgument">ID</link> for the control.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>x, y, cx [required]</term>
+    <listitem>
+    <para>
+      The position and width <link linkend="paraControlCoordinates">coordinates</link> for the control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>cy [optional]</term>
+    <listitem>
+    <para>
+      The height <link linkend="paraControlCoordinates">coordinate</link> for the control. If this argument is omitted,
+      then the height is calculated to fit the height of the dialog font.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+      separated by spaces:
+    </para>
+    <para>
+      <emphasis role="bold">Note:</emphasis> The behavior described here for the style keywords may
+      vary slightly depending on the version of Windows.
+    </para>
+    <simplelist type='vert' columns='3'>
+      <member>AUTOSCROLLH  </member>
+      <member>HSCROLL      </member>
+      <member>AUTOSCROLLV  </member>
+      <member>VSCROLL      </member>
+      <member>MULTILINE    </member>
+      <member>HIDESELECTION</member>
+      <member>NOWANTRETURN </member>
+      <member>READONLY     </member>
+      <member>KEEPSELECTION</member>
+      <member>CENTER       </member>
+      <member>RIGHT        </member>
+      <member>UPPER        </member>
+      <member>LOWER        </member>
+      <member>NUMBER       </member>
+      <member>OEM          </member>
+      <member>HIDDEN       </member>
+      <member>DISABLED     </member>
+      <member>GROUP        </member>
+      <member>NOTAB        </member>
+      <member>NOBORDER     </member>
+    </simplelist>
     <variablelist>
-      <varlistentry><term>id</term>
+      <varlistentry><term>AUTOSCROLLH</term>
       <listitem>
-        <para>
-          The resource <link linkend="idArgument">ID</link> for the control.
-        </para>
+      <para>
+        Automatically scrolls text to the right when the user types a character at the end of the line.  In a
+        single-line edit control text can not be added past the width of the control without this style.  Multi-line
+        edit controls do not need this style if a horizontal scroll bar is added.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>name</term>
+      <varlistentry><term>HSCROLL</term>
       <listitem>
-        <para>
-          The name of the data attribute associated with the dialog item. Using this argument performs the
-          same function as the <link linkend="mthConnectEdit">connectEdit</link>() method. The
-          documentation connectEdit() has a good description of the concept of the data attribute.
-        </para>
-        <para>
-          If you omitt this argument then the data attribute is constructed automatically and named by
-          concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA || id</computeroutput>.
-        </para>
+      <para>
+        Adds a horizontal scroll bar to the bottom of the edit control. A horizontal scroll bar is only functional in
+        multi-line edit controls.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>x, y, cx, cy</term>
+      <varlistentry><term>AUTOSCROLLV</term>
       <listitem>
-        <para>
-          The  control <link linkend="paraControlCoordinates">coordinates</link>. If cy is omitted, then the
-          height is calculated to fit the height of the dialog font.
-        </para>
+      <para>
+        Automatically scrolls text up when the user presses ENTER on the last line.  This style only effects multi-line
+        edit controls and is not needed if a vertical scroll bar is added.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>style</term>
+      <varlistentry><term>VSCROLL</term>
       <listitem>
-        <para>
-          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-          separated by spaces:
-        </para>
-        <para>
-          <emphasis role="bold">Note:</emphasis> The behavior described here for the style keywords may
-          vary slightly depending on the version of Windows.
-        </para>
-        <simplelist type='vert' columns='3'>
-          <member>AUTOSCROLLH  </member>
-          <member>HSCROLL      </member>
-          <member>AUTOSCROLLV  </member>
-          <member>VSCROLL      </member>
-          <member>MULTILINE    </member>
-          <member>HIDESELECTION</member>
-          <member>NOWANTRETURN </member>
-          <member>READONLY     </member>
-          <member>KEEPSELECTION</member>
-          <member>CENTER       </member>
-          <member>RIGHT        </member>
-          <member>UPPER        </member>
-          <member>LOWER        </member>
-          <member>NUMBER       </member>
-          <member>OEM          </member>
-          <member>HIDDEN       </member>
-          <member>DISABLED     </member>
-          <member>GROUP        </member>
-          <member>NOTAB        </member>
-          <member>NOBORDER     </member>
-        </simplelist>
-        <variablelist>
-          <varlistentry><term>AUTOSCROLLH</term>
-          <listitem>
-            <para>
-              Automatically scrolls text to the right when the user types a character at the end of the
-              line.  In a single-line edit control text can not be added past the width of the control
-              without this style.  Multi-line edit controls do not need this style if a horizontal scroll
-              bar is added.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HSCROLL</term>
-          <listitem>
-            <para>
-              Adds a horizontal scroll bar to the bottom of the edit control. A horizontal scroll bar is
-              only functional in multi-line edit controls.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>AUTOSCROLLV</term>
-          <listitem>
-            <para>
-              Automatically scrolls text up when the user presses ENTER on the last line.  This style
-              only effects multi-line edit controls and is not needed if a vertical scroll bar is added.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>VSCROLL</term>
-          <listitem>
-            <para>
-              Adds a vertical scroll bar to the right of the edit control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>MULTILINE</term>
-          <listitem>
-            <para>
-              Designates a multiple-line edit control. (The default is single line.)  Multi-line edit
-              controls have the WANTRETURN and KEEPSELECTION styles unless the NOWANTRETURN and / or
-              HIDESELECTION keywords are specified.
-            </para>
-            <para>
-              When a multi-line edit control has the WANTRETURN style, pressing the ENTER key inserts
-              a line break in the text of the control.  Without the WANTRETURN style, pressing the ENTER
-              key clicks the default button.  With the KEEPSELECTION style, any selected text in the edit
-              control keeps its highlight when the control loses focus.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDESELECTION</term>
-          <listitem>
-            <para>
-              Removes the KEEPSELECTION style from multi-line edit controls. This keyword only effects
-              multi-line edit controls.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOWANTRETURN</term>
-          <listitem>
-            <para>
-              Removes the WANTRETURN style from multi-line edit controls. This keyword only effects
-              multi-line edit controls.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>READONLY</term>
-          <listitem>
-            <para>
-              Prevents the user from entering or editing text in the edit control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>KEEPSELECTION</term>
-          <listitem>
-            <para>
-              Selected text in an edit control keeps its highlight when the focus is shifted away from
-              the control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>CENTER</term>
-          <listitem>
-            <para>
-              Centers text in an edit control.  (In Windows 95 and NT this style only effects multi-line
-              edit controls.)
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>RIGHT</term>
-          <listitem>
-            <para>
-              Aligns text flush right in an edit control.  (In Windows 95 and NT this style only effects
-              multi-line edit controls.)
-            </para>
-            </listitem></varlistentry>
-          <varlistentry><term>UPPER</term>
-          <listitem>
-            <para>
-              Converts all characters to uppercase as they are typed into the edit control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>LOWER</term>
-          <listitem>
-            <para>
-              Converts all characters to lowercase as they are typed into the edit control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NUMBER</term>
-          <listitem>
-            <para>
-              Only allows digits to be typed into the edit control.  If the user types an non-digit
-              character an information balloon is displayed informing the user that only digits are
-              allowed.  This style does not prevent the user from pasting non-digits into the control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>OEM</term>
-          <listitem>
-            <para>
-              Converts text entered in the edit control from the Windows character set to the OEM
-              character set and then back again to the Windows character set. This ensures proper
-              character conversion in certain circumstances. Microsoft states that this style is most
-              useful when edit controls contain file names that will be used with file systems that do
-              not support Unicode. For further details see the <link linkend="defWindowsDoc">Windows
-              documentation</link> provided by Microsoft.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDDEN</term>
-          <listitem>
-            <para>
-              Create the edit control without the <link linkend="wsvisible">visible</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DISABLED</term>
-          <listitem>
-            <para>
-              Create the edit control without the <link linkend="wsdisabled">enabled</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>GROUP</term>
-          <listitem>
-            <para>
-              Create the edit control with the <link linkend="wsgroup">group</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOTAB</term>
-          <listitem>
-            <para>
-              Create the edit control without the <link linkend="wstabstop">tabstop</link> style. By
-              default the edit control is created with the tabstop style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOBORDER</term>
-          <listitem>
-            <para>
-              Create the edit control without the <link linkend="wsborder">border</link> style.  By
-              default edit controls are created with a border.
-            </para>
-          </listitem></varlistentry>
-        </variablelist>
+      <para>
+        Adds a vertical scroll bar to the right of the edit control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MULTILINE</term>
+      <listitem>
+      <para>
+        Designates a multiple-line edit control. (The default is single line.)  Multi-line edit controls have the
+        WANTRETURN and KEEPSELECTION styles unless the NOWANTRETURN and / or HIDESELECTION keywords are specified.
+      </para>
+      <para>
+        When a multi-line edit control has the WANTRETURN style, pressing the ENTER key inserts a line break in the text
+        of the control.  Without the WANTRETURN style, pressing the ENTER key clicks the default button.  With the
+        KEEPSELECTION style, any selected text in the edit control keeps its highlight when the control loses focus.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HIDESELECTION</term>
+      <listitem>
+      <para>
+        Removes the KEEPSELECTION style from multi-line edit controls. This keyword only effects multi-line edit
+        controls.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOWANTRETURN</term>
+      <listitem>
+      <para>
+        Removes the WANTRETURN style from multi-line edit controls. This keyword only effects multi-line edit controls.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>READONLY</term>
+      <listitem>
+      <para>
+        Prevents the user from entering or editing text in the edit control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>KEEPSELECTION</term>
+      <listitem>
+      <para>
+        Selected text in an edit control keeps its highlight when the focus is shifted away from the control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CENTER</term>
+      <listitem>
+      <para>
+        Centers text in an edit control.  (In Windows 95 and NT this style only effects multi-line edit controls.)
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RIGHT</term>
+      <listitem>
+      <para>
+        Aligns text flush right in an edit control.  (In Windows 95 and NT this style only effects multi-line edit
+        controls.)
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>UPPER</term>
+      <listitem>
+      <para>
+        Converts all characters to uppercase as they are typed into the edit control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>LOWER</term>
+      <listitem>
+      <para>
+        Converts all characters to lowercase as they are typed into the edit control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NUMBER</term>
+      <listitem>
+      <para>
+        Only allows digits to be typed into the edit control.  If the user types an non-digit character an information
+        balloon is displayed informing the user that only digits are allowed.  This style does not prevent the user from
+        pasting non-digits into the control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>OEM</term>
+      <listitem>
+      <para>
+        Converts text entered in the edit control from the Windows character set to the OEM character set and then back
+        again to the Windows character set. This ensures proper character conversion in certain circumstances. Microsoft
+        states that this style is most useful when edit controls contain file names that will be used with file systems
+        that do not support Unicode. For further details see the <link linkend="defWindowsDoc">Windows
+        documentation</link> provided by Microsoft.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HIDDEN</term>
+      <listitem>
+      <para>
+        Create the edit control without the <link linkend="wsvisible">visible</link> style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DISABLED</term>
+      <listitem>
+      <para>
+        Create the edit control without the <link linkend="wsdisabled">enabled</link> style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>GROUP</term>
+      <listitem>
+      <para>
+        Create the edit control with the <link linkend="wsgroup">group</link> style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOTAB</term>
+      <listitem>
+      <para>
+        Create the edit control without the <link linkend="wstabstop">tabstop</link> style. By default the edit control
+        is created with the tabstop style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOBORDER</term>
+      <listitem>
+      <para>
+        Create the edit control without the <link linkend="wsborder">border</link> style. By default edit controls are
+        created with a border.
+      </para>
       </listitem></varlistentry>
     </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term>attr [optional]</term>
+    <listitem>
+    <para>
+      The name of the data <link linkend="sctUnderstandingDataAttributes">attribute</link> associated with the dialog
+      control. If you omit this argument then the name of the data attribute is constructed <link
+      linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">auto
+      detection</link> is off, this argument is ignored.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The possible return values are:
-      <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-        <para>
-          Success.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>less than 0</term>
-      <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
-      </listitem></varlistentry>
-      </variablelist>
-    </para>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+      <para>
+        Success.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+      <para>
+        Error with the in-memory dialog template or with the resource ID.
+      </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 
 </section>
 
-<section id="mthAddInput"><title>addInput</title>
-<indexterm><primary>addInput</primary></indexterm>
+<section id="mthCreateEditInput"><title>createEditInput</title>
+<indexterm><primary>createEditInput</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addInput(-id-+--------+-,-x-,-y-+-------+-,-cx2-,-+------+-,-text---->
-                 +-,-name-+         +-,-cx1-+         +-,-cy-+
+>>--createEditInput(-id-,-x-,-y-+-------+-,-cx2-,-+------+-,-text-+----------+->
+                                +-,-cx1-+         +-,-cy-+         +-,-style-+
 
->--+---------+--+------------+-)-----------------------------------------><
-   +-,-style-+  +-,-idstatic-+
+>--+------------+-+--------+-)-------------------><
+   +-,-idStatic-+ +-,-attr-+
 
 ]]>
 </programlisting>
 
 <para>
-  The addInput method adds an entry line (an edit control) along with a label (a static text control) to
-  the dialog.
+  The <emphasis role="italic">createEditInput</emphasis> method creates an edit control and a static text control (the
+  label for the edit control) in the dialog template, in one step.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
     <para>
-      The arguments are:
+      The resource <link linkend="idArgument">ID</link> for the control.
     </para>
-    <variablelist>
-      <varlistentry><term>id</term>
-      <listitem>
-        <para>
-          The resource <link linkend="idArgument">ID</link> for the control.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>name</term>
-      <listitem>
-        <para>
-          The name of the data attribute associated with the edit contorl Using this argument performs the
-          same function as the <link linkend="mthConnectEdit">connectEdit</link>() method. The
-          documentation for connectEdit() has a good description of the concept of the data
-          attribute.
-        </para>
-        <para>
-          If you omitt this argument then the data attribute is constructed automatically and named by
-          concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA ||
-          id</computeroutput>.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>x, y, cx1, cx2, cy</term>
-      <listitem>
-        <para>
-          The  control <link linkend="paraControlCoordinates">coordinates</link>. x and y are the position of
-          the upper-left edge of the label. The edit control is aligned automatically.
-        </para>
-        <para>
-          cx1 is the length of the label. cx2 is the length of the edit control. cy is the height of the
-          edit control. If cx1 or cy are omitted, their length is calculated.
+    </listitem></varlistentry>
+    <varlistentry><term>x, y, cx2 [required]</term>
+    <listitem>
+    <para>
+      The position (x, y) <link linkend="paraControlCoordinates">coordinates</link> of the pair of controls, along with
+      the width coordinate of the edit control. x and y are the position of the upper-left edge of the label. The edit
+      control is aligned automatically. cx2 is the width of the edit control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>cx1, cy [optional]</term>
+    <listitem>
+    <para>
+      cx1 is the width <link linkend="paraControlCoordinates">coordinate</link> of the static control. If omitted, this
+      width is calculated by the ooDialog framework. cy is the height cooridinates of the two controls. If it is
+      omitted, it is also calculated automatically using the height of dialog font.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style [optional]</term>
+    <listitem>
+      <para>
+        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords,
+        separated by spaces, used to set the style of the edit control.
       </para>
-      </listitem></varlistentry>
-      <varlistentry><term>style</term>
-      <listitem>
+      <para>
+        <emphasis role="bold">Note:</emphasis> The behavior described here for the style keywords may
+        vary slightly depending on the version of Windows.
+      </para>
+      <simplelist type='vert' columns='3'>
+        <member>AUTOSCROLLH  </member>
+        <member>HSCROLL      </member>
+        <member>AUTOSCROLLV  </member>
+        <member>VSCROLL      </member>
+        <member>MULTILINE    </member>
+        <member>HIDESELECTION</member>
+        <member>NOWANTRETURN </member>
+        <member>READONLY     </member>
+        <member>KEEPSELECTION</member>
+        <member>PASSWORD     </member>
+        <member>CENTER       </member>
+        <member>RIGHT        </member>
+        <member>UPPER        </member>
+        <member>LOWER        </member>
+        <member>NUMBER       </member>
+        <member>OEM          </member>
+        <member>HIDDEN       </member>
+        <member>DISABLED     </member>
+        <member>GROUP        </member>
+        <member>NOTAB        </member>
+        <member>NOBORDER     </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>AUTOSCROLLH</term>
+        <listitem>
         <para>
-          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-          separated by spaces:
+          Automatically scrolls text to the right when the user types a character at the end of the line.  In a
+          single-line edit control text can not be added past the width of the control without this style.  Multi-line
+          edit controls do not need this style if a horizontal scroll bar is added.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HSCROLL</term>
+        <listitem>
+        <para>
+          Adds a horizontal scroll bar to the bottom of the edit control. A horizontal scroll bar is only functional in
+          multi-line edit controls.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>AUTOSCROLLV</term>
+        <listitem>
+        <para>
+          Automatically scrolls text up when the user presses ENTER on the last line.  This style only effects
+          multi-line edit controls and is not needed if a vertical scroll bar is added.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VSCROLL</term>
+        <listitem>
+        <para>
+          Adds a vertical scroll bar to the right of the edit control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MULTILINE</term>
+        <listitem>
+        <para>
+          Designates a multiple-line edit control. (The default is single line.)  Multi-line edit controls have the
+          WANTRETURN and KEEPSELECTION styles unless the NOWANTRETURN and / or HIDESELECTION keywords are specified.
         </para>
         <para>
-          <emphasis role="bold">Note:</emphasis> The behavior described here for the style keywords may
-          vary slightly depending on the version of Windows.
+          When a multi-line edit control has the WANTRETURN style, pressing the ENTER key inserts a line break in the
+          text of the control.  Without the WANTRETURN style, pressing the ENTER key clicks the default button.  With
+          the KEEPSELECTION style, any selected text in the edit control keeps its highlight when the control loses
+          focus.
         </para>
-        <simplelist type='vert' columns='3'>
-          <member>AUTOSCROLLH  </member>
-          <member>HSCROLL      </member>
-          <member>AUTOSCROLLV  </member>
-          <member>VSCROLL      </member>
-          <member>MULTILINE    </member>
-          <member>HIDESELECTION</member>
-          <member>NOWANTRETURN </member>
-          <member>READONLY     </member>
-          <member>KEEPSELECTION</member>
-          <member>PASSWORD     </member>
-          <member>CENTER       </member>
-          <member>RIGHT        </member>
-          <member>UPPER        </member>
-          <member>LOWER        </member>
-          <member>NUMBER       </member>
-          <member>OEM          </member>
-          <member>HIDDEN       </member>
-          <member>DISABLED     </member>
-          <member>GROUP        </member>
-          <member>NOTAB        </member>
-          <member>NOBORDER     </member>
-        </simplelist>
-        <variablelist>
-          <varlistentry><term>AUTOSCROLLH</term>
-          <listitem>
-            <para>
-              Automatically scrolls text to the right when the user types a character at the end of the
-              line.  In a single-line edit control text can not be added past the width of the control
-              without this style.  Multi-line edit controls do not need this style if a horizontal scroll
-              bar is added.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HSCROLL</term>
-          <listitem>
-            <para>
-              Adds a horizontal scroll bar to the bottom of the edit control. A horizontal scroll bar is
-              only functional in multi-line edit controls.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>AUTOSCROLLV</term>
-          <listitem>
-            <para>
-              Automatically scrolls text up when the user presses ENTER on the last line.  This style
-              only effects multi-line edit controls and is not needed if a vertical scroll bar is added.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>VSCROLL</term>
-          <listitem>
-            <para>
-              Adds a vertical scroll bar to the right of the edit control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>MULTILINE</term>
-          <listitem>
-            <para>
-              Designates a multiple-line edit control. (The default is single line.)  Multi-line edit
-              controls have the WANTRETURN and KEEPSELECTION styles unless the NOWANTRETURN and / or
-              HIDESELECTION keywords are specified.
-            </para>
-            <para>
-              When a multi-line edit control has the WANTRETURN style, pressing the ENTER key inserts
-              a line break in the text of the control.  Without the WANTRETURN style, pressing the ENTER
-              key clicks the default button.  With the KEEPSELECTION style, any selected text in the edit
-              control keeps its highlight when the control loses focus.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDESELECTION</term>
-          <listitem>
-            <para>
-              Removes the KEEPSELECTION style from multi-line edit controls. This keyword only effects
-              multi-line edit controls.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOWANTRETURN</term>
-          <listitem>
-            <para>
-              Removes the WANTRETURN style from multi-line edit controls. This keyword only effects
-              multi-line edit controls.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>READONLY</term>
-          <listitem>
-            <para>
-              Prevents the user from entering or editing text in the edit control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>KEEPSELECTION</term>
-          <listitem>
-            <para>
-              Selected text in an edit control keeps its highlight when the focus is shifted away from
-              the control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>PASSWORD</term>
-          <listitem>
-            <para>
-              Characters typed into the edit control are masked.  Rather than displaying the character typed, the edit
-              control displays the mask character.  Prior to Windows XP the default mask character was the asterisk.  In
-              Windows XP the default mask character is a black circle. The default password character can be changed by
-              through the <link linkend="atrPasswordChar">passwordChar</link> attribute of the <link
-              linkend="clsEdit">Edit</link> control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>CENTER</term>
-          <listitem>
-            <para>
-              Centers text in an edit control.  (In Windows 95 and NT this style only effects multi-line
-              edit controls.)
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>RIGHT</term>
-          <listitem>
-            <para>
-              Aligns text flush right in an edit control.  (In Windows 95 and NT this style only effects
-              multi-line edit controls.)
-            </para>
-            </listitem></varlistentry>
-          <varlistentry><term>UPPER</term>
-          <listitem>
-            <para>
-              Converts all characters to uppercase as they are typed into the edit control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>LOWER</term>
-          <listitem>
-            <para>
-              Converts all characters to lowercase as they are typed into the edit control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NUMBER</term>
-          <listitem>
-            <para>
-              Only allows digits to be typed into the edit control.  If the user types an non-digit
-              character an information balloon is displayed informing the user that only digits are
-              allowed.  This style does not prevent the user from pasting non-digits into the control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>OEM</term>
-          <listitem>
-            <para>
-              Converts text entered in the edit control from the Windows character set to the OEM
-              character set and then back again to the Windows character set. This ensures proper
-              character conversion in certain circumstances. Microsoft states that this style is most
-              useful when edit controls contain file names that will be used with file systems that do
-              not support Unicode. For further details see the <link linkend="defWindowsDoc">Windows
-              documentation</link> provided by Microsoft.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDDEN</term>
-          <listitem>
-            <para>
-              Create the edit control without the <link linkend="wsvisible">visible</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DISABLED</term>
-          <listitem>
-            <para>
-              Create the edit control without the <link linkend="wsdisabled">enabled</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>GROUP</term>
-          <listitem>
-            <para>
-              Create the edit control with the <link linkend="wsgroup">group</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOTAB</term>
-          <listitem>
-            <para>
-              Create the edit control without the <link linkend="wstabstop">tabstop</link> style. By
-              default the edit control is created with the tabstop style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOBORDER</term>
-          <listitem>
-            <para>
-              Create the edit control without the <link linkend="wsborder">border</link> style.  By
-              default edit controls are created with a border.
-            </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </listitem></varlistentry>
-      <varlistentry><term>idstatic</term>
-      <listitem>
+        </listitem></varlistentry>
+        <varlistentry><term>HIDESELECTION</term>
+        <listitem>
         <para>
-          This argument is used to set the resource <link linkend="idArgument">ID</link> for the label, if
-          one is desired. If omitted, the default stactic control ID (-1) is used.
+          Removes the KEEPSELECTION style from multi-line edit controls. This keyword only effects multi-line edit
+          controls.
         </para>
-      </listitem></varlistentry>
-    </variablelist>
+        </listitem></varlistentry>
+        <varlistentry><term>NOWANTRETURN</term>
+        <listitem>
+        <para>
+          Removes the WANTRETURN style from multi-line edit controls. This keyword only effects multi-line edit
+          controls.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>READONLY</term>
+        <listitem>
+        <para>
+          Prevents the user from entering or editing text in the edit control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>KEEPSELECTION</term>
+        <listitem>
+        <para>
+          Selected text in an edit control keeps its highlight when the focus is shifted away from the control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>PASSWORD</term>
+        <listitem>
+        <para>
+          Characters typed into the edit control are masked.  Rather than displaying the character typed, the edit
+          control displays the mask character.  Prior to Windows XP the default mask character was the asterisk.  In
+          Windows XP the default mask character is a black circle. The default password character can be changed through
+          the <link linkend="atrPasswordChar">passwordChar</link> attribute of the <link linkend="clsEdit">Edit</link>
+          control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>CENTER</term>
+        <listitem>
+        <para>
+          Centers text in an edit control.  (In Windows 95 and NT this style only effects multi-line edit controls.)
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RIGHT</term>
+        <listitem>
+        <para>
+          Aligns text flush right in an edit control.  (In Windows 95 and NT this style only effects multi-line edit
+          controls.)
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>UPPER</term>
+        <listitem>
+        <para>
+          Converts all characters to uppercase as they are typed into the edit control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>LOWER</term>
+        <listitem>
+        <para>
+          Converts all characters to lowercase as they are typed into the edit control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NUMBER</term>
+        <listitem>
+        <para>
+          Only allows digits to be typed into the edit control.  If the user types an non-digit character an
+          information balloon is displayed informing the user that only digits are allowed.  This style does not prevent
+          the user from pasting non-digits into the control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>OEM</term>
+        <listitem>
+        <para>
+          Converts text entered in the edit control from the Windows character set to the OEM character set and then
+          back again to the Windows character set. This ensures proper character conversion in certain circumstances.
+          Microsoft states that this style is most useful when edit controls contain file names that will be used with
+          file systems that do not support Unicode. For further details see the <link linkend="defWindowsDoc">Windows
+          documentation</link> provided by Microsoft.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HIDDEN</term>
+        <listitem>
+        <para>
+          Create the edit control without the <link linkend="wsvisible">visible</link> style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DISABLED</term>
+        <listitem>
+        <para>
+          Create the edit control without the <link linkend="wsdisabled">enabled</link> style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>GROUP</term>
+        <listitem>
+        <para>
+          Create the edit control with the <link linkend="wsgroup">group</link> style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTAB</term>
+        <listitem>
+        <para>
+          Create the edit control without the <link linkend="wstabstop">tabstop</link> style. By default the edit
+          control is created with the tabstop style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOBORDER</term>
+        <listitem>
+        <para>
+          Create the edit control without the <link linkend="wsborder">border</link> style. By default edit controls are
+          created with a border.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term>idstatic [optional]</term>
+    <listitem>
+    <para>
+      This argument is used to set the resource <link linkend="idArgument">ID</link> for the static control, if one is
+      desired. If omitted, the default stactic control ID (-1) is used.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>attr [optional]</term>
+    <listitem>
+    <para>
+      The name of the data <link linkend="sctUnderstandingDataAttributes">attribute</link> associated with the edit
+      control. If you omit this argument then the name of the data attribute is constructed <link
+      linkend="sctDataAttributeNames">automatically</link> using the text of the label. If <link
+      linkend="mthInitAutoDetection">auto detection</link> is off, this argument is ignored.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-        <para>
-          Success.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>less than 0</term>
-      <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
-      </listitem></varlistentry>
-      </variablelist>
+      Success.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+    <para>
+      Error with the in-memory dialog template or with the resource ID.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      The following example creates an entry field and the label Your e-mail address (placed on the entry
-      field's left side). It also creates an attribute with the name YOUREMAILADDRESS. The height of the
-      elements is calculated. (See <link linkend="fig55">Sample Input Field</link>.)
-    </para>
+  <para>
+    The following example creates an edit control with the label <emphasis role="italic">Your e-mail
+    address</emphasis> The label is placed on the edit control's left side. It also automatically creates a data <link
+    linkend="sctUnderstandingDataAttributes">attribute</link> with the name YOUREMAILADDRESS. The height of the
+    individual controls is calculated. (See <link linkend="fig55">Sample Edit Input</link>.)
+  </para>
 <programlisting>
 <![CDATA[
-MyUserDialog~addInput(402, , 20, 30, , 150, , "Your eMail address")
+self~createEditInput(402, 20, 30, , 150, , "Your eMail address")
 ]]>
 </programlisting>
 
@@ -7037,314 +7033,625 @@ MyUserDialog~addInput(402, , 20, 30, , 150, , "Your eMail address")
 </variablelist>
 </section>
 
-<section id="mthAddInputGroup"><title>addInputGroup</title>
-<indexterm><primary>addInputGroup</primary></indexterm>
+<section id="mthCreateEditInputGroup"><title>createEditInputGroup</title>
+<indexterm><primary>createEditInputGroup</primary></indexterm>
 
 <programlisting>
 <![CDATA[
-                                                +-----+
-                                                V     |
->>--addInputGroup(-id-,-x-,-y-+-------+-,-cx2-,--text-+-+---------+-+----------+-)--><
-                              +-,-cx1-+                 +-,-style-+ +-,-idstat-+
+                                                        +---+
+                                                        V   |
+>>--createEditInputGroup(-id-,-x-,-y-+-------+-,-cx2-,--txt-+-+------+-+-------+-)-><
+                                     +-,-cx1-+                 +-,-s-+ +-,-id2-+
 
 ]]>
 </programlisting>
 
 <para>
-  The addInputGroup method creates a group of one or more edit controls and their static text labels. The
-  height for each edit control and its label is calculated automatically. The number of labels in the
-  text argument determine how many input lines are added. A group box is optionally place around the
-  input lines.
-</para>
-<para>
-  This method calls <link linkend="mthAddInput">addInput</link>() to add each individual input line.
+  The <emphasis role="italic">createEditInputGroup</emphasis> method creates a group of one or more edit controls and
+  their static text labels in the dialog template. The height for each edit control and its label can be calculated
+  automatically. The number of labels in the <emphasis role="italic">txt</emphasis> argument determines how many groups
+  are created. A <link linkend="clsGroupBox">group box</link> is optionally created and placed around the group if
+  controls.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
     <para>
-      The arguments are:
+      The resource <link linkend="idArgument">ID</link> that is assigned to the first edit control. Consecutive numbers
+      are assigned to the other edit controls
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>x, y [required]</term>
+    <listitem>
+    <para>
+      The position <link linkend="paraControlCoordinates">coordinates</link> of the input group.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>cx1 [optional]</term>
+    <listitem>
+    <para>
+      The width coordinate of the label(s) for the edit control(s). If omitted, the width is calculated based on the
+      dialog font.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>cx2 [required]</term>
+    <listitem>
+    <para>
+      The width coordinate for the edit control(s).
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>txt [required]</term>
+    <listitem>
+    <para>
+      A single string that specifies the text used for each edit control's label. The string must consist of single
+      words separated by blank spaces. Each word is used as the label for an edit control. Thus, the number of words
+      determines the total number of edit controls.
+    </para>
+    <para>
+      If you want to use labels that include blanks (for example, &quot;First Name&quot; instead of
+      &quot;FirstName&quot;), use the <link linkend="mthCreateEditInputStem">createEditInputStem</link>() method.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>s [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+      separated by spaces. Each individual edit control is created with the style specified.
+    </para>
+    <para>
+      <emphasis role="bold">Note:</emphasis> The behavior described here for the style keywords may
+      vary slightly depending on the version of Windows.
+    </para>
+    <simplelist type='vert' columns='3'>
+      <member>AUTOSCROLLH  </member>
+      <member>HSCROLL      </member>
+      <member>AUTOSCROLLV  </member>
+      <member>VSCROLL      </member>
+      <member>MULTILINE    </member>
+      <member>HIDESELECTION</member>
+      <member>NOWANTRETURN </member>
+      <member>READONLY     </member>
+      <member>KEEPSELECTION</member>
+      <member>PASSWORD     </member>
+      <member>CENTER       </member>
+      <member>RIGHT        </member>
+      <member>UPPER        </member>
+      <member>LOWER        </member>
+      <member>NUMBER       </member>
+      <member>OEM          </member>
+      <member>HIDDEN       </member>
+      <member>DISABLED     </member>
+      <member>GROUP        </member>
+      <member>NOTAB        </member>
+      <member>NOBORDER     </member>
+    </simplelist>
     <variablelist>
-      <varlistentry><term>startid</term>
+      <varlistentry><term>AUTOSCROLLH</term>
       <listitem>
-        <para>
-          The resource <link linkend="idArgument">ID</link> that is assigned to the first edit control.
-          Consecutive numbers are assigned to the other edit controls
-        </para>
+      <para>
+        Automatically scrolls text to the right when the user types a character at the end of the line.  In a
+        single-line edit control text can not be added past the width of the control without this style.  Multi-line
+        edit controls do not need this style if a horizontal scroll bar is added.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>x, y</term>
+      <varlistentry><term>HSCROLL</term>
       <listitem>
-        <para>
-          Position of the input group's upper-left <link
-          linkend="paraControlCoordinates">coordinates</link>.
-        </para>
+      <para>
+        Adds a horizontal scroll bar to the bottom of the edit control. A horizontal scroll bar is only functional in
+        multi-line edit controls.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>cx1</term>
+      <varlistentry><term>AUTOSCROLLV</term>
       <listitem>
-        <para>
-          Length of the label(s) for the edit control. If omitted, the length is calculated.
-        </para>
+      <para>
+        Automatically scrolls text up when the user presses ENTER on the last line.  This style only effects multi-line
+        edit controls and is not needed if a vertical scroll bar is added.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>cx2</term>
+      <varlistentry><term>VSCROLL</term>
       <listitem>
-        <para>
-          The length of the edit control(s).
-        </para>
+      <para>
+        Adds a vertical scroll bar to the right of the edit control.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>text</term>
+      <varlistentry><term>MULTILINE</term>
       <listitem>
-        <para>
-          The text used for each edit control's label. The string must consist of single words separated
-          by blank spaces. Each word is used as the label for an edit control. Thus, the number of words
-          determines the total number of edit controls.
-        </para>
-        <para>
-          If you want to use labels that include blanks (for example, &quot;First Name&quot; instead of
-          &quot;FirstName&quot;), use the <link linkend="mthAddInputStem">addInputStem</link>() method.
-        </para>
+      <para>
+        Designates a multiple-line edit control. (The default is single line.)  Multi-line edit controls have the
+        WANTRETURN and KEEPSELECTION styles unless the NOWANTRETURN and / or HIDESELECTION keywords are specified.
+      </para>
+      <para>
+        When a multi-line edit control has the WANTRETURN style, pressing the ENTER key inserts a line break in the text
+        of the control.  Without the WANTRETURN style, pressing the ENTER key clicks the default button.  With the
+        KEEPSELECTION style, any selected text in the edit control keeps its highlight when the control loses focus.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>style</term>
+      <varlistentry><term>HIDESELECTION</term>
       <listitem>
-        <para>
-          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-          separated by spaces.
-        </para>
-        <para>
-          <emphasis role="bold">Note:</emphasis> The behavior described here for the style keywords may
-          vary slightly depending on the version of Windows. Also note that every edit control will be
-          added with the style specified.
-        </para>
-        <simplelist type='vert' columns='3'>
-          <member>AUTOSCROLLH  </member>
-          <member>HSCROLL      </member>
-          <member>AUTOSCROLLV  </member>
-          <member>VSCROLL      </member>
-          <member>MULTILINE    </member>
-          <member>HIDESELECTION</member>
-          <member>NOWANTRETURN </member>
-          <member>READONLY     </member>
-          <member>KEEPSELECTION</member>
-          <member>PASSWORD     </member>
-          <member>CENTER       </member>
-          <member>RIGHT        </member>
-          <member>UPPER        </member>
-          <member>LOWER        </member>
-          <member>NUMBER       </member>
-          <member>OEM          </member>
-          <member>HIDDEN       </member>
-          <member>DISABLED     </member>
-          <member>GROUP        </member>
-          <member>NOTAB        </member>
-          <member>NOBORDER     </member>
-        </simplelist>
-        <variablelist>
-          <varlistentry><term>AUTOSCROLLH</term>
-          <listitem>
-            <para>
-              Automatically scrolls text to the right when the user types a character at the end of the
-              line.  In a single-line edit control text can not be added past the width of the control
-              without this style.  Multi-line edit controls do not need this style if a horizontal scroll
-              bar is added.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HSCROLL</term>
-          <listitem>
-            <para>
-              Adds a horizontal scroll bar to the bottom of the edit control. A horizontal scroll bar is
-              only functional in multi-line edit controls.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>AUTOSCROLLV</term>
-          <listitem>
-            <para>
-              Automatically scrolls text up when the user presses ENTER on the last line.  This style
-              only effects multi-line edit controls and is not needed if a vertical scroll bar is added.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>VSCROLL</term>
-          <listitem>
-            <para>
-              Adds a vertical scroll bar to the right of the edit control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>MULTILINE</term>
-          <listitem>
-            <para>
-              Designates a multiple-line edit control. (The default is single line.)  Multi-line edit
-              controls have the WANTRETURN and KEEPSELECTION styles unless the NOWANTRETURN and / or
-              HIDESELECTION keywords are specified.
-            </para>
-            <para>
-              When a multi-line edit control has the WANTRETURN style, pressing the ENTER key inserts
-              a line break in the text of the control.  Without the WANTRETURN style, pressing the ENTER
-              key clicks the default button.  With the KEEPSELECTION style, any selected text in the edit
-              control keeps its highlight when the control loses focus.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDESELECTION</term>
-          <listitem>
-            <para>
-              Removes the KEEPSELECTION style from multi-line edit controls. This keyword only effects
-              multi-line edit controls.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOWANTRETURN</term>
-          <listitem>
-            <para>
-              Removes the WANTRETURN style from multi-line edit controls. This keyword only effects
-              multi-line edit controls.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>READONLY</term>
-          <listitem>
-            <para>
-              Prevents the user from entering or editing text in the edit control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>KEEPSELECTION</term>
-          <listitem>
-            <para>
-              Selected text in an edit control keeps its highlight when the focus is shifted away from
-              the control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>PASSWORD</term>
-          <listitem>
-            <para>
-              Characters typed into the edit control are masked.  Rather than displaying the character typed, the edit
-              control displays the mask character.  Prior to Windows XP the default mask character was the asterisk.  In
-              Windows XP the default mask character is a black circle. The default password character can be changed by
-              through the <link linkend="atrPasswordChar">passwordChar</link> attribute of the <link
-              linkend="clsEdit">edit</link> control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>CENTER</term>
-          <listitem>
-            <para>
-              Centers text in an edit control.  (In Windows 95 and NT this style only effects multi-line
-              edit controls.)
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>RIGHT</term>
-          <listitem>
-            <para>
-              Aligns text flush right in an edit control.  (In Windows 95 and NT this style only effects
-              multi-line edit controls.)
-            </para>
-            </listitem></varlistentry>
-          <varlistentry><term>UPPER</term>
-          <listitem>
-            <para>
-              Converts all characters to uppercase as they are typed into the edit control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>LOWER</term>
-          <listitem>
-            <para>
-              Converts all characters to lowercase as they are typed into the edit control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NUMBER</term>
-          <listitem>
-            <para>
-              Only allows digits to be typed into the edit control.  If the user types an non-digit
-              character an information balloon is displayed informing the user that only digits are
-              allowed.  This style does not prevent the user from pasting non-digits into the control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>OEM</term>
-          <listitem>
-            <para>
-              Converts text entered in the edit control from the Windows character set to the OEM
-              character set and then back again to the Windows character set. This ensures proper
-              character conversion in certain circumstances. Microsoft states that this style is most
-              useful when edit controls contain file names that will be used with file systems that do
-              not support Unicode. For further details see the <link linkend="defWindowsDoc">Windows
-              documentation</link> provided by Microsoft.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDDEN</term>
-          <listitem>
-            <para>
-              Create the edit control without the <link linkend="wsvisible">visible</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DISABLED</term>
-          <listitem>
-            <para>
-              Create the edit control without the <link linkend="wsdisabled">enabled</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>GROUP</term>
-          <listitem>
-            <para>
-              Create the edit control with the <link linkend="wsgroup">group</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOTAB</term>
-          <listitem>
-            <para>
-              Create the edit control without the <link linkend="wstabstop">tabstop</link> style. By
-              default the edit control is created with the tabstop style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOBORDER</term>
-          <listitem>
-            <para>
-              The NOBORDER style has a special meaning for this method. It Controls whether or not a
-              group box is drawn around the input group. If NOBORDER is used, the group box is not used,
-              otherwise it is.
-            </para>
-          </listitem></varlistentry>
-        </variablelist>
+      <para>
+        Removes the KEEPSELECTION style from multi-line edit controls. This keyword only effects multi-line edit
+        controls.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>idstat</term>
+      <varlistentry><term>NOWANTRETURN</term>
       <listitem>
-        <para>
-          This argument is used to set the resource <link linkend="idArgument">ID</link> for the first
-          static text control, the label for the first edit control. Normally, static text controls are
-          assigned the default (-1) static control ID, and the programmer does not need to specify this
-          argument.
-        </para>
+      <para>
+        Removes the WANTRETURN style from multi-line edit controls. This keyword only effects multi-line edit controls.
+      </para>
       </listitem></varlistentry>
+      <varlistentry><term>READONLY</term>
+      <listitem>
+      <para>
+        Prevents the user from entering or editing text in the edit control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>KEEPSELECTION</term>
+      <listitem>
+      <para>
+        Selected text in an edit control keeps its highlight when the focus is shifted away from the control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>PASSWORD</term>
+      <listitem>
+      <para>
+        Characters typed into the edit control are masked.  Rather than displaying the character typed, the edit
+        control displays the mask character.  Prior to Windows XP the default mask character was the asterisk.  In
+        Windows XP the default mask character is a black circle. The default password character can be changed through
+        the <link linkend="atrPasswordChar">passwordChar</link> attribute of the <link linkend="clsEdit">edit</link>
+        control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CENTER</term>
+      <listitem>
+      <para>
+        Centers text in an edit control.  (In Windows 95 and NT this style only effects multi-line edit controls.)
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RIGHT</term>
+      <listitem>
+      <para>
+        Aligns text flush right in an edit control.  (In Windows 95 and NT this style only effects multi-line edit
+        controls.)
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>UPPER</term>
+      <listitem>
+      <para>
+        Converts all characters to uppercase as they are typed into the edit control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>LOWER</term>
+      <listitem>
+      <para>
+        Converts all characters to lowercase as they are typed into the edit control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NUMBER</term>
+      <listitem>
+      <para>
+        Only allows digits to be typed into the edit control.  If the user types an non-digit character an information
+        balloon is displayed informing the user that only digits are allowed.  This style does not prevent the user from
+        pasting non-digits into the control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>OEM</term>
+      <listitem>
+      <para>
+        Converts text entered in the edit control from the Windows character set to the OEM character set and then back
+        again to the Windows character set. This ensures proper character conversion in certain circumstances. Microsoft
+        states that this style is most useful when edit controls contain file names that will be used with file systems
+        that do not support Unicode. For further details see the <link linkend="defWindowsDoc">Windows
+        documentation</link> provided by Microsoft.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HIDDEN</term>
+      <listitem>
+      <para>
+        Create the edit control without the <link linkend="wsvisible">visible</link> style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DISABLED</term>
+      <listitem>
+      <para>
+        Create the edit control without the <link linkend="wsdisabled">enabled</link> style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>GROUP</term>
+      <listitem>
+      <para>
+        Create the edit control with the <link linkend="wsgroup">group</link> style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOTAB</term>
+      <listitem>
+      <para>
+        Create the edit control without the <link linkend="wstabstop">tabstop</link> style. By default the edit control
+        is created with the tabstop style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOBORDER</term>
+      <listitem>
+      <para>
+        The NOBORDER style has a special meaning for this method. It controls whether or not a group box is created in
+        the dialog template. When created the group box is used to surround the input group. If NOBORDER is used, the
+        group box is not created, otherwise it is created.
+      </para>
+      </listitem></varlistentry>
+      </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term>id2 [optional]</term>
+    <listitem>
+    <para>
+      This argument is used to set the resource <link linkend="idArgument">ID</link> for the first static text control,
+      that is, the label for the first edit control. If this argument is ommited, the static text controls are assigned
+      the default (-1) static control ID.
+    </para>
+    </listitem></varlistentry>
     </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-        <para>
-          Success.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>less than 0</term>
-      <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
-      </listitem></varlistentry>
-      </variablelist>
+      Success.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+    <para>
+      Error with the in-memory dialog template or with the resource ID.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Note that this method calls <link linkend="mthCreateEditInput">createEditInput</link>() to add each individual edit
+    control and its static text label. Because of that, a data <link
+    linkend="sctUnderstandingDataAttributes">attribute</link> will be created for each edit control as though you had
+    invoked the <emphasis role="italic">createEditInput</emphasis> method and omitted the <emphasis
+    role="italic">attr</emphasis> argument. When the <emphasis role="italic">attr</emphasis> argument is omitted, the
+    data attribute name is taken from the text of the label.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      The following example creates a four-line input group. The single entry lines are accessible by IDs
-      301 through 304.
-    </para>
+  <para>
+    The following example creates an input group with four edit controls The single edit controls are are assigned
+    resource IDs 301 through 304.
+  </para>
   </listitem></varlistentry>
 </variablelist>
 
 <programlisting>
 <![CDATA[
-MyDialog~addInputGroup(301, 20, 20, ,130, "Name FirstName Street City")
+self~createEditInputGroup(301, 20, 20, , 130, "Name FirstName Street City")
 ]]>
 </programlisting>
 
+</section>
+
+<section id="mthCreateEditInputStem"><title>createEditInputStem</title>
+<indexterm><primary>createEditInputStem</primary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>--createEditInputStem(-id-,-x-,-y-+-------+-,-cx2-,-txt.--+-----+-+-------+-)--><
+                                    +-,-cx1-+               +-,-s-+ +-,-id2-+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">createEditInputStem</emphasis> method creates a group of edit controls with static text
+  labels in the dialog template. The difference between this method and the <link
+  linkend="mthCreateEditInputGroup">createEditInputGroup</link> method is that the text for the static text controls,
+  the labels, is passed to the method in a stem variable. This makes it possible to use labels containing blank spaces.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource <link linkend="idArgument">ID</link> that is assigned to the first edit control. Consecutive numbers
+      are assigned to the other edit controls
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>x, y [required]</term>
+    <listitem>
+      <para>
+        The position <link linkend="paraControlCoordinates">coordinates</link> of the input group.
+      </para>
+    </listitem></varlistentry>
+    <varlistentry><term>cx1 [optional]</term>
+    <listitem>
+    <para>
+      The width coordinate for the static text control(s). If omitted, the width is calculated based on the dialog font.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>cx2 [required]</term>
+    <listitem>
+    <para>
+      The width coordinate of the edit control(s).
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>txt. [required]</term>
+    <listitem>
+    <para>
+      A stem containing the text used for each edit control's label. The text for the first label is put at
+      <computeroutput>txt.1</computeroutput>, the text for the second label at <computeroutput>txt.2</computeroutput>,
+      and so on. The number of consecutive numeric tails of the stem determines the total number of edit controls.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>s [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords separated by
+      spaces. This specifies the style for the edit control(s) in the group. Each edit control is assigned the same
+      style.
+    </para>
+    <para>
+      <emphasis role="bold">Note:</emphasis> The behavior described here for the style keywords may vary slightly
+      depending on the version of Windows.
+    </para>
+    <simplelist type='vert' columns='3'>
+      <member>AUTOSCROLLH  </member>
+      <member>HSCROLL      </member>
+      <member>AUTOSCROLLV  </member>
+      <member>VSCROLL      </member>
+      <member>MULTILINE    </member>
+      <member>HIDESELECTION</member>
+      <member>NOWANTRETURN </member>
+      <member>READONLY     </member>
+      <member>KEEPSELECTION</member>
+      <member>PASSWORD     </member>
+      <member>CENTER       </member>
+      <member>RIGHT        </member>
+      <member>UPPER        </member>
+      <member>LOWER        </member>
+      <member>NUMBER       </member>
+      <member>OEM          </member>
+      <member>HIDDEN       </member>
+      <member>DISABLED     </member>
+      <member>GROUP        </member>
+      <member>NOTAB        </member>
+      <member>NOBORDER     </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>AUTOSCROLLH</term>
+      <listitem>
+      <para>
+        Automatically scrolls text to the right when the user types a character at the end of the line.  In a
+        single-line edit control text can not be added past the width of the control without this style. Multi-line edit
+        controls do not need this style if a horizontal scroll bar is added.
+      </para> </listitem></varlistentry>
+      <varlistentry><term>HSCROLL</term>
+      <listitem>
+      <para>
+        Adds a horizontal scroll bar to the bottom of the edit control. A horizontal scroll bar is only functional in
+        multi-line edit controls.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>AUTOSCROLLV</term>
+      <listitem>
+      <para>
+        Automatically scrolls text up when the user presses ENTER on the last line.  This style only effects multi-line
+        edit controls and is not needed if a vertical scroll bar is added.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>VSCROLL</term>
+      <listitem>
+      <para>
+        Adds a vertical scroll bar to the right of the edit control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MULTILINE</term>
+      <listitem>
+      <para>
+        Designates a multiple-line edit control. (The default is single line.)  Multi-line edit controls have the
+        WANTRETURN and KEEPSELECTION styles unless the NOWANTRETURN and / or HIDESELECTION keywords are specified.
+      </para>
+      <para>
+        When a multi-line edit control has the WANTRETURN style, pressing the ENTER key inserts a line break in the text
+        of the control.  Without the WANTRETURN style, pressing the ENTER key clicks the default button.  With the
+        KEEPSELECTION style, any selected text in the edit control keeps its highlight when the control loses focus.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HIDESELECTION</term>
+      <listitem>
+      <para>
+        Removes the KEEPSELECTION style from multi-line edit controls. This keyword only effects multi-line edit
+        controls.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOWANTRETURN</term>
+      <listitem>
+      <para>
+        Removes the WANTRETURN style from multi-line edit controls. This keyword only effects multi-line edit controls.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>READONLY</term>
+      <listitem>
+      <para>
+        Prevents the user from entering or editing text in the edit control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>KEEPSELECTION</term>
+      <listitem>
+      <para>
+        Selected text in an edit control keeps its highlight when the focus is shifted away from the control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>PASSWORD</term>
+      <listitem>
+      <para>
+        Characters typed into the edit control are masked.  Rather than displaying the character typed, the edit control
+        displays the mask character.  Prior to Windows XP the default mask character was the asterisk.  In Windows XP
+        the default mask character is a black circle. The default password character can be changed through the <link
+        linkend="atrPasswordChar">passwordChar</link> attribute of the <link linkend="clsEdit">Edit</link> control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CENTER</term>
+      <listitem>
+      <para>
+        Centers text in an edit control.  (In Windows 95 and NT this style only effects multi-line edit controls.)
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RIGHT</term>
+      <listitem>
+      <para>
+        Aligns text flush right in an edit control.  (In Windows 95 and NT this style only effects multi-line edit
+        controls.)
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>UPPER</term>
+      <listitem>
+      <para>
+        Converts all characters to uppercase as they are typed into the edit control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>LOWER</term>
+      <listitem>
+      <para>
+        Converts all characters to lowercase as they are typed into the edit control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NUMBER</term>
+      <listitem>
+      <para>
+        Only allows digits to be typed into the edit control.  If the user types an non-digit character an information
+        balloon is displayed informing the user that only digits are allowed.  This style does not prevent the user from
+        pasting non-digits into the control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>OEM</term>
+      <listitem>
+      <para>
+        Converts text entered in the edit control from the Windows character set to the OEM character set and then back
+        again to the Windows character set. This ensures proper character conversion in certain circumstances. Microsoft
+        states that this style is most useful when edit controls contain file names that will be used with file systems
+        that do not support Unicode. For further details see the <link linkend="defWindowsDoc">Windows
+        documentation</link> provided by Microsoft.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HIDDEN</term>
+      <listitem>
+      <para>
+        Create the edit control without the <link linkend="wsvisible">visible</link> style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DISABLED</term>
+      <listitem>
+      <para>
+        Create the edit control without the <link linkend="wsdisabled">enabled</link> style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>GROUP</term>
+      <listitem>
+      <para>
+        Create the edit control with the <link linkend="wsgroup">group</link> style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOTAB</term>
+      <listitem>
+      <para>
+        Create the edit control without the <link linkend="wstabstop">tabstop</link> style. By default the edit control
+        is created with the tabstop style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOBORDER</term>
+      <listitem>
+      <para>
+        The NOBORDER style has a special meaning for this method. It controls whether or not a group box is created in
+        the dialog template. When created, the group box is set to surround the input group. If NOBORDER is used, the
+        group box is not added to the dialog template, otherwise it is added to the dialog template.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term>id2 [optiona]</term>
+    <listitem>
+    <para>
+      This argument is used to set the resource <link linkend="idArgument">ID</link> for the first static text control,
+      that is, the label for the first edit control. If this arugment is omitted the static text controls are assigned
+      the default (-1) static control ID. Resource IDs only need to be assigned to the static controls if there is some
+      need to manipulate the underlying static control after it has been created. For instance if its text needed to be
+      changed, or its position needed to be changed.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+    <para>
+      Error with the in-memory dialog template or with the resource ID.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Note that this method calls <link linkend="mthCreateEditInput">createEditInput</link>() to add each individual edit
+    control and its static text label. Because of that, a data <link
+    linkend="sctUnderstandingDataAttributes">attribute</link> will be created for each edit control as though you had
+    invoked the <emphasis role="italic">createEditInput</emphasis> method and omitted the <emphasis
+    role="italic">attr</emphasis> argument. When the <emphasis role="italic">attr</emphasis> argument is omitted, the
+    data attribute name is taken from the text of the label.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example shows how to use <emphasis role="italic">createEditInputStem</emphasis>. It creates four edit
+    controls with static text labels. For each edit control (with IDs 401 through 404) the text for the label, (the
+    static text control,) is provided by the stem variable.
+  </para>
+  <para>
+    The labels also provide the name attribute name for each edit control. The attribute names will be slightly
+    different from the title because the spaces and ampersands are removed. In this example the NAME, FIRSTNAME,
+    STREETNUMBER, and CITYZIP attributes are added to the object.
+  </para>
+<programlisting>
+<![CDATA[
+FNames.1="Name"
+FNames.2="First Name"
+FNames.3="Street & Number"
+FNames.4="City & ZIP"
+
+self~createEditInputStem(401, 20, 20, , 150, FNames.)
+]]>
+  </programlisting>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="mthCreateListbox"><title>createListBox</title>
@@ -7472,14 +7779,13 @@ MyDialog~addInputGroup(301, 20, 20, ,130, "Name FirstName Street City")
       <varlistentry><term>KEYINPUT</term>
       <listitem>
       <para>
-        Specifies that the owner of the list box receives WM_VKEYTOITEM messages whenever the user
-        presses a key and the list box has the input focus. This enables an application to perform
-        special processing on the keyboard input.
+        Specifies that the owner of the list box receives WM_VKEYTOITEM messages whenever the user presses a key and the
+        list box has the input focus. This enables an application to perform special processing on the keyboard input.
       </para>
       <para>
         To take advantage of this style, the programmer would need to use the <link
-        linkend="mthAddUserMsg">addUserMsg</link>() method to recieve the keyboard event
-        notification. Furture versions of ooDialog may support this event directly.
+        linkend="mthAddUserMsg">addUserMsg</link>() method to recieve the keyboard event notification. Furture versions
+        of ooDialog may support this event directly.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>EXTSEL</term>
@@ -7492,33 +7798,33 @@ MyDialog~addInputGroup(301, 20, 20, ,130, "Name FirstName Street City")
       <varlistentry><term>HIDDEN</term>
       <listitem>
       <para>
-        Create the control without the <link linkend="wsvisible">visible</link> style.
+        Create the list box without the <link linkend="wsvisible">visible</link> style.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>DISABLED</term>
       <listitem>
       <para>
-        Create the control without the <link linkend="wsdisabled">enabled</link> style.
+        Create the list box without the <link linkend="wsdisabled">enabled</link> style.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>GROUP</term>
       <listitem>
       <para>
-        Create the control with the <link linkend="wsgroup">group</link> style.
+        Create the list box with the <link linkend="wsgroup">group</link> style.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>NOTAB</term>
       <listitem>
       <para>
-        Create the control without the <link linkend="wstabstop">tabstop</link> style. By default
-        the list box control is created with the tabstop style.
+        Create the list box without the <link linkend="wstabstop">tabstop</link> style. By default the list box is
+        created with the tabstop style.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>NOBORDER</term>
       <listitem>
       <para>
-        Create the control without the <link linkend="wsborder">border</link> style.  By default
-        list box controls are created with a border.
+        Create the list box without the <link linkend="wsborder">border</link> style.  By default list box controls are
+        created with a border.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -7909,320 +8215,6 @@ MyDialog~addInputGroup(301, 20, 20, ,130, "Name FirstName Street City")
       </listitem></varlistentry>
       </variablelist>
     </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthAddInputStem"><title>addInputStem</title>
-<indexterm><primary>addInputStem</primary></indexterm>
-<programlisting>
-<![CDATA[
-
->>--addInputGroup(-id-,-x-,-y-+-------+-,-cx2-,-text.--+---------+-+----------+-)--><
-                              +-,-cx1-+                +-,-style-+ +-,-idstat-+
-]]>
-</programlisting>
-
-<para>
-  The addInputStem method adds a group of input fields to the dialog. The difference between this method
-  and the <link linkend="mthAddInputGroup">addInputGroup</link> method is that the text for the static
-  text controls, the labels, is passed to the method in a stem variable. This makes it possible to use strings
-  containing blank spaces.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-    <para>
-      The arguments are:
-    </para>
-    <variablelist>
-      <varlistentry><term>startid</term>
-      <listitem>
-        <para>
-          The resource <link linkend="idArgument">ID</link> that is assigned to the first edit control.
-          Consecutive numbers are assigned to the other edit controls
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>x, y</term>
-      <listitem>
-        <para>
-          Position of the input group's upper-left <link
-          linkend="paraControlCoordinates">coordinates</link>.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>cx1</term>
-      <listitem>
-        <para>
-          Length of the label(s) for the edit control. If omitted, the length is calculated.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>cx2</term>
-      <listitem>
-        <para>
-          The length of the edit control(s).
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>text.</term>
-      <listitem>
-        <para>
-          A stem containing the text used for each edit control's label. The text for the first label is
-          put at <computeroutput>text.1</computeroutput>, the text for the second label at
-          <computeroutput>text.2</computeroutput>, and so. The number of consecutive numeric tails of the
-          stem determines the total number of edit controls.
-        </para>
-        <para>
-          The data attribute for each edit control is created from the stem also.  The example below
-          should make clear how this is done.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>style</term>
-      <listitem>
-        <para>
-          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-          separated by spaces.
-        </para>
-        <para>
-          <emphasis role="bold">Note:</emphasis> The behavior described here for the style keywords may
-          vary slightly depending on the version of Windows. Also note that every edit control will be
-          added with the style specified.
-        </para>
-        <simplelist type='vert' columns='3'>
-          <member>AUTOSCROLLH  </member>
-          <member>HSCROLL      </member>
-          <member>AUTOSCROLLV  </member>
-          <member>VSCROLL      </member>
-          <member>MULTILINE    </member>
-          <member>HIDESELECTION</member>
-          <member>NOWANTRETURN </member>
-          <member>READONLY     </member>
-          <member>KEEPSELECTION</member>
-          <member>PASSWORD     </member>
-          <member>CENTER       </member>
-          <member>RIGHT        </member>
-          <member>UPPER        </member>
-          <member>LOWER        </member>
-          <member>NUMBER       </member>
-          <member>OEM          </member>
-          <member>HIDDEN       </member>
-          <member>DISABLED     </member>
-          <member>GROUP        </member>
-          <member>NOTAB        </member>
-          <member>NOBORDER     </member>
-        </simplelist>
-        <variablelist>
-          <varlistentry><term>AUTOSCROLLH</term>
-          <listitem>
-            <para>
-              Automatically scrolls text to the right when the user types a character at the end of the
-              line.  In a single-line edit control text can not be added past the width of the control
-              without this style.  Multi-line edit controls do not need this style if a horizontal scroll
-              bar is added.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HSCROLL</term>
-          <listitem>
-            <para>
-              Adds a horizontal scroll bar to the bottom of the edit control. A horizontal scroll bar is
-              only functional in multi-line edit controls.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>AUTOSCROLLV</term>
-          <listitem>
-            <para>
-              Automatically scrolls text up when the user presses ENTER on the last line.  This style
-              only effects multi-line edit controls and is not needed if a vertical scroll bar is added.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>VSCROLL</term>
-          <listitem>
-            <para>
-              Adds a vertical scroll bar to the right of the edit control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>MULTILINE</term>
-          <listitem>
-            <para>
-              Designates a multiple-line edit control. (The default is single line.)  Multi-line edit
-              controls have the WANTRETURN and KEEPSELECTION styles unless the NOWANTRETURN and / or
-              HIDESELECTION keywords are specified.
-            </para>
-            <para>
-              When a multi-line edit control has the WANTRETURN style, pressing the ENTER key inserts
-              a line break in the text of the control.  Without the WANTRETURN style, pressing the ENTER
-              key clicks the default button.  With the KEEPSELECTION style, any selected text in the edit
-              control keeps its highlight when the control loses focus.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDESELECTION</term>
-          <listitem>
-            <para>
-              Removes the KEEPSELECTION style from multi-line edit controls. This keyword only effects
-              multi-line edit controls.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOWANTRETURN</term>
-          <listitem>
-            <para>
-              Removes the WANTRETURN style from multi-line edit controls. This keyword only effects
-              multi-line edit controls.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>READONLY</term>
-          <listitem>
-            <para>
-              Prevents the user from entering or editing text in the edit control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>KEEPSELECTION</term>
-          <listitem>
-            <para>
-              Selected text in an edit control keeps its highlight when the focus is shifted away from
-              the control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>PASSWORD</term>
-          <listitem>
-          <para>
-            Characters typed into the edit control are masked.  Rather than displaying the character typed, the edit
-            control displays the mask character.  Prior to Windows XP the default mask character was the asterisk.  In
-            Windows XP the default mask character is a black circle. The default password character can be changed by
-            through the <link linkend="atrPasswordChar">passwordChar</link> attribute of the <link
-            linkend="clsEdit">Edit</link> control.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>CENTER</term>
-          <listitem>
-            <para>
-              Centers text in an edit control.  (In Windows 95 and NT this style only effects multi-line
-              edit controls.)
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>RIGHT</term>
-          <listitem>
-            <para>
-              Aligns text flush right in an edit control.  (In Windows 95 and NT this style only effects
-              multi-line edit controls.)
-            </para>
-            </listitem></varlistentry>
-          <varlistentry><term>UPPER</term>
-          <listitem>
-            <para>
-              Converts all characters to uppercase as they are typed into the edit control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>LOWER</term>
-          <listitem>
-            <para>
-              Converts all characters to lowercase as they are typed into the edit control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NUMBER</term>
-          <listitem>
-            <para>
-              Only allows digits to be typed into the edit control.  If the user types an non-digit
-              character an information balloon is displayed informing the user that only digits are
-              allowed.  This style does not prevent the user from pasting non-digits into the control.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>OEM</term>
-          <listitem>
-            <para>
-              Converts text entered in the edit control from the Windows character set to the OEM
-              character set and then back again to the Windows character set. This ensures proper
-              character conversion in certain circumstances. Microsoft states that this style is most
-              useful when edit controls contain file names that will be used with file systems that do
-              not support Unicode. For further details see the <link linkend="defWindowsDoc">Windows
-              documentation</link> provided by Microsoft.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDDEN</term>
-          <listitem>
-            <para>
-              Create the edit control without the <link linkend="wsvisible">visible</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DISABLED</term>
-          <listitem>
-            <para>
-              Create the edit control without the <link linkend="wsdisabled">enabled</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>GROUP</term>
-          <listitem>
-            <para>
-              Create the edit control with the <link linkend="wsgroup">group</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOTAB</term>
-          <listitem>
-            <para>
-              Create the edit control without the <link linkend="wstabstop">tabstop</link> style. By
-              default the edit control is created with the tabstop style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOBORDER</term>
-          <listitem>
-            <para>
-              The NOBORDER style has a special meaning for this method. It controls whether or not a
-              group box is drawn around the input group. If NOBORDER is used, the group box is not used,
-              otherwise it is.
-            </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </listitem></varlistentry>
-      <varlistentry><term>idstat</term>
-      <listitem>
-        <para>
-          This argument is used to set the resource <link linkend="idArgument">ID</link> for the first
-          static text control, the label for the first edit control. Normally, static text controls are
-          assigned the default (-1) static control ID, and the programmer does not need to specify this
-          argument.
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      The possible return values are:
-      <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-        <para>
-          Success.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>less than 0</term>
-      <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
-      </listitem></varlistentry>
-      </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-      The following example shows how to use AddInputStem. It creates a four-line input group. For each
-      entry line (with IDs 401 through 404) the text for the label, (the static text control,) is
-      provided by the stem variable.
-    </para>
-    <para>
-      The labels also provide the attribute name for each edit control. The attribute names will be
-      slightly different from the title because the spaces and ampersands are removed. In this example the
-      NAME, FIRSTNAME, STREETNUMBER, and CITYZIP attributes are added to the object.
-    </para>
-<programlisting>
-<![CDATA[
-FNames.1="Name"
-FNames.2="First Name"
-FNames.3="Street & Number"
-FNames.4="City & ZIP"
-
-MyDialog~addInputStem(401, 20, 20, , 150, FNames.)
-]]>
-  </programlisting>
   </listitem></varlistentry>
 </variablelist>
 </section>
