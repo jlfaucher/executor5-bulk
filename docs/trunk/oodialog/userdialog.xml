@@ -294,16 +294,16 @@
 </entry>
 </row>
 <row>
-<entry><link linkend="mthAddComboBox">addComboBox</link></entry>
-<entry>addComboBox</entry>
+<entry><link linkend="mthCreateComboBox">createComboBox</link></entry>
+<entry>createComboBox</entry>
 </row>
 <row>
-<entry><link linkend="mthAddComboInput">addComboInput</link></entry>
+<entry><link linkend="mthCreateComboBoxInput">createComboBoxInput</link></entry>
 <entry>xx</entry>
 </row>
 <row>
-<entry><link linkend="mthAddListControl">AddListControl</link></entry>
-<entry>AddListControl</entry>
+<entry><link linkend="mthCreateListView">createListView</link></entry>
+<entry>createListView</entry>
 </row>
 <row>
 <entry><link linkend="mthAddProgressBar">addProgressBar</link></entry>
@@ -318,8 +318,8 @@
 <entry>AddTreeControl</entry>
 </row>
 <row>
-<entry><link linkend="mthAddScrollBar">addScrollBar</link></entry>
-<entry>addScrollBar</entry>
+<entry><link linkend="mthCreateScrollBar">createScrollBar</link></entry>
+<entry>createScrollBar</entry>
 </row>
 </tbody>
 </tgroup>
@@ -7864,18 +7864,183 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
 
 </section>
 
-<section id="mthAddComboBox"><title>addComboBox</title>
-<indexterm><primary>addComboBox</primary></indexterm>
+<section id="mthCreateComboBox"><title>createComboBox</title>
+<indexterm><primary>createComboBox</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addComboBox(--id--,--+------+--,--x--,--y--,--cx--,--cy--+---------+-)-----><
-                         +-name-+                            +-,-style-+
+>>--addComboBox(--id--,--x--,--y--,--cx--,--cy--+---------+--+------------+--)--><
+                                                +-,-style-+  +-,-attrName-+
 ]]>
 </programlisting>
 
 <para>
-  The addComboBox method adds a combo box to the dialog. See the <link linkend="clsComboBox">Combo
-  Box</link> chapter for more information on combo boxes.
+  The <emphasis role="italic">createComboBox</emphasis> method creates a <link linkend="clsComboBox">combo box</link> in
+  the dialog template.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource <link linkend="idArgument">ID</link> for the control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>x, y, cx, cy [required]</term>
+    <listitem>
+    <para>
+      The combo box <link linkend="paraControlCoordinates">coordinates</link>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style [optional]</term>
+    <listitem>
+      <para>
+        A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+        separated by spaces:
+      </para>
+      <simplelist type='vert' columns='3'>
+        <member>SIMPLE   </member>
+        <member>LIST     </member>
+        <member>SORT     </member>
+        <member>VSCROLL  </member>
+        <member>NOHSCROLL</member>
+        <member>PARTIAL  </member>
+        <member>HIDDEN   </member>
+        <member>GROUP    </member>
+        <member>DISABLED </member>
+        <member>NOBORDER </member>
+        <member>NOTAB    </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>SIMPLE</term>
+        <listitem>
+        <para>
+          Adds a simple combo box, which displays the list box at all times. If neither SIMPLE nor LIST are specified,
+          the combo box will be a drop-down combo box.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>LIST</term>
+        <listitem>
+        <para>
+          Adds a drop-down list combo box. If neither SIMPLE nor LIST are specified, the combo box will be a drop-down
+          combo box.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SORT</term>
+        <listitem>
+        <para>
+          The items in the list are sorted by the combo box itself.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VSCROLL</term>
+        <listitem>
+        <para>
+          Adds a vertical scroll bar to the combo box.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOHSCROLL</term>
+        <listitem>
+        <para>
+          In combo boxes where the <link linkend="clsComboBox">selection</link> field is an edit control, the combo box
+          normally scrolls the text automatically to the right when the user types a character at the end of the line.
+          When the NOHSCROLL style is set, automatic horizontal scrolling is disabled and the user can not enter more
+          text than fits within the width of the selection field.
+        </para> </listitem></varlistentry>
+        <varlistentry><term>PARTIAL</term>
+        <listitem>
+        <para>
+          Specifies that the size of the combo box is exactly the size specified by the application when it created the
+          combo box. Normally, the system sizes a combo box so that it does not display partial items.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HIDDEN</term>
+        <listitem>
+        <para>
+          Create the combo box without the <link linkend="wsvisible">visible</link> style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DISABLED</term>
+        <listitem>
+        <para>
+          Create the combo box without the <link linkend="wsdisabled">enabled</link> style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>GROUP</term>
+        <listitem>
+        <para>
+          Create the combo box with the <link linkend="wsgroup">group</link> style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTAB</term>
+        <listitem>
+        <para>
+          Create the combo box without the <link linkend="wstabstop">tabstop</link> style. By default the combo box
+          is created with the tabstop style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOBORDER</term>
+        <listitem>
+        <para>
+          Create the combo box without the <link linkend="wsborder">border</link> style.  By default combo boxes are
+          created with a border.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term>attrName [optional]</term>
+    <listitem>
+    <para>
+      The name of the data <link linkend="sctUnderstandingDataAttributes">attribute</link> associated with the combo box
+      control. If you omit this argument then the name of the data attribute is constructed <link
+      linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">auto
+      detection</link> is off, this argument is ignored.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+    <para>
+      Error with the in-memory dialog template or with the resource ID.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthCreateComboBoxInput"><title>createComboBoxInput</title>
+<indexterm><primary>createComboBoxInput</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-createComboInput(-id-,-x-,-y-+-------+-,-cx2-+---------+-,--txt---+-----+--->
+                                +-,-cx1-+       +-,-count-+          +-,-s-+
+
+>---+-------+--+------------+--)-----------------------------------------------><
+    +-,-id2-+  +-,-attNamer-+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">createComboBoxInput</emphasis> method is used to create a combo box and a static text
+  control in the dialog template. The static text controls is used to provide a label for the combo box.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7884,33 +8049,48 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
       The arguments are:
     </para>
     <variablelist>
-      <varlistentry><term>id</term>
+      <varlistentry><term>id [required]</term>
       <listitem>
         <para>
           The resource <link linkend="idArgument">ID</link> for the control.
         </para>
       </listitem></varlistentry>
-      <varlistentry><term>name</term>
+      <varlistentry><term>x, y [required]</term>
+      <listitem>
+      <para>
+          The position <link linkend="paraControlCoordinates">coordinate</link> of the input group.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>cx1 [optional]</term>
       <listitem>
         <para>
-          The name of the data attribute associated with the dialog item. Using this argument performs the
-          same function as the <link linkend="mthConnectComboBox">connectComboBox</link>() method. The
-          documentation for the <link linkend="mthConnectEdit">connectEdit</link>() method has
-          a good description of the concept of the data attribute.
-        </para>
-        <para>
-          If you omitt this argument then the data attribute is constructed automatically and named by
-          concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA ||
-          id</computeroutput>.
-        </para>
+          The width <link linkend="paraControlCoordinates">coordinate</link> of the static text control used for the
+          label. If omitted, the width is calculated automatically using the dialog font. The height of the label is
+          always calculated automatically using the dialog font.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>x, y, cx, cy</term>
+      <varlistentry><term>cx2 [required]</term>
+      <listitem>
+      <para>
+        The  width <link linkend="paraControlCoordinates">coordinate</link> of the combo box.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>count [optional]</term>
+      <listitem>
+      <para>
+        The  height <link linkend="paraControlCoordinates">coordinate</link> of the combo box specified as a number
+        of lines. The height of one line if text is calculated using the dialog font. This height is used for the height
+        of the label. The <emphasis role="italic">count</emphasis> argument then specifies how many lines. of that
+        height, the combo box should be. The default is 5 lines.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>txt [required]</term>
       <listitem>
         <para>
-          The  control <link linkend="paraControlCoordinates">coordinates</link>.
+          The text for the label. The label is displayed on the left-hand side of the combo box.
         </para>
       </listitem></varlistentry>
-      <varlistentry><term>style</term>
+      <varlistentry><term>style [optional]</term>
       <listitem>
         <para>
           A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
@@ -7932,623 +8112,538 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
         <variablelist>
           <varlistentry><term>SIMPLE</term>
           <listitem>
-            <para>
-              Adds a simple combo box, which displays the list box at all times. If neither SIMPLE nor
-              LIST are specified, the combo box will be a drop-down combo box.
-            </para>
+          <para>
+            Adds a simple combo box, which displays the list box at all times. If neither SIMPLE nor LIST are specified,
+            the combo box will be a drop-down combo box.
+          </para>
           </listitem></varlistentry>
           <varlistentry><term>LIST</term>
           <listitem>
-            <para>
-              Adds a drop-down list combo box. If neither SIMPLE nor LIST are specified, the combo box
-              will be a drop-down combo box.
-            </para>
+          <para>
+            Adds a drop-down list combo box. If neither SIMPLE nor LIST are specified, the combo box will be a drop-down
+            combo box.
+          </para>
           </listitem></varlistentry>
           <varlistentry><term>SORT</term>
           <listitem>
-            <para>
-              The items in the list are sorted by the combo box itself.
-            </para>
+          <para>
+            The items in the list are sorted by the combo box itself.
+          </para>
           </listitem></varlistentry>
           <varlistentry><term>VSCROLL</term>
           <listitem>
-            <para>
-              Adds a vertical scroll bar to the combo box.
-            </para>
+          <para>
+            Adds a vertical scroll bar to the combo box.
+          </para>
           </listitem></varlistentry>
           <varlistentry><term>NOHSCROLL</term>
           <listitem>
-            <para>
-              Normally the ComboBox automatically scrolls the text in an edit control to the right when
-              the user types a character at the end of the line. When the NOHSCROLL style is set, only
-              text that fits within the rectangular boundary is allowed.
-            </para>
-          </listitem></varlistentry>
+          <para>
+            In combo boxes where the <link linkend="clsComboBox">selection</link> field is an edit control, the combo box
+            normally scrolls the text automatically to the right when the user types a character at the end of the line.
+            When the NOHSCROLL style is set, automatic horizontal scrolling is disabled and the user can not enter more
+            text than fits within the width of the selection field.
+          </para> </listitem></varlistentry>
           <varlistentry><term>PARTIAL</term>
           <listitem>
-            <para>
-              Specifies that the size of the combo box is exactly the size specified by the application
-              when it created the combo box. Normally, the system sizes a combo box so that it does not
-              display partial items.
-            </para>
+          <para>
+            Specifies that the size of the combo box is exactly the size specified by the application when it created the
+            combo box. Normally, the system sizes a combo box so that it does not display partial items.
+          </para>
           </listitem></varlistentry>
           <varlistentry><term>HIDDEN</term>
           <listitem>
-            <para>
-              Create the control without the <link linkend="wsvisible">visible</link> style.
-            </para>
+          <para>
+            Create the combo box without the <link linkend="wsvisible">visible</link> style.
+          </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
           <listitem>
-            <para>
-              Create the control without the <link linkend="wsdisabled">enabled</link> style.
-            </para>
+          <para>
+            Create the combo box without the <link linkend="wsdisabled">enabled</link> style.
+          </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
           <listitem>
-            <para>
-              Create the control with the <link linkend="wsgroup">group</link> style.
-            </para>
+          <para>
+            Create the combo box with the <link linkend="wsgroup">group</link> style.
+          </para>
           </listitem></varlistentry>
           <varlistentry><term>NOTAB</term>
           <listitem>
-            <para>
-              Create the control without the <link linkend="wstabstop">tabstop</link> style. By default
-              the combobox control is created with the tabstop style.
-            </para>
+          <para>
+            Create the combo box without the <link linkend="wstabstop">tabstop</link> style. By default the combo box
+            is created with the tabstop style.
+          </para>
           </listitem></varlistentry>
           <varlistentry><term>NOBORDER</term>
           <listitem>
-            <para>
-              Create the control without the <link linkend="wsborder">border</link> style.  By default
-              combobox controls are created with a border.
-            </para>
+          <para>
+            Create the combo box without the <link linkend="wsborder">border</link> style.  By default combo boxes are
+            created with a border.
+          </para>
           </listitem></varlistentry>
         </variablelist>
+      </listitem></varlistentry>
+      <varlistentry><term>id2 [optional]</term>
+      <listitem>
+      <para>
+        This argument is used to set the resource <link linkend="idArgument">ID</link> for the label, if one is desired.
+        If omitted, the default stactic control ID (-1) is used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>attrName [optional]</term>
+      <listitem>
+      <para>
+        The name of the data <link linkend="sctUnderstandingDataAttributes">attribute</link> associated with the combo box
+        control. If you omit this argument then the name of the data attribute is constructed <link
+        linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">auto
+        detection</link> is off, this argument is ignored.
+      </para>
       </listitem></varlistentry>
     </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
     <para>
-      The possible return values are:
-      <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-        <para>
-          Success.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>less than 0</term>
-      <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
-      </listitem></varlistentry>
-      </variablelist>
+      Success.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>less than 0</term>
+    <listitem>
+    <para>
+      Error with the in-memory dialog template or with the resource ID.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
   </listitem></varlistentry>
 </variablelist>
-
 </section>
 
-<section id="mthAddComboInput"><title>addComboInput</title>
-<indexterm><primary>addComboInput</primary></indexterm>
+<section id="mthCreateScrollBar"><title>createScrollBar</title>
+<indexterm><primary>createScrollBar</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-1addComboInput(-id-+--------+-,-x-,-y-+-------+-,-cx2-+----------+--->
-                      +-,-attr-+         +-,-cx1-+       +-,-clines-+
-
->--,--text---+---------+--+----------+-)-------------------------------><
-             +-,-style-+  +-,-idstat-+
+>>--createScrollBar(--id--,--x--,--y--,--cx--,--cy--+----------+--)---------------><
+                                                    +-,-style--+
 ]]>
 </programlisting>
 
 <para>
-  The addComboInput method adds a combo box and a label (a static text control) to the dialog.
+  The <emphasis role="italic">createScrollBar</emphasis> method creates a scroll bar in the dialog template.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
     <para>
-      The arguments are:
+      The resource <link linkend="idArgument">ID</link> for the scroll bar
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>x, y, cx, cy [required]</term>
+    <listitem>
+    <para>
+      The  control <link linkend="paraControlCoordinates">coordinates</link>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+      separated by spaces:
+    </para>
+    <simplelist type='vert' columns='3'>
+      <member>VERTICAL   </member>
+      <member>HORIZONTAL </member>
+      <member>TOPLEFT    </member>
+      <member>BOTTOMRIGHT</member>
+      <member>HIDDEN     </member>
+      <member>GROUP      </member>
+      <member>DISABLED   </member>
+      <member>BORDER     </member>
+      <member>TAB        </member>
+    </simplelist>
     <variablelist>
-      <varlistentry><term>id</term>
+      <varlistentry><term>VERTICAL</term>
       <listitem>
-        <para>
-          The resource <link linkend="idArgument">ID</link> for the control.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>attr</term>
-      <listitem>
-        <para>
-          The name of the data attribute associated with the combo box. Using this argument performs the
-          same function as the <link linkend="mthConnectComboBox">connectComboBox</link>() method. The
-          documentation for <link linkend="mthConnectEdit">connectEdit</link>() has a good
-          description of the concept of the data attribute.
-        </para>
-        <para>
-          If you omitt this argument then the data attribute is constructed automatically and named by
-          concatenating the string DATA with the id argument, i.e.: <computeroutput>DATA ||
-          id</computeroutput>.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>x, y, cx1, cx2, cy</term>
-      <listitem>
-        <para>
-          The  control <link linkend="paraControlCoordinates">coordinates</link>. x and y are the position of
-          the upper-left edge of the label. The combo box is aligned automatically.
-        </para>
-        <para>
-          cx1 is the length of the label. cx2 is the width of the combo box. clines is the height of the
-          combo box in lines.  If cx1 or cy are omitted, their values are calculated.
+      <para>
+         The scroll bar is positioned vertically. This is the default if HORIZONTAL is not specified.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>text</term>
+      <varlistentry><term>HORIZONTAL</term>
       <listitem>
-        <para>
-          The text of the label. The label is displayed on the left-hand side of the combo box.
-        </para>
+      <para>
+        The scroll bar is positioned horizontally.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>style</term>
+      <varlistentry><term>TOPLEFT</term>
       <listitem>
-        <para>
-          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-          separated by spaces:
-        </para>
-        <simplelist type='vert' columns='3'>
-          <member>SIMPLE   </member>
-          <member>LIST     </member>
-          <member>SORT     </member>
-          <member>VSCROLL  </member>
-          <member>NOHSCROLL</member>
-          <member>PARTIAL  </member>
-          <member>HIDDEN   </member>
-          <member>GROUP    </member>
-          <member>DISABLED </member>
-          <member>NOBORDER </member>
-          <member>NOTAB    </member>
-        </simplelist>
-        <variablelist>
-          <varlistentry><term>SIMPLE</term>
-          <listitem>
-            <para>
-              Adds a simple combo box, which displays the list box at all times. If neither SIMPLE nor
-              LIST are specified, the combo box will be a drop-down combo box.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>LIST</term>
-          <listitem>
-            <para>
-              Adds a drop-down list combo box. If neither SIMPLE nor LIST are specified, the combo box
-              will be a drop-down combo box.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>SORT</term>
-          <listitem>
-            <para>
-              The items in the list are sorted by the combo box itself.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>VSCROLL</term>
-          <listitem>
-            <para>
-              Adds a vertical scroll bar to the combo box.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOHSCROLL</term>
-          <listitem>
-            <para>
-              Normally the ComboBox automatically scrolls the text in an edit control to the right when
-              the user types a character at the end of the line. When the NOHSCROLL style is set, only
-              text that fits within the rectangular boundary is allowed.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>PARTIAL</term>
-          <listitem>
-            <para>
-              Specifies that the size of the combo box is exactly the size specified by the application
-              when it created the combo box. Normally, the system sizes a combo box so that it does not
-              display partial items.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDDEN</term>
-          <listitem>
-            <para>
-              Create the control without the <link linkend="wsvisible">visible</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DISABLED</term>
-          <listitem>
-            <para>
-              Create the control without the <link linkend="wsdisabled">enabled</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>GROUP</term>
-          <listitem>
-            <para>
-              Create the control with the <link linkend="wsgroup">group</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOTAB</term>
-          <listitem>
-            <para>
-              Create the control without the <link linkend="wstabstop">tabstop</link> style. By default
-              the combobox control is created with the tabstop style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NOBORDER</term>
-          <listitem>
-            <para>
-              Create the control without the <link linkend="wsborder">border</link> style.  By default
-              combobox controls are created with a border.
-            </para>
-          </listitem></varlistentry>
-        </variablelist>
+      <para>
+         The scroll bar is aligned to the top left of the given rectangle and has a predetermined width (if vertical)
+         or height (if horizontal.)
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>idstatic</term>
+      <varlistentry><term>BOTTOMRIGHT</term>
       <listitem>
-        <para>
-          This argument is used to set the resource <link linkend="idArgument">ID</link> for the label, if
-          one is desired. If omitted, the default stactic control ID (-1) is used.
-        </para>
+      <para>
+        The scroll bar is aligned to the bottom right of the given rectangle and has a predetermined width (if vertical)
+        or height (if horizontal.)
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HIDDEN</term>
+      <listitem>
+      <para>
+        Create the scroll bar without the <link linkend="wsvisible">visible</link> style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DISABLED</term>
+      <listitem>
+      <para>
+        Create the scroll bar without the <link linkend="wsdisabled">enabled</link> style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>GROUP</term>
+      <listitem>
+      <para>
+        Create the scroll bar with the <link linkend="wsgroup">group</link> style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>TAB</term>
+      <listitem>
+      <para>
+        Create the scroll bar with the <link linkend="wstabstop">tabstop</link> style.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>BORDER</term>
+      <listitem>
+      <para>
+        Create the scroll bar with the <link linkend="wsborder">border</link> style.
+      </para>
       </listitem></varlistentry>
     </variablelist>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+  <para>
+  The possible return values are:
+  <variablelist>
+  <varlistentry><term>0</term>
+  <listitem>
+  <para>
+    Success.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>less than 0</term>
+  <listitem>
+  <para>
+    Error with the in-memory dialog template or with the resource ID.
+  </para>
+  </listitem></varlistentry>
+  </variablelist>
+  </para>
+</listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthCreateListView"><title>createListView</title>
+<indexterm><primary>createListView</primary></indexterm>
+<indexterm><primary>UserDialog</primary><secondary>createListView</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--createListView(-id-,--x-,--y-,--cx-,--cy-+---------+--+------------+--)----><
+                                             +-,-style-+  +-,-attrName-+
+]]>
+</programlisting>
+
+<para>
+  Creates a <link linkend="clsListView">list view</link> control in the dialog template and specifies the resource ID,
+  position, size, style, and attribute name for the control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource <link linkend="idArgument">ID</link> for the list view control. May be numeric or <link
+      linkend="defSymbolicID">symbolic</link>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>x, y, cx, cy [required]</term>
+    <listitem>
+    <para>
+      The  control <link linkend="paraControlCoordinates">coordinates</link>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
+      separated by spaces:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>ICON         </member>
+        <member>SMALLICON    </member>
+        <member>LIST         </member>
+        <member>REPORT       </member>
+        <member>ALIGNLEFT    </member>
+        <member>ALIGNTOP     </member>
+        <member>AUTOARRANGE  </member>
+        <member>ASCENDING    </member>
+        <member>DESCENDING   </member>
+        <member>EDIT         </member>
+        <member>HSCROLL      </member>
+        <member>VSCROLL      </member>
+        <member>NOSCROLL     </member>
+        <member>NOHEADER     </member>
+        <member>NOSORTHEADER </member>
+        <member>NOWRAP       </member>
+        <member>SINGLESEL    </member>
+        <member>SHOWSELALWAYS</member>
+        <member>SHAREIMAGES  </member>
+        <member>HIDDEN       </member>
+        <member>DISABLED     </member>
+        <member>GROUP        </member>
+        <member>BORDER       </member>
+        <member>TAB          </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>ICON</term>
+        <listitem>
+        <para>
+          Use the icon view. Each item appears as a full-sized icon with a label below it. The user can drag the items
+          to any location in the list view control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SMALLICON</term>
+        <listitem>
+        <para>
+          Use the small-icon view. Each item appears as a small icon with a label to the right of it. The user can
+          drag the items to any location in the list view control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>LIST</term>
+        <listitem>
+        <para>
+          Use the list view. Each item appears as a small icon with a label to the right of it. Items are arranged in
+          columns and cannot be moved by the user.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>REPORT</term>
+        <listitem>
+        <para>
+          Use the report view. Each item appears on a separate line with information arranged in columns. The leftmost
+          column contains the small icon and label, and subsequent columns contain subitems.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ALIGNLEFT</term>
+        <listitem>
+        <para>
+          In icon and small-icon views, the items are left-aligned.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ALIGNTOP</term>
+        <listitem>
+        <para>
+          In icon and small-icon views, the items are aligned with the top of the control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>AUTOARRANGE</term>
+        <listitem>
+        <para>
+          In icon and small-icon views, the icons are always automatically arranged.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ASCENDING</term>
+        <listitem>
+        <para>
+          Sorts items by item text in ascending order.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DESCENDING</term>
+        <listitem>
+        <para>
+          Sorts items by item text in descending order.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>EDIT</term>
+        <listitem>
+        <para>
+          The list view allows the user to edit the list view items. To store the edited text, you must connect a method
+          to the <link linkend="evtListViewENDEDIT">ENDEDIT</link> event <link linkend="ovvEvents">notification</link>
+          using the <link linkend="mthConnectListViewEvent">connectListViewEvent</link> method. Alternatively you can
+          connect the <link linkend="kwListViewDEFAULTEDIT">DEFAULTEDIT</link> event handler using <emphasis
+          role="italic">connectListViewEvent</emphasis>.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HSCROLL</term>
+        <listitem>
+        <para>
+          The list view supports a horizontal scroll bar.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VSCROLL</term>
+        <listitem>
+        <para>
+          The list view supports a vertical scroll bar.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOSCROLL</term>
+        <listitem>
+        <para>
+          Disables scrolling.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOHEADER</term>
+        <listitem>
+        <para>
+          No column header is displayed in the report view. By default, columns have headers in the report view.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOSORTHEADER</term>
+        <listitem>
+        <para>
+          Specifies that column headers do not work like buttons. This option is useful if clicking a header in the
+          report view does not carry out an action.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOWRAP</term>
+        <listitem>
+        <para>
+          Displays item text on a single line in the icon view. By default, the item text can wrap in the icon view.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SINGLESEL</term>
+        <listitem>
+        <para>
+          Allows only one item to be selected at a time. By default, several items can be selected.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SHOWSELALWAYS</term>
+        <listitem>
+        <para>
+          Specifies that a selected item remains selected when the list view loses focus.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SHAREIMAGES</term>
+        <listitem>
+        <para>
+          The list view does not take ownership of the image lists assigned to it. This option enables an <link
+          linkend="clsImageList">image</link> list to be used with several list controls.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HIDDEN</term>
+        <listitem>
+        <para>
+          The <link linkend="wsvisible">not visible</link> window style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DISABLED</term>
+        <listitem>
+        <para>
+          The <link linkend="wsdisabled">not enabled</link> window style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>GROUP</term>
+        <listitem>
+        <para>
+          Create the list view with the <link linkend="wsgroup">group</link> style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOBORDER</term>
+        <listitem>
+        <para>
+          Create the list view without <link linkend="wsborder">border</link> window style. By default list views are
+          created with a border
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTAB</term>
+        <listitem>
+        <para>
+          Create the list view without the <link linkend="wstabstop">tabstop</link> control style. By default the
+          control is created with the tabstop style.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>attributeName [optional]</term>
+    <listitem>
+    <para>
+      The name of the data <link linkend="sctUnderstandingDataAttributes">attribute</link> associated with the dialog
+      control. If you omit this argument then the name of the data attribute is constructed <link
+      linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">auto
+      detection</link> is off, this argument is ignored.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para></listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The possible return values are:
-      <variablelist>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        The dialog template has either not been started or is complete.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        A symbolic ID was used, but it could not be resolved correctly.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>0</term>
       <listitem>
-        <para>
-          Success.
-        </para>
+      <para>
+        Success.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>less than 0</term>
+      <varlistentry><term>1</term>
       <listitem>
-        <para>
-          Error with the in-memory dialog template or with the resource ID.
-        </para>
+      <para>
+        The control was added to the dialog template but the data attribute could not be connected because the maximum
+        number of data connections has been reached.
+      </para>
       </listitem></varlistentry>
-      </variablelist>
+    </variablelist>
     </para>
   </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthAddScrollBar"><title>addScrollBar</title>
-<indexterm><primary>addScrollBar</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--addScrollBar(--id--,--x--,--y--,--cx--,--cy--+----------+--)---------------><
-                                                 +-,-style--+
-]]>
-</programlisting>
-
-<para>
-  The addScrollBar method adds a scroll bar to the dialog.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      The arguments are:
+      The following example creates a list view with the resource ID of 555 at position x=100 and y=80 and with a size
+      of width=40 and height=120. The list view is a report view with items sorted in ascending order. It supports item
+      editing and column headers do not behave like buttons. The data <link
+      linkend="sctUnderstandingDataAttributes">attribute</link> for the list view is EMPLOYEES.
+<programlisting>
+<![CDATA[
+
+self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER", "EMPLOYEES")
+
+]]>
+</programlisting>
     </para>
-    <variablelist>
-      <varlistentry><term>id</term>
-      <listitem>
-        <para>
-          The resource <link linkend="idArgument">ID</link> for the control.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>x, y, cx, cy</term>
-      <listitem>
-        <para>
-          The  control <link linkend="paraControlCoordinates">coordinates</link>.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>style</term>
-      <listitem>
-        <para>
-          A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
-          separated by spaces:
-        </para>
-        <simplelist type='vert' columns='3'>
-          <member>VERTICAL   </member>
-          <member>HORIZONTAL </member>
-          <member>TOPLEFT    </member>
-          <member>BOTTOMRIGHT</member>
-          <member>HIDDEN     </member>
-          <member>GROUP      </member>
-          <member>DISABLED   </member>
-          <member>BORDER     </member>
-          <member>TAB        </member>
-        </simplelist>
-        <variablelist>
-          <varlistentry><term>VERTICAL</term>
-          <listitem>
-            <para>
-               The scroll bar is positioned vertically. This is the default if HORIZONTAL is not
-               specified.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HORIZONTAL</term>
-          <listitem>
-            <para>
-              The scroll bar is positioned horizontally.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>TOPLEFT</term>
-          <listitem>
-            <para>
-               The scroll bar is aligned to the top left of the given rectangle and has a predetermined
-               width (if vertical) or height (if horizontal.)
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>BOTTOMRIGHT</term>
-          <listitem>
-            <para>
-              The scroll bar is aligned to the bottom right of the given rectangle and has a
-              predetermined width (if vertical) or height (if horizontal.)
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDDEN</term>
-          <listitem>
-            <para>
-              Create the control without the <link linkend="wsvisible">visible</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DISABLED</term>
-          <listitem>
-            <para>
-              Create the control without the <link linkend="wsdisabled">enabled</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>GROUP</term>
-          <listitem>
-            <para>
-              Create the control with the <link linkend="wsgroup">group</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>TAB</term>
-          <listitem>
-            <para>
-              Create the control with the <link linkend="wstabstop">tabstop</link> style.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>BORDER</term>
-          <listitem>
-            <para>
-              Create the control with the <link linkend="wsborder">border</link> style.
-            </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </listitem></varlistentry>
-    </variablelist>
   </listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem>
-  <para>
-    The possible return values are:
-    <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-      <para>
-        Success.
-      </para>
-    </listitem></varlistentry>
-    <varlistentry><term>less than 0</term>
-    <listitem>
-      <para>
-        Error with the in-memory dialog template or with the resource ID.
-      </para>
-    </listitem></varlistentry>
-    </variablelist>
-  </para>
-</listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthAddListControl"><title>AddListControl</title>
-<indexterm><primary>AddListControl</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-anAdvancedControl~AddListControl(--id--,--+---------------+--,--x,--y-->
-                                             +-attributeName-+
-
->--,--cx--,--cy--+--------------------------------+--)-------------------><
-                 |       +-------------------+    |
-                 |       V                   |    |
-                 +-,--"----+-ICON----------+-+--"-+
-                           +-SMALLICON-----+
-                           +-LIST----------+
-                           +-REPORT--------+
-                           +-ALIGNLEFT-----+
-                           +-ALIGNTOP------+
-                           +-AUTOARRANGE---+
-                           +-ASCENDING-----+
-                           +-DESCENDING----+
-                           +-EDIT----------+
-                           +-HSCROLL-------+
-                           +-VSCROLL-------+
-                           +-NOSCROLL------+
-                           +-NOHEADER------+
-                           +-NOSORTHEADER--+
-                           +-NOWRAP--------+
-                           +-SINGLESEL-----+
-                           +-SHOWSELALWAYS-+
-                           +-SHAREIMAGES---+
-                           +-GROUP---------+
-                           +-HIDDEN--------+
-                           +-NOTAB---------+
-                           +-NOBORDER------+
-
-
-]]>
-</programlisting>
-
-<para>The AddListControl method adds a list view to the
-dialog and connects it with a data attribute. For further information on list
-view controls, refer to <link linkend="clsListView">ListControl Class</link>.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>A unique identifier assigned to the control. You need the ID to refer
-to this control in other methods.
-</para></listitem></varlistentry>
-<varlistentry><term>attributeName</term>
-<listitem><para>The name of the data attribute associated with the dialog item. See
-<link linkend="mthConnectTreeview">connectTreeView</link> to get
-information on what happens when this argument is omitted.
-</para></listitem></varlistentry>
-<varlistentry><term>x, y</term>
-<listitem><para>The position of the upper left corner of the control relative to the
-dialog, in dialog units.
-</para></listitem></varlistentry>
-<varlistentry><term>cx, xy</term>
-<listitem><para>The width and height of the dialog item, in dialog units.
-</para></listitem></varlistentry>
-<varlistentry><term>options</term>
-<listitem><para>This argument determines the behavior and style of the dialog item and
-can be one or more of the following, separated by blanks:
-<variablelist>
-<varlistentry><term>ICON</term>
-<listitem><para>Use the icon view. Each item appears as a full-sized icon with a label
-below it. The user can drag the items to any location in the list view control.
-</para></listitem></varlistentry>
-<varlistentry><term>SMALLICON</term>
-<listitem><para>Use the small-icon view. Each item appears as a small icon with a label
-to the right of it. The user can drag the items to any location in the list
-view control.
-</para></listitem></varlistentry>
-<varlistentry><term>LIST</term>
-<listitem><para>Use the list view. Each item appears as a small icon with a label to
-the right of it. Items are arranged in columns and cannot be moved by the
-user.
-</para></listitem></varlistentry>
-<varlistentry><term>REPORT</term>
-<listitem><para>Use the report view. Each item appears on a separate line with information
-arranged in columns. The leftmost column contains the small icon and label,
-and subsequent columns contain subitems.
-</para></listitem></varlistentry>
-<varlistentry><term>ALIGNLEFT</term>
-<listitem><para>In icon and small-icon views, the items are left-aligned.
-</para></listitem></varlistentry>
-<varlistentry><term>ALIGNTOP</term>
-<listitem><para>In icon and small-icon views, the items are aligned with the top of
-the control.
-</para></listitem></varlistentry>
-<varlistentry><term>AUTOARRANGE</term>
-<listitem><para>In icon and small-icon views, the icons are always automatically arranged.
-</para></listitem></varlistentry>
-<varlistentry><term>ASCENDING</term>
-<listitem><para>Sorts items by item text in ascending order.
-</para></listitem></varlistentry>
-<varlistentry><term>DESCENDING</term>
-<listitem><para>Sorts items by item text in descending order.
-</para></listitem></varlistentry>
-<varlistentry><term>EDIT</term>
-<listitem><para>The list view allows the user to edit the list view items. To store
-the edited text, you must connect a method to the ENDEDIT notification or
-you connect the DEFAULTEDIT event handler
-(see <link linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>).
-</para></listitem></varlistentry>
-<varlistentry><term>HSCROLL</term>
-<listitem><para>The list view supports a horizontal scroll bar.
-</para></listitem></varlistentry>
-<varlistentry><term>VSCROLL</term>
-<listitem><para>The list view supports a vertical scroll bar.
-</para></listitem></varlistentry>
-<varlistentry><term>NOSCROLL</term>
-<listitem><para>Disables scrolling.
-</para></listitem></varlistentry>
-<varlistentry><term>NOHEADER</term>
-<listitem><para>No column header is displayed in the report view. By default, columns
-have headers in the report view.
-</para></listitem></varlistentry>
-<varlistentry><term>NOSORTHEADER</term>
-<listitem><para>Specifies that column headers do not work like buttons. This option
-is useful if clicking a header in the report view does not carry out an action.
-</para></listitem></varlistentry>
-<varlistentry><term>NOWRAP</term>
-<listitem><para>Displays item text on a single line in the icon view. By default, the
-item text can wrap in the icon view.
-</para></listitem></varlistentry>
-<varlistentry><term>SINGLESEL</term>
-<listitem><para>Allows only one item to be selected at a time. By default, several items
-can be selected.
-</para></listitem></varlistentry>
-<varlistentry><term>SHOWSELALWAYS</term>
-<listitem><para>Specifies that a selected item remains selected when the list view loses
-focus.
-</para></listitem></varlistentry>
-<varlistentry><term>DEFAULTEDIT</term>
-<listitem><para>Connects the notification that label editing has been started and ended
-with a predefined event-handling method. This method extracts the newly entered
-text from the notification and modifies the item of which the label was edited.
-If this event is not connected you must provide your own event-handling method
-and connect it with the BEGINEDIT and ENDEDIT events. Otherwise, the edited
-text is lost and the item remains unchanged.
-</para></listitem></varlistentry>
-<varlistentry><term>SHAREIMAGES</term>
-<listitem><para>The control does not take ownership of the image lists assigned to it.
-This option enables an image list to be used with several list controls.
-</para></listitem></varlistentry>
-<varlistentry><term>GROUP</term>
-<listitem><para>Specifies the first control of a group of control in which the user
-can move from one control to the next with the arrow keys.
-</para></listitem></varlistentry>
-<varlistentry><term>HIDDEN</term>
-<listitem><para>The control is initially hidden.
-</para></listitem></varlistentry>
-<varlistentry><term>NOTAB</term>
-<listitem><para>The tab key cannot be used to move to this control.
-</para></listitem></varlistentry>
-<varlistentry><term>NOBORDER</term>
-<listitem><para>No border is drawn around the control.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem>
-  <para>
-    The possible return values are:
-    <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-      <para>
-        Success.
-      </para>
-    </listitem></varlistentry>
-    <varlistentry><term>less than 0</term>
-    <listitem>
-      <para>
-        Error with the in-memory dialog template or with the resource ID.
-      </para>
-    </listitem></varlistentry>
-    </variablelist>
-  </para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example creates a list view at position x=100 and y=80
-and with a size of width=40 and height=120. The list view with ID 555 is a
-report view with items sorted in ascending order. It supports item editing
-and column headers do not behave like buttons. Its data is associated with
-attribute EMPLOYEES.
-<programlisting>
-<![CDATA[
-MyDialog~AddListControl(555, "EMPLOYEES", 100, 80, 40, 120, ,
-"REPORT ASCENDING EDIT NOSORTHEADER")
-]]>
-</programlisting>
-</para></listitem></varlistentry>
 </variablelist>
 </section>
 

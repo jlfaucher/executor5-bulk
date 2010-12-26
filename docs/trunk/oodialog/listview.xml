@@ -62,7 +62,7 @@ more powerful than the List Box control.
 Styles</emphasis>: The List-View control has been updated by Microsoft to
 include a number of <emphasis role="italic">extended</emphasis> styles.  These
 styles are similar to the styles that can be used to create a ListControl, (see
-the <link linkend="mthAddListControl">AddListControl</link> method,) like the
+the <link linkend="mthCreateListView">createListView</link> method,) like the
 <computeroutput>NOHEADER</computeroutput> or
 <computeroutput>SINGLESEL</computeroutput> styles.  However, the way that they
 are added or removed from the ListControl is different.  For instance, the
@@ -529,7 +529,7 @@ of a list view control and sets new styles.</para>
 <varlistentry><term>newStyle</term>
 <listitem><para>The new window styles to be set, which is one or more of the styles
 listed in the syntax diagram, separated by blanks. For an explanation
-of the different styles, refer to <link linkend="mthAddListControl">AddListControl</link>.
+of the different styles, refer to <link linkend="mthCreateListView">createListView</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -642,7 +642,7 @@ list view control.</para>
 <varlistentry><term>style</term>
 <listitem><para>The window styles to be added, which is one or more of the styles listed
 in the syntax diagram, separated by blanks. For an explanation of the different
-styles, refer to <link linkend="mthAddListControl">AddListControl</link>.
+styles, refer to <link linkend="mthCreateListView">createListView</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -696,7 +696,7 @@ styles of a list view control.</para>
 <varlistentry><term>style</term>
 <listitem><para>The window styles to be removed, which is one or more of the styles
 listed in the syntax diagram, separated by blanks. For an explanation of the
-different styles, refer to <link linkend="mthAddListControl">AddListControl</link>.
+different styles, refer to <link linkend="mthCreateListView">createListView</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -3840,7 +3840,7 @@ This is the default.
 </para>
 <para>
   Unless a list-view has the LVS_SHAREIMAGELISTS style, (corresponds to the SHAREIMAGES style in the
-  <link linkend="mthAddListControl">addListControl</link>() method,) the list-view control will handle
+  <link linkend="mthCreateListView">addListControl</link>() method,) the list-view control will handle
   releasing the image list(s). When the share image lists style is used, ownership of the image list
   remains with the programmer. The <link linkend="clsImageList">ImageList</link> and <link
   linkend="clsImage">Image</link> classes are used to manage image lists and images in ooDialog. The
