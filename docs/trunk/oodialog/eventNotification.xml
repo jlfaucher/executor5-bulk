@@ -3420,10 +3420,10 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
         <varlistentry><term>BEGINEDIT</term>
         <listitem><para>Editing a label has been started.
         </para></listitem></varlistentry>
-        <varlistentry><term>ENDEDIT</term>
+        <varlistentry id="evtTreeViewENDEDIT"><term>ENDEDIT</term>
         <listitem><para>Label editing has ended.
         </para></listitem></varlistentry>
-        <varlistentry><term>DEFAULTEDIT</term>
+        <varlistentry id="evtTreeViewDEFAULTEDIT"><term>DEFAULTEDIT</term>
         <listitem><para>This event connects the notification that label editing has been started
         and ended with a predefined event-handling method. This method extracts the
         newly entered text from the notification and modifies the item of which the
@@ -3686,15 +3686,15 @@ Example:
 </programlisting>
 
 <para>The connectTrackBarEvent method connects a particular
-WM_NOTIFY message for a slider control, which is also called a track bar,
+WM_NOTIFY message for a trackbar control, which is also called a track bar,
 with a method. The WM_NOTIFY message informs the dialog that an event has
-occurred with regard to the slider control.</para>
+occurred with regard to the trackbar control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>id</term>
-<listitem><para>The ID of the slider control of which a notification is to be connected
+<listitem><para>The ID of the trackbar control of which a notification is to be connected
 to a method.
 </para></listitem></varlistentry>
 <varlistentry><term>event</term>
@@ -3719,20 +3719,20 @@ to a method.
 <listitem><para>The PgDn key has been pressed.
 </para></listitem></varlistentry>
 <varlistentry><term>DRAG</term>
-<listitem><para>The slider has been moved.
+<listitem><para>The trackbar has been moved.
 </para></listitem></varlistentry>
 <varlistentry><term>POSITION</term>
 <listitem><para>The left mouse button has been released, following a DRAG notification.
 </para></listitem></varlistentry>
 <varlistentry><term>ENDTRACK</term>
-<listitem><para>The slider movement is completed, that is, the appropriate key or mouse
+<listitem><para>The trackbar movement is completed, that is, the appropriate key or mouse
 button has been released.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term>msgToRaise</term>
 <listitem><para>The message that is to be sent whenever the specified notification is
-received from the slider control. Provide a method with a matching name. If
+received from the trackbar control. Provide a method with a matching name. If
 you omit this argument, the event is preceded by <computeroutput>On</computeroutput>.
 </para></listitem></varlistentry>
 </variablelist>
@@ -3754,7 +3754,7 @@ incorrect.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example connects the POSITION event (release mouse button
-after dragging) with method PosSet, which extracts the new slider position
+after dragging) with method PosSet, which extracts the new trackbar position
 from the notification arguments and displays it together with the event type
 for POSITION, which should be 4:
 <programlisting>
@@ -3777,11 +3777,11 @@ for POSITION, which should be 4:
 
 <note><title>Notes</title><para>
 <orderedlist>
-<listitem><para>The method can only be called after the slider was created by Windows.
+<listitem><para>The method can only be called after the trackbar was created by Windows.
 A good location for this connection is the InitDialog method.</para></listitem>
 <listitem><para>The event-handling methods receive two arguments: an event-position pair
-and the handle to the slider control. For some events, you can retrieve the
-slider position by extracting the high-oder word. Example:
+and the handle to the trackbar control. For some events, you can retrieve the
+trackbar position by extracting the high-oder word. Example:
 <programlisting>
 <![CDATA[
 ::method Handler

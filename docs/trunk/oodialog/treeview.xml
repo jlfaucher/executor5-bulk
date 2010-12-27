@@ -42,7 +42,7 @@
     #########################################################################
 -->
 <chapter id="clsTreeView"><title>Tree View Controls</title>
-<indexterm><primary>TreeControl class</primary></indexterm>
+<indexterm><primary>TreeView class</primary></indexterm>
 <para>The tree view control is a dialog that displays a hierarchical list of
 items, such as the headings in a document, the entries in an index, or the
 files and directories on a disk. Each item consists of a label and an optional
@@ -51,7 +51,7 @@ on an item, the user can expand and collapse the associated list of subitems.</p
 <para>Refer to OODTREE.REX in the OODIALOG\SAMPLES directory for an example.</para>
 <variablelist>
 <varlistentry><term>Requires:</term>
-<listitem><para>The TreeControl class requires the class definition
+<listitem><para>The TreeView class requires the class definition
 file <computeroutput>oodwin32.cls</computeroutput>:
 <programlisting>
 <![CDATA[
@@ -60,12 +60,12 @@ file <computeroutput>oodwin32.cls</computeroutput>:
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>Methods:</term>
-<listitem><para>Instances of the TreeControl class implement
+<listitem><para>Instances of the TreeView class implement
 the methods listed in the
-<link linkend="t000032">TreeControl Instance Methods</link> table.</para>
+<link linkend="t000032">TreeView Instance Methods</link> table.</para>
 
 <table id="t000032" frame="all">
-<title>TreeControl Instance Methods</title>
+<title>TreeView Instance Methods</title>
 <tgroup cols="2">
 <thead>
 <row>
@@ -223,13 +223,13 @@ the methods listed in the
 </listitem></varlistentry>
 </variablelist>
 
-<section id="treecmeth"><title>Methods of the TreeControl Class</title>
-<para>The following sections describe the individual methods of the TreeControl
+<section id="treecmeth"><title>Methods of the TreeView Class</title>
+<para>The following sections describe the individual methods of the TreeView
 class.</para>
 
 <section id="inserttrc"><title>insert</title>
 <indexterm><primary>insert</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                     +-"LAST"--+     +-""---+     +-0-----+
@@ -349,7 +349,7 @@ is expanded. The text strings for the items are loaded from a file.
 
 <section id="addtrc"><title>Add</title>
 <indexterm><primary>Add</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                       +-------+
@@ -486,7 +486,7 @@ end
 
 <section id="modifytrc"><title>modify</title>
 <indexterm><primary>modify</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                    +-""---+     +-0-----+
@@ -624,7 +624,7 @@ when it is selected:</para>
 
 <section id="iteminfotrc"><title>itemInfo</title>
 <indexterm><primary>itemInfo</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~itemInfo(--hItem--)----------------------------><
@@ -717,7 +717,7 @@ to parent items.
 
 <section id="itemstrc"><title>items</title>
 <indexterm><primary>items</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~Items------------------------------------------><
@@ -891,7 +891,7 @@ retrieved.
 
 <section id="selectedtrc"><title>selected</title>
 <indexterm><primary>selected</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~Selected---------------------------------------><
@@ -922,7 +922,7 @@ item.</para>
 
 <section id="drophighlightedtrc"><title>DropHighlighted</title>
 <indexterm><primary>DropHighlighted</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~DropHighlighted--------------------------------><
@@ -942,7 +942,7 @@ is the target of a drag-and-drop operation.</para>
 
 <section id="firstvisibletrc"><title>FirstVisible</title>
 <indexterm><primary>FirstVisible</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~FirstVisible-----------------------------------><
@@ -973,7 +973,7 @@ item in the client window of a tree view control.</para>
 
 <section id="nexttrc"><title>Next</title>
 <indexterm><primary>Next</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~Next(--hItem--)--------------------------------><
@@ -1047,7 +1047,7 @@ retrieved. <emphasis role="italic">hItem</emphasis> must also be visible.
 
 <section id="previoustrc"><title>Previous</title>
 <indexterm><primary>Previous</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~Previous(--hItem--)----------------------------><
@@ -1107,7 +1107,7 @@ in all other cases.
 
 <section id="deletetrc"><title>delete</title>
 <indexterm><primary>delete</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~delete(--hItem--)------------------------------><
@@ -1158,7 +1158,7 @@ if any:
 
 <section id="deletealltrc"><title>deleteAll</title>
 <indexterm><primary>deleteAll</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~DeleteAll--------------------------------------><
@@ -1383,7 +1383,7 @@ collapsing a selected item:
 
 <section id="ensurevisibletrc"><title>ensureVisible</title>
 <indexterm><primary>ensureVisible</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~ensureVisible(--hItem--)-----------------------><
@@ -1472,7 +1472,7 @@ minimum.
 
 <section id="edittrc"><title>Edit</title>
 <indexterm><primary>Edit</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~Edit(--hItem--)--------------------------------><
@@ -1503,7 +1503,7 @@ in all other cases.
 
 <section id="endedittrc"><title>EndEdit</title>
 <indexterm><primary>EndEdit</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~EndEdit(--+--------+--)------------------------><
@@ -1542,7 +1542,7 @@ the changes are saved to the label, which is the default.
 
 <section id="subclassedittrc"><title>SubclassEdit</title>
 <indexterm><primary>SubclassEdit</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~SubclassEdit-----------------------------------><
@@ -1558,7 +1558,7 @@ active edit item.</para>
 
 <section id="restoreeditclasstrc"><title>RestoreEditClass</title>
 <indexterm><primary>RestoreEditClass</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~RestoreEditClass-------------------------------><
@@ -1574,7 +1574,7 @@ active edit item.</para>
 
 <section id="selecttrc"><title>select</title>
 <indexterm><primary>select</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~select(--hItem--)------------------------------><
@@ -1612,7 +1612,7 @@ active edit item.</para>
 
 <section id="makefirstvisibletrc"><title>MakeFirstVisible</title>
 <indexterm><primary>MakeFirstVisible</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~MakeFirstVisible(--hItem--)--------------------><
@@ -1734,7 +1734,7 @@ was not specified or is 0.
 
 <section id="mthSetImageListClsTreeControl"><title>setImageList</title>
 <indexterm><primary>setImageList</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--setImageList(--newImageList--+----------+--)--------------------><
@@ -1828,7 +1828,7 @@ was not specified or is 0.
 </section>  <!-- End TreeControl::setImageList() -->
 
 <section id="mthGetImageListClsTreeControl"><title>getImageList</title>
-<indexterm><primary>getImageList</primary><secondary>TreeControl class</secondary></indexterm>
+<indexterm><primary>getImageList</primary><secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getImageList(--+--------+--)------------------------------------><
@@ -1983,7 +1983,7 @@ following strings if an item occupies the specified point:
 
 <section id="moveitem"><title>MoveItem</title>
 <indexterm><primary>MoveItem</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aTreeControl~MoveItem(--hItem--,--hNewParent--,--redraw--+---------------+--)-><
@@ -2061,7 +2061,7 @@ of <emphasis role="italic">hItem</emphasis>.
 
 <section id="notifmsgtrc"><title>Notification Messages</title>
 <indexterm><primary>notification messages</primary>
-<secondary>TreeControl class</secondary></indexterm>
+<secondary>TreeView class</secondary></indexterm>
 <para>The tree view control sends notification messages to notify about events.
 For more information on notification messages, refer to
 <link linkend="mthConnectListViewEvent">connectListViewEvent</link>.</para>

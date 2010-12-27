@@ -42,7 +42,7 @@
     #########################################################################
 -->
 <chapter id="clsTrackBar"><title>Track Bar Controls</title>
-<indexterm><primary>SliderControl class</primary></indexterm>
+<indexterm><primary>Trackbar class</primary></indexterm>
 <para>
   A trackbar is a window that contains a slider and optional tick marks. Prior to the effort to <link
   linkend="termMethodNameUnification">unify</link> the ooDialog class and method names, a track bar was called a slider
@@ -70,17 +70,17 @@
   <computeroutput>samples</computeroutput> subdirectory for some help in getting started using a track bar.
 </para>
 <para>
-  The SliderControl class sends notification messages to notify about the event. For information about notification
+  The Trackbar class sends notification messages to notify about the event. For information about notification
   messages, refer to <link linkend="mthConnectListViewEvent">connectListViewEvent</link>.
 </para>
 <variablelist>
 <varlistentry><term>Methods:</term>
-<listitem><para>Instances of the SliderControl class implement
+<listitem><para>Instances of the Trackbar class implement
 the methods listed in the
-<link linkend="t000030">SliderControl Instance Methods</link> table.</para>
+<link linkend="t000030">Trackbar Instance Methods</link> table.</para>
 
 <table id="t000030" frame="all">
-<title>SliderControl Instance Methods</title>
+<title>Trackbar Instance Methods</title>
 <tgroup cols="2">
 <thead>
 <row>
@@ -114,8 +114,8 @@ the methods listed in the
 <entry><link linkend="gettick">GetTick</link></entry>
 </row>
 <row>
-<entry>InitRange</entry>
-<entry><link linkend="initrange">InitRange</link></entry>
+<entry>initRange</entry>
+<entry><link linkend="mthInitRange">initRange</link></entry>
 </row>
 <row>
 <entry>InitSelRange</entry>
@@ -166,12 +166,12 @@ the methods listed in the
 <entry><link linkend="setselstart">SetSelStart</link></entry>
 </row>
 <row>
-<entry>SetTickAt</entry>
-<entry><link linkend="settickat">SetTickAt</link></entry>
+<entry>setTickAt</entry>
+<entry><link linkend="mthSetTickAt">setTickAt</link></entry>
 </row>
 <row>
-<entry>SetTickFrequency</entry>
-<entry><link linkend="settickfrequency">SetTickFrequency</link></entry>
+<entry>setTickFrequency</entry>
+<entry><link linkend="mthSetTickFrequency">setTickFrequency</link></entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -189,7 +189,7 @@ the methods listed in the
 </programlisting>
 
 <para>The Pos= method sets the new logical position of
-the slider and redraws the slider.</para>
+the trackbar and redraws the slider.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -207,7 +207,7 @@ position.
 
 <section id="setpossc"><title>setPos</title>
 <indexterm><primary>setPos</primary>
-<secondary>SliderControl class</secondary></indexterm>
+<secondary>Trackbar class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                    +-0-+
@@ -219,7 +219,7 @@ position.
 </programlisting>
 
 <para>The setPos method sets the new logical position
-of the slider and redraws the slider if required.</para>
+of the trackbar and redraws the trackbar if required.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -231,7 +231,7 @@ a value outside this range, the position is set to the maximum or minimum
 position.
 </para></listitem></varlistentry>
 <varlistentry><term>redraw</term>
-<listitem><para>The redraw flag. If you specify 1, the control is redrawn with the slider
+<listitem><para>The redraw flag. If you specify 1, the control is redrawn with the trackbar
 at the position given by <emphasis role="italic">pos</emphasis>.
 If you specify 0 or omit this argument, the control is not redrawn. However,
 the new position is set regardless of the redraw argument.
@@ -239,8 +239,8 @@ the new position is set regardless of the redraw argument.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example sets the slider to the maximum position, with
-the range of the slider already been set to 0 to 100 using the setRange method:
+<listitem><para>The following example sets the trackbar to the maximum position, with
+the range of the trackbar already been set to 0 to 100 using the setRange method:
 <programlisting>
 <![CDATA[
 ::method SetToMax
@@ -269,7 +269,7 @@ of the slider.</para>
 <listitem><para>The current logical position of the slider.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example displays the current slider position:
+<listitem><para>The following example displays the current trackbar position:
 <programlisting>
 <![CDATA[
 ::method DisplayPos
@@ -282,20 +282,20 @@ of the slider.</para>
 </variablelist>
 </section>
 
-<section id="initrange"><title>InitRange</title>
-<indexterm><primary>InitRange</primary></indexterm>
+<section id="mthInitRange"><title>initRange</title>
+<indexterm><primary>initRange</primary></indexterm>
 <programlisting>
 <![CDATA[
                               +-0---+     +-100-+     +-0-+
->>-aSliderControl~InitRange(--+-----+--,--+-----+--,--+---+--)-><
+>>-aSliderControl~initRange(--+-----+--,--+-----+--,--+---+--)-><
                               +-min-+     +-max-+     +-1-+
 
 
 ]]>
 </programlisting>
 
-<para>The InitRange method sets the minimum and maximum
-positions of the slider and redraws the slider, if required.</para>
+<para>The initRange method sets the minimum and maximum
+positions of the trackbar and redraws the trackbar, if required.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -307,8 +307,8 @@ positions of the slider and redraws the slider, if required.</para>
 <listitem><para>The maximum position of the slider. The default is 100.
 </para></listitem></varlistentry>
 <varlistentry><term>redraw</term>
-<listitem><para>The redraw flag. If you specify 1, the slider is redrawn after the range
-is set. If you specify 0 or omit this argument, the slider is not redrawn.
+<listitem><para>The redraw flag. If you specify 1, the trackbar is redrawn after the range
+is set. If you specify 0 or omit this argument, the trackbar is not redrawn.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -331,10 +331,10 @@ and the tick frequency of the slider:
 ::method InitDialog
   curSL = self~newTrackBar("IDC_1")
   if curSL \= .Nil then do
-    curSL~InitRange(0,100)
+    curSL~initRange(0,100)
     curSL~SetLineStep(1)
     curSL~SetPageStep(10)
-    curSL~SetTickFrequency(10)
+    curSL~setTickFrequency(10)
   end
 ]]>
 </programlisting>
@@ -355,7 +355,7 @@ and the tick frequency of the slider:
 </programlisting>
 
 <para>The SetMin method sets the minimum logical position
-for a slider and redraws the slider, if required.</para>
+for a trackbar and redraws the trackbar, if required.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -364,8 +364,8 @@ for a slider and redraws the slider, if required.</para>
 <listitem><para>The minimum position of the slider.
 </para></listitem></varlistentry>
 <varlistentry><term>redraw</term>
-<listitem><para>The redraw flag. If you specify 1 or omit this argument, the slider
-is redrawn after the minimum position is set. If you specify 0, the slider
+<listitem><para>The redraw flag. If you specify 1 or omit this argument, the trackbar
+is redrawn after the minimum position is set. If you specify 0, the trackbar
 is not redrawn.
 </para></listitem></varlistentry>
 </variablelist>
@@ -397,7 +397,7 @@ is not redrawn.
 </programlisting>
 
 <para>The SetMax method sets the maximum logical position
-for a slider and redraws the slider, if required.</para>
+for a trackbar and redraws the trackbar, if required.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -406,8 +406,8 @@ for a slider and redraws the slider, if required.</para>
 <listitem><para>The maximum position of the slider.
 </para></listitem></varlistentry>
 <varlistentry><term>redraw</term>
-<listitem><para>The redraw flag. If you specify 1 or omit this argument, the slider
-is redrawn after the maximum position is set. If you specify 0, the slider
+<listitem><para>The redraw flag. If you specify 1 or omit this argument, the trackbar
+is redrawn after the maximum position is set. If you specify 0, the trackbar
 is not redrawn.
 </para></listitem></varlistentry>
 </variablelist>
@@ -428,7 +428,7 @@ is not redrawn.
 
 <section id="rangesc"><title>Range</title>
 <indexterm><primary>Range</primary>
-<secondary>SliderControl class</secondary></indexterm>
+<secondary>Trackbar class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aSliderControl~Range----------------------------------------><
@@ -441,7 +441,7 @@ is not redrawn.
 positions of the slider.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The minimum and maximum positions of the slider, separated by a blank.
+<listitem><para>The minimum and maximum positions of the trackbar, separated by a blank.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example displays the range of a slider:
@@ -478,8 +478,8 @@ marks because they are created automatically by the slider.</para>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>redraw</term>
-<listitem><para>The redraw flag. If you specify 1 or omit this argument, the slider
-is redrawn after the tick marks are removed. If you specify 0, the slider
+<listitem><para>The redraw flag. If you specify 1 or omit this argument, the trackbar
+is redrawn after the tick marks are removed. If you specify 0, the trackbar
 is not redrawn.
 </para></listitem></varlistentry>
 </variablelist>
@@ -501,7 +501,7 @@ is not redrawn.
 </programlisting>
 
 <para>The CountTicks method retrieves the number of tick
-marks in a slider, including the first and last tick marks, which are created
+marks in a trackbar, including the first and last tick marks, which are created
 automatically by the slider.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -541,17 +541,17 @@ did not specify a valid index for <emphasis role="italic">tic</emphasis>.
 </variablelist>
 </section>
 
-<section id="settickat"><title>SetTickAt</title>
-<indexterm><primary>SetTickAt</primary></indexterm>
+<section id="mthSetTickAt"><title>setTickAt</title>
+<indexterm><primary>setTickAt</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSliderControl~SetTickAt(--pos--)---------------------------><
+>>-aSliderControl~setTickAt(--pos--)---------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The SetTickAt method sets a tick mark at the specified
+<para>The setTickAt method sets a tick mark at the specified
 logical position in the slider.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -579,21 +579,21 @@ logical position in the slider.</para>
 </variablelist>
 </section>
 
-<section id="settickfrequency"><title>SetTickFrequency</title>
-<indexterm><primary>SetTickFrequency</primary></indexterm>
+<section id="mthSetTickFrequency"><title>setTickFrequency</title>
+<indexterm><primary>setTickFrequency</primary></indexterm>
 <programlisting>
 <![CDATA[
                                      +-1----+
->>-aSliderControl~SetTickFrequency(--+------+--)---------------><
+>>-aSliderControl~setTickFrequency(--+------+--)---------------><
                                      +-freq-+
 
 
 ]]>
 </programlisting>
 
-<para>The SetTickFrequency method sets the interval frequency
+<para>The setTickFrequency method sets the interval frequency
 for tick marks in a slider. For example, if you set the frequency to 2, a
-tick mark is displayed for every other increment in the slider's range.</para>
+tick mark is displayed for every other increment in the trackbar's range.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -626,10 +626,10 @@ and the tick frequency of the slider:
 ::method InitDialog
   curSL = self~newTrackBar("IDC_1")
   if curSL \= .Nil then do
-    curSL~InitRange(0,100)
+    curSL~initRange(0,100)
     curSL~SetLineStep(1)
     curSL~SetPageStep(10)
-    curSL~SetTickFrequency(10)
+    curSL~setTickFrequency(10)
   end
 ]]>
 </programlisting>
@@ -648,7 +648,7 @@ and the tick frequency of the slider:
 </programlisting>
 
 <para>The GetLineStep method retrieves the number of
-logical positions that the slider moves in response to keyboard input from
+logical positions that the trackbar moves in response to keyboard input from
 the arrow keys, such as the Right arrow or the Down arrow keys. The logical
 positions are the integer increments within the minimum and maximum positions
 of the slider.</para>
@@ -670,8 +670,8 @@ of the slider.</para>
 </programlisting>
 
 <para>The GetPageStep method retrieves the number of
-logical positions that the slider moves in response to keyboard input, such
-as the PageUp or PageDown keys, or mouse input, such as clicks in the slider's
+logical positions that the trackbar moves in response to keyboard input, such
+as the PageUp or PageDown keys, or mouse input, such as clicks in the trackbar's
 channel. The logical positions are the integer increments within the minimum
 and maximum positions of the slider.</para>
 <variablelist>
@@ -692,7 +692,7 @@ and maximum positions of the slider.</para>
 </programlisting>
 
 <para>The SetLineStep method sets the number of logical
-positions that the slider moves in response to keyboard input from the arrow
+positions that the trackbar moves in response to keyboard input from the arrow
 keys, such as the Right arrow or the Down arrow keys. The logical positions
 are the integer increments within the minimum and maximum positions of the
 slider.</para>
@@ -717,10 +717,10 @@ and the tick frequency of the slider:
 ::method InitDialog
   curSL = self~newTrackBar("IDC_1")
   if curSL \= .Nil then do
-    curSL~InitRange(0,100)
+    curSL~initRange(0,100)
     curSL~SetLineStep(1)
     curSL~SetPageStep(10)
-    curSL~SetTickFrequency(10)
+    curSL~setTickFrequency(10)
   end
 ]]>
 </programlisting>
@@ -739,8 +739,8 @@ and the tick frequency of the slider:
 </programlisting>
 
 <para>The SetPageStep method sets the number of logical
-positions that the slider moves in response to keyboard input, such as the
-PageUp or PageDown keys, or mouse input, such as clicks in the slider's
+positions that the trackbar moves in response to keyboard input, such as the
+PageUp or PageDown keys, or mouse input, such as clicks in the trackbar's
 channel. The logical positions are the integer increments within the minimum
 and maximum positions of the slider.</para>
 <variablelist>
@@ -763,10 +763,10 @@ and the tick frequency of the slider:
 ::method InitDialog
   curSL = self~newTrackBar("IDC_1")
   if curSL \= .Nil then do
-    curSL~InitRange(0,100)
+    curSL~initRange(0,100)
     curSL~SetLineStep(1)
     curSL~SetPageStep(10)
-    curSL~SetTickFrequency(10)
+    curSL~setTickFrequency(10)
   end
 ]]>
 </programlisting>
@@ -788,7 +788,7 @@ and the tick frequency of the slider:
 
 <para>The InitSelRange method sets the starting and ending
 logical positions for the current selection range in a slider. It is ignored
-if the slider does not have a selection range.</para>
+if the trackbar does not have a selection range.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -799,12 +799,12 @@ The default is 0.
 </para></listitem></varlistentry>
 <varlistentry><term>max</term>
 <listitem><para>The logical ending position of the selection range. If you omit this
-argument, the maximum position of the slider's range is assumed.
+argument, the maximum position of the trackbar's range is assumed.
 </para></listitem></varlistentry>
 <varlistentry><term>redraw</term>
-<listitem><para>The redraw flag. If you specify 1, the slider is redrawn after the selection
+<listitem><para>The redraw flag. If you specify 1, the trackbar is redrawn after the selection
 range is set. If you specify 0 or omit this argument, the selection range
-is set but the slider is not redrawn.
+is set but the trackbar is not redrawn.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -836,7 +836,7 @@ is set but the slider is not redrawn.
 
 <para>The SetSelStart method sets the starting logical
 position for the current selection range in a slider. It is ignored if the
-slider does not have a selection range.</para>
+trackbar does not have a selection range.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -845,9 +845,9 @@ slider does not have a selection range.</para>
 <listitem><para>The logical starting position of the selection range.
 </para></listitem></varlistentry>
 <varlistentry><term>redraw</term>
-<listitem><para>The redraw flag. If you specify 1 or omit this argument, the slider
+<listitem><para>The redraw flag. If you specify 1 or omit this argument, the trackbar
 is redrawn after the starting position has been set. If you specify 0, the
-starting position is set but the slider is not redrawn.
+starting position is set but the trackbar is not redrawn.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -878,7 +878,7 @@ starting position is set but the slider is not redrawn.
 </programlisting>
 
 <para>The SetSelEnd method sets the logical ending position
-for the current selection range in a slider. It is ignored if the slider does
+for the current selection range in a slider. It is ignored if the trackbar does
 not have a selection range.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -889,8 +889,8 @@ not have a selection range.</para>
 </para></listitem></varlistentry>
 <varlistentry><term>redraw</term>
 <listitem><para>The redraw flag. If you specify 1 or omit this argument, the
-slider is redrawn after the ending position has been set. If you specify 0,
-the ending position is set but the slider is not redrawn.
+trackbar is redrawn after the ending position has been set. If you specify 0,
+the ending position is set but the trackbar is not redrawn.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -925,7 +925,7 @@ range in a slider.</para>
 <listitem><para>The only argument is:
 <variablelist>
 <varlistentry><term>redraw</term>
-<listitem><para>The redraw flag. If you specify 1, the slider is redrawn after
+<listitem><para>The redraw flag. If you specify 1, the trackbar is redrawn after
 the selection is cleared.
 </para></listitem></varlistentry>
 </variablelist>

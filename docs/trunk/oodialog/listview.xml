@@ -42,16 +42,16 @@
     #########################################################################
 -->
 <chapter id="clsListView"><title>List View Controls</title>
-<indexterm><primary>ListControl class</primary></indexterm>
+<indexterm><primary>ListView class</primary></indexterm>
 <para>A list view control is a window that displays a collection of items, with
 each item consisting of an icon and a label. It provides several ways of arranging
 and displaying items. Refer to OODLIST.REX in the OODIALOG\SAMPLES directory
 for an example.</para>
 <para>Use the newListView method (see page <link linkend="mthNewListView">newListView</link>)
-to retrieve an object of the ListControl class.</para>
+to retrieve an object of the ListView class.</para>
 <variablelist>
 <varlistentry><term>Notes</term>
-<listitem><para>The ListControl class is the ooDialog interface to the Windows
+<listitem><para>The ListView class is the ooDialog interface to the Windows
 <emphasis role="italic">List-View</emphasis> control.  This should not be
 confused with the Windows <emphasis role="italic">List Box</emphasis> control.
 The ooDialog <link linkend="clsListBox">ListBox</link> class provides the
@@ -61,12 +61,12 @@ more powerful than the List Box control.
 <para id="listControlExtendedStyles">List-View <emphasis role="bold">Extended
 Styles</emphasis>: The List-View control has been updated by Microsoft to
 include a number of <emphasis role="italic">extended</emphasis> styles.  These
-styles are similar to the styles that can be used to create a ListControl, (see
+styles are similar to the styles that can be used to create a ListView, (see
 the <link linkend="mthCreateListView">createListView</link> method,) like the
 <computeroutput>NOHEADER</computeroutput> or
 <computeroutput>SINGLESEL</computeroutput> styles.  However, the way that they
-are added or removed from the ListControl is different.  For instance, the
-extended styles can not be added to a ListControl at the time of creation.  They
+are added or removed from the ListView is different.  For instance, the
+extended styles can not be added to a ListView at the time of creation.  They
 can only be added after the underlying Windows control has been created.  For
 all practical purposes this means in the <link
 linkend="mthInitDialog">InitDialog</link> method, or at some point in the life
@@ -92,7 +92,7 @@ differences in behavior on earlier versions of Windows, the programmer should
 consult the <link linkend="defWindowsDoc">Windows documentation.</link>
 </para></note></listitem></varlistentry>
 <varlistentry><term>Requires:</term>
-<listitem><para>The ListControl class requires the class definition
+<listitem><para>The ListView class requires the class definition
 file <computeroutput>oodwin32.cls</computeroutput>:
 <programlisting>
 <![CDATA[
@@ -101,12 +101,12 @@ file <computeroutput>oodwin32.cls</computeroutput>:
 </programlisting>
 </para></listitem></varlistentry>
 <varlistentry><term>Methods:</term>
-<listitem><para>Instances of the ListControl class implement
+<listitem><para>Instances of the ListView class implement
 the methods listed in the
-<link linkend="t000028">ListControl Instance Methods</link> table.
+<link linkend="t000028">ListView Instance Methods</link> table.
 
 <table id="t000028" frame="all">
-<title>ListControl Instance Methods</title>
+<title>ListView Instance Methods</title>
 <tgroup cols="2">
 <thead>
 <row>
@@ -479,12 +479,12 @@ contain subitems as specified by the application.
 </variablelist>
 </section>
 
-<section id="listcontrolmeth"><title>Methods of the ListControl Class</title>
+<section id="listcontrolmeth"><title>Methods of the ListView Class</title>
 <para>The following sections describe the individual methods.</para>
 
 <section id="replacestyle"><title>replaceStyle</title>
 <indexterm><primary>replaceStyle</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                                +-------------------+
@@ -600,7 +600,7 @@ of the different styles, refer to <link linkend="mthCreateListView">createListVi
 
 <section id="addstyle"><title>addStyle</title>
 <indexterm><primary>addStyle</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                               +-------------------+
@@ -654,7 +654,7 @@ styles, refer to <link linkend="mthCreateListView">createListView</link>.
 
 <section id="removestyle"><title>removeStyle</title>
 <indexterm><primary>removeStyle</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                  +-------------------+
@@ -1067,7 +1067,7 @@ adds check boxes to the list view.
 
 <para>The <computeroutput>GetExtendedStyle</computeroutput> method returns
 the <link linkend="listControlExtendedStyles">extended</link> styles of a
-<computeroutput>ListControl</computeroutput>.  The styles are returned as a
+<computeroutput>ListView</computeroutput>.  The styles are returned as a
 string of blank delimited style keywords.  These are the same keywords as those
 used to set the styles.
 </para>
@@ -1165,7 +1165,7 @@ view control does have the style.
 
 <para>The <computeroutput>GetExtendedStyleRaw</computeroutput> method returns
 the <link linkend="listControlExtendedStyles">extended</link> styles of a
-<computeroutput>ListControl</computeroutput> as the numeric value of the
+<computeroutput>ListView</computeroutput> as the numeric value of the
 extended style flags.  This method is provided for programmers familiar with the
 Windows API who may wish to know, or to work with, the actual value of the
 flags.
@@ -1323,7 +1323,7 @@ hover time was the system default.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example adds the one click activate, the track
 select, and the full row select extended list view styles to a
-<computeroutput>ListControl</computeroutput>.  The hover time is set to .4
+<computeroutput>ListView</computeroutput>.  The hover time is set to .4
 seconds. If the user pauses his mouse over a row in the list view for .4 of a
 second the row is automatically selectd.
 <programlisting> <![CDATA[
@@ -1344,7 +1344,7 @@ second the row is automatically selectd.
 
 <section id="mthCheckClsListControl"><title>Check</title>
 <indexterm><primary>Check</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~Check(--index--)--------------------------------------------><
@@ -1413,7 +1413,7 @@ with a specified zip code.
 
 <section id="mthUncheckClsListControl"><title>Uncheck</title>
 <indexterm><primary>Uncheck</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~Uncheck(--index--)------------------------------------------><
@@ -1661,7 +1661,7 @@ determine if a list view control currently has the check box extended style.
 
 <section id="mthIsCheckedClsListControl"><title>IsChecked</title>
 <indexterm><primary>IsChecked</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~IsChecked(--index--)----------------------------------------><
@@ -2071,7 +2071,7 @@ is sized automatically.
 
 <section id="mthGetColumnCount"><title>getColumnCount</title>
 <indexterm><primary>getColumnCount</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getColumnCount----------------------------------------------------><
@@ -2112,7 +2112,7 @@ colCount = list~getColumnCount
 
 <section id="mthGetColumnOrder"><title>getColumnOrder</title>
 <indexterm><primary>getColumnOrder</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getColumnOrder----------------------------------------------------><
@@ -2237,7 +2237,7 @@ Current order:
 
 <section id="mthSetColumnOrder"><title>setColumnOrder</title>
 <indexterm><primary>setColumnOrder</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--setColumnOrder(--order--)-----------------------------------------><
@@ -2370,7 +2370,7 @@ or 0 in all other cases.
 
 <section id="mthInsertClsListControl"><title>insert</title>
 <indexterm><primary>insert</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--insert(--+------+--,--+---------+--,--text--+--------+--)------------------><
@@ -2467,7 +2467,7 @@ or 0 in all other cases.
 
 <section id="mthModify"><title>modify</title>
 <indexterm><primary>modify</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--modify(--+------+--,--+---------+--,--text--+--------+--)------------------><
@@ -2700,7 +2700,7 @@ and on the system colors used for a selection.
 
 <section id="addlc"><title>add</title>
 <indexterm><primary>add</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
           +-------+
@@ -2893,7 +2893,7 @@ and on the system colors used for a selection.
 
 <section id="deletelc"><title>delete</title>
 <indexterm><primary>delete</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~delete(--item--)-------------------------------><
@@ -2942,7 +2942,7 @@ control.</para>
 
 <section id="deletealllc"><title>deleteAll</title>
 <indexterm><primary>deleteAll</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~DeleteAll--------------------------------------><
@@ -2973,7 +2973,7 @@ view control.</para>
 
 <section id="itemslc"><title>items</title>
 <indexterm><primary>items</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~Items------------------------------------------><
@@ -2993,7 +2993,7 @@ in a list view control.</para>
 
 <section id="last"><title>last</title>
 <indexterm><primary>last</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~Last-------------------------------------------><
@@ -3048,7 +3048,7 @@ control for adding a large number of items.</para>
 
 <section id="selecteditemslc"><title>SelectedItems</title>
 <indexterm><primary>SelectedItems</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~SelectedItems----------------------------------><
@@ -3068,7 +3068,7 @@ of selected items in a list view control.</para>
 
 <section id="iteminfo"><title>itemInfo</title>
 <indexterm><primary>itemInfo</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                     +-0------+
@@ -3238,7 +3238,7 @@ and on the system colors used for a selection.
 
 <section id="selectlc"><title>select</title>
 <indexterm><primary>select</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~select(--item--)-------------------------------><
@@ -3313,7 +3313,7 @@ and on the system colors used for a selection.
 
 <section id="selectedlc"><title>selected</title>
 <indexterm><primary>selected</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~Selected---------------------------------------><
@@ -3352,7 +3352,7 @@ item selected last.</para>
 
 <section id="focused"><title>focused</title>
 <indexterm><primary>focused</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~Focused----------------------------------------><
@@ -3372,7 +3372,7 @@ item that has currently the focus.</para>
 
 <section id="focus"><title>focus</title>
 <indexterm><primary>focus</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~focus(--item--)--------------------------------><
@@ -3412,7 +3412,7 @@ than one item can be selected, only one item can have the focus.</para>
 
 <section id="drophighlighted"><title>DropHighlighted</title>
 <indexterm><primary>DropHighlighted</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~DropHighlighted--------------------------------><
@@ -3432,7 +3432,7 @@ is highlighted as a drag-and-drop target.</para>
 
 <section id="firstvisible"><title>FirstVisible</title>
 <indexterm><primary>FirstVisible</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~FirstVisible-----------------------------------><
@@ -3509,7 +3509,7 @@ item itself is excluded from the search.
 
 <section id="next"><title>Next</title>
 <indexterm><primary>Next</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~Next(--item--)---------------------------------><
@@ -3537,7 +3537,7 @@ or is to the right of, <emphasis role="italic">item</emphasis>.</para>
 
 <section id="previous"><title>Previous</title>
 <indexterm><primary>Previous</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~Previous(--item--)-----------------------------><
@@ -3734,7 +3734,7 @@ to redraw a range of items.</para>
 
 <section id="ensurevisible"><title>ensureVisible</title>
 <indexterm><primary>ensureVisible</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                          +-0-+
@@ -3789,7 +3789,7 @@ This is the default.
 
 <section id="mthSetImageListClsListControl"><title>setImageList</title>
 <indexterm><primary>setImageList</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--setImageList(--src-+---------------+-+----------+-+----------+-)-----------><
@@ -3992,7 +3992,7 @@ This is the default.
 
 <section id="mthGetImageListClsListControl"><title>getImageList</title>
 <indexterm><primary>getImageList</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getImageList(--+--------+--)------------------------------------><
@@ -4083,7 +4083,7 @@ This is the default.
 
 <section id="findlc"><title>Find</title>
 <indexterm><primary>Find</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                 +- -1--+     +-0-+
@@ -4398,7 +4398,7 @@ self~connectListViewEvent(104,"BEGINDRAG","mthDefListDragHandler")
 
 <section id="edit"><title>Edit</title>
 <indexterm><primary>Edit</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~Edit(--item--)---------------------------------><
@@ -4427,7 +4427,7 @@ other cases.
 
 <section id="endedit"><title>EndEdit</title>
 <indexterm><primary>EndEdit</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~EndEdit----------------------------------------><
@@ -4442,7 +4442,7 @@ view item that is being edited.</para>
 
 <section id="subclassedit"><title>SubclassEdit</title>
 <indexterm><primary>SubclassEdit</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~SubclassEdit-----------------------------------><
@@ -4458,7 +4458,7 @@ in an active edit control.</para>
 
 <section id="restoreeditclass"><title>RestoreEditClass</title>
 <indexterm><primary>RestoreEditClass</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aListControl~RestoreEditClass-------------------------------><
@@ -4496,7 +4496,7 @@ view control.
 
 <section id="scrolllc"><title>scroll</title>
 <indexterm><primary>scroll</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                          +-0-+     +-0-+
@@ -4704,7 +4704,7 @@ for the text in a list view control.</para>
 
 <section id="notifmsg"><title>Notification Messages</title>
 <indexterm><primary>modification messages</primary>
-<secondary>ListControl class</secondary></indexterm>
+<secondary>ListView class</secondary></indexterm>
 <para>The list view control sends notification messages to its parent (the
 dialog) when certain events happen. For more information on notification
 messages, refer to <link linkend="mthConnectListViewEvent">connectListViewEvent</link>.
