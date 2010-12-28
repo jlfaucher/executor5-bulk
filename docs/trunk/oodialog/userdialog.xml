@@ -268,6 +268,10 @@
 <entry>Creates a static control in the dialog template.</entry>
 </row>
 <row>
+<entry><link linkend="mthCreateStaticFrame">createStaticFrame</link></entry>
+<entry>Creates one of static frame controls in the dialog template.</entry>
+</row>
+<row>
 <entry><link linkend="mthCreateStaticImage">createStaticImage</link></entry>
 <entry>Creates a static image control in the dialog template.</entry>
 </row>
@@ -2346,6 +2350,215 @@ return 0
 </variablelist>
 
 </section>
+
+<section id="mthCreateStaticFrame"><title>createStaticFrame</title>
+<indexterm><primary>createStaticFrame</primary></indexterm>
+<indexterm><primary>UserDialog class</primary><secondary>createStaticFrame</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--createStaticFrame(--id--,-x--,-y--,-cx--,-cy--+----------+--)--------------><
+                                                  +-,-style--+
+]]>
+</programlisting>
+
+<para>
+  Creates one of the frame, rectangle, or etched line <link linkend="figFramesRects">static</link> controls in the
+  dialog template. The <emphasis role="italic">style</emphasis> option dictates which type is created.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [optional]</term>
+      <listitem>
+      <para>
+        The resource <link linkend="idArgument">ID</link> for the static control. -1 is used if <emphasis
+        role="italic">id</emphasis> is omitted.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x, y, cx, cy [required]</term>
+      <listitem>
+      <para>
+        The  control <link linkend="paraControlCoordinates">coordinates</link>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more <link linkend="paraStyleExplanation">style</link> keywords separated by spaces. If this
+        argument is omitted, the default is WHITERECT.
+      </para>
+      <para>
+        The style keywords, WHITERECT, GRAYRECT, BLACKRECT, WHITEFRAME, GRAYFRAME, BLACKFRAME, ETCHED, HORZ, VERT, and
+        LEFT are all mutually exclusive. They determine which frame, rectangle, or line is created. If more than one of
+        these keywords is specified, the type of static frame created is undefined.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>WHITERECT    </member>
+          <member>GRAYRECT     </member>
+          <member>BLACKRECT    </member>
+          <member>WHITEFRAME   </member>
+          <member>GRAYFRAME    </member>
+          <member>BLACKFRAME   </member>
+          <member>ETCHED       </member>
+          <member>HORZ         </member>
+          <member>VERT         </member>
+          <member>LEFT         </member>
+          <member>NOTIFY       </member>
+          <member>SUNKEN       </member>
+          <member>HIDDEN       </member>
+          <member>DISABLED     </member>
+          <member>GROUP        </member>
+          <member>BORDER       </member>
+          <member>TAB          </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>WHITERECT</term>
+          <listitem>
+          <para>
+            A <link linkend="figFramesRects">rectangle</link>rectangle filled with the current window background color,
+            which is white in the default color scheme.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>WHITEFRAME</term>
+          <listitem>
+          <para>
+            A <link linkend="figFramesRects">frame</link> drawn with the same color as the window background, which is white
+            in the default color scheme.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GRAYRECT</term>
+          <listitem>
+          <para>
+            A <link linkend="figFramesRects">rectangle</link>rectangle filled with the current screen background color,
+            which is gray in the default color scheme.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GRAYFRAME</term>
+          <listitem>
+          <para>
+            A <link linkend="figFramesRects">frame</link> drawn with the same color as the current screen background, which
+            is gray in the default color scheme.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BLACKRECT</term>
+          <listitem>
+          <para>
+            A <link linkend="figFramesRects">rectangle</link>rectangle filled with the current window frame color, which is
+            black in the default color scheme.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BLACKFRAME</term>
+          <listitem>
+          <para>
+            A <link linkend="figFramesRects">frame</link> drawn with the same color as the current window frames, which is
+            black in the default color scheme.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ETCHED</term>
+          <listitem>
+          <para>
+            A <link linkend="figFramesRects">frame</link> drawn with an etched appearance.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HORZ</term>
+          <listitem>
+          <para>
+            A <link linkend="figFramesRects">frame</link> drawn with an etched appearance, but only the top horizontal line
+            of the frame is drawn.  In other words, this is a single horizontal line, whose position and length are
+            determined by the position and width of the imaginary frame specified by the control coordinates.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>VERT</term>
+          <listitem>
+          <para>
+            A <link linkend="figFramesRects">frame</link> drawn with an etched appearance, but only the left vertical line
+            of the frame is drawn.  In other words, this is a single vertical line, whose position and length are determined
+            by the position and height of the imaginary frame specified by the control coordinates.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTIFY</term>
+          <listitem>
+          <para>
+            Causes the static control to send notification messages for the click, double click, disabled, and enabled
+            events.  A static control without this style does not send notification messages.  See the <link
+            linkend="mthConnectStaticEvent">connectStaticEvent()</link> method of the <link
+            linkend="clsEventNotification">EventNotification</link> class for further information.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SUNKEN</term>
+          <listitem>
+          <para>
+            The control is drawn with a half-sunken border around it.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            The <link linkend="wsvisible">not visible</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLED</term>
+          <listitem>
+          <para>
+            The <link linkend="wsborder">not enabled</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BORDER</term>
+          <listitem>
+          <para>
+            The <link linkend="wsborder">border</link> window style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GROUP</term>
+          <listitem>
+          <para>
+            The <link linkend="wsborder">group</link> control style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TAB</term>
+          <listitem>
+          <para>
+            The <link linkend="wsborder">tabstop</link> control style.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+  <variablelist>
+    <varlistentry><term>-2</term>
+    <listitem>
+    <para>
+      The dialog template has either not been started or is complete.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used, but it could not be resolved correctly.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Success.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UserDialog::createStaticFrame() -->
 
 <section id="mthCreateWhiteRect"><title>createWhiteRect</title>
 <indexterm><primary>createWhiteRect</primary></indexterm>
