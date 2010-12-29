@@ -353,7 +353,7 @@
    if nob = 0 then return self~createGroupBox(idstat, x, y, mx+cx, highy-y+(stepy % 2), newopts, "")
    else return 0
 
-::method createPushButtonGroup
+::method createPushButtonGroup  -- TODO this doesn't support symbolic IDs.
    use arg x, y, cx, cy, inp, bottom, opts = ""
    parse var inp bt bid bfnk newinp
 
@@ -802,6 +802,7 @@
    else if kind = "GB" then do
        if style~wordpos("BS_LEFT") > 0 then ret = ret || " LEFT"
        if style~wordpos("BS_RIGHT") > 0 then ret = ret || " RIGHT"
+       if style~wordpos("BS_CENTER") > 0 then ret = ret || " CENTER"
        if style~wordpos("WS_BORDER") > 0 then ret = ret || " BORDER"
        if style~wordpos("WS_TABSTOP") > 0 then ret = ret || " TAB"
    end
