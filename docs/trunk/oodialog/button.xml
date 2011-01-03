@@ -2495,36 +2495,42 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 
 <para>
   Assigns a new text alignment to the group box.  By default the text of a group box is in the upper left
-  corner.  The alignment can also be set to the right, although this is not commonly done.
+  corner.  The alignment can also be set to the right or to the center, although this is not commonly done.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      The only argument is:
-      <variablelist>
-        <varlistentry><term>styleKeyword</term>
+  <para>
+    The only argument is:
+    <variablelist>
+      <varlistentry><term>styleKeyword</term>
+      <listitem>
+      <para>
+        A keyword that is one of the following:
+        <variablelist>
+        <varlistentry><term>LEFT</term>
         <listitem>
-          <para>
-            A text string that is either:
-            <variablelist>
-            <varlistentry><term>LEFT</term>
-            <listitem>
-              <para>
-                The group box label is aligned to the upper left.
-              </para>
-            </listitem></varlistentry>
-            <varlistentry><term>RIGHT</term>
-            <listitem>
-              <para>
-                The label is aligned to the upper right.
-              </para>
-            </listitem></varlistentry>
-            </variablelist>
-          </para>
+        <para>
+          The group box label is aligned to the upper left.
+        </para>
         </listitem></varlistentry>
-      </variablelist>
-    </para>
+        <varlistentry><term>RIGHT</term>
+        <listitem>
+        <para>
+          The label is aligned to the upper right.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>CENTER</term>
+        <listitem>
+        <para>
+          The label is aligned to the upper center.
+        </para>
+        </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>

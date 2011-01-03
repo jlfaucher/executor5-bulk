@@ -41,13 +41,21 @@
 <indexterm><primary>PropertySheet dialogs</primary></indexterm>
 <indexterm><primary>Control dialogs</primary></indexterm>
 <para>
-  A <emphasis role="italic">property sheet</emphasis> is a main window containing one or more overlapping windows. Each
-  of the overlapping windows is called a <emphasis role="italic">page</emphasis>.  The main window is called a property
-  sheet, signifying a property sheet is used to set <emphasis role="italic">properties</emphasis>.  In practice
-  programmer's use property sheets for a number of different reasons.
+  A Windows <emphasis role="italic">property sheet</emphasis> is a main window containing one or more overlapping
+  windows. Each of the overlapping windows is called a <emphasis role="italic">page</emphasis>.  The main window is
+  called a property sheet, signifying a property sheet is used to set <emphasis role="italic">properties</emphasis>.  In
+  practice programmer's use property sheets for a number of different reasons.
 </para>
 <para>
-
+  ooDialog implements property sheets through the <link linkend="clsPropertySheetDialog">PropertySheetDialog</link> and
+  the <link linkend="clsPropertySheetPage">PropertySheetPage</link> classes.
+</para>
+<para>
+  Windows has a style for dialogs that allows the dialog to work well as a dialog within a top-level dialog. The
+  ooDialog framework has support for this type of dialog and calls them <emphasis role="italic">control</emphasis>
+  dialogs because they function like a control within the top-level dialog. These dialogs work well as the content for
+  tab control pages. The implementation for control dialogs is primarily through the <link
+  linkend="clsControlDialog">ControlDialog</link> class.
 </para>
 
 <section id="clsPropertySheetDialog"><title>PropertySheetDialog Class</title>
@@ -202,8 +210,18 @@
 </section>
 
 
-<section id="mthNewClsPropertSheetPage"><title>new (Class method)</title>
-<indexterm><primary>new</primary><secondary>PropgerSheetPage class</secondary></indexterm>
+</section>
+
+<section id="clsResPSPDialog"><title>ResPSPDialog Class</title>
+<indexterm><primary>Property Sheet Pages</primary><secondary>ResPSPDialog class</secondary></indexterm>
+<indexterm><primary>ResPSPDialog class</primary></indexterm>
+<para>
+  xxx
+</para>
+
+
+<section id="mthNewClsResPSPDialog"><title>new (Class method)</title>
+<indexterm><primary>new</primary><secondary>ResPSPDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--new(--TODO NEEDs---TO---BE---DONE)-------------------------><
@@ -212,7 +230,7 @@
 </programlisting>
 
 <para>
-  TODO all wrong, this is a mixin class. Instantiates a new <computeroutput>PropertySheet</computeroutput> object.
+  Instantiates a new <computeroutput>ResPSPDialog</computeroutput> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -258,21 +276,67 @@
 
 </section>
 
-<section id="clsResPSPDialog"><title>ResPSPDialog Class</title>
-<indexterm><primary>Property Sheet Pages</primary><secondary>ResPSPDialog class</secondary></indexterm>
-<indexterm><primary>ResPSPDialog class</primary></indexterm>
-<para>
-  xxx
-</para>
-
-</section>
-
 <section id="clsUserPSPDialog"><title>UserPSPDialog Class</title>
 <indexterm><primary>Property Sheet Pages</primary><secondary>UserPSPDialog class</secondary></indexterm>
 <indexterm><primary>UserPSPDialog class</primary></indexterm>
 <para>
   xxx
 </para>
+
+
+<section id="mthNewClsUserPSPDialog"><title>new (Class method)</title>
+<indexterm><primary>new</primary><secondary>UserPSPDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--TODO NEEDs---TO---BE---DONE)-------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new <computeroutput>ResPSPDialog</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments when creating a new dialog instance of this class are:
+    <variablelist>
+      <varlistentry><term>XXX [required]</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    xxx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This sample xxxx
+
+<programlisting>
+<![CDATA[
+  ...
+
+::requires "ooDialog.cls"
+
+...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>
 
 </section>
 
@@ -283,9 +347,63 @@
   xxx
 </para>
 
-</section>
+<section id="mthNewClsRcPSPDialog"><title>new (Class method)</title>
+<indexterm><primary>new</primary><secondary>RcPSPDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--TODO NEEDs---TO---BE---DONE)-------------------------><
 
-</section>
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new <computeroutput>RcPSPDialog</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments when creating a new dialog instance of this class are:
+    <variablelist>
+      <varlistentry><term>XXX [required]</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    xxx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This sample xxxx
+
+<programlisting>
+<![CDATA[
+  ...
+
+::requires "ooDialog.cls"
+
+...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section><!-- End RcPSPDialog::new() -->
+
+</section><!-- End RcPSPDialog Class -->
+
+</section><!-- End Property Sheet Pages -->
 
 
 <section id="sctControlDialogs"><title>Control Dialogs</title>
@@ -294,7 +412,7 @@
   xxx
 </para>
 
-<section id="clsContr0lDialog"><title>ControlDialog Class</title>
+<section id="clsControlDialog"><title>ControlDialog Class</title>
 <indexterm><primary>Control Dialogs</primary><secondary>ControlDialog class</secondary></indexterm>
 <indexterm><primary>ControlDialog Class</primary></indexterm>
 <para>
@@ -310,6 +428,60 @@
   xxx
 </para>
 
+<section id="mthNewClsUserControlDialog"><title>new (Class method)</title>
+<indexterm><primary>new</primary><secondary>UserControlDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--TODO NEEDs---TO---BE---DONE)-------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new <computeroutput>UserControlDialog</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments when creating a new dialog instance of this class are:
+    <variablelist>
+      <varlistentry><term>XXX [required]</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    xxx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This sample xxxx
+
+<programlisting>
+<![CDATA[
+  ...
+
+::requires "ooDialog.cls"
+
+...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section><!-- End UserControlDialog::new() -->
+
 </section>
 
 <section id="clsRcControlDialog"><title>RcControlDialog Class</title>
@@ -319,6 +491,61 @@
   xxx
 </para>
 
+<section id="mthNewClsRcControlDialog"><title>new (Class method)</title>
+<indexterm><primary>new</primary><secondary>RcControlDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--TODO NEEDs---TO---BE---DONE)-------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new <computeroutput>RcControlDialog</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments when creating a new dialog instance of this class are:
+    <variablelist>
+      <varlistentry><term>XXX [required]</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    xxx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This sample xxxx
+
+<programlisting>
+<![CDATA[
+  ...
+
+::requires "ooDialog.cls"
+
+...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section><!-- End RcControlDialog::new() -->
+
+
 </section>
 
 <section id="clsResControl"><title>ResControlDialog Class</title>
@@ -327,6 +554,61 @@
 <para>
   xxx
 </para>
+
+<section id="mthNewClsResControlDialog"><title>new (Class method)</title>
+<indexterm><primary>new</primary><secondary>ResControlDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--TODO NEEDs---TO---BE---DONE)-------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new <computeroutput>ResControlDialog</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments when creating a new dialog instance of this class are:
+    <variablelist>
+      <varlistentry><term>XXX [required]</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    xxx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This sample xxxx
+
+<programlisting>
+<![CDATA[
+  ...
+
+::requires "ooDialog.cls"
+
+...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section><!-- End RcControlDialog::new() -->
+
 
 </section>
 
