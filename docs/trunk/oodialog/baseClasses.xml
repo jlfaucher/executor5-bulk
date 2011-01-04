@@ -206,6 +206,92 @@
   linkend="mthNewDialogObject">superclass</link> has been initialized.
 </para>
 
+<section id="sctCodingEventHandlers"><title>Coding Event Handlers</title>
+<indexterm><primary>coding event handlers</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>coding event handlers</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>coding event handlers</secondary></indexterm>
+
+<para>
+  The methods in a Rexx dialog object connected to Windows event notifications are commonly called event handlers
+  because the method handles the event. In order to properly code an event handler, the Rexx programmer needs to
+  understand somewhat the underlying mechanism of event notification. This is particularly important in ooDialog 4.2.0
+  and later with its ability to <link linkend="ovvEventsDirectReply">directly</link> invoke the event handling method
+  from the window <link linkend="ovvWindowMessages">message</link> processing loop.
+</para>
+<para>
+  When the operating system sends an event notification to the underlying dialog, the operating system waits for a reply
+  to the notification in the message processing loop. This is significant because while the operating system is
+  waiting, in general, other messages can not be processed by the window. If an application does not reply in a timely
+  manner to the notifcation messages, it can cause the application to appear hung. With today's fast processors there
+  are plenty of CPU cycles for an event handler to process and reply to event notifications. But, if an application were
+  to do something like sleep for 10 seconds in an event handler, the user would think the application was hung.
+</para>
+<para>
+  Prior to ooDialog 4.2.0, the ooDialog framework could not directly invoke the event handling method in the Rexx dialog
+  object. To invoke the method, the framework used a cumbersome process involving queues and interpret. In the message
+  processing loop, the framework essentially queued up the method to be invoked at some later time and replied
+  immediately to the notification. Because of this, the event handling method could not reply to the event notification,
+  and in fact any return was simply lost. This meant much of the capability of a Windows dialog was unavailable. It also
+  meant it did not matter if the method replied in a timely manner.
+</para>
+<para>
+  With ooDialog 4.2.0 and later, the event handling method in the Rexx dialog object is invoked by the interpreter
+  directly from the message processing loop in the underlying Windows dialog. This allows the Rexx programmer
+  to <link linkend="exampleEventHandler1">return</link> a value to the notification, to <link
+  linkend="exampleEventHandler1">synchronize</link> the handling of notifications, or to <link
+  linkend="exampleEventHandler3">veto</link> an event. Remember, with this direct invocation of the event handling
+  methods, the interpreter is waiting in the message processing loop for the return from the method. Therefore, the
+  programmer needs to return from the method in a reasonable amount of time. Do not be overly worried about this, the
+  interpreter processes a large number of statements in a very short time. There is adequate time to process and return
+  a value in the event handler.
+</para>
+<para>
+  However, having the interpreter waiting for the return of an event handling method could conceivably be a problem for
+  some few existing programs. Since, in older ooDialog versions, the return from an event handler method was
+  meaningless, some programmers may not have returned from the method in a timely manner, and never realized this was a
+  mistake. In addition, there are a large number of event notifications in Windows where the operating system ignores
+  the reply. Therefore, the ooDialog framework uses two different ways to invoke the event handling method. The first,
+  preferred method is for the interpreter to invoke the method directly, wait for the return, and then use the return to
+  reply to the Windows event notification. The second is to invoke the event handling method using the <emphasis
+  role="italic">startWith</emphasis>() method of the <computeroutput>Object</computeroutput> class. This starts the
+  event handling method concurrently, and the ooDialog framework replies to the Windows event notification immediately.
+</para>
+
+<variablelist>
+  <varlistentry id="exampleEventHandler1"><term><emphasis role="bold">Returning Values</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="clsMonthCalendar">month calendar</link> control has the <link
+    linkend="mthConnectMonthCalendarEvent">GETDAYSTATE</link> event that is sent to request information on how certain
+    days are to be shown. The programmer can customize the calendar by returning a set of days that should be displayed
+    in bold. For instance, in a business application paid holidays could be displayed in bold.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleEventHandler2"><term><emphasis role="bold">Event Synchronization</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="clsDateTimePicker">DTP</link> (date time pcker) control has the <link
+    linkend="mthConnectDateTimePickerEvent">DROPDOWN</link> event notification that is sent when the drop down calendar
+    is shown. This gives the programmer a chance to customize the month calendar control that is shown. Since the month
+    calendar is not shown until the event handling method returns, replying directly to the notification allows the
+    programmer to completely finish the customizations before the month calendar appears on the screen.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleEventHandler3"><term><emphasis role="bold">Veto Events</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="clsTab">tab</link> control has the <link linkend="mthConnectTabEvent">SELCHANGING</link> event.
+    It is sent when the user selects a different tab, and is sent <emphasis role="bold">before</emphasis> the selected
+    tab is changed. The programmer can <emphasis role="italic">veto</emphasis> the change to a new tab by returning
+    <computeroutput>.false</computeroutput> to the event notification, or allow the change by returning
+    <computeroutput>.true</computeroutput>. One reason for preventing the change might be that the user had entered
+    invalid data in the current tab page.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>
+
 <section id="enConnectHelp"><title>connectHelp</title>
 <programlisting>
 <link linkend="mthConnectHelp">connectHelp</link>
