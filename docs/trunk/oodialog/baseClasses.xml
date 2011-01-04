@@ -189,20 +189,20 @@
   Whenever a dialog object is instantiated, the ooDialog framwork <link
   linkend="sctStandardEventMethods">automatically</link> makes several event connections. For all other events the Rexx
   programmer, usually, needs to specifically connect the event to his dialog, through one of the event notification
-  methods, to be able to respond to the event. However, in a <link linkend="clsUserDialog">UserDialog</link>, some of
-  the methods that create dialog controls have an option that automatically connects an event to a dialog method.
-  However, for most events, say the resize or move events, the connection needs to be made explicitly.  Indeed, except
-  for trivial dialogs, most of the programming is deciding which events to be notified of and taking action upon
-  receiving the notification.
+  methods, to be able to respond to the event. In a <link linkend="clsUserDialog">UserDialog</link>, some of the methods
+  that create dialog controls have an option that automatically connects an event to a dialog method. But, for most
+  events, say the resize or move events, the connection needs to be made explicitly.  Indeed, except for trivial
+  dialogs, most of the programming is deciding which events to be notified of and taking action upon receiving the
+  notification.
 </para>
 <para id="paraWhereToConnectEvents">
   In general, events should be connected before the dialog is shown on the screen, or immediately after the dialog is
-  created. However, the programmer can place the invocation where ever it makes the most sense. Connecting the events in
-  the <link linkend="mthInitDialog">initDialog</link>() method is usually sufficient. In a
+  created. There is no reason why the programmer can not place the invocation where ever it makes the most sense.
+  Connecting the events in the <link linkend="mthInitDialog">initDialog</link>() method is usually sufficient. In a
   <computeroutput>UserDialog</computeroutput>, the <link linkend="mthDefineDialog">defineDialog</link>() method also
   makes a good place for the connect event methods. If the programmer is overriding the <emphasis
-  role="italic">init</emphasis>() method, the connect event methods can be placed there.  But, in this case, do not
-  invoke the connect event method until <emphasis role="bold">after</emphasis> the <link
+  role="italic">init</emphasis>() method, the connect event methods can be placed there.  In this case, do not invoke
+  the connect event method until <emphasis role="bold">after</emphasis> the <link
   linkend="mthNewDialogObject">superclass</link> has been initialized.
 </para>
 
@@ -232,7 +232,7 @@
   processing loop, the framework essentially queued up the method to be invoked at some later time and replied
   immediately to the notification. Because of this, the event handling method could not reply to the event notification,
   and in fact any return was simply lost. This meant much of the capability of a Windows dialog was unavailable. It also
-  meant it did not matter if the method replied in a timely manner.
+  meant it did not matter if the method returned in a timely manner.
 </para>
 <para>
   With ooDialog 4.2.0 and later, the event handling method in the Rexx dialog object is invoked by the interpreter
@@ -256,7 +256,63 @@
   role="italic">startWith</emphasis>() method of the <computeroutput>Object</computeroutput> class. This starts the
   event handling method concurrently, and the ooDialog framework replies to the Windows event notification immediately.
 </para>
+<para>
+  In general, whether the ooDialog framework invokes the event handling method and waits for the return, or uses
+  <emphasis role="italic">startWith</emphasis>() and replies to the Windows event notification immediately is determined
+  using these rules:
+</para>
+<orderedlist>
+<listitem>
+<para>
+  Event connections made using the event connection methods that existed prior to ooDialog 4.2.0, using the existing
+  event keywords, and existing arguments, use <emphasis role="italic">startWith</emphasis> to invoke the event handlers.
+  The programmer can not change this. For the purpose of this discussion, these methods will be called existing
+  connection methods.
+</para>
+</listitem>
+<listitem>
+<para>
+  All event connections made using event connection methods introduced after ooDialog 4.1.0 assume the programmer wants
+  the event handler invoked directly and for the ooDialog framework to wait for the return. These methods will be called
+  new connection methods. For instance, the <link linkend="clsDateTimePicker">date time</link> picker control did not
+  exist in ooDialog 4.1.0, so its event connection method, <link
+  linkend="mthConnectDateTimePickerEvent">connectDateTimePickerEvent</link> falls into this category.
+</para>
+</listitem>
+<listitem>
+<para>
+  For new connection methods, when the reply to an event notification has a meaning for the notification, the framework
+  always invokes the event handler directly and waits for the return. The programmer can not change this. If the
+  programmer does not want to reply to the event, then he should simply not connect the event.
+</para>
+</listitem>
+<listitem>
+<para>
+  All new connection methods have an optional argument that allows the programmer to specify whether she wants the
+  framework to wait for the return, or use <emphasis role="italic">startWith</emphasis> and reply immediately. When the
+  reply to an event is ignored by the operating system, the optional argument will be used to direct the framework to
+  invoke the event handler directly or use <emphasis role="italic">startWith</emphasis>. By default, the framework
+  invokes the connected method directly.
+</para>
+</listitem>
+<listitem>
+<para>
+  Over time, the existing connections will be enhanced to also take a fourth optional argument. This will allow the
+  programmer to specify that the framework invoke the event handler directly and wait for the return. This enhancement
+  has started, but is far from complete.
+</para>
+</listitem>
+<listitem>
+<para>
+  The documentation for each event connection method, for each event, will specify how the event handler will be
+  invoked.
+</para>
+</listitem>
+</orderedlist>
 
+<para>
+  The following code snippets and examples expand on these details.
+</para>
 <variablelist>
   <varlistentry id="exampleEventHandler1"><term><emphasis role="bold">Returning Values</emphasis></term>
   <listitem>
@@ -266,6 +322,13 @@
     days are to be shown. The programmer can customize the calendar by returning a set of days that should be displayed
     in bold. For instance, in a business application paid holidays could be displayed in bold.
   </para>
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
   </listitem></varlistentry>
   <varlistentry id="exampleEventHandler2"><term><emphasis role="bold">Event Synchronization</emphasis></term>
   <listitem>
@@ -276,6 +339,13 @@
     calendar is not shown until the event handling method returns, replying directly to the notification allows the
     programmer to completely finish the customizations before the month calendar appears on the screen.
   </para>
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
   </listitem></varlistentry>
   <varlistentry id="exampleEventHandler3"><term><emphasis role="bold">Veto Events</emphasis></term>
   <listitem>
@@ -287,6 +357,13 @@
     <computeroutput>.true</computeroutput>. One reason for preventing the change might be that the user had entered
     invalid data in the current tab page.
   </para>
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
   </listitem></varlistentry>
 </variablelist>
 
