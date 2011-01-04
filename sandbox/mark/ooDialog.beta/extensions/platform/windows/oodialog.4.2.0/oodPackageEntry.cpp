@@ -207,6 +207,7 @@ REXX_METHOD_PROTOTYPE(en_connectFKeyPress);
 REXX_METHOD_PROTOTYPE(en_disconnectKeyPress);
 REXX_METHOD_PROTOTYPE(en_hasKeyPressConnection);
 REXX_METHOD_PROTOTYPE(en_connectCommandEvents);
+REXX_METHOD_PROTOTYPE(en_connectListViewEvent);
 REXX_METHOD_PROTOTYPE(en_connectDateTimePickerEvent);
 REXX_METHOD_PROTOTYPE(en_connectMonthCalendarEvent);
 REXX_METHOD_PROTOTYPE(en_connectUpDownEvent);
@@ -269,6 +270,7 @@ REXX_METHOD_PROTOTYPE(pbdlg_setControlData);
 REXX_METHOD_PROTOTYPE(pbdlg_getTextSizeDlg);
 REXX_METHOD_PROTOTYPE(pbdlg_newControl);
 REXX_METHOD_PROTOTYPE(pbdlg_putControl_pvt);
+REXX_METHOD_PROTOTYPE(pbdlg_dumpMessageTable);
 REXX_METHOD_PROTOTYPE(pbdlg_unInit);
 
 REXX_METHOD_PROTOTYPE(generic_setListTabulators);
@@ -914,6 +916,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(en_disconnectKeyPress,          en_disconnectKeyPress),
     REXX_METHOD(en_hasKeyPressConnection,       en_hasKeyPressConnection),
     REXX_METHOD(en_connectCommandEvents,        en_connectCommandEvents),
+    REXX_METHOD(en_connectListViewEvent,        en_connectListViewEvent),
     REXX_METHOD(en_connectDateTimePickerEvent,  en_connectDateTimePickerEvent),
     REXX_METHOD(en_connectMonthCalendarEvent,   en_connectMonthCalendarEvent),
     REXX_METHOD(en_connectUpDownEvent,          en_connectUpDownEvent),
@@ -971,6 +974,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(pbdlg_stopIt,                   pbdlg_stopIt),
     REXX_METHOD(pbdlg_newControl,               pbdlg_newControl),
     REXX_METHOD(pbdlg_putControl_pvt,           pbdlg_putControl_pvt),
+    REXX_METHOD(pbdlg_dumpMessageTable,         pbdlg_dumpMessageTable),
     REXX_METHOD(pbdlg_unInit,                   pbdlg_unInit),
 
     REXX_METHOD(generic_setListTabulators,      generic_setListTabulators),
