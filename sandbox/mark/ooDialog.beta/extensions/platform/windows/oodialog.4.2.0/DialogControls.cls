@@ -195,6 +195,7 @@
 ::method removeStyle unguarded external "LIBRARY oodialog e_style"
 ::method getStyle unguarded external "LIBRARY oodialog e_style"
 ::method noContextMenu unguarded external "LIBRARY oodialog e_noContextMenu"
+::method disableInternalResize unguarded external "LIBRARY oodialog e_disableInternalResize"
 
 ::method canUndo unguarded
     use strict arg
@@ -1445,7 +1446,7 @@
 ::method setCALID unguarded external "LIBRARY oodialog mc_setCALID"
 ::method setColor unguarded external "LIBRARY oodialog mc_setColor"
 ::method setCurrentView unguarded external "LIBRARY oodialog mc_setCurrentView"
-::method setDayStatec unguarded external "LIBRARY oodialog mc_setDayState"
+::method setDayState unguarded external "LIBRARY oodialog mc_setDayState"
 ::method setDayStateQuick unguarded external "LIBRARY oodialog mc_setDayStateQuick"
 ::method setFirstDayOfWeek unguarded external "LIBRARY oodialog mc_setFirstDayOfWeek"
 

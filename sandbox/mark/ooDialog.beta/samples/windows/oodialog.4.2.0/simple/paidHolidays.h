@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2009-2011 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2010-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,31 +35,9 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-  	ReadMe
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
+#endif
 
-  1.  Simple ooDialog Example Programs
-  ------------------------------------
-
-  This directory contains example ooDialog programs that are intended to be
-  simple enough to not require any comment.  They are short and only
-  demonstrate a few things.  They should encourage the user to read the
-  ooDialog documentation to better understand the areas the programs are
-  concerned with.
-
-    - SimpleUpDown.rex
-
-    Shows how to create an up down control in a user dialog and initialize
-    it.
-
-    - ChangeFont.rex
-
-    Shows how to create a new font correctly and how to change the font of
-    a dialog control using the created font.  It is also an example of a
-    multi-line edit control and shows how to enable and disable buttons.
-
-    - PaidHolidays.rex
-
-    Shows how to use a MonthCalendar control, inlcuding responding to the
-    GETDAYSTATE event.  Also shows how to: restrict the time span shown in
-    the calendar, resize the calendar to the optimal size, and determine
-    which months are currently displayed.
+#define IDD_HOLIDAY_DLG                         101
+#define IDC_MC_HOLIDAYS                         1003
