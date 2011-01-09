@@ -70,22 +70,6 @@
   are connected.)
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
-  <para>
-    Syntax errors are raised when incorrect usage is detected.
-  </para>
-  <para>
-    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
-    help events happen.
-  </para>
-  <para>
-    In Windows itself, the dialog receives this notification as a WM_HELP message.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -157,6 +141,22 @@
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+  </para>
+  <para>
+    Syntax errors are raised when incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
+    help events happen.
+  </para>
+  <para>
+    In Windows itself, the dialog receives this notification as a WM_HELP message.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -427,6 +427,147 @@ Help request:
   y = .DlgUtil~hiWord(posInfo)
   say 'At coordinate (' x',' y' ) on the screen. (In pixels.)'
 
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthConnectSizeMoveEnded"><title>connectSizeMoveEnded</title>
+<indexterm><primary>connectSizeMoveEnded</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectSizeMoveEnded</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>connectSizeMoveEnded</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectSizeMoveEnded(--methodName--+--------------+--)-----><
+                                       +-,-willReply--+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectSizeMoveEnded</emphasis> method connects the Windows exit size / move <link
+  linkend="ovvEvents">event</link> with an event handling method in the Rexx dialog object. This event is sent exactly
+  one time when the user has stopped moving or stopped resizing the dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are
+  <variablelist>
+    <varlistentry><term>methodName [required]</term>
+    <listitem>
+    <para>
+      The name of the event handling method that to be invoked when the the size / move exit event occurs. The name must
+      not be the empty string and must be less than 256 characters in length.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The default behavior is for the interpreter to wait in the window <link linkend="ovvWindowMessages">message</link>
+      processing loop for the return from the event handler, (the default for <emphasis
+      role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>). However, the operating system
+      ignores the return from this event notification. Specifying <computeroutput>.false</computeroutput> changes the
+      default behavior so that the interpreter does not wait for the return from the event handling method.
+    </para>
+    </listitem></varlistentry>
+  </variablelist> </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      An (internal) error prevented the message from being connected to a method.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Unlike most event handlers, the event handling method for the size / move ended event does not recieve any
+    arguments. As noted above, the Windows operating system ignores the return value to the event notifcation.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+  </para>
+  <para>
+    Syntax errors are raised when incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
+    help events happen.
+  </para>
+  <para>
+    In Windows itself, the dialog receives this notification as a WM_EXITSIZEMOVE message.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example comes from a resizable dialog implemented through the <link linkend="clsDlgAreaU">DlgAreaU</link>
+    class. It turns off forcing the dialog controls to redraw in the <computeroutput>DlgAreaU</computeroutput> object,
+    and only has the controls redraw once when the sizing is finished.
+
+<programlisting>
+<![CDATA[
+
+::method init
+    expose sizing
+
+    self~init:super
+    ...
+    self~connectResize('onResize')
+    self~connectSizeMoveEnded('onExitSizeMove')
+    sizing = .false
+    ...
+
+
+::method defineDialog
+  expose u
+
+  u = .dlgAreaU~new(self)
+  u~updateOnResize = .false
+
+
+::method onResize unguarded
+  expose u sizing
+  use arg ignored, sizeinfo
+
+  sizing = .true
+
+  u~resize(self, sizeinfo)
+  return 0
+
+::method onExitSizeMove unguarded
+    expose sizing
+
+    if sizing then do
+      -- The user has stopped sizing the dialog, we'll now show all the dialog
+      -- controls we hid previously, and force the controls to redraw.
+      self~showAllControls
+      self~update
+      sizing = .false
+    end
+
+    return 0
 ]]>
 </programlisting>
   </para>

@@ -3412,6 +3412,12 @@ self~addButton(1,b~x,b~y(-15),b~w,15,"OK","OK","Default")
   role="italic">DlgAreaU</emphasis> class will <emphasis role="bold">not</emphasis> work if <emphasis
   role="italic">rexxc</emphasis> is used to tokenize the source code.
 </para>
+<para>
+  The other implication of using the <emphasis role="italic">source</emphasis> method to parse the dialog's <emphasis
+  role="italic">defineDialog</emphasis> method is that the <computeroutput>DlgAreaU</computeroutput> class can only be
+  used with a <link linkend="clsUserDialog">UserDialog</link>. It will not work with <link
+  linkend="clsResDialog">ResDialog</link> or <link linkend="clsRcDialog">RcDialog</link> classes.
+</para>
 <para>To use objects of the DlgAreaU class include this line in your code:
 </para>
 <programlisting>
@@ -3514,33 +3520,66 @@ during a resize event.
 </para>
 </section>
 
+<section id="atrUpdateOnResize"><title>updateOnResize</title>
+<indexterm><primary>updateOnResize</primary><secondary>DlgAreaU class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--value = dlgAreaU~updateOnResize-----------------------------------><
+>>--dlgAreaU~updateOnResize-=-value-----------------------------------><
+]]>
+</programlisting>
+
+<para>
+  An attribute that controls whether the <computeroutput>DlgAreaU</computeroutput> object forces the dialog controls to
+  redraw during every resize event.  The default value of this attribute is <computeroutput>.true</computeroutput>, the
+  dialog controls are forced to redraw on every resize event. Setting this attribute to false will prevent the dialog
+  controls from being forced to redraw.
+</para>
+<para>
+  When the <emphasis role="italic">updateOnResize</emphasis> attribute is <computeroutput>.false</computeroutput>, it
+  becomes the programmer's responsibility to force the dialog controls to redraw when the user has stopped resizing the
+  dialog. This can be down by using the <link linkend="mthConnectSizeMoveEnd"></link> method. Having the dialog controls
+  redraw only once eliminates flicker while the user is sizing the dialog. However, the dialog controls do not change
+  size or position while the using is sizing the dialog. In the <computeroutput>samples\oodialog</computeroutput>
+  directory of the ooRexx installation are two example programs: <computeroutput>dlgAreaUDemo.rex</computeroutput>
+  redraws the dialog controls on every resize event. <computeroutput>dlgAreaUDemoTwo.rex</computeroutput> only redraws
+  the controls once, when the user has stopped resizing the controls. Contrast the two programs to determine which
+  method best suits the needs or your program.
+</para>
+</section>
+
 <section id="dlgareaucreate"><title>Creating Resizeable Dialogs</title>
 <indexterm><primary>Dynamically Resizable dialogs</primary>
 <secondary>DlgAreaU class</secondary></indexterm>
-<para>You can use the DlgAreaU Object to facilitate in creating dynamically
-resizable Dialog objects, but to do so you must carefully satisfy all the
-requirements below.
+<para>
+  You can use the DlgAreaU Object to facilitate in creating dynamically resizable dialog objects, but to do so you must
+  carefully satisfy all the requirements below.
 </para>
 <para>
-The Dialog must be created with the
-<computeroutput>ThickFrame</computeroutput> option.
-It may be created with the <computeroutput>UserDialog</computeroutput> <link linkend="mthCreate">create</link> or <link
-linkend="mthCreateCenter">createCenter</link> method.
+  The dialog must be a <link linkend="clsUserDialog">UserDialog</link> with all dialog controls created in the dialog
+  template from within the <link linkend="mthDefineDialog"></link> method. In the <link
+  linkend="mthCreate">create</link> or <link linkend="mthCreateCenter">createCenter</link> method, the dialog template
+  must be created with the THICKFRAME option.
 </para>
 <para>
-Your Dialog init method must include the line:</para>
+  You must connect the RESIZE event to a method in your dialog. Add the following source line to your dialog code
+  somewhere. The <emphasis role="italic">init</emphasis>, <emphasis role="italic">defineDialog</emphasis> or <emphasis
+  role="italic">initDialog</emphasis> methods are all a suitable place for the line:
+</para>
+
 <programlisting>
 <![CDATA[
 self~connectResize("OnResize")
 ]]>
 </programlisting>
+
 <para>
-Your defineDialog method must start with these lines:
+  Your <emphasis role="italic">defineDialog</emphasis> method must start with these lines:
 </para>
 <programlisting>
 <![CDATA[
 expose u
-u = .dlgAreaU~new(self)          /* whole dlg   */
+u = .dlgAreaU~new(self)
 ]]>
 </programlisting>
 <para>
@@ -3576,23 +3615,26 @@ To debug your DlgAreaU call/insert the following after the instantiation
 if u~lastError \= .nil then call errorDialog u~lastError
 ]]>
 </programlisting>
-<para>You must also include the following in your code.</para>
+<para>
+  Your event handler code for the RESIZE event must pass on the second argument of the method to the
+  <computeroutput>DlgAreaU</computeroutput> object's <emphasis role="italic">resize</emphasis> method.
+</para>
 <programlisting>
 <![CDATA[
 /* ------------------------------------------------------------------------- */
 ::method OnResize
 /* ------------------------------------------------------------------------- */
-expose u
-if u~lastError \= .nil then call errorDialog u~lastError
-use arg dummy,sizeinfo
-                                 /* wait for last size event msg then resize */
-if self~PeekDialogMessage~left(8) \= "OnResize" then u~resize(self,sizeinfo)
+  expose u
+  use arg ignored, sizeInfo
+
+  u~resize(self, sizeInfo)
+
 ]]>
 </programlisting>
 <para>
-The DlgAreaU method will then automatically resize &amp; place the following
-widgets in your dialog when the dialog frame is dragged or the minimize,
-maximise or restore buttons are pressed:
+  The <computeroutput>DlgAreaU</computeroutput> object's <emphasis role="italic">method</emphasis> will then
+  automatically resize &amp; position the following widgets in your dialog when the dialog frame is dragged or the
+  minimize, maximise, or restore buttons are pressed:
 </para>
 <table frame="all">
 <title>DlgAreaU Automatic Resize Elements</title>
@@ -3746,8 +3788,7 @@ StatusLine~setText("You Pressed" msgname)
 /* ------------------------------------------------------------------------- */
 expose u
 use arg dummy,sizeinfo
-                                 /* wait for last size event msg then resize */
-if self~PeekDialogMessage~left(8) \= "OnResize" then u~resize(self,sizeinfo)
+u~resize(self,sizeinfo)
 
 ]]>
 </programlisting>
