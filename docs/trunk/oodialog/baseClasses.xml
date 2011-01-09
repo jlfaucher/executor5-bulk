@@ -374,7 +374,7 @@
 
 </para>
 <para>
-  The following examples are all for events where the returned value is necessary.
+  The following examples are all for events where the event handler must return a value.
 </para>
 <variablelist>
   <varlistentry id="exampleEventHandler1"><term><emphasis role="bold">Returning Values</emphasis></term>
@@ -385,10 +385,61 @@
     days are to be shown. The programmer can customize the calendar by returning a set of days that should be displayed
     in bold. For instance, in a business application paid holidays could be displayed in bold.
   </para>
+  <para>
+    Since the <emphasis role="italic">connectMonthCalendarEvent</emphasis> method did not exist in ooDialog 4.1.0 and
+    the return value for this event is meaningful, the second and third rules above apply.  That is, the interpreter
+    invokes the event handler directly, waits for the reply, and the programmer can not chnage this behavior.
+  </para>
 
 <programlisting>
 <![CDATA[
 
+::method initDialog
+  expose calendar
+
+  calendar = self~newMonthCalendar(IDC_MC_HOLIDAYS)
+
+  -- Connect the GETDAYSTATE event.
+  self~connectMonthCalendarEvent(IDC_MC_HOLIDAYS, "GETDAYSTATE", onGetDayState)
+
+  -- Restrict the calendar so that it only displays the year 2011.
+  start = .DateTime~fromStandardDate("20110101")
+  end = .DateTime~fromStandardDate("20111231")
+
+  ...
+
+::method onGetDayState unguarded
+  expose calendar
+  use arg startDate, count
+
+  -- Create the array to hold the .DayState objects.
+  dayStates = .array~new(count)
+
+  month = startDate~month
+  if month == 12 then month = 0
+
+  do i = 1 to count
+    j = month + i - 1
+
+    select
+      when j ==  1 then dayStates[i] = .DayState~new(17)
+      when j ==  2 then dayStates[i] = .DayState~new(21)
+      when j ==  3 then dayStates[i] = .DayState~new
+      when j ==  4 then dayStates[i] = .DayState~new
+      when j ==  5 then dayStates[i] = .DayState~new(30)
+      when j ==  6 then dayStates[i] = .DayState~new
+      when j ==  7 then dayStates[i] = .DayState~new(4)
+      when j ==  8 then dayStates[i] = .DayState~new
+      when j ==  9 then dayStates[i] = .DayState~new(5)
+      when j == 10 then dayStates[i] = .DayState~new
+      when j == 11 then dayStates[i] = .DayState~new(24, 25)
+      when j == 12 then dayStates[i] = .DayState~new(23, 30)
+      otherwise dayStates[i] = .DayState~new()
+    end
+  end
+
+  buffer = .DayStates~makeDayStateBuffer(dayStates)
+  return buffer
 
 ]]>
 </programlisting>
@@ -398,14 +449,56 @@
   <para>
     The <link linkend="clsDateTimePicker">DTP</link> (date time pcker) control has the <link
     linkend="mthConnectDateTimePickerEvent">DROPDOWN</link> event notification that is sent when the drop down calendar
-    is shown. This gives the programmer a chance to customize the month calendar control that is shown. Since the month
-    calendar is not shown until the event handling method returns, replying directly to the notification allows the
-    programmer to completely finish the customizations before the month calendar appears on the screen.
+    is shown. This gives the programmer a chance to customize the month calendar that is shown. Since the month calendar
+    is not shown until the event handling method returns, replying directly to the notification allows the programmer to
+    completely finish the customizations before the month calendar appears on the screen.
   </para>
 
 <programlisting>
 <![CDATA[
 
+::method initDialog
+
+  self~connectDateTimePickerEvent(IDC_DTP, "DROPDOWN", onDropDown)
+  ...
+
+
+::method onDropDown unguarded
+  use arg idFrom, hwndFrom
+
+  dt = self~newDateTimePicker(IDC_DTP);
+  monthCal = dt~getMonthCal
+  monthCal~setFirstDayOfWeek(3)
+  monthCal~addStyle("NOTODAY")
+
+  return 0
+
+]]>
+</programlisting>
+  <para>
+    In the above example, the <emphasis role="italic">connectDateTimePickerEvent</emphasis> method did not exist in
+    ooDialog 4.1.0, but the return value for this event is ignored by the OS. Therefore, the second and fourth rules
+    above apply. That is, by default the interpreter invokes the event handler directly and waits for a reply. However
+    the programmer can change this behavior if he wants. If there is no reason to have the interpreter wait until the
+    event handler finishes, then the programmer could use the fourth optional argument. The
+    <computeroutput>.false</computeroutput> value tells the ooDialog framework to use the <emphasis
+    role="italic">startWith</emphasis> method to invoke the event handler.
+  </para>
+
+<programlisting>
+<![CDATA[
+
+::method initDialog
+
+  self~connectDateTimePickerEvent(IDC_DTP, "DROPDOWN", onDropDown, .false)
+  ...
+
+
+::method onDropDown unguarded
+  expose userDidSeeCalendar
+  use arg idFrom, hwndFrom
+
+  userDidSeeCalendar = .true
 
 ]]>
 </programlisting>
@@ -420,17 +513,249 @@
     <computeroutput>.true</computeroutput>. One reason for preventing the change might be that the user had entered
     invalid data in the current tab page.
   </para>
-
+  <para>
+    <emphasis role="bold">Note:</emphasis> Since the <emphasis role="italic">connectTabEvent</emphasis> method is the
+    replacement for the <emphasis role="italic">ovvDeprecated</emphasis> <emphasis
+    role="italic">connectTabNotify</emphasis> method, it essentially is a method that existed in ooDialog 4.1.0. The
+    above rules one and five apply. That is, when the same arguments are used as existed in 4.1.0, the event handler is
+    invoked using <emphasis role="italic">startWith</emphasis> and the interpreter does not wait for a return value.
+    With this behavior, it is impossible for the programmer to veto the change to a new tab. Therefore the programmer
+    has to use the fourth optional argument to change the default behavior. Specifying
+    <computeroutput>.true</computeroutput> causes the ooDialog framework to invoke the <emphasis
+    role="italic">onTabChanging</emphasis> method directly and wait for the return value.
+  </para>
 <programlisting>
 <![CDATA[
 
+::method defineDialog
 
+  self~connectTabEvent(IDC_TAB, SELCHANGING, onTabChanging, .true)
+
+::method onTabChanging unguarded
+  expose tabContent
+  use arg idFrom, hwndFrom
+
+  index = self~newTab(idFrom)~selectedIndex + 1
+  dlg = tabContent[index]
+
+  if dlg~validate then return .true
+  else return .false
+
+]]>
+</programlisting>
+  <para>
+    In the above example, since the <emphasis role="italic">validate</emphasis> method is returning
+    <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput> the event handler could have been
+    coded this way:
+  </para>
+<programlisting>
+<![CDATA[
+::method onTabChanging unguarded
+
+  ...
+
+  return dlg~validate
+]]>
+</programlisting>
+  <para>
+    The example used:
+<programlisting>
+<![CDATA[
+  if dlg~validate then return .true
+  else return .false
+]]>
+</programlisting>
+    to emphasize that the event handler needs to return <computeroutput>.true</computeroutput> or
+    <computeroutput>.false</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleEventHandler4"><term><emphasis role="bold">Lengthy Processing</emphasis></term>
+  <listitem>
+  <para>
+    As previously noted, the Rexx programmer does not need to be overly worried about taking to much time to return a
+    value from an event handler. In most very case there is plenty of time to process the event and return a value.
+    However, sometimes the programmer may want to, or need to, do some lengthy processing in the event handler. For
+    these cases, the programmer needs to figure out how to return a value from the event handler and also do the needed
+    processing. This is really a <emphasis role="italic">concurrency</emphasis> problem, not an event handling problem.
+  </para>
+  <para>
+    The two common ways to solve this problem would be to use an <emphasis role="italic">early reply</emphasis> or to
+    start a <emphasis role="italic">second activity</emphasis> running to do the processing. Using the <link
+    linkend="exampleEventHandler3">onTabChanging</link> event handler above, here are two typical ways to handle the
+    event when some lengthy processing is involved. As a hypothetical, say that when the user changes to a new tab, the
+    program needs to gather up all the data on the validated page and write it to disk, or send it somewhere. One
+    approach would be to validate the page, do an early reply, and then finish up the processing:
+  </para>
+<programlisting>
+<![CDATA[
+
+::method defineDialog
+
+  self~connectTabEvent(IDC_TAB, SELCHANGING, onTabChanging, .true)
+
+::method onTabChanging unguarded
+  expose tabContent
+  use arg idFrom, hwndFrom
+
+  index = self~newTab(idFrom)~selectedIndex + 1
+  dlg = tabContent[index]
+
+  if \ dlg~validate then return .false  -- Tab will not be changed
+
+  reply .true  -- Tab is changed for the user.
+
+  -- Now gather up the data entered on the page we just switched from.
+  data = dlg~getUserDataDirectory
+  self~writeDataToFile(data)
+
+]]>
+</programlisting>
+  <para>
+    Another approach could be to start a new activity which will run concurrently. It might be coded this way:
+  </para>
+<programlisting>
+<![CDATA[
+::method onTabChanging unguarded
+  expose tabContent
+  use arg idFrom, hwndFrom
+
+  index = self~newTab(idFrom)~selectedIndex + 1
+  dlg = tabContent[index]
+
+  if dlg~validate then do
+    dp = .DataProcesser~new
+    dp~start("processDlgData", dlg)
+    return .true
+  end
+  else do
+    return .false
+  end
 ]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
 
 </section>
+
+<section id="sctMethodsEventNotification"><title>Method Table</title>
+<para>
+  The following table list the methods of the <computeroutput>EventNotification</computeroutput> class:
+</para>
+<table id="tblEventNotificationMethods" frame="all">
+<title>EventNotification Methods</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><link linkend="enAddUserMsg">addUserMsg</link></entry>
+<entry>Connects an operating system window message with a method in the Rexx dialog object.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectButtonEvent">connectButtonEvent</link></entry>
+<entry>Connect an event notification from a button control to a method in the Rexx Dialog</entry>
+</row>
+<row>
+<entry><link linkend="enConnectComboBoxEvent">connectComboBoxEvent</link></entry>
+<entry>Connects an event notification from a combo box to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectCommandEvents">connectCommandEvents</link></entry>
+<entry>Connects a command event notification from a dialog control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectDateTimePickerEvent"></link></entry>
+<entry>Connects an event notification form a date time picker to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectDraw">connectDraw</link></entry>
+<entry>Connects the draw item event notification to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectEachSBEvent">connectEachSBEvent</link></entry>
+<entry>Connects each specified event notification from a scroll bar to a separate method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectEditEvent">connectEditEvent</link></entry>
+<entry>Connects an event notification from an edit control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectHelp">connectHelp</link></entry>
+<entry>Connects the Windows Help event to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectListBoxEvent">connectListBoxEvent</link></entry>
+<entry>Connects an event notification from a list box control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectListViewEvent">connectListViewEvent</link></entry>
+<entry>Connects an event notification from a list view control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectMonthCalendarEvent">connectMonthCalendarEvent</link></entry>
+<entry>Connects an event notification from a month calendar to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectMove">connectMove</link></entry>
+<entry>Connects the move event notification to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectMouseCapture">connectMouseCapture</link></entry>
+<entry>Connects the losing the mouse capture event notification to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectNotifyEvent">connectNotifyEvent</link></entry>
+<entry>Connects a generic event notification from a dialog control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectPosChanged">connectPosChanged</link></entry>
+<entry>Connects the position has changed event notification to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectResize">connectResize</link></entry>
+<entry>Connects the size event notification to a method in the Rexx dialog</entry>
+</row>
+<row>
+<entry><link linkend="enConnectScrollBarEvent">connectScrollBarEvent</link></entry>
+<entry>Connects an event notification from a scroll bar control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectStaticEvent">connectStaticEvent</link></entry>
+<entry>Connects an event notification from a static control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectTabEvent">connectTabEvent</link></entry>
+<entry>Connects an event notification from a tab control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectTrackBarEvent">connectTrackBarEvent</link></entry>
+<entry>Connects an event notification from a track bar control to a method in the Rexx dialog. </entry>
+</row>
+<row>
+<entry><link linkend="enConnectTreeViewEvent">connectTreeViewEvent</link></entry>
+<entry>Connects an event notification from a tree view control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectUpDownEvent">connectUpDownEvent</link></entry>
+<entry>Connects an event notification from an UpDown control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enDefListDragHandler">defListDragHandler</link></entry>
+<entry>Default implementation of a drag and drop handler for a list view control.</entry>
+</row>
+<row>
+<entry><link linkend="enDefTreeDragHandler">defTreeDragHandler</link></entry>
+<entry>Default implementation of a drag and drop handler for a tree view control.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
 
 <section id="enConnectHelp"><title>connectHelp</title>
 <programlisting>
@@ -639,13 +964,24 @@
 </programlisting>
 </section>
 
+<section id="enConnectDateTimePickerEvent"><title>connectDateTimePickerEvent</title>
+<programlisting>
+<link linkend="mthConnectDateTimePickerEvent">connectDateTimePickedEvent</link>
+
+<![CDATA[
+>>--connectDateTimePickerEvent(--id--,--event--+---------+--+-------------+-)--><
+                                               +-,-mName-+  +-,-willReply-+
+]]>
+</programlisting>
+</section>
+
 <section id="enConnectMonthCalendarEvent"><title>connectMonthCalendarEvent</title>
 <programlisting>
 <link linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link>
 
 <![CDATA[
->>--connectMonthCalendarEvent(--id--,--event--,-+---------------+--)-----------><
-                                                +-,--methodName-+
+>>--connectMonthCalendarEvent(--id--,--event--+---------+--+-------------+-)---><
+                                              +-,-mName-+  +-,-willReply-+
 ]]>
 </programlisting>
 </section>
@@ -655,8 +991,8 @@
 <link linkend="mthConnectUpDownEvent">connectUpDownEvent</link>
 
 <![CDATA[
->>--connectUpDownEvent(--id--,--event--+----------------+--)-------------------><
-                                       +--,-methodName--+
+>>--connectUpDownEvent(--id--,--event--+--------------+--+-------------+-)-----><
+                                       +-,-methodName-+  +-,-willReply-+
 ]]>
 </programlisting>
 

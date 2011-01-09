@@ -3597,6 +3597,7 @@ separated by a blank). Example:
       <listitem>
       <para>
         The resource ID of the tab control whose event notification is to be connected to a method in the Rexx dialog.
+        May be numeric or <link linkend="defSymbolicId">symbolic</link>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>event [required]</term>
@@ -3619,7 +3620,8 @@ separated by a blank). Example:
           <varlistentry><term>SELCHANGING</term>
           <listitem>
           <para>
-            A new tab has been selected in the tab control. This method is called before the selection is changed.
+            A new tab has been selected in the tab control. This method is called before the selection is changed.  TODO
+            fix this paragraph.  Note that args to event handler are different if willReply is .false than if .true
           </para>
           <para>
             The programmer can prevent the selection from changing by returning <computeroutput>.false</computeroutput>
