@@ -243,6 +243,8 @@ Section  doSwitch
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\simple
     ; Add the files ...
+    File "${SamplesDir420}\simple\*.h"
+    File "${SamplesDir420}\simple\*.rc"
     File "${SamplesDir420}\simple\*.rex"
     File "${SamplesDir420}\simple\*.txt"
 
@@ -669,6 +671,7 @@ Function RemoveFiles
     Delete $INSTDIR\samples\oodialog\bmp\ticketWizardTheater.bmp
     Delete $INSTDIR\samples\oodialog\bmp\ticketWizardTicket.bmp
     RMDir /r $INSTDIR\samples\oodialog\controls
+    Delete $INSTDIR\samples\oodialog\dlgAreaUDemoTwo.rex
     Delete $INSTDIR\samples\oodialog\examples\ReadMe.txt
     Delete $INSTDIR\samples\oodialog\ooDraw.h
     Delete $INSTDIR\samples\oodialog\PropertySheetDemo.rex
