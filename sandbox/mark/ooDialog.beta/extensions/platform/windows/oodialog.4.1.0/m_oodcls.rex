@@ -44,9 +44,9 @@ p = time('R')
 -- say 'OOdialog build started                  ' time() 'on' date()
 -- say '----------------------------------------------------------------'
 outname = .array~new(3)
-outname[1] = "OODPLAIN"
-outname[2] = "OODIALOG"
-outname[3] = "OODWIN32"
+outname[1] = "oodPlain"
+outname[2] = "ooDialog"
+outname[3] = "oodWin32"
 UtilName = "OODUTILS.CLS"
 .Local["UtilName"] = UtilName
 Arrax = .Array~new(3)
@@ -60,7 +60,7 @@ Arrax[3] = .CheckArray~of("ADVCTRL.CLS", "STDEXT.CLS", "MSGEXT.CLS", "PROPSHT.CL
 i = 0
 do j over Arrax
     i += 1
-    NewFile = .stream~new(outname[i] || ".CLS")
+    NewFile = .stream~new(outname[i] || ".cls")
     if NewFile~open("WRITE REPLACE") \= "READY:" then leave
     NewFile~lineout("/"||"*"~copies(78)||"/")
     NewFile~lineout("/*"||" "~copies(76)||"*/")
