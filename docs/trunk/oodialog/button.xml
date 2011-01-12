@@ -87,7 +87,7 @@
 <entry><link linkend="clsCheckBox">CheckBox Class</link></entry>
 </row>
 <row>
-<entry>Raido Button</entry>
+<entry>Radio Button</entry>
 <entry><link linkend="clsRadioButton">RadioButton Class</link></entry>
 </row>
 <row>
@@ -176,16 +176,16 @@
 <entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="tmthNewPushButton">newUpDown</link></entry>
+<entry><link linkend="tmthNewPushButton">newPushButton</link></entry>
 <entry>Returns an <computeroutput>Button</computeroutput> object for the control with the specified ID.</entry>
 </row>
 <row>
 <entry><link linkend="tmthCreatePushButton">createPushButton</link></entry>
-<entry>Creates an up-down control in the dialog template of a <link linkend="clsUserDialog">UserDialog</link></entry>
+<entry>Creates a button control in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>.</entry>
 </row>
 <row>
 <entry><link linkend="tmthConnectButtonEvent">connectButtonEvent</link></entry>
-<entry>Connects button event notifications to a method in the Rexx dialog object</entry>
+<entry>Connects button event notifications to a method in the Rexx dialog object.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
@@ -196,92 +196,92 @@
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry>changeBitmap</entry>
 <entry><link linkend="changebitmap">changeBitmap</link></entry>
+<entry>Changes the bitmap of a bitmap button.</entry>
 </row>
 <row>
-<entry>click</entry>
 <entry><link linkend="mthClick">click</link></entry>
+<entry>Simulates a user clicking on the associated button control.</entry>
 </row>
 <row>
-<entry>dimBitmap</entry>
 <entry><link linkend="dimbitmap">dimBitmap</link></entry>
+<entry>Draws a bitmap step by step.</entry>
 </row>
 <row>
-<entry>displaceBitmap</entry>
 <entry><link linkend="displacebitmap">displaceBitmap</link></entry>
+<entry>Sets the position of a bitmap within a bitmap button.</entry>
 </row>
 <row>
-<entry>drawBitmap</entry>
 <entry><link linkend="drawbitmap">drawBitmap</link></entry>
+<entry>Draws the bitmap of the associated bitmap button at the specified position.</entry>
 </row>
 <row>
-<entry>getBitmapSizeX</entry>
 <entry><link linkend="getbitmapsizex">getBitmapSizeX</link></entry>
+<entry>Retrieves the width of the bitmap that is set for the associated button.</entry>
 </row>
 <row>
-<entry>getBitmapSizeY</entry>
 <entry><link linkend="getbitmapsizey">getBitmapSizeY</link></entry>
+<entry>Retrieves the height of the bitmap that is set for the associated button.</entry>
 </row>
 <row>
-<entry>getBmpDisplacement</entry>
 <entry><link linkend="getbmpdisplacement">getBmpDisplacement</link></entry>
+<entry>Retrieves the position of a bitmap within a bitmap button.</entry>
 </row>
 <row>
-<entry>getIdealSize</entry>
 <entry><link linkend="mthGetIdealSize">getIdealSize</link></entry>
+<entry>Queries the button control for the size that best fits its text or image.</entry>
 </row>
 <row>
-<entry>getImage</entry>
 <entry><link linkend="mthGetImage">getImage</link></entry>
+<entry>Retrieves a button's image if one is set.</entry>
 </row>
 <row>
-<entry>getImageList</entry>
 <entry><link linkend="mthGetImageList">getImageList</link></entry>
+<entry>Retrieves information describing the image list for the associated button.</entry>
 </row>
 <row>
-<entry>getTextMargin</entry>
 <entry><link linkend="mthGetTextMargin">getTextMargin</link></entry>
+<entry>Retrieves the margins used to draw text within the assoicated button control.</entry>
 </row>
 <row>
-<entry>push</entry>
 <entry><link linkend="mthPush">push</link></entry>
+<entry>Simulates the user pushing the associated button control.</entry>
 </row>
 <row>
-<entry>scroll</entry>
 <entry><link linkend="scrollbc">scroll</link></entry>
+<entry>Moves the rectangle within the associated button and redraws the uncovered area with the button background color.</entry>
 </row>
 <row>
-<entry>scrollBitmapFromTo</entry>
 <entry><link linkend="scrollbitmapfromto">scrollBitmapFromTo</link></entry>
+<entry>Scrolls the bitmap within the associated bitmap button from one position to another.</entry>
 </row>
 <row>
-<entry>scrollText</entry>
 <entry><link linkend="scrolltextbc">scrollText</link></entry>
+<entry>Scrolls text in the associated button with the given font, size, and color.</entry>
 </row>
 <row>
-<entry>setImage</entry>
 <entry><link linkend="mthSetImage">setImage</link></entry>
+<entry>Sets, or removes, the image associated with a button.</entry>
 </row>
 <row>
-<entry>setImageList</entry>
 <entry><link linkend="mthSetImageList">setImageList</link></entry>
+<entry>Sets, or removes the image list for the button.</entry>
 </row>
 <row>
-<entry>setTextMargin</entry>
 <entry><link linkend="mthSetTextMargin">setTextMargin</link></entry>
+<entry>Sets the margins for drawing text in the associated button control.</entry>
 </row>
 <row>
-<entry>state</entry>
 <entry><link linkend="state">state</link></entry>
+<entry>Retrieves the current state of the associated button control.</entry>
 </row>
 <row>
-<entry>state=</entry>
 <entry><link linkend="statenew">state=</link></entry>
+<entry>Sets the state for the associated button control.</entry>
 </row>
 <row>
-<entry>style=</entry>
 <entry><link linkend="stylenew">style=</link></entry>
+<entry>Changes the style of the associated button control.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -709,7 +709,7 @@ except that the operating system maintains the check state for the programmer.
 <listitem><para>The text is placed at the bottom of the button rectangle.
 </para></listitem></varlistentry>
 <varlistentry><term>VCENTER</term>
-<listitem><para>The text is vertically centered in the button rectanble.
+<listitem><para>The text is vertically centered in the button rectangle.
 </para></listitem></varlistentry>
 <varlistentry><term>PUSHLIKE</term>
 <listitem><para>Causes a radio button or check box button to behave like a push
@@ -862,7 +862,7 @@ button~style="DEFPUSHBUTTON"
 </programlisting>
 
 <para>
-  This method retrieves the margins used to draw text within the assoicated
+  This method retrieves the margins used to draw text within the associated
   button control.
 </para>
 <variablelist>
@@ -1125,7 +1125,7 @@ self~newPushButton(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
   have an image, then the system does not draw an image for that state. The programmer retains ownership
   of the image list. What this means in essence is the programmer decide when, or if, the image list
   should be released. See the discussion in the .ImageList class about releasing image lists if needed.
-  If you release the image list while the dialog is stil active, the images on the button disappear.
+  If you release the image list while the dialog is still active, the images on the button disappear.
 </para>
 <para>
   A sample program: <computeroutput>imageButton.rex</computeroutput> in the samples directory is provided
@@ -1205,7 +1205,7 @@ self~newPushButton(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
         <para>
           The Nil object is returned if there was no existing image list, and also if an error is
           encountered. In general, the .SystemErrorCode variable should be set to non-zero if an error
-          happend.
+          happened.
         </para>
       </listitem></varlistentry>
       </variablelist>
@@ -1331,12 +1331,12 @@ return 0
 </programlisting>
 
 <para>
-  Sets, or removes, the image assoicated with a button. The image can bet a bitmap, icon, or cursor. Note
+  Sets, or removes, the image associated with a button. The image can bet a bitmap, icon, or cursor. Note
   that the button style has to match the type of image. For cursors and icons, the button must be an ICON
   button. For bitmap images, the button must be a BITMAP button.
 </para>
 <para>
-  To completely remove an image assoicated with the button use .nil for the argument.
+  To completely remove an image associated with the button use .nil for the argument.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1361,7 +1361,7 @@ return 0
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      This example gets an image from the resource file for a ResDialog and assoicates it with the Push
+      This example gets an image from the resource file for a ResDialog and associates it with the Push
       Me button.
 <programlisting>
 <![CDATA[
@@ -1722,16 +1722,16 @@ is drawn at the position set with DisplaceBitmap. DrawBitmap is used by <link li
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
-<varlistentry><term>tarx,tary</term>
+<varlistentry><term>tarx, tary</term>
 <listitem><para>The position relative to the client area of the button where the bitmap
 is to be displayed. The default is 0,0.
 </para></listitem></varlistentry>
-<varlistentry><term>srcx,srcy</term>
+<varlistentry><term>srcx, srcy</term>
 <listitem><para>The offsets that specify the first pixel in the bitmap to be displayed.
 If you omit these arguments, the pixel at position 0,0 is the first pixel
 displayed.
 </para></listitem></varlistentry>
-<varlistentry><term>width,height</term>
+<varlistentry><term>width, height</term>
 <listitem><para>The width and height of the bitmap. If you omit these arguments or specify
 0, the entire bitmap is displayed at the specified position. You can use these
 arguments to display only parts of the bitmap.
@@ -1878,44 +1878,44 @@ within the associated bitmap button from one position to another.</para>
 <entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="tmthNewRadioButton">newUpDown</link></entry>
+<entry><link linkend="tmthNewRadioButton">newRadioButton</link></entry>
 <entry>Returns an <computeroutput>RadionButton</computeroutput> object for the control with the specified ID.</entry>
 </row>
 <row>
 <entry><link linkend="tmthCreateRadioButton">createRadiobutton</link></entry>
-<entry>Creates a radio button in the dialog template of a <link linkend="clsUserDialog">UserDialog</link></entry>
+<entry>Creates a radio button in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>.</entry>
 </row>
 <row>
 <entry><link linkend="tmthConnectButtonEvent">connectButtonEvent</link></entry>
-<entry>Connects button event notifications to a method in the Rexx dialog object</entry>
+<entry>Connects button event notifications to a method in the Rexx dialog object.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>checkInGroup</entry>
 <entry><link linkend="mthCheckInGroupCls">checkInGroup</link></entry>
+<entry>Checks the specified radio button in a group and unchecks all other radio buttons in the group.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry>check</entry>
 <entry><link linkend="mthCheck">check</link></entry>
+<entry>Puts the button in the checked state.</entry>
 </row>
 <row>
-<entry>checked</entry>
 <entry><link linkend="mthChecked">checked</link></entry>
+<entry>Determines if the button is checked, or not.</entry>
 </row>
 <row>
-<entry>getCheckState</entry>
 <entry><link linkend="mthGetCheckStateClsRadioButton">getCheckState</link></entry>
+<entry>Returns a keyword indicating the check state of the radio button.</entry>
 </row>
 <row>
-<entry>uncheck</entry>
 <entry><link linkend="mthUncheck">uncheck</link></entry>
+<entry>Puts the button in the unchecked state.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -2172,7 +2172,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 <para>
   There are four styles of check boxes: standard, automatic, three-state, and automatic three-state, The
   system manages the check state of automatic and automatic three-state check boxes. All check boxes have
-  at least two states, either checked or cleared (unchecked.) In addition three-state check boxes have a
+  at least two states, either checked or cleared (unchecked). In addition three-state check boxes have a
   third state called indeterminate, which the system draws as a grayed box inside the check box.
 </para>
 <para>
@@ -2183,31 +2183,10 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 <para>
   The CheckBox class provides methods to query and modify check box controls.
 </para>
-
+<para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with check box controls:
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
-  <listitem>
-    <para>
-      The check box class is a direct subclass of the <link linkend="clsRadioButton">RadioButton</link>
-      class, and therefore an indirect subclass of the <link
-      linkend="clsButton">Button</link> class and the <link
-      linkend="chpDialogControlObject">DialogControl class</link> class. It inherits all the methods of all
-      three classes.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Mixin Class Inherits:</emphasis></term>
-  <listitem>
-    <para>
-      The check box class inherits from the following mixin classes, (indirectly through the
-      DialogControl class.)
-    </para>
-    <para>
-      The <link linkend="clsWindowBase">WindowBase</link>
-    </para>
-    <para>
-      The <link linkend="clsWindowExtensions">WindowExtensions</link>
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
     <para>
@@ -2227,16 +2206,17 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
     <para>
-      A check box, is a button, and the programmer uses the same method to recieve notifications of events as with the
+      A check box, is a button, and the programmer uses the same method to receive notifications of events as with the
       ButtonControl: the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
     </para>
   </listitem></varlistentry>
 </variablelist>
+</para>
 
 <section id="sctMethodsCheckBox"><title>Method Table</title>
 
 <para>
-  The CheckBox class implements the instance methods listed in the following table:
+  The following table provides links to the documentation for the primary methods and attributes used in working with CheckBox objects, including the pertinent methods from other classes.
 </para>
 
 <table id="tblCheckBoxMethods" frame="all">
@@ -2244,22 +2224,22 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 <tgroup cols="2">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...Description</entry>
+<entry>Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>isIndeterminate</entry>
 <entry><link linkend="mthIsIndeterminate">isIndeterminate</link></entry>
+<entry>Determines if the check box is in indeterminate state, or not.</entry>
 </row>
 <row>
-<entry>getCheckState</entry>
 <entry><link linkend="mthGetCheckStateClsCheckBox">getCheckState</link></entry>
+<entry>Returns a keyword indicating the check state of the check box, checked, unchecked, or indeterminate.</entry>
 </row>
 <row>
-<entry>setIndeterminate</entry>
 <entry><link linkend="mthsetIndeterminate">setIndeterminate</link></entry>
+<entry>Puts the check box in the indeterminate state.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -2318,7 +2298,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 </programlisting>
 
 <para>
-  This method over-rides the RadioButton <link
+  This method overrides the RadioButton <link
   linkend="mthGetCheckStateClsRadioButton">getCheckState</link>() method to return a keyword indicating
   the check state of the check box, checked, unchecked, or indeterminate.
 </para>
@@ -2400,44 +2380,10 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 <para>
   The GroupBox class provides methods to work with group box controls.
 </para>
-
+<para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with group box controls:
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Requires</emphasis>:</term>
-  <listitem>
-    <para>
-      The GroupBoxe class requires the class definition file
-      <computeroutput>oodwin32.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "oodwin32.cls"
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Subclass of:</emphasis></term>
-  <listitem>
-    <para>
-      Although the group box is a button, since it does not have a state, can not be selected, does not
-      send notifications, etc., it does not inherit from the <link
-      linkend="clsButton">Button</link> class. A group box does not share behaviour or
-      characteristics with the other button classes. Therefore, the group box class is a direct subclass
-      of the <link linkend="chpDialogControlObject">DialogControl</link> class. It therefore inherits all
-      methods of that class.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Mixin Class Inherits:</emphasis></term>
-  <listitem>
-    <para>
-      The group box class inherits from the following mixin classes, (indirectly through the
-      DialogControl class.)
-    </para>
-    <para>
-      The <link linkend="clsWindowBase">WindowBase</link>
-    </para>
-    <para>
-      The <link linkend="clsWindowExtensions">WindowExtensions</link>
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
     <para>
@@ -2458,29 +2404,32 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
       Group boxes do not generate notifications.
     </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Methods</emphasis>:</term>
-  <listitem>
-  <para>
-    The GroupBox class only implements a few methods, (actually only one method at this time.)
-  </para>
+</variablelist>
+</para>
+
+<section id="sctMethodsGroupBox"><title>Method Table</title>
+
+<para>
+  The following table provides links to the documentation for the primary methods and attributes used in working with GroupBox objects, including the pertinent methods from other classes.
+</para>
+
 <table id="tblGroupBoxMethods" frame="all">
 <title>GroupBox Instance Methods</title>
 <tgroup cols="2">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...Description</entry>
+<entry>Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>style=</entry>
 <entry><link linkend="mthGBStyleEquals">style=</link></entry>
+<entry>Assigns a new text alignment to the group box.</entry>
 </row>
 </tbody></tgroup>
 </table>
-  </listitem></varlistentry>
-</variablelist>
+</section>
 
 
 <section id="mthGBStyleEquals"><title>Style=</title>
@@ -2534,7 +2483,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para> Changing the style is staightforward:
+    <para> Changing the style is straightforward:
 <programlisting>
 <![CDATA[
   gb = self~newGroupBox(IDC_GB_AREACODES)
