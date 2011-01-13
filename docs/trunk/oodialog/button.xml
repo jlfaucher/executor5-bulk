@@ -196,7 +196,7 @@
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="changebitmap">changeBitmap</link></entry>
+<entry><link linkend="mthChangeBitmap">changeBitmap</link></entry>
 <entry>Changes the bitmap of a bitmap button.</entry>
 </row>
 <row>
@@ -204,27 +204,31 @@
 <entry>Simulates a user clicking on the associated button control.</entry>
 </row>
 <row>
-<entry><link linkend="dimbitmap">dimBitmap</link></entry>
+<entry><link linkend="mthDimBitmap">dimBitmap</link></entry>
 <entry>Draws a bitmap step by step.</entry>
 </row>
 <row>
-<entry><link linkend="displacebitmap">displaceBitmap</link></entry>
-<entry>Sets the position of a bitmap within a bitmap button.</entry>
+<entry><link linkend="mthDisplaceBitmap">displaceBitmap</link></entry>
+<entry>Sets the position of the bitmap within a bitmap button.</entry>
 </row>
 <row>
-<entry><link linkend="drawbitmap">drawBitmap</link></entry>
-<entry>Draws the bitmap of the associated bitmap button at the specified position.</entry>
+<entry><link linkend="mthDrawBitmap">drawBitmap</link></entry>
+<entry>Draws the bitmap for a bitmap button at the specified position.</entry>
 </row>
 <row>
-<entry><link linkend="getbitmapsizex">getBitmapSizeX</link></entry>
+<entry><link linkend="mthGetBitmapPosition">getBitmapPosition</link></entry>
+<entry>Retrieves the postion, as a point, of the upper left corner of a bitmap within a bitmap button.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetBitmapSizeX">getBitmapSizeX</link></entry>
 <entry>Retrieves the width of the bitmap that is set for the associated button.</entry>
 </row>
 <row>
-<entry><link linkend="getbitmapsizey">getBitmapSizeY</link></entry>
+<entry><link linkend="mthGetBitmapSizeY">getBitmapSizeY</link></entry>
 <entry>Retrieves the height of the bitmap that is set for the associated button.</entry>
 </row>
 <row>
-<entry><link linkend="getbmpdisplacement">getBmpDisplacement</link></entry>
+<entry><link linkend="mthGetBmpDisplacement">getBmpDisplacement</link></entry>
 <entry>Retrieves the position of a bitmap within a bitmap button.</entry>
 </row>
 <row>
@@ -248,16 +252,20 @@
 <entry>Simulates the user pushing the associated button control.</entry>
 </row>
 <row>
-<entry><link linkend="scrollbc">scroll</link></entry>
+<entry><link linkend="mthScrollClsButton">scroll</link></entry>
 <entry>Moves the rectangle within the associated button and redraws the uncovered area with the button background color.</entry>
 </row>
 <row>
-<entry><link linkend="scrollbitmapfromto">scrollBitmapFromTo</link></entry>
+<entry><link linkend="mthScrolBbitmapFromTo">scrollBitmapFromTo</link></entry>
 <entry>Scrolls the bitmap within the associated bitmap button from one position to another.</entry>
 </row>
 <row>
-<entry><link linkend="scrolltextbc">scrollText</link></entry>
+<entry><link linkend="mthScrollTtextClsButton">scrollText</link></entry>
 <entry>Scrolls text in the associated button with the given font, size, and color.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetBitmapPosition">setBitmapPosition</link></entry>
+<entry>Sets the postion of the upper left corner of a bitmap within a bitmap button.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetImage">setImage</link></entry>
@@ -272,15 +280,15 @@
 <entry>Sets the margins for drawing text in the associated button control.</entry>
 </row>
 <row>
-<entry><link linkend="state">state</link></entry>
+<entry><link linkend="mthStateClsButton">state</link></entry>
 <entry>Retrieves the current state of the associated button control.</entry>
 </row>
 <row>
-<entry><link linkend="statenew">state=</link></entry>
+<entry><link linkend="mthStateEquals">state=</link></entry>
 <entry>Sets the state for the associated button control.</entry>
 </row>
 <row>
-<entry><link linkend="stylenew">style=</link></entry>
+<entry><link linkend="mthStyleEquals">style=</link></entry>
 <entry>Changes the style of the associated button control.</entry>
 </row>
 </tbody></tgroup>
@@ -334,7 +342,8 @@
 
 
 <section id="mthPush"><title>push</title>
-<indexterm><primary>push</primary><secondary>Button class</secondary></indexterm>
+<indexterm><primary>push</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>push</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--push---------------------------------------><
@@ -342,24 +351,30 @@
 </programlisting>
 
 <para>
-  The push method simulates the user pushing the associated button control.  It allows a Rexx
-  programmer to produce the exact same behavior from within an ooDialog program as the behavior produced
+  The <emphasis role="italic">push</emphasis> method simulates the user pushing the associated button control.  It
+  allows a Rexx programmer to produce the exact same behavior from within an ooDialog program as the behavior produced
   by the user pushing the button in the dialog.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>There are no arguments to this method.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method does not return a value.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example comes from an imaginary program that has a list of
-  window handles.  The dialog has a Refresh button that the user can push to
-  update the window list.  The code comes from a section of the program that is
-  checking if a specific window handle is valid.  If the handle is not valid,
-  the code simulates the user pushing the Refresh button to update the window
-  list.
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return a value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example comes from an imaginary program that has a list of window handles.  The dialog has a Refresh button that
+    the user can push to update the window list.  The code comes from a section of the program that is
+    checking if a specific window handle is valid.  If the handle is not valid, the code simulates the user pushing the
+    Refresh button to update the window list.
 <programlisting>
 <![CDATA[
 ::method validateHandle private
@@ -372,14 +387,15 @@
 return .true
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
 
 <section id="mthClick"><title>click</title>
-<indexterm><primary>click</primary>
-<secondary>Button class</secondary></indexterm>
+<indexterm><primary>click</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>click</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--click----------------------------------------><
@@ -387,32 +403,42 @@ return .true
 </programlisting>
 
 <para>
-  The click method programmatically clicks the associated button control.  It simulates the user clicking
-  the button and produces exactly the same behavior as if the user had clicked on the button with the
-  mouse.
+  The <emphasis role="italic">click</emphasis> method programmatically clicks the associated button control.  It
+  simulates the user clicking the button and produces exactly the same behavior as if the user had clicked on the button
+  with the mouse.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>This method takes no arguments.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method does not return any value.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example closes the dialog as if the user had clicked the
-  cancel button.  (Provided of course that the dialog has a cancel button.)
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return any value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example closes the dialog as if the user had clicked the cancel button.  (Provided of course that the dialog
+    has a cancel button.)
 <programlisting>
 <![CDATA[
 self~newPushButton(IDCANCEL)~click
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
 
-<section id="state"><title>state</title>
+<section id="mthStateClsButton"><title>state</title>
 <indexterm><primary>state</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>state</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--state----------------------------------------><
@@ -420,61 +446,78 @@ self~newPushButton(IDCANCEL)~click
 </programlisting>
 
 <para>
-  The state method retrieves the current state of the associated button control.
+  The <emphasis role="italic">state</emphasis> method retrieves the current state of the associated button control.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>A text string that can contain one or more of the following keywords,
-separated by blanks:
-<variablelist>
-<varlistentry><term>&quot;CHECKED&quot;</term>
-<listitem><para>The radio button or the check box is checked.  A radio button is
-checked when it contains a black dot, a check box is checked when it contains a
-check mark.
-</para></listitem></varlistentry>
-<varlistentry><term>&quot;UNCHECKED&quot;</term>
-<listitem><para>The radio button or the check box is not checked.  A radio
-button is not checked when it does not contain a black dot and a check box is
-not checked when it does not contain a check mark.
-</para></listitem></varlistentry>
-<varlistentry><term>&quot;INDETERMINATE&quot;</term>
-<listitem><para>A 3-state check box button is neither checked nor unchecked.
-Only 3-state check box buttons can be in this state.  When in the indeterminate
-state, the check box button is drawn in a visually distinctive manner that is
-different from checked or unchecked.  Exactly how the indeterminate state is
-drawn is dependent on the operating system version.
-</para></listitem></varlistentry>
-<varlistentry><term>&quot;PUSHED&quot;</term>
-<listitem><para>When a button is in the pushed state it is drawn as a sunken
-button, otherwise it is drawn as a raised button.  The user causes a button to
-be in the pushed state by clicking the button with the left mouse button.  As
-long as the mouse button is held down, the button will be drawn as pushed. When
-the user releases the mouse button, the button will resume its not pushed state.
-When this keyword is not in the text string, the button is not in the pushed
-state.
-</para></listitem></varlistentry>
-<varlistentry><term>&quot;FOCUS&quot;</term>
-<listitem><para>The button has the keyboard focus.  When this keyword is missing
-from the text string, the button does not have the focus.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A text string that can contain one or more of the following keywords, separated by blanks:
+    <variablelist>
+      <varlistentry><term>CHECKED</term>
+      <listitem>
+      <para>
+        The radio button or the check box is checked.  A radio button is checked when it contains a black dot, a check
+        box is checked when it contains a check mark.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>UNCHECKED</term>
+      <listitem>
+      <para>
+        The radio button or the check box is not checked.  A radio button is not checked when it does not contain a
+        black dot and a check box is not checked when it does not contain a check mark.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>INDETERMINATE</term>
+      <listitem>
+      <para>
+        A 3-state check box button is neither checked nor unchecked. Only 3-state check box buttons can be in this
+        state.  When in the indeterminate state, the check box button is drawn in a visually distinctive manner that is
+        different from checked or unchecked.  Exactly how the indeterminate state is drawn is dependent on the operating
+        system version.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>PUSHED</term>
+      <listitem>
+      <para>
+        When a button is in the pushed state it is drawn as a sunken button, otherwise it is drawn as a raised button.
+        The user causes a button to be in the pushed state by clicking the button with the left mouse button.  As long
+        as the mouse button is held down, the button will be drawn as pushed. When the user releases the mouse button,
+        the button will resume its not pushed state. When this keyword is not in the text string, the button is not in
+        the pushed state.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>FOCUS</term>
+      <listitem>
+      <para>
+        The button has the keyboard focus.  When this keyword is missing from the text string, the button does not have
+        the focus.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
 <programlisting>
 <![CDATA[
 button = MyDialog~newPushButton("IDOK")
 if button == .Nil then return
 say button~State
 ]]>
-</programlisting></para>
-<para>The result could be &quot;UNCHECKED FOCUS&quot;.</para>
-</listitem></varlistentry>
+</programlisting>
+  </para>
+  <para>
+    The result could be &quot;UNCHECKED FOCUS&quot;.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="statenew"><title>state=</title>
+<section id="mthStateEquals"><title>state=</title>
 <indexterm><primary>state=</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>state=</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--state=--newState-----------------------------><
@@ -486,51 +529,68 @@ say button~State
   The state= method sets the state for the associated button control.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>newState</term>
-<listitem>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
   <para>
-    A text string that contains one or more of the following keywords, separated by a blank:
-    <simplelist type='horiz' columns='2'>
-    <member>CHECKED</member>       <member>UNCHECKED</member>
-    <member>PUSHED</member>        <member>NOTPUSHED</member>
-    <member>INDETERMINATE</member> <member>FOCUS</member>
-    </simplelist>
+    The only argument is:
     <variablelist>
-    <varlistentry><term>CHECKED</term>
-    <listitem><para>
-      The radio button or the check box is to be set to the &quot;checked&quot; state.
-    </para></listitem></varlistentry>
-    <varlistentry><term>UNCHECKED</term>
-    <listitem><para>
-      The radio button or the check box is to be set to the &quot;unchecked&quot; state.
-    </para></listitem></varlistentry>
-    <varlistentry><term>PUSHED</term>
-    <listitem><para>
-      The button is to be set to the &quot;pushed&quot; state.
-    </para></listitem></varlistentry>
-    <varlistentry><term>NOTPUSHED</term>
-    <listitem><para>
-      The &quot;pushed&quot; state is to be removed from the button.
-    </para></listitem></varlistentry>
-    <varlistentry><term>INDETERMINATE</term>
-    <listitem><para>
-      The 3-state check box button is to be set to the &quot;indeterminate&quot; state.  This state can
-      only be applied to 3-state check box buttons.
-    </para></listitem></varlistentry>
-    <varlistentry><term>FOCUS</term>
-    <listitem><para>
-      The button is to be set to the &quot;focused&quot; state.
-    </para></listitem></varlistentry>
+      <varlistentry><term>newState [required]</term>
+      <listitem>
+      <para>
+        A text string that contains one or more of the following keywords, separated by a blank:
+      </para>
+      <para>
+        <simplelist type='horiz' columns='2'>
+        <member>CHECKED</member>       <member>UNCHECKED</member>
+        <member>PUSHED</member>        <member>NOTPUSHED</member>
+        <member>INDETERMINATE</member> <member>FOCUS</member>
+        </simplelist>
+      </para>
+      <variablelist>
+        <varlistentry><term>CHECKED</term>
+        <listitem>
+        <para>
+          The radio button or the check box is to be set to the &quot;checked&quot; state.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>UNCHECKED</term>
+        <listitem>
+        <para>
+          The radio button or the check box is to be set to the &quot;unchecked&quot; state.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>PUSHED</term>
+        <listitem>
+        <para>
+          The button is to be set to the &quot;pushed&quot; state.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTPUSHED</term>
+        <listitem><para>
+          The &quot;pushed&quot; state is to be removed from the button.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>INDETERMINATE</term>
+        <listitem>
+        <para>
+          The 3-state check box button is to be set to the &quot;indeterminate&quot; state.  This state can only be
+          applied to 3-state check box buttons.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>FOCUS</term>
+        <listitem>
+        <para>
+          The button is to be set to the &quot;focused&quot; state.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
     </variablelist>
   </para>
-</listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
 <programlisting>
 <![CDATA[
 button = MyDialog~newPushButton("IDOK")
@@ -538,36 +598,47 @@ if button == .Nil then return
 button~state="FOCUS PUSHED"
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Notes:</emphasis></term>
-<listitem><para>Some points to remember when using this method.
-<orderedlist>
-<listitem><para>The checked, unchecked or indeterminate states have no meaning
-for a push button.  Setting a push button to one of these states therefore has
-no effect.
-</para></listitem>
-<listitem><para>A radio button or check box can be set to only one of the
-checked, unchecked or indeterminate states.  If more than one of these states is
-specified in the text string the button is set to the state that is first in the
-string.
-</para></listitem>
-<listitem><para>Only 3-state check box buttons can be set to the indeterminate
-state.  If this keyword is used for a button that is not a 3-state button then
-the button's state is not changed.
-</para></listitem>
-<listitem><para>To change a button state to not focused programmatically use
-one of the ooDialog methods that move the focus: <link linkend="tabtonext">TabToNext</link>,
-<link linkend="tabtoprevious">TabToPrevious</link>, <link linkend="setfocus">SetFocus</link>,
-<link linkend="focusitem">FocusItem</link>, etc..
-</para></listitem>
-</orderedlist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Some points to remember when using this method.
+    <orderedlist>
+    <listitem>
+    <para>
+      The checked, unchecked or indeterminate states have no meaning for a push button.  Setting a push button to
+      one of these states therefore has no effect.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      A radio button or check box can be set to only one of the checked, unchecked or indeterminate states.  If more
+      than one of these states is specified in the text string the button is set to the state that is first in the
+      string.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      Only 3-state check box buttons can be set to the indeterminate state.  If this keyword is used for a button that
+      is not a 3-state button then the button's state is not changed.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      To change a button state to not focused programmatically use one of the ooDialog methods that move the focus:
+      <link linkend="mthTabToNext">tabToNext</link>, <link linkend="tabtoprevious">tabToPrevious</link>, <link
+      linkend="mthSetFocus">setFocus</link>, <link linkend="mthFocusItem">focusItem</link>, etc..
+    </para>
+    </listitem>
+    </orderedlist>
+  </para>
+  </listitem></varlistentry>
+</variablelist> </section>
 
-<section id="stylenew"><title>style=</title>
-<indexterm><primary>style=</primary>
-<secondary>Button class</secondary></indexterm>
+<section id="mthStyleEquals"><title>style=</title>
+<indexterm><primary>style=</primary></indexterm>
+<indexterm><primary>Button class<secondary>style=</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--style=--newStyle-----------------------------><
@@ -576,212 +647,212 @@ one of the ooDialog methods that move the focus: <link linkend="tabtonext">TabTo
 </programlisting>
 
 <para>
-  The style= method changes the style of the associated button control.
-<note><title>Note</title>
-<para>
-  In the past, the documentation for this method was incomplete or misleading.
-  There are really two aspects to a button, its type (or kind) and its style.
-  Many of the button styles only have meaning within the same type of button.
-  These styles can not be applied to a button of a different type after the
-  button has been created.
+  The <emphasis role="italic">style=</emphasis> method changes the style of the associated button control.
 </para>
-<para>
-  For instance, the AUTOCHECKBOX style can only be applied to a check box type
-  of button.  Trying to give this style to a radio type button has no effect.
-  Because of this, certain of the style key words have no effect.  They are
-  listed here only because they were listed in previous versions of the
-  documentation.  This may have lead someone to use the key word in their code.
-  An example is the GROUPBOX key word. The group box type of button only has one
-  style. This style can not be applied to any other type of button, so setting
-  the style of any button to GROUPBOX has no effect, and has never had any
-  effect.
-</para>
-<para>
-  However, within each type of button, the styles that apply to that type of
-  button can be changed.  For instance, a check box type of button that has the
-  3STATE style, can be changed to have the AUTOCHECKBOX style or to have the
-  AUTO3STATE style.
-</para>
-</note></para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>newStyle</term>
-<listitem>
-<para>
-  A text string containing one or more of the following keywords separated by blanks.  Common sense
-  should be used when constructing the newStyle string. If mutually exclusive key words are used, the
-  outcome will be dependent on the order of the key words.
-</para>
-<para>
-  <simplelist type='vert' columns='3'>
-  <member>DEFPUSHBUTTON</member> <member>LEFTTEXT   </member> <member>BOTTOM      </member>
-  <member>PUSHBOX      </member> <member>RIGHTBUTTON</member> <member>VCENTER     </member>
-  <member>RADIO        </member> <member>NOTLEFTTEXT</member> <member>PUSHLIKE    </member>
-  <member>AUTORADIO    </member> <member>TEXT       </member> <member>MULTILINE   </member>
-  <member>CHECKBOX     </member> <member>ICON       </member> <member>NOTIFY      </member>
-  <member>AUTOCHECKBOX </member> <member>BITMAP     </member> <member>FLAT        </member>
-  <member>3STATE       </member> <member>LEFT       </member> <member>NOTPUSHLIKE </member>
-  <member>AUTO3STATE   </member> <member>RIGHT      </member> <member>NOTMULTILINE</member>
-  <member>GROUPBOX     </member> <member>HCENTER    </member> <member>NOTNOTIFY   </member>
-  <member>OWNERDRAW    </member> <member>TOP        </member> <member>NOTFLAT     </member>
-  </simplelist>
-<variablelist>
-<varlistentry><term>DEFPUSHBUTTON</term>
-<listitem><para>In a dialog, the default push button is the button that is
-  pushed when the Enter key is pressed.  Changing the default push button will
-  change the behavior of the dialog when the user presses the enter key.
-</para></listitem></varlistentry>
-<varlistentry><term>PUSHBOX</term>
-<listitem><para>A push button that does not display the button face or border,
-  only the text appears.  This button style is not applicable when Windows
-  themes are in use.
-</para></listitem></varlistentry>
-<varlistentry><term>RADIO</term>
-<listitem><para>A radio button the state of which has to be maintained by the
-  programmer.
-</para></listitem></varlistentry>
-<varlistentry><term>AUTO</term>
-<listitem><para>A radio button where the operating system maintains the check
-state for all radio buttons in the same group.  When one radio button in the
-group is checked by the user, the operating system unchecks all other buttons in
-the group.
-</para></listitem></varlistentry>
-<varlistentry><term>CHECKBOX</term>
-<listitem><para>A check box where the state has to be maintained by the
-  programmer.  The state can only be checked or unchecked.
-</para></listitem></varlistentry>
-<varlistentry><term>AUTOCHECKBOX</term>
-<listitem><para>A check box where the operating system maintains the check state
-  for the programmer.
-</para></listitem></varlistentry>
-<varlistentry><term>3STATE</term>
-<listitem><para>A check box button that has a grayed state as well as checked or
-unchecked.  The greyed state shows that the check state of the button is not
-determined.  The programmer needs to manage the state of the button when it is
-clicked.
-</para></listitem></varlistentry>
-<varlistentry><term>AUTO3STATE</term>
-<listitem><para>A check box button that is the same as a three-state check box
-except that the operating system maintains the check state for the programmer.
-</para></listitem></varlistentry>
-<varlistentry><term>GROUPBOX</term>
-<listitem><para>This key word has no effect.
-</para></listitem></varlistentry>
-<varlistentry><term>OWNERDRAW</term>
-<listitem><para>This key word has no effect.
-</para></listitem></varlistentry>
-<varlistentry><term>LEFTTEXT</term>
-<listitem><para>Places the text on the left of the button for a radio button or
-  check box.  This style and RIGHTBUTTON are equivalent.
-</para></listitem></varlistentry>
-<varlistentry><term>RIGHTBUTTON</term>
-<listitem><para>Places the button on the right of the text for a radio button
-  or a check box. This style is the same as LEFTTEXT.
-</para></listitem></varlistentry>
-<varlistentry><term>NOTLEFTTEXT</term>
-<listitem><para>Removes the LEFTTEXT style.
-</para></listitem></varlistentry>
-<varlistentry><term>TEXT</term>
-<listitem><para>The button displays text.
-</para></listitem></varlistentry>
-<varlistentry><term>ICON</term>
-<listitem><para>The button displays an icon image.
-</para></listitem></varlistentry>
-<varlistentry><term>BITMAP</term>
-<listitem><para>The button displays a bitmap image.
-</para></listitem></varlistentry>
-<varlistentry><term>LEFT</term>
-<listitem><para>The button has its text left-justified in the button rectangle.
-</para></listitem></varlistentry>
-<varlistentry><term>RIGHT</term>
-<listitem><para>The button has its text right-justified in the button rectangle.
-</para></listitem></varlistentry>
-<varlistentry><term>HCENTER</term>
-<listitem><para>The button has its text centered horizontally in the button
-  rectangle.
-</para></listitem></varlistentry>
-<varlistentry><term>TOP</term>
-<listitem><para>The text is placed at the top of the button rectangle.
-</para></listitem></varlistentry>
-<varlistentry><term>BOTTOM</term>
-<listitem><para>The text is placed at the bottom of the button rectangle.
-</para></listitem></varlistentry>
-<varlistentry><term>VCENTER</term>
-<listitem><para>The text is vertically centered in the button rectangle.
-</para></listitem></varlistentry>
-<varlistentry><term>PUSHLIKE</term>
-<listitem><para>Causes a radio button or check box button to behave like a push
-  button.
-</para></listitem></varlistentry>
-<varlistentry><term>MULTILINE</term>
-<listitem><para>Causes the text for a button to wrap to multiple lines if the
-  text is too long for the width of the button.
-</para></listitem></varlistentry>
-<varlistentry><term>NOTIFY</term>
-<listitem><para>Enables a button to send the kill focus and set focus messages.
-  See the <link linkend="mthConnectButtonEvent">connectButtonEvent</link> method
-  of the <link linkend="clsEventNotification">EventNotification Class</link>.  If the button
-  does not have this style, kill and set focus events will not be received, if
-  the programmer does <computeroutput>connectButtonEvent()</computeroutput> to
-  connect those events.
-</para></listitem></varlistentry>
-<varlistentry><term>FLAT</term>
-<listitem><para>Gives the button a flat appearance.  This style is not
-  applicable when Windows themes are in effect.
-</para></listitem></varlistentry>
-<varlistentry><term>NOTPUSHLIKE</term>
-<listitem><para>Removes the push like style.
-</para></listitem></varlistentry>
-<varlistentry><term>NOTMULTILINE</term>
-<listitem><para>Removes the multi-line style.
-</para></listitem></varlistentry>
-<varlistentry><term>NOTNOTIFY</term>
-<listitem><para>Removes the notify style.
-</para></listitem></varlistentry>
-<varlistentry><term>NOTFLAT</term>
-<listitem><para>Removes the flat style.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example 1:</emphasis></term>
-<listitem><para>The following example makes the OK button the default button:
-<programlisting>
-<![CDATA[
-button = MyDialog~newPushButton("IDOK")
-if button == .Nil then return
-button~style="DEFPUSHBUTTON"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example 2:</emphasis></term>
-<listitem><para>This example changes the text of a check box button depending on
-  the state another check box.  When the button text is long, the multi-line
-  style is added and the placement of the text in relation to the button
-  rectangle is changed.  When the text is short, the button style is set back to
-  the default style.
-<programlisting> <![CDATA[
-::method idCheckOne
-  use arg wParam, lParam
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+    <variablelist>
+      <varlistentry><term>newStyle [required]</term>
+      <listitem>
+      <para>
+        A text string containing one or more of the following keywords separated by blanks.  Common sense should be used
+        when constructing the newStyle string. If mutually exclusive key words are used, the outcome is undefined.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+        <member>DEFPUSHBUTTON</member> <member>LEFTTEXT   </member> <member>BOTTOM      </member>
+        <member>PUSHBOX      </member> <member>RIGHTBUTTON</member> <member>VCENTER     </member>
+        <member>RADIO        </member> <member>NOTLEFTTEXT</member> <member>PUSHLIKE    </member>
+        <member>AUTORADIO    </member> <member>TEXT       </member> <member>MULTILINE   </member>
+        <member>CHECKBOX     </member> <member>ICON       </member> <member>NOTIFY      </member>
+        <member>AUTOCHECKBOX </member> <member>BITMAP     </member> <member>FLAT        </member>
+        <member>3STATE       </member> <member>LEFT       </member> <member>NOTPUSHLIKE </member>
+        <member>AUTO3STATE   </member> <member>RIGHT      </member> <member>NOTMULTILINE</member>
+        <member>GROUPBOX     </member> <member>HCENTER    </member> <member>NOTNOTIFY   </member>
+        <member>OWNERDRAW    </member> <member>TOP        </member> <member>NOTFLAT     </member>
+        </simplelist>
+      </para>
+      <variablelist>
+      <varlistentry><term>DEFPUSHBUTTON</term>
+      <listitem><para>In a dialog, the default push button is the button that is
+        pushed when the Enter key is pressed.  Changing the default push button will
+        change the behavior of the dialog when the user presses the enter key.
+      </para></listitem></varlistentry>
+      <varlistentry><term>PUSHBOX</term>
+      <listitem><para>A push button that does not display the button face or border,
+        only the text appears.  This button style is not applicable when Windows
+        themes are in use.
+      </para></listitem></varlistentry>
+      <varlistentry><term>RADIO</term>
+      <listitem><para>A radio button the state of which has to be maintained by the
+        programmer.
+      </para></listitem></varlistentry>
+      <varlistentry><term>AUTO</term>
+      <listitem><para>A radio button where the operating system maintains the check
+      state for all radio buttons in the same group.  When one radio button in the
+      group is checked by the user, the operating system unchecks all other buttons in
+      the group.
+      </para></listitem></varlistentry>
+      <varlistentry><term>CHECKBOX</term>
+      <listitem><para>A check box where the state has to be maintained by the
+        programmer.  The state can only be checked or unchecked.
+      </para></listitem></varlistentry>
+      <varlistentry><term>AUTOCHECKBOX</term>
+      <listitem><para>A check box where the operating system maintains the check state
+        for the programmer.
+      </para></listitem></varlistentry>
+      <varlistentry><term>3STATE</term>
+      <listitem><para>A check box button that has a grayed state as well as checked or
+      unchecked.  The greyed state shows that the check state of the button is not
+      determined.  The programmer needs to manage the state of the button when it is
+      clicked.
+      </para></listitem></varlistentry>
+      <varlistentry><term>AUTO3STATE</term>
+      <listitem><para>A check box button that is the same as a three-state check box
+      except that the operating system maintains the check state for the programmer.
+      </para></listitem></varlistentry>
+      <varlistentry><term>GROUPBOX</term>
+      <listitem><para>This key word has no effect.
+      </para></listitem></varlistentry>
+      <varlistentry><term>OWNERDRAW</term>
+      <listitem><para>This key word has no effect.
+      </para></listitem></varlistentry>
+      <varlistentry><term>LEFTTEXT</term>
+      <listitem><para>Places the text on the left of the button for a radio button or
+        check box.  This style and RIGHTBUTTON are equivalent.
+      </para></listitem></varlistentry>
+      <varlistentry><term>RIGHTBUTTON</term>
+      <listitem><para>Places the button on the right of the text for a radio button
+        or a check box. This style is the same as LEFTTEXT.
+      </para></listitem></varlistentry>
+      <varlistentry><term>NOTLEFTTEXT</term>
+      <listitem><para>Removes the LEFTTEXT style.
+      </para></listitem></varlistentry>
+      <varlistentry><term>TEXT</term>
+      <listitem><para>The button displays text.
+      </para></listitem></varlistentry>
+      <varlistentry><term>ICON</term>
+      <listitem><para>The button displays an icon image.
+      </para></listitem></varlistentry>
+      <varlistentry><term>BITMAP</term>
+      <listitem><para>The button displays a bitmap image.
+      </para></listitem></varlistentry>
+      <varlistentry><term>LEFT</term>
+      <listitem><para>The button has its text left-justified in the button rectangle.
+      </para></listitem></varlistentry>
+      <varlistentry><term>RIGHT</term>
+      <listitem><para>The button has its text right-justified in the button rectangle.
+      </para></listitem></varlistentry>
+      <varlistentry><term>HCENTER</term>
+      <listitem><para>The button has its text centered horizontally in the button
+        rectangle.
+      </para></listitem></varlistentry>
+      <varlistentry><term>TOP</term>
+      <listitem><para>The text is placed at the top of the button rectangle.
+      </para></listitem></varlistentry>
+      <varlistentry><term>BOTTOM</term>
+      <listitem><para>The text is placed at the bottom of the button rectangle.
+      </para></listitem></varlistentry>
+      <varlistentry><term>VCENTER</term>
+      <listitem><para>The text is vertically centered in the button rectangle.
+      </para></listitem></varlistentry>
+      <varlistentry><term>PUSHLIKE</term>
+      <listitem><para>Causes a radio button or check box button to behave like a push
+        button.
+      </para></listitem></varlistentry>
+      <varlistentry><term>MULTILINE</term>
+      <listitem><para>Causes the text for a button to wrap to multiple lines if the
+        text is too long for the width of the button.
+      </para></listitem></varlistentry>
+      <varlistentry><term>NOTIFY</term>
+      <listitem><para>Enables a button to send the kill focus and set focus messages.
+        See the <link linkend="mthConnectButtonEvent">connectButtonEvent</link> method
+        of the <link linkend="clsEventNotification">EventNotification Class</link>.  If the button
+        does not have this style, kill and set focus events will not be received, if
+        the programmer does <computeroutput>connectButtonEvent()</computeroutput> to
+        connect those events.
+      </para></listitem></varlistentry>
+      <varlistentry><term>FLAT</term>
+      <listitem><para>Gives the button a flat appearance.  This style is not
+        applicable when Windows themes are in effect.
+      </para></listitem></varlistentry>
+      <varlistentry><term>NOTPUSHLIKE</term>
+      <listitem><para>Removes the push like style.
+      </para></listitem></varlistentry>
+      <varlistentry><term>NOTMULTILINE</term>
+      <listitem><para>Removes the multi-line style.
+      </para></listitem></varlistentry>
+      <varlistentry><term>NOTNOTIFY</term>
+      <listitem><para>Removes the notify style.
+      </para></listitem></varlistentry>
+      <varlistentry><term>NOTFLAT</term>
+      <listitem><para>Removes the flat style.
+      </para></listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    In the past, the documentation for this method was incomplete or misleading. There are really two aspects to a button,
+    its type (or kind) and its style. Many of the button styles only have meaning within the same type of button. These
+    styles can not be applied to a button of a different type after the button has been created.
+  </para>
+  <para>
+    For instance, the AUTOCHECKBOX style can only be applied to a check box type of button.  Trying to give this style to
+    a radio type button has no effect. Because of this, certain of the style key words have no effect.  They are listed
+    here only because they were listed in previous versions of the documentation.  This may have lead someone to use the
+    key word in their code. An example is the GROUPBOX key word. The group box type of button only has one style. This
+    style can not be applied to any other type of button, so setting the style of any button to GROUPBOX has no effect,
+    and has never had any effect.
+  </para>
+  <para>
+    However, within each type of button, the styles that apply to that type of button can be changed.  For instance, a
+    check box type of button that has the 3STATE style, can be changed to have the AUTOCHECKBOX style or to have the
+    AUTO3STATE style.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example 1:</emphasis></term>
+  <listitem><para>The following example makes the OK button the default button:
+  <programlisting>
+  <![CDATA[
+  button = MyDialog~newPushButton("IDOK")
+  if button == .Nil then return
+  button~style="DEFPUSHBUTTON"
+  ]]>
+  </programlisting>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example 2:</emphasis></term>
+  <listitem><para>This example changes the text of a check box button depending on
+    the state another check box.  When the button text is long, the multi-line
+    style is added and the placement of the text in relation to the button
+    rectangle is changed.  When the text is short, the button style is set back to
+    the default style.
+  <programlisting> <![CDATA[
+  ::method idCheckOne
+    use arg wParam, lParam
 
-  id = .DlgUtil~loWord(wParam)
-  if self~newCheckBox(id)~checked then do
-    chkButton = self~newCheckBox(IDC_CHECK_TWO)
-    chkButton~style = "MULTILINE TOP HCENTER"
-    chkButton~setTitle("Use IPv6 not IPv4 during this connection")
-  end
-  else do
-    chkButton = self~newCheckBox(IDC_CHECK_TWO)
-    chkButton~style = "NOTMULTILINE VCENTER LEFT"
-    chkButton~setTitle("Connect")
-  end
+    id = .DlgUtil~loWord(wParam)
+    if self~newCheckBox(id)~checked then do
+      chkButton = self~newCheckBox(IDC_CHECK_TWO)
+      chkButton~style = "MULTILINE TOP HCENTER"
+      chkButton~setTitle("Use IPv6 not IPv4 during this connection")
+    end
+    else do
+      chkButton = self~newCheckBox(IDC_CHECK_TWO)
+      chkButton~style = "NOTMULTILINE VCENTER LEFT"
+      chkButton~setTitle("Connect")
+    end
 
-]]>
-</programlisting>
-</para></listitem></varlistentry>
+  ]]>
+  </programlisting>
+  </para></listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -1378,11 +1449,11 @@ return 0
 </section>  <!-- End ButtonControl::setImage() -->
 
 
-<section id="changebitmap"><title>ChangeBitmap</title>
-<indexterm><primary>ChangeBitmap</primary></indexterm>
+<section id="mthChangeBitmap"><title>changeBitmap</title>
+<indexterm><primary>changeBitmap</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~ChangeBitmap(--bmpNormal--,--+------------+--,-->
+>>-aButtonControl~changeBitmap(--bmpNormal--,--+------------+--,-->
                                                +-bmpFocused-+
 
 >--+-------------+--,--+-------------+--+-----------------+--)-><
@@ -1395,7 +1466,7 @@ return 0
 ]]>
 </programlisting>
 
-<para>The ChangeBitmap method changes the bitmap of a
+<para>The changeBitmap method changes the bitmap of a
 bitmap button.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1461,7 +1532,7 @@ library.
 <![CDATA[
 button = MyDialog~newPushButton("IDOK")
 if button == .Nil then return
-button~ChangeBitmap("AddBut_n.bmp", "AddBut_f.bmp", "AddBut_s.bmp", ,
+button~changeBitmap("AddBut_n.bmp", "AddBut_f.bmp", "AddBut_s.bmp", ,
 "AddBut_d.bmp", "FRAME")
 ]]>
 </programlisting>
@@ -1470,49 +1541,157 @@ button~ChangeBitmap("AddBut_n.bmp", "AddBut_f.bmp", "AddBut_s.bmp", ,
 <para>See also <link linkend="mthInstallBitmapButton">installBitmapButton</link>.</para>
 </section>
 
-<section id="displacebitmap"><title>DisplaceBitmap</title>
-<indexterm><primary>DisplaceBitmap</primary>
-<secondary>Button class</secondary></indexterm>
+<section id="mthGetBitmapPosition"><title>getBitmapPosition</title>
+<indexterm><primary>getBitmapPosition</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>getBitmapPosition</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~DisplaceBitmap(--x--,--y--)------------------><
+>>--getBitmapPosition(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
 
+<para>
+  Retrieves the postion, (X,Y) co-ordinates of the upper left corner of a bitmap within a bitmap button.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PushButton::getBitmapPosition() -->
+
+<section id="mthSetBitmapPosition"><title>setBitmapPosition</title>
+<indexterm><primary>setBitmapPosition</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>setBitmapPosition</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+Form 1:
+
+>>--setBitmapPosition(--point--)-----------------><
+
+Form 2:
+
+>>--setBitmapPosition(--x--,--y--)---------------><
+
+Generic form:
+
+>>--setBitmapPosition(--newPosition--)-----------><
 
 ]]>
 </programlisting>
 
-<para>The DisplaceBitmap method sets the position of
-a bitmap within a bitmap button.</para>
+<para>
+  Sets the position of the upper left corner of the bitmap within the <link linkend="defClientArea">client</link> area
+  of a bitmap button.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>The horizontal displacement, in screen pixels. A negative value can
-also be used.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>The vertical displacement, in screen pixels. A negative value can also
-be used.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example moves the bitmap within the associated bitmap
-button 4 screen pixels to the right and 3 pixels upward:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The argument(s) specify the (x, y) co-ordinates of the bitmap. These co-oridnates can be specifed either as a <link
+    linkend="clsPoint">object</link> or as 2 separate whole number arguments, as in Form 2.
+  <variablelist>
+    <varlistentry><term>newPosition [required]</term>
+    <listitem>
+    <para>
+      Whether specified as a <computeroutput>point</computeroutput> object, or using the <emphasis
+      role="italic">x, y</emphasis> format, both the x and y co-ordinates are required.  If only one argument is used, it
+      must be a <computeroutput>point</computeroutput> object. The co-ordinates are specified as client area
+      co-ordinates, in pixels.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns 0 for success and 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Recall that client area co-ordinates are relative to the (0, 0) point of the client area of a window. Both or either
+    of the co-ordinates can be negative. A negative x will place the bitmap to the left of the edge of the button. A
+    negative y will place the bitmap above the top of the bitmap.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleSetBitmapPosition"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+
 <programlisting>
 <![CDATA[
-button = MyDialog~newPushButton("IDOK")
-if button == .Nil then return
-parse value button~GetBmpDisplacement with dx dy
-button~DisplacementBitmap(244, dx+4, dy-3)
+    p = .Point~new
+    button = self~newPushButton(IDC_PB_HORSEBITMAP)
+    if button~getBitmapPosition(p) then
+        p~x += 4
+        p~y += 3
+        button~setBitmapPosition(p)
+    end
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End PushButton::setBitmapPosition() -->
 
-<section id="getbmpdisplacement"><title>GetBmpDisplacement</title>
+<section id="mthGetBmpDisplacement"><title>GetBmpDisplacement</title>
 <indexterm><primary>GetBmpDisplacement</primary>
 <secondary>Button class</secondary></indexterm>
 <programlisting>
@@ -1531,14 +1710,84 @@ of a bitmap within a bitmap button.</para>
 and separated by a blank.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="displacebitmap">DisplaceBitmap</link>.
-</para></listitem></varlistentry>
+<listitem>
+<para>
+  See <link linkend="mthDisplaceBitmap">displaceBitmap</link>. </para></listitem></varlistentry>
+</variablelist> </section>
+
+<section id="mthDisplaceBitmap"><title>displaceBitmap</title>
+<indexterm><primary>displaceBitmap</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>displaceBitmap</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--displaceBitmap(--x--,--y--)------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">displaceBitmap</emphasis> method sets the position of a bitmap within the <link
+  linkend="defClientArea">client</link> area of a bitmap button.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+    <varlistentry><term>x [required]</term>
+    <listitem>
+    <para>
+      The x co-ordinate of the top left corner of the bitmap within the client area of the bitmap button.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>y [required]</term>
+    <listitem>
+    <para>
+      The y co-ordinate of the upper left corner of the bitmap within the client area of the bitmap button.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Both the x and y co-ordinates are in pixels and can have negative values.
+  </para>
+  <para>
+    Recall that client area co-oridnates are specified in relation to the (0, 0) point of the client area of a window.
+    Negative values then place the bitmap outside of the client area of the bitmap
+  </para>
+  <para>
+    The <link linkend="mthSetBitmapPosition">setBitmapPosition</link> method is most likely a better method to use than
+    the <emphasis role="italic">displaceBitmap</emphasis>.  It accepts eithe a <computeroutput>Point</computeroutput>
+    object or the individual x and y co-ordinates to specify the position of the bitmap. Set position more accurately
+    describes what the method does than displace.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example moves the bitmap within the associated bitmap button 4 screen pixels to the right and 3
+    pixels upward. Contrast this with the <link linkend="exampleSetBitmapPosition">setBitmapPosition</link> example:
+<programlisting>
+<![CDATA[
+
+  button = self~newPushButton("IDC_PB_BITMAP1")
+  if button == .nil then return
+  parse value button~getBmpDisplacement with dx dy
+  button~displaceBitmap(dx+4, dy-3)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="scrollbc"><title>scroll</title>
-<indexterm><primary>scroll</primary>
-<secondary>Button class</secondary></indexterm>
+<section id="mthScrollClsButton"><title>scroll</title>
+<indexterm><primary>scroll</primary><secondary>Button class</secondary></indexterm>
+<indexterm><primary>Button class</primary><secondary>scroll</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aButtonControl~scroll(--xPos--,--yPos--,--left--,--top--,--right--,--bottom--)-><
@@ -1565,7 +1814,7 @@ color. It is used to move bitmaps within bitmap buttons.</para>
 </variablelist>
 </section>
 
-<section id="scrolltextbc"><title>ScrollText</title>
+<section id="mthScrollTtextClsButton"><title>ScrollText</title>
 <indexterm><primary>ScrollText</primary>
 <secondary>Button class</secondary></indexterm>
 <programlisting>
@@ -1655,7 +1904,7 @@ button~ScrollText("Hello world!", "Arial", 36, "BOLD ITALIC", 2, 3, 15, 4)
 </variablelist>
 </section>
 
-<section id="getbitmapsizex"><title>GetBitmapSizeX</title>
+<section id="mthGetBitmapSizeX"><title>GetBitmapSizeX</title>
 <indexterm><primary>GetBitmapSizeX</primary>
 <secondary>Button class</secondary></indexterm>
 <programlisting>
@@ -1675,7 +1924,7 @@ the bitmap that is set for the associated button.</para>
 </variablelist>
 </section>
 
-<section id="getbitmapsizey"><title>GetBitmapSizeY</title>
+<section id="mthGetBitmapSizeY"><title>GetBitmapSizeY</title>
 <indexterm><primary>GetBitmapSizeY</primary>
 <secondary>Button class</secondary></indexterm>
 <programlisting>
@@ -1695,7 +1944,7 @@ of the bitmap that is set for the associated button.</para>
 </variablelist>
 </section>
 
-<section id="drawbitmap"><title>DrawBitmap</title>
+<section id="mthDrawBitmap"><title>DrawBitmap</title>
 <indexterm><primary>DrawBitmap</primary>
 <secondary>Button class</secondary></indexterm>
 <programlisting>
@@ -1714,10 +1963,10 @@ of the bitmap that is set for the associated button.</para>
 
 <para>The DrawBitmap method draws the bitmap of the associated
 bitmap button. You can also use this method to move a bitmap or part of it.</para>
-<para>Contrary to the method <link linkend="displacebitmap">DisplaceBitmap</link>, which sets a permanent
+<para>Contrary to the method <link linkend="mthDisplaceBitmap">displaceBitmap</link>, which sets a permanent
 position for the bitmap, DrawBitmap immediately draws the bitmap, or part
 of it, at the specified position. If the button must be refreshed, the bitmap
-is drawn at the position set with DisplaceBitmap. DrawBitmap is used by <link linkend="scrollbitmapfromto">ScrollBitmapFromTo</link>, for example.</para>
+is drawn at the position set with DisplaceBitmap. DrawBitmap is used by <link linkend="mthScrolBbitmapFromTo">ScrollBitmapFromTo</link>, for example.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -1750,7 +1999,7 @@ to display a single image of the bitmap.
 </para></note>
 </section>
 
-<section id="dimbitmap"><title>DimBitmap</title>
+<section id="mthDimBitmap"><title>DimBitmap</title>
 <indexterm><primary>DimBitmap</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1792,7 +2041,7 @@ The default is 10.
 </variablelist>
 </section>
 
-<section id="scrollbitmapfromto"><title>ScrollBitmapFromTo</title>
+<section id="mthScrolBbitmapFromTo"><title>ScrollBitmapFromTo</title>
 <indexterm><primary>ScrollBitmapFromTo</primary>
 <secondary>Button class</secondary></indexterm>
 <programlisting>

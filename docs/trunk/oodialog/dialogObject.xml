@@ -776,8 +776,8 @@
 <entry><link linkend="mthDisconnectKeyPressBaseDialog">disconnectKeyPress</link></entry>
 </row>
 <row>
-<entry>DisplaceBitmap</entry>
-<entry><link linkend="h000726">DisplaceBitmap</link></entry>
+<entry>displaceBitmap</entry>
+<entry><link linkend="h000726">displaceBitmap</link></entry>
 </row>
 <row>
 <entry>DrawBitmap</entry>
@@ -816,8 +816,8 @@
 <entry><link linkend="h000408">FindListEntry</link></entry>
 </row>
 <row>
-<entry>FocusItem</entry>
-<entry><link linkend="focusitem">FocusItem</link></entry>
+<entry>focusItem</entry>
+<entry><link linkend="mthFocusItem">focusItem</link></entry>
 </row>
 <row>
 <entry>foregroundWindow</entry>
@@ -1254,8 +1254,8 @@
 <entry><link linkend="mthSetEditData">setEditData</link></entry>
 </row>
 <row>
-<entry>SetFocus</entry>
-<entry><link linkend="setfocus">SetFocus</link></entry>
+<entry>setFocus</entry>
+<entry><link linkend="mthSetFocus">setFocus</link></entry>
 </row>
 <row>
 <entry>SetFocusToWindow</entry>
@@ -1342,12 +1342,12 @@
 <entry><link linkend="h001277">ShowWindowFast</link></entry>
 </row>
 <row>
-<entry>TabToNext</entry>
-<entry><link linkend="tabtonext">TabToNext</link></entry>
+<entry>tabToNext</entry>
+<entry><link linkend="mthTabToNext">tabToNext</link></entry>
 </row>
 <row>
-<entry>TabToPrevious</entry>
-<entry><link linkend="tabtoprevious">TabToPrevious</link></entry>
+<entry>tabToPrevious</entry>
+<entry><link linkend="tabtoprevious">tabToPrevious</link></entry>
 </row>
 <row>
 <entry>TiledBackgroundBitmap</entry>
@@ -6909,17 +6909,17 @@ being maximized.
 </variablelist>
 </section>
 
-<section id="focusitem"><title>FocusItem</title>
-<indexterm><primary>FocusItem</primary></indexterm>
+<section id="mthFocusItem"><title>focusItem</title>
+<indexterm><primary>focusItem</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~FocusItem(--id--)------------------------------><
+>>-aBaseDialog~focusItem(--id--)------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The FocusItem method sets the input focus to a
+<para>The focusItem method sets the input focus to a
 particular dialog item. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6936,8 +6936,8 @@ particular dialog item. </para>
 </variablelist>
 </section>
 
-<section id="tabtonext"><title>TabToNext</title>
-<indexterm><primary>TabToNext</primary></indexterm>
+<section id="mthTabToNext"><title>tabToNext</title>
+<indexterm><primary>tabToNext</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aBaseDialog~TabToNext--------------------------------------><
@@ -6946,9 +6946,9 @@ particular dialog item. </para>
 ]]>
 </programlisting>
 
-<para>The TabToNext method sets the input focus to the next dialog control
+<para>The tabToNext method sets the input focus to the next dialog control
 with a tab stop.  This performs the same action as if the user pressed the
-tab key in the dialog.  Like many of the other methods, TabToNext is a method
+tab key in the dialog.  Like many of the other methods, tabToNext is a method
 of both a BaseDialog and a DialogControl.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -6969,8 +6969,8 @@ could not be determined.
 </variablelist>
 </section>
 
-<section id="tabtoprevious"><title>TabToPrevious</title>
-<indexterm><primary>TabToPrevious</primary></indexterm>
+<section id="tabtoprevious"><title>tabToPrevious</title>
+<indexterm><primary>tabToPrevious</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aBaseDialog~TabToPrevious----------------------------------><
@@ -6979,9 +6979,9 @@ could not be determined.
 ]]>
 </programlisting>
 
-<para>This method is the reverse of TabToNext and sets the input focus to
+<para>This method is the reverse of tabToNext and sets the input focus to
 the previous dialog control with a tab stop.  This performs the same action
-as if the user pressed the shift-tab key in the dialog.  TabToPrevious is a
+as if the user pressed the shift-tab key in the dialog.  tabToPrevious is a
 method of both a BaseDialog and a DialogControl.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -8554,7 +8554,7 @@ the next move. This determines the speed at which the bitmap moves.
 </para></listitem></varlistentry>
 <varlistentry><term>displace</term>
 <listitem><para>If set to 1 the internal position of the bitmap (bitmap displacement)
-is updated after each incremental move. <link linkend="h000726">DisplaceBitmap</link> is
+is updated after each incremental move. <link linkend="h000726">displaceBitmap</link> is
 called after each step to adjust the bitmap position.  If the dialog is redrawn,
 the bitmap is shown at the correct position, but the drawing is slower.
 </para></listitem></varlistentry>
@@ -8620,18 +8620,18 @@ information.
 </variablelist>
 </section>
 
-<section id="h000726"><title>DisplaceBitmap</title>
-<indexterm><primary>DisplaceBitmap</primary>
+<section id="h000726"><title>displaceBitmap</title>
+<indexterm><primary>displaceBitmap</primary>
 <secondary>BaseDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~DisplaceBitmap(--id--,--x--,--y--)-------------><
+>>-aBaseDialog~displaceBitmap(--id--,--x--,--y--)-------------><
 
 
 ]]>
 </programlisting>
 
-<para>The DisplaceBitmap method sets the position of
+<para>The displaceBitmap method sets the position of
 a bitmap within a button. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8655,7 +8655,7 @@ four screen pixels to the right and three pixels upward:
 
 <programlisting>
 <![CDATA[
-MyBaseDialog~DisplaceBitmap(244, 4, -3)
+MyBaseDialog~displaceBitmap(244, 4, -3)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
