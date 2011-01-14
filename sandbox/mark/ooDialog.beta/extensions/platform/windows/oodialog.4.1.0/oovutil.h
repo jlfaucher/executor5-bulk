@@ -68,7 +68,7 @@
 
 #define OODDLL "oodialog.dll"
 #define OOD_LVL_MAJOR               4
-#define OOD_LVL_MINOR               2
+#define OOD_LVL_MINOR               1
 #define OOD_LVL_BIT                 0
 
 #define MSG_TERMINATE "1DLGDELETED1"
