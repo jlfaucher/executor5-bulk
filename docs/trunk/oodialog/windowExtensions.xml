@@ -1234,60 +1234,101 @@ failed.
 <indexterm><primary>dialog control object</primary><secondary>setCursorPos</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setCursorPos(--x--,--y--)------------------------><
+
+Form 1:
+
+>>--setCursorPos(--point--)----------------------><
+
+Form 2:
+
+>>--setCursorPos(--x--,--y--)--------------------><
+
+Generic form:
+
+>>--setCursorPos(--newPosition--)----------------><
 
 ]]>
 </programlisting>
 
-<para>The setCursorPos method moves the mouse cursor
-to the specified position. This method can be used to force the repainting
-of the mouse cursor or to keep the mouse cursor within a specific rectangle.</para>
+<para>
+  The <emphasis role="italic">setCursorPos</emphasis> method moves the mouse cursor to the specified position. This
+  method can be used to force the repainting of the mouse cursor or to keep the mouse cursor within a specific
+  rectangle.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>x</term>
-<listitem><para>The horizontal position of the mouse cursor, in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>The vertical position of the mouse cursor, in screen pixels.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Moving the mouse cursor was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Moving the mouse cursor failed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example shows two methods: one indicating that processing
-has started and one indicating that processing has completed. The method IndicateBeginProcessing
-changes the shape of the mouse cursor to the WAIT cursor and IndicateEndProcessing
-restores the original mouse cursor shape. Both methods retrieve the current
-position of the mouse cursor and move it by one screen pixel in each direction
-to force the repainting of the mouse cursor.</para>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The argument(s) specify the (x, y) coordinates for the new position of the mouse cursor. These coordinates can be
+    specifed either as a <link linkend="clsPoint">object</link> or as 2 separate whole number arguments, as in Form 2.
+    <variablelist>
+      <varlistentry><term>newPosition [required]</term>
+      <listitem>
+      <para>
+        Whether the coordinates are specified as a <computeroutput>point</computeroutput> object or in the x, y format
+        both coordinates are required. The coordinates are specified as <link
+        linkend="defScreenCoordinates">screen</link> coordinates.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Moving the mouse cursor was successful.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Moving the mouse cursor failed.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleSetCursorPos"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example shows two methods: one indicating that processing has started and one indicating that
+    processing has completed. The method <emphasis role="italic">indicateBeginProcessing</emphasis> changes the shape of
+    the mouse cursor to the WAIT cursor and <emphasis role="italic">indicateEndProcessing</emphasis> restores the
+    original mouse cursor shape. Both methods retrieve the current position of the mouse cursor and move it by one
+    screen pixel in each direction to force the repainting of the mouse cursor.
+  </para>
 <programlisting>
 <![CDATA[
-::method IndicateBeginProcessing
-  self~Current_Cursor = self~cursor_wait
-  parse value self~cursorPos with curx cury
-  self~setCursorPos(curx+1, cury+1)
+::method indicateBeginProcessing
+  self~current_Cursor = self~cursor_wait
+  p = self~getCursorPos
+  self~setCursorPos(p++)
 
-::method IndicateEndProcessing
+::method indicateEndProcessing
   self~restoreCursorShape(self~Current_Cursor)
-  parse value self~cursorPos with curx cury
-  self~setCursorPos(curx-1, cury-1)
+  p = self~getCursorPos
+  self~setCursorPos(p++)
 ]]>
 </programlisting>
-<para>See <link linkend="mthDefListDragHandler">defListDragHandler</link> for
-another example on how to use the mouse methods.</para>
-</listitem></varlistentry>
+  <para>
+    The <link linkend="mthDefListDragHandler">defListDragHandler</link> method documentation has another example on how
+    to use the mouse methods.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -1299,13 +1340,13 @@ another example on how to use the mouse methods.</para>
 <indexterm><primary>dialog control object</primary><secondary>removeBitmap</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getCursorPos-------------------------------------><
+>>--getCursorPos---------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Retrieves the current cursor position in pixels.
+  Retrieves the current position of the cursor.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1317,7 +1358,8 @@ another example on how to use the mouse methods.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the postion, in pixels, as a <computeroutput>.Point</computeroutput> object.
+    Returns the postion, in <link linkend="defScreenCoordinates">screen</link> coodinates, as a
+    <link linkend="clsPoint">point</link> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1325,16 +1367,15 @@ another example on how to use the mouse methods.</para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example TODO add example...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The <link linkend="exampleSetCursorPos">setCursorPos</link> example uses the <emphasis
+    role="italic">getCursorPos</emphasis> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1562,7 +1603,7 @@ of the mouse cursor.</para>
     <varlistentry><term>x, y [required]</term>
     <listitem>
     <para>
-      The starting position of the text, in pixels. The position co-ordinates are relative to the window, or the client
+      The starting position of the text, in pixels. The position coordinates are relative to the window, or the client
       area of the window, not relative to the screen.
     </para>
     </listitem></varlistentry>

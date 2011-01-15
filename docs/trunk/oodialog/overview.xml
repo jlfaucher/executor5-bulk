@@ -573,14 +573,28 @@ xPixels = xDialogUnits * self~FactorX
 
 <section id="defClientArea"><title>Client / Nonclient Area</title>
 <para>
-  The <emphasis role="italic">client area</emphasis> is the part of a window where, normally, an application displays
-  its output. The title bar, menu bar, window menu, minimize and maximize buttons, sizing border, and scroll bars are
-  referred to collectively as the window's <emphasis role="italic">nonclient</emphasis> area. The operating system
-  manages most aspects of the nonclient area. The application manages the appearance and behavior of its client area.
+  The <emphasis role="italic">client area</emphasis> of a window is the part of a window where, normally, the window
+  does its active drawing. For a top-level window this is usually where an application displays its output. The title
+  bar, menu bar, window menu, minimize and maximize buttons, sizing border, and scroll bars are referred to
+  collectively as the window's <emphasis role="italic">nonclient</emphasis> area. The operating system manages most
+  aspects of the nonclient area. The application manages the appearance and behavior of its client area.
 </para>
 <para>
-  For dialogs, the client area is the area where the dialog draws its controls. For dialog controls, the client area is
-  where the control draws itself. The nonclient area would be the border of the control, if it has one.
+  Dialogs are top-level windows, and the client area is the area where the dialog draws its controls. The nonclient
+  area is the border, title bar, etc.. For dialog controls, the client area is where the control draws itself. The
+  nonclient area would be the border of the control, if it has one.
+</para>
+</section>
+
+<section id="defScreenCoordinates"><title>Screen / Client Coordinates</title>
+<para>
+  Points on the screen are described as x and y coordinate pairs (x,y). The x coordinates increase to the right, y
+  coordinates increase towards the bottom. <emphasis role="italic">Screen</emphasis> and <emphasis
+  role="italic">client</emphasis> coordinates are used to distinguish the origin (0,0) of the coordinate. For a screen
+  coordinate, the origin is the upper left corner of the primary display device, typically a monitor, and usually called
+  the screen. Client coordinates on the other hand have an origin of the upper left corner of the <link
+  linkend="defClientArte">client</link> area of the window.  Both screen and client coordinates are always given in the
+  device unit of the display, which for all practical purposes is a <link linkend="defPixel">pixel</link>.
 </para>
 </section>
 
