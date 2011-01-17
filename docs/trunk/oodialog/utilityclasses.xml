@@ -813,6 +813,878 @@ return .true
 </section> <!-- End DlgUtil Class -->
 
 
+<section id="clsWindow"><title>Window Class</title>
+<indexterm><primary>Window class</primary></indexterm>
+<para>
+  A <emphasis role="italic">Window</emphasis> object allows the invocation of methods common to every window.  It does
+  this by inheriting the <emphasis role="italic">WindowBase</emphasis> class. Other than the <link
+  linkend="mthNewClsWindow">new</link>() method, the <emphasis role="italic">Window</emphasis> class provides no other
+  methods of its own.
+</para>
+
+<section id="sctMethodsWindow"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>Window</computeroutput> class:
+<table id="tblMethodsWindow" frame="all"> <title>Window Class Method Reference</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Window Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsWindow">new</link></entry>
+<entry>Instantiates a new window object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbwFactorX">factorX</link></entry>
+<entry>The horizontal size of one dialog unit in pixels. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="wbwFactorY">factorY</link></entry>
+<entry>The vertical size of one dialog unit in pixels. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="wbwHwnd">hwnd</link></entry>
+<entry>The window handle of the window.</entry>
+</row>
+<row>
+<entry><link linkend="wbwInitCode">initCode</link></entry>
+<entry>Has no meaning, always 0.</entry>
+</row>
+<row>
+<entry><link linkend="wbwPixelCX">pixelCX</link></entry>
+<entry>The width of the window in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbwPixelCY">pixelCY</link></entry>
+<entry>The height of the window in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbwSizeX">sizeX</link></entry>
+<entry>The width of the window in dialog units. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="wbwSizeY">sizeY</link></entry>
+<entry>The height of the window in dialog units. (Inaccurate.)</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbwClear">clear</link></entry>
+<entry>Clears the client area of the window by painting it with the background brush.</entry>
+</row>
+<row>
+<entry><link linkend="wbwClient2screen">client2screen</link></entry>
+<entry>Converts a point or points in client-area coordinates of the window to its screen coordinates.</entry>
+</row>
+<row>
+<entry><link linkend="wbwClientRect">clientRect</link></entry>
+<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the window's client area in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbwClientToScreen">clientToScreen</link></entry>
+<entry>Converts client-area coordinates of the window to its screen coordinates.</entry>
+</row>
+<row>
+<entry><link linkend="wbwEnable">enable</link></entry>
+<entry>Enables the window.</entry>
+</row>
+<row>
+<entry><link linkend="wbwDisable">disable</link></entry>
+<entry>Disables the window.</entry>
+</row>
+<row>
+<entry><link linkend="wbwDisplay">display</link></entry>
+<entry>Shows or hides the window.</entry>
+</row>
+<row>
+<entry><link linkend="wbwDraw">draw</link></entry>
+<entry>Redraws the entire client area of the window immediately.</entry>
+</row>
+<row>
+<entry><link linkend="wbwForegroundWindow">foregroundWindow</link></entry>
+<entry>Returns the handle of the window in the foreground.</entry>
+</row>
+<row>
+<entry><link linkend="wbwGetClientRect">getClientRect</link></entry>
+<entry>Returns the dimensions of the window's client area.</entry>
+</row>
+<row>
+<entry><link linkend="wbwGetExStyleRaw">getExStyleRaw</link></entry>
+<entry>Retrieves the numeric value of the window's extended style flags.</entry>
+</row>
+<row>
+<entry><link linkend="wbwGetID">getID</link></entry>
+<entry>Retrieves the identification number of the window.</entry>
+</row>
+<row>
+<entry><link linkend="wbwGetPos">getPos</link></entry>
+<entry>Returns the position of the window in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbwGetRealPos">getRealPos</link></entry>
+<entry>Returns the position of the window in pixels as a <computeroutput>Point</computeroutput> object.</entry>
+</row>
+<row>
+<entry><link linkend="wbwGetRealSize">getRealSize</link></entry>
+<entry>Returns the size of the window in pixels as a <computeroutput>Size</computeroutput> object.</entry>
+</row>
+<row>
+<entry><link linkend="wbwGetRect">getRect</link></entry>
+<entry>Returns the dimesions of the window.</entry>
+</row>
+<row>
+<entry><link linkend="wbwGetSize">getSize</link></entry>
+<entry>Returns the size of the window in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbwGetStyleRaw">getStyleRaw</link></entry>
+<entry>Retrieves the numeric value of the window's style flags.</entry>
+</row>
+<row>
+<entry><link linkend="wbwGetText">getText</link></entry>
+<entry>Gets the text of the window.</entry>
+</row>
+<row>
+<entry><link linkend="wbwGetTextSizePx">getTextSizePx</link></entry>
+<entry>Calculates the size needed for a string in pixels <emphasis role="bold">(preferred method.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbwGetTextSizeScreen">getTextSizeScreen</link></entry>
+<entry>Calculates the size needed for a string in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbwHide">hide</link></entry>
+<entry>Makes the window invisible and repaints it.</entry>
+</row>
+<row>
+<entry><link linkend="wbwHideFast">hideFast</link></entry>
+<entry>Marks the window as invisible</entry>
+</row>
+<row>
+<entry><link linkend="wbwIsEnabled">isEnabled</link></entry>
+<entry>Tests if the window is enabled.</entry>
+</row>
+<row>
+<entry><link linkend="wbwIsVisible">isVisible</link></entry>
+<entry>Tests if the window is visible.</entry>
+</row>
+<row>
+<entry><link linkend="wbwMove">move</link></entry>
+<entry>Moves the window to the position specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbwMoveTo">moveTo</link></entry>
+<entry>Moves the window to the position specified in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbwRedraw">redraw</link></entry>
+<entry>Redraws the entire window and all its child windows immediately.</entry>
+</row>
+<row>
+<entry><link linkend="wbwRedrawClient">redrawClient</link></entry>
+<entry>Redraws the entire client area of the window immediately.</entry>
+</row>
+<row>
+<entry><link linkend="wbwResize">resize</link></entry>
+<entry>Resizes the window to the size specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbwResizeTo">resizeTo</link></entry>
+<entry>Resizes the window to the size specified in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbwScreen2client">screen2client</link></entry>
+<entry>Converts a point or points in screen coordinates to the client-area coordinates of the window.</entry>
+</row>
+<row>
+<entry><link linkend="wbwScreenToClient">screenToClient</link></entry>
+<entry>Converts screen coordinates to the client-area coordinates of the window.</entry>
+</row>
+<row>
+<entry><link linkend="wbwSendMessage">sendMessage</link></entry>
+<entry>Sends a Windows message to the underlying window and returns its response as a whole number.</entry>
+</row>
+<row>
+<entry><link linkend="wbwSendMessageHandle">sendMessageHandle</link></entry>
+<entry>Sends a Windows message to the underlying window and returns its response as a handle.</entry>
+</row>
+<row>
+<entry><link linkend="wbwSetRect">setRect</link></entry>
+<entry>Moves and / or resizes the window.</entry>
+</row>
+<row>
+<entry><link linkend="wbwSetText">setText</link></entry>
+<entry>Sets the text of the window.</entry>
+</row>
+<row>
+<entry><link linkend="wbwSetTitle">setTitle</link></entry>
+<entry>Sets the text of the window.</entry>
+</row>
+<row>
+<entry><link linkend="wbwShowfast">showFast</link></entry>
+<entry>Marks the window as visible.</entry>
+</row>
+<row>
+<entry><link linkend="wbwTitle">title</link></entry>
+<entry>Gets the text of the window.</entry>
+</row>
+<row>
+<entry><link linkend="wbwTitleEquals">title=</link></entry>
+<entry>Sets the text of the window.</entry>
+</row>
+<row>
+<entry><link linkend="wbwUpdate">update</link></entry>
+<entry>Invalidates the entire client area of the window.</entry>
+</row>
+<row>
+<entry><link linkend="wbwWindowRect">windowRect</link></entry>
+<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the window in pixels.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsWindow"><title>new (Class Method)</title>
+<indexterm><primary>new</primary>
+<secondary>Window class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-.Window~new(--hwnd--)---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Given a window handle, instantiates a new <emphasis role="italic">Window</emphasis> object.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The required argument is:
+<variablelist>
+<varlistentry><term>hwnd</term>
+<listitem><para>The window
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>This method returns a new Window object.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem>
+<para>
+  Given an array of dialog control resource IDs this method enables all the controls without having to know what the
+  type of the individual control is:
+<programlisting>
+<![CDATA[
+::method enableControls
+  use strict arg IDs
+  hDlg = self~hwnd
+  do id over IDs
+    hwnd = self~getControlHandle(id, hDlg)
+    if hwnd = 0 then return .false
+    .Window~new(hwnd)~enable
+  end
+  return .true
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="wbwInitCode"><title>initCode (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrInitCode">initCode</link>
+
+<![CDATA[
+>>--initCode-----------------------------------------------------><
+
+>>--initCode-=-code----------------------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="wbwHwnd"><title>hwnd (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrHwnd">hwnd</link>
+
+<![CDATA[
+>>--hwnd-----------------------------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="wbwSizeX"><title>sizeX (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrSizeX">sizeX</link>
+
+<![CDATA[
+>>--sizeX-----------------------------------------------------><
+
+>>--sizeX-=-dialogUnits---------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwSizeY"><title>sizeY (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrSizeY">sizeY</link>
+
+<![CDATA[
+>>--sizeY-----------------------------------------------------><
+
+>>--sizeY-=-dialogUnits---------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwFactorX"><title>factorX (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrFactorX">factorX</link>
+
+<![CDATA[
+>>--factorX-----------------------------------------------------><
+
+>>--factorX-=-ratio---------------------------------------------><
+]]>
+
+</programlisting>
+</section>
+
+<section id="wbwFactorY"><title>factorY (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrFactorY">factorY</link>
+
+<![CDATA[
+>>--factorY-----------------------------------------------------><
+
+>>--factorY-=-ratio---------------------------------------------><
+]]>
+
+</programlisting>
+</section>
+
+<section id="wbwPixelCX"><title>pixelCX (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrPixelCX">pixelCX</link>
+
+<![CDATA[
+>>--pixelCX-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwPixelCY"><title>pixelCY (Attribute)</title>
+<programlisting>
+WindowBase::<link linkend="atrPixelCY">pixelCY</link>
+
+<![CDATA[
+>>--pixelCY-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwSendMessage"><title>sendMessage</title>
+<programlisting>
+WindowBase::<link linkend="mthSendMessage">sendMessage</link>
+
+<![CDATA[
+>>--sendMessage(--id--,--msg--,--wParam--,--lParam--)----------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwSendMessageHandle"><title>sendMessageHandle</title>
+<programlisting>
+<link linkend="mthSendMessageHandle">sendMessageHandle</link>
+
+<![CDATA[
+>>--sendMessageHandle(--id--,--msg--,--wParam--,--lParam--)----><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwEnable"><title>enable</title>
+<programlisting>
+WindowBase::<link linkend="mthEnable">enable</link>
+
+<![CDATA[
+>>--enable-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwDisable"><title>disable</title>
+<programlisting>
+WindowBass::<link linkend="mthDisable">disable</link>
+
+<![CDATA[
+>>--disable----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwIsVisible"><title>isVisible</title>
+<programlisting>
+WindowBase::<link linkend="mthIsVisible">isVisible</link>
+
+<![CDATA[
+>>--isVisible--------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwIsEnabled"><title>isEnabled</title>
+<programlisting>
+WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
+
+<![CDATA[
+>>--isEnabled--------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwHide"><title>hide</title>
+<programlisting>
+WindowBase::<link linkend="mthHide">hide</link>
+
+<![CDATA[
+>>--hide-------------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwShowFast"><title>showFast</title>
+<programlisting>
+WindowBase::<link linkend="mthShowFast">showFast</link>
+
+<![CDATA[
+>>--showFast---------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwHideFast"><title>hideFast</title>
+<programlisting>
+WindowBase::<link linkend="mthHideFast">hideFast</link>
+
+<![CDATA[
+>>--hideFast---------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwDisplay"><title>display</title>
+<programlisting>
+WindowBase::<link linkend="mthDisplay">display</link>
+
+<![CDATA[
+]]>
+</programlisting>
+</section>
+
+<section id="wbwUpdate"><title>update</title>
+<programlisting>
+WindowBase::<link linkend="mthUpdate">update</link>
+
+<![CDATA[
+]]>
+</programlisting>
+</section>
+
+<section id="wbwDraw"><title>draw</title>
+<programlisting>
+WindowBase::<link linkend="mthDraw">draw</link>
+
+<![CDATA[
+>>--draw-------------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwRedrawClient"><title>redrawClient</title>
+<programlisting>
+WindowBase::<link linkend="mthRedrawClient">redrawClient</link>
+
+<![CDATA[
+>>--redrawClient(--+------------+--)---------------------------><
+                   +--eraseBkg--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbwRedraw"><title>redraw</title>
+<programlisting>
+WindowBase::<link linkend="mthRedraw">redraw</link>
+
+<![CDATA[
+>>--redraw-----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwGetID"><title>getID</title>
+<programlisting>
+WindowBase::<link linkend="mthGetID">getID</link>
+
+<![CDATA[
+>>--getID------------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwGetStyleRaw"><title>getStyleRaw</title>
+<programlisting>
+WindowBase::<link linkend="mthGetStyleRaw">getStyleRaw</link>
+
+<![CDATA[
+>>--getStyleRaw------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwGetExStyleRaw"><title>getExStyleRaw</title>
+<programlisting>
+WindowBase::<link linkend="mthGetExStyleRaw">getExStyleRaw</link>
+
+<![CDATA[
+>>--getExStyleRaw----------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwSetText"><title>setText</title>
+<programlisting>
+WindowBase::<link linkend="mthSetText">setText</link>
+
+<![CDATA[
+>>--setText(--newText--)---------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwGetText"><title>getText</title>
+<programlisting>
+WindowBase::<link linkend="mthGetText">getText</link>
+
+<![CDATA[
+>>--getText----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwTitleEquals"><title>title=</title>
+<programlisting>
+WindowBase::<link linkend="mthTitleEquals">title=</link>
+
+<![CDATA[
+>>--title-=--newText-------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwSetTitle"><title>setTitle</title>
+<programlisting>
+WindowBase::<link linkend="mthSetTitle">setTitle</link>
+
+<![CDATA[
+>>--setTitle(--newText--)--------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwTitle"><title>title</title>
+<programlisting>
+WindowBase::<link linkend="mthTitle">title</link>
+
+<![CDATA[
+>>--title------------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwGetTextSizePx"><title>getTextSizePx</title>
+<programlisting>
+WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
+
+<![CDATA[
+>>--getTextSizePx(-text--)-------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwGetTextSizeScreen"><title>getTextSizeScreen</title>
+<programlisting>
+WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
+
+<![CDATA[
+>>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
+                             +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbwSetRect"><title>setRect</title>
+<programlisting>
+WindowBase::<link linkend="mthSetRect">setRect</link>
+
+<![CDATA[
+Form 1:
+
+>>--setRect(--rectangle--+------------+--)-------------------------------------><
+                         +-,-showOpts-+
+
+Form 2:
+
+>>--setRect(--point--,--size--+------------+--)--------------------------------><
+                              +-,-showOpts-+
+
+Form 3:
+
+>>--setRect(--x-,--y-,--cx-,--cy--+------------+--)----------------------------><
+                                  +-,-showOpts-+
+
+Generic form:
+
+>>--setRect(--ptSizeRectangle--+------------+--)-------------------------------><
+                               +-,-showOpts-+
+]]>
+</programlisting>
+</section>
+
+<section id="wbwResizeTo"><title>resizeTo</title>
+<programlisting>
+WindowBase::<link linkend="mthResizeTo">resizeTo</link>
+
+<![CDATA[
+Form 1:
+
+>>--resizeTo(--size--)-----------------------------------------><
+
+Form 2:
+
+>>--resizeTo(--cx,--cy--)--------------------------------------><
+
+Generic form:
+
+>>--resizeTo(--newSize--)--------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwMoveTo"><title>moveTo</title>
+<programlisting>
+WindowBase::<link linkend="mthMoveTo">moveTo</link>
+
+<![CDATA[
+Form 1:
+
+>>--moveTo(--point--+--------------+--)------------------------><
+                    +--,-showOpts--+
+Form 2:
+
+>>--moveTo(--x,--y--+--------------+--)------------------------><
+                    +--,-showOpts--+
+Generic form:
+
+>>--moveTo(--newPos--+--------------+--)-----------------------><
+                     +--,-showOpts--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbwGetRealSize"><title>getRealSize</title>
+<programlisting>
+WindowBase::<link linkend="mthGetRealSize">getRealSize</link>
+
+<![CDATA[
+>>--getRealSize------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwGetRealPos"><title>getRealPos</title>
+<programlisting>
+WindowBase::<link linkend="mthGetSize">getRealPos</link>
+
+<![CDATA[
+>>--getRealPos-------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwWindowRect"><title>windowRect</title>
+<programlisting>
+WindowBase::<link linkend="mthWindowRect">windowRect</link>
+
+<![CDATA[
+>>--windowRect(--+--------+--)-----------------------><
+                 +--hwnd--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbwClientRect"><title>clientRect</title>
+<programlisting>
+WindowBase::<link linkend="mthClientRect">clientRect</link>
+
+<![CDATA[
+>>--clientRect(--+--------+--)-----------------------><
+                 +--hwnd--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbwClear"><title>clear</title>
+<programlisting>
+WindowBase::<link linkend="mthClear">clear</link>
+
+<![CDATA[
+>>--clear--------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwResize"><title>resize</title>
+<programlisting>
+WindowBase::<link linkend="mthResize">resize</link>
+
+<![CDATA[
+>>--resize(--width--,--height--+-------------+--)----><
+                               +-,-showOpts--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbwMove"><title>move</title>
+<programlisting>
+WindowBase::<link linkend="mthMove">move</link>
+
+<![CDATA[
+>>--move(--xPos--,--yPos--+-------------+--)---------><
+                          +-,-showOpts--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbwGetSize"><title>getSize</title>
+<programlisting>
+WindowBase::<link linkend="mthGetSize">getSize</link>
+
+<![CDATA[
+>>--getSize----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwGetPos"><title>getPos</title>
+<programlisting>
+WindowBase::<link linkend="mthGetPos">getPos</link>
+
+<![CDATA[
+>>--getPos-------------------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="wbwGetRect"><title>getRect</title>
+<programlisting>
+WindowBase::<link linkend="mthGetRect">getRect</link>
+
+<![CDATA[
+>>--getRect------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbwGetClientRect"><title>getClientRect</title>
+<programlisting>
+WindowBase::<link linkend="mthGetClientRect">getClientRect</link>
+
+<![CDATA[
+>>--getClientRect(--+------+--)------------------><
+                    +-hwnd-+
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbwForegroundWindow"><title>foregroundWindow</title>
+<programlisting>
+WindowBase::<link linkend="mthForegroundWindow">foregroundWindow</link>
+
+<![CDATA[
+>>--foregroundWindow---------------------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbwScreen2client"><title>screen2client</title>
+<programlisting>
+WindowBase::<link linkend="mthScreen2client">screen2client</link>
+
+<![CDATA[
+>>--screen2client(--pointOrRect--)-------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbwClient2screen"><title>client2screen</title>
+<programlisting>
+WindowBase::<link linkend="mthClient2screen">client2screen</link>
+
+<![CDATA[
+>>--client2screen(--pointOrRect--)-------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbwScreenToClient"><title>screenToClient</title>
+<programlisting>
+WindowBase::<link linkend="mthScreenToClient">screenToClient</link>
+
+<![CDATA[
+>>--screenToClient(--x--,--y--)----------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbwClientToScreen"><title>clientToScreen</title>
+<programlisting>
+WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
+
+<![CDATA[
+>>--clientToScreen(--x--,--y--)----------------------><
+]]>
+</programlisting>
+</section>
+
+</section> <!-- End Window Class -->
+
+
 <section id="clsOs"><title>OS Class</title>
 <indexterm><primary>OS class</primary></indexterm>
 <para>
@@ -1805,880 +2677,6 @@ Changed point q to be at (150,300)
 </section> <!-- End Point Class -->
 
 
-<section id="clsWindow"><title>Window Class</title>
-<indexterm><primary>Window class</primary></indexterm>
-<para>
-  A <emphasis role="italic">Window</emphasis> object allows the invocation of methods common to every window.  It does
-  this by inheriting the <emphasis role="italic">WindowBase</emphasis> class. Other than the <link
-  linkend="mthNewClsWindow">new</link>() method, the <emphasis role="italic">Window</emphasis> class provides no other
-  methods of its own. Consult the <link linkend="clsWindowBase">WindowBase</link> documentation to see what other
-  methods are available for the <emphasis role="italic">Window</emphasis> object.
-</para>
-
-<section id="sctMethodsWindow"><title>Method Table</title>
-<para>
-  The following table lists the class and instance methods of the <computeroutput>Window</computeroutput> class:
-<table id="tblMethodsWindow" frame="all"> <title>Window Class Method Reference</title>
-<tgroup cols="2">
-<thead>
-<row>
-<entry>Window Method</entry>
-<entry>Description</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold"></emphasis></entry>
-</row>
-<row>
-<entry><link linkend="mthNewClsWindow">new</link></entry>
-<entry>Instantiates a new window object.</entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
-<entry align="center"><emphasis role="bold"></emphasis></entry>
-</row>
-<row>
-<entry><link linkend="wbwInitCode">initCode</link></entry>
-<entry>Has no meaning, always 0.</entry>
-</row>
-<row>
-<entry><link linkend="wbwHwnd">hwnd</link></entry>
-<entry>The window handle of the window.</entry>
-</row>
-<row>
-<entry><link linkend="wbwSizeX">sizeX</link></entry>
-<entry>The width of the window in dialog units. (Inaccurate.)</entry>
-</row>
-<row>
-<entry><link linkend="wbwSizeY">sizeY</link></entry>
-<entry>The height of the window in dialog units. (Inaccurate.)</entry>
-</row>
-<row>
-<entry><link linkend="wbwFactorX">factorX</link></entry>
-<entry>The horizontal size of one dialog unit in pixels. (Inaccurate.)</entry>
-</row>
-<row>
-<entry><link linkend="wbwFactorY">factorY</link></entry>
-<entry>The vertical size of one dialog unit in pixels. (Inaccurate.)</entry>
-</row>
-<row>
-<entry><link linkend="wbwPixelCX">pixelCX</link></entry>
-<entry>The width of the window in pixels.</entry>
-</row>
-<row>
-<entry><link linkend="wbwPixelCY">pixelCY</link></entry>
-<entry>The height of the window in pixels.</entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold"></emphasis></entry>
-</row>
-<row>
-<entry><link linkend="wbwSendMessage">sendMessage</link></entry>
-<entry>Sends a Windows message to the underlying window and returns its response as a whole number.</entry>
-</row>
-<row>
-<entry><link linkend="wbwSendMessageHandle">sendMessageHandle</link></entry>
-<entry>Sends a Windows message to the underlying window and returns its response as a handle.</entry>
-</row>
-<row>
-<entry><link linkend="wbwEnable">enable</link></entry>
-<entry>Enables the window.</entry>
-</row>
-<row>
-<entry><link linkend="wbwDisable">disable</link></entry>
-<entry>Disables the window.</entry>
-</row>
-<row>
-<entry><link linkend="wbwIsVisible">isVisible</link></entry>
-<entry>Tests if the window is visible.</entry>
-</row>
-<row>
-<entry><link linkend="wbwIsEnabled">isEnabled</link></entry>
-<entry>Tests if the window is enabled.</entry>
-</row>
-<row>
-<entry><link linkend="wbwHide">hide</link></entry>
-<entry>Makes the window invisible and repaints it.</entry>
-</row>
-<row>
-<entry><link linkend="wbwShowfast">showFast</link></entry>
-<entry>Marks the window as visible.</entry>
-</row>
-<row>
-<entry><link linkend="wbwHideFast">hideFast</link></entry>
-<entry>Marks the window as invisible</entry>
-</row>
-<row>
-<entry><link linkend="wbwDisplay">display</link></entry>
-<entry>Shows or hides the window.</entry>
-</row>
-<row>
-<entry><link linkend="wbwUpdate">update</link></entry>
-<entry>Invalidates the entire client area of the window.</entry>
-</row>
-<row>
-<entry><link linkend="wbwDraw">draw</link></entry>
-<entry>Redraws the entire client area of the window immediately.</entry>
-</row>
-<row>
-<entry><link linkend="wbwRedrawClient">redrawClient</link></entry>
-<entry>Redraws the entire client area of the window immediately.</entry>
-</row>
-<row>
-<entry><link linkend="wbwRedraw">redraw</link></entry>
-<entry>Redraws the entire window and all its child windows immediately.</entry>
-</row>
-<row>
-<entry><link linkend="wbwGetID">getID</link></entry>
-<entry>Retrieves the identification number of the window.</entry>
-</row>
-<row>
-<entry><link linkend="wbwGetStyleRaw">getStyleRaw</link></entry>
-<entry>Retrieves the numeric value of the window's style flags.</entry>
-</row>
-<row>
-<entry><link linkend="wbwGetExStyleRaw">getExStyleRaw</link></entry>
-<entry>Retrieves the numeric value of the window's extended style flags.</entry>
-</row>
-<row>
-<entry><link linkend="wbwSetText">setText</link></entry>
-<entry>Sets the text of the window.</entry>
-</row>
-<row>
-<entry><link linkend="wbwGetText">getText</link></entry>
-<entry>Gets the text of the window.</entry>
-</row>
-<row>
-<entry><link linkend="wbwTitleEquals">title=</link></entry>
-<entry>Sets the text of the window.</entry>
-</row>
-<row>
-<entry><link linkend="wbwSetTitle">setTitle</link></entry>
-<entry>Sets the text of the window.</entry>
-</row>
-<row>
-<entry><link linkend="wbwTitle">title</link></entry>
-<entry>Gets the text of the window.</entry>
-</row>
-<row>
-<entry><link linkend="wbwGetTextSizePx">getTextSizePx</link></entry>
-<entry>Calculates the size needed for a string in pixels <emphasis role="bold">(preferred method.)</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="wbwGetTextSizeScreen">getTextSizeScreen</link></entry>
-<entry>Calculates the size needed for a string in pixels.</entry>
-</row>
-<row>
-<entry><link linkend="wbwSetRect">setRect</link></entry>
-<entry>Moves and / or resizes the window.</entry>
-</row>
-<row>
-<entry><link linkend="wbwResizeTo">resizeTo</link></entry>
-<entry>Resizes the window to the size specified in pixels.</entry>
-</row>
-<row>
-<entry><link linkend="wbwMoveTo">moveTo</link></entry>
-<entry>Moves the window to the position specified in pixels.</entry>
-</row>
-<row>
-<entry><link linkend="wbwGetRealSize">getRealSize</link></entry>
-<entry>Returns the size of the window in pixels as a <computeroutput>Size</computeroutput> object.</entry>
-</row>
-<row>
-<entry><link linkend="wbwGetRealPos">getRealPos</link></entry>
-<entry>Returns the position of the window in pixels as a <computeroutput>Point</computeroutput> object.</entry>
-</row>
-<row>
-<entry><link linkend="wbwWindowRect">windowRect</link></entry>
-<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the window in pixels.</entry>
-</row>
-<row>
-<entry><link linkend="wbwClientRect">clientRect</link></entry>
-<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the window's client area in pixels.</entry>
-</row>
-<row>
-<entry><link linkend="wbwClear">clear</link></entry>
-<entry>Clears the client area of the window by painting it with the background brush.</entry>
-</row>
-<row>
-<entry><link linkend="wbwResize">resize</link></entry>
-<entry>Resizes the window to the size specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="wbwMove">move</link></entry>
-<entry>Moves the window to the position specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="wbwGetSize">getSize</link></entry>
-<entry>Returns the size of the window in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="wbwGetPos">getPos</link></entry>
-<entry>Returns the position of the window in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="wbwGetRect">getRect</link></entry>
-<entry>Returns the dimesions of the window.</entry>
-</row>
-<row>
-<entry><link linkend="wbwGetClientRect">getClientRect</link></entry>
-<entry>Returns the dimensions of the window's client area.</entry>
-</row>
-<row>
-<entry><link linkend="wbwForegroundWindow">foregroundWindow</link></entry>
-<entry>Returns the handle of the window in the foreground.</entry>
-</row>
-<row>
-<entry><link linkend="wbwScreen2client">screen2client</link></entry>
-<entry>Converts a point or points in screen coordinates to the client-area coordinates of the window.</entry>
-</row>
-<row>
-<entry><link linkend="wbwClient2screen">client2screen</link></entry>
-<entry>Converts a point or points in client-area coordinates of the window to its screen coordinates.</entry>
-</row>
-<row>
-<entry><link linkend="wbwScreenToClient">screenToClient</link></entry>
-<entry>Converts screen coordinates to the client-area coordinates of the window.</entry>
-</row>
-<row>
-<entry><link linkend="wbwClientToScreen">clientToScreen</link></entry>
-<entry>Converts client-area coordinates of the window to its screen coordinates.</entry>
-</row>
-</tbody></tgroup>
-</table>
-</para>
-</section>
-
-<section id="mthNewClsWindow"><title>new (Class Method)</title>
-<indexterm><primary>new</primary>
-<secondary>Window class</secondary></indexterm>
-<programlisting>
-<![CDATA[
-
->>-.Window~new(--hwnd--)---------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Given a window handle, instantiates a new <emphasis role="italic">Window</emphasis> object.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The required argument is:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The window
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method returns a new Window object.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem>
-<para>
-  Given an array of dialog control resource IDs this method enables all the controls without having to know what the
-  type of the individual control is:
-<programlisting>
-<![CDATA[
-::method enableControls
-  use strict arg IDs
-  hDlg = self~hwnd
-  do id over IDs
-    hwnd = self~getControlHandle(id, hDlg)
-    if hwnd = 0 then return .false
-    .Window~new(hwnd)~enable
-  end
-  return .true
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="wbwInitCode"><title>initCode (Attribute)</title>
-<programlisting>
-WindowBase::<link linkend="atrInitCode">initCode</link>
-
-<![CDATA[
->>--initCode-----------------------------------------------------><
-
->>--initCode-=-code----------------------------------------------><
-
-]]>
-</programlisting>
-</section>
-
-<section id="wbwHwnd"><title>hwnd (Attribute)</title>
-<programlisting>
-WindowBase::<link linkend="atrHwnd">hwnd</link>
-
-<![CDATA[
->>--hwnd-----------------------------------------------------><
-
-]]>
-</programlisting>
-</section>
-
-<section id="wbwSizeX"><title>sizeX (Attribute)</title>
-<programlisting>
-WindowBase::<link linkend="atrSizeX">sizeX</link>
-
-<![CDATA[
->>--sizeX-----------------------------------------------------><
-
->>--sizeX-=-dialogUnits---------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwSizeY"><title>sizeY (Attribute)</title>
-<programlisting>
-WindowBase::<link linkend="atrSizeY">sizeY</link>
-
-<![CDATA[
->>--sizeY-----------------------------------------------------><
-
->>--sizeY-=-dialogUnits---------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwFactorX"><title>factorX (Attribute)</title>
-<programlisting>
-WindowBase::<link linkend="atrFactorX">factorX</link>
-
-<![CDATA[
->>--factorX-----------------------------------------------------><
-
->>--factorX-=-ratio---------------------------------------------><
-]]>
-
-</programlisting>
-</section>
-
-<section id="wbwFactorY"><title>factorY (Attribute)</title>
-<programlisting>
-WindowBase::<link linkend="atrFactorY">factorY</link>
-
-<![CDATA[
->>--factorY-----------------------------------------------------><
-
->>--factorY-=-ratio---------------------------------------------><
-]]>
-
-</programlisting>
-</section>
-
-<section id="wbwPixelCX"><title>pixelCX (Attribute)</title>
-<programlisting>
-WindowBase::<link linkend="atrPixelCX">pixelCX</link>
-
-<![CDATA[
->>--pixelCX-----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwPixelCY"><title>pixelCY (Attribute)</title>
-<programlisting>
-WindowBase::<link linkend="atrPixelCY">pixelCY</link>
-
-<![CDATA[
->>--pixelCY-----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwSendMessage"><title>sendMessage</title>
-<programlisting>
-WindowBase::<link linkend="mthSendMessage">sendMessage</link>
-
-<![CDATA[
->>--sendMessage(--id--,--msg--,--wParam--,--lParam--)----------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwSendMessageHandle"><title>sendMessageHandle</title>
-<programlisting>
-<link linkend="mthSendMessageHandle">sendMessageHandle</link>
-
-<![CDATA[
->>--sendMessageHandle(--id--,--msg--,--wParam--,--lParam--)----><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwEnable"><title>enable</title>
-<programlisting>
-WindowBase::<link linkend="mthEnable">enable</link>
-
-<![CDATA[
->>--enable-----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwDisable"><title>disable</title>
-<programlisting>
-WindowBass::<link linkend="mthDisable">disable</link>
-
-<![CDATA[
->>--disable----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwIsVisible"><title>isVisible</title>
-<programlisting>
-WindowBase::<link linkend="mthIsVisible">isVisible</link>
-
-<![CDATA[
->>--isVisible--------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwIsEnabled"><title>isEnabled</title>
-<programlisting>
-WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
-
-<![CDATA[
->>--isEnabled--------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwHide"><title>hide</title>
-<programlisting>
-WindowBase::<link linkend="mthHide">hide</link>
-
-<![CDATA[
->>--hide-------------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwShowFast"><title>showFast</title>
-<programlisting>
-WindowBase::<link linkend="mthShowFast">showFast</link>
-
-<![CDATA[
->>--showFast---------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwHideFast"><title>hideFast</title>
-<programlisting>
-WindowBase::<link linkend="mthHideFast">hideFast</link>
-
-<![CDATA[
->>--hideFast---------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwDisplay"><title>display</title>
-<programlisting>
-WindowBase::<link linkend="mthDisplay">display</link>
-
-<![CDATA[
-]]>
-</programlisting>
-</section>
-
-<section id="wbwUpdate"><title>update</title>
-<programlisting>
-WindowBase::<link linkend="mthUpdate">update</link>
-
-<![CDATA[
-]]>
-</programlisting>
-</section>
-
-<section id="wbwDraw"><title>draw</title>
-<programlisting>
-WindowBase::<link linkend="mthDraw">draw</link>
-
-<![CDATA[
->>--draw-------------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwRedrawClient"><title>redrawClient</title>
-<programlisting>
-WindowBase::<link linkend="mthRedrawClient">redrawClient</link>
-
-<![CDATA[
->>--redrawClient(--+------------+--)---------------------------><
-                   +--eraseBkg--+
-]]>
-</programlisting>
-</section>
-
-<section id="wbwRedraw"><title>redraw</title>
-<programlisting>
-WindowBase::<link linkend="mthRedraw">redraw</link>
-
-<![CDATA[
->>--redraw-----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwGetID"><title>getID</title>
-<programlisting>
-WindowBase::<link linkend="mthGetID">getID</link>
-
-<![CDATA[
->>--getID------------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwGetStyleRaw"><title>getStyleRaw</title>
-<programlisting>
-WindowBase::<link linkend="mthGetStyleRaw">getStyleRaw</link>
-
-<![CDATA[
->>--getStyleRaw------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwGetExStyleRaw"><title>getExStyleRaw</title>
-<programlisting>
-WindowBase::<link linkend="mthGetExStyleRaw">getExStyleRaw</link>
-
-<![CDATA[
->>--getExStyleRaw----------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwSetText"><title>setText</title>
-<programlisting>
-WindowBase::<link linkend="mthSetText">setText</link>
-
-<![CDATA[
->>--setText(--newText--)---------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwGetText"><title>getText</title>
-<programlisting>
-WindowBase::<link linkend="mthGetText">getText</link>
-
-<![CDATA[
->>--getText----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwTitleEquals"><title>title=</title>
-<programlisting>
-WindowBase::<link linkend="mthTitleEquals">title=</link>
-
-<![CDATA[
->>--title-=--newText-------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwSetTitle"><title>setTitle</title>
-<programlisting>
-WindowBase::<link linkend="mthSetTitle">setTitle</link>
-
-<![CDATA[
->>--setTitle(--newText--)--------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwTitle"><title>title</title>
-<programlisting>
-WindowBase::<link linkend="mthTitle">title</link>
-
-<![CDATA[
->>--title------------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwGetTextSizePx"><title>getTextSizePx</title>
-<programlisting>
-WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
-
-<![CDATA[
->>--getTextSizePx(-text--)-------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwGetTextSizeScreen"><title>getTextSizeScreen</title>
-<programlisting>
-WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
-
-<![CDATA[
->>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
-                             +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
-]]>
-</programlisting>
-</section>
-
-<section id="wbwSetRect"><title>setRect</title>
-<programlisting>
-WindowBase::<link linkend="mthSetRect">setRect</link>
-
-<![CDATA[
-Form 1:
-
->>--setRect(--rectangle--+------------+--)-------------------------------------><
-                         +-,-showOpts-+
-
-Form 2:
-
->>--setRect(--point--,--size--+------------+--)--------------------------------><
-                              +-,-showOpts-+
-
-Form 3:
-
->>--setRect(--x-,--y-,--cx-,--cy--+------------+--)----------------------------><
-                                  +-,-showOpts-+
-
-Generic form:
-
->>--setRect(--ptSizeRectangle--+------------+--)-------------------------------><
-                               +-,-showOpts-+
-]]>
-</programlisting>
-</section>
-
-<section id="wbwResizeTo"><title>resizeTo</title>
-<programlisting>
-WindowBase::<link linkend="mthResizeTo">resizeTo</link>
-
-<![CDATA[
-Form 1:
-
->>--resizeTo(--size--)-----------------------------------------><
-
-Form 2:
-
->>--resizeTo(--cx,--cy--)--------------------------------------><
-
-Generic form:
-
->>--resizeTo(--newSize--)--------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwMoveTo"><title>moveTo</title>
-<programlisting>
-WindowBase::<link linkend="mthMoveTo">moveTo</link>
-
-<![CDATA[
-Form 1:
-
->>--moveTo(--point--+--------------+--)------------------------><
-                    +--,-showOpts--+
-Form 2:
-
->>--moveTo(--x,--y--+--------------+--)------------------------><
-                    +--,-showOpts--+
-Generic form:
-
->>--moveTo(--newPos--+--------------+--)-----------------------><
-                     +--,-showOpts--+
-]]>
-</programlisting>
-</section>
-
-<section id="wbwGetRealSize"><title>getRealSize</title>
-<programlisting>
-WindowBase::<link linkend="mthGetRealSize">getRealSize</link>
-
-<![CDATA[
->>--getRealSize------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwGetRealPos"><title>getRealPos</title>
-<programlisting>
-WindowBase::<link linkend="mthGetSize">getRealPos</link>
-
-<![CDATA[
->>--getRealPos-------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwWindowRect"><title>windowRect</title>
-<programlisting>
-WindowBase::<link linkend="mthWindowRect">windowRect</link>
-
-<![CDATA[
->>--windowRect(--+--------+--)-----------------------><
-                 +--hwnd--+
-]]>
-</programlisting>
-</section>
-
-<section id="wbwClientRect"><title>clientRect</title>
-<programlisting>
-WindowBase::<link linkend="mthClientRect">clientRect</link>
-
-<![CDATA[
->>--clientRect(--+--------+--)-----------------------><
-                 +--hwnd--+
-]]>
-</programlisting>
-</section>
-
-<section id="wbwClear"><title>clear</title>
-<programlisting>
-WindowBase::<link linkend="mthClear">clear</link>
-
-<![CDATA[
->>--clear--------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwResize"><title>resize</title>
-<programlisting>
-WindowBase::<link linkend="mthResize">resize</link>
-
-<![CDATA[
->>--resize(--width--,--height--+-------------+--)----><
-                               +-,-showOpts--+
-]]>
-</programlisting>
-</section>
-
-<section id="wbwMove"><title>move</title>
-<programlisting>
-WindowBase::<link linkend="mthMove">move</link>
-
-<![CDATA[
->>--move(--xPos--,--yPos--+-------------+--)---------><
-                          +-,-showOpts--+
-]]>
-</programlisting>
-</section>
-
-<section id="wbwGetSize"><title>getSize</title>
-<programlisting>
-WindowBase::<link linkend="mthGetSize">getSize</link>
-
-<![CDATA[
->>--getSize----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwGetPos"><title>getPos</title>
-<programlisting>
-WindowBase::<link linkend="mthGetPos">getPos</link>
-
-<![CDATA[
->>--getPos-------------------------------------------><
-
-]]>
-</programlisting>
-</section>
-
-<section id="wbwGetRect"><title>getRect</title>
-<programlisting>
-WindowBase::<link linkend="mthGetRect">getRect</link>
-
-<![CDATA[
->>--getRect------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wbwGetClientRect"><title>getClientRect</title>
-<programlisting>
-WindowBase::<link linkend="mthGetClientRect">getClientRect</link>
-
-<![CDATA[
->>--getClientRect(--+------+--)------------------><
-                    +-hwnd-+
-]]>
-</programlisting>
-</section>
-
-
-<section id="wbwForegroundWindow"><title>foregroundWindow</title>
-<programlisting>
-WindowBase::<link linkend="mthForegroundWindow">foregroundWindow</link>
-
-<![CDATA[
->>--foregroundWindow---------------------------------><
-]]>
-</programlisting>
-</section>
-
-
-<section id="wbwScreen2client"><title>screen2client</title>
-<programlisting>
-WindowBase::<link linkend="mthScreen2client">screen2client</link>
-
-<![CDATA[
->>--screen2client(--pointOrRect--)-------------------><
-]]>
-</programlisting>
-</section>
-
-
-<section id="wbwClient2screen"><title>client2screen</title>
-<programlisting>
-WindowBase::<link linkend="mthClient2screen">client2screen</link>
-
-<![CDATA[
->>--client2screen(--pointOrRect--)-------------------><
-]]>
-</programlisting>
-</section>
-
-
-<section id="wbwScreenToClient"><title>screenToClient</title>
-<programlisting>
-WindowBase::<link linkend="mthScreenToClient">screenToClient</link>
-
-<![CDATA[
->>--screenToClient(--x--,--y--)----------------------><
-]]>
-</programlisting>
-</section>
-
-
-<section id="wbwClientToScreen"><title>clientToScreen</title>
-<programlisting>
-WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
-
-<![CDATA[
->>--clientToScreen(--x--,--y--)----------------------><
-]]>
-</programlisting>
-</section>
-
-
-
-</section> <!-- End Window Class -->
-
 <section id="clsSize"><title>Size Class</title>
 <indexterm><primary>Size class</primary></indexterm>
 <para>
@@ -3135,7 +3133,7 @@ UserDialog.
 <para></para>
 </section>
 
-<section id="dlgareamargin"><title>Margin</title>
+<section id="atrMargin"><title>Margin</title>
 <indexterm><primary>Margim</primary>
 <secondary>DlgArea class</secondary></indexterm>
 <para>Size in dialog units of DlgArea margin.
@@ -3398,70 +3396,128 @@ self~addButton(1,b~x,b~y(-15),b~w,15,"OK","OK","Default")
 <section id="clsDlgAreaU"><title>DlgAreaU Class</title>
 <indexterm><primary>DlgAreaU class</primary></indexterm>
 <para>
-  The DlgAreaU class is a subclass of the DlgArea class that assists the
-  creation of dynamically resizable Dialogs. This class provides assistance in
-  resizing and / or positioning controls when a dialog is resized.  When the
-  DlgArea and DlgAreaU classes are used together, the they provide a convenient
-  way to create resizable dialogs.
+  The <computeroutput>DlgAreaU</computeroutput> class is a subclass of the <link linkend="clsDlgArea">DlgArea</link>
+  class that helps with the creation of dynamically resizable dialogs. This class provides assistance in resizing and /
+  or positioning controls when a dialog is resized.  When the <computeroutput>DlgArea</computeroutput> and
+  <computeroutput>DlgAreaU</computeroutput> classes are used together, the they provide a convenient way to create
+  resizable dialogs.
 </para>
 <para>
-  <emphasis role="bold">Note:</emphasis> The DlgAreaU class uses the <emphasis role="italic">.Object</emphasis> class's
-  <emphasis role="italic">source</emphasis> class method to parse the source code of the dialog's <link
-  linkend="mthDefineDialog">defineDialog</link> method.  This source is not available if the <emphasis
-  role="italic">rexxc</emphasis> program is used to tokenize the source code. Therefore, <emphasis
+  <emphasis role="bold">Note:</emphasis> The <computeroutput>DlgAreaU</computeroutput> class uses the <emphasis
+  role="italic">.Object</emphasis> class's <emphasis role="italic">source</emphasis> class method to parse the source
+  code of the dialog's <link linkend="mthDefineDialog">defineDialog</link> method.  This source is not available if the
+  <emphasis role="italic">rexxc</emphasis> program is used to tokenize the source code. Therefore, <emphasis
   role="italic">DlgAreaU</emphasis> class will <emphasis role="bold">not</emphasis> work if <emphasis
   role="italic">rexxc</emphasis> is used to tokenize the source code.
 </para>
 <para>
   The other implication of using the <emphasis role="italic">source</emphasis> method to parse the dialog's <emphasis
   role="italic">defineDialog</emphasis> method is that the <computeroutput>DlgAreaU</computeroutput> class can only be
-  used with a <link linkend="clsUserDialog">UserDialog</link>. It will not work with <link
-  linkend="clsResDialog">ResDialog</link> or <link linkend="clsRcDialog">RcDialog</link> classes.
+  used with a <link linkend="clsUserDialog">UserDialog</link>. It will not work with any other dialog class, such as the
+  <link linkend="clsResDialog">ResDialog</link> or <link linkend="clsRcDialog">RcDialog</link> classes.
 </para>
-<para>To use objects of the DlgAreaU class include this line in your code:
-</para>
-<programlisting>
-::requires "OODIALOG.CLS"
-</programlisting>
 
-<section id="dlgareauinit"><title>init</title>
-<indexterm><primary>init</primary>
-<secondary>DlgAreaU class</secondary></indexterm>
+<section id="sctMethodsDlgAreaU"><title>Method Table</title>
+<para>
+  Instances of the <computeroutput>DlgAreaU</computeroutput> class implement the methods listed in the following
+  table.
+
+<table id="tDlgAreaUClass" frame="all">
+<title>DlgAreaU Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Dialog Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsDlgAreaU">new</link></entry>
+<entry>Instantiates a new <computeroutput>DlgAreaU</computeroutput> object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthAddIconResource">addIconResource</link></entry>
+<entry>Adds the file name for an icon resource to the dialog's icon table.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</para>
+
+</section>
+
+<section id="mthNewClsDlgAreaU"><title>new (Class method)</title>
+<indexterm><primary>new</primary><secondary>DlgAreaU class</secondary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-init(-dlg--+----------+--+------------+--+--------+-)--------------><
-              +-,-margin-+  +-,-noResize-+  +-noMove-+
+>>-new(-dlg--+----------+--+------------+--+--------+-)------------------------><
+             +-,-margin-+  +-,-noResize-+  +-noMove-+
 
 ]]>
 </programlisting>
 
 <para>
-The DlgAreaU object creates a dialog area coterminous with the calling dialog.
-It inherits all the methods and attributes of the DlgArea Class (listed above).
+  The <computeroutput>DlgAreaU</computeroutput> object creates a dialog area coterminous with the calling dialog. It is
+  a subclass of the <link linkend="clsDlgArea">DlgArea</link> class and therefore inherits all the methods and
+  attributes of that class.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments you pass to the new method when creating a
-DlgArea Object are:
-<variablelist>
-<varlistentry><term>dlg</term>
-<listitem><para>An Object that is SubClassed from A UserDialog.
-</para></listitem></varlistentry>
-<varlistentry><term>margin</term>
-<listitem><para>See DlgArea Margin.
-</para></listitem></varlistentry>
-<varlistentry><term>noResize</term>
-<listitem><para>A set of Dialog Ids of widgets not to be resized during a resize.
-</para></listitem></varlistentry>
-<varlistentry><term>noMove</term>
-<listitem><para>A set of resource Ids of widgets not to be moved during a resize.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+    <variablelist>
+      <varlistentry><term>dlg</term>
+      <listitem>
+      <para>
+        The resizable dialog you are creating a dialog area for. This dialog must be subclassed from a
+       <link linkend="clsUserDialog">UserDialog</link>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>margin</term>
+      <listitem>
+      <para>
+        The <computeroutput>DlgArea</computeroutput> <link linkend="atrMargin">margin</link>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>noResize</term>
+      <listitem>
+      <para>
+        A <computeroutput>.Set</computeroutput> object containing the resource <link linkend="defResourceIDs">IDs</link>
+        of the dialog controls that should <emphasis role="bold">not</emphasis> be resized during the resize event. The
+        IDs may be numeric or <link linkend="defSymbolicID">symbolic</link>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>noMove</term>
+      <listitem>
+      <para>
+        A <computeroutput>.Set</computeroutput> object containing the resource <link linkend="defResourceIDs">IDs</link>
+        of the dialog controls that should <emphasis role="bold">not</emphasis> be moved during the resize event. The
+        IDs may be numeric or <link linkend="defSymbolicID">symbolic</link>.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthCorrectionFactor"><title>CorrectionFactor</title>
+<section id="atrCorrectionFactor"><title>CorrectionFactor</title>
 <indexterm><primary>CorrectionFactor</primary>
 <secondary>DlgAreaU class</secondary></indexterm>
 <programlisting>
@@ -3717,7 +3773,7 @@ methods.
 <section id="dlgareaubug"><title>Possible Problems</title>
 <para>The DlgAreaU resize method can create slightly over-size margins on the
 left &amp; bottom of the Dialog.  To correct for this the DlgAreaU class has
-a <link linkend="mthCorrectionFactor">CorrectionFactor </link> attribute set by
+a <link linkend="atrCorrectionFactor">CorrectionFactor </link> attribute set by
 default to 1.05. In tests, this correction factor appears to neutralise the
 effect. If your dialogs have over (or under) sized margins, you may be able to
 correct this in your code by adjusting the Correction Factor. For example:
