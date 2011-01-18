@@ -3446,12 +3446,40 @@ self~addButton(1,b~x,b~y(-15),b~w,15,"OK","OK","Default")
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
+<entry><link linkend="atrCorrectionFactor">correctionFactor</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="atrLastError">lastError</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="atrNoMove">noMove</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="atrNoResize">noResize</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="atrUpdateOnResize">upDateOnResize</link></entry>
+<entry>xx</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthAddIconResource">addIconResource</link></entry>
-<entry>Adds the file name for an icon resource to the dialog's icon table.</entry>
+<entry><link linkend="mthNoMovePut">noMovePut</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthNoResizePut">noResizePut</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthResizeClsDlgAreaU">resize</link></entry>
+<entry>xx</entry>
 </row>
 </tbody>
 </tgroup>
@@ -3517,71 +3545,98 @@ self~addButton(1,b~x,b~y(-15),b~w,15,"OK","OK","Default")
 </variablelist>
 </section>
 
-<section id="atrCorrectionFactor"><title>CorrectionFactor</title>
-<indexterm><primary>CorrectionFactor</primary>
-<secondary>DlgAreaU class</secondary></indexterm>
+<section id="atrCorrectionFactor"><title>correctionFactor (Attribute)</title>
+<indexterm><primary>correctionFactor</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary<secondary>correctionFactor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--ADlgAreaU~CorrectionFactor----------------------------------------><
+>>--correctionFactor-----------------------------><
+
+>>--correctionFactor-=-num-----------------------><
 ]]>
 </programlisting>
 
-<para>An attribute containing the value used to adjust the ratio of the top &
-left margins to the bottom &amp; right margins. (The default correction factor
-is set to 1.05.) See the <link linkend="dlgareaubug">Possible Problems</link>
-section for some additional detail.
+<para>
+  An attribute containing the value used to adjust the ratio of the top & left margins to the bottom &amp; right
+  margins. (The default correction factor is set to 1.05.) The <link linkend="sctDlgAreaUProblems">Possible
+  Problems</link> section has additional details on using the <emphasis role="italic">correctionFactor</emphasis>
+  attribute.
 </para>
 </section>
 
-<section id="dlgareaulasterror"><title>LastError</title>
-<indexterm><primary>LastError</primary>
-<secondary>DlgAreaU class</secondary></indexterm>
+<section id="atrLastError"><title>lastError (Attribute)</title>
+<indexterm><primary>lastError</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary<secondary>lastError</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--ADlgAreaU~LastError-----------------------------------------------><
+>>--lastError------------------------------------><
+
+>>--lastError-=-errMsg---------------------------><
 ]]>
 </programlisting>
 
-<para>An attribute holding the details if an error was encountered when parsing
-the calling dialog's defineDialog method.  The value of the attribute is .nil if
-no error occurred.
+<para>
+  An attribute holding the details if an error was encountered when parsing the calling dialog's <link
+  linkend="mthDefineDialog">defineDialog</link> method.  The value of the attribute is .nil if no error occurred.
 </para>
 </section>
 
-<section id="dlgareaunomove"><title>NoMove</title>
-<indexterm><primary>NoMove</primary>
-<secondary>DlgAreaU class</secondary></indexterm>
+<section id="atrNoMove"><title>noMove (Attribute)</title>
+<indexterm><primary>noMove</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>noMove</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--ADlgAreaU~NoMove--------------------------------------------------><
+>>--noMove--------------------------------------------------><
+
+>>--noMove-=-ids--------------------------------------------><
 ]]>
 </programlisting>
 
-<para>An attribute holding the set of Dialog Ids of widgets not to be moved
-during a resize event.
+<para>
+  A <computeroutput>.Set</computeroutput> object holding the resource IDs of the dialog controls that the programmer
+  does not wish to be moved during a resize event. The IDs in the set must be numeric.
+</para>
+<para>
+  The programmer can use <link linkend="defSymbolicID">symbolic</link> IDs for the dialog controls by adding to the set
+  through the <link linkend="mthNoMovePut">noMovePut</link> method. Or by passing in a
+  <computeroutput>.Set</computeroutput> object when instantiating a <link linkend="mthNewClsDlgAreaU">new</link>
+  <computeroutput>DlgAreaU</computeroutput> object. If the programmer accesses the set of IDs directly through the
+  <emphasis role="italic">noMove</emphasis> attribute to add a resource ID, only numeric IDs should be used.
 </para>
 </section>
 
-<section id="dlgareaunoresize"><title>NoResize</title>
-<indexterm><primary>NoResize</primary>
-<secondary>DlgAreaU class</secondary></indexterm>
+<section id="atrNoResize"><title>noResize (Attribute)</title>
+<indexterm><primary>noResize</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary<secondary>noResize</secondary></indexterm>
+
 <programlisting>
 <![CDATA[
->>--ADlgAreaU~NoResize------------------------------------------------><
+>>--noResize-------------------------------------><
+
+>>--noResize-=-ids-------------------------------><
 ]]>
 </programlisting>
 
-<para>An attribute holding the set of Dialog Ids of widgets not to be resized
-during a resize event.
+<para>
+  A <computeroutput>.Set</computeroutput> object holding the resource IDs of the dialog controls that the programmer
+  does not wish to be resized during a resize event. The IDs in the set must be numeric.
+</para>
+<para>
+  The programmer can use <link linkend="defSymbolicID">symbolic</link> IDs for the dialog controls by adding to the set
+  through the <link linkend="mthNoResizePut">noResizePut</link> method. Or by passing in a
+  <computeroutput>.Set</computeroutput> object when instantiating a <link linkend="mthNewClsDlgAreaU">new</link>
+  <computeroutput>DlgAreaU</computeroutput> object. If the programmer accesses the set of IDs directly through the
+  <emphasis role="italic">noResize</emphasis> attribute to add a resource ID, only numeric IDs should be used.
 </para>
 </section>
 
-<section id="atrUpdateOnResize"><title>updateOnResize</title>
-<indexterm><primary>updateOnResize</primary><secondary>DlgAreaU class</secondary></indexterm>
+<section id="atrUpdateOnResize"><title>updateOnResize (Attribute)</title>
+<indexterm><primary>updateOnResize</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>updateOnResize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--value = dlgAreaU~updateOnResize-----------------------------------><
->>--dlgAreaU~updateOnResize-=-value-----------------------------------><
+>>--updateOnResize-------------------------------><
+>>--updateOnResize-=-boolean---------------------><
 ]]>
 </programlisting>
 
@@ -3604,12 +3659,203 @@ during a resize event.
 </para>
 </section>
 
-<section id="dlgareaucreate"><title>Creating Resizeable Dialogs</title>
-<indexterm><primary>Dynamically Resizable dialogs</primary>
-<secondary>DlgAreaU class</secondary></indexterm>
+<section id="mthNoMovePut"><title>noMovePut</title>
+<indexterm><primary>noMovePut</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>noMovePut</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--noMovePut(--resourceID--)--------------------><
+
+]]>
+</programlisting>
+
 <para>
-  You can use the DlgAreaU Object to facilitate in creating dynamically resizable dialog objects, but to do so you must
-  carefully satisfy all the requirements below.
+  Adds a dialog control to the <link linkend="atrNoMove">set</link> of dialog controls that will not be moved during the
+  resize event.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>resourceID [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control that is not to be moved during the resize event. May be symbolic or numeric.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return a value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method allows the programmer to use <link linkend="defSymbolicID">symbolic</link> ids for the dialog
+    control. If the resource ID is put directly into the set through the <emphasis role="italic">noMove</emphasis>
+    attribute, symbolic IDs will not be recognized.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    If a symbolic ID is used and it can not be resolved a syntax error is raised.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgAreaU::noMovePut() -->
+
+<section id="mthNoResizePut"><title>noResizePut</title>
+<indexterm><primary>noResizePut</primary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>noResizePut</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--noResizePut(--resourceID--)------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Adds a dialog control to the <link linkend="atrNoResize">set</link> of dialog controls that will not be resized during
+  the resize event.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>resourceID [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control that is not to be resized during the resize event. May be symbolic or
+      numeric.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return a value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Using this method allows the programmer to use <link linkend="defSymbolicID">symbolic</link> ids for the dialog
+    control. If the resource ID is put directly into the set through the <emphasis role="italic">noResize</emphasis>
+    attribute, symbolic IDs will not be recognized.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    If a symbolic ID is used and it can not be resolved a syntax error is raised.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgAreaU::noMovePut() -->
+
+<section id="mthResizeClsDlgAreaU"><title>resize</title>
+<indexterm><primary>resize</primary><secondary>DlgAreaU class</secondary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>resize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--resize(--dlgObj--,--sizeInfo--)--------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">resize</emphasis> method causes the <computeroutput>DlgAreaU</computeroutput> object to
+  resize and reposition all the dialog controls in the <emphasis role="italic">dlgObj</emphasis> dialog in relation to
+  the <emphasis role="italic">sizeInfo</emphasis> argument. Normally the dialog is then told to update itself, which
+  redraws the controls. Howver, the updating is dependent on the value of the <link
+  linkend="atrUpdateOnResize">upDateOnResize</link> attribute.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>dlgObj [required]</term>
+    <listitem>
+    <para>
+      The dialog which is being resized. The dialog must be the same dialog used to instantiate the <link
+      linkend="mthNewClsDlgAreaU">new</link> <computeroutput>DlgAreaU</computeroutput> object.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>sizeInfo [required]</term>
+    <listitem>
+    <para>
+      The new size of the dialog. Normally, <emphasis role="italic">sizeInfo</emphasis> comes from the value passed to
+      your resize <link linkend="paraResizeEvent">event</link> handler.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return a value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The most common way to use the <computeroutput>DlgAreaU</computeroutput> class is to connect the <link
+    linkend="mthConnectResize">RESIZE</link> event to an event handling method in a resizable dialog. Then the <emphasis
+    role="italic">sizeInfo</emphasis> arg to the event handler is simply passed on to the <emphasis
+    role="italic">resize</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows a typical event handling method in a resizable dialog that makes use of the
+    <computeroutput>DlgAreaU</computeroutput> class
+<programlisting>
+<![CDATA[
+
+::method defineDialog
+  expose u
+
+  self~connectResize('onResize')
+
+  u = .dlgAreaU~new(self)
+  ...
+
+
+::method onResize unguarded
+  expose u
+  use arg sizeEvent, sizeInfo
+
+  u~resize(self, sizeInfo)
+  return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgAreaU::resize() -->
+
+<section id="sctCeateResizableDialogs"><title>Creating Resizeable Dialogs</title>
+<indexterm><primary>dynamically resizable dialogs</primary><secondary>DlgAreaU class</secondary></indexterm>
+<indexterm><primary>DlgAreaU class</primary><secondary>resizable dialogs</secondary></indexterm>
+<para>
+  You can use the <computeroutput>DlgAreaU</computeroutput> class to facilitate creating dynamically resizable dialogs.
+  However the following restrictions apply:
 </para>
 <para>
   The dialog must be a <link linkend="clsUserDialog">UserDialog</link> with all dialog controls created in the dialog
@@ -3617,15 +3863,17 @@ during a resize event.
   linkend="mthCreate">create</link> or <link linkend="mthCreateCenter">createCenter</link> method, the dialog template
   must be created with the THICKFRAME option.
 </para>
-<para>
-  You must connect the RESIZE event to a method in your dialog. Add the following source line to your dialog code
-  somewhere. The <emphasis role="italic">init</emphasis>, <emphasis role="italic">defineDialog</emphasis> or <emphasis
-  role="italic">initDialog</emphasis> methods are all a suitable place for the line:
+<para id="paraResizeEvent">
+  You must connect the <link linkend="mthConnectResize">RESIZE</link> event to a method in your dialog. Add the
+  following source line to your dialog code somewhere. The <emphasis role="italic">init</emphasis>, <emphasis
+  role="italic">defineDialog</emphasis> or <emphasis role="italic">initDialog</emphasis> methods are all a suitable
+  place for the line. The <emphasis role="italic">methodName</emphasis> argument is the name of your event handling
+  method and can be any appropriate method name.
 </para>
 
 <programlisting>
 <![CDATA[
-self~connectResize("OnResize")
+self~connectResize(methodName)
 ]]>
 </programlisting>
 
@@ -3639,32 +3887,33 @@ u = .dlgAreaU~new(self)
 ]]>
 </programlisting>
 <para>
-Your defineDialog method must not reference variables within the Add Method
-parameters, although you can use references to DlgArea attributes, so
+  Your <emphasis role="italic">defineDialog</emphasis> method must not reference variables within the <link
+  linkend="sctCreateMethods">create</link> control method parameters. Although you can use references to <link
+  linkend="clsDlgArea">DlgArea</link> attributes, so
 </para>
 <programlisting>
 <![CDATA[
-Self~addButton(23,1,5,6,"MyButton","Pressed")
-self~addButton(14,b~x,b~y("10%"),b~w,b~h("9%"),"Button" 1,"Button"||1)
+  self~createPushButton(IDC_PB, 5, 100, 45, 15, , "MyButton", "Pressed")
+  self~createPushButton(IDC_PB_1, b~x, b~y("10%"), b~w, b~h("9%"), , "Button" 1, "Button"||1)
 ]]>
 </programlisting>
-<para>
-Both are OK, whereas
-</para>
+  <para>
+    work fine, whereas
+  </para>
 <programlisting>
 <![CDATA[
 /* Seven buttons evenly spaced at 10% intervals, 9% high                     */
 do i = 0 to 6
-   self~addButton(12+i,b~x,b~y((i * 10)||"%"),b~w,b~h("9%"),"Button" i,"Button"||i)
+   self~createPushButton(12+i, b~x, b~y((i * 10)||"%"), b~w, b~h("9%"), , "Button" i, "Button"||i)
 end /* DO */
 ]]>
 </programlisting>
 <para>
-would now fail as the variable <computeroutput>i</computeroutput>
-is referenced within the parameters.
+  would fail because the <emphasis role="italic">createPushButton</emphasis> method references the variable
+  <computeroutput>i</computeroutput> within its parameters.
 </para>
 <para>
-To debug your DlgAreaU call/insert the following after the instantiation
+  To debug your <computeroutput>DlgAreaU</computeroutput> object call/insert the following after the instantiation:
 </para>
 <programlisting>
 <![CDATA[
@@ -3681,175 +3930,203 @@ if u~lastError \= .nil then call errorDialog u~lastError
 ::method OnResize
 /* ------------------------------------------------------------------------- */
   expose u
-  use arg ignored, sizeInfo
+  use arg sizeEvent, sizeInfo
 
   u~resize(self, sizeInfo)
 
 ]]>
 </programlisting>
 <para>
-  The <computeroutput>DlgAreaU</computeroutput> object's <emphasis role="italic">method</emphasis> will then
-  automatically resize &amp; position the following widgets in your dialog when the dialog frame is dragged or the
-  minimize, maximise, or restore buttons are pressed:
+  The <computeroutput>DlgAreaU</computeroutput> object's <emphasis role="italic">resize</emphasis> method will then
+  automatically resize &amp; position the dialog controls in your dialog that were added to the dialog template with the
+  following methods. The resizing takes place when the dialog frame is dragged, or the minimize, maximize, or restore
+  buttons are pressed:
 </para>
 <table frame="all">
-<title>DlgAreaU Automatic Resize Elements</title>
+<title>DlgAreaU Automatic Resize Controls</title>
 <tgroup cols="4" align="left" colsep="1" rowsep="1">
 <tbody>
 <row>
-   <entry>BLACKFRAME</entry>
-   <entry>BLACKRECT</entry>
-   <entry>BITMAPBUTTON</entry>
-   <entry>BUTTON</entry>
+  <entry>createBitmapbutton</entry>
+  <entry>createBlackframe</entry>
+  <entry>createBlackrect</entry>
+  <entry>createCheckbox</entry>
 </row>
 <row>
-   <entry>CHECKBOX</entry>
-   <entry>COMBOBOX</entry>
-   <entry>ENTRYLINE</entry>
-   <entry>GRAYFRAME</entry>
+  <entry>createCombobox</entry>
+  <entry>createEdit</entry>
+  <entry>createDatetimePicker</entry>
+  <entry>createEdit</entry>
 </row>
 <row>
-   <entry>GRAYRECT</entry>
-   <entry>GROUPBOX</entry>
-   <entry>LISTBOX</entry>
-   <entry>LISTCONTROL</entry>
+  <entry>createEtchedHorizontal</entry>
+  <entry>createEtchedVertical</entry>
+  <entry>createGrayFrame</entry>
+  <entry>createGrayRect</entry>
 </row>
 <row>
-   <entry>PASSWORDLINE</entry>
-   <entry>PROGRESSBAR</entry>
-   <entry>RADIOBUTTON</entry>
-   <entry>SCROLLBAR</entry>
+  <entry>createGroupBox</entry>
+  <entry>createListBox</entry>
+  <entry>createListView</entry>
+  <entry>createMonthCalendar</entry>
 </row>
 <row>
-   <entry>SLIDERCONTROL</entry>
-   <entry>TABCONTROL</entry>
-   <entry>TEXT</entry>
-   <entry>TREECONTROL</entry>
+  <entry>createPasswordEdit</entry>
+  <entry>createProgressBar</entry>
+  <entry>createPushButton</entry>
+  <entry>createRadioButton</entry>
 </row>
 <row>
-   <entry>WHITEFRAME</entry>
-   <entry>WHITERECT</entry>
-   <entry></entry>
-   <entry></entry>
+  <entry>createScrollBar</entry>
+  <entry>createStatic</entry>
+  <entry>createStaticFrame</entry>
+  <entry>createStaticImage</entry>
+</row>
+<row>
+  <entry>createStaticText</entry>
+  <entry>createTab</entry>
+  <entry>createTrackBar</entry>
+  <entry>createTreeView</entry>
+</row>
+<row>
+  <entry>createUpDown</entry>
+  <entry>createWhiteFrame</entry>
+  <entry>createWhiteRect</entry>
+  <entry></entry>
 </row>
 </tbody>
 </tgroup>
 </table>
 <para>
-The following widgets can be defined in a UserDialog, but cannot be handled by
-the DlgAreaU resize method, so should not be used.
+  The following <link linkend="sctCreateMethods">methods</link> can be used to define dialog controls in a <link
+  linkend="clsUserDialog">UserDialog</link>, but cannot be handled by the <computeroutput>DlgAreaU</computeroutput>
+  <link linkend="mthResizeClsDlgAreaU">resize</link> method. If you use any of these methods, the dialog controls will
+  not be automatically resized and positioned.
 </para>
 <table frame="all">
-<title>DlgAreaU Non-Automatic Resize Elements</title>
+<title>DlgAreaU Non-Automatic Resize Controls</title>
 <tgroup cols="4" align="left" colsep="1" rowsep="1">
 <tbody>
 <row>
-   <entry>BUTTONGROUP</entry>
-   <entry>CHECKBOXSTEM</entry>
-   <entry>CHECKGROUP</entry>
-   <entry>COMBOINPUT</entry>
+  <entry>createCheckBoxGroup</entry>
+  <entry>createCheckBoxStem</entry>
+  <entry>createComboBoxInput</entry>
+  <entry>createEditInput</entry>
 </row>
 <row>
-   <entry>FULLSEQ</entry>
-   <entry>INPUT</entry>
-   <entry>INPUTGROUP</entry>
-   <entry>INPUTSTEM</entry>
+  <entry>createEditInputGroup</entry>
+  <entry>createEditInputStem</entry>
+  <entry>createOkCancelLeftBottom</entry>
+  <entry>createOkCancelLeftTop</entry>
 </row>
 <row>
-   <entry>OKCANCEL...</entry>
-   <entry>RADIOGROUP</entry>
-   <entry>RADIOSTEM</entry>
-   <entry></entry>
+  <entry>createOkCancelRightBottom</entry>
+  <entry>createOkCancelRightTop</entry>
+  <entry>createPushButtonGroup</entry>
+  <entry>createRadioButtonGroup</entry>
+</row>
+<row>
+  <entry>createRadioButtonStem</entry>
+  <entry></entry>
+  <entry></entry>
+  <entry></entry>
 </row>
 </tbody>
 </tgroup>
 </table>
 <para>
-All of these widgets can be achieved using combinations of the permitted
-methods.
+  All of these dialog controls can be added to the dialog template by using combinations of the methods recognized in
+  the <emphasis role="italic">resize</emphasis> method.
 </para>
 </section>
 
-<section id="dlgareaubug"><title>Possible Problems</title>
-<para>The DlgAreaU resize method can create slightly over-size margins on the
-left &amp; bottom of the Dialog.  To correct for this the DlgAreaU class has
-a <link linkend="atrCorrectionFactor">CorrectionFactor </link> attribute set by
-default to 1.05. In tests, this correction factor appears to neutralise the
-effect. If your dialogs have over (or under) sized margins, you may be able to
-correct this in your code by adjusting the Correction Factor. For example:
+<section id="sctDlgAreaUProblems"><title>Possible Problems</title>
+<para>
+  The <computeroutput>DlgAreaU</computeroutput> <link linkend="mthResizeClsDlgAreaU">resize</link> method can create slightly
+  over-size margins on the left &amp; bottom of the Dialog.  To correct for this the DlgAreaU class has a <link
+  linkend="atrCorrectionFactor">correctionFactor </link> attribute set by default to 1.05. In tests, this correction
+  factor appears to neutralise the effect. If your dialogs have over (or under) sized margins, you may be able to
+  correct this in your code by adjusting the <emphasis role="italic">correctionFactor</emphasis> attribute. For example:
 </para>
 <programlisting>
 <![CDATA[
-U=.DlgAreaU~new(self)
-U~CorrectionFactor=1.07
+u = .DlgAreaU~new(self)
+u~correctionFactor=1.07
 ]]>
 </programlisting>
-<para>You will have to experiment to find the apropriate setting for this
-attribute.
+<para>
+  You will have to experiment to find the apropriate setting for this attribute.
+</para>
+<para>
+  The reason this problem ocurrs is because of the use of the <link linkend="ovvInaccurate">inaccurate</link> <emphasis
+  role="italic">factorX</emphasis> and <emphasis role="italic">factorY</emphasis> attributes to convert pixels to dialog
+  units. Fixing this, at this point, would most likely break exsiting programs.
 </para>
 </section>
 
-<section id="dlgareausample"><title>Sample Code</title>
+<section id="sctDlgAreaUSample"><title>Sample Code</title>
 <programlisting>
 <![CDATA[
 /* DlgAreaDemo.Rex  --  Demonstrate DlgArea & DlgAreaU Classes  --  Feb 2006 */
 
-MyDlg=.MyDialog~new
-MyDlg~execute("ShowTop")
+dlg=.MyDialog~new
+dlg~execute("ShowTop")
 
 exit
-::requires "OODWIN32.CLS"
+::requires "ooDialog.cls"
 /* ========================================================================= */
-::class MyDialog Subclass UserDialog
+::class 'MyDialog' subclass UserDialog
 /* ========================================================================= */
 ::method init
 /* ------------------------------------------------------------------------- */
-  self~Init:super
-  rc=self~createCenter(250,250,"MyDialog","ThickFrame", ,"MS Sans Serif",8)
-  self~InitCode=(rc=0)
-  self~connectResize("OnResize")
+  self~init:super
+  rc = self~createCenter(250, 250, "MyDialog", "ThickFrame", , "MS Sans Serif", 8)
+  if rc == 0 then return
+  self~connectResize("onResize")
 
 /* ------------------------------------------------------------------------- */
 ::method defineDialog
 /* ------------------------------------------------------------------------- */
 expose u
 
-u=.dlgAreaU~new(self)                                         /* whole dlg   */
+u = .dlgAreaU~new(self)                                       /* whole dlg   */
 if u~lastError \= .nil then call errorDialog u~lastError
-e=.dlgArea~new(u~x       ,u~y       ,u~w("70%"),u~h("90%"))   /* edit   area */
-s=.dlgArea~new(u~x       ,u~y("90%"),u~w("70%"),u~hr      )   /* status area */
-b=.dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      )   /* button area */
+e = .dlgArea~new(u~x       ,u~y       ,u~w("70%"),u~h("90%")) /* edit   area */
+s = .dlgArea~new(u~x       ,u~y("90%"),u~w("70%"),u~hr      ) /* status area */
+b = .dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      ) /* button area */
 
-self~createEdit(12, e~x, e~y, e~w, e~h, "multiline", "text")
-self~createStaticText(11, s~x, s~y, s~w, s~h, , "Status info appears here")
+self~createEdit(IDC_EDIT, e~x, e~y, e~w, e~h, "multiline", "text")
+self~createStaticText(IDC_ST_STATUS, s~x, s~y, s~w, s~h, , "Status info appears here")
 
-self~addButton(13,b~x,b~y("00%"),b~w,b~h("9%"),"Button" 0,"Button"||0)
-self~addButton(14,b~x,b~y("10%"),b~w,b~h("9%"),"Button" 1,"Button"||1)
-self~addButton(15,b~x,b~y("20%"),b~w,b~h("9%"),"Button" 2,"Button"||2)
-self~addButton(16,b~x,b~y("30%"),b~w,b~h("9%"),"Button" 3,"Button"||3)
-self~addButton(17,b~x,b~y("40%"),b~w,b~h("9%"),"Button" 4,"Button"||4)
-self~addButton(18,b~x,b~y("50%"),b~w,b~h("9%"),"Button" 5,"Button"||5)
-self~addButton(19,b~x,b~y("60%"),b~w,b~h("9%"),"Button" 6,"Button"||6)
-self~addButton( 1,b~x,b~y("90%"),b~w,b~h("9%"),"Ok","Ok","DEFAULT")
+self~createPushButton(IDC_PB_0, b~x, b~y('00%'), b~w, b~h('9%'), ,'Button' 0, 'Button'||0)
+self~createPushButton(IDC_PB_1, b~x, b~y('10%'), b~w, b~h('9%'), ,'Button' 1, 'Button'||1)
+self~createPushButton(IDC_PB_2, b~x, b~y('20%'), b~w, b~h('9%'), ,'Button' 2, 'Button'||2)
+self~createPushButton(IDC_PB_3, b~x, b~y('30%'), b~w, b~h('9%'), ,'Button' 3, 'Button'||3)
+self~createPushButton(IDC_PB_4, b~x, b~y('40%'), b~w, b~h('9%'), ,'Button' 4, 'Button'||4)
+self~createPushButton(IDC_PB_5, b~x, b~y('50%'), b~w, b~h('9%'), ,'Button' 5, 'Button'||5)
+self~createPushButton(IDC_PB_6, b~x, b~y('60%'), b~w, b~h('9%'), ,'Button' 6, 'Button'||6)
+self~createPushButton(IDOK,     b~x, b~y('90%'), b~w, b~h('9%'),'DEFAULT', 'Ok')
+
 
 /* ------------------------------------------------------------------------- */
-::method Unknown
+::method unknown
 /* ------------------------------------------------------------------------- */
 use arg msgname, args
-StatusLine = Self~newStatic(11)
-StatusLine~setText("You Pressed" msgname)
+if msgname~abbrev("BUTTON") then
+   self~newStatic(IDC_ST_STATUS)~setText('You Pressed Button' msgname~right(1))
 
 /* ------------------------------------------------------------------------- */
-::method OnResize
+::method onResize
 /* ------------------------------------------------------------------------- */
 expose u
-use arg dummy,sizeinfo
-u~resize(self,sizeinfo)
+use arg sizeEvent, sizeinfo
+u~resize(self, sizeinfo)
 
 ]]>
 </programlisting>
-<para>This achieves the same dialog as the previous <link linkend="exampleDlgArea">
-DlgArea example</link>, but now it is resizable by dragging the frame.
+<para>
+  This achieves the same dialog as the previous <link linkend="exampleDlgArea"> DlgArea example</link>, but now it is
+  resizable by dragging the frame.
 </para>
 </section>
 </section>
