@@ -3447,23 +3447,23 @@ self~addButton(1,b~x,b~y(-15),b~w,15,"OK","OK","Default")
 </row>
 <row>
 <entry><link linkend="atrCorrectionFactor">correctionFactor</link></entry>
-<entry>xx</entry>
+<entry>A value used to fix problems in the conversion of pixels to dialog units by adjusting the ratio of original size to change in size.</entry>
 </row>
 <row>
 <entry><link linkend="atrLastError">lastError</link></entry>
-<entry>xx</entry>
+<entry>Holds the details if an error was encountered when parsing the calling dialog’s defineDialog method.</entry>
 </row>
 <row>
 <entry><link linkend="atrNoMove">noMove</link></entry>
-<entry>xx</entry>
+<entry>Holds a set of the resource IDs of dialog controls not to be moved during a resize event.</entry>
 </row>
 <row>
 <entry><link linkend="atrNoResize">noResize</link></entry>
-<entry>xx</entry>
+<entry>Holds a set of the resource IDs of dialog controls not to be resized during a resize event.</entry>
 </row>
 <row>
 <entry><link linkend="atrUpdateOnResize">upDateOnResize</link></entry>
-<entry>xx</entry>
+<entry>Controls whether the DlgAreaU object forces the dialog controls to redraw after every resize event.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -3471,15 +3471,15 @@ self~addButton(1,b~x,b~y(-15),b~w,15,"OK","OK","Default")
 </row>
 <row>
 <entry><link linkend="mthNoMovePut">noMovePut</link></entry>
-<entry>xx</entry>
+<entry>Adds a dialog control to the set of dialog controls that will not be moved during the resize event.</entry>
 </row>
 <row>
 <entry><link linkend="mthNoResizePut">noResizePut</link></entry>
-<entry>xx</entry>
+<entry>Adds a dialog control to the set of dialog controls that will not be resized during the resize event.</entry>
 </row>
 <row>
 <entry><link linkend="mthResizeClsDlgAreaU">resize</link></entry>
-<entry>xx</entry>
+<entry>Causes the DlgAreaU object to resize and reposition all the dialog controls in the dialog.</entry>
 </row>
 </tbody>
 </tgroup>
@@ -3859,13 +3859,13 @@ self~addButton(1,b~x,b~y(-15),b~w,15,"OK","OK","Default")
 </para>
 <para>
   The dialog must be a <link linkend="clsUserDialog">UserDialog</link> with all dialog controls created in the dialog
-  template from within the <link linkend="mthDefineDialog"></link> method. In the <link
+  template from within the <link linkend="mthDefineDialog">defineDialog</link> method. In the <link
   linkend="mthCreate">create</link> or <link linkend="mthCreateCenter">createCenter</link> method, the dialog template
   must be created with the THICKFRAME option.
 </para>
 <para id="paraResizeEvent">
   You must connect the <link linkend="mthConnectResize">RESIZE</link> event to a method in your dialog. Add the
-  following source line to your dialog code somewhere. The <emphasis role="italic">init</emphasis>, <emphasis
+  following code somewhere in your dialog code. The <emphasis role="italic">init</emphasis>, <emphasis
   role="italic">defineDialog</emphasis> or <emphasis role="italic">initDialog</emphasis> methods are all a suitable
   place for the line. The <emphasis role="italic">methodName</emphasis> argument is the name of your event handling
   method and can be any appropriate method name.
@@ -4058,9 +4058,9 @@ u~correctionFactor=1.07
   You will have to experiment to find the apropriate setting for this attribute.
 </para>
 <para>
-  The reason this problem ocurrs is because of the use of the <link linkend="ovvInaccurate">inaccurate</link> <emphasis
+  This problem ocurrs because of the use of the <link linkend="ovvInaccurate">inaccurate</link> <emphasis
   role="italic">factorX</emphasis> and <emphasis role="italic">factorY</emphasis> attributes to convert pixels to dialog
-  units. Fixing this, at this point, would most likely break exsiting programs.
+  units. Fixing the problem, at this point, would most likely break exsiting programs.
 </para>
 </section>
 
@@ -4069,10 +4069,11 @@ u~correctionFactor=1.07
 <![CDATA[
 /* DlgAreaDemo.Rex  --  Demonstrate DlgArea & DlgAreaU Classes  --  Feb 2006 */
 
-dlg=.MyDialog~new
-dlg~execute("ShowTop")
+dlg = .MyDialog~new
+if dlg~initCode == 0 then dlg~execute("ShowTop")
 
-exit
+return dlg~initCode
+
 ::requires "ooDialog.cls"
 /* ========================================================================= */
 ::class 'MyDialog' subclass UserDialog
@@ -4080,8 +4081,11 @@ exit
 ::method init
 /* ------------------------------------------------------------------------- */
   self~init:super
-  rc = self~createCenter(250, 250, "MyDialog", "ThickFrame", , "MS Sans Serif", 8)
-  if rc == 0 then return
+  if \ self~createCenter(250, 250, "MyDialog", "ThickFrame", , "Tahoma", 8) then do
+    self~initCode = 1
+    return
+  end
+
   self~connectResize("onResize")
 
 /* ------------------------------------------------------------------------- */
